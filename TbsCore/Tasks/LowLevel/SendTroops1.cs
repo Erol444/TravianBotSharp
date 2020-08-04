@@ -1,0 +1,44 @@
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System.Threading.Tasks;
+using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Models.SendTroopsModels;
+
+namespace TravBotSharp.Files.Tasks.LowLevel
+{
+    public class SendTroops1 : BotTask
+    {
+        public TroopsMovementModel TroopsMovement { get; set; }
+        //TODO Add options for catapult/scout targets inside SendTroops2!
+
+        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        {
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
+
+            //add number of troops to the input boxes
+            for (int i = 0; i < TroopsMovement.Troops.Length; i++)
+            {
+                if (TroopsMovement.Troops[i] == 0) continue;
+                wb.ExecuteScript($"document.getElementsByName('t{i + 1 }')[0].value='{TroopsMovement.Troops[i]}'");
+                await Task.Delay(222);
+            }
+
+            //select coordinates
+            wb.ExecuteScript($"document.getElementById('xCoordInput').value='{TroopsMovement.Coordinates.x}'");
+            wb.ExecuteScript($"document.getElementById('yCoordInput').value='{TroopsMovement.Coordinates.y}'");
+            await Task.Delay(AccountHelper.Delay());
+
+            //Select type of troop sending
+            string script = "var radio = document.getElementsByClassName(\"radio\");for(var i = 0; i < radio.length; i++){";
+            script += $"if(radio[i].value == \"{(int)TroopsMovement.MovementType}\") radio[i].checked = \"checked\"}}";
+            wb.ExecuteScript(script);
+            await Task.Delay(2 * AccountHelper.Delay());
+
+            //Click on "Send" button
+            wb.ExecuteScript($"document.getElementById('btn_ok').click()");
+
+            return TaskRes.Executed;
+        }
+    }
+}

@@ -1,0 +1,21 @@
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System.Threading.Tasks;
+using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models.AccModels;
+
+namespace TravBotSharp.Files.Tasks.LowLevel
+{
+    public class SendTroopsConfirm : BotTask
+    {
+        //TODO: add option for scouting type / catapult target(s)
+
+        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        {
+            await Task.Delay(AccountHelper.Delay());
+            wb.ExecuteScript($"document.getElementById('btn_ok').click()"); //Click send
+
+            return TaskRes.Executed;
+        }
+    }
+}

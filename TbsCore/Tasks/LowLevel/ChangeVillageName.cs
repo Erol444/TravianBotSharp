@@ -1,0 +1,37 @@
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models.AccModels;
+
+namespace TravBotSharp.Files.Tasks.LowLevel
+{
+    public class ChangeVillageName : BotTask
+    {
+        public List<(int, string)> ChangeList { get; set; }
+        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        {
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?s=2");
+
+            if(htmlDoc.GetElementbyId("PlayerProfileEditor") == null)
+            {
+                // Sitter. Can't change the name of the village. TODO: check if sitter before
+                // creating the task.
+                return TaskRes.Executed;
+            }
+
+            foreach (var change in ChangeList)
+            {
+                var script = $"document.getElementsByName('dname[{change.Item1}]=')[0].value='{change.Item2}'";
+                wb.ExecuteScript(script); //insert new name into the textbox
+            }
+
+            await Task.Delay(AccountHelper.Delay());
+
+            wb.ExecuteScript("document.getElementById('PlayerProfileEditor').submit()"); //click save button
+
+            return TaskRes.Executed;
+        }
+    }
+}
