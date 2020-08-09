@@ -1,6 +1,8 @@
 # TravianBotSharp (TBS)
 #### [DOWNLOAD COMPILED BOT HERE](https://drive.google.com/drive/folders/1db_wPZeg5w7BQs5ROa29x2LGDxCzoXIj?usp=sharing)
 
+#### [Discord chat](https://discord.gg/mBa4f2K)
+
 #### About
 I have worked on this bot for over 2 years, ~15k LoC. It was mainly tested and developed for [TTWars server](https://ttwars.com), so there are many features specific for that server. I have tested it on T4.5 and did some bugfixes, it seems to work now. I'm not sure if I will develop it any further since I don't play this game anymore.
 
