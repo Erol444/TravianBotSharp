@@ -57,6 +57,9 @@ namespace TravBotSharp
                 if (result == DialogResult.OK)
                 {
                     var acc = form.Acc;
+                    if (string.IsNullOrEmpty(acc.AccInfo.Nickname) ||
+                        string.IsNullOrEmpty(acc.AccInfo.ServerUrl)) return;
+
                     accounts.Add(acc);
                     var access = acc.Access.GetCurrentAccess();
                     InsertAccIntoListView(acc.AccInfo.Nickname,

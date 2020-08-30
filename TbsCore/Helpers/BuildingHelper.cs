@@ -256,6 +256,10 @@ namespace TravBotSharp.Files.Helpers
                 if (b.Level == task.Level - 1 && b.UnderConstruction) buildings.Remove(b); //its already being upgraded to selected lvl
             }
 
+            // Filter resource fields by type
+            buildings = buildings.Where(x => x.Type == task.Building).ToList();
+
+
             Models.ResourceModels.Building buildingToUpgrade = null;
             switch (task.BuildingStrategy)
             {

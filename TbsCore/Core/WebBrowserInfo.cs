@@ -44,12 +44,7 @@ namespace TravBotSharp.Files.Models.AccModels
             ChromeOptions options = new ChromeOptions();
             if (!string.IsNullOrEmpty(access.Proxy))
             {
-                options.Proxy = new Proxy()
-                {
-                    Kind = ProxyKind.Manual,
-                    IsAutoDetect = false,
-                    SslProxy = $"<{access.Proxy}:{access.ProxyPort}>"
-                };
+                options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
                 options.AddArgument("ignore-certificate-errors");
             }
             if (!string.IsNullOrEmpty(access.UserAgent))

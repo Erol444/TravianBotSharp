@@ -27,7 +27,11 @@ namespace TravBotSharp.Files.Helpers
                 acc.TaskTimer.Stop();
                 return;
             }
-
+            if (CheckCookies(acc))
+            {
+                AddTaskIfNotExists(acc, new AcceptCookies() { ExecuteAt = DateTime.MinValue });
+                return;
+            }
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
                 AddTaskIfNotExists(acc, new LoginTask() { ExecuteAt = DateTime.MinValue });
@@ -42,6 +46,14 @@ namespace TravBotSharp.Files.Helpers
             //TODO: limit this for performance reasons?
             PreTaskRefresh(acc);
         }
+
+        /// <summary>
+        /// Checks if there are cookies to be accepted
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>Whether there are cookies to be accepted</returns>
+        private static bool CheckCookies(Account acc) =>
+            acc.Wb.Html.GetElementbyId("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll") != null;
 
         /// <summary>
         /// Invoke all PostTasks that a task might have.

@@ -41,20 +41,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return await Execute(htmlDoc, wb, acc);
             }
 
-            // In which dorf is the building. Maybe not needed.
+            // In which dorf is the building. So bot is less suspicious.
             if (!acc.Wb.CurrentUrl.Contains($"/dorf{((task.BuildingId ?? default) < 19 ? 1 : 2)}.php"))
             {
+                string navigateTo = $"{acc.AccInfo.ServerUrl}/";
                 //Switch village!
-                BotTask updateDorfTask = (task.BuildingId ?? default) < 19 ?
-                    (BotTask)new UpdateDorf1() :
-                    (BotTask)new UpdateDorf2();
+                navigateTo += (task.BuildingId ?? default) < 19 ?
+                    "dorf1.php" :
+                    "dorf2.php";
 
-                updateDorfTask.vill = this.vill;
-                updateDorfTask.ExecuteAt = DateTime.MinValue.AddHours(2);
-
-                TaskExecutor.AddTask(acc, updateDorfTask);
-                this.NextExecute = updateDorfTask.ExecuteAt.AddMinutes(1);
-                return TaskRes.Executed;
+                await acc.Wb.Navigate(navigateTo);
             }
 
             // Check if there are already too many buildings currently constructed
@@ -148,11 +144,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // If there is already a different building in this spot, find a new id to construct it.
                 if (buildingEnum != task.Building)
                 {
-                    if (!BuildingHelper.FindBuildingId(vill, task))
+                    vill.Build.Tasks.Remove(this.task);
+                    if (!BuildingHelper.FindBuildingId(vill, this.task))
                     {
-                        vill.Build.Tasks.Remove(this.task);
+                        return TaskRes.Retry;
                     }
-                    return TaskRes.Retry;
+                    return TaskRes.Executed;
                 }
 
                 // Basic task already on/above desired level, don't upgrade further
@@ -201,6 +198,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     var res = ResourceParser.GetResourceCost(resWrapper);
                     this.PostTaskCheck.Remove(ConfigNextExecute);
                     this.NextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, vill, res);
+                    // Crop supply is low. Upgrade crop field first
+                    if(this.NextExecute <= DateTime.Now)
+                    {
+                        this.task.Building = BuildingEnum.Cropland;
+                    }
                     return TaskRes.Executed;
                 }
             }
@@ -385,14 +387,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             return vill.Build.Tasks.FirstOrDefault(x =>
             x.TaskType != BuildingType.AutoUpgradeResFields && !IsResourceField(x.Building)
             );
-        }
-
-        private BuildingDorf GetBuildingDorf(BuildingTask task)
-        {
-            bool isRes = task.TaskType == BuildingType.AutoUpgradeResFields ||
-                            IsResourceField(task.Building);
-
-            return isRes ? BuildingDorf.Dorf1 : BuildingDorf.Dorf2;
         }
     }
 }
