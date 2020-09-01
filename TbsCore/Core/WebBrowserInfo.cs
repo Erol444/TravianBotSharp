@@ -97,7 +97,7 @@ namespace TravBotSharp.Files.Models.AccModels
             this.CurrentUrl = url;
             await Task.Delay(AccountHelper.Delay());
             this.Html.LoadHtml(this.Driver.PageSource);
-            TaskExecutor.PageLoaded(acc);
+            await TaskExecutor.PageLoaded(acc);
         }
 
         public void Close()

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using TbsCore.Resources;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
 
@@ -156,6 +157,22 @@ namespace TravBotSharp.Files.Helpers
                 acc.Wb = null;
             }
             acc.Tasks = null; //TODO: somehow save tasks, JSON cant parse/stringify abstract classes :(
+        }
+
+        public static string GetUseragent()
+        {
+            Random rnd = new Random();
+            var agents = Resources.useragents.Split('\n');
+            for (int i = 0; i < agents.Length; i++)
+            {
+                int limit = agents.Length - i;
+                int num = rnd.Next(1, limit);
+                if(num <= 1 + limit / 20)
+                {
+                    return agents[i].Replace("\r", "");
+                }
+            }
+            return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36";
         }
     }
 }

@@ -44,6 +44,5 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             return TaskRes.Executed;
         }
-
     }
 }

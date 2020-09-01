@@ -20,7 +20,7 @@ namespace TravBotSharp.Files.Helpers
         /// In first case execute the task, in second remove it.
         /// </summary>
         /// <param name="acc"></param>
-        public static void PageLoaded(Account acc)
+        public static async Task PageLoaded(Account acc)
         {
             if (IsCaptcha(acc) || IsWWMsg(acc)) //Check if a captcha is detected or WW there is a WW msg
             {
@@ -29,8 +29,7 @@ namespace TravBotSharp.Files.Helpers
             }
             if (CheckCookies(acc))
             {
-                AddTaskIfNotExists(acc, new AcceptCookies() { ExecuteAt = DateTime.MinValue });
-                return;
+                acc.Wb.Driver.ExecuteScript("document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click()");
             }
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
@@ -39,8 +38,8 @@ namespace TravBotSharp.Files.Helpers
             }
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
             {
-                AddTask(acc, new ClickContinueTask() { ExecuteAt = DateTime.MinValue });
-                return;
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?ok");
+                await Task.Delay(AccountHelper.Delay());
             }
 
             //TODO: limit this for performance reasons?
