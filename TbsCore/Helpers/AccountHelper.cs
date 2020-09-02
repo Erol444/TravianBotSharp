@@ -48,6 +48,9 @@ namespace TravBotSharp.Files.Helpers
             if (acc.AccInfo.MapSize == 0) TaskExecutor.AddTaskIfNotExists(acc, new GetMapSize() { ExecuteAt = DateTime.MinValue.AddHours(2) });
             //FL
             if (acc.Farming.Enabled) TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
+
+            TaskExecutor.AddTaskIfNotExists(acc, new Sleep() { ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc) });
+
             //research / improve / train troops
             foreach (var vill in acc.Villages)
             {

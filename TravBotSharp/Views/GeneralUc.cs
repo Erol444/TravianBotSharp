@@ -220,5 +220,44 @@ namespace TravBotSharp.Views
         {
             getSelectedAcc().Settings.DisableImages = disableImagesCheckbox.Checked;
         }
+
+        private void workMin_ValueChanged(object sender, EventArgs e)
+        {
+            var val = (int)workMin.Value;
+            if (val > (int)workMax.Value) {
+                workMin.Value = workMax.Value;
+            }
+            getSelectedAcc().Settings.Time.MinWork = (int)workMin.Value;
+        }
+
+        private void workMax_ValueChanged(object sender, EventArgs e)
+        {
+            var val = (int)workMax.Value;
+            if (val < (int)workMin.Value)
+            {
+                workMax.Value = workMin.Value;
+            }
+            getSelectedAcc().Settings.Time.MaxWork = (int)workMax.Value;
+        }
+
+        private void sleepMin_ValueChanged(object sender, EventArgs e)
+        {
+            var val = (int)sleepMin.Value;
+            if (val > (int)sleepMax.Value)
+            {
+                sleepMin.Value = sleepMax.Value;
+            }
+            getSelectedAcc().Settings.Time.MinSleep = (int)sleepMin.Value;
+        }
+
+        private void sleepMax_ValueChanged(object sender, EventArgs e)
+        {
+            var val = (int)sleepMax.Value;
+            if (val < (int)sleepMin.Value)
+            {
+                sleepMax.Value = sleepMin.Value;
+            }
+            getSelectedAcc().Settings.Time.MaxSleep = (int)sleepMax.Value;
+        }
     }
 }

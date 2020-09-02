@@ -64,7 +64,7 @@ namespace TravBotSharp.Files.Models.AccModels
             var taskInProgress = acc.Tasks.FirstOrDefault(x => x.Stage != TaskStage.Start);
             if (taskInProgress != null)
             {
-                if (taskInProgress.DurationCounter++ > 30) //after 20sec try to re-execute the task
+                if (taskInProgress.DurationCounter++ > 30) //after 15sec try to re-execute the task
                 {
                     Console.WriteLine($"Task {taskInProgress} timed out. Restarting it..");
                     taskInProgress.DurationCounter = 15;

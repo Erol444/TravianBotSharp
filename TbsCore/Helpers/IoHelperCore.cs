@@ -159,6 +159,11 @@ namespace TravBotSharp.Files.Helpers
             acc.Tasks = null; //TODO: somehow save tasks, JSON cant parse/stringify abstract classes :(
         }
 
+        /// <summary>
+        /// Gets a random useragent. Useragents written higher in the file are more popular, thus should be
+        /// used by the bot more frequently.
+        /// </summary>
+        /// <returns>Random useragent string</returns>
         public static string GetUseragent()
         {
             Random rnd = new Random();
@@ -167,7 +172,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 int limit = agents.Length - i;
                 int num = rnd.Next(1, limit);
-                if(num <= 1 + limit / 20)
+                if(num <= 1 + limit / 10)
                 {
                     return agents[i].Replace("\r", "");
                 }

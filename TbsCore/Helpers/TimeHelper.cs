@@ -44,5 +44,19 @@ namespace TravBotSharp.Files.Helpers
         {
             return (TimeSpan.FromTicks(timeSpan.Ticks * multiplyBy));
         }
+
+        /// <summary>
+        /// Generate random time when the next sleep will occur
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>TimeSpan of the working time. After this, account should sleep</returns>
+        public static TimeSpan GetWorkTime(Account acc)
+        {
+            var rand = new Random();
+            TimeSpan workTime = new TimeSpan(0,
+                rand.Next(acc.Settings.Time.MinWork, acc.Settings.Time.MaxWork),
+                0);
+            return workTime;
+        }
     }
 }
