@@ -245,7 +245,8 @@ namespace TravBotSharp.Files.Helpers
                 if (troop == TroopsEnum.None) continue;
 
                 // Research
-                if (!vill.Troops.Researched.Exists(x => x == troop))
+                if (!vill.Troops.Researched.Exists(x => x == troop)
+                    && ((int)troop % 10) != 1) // Don't try to research 1. troops of each tribe (clubs, phalanx...)
                 {
                     if (TroopsHelper.AddBuildingsForTroop(acc, vill, troop))
                     {

@@ -32,9 +32,9 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Returns a random delay.
+        /// Returns a random delay (click delay, ~0.5-1sec).
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Random delay in milliseconds</returns>
         internal static int Delay()
         {
             //Return random delay

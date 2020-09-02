@@ -49,9 +49,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={buildId.Id}");
 
-            //after finishing task, update currently training
-            this.PostTaskCheck.Add(UpdateCurrentlyTraining);
-            if (!HighSpeedServer) this.PostTaskCheck.Add(RepeatTrainingCycle);
             if (this.UpdateOnly || this.Troop == TroopsEnum.None)
             {
                 return TaskRes.Executed;
@@ -63,7 +60,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
             var inputName = troopNode.Descendants("input").FirstOrDefault().GetAttributeValue("name", "");
 
-            var maxNum = Parser.RemoveNonNumeric(troopNode.ChildNodes.FirstOrDefault(x => x.Name == "a").InnerText);
+            var maxNum = Parser.RemoveNonNumeric(troopNode.ChildNodes.First(x=>x.HasClass("cta")).ChildNodes.First(x => x.Name == "a").InnerText);
 
             if (!HighSpeedServer)
             {
@@ -83,6 +80,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await Task.Delay(100);
 
             wb.ExecuteScript("document.getElementsByName('s1')[0].click()"); //Train button
+
+            //Check the newly trained troops
+            await Task.Delay(AccountHelper.Delay());
+            htmlDoc.LoadHtml(wb.PageSource);
+            UpdateCurrentlyTraining(htmlDoc, acc);
+
+            if (!HighSpeedServer) RepeatTrainingCycle(htmlDoc, acc);
+
             return TaskRes.Executed;
         }
         public void UpdateCurrentlyTraining(HtmlDocument htmlDoc, Account acc)
@@ -108,7 +113,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
         }
         /// <summary>
-        /// PostTask. Repeats sending resources and training troops. Needs to fill up training above X hours.
+        /// Repeats sending resources and training troops. Needs to fill up training above X hours.
         /// </summary>
         /// <param name="htmlDoc">html of the page</param>
         /// <param name="acc">Account</param>
@@ -156,11 +161,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             else
             {
+                var subtractMillis = AccountHelper.Delay() * 50; //~30sec
                 var later = DateTime.Now.AddMinutes(10);
                 // Don't training again sooner than after 10min
                 if (later > trainingEnds) trainingEnds = later;
 
-                this.NextExecute = trainingEnds;
+                this.NextExecute = trainingEnds.AddMilliseconds(-subtractMillis);
             }
         }
     }

@@ -274,6 +274,9 @@ namespace TravBotSharp.Views
                 vill.Settings.GetRes = cells[column].Checked;
                 column++;
                 vill.Settings.SendRes = cells[column].Checked;
+
+                // Reset training
+                if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
             }
             //Change name of village/s
             if (changeVillNames.Count > 0)
@@ -320,10 +323,6 @@ namespace TravBotSharp.Views
             if (vill.Settings.GreatBarracksTrain == enabled) return; //no difference
 
             vill.Settings.GreatBarracksTrain = enabled;
-            if (enabled)
-            {
-                if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
-            }
         }
         private void UpdateGS(Account acc, Village vill, CellCollection cells, int column)
         {
@@ -331,10 +330,6 @@ namespace TravBotSharp.Views
             if (vill.Settings.GreatStableTrain == enabled) return; //no difference
 
             vill.Settings.GreatStableTrain = enabled;
-            if (enabled)
-            {
-                if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
-            }
         }
         private void UpdateVillageType(Village vill, CellCollection cells, int column)
         {
