@@ -26,7 +26,7 @@ namespace TravBotSharp.Files.Helpers
         /// </summary>
         /// <param name="vill">(target) Village to get the resources</param>
         /// <returns>Returns DateTime when approximately will resources get transited to target village </returns>
-        public static DateTime TransitResources(Account acc, Village vill)
+        public static DateTime TransitResourcesFromMain(Account acc, Village vill)
         {
             //Transit resources for this village is disabled.
             if (!vill.Market.Settings.Configuration.Enabled) return DateTime.MaxValue;

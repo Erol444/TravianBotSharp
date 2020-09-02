@@ -125,7 +125,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     TaskExecutor.AddTask(acc, new SendResToMain() { vill = this.vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
                 }
             }
-            if (vill.Settings.GetRes)
+
+            var mainVill = AccountHelper.GetMainVillage(acc);
+            if (vill.Settings.GetRes && mainVill != this.vill)
             {
                 var nextCycle = trainingEnds.AddHours(-acc.Settings.FillInAdvance);
                 if (nextCycle < DateTime.Now)
@@ -145,7 +147,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 TaskExecutor.AddTask(acc, new SendResFillTroops()
                 {
                     ExecuteAt = nextCycle.AddMilliseconds(1),
-                    vill = AccountHelper.GetMainVillage(acc),
+                    vill = mainVill,
                     TargetVill = this.vill,
                     TrainTask = this
                 });
@@ -154,7 +156,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             else
             {
-                var later = DateTime.Now.AddMinutes(1);
+                var later = DateTime.Now.AddMinutes(10);
                 // Don't training again sooner than after 10min
                 if (later > trainingEnds) trainingEnds = later;
 

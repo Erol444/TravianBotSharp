@@ -20,14 +20,16 @@ namespace TravBotSharp.Files.Helpers
         {
             DateTime enoughRes = DateTime.Now.Add(TimeHelper.EnoughResToUpgrade(vill, res));
 
+            var mainVill = AccountHelper.GetMainVillage(acc);
             //We have enough resources, return DateTime.Now
             if (enoughRes < DateTime.Now.AddMilliseconds(1))
             {
                 return DateTime.Now;
             }
+            if (mainVill == vill) return enoughRes;
             //Not enough resources, send resources
             //TODO: this isn't working like supposed to. If we have small transport time, (below 2min, return 2min, so bot has time to send res
-            DateTime resTransit = MarketHelper.TransitResources(acc, vill);
+            DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
             return (enoughRes < resTransit ? enoughRes : resTransit);
         }
         /// <summary>
