@@ -45,7 +45,11 @@ namespace TravBotSharp.Files.Helpers
         {
             // If we don't know server speed, go and get it
             if (acc.AccInfo.ServerSpeed == 0) TaskExecutor.AddTaskIfNotExists(acc, new GetServerSpeed() { ExecuteAt = DateTime.MinValue.AddHours(2) });
-            if (acc.AccInfo.MapSize == 0) TaskExecutor.AddTaskIfNotExists(acc, new GetMapSize() { ExecuteAt = DateTime.MinValue.AddHours(2) });
+            if (acc.AccInfo.MapSize == 0 ||
+                acc.AccInfo.Tribe == Classificator.TribeEnum.Any)
+            {
+                TaskExecutor.AddTaskIfNotExists(acc, new GetMapSizeAndTribe() { ExecuteAt = DateTime.MinValue.AddHours(2) });
+            }
             //FL
             if (acc.Farming.Enabled) TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
 

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using TbsCore.Helpers;
 using TbsCore.Resources;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
@@ -89,6 +90,8 @@ namespace TravBotSharp.Files.Helpers
                     accounts = JsonConvert.DeserializeObject<List<Account>>(sr.ReadToEnd());
                 }
                 if (accounts == null) accounts = new List<Account>();
+
+                accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
             }
             catch (IOException e)
             {

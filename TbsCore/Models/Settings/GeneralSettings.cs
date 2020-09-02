@@ -1,12 +1,17 @@
-﻿namespace TravBotSharp.Files.Models.Settings
+﻿using TbsCore.Models.Settings;
+using TravBotSharp.Files.Models.AccModels;
+
+namespace TravBotSharp.Files.Models.Settings
 {
     public class GeneralSettings
     {
-        public void init()
+        public void Init()
         {
             this.FillFor = 2;
             this.FillInAdvance = 4;
             this.AutoReadIgms = true;
+            this.Time = new TimeSettings();
+            this.Time.Init();
         }
         public bool AutoActivateProductionBoost { get; set; }
 
@@ -36,5 +41,9 @@
         /// Initialize Chrome selenium driver in headless mode
         /// </summary>
         public bool HeadlessMode { get; set; }
+        /// <summary>
+        /// Time settings for the bot
+        /// </summary>
+        public TimeSettings Time { get; set; }
     }
 }

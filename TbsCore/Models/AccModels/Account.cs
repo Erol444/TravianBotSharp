@@ -28,7 +28,7 @@ namespace TravBotSharp.Files.Models.AccModels
             AccInfo.Init();
             Quests = new List<Quest>();
             Settings = new GeneralSettings();
-            Settings.init();
+            Settings.Init();
             Farming = new Farming();
             NewVillages = new NewVillageSettings();
             NewVillages.Init();

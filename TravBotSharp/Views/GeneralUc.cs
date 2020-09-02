@@ -51,6 +51,11 @@ namespace TravBotSharp.Views
 
             disableImagesCheckbox.Checked = acc.Settings.DisableImages;
             headlessCheckbox.Checked = acc.Settings.HeadlessMode;
+
+            sleepMax.Value = acc.Settings.Time.MaxSleep;
+            sleepMin.Value = acc.Settings.Time.MinSleep;
+            workMax.Value = acc.Settings.Time.MaxWork;
+            workMin.Value = acc.Settings.Time.MinWork;
         }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages

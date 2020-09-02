@@ -65,23 +65,25 @@
             this.label1 = new System.Windows.Forms.Label();
             this.workMin = new System.Windows.Forms.NumericUpDown();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.sleepMax = new System.Windows.Forms.NumericUpDown();
+            this.workMax = new System.Windows.Forms.NumericUpDown();
+            this.label15 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.sleepMin = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.workMax = new System.Windows.Forms.NumericUpDown();
-            this.sleepMax = new System.Windows.Forms.NumericUpDown();
+            this.label16 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fillInAdvanceUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FillForUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workMin)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sleepMin)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sleepMax)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.workMax)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sleepMin)).BeginInit();
             this.SuspendLayout();
             // 
             // button5
@@ -466,6 +468,8 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel1.Controls.Add(this.label18);
+            this.panel1.Controls.Add(this.label16);
             this.panel1.Controls.Add(this.sleepMax);
             this.panel1.Controls.Add(this.workMax);
             this.panel1.Controls.Add(this.label15);
@@ -479,6 +483,44 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(280, 135);
             this.panel1.TabIndex = 169;
+            // 
+            // sleepMax
+            // 
+            this.sleepMax.Location = new System.Drawing.Point(181, 87);
+            this.sleepMax.Margin = new System.Windows.Forms.Padding(2);
+            this.sleepMax.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.sleepMax.Name = "sleepMax";
+            this.sleepMax.Size = new System.Drawing.Size(74, 20);
+            this.sleepMax.TabIndex = 175;
+            this.sleepMax.ValueChanged += new System.EventHandler(this.sleepMax_ValueChanged);
+            // 
+            // workMax
+            // 
+            this.workMax.Location = new System.Drawing.Point(181, 58);
+            this.workMax.Margin = new System.Windows.Forms.Padding(2);
+            this.workMax.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.workMax.Name = "workMax";
+            this.workMax.Size = new System.Drawing.Size(74, 20);
+            this.workMax.TabIndex = 170;
+            this.workMax.ValueChanged += new System.EventHandler(this.workMax_ValueChanged);
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(163, 93);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(18, 20);
+            this.label15.TabIndex = 174;
+            this.label15.Text = "~";
             // 
             // label5
             // 
@@ -508,11 +550,11 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(63, 16);
+            this.label4.Location = new System.Drawing.Point(35, 13);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(142, 16);
+            this.label4.Size = new System.Drawing.Size(225, 16);
             this.label4.TabIndex = 171;
-            this.label4.Text = "Bot activity settings";
+            this.label4.Text = "Bot activity settings [in minutes]";
             // 
             // label3
             // 
@@ -532,43 +574,23 @@
             this.label2.TabIndex = 169;
             this.label2.Text = "Working time";
             // 
-            // label15
+            // label16
             // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(163, 93);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(18, 20);
-            this.label15.TabIndex = 174;
-            this.label15.Text = "~";
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(85, 42);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(24, 13);
+            this.label16.TabIndex = 176;
+            this.label16.Text = "Min";
             // 
-            // workMax
+            // label18
             // 
-            this.workMax.Location = new System.Drawing.Point(181, 58);
-            this.workMax.Margin = new System.Windows.Forms.Padding(2);
-            this.workMax.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.workMax.Name = "workMax";
-            this.workMax.Size = new System.Drawing.Size(74, 20);
-            this.workMax.TabIndex = 170;
-            this.workMax.ValueChanged += new System.EventHandler(this.workMax_ValueChanged);
-            // 
-            // sleepMax
-            // 
-            this.sleepMax.Location = new System.Drawing.Point(181, 87);
-            this.sleepMax.Margin = new System.Windows.Forms.Padding(2);
-            this.sleepMax.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.sleepMax.Name = "sleepMax";
-            this.sleepMax.Size = new System.Drawing.Size(74, 20);
-            this.sleepMax.TabIndex = 175;
-            this.sleepMax.ValueChanged += new System.EventHandler(this.sleepMax_ValueChanged);
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(178, 42);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(27, 13);
+            this.label18.TabIndex = 177;
+            this.label18.Text = "Max";
             // 
             // GeneralUc
             // 
@@ -619,9 +641,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.workMin)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.sleepMin)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sleepMax)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.workMax)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.sleepMin)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -673,5 +695,7 @@
         private System.Windows.Forms.NumericUpDown sleepMax;
         private System.Windows.Forms.NumericUpDown workMax;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label16;
     }
 }

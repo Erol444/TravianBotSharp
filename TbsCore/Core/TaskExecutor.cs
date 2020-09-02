@@ -165,7 +165,6 @@ namespace TravBotSharp.Files.Helpers
                     TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, vill = villExpansionReady });
                 }
 
-                acc.AccInfo.Tribe = LeftBarParser.GetAccountTribe(acc, html);
                 acc.Quests = RightBarParser.GetQuests(html);
                 var goldSilver = RightBarParser.GetGoldAndSilver(html, acc.AccInfo.ServerVersion);
                 acc.AccInfo.Gold = goldSilver[0];
