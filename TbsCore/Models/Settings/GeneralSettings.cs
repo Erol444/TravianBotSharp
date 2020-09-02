@@ -45,5 +45,9 @@ namespace TravBotSharp.Files.Models.Settings
         /// Time settings for the bot
         /// </summary>
         public TimeSettings Time { get; set; }
+        /// <summary>
+        /// Whether you want to Auto improve units
+        /// </summary>
+        public bool AutoImprove { get; set; }
     }
 }

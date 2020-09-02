@@ -48,6 +48,8 @@ namespace TravBotSharp.Views
                 labelTroopsToTrain.Text = "Selected:";
                 comboBoxTroopsToTrain.Items.Clear();
             }
+
+            autoImprove.Checked = acc.Settings.AutoImprove;
         }
 
         private void button10_Click(object sender, EventArgs e) //select troop to train
@@ -58,6 +60,11 @@ namespace TravBotSharp.Views
             var troopSelected = troopsEnum + comboBoxTroopsToTrain.SelectedIndex + 1;
             vill.Troops.TroopToTrain = (Classificator.TroopsEnum)troopSelected;
             labelTroopsToTrain.Text = $"Selected: {VillageHelper.EnumStrToString(vill.Troops.TroopToTrain.ToString() ?? "")}";
+        }
+
+        private void autoImprove_CheckedChanged(object sender, EventArgs e)
+        {
+            getSelectedAcc().Settings.AutoImprove = autoImprove.Checked;
         }
     }
 }

@@ -261,7 +261,7 @@ namespace TravBotSharp.Files.Helpers
                 else vill.Troops.ToResearch.Remove(troop);
 
                 // Improvement
-                if (!vill.Troops.Levels.Exists(x => x.Troop == troop && x.Level == 20))
+                if (!vill.Troops.Levels.Exists(x => x.Troop == troop && x.Level == 20) && acc.Settings.AutoImprove)
                 {
                     vill.Troops.ToImprove.Add(troop);
                     if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Smithy))
