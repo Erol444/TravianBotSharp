@@ -12,12 +12,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class SendFarmlist : BotTask
     {
         public FarmList FL { get; set; }
+        private HtmlNode GetFlNode(HtmlDocument htmlDoc) => htmlDoc.GetElementbyId("raidList" + this.FL.Id);
         public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
         {
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
             //TODO: if there is no rally point, switch to different village!]
-            var flNode = htmlDoc.GetElementbyId("list" + this.FL.Id);
+            var flNode = GetFlNode(htmlDoc);
 
             if (flNode == null)
             {
@@ -44,7 +45,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await Task.Delay(AccountHelper.Delay());
 
             // Update flNode!
-            flNode = htmlDoc.GetElementbyId("list" + this.FL.Id);
+            flNode = GetFlNode(htmlDoc);
+
             foreach (var farm in flNode.Descendants("tr").Where(x => x.HasClass("slotRow")))
             {
 
@@ -67,7 +69,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             await Task.Delay(AccountHelper.Delay() * 2);
 
-            wb.ExecuteScript($"document.getElementById('{flNode.Id}').childNodes[1].submit()");
+            var sendFlScript = "var wrapper = document.getElementsByClassName('buttonWrapper')[0];";
+            sendFlScript += "wrapper.getElementsByClassName('startButton')[0].click();";
+            wb.ExecuteScript(sendFlScript);
 
             return TaskRes.Executed;
         }
