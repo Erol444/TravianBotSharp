@@ -10,6 +10,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
         {
+            string currentUrl = acc.Wb.CurrentUrl;
             await acc.Wb.Navigate("https://api.ipify.org/");
 
             var ip = htmlDoc.DocumentNode.InnerText;
@@ -20,7 +21,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 // Proxy error!
                 Utils.log.Information($"Failed proxy {currentProxy} for account {acc.AccInfo.Nickname}! Trying to get new proxy.");
-                if(acc.Access.AllAccess.Count > 1)
+                if (acc.Access.AllAccess.Count > 1)
                 {
                     // Try another access.
                     acc.Wb.Close();
@@ -30,7 +31,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     acc.Wb.InitSelenium(acc);
                     return TaskRes.Executed;
                 }
-
+                else
+                {
+                    Utils.log.Information($"Will sleep and retry the same proxy..");
+                    await Task.Delay(AccountHelper.Delay() * 15);
+                    this.NextExecute = DateTime.MinValue.AddMinutes(1);
+                }
+            }
+            else
+            {
+                // Proxy OK
+                await acc.Wb.Navigate(currentUrl);
             }
 
             return TaskRes.Executed;
