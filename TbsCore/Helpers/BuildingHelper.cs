@@ -257,7 +257,7 @@ namespace TravBotSharp.Files.Helpers
             }
 
             // Filter resource fields by type
-            buildings = buildings.Where(x => x.Type == task.Building).ToList();
+            //buildings = buildings.Where(x => x.Type == task.Building).ToList();
 
 
             Models.ResourceModels.Building buildingToUpgrade = null;
