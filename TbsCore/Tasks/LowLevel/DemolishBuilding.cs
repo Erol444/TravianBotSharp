@@ -27,12 +27,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (id == null) return TaskRes.Executed; //No more demolish tasks
 
-            this.PostTaskCheck.Add(CheckDemolishTime);
-
             wb.ExecuteScript($"document.getElementById('demolish').value={id}");
             await Task.Delay(AccountHelper.Delay());
             wb.ExecuteScript($"document.getElementById('btn_demolish').click()");
-            this.NextExecute = DateTime.Now.AddMinutes(10);
+            await Task.Delay(AccountHelper.Delay());
+
+            this.NextExecute = NextDemolishTime(htmlDoc, acc);
+
             return TaskRes.Executed;
         }
 
@@ -53,12 +54,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 vill.Build.DemolishTasks.Remove(task);
                 return BuildingToDemolish(vill, htmlDoc);
             }
-            //TODO: get name of the building you are destroying. localization.
+            //TODO: localization.
             var option = building.InnerText;
             var lvl = option.Split(' ').LastOrDefault();
-            var buildingName = Parser.RemoveNumeric(option.Split('.')[1]).Trim();
-            var optionBuilding = Localizations.BuildingFromString(buildingName);
-            if (int.Parse(lvl) <= task.Level || optionBuilding != task.Building)
+            //var buildingName = Parser.RemoveNumeric(option.Split('.')[1]).Trim();
+            //var optionBuilding = Localizations.BuildingFromString(buildingName);
+            if (int.Parse(lvl) <= task.Level /*|| optionBuilding != task.Building*/)
             {
                 vill.Build.DemolishTasks.Remove(task);
                 return BuildingToDemolish(vill, htmlDoc);
@@ -67,20 +68,20 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         }
 
         /// <summary>
-        /// PostCheckTask. Add new demolish task after this one finishes.
+        /// Checks demolish time.
         /// </summary>
         /// <param name="htmlDoc">The html of the page</param>
         /// <param name="acc">account</param>
-        public void CheckDemolishTime(HtmlDocument htmlDoc, Account acc)
+        public DateTime NextDemolishTime(HtmlDocument htmlDoc, Account acc)
         {
+            htmlDoc.LoadHtml(acc.Wb.Driver.PageSource);
             var table = htmlDoc.GetElementbyId("demolish");
             if (table == null) //No building is being demolished
             {
-                this.NextExecute = DateTime.Now;
-                return;
+                return DateTime.Now;
             }
             //Re-execute the demolish building task
-            this.NextExecute = DateTime.Now.Add(TimeParser.ParseTimer(table)).AddSeconds(2);
+            return DateTime.Now.Add(TimeParser.ParseTimer(table)).AddSeconds(2);
         }
     }
 }
