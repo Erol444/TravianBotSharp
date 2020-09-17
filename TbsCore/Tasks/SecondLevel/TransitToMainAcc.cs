@@ -16,8 +16,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public Coordinates coords;
         public int delay;
 
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             TaskExecutor.AddTaskIfNotExists(acc, new TransitToMainAcc { coords = this.coords, delay = this.delay, ExecuteAt = DateTime.Now.AddSeconds(delay), vill = this.vill });
 
             //Resources res = new Resources() { Wood = 50000000, Clay = 50000000, Iron = 50000000, Crop = 50000000 };

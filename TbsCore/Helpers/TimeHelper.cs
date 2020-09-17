@@ -1,4 +1,6 @@
-﻿using System;
+﻿using RestSharp;
+using System;
+using System.Net;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 
@@ -46,7 +48,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Generate random time when the next sleep will occur
+        /// Calculate when the next sleep will occur
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TimeSpan of the working time. After this, account should sleep</returns>
@@ -57,6 +59,24 @@ namespace TravBotSharp.Files.Helpers
                 rand.Next(acc.Settings.Time.MinWork, acc.Settings.Time.MaxWork),
                 0);
             return workTime;
+        }
+
+        /// <summary>
+        /// Calculate when next proxy change should occur
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>TimeSpan when next proxy change should occur</returns>
+        public static TimeSpan GetNextProxyChange(Account acc)
+        {
+            var proxyCount = acc.Access.AllAccess.Count;
+            if (proxyCount == 1) return TimeSpan.MaxValue;
+
+            var min = (int)((24 * 60) / proxyCount);
+
+            // +- 30min
+            var rand = new Random();
+
+            return new TimeSpan(0, min + rand.Next(-30, 30), 0);
         }
     }
 }

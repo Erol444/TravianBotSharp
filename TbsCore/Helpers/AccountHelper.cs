@@ -1,5 +1,10 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using RestSharp;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Files.Tasks.SecondLevel;
@@ -53,8 +58,15 @@ namespace TravBotSharp.Files.Helpers
             //FL
             if (acc.Farming.Enabled) TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
 
+            // Bot sleep
             TaskExecutor.AddTaskIfNotExists(acc, new Sleep() { ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc) });
 
+            // Access change
+            var nextAccessChange = TimeHelper.GetNextProxyChange(acc);
+            if(nextAccessChange != TimeSpan.MaxValue)
+            {
+                TaskExecutor.AddTaskIfNotExists(acc, new ChangeAccess() { ExecuteAt = DateTime.Now + nextAccessChange });
+            }
             //research / improve / train troops
             foreach (var vill in acc.Villages)
             {
@@ -66,6 +78,38 @@ namespace TravBotSharp.Files.Helpers
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 //todo
             }
+        }
+
+
+        public static async Task CheckProxies(List<Access> access)
+        {
+            List<Task> tasks = new List<Task>();
+            access.ForEach(a =>
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    Console.WriteLine(DateTime.Now.ToString()+"]Start ip "+a.Proxy);
+                    var response = new RestClient
+                    {
+                        BaseUrl = new Uri("https://api.ipify.org/"),
+                        Proxy = new WebProxy(a.Proxy, a.ProxyPort)
+                    }.Execute(new RestRequest
+                    {
+                        Resource = "api/ip",
+                        Method = Method.GET,
+                        Timeout = 5000,
+                    });
+                    Console.WriteLine(DateTime.Now.ToString() + "] Complete ip" + a.Proxy + ", content:"+response.Content);
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.LoadHtml(response.Content);
+
+                    var ip = doc.DocumentNode.InnerText;
+
+                    a.Ok = ip == a.Proxy;
+                }));
+            });
+            await Task.WhenAll(tasks);
+            Console.WriteLine(DateTime.Now.ToString() + "]all tasks complete");
         }
     }
 }

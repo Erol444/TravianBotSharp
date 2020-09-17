@@ -33,8 +33,8 @@ namespace TravBotSharp.Files.Helpers
             }
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
-                AddTaskIfNotExists(acc, new LoginTask() { ExecuteAt = DateTime.MinValue });
-                return;
+                var login = new LoginTask();
+                await login.Execute(acc);
             }
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
             {
@@ -83,13 +83,16 @@ namespace TravBotSharp.Files.Helpers
         {
             //Before every execution, wait a random delay. TODO: needed?
             if (task.PostTaskCheck == null) task.PostTaskCheck = new List<Action<HtmlDocument, Account>>();
-            if(acc.Wb?.CurrentUrl == null) await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
+            if (acc.Wb?.CurrentUrl == null &&
+                task.GetType() != typeof(CheckProxy)) {
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
+            }
             task.ErrorMessage = null;
             //Console.WriteLine($"Executing task {task.GetType()}");
             if(task.vill == null) task.vill = acc.Villages.FirstOrDefault(x => x.Active);
             try
             {
-                switch (await task.Execute(acc.Wb.Html, acc.Wb.Driver, acc))
+                switch (await task.Execute(acc))
                 {
                     case TaskRes.Retry:
                         if (task.ErrorMessage != null)
@@ -122,7 +125,6 @@ namespace TravBotSharp.Files.Helpers
                 task.ExecuteAt = task.NextExecute ?? default;
                 task.NextExecute = null;
                 task.Stage = TaskStage.Start;
-                task.DurationCounter = 0;
                 task.RetryCounter = 0;
                 ReorderTaskList(acc);
                 return;

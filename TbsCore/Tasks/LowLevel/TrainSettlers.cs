@@ -11,8 +11,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class TrainSettlers : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Residence || x.Type == Classificator.BuildingEnum.Palace || x.Type == Classificator.BuildingEnum.CommandCenter);
             if (building == null)
             {

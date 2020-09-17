@@ -11,8 +11,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class GetMapSizeAndTribe : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2&z=1");
 
             var yStr = htmlDoc.GetElementbyId("yCoordInput").GetAttributeValue("value", "");

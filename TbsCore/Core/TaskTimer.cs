@@ -62,21 +62,7 @@ namespace TravBotSharp.Files.Models.AccModels
 
             // Another task is already in progress. wait
             var taskInProgress = acc.Tasks.FirstOrDefault(x => x.Stage != TaskStage.Start);
-            if (taskInProgress != null)
-            {
-                if (taskInProgress.DurationCounter++ > 30) //after 15sec try to re-execute the task
-                {
-                    Console.WriteLine($"Task {taskInProgress} timed out. Restarting it..");
-                    taskInProgress.DurationCounter = 15;
-                    taskInProgress.Stage = TaskStage.Start; //re-navigate & execute
-                                                            //We have tried re-executing the task 3 times already, something is clearly wrong. Just delete the task.
-                    if (++taskInProgress.RetryCounter > 3)
-                    {
-                        acc.Tasks.Remove(taskInProgress);
-                    }
-                }
-                return;
-            }
+            if (taskInProgress != null) return;
 
             var tasks = acc.Tasks.Where(x => x.ExecuteAt <= DateTime.Now).ToList();
             if (tasks.Count == 0) return; // No tasks yet
@@ -85,10 +71,6 @@ namespace TravBotSharp.Files.Models.AccModels
             if (firstTask == null) firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.Medium);
             if (firstTask == null) firstTask = tasks.FirstOrDefault();
 
-            //Console.WriteLine($"---Tasks: {acc.Tasks.Count}, first one {firstTask.GetType()}");
-
-
-            if (firstTask.Stage != TaskStage.Start) return;
             //If correct village is selected, otherwise change village
             if (firstTask.vill != null)
             {

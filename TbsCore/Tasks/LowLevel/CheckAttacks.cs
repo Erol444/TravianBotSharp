@@ -7,7 +7,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class CheckAttacks : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=1&subfilters=1");
 

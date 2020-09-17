@@ -9,8 +9,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class TTWarsBuyAdventure : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php?t=3");
 
             var button = htmlDoc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyAdventure"));

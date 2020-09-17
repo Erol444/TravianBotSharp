@@ -20,8 +20,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public Coordinates Coordinates { get; set; }
         public int RunTimes { get; set; } //once / twice / 3 times
 
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
             if (building == null)
             {

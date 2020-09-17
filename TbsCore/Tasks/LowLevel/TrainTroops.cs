@@ -35,8 +35,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         private BuildingEnum building;
 
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             building = TroopsHelper.GetTroopBuilding(Troop, Great);
 
             var buildId = vill.Build.Buildings.FirstOrDefault(x => x.Type == building);

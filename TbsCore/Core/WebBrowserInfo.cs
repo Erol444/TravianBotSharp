@@ -16,10 +16,10 @@ namespace TravBotSharp.Files.Models.AccModels
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
 
-        public void InitSelenium(Account acc)
+        public async Task InitSelenium(Account acc)
         {
             this.acc = acc;
-            var access = acc.Access.GetNewAccess();
+            var access = await acc.Access.GetNewAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
@@ -28,14 +28,10 @@ namespace TravBotSharp.Files.Models.AccModels
                 this.Html = new HtmlAgilityPack.HtmlDocument();
             }
 
-            // If account is using a proxy, check if the proxy is working correctly
             if (!string.IsNullOrEmpty(access.Proxy))
             {
-                var checkProxy = new CheckProxy()
-                {
-                    ExecuteAt = DateTime.MinValue.AddMinutes(1)
-                };
-                TaskExecutor.AddTask(acc, checkProxy);
+                var checkproxy = new CheckProxy();
+                await checkproxy.Execute(acc);
             }
         }
 
@@ -73,6 +69,9 @@ namespace TravBotSharp.Files.Models.AccModels
             try
             {
                 this.Driver = new ChromeDriver(service, options);
+
+                // Set timeout
+                this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
             }
             catch(Exception e)
             {
@@ -93,9 +92,42 @@ namespace TravBotSharp.Files.Models.AccModels
 
         public async Task Navigate(string url)
         {
-            this.Driver.Navigate().GoToUrl(url);
+            if (string.IsNullOrEmpty(url)) return;
+
             this.CurrentUrl = url;
+            int repeatCnt = 0;
+            bool repeat;
+            do
+            {
+                try
+                {
+                    // Will throw exception after timeout
+                    this.Driver.Navigate().GoToUrl(url);
+                    repeat = false;
+                }
+                catch (Exception e)
+                {
+                    repeat = true;
+                    if (++repeatCnt >= 3 && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
+                    {
+                        // Change access
+                        repeatCnt = 0;
+                        var changeAccess = new ChangeAccess();
+                        await changeAccess.Execute(acc);
+                        await Task.Delay(AccountHelper.Delay() * 5);
+                    }
+                }
+            }
+            while(repeat);
+
+
             await Task.Delay(AccountHelper.Delay());
+            if (!string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
+            {
+                // We are using proxy. Connection is probably slower -> additional delay.
+                await Task.Delay(AccountHelper.Delay() * 2);
+            }
+
             this.Html.LoadHtml(this.Driver.PageSource);
             await TaskExecutor.PageLoaded(acc);
         }
@@ -104,8 +136,7 @@ namespace TravBotSharp.Files.Models.AccModels
         {
             try
             {
-                this.Driver.Close();
-                this.Driver.Dispose();
+                this.Driver.Quit();
             }
             catch(Exception e)
             {

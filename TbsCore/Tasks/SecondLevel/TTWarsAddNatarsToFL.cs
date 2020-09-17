@@ -18,8 +18,10 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
         public int MinPop { get; set; }
         public int MaxPop { get; set; }
         public FarmList FL { get; set; }
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?uid=1");
 
             var vills = htmlDoc.GetElementbyId("villages").Descendants("tr");

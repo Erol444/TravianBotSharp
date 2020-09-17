@@ -13,8 +13,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class ImproveTroop : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             if (vill == null) vill = acc.Villages.First(x => x.Active);
 
             var smithy = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);

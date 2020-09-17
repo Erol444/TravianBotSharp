@@ -15,8 +15,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// When new village is found by the bot, it should firstly check barracks, then  stable and then workshop,
         /// to see which troops are researched
         /// </summary>
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             // If we have Plus account, just check that.
             if (acc.AccInfo.PlusAccount)
             {

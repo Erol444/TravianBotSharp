@@ -16,8 +16,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class FindVillageToSettle : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
+
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
 
             var mainVill = AccountHelper.GetMainVillage(acc);

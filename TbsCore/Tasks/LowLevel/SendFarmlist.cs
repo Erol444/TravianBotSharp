@@ -13,8 +13,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public FarmList FL { get; set; }
         private HtmlNode GetFlNode(HtmlDocument htmlDoc) => htmlDoc.GetElementbyId("raidList" + this.FL.Id);
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
             //TODO: if there is no rally point, switch to different village!]

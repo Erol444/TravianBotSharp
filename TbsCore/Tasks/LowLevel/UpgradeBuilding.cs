@@ -17,8 +17,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         private BuildingTask task;
 
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             if (this.task == null)
             {
                 ConfigNextExecute(acc.Wb.Html, acc);
@@ -38,7 +40,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 //no space for this building
                 vill.Build.Tasks.Remove(this.task);
                 this.task = null;
-                return await Execute(htmlDoc, wb, acc);
+                return await Execute(acc);
             }
 
             // In which dorf is the building. So bot is less suspicious.

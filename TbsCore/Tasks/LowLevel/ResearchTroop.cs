@@ -15,8 +15,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class ResearchTroop : BotTask
     {
         //If Troop == null, just update the troop levels
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             var academy = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Academy);
             if (academy == null)
             {

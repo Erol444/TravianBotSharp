@@ -36,12 +36,7 @@ namespace TravBotSharp.Files.Tasks
         /// <param name="wb">Selenium driver</param>
         /// <param name="acc">Account</param>
         /// <returns>TaskRes</returns>
-        public abstract Task<TaskRes> Execute(HtmlAgilityPack.HtmlDocument htmlDoc, ChromeDriver wb, Account acc); //execute the task
-
-        /// <summary>
-        /// Counts how long this task was being executed. Used for timeouts (after 20sec, re-execute the task)
-        /// </summary>
-        public int DurationCounter { get; set; }
+        public abstract Task<TaskRes> Execute(Account acc); //execute the task
 
         /// <summary>
         /// Counts how many times we retried executing the task. After 3rd try, stop retrying. Something is clearly wrong

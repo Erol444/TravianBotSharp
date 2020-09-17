@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Models.AccModels
@@ -16,8 +17,9 @@ namespace TravBotSharp.Files.Models.AccModels
             AllAccess = new List<Access>();
         }
 
-        public Access GetNewAccess()
+        public async Task<Access> GetNewAccess()
         {
+            //await AccountHelper.CheckProxies(AllAccess);
             CurrentAccess++;
 
             if (CurrentAccess >= AllAccess.Count) CurrentAccess = 0;

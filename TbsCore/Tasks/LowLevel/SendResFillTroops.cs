@@ -22,8 +22,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// </summary>
         public Village TargetVill { get; set; }
         public TrainTroops TrainTask { get; set; }
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
             if (building == null)
             {

@@ -21,8 +21,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private DateTime lastArriveAt;
         private string[] hiddenFields = new string[] { "timestamp", "timestamp_checksum", "b", "currentDid", "mpvt_token" };
 
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
 
             var wavesReady = new List<WaveReadyModel>();
@@ -156,7 +158,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     MovementTime = timespan
                 });
 
-                this.DurationCounter = 0;
                 Console.WriteLine(DateTime.Now + "Send wave 2");
             }
 
@@ -172,7 +173,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 var waitForTargetSec = waitForTarget.Seconds + (waitForTarget.Minutes * 60) - 1; // -1 to compensate
                 var waitForTargetTimeSpan = new TimeSpan(0, 0, waitForTargetSec);
                 wait = wait.Add(waitForTargetTimeSpan);
-                this.DurationCounter = -(int)(wait.TotalSeconds * 2);
             }
             await Task.Delay(wait);
 
@@ -185,8 +185,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await Task.Delay(rnd.Next(delay - delay10Percent, delay + delay10Percent));
 
                 _ = HttpHelper.SendPostReq(acc, wavesReady[i].Content, "/build.php?tt=2&id=39");
-
-                this.DurationCounter = 0;
             }
 
             await Task.Delay(AccountHelper.Delay() * 2);

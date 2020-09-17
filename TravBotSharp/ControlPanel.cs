@@ -87,7 +87,7 @@ namespace TravBotSharp
         private void button2_Click(object sender, EventArgs e) //login button
         {
             var acc = GetSelectedAcc();
-            new Thread(() => IoHelperCore.LoginAccount(acc)).Start();
+            new Thread(() => _=IoHelperCore.LoginAccount(acc)).Start();
         }
 
         private void button3_Click(object sender, EventArgs e) // Remove an account

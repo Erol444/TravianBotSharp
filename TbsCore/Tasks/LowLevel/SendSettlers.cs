@@ -12,10 +12,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class SendSettlers : BotTask
     {
         private NewVillage newVillage;
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             // Check if the account has enough culture points
-            if(acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
+            if (acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
             {
                 this.vill.Expansion.ExpensionAvailable = true;
                 return TaskRes.Executed;

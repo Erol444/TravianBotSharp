@@ -12,8 +12,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public TroopsMovementModel TroopsMovement { get; set; }
         //TODO Add options for catapult/scout targets inside SendTroops2!
 
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
 
             //add number of troops to the input boxes

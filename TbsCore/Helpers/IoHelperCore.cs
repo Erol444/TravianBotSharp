@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Resources;
 using TravBotSharp.Files.Models.AccModels;
@@ -131,13 +132,13 @@ namespace TravBotSharp.Files.Helpers
         /// Login into account and initialize everything
         /// </summary>
         /// <param name="acc">Account</param>
-        public static void LoginAccount(Account acc)
+        public static async Task LoginAccount(Account acc)
         {
             if (acc.Wb == null)
             { // If Agent doesn't exist yet
                 acc.Tasks = new List<BotTask>();
                 acc.Wb = new WebBrowserInfo();
-                acc.Wb.InitSelenium(acc);
+                await acc.Wb.InitSelenium(acc);
                 acc.TaskTimer = new TaskTimer(acc);
 
                 AccountHelper.StartAccountTasks(acc);

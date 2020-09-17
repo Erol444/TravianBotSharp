@@ -10,8 +10,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class CheckHeroInfo : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php?t=1");
 
             acc.Hero.HeroInfo = HeroParser.GetHeroInfo(htmlDoc);

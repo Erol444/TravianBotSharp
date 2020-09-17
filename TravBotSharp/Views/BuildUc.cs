@@ -99,7 +99,7 @@ namespace TravBotSharp.Views
 
                 item.SubItems.Add(building.Level.ToString() + upgradeLvl); //level
                 //set color
-                switch (building.Type)
+                switch(building.Type)
                 {
                     case Classificator.BuildingEnum.Woodcutter:
                         item.ForeColor = Color.LightGreen;

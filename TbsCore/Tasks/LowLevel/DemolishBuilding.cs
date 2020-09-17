@@ -12,8 +12,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class DemolishBuilding : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
+
             var mainBuilding = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.MainBuilding);
             if (mainBuilding == null) return TaskRes.Executed;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={mainBuilding.Id}");

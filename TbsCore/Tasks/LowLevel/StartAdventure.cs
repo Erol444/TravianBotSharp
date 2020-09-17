@@ -4,14 +4,17 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class StartAdventure : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php?t=3");
 
             acc.Hero.Adventures = AdventureParser.GetAdventures(htmlDoc, acc.AccInfo.ServerVersion);

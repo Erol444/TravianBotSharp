@@ -8,8 +8,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class UpdateDorf1 : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var htmlDoc = acc.Wb.Html;
+            var wb = acc.Wb.Driver;
             //remove all same tasks
             TaskExecutor.RemoveSameTasksForVillage(acc, vill, this.GetType(), this);
 
