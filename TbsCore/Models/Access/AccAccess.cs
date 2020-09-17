@@ -34,13 +34,15 @@ namespace TravBotSharp.Files.Models.AccModels
         {
             AllAccess.Add(access);
         }
-        public void AddNewAccess(string pw, string proxy, int port)
+        public void AddNewAccess(AccessRaw raw)
         {
             var accs = new Access()
             {
-                Password = pw,
-                Proxy = proxy,
-                ProxyPort = port,
+                Password = raw.Password,
+                Proxy = raw.Proxy,
+                ProxyPort = raw.ProxyPort,
+                ProxyUsername = raw.ProxyUsername,
+                ProxyPassword = raw.ProxyPassword,
                 UserAgent = IoHelperCore.GetUseragent(),
                 IsSittering = false,
                 LastUsed = DateTime.MinValue

@@ -18,6 +18,10 @@ namespace TravBotSharp.Files.Helpers
     {
         public static string AccountsPath => Path.Combine(TbsPath(), "accounts.txt");
         public static string CachePath => Path.Combine(TbsPath(), "cache");
+        public static string GetCacheDir(string username, string server, Access access)
+        {
+            return Path.Combine(IoHelperCore.CachePath, GetCacheFolder(username, server, access.Proxy));
+        }
 
         public static void AddBuildTasksFromFile(Account acc, Village vill, string location)
         {

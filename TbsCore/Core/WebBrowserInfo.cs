@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
 
@@ -40,6 +41,14 @@ namespace TravBotSharp.Files.Models.AccModels
             ChromeOptions options = new ChromeOptions();
             if (!string.IsNullOrEmpty(access.Proxy))
             {
+                if (!string.IsNullOrEmpty(access.ProxyUsername))
+                {
+                    // Add proxy authentication
+                    var proxyAuth = new ProxyAuthentication();
+                    var extensionPath = proxyAuth.CreateExtension(username, server, access);
+                    options.AddExtension(extensionPath);
+                }
+
                 options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
                 options.AddArgument("ignore-certificate-errors");
             }
@@ -55,8 +64,8 @@ namespace TravBotSharp.Files.Models.AccModels
             if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false");
 
             // Add browser caching
-            var accFolder = IoHelperCore.GetCacheFolder(username, server, access.Proxy);
-            var dir = Path.Combine(IoHelperCore.CachePath, accFolder);
+
+            var dir = IoHelperCore.GetCacheDir(username, server, access);
             Directory.CreateDirectory(dir);
             options.AddArguments("user-data-dir=" + dir);
 
@@ -122,11 +131,11 @@ namespace TravBotSharp.Files.Models.AccModels
 
 
             await Task.Delay(AccountHelper.Delay());
-            if (!string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
-            {
-                // We are using proxy. Connection is probably slower -> additional delay.
-                await Task.Delay(AccountHelper.Delay() * 2);
-            }
+            //if (!string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
+            //{
+            //    // We are using proxy. Connection is probably slower -> additional delay.
+            //    await Task.Delay(AccountHelper.Delay() * 2);
+            //}
 
             this.Html.LoadHtml(this.Driver.PageSource);
             await TaskExecutor.PageLoaded(acc);
