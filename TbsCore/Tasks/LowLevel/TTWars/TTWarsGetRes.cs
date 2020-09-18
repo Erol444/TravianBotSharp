@@ -1,8 +1,10 @@
 ﻿using HtmlAgilityPack;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Internal;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -18,26 +20,23 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             Random rnd = new Random();
             int sec = rnd.Next(370, 380);
-            TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec), vill = AccountHelper.GetMainVillage(acc) });
-            TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero, vill = vill });
+            TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc) });
+            TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero, Vill = Vill });
             TaskExecutor.AddTask(acc, new TrainTroops()
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec + 9),
                 Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
-                vill = vill,
+                Vill = Vill,
                 HighSpeedServer = true
             });
 
 
-            wb.ExecuteScript("window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});");
+            var script = "window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});";
+            await DriverHelper.ExecuteScript(acc, script);
 
-            await Task.Delay(AccountHelper.Delay() * 2);
+            script = "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#2').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');";
+            await DriverHelper.ExecuteScript(acc, script);
 
-            wb.ExecuteScript("$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#2').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');"); //Excgabge resources button
-
-            await Task.Delay(AccountHelper.Delay() * 2);
-
-            htmlDoc.LoadHtml(wb.PageSource);
 
             //gold prosButton buyResources6
             //gold prosButton buyAnimal5

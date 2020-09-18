@@ -19,10 +19,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var homeVill = HeroParser.GetHeroVillageId(htmlDoc);
             if (homeVill != null) acc.Hero.HomeVillageId = homeVill ?? 0;
 
-            if (acc.Hero.HeroInfo.Health > acc.Hero.Settings.MinHealth && acc.Hero.Settings.AutoSendToAdventure)
-            {
-                TaskExecutor.AddTaskIfNotExists(acc, new StartAdventure() { ExecuteAt = DateTime.MinValue.AddMilliseconds(1) });
-            }
+            //if (acc.Hero.HeroInfo.Health > acc.Hero.Settings.MinHealth && acc.Hero.Settings.AutoSendToAdventure)
+            //{
+            //    TaskExecutor.AddTaskIfNotExists(acc, new StartAdventure() { ExecuteAt = DateTime.MinValue.AddMilliseconds(1) });
+            //}
             return TaskRes.Executed;
         }
     }

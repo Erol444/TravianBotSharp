@@ -16,7 +16,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             string str = "?";
             if (acc.Wb.CurrentUrl.Contains("?")) str = "&";
-            var url = $"{acc.Wb.CurrentUrl}{str}newdid={this.vill.Id}";
+            var url = $"{acc.Wb.CurrentUrl}{str}newdid={this.Vill.Id}";
             await acc.Wb.Navigate(url);
             return TaskRes.Executed;
         }

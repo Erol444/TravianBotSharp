@@ -102,17 +102,38 @@ namespace TravBotSharp.Files.Parsers
             }
             return false;
         }
-        public static List<Quest> GetQuests(HtmlAgilityPack.HtmlDocument htmlDoc)
+
+        /// <summary>
+        /// Check if there is a daily task complete
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns>Whether there are daily quests complete</returns>
+        public static bool CheckDailyQuest(HtmlAgilityPack.HtmlDocument html)
+        {
+            var node = html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("dailyQuests"));
+            var indicator = node.Descendants().FirstOrDefault(x => x.HasClass("indicator"));
+            return indicator != null;
+        }
+
+        /// <summary>
+        /// Gets the beginner quests
+        /// </summary>
+        /// <param name="htmlDoc"></param>
+        /// <returns>List of beginner quests</returns>
+        public static List<Quest> GetBeginnerQuests(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             List<Quest> QuestList = new List<Quest>();
-            return null;
-            var nodes = htmlDoc.GetElementbyId("mentorTaskList").ChildNodes.Where(x => x.Name == "li");
+
+            var mentor = htmlDoc.GetElementbyId("mentorTaskList");
+            if (mentor == null) return null;
+
+            var nodes = mentor.ChildNodes.Where(x => x.Name == "li");
 
             foreach (var node in nodes)
             {
                 Quest quest = new Quest();
                 quest.finished = false;
-                if (!node.ChildNodes.Any(x => x.Name == "img")) quest.finished = true;
+                if (node.Descendants("svg").FirstOrDefault(x=>x.HasClass("check")) != null) quest.finished = true;
                 try
                 {
                     quest.level = byte.Parse(node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value.Split('_')[1]);

@@ -53,9 +53,9 @@ namespace TravBotSharp.Files.Parsers
                 case Classificator.ServerVersionEnum.T4_5:
                     var adv45 = htmlDoc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("adventure"));
                     var num = adv45.ChildNodes.FirstOrDefault(x => x.HasClass("content") && x.Name == "div");
-                    if (num == null) return -1;
+                    if (num == null) return 0;
                     return (int)Parser.RemoveNonNumeric(num.InnerText);
-                default: return -1;
+                default: return 0;
             }
         }
         public static bool LeveledUp(HtmlAgilityPack.HtmlDocument htmlDoc)
@@ -145,6 +145,11 @@ namespace TravBotSharp.Files.Parsers
             var span = htmlDoc.GetElementbyId("availablePoints");
             var points = (int)Parser.RemoveNonNumeric(span.InnerText);
             return points;
+        }
+
+        public static TimeSpan GetHeroArrival(HtmlDocument htmlDoc)
+        {
+            return TimeParser.ParseTimer(htmlDoc.GetElementbyId("tileDetails"));
         }
     }
 }

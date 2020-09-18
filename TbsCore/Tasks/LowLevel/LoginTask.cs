@@ -4,6 +4,7 @@ using OpenQA.Selenium.Chrome;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -34,10 +35,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 wb.ExecuteScript($"document.getElementsByName('password')[0].value='{access.Password}'");
             }
 
-            wb.ExecuteScript("document.getElementsByName('s1')[0].click()"); //Login button
+            await DriverHelper.ExecuteScript(acc, "document.getElementsByName('s1')[0].click()");
 
-            await Task.Delay(AccountHelper.Delay());
-            htmlDoc.LoadHtml(acc.Wb.Driver.PageSource);
             if (TaskExecutor.IsLoginScreen(acc))
             {
                 // Wrong password/nickname

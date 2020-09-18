@@ -31,7 +31,7 @@ namespace TravBotSharp.Files.Helpers
                     foundVill.UnderAttack &&
                     oldVill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
                 {
-                    TaskExecutor.AddTaskIfNotExistInVillage(acc, oldVill, new CheckAttacks() { vill = oldVill, ExecuteAt = DateTime.Now.AddMinutes(-30) });
+                    TaskExecutor.AddTaskIfNotExistInVillage(acc, oldVill, new CheckAttacks() { Vill = oldVill, ExecuteAt = DateTime.Now.AddMinutes(-30) });
                 }
                 oldVill.UnderAttack = foundVill.UnderAttack;
                 foundVills.Remove(foundVill);
@@ -118,16 +118,9 @@ namespace TravBotSharp.Files.Helpers
         }
         public static void UpdateDorfs(Account acc, Village vill)
         {
-            TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = DateTime.Now, vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = DateTime.Now, vill = vill });
-        }
-        public static void UpdateQuests(HtmlAgilityPack.HtmlDocument htmlDoc, Account acc)
-        {
-            var refreshedQuests = RightBarParser.GetQuests(htmlDoc);
-
-            //TODO: add logic to get reward from quest if it is enabled
-            acc.Quests = refreshedQuests;
+            TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = DateTime.Now, Vill = vill });
+            TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = vill });
+            TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = DateTime.Now, Vill = vill });
         }
 
         /// <summary>

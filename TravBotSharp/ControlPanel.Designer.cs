@@ -59,6 +59,7 @@
             this.button7 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
+            this.questsTab = new System.Windows.Forms.TabPage();
             this.generalUc1 = new TravBotSharp.Views.GeneralUc();
             this.heroUc1 = new TravBotSharp.Views.HeroUc();
             this.buildUc1 = new TravBotSharp.Views.BuildUc();
@@ -70,6 +71,7 @@
             this.newVillagesUc1 = new TravBotSharp.Views.NewVillagesUc();
             this.deffendingUc1 = new TravBotSharp.Views.DeffendingUc();
             this.debugUc1 = new TravBotSharp.Views.DebugUc();
+            this.questsUc1 = new TravBotSharp.Views.QuestsUc();
             this.accTabController.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
@@ -84,6 +86,7 @@
             this.newVillagesTab.SuspendLayout();
             this.deffendingTab.SuspendLayout();
             this.debugTab.SuspendLayout();
+            this.questsTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -105,6 +108,7 @@
             this.accTabController.Controls.Add(this.FarmingTab);
             this.accTabController.Controls.Add(this.newVillagesTab);
             this.accTabController.Controls.Add(this.deffendingTab);
+            this.accTabController.Controls.Add(this.questsTab);
             this.accTabController.Controls.Add(this.debugTab);
             this.accTabController.Dock = System.Windows.Forms.DockStyle.Right;
             this.accTabController.Location = new System.Drawing.Point(218, 0);
@@ -119,7 +123,7 @@
             this.tabGeneral.Controls.Add(this.generalUc1);
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
             this.tabGeneral.Size = new System.Drawing.Size(945, 635);
             this.tabGeneral.TabIndex = 3;
             this.tabGeneral.Text = "General";
@@ -143,7 +147,7 @@
             this.tabVillages.Controls.Add(this.villageTabController);
             this.tabVillages.Location = new System.Drawing.Point(4, 22);
             this.tabVillages.Name = "tabVillages";
-            this.tabVillages.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabVillages.Padding = new System.Windows.Forms.Padding(3);
             this.tabVillages.Size = new System.Drawing.Size(945, 635);
             this.tabVillages.TabIndex = 0;
             this.tabVillages.Text = "Villages";
@@ -228,7 +232,7 @@
             this.villTabBuild.Controls.Add(this.buildUc1);
             this.villTabBuild.Location = new System.Drawing.Point(4, 22);
             this.villTabBuild.Name = "villTabBuild";
-            this.villTabBuild.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.villTabBuild.Padding = new System.Windows.Forms.Padding(3);
             this.villTabBuild.Size = new System.Drawing.Size(733, 603);
             this.villTabBuild.TabIndex = 0;
             this.villTabBuild.Text = "Build";
@@ -239,7 +243,7 @@
             this.villTabMarket.Controls.Add(this.marketUc1);
             this.villTabMarket.Location = new System.Drawing.Point(4, 22);
             this.villTabMarket.Name = "villTabMarket";
-            this.villTabMarket.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.villTabMarket.Padding = new System.Windows.Forms.Padding(3);
             this.villTabMarket.Size = new System.Drawing.Size(733, 603);
             this.villTabMarket.TabIndex = 1;
             this.villTabMarket.Text = "Market";
@@ -260,7 +264,7 @@
             this.villTabAttack.Controls.Add(this.attackUc1);
             this.villTabAttack.Location = new System.Drawing.Point(4, 22);
             this.villTabAttack.Name = "villTabAttack";
-            this.villTabAttack.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.villTabAttack.Padding = new System.Windows.Forms.Padding(3);
             this.villTabAttack.Size = new System.Drawing.Size(733, 603);
             this.villTabAttack.TabIndex = 3;
             this.villTabAttack.Text = "Attack";
@@ -271,7 +275,7 @@
             this.tabOverview.Controls.Add(this.overviewUc1);
             this.tabOverview.Location = new System.Drawing.Point(4, 22);
             this.tabOverview.Name = "tabOverview";
-            this.tabOverview.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabOverview.Padding = new System.Windows.Forms.Padding(3);
             this.tabOverview.Size = new System.Drawing.Size(945, 635);
             this.tabOverview.TabIndex = 4;
             this.tabOverview.Text = "Overview";
@@ -292,7 +296,7 @@
             this.newVillagesTab.Controls.Add(this.newVillagesUc1);
             this.newVillagesTab.Location = new System.Drawing.Point(4, 22);
             this.newVillagesTab.Name = "newVillagesTab";
-            this.newVillagesTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.newVillagesTab.Padding = new System.Windows.Forms.Padding(3);
             this.newVillagesTab.Size = new System.Drawing.Size(945, 635);
             this.newVillagesTab.TabIndex = 6;
             this.newVillagesTab.Text = "New villages";
@@ -303,7 +307,7 @@
             this.deffendingTab.Controls.Add(this.deffendingUc1);
             this.deffendingTab.Location = new System.Drawing.Point(4, 22);
             this.deffendingTab.Name = "deffendingTab";
-            this.deffendingTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.deffendingTab.Padding = new System.Windows.Forms.Padding(3);
             this.deffendingTab.Size = new System.Drawing.Size(945, 635);
             this.deffendingTab.TabIndex = 7;
             this.deffendingTab.Text = "Deffending";
@@ -314,7 +318,7 @@
             this.debugTab.Controls.Add(this.debugUc1);
             this.debugTab.Location = new System.Drawing.Point(4, 22);
             this.debugTab.Name = "debugTab";
-            this.debugTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.debugTab.Padding = new System.Windows.Forms.Padding(3);
             this.debugTab.Size = new System.Drawing.Size(945, 635);
             this.debugTab.TabIndex = 8;
             this.debugTab.Text = "Debug";
@@ -401,6 +405,17 @@
             this.button5.Text = "Logout";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // questsTab
+            // 
+            this.questsTab.Controls.Add(this.questsUc1);
+            this.questsTab.Location = new System.Drawing.Point(4, 22);
+            this.questsTab.Name = "questsTab";
+            this.questsTab.Padding = new System.Windows.Forms.Padding(3);
+            this.questsTab.Size = new System.Drawing.Size(945, 635);
+            this.questsTab.TabIndex = 9;
+            this.questsTab.Text = "Quests";
+            this.questsTab.UseVisualStyleBackColor = true;
             // 
             // generalUc1
             // 
@@ -501,6 +516,14 @@
             this.debugUc1.Size = new System.Drawing.Size(939, 629);
             this.debugUc1.TabIndex = 0;
             // 
+            // questsUc1
+            // 
+            this.questsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.questsUc1.Location = new System.Drawing.Point(3, 3);
+            this.questsUc1.Name = "questsUc1";
+            this.questsUc1.Size = new System.Drawing.Size(939, 629);
+            this.questsUc1.TabIndex = 0;
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -531,6 +554,7 @@
             this.newVillagesTab.ResumeLayout(false);
             this.deffendingTab.ResumeLayout(false);
             this.debugTab.ResumeLayout(false);
+            this.questsTab.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -578,5 +602,7 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TabPage debugTab;
         private Views.DebugUc debugUc1;
+        private System.Windows.Forms.TabPage questsTab;
+        private Views.QuestsUc questsUc1;
     }
 }

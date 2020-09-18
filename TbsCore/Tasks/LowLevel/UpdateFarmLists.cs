@@ -21,7 +21,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (foundFLs == null)
             {
                 this.ErrorMessage = "No FL, do you have rally point in this village?";
-                this.vill = AccountHelper.GetMainVillage(acc);
+                this.Vill = AccountHelper.GetMainVillage(acc);
                 this.NextExecute = DateTime.Now.AddSeconds(10);
                 return TaskRes.Executed;
             }

@@ -13,7 +13,6 @@ namespace TravBotSharp.Files.Helpers
         public static void ExportBuildTasks(string tasks)
         {
             SaveFileDialog svd = new SaveFileDialog();
-            var initFolder = AppDomain.CurrentDomain.BaseDirectory;
             svd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory + "data\\";
             svd.Filter = "tbs files (*.tbs)|*.tbs|All files (*.*)|*.*";
             svd.FilterIndex = 1;
@@ -25,31 +24,14 @@ namespace TravBotSharp.Files.Helpers
                 System.IO.File.WriteAllText(svd.FileName, tasks);
             }
         }
-        public static void AddBuildTasksFromFile(Account acc, Village vill, string location)
-        {
-            List<BuildingTask> tasks = null;
-            try
-            {
-                using (StreamReader sr = new StreamReader(location))
-                {
-                    tasks = JsonConvert.DeserializeObject<List<BuildingTask>>(sr.ReadToEnd());
-                }
-            }
-            catch (Exception e) { return; } // User canceled
 
-            foreach (var task in tasks)
-            {
-                BuildingHelper.AddBuildingTask(acc, vill, task);
-            }
-            BuildingHelper.RemoveCompletedTasks(vill, acc);
-        }
         public static string PromptUserForBuidTasksLocation()
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 var initFolder = AppDomain.CurrentDomain.BaseDirectory;
                 ofd.InitialDirectory = AppDomain.CurrentDomain.BaseDirectory + "data\\";
-                ofd.Filter = "tbs files (*.tbs)|*.tbs|All files (*.*)|*.*";
+                ofd.Filter = "TBS or TRBC files (*.tbs;*.trbc)|*.tbs;*.trbc";
                 ofd.FilterIndex = 1;
                 ofd.RestoreDirectory = true;
 

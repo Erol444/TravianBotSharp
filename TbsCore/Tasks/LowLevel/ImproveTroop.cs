@@ -17,9 +17,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
-            if (vill == null) vill = acc.Villages.First(x => x.Active);
+            if (Vill == null) Vill = acc.Villages.First(x => x.Active);
 
-            var smithy = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
+            var smithy = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
             if (smithy == null) return TaskRes.Executed;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
 
@@ -29,11 +29,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 this.ErrorMessage = "There was an error at getting Smithy troop levels";
                 return TaskRes.Executed;
             }
-            vill.Troops.Levels = levels;
-            UpdateResearchedTroops(vill);
+            Vill.Troops.Levels = levels;
+            UpdateResearchedTroops(Vill);
 
             var currentlyImproving = TroopsParser.GetImprovingTroops(htmlDoc);
-            var troop = TroopToImprove(vill, currentlyImproving);
+            var troop = TroopToImprove(Vill, currentlyImproving);
             if (troop == Classificator.TroopsEnum.None)
             {
                 return TaskRes.Executed;
@@ -48,9 +48,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             //call NextImprove() after enough res OR when this improvement finishes.
 
-            var cost = vill.Troops.Levels.FirstOrDefault(x => x.Troop == troop);
+            var cost = Vill.Troops.Levels.FirstOrDefault(x => x.Troop == troop);
 
-            var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, vill, cost.UpgradeCost);
+            var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost.UpgradeCost);
             if (nextExecute < DateTime.Now.AddMilliseconds(1)) //We have enough resources, click Improve button
             {
                 //Click on the button

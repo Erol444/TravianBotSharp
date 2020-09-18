@@ -11,6 +11,7 @@ using TbsCore.Helpers;
 using TbsCore.Resources;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
+using static TbsCore.Models.TB;
 
 namespace TravBotSharp.Files.Helpers
 {
@@ -25,12 +26,18 @@ namespace TravBotSharp.Files.Helpers
 
         public static void AddBuildTasksFromFile(Account acc, Village vill, string location)
         {
-            List<BuildingTask> tasks = null;
+            List<BuildingTask> tasks = new List<BuildingTask>();
             try
             {
                 using (StreamReader sr = new StreamReader(location))
                 {
-                    tasks = JsonConvert.DeserializeObject<List<BuildingTask>>(sr.ReadToEnd());
+                    // If .trbc file, decode into List<BuildTask>
+                    if (Path.GetExtension(location).Equals(".TRBC", StringComparison.CurrentCultureIgnoreCase))
+                    {
+                        var trbc = JsonConvert.DeserializeObject<TbRoot>(sr.ReadToEnd());
+                        tasks = DecodeTrbc(trbc);
+                    }
+                    else tasks = JsonConvert.DeserializeObject<List<BuildingTask>>(sr.ReadToEnd());
                 }
             }
             catch (Exception e) { return; } // User canceled
@@ -40,6 +47,15 @@ namespace TravBotSharp.Files.Helpers
                 BuildingHelper.AddBuildingTask(acc, vill, task);
             }
             BuildingHelper.RemoveCompletedTasks(vill, acc);
+        }
+
+        private static List<BuildingTask> DecodeTrbc(TbRoot root)
+        {
+            var tasks = new List<BuildingTask>();
+
+            //TODO: decode TbRoot
+
+            return tasks;
         }
 
         public static string TbsPath()

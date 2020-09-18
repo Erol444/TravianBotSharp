@@ -19,11 +19,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Check if the account has enough culture points
             if (acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
             {
-                this.vill.Expansion.ExpensionAvailable = true;
+                this.Vill.Expansion.ExpensionAvailable = true;
                 return TaskRes.Executed;
             }
 
-            this.vill.Expansion.ExpensionAvailable = false;
+            this.Vill.Expansion.ExpensionAvailable = false;
 
             //https://low4.ttwars.com/build.php?id=39&tt=2&kid=7274&a=6
             //https://low4.ttwars.com/build.php?id=39&tt=2&kid=7272&a=6

@@ -55,11 +55,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     string script = $"var div = document.getElementById('{adventure.AdventureId}');";
                     script += $"div.children[0].submit();";
                     wb.ExecuteScript(script);
+
+                    // Check hero outgoing time
+                    await Task.Delay(AccountHelper.Delay());
+                    htmlDoc.LoadHtml(acc.Wb.Driver.PageSource);
+                    var outTime = HeroParser.GetHeroArrival(htmlDoc);
+                    // At least 1.5x longer (if hero has Large map)
+                    acc.Hero.NextHeroSend = DateTime.Now + TimeSpan.FromTicks((long)(outTime.Ticks * 1.5));
                     break;
             }
 
             return TaskRes.Executed;
-
         }
     }
 }

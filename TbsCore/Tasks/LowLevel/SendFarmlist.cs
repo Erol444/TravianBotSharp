@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.TroopsModels;
@@ -24,7 +25,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (flNode == null)
             {
-                TaskExecutor.AddTask(acc, new SwitchVillage() { vill = AccountHelper.GetMainVillage(acc), ExecuteAt = DateTime.MinValue.AddMinutes(10), Priority = TaskPriority.High });
+                TaskExecutor.AddTask(acc, new SwitchVillage() { Vill = AccountHelper.GetMainVillage(acc), ExecuteAt = DateTime.MinValue.AddMinutes(10), Priority = TaskPriority.High });
                 this.NextExecute = DateTime.Now.AddSeconds(5);
                 return TaskRes.Executed;
             }
@@ -34,17 +35,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 {
                     ExecuteAt = DateTime.Now.AddSeconds(2),
                     Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
-                    vill = this.vill,
+                    Vill = this.Vill,
                     HighSpeedServer = true
                 });
             }
 
-            wb.ExecuteScript($"Travian.Game.RaidList.toggleList({this.FL.Id});"); //Toggle the FL (show it)
-
-            await Task.Delay(AccountHelper.Delay() * 2);
-
-            htmlDoc.LoadHtml(wb.PageSource);
-            await Task.Delay(AccountHelper.Delay());
+            await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
 
             // Update flNode!
             flNode = GetFlNode(htmlDoc);

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Parsers;
@@ -72,7 +73,7 @@ namespace TravBotSharp.Files.Helpers
                 Configuration = conf,
                 Coordinates = vill.Coordinates,
                 ExecuteAt = DateTime.Now.AddHours(-1),
-                vill = AccountHelper.GetMainVillage(acc),
+                Vill = AccountHelper.GetMainVillage(acc),
                 Resources = sendRes
             };
 
@@ -174,26 +175,16 @@ namespace TravBotSharp.Files.Helpers
                     var button = document.getElementById('enabledButton');
                     button.click();
                     ";
-            wb.ExecuteScript(script); //Prepare
+            await DriverHelper.ExecuteScript(acc, script);
 
-            //update htmlDoc, parse duration, TODO: maybe some other method to wait until the page is loaded?
-            HtmlNode durNode = null;
-            do
-            {
-                await Task.Delay(AccountHelper.Delay());
-                HtmlDocument html2 = new HtmlDocument();
-                html2.LoadHtml(wb.PageSource);
-                durNode = html2.GetElementbyId("target_validate");
-            }
-            while (durNode == null);
+            var durNode = acc.Wb.Html.GetElementbyId("target_validate");
+
 
             //get duration of transit
             var dur = durNode.Descendants("td").ToList()[3].InnerText.Replace("\t", "").Replace("\n", "");
 
             // Will NOT trigger a page reload! Thus we should await some time before continuing.
-            wb.ExecuteScript("document.getElementById('enabledButton').click()"); //SendRes
-
-            await Task.Delay(AccountHelper.Delay() * 2);
+            await DriverHelper.ExecuteScript(acc, "document.getElementById('enabledButton').click()");
 
             var duration = TimeParser.ParseDuration(dur);
             return TimeSpan.FromTicks(duration.Ticks * (times * 2 - 1));
@@ -360,14 +351,14 @@ namespace TravBotSharp.Files.Helpers
 
         public static void ReStartSendingToMain(Account acc, Village vill)
         {
-            acc.Tasks.RemoveAll(x => x.GetType() == typeof(SendResToMain) && x.vill == vill);
+            acc.Tasks.RemoveAll(x => x.GetType() == typeof(SendResToMain) && x.Vill == vill);
 
             if (vill.Settings.Type == Models.Settings.VillType.Support && vill.Settings.SendRes)
             {
                 TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new SendResToMain()
                 {
                     ExecuteAt = DateTime.Now,
-                    vill = vill
+                    Vill = vill
                 });
             }
         }

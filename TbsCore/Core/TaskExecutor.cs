@@ -89,7 +89,7 @@ namespace TravBotSharp.Files.Helpers
             }
             task.ErrorMessage = null;
             //Console.WriteLine($"Executing task {task.GetType()}");
-            if(task.vill == null) task.vill = acc.Villages.FirstOrDefault(x => x.Active);
+            if(task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
             try
             {
                 switch (await task.Execute(acc))
@@ -136,7 +136,7 @@ namespace TravBotSharp.Files.Helpers
         private static string LogHelper(Account acc, BotTask task, string type)
         {
             var msg = $"Account {acc.AccInfo.Nickname}, \nserver {acc.AccInfo.ServerUrl}, \ncurrent url {acc.Wb.CurrentUrl}\n";
-            return msg + $"Task: {task.GetType()}, village {task.vill?.Name} encountered a {type}";
+            return msg + $"Task: {task.GetType()}, village {task.Vill?.Name} encountered a {type}";
         }
 
         /// <summary>
@@ -150,7 +150,7 @@ namespace TravBotSharp.Files.Helpers
             try
             {
                 //check & update dorf1/dorf2
-                if (!UpdateAccountObject.UpdateVillages(html, acc)) return false; //Web browser not initiali
+                if (!UpdateAccountObject.UpdateVillages(html, acc)) return false; //Web browser not initialized
                 var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
                 //update dorf1/dorf2
                 if (acc.Wb.CurrentUrl.Contains("dorf1")) UpdateDorf1Info(acc);
@@ -164,18 +164,43 @@ namespace TravBotSharp.Files.Helpers
                     villExpansionReady != null)
                 {
                     villExpansionReady.Expansion.ExpensionAvailable = false;
-                    TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, vill = villExpansionReady });
+                    TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady });
+                }
+                // Beginner Quests
+                acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html);
+                var claimQuest = acc.Quests?.Quests?.FirstOrDefault(x => x.finished);
+                if (claimQuest != null
+                    && acc.Quests.ClaimBeginnerQuests
+                    )
+                {
+                    TaskExecutor.AddTaskIfNotExists(acc, new ClaimBeginnerTask()
+                    {
+                        ExecuteAt = DateTime.Now,
+                        QuestToClaim = claimQuest,
+                        Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim)
+                    });
+                }
+                // Daily quest
+                if(RightBarParser.CheckDailyQuest(html) && acc.Quests.ClaimDailyQuests)
+                {
+                    TaskExecutor.AddTaskIfNotExists(acc, new ClaimDailyTask()
+                    {
+                        ExecuteAt = DateTime.Now,
+                        Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim)
+                    });
                 }
 
-                acc.Quests = RightBarParser.GetQuests(html);
+
                 var goldSilver = RightBarParser.GetGoldAndSilver(html, acc.AccInfo.ServerVersion);
                 acc.AccInfo.Gold = goldSilver[0];
                 acc.AccInfo.Silver = goldSilver[1];
                 acc.AccInfo.PlusAccount = RightBarParser.HasPlusAccount(html, acc.AccInfo.ServerVersion);
                 //Check reports/msg count
-                if (MsgParser.UnreadMessages(html, acc.AccInfo.ServerVersion) > 0 &&
-                    !acc.Wb.CurrentUrl.Contains("messages.php") &&
-                    !IsTaskOnQueue(acc, typeof(ReadMessage))) TaskExecutor.AddTask(acc, new ReadMessage() { ExecuteAt = DateTime.Now.AddMilliseconds(AccountHelper.Delay() * 30) });
+                if (MsgParser.UnreadMessages(html, acc.AccInfo.ServerVersion) > 0
+                    && !acc.Wb.CurrentUrl.Contains("messages.php"))
+                {
+                    TaskExecutor.AddTaskIfNotExists(acc, new ReadMessage() { ExecuteAt = DateTime.Now.AddMilliseconds(AccountHelper.Delay() * 30) });
+                }
 
                 //update loyalty of village
 
@@ -193,7 +218,7 @@ namespace TravBotSharp.Files.Helpers
                     TaskExecutor.AddTaskIfNotExistInVillage(acc, activeVill, new NPC()
                     {
                         ExecuteAt = DateTime.MinValue,
-                        vill = activeVill
+                        Vill = activeVill
                     });
                 }
                 if (acc.Settings.AutoActivateProductionBoost && CheckProductionBoost(acc)) { TaskExecutor.AddTask(acc, new TTWarsPlusAndBoost() { ExecuteAt = DateTime.Now.AddSeconds(1) }); }
@@ -207,8 +232,9 @@ namespace TravBotSharp.Files.Helpers
                     acc.Hero.Status == Hero.StatusEnum.Home &&
                     acc.Hero.NextHeroSend < DateTime.Now);
                 // Update adventures
-                if (heroReady &&
-                    (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc))) //update adventures
+                if (heroReady
+                    && (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc))
+                    ) //update adventures
                 {
                     AddTaskIfNotExists(acc, new StartAdventure() { ExecuteAt = DateTime.Now.AddSeconds(10) });
                 }
@@ -218,7 +244,7 @@ namespace TravBotSharp.Files.Helpers
                 }
                 if (acc.Hero.Status == Hero.StatusEnum.Dead && acc.Hero.Settings.AutoReviveHero) //if hero is dead, revive him
                 {
-                    AddTaskIfNotExists(acc, new ReviveHero() { ExecuteAt = DateTime.Now.AddSeconds(5), vill = AccountHelper.GetHeroReviveVillage(acc) });
+                    AddTaskIfNotExists(acc, new ReviveHero() { ExecuteAt = DateTime.Now.AddSeconds(5), Vill = AccountHelper.GetHeroReviveVillage(acc) });
                 }
                 if (HeroParser.LeveledUp(html) && acc.Hero.Settings.AutoSetPoints)
                 {
@@ -234,7 +260,7 @@ namespace TravBotSharp.Files.Helpers
             }
         }
 
-        private static void UpdateDorf2Info(Account acc)
+        public static void UpdateDorf2Info(Account acc)
         {
             //update server version
             acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4);
@@ -246,7 +272,7 @@ namespace TravBotSharp.Files.Helpers
             //remove any further UpdateDorf1 BotTasks for this village (if below 5min)
             acc.Tasks.RemoveAll(x =>
                 x.GetType() == typeof(UpdateDorf2) &&
-                x.vill == activeVill &&
+                x.Vill == activeVill &&
                 x.ExecuteAt < DateTime.Now.AddMinutes(5)
             );
 
@@ -270,7 +296,7 @@ namespace TravBotSharp.Files.Helpers
                 foreach (var b in currentlyb) vill.Build.CurrentlyBuilding.Add(b);
         }
 
-        private static void UpdateDorf1Info(Account acc)
+        public static void UpdateDorf1Info(Account acc)
         {
             //update server version
             acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4);
@@ -281,7 +307,7 @@ namespace TravBotSharp.Files.Helpers
             //remove any further UpdateDorf1 BotTasks for this village (if below 5min)
             acc.Tasks.RemoveAll(x =>
                 x.GetType() == typeof(UpdateDorf1) &&
-                x.vill == activeVill &&
+                x.Vill == activeVill &&
                 x.ExecuteAt < DateTime.Now.AddMinutes(5)
             );
 
@@ -344,21 +370,16 @@ namespace TravBotSharp.Files.Helpers
         {
             acc.Tasks = acc.Tasks.OrderBy(x => x.ExecuteAt).ToList();
         }
-        public static bool IsTaskOnQueue(Account acc, Type task)
-        {
-            var t = acc.Tasks.FirstOrDefault(x => x.GetType() == task);
-            return t != null;
-        }
         public static void AddTaskIfNotExists(Account acc, BotTask task)
         {
-            if (!acc.Tasks.Any(x => x.GetType() == task.GetType() && x.ExecuteAt > DateTime.Now)) //there is no such BotTask (that will be executed in more than 10sec), add it
+            if (!acc.Tasks.Any(x => x.GetType() == task.GetType()))
                 AddTask(acc, task);
         }
         public static void AddTaskIfNotExistInVillage(Account acc, Village vill, BotTask task)
         {
             var taskExists = acc.Tasks.Any(x =>
                         x.GetType() == task.GetType() &&
-                        x.vill == vill
+                        x.Vill == vill
                     );
             if (!taskExists)
             {
@@ -376,7 +397,7 @@ namespace TravBotSharp.Files.Helpers
         public static void RemoveSameTasksForVillage(Account acc, Village vill, Type type, BotTask thisTask)
         {
             acc.Tasks.RemoveAll(x =>
-                x.vill == vill &&
+                x.Vill == vill &&
                 x.GetType() == type &&
                 x != thisTask
             );

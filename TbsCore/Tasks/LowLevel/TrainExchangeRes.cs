@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -17,11 +18,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
-            if (vill == null) vill = AccountHelper.GetMainVillage(acc);
+            if (Vill == null) Vill = AccountHelper.GetMainVillage(acc);
 
             Classificator.BuildingEnum building = (Great == false) ? TroopsHelper.GetTroopBuilding(troop, false) : TroopsHelper.GetTroopBuilding(troop, true);
 
-            var buildId = vill.Build.Buildings.FirstOrDefault(x => x.Type == building);
+            var buildId = Vill.Build.Buildings.FirstOrDefault(x => x.Type == building);
             if (buildId == null)
             {
                 //update dorf, no buildingId found?
@@ -37,11 +38,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //finding the correct "Exchange resources" button
             var exchangeResButton = troopNode.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
 
-            wb.ExecuteScript($"document.getElementById('{exchangeResButton.GetAttributeValue("id", "")}').click()"); //Exchange resources button
-
-            await Task.Delay(AccountHelper.Delay());
-            htmlDoc.LoadHtml(wb.PageSource);
-            await Task.Delay(AccountHelper.Delay());
+            string script = $"document.getElementById('{exchangeResButton.GetAttributeValue("id", "")}').click()";
+            await DriverHelper.ExecuteScript(acc, script);
 
             var distribute = htmlDoc.DocumentNode.SelectNodes("//*[text()[contains(., 'Distribute remaining resources.')]]")[0];
             while (distribute.Name != "button") distribute = distribute.ParentNode;

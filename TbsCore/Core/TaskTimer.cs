@@ -72,15 +72,15 @@ namespace TravBotSharp.Files.Models.AccModels
             if (firstTask == null) firstTask = tasks.FirstOrDefault();
 
             //If correct village is selected, otherwise change village
-            if (firstTask.vill != null)
+            if (firstTask.Vill != null)
             {
                 var active = acc.Villages.FirstOrDefault(x => x.Active);
                 if (active != null) //error handling
                 {
-                    if (firstTask.vill != active && firstTask.GetType() != typeof(SwitchVillage))
+                    if (firstTask.Vill != active && firstTask.GetType() != typeof(SwitchVillage))
                     {
                         //wrong village selected, reselect village
-                        TaskExecutor.AddTask(acc, new SwitchVillage() { vill = firstTask.vill, Priority = TaskPriority.High });
+                        TaskExecutor.AddTask(acc, new SwitchVillage() { Vill = firstTask.Vill, Priority = TaskPriority.High });
                         return;
                     }
                 }

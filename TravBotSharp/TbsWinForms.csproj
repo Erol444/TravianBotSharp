@@ -229,6 +229,12 @@
     <Compile Include="Views\GeneralUc.Designer.cs">
       <DependentUpon>GeneralUc.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\QuestsUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\QuestsUc.Designer.cs">
+      <DependentUpon>QuestsUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\HeroUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -307,6 +313,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\GeneralUc.resx">
       <DependentUpon>GeneralUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\QuestsUc.resx">
+      <DependentUpon>QuestsUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\HeroUc.resx">
       <DependentUpon>HeroUc.cs</DependentUpon>

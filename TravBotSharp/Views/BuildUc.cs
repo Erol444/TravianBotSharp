@@ -186,7 +186,7 @@ namespace TravBotSharp.Views
                 };
                 vill.Build.DemolishTasks.Add(dt);
                 //TODO: ReStartDemolish
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { ExecuteAt = DateTime.Now, vill = vill });
+                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { ExecuteAt = DateTime.Now, Vill = vill });
             }
             UpdateBuildTab();
         }
@@ -310,7 +310,7 @@ namespace TravBotSharp.Views
 
             string location = IoHelperForms.PromptUserForBuidTasksLocation();
             if (location == null) return;
-            IoHelperForms.AddBuildTasksFromFile(acc, vill, location);
+            IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
             UpdateBuildTab();
         }
 

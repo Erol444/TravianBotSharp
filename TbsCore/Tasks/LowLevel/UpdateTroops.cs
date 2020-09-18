@@ -29,12 +29,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            var smithy = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
+            var smithy = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
             if (smithy != null)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
-                vill.Troops.Levels = TroopsParser.GetTroopLevels(htmlDoc);
-                UpdateResearchedTroops(vill);
+                Vill.Troops.Levels = TroopsParser.GetTroopLevels(htmlDoc);
+                UpdateResearchedTroops(Vill);
                 return TaskRes.Executed;
             }
 
@@ -56,9 +56,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             switch (check)
             {
-                case 1: return vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Barracks);
-                case 2: return vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Stable);
-                case 3: return vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Workshop);
+                case 1: return Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Barracks);
+                case 2: return Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Stable);
+                case 3: return Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Workshop);
                 default: return null;
             }
         }

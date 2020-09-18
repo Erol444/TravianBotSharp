@@ -11,7 +11,7 @@ namespace TravBotSharp.Files.Tasks
         /// <summary>
         /// If of the village to execute the task. If null, don't change village before executing the task
         /// </summary>
-        public Village vill { get; set; }
+        public Village Vill { get; set; }
 
         /// <summary>
         /// Stage in which task is currently in.

@@ -13,7 +13,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             //remove all same tasks
-            TaskExecutor.RemoveSameTasksForVillage(acc, vill, this.GetType(), this);
+            TaskExecutor.RemoveSameTasksForVillage(acc, Vill, this.GetType(), this);
 
             var url = $"{acc.AccInfo.ServerUrl}/dorf2.php";
             await acc.Wb.Navigate(url);

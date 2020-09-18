@@ -60,7 +60,7 @@ namespace TravBotSharp.Views
                 var item = new ListViewItem();
                 var firstWave = task.SendWaveModels.FirstOrDefault();
 
-                item.SubItems[0].Text = sendWaveTask.vill.Name; // name of the village you are sending from
+                item.SubItems[0].Text = sendWaveTask.Vill.Name; // name of the village you are sending from
                 item.SubItems.Add(firstWave.Coordinates.x + "/" + firstWave.Coordinates.y); //target coordinates
                 item.SubItems.Add(GetWaveType(firstWave)); // type of the wave
                 item.SubItems.Add(task.ExecuteAt.ToString()); // execute at
@@ -112,7 +112,7 @@ namespace TravBotSharp.Views
                 var waveTask = new SendWaves()
                 {
                     ExecuteAt = DateTime.Now.AddHours(-100), // Execute now, on we will create a correct ExecuteAt later
-                    vill = getSelectedVillage(),
+                    Vill = getSelectedVillage(),
                     SendWaveModels = wave.ToList(),
                     Priority = Files.Tasks.BotTask.TaskPriority.High
                 };

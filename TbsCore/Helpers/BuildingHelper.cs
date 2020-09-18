@@ -17,7 +17,7 @@ namespace TravBotSharp.Files.Helpers
                 if (!FindBuildingId(vill, task)) return;
             }
             vill.Build.Tasks.Add(task);
-            ReStartBuilding(acc, vill);
+            if(acc.Wb != null)ReStartBuilding(acc, vill);
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace TravBotSharp.Files.Helpers
             RemoveCompletedTasks(vill, acc);
             //remove ongoing building task for this village
             acc.Tasks.RemoveAll(x =>
-                x.vill == vill &&
+                x.Vill == vill &&
                 x.GetType() == typeof(UpgradeBuilding)
                 );
 
@@ -84,7 +84,7 @@ namespace TravBotSharp.Files.Helpers
 
             var building = new UpgradeBuilding()
             {
-                vill = vill,
+                Vill = vill,
                 ExecuteAt = nextExecution,
             };
             TaskExecutor.AddTask(acc, building);
@@ -94,7 +94,7 @@ namespace TravBotSharp.Files.Helpers
         {
             if (vill.Build.DemolishTasks.Count > 0)
             {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) });
+                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) });
             }
         }
 
@@ -258,7 +258,6 @@ namespace TravBotSharp.Files.Helpers
 
             // Filter resource fields by type
             //buildings = buildings.Where(x => x.Type == task.Building).ToList();
-
 
             Models.ResourceModels.Building buildingToUpgrade = null;
             switch (task.BuildingStrategy)
@@ -573,7 +572,9 @@ namespace TravBotSharp.Files.Helpers
             Models.ResourceModels.Building lowestBuilding = buildings[0];
             for (int i = 1; i < buildings.Count; i++)
             {
-                if (lowestBuilding.Level > buildings[i].Level) lowestBuilding = buildings[i];
+                var buildingLevel = buildings[i].Level;
+                if (buildings[i].UnderConstruction) buildingLevel++;
+                if (lowestBuilding.Level > buildingLevel) lowestBuilding = buildings[i];
             }
             return lowestBuilding;
         }

@@ -32,7 +32,7 @@ namespace TravBotSharp.Views
             {
                 var item = new ListViewItem();
                 item.SubItems[0].Text = task.ToString().Split('.').Last(); // Task name
-                item.SubItems.Add(task.vill?.Name ?? "/"); // Village name
+                item.SubItems.Add(task.Vill?.Name ?? "/"); // Village name
                 item.SubItems.Add(task.Priority.ToString());
                 item.SubItems.Add(task.Stage.ToString());
                 item.SubItems.Add(task.ExecuteAt.ToString());

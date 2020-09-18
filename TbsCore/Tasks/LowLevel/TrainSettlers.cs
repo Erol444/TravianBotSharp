@@ -15,11 +15,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
-            var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Residence || x.Type == Classificator.BuildingEnum.Palace || x.Type == Classificator.BuildingEnum.CommandCenter);
+            var building = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Residence || x.Type == Classificator.BuildingEnum.Palace || x.Type == Classificator.BuildingEnum.CommandCenter);
             if (building == null)
             {
                 //update dorg, no buildingId found?
-                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, vill = vill });
+                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = Vill });
                 Console.WriteLine($"There is no Residence/Palace/CommandCenter in this village!");
                 return TaskRes.Executed;
             }
@@ -34,14 +34,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             var resources = ResourceParser.GetResourceCost(cost);
-            var enoughResAt = ResourcesHelper.EnoughResourcesOrTransit(acc, vill, resources);
+            var enoughResAt = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, resources);
             if (enoughResAt <= DateTime.Now.AddMilliseconds(1)) //we have enough res, create new settler!
             {
                 wb.ExecuteScript($"document.getElementsByName('t10')[0].value='1'");
                 await Task.Delay(AccountHelper.Delay());
                 wb.ExecuteScript($"document.getElementById('s1').click()"); //Train settler
-                vill.Troops.Settlers++;
-                if (vill.Troops.Settlers < 3)
+                Vill.Troops.Settlers++;
+                if (Vill.Troops.Settlers < 3)
                 {
                     //In 1 minute, do the same task (to get total of 3 settlers)
                     this.NextExecute = DateTime.Now.AddSeconds(1);
@@ -69,7 +69,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var training = TroopsHelper.TrainingDuration(htmlDoc);
             TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() {
                 ExecuteAt = training.AddSeconds(3),
-                vill = this.vill,
+                Vill = this.Vill,
                 Priority = TaskPriority.Medium
             });
         }

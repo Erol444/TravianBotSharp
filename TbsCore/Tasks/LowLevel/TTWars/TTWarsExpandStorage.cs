@@ -16,7 +16,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
-            var building = vill.Build.Buildings.FirstOrDefault(x => x.Level > 0 && (x.Type == Classificator.BuildingEnum.Warehouse || x.Type == Classificator.BuildingEnum.Granary));
+            var building = Vill.Build.Buildings.FirstOrDefault(x => x.Level > 0 && (x.Type == Classificator.BuildingEnum.Warehouse || x.Type == Classificator.BuildingEnum.Granary));
             if (building != null) await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}");
 
             //expand the storage

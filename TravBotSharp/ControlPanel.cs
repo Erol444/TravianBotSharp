@@ -36,6 +36,7 @@ namespace TravBotSharp
             deffendingUc1.Init(this);
             attackUc1.Init(this);
             debugUc1.Init(this);
+            questsUc1.Init(this);
         }
 
         private void LoadAccounts()
@@ -145,7 +146,10 @@ namespace TravBotSharp
                 case 6: // Deffending
                     deffendingUc1.UpdateTab();
                     break;
-                case 7: // Debug tab
+                case 7: // Quests
+                    questsUc1.UpdateTab();
+                    break;
+                case 8: // Debug tab
                     debugUc1.UpdateTab();
                     break;
                 default: break;
@@ -257,9 +261,9 @@ namespace TravBotSharp
         private void RefreshVillage(Account acc, Village vill)
         {
             var executeAt = DateTime.Now.AddHours(-1);
-            TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = executeAt, vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = executeAt, vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = executeAt, vill = vill });
+            TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = executeAt, Vill = vill });
+            TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = executeAt, Vill = vill });
+            TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = executeAt, Vill = vill });
             // Todo: refresh celebrities
         }
 

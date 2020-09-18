@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -17,18 +18,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             Random rnd = new Random();
             int sec = rnd.Next(725, 740);
-            TaskExecutor.AddTask(acc, new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec), vill = AccountHelper.GetMainVillage(acc) });
+            TaskExecutor.AddTask(acc, new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc) });
 
             //Open payment wizard on tab Plus features (where you can buy stuff with gold)
-            wb.ExecuteScript("window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});");
+            var script = "window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});";
+            await DriverHelper.ExecuteScript(acc, script);
 
-            await Task.Delay(AccountHelper.Delay());
-
-            wb.ExecuteScript("$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#3').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');"); //Excgabge resources button
-
-            await Task.Delay(AccountHelper.Delay() * 2);
-
-            htmlDoc.LoadHtml(wb.PageSource);
+            script = "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#3').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');";
+            await DriverHelper.ExecuteScript(acc, script);
 
             var buy = htmlDoc.DocumentNode.SelectNodes("//*[text()[contains(., '3000')]]")[0];
             while (buy.Name != "button") buy = buy.ParentNode;

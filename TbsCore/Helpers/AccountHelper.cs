@@ -36,6 +36,18 @@ namespace TravBotSharp.Files.Helpers
             return heroVill;
         }
 
+        public static Village GetQuestsClaimVillage(Account acc)
+        {
+            var questsClaimVill = acc.Villages.FirstOrDefault(x => x.Id == acc.Quests.VillToClaim);
+            // There is no main village, select it
+            if (questsClaimVill == null)
+            {
+                questsClaimVill = acc.Villages.FirstOrDefault();
+                acc.Quests.VillToClaim = questsClaimVill?.Id ?? default;
+            }
+            return questsClaimVill;
+        }
+
         /// <summary>
         /// Returns a random delay (click delay, ~0.5-1sec).
         /// </summary>
