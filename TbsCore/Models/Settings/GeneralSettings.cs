@@ -1,5 +1,7 @@
-﻿using TbsCore.Models.Settings;
+﻿using System.Collections.Generic;
+using TbsCore.Models.Settings;
 using TravBotSharp.Files.Models.AccModels;
+using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Models.Settings
 {
@@ -12,6 +14,8 @@ namespace TravBotSharp.Files.Models.Settings
             this.AutoReadIgms = true;
             this.Time = new TimeSettings();
             this.Time.Init();
+            this.Timing = new TimingData();
+            this.Localization = new Dictionary<BuildingEnum, string>();
         }
         public bool AutoActivateProductionBoost { get; set; }
 
@@ -49,5 +53,17 @@ namespace TravBotSharp.Files.Models.Settings
         /// Whether you want to Auto improve units
         /// </summary>
         public bool AutoImprove { get; set; }
+        /// <summary>
+        /// Data about when things last happened
+        /// </summary>
+        public TimingData Timing { get; set; }
+        /// <summary>
+        /// Whether to close and reopen chrome if there is no task in the next 5 min
+        /// </summary>
+        public bool AutoCloseDriver { get; set; }
+        /// <summary>
+        /// Localization strings
+        /// </summary>
+        public Dictionary<BuildingEnum, string> Localization { get; set; }
     }
 }

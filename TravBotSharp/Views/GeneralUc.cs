@@ -51,6 +51,7 @@ namespace TravBotSharp.Views
 
             disableImagesCheckbox.Checked = acc.Settings.DisableImages;
             headlessCheckbox.Checked = acc.Settings.HeadlessMode;
+            reopenChrome.Checked = acc.Settings.AutoCloseDriver;
 
             sleepMax.Value = acc.Settings.Time.MaxSleep;
             sleepMin.Value = acc.Settings.Time.MinSleep;
@@ -263,6 +264,11 @@ namespace TravBotSharp.Views
                 sleepMax.Value = sleepMin.Value;
             }
             getSelectedAcc().Settings.Time.MaxSleep = (int)sleepMax.Value;
+        }
+
+        private void reopenChrome_CheckedChanged(object sender, EventArgs e)
+        {
+            getSelectedAcc().Settings.AutoCloseDriver = reopenChrome.Checked;
         }
     }
 }

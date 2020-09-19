@@ -65,7 +65,19 @@ namespace TravBotSharp.Files.Models.AccModels
             if (taskInProgress != null) return;
 
             var tasks = acc.Tasks.Where(x => x.ExecuteAt <= DateTime.Now).ToList();
-            if (tasks.Count == 0) return; // No tasks yet
+            if (tasks.Count == 0)
+            {
+                // Auto close chrome and reopen when there is a high/normal prio BotTask
+                if (acc.Settings.AutoCloseDriver &&
+                    TimeHelper.NextNormalOrHighPrioTask(acc) > TimeSpan.FromMinutes(5))
+                {
+                    TaskExecutor.AddTask(acc, new ReopenDriver() {
+                        ExecuteAt = DateTime.Now,
+                        Priority = TaskPriority.Low
+                    });
+                }
+                return; // No tasks yet
+            }
 
             BotTask firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
             if (firstTask == null) firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.Medium);

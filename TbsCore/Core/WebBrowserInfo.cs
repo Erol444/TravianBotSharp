@@ -17,10 +17,10 @@ namespace TravBotSharp.Files.Models.AccModels
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
 
-        public async Task InitSelenium(Account acc)
+        public async Task InitSelenium(Account acc, bool newAccess = true)
         {
             this.acc = acc;
-            var access = await acc.Access.GetNewAccess();
+            Access access = newAccess ? await acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 

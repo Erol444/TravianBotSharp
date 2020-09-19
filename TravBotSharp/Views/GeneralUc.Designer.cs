@@ -65,6 +65,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.workMin = new System.Windows.Forms.NumericUpDown();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
             this.sleepMax = new System.Windows.Forms.NumericUpDown();
             this.workMax = new System.Windows.Forms.NumericUpDown();
             this.label15 = new System.Windows.Forms.Label();
@@ -73,8 +75,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
+            this.reopenChrome = new System.Windows.Forms.CheckBox();
+            this.label19 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fillInAdvanceUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
@@ -218,7 +220,7 @@
             this.startTimersButton.Name = "startTimersButton";
             this.startTimersButton.Size = new System.Drawing.Size(92, 23);
             this.startTimersButton.TabIndex = 95;
-            this.startTimersButton.Text = "Start Timers";
+            this.startTimersButton.Text = "Restart bot";
             this.startTimersButton.UseVisualStyleBackColor = true;
             this.startTimersButton.Click += new System.EventHandler(this.startTimersButton_Click);
             // 
@@ -413,7 +415,7 @@
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(92, 23);
             this.button6.TabIndex = 162;
-            this.button6.Text = "Stop Timers";
+            this.button6.Text = "Pause bot";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
@@ -433,7 +435,7 @@
             // 
             this.disableImagesCheckbox.AutoSize = true;
             this.disableImagesCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.disableImagesCheckbox.Location = new System.Drawing.Point(681, 441);
+            this.disableImagesCheckbox.Location = new System.Drawing.Point(681, 439);
             this.disableImagesCheckbox.Name = "disableImagesCheckbox";
             this.disableImagesCheckbox.Size = new System.Drawing.Size(174, 21);
             this.disableImagesCheckbox.TabIndex = 164;
@@ -483,6 +485,24 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(280, 135);
             this.panel1.TabIndex = 169;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(178, 42);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(27, 13);
+            this.label18.TabIndex = 177;
+            this.label18.Text = "Max";
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(85, 42);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(24, 13);
+            this.label16.TabIndex = 176;
+            this.label16.Text = "Min";
             // 
             // sleepMax
             // 
@@ -574,28 +594,34 @@
             this.label2.TabIndex = 169;
             this.label2.Text = "Working time";
             // 
-            // label16
+            // reopenChrome
             // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(85, 42);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(24, 13);
-            this.label16.TabIndex = 176;
-            this.label16.Text = "Min";
+            this.reopenChrome.AutoSize = true;
+            this.reopenChrome.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.reopenChrome.Location = new System.Drawing.Point(681, 462);
+            this.reopenChrome.Name = "reopenChrome";
+            this.reopenChrome.Size = new System.Drawing.Size(199, 21);
+            this.reopenChrome.TabIndex = 170;
+            this.reopenChrome.Text = "Close and reopen chrome* ";
+            this.reopenChrome.UseVisualStyleBackColor = true;
+            this.reopenChrome.CheckedChanged += new System.EventHandler(this.reopenChrome_CheckedChanged);
             // 
-            // label18
+            // label19
             // 
-            this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(178, 42);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(27, 13);
-            this.label18.TabIndex = 177;
-            this.label18.Text = "Max";
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(678, 486);
+            this.label19.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(153, 13);
+            this.label19.TabIndex = 171;
+            this.label19.Text = "* if there is no task in next 5min";
             // 
             // GeneralUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label19);
+            this.Controls.Add(this.reopenChrome);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.disableImagesCheckbox);
@@ -697,5 +723,7 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.CheckBox reopenChrome;
+        private System.Windows.Forms.Label label19;
     }
 }
