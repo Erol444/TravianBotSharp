@@ -569,12 +569,17 @@ namespace TravBotSharp.Files.Helpers
         private static Models.ResourceModels.Building FindLowestLevelBuilding(List<Models.ResourceModels.Building> buildings)
         {
             if (buildings.Count == 0) return null;
+            var lowestLvl = 100;
             Models.ResourceModels.Building lowestBuilding = buildings[0];
             for (int i = 1; i < buildings.Count; i++)
             {
                 var buildingLevel = buildings[i].Level;
                 if (buildings[i].UnderConstruction) buildingLevel++;
-                if (lowestBuilding.Level > buildingLevel) lowestBuilding = buildings[i];
+                if (lowestLvl > buildingLevel)
+                {
+                    lowestLvl = buildingLevel;
+                    lowestBuilding = buildings[i];
+                }
             }
             return lowestBuilding;
         }

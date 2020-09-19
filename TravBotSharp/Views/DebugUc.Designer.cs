@@ -32,9 +32,9 @@
             this.cH1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cH2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cH3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.cHvill = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cH4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
-            this.cHvill = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // taskListView
@@ -51,7 +51,7 @@
             this.taskListView.Location = new System.Drawing.Point(3, 42);
             this.taskListView.MultiSelect = false;
             this.taskListView.Name = "taskListView";
-            this.taskListView.Size = new System.Drawing.Size(438, 350);
+            this.taskListView.Size = new System.Drawing.Size(470, 394);
             this.taskListView.TabIndex = 35;
             this.taskListView.UseCompatibleStateImageBehavior = false;
             this.taskListView.View = System.Windows.Forms.View.Details;
@@ -63,12 +63,16 @@
             // 
             // cH2
             // 
-            this.cH2.Text = "Priority";
+            this.cH2.Text = "Vill";
             this.cH2.Width = 56;
             // 
             // cH3
             // 
-            this.cH3.Text = "Stage";
+            this.cH3.Text = "Priority";
+            // 
+            // cHvill
+            // 
+            this.cHvill.Text = "Stage";
             // 
             // cH4
             // 
@@ -84,10 +88,6 @@
             this.label1.Size = new System.Drawing.Size(160, 20);
             this.label1.TabIndex = 36;
             this.label1.Text = "Tasks to be executed";
-            // 
-            // cHvill
-            // 
-            this.cHvill.Text = "Vill";
             // 
             // DebugUc
             // 
