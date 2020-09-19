@@ -20,11 +20,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public Coordinates TargetVillage { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
 
-            int[] troopsAtHome = TroopsMovementParser.GetTroopsInRallyPoint(htmlDoc);
+            int[] troopsAtHome = TroopsMovementParser.GetTroopsInRallyPoint(acc.Wb.Html);
 
             for (int i = 0; i < 10; i++)
             {

@@ -17,7 +17,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         //If Troop == null, just update the troop levels
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             var academy = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Academy);
             if (academy == null)
@@ -29,7 +28,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var troop = Vill.Troops.ToResearch.FirstOrDefault();
             if (troop == TroopsEnum.None) return TaskRes.Executed; //We have researched all troops that were on the list
 
-            var troopNode = htmlDoc.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
+            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
             if (troopNode == null)
             {
                 this.ErrorMessage = $"Researching {troop} was not possible! Bot assumes you already have it researched";
@@ -43,7 +42,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 RepeatTask(Vill, troop, DateTime.Now);
             }
-            (TimeSpan dur, Resources cost) = TroopsParser.AcademyResearchCost(htmlDoc, troop);
+            (TimeSpan dur, Resources cost) = TroopsParser.AcademyResearchCost(acc.Wb.Html, troop);
 
             var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost);
 

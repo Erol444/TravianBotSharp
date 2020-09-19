@@ -20,7 +20,10 @@ namespace TravBotSharp.Views
             checkBoxAutoSendToAdventures.Checked = acc.Hero.Settings.AutoSendToAdventure;
             minHeroHealthUpDown.Value = acc.Hero.Settings.MinHealth;
             autoReviveHero.Checked = acc.Hero.Settings.AutoReviveHero;
-            refreshInfo.Checked = acc.Hero.AutoRefreshInfo;
+            refreshInfo.Checked = acc.Hero.Settings.AutoRefreshInfo;
+
+            autoRes.Checked = acc.Hero.Settings.AutoUseRes;
+            autoEquip.Checked = acc.Hero.Settings.AutoEquip;
 
             var heroUpgrade = acc.Hero.Settings.Upgrades;
             strength.Value = heroUpgrade[0];
@@ -169,7 +172,30 @@ namespace TravBotSharp.Views
 
         private void refreshInfo_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Hero.AutoRefreshInfo = refreshInfo.Checked;
+            getSelectedAcc().Hero.Settings.AutoRefreshInfo = refreshInfo.Checked;
+        }
+
+        private void autoEquip_CheckedChanged(object sender, EventArgs e)
+        {
+            var acc = getSelectedAcc();
+            acc.Hero.Settings.AutoEquip = autoEquip.Checked;
+            if (autoEquip.Checked) TurnOnAutoRefresh(acc);
+        }
+
+        private void autoRes_CheckedChanged(object sender, EventArgs e)
+        {
+            var acc = getSelectedAcc();
+            acc.Hero.Settings.AutoUseRes = autoRes.Checked;
+            if (autoRes.Checked) TurnOnAutoRefresh(acc);
+        }
+        /// <summary>
+        /// If you want to use Auto-use res or Auto-Equip hero, you need to auto-refresh hero info
+        /// </summary>
+        /// <param name="acc"></param>
+        private void TurnOnAutoRefresh(Account acc)
+        {
+            acc.Hero.Settings.AutoRefreshInfo = true;
+            refreshInfo.Checked = true;
         }
     }
 }

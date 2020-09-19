@@ -12,7 +12,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await Task.Delay(AccountHelper.Delay());
             wb.ExecuteScript($"document.getElementById('btn_ok').click()"); //Click send

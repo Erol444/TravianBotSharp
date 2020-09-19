@@ -20,11 +20,10 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
         public FarmList FL { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?uid=1");
 
-            var vills = htmlDoc.GetElementbyId("villages").Descendants("tr");
+            var vills = acc.Wb.Html.GetElementbyId("villages").Descendants("tr");
             int addedFarms = 0;
             foreach (var vill in vills)
             {

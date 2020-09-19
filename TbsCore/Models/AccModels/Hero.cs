@@ -39,10 +39,7 @@ namespace TravBotSharp.Files.Models.AccModels
         /// Items currently equipt
         /// </summary>
         public Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum> Equipt { get; set; }
-        /// <summary>
-        /// Auto refresh hero information every 1 hour
-        /// </summary>
-        public bool AutoRefreshInfo { get; set; } = true;
+
 
         public enum StatusEnum
         {

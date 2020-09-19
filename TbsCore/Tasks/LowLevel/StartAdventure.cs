@@ -13,13 +13,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php?t=3");
 
-            acc.Hero.Adventures = AdventureParser.GetAdventures(htmlDoc, acc.AccInfo.ServerVersion);
+            acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
-            var homeVill = HeroParser.GetHeroVillageId(htmlDoc);
+            var homeVill = HeroParser.GetHeroVillageId(acc.Wb.Html);
             if (homeVill != null) acc.Hero.HomeVillageId = homeVill ?? 0;
 
             if (acc.Hero.Adventures == null || acc.Hero.Adventures.Count == 0) return TaskRes.Executed;
@@ -42,7 +41,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 case Classificator.ServerVersionEnum.T4_4:
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/{adventure.Ref}");
 
-                    var startButton = htmlDoc.GetElementbyId("start");
+                    var startButton = acc.Wb.Html.GetElementbyId("start");
                     if (startButton == null){
                         //Hero is probably out of the village.
                         this.NextExecute = DateTime.Now.AddMinutes(10);
@@ -58,8 +57,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                     // Check hero outgoing time
                     await Task.Delay(AccountHelper.Delay());
-                    htmlDoc.LoadHtml(acc.Wb.Driver.PageSource);
-                    var outTime = HeroParser.GetHeroArrival(htmlDoc);
+                    acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
+                    var outTime = HeroParser.GetHeroArrival(acc.Wb.Html);
                     // At least 1.5x longer (if hero has Large map)
                     acc.Hero.NextHeroSend = DateTime.Now + TimeSpan.FromTicks((long)(outTime.Ticks * 1.5));
                     break;

@@ -18,11 +18,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/production.php?t=1");
 
-            var table = htmlDoc.DocumentNode.Descendants("table").FirstOrDefault(x => x.HasClass("row_table_data"));
+            var table = acc.Wb.Html.DocumentNode.Descendants("table").FirstOrDefault(x => x.HasClass("row_table_data"));
             if (table == null)
             {
                 this.ErrorMessage = "Production table not found.";

@@ -16,7 +16,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             if (Vill == null) Vill = AccountHelper.GetMainVillage(acc);
 
@@ -32,7 +31,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={buildId.Id}");
 
-            var troopNode = htmlDoc.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
+            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
 
             //finding the correct "Exchange resources" button
@@ -41,7 +40,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             string script = $"document.getElementById('{exchangeResButton.GetAttributeValue("id", "")}').click()";
             await DriverHelper.ExecuteScript(acc, script);
 
-            var distribute = htmlDoc.DocumentNode.SelectNodes("//*[text()[contains(., 'Distribute remaining resources.')]]")[0];
+            var distribute = acc.Wb.Html.DocumentNode.SelectNodes("//*[text()[contains(., 'Distribute remaining resources.')]]")[0];
             while (distribute.Name != "button") distribute = distribute.ParentNode;
             string distributeid = distribute.GetAttributeValue("id", "");
             wb.ExecuteScript($"document.getElementById('{distributeid}').click()"); //Distribute resources button

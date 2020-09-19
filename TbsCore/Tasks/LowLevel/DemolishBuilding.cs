@@ -15,7 +15,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
 
             var mainBuilding = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.MainBuilding);
@@ -24,14 +23,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (Vill.Build.DemolishTasks.Count == 0) return TaskRes.Executed; //No more demolish tasks
 
-            var id = BuildingToDemolish(Vill, htmlDoc);
+            var id = BuildingToDemolish(Vill, acc.Wb.Html);
 
             if (id == null) return TaskRes.Executed; //No more demolish tasks
 
             await DriverHelper.ExecuteScript(acc, $"document.getElementById('demolish').value={id}");
             await DriverHelper.ExecuteScript(acc, "document.getElementById('btn_demolish').click()");
 
-            this.NextExecute = NextDemolishTime(htmlDoc, acc);
+            this.NextExecute = NextDemolishTime(acc.Wb.Html, acc);
 
             return TaskRes.Executed;
         }

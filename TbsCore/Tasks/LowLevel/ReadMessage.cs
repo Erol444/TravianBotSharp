@@ -12,11 +12,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/messages.php");
 
-            var msg = htmlDoc.DocumentNode.Descendants("img").Where(x => x.HasClass("messageStatusUnread")).FirstOrDefault();
+            var msg = acc.Wb.Html.DocumentNode.Descendants("img").Where(x => x.HasClass("messageStatusUnread")).FirstOrDefault();
             if (msg != null)
             {
                 var url = msg.ParentNode.GetAttributeValue("href", "").Replace("amp;", "");

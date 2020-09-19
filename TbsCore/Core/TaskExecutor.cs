@@ -199,9 +199,14 @@ namespace TravBotSharp.Files.Helpers
                 acc.AccInfo.PlusAccount = RightBarParser.HasPlusAccount(html, acc.AccInfo.ServerVersion);
                 //Check reports/msg count
                 if (MsgParser.UnreadMessages(html, acc.AccInfo.ServerVersion) > 0
-                    && !acc.Wb.CurrentUrl.Contains("messages.php"))
+                    && !acc.Wb.CurrentUrl.Contains("messages.php")
+                    && acc.Settings.AutoReadIgms)
                 {
-                    TaskExecutor.AddTaskIfNotExists(acc, new ReadMessage() { ExecuteAt = DateTime.Now.AddMilliseconds(AccountHelper.Delay() * 30) });
+                    var ran = new Random();
+                    TaskExecutor.AddTaskIfNotExists(acc, new ReadMessage() {
+                        ExecuteAt = DateTime.Now.AddSeconds(ran.Next(10, 600)), // Read msg in next 10-600 seconds
+                        Priority = TaskPriority.Low
+                    });
                 }
 
                 //update loyalty of village
@@ -270,7 +275,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc"></param>
         private static void RefreshHeroData(Account acc)
         {
-            if (acc.Hero.AutoRefreshInfo && acc.Settings.Timing.LastHeroRefresh + TimeSpan.FromMinutes(60) < DateTime.Now)
+            if (acc.Hero.Settings.AutoRefreshInfo && acc.Settings.Timing.LastHeroRefresh + TimeSpan.FromMinutes(60) < DateTime.Now)
             {
                 TaskExecutor.AddTaskIfNotExists(acc, new HeroUpdateInfo()
                 {

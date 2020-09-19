@@ -12,8 +12,6 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
-            var wb = acc.Wb.Driver;
             Random rnd = new Random();
             int totalSec = 0;
 

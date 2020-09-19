@@ -11,11 +11,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public int ItemId { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php?t=4&action=sell");
 
-            var yesButton = htmlDoc.DocumentNode.Descendants().Where(x => x.Attributes.Any(a => a.Value.Contains("green ok dialogButtonOk"))).First();
+            var yesButton = acc.Wb.Html.DocumentNode.Descendants().Where(x => x.Attributes.Any(a => a.Value.Contains("green ok dialogButtonOk"))).First();
             //if()
             //Make dropdown menu selectable!
 

@@ -14,7 +14,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private NewVillage newVillage;
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             // Check if the account has enough culture points
             if (acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
@@ -50,7 +49,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             //TODO: check if enough resources!!
             newVillage.SettlersSent = true;
-            var button = htmlDoc.GetElementbyId("btn_ok");
+            var button = acc.Wb.Html.GetElementbyId("btn_ok");
 
             if (button != null)
             {

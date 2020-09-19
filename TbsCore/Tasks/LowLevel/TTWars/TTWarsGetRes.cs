@@ -14,7 +14,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
 
@@ -40,7 +39,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             //gold prosButton buyResources6
             //gold prosButton buyAnimal5
-            var buy = htmlDoc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyResources6"));
+            var buy = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyResources6"));
             if (buy == null)
             {
                 this.ErrorMessage = "Can't find the button with class buyResources6. Are you sure you are on vip/unl TTWars server?";

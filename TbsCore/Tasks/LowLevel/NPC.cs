@@ -13,22 +13,21 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             var market = Vill.Build.Buildings.FirstOrDefault(x => x.Type == TravBotSharp.Files.Helpers.Classificator.BuildingEnum.Marketplace);
             if (market == null) return TaskRes.Executed;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?t=0&id={market.Id}");
 
-            var npcMerchant = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
+            var npcMerchant = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
             var npcButton = npcMerchant.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
 
             wb.ExecuteScript($"document.getElementById('{npcButton.GetAttributeValue("id", "")}').click()"); //Excgabge resources button
 
             await Task.Delay(AccountHelper.Delay() * 2);
 
-            htmlDoc.LoadHtml(wb.PageSource);
+            acc.Wb.Html.LoadHtml(wb.PageSource);
 
-            var resSum = Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("remain").InnerText);
+            var resSum = Parser.RemoveNonNumeric(acc.Wb.Html.GetElementbyId("remain").InnerText);
             var targetRes = MarketHelper.NpcTargetResources(Vill, resSum);
 
             if (!Vill.Market.Npc.NpcIfOverflow && MarketHelper.NpcWillOverflow(Vill, targetRes))
@@ -40,7 +39,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await DriverHelper.ExecuteScript(acc, $"document.getElementById('m2[{i}]').value='{targetRes[i]}'");
             }
 
-            var submit = htmlDoc.GetElementbyId("submitText");
+            var submit = acc.Wb.Html.GetElementbyId("submitText");
             var distribute = submit.Descendants("button").FirstOrDefault();
 
             await DriverHelper.ExecuteScript(acc, $"document.getElementById('{distribute.Id}').click()");

@@ -16,12 +16,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private HtmlNode GetFlNode(HtmlDocument htmlDoc) => htmlDoc.GetElementbyId("raidList" + this.FL.Id);
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
             //TODO: if there is no rally point, switch to different village!]
-            var flNode = GetFlNode(htmlDoc);
+            var flNode = GetFlNode(acc.Wb.Html);
 
             if (flNode == null)
             {
@@ -43,7 +42,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
 
             // Update flNode!
-            flNode = GetFlNode(htmlDoc);
+            flNode = GetFlNode(acc.Wb.Html);
 
             foreach (var farm in flNode.Descendants("tr").Where(x => x.HasClass("slotRow")))
             {

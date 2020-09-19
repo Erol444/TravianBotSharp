@@ -11,11 +11,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php?t=3");
 
-            var button = htmlDoc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyAdventure"));
+            var button = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyAdventure"));
             if (button == null)
             {
                 this.ErrorMessage = "No button 'Buy' button found, perhaps you are not on vip ttwars server?";

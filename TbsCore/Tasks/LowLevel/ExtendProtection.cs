@@ -13,10 +13,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
-
             //Sitters cannot extend protection on TTWARS!
-            var extendButton = htmlDoc.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("value", "") == "Extend");
+            var extendButton = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("value", "") == "Extend");
             if (extendButton == null)
             {
                 this.ErrorMessage = "Can not extend protection! Are you a sitter?";

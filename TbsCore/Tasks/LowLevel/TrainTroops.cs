@@ -38,7 +38,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             building = TroopsHelper.GetTroopBuilding(Troop, Great);
 
@@ -57,9 +56,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            (TimeSpan dur, Resources cost) = TroopsParser.GetTrainCost(htmlDoc, this.Troop);
+            (TimeSpan dur, Resources cost) = TroopsParser.GetTrainCost(acc.Wb.Html, this.Troop);
 
-            var troopNode = htmlDoc.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)Troop));
+            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)Troop));
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
             var inputName = troopNode.Descendants("input").FirstOrDefault().GetAttributeValue("name", "");
 
@@ -83,9 +82,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await Task.Delay(100);
 
             await DriverHelper.ExecuteScript(acc, "document.getElementsByName('s1')[0].click()");
-            UpdateCurrentlyTraining(htmlDoc, acc);
+            UpdateCurrentlyTraining(acc.Wb.Html, acc);
 
-            if (!HighSpeedServer) RepeatTrainingCycle(htmlDoc, acc);
+            if (!HighSpeedServer) RepeatTrainingCycle(acc.Wb.Html, acc);
 
             return TaskRes.Executed;
         }

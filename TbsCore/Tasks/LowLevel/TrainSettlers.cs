@@ -13,7 +13,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             var building = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Residence || x.Type == Classificator.BuildingEnum.Palace || x.Type == Classificator.BuildingEnum.CommandCenter);
             if (building == null)
@@ -25,7 +24,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?s=1&id={building.Id}");
 
-            var cost = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
+            var cost = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
             if (cost == null)
             {
                 this.ErrorMessage = "Could not train settlers. Will retry in 5min";

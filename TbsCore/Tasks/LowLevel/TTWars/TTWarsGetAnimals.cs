@@ -12,7 +12,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
 
@@ -27,7 +26,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             script = "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#3').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');";
             await DriverHelper.ExecuteScript(acc, script);
 
-            var buy = htmlDoc.DocumentNode.SelectNodes("//*[text()[contains(., '3000')]]")[0];
+            var buy = acc.Wb.Html.DocumentNode.SelectNodes("//*[text()[contains(., '3000')]]")[0];
             while (buy.Name != "button") buy = buy.ParentNode;
             var buyId = buy.GetAttributeValue("id", "");
             wb.ExecuteScript($"document.getElementById('{buyId}').click()");

@@ -17,13 +17,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// </summary>
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             // If we have Plus account, just check that.
             if (acc.AccInfo.PlusAccount)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf3.php?s=5&su=2");
-                OverviewParser.UpdateTroopsLevels(htmlDoc, ref acc);
+                OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);
                 // We have updated all villages at the same time. No need to continue.
                 acc.Tasks.RemoveAll(x => x.GetType() == typeof(UpdateTroops));
                 return TaskRes.Executed;
@@ -33,7 +32,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (smithy != null)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
-                Vill.Troops.Levels = TroopsParser.GetTroopLevels(htmlDoc);
+                Vill.Troops.Levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
                 UpdateResearchedTroops(Vill);
                 return TaskRes.Executed;
             }

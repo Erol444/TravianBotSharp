@@ -15,10 +15,10 @@ namespace TravBotSharp.Files.Parsers
             {
                 Resources = new Resources()
                 {
-                    Wood = Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("l1").InnerText),
-                    Clay = Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("l2").InnerText),
-                    Iron = Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("l3").InnerText),
-                    Crop = Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("l4").InnerText)
+                    Wood = ParseHtml(htmlDoc.GetElementbyId("l1").InnerText),
+                    Clay = ParseHtml(htmlDoc.GetElementbyId("l2").InnerText),
+                    Iron = ParseHtml(htmlDoc.GetElementbyId("l3").InnerText),
+                    Crop = ParseHtml(htmlDoc.GetElementbyId("l4").InnerText)
                 },
                 LastRefresh = DateTime.Now
             };
@@ -30,13 +30,13 @@ namespace TravBotSharp.Files.Parsers
 
             return new ResourceProduction()
             {
-                WoodPerHour = ParseProduction(Res[1].ChildNodes[5].InnerText),
-                ClayPerHour = ParseProduction(Res[3].ChildNodes[5].InnerText),
-                IronPerHour = ParseProduction(Res[5].ChildNodes[5].InnerText),
-                CropPerHour = ParseProduction(Res[7].ChildNodes[5].InnerText)
+                WoodPerHour = ParseHtml(Res[1].ChildNodes[5].InnerText),
+                ClayPerHour = ParseHtml(Res[3].ChildNodes[5].InnerText),
+                IronPerHour = ParseHtml(Res[5].ChildNodes[5].InnerText),
+                CropPerHour = ParseHtml(Res[7].ChildNodes[5].InnerText)
             };
         }
-        private static long ParseProduction(string text)
+        private static long ParseHtml(string text)
         {
             string decoded = System.Net.WebUtility.HtmlDecode(text);
             return Parser.RemoveNonNumeric(decoded);

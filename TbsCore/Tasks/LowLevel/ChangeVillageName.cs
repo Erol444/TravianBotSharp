@@ -12,12 +12,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public List<(int, string)> ChangeList { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?s=2");
 
-            if(htmlDoc.GetElementbyId("PlayerProfileEditor") == null)
+            if(acc.Wb.Html.GetElementbyId("PlayerProfileEditor") == null)
             {
                 // Sitter. Can't change the name of the village. TODO: check if sitter before
                 // creating the task.

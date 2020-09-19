@@ -20,7 +20,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
 
             // Sets building task to be built
@@ -110,8 +109,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             this.PostTaskCheck.Add(ConfigNextExecute);
             this.NextExecute = DateTime.Now.AddMinutes(2);
 
-            var contractBuilding = htmlDoc.GetElementbyId($"contract_building{(int)task.Building}");
-            var upgradeBuildingContract = htmlDoc.GetElementbyId("build");
+            var contractBuilding = acc.Wb.Html.GetElementbyId($"contract_building{(int)task.Building}");
+            var upgradeBuildingContract = acc.Wb.Html.GetElementbyId("build");
             if (contractBuilding != null) //Construct a new building
             {
                 var resWrapper = contractBuilding.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
@@ -175,7 +174,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     return TaskRes.Executed;
                 }
 
-                var container = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
+                var container = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
                 var buttons = container?.Descendants("button");
                 if (buttons == null)
                 {
@@ -207,7 +206,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 {
                     HtmlNode error = container.Descendants("span").FirstOrDefault(x => x.HasClass("none"));
                     //Not enough resources
-                    var contract = htmlDoc.GetElementbyId("contract");
+                    var contract = acc.Wb.Html.GetElementbyId("contract");
                     var resWrapper = contract.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
                     var res = ResourceParser.GetResourceCost(resWrapper);
                     this.PostTaskCheck.Remove(ConfigNextExecute);

@@ -13,15 +13,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2&z=1");
 
-            var yStr = htmlDoc.GetElementbyId("yCoordInput").GetAttributeValue("value", "");
+            var yStr = acc.Wb.Html.GetElementbyId("yCoordInput").GetAttributeValue("value", "");
             var y = (int)Parser.RemoveNonNumeric(yStr);
             acc.AccInfo.MapSize = Math.Abs(y);
 
-            var unitImg = htmlDoc.DocumentNode.Descendants("img").First(x => x.HasClass("unit"));
+            var unitImg = acc.Wb.Html.DocumentNode.Descendants("img").First(x => x.HasClass("unit"));
             var unitInt = Parser.RemoveNonNumeric(unitImg.GetClasses().First(x => x != "unit"));
             int tribeInt = (int)(unitInt / 10);
             // ++ since the first element in Classificator.TribeEnum is Any, second is Romans.

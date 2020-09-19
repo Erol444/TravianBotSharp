@@ -11,9 +11,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
-            var leftBar = htmlDoc.GetElementbyId("sidebarBeforeContent");
+            var leftBar = acc.Wb.Html.GetElementbyId("sidebarBeforeContent");
             var button = leftBar.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
             if (button == null)
             {
