@@ -25,9 +25,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (flNode == null)
             {
-                TaskExecutor.AddTask(acc, new SwitchVillage() { Vill = AccountHelper.GetMainVillage(acc), ExecuteAt = DateTime.MinValue.AddMinutes(10), Priority = TaskPriority.High });
-                this.NextExecute = DateTime.Now.AddSeconds(5);
-                return TaskRes.Executed;
+                var mainVill = AccountHelper.GetMainVillage(acc);
+                if (mainVill == this.Vill) return TaskRes.Executed; // No gold account?
+                await VillageHelper.SwitchVillage(acc, mainVill.Id);
             }
             if (acc.Farming.TrainTroopsAfterFL)
             {

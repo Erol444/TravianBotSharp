@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TravBotSharp.Files.Models.AccModels;
 
 namespace TravBotSharp.Files.Helpers
@@ -71,6 +72,15 @@ namespace TravBotSharp.Files.Helpers
         public static Village VillageFromId(Account acc, int id)
         {
             return acc.Villages.FirstOrDefault(x => x.Id == id);
+        }
+
+        public static async Task SwitchVillage(Account acc, int id)
+        {
+            if (acc.Wb.CurrentUrl == null) acc.Wb.CurrentUrl = acc.AccInfo.ServerUrl;
+            string str = "?";
+            if (acc.Wb.CurrentUrl.Contains("?")) str = "&";
+            var url = $"{acc.Wb.CurrentUrl}{str}newdid={id}";
+            await acc.Wb.Navigate(url);
         }
     }
 }
