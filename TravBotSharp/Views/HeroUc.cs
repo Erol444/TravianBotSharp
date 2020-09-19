@@ -20,6 +20,7 @@ namespace TravBotSharp.Views
             checkBoxAutoSendToAdventures.Checked = acc.Hero.Settings.AutoSendToAdventure;
             minHeroHealthUpDown.Value = acc.Hero.Settings.MinHealth;
             autoReviveHero.Checked = acc.Hero.Settings.AutoReviveHero;
+            refreshInfo.Checked = acc.Hero.AutoRefreshInfo;
 
             var heroUpgrade = acc.Hero.Settings.Upgrades;
             strength.Value = heroUpgrade[0];
@@ -164,6 +165,11 @@ namespace TravBotSharp.Views
             var vill = acc.Villages[SupplyResVillageComboBox.SelectedIndex];
             acc.Hero.ReviveInVillage = vill.Id;
             SupplyResVillageSelected.Text = "Selected: " + vill.Name;
+        }
+
+        private void refreshInfo_CheckedChanged(object sender, EventArgs e)
+        {
+            getSelectedAcc().Hero.AutoRefreshInfo = refreshInfo.Checked;
         }
     }
 }

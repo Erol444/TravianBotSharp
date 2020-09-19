@@ -1,4 +1,5 @@
 ﻿
+using Elasticsearch.Net;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -84,12 +85,13 @@ namespace TravBotSharp.Files.Helpers
             //Before every execution, wait a random delay. TODO: needed?
             if (task.PostTaskCheck == null) task.PostTaskCheck = new List<Action<HtmlDocument, Account>>();
             if (acc.Wb?.CurrentUrl == null &&
-                task.GetType() != typeof(CheckProxy)) {
+                task.GetType() != typeof(CheckProxy))
+            {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
             task.ErrorMessage = null;
             //Console.WriteLine($"Executing task {task.GetType()}");
-            if(task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
+            if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
             try
             {
                 switch (await task.Execute(acc))
@@ -181,7 +183,7 @@ namespace TravBotSharp.Files.Helpers
                     });
                 }
                 // Daily quest
-                if(RightBarParser.CheckDailyQuest(html) && acc.Quests.ClaimDailyQuests)
+                if (RightBarParser.CheckDailyQuest(html) && acc.Quests.ClaimDailyQuests)
                 {
                     TaskExecutor.AddTaskIfNotExists(acc, new ClaimDailyTask()
                     {
@@ -250,6 +252,9 @@ namespace TravBotSharp.Files.Helpers
                 {
                     AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                 }
+
+                RefreshHeroData(acc);
+
                 return true;
 
             }
@@ -257,6 +262,21 @@ namespace TravBotSharp.Files.Helpers
             {
                 Console.WriteLine("Error in PreTask " + e.Message + "\n\nStack Trace: " + e.StackTrace + "\n-----------------------");
                 return false;
+            }
+        }
+        /// <summary>
+        /// For refreshing
+        /// </summary>
+        /// <param name="acc"></param>
+        private static void RefreshHeroData(Account acc)
+        {
+            if (acc.Hero.AutoRefreshInfo && acc.Settings.Timing.LastHeroRefresh + TimeSpan.FromMinutes(60) < DateTime.Now)
+            {
+                TaskExecutor.AddTaskIfNotExists(acc, new HeroUpdateInfo()
+                {
+                    ExecuteAt = DateTime.Now,
+                    Priority = TaskPriority.Low
+                });
             }
         }
 

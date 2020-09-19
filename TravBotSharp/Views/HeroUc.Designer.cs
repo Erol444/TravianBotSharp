@@ -60,6 +60,7 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label7 = new System.Windows.Forms.Label();
+            this.refreshInfo = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.minHeroHealthUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.strength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offBonus)).BeginInit();
@@ -71,7 +72,7 @@
             // buyAdventuresCheckBox
             // 
             this.buyAdventuresCheckBox.AutoSize = true;
-            this.buyAdventuresCheckBox.Location = new System.Drawing.Point(13, 172);
+            this.buyAdventuresCheckBox.Location = new System.Drawing.Point(13, 203);
             this.buyAdventuresCheckBox.Name = "buyAdventuresCheckBox";
             this.buyAdventuresCheckBox.Size = new System.Drawing.Size(141, 17);
             this.buyAdventuresCheckBox.TabIndex = 7;
@@ -82,7 +83,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(10, 70);
+            this.label13.Location = new System.Drawing.Point(10, 101);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(82, 13);
             this.label13.TabIndex = 6;
@@ -90,7 +91,7 @@
             // 
             // minHeroHealthUpDown
             // 
-            this.minHeroHealthUpDown.Location = new System.Drawing.Point(13, 86);
+            this.minHeroHealthUpDown.Location = new System.Drawing.Point(13, 117);
             this.minHeroHealthUpDown.Name = "minHeroHealthUpDown";
             this.minHeroHealthUpDown.Size = new System.Drawing.Size(90, 20);
             this.minHeroHealthUpDown.TabIndex = 5;
@@ -213,7 +214,7 @@
             // 
             // maxDistanceUpDown
             // 
-            this.maxDistanceUpDown.Location = new System.Drawing.Point(13, 136);
+            this.maxDistanceUpDown.Location = new System.Drawing.Point(13, 167);
             this.maxDistanceUpDown.Maximum = new decimal(new int[] {
             500,
             0,
@@ -232,7 +233,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(10, 120);
+            this.label5.Location = new System.Drawing.Point(10, 151);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(70, 13);
             this.label5.TabIndex = 18;
@@ -385,10 +386,22 @@
             this.label7.TabIndex = 146;
             this.label7.Text = "Currently equipt";
             // 
+            // refreshInfo
+            // 
+            this.refreshInfo.AutoSize = true;
+            this.refreshInfo.Location = new System.Drawing.Point(13, 61);
+            this.refreshInfo.Name = "refreshInfo";
+            this.refreshInfo.Size = new System.Drawing.Size(127, 17);
+            this.refreshInfo.TabIndex = 147;
+            this.refreshInfo.Text = "Auto refresh hero info";
+            this.refreshInfo.UseVisualStyleBackColor = true;
+            this.refreshInfo.CheckedChanged += new System.EventHandler(this.refreshInfo_CheckedChanged);
+            // 
             // HeroUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.refreshInfo);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.equiptList);
             this.Controls.Add(this.lastUpdated);
@@ -461,5 +474,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox refreshInfo;
     }
 }

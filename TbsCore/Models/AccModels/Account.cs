@@ -11,11 +11,6 @@ namespace TravBotSharp.Files.Models.AccModels
         /// <summary>
         /// This method is called when new accounts is created
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy ip</param>
-        /// <param name="port">Proxy port</param>
-        /// <param name="server">Server url</param>
         public void Init()
         {
             Hero = new Hero();
