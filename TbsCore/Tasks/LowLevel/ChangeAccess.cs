@@ -16,11 +16,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             acc.Wb.Close();
 
-            //TODO: also check for high priority tasks (attacking/deffending). If there is one, don't wait so long!
             //TODO: make this configurable (wait time between switches)
 
-            // Wait some time between the proxy switching.
-            await Task.Delay(AccountHelper.Delay() * 5);
+            // Wait some time (5-10mins) between the proxy switching.
+            var sleep = new Sleep()
+            {
+                AutoSleep = false,
+                MinSleepSec = 300,
+                MaxSleepSec = 600,
+            };
+            // sleep will stop if there is a high priority task
+            await sleep.Execute(acc);
 
             await acc.Wb.InitSelenium(acc);
 

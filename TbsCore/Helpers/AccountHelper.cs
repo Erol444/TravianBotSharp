@@ -71,7 +71,11 @@ namespace TravBotSharp.Files.Helpers
             if (acc.Farming.Enabled) TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
 
             // Bot sleep
-            TaskExecutor.AddTaskIfNotExists(acc, new Sleep() { ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc) });
+            TaskExecutor.AddTaskIfNotExists(acc, new Sleep()
+            {
+                ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc),
+                AutoSleep = true
+            });
 
             // Access change
             var nextAccessChange = TimeHelper.GetNextProxyChange(acc);

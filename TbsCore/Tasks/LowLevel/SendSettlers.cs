@@ -32,8 +32,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 if (acc.NewVillages.AutoFindVillages) // Find new village to settle
                 {
                     TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle() {
-                        ExecuteAt = DateTime.MinValue.AddHours(10),
-                        Priority = TaskPriority.Medium
+                        ExecuteAt = DateTime.MinValue.AddHours(10)
                     });
                     this.NextExecute = DateTime.MinValue.AddHours(11);
                 }
