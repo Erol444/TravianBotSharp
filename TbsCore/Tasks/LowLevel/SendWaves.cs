@@ -46,7 +46,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 var build = htmlDoc1.GetElementbyId("build");
 
-                var ajaxToken = await HttpHelper.GetAjaxToken(wb);
+                var ajaxToken = HttpHelper.GetAjaxToken(wb);
                 var values = new Dictionary<string, string>
                 {
                     {"dname", ""}, // Name of the village, empty. Bot uses coordinates

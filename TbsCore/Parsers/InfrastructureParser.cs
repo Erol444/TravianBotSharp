@@ -45,7 +45,7 @@ namespace TravBotSharp.Files.Parsers
         }
 
 
-        public static List<BuildingCurrently> CurrentlyBuilding(HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static List<BuildingCurrently> CurrentlyBuilding(HtmlAgilityPack.HtmlDocument htmlDoc, Account acc)
         {
             var finishButton = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("finishNow"));
             if (finishButton == null) return null;
@@ -53,14 +53,15 @@ namespace TravBotSharp.Files.Parsers
             foreach (var row in finishButton.ParentNode.Descendants("li").ToList())
             {
                 var duration = TimeParser.ParseTimer(row);
-                var name = row.Descendants("div").FirstOrDefault(x => x.HasClass("name")).InnerText.Split('\n')[1].Trim();
+                var nameArr = row.Descendants("div").FirstOrDefault(x => x.HasClass("name")).InnerText.Split('\t'); //[1].Trim();
+                string name = nameArr.FirstOrDefault(x => !string.IsNullOrEmpty(x.Replace("\r", "").Replace("\n", "")));
                 var lvl = Parser.RemoveNonNumeric(row.Descendants("span").FirstOrDefault(x => x.HasClass("lvl")).InnerText);
 
                 ret.Add(new BuildingCurrently()
                 {
                     Duration = DateTime.Now.Add(duration),
                     Level = (byte)lvl,
-                    Building = Localizations.BuildingFromString(name)
+                    Building = Localizations.BuildingFromString(name, acc)
                 });
             }
             return ret;

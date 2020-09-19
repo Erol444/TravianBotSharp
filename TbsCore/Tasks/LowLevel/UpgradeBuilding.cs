@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
+using TravBotSharp.Files.TravianData;
 using static TravBotSharp.Files.Helpers.BuildingHelper;
 using static TravBotSharp.Files.Helpers.Classificator;
 
@@ -21,16 +22,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var htmlDoc = acc.Wb.Html;
             var wb = acc.Wb.Driver;
+
+            // Sets building task to be built
+            ConfigNextExecute(acc.Wb.Html, acc);
+            this.NextExecute = DateTime.Now.AddMinutes(2);
             if (this.task == null)
             {
-                ConfigNextExecute(acc.Wb.Html, acc);
-                this.NextExecute = DateTime.Now.AddMinutes(2);
-                if (this.task == null)
-                {
-                    // There is no building task left. Remove the BotTask
-                    acc.Tasks.Remove(this);
-                    return TaskRes.Executed;
-                }
+                // There is no building task left. Remove the BotTask
+                acc.Tasks.Remove(this);
+                return TaskRes.Executed;
             }
 
             // Check if the task is complete
@@ -52,7 +52,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     "dorf1.php" :
                     "dorf2.php";
 
-                await acc.Wb.Navigate(navigateTo);
+                // For localization purposes, bot sends raw http req to Travian servers. We need localized building
+                // names, and JS hides the title of the buildings on selenium browser.
+
+                acc.Wb.Html = await HttpHelper.SendGetReq(acc, navigateTo);
+
+                if (navigateTo.EndsWith("dorf1.php")) TaskExecutor.UpdateDorf1Info(acc);
+                else TaskExecutor.UpdateDorf2Info(acc); // dorf2 ok
+
+                Localizations.UpdateLocalization(acc);
             }
 
             // Check if there are already too many buildings currently constructed
@@ -316,6 +324,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var maxBuild = 1;
             if (acc.AccInfo.PlusAccount) maxBuild++;
+            //if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuild++;
 
             BuildingTask task = null;
 

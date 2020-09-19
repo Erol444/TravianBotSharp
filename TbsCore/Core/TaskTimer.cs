@@ -89,8 +89,7 @@ namespace TravBotSharp.Files.Models.AccModels
             if (firstTask.Vill != null)
             {
                 var active = acc.Villages.FirstOrDefault(x => x.Active);
-                // && active != firstTask.Vill
-                if (active != null) //error handling
+                if (active != null && active != firstTask.Vill)
                 {
                     await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
                 }

@@ -1,5 +1,6 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -39,6 +40,13 @@ namespace TravBotSharp.Files.Models.AccModels
         private void SetupChromeDriver(Access access, string username, string server)
         {
             ChromeOptions options = new ChromeOptions();
+
+            // Turn on logging preferences for buildings localization (string).
+            //var loggingPreferences = new OpenQA.Selenium.Chromium.ChromiumPerformanceLoggingPreferences();
+            //loggingPreferences.IsCollectingNetworkEvents = true;
+            //options.PerformanceLoggingPreferences = loggingPreferences;
+            //options.SetLoggingPreference("performance", LogLevel.All);
+
             if (!string.IsNullOrEmpty(access.Proxy))
             {
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
@@ -64,7 +72,6 @@ namespace TravBotSharp.Files.Models.AccModels
             if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false");
 
             // Add browser caching
-
             var dir = IoHelperCore.GetCacheDir(username, server, access);
             Directory.CreateDirectory(dir);
             options.AddArguments("user-data-dir=" + dir);

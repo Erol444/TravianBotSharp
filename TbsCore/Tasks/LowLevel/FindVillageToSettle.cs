@@ -25,7 +25,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var mainVill = AccountHelper.GetMainVillage(acc);
 
-            var ajaxToken = await HttpHelper.GetAjaxToken(wb);
+            var ajaxToken = HttpHelper.GetAjaxToken(wb);
             var values = new Dictionary<string, string>
             {
                 {"cmd", "mapPositionData"},

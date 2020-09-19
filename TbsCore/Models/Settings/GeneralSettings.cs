@@ -15,7 +15,7 @@ namespace TravBotSharp.Files.Models.Settings
             this.Time = new TimeSettings();
             this.Time.Init();
             this.Timing = new TimingData();
-            this.Localization = new Dictionary<BuildingEnum, string>();
+            this.Localization = new Dictionary<string, BuildingEnum>();
         }
         public bool AutoActivateProductionBoost { get; set; }
 
@@ -64,6 +64,6 @@ namespace TravBotSharp.Files.Models.Settings
         /// <summary>
         /// Localization strings
         /// </summary>
-        public Dictionary<BuildingEnum, string> Localization { get; set; }
+        public Dictionary<string, BuildingEnum> Localization { get; set; }
     }
 }

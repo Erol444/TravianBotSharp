@@ -80,6 +80,8 @@ namespace TravBotSharp.Files.Helpers
 
             var maxBuildings = 1;
             if (acc.AccInfo.PlusAccount) maxBuildings++;
+            if (acc.AccInfo.Tribe == Classificator.TribeEnum.Romans) maxBuildings++;
+
             if (lastCB != null && lastCB.Duration > nextExecution && vill.Build.CurrentlyBuilding.Count >= maxBuildings) nextExecution = lastCB.Duration;
 
             var building = new UpgradeBuilding()

@@ -291,7 +291,7 @@ namespace TravBotSharp.Files.Helpers
         private static void UpdateCurrentlyBuilding(Account acc, Village vill)
         {
             vill.Build.CurrentlyBuilding.Clear();
-            var currentlyb = InfrastructureParser.CurrentlyBuilding(acc.Wb.Html);
+            var currentlyb = InfrastructureParser.CurrentlyBuilding(acc.Wb.Html, acc);
             if (currentlyb != null)
                 foreach (var b in currentlyb) vill.Build.CurrentlyBuilding.Add(b);
         }

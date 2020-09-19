@@ -1,5 +1,6 @@
 ﻿using RestSharp;
 using System;
+using System.Linq;
 using System.Net;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
@@ -77,6 +78,22 @@ namespace TravBotSharp.Files.Helpers
             var rand = new Random();
 
             return new TimeSpan(0, min + rand.Next(-30, 30), 0);
+        }
+
+        /// <summary>
+        /// Gets the TimeSpan when the next normal or high priority task should be executed
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>TimeSpan</returns>
+        public static TimeSpan NextNormalOrHighPrioTask(Account acc)
+        {
+            var firstTask = acc.Tasks.FirstOrDefault(x =>
+                x.Priority == Tasks.BotTask.TaskPriority.Medium ||
+                x.Priority == Tasks.BotTask.TaskPriority.High
+            );
+            if (firstTask == null) return TimeSpan.MaxValue;
+
+            return (firstTask.ExecuteAt - DateTime.Now);
         }
     }
 }
