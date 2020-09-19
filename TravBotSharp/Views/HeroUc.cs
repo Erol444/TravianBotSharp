@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Serilog.Formatting.Json;
+using System;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -38,6 +39,45 @@ namespace TravBotSharp.Views
             {
                 SupplyResVillageComboBox.SelectedIndex = 0;
                 SupplyResVillageSelected.Text = "Selected: " + AccountHelper.GetHeroReviveVillage(acc).Name;
+            }
+
+            lastUpdated.Text = "Last updated: " + acc.Settings.Timing.LastHeroRefresh.ToString();
+            if (acc.Hero.Items == null) return;
+
+            heroItemsList.Items.Clear();
+            if (acc.Hero.Items.Count > 0)
+            {
+                foreach (var item in acc.Hero.Items)
+                {
+                    var viewItem = new ListViewItem();
+
+                    var attr = item.Item.ToString().Split('_');
+
+                    viewItem.SubItems[0].Text = attr[0];
+                    viewItem.SubItems.Add(attr[1]);
+                    viewItem.SubItems.Add(attr[2] == "0" ? "" : attr[2]);
+                    viewItem.SubItems.Add(item.Count.ToString());
+
+                    heroItemsList.Items.Add(viewItem);
+                }
+            }
+
+            equiptList.Items.Clear();
+            if (acc.Hero.Equipt == null)
+            {
+                acc.Hero.Equipt = new System.Collections.Generic.Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum>();
+            }
+            foreach (var pair in acc.Hero.Equipt)
+            {
+                var viewItem = new ListViewItem();
+
+                var attr = pair.Value.ToString().Split('_');
+
+                viewItem.SubItems[0].Text = attr[0];
+                viewItem.SubItems.Add(attr[1]);
+                viewItem.SubItems.Add(attr[2] == "0" ? "" : attr[2]);
+
+                equiptList.Items.Add(viewItem);
             }
         }
         public void Init(ControlPanel _main)

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using TbsCore.Models.TroopsModels;
+using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.Settings;
 
 namespace TravBotSharp.Files.Models.AccModels
@@ -12,6 +14,8 @@ namespace TravBotSharp.Files.Models.AccModels
             Settings = new HeroSettings();
             Settings.Init();
             Adventures = new List<Adventure>();
+            Items = new List<HeroItem>();
+            Equipt = new Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum>();
         }
         public List<Adventure> Adventures { get; set; }
         /// <summary>
@@ -27,6 +31,14 @@ namespace TravBotSharp.Files.Models.AccModels
         public int HomeVillageId { get; set; }
         public HeroInfo HeroInfo { get; set; }
         public HeroSettings Settings { get; set; }
+        /// <summary>
+        /// Hero items in the inventory
+        /// </summary>
+        public List<HeroItem> Items { get; set; }
+        /// <summary>
+        /// Items currently equipt
+        /// </summary>
+        public Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum> Equipt { get; set; }
 
         public enum StatusEnum
         {

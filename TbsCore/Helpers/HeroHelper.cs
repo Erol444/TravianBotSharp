@@ -1,18 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Models.ResourceModels;
+using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Helpers
 {
     public static class HeroHelper
     {
-        private static readonly Dictionary<int, string> DomId = new Dictionary<int, string>()
-        {
-            { 0, "attributepower" },
-            { 0, "attributeoffBonus" },
-            { 0, "attributedefBonus" },
-            { 0, "attributeproductionPoints" },
-        };
         /// <summary>
         /// Calculates if there is any adventure in the range of the home village.
         /// </summary>
@@ -24,16 +21,34 @@ namespace TravBotSharp.Files.Helpers
                 MapHelper.CalculateDistance(acc, x.Coordinates, MapHelper.CoordinatesFromKid(acc.Hero.HomeVillageId, acc)) <= acc.Hero.Settings.MaxDistance
             );
         }
-
         /// <summary>
-        /// Gets the html DOM id from the iterator
+        /// Will parse all the useful data from the hero page (/hero.php)
         /// </summary>
-        /// <param name="i">Iterator</param>
-        /// <returns></returns>
-        public static string AttributeDomId(int i)
+        /// <param name="acc">Account</param>
+        public static void ParseHeroPage(Account acc)
         {
-            DomId.TryGetValue(i, out string ret);
-            return ret;
+            acc.Settings.Timing.LastHeroRefresh = DateTime.Now;
+            acc.Hero.HeroInfo = HeroParser.GetHeroInfo(acc.Wb.Html);
+            acc.Hero.Items = HeroParser.GetHeroItems(acc.Wb.Html);
+            acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
+
+            var homeVill = HeroParser.GetHeroVillageId(acc.Wb.Html);
+            if (homeVill != null) acc.Hero.HomeVillageId = homeVill ?? 0;
+        }
+
+        public static Resources GetHeroResources(Account acc)
+        {
+
+            var heroItems = acc.Hero.Items;
+            var res = new Resources()
+            {
+                Wood = heroItems.FirstOrDefault(x => x.Item == Classificator.HeroItemEnum.Others_Wood_0)?.Count ?? 0,
+                Clay = heroItems.FirstOrDefault(x => x.Item == Classificator.HeroItemEnum.Others_Clay_0)?.Count ?? 0,
+                Iron = heroItems.FirstOrDefault(x => x.Item == Classificator.HeroItemEnum.Others_Iron_0)?.Count ?? 0,
+                Crop = heroItems.FirstOrDefault(x => x.Item == Classificator.HeroItemEnum.Others_Crop_0)?.Count ?? 0
+            };
+
+            return res;
         }
     }
 }

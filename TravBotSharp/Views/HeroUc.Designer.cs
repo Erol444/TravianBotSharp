@@ -48,6 +48,18 @@
             this.SupplyResVillageSelected = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.SupplyResVillageComboBox = new System.Windows.Forms.ComboBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.heroItemsList = new System.Windows.Forms.ListView();
+            this.columnHeader18 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader19 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.lastUpdated = new System.Windows.Forms.Label();
+            this.equiptList = new System.Windows.Forms.ListView();
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.minHeroHealthUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.strength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offBonus)).BeginInit();
@@ -111,11 +123,6 @@
             this.strength.Name = "strength";
             this.strength.Size = new System.Drawing.Size(47, 20);
             this.strength.TabIndex = 8;
-            this.strength.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             this.strength.ValueChanged += new System.EventHandler(this.strength_ValueChanged);
             // 
             // label1
@@ -191,11 +198,6 @@
             this.resources.Name = "resources";
             this.resources.Size = new System.Drawing.Size(47, 20);
             this.resources.TabIndex = 15;
-            this.resources.Value = new decimal(new int[] {
-            2,
-            0,
-            0,
-            0});
             this.resources.ValueChanged += new System.EventHandler(this.resources_ValueChanged);
             // 
             // autoSetHeroPoints
@@ -249,7 +251,7 @@
             // 
             // SupplyResourcesButton
             // 
-            this.SupplyResourcesButton.Location = new System.Drawing.Point(358, 205);
+            this.SupplyResourcesButton.Location = new System.Drawing.Point(352, 202);
             this.SupplyResourcesButton.Name = "SupplyResourcesButton";
             this.SupplyResourcesButton.Size = new System.Drawing.Size(71, 23);
             this.SupplyResourcesButton.TabIndex = 119;
@@ -260,7 +262,7 @@
             // SupplyResVillageSelected
             // 
             this.SupplyResVillageSelected.AutoSize = true;
-            this.SupplyResVillageSelected.Location = new System.Drawing.Point(221, 233);
+            this.SupplyResVillageSelected.Location = new System.Drawing.Point(215, 230);
             this.SupplyResVillageSelected.Name = "SupplyResVillageSelected";
             this.SupplyResVillageSelected.Size = new System.Drawing.Size(55, 13);
             this.SupplyResVillageSelected.TabIndex = 118;
@@ -270,7 +272,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(221, 187);
+            this.label17.Location = new System.Drawing.Point(215, 184);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(108, 16);
             this.label17.TabIndex = 117;
@@ -279,15 +281,119 @@
             // SupplyResVillageComboBox
             // 
             this.SupplyResVillageComboBox.FormattingEnabled = true;
-            this.SupplyResVillageComboBox.Location = new System.Drawing.Point(221, 206);
+            this.SupplyResVillageComboBox.Location = new System.Drawing.Point(215, 203);
             this.SupplyResVillageComboBox.Name = "SupplyResVillageComboBox";
             this.SupplyResVillageComboBox.Size = new System.Drawing.Size(130, 21);
             this.SupplyResVillageComboBox.TabIndex = 116;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(499, 14);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(83, 16);
+            this.label6.TabIndex = 120;
+            this.label6.Text = "Hero items";
+            // 
+            // heroItemsList
+            // 
+            this.heroItemsList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader18,
+            this.columnHeader17,
+            this.columnHeader19,
+            this.columnHeader1});
+            this.heroItemsList.FullRowSelect = true;
+            this.heroItemsList.GridLines = true;
+            this.heroItemsList.HideSelection = false;
+            this.heroItemsList.Location = new System.Drawing.Point(502, 38);
+            this.heroItemsList.MultiSelect = false;
+            this.heroItemsList.Name = "heroItemsList";
+            this.heroItemsList.Size = new System.Drawing.Size(278, 399);
+            this.heroItemsList.TabIndex = 143;
+            this.heroItemsList.UseCompatibleStateImageBehavior = false;
+            this.heroItemsList.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader18
+            // 
+            this.columnHeader18.Text = "Category";
+            this.columnHeader18.Width = 75;
+            // 
+            // columnHeader17
+            // 
+            this.columnHeader17.Text = "Item";
+            this.columnHeader17.Width = 82;
+            // 
+            // columnHeader19
+            // 
+            this.columnHeader19.Text = "Tier";
+            this.columnHeader19.Width = 39;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Amount";
+            this.columnHeader1.Width = 71;
+            // 
+            // lastUpdated
+            // 
+            this.lastUpdated.AutoSize = true;
+            this.lastUpdated.Location = new System.Drawing.Point(464, 440);
+            this.lastUpdated.Name = "lastUpdated";
+            this.lastUpdated.Size = new System.Drawing.Size(72, 13);
+            this.lastUpdated.TabIndex = 144;
+            this.lastUpdated.Text = "Last updated:";
+            // 
+            // equiptList
+            // 
+            this.equiptList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4});
+            this.equiptList.FullRowSelect = true;
+            this.equiptList.GridLines = true;
+            this.equiptList.HideSelection = false;
+            this.equiptList.Location = new System.Drawing.Point(288, 287);
+            this.equiptList.MultiSelect = false;
+            this.equiptList.Name = "equiptList";
+            this.equiptList.Size = new System.Drawing.Size(208, 150);
+            this.equiptList.TabIndex = 145;
+            this.equiptList.UseCompatibleStateImageBehavior = false;
+            this.equiptList.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Category";
+            this.columnHeader2.Width = 75;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Item";
+            this.columnHeader3.Width = 82;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Tier";
+            this.columnHeader4.Width = 39;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(285, 268);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(116, 16);
+            this.label7.TabIndex = 146;
+            this.label7.Text = "Currently equipt";
             // 
             // HeroUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.equiptList);
+            this.Controls.Add(this.lastUpdated);
+            this.Controls.Add(this.heroItemsList);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.SupplyResourcesButton);
             this.Controls.Add(this.SupplyResVillageSelected);
             this.Controls.Add(this.label17);
@@ -309,7 +415,7 @@
             this.Controls.Add(this.minHeroHealthUpDown);
             this.Controls.Add(this.checkBoxAutoSendToAdventures);
             this.Name = "HeroUc";
-            this.Size = new System.Drawing.Size(513, 294);
+            this.Size = new System.Drawing.Size(843, 470);
             ((System.ComponentModel.ISupportInitialize)(this.minHeroHealthUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.strength)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.offBonus)).EndInit();
@@ -343,5 +449,17 @@
         private System.Windows.Forms.Label SupplyResVillageSelected;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.ComboBox SupplyResVillageComboBox;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.ListView heroItemsList;
+        private System.Windows.Forms.ColumnHeader columnHeader18;
+        private System.Windows.Forms.ColumnHeader columnHeader17;
+        private System.Windows.Forms.ColumnHeader columnHeader19;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.Label lastUpdated;
+        private System.Windows.Forms.ListView equiptList;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.Label label7;
     }
 }

@@ -1,6 +1,8 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -82,7 +84,7 @@ namespace TravBotSharp.Files.Parsers
                         default: return Hero.StatusEnum.Unknown;
                     }
                 case Classificator.ServerVersionEnum.T4_5:
-                    var heroStatus5 = htmlDoc.DocumentNode.Descendants("div").First(x => x.HasClass("heroStatus")).Descendants().FirstOrDefault(x=>x.Name == "svg");
+                    var heroStatus5 = htmlDoc.DocumentNode.Descendants("div").First(x => x.HasClass("heroStatus")).Descendants().FirstOrDefault(x => x.Name == "svg");
                     if (heroStatus5 == null) return Hero.StatusEnum.Unknown;
                     var str = heroStatus5.GetClasses().FirstOrDefault();
                     if (str == null) return Hero.StatusEnum.Unknown;
@@ -123,11 +125,6 @@ namespace TravBotSharp.Files.Parsers
             }
             return 0;
         }
-        public static bool IsLeveledUp(HtmlDocument htmlDoc)
-        {
-            //htmlDoc.GetElementbyId("sidebarBoxHero").Descendants("div").FirstOrDefault(x=>x.HasClass("sidebarBoxInnerBox")).ChildNodes.FirstOrDefault(x=>x.Name == "div").
-            return false;
-        }
 
         public static int? GetHeroVillageId(HtmlDocument htmlDoc)
         {
@@ -150,6 +147,79 @@ namespace TravBotSharp.Files.Parsers
         public static TimeSpan GetHeroArrival(HtmlDocument htmlDoc)
         {
             return TimeParser.ParseTimer(htmlDoc.GetElementbyId("tileDetails"));
+        }
+
+        public static List<HeroItem> GetHeroItems(HtmlDocument html)
+        {
+            List<HeroItem> heroItems = new List<HeroItem>();
+            var inventory = html.GetElementbyId("itemsToSale");
+
+            foreach (var itemSlot in inventory.ChildNodes)
+            {
+                var item = itemSlot.ChildNodes.FirstOrDefault(x => x.Id.StartsWith("item_"));
+                if (item == null) continue;
+
+                (var heroItemEnum, int amount) = ParseItemNode(item);
+                if (heroItemEnum == null) continue;
+
+                var heroItem = new HeroItem
+                {
+                    Item = heroItemEnum ?? Classificator.HeroItemEnum.None_None_0,
+                    Count = amount
+                };
+
+                heroItems.Add(heroItem);
+            }
+            return heroItems;
+        }
+
+        private static readonly Dictionary<Classificator.HeroItemType, string> HeroTypeIds = new Dictionary<Classificator.HeroItemType, string>()
+        {
+            { Classificator.HeroItemType.Helmet, "helmet" },
+            { Classificator.HeroItemType.Left, "leftHand" },
+            { Classificator.HeroItemType.Weapon, "rightHand" },
+            { Classificator.HeroItemType.Armor, "body" },
+            { Classificator.HeroItemType.Horse, "horse" },
+            { Classificator.HeroItemType.Boots, "shoes" },
+            { Classificator.HeroItemType.Others, "bag" }
+        };
+        /// <summary>
+        /// Parses what items is hero currently equipt with
+        /// </summary>
+        /// <param name="html">Html</param>
+        /// <returns>Equipt items</returns>
+        public static Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum> GetHeroEquipment(HtmlDocument html)
+        {
+            var ret = new Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum>();
+
+            foreach (var pair in HeroTypeIds)
+            {
+                var item = html.GetElementbyId(pair.Value).ChildNodes.FirstOrDefault(x => x.HasClass("item"));
+                if (item == null) continue;
+
+                (Classificator.HeroItemEnum? heroItemEnum, int amount) = ParseItemNode(item);
+                if (heroItemEnum == null) continue;
+
+                var itemEnum = heroItemEnum ?? Classificator.HeroItemEnum.None_None_0;
+                ret.Add(pair.Key, itemEnum);
+            }
+            return ret;
+        }
+
+        private static (Classificator.HeroItemEnum?, int) ParseItemNode(HtmlNode node)
+        {
+            var itemClass = node.GetClasses().FirstOrDefault(x => x.Contains("_item_"));
+            if (itemClass == null) return (null, 0);
+
+            var itemEnum = (Classificator.HeroItemEnum)Parser.RemoveNonNumeric(itemClass.Split('_').LastOrDefault());
+
+            // Get amount
+            var amount = node.ChildNodes.FirstOrDefault(x => x.HasClass("amount"));
+            if (amount == null) return (itemEnum, 0);
+
+            var amountNum = (int)Parser.RemoveNonNumeric(amount.InnerText);
+
+            return (itemEnum, amountNum);
         }
     }
 }
