@@ -239,8 +239,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     new TrainSettlers()
                     {
                         ExecuteAt = finishBuilding.AddSeconds(5),
-                        Vill = vill,
-                        Priority = TaskPriority.Medium
+                        Vill = vill
                     });
             }
         }

@@ -69,8 +69,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var training = TroopsHelper.TrainingDuration(htmlDoc);
             TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() {
                 ExecuteAt = training.AddSeconds(3),
-                Vill = this.Vill,
-                Priority = TaskPriority.Medium
+                Vill = this.Vill
             });
         }
     }

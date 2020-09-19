@@ -65,11 +65,14 @@ namespace TravBotSharp.Files.Tasks
             Start,
             Executing,
         }
+        /// <summary>
+        /// Priority of the task
+        /// </summary>
         public enum TaskPriority
         {
-            Low = 0,
-            Medium,
-            High
+            Medium = 0, // For normal tasks, not urgent. For example building, adventures, sending resources etc. Selected by default.
+            Low, // For tasks that can wait few hours. For example updating hero items, account info, TOP10, dorf1 (for attacks) etc.
+            High // Time-critical tasks, for example sending catapult waves, sending deff troops - tasks that require to-second precision.
         }
         public string ErrorMessage { get; set; }
     }
