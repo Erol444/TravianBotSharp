@@ -163,5 +163,17 @@ namespace TravBotSharp.Files.Parsers
             var troopNum = Parser.RemoveNonNumeric(img.GetClasses().First(x => x != "unit"));
             return (Classificator.TroopsEnum)troopNum;
         }
+
+        /// <summary>
+        /// Parses available/present troops of this kind.
+        /// </summary>
+        /// <param name="node">Details node of the troop</param>
+        /// <returns>Number of troops available</returns>
+        public static long ParseAvailable(HtmlNode node)
+        {
+            var info = node.Descendants("span").FirstOrDefault(x => x.HasClass("furtherInfo"));
+            if (info == null) return 0;
+            return Parser.RemoveNonNumeric(info.InnerText);
+        }
     }
 }

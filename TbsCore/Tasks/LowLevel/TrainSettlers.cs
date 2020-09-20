@@ -24,33 +24,46 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?s=1&id={building.Id}");
 
-            var cost = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
-            if (cost == null)
+            var settler = TroopsHelper.TribeSettler(acc.AccInfo.Tribe);
+            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settler));
+
+            if (troopNode == null)
             {
-                this.ErrorMessage = "Could not train settlers. Will retry in 5min";
-                this.NextExecute = DateTime.Now.AddMinutes(5); //retry in 5min
+                // No settler can be trained.
+                SendSettlersTask(acc);
                 return TaskRes.Executed;
             }
+            while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
+            //var inputName = troopNode.Descendants("input").FirstOrDefault().GetAttributeValue("name", "");
+
+            var maxNum = Parser.RemoveNonNumeric(troopNode.ChildNodes.First(x => x.Name == "a").InnerText);
+            var available = TroopsParser.ParseAvailable(troopNode);
+
+            var cost = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
 
             var resources = ResourceParser.GetResourceCost(cost);
             var enoughResAt = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, resources);
             if (enoughResAt <= DateTime.Now.AddMilliseconds(1)) //we have enough res, create new settler!
             {
-                wb.ExecuteScript($"document.getElementsByName('t10')[0].value='1'");
+                wb.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
                 await Task.Delay(AccountHelper.Delay());
-                wb.ExecuteScript($"document.getElementById('s1').click()"); //Train settler
-                Vill.Troops.Settlers++;
+                // Click Train button
+                await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, "document.getElementById('s1').click()");
+                Vill.Troops.Settlers = (int)available + (int)maxNum;
+
+                var training = TroopsHelper.TrainingDuration(acc.Wb.Html);
+                if (training < DateTime.Now) training = DateTime.Now;
+
                 if (Vill.Troops.Settlers < 3)
                 {
                     //In 1 minute, do the same task (to get total of 3 settlers)
-                    this.NextExecute = DateTime.Now.AddSeconds(1);
+                    this.NextExecute = training.AddSeconds(3);
                 }
                 else
                 {
                     if (acc.NewVillages.AutoSettleNewVillages)
                     {
-                        //parse in training table
-                        this.PostTaskCheck.Add(NewVillage);
+                        SendSettlersTask(acc);
                     }
                 }
                 return TaskRes.Executed;
@@ -62,12 +75,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
         }
-        public void NewVillage(HtmlDocument htmlDoc, Account acc)
+        private void SendSettlersTask(Account acc)
         {
-            //TODO: parse when the 3rd settler will be trained.
-            var training = TroopsHelper.TrainingDuration(htmlDoc);
-            TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() {
-                ExecuteAt = training.AddSeconds(3),
+            var training = TroopsHelper.TrainingDuration(acc.Wb.Html);
+            if (training < DateTime.Now) training = DateTime.Now;
+            TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers()
+            {
+                ExecuteAt = training.AddSeconds(5),
                 Vill = this.Vill
             });
         }

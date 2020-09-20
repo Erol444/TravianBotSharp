@@ -33,6 +33,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await UpdateTroopsResearchedAndLevels(acc);
             await UpdateTroopsTraining(acc);
 
+            var firstTroop = TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe);
+            Vill.Troops.TroopToTrain = firstTroop;
+            Vill.Troops.Researched.Add(firstTroop);
+
             return TaskRes.Executed;
         }
 

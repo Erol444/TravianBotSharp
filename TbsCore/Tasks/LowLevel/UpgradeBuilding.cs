@@ -55,6 +55,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // names, and JS hides the title of the buildings on selenium browser.
 
                 acc.Wb.Html = await HttpHelper.SendGetReq(acc, navigateTo);
+                await Task.Delay(AccountHelper.Delay());
 
                 if (navigateTo.EndsWith("dorf1.php")) TaskExecutor.UpdateDorf1Info(acc);
                 else TaskExecutor.UpdateDorf2Info(acc); // dorf2 ok

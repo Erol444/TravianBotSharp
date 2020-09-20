@@ -511,6 +511,19 @@ namespace TravBotSharp.Files.Helpers
             }
         }
 
+        public static Classificator.TroopsEnum TribeSettler(Classificator.TribeEnum? tribe)
+        {
+            switch (tribe)
+            {
+                case TribeEnum.Romans: return Classificator.TroopsEnum.RomanSettler;
+                case TribeEnum.Teutons: return Classificator.TroopsEnum.TeutonSettler;
+                case TribeEnum.Gauls: return Classificator.TroopsEnum.GaulSettler;
+                case TribeEnum.Egyptians: return Classificator.TroopsEnum.EgyptianSettler;
+                case TribeEnum.Huns: return Classificator.TroopsEnum.HunSettler;
+                default: return TroopsEnum.None;
+            }
+        }
+
         public static bool IsTroopDefensive(Classificator.TroopsEnum troop)
         {
             switch (troop)

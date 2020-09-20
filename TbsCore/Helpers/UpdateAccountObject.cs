@@ -63,11 +63,14 @@ namespace TravBotSharp.Files.Helpers
             acc.Villages.Add(vill);
 
             // Update the village
-            UpdateNewVillage(acc, vill);
+            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateNewVillage()
+            {
+                ExecuteAt = DateTime.Now,
+                Vill = vill
+            });
 
             DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);
             vill.Build.AutoBuildResourceBonusBuildings = true;
-            vill.Troops.TroopToTrain = (Classificator.TroopsEnum)((int)(acc.AccInfo.Tribe ?? Classificator.TribeEnum.Any) * 10); //change to acc wide setting
 
             // Copy default settings to the new village. TODO: use automapper for this.
             var defaultSettings = acc.NewVillages.DefaultSettings;
@@ -105,26 +108,6 @@ namespace TravBotSharp.Files.Helpers
                         ChangeList = new List<(int, string)> { (vill.Id, newVillageFromList.Name) }
                     });
             }
-        }
-
-        /// <summary>
-        /// Updates a village
-        /// </summary>
-        /// <param name="acc">Account</param>
-        /// <param name="vill">Village to update</param>
-        public static void UpdateNewVillage(Account acc, Village vill)
-        {
-            //If plus account just look at troop level in statistics
-            //dorf1, dorf2, smithy (if village has it, otherwise (if exists) barracks,stable,workshop
-
-            // Dorf1 and Dorf2 will get updated in ImportBuildingTasks BotTask (and get building tasks imported after the update)
-            //TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = DateTime.Now, Vill = vill });
-            //TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = vill });
-
-            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateNewVillage() {
-                ExecuteAt = DateTime.Now,
-                Vill = vill
-            });
         }
     }
 }

@@ -16,7 +16,6 @@ namespace TravBotSharp.Files.Models.TroopsModels
             CurrentlyTraining = new CurrentlyTraining();
             CurrentlyTraining.Init();
             Researched = new List<Classificator.TroopsEnum>();
-            Researched.Add(TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe));
 
             Levels = new List<TroopLevel>();
             ToResearch = new List<Classificator.TroopsEnum>();
