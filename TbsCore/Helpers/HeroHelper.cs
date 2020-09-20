@@ -40,8 +40,7 @@ namespace TravBotSharp.Files.Helpers
                 if(acc.Hero.Equipt.TryGetValue(category, out var item))
                 {
                     // Hero already has an equipt item for this category
-                    (var itemCategory, var itemName, var itemTier) = ParseHeroItem(item);
-                    currentTier = itemTier;
+                    currentTier = GetHeroItemTier(item);
                 }
 
                 var equipWith = acc.Hero.Items
@@ -52,12 +51,11 @@ namespace TravBotSharp.Files.Helpers
                     })
                     .OrderBy(x => // Order by tier
                     {
-                        (var itemCategory, var itemName, var itemTier) = ParseHeroItem(x.Item);
-                        return itemTier;
+                        return GetHeroItemTier(x.Item);
                     })
                     .LastOrDefault();
 
-                if(equipWith != null)
+                if(equipWith != null && GetHeroItemTier(equipWith.Item) > currentTier)
                 {
                     TaskExecutor.AddTask(acc, new HeroEquip()
                     {
@@ -85,18 +83,22 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
+        /// Gets the tier of the hero item
+        /// </summary>
+        /// <param name="item">HeroItem</param>
+        /// <returns>Tier</returns>
+        public static int GetHeroItemTier(Classificator.HeroItemEnum item)
+        {
+            (var newCategory, var itemName, var itemTier) = ParseHeroItem(item);
+            return itemTier;
+        }
+
+        /// <summary>
         /// Will parse all the useful data from the hero page (/hero.php)
         /// </summary>
         /// <param name="acc">Account</param>
         public static void ParseHeroPage(Account acc)
         {
-            //if(acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_4
-            //    && HeroParser.AttributesHidden(acc.Wb.Html)
-            //    )
-            //{
-            //    // If T4.4, we need to open attributes dropdown menu
-            //    await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('openedClosedSwitch')[0].click();");
-            //}
             acc.Settings.Timing.LastHeroRefresh = DateTime.Now;
             acc.Hero.HeroInfo = HeroParser.GetHeroInfo(acc.Wb.Html);
             acc.Hero.Items = HeroParser.GetHeroItems(acc.Wb.Html);

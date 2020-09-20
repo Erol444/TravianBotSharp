@@ -21,6 +21,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 HeroHelper.AutoEquipHero(acc);
             }
 
+            TaskExecutor.RemoveSameTasksForVillage(acc, Vill, typeof(HeroUpdateInfo), this);
+
+            if (acc.Hero.Settings.AutoRefreshInfo)
+            {
+                var ran = new Random();
+                this.NextExecute = DateTime.Now.AddMinutes(ran.Next(40, 80));
+            }
+
             return TaskRes.Executed;
         }
     }
