@@ -259,31 +259,12 @@ namespace TravBotSharp.Files.Helpers
                 {
                     AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                 }
-
-                RefreshHeroData(acc);
-
                 return true;
-
             }
             catch (Exception e)
             {
                 Console.WriteLine("Error in PreTask " + e.Message + "\n\nStack Trace: " + e.StackTrace + "\n-----------------------");
                 return false;
-            }
-        }
-        /// <summary>
-        /// For refreshing
-        /// </summary>
-        /// <param name="acc"></param>
-        private static void RefreshHeroData(Account acc)
-        {
-            if (acc.Hero.Settings.AutoRefreshInfo && acc.Settings.Timing.LastHeroRefresh + TimeSpan.FromMinutes(60) < DateTime.Now)
-            {
-                TaskExecutor.AddTaskIfNotExists(acc, new HeroUpdateInfo()
-                {
-                    ExecuteAt = DateTime.Now,
-                    Priority = TaskPriority.Low
-                });
             }
         }
 

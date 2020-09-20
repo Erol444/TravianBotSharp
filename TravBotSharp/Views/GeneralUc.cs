@@ -48,6 +48,7 @@ namespace TravBotSharp.Views
             FillForUpDown.Value = acc.Settings.FillFor;
 
             autoReadIGMs.Checked = acc.Settings.AutoReadIgms;
+            autoRandomTasks.Checked = acc.Settings.AutoRandomTasks;
 
             disableImagesCheckbox.Checked = acc.Settings.DisableImages;
             headlessCheckbox.Checked = acc.Settings.HeadlessMode;
@@ -269,6 +270,11 @@ namespace TravBotSharp.Views
         private void reopenChrome_CheckedChanged(object sender, EventArgs e)
         {
             getSelectedAcc().Settings.AutoCloseDriver = reopenChrome.Checked;
+        }
+
+        private void autoRandomTasks_CheckedChanged(object sender, EventArgs e)
+        {
+            getSelectedAcc().Settings.AutoRandomTasks = autoRandomTasks.Checked;
         }
     }
 }

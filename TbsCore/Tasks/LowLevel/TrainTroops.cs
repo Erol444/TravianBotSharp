@@ -59,6 +59,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             (TimeSpan dur, Resources cost) = TroopsParser.GetTrainCost(acc.Wb.Html, this.Troop);
 
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)Troop));
+
+            if(troopNode == null)
+            {
+                //TaskExecutor.AddTaskIfNotExistInVillage(acc, Vill)
+                return TaskRes.Executed;
+            }
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
             var inputName = troopNode.Descendants("input").FirstOrDefault().GetAttributeValue("name", "");
 

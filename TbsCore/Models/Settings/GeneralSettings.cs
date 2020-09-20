@@ -65,5 +65,9 @@ namespace TravBotSharp.Files.Models.Settings
         /// Localization strings
         /// </summary>
         public Dictionary<string, BuildingEnum> Localization { get; set; }
+        /// <summary>
+        /// Whether to automatically add random tasks when there is no other task to be executed
+        /// </summary>
+        public bool AutoRandomTasks { get; set; }
     }
 }

@@ -77,6 +77,10 @@
             this.label2 = new System.Windows.Forms.Label();
             this.reopenChrome = new System.Windows.Forms.CheckBox();
             this.label19 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.autoRandomTasks = new System.Windows.Forms.CheckBox();
+            this.label20 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fillInAdvanceUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
@@ -86,6 +90,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.sleepMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sleepMin)).BeginInit();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // button5
@@ -401,7 +407,7 @@
             // 
             this.autoReadIGMs.AutoSize = true;
             this.autoReadIGMs.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.autoReadIGMs.Location = new System.Drawing.Point(681, 353);
+            this.autoReadIGMs.Location = new System.Drawing.Point(13, 11);
             this.autoReadIGMs.Name = "autoReadIGMs";
             this.autoReadIGMs.Size = new System.Drawing.Size(125, 21);
             this.autoReadIGMs.TabIndex = 161;
@@ -423,7 +429,7 @@
             // 
             this.headlessCheckbox.AutoSize = true;
             this.headlessCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.headlessCheckbox.Location = new System.Drawing.Point(681, 416);
+            this.headlessCheckbox.Location = new System.Drawing.Point(14, 34);
             this.headlessCheckbox.Name = "headlessCheckbox";
             this.headlessCheckbox.Size = new System.Drawing.Size(176, 21);
             this.headlessCheckbox.TabIndex = 163;
@@ -435,7 +441,7 @@
             // 
             this.disableImagesCheckbox.AutoSize = true;
             this.disableImagesCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.disableImagesCheckbox.Location = new System.Drawing.Point(681, 439);
+            this.disableImagesCheckbox.Location = new System.Drawing.Point(14, 57);
             this.disableImagesCheckbox.Name = "disableImagesCheckbox";
             this.disableImagesCheckbox.Size = new System.Drawing.Size(174, 21);
             this.disableImagesCheckbox.TabIndex = 164;
@@ -446,10 +452,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(679, 395);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(11, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(201, 17);
+            this.label1.Size = new System.Drawing.Size(220, 16);
             this.label1.TabIndex = 165;
             this.label1.Text = "For decreased memory usage:";
             // 
@@ -598,7 +604,7 @@
             // 
             this.reopenChrome.AutoSize = true;
             this.reopenChrome.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.reopenChrome.Location = new System.Drawing.Point(681, 462);
+            this.reopenChrome.Location = new System.Drawing.Point(14, 80);
             this.reopenChrome.Name = "reopenChrome";
             this.reopenChrome.Size = new System.Drawing.Size(199, 21);
             this.reopenChrome.TabIndex = 170;
@@ -609,25 +615,67 @@
             // label19
             // 
             this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(678, 486);
+            this.label19.Location = new System.Drawing.Point(11, 104);
             this.label19.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(153, 13);
             this.label19.TabIndex = 171;
             this.label19.Text = "* if there is no task in next 5min";
             // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.Controls.Add(this.reopenChrome);
+            this.panel2.Controls.Add(this.label19);
+            this.panel2.Controls.Add(this.headlessCheckbox);
+            this.panel2.Controls.Add(this.disableImagesCheckbox);
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Location = new System.Drawing.Point(635, 373);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(243, 131);
+            this.panel2.TabIndex = 172;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.label20);
+            this.panel3.Controls.Add(this.autoRandomTasks);
+            this.panel3.Controls.Add(this.autoReadIGMs);
+            this.panel3.Location = new System.Drawing.Point(635, 259);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(217, 100);
+            this.panel3.TabIndex = 173;
+            // 
+            // autoRandomTasks
+            // 
+            this.autoRandomTasks.AutoSize = true;
+            this.autoRandomTasks.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.autoRandomTasks.Location = new System.Drawing.Point(13, 52);
+            this.autoRandomTasks.Name = "autoRandomTasks";
+            this.autoRandomTasks.Size = new System.Drawing.Size(146, 21);
+            this.autoRandomTasks.TabIndex = 162;
+            this.autoRandomTasks.Text = "Add random tasks*";
+            this.autoRandomTasks.UseVisualStyleBackColor = true;
+            this.autoRandomTasks.CheckedChanged += new System.EventHandler(this.autoRandomTasks_CheckedChanged);
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(10, 70);
+            this.label20.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(195, 13);
+            this.label20.TabIndex = 174;
+            this.label20.Text = "* if there is no other task to be executed";
+            // 
             // GeneralUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label19);
-            this.Controls.Add(this.reopenChrome);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.disableImagesCheckbox);
-            this.Controls.Add(this.headlessCheckbox);
             this.Controls.Add(this.button6);
-            this.Controls.Add(this.autoReadIGMs);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.FillForUpDown);
             this.Controls.Add(this.label12);
@@ -670,6 +718,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.sleepMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.workMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sleepMin)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -725,5 +777,9 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.CheckBox reopenChrome;
         private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.CheckBox autoRandomTasks;
     }
 }

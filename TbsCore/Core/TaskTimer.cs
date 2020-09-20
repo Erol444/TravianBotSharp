@@ -47,16 +47,16 @@ namespace TravBotSharp.Files.Models.AccModels
         private async void NewTick()
         {
             // Dirty hack. TODO fix the code, so building/troops filling tasks won't fail by themselves
-            restartTasksCounter++;
-            if (restartTasksCounter > 7200)
-            {
-                restartTasksCounter = 0;
-                foreach (var vill in acc.Villages)
-                {
-                    if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
-                    BuildingHelper.ReStartBuilding(acc, vill);
-                }
-            }
+            //restartTasksCounter++;
+            //if (restartTasksCounter > 7200)
+            //{
+            //    restartTasksCounter = 0;
+            //    foreach (var vill in acc.Villages)
+            //    {
+            //        if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
+            //        BuildingHelper.ReStartBuilding(acc, vill);
+            //    }
+            //}
 
             if (acc.Tasks.Count == 0) return; //No tasks
 
@@ -67,16 +67,8 @@ namespace TravBotSharp.Files.Models.AccModels
             var tasks = acc.Tasks.Where(x => x.ExecuteAt <= DateTime.Now).ToList();
             if (tasks.Count == 0)
             {
-                // Auto close chrome and reopen when there is a high/normal prio BotTask
-                if (acc.Settings.AutoCloseDriver &&
-                    TimeHelper.NextNormalOrHighPrioTask(acc) > TimeSpan.FromMinutes(5))
-                {
-                    TaskExecutor.AddTask(acc, new ReopenDriver() {
-                        ExecuteAt = DateTime.Now,
-                        Priority = TaskPriority.Low
-                    });
-                }
-                return; // No tasks yet
+                NoTasks(acc);
+                return;
             }
 
             BotTask firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
@@ -95,6 +87,33 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
             }
             _ = TaskExecutor.Execute(acc, firstTask);
+        }
+
+        private void NoTasks(Account acc)
+        {
+            BotTask task = null;
+            // Auto close chrome and reopen when there is a high/normal prio BotTask
+            if (acc.Settings.AutoCloseDriver &&
+                TimeHelper.NextNormalOrHighPrioTask(acc) > TimeSpan.FromMinutes(5))
+            {
+                task = new ReopenDriver();
+            }
+            else if (acc.Hero.Settings.AutoRefreshInfo && acc.Settings.Timing.LastHeroRefresh + TimeSpan.FromMinutes(30) < DateTime.Now)
+            {
+                task = new HeroUpdateInfo();
+            }
+            else if (acc.Settings.AutoRandomTasks)
+            {
+                task = new RandomTask();
+            }
+
+            if (task != null)
+            {
+                task.ExecuteAt = DateTime.Now;
+                task.Priority = TaskPriority.Low;
+                TaskExecutor.AddTask(acc, task);
+            }
+
         }
     }
 }
