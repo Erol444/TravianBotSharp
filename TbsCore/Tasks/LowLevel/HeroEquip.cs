@@ -36,12 +36,23 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             string script = "var items = document.getElementById('itemsToSale');";
-            script += $"items.querySelector('div[class$=\"_{(int)Item}\"]').click();";
+
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case ServerVersionEnum.T4_5:
+                    script += $"items.querySelector('div[class$=\"_{(int)Item}\"]').click();";
+                    break;
+                case ServerVersionEnum.T4_4:
+                    script += $"items.querySelector('div[class$=\"_{(int)Item} \"]').click();";
+                    break;
+
+            }
+
 
             await DriverHelper.ExecuteScript(acc, script);
 
             // No amount specified, meaning we have already equipt the item
-            if (Amount == -1) return Done(acc);
+            if (Amount == -1) return await Done(acc);
 
             try
             {
@@ -55,7 +66,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             script = "document.querySelector('div[class=\"buttons\"]>button').click();";
             await DriverHelper.ExecuteScript(acc, script);
 
-            return Done(acc);
+            return await Done(acc);
         }
 
         /// <summary>
@@ -64,7 +75,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// <param name="acc">Account</param>
         /// <returns>TaskRes</returns>
 
-        private TaskRes Done(Account acc)
+        private async Task<TaskRes> Done(Account acc)
         {
             HeroHelper.ParseHeroPage(acc);
             return TaskRes.Executed;

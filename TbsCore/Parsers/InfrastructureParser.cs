@@ -54,8 +54,20 @@ namespace TravBotSharp.Files.Parsers
             {
                 var duration = TimeParser.ParseTimer(row);
                 var nameArr = row.Descendants("div").FirstOrDefault(x => x.HasClass("name")).InnerText.Split('\t'); //[1].Trim();
+
+                var levelStr = row.Descendants("span").FirstOrDefault(x => x.HasClass("lvl")).InnerText;
                 string name = nameArr.FirstOrDefault(x => !string.IsNullOrEmpty(x.Replace("\r", "").Replace("\n", "")));
-                var lvl = Parser.RemoveNonNumeric(row.Descendants("span").FirstOrDefault(x => x.HasClass("lvl")).InnerText);
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case Classificator.ServerVersionEnum.T4_5:
+
+                        break;
+                    case Classificator.ServerVersionEnum.T4_4:
+                        name = name.Replace(levelStr, "");
+                        break;
+
+                }
+                var lvl = Parser.RemoveNonNumeric(levelStr);
 
                 ret.Add(new BuildingCurrently()
                 {

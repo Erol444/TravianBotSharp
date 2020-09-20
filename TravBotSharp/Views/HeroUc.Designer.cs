@@ -64,6 +64,7 @@
             this.autoEquip = new System.Windows.Forms.CheckBox();
             this.autoRes = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.minHeroHealthUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.strength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offBonus)).BeginInit();
@@ -440,10 +441,21 @@
             this.panel1.Size = new System.Drawing.Size(162, 149);
             this.panel1.TabIndex = 150;
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(293, 179);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(136, 23);
+            this.button1.TabIndex = 151;
+            this.button1.Text = "Refresh Hero info";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // HeroUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.autoRes);
             this.Controls.Add(this.autoEquip);
@@ -517,5 +529,6 @@
         private System.Windows.Forms.CheckBox autoEquip;
         private System.Windows.Forms.CheckBox autoRes;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button button1;
     }
 }

@@ -169,7 +169,7 @@ namespace TravBotSharp.Files.Helpers
                     TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady });
                 }
                 // Beginner Quests
-                acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html);
+                acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html, acc.AccInfo.ServerVersion);
                 var claimQuest = acc.Quests?.Quests?.FirstOrDefault(x => x.finished);
                 if (claimQuest != null
                     && acc.Quests.ClaimBeginnerQuests
@@ -183,7 +183,9 @@ namespace TravBotSharp.Files.Helpers
                     });
                 }
                 // Daily quest
-                if (RightBarParser.CheckDailyQuest(html) && acc.Quests.ClaimDailyQuests)
+                if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
+                    RightBarParser.CheckDailyQuest(html) &&
+                    acc.Quests.ClaimDailyQuests)
                 {
                     TaskExecutor.AddTaskIfNotExists(acc, new ClaimDailyTask()
                     {
@@ -253,7 +255,7 @@ namespace TravBotSharp.Files.Helpers
                 {
                     AddTaskIfNotExists(acc, new ReviveHero() { ExecuteAt = DateTime.Now.AddSeconds(5), Vill = AccountHelper.GetHeroReviveVillage(acc) });
                 }
-                if (HeroParser.LeveledUp(html) && acc.Hero.Settings.AutoSetPoints)
+                if (HeroParser.LeveledUp(html, acc.AccInfo.ServerVersion) && acc.Hero.Settings.AutoSetPoints)
                 {
                     AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                 }

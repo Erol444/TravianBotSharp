@@ -17,9 +17,13 @@ namespace TbsCore.Helpers
         /// <returns>/</returns>
         public static async Task ExecuteScript(Account acc, string script)
         {
-            acc.Wb.Driver.ExecuteScript(script);
-            await Task.Delay(AccountHelper.Delay());
-            acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
+            try
+            {
+                acc.Wb.Driver.ExecuteScript(script);
+                await Task.Delay(AccountHelper.Delay());
+                acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
+            }
+            catch(Exception e) { }
         }
     }
 }

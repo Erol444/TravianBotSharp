@@ -3,6 +3,7 @@ using System;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Views
 {
@@ -196,6 +197,12 @@ namespace TravBotSharp.Views
         {
             acc.Hero.Settings.AutoRefreshInfo = true;
             refreshInfo.Checked = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var acc = getSelectedAcc();
+            TaskExecutor.AddTask(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
         }
     }
 }

@@ -15,12 +15,22 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var questId = QuestId(QuestToClaim);
-            var script = "var quests = document.getElementById('mentorTaskList').children;";
-            script += $"for(var i=0;i<quests.length;i++) if(quests[i].getAttribute('data-questid')=='{questId}') quests[i].click();";
+            var script = $"document.getElementById('mentorTaskList').querySelector('[data-questid=\"{questId}\"]').click();";
             await DriverHelper.ExecuteScript(acc, script);
 
-            var collectButton = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("questid", "") == questId);
-            acc.Wb.Driver.ExecuteScript($"document.getElementById('{collectButton.Id}').click();");
+            string buttonId = "";
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_5:
+                buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("questid", "") == questId).Id;
+                    break;
+
+                case Classificator.ServerVersionEnum.T4_4:
+                buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("questButtonNext"))?.Id;
+                    break;
+            }
+
+            acc.Wb.Driver.ExecuteScript($"document.getElementById('{buttonId}').click();");
             return TaskRes.Executed;
         }
 

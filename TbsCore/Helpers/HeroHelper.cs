@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
@@ -88,6 +90,13 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc">Account</param>
         public static void ParseHeroPage(Account acc)
         {
+            //if(acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_4
+            //    && HeroParser.AttributesHidden(acc.Wb.Html)
+            //    )
+            //{
+            //    // If T4.4, we need to open attributes dropdown menu
+            //    await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('openedClosedSwitch')[0].click();");
+            //}
             acc.Settings.Timing.LastHeroRefresh = DateTime.Now;
             acc.Hero.HeroInfo = HeroParser.GetHeroInfo(acc.Wb.Html);
             acc.Hero.Items = HeroParser.GetHeroItems(acc.Wb.Html);

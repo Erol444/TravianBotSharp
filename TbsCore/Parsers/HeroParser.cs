@@ -10,37 +10,86 @@ namespace TravBotSharp.Files.Parsers
 {
     public static class HeroParser
     {
+        private static readonly string[] domId = new string[] {
+            "attributepower",
+            "attributeoffBonus",
+            "attributedefBonus",
+            "attributeproductionPoints"
+        };
+
+        public static bool AttributesHidden(HtmlDocument htmlDoc)
+        {
+            var attributes = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroPropertiesContent"));
+            if (attributes?.GetClasses()?.FirstOrDefault(x => x == "hide") == null) return false;
+            else return true;
+        }
         public static HeroInfo GetHeroInfo(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
+            var content = htmlDoc.GetElementbyId("content");
+            var health = content.Descendants("tr")
+                .FirstOrDefault(x => x.HasClass("health"))
+                .Descendants("span")
+                .FirstOrDefault(x => x.HasClass("value"))
+                .InnerText;
 
-            var values = htmlDoc.DocumentNode.Descendants().Where(x => x.Attributes.Any(a => a.Value == "element current powervalue"));
-            var attributes = htmlDoc.DocumentNode.Descendants().Where(x => x.Attributes.Any(a => a.Value == "element current powervalue tooltip"));
-            var lvl = htmlDoc.DocumentNode.Descendants().Where(x => x.Attributes.Any(a => a.Value == "titleInHeader")).FirstOrDefault();
-            var resSelected = htmlDoc.DocumentNode.Descendants().Where(x => x.Attributes.Any(a => a.Value == "resourcePick")).FirstOrDefault();
-            byte resSelectedByte = 255;
-            var production = htmlDoc.DocumentNode.Descendants().Where(x => x.Attributes.Any(a => a.Value == "production tooltip")).FirstOrDefault().ChildNodes[1].ChildNodes[3].InnerText;
+            var experience = content.Descendants("tr")
+                 .FirstOrDefault(x => x.HasClass("experience"))
+                 .Descendants("span")
+                 .FirstOrDefault(x => x.HasClass("value"))
+                 .InnerText;
 
-            for (byte i = 0; i < 5; i++)
+            string[] heroPoints = new string[4];
+            for (int i = 0; i < 4; i++)
             {
-                var selected = resSelected.ChildNodes[(i * 2) + 1].ChildNodes[1].ChildNodes[1].Attributes.Where(x => x.Value == "checked").FirstOrDefault();
-                if (selected != null) resSelectedByte = i;
+                heroPoints[i] = htmlDoc.GetElementbyId(domId[i])
+                    .ChildNodes
+                    .FirstOrDefault(x => x.HasClass("points"))
+                    .InnerText
+                    .Replace("%", "");
             }
 
-            //TODO: check hero items inventory and items on hero
+            var availablePoints = System.Net.WebUtility.HtmlDecode(htmlDoc.GetElementbyId("availablePoints").InnerText);
 
-            return new HeroInfo()
+            var heroLevel = htmlDoc.DocumentNode.Descendants()
+                .FirstOrDefault(x => x.HasClass("titleInHeader"))
+                .InnerText
+                .Split(' ')
+                .Last();
+
+            var production = htmlDoc.DocumentNode.Descendants()
+                .FirstOrDefault(x => x.HasClass("production"))
+                .Descendants("span")
+                .FirstOrDefault(x => x.HasClass("value"))
+                .InnerText;
+
+            var resRadioChecked = htmlDoc.DocumentNode.Descendants("input").FirstOrDefault(x =>
+                x.HasClass("radio") &&
+                x.GetAttributeValue("checked", "") == "checked"
+            );
+            byte resSelectedByte = 0;
+            if (resRadioChecked != null)
             {
-                Health = (int)Parser.ParseNum(values.ElementAt(0).ChildNodes[1].InnerText.Replace("%", "")),
-                Experience = (int)Parser.ParseNum(values.ElementAt(1).ChildNodes[1].InnerText),
-                FightingStrengthPoints = (int)Parser.ParseNum(attributes.ElementAt(0).ChildNodes[1].InnerText.Replace("%", "")),
-                OffBonusPoints = (int)Parser.ParseNum(attributes.ElementAt(1).ChildNodes[1].InnerText.Replace("%", "")),
-                DeffBonusPoints = (int)Parser.ParseNum(attributes.ElementAt(2).ChildNodes[1].InnerText.Replace("%", "")),
-                ResourcesPoints = (int)Parser.ParseNum(attributes.ElementAt(3).ChildNodes[1].InnerText.Replace("%", "")),
-                AvaliblePoints = (int)Parser.ParseNum(htmlDoc.GetElementbyId("availablePoints").InnerText.Split('/')[1]),
-                Level = (int)Parser.ParseNum(lvl.InnerText.Split(' ').Last()),
-                SelectedResource = resSelectedByte,
-                HeroProduction = (int)Parser.ParseNum(production)
-            };
+                resSelectedByte = (byte) Parser.RemoveNonNumeric(resRadioChecked.GetAttributeValue("value", "0"));
+            }
+
+            var heroInfo = new HeroInfo();
+            heroInfo.Health = (int)Parser.ParseNum(health.Replace("%", ""));
+            heroInfo.Experience = (int)Parser.ParseNum(experience);
+            heroInfo.AvaliblePoints = (int)Parser.ParseNum(availablePoints.Split('/').LastOrDefault());
+
+            if(heroInfo.AvaliblePoints == 0)
+            {
+                heroInfo.FightingStrengthPoints = (int)Parser.ParseNum(heroPoints[0]);
+                heroInfo.OffBonusPoints = (int)Parser.ParseNum(heroPoints[1]);
+                heroInfo.DeffBonusPoints = (int)Parser.ParseNum(heroPoints[2]);
+                heroInfo.ResourcesPoints = (int)Parser.ParseNum(heroPoints[3]);
+            }
+
+            heroInfo.Level = (int)Parser.ParseNum(heroLevel);
+            heroInfo.SelectedResource = resSelectedByte;
+            heroInfo.HeroProduction = (int)Parser.RemoveNonNumeric(production);
+
+            return heroInfo;
         }
         /// <summary>
         /// Parses when the hero arrival will be (parsed from /hero.php)
@@ -71,10 +120,16 @@ namespace TravBotSharp.Files.Parsers
                 default: return 0;
             }
         }
-        public static bool LeveledUp(HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static bool LeveledUp(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
-            //<i class="levelUp"></i>
-            return htmlDoc.DocumentNode.Descendants("i").FirstOrDefault(x => x.HasClass("levelUp")) != null;
+            switch (version)
+            {
+                case Classificator.ServerVersionEnum.T4_4:
+                    return htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("levelUp")) != null;
+                case Classificator.ServerVersionEnum.T4_5:
+                    return htmlDoc.DocumentNode.Descendants("i").FirstOrDefault(x => x.HasClass("levelUp")) != null;
+            }
+            return false;
         }
         public static Hero.StatusEnum HeroStatus(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
