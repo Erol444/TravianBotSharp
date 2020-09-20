@@ -62,15 +62,8 @@ namespace TravBotSharp.Files.Helpers
             vill.Init(acc);
             acc.Villages.Add(vill);
 
-            //on new village set the tasks
-            if (string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
-            {
-                DefaultConfigurations.FarmVillagePlan(acc, vill);
-            }
-            else
-            {
-                IoHelperCore.AddBuildTasksFromFile(acc, vill, acc.NewVillages.BuildingTasksLocationNewVillage);
-            }
+            // Update the village
+            UpdateNewVillage(acc, vill);
 
             DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);
             vill.Build.AutoBuildResourceBonusBuildings = true;
@@ -89,9 +82,6 @@ namespace TravBotSharp.Files.Helpers
                 SendRes = defaultSettings.SendRes,
                 GetRes = defaultSettings.GetRes,
             };
-
-            // Update the village
-            UpdateDorfs(acc, vill);
 
             // Change village name
             var newVillageFromList = acc.NewVillages.Locations
@@ -116,44 +106,25 @@ namespace TravBotSharp.Files.Helpers
                     });
             }
         }
-        public static void UpdateDorfs(Account acc, Village vill)
-        {
-            TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = DateTime.Now, Vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = DateTime.Now, Vill = vill });
-        }
 
         /// <summary>
         /// Updates a village
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="vill">Village to update</param>
-        public static void UpdateVillage(Account acc, Village vill)
+        public static void UpdateNewVillage(Account acc, Village vill)
         {
             //If plus account just look at troop level in statistics
             //dorf1, dorf2, smithy (if village has it, otherwise (if exists) barracks,stable,workshop
+
+            // Dorf1 and Dorf2 will get updated in ImportBuildingTasks BotTask (and get building tasks imported after the update)
+            //TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = DateTime.Now, Vill = vill });
+            //TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = vill });
+
+            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateNewVillage() {
+                ExecuteAt = DateTime.Now,
+                Vill = vill
+            });
         }
-
-        /// <summary>
-        /// Updates all villages
-        /// </summary>
-        /// <param name="acc">Account</param>
-        public static void UpdateAllVillages(Account acc)
-        {
-            foreach (var vill in acc.Villages)
-            {
-                UpdateVillage(acc, vill);
-            }
-        }
-
-        /// <summary>
-        /// Updates server speed, map size, profile (rank, pop, hero, quests/tasks
-        /// </summary>
-        /// <param name="acc">Account</param>
-        public static void UpdateAccount(Account acc)
-        {
-
-        }
-
     }
 }

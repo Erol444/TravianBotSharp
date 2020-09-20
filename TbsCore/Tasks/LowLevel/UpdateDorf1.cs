@@ -10,7 +10,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             //remove all same tasks
             TaskExecutor.RemoveSameTasksForVillage(acc, Vill, this.GetType(), this);
 
