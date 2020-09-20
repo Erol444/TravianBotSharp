@@ -32,7 +32,6 @@ namespace TravBotSharp.Files.Parsers
             {
                 Health = (int)Parser.ParseNum(values.ElementAt(0).ChildNodes[1].InnerText.Replace("%", "")),
                 Experience = (int)Parser.ParseNum(values.ElementAt(1).ChildNodes[1].InnerText),
-                LastChecked = DateTime.Now,
                 FightingStrengthPoints = (int)Parser.ParseNum(attributes.ElementAt(0).ChildNodes[1].InnerText.Replace("%", "")),
                 OffBonusPoints = (int)Parser.ParseNum(attributes.ElementAt(1).ChildNodes[1].InnerText.Replace("%", "")),
                 DeffBonusPoints = (int)Parser.ParseNum(attributes.ElementAt(2).ChildNodes[1].InnerText.Replace("%", "")),
@@ -42,6 +41,18 @@ namespace TravBotSharp.Files.Parsers
                 SelectedResource = resSelectedByte,
                 HeroProduction = (int)Parser.ParseNum(production)
             };
+        }
+        /// <summary>
+        /// Parses when the hero arrival will be (parsed from /hero.php)
+        /// </summary>
+        /// <param name="html">Html</param>
+        /// <returns>TimeSpan after how much time hero arrival will happen</returns>
+        public static TimeSpan GetHeroArrivalInfo(HtmlDocument html)
+        {
+            var statusMsg = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
+            if (statusMsg == null) return TimeSpan.Zero;
+
+            return TimeParser.ParseTimer(statusMsg);
         }
         public static int GetAdventureNum(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
@@ -164,7 +175,7 @@ namespace TravBotSharp.Files.Parsers
 
                 var heroItem = new HeroItem
                 {
-                    Item = heroItemEnum ?? Classificator.HeroItemEnum.None_None_0,
+                    Item = heroItemEnum ?? Classificator.HeroItemEnum.Others_None_0,
                     Count = amount
                 };
 
@@ -173,24 +184,24 @@ namespace TravBotSharp.Files.Parsers
             return heroItems;
         }
 
-        private static readonly Dictionary<Classificator.HeroItemType, string> HeroTypeIds = new Dictionary<Classificator.HeroItemType, string>()
+        private static readonly Dictionary<Classificator.HeroItemCategory, string> HeroTypeIds = new Dictionary<Classificator.HeroItemCategory, string>()
         {
-            { Classificator.HeroItemType.Helmet, "helmet" },
-            { Classificator.HeroItemType.Left, "leftHand" },
-            { Classificator.HeroItemType.Weapon, "rightHand" },
-            { Classificator.HeroItemType.Armor, "body" },
-            { Classificator.HeroItemType.Horse, "horse" },
-            { Classificator.HeroItemType.Boots, "shoes" },
-            { Classificator.HeroItemType.Others, "bag" }
+            { Classificator.HeroItemCategory.Helmet, "helmet" },
+            { Classificator.HeroItemCategory.Left, "leftHand" },
+            { Classificator.HeroItemCategory.Weapon, "rightHand" },
+            { Classificator.HeroItemCategory.Armor, "body" },
+            { Classificator.HeroItemCategory.Horse, "horse" },
+            { Classificator.HeroItemCategory.Boots, "shoes" },
+            { Classificator.HeroItemCategory.Others, "bag" }
         };
         /// <summary>
         /// Parses what items is hero currently equipt with
         /// </summary>
         /// <param name="html">Html</param>
         /// <returns>Equipt items</returns>
-        public static Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum> GetHeroEquipment(HtmlDocument html)
+        public static Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum> GetHeroEquipment(HtmlDocument html)
         {
-            var ret = new Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum>();
+            var ret = new Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum>();
 
             foreach (var pair in HeroTypeIds)
             {
@@ -200,7 +211,7 @@ namespace TravBotSharp.Files.Parsers
                 (Classificator.HeroItemEnum? heroItemEnum, int amount) = ParseItemNode(item);
                 if (heroItemEnum == null) continue;
 
-                var itemEnum = heroItemEnum ?? Classificator.HeroItemEnum.None_None_0;
+                var itemEnum = heroItemEnum ?? Classificator.HeroItemEnum.Others_None_0;
                 ret.Add(pair.Key, itemEnum);
             }
             return ret;

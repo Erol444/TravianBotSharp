@@ -15,13 +15,17 @@ namespace TravBotSharp.Files.Models.AccModels
             Settings.Init();
             Adventures = new List<Adventure>();
             Items = new List<HeroItem>();
-            Equipt = new Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum>();
+            Equipt = new Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum>();
         }
         public List<Adventure> Adventures { get; set; }
         /// <summary>
         /// Here only because TTWars doesn't register hero is on away immediately.
         /// </summary>
         public DateTime NextHeroSend { get; set; }
+        /// <summary>
+        /// Parsed from /hero.php, when the arrival will be
+        /// </summary>
+        public DateTime HeroArrival { get; set; }
         /// <summary>
         /// In which village should bot revive the hero
         /// </summary>
@@ -38,7 +42,7 @@ namespace TravBotSharp.Files.Models.AccModels
         /// <summary>
         /// Items currently equipt
         /// </summary>
-        public Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum> Equipt { get; set; }
+        public Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum> Equipt { get; set; }
 
 
         public enum StatusEnum

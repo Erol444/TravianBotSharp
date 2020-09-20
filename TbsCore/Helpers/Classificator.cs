@@ -53,7 +53,7 @@
             Hospital,
         }
 
-        public enum HeroItemType
+        public enum HeroItemCategory
         {
             Helmet,
             Weapon,
@@ -66,22 +66,22 @@
 
         public enum HeroItemEnum
         {
-            None_None_0 = 0,
+            Others_None_0 = 0,
             Helmet_Experience_1,
             Helmet_Experience_2,
             Helmet_Experience_3,
-            Helpet_Regeneration_1,
-            Helpet_Regeneration_2,
-            Helpet_Regeneration_3,
-            Helpet_CulturePoints_1,
-            Helpet_CulturePoints_2,
-            Helpet_CulturePoints_3,
-            Helpet_Cavalry_1,
-            Helpet_Cavalry_2,
-            Helpet_Cavalry_3,
-            Helpet_Infantry_1,
-            Helpet_Infantry_2,
-            Helpet_Infantry_3,
+            Helmet_Regeneration_1,
+            Helmet_Regeneration_2,
+            Helmet_Regeneration_3,
+            Helmet_CulturePoints_1,
+            Helmet_CulturePoints_2,
+            Helmet_CulturePoints_3,
+            Helmet_Cavalry_1,
+            Helmet_Cavalry_2,
+            Helmet_Cavalry_3,
+            Helmet_Infantry_1,
+            Helmet_Infantry_2,
+            Helmet_Infantry_3,
             // Roman weapons
             Weapon_Legionnaire_1, // =16
             Weapon_Legionnaire_2,

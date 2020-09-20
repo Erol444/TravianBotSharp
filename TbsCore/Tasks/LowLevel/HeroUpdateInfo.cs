@@ -16,6 +16,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             HeroHelper.ParseHeroPage(acc);
 
+            if (acc.Hero.Settings.AutoEquip)
+            {
+                HeroHelper.AutoEquipHero(acc);
+            }
+
             return TaskRes.Executed;
         }
     }

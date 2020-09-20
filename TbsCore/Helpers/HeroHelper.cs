@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Parsers;
+using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Files.Helpers
 {
@@ -21,6 +23,65 @@ namespace TravBotSharp.Files.Helpers
                 MapHelper.CalculateDistance(acc, x.Coordinates, MapHelper.CoordinatesFromKid(acc.Hero.HomeVillageId, acc)) <= acc.Hero.Settings.MaxDistance
             );
         }
+
+        /// <summary>
+        /// Auto equip hero if there is better equipment available
+        /// </summary>
+        /// <param name="acc">Account</param>
+        public static void AutoEquipHero(Account acc)
+        {
+            foreach (Classificator.HeroItemCategory category
+                in (Classificator.HeroItemCategory[])Enum.GetValues(typeof(Classificator.HeroItemCategory)))
+            {
+                if (category == Classificator.HeroItemCategory.Others) continue; // Don't equip into hero bag
+                int currentTier = 0;
+                if(acc.Hero.Equipt.TryGetValue(category, out var item))
+                {
+                    // Hero already has an equipt item for this category
+                    (var itemCategory, var itemName, var itemTier) = ParseHeroItem(item);
+                    currentTier = itemTier;
+                }
+
+                var equipWith = acc.Hero.Items
+                    .Where(x => // Filter by category
+                    {
+                        (var itemCategory, var itemName, var itemTier) = ParseHeroItem(x.Item);
+                        return itemCategory == category;
+                    })
+                    .OrderBy(x => // Order by tier
+                    {
+                        (var itemCategory, var itemName, var itemTier) = ParseHeroItem(x.Item);
+                        return itemTier;
+                    })
+                    .LastOrDefault();
+
+                if(equipWith != null)
+                {
+                    TaskExecutor.AddTask(acc, new HeroEquip()
+                    {
+                        ExecuteAt = DateTime.Now,
+                        Item = equipWith.Item
+                    });
+                }
+            }
+        }
+
+        /// <summary>
+        /// Will parse HeroItemEnum into category, name and tier
+        /// </summary>
+        /// <param name="item">Hero item enum</param>
+        /// <returns>Hero item (category, name, tier)</returns>
+        public static (Classificator.HeroItemCategory, string, int) ParseHeroItem(Classificator.HeroItemEnum item)
+        {
+            var attr = item.ToString().Split('_');
+
+            Enum.TryParse(attr[0], out Classificator.HeroItemCategory category);
+            string name = attr[1];
+            int tier = int.Parse(attr[2]);
+
+            return (category, name, tier);
+        }
+
         /// <summary>
         /// Will parse all the useful data from the hero page (/hero.php)
         /// </summary>
@@ -31,6 +92,7 @@ namespace TravBotSharp.Files.Helpers
             acc.Hero.HeroInfo = HeroParser.GetHeroInfo(acc.Wb.Html);
             acc.Hero.Items = HeroParser.GetHeroItems(acc.Wb.Html);
             acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
+            acc.Hero.HeroArrival = DateTime.Now + HeroParser.GetHeroArrivalInfo(acc.Wb.Html);
 
             var homeVill = HeroParser.GetHeroVillageId(acc.Wb.Html);
             if (homeVill != null) acc.Hero.HomeVillageId = homeVill ?? 0;

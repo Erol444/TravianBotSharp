@@ -69,7 +69,7 @@ namespace TravBotSharp.Views
             equiptList.Items.Clear();
             if (acc.Hero.Equipt == null)
             {
-                acc.Hero.Equipt = new System.Collections.Generic.Dictionary<Classificator.HeroItemType, Classificator.HeroItemEnum>();
+                acc.Hero.Equipt = new System.Collections.Generic.Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum>();
             }
             foreach (var pair in acc.Hero.Equipt)
             {

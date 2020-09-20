@@ -38,10 +38,10 @@ namespace TravBotSharp.Files.Parsers
         public static TimeSpan ParseTimer(HtmlNode node)
         {
             var timer = node.Descendants().FirstOrDefault(x => x.HasClass("timer"));
-            if (timer == null) return new TimeSpan();
+            if (timer == null) return TimeSpan.Zero;
             int sec = int.Parse(timer.GetAttributeValue("value", "0"));
             if (sec < 0) sec = 0;
-            return new TimeSpan(0, 0, sec);
+            return TimeSpan.FromSeconds(sec);
         }
 
         public static DateTime GetServerTime(HtmlDocument html)
