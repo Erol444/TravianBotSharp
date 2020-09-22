@@ -46,7 +46,7 @@ namespace TravBotSharp.Views
 
                 var upgradeTask = acc.Tasks?.FirstOrDefault(x =>
                     x.GetType() == typeof(UpgradeBuilding)
-                    && ((UpgradeBuilding)x).Task.Equals(task)
+                    && ((UpgradeBuilding)x).Task == task
                     );
 
                 item.SubItems.Add(upgradeTask == null ? "" : upgradeTask.ExecuteAt.ToString()); //execute at

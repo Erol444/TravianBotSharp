@@ -31,7 +31,6 @@ namespace TravBotSharp.Files.Helpers
             {
                 return DateTime.Now;
             }
-            if (mainVill == vill) return enoughRes;
 
             //Not enough resources, send resources or use hero resources
 
@@ -53,6 +52,8 @@ namespace TravBotSharp.Files.Helpers
                 // ~10sec - after EquipHero tasks are executed. If not, still send res from Main Vill
                 if (IsZeroResources(resLeft)) return DateTime.Now.AddSeconds(10);
             }
+
+            if (mainVill == vill) return enoughRes;
 
             DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
             return (enoughRes < resTransit ? enoughRes : resTransit);
