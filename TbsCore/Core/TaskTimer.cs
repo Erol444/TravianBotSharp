@@ -42,8 +42,6 @@ namespace TravBotSharp.Files.Models.AccModels
             }
         }
 
-        long restartTasksCounter = 0;
-
         private async void NewTick()
         {
             // Dirty hack. TODO fix the code, so building/troops filling tasks won't fail by themselves

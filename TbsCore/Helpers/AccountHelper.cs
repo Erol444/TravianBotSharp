@@ -105,17 +105,31 @@ namespace TravBotSharp.Files.Helpers
                 tasks.Add(Task.Run(() =>
                 {
                     Console.WriteLine(DateTime.Now.ToString()+"]Start ip "+a.Proxy);
-                    var response = new RestClient
+                    var restClient = new RestClient
                     {
                         BaseUrl = new Uri("https://api.ipify.org/"),
-                        Proxy = new WebProxy(a.Proxy, a.ProxyPort)
-                    }.Execute(new RestRequest
+                    };
+
+                    if (!string.IsNullOrEmpty(a.Proxy))
+                    {
+                        if (!string.IsNullOrEmpty(a.ProxyUsername)) // Proxy auth
+                        {
+                            ICredentials credentials = new NetworkCredential(a.ProxyUsername, a.ProxyPassword);
+                            restClient.Proxy = new WebProxy($"{a.Proxy}:{a.ProxyPort}", false, null, credentials);
+                        }
+                        else // Without proxy auth
+                        {
+                            restClient.Proxy = new WebProxy(a.Proxy, a.ProxyPort);
+                        }
+                    }
+
+                    var response = restClient.Execute(new RestRequest
                     {
                         Resource = "api/ip",
                         Method = Method.GET,
                         Timeout = 5000,
                     });
-                    Console.WriteLine(DateTime.Now.ToString() + "] Complete ip" + a.Proxy + ", content:"+response.Content);
+                    Console.WriteLine(DateTime.Now.ToString() + "] Complete ip" + a.Proxy + $", Credentials: {!string.IsNullOrEmpty(a.ProxyUsername)}, content:"+response.Content);
                     HtmlDocument doc = new HtmlDocument();
                     doc.LoadHtml(response.Content);
 

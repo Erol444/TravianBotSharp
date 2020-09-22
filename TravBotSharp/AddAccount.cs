@@ -105,13 +105,13 @@ namespace TravBotSharp
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
-            Acc.AccInfo.ServerUrl = textBox4.Text;
-            if (!Acc.AccInfo.ServerUrl.Contains("https://") &&
-                !Acc.AccInfo.ServerUrl.Contains("http://"))
+            textBox4.Text = textBox4.Text.Replace("https://", "").Replace("http://", "");
+            if (textBox4.Text.Contains("/"))
             {
-                //add https:// if user forgot
-                Acc.AccInfo.ServerUrl = "https://" + Acc.AccInfo.ServerUrl;
+                var str = textBox4.Text.Split('/');
+                textBox4.Text = str[0];
             }
+            Acc.AccInfo.ServerUrl = "https://" + textBox4.Text;
         }
 
         /// <summary>

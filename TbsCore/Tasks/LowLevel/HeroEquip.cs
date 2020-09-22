@@ -52,7 +52,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.ExecuteScript(acc, script);
 
             // No amount specified, meaning we have already equipt the item
-            if (Amount == -1) return await Done(acc);
+            if (Amount == -1) return Done(acc);
 
             try
             {
@@ -66,7 +66,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             script = "document.querySelector('div[class=\"buttons\"]>button').click();";
             await DriverHelper.ExecuteScript(acc, script);
 
-            return await Done(acc);
+            return Done(acc);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// <param name="acc">Account</param>
         /// <returns>TaskRes</returns>
 
-        private async Task<TaskRes> Done(Account acc)
+        private TaskRes Done(Account acc)
         {
             HeroHelper.ParseHeroPage(acc);
             return TaskRes.Executed;
