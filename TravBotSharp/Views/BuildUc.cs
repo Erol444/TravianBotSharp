@@ -35,12 +35,21 @@ namespace TravBotSharp.Views
             {
                 var item = new ListViewItem();
                 //building
-                if (task.TaskType == BuildingHelper.BuildingType.AutoUpgradeResFields) item.SubItems[0].Text = "Auto-upgrade Res Fields";
+                if (task.TaskType == BuildingHelper.BuildingType.AutoUpgradeResFields)
+                {
+                    item.SubItems[0].Text = AutoBuildResFieldsStr(task);
+                }
                 else item.SubItems[0].Text = VillageHelper.BuildingTypeToString(task.Building);
 
                 item.SubItems.Add(task.Level.ToString()); //lvl
                 item.SubItems.Add(task.BuildingId.ToString()); //buildingId
-                item.SubItems.Add("TODO when will it be executed"); //execute at
+
+                var upgradeTask = acc.Tasks?.FirstOrDefault(x =>
+                    x.GetType() == typeof(UpgradeBuilding)
+                    && ((UpgradeBuilding)x).Task.Equals(task)
+                    );
+
+                item.SubItems.Add(upgradeTask == null ? "" : upgradeTask.ExecuteAt.ToString()); //execute at
                 buildListView.Items.Add(item);
             }
             foreach (var task in vill.Build.DemolishTasks)
@@ -72,6 +81,36 @@ namespace TravBotSharp.Views
             buildTypeComboBox.Enabled = false;
 
             buildRadioButton.Checked = true;
+        }
+
+        private string AutoBuildResFieldsStr(BuildingTask task)
+        {
+            var str = "Auto-upgrade Res Fields - ";
+            switch (task.ResourceType)
+            {
+                case ResTypeEnum.AllResources:
+                    str += "All resources - ";
+                    break;
+                case ResTypeEnum.ExcludeCrop:
+                    str += "Exclude cropland - ";
+                    break;
+                case ResTypeEnum.OnlyCrop:
+                    str += "Only cropland - ";
+                    break;
+            }
+            switch (task.BuildingStrategy)
+            {
+                case BuildingStrategyEnum.BasedOnLevel:
+                    str += "Based on level";
+                    break;
+                case BuildingStrategyEnum.BasedOnProduction:
+                    str += "Based on production";
+                    break;
+                case BuildingStrategyEnum.BasedOnRes:
+                    str += "Based on storage";
+                    break;
+            }
+            return str;
         }
 
         private void RefreshBuildingsList(Village vill)

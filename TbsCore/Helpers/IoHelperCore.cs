@@ -53,9 +53,50 @@ namespace TravBotSharp.Files.Helpers
         {
             var tasks = new List<BuildingTask>();
 
-            //TODO: decode TbRoot
+            foreach (var cmd in root.commands)
+            {
+                var task = new BuildingTask
+                {
+                    Level = cmd.level
+                };
+                if (cmd.bid > 0) task.BuildingId = (byte)cmd.bid;
 
+                switch (cmd.cmdType)
+                {
+                    case 1: // Normal build
+                        task.TaskType = BuildingHelper.BuildingType.General;
+                        task.Building = (Classificator.BuildingEnum)cmd.gid;
+                        break;
+                    case 4: // Based on level
+                        task.TaskType = BuildingHelper.BuildingType.AutoUpgradeResFields;
+                        task.BuildingStrategy = BuildingStrategyEnum.BasedOnLevel;
+                        task.ResourceType = GetTrBuilderResType(cmd.gid);
+                        break;
+                    case 5: // Based on production
+                        task.TaskType = BuildingHelper.BuildingType.AutoUpgradeResFields;
+                        task.BuildingStrategy = BuildingStrategyEnum.BasedOnProduction;
+                        task.ResourceType = GetTrBuilderResType(cmd.gid);
+                        break;
+                    case 6: // Based on storage
+                        task.TaskType = BuildingHelper.BuildingType.AutoUpgradeResFields;
+                        task.BuildingStrategy = BuildingStrategyEnum.BasedOnRes;
+                        task.ResourceType = GetTrBuilderResType(cmd.gid);
+                        break;
+                }
+
+                tasks.Add(task);
+            }
             return tasks;
+        }
+        private static ResTypeEnum GetTrBuilderResType(int gid)
+        {
+            switch (gid)
+            {
+                case 60: return ResTypeEnum.AllResources;
+                case 61: return ResTypeEnum.ExcludeCrop;
+                case 62: return ResTypeEnum.OnlyCrop;
+            }
+            return ResTypeEnum.AllResources;
         }
 
         public static string TbsPath()
