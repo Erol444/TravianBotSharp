@@ -13,17 +13,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class RandomTask : BotTask
     {
         private readonly string[] Url = new string[] {
-            "/statistiken.php",
-            "/statistiken.php?id=1",
-            "/statistiken.php?id=1&idSub=3",
-            "/reports.php",
-            "/statistiken.php?id=3",
-            "/statistiken.php?id=0&idSub=3",
-            "/spieler.php",
-            "/statistiken.php?id=5",
-            "/statistiken.php?id=0&idSub=2",
-            "/messages.php",
-            "/hero.php?t=4"
+            "/statistiken.php", // player
+            "/statistiken.php?id=1", // ally
+            "/statistiken.php?id=1&idSub=3", // ally TOP10
+            "/statistiken.php?id=3", // hero
+            "/statistiken.php?id=0&idSub=3", // player top10
+            "/spieler.php", // profile
+            "/statistiken.php?id=0&idSub=1", // players top attackers
+            "/statistiken.php?id=0&idSub=2", // players top deffenders
+            "/messages.php", // messages
+            "/hero.php?t=4" // hero auctions
         };
         public override async Task<TaskRes> Execute(Account acc)
         {
