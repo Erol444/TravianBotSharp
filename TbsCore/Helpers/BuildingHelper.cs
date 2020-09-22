@@ -594,10 +594,10 @@ namespace TravBotSharp.Files.Helpers
 
             foreach (var distinctType in distinct)
             {
-                if (distinctType == Classificator.BuildingEnum.Woodcutter && vill.Res.Production.WoodPerHour < lowestProd) { lowestProd = vill.Res.Production.WoodPerHour; toUpgrade = Classificator.BuildingEnum.Woodcutter; }
-                if (distinctType == Classificator.BuildingEnum.ClayPit && vill.Res.Production.ClayPerHour < lowestProd) { lowestProd = vill.Res.Production.ClayPerHour; toUpgrade = Classificator.BuildingEnum.ClayPit; }
-                if (distinctType == Classificator.BuildingEnum.IronMine && vill.Res.Production.IronPerHour < lowestProd) { lowestProd = vill.Res.Production.IronPerHour; toUpgrade = Classificator.BuildingEnum.IronMine; }
-                if (distinctType == Classificator.BuildingEnum.Cropland && vill.Res.Production.CropPerHour < lowestProd) { lowestProd = vill.Res.Production.CropPerHour; toUpgrade = Classificator.BuildingEnum.Cropland; }
+                if (distinctType == Classificator.BuildingEnum.Woodcutter && vill.Res.Production.Wood < lowestProd) { lowestProd = vill.Res.Production.Wood; toUpgrade = Classificator.BuildingEnum.Woodcutter; }
+                if (distinctType == Classificator.BuildingEnum.ClayPit && vill.Res.Production.Clay < lowestProd) { lowestProd = vill.Res.Production.Clay; toUpgrade = Classificator.BuildingEnum.ClayPit; }
+                if (distinctType == Classificator.BuildingEnum.IronMine && vill.Res.Production.Iron < lowestProd) { lowestProd = vill.Res.Production.Iron; toUpgrade = Classificator.BuildingEnum.IronMine; }
+                if (distinctType == Classificator.BuildingEnum.Cropland && vill.Res.Production.Crop < lowestProd) { lowestProd = vill.Res.Production.Crop; toUpgrade = Classificator.BuildingEnum.Cropland; }
             }
             return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }

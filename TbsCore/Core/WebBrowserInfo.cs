@@ -87,7 +87,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 this.Driver = new ChromeDriver(service, options);
 
                 // Set timeout
-                this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
+                this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
             }
             catch(Exception e)
             {
@@ -124,7 +124,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 catch (Exception e)
                 {
                     repeat = true;
-                    if (++repeatCnt >= 3 && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
+                    if (++repeatCnt >= 5 && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {
                         // Change access
                         repeatCnt = 0;

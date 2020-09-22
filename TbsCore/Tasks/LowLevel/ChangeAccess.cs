@@ -18,12 +18,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             //TODO: make this configurable (wait time between switches)
 
-            // Wait some time (5-10mins) between the proxy switching.
+            // Wait some time (1min) between the proxy switching.
             var sleep = new Sleep()
             {
                 AutoSleep = false,
-                MinSleepSec = 300,
-                MaxSleepSec = 600,
+                MinSleepSec = 10,
+                MaxSleepSec = 60,
             };
             // sleep will stop if there is a high priority task
             await sleep.Execute(acc);

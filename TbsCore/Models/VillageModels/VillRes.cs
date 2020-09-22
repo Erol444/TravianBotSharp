@@ -9,9 +9,9 @@ namespace TravBotSharp.Files.Models.VillageModels
             Capacity = new ResourceCapacity();
             Stored = new StoredResources();
             Stored.Init();
-            Production = new ResourceProduction();
+            Production = new Resources();
         }
-        public ResourceProduction Production { get; set; }
+        public Resources Production { get; set; }
         public ResourceCapacity Capacity { get; set; }
         public StoredResources Stored { get; set; }
         public long FreeCrop { get; set; }

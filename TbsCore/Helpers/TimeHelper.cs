@@ -17,17 +17,16 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>TimeSpan</returns>
         public static TimeSpan EnoughResToUpgrade(Village vill, Resources required)
         {
-            long[] resStored = { vill.Res.Stored.Resources.Wood, vill.Res.Stored.Resources.Clay, vill.Res.Stored.Resources.Iron, vill.Res.Stored.Resources.Crop };
-            long[] production = { vill.Res.Production.WoodPerHour, vill.Res.Production.ClayPerHour, vill.Res.Production.IronPerHour, vill.Res.Production.CropPerHour };
-            long[] resRequired = { required.Wood, required.Clay, required.Iron, required.Crop };
+            long[] production = ResourcesHelper.ResourcesToArray(vill.Res.Production);
+            long[] resRequired = ResourcesHelper.ResourcesToArray(required);
+
             TimeSpan timeSpan = new TimeSpan(0);
             for (int i = 0; i < 4; i++)
             {
                 TimeSpan toWaitForThisRes = new TimeSpan(0);
-                var neededRes = resRequired[i] - resStored[i];
-                if (neededRes > 0)
+                if (resRequired[i] > 0)
                 {
-                    float hoursToWait = (float)neededRes / (float)production[i];
+                    float hoursToWait = (float)resRequired[i] / (float)production[i];
                     float secToWait = hoursToWait * 3600;
                     toWaitForThisRes = new TimeSpan(0, 0, (int)secToWait);
                 }

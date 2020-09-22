@@ -23,17 +23,17 @@ namespace TravBotSharp.Files.Parsers
                 LastRefresh = DateTime.Now
             };
         }
-        public static ResourceProduction GetProduction(HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static Resources GetProduction(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             var Res = htmlDoc.GetElementbyId("production").ChildNodes[3].ChildNodes;
             //1,3,5,7
 
-            return new ResourceProduction()
+            return new Resources()
             {
-                WoodPerHour = ParseHtml(Res[1].ChildNodes[5].InnerText),
-                ClayPerHour = ParseHtml(Res[3].ChildNodes[5].InnerText),
-                IronPerHour = ParseHtml(Res[5].ChildNodes[5].InnerText),
-                CropPerHour = ParseHtml(Res[7].ChildNodes[5].InnerText)
+                Wood = ParseHtml(Res[1].ChildNodes[5].InnerText),
+                Clay = ParseHtml(Res[3].ChildNodes[5].InnerText),
+                Iron = ParseHtml(Res[5].ChildNodes[5].InnerText),
+                Crop = ParseHtml(Res[7].ChildNodes[5].InnerText)
             };
         }
         private static long ParseHtml(string text)
