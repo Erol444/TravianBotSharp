@@ -1,4 +1,5 @@
-﻿using TravBotSharp.Files.Models.Settings;
+﻿using TbsCore.Models.VillageModels;
+using TravBotSharp.Files.Models.Settings;
 using TravBotSharp.Files.Models.TroopsModels;
 using TravBotSharp.Files.Models.VillageModels;
 
@@ -22,6 +23,7 @@ namespace TravBotSharp.Files.Models.AccModels
             Market.Init();
             Deffing = new VillDeffing();
             Expansion = new VillExpansion();
+            Timings = new VillTiming();
         }
 
         #region General info
@@ -80,6 +82,10 @@ namespace TravBotSharp.Files.Models.AccModels
         /// For village expansion (new village - settlers)
         /// </summary>
         public VillExpansion Expansion { get; set; }
+        /// <summary>
+        /// Timings for the village
+        /// </summary>
+        public VillTiming Timings { get; set; }
         #endregion
     }
 }

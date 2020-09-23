@@ -90,15 +90,25 @@ namespace TravBotSharp.Files.Models.AccModels
         private void NoTasks(Account acc)
         {
             BotTask task = null;
-            // Auto close chrome and reopen when there is a high/normal prio BotTask
-            if (acc.Settings.AutoCloseDriver &&
-                TimeHelper.NextNormalOrHighPrioTask(acc) > TimeSpan.FromMinutes(5))
+            var updateVill = acc.Villages.FirstOrDefault(x => x.Timings.LastVillRefresh + TimeSpan.FromMinutes(30) < DateTime.Now);
+
+            if (updateVill != null)
             {
-                task = new ReopenDriver();
+                // Update the village
+                task = new UpdateDorf1
+                {
+                    Vill = updateVill
+                };
             }
             else if (acc.Hero.Settings.AutoRefreshInfo && acc.Settings.Timing.LastHeroRefresh + TimeSpan.FromMinutes(30) < DateTime.Now)
             {
                 task = new HeroUpdateInfo();
+            }
+            else if (acc.Settings.AutoCloseDriver &&
+                TimeHelper.NextNormalOrHighPrioTask(acc) > TimeSpan.FromMinutes(5))
+            {
+                // Auto close chrome and reopen when there is a high/normal prio BotTask
+                task = new ReopenDriver();
             }
             else if (acc.Settings.AutoRandomTasks)
             {
