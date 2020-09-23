@@ -1,8 +1,10 @@
 ﻿using Elasticsearch.Net;
 using System;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
+using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
 using static TravBotSharp.Files.Helpers.Classificator;
 
@@ -19,8 +21,9 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc">Account</param>
         /// <param name="vill">(target) Village</param>
         /// <param name="requiredRes">Resources required</param>
-        /// <returns></returns>
-        public static DateTime EnoughResourcesOrTransit(Account acc, Village vill, Resources requiredRes)
+        /// <param name="task">Potential UpgradeBuilding task</param>
+        /// <returns>When village will have required resources</returns>
+        public static DateTime EnoughResourcesOrTransit(Account acc, Village vill, Resources requiredRes, BuildingTask task = null)
         {
             var stillNeededRes = ResStillNeeded(vill, requiredRes);
             DateTime enoughRes = DateTime.Now.Add(TimeHelper.EnoughResToUpgrade(vill, stillNeededRes));
@@ -31,7 +34,6 @@ namespace TravBotSharp.Files.Helpers
             {
                 return DateTime.Now;
             }
-
             //Not enough resources, send resources or use hero resources
 
             if(acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 && // Only T4.5 has resources in hero inv
@@ -44,10 +46,10 @@ namespace TravBotSharp.Files.Helpers
                 // If we have some hero resources, we should use those first
                 if (!IsZeroResources(heroRes))
                 {
-                    UseHeroResources(acc, vill, requiredRes, heroRes);
+                    UseHeroResources(acc, vill, stillNeededRes, heroRes, task);
                 }
 
-                var resLeft = SubtractResources(requiredRes, heroRes, true);
+                var resLeft = SubtractResources(stillNeededRes, heroRes, true);
                 // If we have enough hero res for our needs, required resources will be available in
                 // ~10sec - after EquipHero tasks are executed. If not, still send res from Main Vill
                 if (IsZeroResources(resLeft)) return DateTime.Now.AddSeconds(10);
@@ -83,8 +85,9 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc">Account</param>
         /// <param name="vill">Village to use resources in</param>
         /// <param name="neededRes">Needed resources</param>
-        /// <param name="heroRes">Hero resources</param>
-        private static void UseHeroResources(Account acc, Village vill, Resources neededRes, Resources heroRes)
+        /// <param name="heroRes">Hero resources</param
+        /// <param name="task">Potential BuildingTask that requires the resources</param>
+        private static void UseHeroResources(Account acc, Village vill, Resources neededRes, Resources heroRes, BuildingTask task = null)
         {
             var neededResArr = ResourcesToArray(neededRes);
             var heroResArr = ResourcesToArray(heroRes);
@@ -121,6 +124,23 @@ namespace TravBotSharp.Files.Helpers
                     Vill = vill
                 });
             }
+
+            // A BuildTask needed the resources. If it was auto-build res fields task, make a new
+            // general building task - so resources actually get used for intended building upgrade
+            if (task != null && task.TaskType == BuildingHelper.BuildingType.AutoUpgradeResFields)
+            {
+                var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId);
+                var lvl = building.Level;
+                if (building.UnderConstruction) lvl++;
+                vill.Build.Tasks.Insert(0, new BuildingTask()
+                {
+                    TaskType = BuildingHelper.BuildingType.General,
+                    Building = task.Building,
+                    BuildingId = task.BuildingId,
+                    Level = ++lvl
+                });
+            }
+
         }
 
         /// <summary>

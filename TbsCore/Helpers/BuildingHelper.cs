@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
@@ -161,7 +162,7 @@ namespace TravBotSharp.Files.Helpers
                 case BuildingType.General:
                     return GetUrlGeneralTask(vill, task);
                 case BuildingType.AutoUpgradeResFields:
-                    return GetUrlAutoResFIelds(vill, task);
+                    return GetUrlAutoResFields(vill, task);
             }
             return null;
         }
@@ -209,11 +210,11 @@ namespace TravBotSharp.Files.Helpers
         }
         private static string GetUrlGeneralTask(Village vill, BuildingTask task)
         {
-            //check if there is already a different building in this spot
+            // Check if there is already a different building in this spot
             if (task.BuildingId == null || vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId).Type != task.Building)
             {
                 var targetBuilding = vill.Build.Buildings.FirstOrDefault(x => x.Type == task.Building);
-                //re-select the buildingId
+                // Re-select the buildingId
                 if (targetBuilding != null && !task.ConstructNew)
                 {
                     task.BuildingId = targetBuilding.Id;
@@ -235,9 +236,9 @@ namespace TravBotSharp.Files.Helpers
             }
             return url;
         }
-        public static string GetUrlAutoResFIelds(Village vill, BuildingTask task)
+        public static string GetUrlAutoResFields(Village vill, BuildingTask task)
         {
-            List<Models.ResourceModels.Building> buildings; //potential buildings to be upgraded next :)
+            List<Models.ResourceModels.Building> buildings; // Potential buildings to be upgraded next
             switch (task.ResourceType)
             {
                 case ResTypeEnum.AllResources:
@@ -252,10 +253,10 @@ namespace TravBotSharp.Files.Helpers
                 default:
                     return null;
             }
-            buildings = buildings.Where(x => x.Level < task.Level).ToList(); //only select res fields that are below desired level
+            buildings = buildings.Where(x => x.Level < task.Level).ToList(); // Only select res fields that are below desired level
             foreach (var b in buildings.ToList())
             {
-                if (b.Level == task.Level - 1 && b.UnderConstruction) buildings.Remove(b); //its already being upgraded to selected lvl
+                if (b.Level == task.Level - 1 && b.UnderConstruction) buildings.Remove(b); // It's already being upgraded to selected level
             }
 
             // Filter resource fields by type
@@ -309,7 +310,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc"></param>
         /// <param name="vill"></param>
         /// <param name="building"></param>
-        /// <returns>True if we have all prerequisite buildings, false otherwise</returns>
+        /// <returns>Whether we have all prerequisite buildings</returns>
         public static bool AddBuildingPrerequisites(Account acc, Village vill, Classificator.BuildingEnum building)
         {
             (var tribe, var prereqs) = GetBuildingPrerequisites(building);
@@ -322,9 +323,9 @@ namespace TravBotSharp.Files.Helpers
                     x.Type == prereq.Building &&
                     x.Level >= prereq.Level
                     );
-                //prereqired building already exists
+                // Prerequired building already exists
                 if (prereqBuilding != null) continue;
-                //check if we have its prerequisites
+                // Check if we have its prerequisites
                 AddBuildingPrerequisites(acc, vill, prereq.Building);
                 AddBuildingTask(acc, vill, new BuildingTask()
                 {
@@ -339,7 +340,7 @@ namespace TravBotSharp.Files.Helpers
         public static bool IsResourceField(Classificator.BuildingEnum building)
         {
             int buildingInt = (int)building;
-            //if id between 1 and 4, it's resource field.
+            // If id between 1 and 4, it's resource field
             return buildingInt < 5 && buildingInt > 0;
         }
         public static void RemoveCompletedTasks(Village vill, Account acc)
@@ -401,11 +402,6 @@ namespace TravBotSharp.Files.Helpers
             }
         }
 
-        public class Prerequisite
-        {
-            public Classificator.BuildingEnum Building { get; set; }
-            public int Level { get; set; }
-        }
         public static (Classificator.TribeEnum, List<Prerequisite>) GetBuildingPrerequisites(Classificator.BuildingEnum building)
         {
             Classificator.TribeEnum tribe = Classificator.TribeEnum.Any;

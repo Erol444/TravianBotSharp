@@ -23,7 +23,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
 
             // Sets building task to be built
-            ConfigNextExecute(acc.Wb.Html, acc);
+            //if (this.Task == null)
+                ConfigNextExecute(acc.Wb.Html, acc);
+
             this.NextExecute = DateTime.Now.AddMinutes(2);
             if (this.Task == null)
             {
@@ -224,6 +226,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     break;
             }
 
+            // TODO: check if there is no upgrade button due to already building another building
+
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
 
             if (IsTaskCompleted(Vill, acc, this.Task))
@@ -248,7 +252,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var resWrapper = contract.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var res = ResourceParser.GetResourceCost(resWrapper);
             this.PostTaskCheck.Remove(ConfigNextExecute);
-            this.NextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, res);
+            this.NextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, res, this.Task);
             // Crop supply is low. Upgrade crop field first. TODO: detect this beforehand
             if (this.NextExecute <= DateTime.Now)
             {
