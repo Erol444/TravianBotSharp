@@ -17,13 +17,26 @@ namespace TravBotSharp.Files.Helpers
         /// <summary>
         /// Calculates if there is any adventure in the range of the home village.
         /// </summary>
-        /// <param name="acc"></param>
-        /// <returns></returns>
+        /// <param name="acc">Account</param>
+        /// <returns>Whether there are adventures in range</returns>
         public static bool AdventureInRange(Account acc)
         {
+            var heroHome = GetHeroHomeVillage(acc);
+            if (heroHome == null) return false;
+
             return acc.Hero.Adventures.Any(x =>
-                MapHelper.CalculateDistance(acc, x.Coordinates, MapHelper.CoordinatesFromKid(acc.Hero.HomeVillageId, acc)) <= acc.Hero.Settings.MaxDistance
+                MapHelper.CalculateDistance(acc, x.Coordinates, heroHome.Coordinates) <= acc.Hero.Settings.MaxDistance
             );
+        }
+
+        /// <summary>
+        /// Gets the hero home village
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>Hero home village</returns>
+        public static Village GetHeroHomeVillage(Account acc)
+        {
+            return acc.Villages.FirstOrDefault(x => x.Id == acc.Hero.HomeVillageId);
         }
 
         /// <summary>
@@ -105,8 +118,26 @@ namespace TravBotSharp.Files.Helpers
             acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
             acc.Hero.HeroArrival = DateTime.Now + HeroParser.GetHeroArrivalInfo(acc.Wb.Html);
 
-            var homeVill = HeroParser.GetHeroVillageId(acc.Wb.Html);
-            if (homeVill != null) acc.Hero.HomeVillageId = homeVill ?? 0;
+            UpdateHeroVillage(acc);
+        }
+        public static void UpdateHeroVillage(Account acc)
+        {
+            var hrefId = HeroParser.GetHeroVillageHref(acc.Wb.Html);
+            if (hrefId == null) return;
+
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_4:
+                    acc.Hero.HomeVillageId = hrefId ?? 0;
+                    return;
+                case Classificator.ServerVersionEnum.T4_5:
+                    // Convert from coordinates id -> coordinates -> villageId
+                    var coordinates = MapHelper.CoordinatesFromKid(hrefId ?? 0, acc);
+                    var vill = acc.Villages.FirstOrDefault(x => x.Coordinates.Equals(coordinates));
+                    if (vill == null) return;
+                    acc.Hero.HomeVillageId = vill.Id;
+                    return;
+            }
         }
 
         public static Resources GetHeroResources(Account acc)

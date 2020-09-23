@@ -217,6 +217,7 @@ namespace TravBotSharp.Files.Helpers
                 activeVill.Res.FreeCrop = RightBarParser.GetFreeCrop(html);
                 activeVill.Res.Capacity = ResourceParser.GetResourceCapacity(html, acc.AccInfo.ServerVersion);
                 activeVill.Res.Stored = ResourceParser.GetResources(html);
+                activeVill.Timings.LastVillRefresh = DateTime.Now;
 
                 float ratio = (float)activeVill.Res.Stored.Resources.Crop / activeVill.Res.Capacity.GranaryCapacity;
                 if (ratio >= 0.99 &&

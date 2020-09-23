@@ -192,15 +192,21 @@ namespace TravBotSharp.Files.Parsers
             return 0;
         }
 
-        public static int? GetHeroVillageId(HtmlDocument htmlDoc)
+        /// <summary>
+        /// Parses the her home village href
+        /// </summary>
+        /// <param name="htmlDoc">Html</param>
+        /// <returns>Hero's home village href id</returns>
+        public static int? GetHeroVillageHref(HtmlDocument htmlDoc)
         {
-            var statusMessage = htmlDoc.DocumentNode.Descendants("div").LastOrDefault(x => x.HasClass("heroStatusMessage"));
+            var node = htmlDoc.GetElementbyId("attributes");
+            if (node == null) node = htmlDoc.GetElementbyId("content");
+            if (node == null) return null;
 
-            var href = statusMessage.ChildNodes.FirstOrDefault(x => x.Name == "a")?.GetAttributeValue("href", "");
-
+            var href = node.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("href", "").StartsWith("/karte"));
             if (href == null) return null;
 
-            return Convert.ToInt32(href.Split('=')[1]);
+            return Convert.ToInt32(href.GetAttributeValue("href", "").Split('=').Last());
         }
 
         public static int GetAvailablePoints(HtmlDocument htmlDoc)

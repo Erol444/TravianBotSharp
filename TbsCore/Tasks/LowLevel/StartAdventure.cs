@@ -18,14 +18,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
-            var homeVill = HeroParser.GetHeroVillageId(acc.Wb.Html);
-            if (homeVill != null) acc.Hero.HomeVillageId = homeVill ?? 0;
+            HeroHelper.UpdateHeroVillage(acc);
 
             if (acc.Hero.Adventures == null || acc.Hero.Adventures.Count == 0) return TaskRes.Executed;
 
             var adventures = acc.Hero.Adventures
                 .Where(x =>
-                    MapHelper.CalculateDistance(acc, x.Coordinates, MapHelper.CoordinatesFromKid(acc.Hero.HomeVillageId, acc)) <= acc.Hero.Settings.MaxDistance
+                    MapHelper.CalculateDistance(acc, x.Coordinates, HeroHelper.GetHeroHomeVillage(acc).Coordinates) <= acc.Hero.Settings.MaxDistance
                 )
                 .ToList();
 

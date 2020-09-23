@@ -10,7 +10,7 @@ namespace TravBotSharp.Files.Helpers
     public static class TimeHelper
     {
         /// <summary>
-        /// Get TimeSpan when there will be enough resources
+        /// Get TimeSpan when there will be enough resources, based on production
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="required">Resources required</param>
