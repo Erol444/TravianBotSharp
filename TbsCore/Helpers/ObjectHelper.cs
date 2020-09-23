@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -43,7 +44,19 @@ namespace TbsCore.Helpers
                             // Set the missing & populated object to the property
                             property.SetValue(obj, instance);
                         }
-                        if(property.GetValue(obj) != null) FixAccObj(acc, property.GetValue(obj));
+
+                        if (property.GetValue(obj) != null) FixAccObj(acc, property.GetValue(obj));
+                    }
+                    else if (IsIEnumerable(property.GetValue(obj))) // If object has interface IEnumerable, loop through it's items
+                    {
+                        if(property.GetValue(obj) != null)
+                        {
+                            foreach (object item in (IEnumerable)property.GetValue(obj))
+                            {
+                                FixAccObj(acc, item);
+                            }
+                        }
+                        // else initialize the enumerable?
                     }
                 }
             }
@@ -51,6 +64,18 @@ namespace TbsCore.Helpers
             {
                 // Log me
             }
+        }
+
+        /// <summary>
+        /// Checks if the object implements IEnumerable interface.
+        /// </summary>
+        /// <param name="o">Object</param>
+        /// <returns>Whether the object implements IEnumerable interface</returns>
+        public static bool IsIEnumerable(object o)
+        {
+            if (o == null) return false;
+            return o is IEnumerable &&
+                   o.GetType().IsGenericType;
         }
     }
 }
