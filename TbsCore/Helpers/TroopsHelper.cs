@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;

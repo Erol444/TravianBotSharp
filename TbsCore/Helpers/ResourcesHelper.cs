@@ -25,6 +25,9 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>When village will have required resources</returns>
         public static DateTime EnoughResourcesOrTransit(Account acc, Village vill, Resources requiredRes, BuildingTask task = null)
         {
+            // TODO: do this check before calling this method!
+            if (IsStorageTooLow(acc, vill, requiredRes)) return DateTime.Now.AddMinutes(30);
+
             var stillNeededRes = ResStillNeeded(vill, requiredRes);
             DateTime enoughRes = DateTime.Now.Add(TimeHelper.EnoughResToUpgrade(vill, stillNeededRes));
 
@@ -59,6 +62,58 @@ namespace TravBotSharp.Files.Helpers
 
             DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
             return (enoughRes < resTransit ? enoughRes : resTransit);
+        }
+
+        /// <summary>
+        /// Checks if the storage is too low to store required resources
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="vill">Village</param>
+        /// <param name="res">Required resources</param>
+        /// <returns>Whether storage is too low</returns>
+        private static bool IsStorageTooLow(Account acc, Village vill, Resources res)
+        {
+            bool upgradeWarehouse =
+                res.Wood > vill.Res.Capacity.WarehouseCapacity ||
+                res.Clay > vill.Res.Capacity.WarehouseCapacity ||
+                res.Iron > vill.Res.Capacity.WarehouseCapacity;
+
+            bool upgradeGranary = res.Crop > vill.Res.Capacity.GranaryCapacity;
+
+            // if auto-expand storage &&
+            if (upgradeGranary) UpgradeStorage(acc, vill, BuildingEnum.Granary);
+            if (upgradeWarehouse) UpgradeStorage(acc, vill, BuildingEnum.Warehouse);
+
+            return upgradeGranary || upgradeWarehouse;
+        }
+
+        /// <summary>
+        /// Upgrades storage of the village
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="vill">Village</param>
+        /// <param name="building">Storage building</param>
+        private static void UpgradeStorage(Account acc, Village vill, BuildingEnum building)
+        {
+            var task = new BuildingTask()
+            {
+                Building = building,
+                TaskType = BuildingHelper.BuildingType.General
+            };
+            var current = vill.Build.Buildings.FirstOrDefault(x =>
+                x.Type == building &&
+                (x.Level != 20 || (x.Level != 19 && x.UnderConstruction))
+                );
+            if (current == null)
+            {
+                task.ConstructNew = true;
+                task.Level = 1;
+            }
+            else
+            {
+                task.Level = current.Level + 1;
+            }
+            BuildingHelper.AddBuildingTask(acc, vill, task, false);
         }
 
         /// <summary>

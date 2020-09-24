@@ -118,6 +118,8 @@ namespace TravBotSharp.Files.Helpers
                 .Where(x => x.Replace(CachePath + "\\", "").StartsWith(userFolder))
                 .ToArray();
 
+            if (removeFolders == null) return;
+
             for (int i = 0; i < removeFolders.Count(); i++)
             {
                 Directory.Delete(removeFolders[i], true);

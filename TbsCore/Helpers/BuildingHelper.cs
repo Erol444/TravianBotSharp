@@ -10,15 +10,17 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class BuildingHelper
     {
-        public static void AddBuildingTask(Account acc, Village vill, BuildingTask task)
+        public static void AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
         {
             if (task.BuildingId == null && task.TaskType == BuildingType.General)
             {
                 //Check if bot has any space to build new buildings, otherwise return
                 if (!FindBuildingId(vill, task)) return;
             }
-            vill.Build.Tasks.Add(task);
-            if(acc.Wb != null)ReStartBuilding(acc, vill);
+            if (bottom) vill.Build.Tasks.Add(task);
+            else vill.Build.Tasks.Insert(0, task);
+
+            if (acc.Wb != null) ReStartBuilding(acc, vill);
         }
 
         /// <summary>
