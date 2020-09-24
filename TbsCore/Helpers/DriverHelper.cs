@@ -20,7 +20,7 @@ namespace TbsCore.Helpers
             try
             {
                 acc.Wb.Driver.ExecuteScript(script);
-                await Task.Delay(AccountHelper.Delay());
+                await Task.Delay(AccountHelper.Delay() * 2);
                 acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
             }
             catch(Exception e) { }

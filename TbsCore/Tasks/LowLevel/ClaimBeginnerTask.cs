@@ -17,6 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var questId = QuestId(QuestToClaim);
             var script = $"document.getElementById('mentorTaskList').querySelector('[data-questid=\"{questId}\"]').click();";
             await DriverHelper.ExecuteScript(acc, script);
+            await Task.Delay(AccountHelper.Delay() * 2);
 
             string buttonId = "";
             switch (acc.AccInfo.ServerVersion)
