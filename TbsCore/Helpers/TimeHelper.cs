@@ -26,6 +26,9 @@ namespace TravBotSharp.Files.Helpers
                 TimeSpan toWaitForThisRes = new TimeSpan(0);
                 if (resRequired[i] > 0)
                 {
+                    // In case of negative crop, we will never have enough crop
+                    if (production[i] <= 0) return TimeSpan.MaxValue;
+
                     float hoursToWait = (float)resRequired[i] / (float)production[i];
                     float secToWait = hoursToWait * 3600;
                     toWaitForThisRes = new TimeSpan(0, 0, (int)secToWait);
