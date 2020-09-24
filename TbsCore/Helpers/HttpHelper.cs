@@ -9,10 +9,16 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class HttpHelper
     {
-        public static string GetAjaxToken(ChromeDriver wb)
+        public static string GetAjaxToken(Account acc)
         {
-            IJavaScriptExecutor js = wb as IJavaScriptExecutor;
-            return js.ExecuteScript("return ajaxToken;") as string;
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_4:
+                    IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
+                    return js.ExecuteScript("return ajaxToken;") as string;
+                default:
+                    return "";
+            }
         }
 
         public static (CookieContainer, string) GetCookies(Account acc)

@@ -3,6 +3,8 @@ using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.AttackModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 
@@ -65,7 +67,7 @@ namespace TravBotSharp.Files.Parsers
                 var troopNum = (int)Parser.RemoveNonNumeric(troop);
 
                 var troopCount = td.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("href", "") == "#")?.InnerText;
-                var troopCountInt = troopCount == null ? 0 : (int)Parser.RemoveNonNumeric(troopCount);
+                var troopCountInt = troopCount == null ? 0 : (int)Parser.RemoveNonNumeric(WebUtility.HtmlDecode(troopCount));
                 ret[troopNum - 1] = troopCountInt;
             }
             return ret;
