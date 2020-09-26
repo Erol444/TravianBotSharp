@@ -72,6 +72,7 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.demolishRadioButton = new System.Windows.Forms.RadioButton();
             this.button1 = new System.Windows.Forms.Button();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.autoBuildResLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.buildLevelUpDown)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -405,7 +406,8 @@
             this.columnHeader5,
             this.columnHeader6,
             this.buildingId,
-            this.columnHeader7});
+            this.columnHeader7,
+            this.columnHeader1});
             this.buildListView.FullRowSelect = true;
             this.buildListView.GridLines = true;
             this.buildListView.HideSelection = false;
@@ -487,6 +489,11 @@
             this.button1.Text = "Refresh";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "";
+            this.columnHeader1.Width = 27;
             // 
             // BuildUc
             // 
@@ -581,5 +588,6 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton demolishRadioButton;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
     }
 }

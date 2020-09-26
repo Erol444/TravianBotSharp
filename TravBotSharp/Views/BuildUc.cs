@@ -44,6 +44,7 @@ namespace TravBotSharp.Views
 
                 item.SubItems.Add(task.Level.ToString()); //lvl
                 item.SubItems.Add(task.BuildingId.ToString()); //buildingId
+                item.SubItems.Add(""); // Selected task
 
                 var upgradeTask = acc.Tasks?.FirstOrDefault(x =>
                     x.GetType() == typeof(UpgradeBuilding)
@@ -53,7 +54,7 @@ namespace TravBotSharp.Views
                 item.SubItems.Add(upgradeTask == null ? "" : upgradeTask.ExecuteAt.ToString()); //execute at
                 buildListView.Items.Add(item);
             }
-            //UpdateCurrentlySelected(vill);
+            UpdateCurrentlySelected(vill);
             foreach (var task in vill.Build.DemolishTasks)
             {
                 var item = new ListViewItem();
@@ -87,11 +88,13 @@ namespace TravBotSharp.Views
 
         private void UpdateCurrentlySelected(Village vill)
         {
-            // TODO: finish this
-            //if (oldSelected >= 0 && oldSelected < vill.Build.Tasks.Count)
-            //{
-            //    buildListView.Items[oldSelected].SubItems[0].Text = "▶ " + buildListView.Items[oldSelected].SubItems[0].Text;
-            //}
+            if (oldSelected >= 0 && oldSelected < vill.Build.Tasks.Count)
+            {
+                for (int i = 0; i < buildListView.Items.Count; i++)
+                {
+                    buildListView.Items[i].SubItems[4].Text = (oldSelected == i) ? "⨞" : "";
+                }
+            }
         }
 
         private string AutoBuildResFieldsStr(BuildingTask task)
@@ -252,8 +255,8 @@ namespace TravBotSharp.Views
             if (index == 0) return;
             vill.Build.Tasks.Remove(task);
             vill.Build.Tasks.Insert(0, task);
-            UpdateBuildTab();
             oldSelected = 0;
+            UpdateBuildTab();
         }
 
         private void button22_Click(object sender, EventArgs e) //move bottom build task
@@ -264,8 +267,8 @@ namespace TravBotSharp.Views
             if (index == vill.Build.Tasks.Count - 1) return; //already at the bottom
             vill.Build.Tasks.Remove(task);
             vill.Build.Tasks.Add(task);
-            UpdateBuildTab();
             oldSelected = vill.Build.Tasks.Count - 1;
+            UpdateBuildTab();
         }
 
         private void button11_Click(object sender, EventArgs e) //move up build task
@@ -276,8 +279,8 @@ namespace TravBotSharp.Views
             if (index == 0) return;
             vill.Build.Tasks.Remove(task);
             vill.Build.Tasks.Insert(index - 1, task);
-            UpdateBuildTab();
             oldSelected = index - 1;
+            UpdateBuildTab();
         }
 
         private void button12_Click(object sender, EventArgs e) //move down build task
@@ -288,8 +291,8 @@ namespace TravBotSharp.Views
             if (index == vill.Build.Tasks.Count - 1) return;
             vill.Build.Tasks.Remove(task);
             vill.Build.Tasks.Insert(index + 1, task);
-            UpdateBuildTab();
             oldSelected = index + 1;
+            UpdateBuildTab();
         }
 
         private void button13_Click(object sender, EventArgs e) //delete build task
