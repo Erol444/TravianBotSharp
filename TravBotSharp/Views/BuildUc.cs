@@ -355,7 +355,6 @@ namespace TravBotSharp.Views
 
         private void AutoBuildBonusBuildings_CheckedChanged(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
             var vill = getSelectedVillage();
             vill.Build.AutoBuildResourceBonusBuildings = AutoBuildBonusBuildings.Checked;
         }
@@ -367,17 +366,31 @@ namespace TravBotSharp.Views
             var vill = getSelectedVillage();
 
             var indicies = buildingsList.SelectedIndices;
-            if (indicies.Count > 0)
-                selectedBuilding = vill.Build.Buildings[indicies[0]];
-            //buildlevelupdown
-            if (selectedBuilding != null)
-                buildLevelUpDown.Value = selectedBuilding.Level + 1;
+
+            if (indicies.Count > 0) selectedBuilding = vill.Build.Buildings[indicies[0]];
+            else return;
+
+            // Check if there is already a building planner for that id
+            var planedBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == selectedBuilding.Id);
+
+            // Building level selector
+            if (selectedBuilding.Type != Classificator.BuildingEnum.Site) buildLevelUpDown.Value = selectedBuilding.Level + 1;
+            else if (planedBuilding != null) buildLevelUpDown.Value = planedBuilding.Level + 1;
+            else buildLevelUpDown.Value = 1;
+
             //construct new building
             buildTypeComboBox.Items.Clear();
 
-            if (selectedBuilding == null) return;
+            buildTypeComboBox.Enabled = false;
             if (selectedBuilding.Type == Classificator.BuildingEnum.Site)
             {
+                if (planedBuilding != null)
+                {
+                    buildTypeComboBox.Items.Add(planedBuilding.Building.ToString());
+                    buildTypeComboBox.SelectedIndex = 0;
+                    return;
+                }
+
                 buildTypeComboBox.Enabled = true;
                 for (int i = 5; i <= 45; i++)
                 {
@@ -386,10 +399,12 @@ namespace TravBotSharp.Views
                         buildTypeComboBox.Items.Add(((Classificator.BuildingEnum)i).ToString());
                     }
                 }
-                if (buildTypeComboBox.Items.Count > 0) buildTypeComboBox.SelectedIndex = 0;
             }
-            else
-                buildTypeComboBox.Enabled = false;
+            else // Building already there
+            {
+                buildTypeComboBox.Items.Add(selectedBuilding.Type.ToString());
+            }
+            if (buildTypeComboBox.Items.Count > 0) buildTypeComboBox.SelectedIndex = 0;
         }
 
         private void demolishRadioButton_CheckedChanged(object sender, EventArgs e)
