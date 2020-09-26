@@ -63,10 +63,6 @@ namespace TravBotSharp.Files.Helpers
 
                 switch (cmd.cmdType)
                 {
-                    case 1: // Normal build
-                        task.TaskType = BuildingHelper.BuildingType.General;
-                        task.Building = (Classificator.BuildingEnum)cmd.gid;
-                        break;
                     case 4: // Based on level
                         task.TaskType = BuildingHelper.BuildingType.AutoUpgradeResFields;
                         task.BuildingStrategy = BuildingStrategyEnum.BasedOnLevel;
@@ -81,6 +77,10 @@ namespace TravBotSharp.Files.Helpers
                         task.TaskType = BuildingHelper.BuildingType.AutoUpgradeResFields;
                         task.BuildingStrategy = BuildingStrategyEnum.BasedOnRes;
                         task.ResourceType = GetTrBuilderResType(cmd.gid);
+                        break;
+                    default: // Normal build?
+                        task.TaskType = BuildingHelper.BuildingType.General;
+                        task.Building = (Classificator.BuildingEnum)cmd.gid;
                         break;
                 }
 
