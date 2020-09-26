@@ -12,6 +12,7 @@ namespace TravBotSharp.Files.Models.AccModels
     {
         private readonly Account acc;
         private Timer Timer { get; set; }
+        public bool? IsBotRunning() => Timer.Enabled;
         public TaskTimer(Account account)
         {
             acc = account;
@@ -28,6 +29,7 @@ namespace TravBotSharp.Files.Models.AccModels
         public void Stop()
         {
             Timer.Stop();
+            Timer.Enabled = false;
         }
 
         private void TimerElapsed(Object source, ElapsedEventArgs e)

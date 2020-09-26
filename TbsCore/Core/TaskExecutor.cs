@@ -154,6 +154,10 @@ namespace TravBotSharp.Files.Helpers
                 //check & update dorf1/dorf2
                 if (!UpdateAccountObject.UpdateVillages(html, acc)) return false; //Web browser not initialized
                 var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
+
+                //update server version
+                acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4);
+
                 //update dorf1/dorf2
                 if (acc.Wb.CurrentUrl.Contains("dorf1")) UpdateDorf1Info(acc);
                 else if (acc.Wb.CurrentUrl.Contains("dorf2")) UpdateDorf2Info(acc);
@@ -271,9 +275,6 @@ namespace TravBotSharp.Files.Helpers
 
         public static void UpdateDorf2Info(Account acc)
         {
-            //update server version
-            acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4);
-
             //update buildings, currentlyBuilding, resources, capacity
             var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
             if (activeVill == null) return;
@@ -307,9 +308,6 @@ namespace TravBotSharp.Files.Helpers
 
         public static void UpdateDorf1Info(Account acc)
         {
-            //update server version
-            acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4);
-
             var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
             if (activeVill == null) return;
 

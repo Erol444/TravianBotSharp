@@ -85,10 +85,10 @@ namespace TravBotSharp
             accListView.Items.Add(item);
         }
 
-        private void button2_Click(object sender, EventArgs e) //login button
+        private async void button2_Click(object sender, EventArgs e) //login button
         {
-            var acc = GetSelectedAcc();
-            new Thread(() => _=IoHelperCore.LoginAccount(acc)).Start();
+            new Thread(() => _ = IoHelperCore.LoginAccount(GetSelectedAcc())).Start();
+            generalUc1.UpdateBotRunning("true");
         }
 
         private void button3_Click(object sender, EventArgs e) // Remove an account
@@ -281,6 +281,7 @@ namespace TravBotSharp
         private void button5_Click(object sender, EventArgs e) // Logout
         {
             new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
+            generalUc1.UpdateBotRunning("false");
         }
     }
 }

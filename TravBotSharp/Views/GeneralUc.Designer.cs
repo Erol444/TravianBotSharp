@@ -79,8 +79,11 @@
             this.label19 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.autoRandomTasks = new System.Windows.Forms.CheckBox();
             this.label20 = new System.Windows.Forms.Label();
+            this.autoRandomTasks = new System.Windows.Forms.CheckBox();
+            this.button1 = new System.Windows.Forms.Button();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.botRunning = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.fillInAdvanceUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
@@ -92,6 +95,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.sleepMin)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.panel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // button5
@@ -222,7 +226,7 @@
             // 
             // startTimersButton
             // 
-            this.startTimersButton.Location = new System.Drawing.Point(34, 203);
+            this.startTimersButton.Location = new System.Drawing.Point(16, 14);
             this.startTimersButton.Name = "startTimersButton";
             this.startTimersButton.Size = new System.Drawing.Size(92, 23);
             this.startTimersButton.TabIndex = 95;
@@ -417,7 +421,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(34, 244);
+            this.button6.Location = new System.Drawing.Point(16, 72);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(92, 23);
             this.button6.TabIndex = 162;
@@ -646,6 +650,16 @@
             this.panel3.Size = new System.Drawing.Size(217, 100);
             this.panel3.TabIndex = 173;
             // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(10, 70);
+            this.label20.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(195, 13);
+            this.label20.TabIndex = 174;
+            this.label20.Text = "* if there is no other task to be executed";
+            // 
             // autoRandomTasks
             // 
             this.autoRandomTasks.AutoSize = true;
@@ -658,24 +672,47 @@
             this.autoRandomTasks.UseVisualStyleBackColor = true;
             this.autoRandomTasks.CheckedChanged += new System.EventHandler(this.autoRandomTasks_CheckedChanged);
             // 
-            // label20
+            // button1
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(10, 70);
-            this.label20.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(195, 13);
-            this.label20.TabIndex = 174;
-            this.label20.Text = "* if there is no other task to be executed";
+            this.button1.Location = new System.Drawing.Point(16, 43);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(92, 23);
+            this.button1.TabIndex = 174;
+            this.button1.Text = "Resume bot";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // panel4
+            // 
+            this.panel4.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel4.Controls.Add(this.botRunning);
+            this.panel4.Controls.Add(this.startTimersButton);
+            this.panel4.Controls.Add(this.button1);
+            this.panel4.Controls.Add(this.button6);
+            this.panel4.Location = new System.Drawing.Point(17, 133);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(138, 136);
+            this.panel4.TabIndex = 175;
+            // 
+            // botRunning
+            // 
+            this.botRunning.AutoSize = true;
+            this.botRunning.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botRunning.Location = new System.Drawing.Point(9, 109);
+            this.botRunning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.botRunning.Name = "botRunning";
+            this.botRunning.Size = new System.Drawing.Size(77, 16);
+            this.botRunning.TabIndex = 176;
+            this.botRunning.Text = "Bot running:";
             // 
             // GeneralUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.button6);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.FillForUpDown);
             this.Controls.Add(this.label12);
@@ -704,7 +741,6 @@
             this.Controls.Add(this.SupplyResVillageSelected);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.SupplyResVillageComboBox);
-            this.Controls.Add(this.startTimersButton);
             this.Controls.Add(this.checkBox4);
             this.Name = "GeneralUc";
             this.Size = new System.Drawing.Size(950, 536);
@@ -722,6 +758,8 @@
             this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -781,5 +819,8 @@
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.CheckBox autoRandomTasks;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Label botRunning;
     }
 }

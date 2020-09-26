@@ -58,6 +58,7 @@ namespace TravBotSharp.Views
             sleepMin.Value = acc.Settings.Time.MinSleep;
             workMax.Value = acc.Settings.Time.MaxWork;
             workMin.Value = acc.Settings.Time.MinWork;
+            UpdateBotRunning();
         }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages
@@ -96,6 +97,7 @@ namespace TravBotSharp.Views
 
             acc.Tasks.Clear();
             AccountHelper.StartAccountTasks(acc);
+            UpdateBotRunning();
         }
 
         private void button16_Click(object sender, EventArgs e) //all villages farm tasks
@@ -215,7 +217,8 @@ namespace TravBotSharp.Views
 
         private void button6_Click(object sender, EventArgs e) // Stop timers
         {
-            getSelectedAcc().TaskTimer.Stop();
+            getSelectedAcc().TaskTimer?.Stop();
+            UpdateBotRunning();
         }
 
         private void headlessCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -275,6 +278,17 @@ namespace TravBotSharp.Views
         private void autoRandomTasks_CheckedChanged(object sender, EventArgs e)
         {
             getSelectedAcc().Settings.AutoRandomTasks = autoRandomTasks.Checked;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            getSelectedAcc().TaskTimer.Start();
+            UpdateBotRunning();
+        }
+        public void UpdateBotRunning(string running = null)
+        {
+            if(string.IsNullOrEmpty(running)) running = getSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
+            botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
         }
     }
 }
