@@ -50,22 +50,22 @@ namespace TravBotSharp.Files.Helpers
             var cap = vill.Res.Capacity;
 
             var woodNeeded = (long)(cap.WarehouseCapacity * conf.TargetLimit.Wood / 100.0);
-            sendRes.Wood = (((woodNeeded > conf.FillLimit.Wood ? conf.FillLimit.Wood : woodNeeded) - currentRes.Wood) / 1000) * 1000;
+            sendRes.Wood = (woodNeeded > conf.FillLimit.Wood ? conf.FillLimit.Wood : woodNeeded) - currentRes.Wood;
             sendRes.Wood = (sendRes.Wood < 0 ? 0 : sendRes.Wood);
 
             var clayNeeded = (long)(cap.WarehouseCapacity * conf.TargetLimit.Clay / 100.0);
-            sendRes.Clay = (((clayNeeded > conf.FillLimit.Clay ? conf.FillLimit.Clay : clayNeeded) - currentRes.Clay) / 1000) * 1000;
+            sendRes.Clay = (clayNeeded > conf.FillLimit.Clay ? conf.FillLimit.Clay : clayNeeded) - currentRes.Clay;
             sendRes.Clay = (sendRes.Clay < 0 ? 0 : sendRes.Clay);
 
             var ironNeeded = (long)(cap.WarehouseCapacity * conf.TargetLimit.Iron / 100.0);
-            sendRes.Iron = (((ironNeeded > conf.FillLimit.Iron ? conf.FillLimit.Iron : ironNeeded) - currentRes.Iron) / 1000) * 1000;
+            sendRes.Iron = (ironNeeded > conf.FillLimit.Iron ? conf.FillLimit.Iron : ironNeeded) - currentRes.Iron;
             sendRes.Iron = (sendRes.Iron < 0 ? 0 : sendRes.Iron);
 
             var cropNeeded = (long)(cap.GranaryCapacity * conf.TargetLimit.Crop / 100.0);
-            sendRes.Crop = (((cropNeeded > conf.FillLimit.Crop ? conf.FillLimit.Crop : cropNeeded) - currentRes.Crop) / 1000) * 1000;
+            sendRes.Crop = (cropNeeded > conf.FillLimit.Crop ? conf.FillLimit.Crop : cropNeeded) - currentRes.Crop;
             sendRes.Crop = (sendRes.Crop < 0 ? 0 : sendRes.Crop);
 
-            if (sendRes.Wood == 0 && sendRes.Clay == 0 && sendRes.Iron == 0 && sendRes.Crop == 0) //we have enough res :)
+            if (ResourcesHelper.IsZeroResources(sendRes)) //we have enough res :)
                 return DateTime.MinValue;
 
             var sendResTask = new SendResources

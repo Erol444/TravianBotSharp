@@ -268,7 +268,7 @@ namespace TravBotSharp.Files.Helpers
             return ArrayToResources(ret);
         }
 
-        private static bool IsZeroResources(Resources res)
+        public static bool IsZeroResources(Resources res)
         {
             return (res.Wood == 0 && res.Clay == 0 && res.Iron == 0 && res.Crop == 0);
         }
