@@ -23,14 +23,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             var rand = new Random();
             int sleepSec = rand.Next(MinSleepSec, MaxSleepSec);
+            var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
 
-            int counterSec = 0;
             do
             {
-                counterSec++;
-                await Task.Delay(1000);
+                await Task.Delay(AccountHelper.Delay());
             }
-            while (NoHighPriorityTask(acc) || counterSec >= sleepSec);
+            while (DateTime.Now < sleepEnd && NoHighPriorityTask(acc));
 
 
             if (AutoSleep)
