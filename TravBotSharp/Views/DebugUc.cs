@@ -36,6 +36,7 @@ namespace TravBotSharp.Views
                 item.SubItems.Add(task.Priority.ToString());
                 item.SubItems.Add(task.Stage.ToString());
                 item.SubItems.Add(task.ExecuteAt.ToString());
+                item.SubItems.Add(task.Message ?? "");
                 taskListView.Items.Add(item);
             }
         }

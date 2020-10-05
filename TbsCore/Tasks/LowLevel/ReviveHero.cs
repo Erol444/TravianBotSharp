@@ -17,7 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var reviveButton = acc.Wb.Html.GetElementbyId("heroRegeneration");
             if (reviveButton == null)
             {
-                this.ErrorMessage = "No revive button!";
+                this.Message = "No revive button!";
                 return TaskRes.Executed;
             }
             if (reviveButton.HasClass("green"))

@@ -177,7 +177,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (buildingEnum == BuildingEnum.Site || lvl == -1)
             {
-                this.ErrorMessage = $"Can't upgrade building {this.Task.Building} in village {this.Vill.Name}. Will be removed from the queue.";
+                this.Message = $"Can't upgrade building {this.Task.Building} in village {this.Vill.Name}. Will be removed from the queue.";
                 Vill.Build.Tasks.Remove(this.Task);
                 return TaskRes.Executed;
             }
@@ -198,7 +198,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (building.UnderConstruction) lvl++;
             if (lvl >= Task.Level)
             {
-                this.ErrorMessage = $"{this.Task.Building} is on level {lvl}, above desired {Task.Level}. Removing it from queue.";
+                this.Message = $"{this.Task.Building} is on level {lvl}, above desired {Task.Level}. Removing it from queue.";
                 Vill.Build.Tasks.Remove(this.Task);
                 RemoveCompletedTasks(this.Vill, acc);
                 return TaskRes.Executed;
@@ -208,7 +208,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var buttons = container?.Descendants("button");
             if (buttons == null)
             {
-                this.ErrorMessage = "No 'upgrade' button found!";
+                this.Message = "No 'upgrade' button found!";
                 return TaskRes.Executed;
             }
 
@@ -232,7 +232,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (IsTaskCompleted(Vill, acc, this.Task))
             {
-                this.ErrorMessage = $"Building {this.Task.Building} in village {this.Vill.Name} is already done. Will be removed from the queue.";
+                this.Message = $"Building {this.Task.Building} in village {this.Vill.Name} is already done. Will be removed from the queue.";
                 Vill.Build.Tasks.Remove(this.Task);
                 return TaskRes.Executed;
             }

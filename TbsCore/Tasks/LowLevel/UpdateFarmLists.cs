@@ -19,7 +19,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var foundFLs = FarmlistParser.ParseFL(acc.Wb.Html);
             if (foundFLs == null)
             {
-                this.ErrorMessage = "No FL, do you have rally point in this village?";
+                this.Message = "No FL, do you have rally point in this village?";
                 this.Vill = AccountHelper.GetMainVillage(acc);
                 this.NextExecute = DateTime.Now.AddSeconds(10);
                 return TaskRes.Executed;

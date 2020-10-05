@@ -89,7 +89,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
-            task.ErrorMessage = null;
+            task.Message = null;
             //Console.WriteLine($"Executing task {task.GetType()}");
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
             try
@@ -97,9 +97,9 @@ namespace TravBotSharp.Files.Helpers
                 switch (await task.Execute(acc))
                 {
                     case TaskRes.Retry:
-                        if (task.ErrorMessage != null)
+                        if (task.Message != null)
                         {
-                            Utils.log.Warning(LogHelper(acc, task, "warning") + "\n" + task.ErrorMessage);
+                            Utils.log.Warning(LogHelper(acc, task, "warning") + "\n" + task.Message);
                         }
 
                         // There was probably a problem, retry executing the task later.
@@ -120,6 +120,8 @@ namespace TravBotSharp.Files.Helpers
 
             // Execute post tasks
             PostTask(task, acc);
+
+            task.Message = null;
 
             //We want to re-execute the same task later
             if (task.NextExecute != null && task.RetryCounter < 3)

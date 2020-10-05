@@ -17,7 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var extendButton = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("value", "") == "Extend");
             if (extendButton == null)
             {
-                this.ErrorMessage = "Can not extend protection! Are you a sitter?";
+                this.Message = "Can not extend protection! Are you a sitter?";
                 return TaskRes.Executed;
             }
 

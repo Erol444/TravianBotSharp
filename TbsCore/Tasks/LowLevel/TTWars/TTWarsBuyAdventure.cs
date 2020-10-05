@@ -17,7 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var button = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyAdventure"));
             if (button == null)
             {
-                this.ErrorMessage = "No button 'Buy' button found, perhaps you are not on vip ttwars server?";
+                this.Message = "No button 'Buy' button found, perhaps you are not on vip ttwars server?";
                 return TaskRes.Executed;
             }
             wb.ExecuteScript($"document.getElementById('{button.Id}').click()"); //Excgabge resources button

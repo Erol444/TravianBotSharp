@@ -42,7 +42,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var buy = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyResources6"));
             if (buy == null)
             {
-                this.ErrorMessage = "Can't find the button with class buyResources6. Are you sure you are on vip/unl TTWars server?";
+                this.Message = "Can't find the button with class buyResources6. Are you sure you are on vip/unl TTWars server?";
                 return TaskRes.Executed;
             }
             var buyId = buy.GetAttributeValue("id", "");

@@ -23,7 +23,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var button = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("increaseStorage"));
             if (button == null)
             {
-                this.ErrorMessage = "No such button, are you sure you are on TTWars vip/unl?";
+                this.Message = "No such button, are you sure you are on TTWars vip/unl?";
                 return TaskRes.Executed;
             }
             wb.ExecuteScript($"document.getElementById('{button.Id}').click()"); //exapand the storage button

@@ -24,7 +24,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var table = acc.Wb.Html.DocumentNode.Descendants("table").FirstOrDefault(x => x.HasClass("row_table_data"));
             if (table == null)
             {
-                this.ErrorMessage = "Production table not found.";
+                this.Message = "Production table not found.";
                 return TaskRes.Executed;
             }
             var firstRow = table.ChildNodes.First(x => x.Name == "tbody").ChildNodes.First(x => x.Name == "tr");
@@ -33,7 +33,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var level = (int)Parser.RemoveNonNumeric(levelCell.InnerText);
             if (level > 20)
             {
-                this.ErrorMessage = "Woodcutter level above 20. Impossible.";
+                this.Message = "Woodcutter level above 20. Impossible.";
                 return TaskRes.Executed;
             }
 
