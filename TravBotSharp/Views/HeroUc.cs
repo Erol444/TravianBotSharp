@@ -20,11 +20,17 @@ namespace TravBotSharp.Views
             minHeroHealthUpDown.Value = acc.Hero.Settings.MinHealth;
             autoReviveHero.Checked = acc.Hero.Settings.AutoReviveHero;
 
+            strength.Value = 0;
+            offBonus.Value = 0;
+            deffBonus.Value = 0;
+            resources.Value = 0;
+
             var heroUpgrade = acc.Hero.Settings.Upgrades;
             strength.Value = heroUpgrade[0];
             offBonus.Value = heroUpgrade[1];
             deffBonus.Value = heroUpgrade[2];
             resources.Value = heroUpgrade[3];
+
             autoSetHeroPoints.Checked = acc.Hero.Settings.AutoSetPoints;
             maxDistanceUpDown.Value = acc.Hero.Settings.MaxDistance;
             LimitHeroPoints();
