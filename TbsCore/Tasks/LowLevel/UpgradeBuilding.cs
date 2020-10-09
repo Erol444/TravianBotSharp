@@ -297,7 +297,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             // Worst case: leave nextExecute as is (after the current building finishes)
             // Best case: now
-            CheckResourceBonus(Vill);
+            if (Vill.Build.AutoBuildResourceBonusBuildings) CheckResourceBonus(Vill);
+
             (var nextTask, var time) = FindBuildingTask(acc, Vill);
             if (nextTask == null)
             {
