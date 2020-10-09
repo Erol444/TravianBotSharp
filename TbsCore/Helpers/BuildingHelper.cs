@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
@@ -9,15 +10,17 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class BuildingHelper
     {
-        public static void AddBuildingTask(Account acc, Village vill, BuildingTask task)
+        public static void AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
         {
             if (task.BuildingId == null && task.TaskType == BuildingType.General)
             {
                 //Check if bot has any space to build new buildings, otherwise return
                 if (!FindBuildingId(vill, task)) return;
             }
-            vill.Build.Tasks.Add(task);
-            ReStartBuilding(acc, vill);
+            if (bottom) vill.Build.Tasks.Add(task);
+            else vill.Build.Tasks.Insert(0, task);
+
+            if (acc.Wb != null) ReStartBuilding(acc, vill);
         }
 
         /// <summary>
@@ -69,7 +72,7 @@ namespace TravBotSharp.Files.Helpers
             RemoveCompletedTasks(vill, acc);
             //remove ongoing building task for this village
             acc.Tasks.RemoveAll(x =>
-                x.vill == vill &&
+                x.Vill == vill &&
                 x.GetType() == typeof(UpgradeBuilding)
                 );
 
@@ -80,11 +83,13 @@ namespace TravBotSharp.Files.Helpers
 
             var maxBuildings = 1;
             if (acc.AccInfo.PlusAccount) maxBuildings++;
+            if (acc.AccInfo.Tribe == Classificator.TribeEnum.Romans) maxBuildings++;
+
             if (lastCB != null && lastCB.Duration > nextExecution && vill.Build.CurrentlyBuilding.Count >= maxBuildings) nextExecution = lastCB.Duration;
 
             var building = new UpgradeBuilding()
             {
-                vill = vill,
+                Vill = vill,
                 ExecuteAt = nextExecution,
             };
             TaskExecutor.AddTask(acc, building);
@@ -94,7 +99,7 @@ namespace TravBotSharp.Files.Helpers
         {
             if (vill.Build.DemolishTasks.Count > 0)
             {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) });
+                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) });
             }
         }
 
@@ -159,7 +164,7 @@ namespace TravBotSharp.Files.Helpers
                 case BuildingType.General:
                     return GetUrlGeneralTask(vill, task);
                 case BuildingType.AutoUpgradeResFields:
-                    return GetUrlAutoResFIelds(vill, task);
+                    return GetUrlAutoResFields(vill, task);
             }
             return null;
         }
@@ -207,11 +212,11 @@ namespace TravBotSharp.Files.Helpers
         }
         private static string GetUrlGeneralTask(Village vill, BuildingTask task)
         {
-            //check if there is already a different building in this spot
+            // Check if there is already a different building in this spot
             if (task.BuildingId == null || vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId).Type != task.Building)
             {
                 var targetBuilding = vill.Build.Buildings.FirstOrDefault(x => x.Type == task.Building);
-                //re-select the buildingId
+                // Re-select the buildingId
                 if (targetBuilding != null && !task.ConstructNew)
                 {
                     task.BuildingId = targetBuilding.Id;
@@ -233,9 +238,9 @@ namespace TravBotSharp.Files.Helpers
             }
             return url;
         }
-        public static string GetUrlAutoResFIelds(Village vill, BuildingTask task)
+        public static string GetUrlAutoResFields(Village vill, BuildingTask task)
         {
-            List<Models.ResourceModels.Building> buildings; //potential buildings to be upgraded next :)
+            List<Models.ResourceModels.Building> buildings; // Potential buildings to be upgraded next
             switch (task.ResourceType)
             {
                 case ResTypeEnum.AllResources:
@@ -250,15 +255,14 @@ namespace TravBotSharp.Files.Helpers
                 default:
                     return null;
             }
-            buildings = buildings.Where(x => x.Level < task.Level).ToList(); //only select res fields that are below desired level
+            buildings = buildings.Where(x => x.Level < task.Level).ToList(); // Only select res fields that are below desired level
             foreach (var b in buildings.ToList())
             {
-                if (b.Level == task.Level - 1 && b.UnderConstruction) buildings.Remove(b); //its already being upgraded to selected lvl
+                if (b.Level == task.Level - 1 && b.UnderConstruction) buildings.Remove(b); // It's already being upgraded to selected level
             }
 
             // Filter resource fields by type
             //buildings = buildings.Where(x => x.Type == task.Building).ToList();
-
 
             Models.ResourceModels.Building buildingToUpgrade = null;
             switch (task.BuildingStrategy)
@@ -308,7 +312,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc"></param>
         /// <param name="vill"></param>
         /// <param name="building"></param>
-        /// <returns>True if we have all prerequisite buildings, false otherwise</returns>
+        /// <returns>Whether we have all prerequisite buildings</returns>
         public static bool AddBuildingPrerequisites(Account acc, Village vill, Classificator.BuildingEnum building)
         {
             (var tribe, var prereqs) = GetBuildingPrerequisites(building);
@@ -321,9 +325,9 @@ namespace TravBotSharp.Files.Helpers
                     x.Type == prereq.Building &&
                     x.Level >= prereq.Level
                     );
-                //prereqired building already exists
+                // Prerequired building already exists
                 if (prereqBuilding != null) continue;
-                //check if we have its prerequisites
+                // Check if we have its prerequisites
                 AddBuildingPrerequisites(acc, vill, prereq.Building);
                 AddBuildingTask(acc, vill, new BuildingTask()
                 {
@@ -338,7 +342,7 @@ namespace TravBotSharp.Files.Helpers
         public static bool IsResourceField(Classificator.BuildingEnum building)
         {
             int buildingInt = (int)building;
-            //if id between 1 and 4, it's resource field.
+            // If id between 1 and 4, it's resource field
             return buildingInt < 5 && buildingInt > 0;
         }
         public static void RemoveCompletedTasks(Village vill, Account acc)
@@ -400,11 +404,6 @@ namespace TravBotSharp.Files.Helpers
             }
         }
 
-        public class Prerequisite
-        {
-            public Classificator.BuildingEnum Building { get; set; }
-            public int Level { get; set; }
-        }
         public static (Classificator.TribeEnum, List<Prerequisite>) GetBuildingPrerequisites(Classificator.BuildingEnum building)
         {
             Classificator.TribeEnum tribe = Classificator.TribeEnum.Any;
@@ -570,10 +569,17 @@ namespace TravBotSharp.Files.Helpers
         private static Models.ResourceModels.Building FindLowestLevelBuilding(List<Models.ResourceModels.Building> buildings)
         {
             if (buildings.Count == 0) return null;
-            Models.ResourceModels.Building lowestBuilding = buildings[0];
-            for (int i = 1; i < buildings.Count; i++)
+            int lowestLvl = 100;
+            Models.ResourceModels.Building lowestBuilding = new Models.ResourceModels.Building();
+            for (int i = 0; i < buildings.Count; i++)
             {
-                if (lowestBuilding.Level > buildings[i].Level) lowestBuilding = buildings[i];
+                var buildingLevel = buildings[i].Level;
+                if (buildings[i].UnderConstruction) buildingLevel++;
+                if (lowestLvl > buildingLevel)
+                {
+                    lowestLvl = buildingLevel;
+                    lowestBuilding = buildings[i];
+                }
             }
             return lowestBuilding;
         }
@@ -586,10 +592,10 @@ namespace TravBotSharp.Files.Helpers
 
             foreach (var distinctType in distinct)
             {
-                if (distinctType == Classificator.BuildingEnum.Woodcutter && vill.Res.Production.WoodPerHour < lowestProd) { lowestProd = vill.Res.Production.WoodPerHour; toUpgrade = Classificator.BuildingEnum.Woodcutter; }
-                if (distinctType == Classificator.BuildingEnum.ClayPit && vill.Res.Production.ClayPerHour < lowestProd) { lowestProd = vill.Res.Production.ClayPerHour; toUpgrade = Classificator.BuildingEnum.ClayPit; }
-                if (distinctType == Classificator.BuildingEnum.IronMine && vill.Res.Production.IronPerHour < lowestProd) { lowestProd = vill.Res.Production.IronPerHour; toUpgrade = Classificator.BuildingEnum.IronMine; }
-                if (distinctType == Classificator.BuildingEnum.Cropland && vill.Res.Production.CropPerHour < lowestProd) { lowestProd = vill.Res.Production.CropPerHour; toUpgrade = Classificator.BuildingEnum.Cropland; }
+                if (distinctType == Classificator.BuildingEnum.Woodcutter && vill.Res.Production.Wood < lowestProd) { lowestProd = vill.Res.Production.Wood; toUpgrade = Classificator.BuildingEnum.Woodcutter; }
+                if (distinctType == Classificator.BuildingEnum.ClayPit && vill.Res.Production.Clay < lowestProd) { lowestProd = vill.Res.Production.Clay; toUpgrade = Classificator.BuildingEnum.ClayPit; }
+                if (distinctType == Classificator.BuildingEnum.IronMine && vill.Res.Production.Iron < lowestProd) { lowestProd = vill.Res.Production.Iron; toUpgrade = Classificator.BuildingEnum.IronMine; }
+                if (distinctType == Classificator.BuildingEnum.Cropland && vill.Res.Production.Crop < lowestProd) { lowestProd = vill.Res.Production.Crop; toUpgrade = Classificator.BuildingEnum.Cropland; }
             }
             return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }

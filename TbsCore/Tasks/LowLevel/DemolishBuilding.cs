@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
@@ -12,24 +13,25 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class DemolishBuilding : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
-            var mainBuilding = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.MainBuilding);
+            var wb = acc.Wb.Driver;
+
+            var mainBuilding = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.MainBuilding);
             if (mainBuilding == null) return TaskRes.Executed;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={mainBuilding.Id}");
 
-            if (vill.Build.DemolishTasks.Count == 0) return TaskRes.Executed; //No more demolish tasks
+            if (Vill.Build.DemolishTasks.Count == 0) return TaskRes.Executed; //No more demolish tasks
 
-            var id = BuildingToDemolish(vill, htmlDoc);
+            var id = BuildingToDemolish(Vill, acc.Wb.Html);
 
             if (id == null) return TaskRes.Executed; //No more demolish tasks
 
-            this.PostTaskCheck.Add(CheckDemolishTime);
+            await DriverHelper.ExecuteScript(acc, $"document.getElementById('demolish').value={id}");
+            await DriverHelper.ExecuteScript(acc, "document.getElementById('btn_demolish').click()");
 
-            wb.ExecuteScript($"document.getElementById('demolish').value={id}");
-            await Task.Delay(AccountHelper.Delay());
-            wb.ExecuteScript($"document.getElementById('btn_demolish').click()");
-            this.NextExecute = DateTime.Now.AddMinutes(10);
+            this.NextExecute = NextDemolishTime(acc.Wb.Html, acc);
+
             return TaskRes.Executed;
         }
 
@@ -50,12 +52,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 vill.Build.DemolishTasks.Remove(task);
                 return BuildingToDemolish(vill, htmlDoc);
             }
-            //TODO: get name of the building you are destroying. localization.
+
             var option = building.InnerText;
             var lvl = option.Split(' ').LastOrDefault();
-            var buildingName = Parser.RemoveNumeric(option.Split('.')[1]).Trim();
-            var optionBuilding = Localizations.BuildingFromString(buildingName);
-            if (int.Parse(lvl) <= task.Level || optionBuilding != task.Building)
+
+            //TODO: Check if localized building name match
+            //var buildingName = Parser.RemoveNumeric(option.Split('.')[1]).Trim();
+            //var optionBuilding = Localizations.BuildingFromString(buildingName);
+
+            if (int.Parse(lvl) <= task.Level /*|| optionBuilding != task.Building*/)
             {
                 vill.Build.DemolishTasks.Remove(task);
                 return BuildingToDemolish(vill, htmlDoc);
@@ -64,20 +69,20 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         }
 
         /// <summary>
-        /// PostCheckTask. Add new demolish task after this one finishes.
+        /// Checks demolish time.
         /// </summary>
         /// <param name="htmlDoc">The html of the page</param>
         /// <param name="acc">account</param>
-        public void CheckDemolishTime(HtmlDocument htmlDoc, Account acc)
+        public DateTime NextDemolishTime(HtmlDocument htmlDoc, Account acc)
         {
+            htmlDoc.LoadHtml(acc.Wb.Driver.PageSource);
             var table = htmlDoc.GetElementbyId("demolish");
             if (table == null) //No building is being demolished
             {
-                this.NextExecute = DateTime.Now;
-                return;
+                return DateTime.Now;
             }
             //Re-execute the demolish building task
-            this.NextExecute = DateTime.Now.Add(TimeParser.ParseTimer(table)).AddSeconds(2);
+            return DateTime.Now.Add(TimeParser.ParseTimer(table)).AddSeconds(2);
         }
     }
 }

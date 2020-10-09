@@ -1,6 +1,8 @@
 ﻿using HtmlAgilityPack;
 using OpenQA.Selenium.Chrome;
 using System;
+using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -9,17 +11,49 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class Sleep : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public bool AutoSleep { get; set; }
+        public int MinSleepSec { get; set; }
+        public int MaxSleepSec { get; set; }
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            if (AutoSleep)
+            {
+                MinSleepSec = acc.Settings.Time.MinSleep * 60;
+                MaxSleepSec = acc.Settings.Time.MaxSleep * 60;
+            }
             var rand = new Random();
-            int sleepSec = rand.Next(acc.Settings.Time.MinSleep * 60, acc.Settings.Time.MaxSleep * 60);
-            // Set durationCounter low enough so it won't interrupt sleep (durationCounter decreases by 1 every 500ms)
-            this.DurationCounter = -2 * sleepSec;
-            await Task.Delay(sleepSec * 1000);
+            int sleepSec = rand.Next(MinSleepSec, MaxSleepSec);
+            var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
 
-            this.NextExecute = DateTime.Now + TimeHelper.GetWorkTime(acc);
+            this.Message = $"Bot will wake up at {sleepEnd}";
+
+            do
+            {
+                await Task.Delay(AccountHelper.Delay());
+            }
+            while (DateTime.Now < sleepEnd && NoHighPriorityTask(acc));
+
+
+            if (AutoSleep)
+            {
+                this.NextExecute = DateTime.Now + TimeHelper.GetWorkTime(acc);
+            }
 
             return TaskRes.Executed;
+        }
+
+        /// <summary>
+        /// Check if there is a high priority task that has to be executed.
+        /// If there is, sleep should stop.
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>Whether there are high priority tasks to be executed</returns>
+        private bool NoHighPriorityTask(Account acc)
+        {
+            return !acc.Tasks.Any(x =>
+                x.ExecuteAt <= DateTime.Now &&
+                x.Priority == TaskPriority.High
+            );
         }
     }
 }

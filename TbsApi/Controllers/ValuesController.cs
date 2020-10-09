@@ -37,7 +37,7 @@ namespace TbsApi.Controllers
         [HttpPost]
         public void Post([FromBody] string value)
         {
-            IoHelperCore.LoginAccount(acc.GetAccounts().FirstOrDefault());
+            //IoHelperCore.LoginAccount(acc.GetAccounts().FirstOrDefault());
         }
 
         // PUT api/values/5

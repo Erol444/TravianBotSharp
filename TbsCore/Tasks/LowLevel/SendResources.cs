@@ -20,13 +20,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public Coordinates Coordinates { get; set; }
         public int RunTimes { get; set; } //once / twice / 3 times
 
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
-            var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
+            var wb = acc.Wb.Driver;
+            var building = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
             if (building == null)
             {
                 //update dorg, no buildingId found?
-                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, vill = vill });
+                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = Vill });
                 Console.WriteLine($"There is no {building} in this village!");
                 return TaskRes.Executed;
             }
@@ -34,7 +35,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (this.Resources == null)
             {
-                this.Resources = vill.Res.Stored.Resources;
+                this.Resources = Vill.Res.Stored.Resources;
             }
             // Check if we have enough resources in main village
             var resToSend = MarketHelper.SendResCapToStorage(acc, this.Resources);

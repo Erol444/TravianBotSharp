@@ -1,4 +1,7 @@
-﻿using System;
+﻿using RestSharp;
+using System;
+using System.Linq;
+using System.Net;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 
@@ -7,24 +10,26 @@ namespace TravBotSharp.Files.Helpers
     public static class TimeHelper
     {
         /// <summary>
-        /// Get TimeSpan when there will be enough resources
+        /// Get TimeSpan when there will be enough resources, based on production
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="required">Resources required</param>
         /// <returns>TimeSpan</returns>
         public static TimeSpan EnoughResToUpgrade(Village vill, Resources required)
         {
-            long[] resStored = { vill.Res.Stored.Resources.Wood, vill.Res.Stored.Resources.Clay, vill.Res.Stored.Resources.Iron, vill.Res.Stored.Resources.Crop };
-            long[] production = { vill.Res.Production.WoodPerHour, vill.Res.Production.ClayPerHour, vill.Res.Production.IronPerHour, vill.Res.Production.CropPerHour };
-            long[] resRequired = { required.Wood, required.Clay, required.Iron, required.Crop };
+            long[] production = ResourcesHelper.ResourcesToArray(vill.Res.Production);
+            long[] resRequired = ResourcesHelper.ResourcesToArray(required);
+
             TimeSpan timeSpan = new TimeSpan(0);
             for (int i = 0; i < 4; i++)
             {
                 TimeSpan toWaitForThisRes = new TimeSpan(0);
-                var neededRes = resRequired[i] - resStored[i];
-                if (neededRes > 0)
+                if (resRequired[i] > 0)
                 {
-                    float hoursToWait = (float)neededRes / (float)production[i];
+                    // In case of negative crop, we will never have enough crop
+                    if (production[i] <= 0) return TimeSpan.MaxValue;
+
+                    float hoursToWait = (float)resRequired[i] / (float)production[i];
                     float secToWait = hoursToWait * 3600;
                     toWaitForThisRes = new TimeSpan(0, 0, (int)secToWait);
                 }
@@ -46,7 +51,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Generate random time when the next sleep will occur
+        /// Calculate when the next sleep will occur
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TimeSpan of the working time. After this, account should sleep</returns>
@@ -57,6 +62,40 @@ namespace TravBotSharp.Files.Helpers
                 rand.Next(acc.Settings.Time.MinWork, acc.Settings.Time.MaxWork),
                 0);
             return workTime;
+        }
+
+        /// <summary>
+        /// Calculate when next proxy change should occur
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>TimeSpan when next proxy change should occur</returns>
+        public static TimeSpan GetNextProxyChange(Account acc)
+        {
+            var proxyCount = acc.Access.AllAccess.Count;
+            if (proxyCount == 1) return TimeSpan.MaxValue;
+
+            var min = (int)((24 * 60) / proxyCount);
+
+            // +- 30min
+            var rand = new Random();
+
+            return new TimeSpan(0, min + rand.Next(-30, 30), 0);
+        }
+
+        /// <summary>
+        /// Gets the TimeSpan when the next normal or high priority task should be executed
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>TimeSpan</returns>
+        public static TimeSpan NextNormalOrHighPrioTask(Account acc)
+        {
+            var firstTask = acc.Tasks.FirstOrDefault(x =>
+                x.Priority == Tasks.BotTask.TaskPriority.Medium ||
+                x.Priority == Tasks.BotTask.TaskPriority.High
+            );
+            if (firstTask == null) return TimeSpan.MaxValue;
+
+            return (firstTask.ExecuteAt - DateTime.Now);
         }
     }
 }

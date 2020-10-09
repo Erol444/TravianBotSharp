@@ -13,25 +13,26 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class ImproveTroop : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
-            if (vill == null) vill = acc.Villages.First(x => x.Active);
+            var wb = acc.Wb.Driver;
+            if (Vill == null) Vill = acc.Villages.First(x => x.Active);
 
-            var smithy = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
+            var smithy = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
             if (smithy == null) return TaskRes.Executed;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
 
-            var levels = TroopsParser.GetTroopLevels(htmlDoc);
+            var levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
             if (levels == null)
             {
-                this.ErrorMessage = "There was an error at getting Smithy troop levels";
+                this.Message = "There was an error at getting Smithy troop levels";
                 return TaskRes.Executed;
             }
-            vill.Troops.Levels = levels;
-            UpdateResearchedTroops(vill);
+            Vill.Troops.Levels = levels;
+            UpdateResearchedTroops(Vill);
 
-            var currentlyImproving = TroopsParser.GetImprovingTroops(htmlDoc);
-            var troop = TroopToImprove(vill, currentlyImproving);
+            var currentlyImproving = TroopsParser.GetImprovingTroops(acc.Wb.Html);
+            var troop = TroopToImprove(Vill, currentlyImproving);
             if (troop == Classificator.TroopsEnum.None)
             {
                 return TaskRes.Executed;
@@ -46,19 +47,19 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             //call NextImprove() after enough res OR when this improvement finishes.
 
-            var cost = vill.Troops.Levels.FirstOrDefault(x => x.Troop == troop);
+            var cost = Vill.Troops.Levels.FirstOrDefault(x => x.Troop == troop);
 
-            var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, vill, cost.UpgradeCost);
+            var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost.UpgradeCost);
             if (nextExecute < DateTime.Now.AddMilliseconds(1)) //We have enough resources, click Improve button
             {
                 //Click on the button
-                var troopNode = htmlDoc.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
+                var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
                 while (!troopNode.HasClass("research")) troopNode = troopNode.ParentNode;
 
                 var button = troopNode.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
                 if (button == null)
                 {
-                    this.ErrorMessage = $"Could not find Upgrade button to improve {troop}";
+                    this.Message = $"Could not find Upgrade button to improve {troop}";
                     this.NextExecute = DateTime.Now.AddMinutes(1);
                     return TaskRes.Retry;
                 }

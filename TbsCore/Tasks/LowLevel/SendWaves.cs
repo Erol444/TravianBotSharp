@@ -21,8 +21,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private DateTime lastArriveAt;
         private string[] hiddenFields = new string[] { "timestamp", "timestamp_checksum", "b", "currentDid", "mpvt_token" };
 
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
 
             var wavesReady = new List<WaveReadyModel>();
@@ -44,21 +45,20 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 var build = htmlDoc1.GetElementbyId("build");
 
-                var ajaxToken = await HttpHelper.GetAjaxToken(wb);
                 var values = new Dictionary<string, string>
                 {
                     {"dname", ""}, // Name of the village, empty. Bot uses coordinates
                     {"x", SendWaveModels[i].Coordinates.x.ToString()},
                     {"y", SendWaveModels[i].Coordinates.y.ToString()},
                     {"c", ((int)SendWaveModels[i].MovementType).ToString()}, // 2 = reinformance, 3 = attack, 4 = raid
-                    {"s1", "ok"},
-                    {"ajaxToken", ajaxToken}
+                    {"s1", "ok"}
                 };
 
                 foreach (var hidden in hiddenFields)
                 {
-                    var value = build.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "") == hidden).GetAttributeValue("value", "");
-                    values.Add(hidden, value);
+                    var value = build.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "") == hidden);
+                    if (value == null) continue;
+                    values.Add(hidden, value.GetAttributeValue("value", ""));
                 }
 
                 // Get available troops
@@ -92,7 +92,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 for (int j = 0; j < SendWaveModels[i].Troops.Length; j++)
                 {
-                    values.Add($"t{j + 1}", SendWaveModels[i].Troops[j].ToString());
+                    switch (acc.AccInfo.ServerVersion)
+                    {
+                        case Classificator.ServerVersionEnum.T4_4:
+                            values.Add($"t{j + 1}", TroopCount(SendWaveModels[i].Troops[j]));
+                            break;
+                        case Classificator.ServerVersionEnum.T4_5:
+                            values.Add($"troops[0][t{j + 1}]", TroopCount(SendWaveModels[i].Troops[j]));
+                            break;
+                    }
+
                 }
 
 
@@ -118,7 +127,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     timeDifference = timeDifference.Subtract(new TimeSpan(0, 0, 0, 0, negateMillis));
 
                     var executeTime = CorrectExecuteTime(timespan);
-                    if (DateTime.Now.AddMinutes(1) < executeTime)
+                    if (DateTime.Now.AddMinutes(2) < executeTime)
                     {
                         // Restart this task at the correct time
                         this.NextExecute = executeTime;
@@ -143,7 +152,21 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 }
 
                 // Add catapult targets
-                values2.TryGetValue("t8", out string cataCount);
+                string cataCount = "0";
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case Classificator.ServerVersionEnum.T4_4:
+                        values2.TryGetValue("t8", out cataCount);
+                        break;
+                    case Classificator.ServerVersionEnum.T4_5:
+                        values2.TryGetValue("troops[0][t8]", out cataCount);
+                        // If T4.5, we need to get value "a" as well - From Confirm button
+                        var button = htmlDoc2.GetElementbyId("btn_ok");
+                        string a = button.GetAttributeValue("value", "");
+                        values2.Add("a", a);
+                        break;
+                }
+
                 if (int.Parse(cataCount) > 0)
                 {
                     values2.Add("ctar1", "99"); // 99 = Random, 1 = woodcuter, 2 = claypit..
@@ -156,7 +179,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     MovementTime = timespan
                 });
 
-                this.DurationCounter = 0;
                 Console.WriteLine(DateTime.Now + "Send wave 2");
             }
 
@@ -172,7 +194,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 var waitForTargetSec = waitForTarget.Seconds + (waitForTarget.Minutes * 60) - 1; // -1 to compensate
                 var waitForTargetTimeSpan = new TimeSpan(0, 0, waitForTargetSec);
                 wait = wait.Add(waitForTargetTimeSpan);
-                this.DurationCounter = -(int)(wait.TotalSeconds * 2);
             }
             await Task.Delay(wait);
 
@@ -185,15 +206,20 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await Task.Delay(rnd.Next(delay - delay10Percent, delay + delay10Percent));
 
                 _ = HttpHelper.SendPostReq(acc, wavesReady[i].Content, "/build.php?tt=2&id=39");
-
-                this.DurationCounter = 0;
             }
 
             await Task.Delay(AccountHelper.Delay() * 2);
-            acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=2&subfilters=4");
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=2&subfilters=4");
             //Todo: check waves?
             return TaskRes.Executed;
         }
+
+        private string TroopCount(int v)
+        {
+            if (v == 0) return "";
+            return v.ToString();
+        }
+
         private DateTime CorrectExecuteTime(TimeSpan troopTime)
         {
             var sec = 10; // Base value

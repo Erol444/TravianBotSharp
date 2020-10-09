@@ -14,8 +14,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public int FarmListId { get; set; }
         public Coordinates Coordinates { get; set; }
         public List<TroopsRaw> Troops { get; set; }
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var wb = acc.Wb.Driver;
+
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
             wb.ExecuteScript($"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');"); //show "Add raid" popup

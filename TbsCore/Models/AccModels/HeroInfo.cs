@@ -4,7 +4,6 @@ namespace TravBotSharp.Files.Models.AccModels
 {
     public class HeroInfo
     {
-        public DateTime LastChecked { get; set; }
         public int Health { get; set; }
         public int Experience { get; set; }
         public int Level { get; set; }

@@ -48,14 +48,17 @@ namespace TravBotSharp.Views
             FillForUpDown.Value = acc.Settings.FillFor;
 
             autoReadIGMs.Checked = acc.Settings.AutoReadIgms;
+            autoRandomTasks.Checked = acc.Settings.AutoRandomTasks;
 
             disableImagesCheckbox.Checked = acc.Settings.DisableImages;
             headlessCheckbox.Checked = acc.Settings.HeadlessMode;
+            reopenChrome.Checked = acc.Settings.AutoCloseDriver;
 
             sleepMax.Value = acc.Settings.Time.MaxSleep;
             sleepMin.Value = acc.Settings.Time.MinSleep;
             workMax.Value = acc.Settings.Time.MaxWork;
             workMin.Value = acc.Settings.Time.MinWork;
+            UpdateBotRunning();
         }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages
@@ -94,6 +97,7 @@ namespace TravBotSharp.Views
 
             acc.Tasks.Clear();
             AccountHelper.StartAccountTasks(acc);
+            UpdateBotRunning();
         }
 
         private void button16_Click(object sender, EventArgs e) //all villages farm tasks
@@ -213,7 +217,8 @@ namespace TravBotSharp.Views
 
         private void button6_Click(object sender, EventArgs e) // Stop timers
         {
-            getSelectedAcc().TaskTimer.Stop();
+            getSelectedAcc().TaskTimer?.Stop();
+            UpdateBotRunning();
         }
 
         private void headlessCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -263,6 +268,27 @@ namespace TravBotSharp.Views
                 sleepMax.Value = sleepMin.Value;
             }
             getSelectedAcc().Settings.Time.MaxSleep = (int)sleepMax.Value;
+        }
+
+        private void reopenChrome_CheckedChanged(object sender, EventArgs e)
+        {
+            getSelectedAcc().Settings.AutoCloseDriver = reopenChrome.Checked;
+        }
+
+        private void autoRandomTasks_CheckedChanged(object sender, EventArgs e)
+        {
+            getSelectedAcc().Settings.AutoRandomTasks = autoRandomTasks.Checked;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            getSelectedAcc().TaskTimer.Start();
+            UpdateBotRunning();
+        }
+        public void UpdateBotRunning(string running = null)
+        {
+            if(string.IsNullOrEmpty(running)) running = getSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
+            botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
         }
     }
 }

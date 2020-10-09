@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Serilog.Formatting.Json;
+using System;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Views
 {
@@ -19,6 +21,10 @@ namespace TravBotSharp.Views
             checkBoxAutoSendToAdventures.Checked = acc.Hero.Settings.AutoSendToAdventure;
             minHeroHealthUpDown.Value = acc.Hero.Settings.MinHealth;
             autoReviveHero.Checked = acc.Hero.Settings.AutoReviveHero;
+            refreshInfo.Checked = acc.Hero.Settings.AutoRefreshInfo;
+
+            autoRes.Checked = acc.Hero.Settings.AutoUseRes;
+            autoEquip.Checked = acc.Hero.Settings.AutoEquip;
 
             strength.Value = 0;
             offBonus.Value = 0;
@@ -44,6 +50,45 @@ namespace TravBotSharp.Views
             {
                 SupplyResVillageComboBox.SelectedIndex = 0;
                 SupplyResVillageSelected.Text = "Selected: " + AccountHelper.GetHeroReviveVillage(acc).Name;
+            }
+
+            lastUpdated.Text = "Last updated: " + acc.Settings.Timing.LastHeroRefresh.ToString();
+            if (acc.Hero.Items == null) return;
+
+            heroItemsList.Items.Clear();
+            if (acc.Hero.Items.Count > 0)
+            {
+                foreach (var item in acc.Hero.Items)
+                {
+                    var viewItem = new ListViewItem();
+
+                    var attr = item.Item.ToString().Split('_');
+
+                    viewItem.SubItems[0].Text = attr[0];
+                    viewItem.SubItems.Add(attr[1]);
+                    viewItem.SubItems.Add(attr[2] == "0" ? "" : attr[2]);
+                    viewItem.SubItems.Add(item.Count.ToString());
+
+                    heroItemsList.Items.Add(viewItem);
+                }
+            }
+
+            equiptList.Items.Clear();
+            if (acc.Hero.Equipt == null)
+            {
+                acc.Hero.Equipt = new System.Collections.Generic.Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum>();
+            }
+            foreach (var pair in acc.Hero.Equipt)
+            {
+                var viewItem = new ListViewItem();
+
+                var attr = pair.Value.ToString().Split('_');
+
+                viewItem.SubItems[0].Text = attr[0];
+                viewItem.SubItems.Add(attr[1]);
+                viewItem.SubItems.Add(attr[2] == "0" ? "" : attr[2]);
+
+                equiptList.Items.Add(viewItem);
             }
         }
         public void Init(ControlPanel _main)
@@ -130,6 +175,40 @@ namespace TravBotSharp.Views
             var vill = acc.Villages[SupplyResVillageComboBox.SelectedIndex];
             acc.Hero.ReviveInVillage = vill.Id;
             SupplyResVillageSelected.Text = "Selected: " + vill.Name;
+        }
+
+        private void refreshInfo_CheckedChanged(object sender, EventArgs e)
+        {
+            getSelectedAcc().Hero.Settings.AutoRefreshInfo = refreshInfo.Checked;
+        }
+
+        private void autoEquip_CheckedChanged(object sender, EventArgs e)
+        {
+            var acc = getSelectedAcc();
+            acc.Hero.Settings.AutoEquip = autoEquip.Checked;
+            if (autoEquip.Checked) TurnOnAutoRefresh(acc);
+        }
+
+        private void autoRes_CheckedChanged(object sender, EventArgs e)
+        {
+            var acc = getSelectedAcc();
+            acc.Hero.Settings.AutoUseRes = autoRes.Checked;
+            if (autoRes.Checked) TurnOnAutoRefresh(acc);
+        }
+        /// <summary>
+        /// If you want to use Auto-use res or Auto-Equip hero, you need to auto-refresh hero info
+        /// </summary>
+        /// <param name="acc"></param>
+        private void TurnOnAutoRefresh(Account acc)
+        {
+            acc.Hero.Settings.AutoRefreshInfo = true;
+            refreshInfo.Checked = true;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var acc = getSelectedAcc();
+            TaskExecutor.AddTask(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
         }
     }
 }

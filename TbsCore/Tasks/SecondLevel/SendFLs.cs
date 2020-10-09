@@ -10,7 +10,7 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
 {
     public class SendFLs : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
             Random rnd = new Random();
             int totalSec = 0;

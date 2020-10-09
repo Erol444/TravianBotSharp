@@ -11,7 +11,7 @@ namespace TravBotSharp.Files.Tasks
         /// <summary>
         /// If of the village to execute the task. If null, don't change village before executing the task
         /// </summary>
-        public Village vill { get; set; }
+        public Village Vill { get; set; }
 
         /// <summary>
         /// Stage in which task is currently in.
@@ -36,12 +36,7 @@ namespace TravBotSharp.Files.Tasks
         /// <param name="wb">Selenium driver</param>
         /// <param name="acc">Account</param>
         /// <returns>TaskRes</returns>
-        public abstract Task<TaskRes> Execute(HtmlAgilityPack.HtmlDocument htmlDoc, ChromeDriver wb, Account acc); //execute the task
-
-        /// <summary>
-        /// Counts how long this task was being executed. Used for timeouts (after 20sec, re-execute the task)
-        /// </summary>
-        public int DurationCounter { get; set; }
+        public abstract Task<TaskRes> Execute(Account acc); //execute the task
 
         /// <summary>
         /// Counts how many times we retried executing the task. After 3rd try, stop retrying. Something is clearly wrong
@@ -70,12 +65,15 @@ namespace TravBotSharp.Files.Tasks
             Start,
             Executing,
         }
+        /// <summary>
+        /// Priority of the task
+        /// </summary>
         public enum TaskPriority
         {
-            Low = 0,
-            Medium,
-            High
+            Medium = 0, // For normal tasks, not urgent. For example building, adventures, sending resources etc. Selected by default.
+            Low, // For tasks that can wait few hours. For example updating hero items, account info, TOP10, dorf1 (for attacks) etc.
+            High // Time-critical tasks, for example sending catapult waves, sending deff troops - tasks that require to-second precision.
         }
-        public string ErrorMessage { get; set; }
+        public string Message { get; set; }
     }
 }

@@ -12,16 +12,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class SendSettlers : BotTask
     {
         private NewVillage newVillage;
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var wb = acc.Wb.Driver;
             // Check if the account has enough culture points
-            if(acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
+            if (acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
             {
-                this.vill.Expansion.ExpensionAvailable = true;
+                this.Vill.Expansion.ExpensionAvailable = true;
                 return TaskRes.Executed;
             }
 
-            this.vill.Expansion.ExpensionAvailable = false;
+            this.Vill.Expansion.ExpensionAvailable = false;
 
             //https://low4.ttwars.com/build.php?id=39&tt=2&kid=7274&a=6
             //https://low4.ttwars.com/build.php?id=39&tt=2&kid=7272&a=6
@@ -30,8 +31,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 if (acc.NewVillages.AutoFindVillages) // Find new village to settle
                 {
                     TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle() {
-                        ExecuteAt = DateTime.MinValue.AddHours(10),
-                        Priority = TaskPriority.Medium
+                        ExecuteAt = DateTime.MinValue.AddHours(10)
                     });
                     this.NextExecute = DateTime.MinValue.AddHours(11);
                 }
@@ -49,7 +49,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             //TODO: check if enough resources!!
             newVillage.SettlersSent = true;
-            var button = htmlDoc.GetElementbyId("btn_ok");
+            var button = acc.Wb.Html.GetElementbyId("btn_ok");
 
             if (button != null)
             {

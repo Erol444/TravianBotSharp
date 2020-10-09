@@ -4,6 +4,7 @@ using OpenQA.Selenium.Chrome;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -11,8 +12,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class LoginTask : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var wb = acc.Wb.Driver;
             if (!TaskExecutor.IsLoginScreen(acc))
             {
                 await Task.Delay(AccountHelper.Delay() * 2);
@@ -32,10 +34,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 wb.ExecuteScript($"document.getElementsByName('password')[0].value='{access.Password}'");
             }
 
-            wb.ExecuteScript("document.getElementsByName('s1')[0].click()"); //Login button
+            await DriverHelper.ExecuteScript(acc, "document.getElementsByName('s1')[0].click()");
 
-            await Task.Delay(AccountHelper.Delay());
-            htmlDoc.LoadHtml(acc.Wb.Driver.PageSource);
             if (TaskExecutor.IsLoginScreen(acc))
             {
                 // Wrong password/nickname

@@ -4,26 +4,27 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class StartAdventure : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php?t=3");
 
-            acc.Hero.Adventures = AdventureParser.GetAdventures(htmlDoc, acc.AccInfo.ServerVersion);
+            acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
-            var homeVill = HeroParser.GetHeroVillageId(htmlDoc);
-            if (homeVill != null) acc.Hero.HomeVillageId = homeVill ?? 0;
+            HeroHelper.UpdateHeroVillage(acc);
 
             if (acc.Hero.Adventures == null || acc.Hero.Adventures.Count == 0) return TaskRes.Executed;
 
             var adventures = acc.Hero.Adventures
                 .Where(x =>
-                    MapHelper.CalculateDistance(acc, x.Coordinates, MapHelper.CoordinatesFromKid(acc.Hero.HomeVillageId, acc)) <= acc.Hero.Settings.MaxDistance
+                    MapHelper.CalculateDistance(acc, x.Coordinates, HeroHelper.GetHeroHomeVillage(acc).Coordinates) <= acc.Hero.Settings.MaxDistance
                 )
                 .ToList();
 
@@ -39,7 +40,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 case Classificator.ServerVersionEnum.T4_4:
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/{adventure.Ref}");
 
-                    var startButton = htmlDoc.GetElementbyId("start");
+                    var startButton = acc.Wb.Html.GetElementbyId("start");
                     if (startButton == null){
                         //Hero is probably out of the village.
                         this.NextExecute = DateTime.Now.AddMinutes(10);
@@ -52,11 +53,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     string script = $"var div = document.getElementById('{adventure.AdventureId}');";
                     script += $"div.children[0].submit();";
                     wb.ExecuteScript(script);
+
+                    // Check hero outgoing time
+                    await Task.Delay(AccountHelper.Delay());
+                    acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
+                    var outTime = HeroParser.GetHeroArrival(acc.Wb.Html);
+                    // At least 1.5x longer (if hero has Large map)
+                    acc.Hero.NextHeroSend = DateTime.Now + TimeSpan.FromTicks((long)(outTime.Ticks * 1.5));
                     break;
             }
 
             return TaskRes.Executed;
-
         }
     }
 }

@@ -123,6 +123,9 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RestSharp, Version=106.11.4.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.11.4\lib\net452\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
@@ -226,6 +229,12 @@
     <Compile Include="Views\GeneralUc.Designer.cs">
       <DependentUpon>GeneralUc.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\QuestsUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\QuestsUc.Designer.cs">
+      <DependentUpon>QuestsUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\HeroUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -304,6 +313,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\GeneralUc.resx">
       <DependentUpon>GeneralUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\QuestsUc.resx">
+      <DependentUpon>QuestsUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\HeroUc.resx">
       <DependentUpon>HeroUc.cs</DependentUpon>

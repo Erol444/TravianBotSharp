@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Security;
 using System.Windows.Forms;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -26,27 +27,25 @@ namespace TravBotSharp
             for (int i = 0; i < Acc.Access.AllAccess.Count; i++)
             {
                 var access = Acc.Access.AllAccess[i];
-                if(i == 0)
+                if (i == 0)
                 {
-                    textBox2.Text = access.Password;
-                    textBox3.Text = access.Proxy;
-                    numericUpDown1.Value = access.ProxyPort;
+                    UpdateAccessView(access);
                 }
 
                 var item = new ListViewItem();
                 item.SubItems[0].Text = access.Password;
                 item.SubItems.Add(access.Proxy);
-                item.SubItems.Add(access.ProxyPort.ToString());
+                item.SubItems.Add(access.ProxyPort + "");
+                item.SubItems.Add(access.ProxyUsername);
 
                 accessListView.Items.Add(item);
             }
+            AuthCheckbox();
         }
 
         private void button2_Click(object sender, EventArgs e) // Add a new access
         {
-            var input = GetAccessInput();
-
-            Acc.Access.AddNewAccess(input.Password, input.Proxy, input.ProxyPort);
+            Acc.Access.AddNewAccess(GetAccessInput());
             UpdateWindow();
         }
 
@@ -66,7 +65,7 @@ namespace TravBotSharp
             var indicies = accessListView.SelectedIndices;
             if (indicies.Count > 0)
             {
-                if(indicies[0] < this.Acc.Access.AllAccess.Count)
+                if (indicies[0] < this.Acc.Access.AllAccess.Count)
                 {
                     sel = indicies[0];
                 }
@@ -81,7 +80,9 @@ namespace TravBotSharp
             var input = GetAccessInput();
             access.Password = input.Password;
             access.Proxy = input.Proxy;
-            access.ProxyPort= input.ProxyPort;
+            access.ProxyPort = input.ProxyPort;
+            access.ProxyPassword = input.ProxyPassword;
+            access.ProxyUsername = input.ProxyUsername;
             UpdateWindow();
         }
         private AccessRaw GetAccessInput()
@@ -89,8 +90,10 @@ namespace TravBotSharp
             AccessRaw accessRaw = new AccessRaw
             {
                 Password = textBox2.Text,
-                Proxy = textBox3.Text,
-                ProxyPort = (int)numericUpDown1.Value
+                Proxy = textBox3.Text.Trim(),
+                ProxyPort = (int)numericUpDown1.Value,
+                ProxyUsername = proxyUsername.Text.Trim(),
+                ProxyPassword = proxyPassword.Text.Trim()
             };
             return accessRaw;
         }
@@ -102,13 +105,13 @@ namespace TravBotSharp
 
         private void textBox4_TextChanged(object sender, EventArgs e)
         {
-            Acc.AccInfo.ServerUrl = textBox4.Text;
-            if (!Acc.AccInfo.ServerUrl.Contains("https://") &&
-                !Acc.AccInfo.ServerUrl.Contains("http://"))
+            textBox4.Text = textBox4.Text.Replace("https://", "").Replace("http://", "");
+            if (textBox4.Text.Contains("/"))
             {
-                //add https:// if user forgot
-                Acc.AccInfo.ServerUrl = "https://" + Acc.AccInfo.ServerUrl;
+                var str = textBox4.Text.Split('/');
+                textBox4.Text = str[0];
             }
+            Acc.AccInfo.ServerUrl = "https://" + textBox4.Text;
         }
 
         /// <summary>
@@ -118,10 +121,21 @@ namespace TravBotSharp
         /// <param name="e"></param>
         private void accessListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var access = GetCurrentAccess();
+            UpdateAccessView(GetCurrentAccess());
+
+        }
+        private void UpdateAccessView(Access access)
+        {
             textBox2.Text = access.Password;
             textBox3.Text = access.Proxy;
             numericUpDown1.Value = access.ProxyPort;
+
+            proxyUsername.Text = access.ProxyUsername;
+            proxyPassword.Text = access.ProxyPassword;
+            var authEmpty = string.IsNullOrEmpty(access.ProxyUsername);
+            checkBox1.Checked = !authEmpty;
+            proxyUsername.ReadOnly = authEmpty;
+            proxyPassword.ReadOnly = authEmpty;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -130,9 +144,21 @@ namespace TravBotSharp
             this.Close();
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
+            AuthCheckbox();
+        }
 
+        private void AuthCheckbox()
+        {
+            var check = checkBox1.Checked;
+            if (!check)
+            {
+                proxyUsername.Text = "";
+                proxyPassword.Text = "";
+            }
+            proxyUsername.ReadOnly = !check;
+            proxyPassword.ReadOnly = !check;
         }
     }
 }

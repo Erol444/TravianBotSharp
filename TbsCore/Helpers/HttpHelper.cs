@@ -9,13 +9,19 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class HttpHelper
     {
-        public static async Task<string> GetAjaxToken(ChromeDriver wb)
+        public static string GetAjaxToken(Account acc)
         {
-            IJavaScriptExecutor js = wb as IJavaScriptExecutor;
-            return js.ExecuteScript("return ajaxToken;") as string;
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_4:
+                    IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
+                    return js.ExecuteScript("return ajaxToken;") as string;
+                default:
+                    return "";
+            }
         }
 
-        internal static async Task<(CookieContainer, string)> GetCookies(Account acc)
+        public static (CookieContainer, string) GetCookies(Account acc)
         {
             var cookies = acc.Wb.GetCookes();
 
@@ -32,9 +38,10 @@ namespace TravBotSharp.Files.Helpers
             cookieContainer.SetCookies(new System.Uri(acc.AccInfo.ServerUrl), cookiesStr);
             return (cookieContainer, phpsessid);
         }
+
         internal static async Task<string> SendPostReq(Account acc, FormUrlEncodedContent content, string url)
         {
-            (CookieContainer container, string phpsessid) = await HttpHelper.GetCookies(acc);
+            (CookieContainer container, string phpsessid) = HttpHelper.GetCookies(acc);
 
             using (var handler = new HttpClientHandler() { CookieContainer = container })
             using (var client = new HttpClient(handler) { BaseAddress = new System.Uri(acc.AccInfo.ServerUrl) })
@@ -55,9 +62,9 @@ namespace TravBotSharp.Files.Helpers
                 return await result.Content.ReadAsStringAsync();
             }
         }
-        internal static async Task<HtmlAgilityPack.HtmlDocument> SendGetReq(Account acc, string url)
+        public static async Task<HtmlAgilityPack.HtmlDocument> SendGetReq(Account acc, string url)
         {
-            (CookieContainer container, string phpsessid) = await HttpHelper.GetCookies(acc);
+            (CookieContainer container, string phpsessid) = HttpHelper.GetCookies(acc);
 
             using (var handler = new HttpClientHandler() { CookieContainer = container })
             using (var client = new HttpClient(handler) { BaseAddress = new System.Uri(acc.AccInfo.ServerUrl) })

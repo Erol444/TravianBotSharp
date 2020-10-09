@@ -401,7 +401,7 @@ namespace TravBotSharp.Views
                     var id = Int32.Parse(cells[0].Text);
                     var vill = acc.Villages.First(x => x.Id == id);
 
-                    IoHelperForms.AddBuildTasksFromFile(acc, vill, location);
+                    IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
                 }
             }
 

@@ -10,8 +10,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         //TODO: add option for scouting type / catapult target(s)
 
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var wb = acc.Wb.Driver;
             await Task.Delay(AccountHelper.Delay());
             wb.ExecuteScript($"document.getElementById('btn_ok').click()"); //Click send
 

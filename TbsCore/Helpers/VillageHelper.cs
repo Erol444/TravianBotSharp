@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TravBotSharp.Files.Models.AccModels;
 
 namespace TravBotSharp.Files.Helpers
@@ -8,10 +9,11 @@ namespace TravBotSharp.Files.Helpers
     {
         /// <summary>
         /// Generates the resource indicator for the list view on GUI
+        /// 0000 if no resources, FFFF if full
         /// </summary>
         /// <param name="vill">Village</param>
-        /// <returns>Res Indicator</returns>
-        public static string ResourceIndicator(Village vill) //returns 0000 if no resources, FFFF if full
+        /// <returns>Resource indicator string</returns>
+        public static string ResourceIndicator(Village vill)
         {
             string indicator = "";
             indicator += GenerateIndicator(vill.Res.Capacity.WarehouseCapacity, vill.Res.Stored.Resources.Wood);
@@ -30,8 +32,8 @@ namespace TravBotSharp.Files.Helpers
         private static string GenerateIndicator(long capacity, long res)
         {
             if (capacity == 0) return "?";
-            int num = (int)((float)res / capacity) * 10;
-            return num.ToString().Replace("10", "F");
+            double num = ((double)res / (double)capacity) * 10.0;
+            return ((int)num).ToString().Replace("10", "F");
         }
 
         public static int GetVillageIdFromName(string name, Account acc)
@@ -71,6 +73,15 @@ namespace TravBotSharp.Files.Helpers
         public static Village VillageFromId(Account acc, int id)
         {
             return acc.Villages.FirstOrDefault(x => x.Id == id);
+        }
+
+        public static async Task SwitchVillage(Account acc, int id)
+        {
+            if (acc.Wb.CurrentUrl == null) acc.Wb.CurrentUrl = acc.AccInfo.ServerUrl;
+            string str = "?";
+            if (acc.Wb.CurrentUrl.Contains("?")) str = "&";
+            var url = $"{acc.Wb.CurrentUrl}{str}newdid={id}";
+            await acc.Wb.Navigate(url);
         }
     }
 }

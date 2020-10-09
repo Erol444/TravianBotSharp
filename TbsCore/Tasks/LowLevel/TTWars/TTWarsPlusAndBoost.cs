@@ -9,9 +9,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     //since "extend automatically" doesn't work on TTWars, this task will automatically prolong plus account / +25% resource boost
     public class TTWarsPlusAndBoost : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
-            var leftBar = htmlDoc.GetElementbyId("sidebarBeforeContent");
+            var wb = acc.Wb.Driver;
+            var leftBar = acc.Wb.Html.GetElementbyId("sidebarBeforeContent");
             var button = leftBar.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
             if (button == null)
             {

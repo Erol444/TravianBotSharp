@@ -15,34 +15,31 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// </summary>
     public class SendResToMain : BotTask
     {
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
-            var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
+            var wb = acc.Wb.Driver;
+            var building = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
             if (building == null)
             {
                 //update dorg, no buildingId found?
-                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, vill = vill });
+                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = Vill });
                 Console.WriteLine($"There is no {building} in this village!");
                 return TaskRes.Executed;
             }
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}&t=5");
 
-            this.PostTaskCheck.Add(RepeatTask);
-            var mainVill = AccountHelper.GetMainVillage(acc);
-
-            var res = MarketHelper.GetResToMainVillage(vill);
-
-            var ret = await MarketHelper.MarketSendResource(acc, res, mainVill, this);
-            return TaskRes.Executed;
-        }
-
-        public void RepeatTask(HtmlDocument htmlDoc, Account acc)
-        {
-            if (this.vill.Settings.Type == Models.Settings.VillType.Support && this.vill.Settings.SendRes)
+            if (this.Vill.Settings.Type == Models.Settings.VillType.Support && this.Vill.Settings.SendRes)
             {
                 // Repeat this task
                 this.NextExecute = DateTime.Now.AddHours(1);
             }
+
+            var mainVill = AccountHelper.GetMainVillage(acc);
+
+            var res = MarketHelper.GetResToMainVillage(Vill);
+
+            var ret = await MarketHelper.MarketSendResource(acc, res, mainVill, this);
+            return TaskRes.Executed;
         }
     }
 }

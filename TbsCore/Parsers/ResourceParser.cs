@@ -15,26 +15,31 @@ namespace TravBotSharp.Files.Parsers
             {
                 Resources = new Resources()
                 {
-                    Wood = Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("l1").InnerText),
-                    Clay = Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("l2").InnerText),
-                    Iron = Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("l3").InnerText),
-                    Crop = Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("l4").InnerText)
+                    Wood = ParseHtml(htmlDoc.GetElementbyId("l1").InnerText),
+                    Clay = ParseHtml(htmlDoc.GetElementbyId("l2").InnerText),
+                    Iron = ParseHtml(htmlDoc.GetElementbyId("l3").InnerText),
+                    Crop = ParseHtml(htmlDoc.GetElementbyId("l4").InnerText)
                 },
                 LastRefresh = DateTime.Now
             };
         }
-        public static ResourceProduction GetProduction(HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static Resources GetProduction(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             var Res = htmlDoc.GetElementbyId("production").ChildNodes[3].ChildNodes;
             //1,3,5,7
 
-            return new ResourceProduction()
+            return new Resources()
             {
-                WoodPerHour = Parser.RemoveNonNumeric(Res[1].ChildNodes[5].InnerText),
-                ClayPerHour = Parser.RemoveNonNumeric(Res[3].ChildNodes[5].InnerText),
-                IronPerHour = Parser.RemoveNonNumeric(Res[5].ChildNodes[5].InnerText),
-                CropPerHour = Parser.RemoveNonNumeric(Res[7].ChildNodes[5].InnerText)
+                Wood = ParseHtml(Res[1].ChildNodes[5].InnerText),
+                Clay = ParseHtml(Res[3].ChildNodes[5].InnerText),
+                Iron = ParseHtml(Res[5].ChildNodes[5].InnerText),
+                Crop = ParseHtml(Res[7].ChildNodes[5].InnerText)
             };
+        }
+        private static long ParseHtml(string text)
+        {
+            string decoded = System.Net.WebUtility.HtmlDecode(text);
+            return Parser.RemoveNonNumeric(decoded);
         }
         public static ResourceCapacity GetResourceCapacity(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
@@ -61,7 +66,7 @@ namespace TravBotSharp.Files.Parsers
                 GranaryCapacity = Parser.RemoveNonNumeric(GranaryCap)
             };
         }
-        public static List<Building> GetResourcefields(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static List<Building> GetResourcefields(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
             {

@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.TroopsModels;
@@ -13,18 +14,19 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public FarmList FL { get; set; }
         private HtmlNode GetFlNode(HtmlDocument htmlDoc) => htmlDoc.GetElementbyId("raidList" + this.FL.Id);
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
             //TODO: if there is no rally point, switch to different village!]
-            var flNode = GetFlNode(htmlDoc);
+            var flNode = GetFlNode(acc.Wb.Html);
 
             if (flNode == null)
             {
-                TaskExecutor.AddTask(acc, new SwitchVillage() { vill = AccountHelper.GetMainVillage(acc), ExecuteAt = DateTime.MinValue.AddMinutes(10), Priority = TaskPriority.High });
-                this.NextExecute = DateTime.Now.AddSeconds(5);
-                return TaskRes.Executed;
+                var mainVill = AccountHelper.GetMainVillage(acc);
+                if (mainVill == this.Vill) return TaskRes.Executed; // No gold account?
+                await VillageHelper.SwitchVillage(acc, mainVill.Id);
             }
             if (acc.Farming.TrainTroopsAfterFL)
             {
@@ -32,20 +34,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 {
                     ExecuteAt = DateTime.Now.AddSeconds(2),
                     Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
-                    vill = this.vill,
+                    Vill = this.Vill,
                     HighSpeedServer = true
                 });
             }
 
-            wb.ExecuteScript($"Travian.Game.RaidList.toggleList({this.FL.Id});"); //Toggle the FL (show it)
-
-            await Task.Delay(AccountHelper.Delay() * 2);
-
-            htmlDoc.LoadHtml(wb.PageSource);
-            await Task.Delay(AccountHelper.Delay());
+            await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
 
             // Update flNode!
-            flNode = GetFlNode(htmlDoc);
+            flNode = GetFlNode(acc.Wb.Html);
 
             foreach (var farm in flNode.Descendants("tr").Where(x => x.HasClass("slotRow")))
             {

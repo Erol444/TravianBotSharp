@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Parsers;
@@ -49,22 +50,22 @@ namespace TravBotSharp.Files.Helpers
             var cap = vill.Res.Capacity;
 
             var woodNeeded = (long)(cap.WarehouseCapacity * conf.TargetLimit.Wood / 100.0);
-            sendRes.Wood = (((woodNeeded > conf.FillLimit.Wood ? conf.FillLimit.Wood : woodNeeded) - currentRes.Wood) / 1000) * 1000;
+            sendRes.Wood = (woodNeeded > conf.FillLimit.Wood ? conf.FillLimit.Wood : woodNeeded) - currentRes.Wood;
             sendRes.Wood = (sendRes.Wood < 0 ? 0 : sendRes.Wood);
 
             var clayNeeded = (long)(cap.WarehouseCapacity * conf.TargetLimit.Clay / 100.0);
-            sendRes.Clay = (((clayNeeded > conf.FillLimit.Clay ? conf.FillLimit.Clay : clayNeeded) - currentRes.Clay) / 1000) * 1000;
+            sendRes.Clay = (clayNeeded > conf.FillLimit.Clay ? conf.FillLimit.Clay : clayNeeded) - currentRes.Clay;
             sendRes.Clay = (sendRes.Clay < 0 ? 0 : sendRes.Clay);
 
             var ironNeeded = (long)(cap.WarehouseCapacity * conf.TargetLimit.Iron / 100.0);
-            sendRes.Iron = (((ironNeeded > conf.FillLimit.Iron ? conf.FillLimit.Iron : ironNeeded) - currentRes.Iron) / 1000) * 1000;
+            sendRes.Iron = (ironNeeded > conf.FillLimit.Iron ? conf.FillLimit.Iron : ironNeeded) - currentRes.Iron;
             sendRes.Iron = (sendRes.Iron < 0 ? 0 : sendRes.Iron);
 
             var cropNeeded = (long)(cap.GranaryCapacity * conf.TargetLimit.Crop / 100.0);
-            sendRes.Crop = (((cropNeeded > conf.FillLimit.Crop ? conf.FillLimit.Crop : cropNeeded) - currentRes.Crop) / 1000) * 1000;
+            sendRes.Crop = (cropNeeded > conf.FillLimit.Crop ? conf.FillLimit.Crop : cropNeeded) - currentRes.Crop;
             sendRes.Crop = (sendRes.Crop < 0 ? 0 : sendRes.Crop);
 
-            if (sendRes.Wood == 0 && sendRes.Clay == 0 && sendRes.Iron == 0 && sendRes.Crop == 0) //we have enough res :)
+            if (ResourcesHelper.IsZeroResources(sendRes)) //we have enough res :)
                 return DateTime.MinValue;
 
             var sendResTask = new SendResources
@@ -72,7 +73,7 @@ namespace TravBotSharp.Files.Helpers
                 Configuration = conf,
                 Coordinates = vill.Coordinates,
                 ExecuteAt = DateTime.Now.AddHours(-1),
-                vill = AccountHelper.GetMainVillage(acc),
+                Vill = AccountHelper.GetMainVillage(acc),
                 Resources = sendRes
             };
 
@@ -174,26 +175,16 @@ namespace TravBotSharp.Files.Helpers
                     var button = document.getElementById('enabledButton');
                     button.click();
                     ";
-            wb.ExecuteScript(script); //Prepare
+            await DriverHelper.ExecuteScript(acc, script);
 
-            //update htmlDoc, parse duration, TODO: maybe some other method to wait until the page is loaded?
-            HtmlNode durNode = null;
-            do
-            {
-                await Task.Delay(AccountHelper.Delay());
-                HtmlDocument html2 = new HtmlDocument();
-                html2.LoadHtml(wb.PageSource);
-                durNode = html2.GetElementbyId("target_validate");
-            }
-            while (durNode == null);
+            var durNode = acc.Wb.Html.GetElementbyId("target_validate");
+
 
             //get duration of transit
             var dur = durNode.Descendants("td").ToList()[3].InnerText.Replace("\t", "").Replace("\n", "");
 
             // Will NOT trigger a page reload! Thus we should await some time before continuing.
-            wb.ExecuteScript("document.getElementById('enabledButton').click()"); //SendRes
-
-            await Task.Delay(AccountHelper.Delay() * 2);
+            await DriverHelper.ExecuteScript(acc, "document.getElementById('enabledButton').click()");
 
             var duration = TimeParser.ParseDuration(dur);
             return TimeSpan.FromTicks(duration.Ticks * (times * 2 - 1));
@@ -360,14 +351,14 @@ namespace TravBotSharp.Files.Helpers
 
         public static void ReStartSendingToMain(Account acc, Village vill)
         {
-            acc.Tasks.RemoveAll(x => x.GetType() == typeof(SendResToMain) && x.vill == vill);
+            acc.Tasks.RemoveAll(x => x.GetType() == typeof(SendResToMain) && x.Vill == vill);
 
             if (vill.Settings.Type == Models.Settings.VillType.Support && vill.Settings.SendRes)
             {
                 TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new SendResToMain()
                 {
                     ExecuteAt = DateTime.Now,
-                    vill = vill
+                    Vill = vill
                 });
             }
         }

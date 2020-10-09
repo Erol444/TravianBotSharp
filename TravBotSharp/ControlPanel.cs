@@ -36,6 +36,7 @@ namespace TravBotSharp
             deffendingUc1.Init(this);
             attackUc1.Init(this);
             debugUc1.Init(this);
+            questsUc1.Init(this);
         }
 
         private void LoadAccounts()
@@ -84,10 +85,10 @@ namespace TravBotSharp
             accListView.Items.Add(item);
         }
 
-        private void button2_Click(object sender, EventArgs e) //login button
+        private async void button2_Click(object sender, EventArgs e) //login button
         {
-            var acc = GetSelectedAcc();
-            new Thread(() => IoHelperCore.LoginAccount(acc)).Start();
+            new Thread(() => _ = IoHelperCore.LoginAccount(GetSelectedAcc())).Start();
+            generalUc1.UpdateBotRunning("true");
         }
 
         private void button3_Click(object sender, EventArgs e) // Remove an account
@@ -145,7 +146,10 @@ namespace TravBotSharp
                 case 6: // Deffending
                     deffendingUc1.UpdateTab();
                     break;
-                case 7: // Debug tab
+                case 7: // Quests
+                    questsUc1.UpdateTab();
+                    break;
+                case 8: // Debug tab
                     debugUc1.UpdateTab();
                     break;
                 default: break;
@@ -257,9 +261,9 @@ namespace TravBotSharp
         private void RefreshVillage(Account acc, Village vill)
         {
             var executeAt = DateTime.Now.AddHours(-1);
-            TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = executeAt, vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = executeAt, vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = executeAt, vill = vill });
+            TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = executeAt, Vill = vill });
+            TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = executeAt, Vill = vill });
+            TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = executeAt, Vill = vill });
             // Todo: refresh celebrities
         }
 
@@ -277,6 +281,7 @@ namespace TravBotSharp
         private void button5_Click(object sender, EventArgs e) // Logout
         {
             new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
+            generalUc1.UpdateBotRunning("false");
         }
     }
 }

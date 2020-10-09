@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models;
 using TravBotSharp.Files.Models.AccModels;
@@ -17,11 +18,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public SendDeffAmount DeffAmount { get; set; }
         public SendDeff NextDeffTask { get; set; }
         public Coordinates TargetVillage { get; set; }
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
 
-            int[] troopsAtHome = TroopsMovementParser.GetTroopsInRallyPoint(htmlDoc);
+            int[] troopsAtHome = TroopsMovementParser.GetTroopsInRallyPoint(acc.Wb.Html);
 
             for (int i = 0; i < 10; i++)
             {
@@ -70,12 +72,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //Select reinforcement
             string script = "var radio = document.getElementsByClassName(\"radio\");for(var i = 0; i < radio.length; i++){";
             script += $"if(radio[i].value == '2') radio[i].checked = \"checked\"}}";
-            wb.ExecuteScript(script);
-            await Task.Delay(2 * AccountHelper.Delay());
+            await DriverHelper.ExecuteScript(acc, script);
+            await DriverHelper.ExecuteScript(acc, "document.getElementById('btn_ok').click()");
 
-            wb.ExecuteScript($"document.getElementById('btn_ok').click()");
-
-            await Task.Delay(2 * AccountHelper.Delay());
             // Confirm
             wb.ExecuteScript($"document.getElementById('btn_ok').click()"); //Click send
             return TaskRes.Executed;

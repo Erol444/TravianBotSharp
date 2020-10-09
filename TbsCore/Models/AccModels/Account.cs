@@ -11,11 +11,6 @@ namespace TravBotSharp.Files.Models.AccModels
         /// <summary>
         /// This method is called when new accounts is created
         /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="password">Password</param>
-        /// <param name="proxy">Proxy ip</param>
-        /// <param name="port">Proxy port</param>
-        /// <param name="server">Server url</param>
         public void Init()
         {
             Hero = new Hero();
@@ -26,7 +21,8 @@ namespace TravBotSharp.Files.Models.AccModels
             Access.Init();
             AccInfo = new AccInfo();
             AccInfo.Init();
-            Quests = new List<Quest>();
+            Quests = new QuestsSettings();
+            Quests.Init();
             Settings = new GeneralSettings();
             Settings.Init();
             Farming = new Farming();
@@ -38,10 +34,9 @@ namespace TravBotSharp.Files.Models.AccModels
         public List<Village> Villages { get; set; }
         public Farming Farming { get; set; }
         public List<BotTask> Tasks { get; set; }
-
         public Hero Hero { get; set; }
         public WebBrowserInfo Wb { get; set; }
-        public List<Quest> Quests { get; set; }
+        public QuestsSettings Quests { get; set; }
         public TaskTimer TaskTimer { get; set; }
         public NewVillageSettings NewVillages { get; set; }
         public GeneralSettings Settings { get; set; }

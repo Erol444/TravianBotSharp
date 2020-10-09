@@ -22,13 +22,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// </summary>
         public Village TargetVill { get; set; }
         public TrainTroops TrainTask { get; set; }
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
-            var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
+            var wb = acc.Wb.Driver;
+            var building = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
             if (building == null)
             {
                 //update dorg, no buildingId found?
-                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, vill = vill });
+                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = Vill });
                 Console.WriteLine($"There is no {building} in this village!");
                 return TaskRes.Executed;
             }
@@ -40,7 +41,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var trainNum = TroopsHelper.TroopsToFill(acc, TargetVill, TrainTask.Troop, TrainTask.Great);
 
             //how many troops we can train with resources that we have
-            var mainVillResStored = ResourcesHelper.ResourcesToArray(vill.Res.Stored.Resources);
+            var mainVillResStored = ResourcesHelper.ResourcesToArray(Vill.Res.Stored.Resources);
             var targetVillStoredRes = ResourcesHelper.ResourcesToArray(TargetVill.Res.Stored.Resources);
 
             // Max troops we can train with resources that we have

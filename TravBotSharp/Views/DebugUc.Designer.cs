@@ -32,9 +32,10 @@
             this.cH1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cH2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cH3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.cHvill = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cH4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
-            this.cHvill = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SuspendLayout();
             // 
             // taskListView
@@ -44,14 +45,15 @@
             this.cH2,
             this.cH3,
             this.cHvill,
-            this.cH4});
+            this.cH4,
+            this.columnHeader1});
             this.taskListView.FullRowSelect = true;
             this.taskListView.GridLines = true;
             this.taskListView.HideSelection = false;
             this.taskListView.Location = new System.Drawing.Point(3, 42);
             this.taskListView.MultiSelect = false;
             this.taskListView.Name = "taskListView";
-            this.taskListView.Size = new System.Drawing.Size(438, 350);
+            this.taskListView.Size = new System.Drawing.Size(690, 394);
             this.taskListView.TabIndex = 35;
             this.taskListView.UseCompatibleStateImageBehavior = false;
             this.taskListView.View = System.Windows.Forms.View.Details;
@@ -63,12 +65,16 @@
             // 
             // cH2
             // 
-            this.cH2.Text = "Priority";
+            this.cH2.Text = "Vill";
             this.cH2.Width = 56;
             // 
             // cH3
             // 
-            this.cH3.Text = "Stage";
+            this.cH3.Text = "Priority";
+            // 
+            // cHvill
+            // 
+            this.cHvill.Text = "Stage";
             // 
             // cH4
             // 
@@ -85,9 +91,10 @@
             this.label1.TabIndex = 36;
             this.label1.Text = "Tasks to be executed";
             // 
-            // cHvill
+            // columnHeader1
             // 
-            this.cHvill.Text = "Vill";
+            this.columnHeader1.Text = "Message";
+            this.columnHeader1.Width = 179;
             // 
             // DebugUc
             // 
@@ -111,5 +118,6 @@
         private System.Windows.Forms.ColumnHeader cH4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ColumnHeader cHvill;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
     }
 }

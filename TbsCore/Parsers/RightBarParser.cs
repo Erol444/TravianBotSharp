@@ -102,51 +102,74 @@ namespace TravBotSharp.Files.Parsers
             }
             return false;
         }
-        public static List<Quest> GetQuests(HtmlAgilityPack.HtmlDocument htmlDoc)
+
+        /// <summary>
+        /// Check if there is a daily task complete
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns>Whether there are daily quests complete</returns>
+        public static bool CheckDailyQuest(HtmlAgilityPack.HtmlDocument html)
+        {
+            var node = html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("dailyQuests"));
+            if (node == null) return false;
+            var indicator = node.Descendants().FirstOrDefault(x => x.HasClass("indicator"));
+            return indicator != null;
+        }
+
+        /// <summary>
+        /// Gets the beginner quests
+        /// </summary>
+        /// <param name="htmlDoc"></param>
+        /// <returns>List of beginner quests</returns>
+        public static List<Quest> GetBeginnerQuests(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             List<Quest> QuestList = new List<Quest>();
-            return null;
-            var nodes = htmlDoc.GetElementbyId("mentorTaskList").ChildNodes.Where(x => x.Name == "li");
+
+            var mentor = htmlDoc.GetElementbyId("mentorTaskList");
+            if (mentor == null) return null;
+
+            var nodes = mentor.ChildNodes.Where(x => x.Name == "li");
 
             foreach (var node in nodes)
             {
                 Quest quest = new Quest();
                 quest.finished = false;
-                if (!node.ChildNodes.Any(x => x.Name == "img")) quest.finished = true;
-                try
+                switch (version)
                 {
-                    quest.level = byte.Parse(node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value.Split('_')[1]);
-                    switch (node.Attributes.FirstOrDefault(x => x.Name == "data-category").Value)
-                    {
-                        case "battle":
-                            quest.category = Category.Battle;
-                            break;
-                        case "economy":
-                            quest.category = Category.Economy;
-                            break;
-                        case "world":
-                            quest.category = Category.World;
-                            break;
-                    }
+                    case Classificator.ServerVersionEnum.T4_5:
+                        if (node.Descendants("svg").FirstOrDefault(x => x.HasClass("check")) != null) quest.finished = true;
+                        quest.level = byte.Parse(node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value.Split('_')[1]);
+                        switch (node.Attributes.FirstOrDefault(x => x.Name == "data-category").Value)
+                        {
+                            case "battle":
+                                quest.category = Category.Battle;
+                                break;
+                            case "economy":
+                                quest.category = Category.Economy;
+                                break;
+                            case "world":
+                                quest.category = Category.World;
+                                break;
+                        }
+                        break;
+                    case Classificator.ServerVersionEnum.T4_4:
+                        if (node.Descendants("img").FirstOrDefault(x => x.HasClass("finished")) != null) quest.finished = true;
+                        var node1 = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
+                        quest.level = byte.Parse(node1.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value.Split('_')[1]);
+                        switch (node1.Attributes.FirstOrDefault(x => x.Name == "data-category").Value)
+                        {
+                            case "battle":
+                                quest.category = Category.Battle;
+                                break;
+                            case "economy":
+                                quest.category = Category.Economy;
+                                break;
+                            case "world":
+                                quest.category = Category.World;
+                                break;
+                        }
+                        break;
                 }
-                catch //for other servers, like ttwars
-                {
-                    var node1 = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
-                    quest.level = byte.Parse(node1.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value.Split('_')[1]);
-                    switch (node1.Attributes.FirstOrDefault(x => x.Name == "data-category").Value)
-                    {
-                        case "battle":
-                            quest.category = Category.Battle;
-                            break;
-                        case "economy":
-                            quest.category = Category.Economy;
-                            break;
-                        case "world":
-                            quest.category = Category.World;
-                            break;
-                    }
-                }
-
                 QuestList.Add(quest);
             }
             return QuestList;

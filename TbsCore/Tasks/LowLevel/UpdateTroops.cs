@@ -15,24 +15,25 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// When new village is found by the bot, it should firstly check barracks, then  stable and then workshop,
         /// to see which troops are researched
         /// </summary>
-        public override async Task<TaskRes> Execute(HtmlDocument htmlDoc, ChromeDriver wb, Files.Models.AccModels.Account acc)
+        public override async Task<TaskRes> Execute(Account acc)
         {
+            var wb = acc.Wb.Driver;
             // If we have Plus account, just check that.
             if (acc.AccInfo.PlusAccount)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf3.php?s=5&su=2");
-                OverviewParser.UpdateTroopsLevels(htmlDoc, ref acc);
+                OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);
                 // We have updated all villages at the same time. No need to continue.
                 acc.Tasks.RemoveAll(x => x.GetType() == typeof(UpdateTroops));
                 return TaskRes.Executed;
             }
 
-            var smithy = vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
+            var smithy = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
             if (smithy != null)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
-                vill.Troops.Levels = TroopsParser.GetTroopLevels(htmlDoc);
-                UpdateResearchedTroops(vill);
+                Vill.Troops.Levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
+                UpdateResearchedTroops(Vill);
                 return TaskRes.Executed;
             }
 
@@ -54,9 +55,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             switch (check)
             {
-                case 1: return vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Barracks);
-                case 2: return vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Stable);
-                case 3: return vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Workshop);
+                case 1: return Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Barracks);
+                case 2: return Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Stable);
+                case 3: return Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Workshop);
                 default: return null;
             }
         }
