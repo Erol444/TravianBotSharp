@@ -90,6 +90,16 @@ namespace TravBotSharp.Views
 
                 equiptList.Items.Add(viewItem);
             }
+
+            // Update hero info
+            string heroInfoStr = $"Health: {acc.Hero.HeroInfo.Health}\n";
+            heroInfoStr += $"Level: {acc.Hero.HeroInfo.Level}\n";
+            heroInfoStr += $"Experience: {acc.Hero.HeroInfo.Experience}\n";
+            heroInfoStr += $"Attack points: {acc.Hero.HeroInfo.FightingStrengthPoints}\n";
+            heroInfoStr += $"Off Bonus points: {acc.Hero.HeroInfo.OffBonusPoints}\n";
+            heroInfoStr += $"Deff Bonus points: {acc.Hero.HeroInfo.DeffBonusPoints}\n";
+            heroInfoStr += $"Resources points: {acc.Hero.HeroInfo.ResourcesPoints}";
+            heroInfo.Text = heroInfoStr;
         }
         public void Init(ControlPanel _main)
         {
