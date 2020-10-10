@@ -21,15 +21,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             Classificator.BuildingEnum building = (Great == false) ? TroopsHelper.GetTroopBuilding(troop, false) : TroopsHelper.GetTroopBuilding(troop, true);
 
-            var buildId = Vill.Build.Buildings.FirstOrDefault(x => x.Type == building);
-            if (buildId == null)
-            {
-                //update dorf, no buildingId found?
-                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now });
-                Console.WriteLine($"There is no {building} in this village!");
+            if (!await VillageHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
-            }
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={buildId.Id}");
 
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;

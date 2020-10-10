@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Tasks.LowLevel;
+using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Helpers
 {
@@ -82,6 +84,30 @@ namespace TravBotSharp.Files.Helpers
             if (acc.Wb.CurrentUrl.Contains("?")) str = "&";
             var url = $"{acc.Wb.CurrentUrl}{str}newdid={id}";
             await acc.Wb.Navigate(url);
+        }
+
+        /// <summary>
+        /// Enters a specific building.
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="vill">Village</param>
+        /// <param name="buildingEnum">Building to enter</param>
+        /// <returns>Whether it was successful</returns>
+        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum)
+        {
+            var building = vill.Build
+                .Buildings
+                .FirstOrDefault(x => x.Type == buildingEnum);
+
+            if (building == null)
+            {
+                //TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = vill });
+                Console.WriteLine($"There is no {buildingEnum} in this village!");
+                return false;
+            }
+
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}");
+            return true;
         }
     }
 }

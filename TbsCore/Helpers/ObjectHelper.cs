@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using TravBotSharp.Files.Models.AccModels;
@@ -76,6 +77,31 @@ namespace TbsCore.Helpers
             if (o == null) return false;
             return o is IEnumerable &&
                    o.GetType().IsGenericType;
+        }
+
+        public static T[] GetRow<T>(this T[,] array, int row)
+        {
+            if (!typeof(T).IsPrimitive)
+                throw new InvalidOperationException("Not supported for managed types.");
+
+            if (array == null)
+                throw new ArgumentNullException("array");
+
+            int cols = array.GetUpperBound(1) + 1;
+            T[] result = new T[cols];
+
+            int size;
+
+            if (typeof(T) == typeof(bool))
+                size = 1;
+            else if (typeof(T) == typeof(char))
+                size = 2;
+            else
+                size = Marshal.SizeOf<T>();
+
+            Buffer.BlockCopy(array, row * cols * size, result, 0, cols * size);
+
+            return result;
         }
     }
 }

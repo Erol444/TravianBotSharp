@@ -18,11 +18,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Check if the account has enough culture points
             if (acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
             {
-                this.Vill.Expansion.ExpensionAvailable = true;
+                this.Vill.Expansion.ExpansionAvailable = true;
                 return TaskRes.Executed;
             }
 
-            this.Vill.Expansion.ExpensionAvailable = false;
+            this.Vill.Expansion.ExpansionAvailable = false;
 
             //https://low4.ttwars.com/build.php?id=39&tt=2&kid=7274&a=6
             //https://low4.ttwars.com/build.php?id=39&tt=2&kid=7272&a=6
@@ -31,6 +31,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 if (acc.NewVillages.AutoFindVillages) // Find new village to settle
                 {
                     TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle() {
+                        Vill = AccountHelper.GetMainVillage(acc),
                         ExecuteAt = DateTime.MinValue.AddHours(10)
                     });
                     this.NextExecute = DateTime.MinValue.AddHours(11);

@@ -63,7 +63,7 @@ namespace TravBotSharp.Files.Helpers
             acc.Villages.Add(vill);
 
             // Update the village
-            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateNewVillage()
+            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateVillage()
             {
                 ExecuteAt = DateTime.Now,
                 Vill = vill

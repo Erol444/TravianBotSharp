@@ -260,11 +260,11 @@ namespace TravBotSharp
         }
         private void RefreshVillage(Account acc, Village vill)
         {
-            var executeAt = DateTime.Now.AddHours(-1);
-            TaskExecutor.AddTask(acc, new UpdateDorf1() { ExecuteAt = executeAt, Vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = executeAt, Vill = vill });
-            TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = executeAt, Vill = vill });
-            // Todo: refresh celebrities
+            TaskExecutor.AddTask(acc, new UpdateVillage() { 
+                ExecuteAt = DateTime.Now.AddHours(-1),
+                Vill = vill,
+                ImportTasks = false 
+            });
         }
 
         private void RefreshAllVills_Click(object sender, EventArgs e)
@@ -275,7 +275,12 @@ namespace TravBotSharp
 
         private void button4_Click(object sender, EventArgs e)
         {
-
+            var acc = GetSelectedAcc();
+            TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
+            {
+                Vill = AccountHelper.GetMainVillage(acc),
+                ExecuteAt = DateTime.MinValue.AddHours(10)
+            });
         }
 
         private void button5_Click(object sender, EventArgs e) // Logout

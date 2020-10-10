@@ -50,6 +50,8 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
                 r.Cells.Add(new Cell("", vill.Settings.GetRes)); //Get resources from
                 r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
+                r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
+                r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -59,7 +61,7 @@ namespace TravBotSharp.Views
             XpTableGlobal.TableModel = tableModelGlobal;
             var acc = getSelectedAcc();
             var vill = acc.Villages.FirstOrDefault();
-            var newVills = acc.NewVillages.DefaultSettings;
+            
 
             tableModelGlobal.Rows.Clear();
             // Change multiple row
@@ -74,20 +76,25 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
             r.Cells.Add(new Cell("", vill.Settings.GetRes)); //Get resources from
             r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
+            r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
+            r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
             tableModelGlobal.Rows.Add(r);
 
-            var r1 = new Row();
-            r1.Cells.Add(new Cell("")); //vill id
-            r1.Cells.Add(new Cell("NEW VILLAGES")); //vill name
-            r1.Cells.Add(new Cell(newVills.Type.ToString())); //vill type
-            r1.Cells.Add(new Cell(newVills.BarracksTrain.ToString())); //barracks training
-            r1.Cells.Add(new Cell("", newVills.GreatBarracksTrain)); //GB
-            r1.Cells.Add(new Cell(newVills.StableTrain.ToString())); //stable training
-            r1.Cells.Add(new Cell("", newVills.GreatStableTrain)); //GS
-            r1.Cells.Add(new Cell(newVills.WorkshopTrain.ToString())); //workshop training
-            r1.Cells.Add(new Cell("", newVills.GetRes)); //Get resources from
-            r1.Cells.Add(new Cell("", newVills.SendRes)); //Send resources to
-            tableModelGlobal.Rows.Add(r);
+            //var newVills = acc.NewVillages.DefaultSettings;
+            //var r1 = new Row();
+            //r1.Cells.Add(new Cell("")); //vill id
+            //r1.Cells.Add(new Cell("NEW VILLAGES")); //vill name
+            //r1.Cells.Add(new Cell(newVills.Type.ToString())); //vill type
+            //r1.Cells.Add(new Cell(newVills.BarracksTrain.ToString())); //barracks training
+            //r1.Cells.Add(new Cell("", newVills.GreatBarracksTrain)); //GB
+            //r1.Cells.Add(new Cell(newVills.StableTrain.ToString())); //stable training
+            //r1.Cells.Add(new Cell("", newVills.GreatStableTrain)); //GS
+            //r1.Cells.Add(new Cell(newVills.WorkshopTrain.ToString())); //workshop training
+            //r1.Cells.Add(new Cell("", newVills.GetRes)); //Get resources from
+            //r1.Cells.Add(new Cell("", newVills.SendRes)); //Send resources to
+            //r1.Cells.Add(new Cell("", false)); // Auto-celebrations
+            //r1.Cells.Add(new Cell("", false)); // Big celebrations
+            //tableModelGlobal.Rows.Add(r);
         }
         #region Initialize table columns
         private void InitTable()
@@ -206,18 +213,30 @@ namespace TravBotSharp.Views
             CheckBoxColumn GetRes = new CheckBoxColumn
             {
                 Text = "Get Res",
-                Width = 75,
+                Width = 70,
                 ToolTipText = "Select the supplying village when there are not enough resources"
             };
             columnModel.Columns.Add(GetRes);
             //get resources for troops
-            CheckBoxColumn SendRes = new CheckBoxColumn
+            columnModel.Columns.Add(new CheckBoxColumn
             {
                 Text = "Send Res",
-                Width = 80,
+                Width = 70,
                 ToolTipText = "Select where to send resources when too many"
-            };
-            columnModel.Columns.Add(SendRes);
+            });
+
+            columnModel.Columns.Add(new CheckBoxColumn
+            {
+                Text = "Auto Celeb",
+                Width = 80,
+                ToolTipText = "Automatically start celebrations"
+            });
+            columnModel.Columns.Add(new CheckBoxColumn
+            {
+                Text = "Big Celeb",
+                Width = 80,
+                ToolTipText = "Automatically start big celebrations"
+            });
         }
         #endregion
         private string[] GetPossibleTroops(Classificator.BuildingEnum building)
@@ -274,6 +293,10 @@ namespace TravBotSharp.Views
                 vill.Settings.GetRes = cells[column].Checked;
                 column++;
                 vill.Settings.SendRes = cells[column].Checked;
+                column++;
+                vill.Expansion.AutoCelebrations = cells[column].Checked;
+                column++;
+                vill.Expansion.BigCelebrations = cells[column].Checked;
 
                 // Reset training
                 if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);

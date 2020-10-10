@@ -45,10 +45,10 @@
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(463, 614);
-            this.SaveButton.Margin = new System.Windows.Forms.Padding(2);
+            this.SaveButton.Location = new System.Drawing.Point(609, 725);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(82, 25);
+            this.SaveButton.Size = new System.Drawing.Size(109, 31);
             this.SaveButton.TabIndex = 1;
             this.SaveButton.Text = "Save";
             this.SaveButton.UseVisualStyleBackColor = true;
@@ -63,10 +63,11 @@
             this.table1.DragDropRenderer = dragDropRenderer1;
             this.table1.GridLinesContrainedToData = false;
             this.table1.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.table1.Location = new System.Drawing.Point(0, 94);
+            this.table1.Location = new System.Drawing.Point(0, 116);
+            this.table1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.table1.MultiSelect = true;
             this.table1.Name = "table1";
-            this.table1.Size = new System.Drawing.Size(984, 515);
+            this.table1.Size = new System.Drawing.Size(1312, 606);
             this.table1.TabIndex = 0;
             this.table1.Text = "table1";
             this.table1.UnfocusedBorderColor = System.Drawing.Color.Black;
@@ -80,19 +81,21 @@
             this.XpTableGlobal.DragDropRenderer = dragDropRenderer2;
             this.XpTableGlobal.GridLinesContrainedToData = false;
             this.XpTableGlobal.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.XpTableGlobal.Location = new System.Drawing.Point(0, 3);
+            this.XpTableGlobal.Location = new System.Drawing.Point(0, 4);
+            this.XpTableGlobal.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.XpTableGlobal.MultiSelect = true;
             this.XpTableGlobal.Name = "XpTableGlobal";
-            this.XpTableGlobal.Size = new System.Drawing.Size(984, 55);
+            this.XpTableGlobal.Size = new System.Drawing.Size(1312, 68);
             this.XpTableGlobal.TabIndex = 2;
             this.XpTableGlobal.Text = "table2";
             this.XpTableGlobal.UnfocusedBorderColor = System.Drawing.Color.Black;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(348, 64);
+            this.button2.Location = new System.Drawing.Point(464, 79);
+            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(269, 23);
+            this.button2.Size = new System.Drawing.Size(359, 28);
             this.button2.TabIndex = 4;
             this.button2.Text = "Change selected";
             this.button2.UseVisualStyleBackColor = true;
@@ -102,7 +105,8 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(630, 69);
+            this.label1.Location = new System.Drawing.Point(840, 85);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(108, 13);
             this.label1.TabIndex = 5;
@@ -110,9 +114,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(29, 64);
+            this.button1.Location = new System.Drawing.Point(39, 79);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(100, 28);
             this.button1.TabIndex = 6;
             this.button1.Text = "Import tasks";
             this.button1.UseVisualStyleBackColor = true;
@@ -120,9 +125,10 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(791, 65);
+            this.button3.Location = new System.Drawing.Point(1055, 80);
+            this.button3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(124, 23);
+            this.button3.Size = new System.Drawing.Size(165, 28);
             this.button3.TabIndex = 7;
             this.button3.Text = "Save new vill settings";
             this.button3.UseVisualStyleBackColor = true;
@@ -130,7 +136,7 @@
             // 
             // OverviewUc
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
@@ -139,8 +145,9 @@
             this.Controls.Add(this.XpTableGlobal);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.table1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "OverviewUc";
-            this.Size = new System.Drawing.Size(988, 646);
+            this.Size = new System.Drawing.Size(1317, 759);
             ((System.ComponentModel.ISupportInitialize)(this.table1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XpTableGlobal)).EndInit();
             this.ResumeLayout(false);

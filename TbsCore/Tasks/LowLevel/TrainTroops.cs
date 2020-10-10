@@ -41,15 +41,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             building = TroopsHelper.GetTroopBuilding(Troop, Great);
 
-            var buildId = Vill.Build.Buildings.FirstOrDefault(x => x.Type == building);
-            if (buildId == null)
-            {
-                //update dorf, no buildingId found?
-                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = Vill });
-                Console.WriteLine($"There is no {building} in this village!");
+            if (!await VillageHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
-            }
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={buildId.Id}");
 
             if (this.UpdateOnly || this.Troop == TroopsEnum.None)
             {

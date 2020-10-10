@@ -92,10 +92,22 @@ namespace TravBotSharp.Files.Helpers
                 BuildingHelper.ReStartBuilding(acc, vill);
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);
-                //todo
+                ReStartCelebration(acc, vill);
             }
         }
 
+        private static void ReStartCelebration(Account acc, Village vill)
+        {
+            // If we don't want auto-celebrations, return
+            if (!vill.Expansion.AutoCelebrations) return;
+
+            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new Celebration()
+            {
+                ExecuteAt = vill.Expansion.CelebrationEnd.AddSeconds(7),
+                Vill = vill,
+                BigCelebration = vill.Expansion.BigCelebrations,
+            });
+        }
 
         public static async Task CheckProxies(List<Access> access)
         {

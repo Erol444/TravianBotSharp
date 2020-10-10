@@ -79,7 +79,7 @@ namespace TravBotSharp.Files.Models.AccModels
         /// </summary>
         public VillDeffing Deffing { get; set; }
         /// <summary>
-        /// For village expansion (new village - settlers)
+        /// For village expansion (new village - settlers), culture points
         /// </summary>
         public VillExpansion Expansion { get; set; }
         /// <summary>

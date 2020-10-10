@@ -167,11 +167,11 @@ namespace TravBotSharp.Files.Helpers
 
                 acc.AccInfo.CulturePoints = RightBarParser.GetCulurePoints(html, acc.AccInfo.ServerVersion);
 
-                var villExpansionReady = acc.Villages.FirstOrDefault(x => x.Expansion.ExpensionAvailable);
+                var villExpansionReady = acc.Villages.FirstOrDefault(x => x.Expansion.ExpansionAvailable);
                 if (acc.AccInfo.CulturePoints.MaxVillages > acc.AccInfo.CulturePoints.VillageCount &&
                     villExpansionReady != null)
                 {
-                    villExpansionReady.Expansion.ExpensionAvailable = false;
+                    villExpansionReady.Expansion.ExpansionAvailable = false;
                     TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady });
                 }
                 // Beginner Quests
@@ -216,9 +216,6 @@ namespace TravBotSharp.Files.Helpers
                         Priority = TaskPriority.Low
                     });
                 }
-
-                //update loyalty of village
-
 
                 activeVill.Res.FreeCrop = RightBarParser.GetFreeCrop(html);
                 activeVill.Res.Capacity = ResourceParser.GetResourceCapacity(html, acc.AccInfo.ServerVersion);
@@ -266,6 +263,7 @@ namespace TravBotSharp.Files.Helpers
                 {
                     AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                 }
+
                 return true;
             }
             catch (Exception e)

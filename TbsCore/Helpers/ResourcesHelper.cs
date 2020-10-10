@@ -12,6 +12,9 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class ResourcesHelper
     {
+        public static DateTime EnoughResourcesOrTransit(Account acc, Village vill, long[] requiredRes, BuildingTask task = null) =>
+            EnoughResourcesOrTransit(acc, vill, ResourcesHelper.ArrayToResources(requiredRes), task);
+
         /// <summary>
         /// If there are enough resources, return TimeSpan(0)
         /// Otherwise calculate how long it will take to get enough resources and transit res from

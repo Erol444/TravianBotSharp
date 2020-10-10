@@ -17,9 +17,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var wb = acc.Wb.Driver;
 
-            var mainBuilding = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.MainBuilding);
-            if (mainBuilding == null) return TaskRes.Executed;
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={mainBuilding.Id}");
+            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.MainBuilding))
+                return TaskRes.Executed;
 
             if (Vill.Build.DemolishTasks.Count == 0) return TaskRes.Executed; //No more demolish tasks
 

@@ -18,12 +18,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            var academy = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Academy);
-            if (academy == null)
-            {
+            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Academy))
                 return TaskRes.Executed;
-            }
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={academy.Id}");
 
             var troop = Vill.Troops.ToResearch.FirstOrDefault();
             if (troop == TroopsEnum.None) return TaskRes.Executed; //We have researched all troops that were on the list

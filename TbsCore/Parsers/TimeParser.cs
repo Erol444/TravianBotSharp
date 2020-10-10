@@ -52,5 +52,20 @@ namespace TravBotSharp.Files.Parsers
             var dur = TimeParser.ParseDuration(timer.InnerText);
             return DateTime.Today.Add(dur);
         }
+
+        /// <summary>
+        /// Gets the TimeSpan when the current celebration will end
+        /// </summary>
+        /// <param name="html">Html</param>
+        /// <returns>When celebration will end</returns>
+        public static TimeSpan GetCelebrationTime(HtmlDocument html)
+        {
+            var content = html.GetElementbyId("content");
+
+            var underProgress = content.Descendants().FirstOrDefault(x => x.HasClass("under_progress"));
+            if (underProgress == null) return TimeSpan.MinValue; // No celebration is under progress
+
+            return TimeParser.ParseTimer(underProgress);
+        }
     }
 }

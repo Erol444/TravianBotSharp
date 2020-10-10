@@ -9,8 +9,12 @@ using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class UpdateNewVillage : BotTask
+    public class UpdateVillage : BotTask
     {
+        /// <summary>
+        /// If village is new, we want to import the building tasks to the village
+        /// </summary>
+        public bool ImportTasks { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
             TaskExecutor.RemoveSameTasksForVillage(acc, Vill, typeof(UpdateDorf1), this);
@@ -21,14 +25,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2
 
             // On new village import the building tasks
-            if (string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
+            if (ImportTasks) 
             {
-                DefaultConfigurations.FarmVillagePlan(acc, Vill);
+                if (string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
+                    DefaultConfigurations.FarmVillagePlan(acc, Vill);
+                else
+                    IoHelperCore.AddBuildTasksFromFile(acc, Vill, acc.NewVillages.BuildingTasksLocationNewVillage);
             }
-            else
-            {
-                IoHelperCore.AddBuildTasksFromFile(acc, Vill, acc.NewVillages.BuildingTasksLocationNewVillage);
-            }
+            
 
             await UpdateTroopsResearchedAndLevels(acc);
             await UpdateTroopsTraining(acc);
@@ -36,6 +40,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var firstTroop = TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe);
             Vill.Troops.TroopToTrain = firstTroop;
             Vill.Troops.Researched.Add(firstTroop);
+
+            if(await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
+            {
+                // Village has town hall, parse celebration duration
+                Vill.Expansion.CelebrationEnd = DateTime.Now + TimeParser.GetCelebrationTime(acc.Wb.Html);
+            }
 
             return TaskRes.Executed;
         }

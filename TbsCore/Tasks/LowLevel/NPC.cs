@@ -14,9 +14,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            var market = Vill.Build.Buildings.FirstOrDefault(x => x.Type == TravBotSharp.Files.Helpers.Classificator.BuildingEnum.Marketplace);
-            if (market == null) return TaskRes.Executed;
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?t=0&id={market.Id}");
+            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace))
+                return TaskRes.Executed;
 
             var npcMerchant = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
             var npcButton = npcMerchant.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));

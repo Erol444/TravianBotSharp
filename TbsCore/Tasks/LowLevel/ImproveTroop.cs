@@ -18,9 +18,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             if (Vill == null) Vill = acc.Villages.First(x => x.Active);
 
-            var smithy = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
-            if (smithy == null) return TaskRes.Executed;
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
+            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Smithy))
+                return TaskRes.Executed;
 
             var levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
             if (levels == null)
