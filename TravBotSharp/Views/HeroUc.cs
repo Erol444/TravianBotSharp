@@ -93,6 +93,8 @@ namespace TravBotSharp.Views
 
             // Update hero info
             string heroInfoStr = $"Health: {acc.Hero.HeroInfo.Health}\n";
+            heroInfoStr += $"Hero Status: {acc.Hero.Status}\n";
+            heroInfoStr += $"Hero Arrival: {acc.Hero.HeroArrival}\n";
             heroInfoStr += $"Level: {acc.Hero.HeroInfo.Level}\n";
             heroInfoStr += $"Experience: {acc.Hero.HeroInfo.Experience}\n";
             heroInfoStr += $"Attack points: {acc.Hero.HeroInfo.FightingStrengthPoints}\n";

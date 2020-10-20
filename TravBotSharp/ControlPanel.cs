@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -42,11 +44,7 @@ namespace TravBotSharp
         private void LoadAccounts()
         {
             accounts = IoHelperCore.ReadAccounts();
-            foreach (var acc in accounts)
-            {
-                var access = acc.Access.GetCurrentAccess();
-                InsertAccIntoListView(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl, access.Proxy, access.ProxyPort);
-            }
+            RefreshAccView();
         }
 
         private void button1_Click(object sender, EventArgs e) // Add account
@@ -62,11 +60,7 @@ namespace TravBotSharp
                         string.IsNullOrEmpty(acc.AccInfo.ServerUrl)) return;
 
                     accounts.Add(acc);
-                    var access = acc.Access.GetCurrentAccess();
-                    InsertAccIntoListView(acc.AccInfo.Nickname,
-                        acc.AccInfo.ServerUrl,
-                        access.Proxy,
-                        access.ProxyPort);
+                    RefreshAccView();
                 }
             }
        }
@@ -76,10 +70,27 @@ namespace TravBotSharp
             IoHelperCore.Quit(accounts);
         }
 
-        private void InsertAccIntoListView(string nick, string url, string proxy, int port)
+        /// <summary>
+        /// Refreshes the account view. Account currently selected will be colored in blue.
+        /// </summary>
+        private void RefreshAccView()
+        {
+            accListView.Items.Clear();
+            for (int i = 0; i < accounts.Count; i++)
+            {
+                var access = accounts[i].Access.GetCurrentAccess();
+                InsertAccIntoListView(accounts[i].AccInfo.Nickname,
+                    accounts[i].AccInfo.ServerUrl,
+                    access.Proxy,
+                    access.ProxyPort,
+                    i == accSelected);
+            }
+        }
+        private void InsertAccIntoListView(string nick, string url, string proxy, int port, bool selected = false)
         {
             var item = new ListViewItem();
             item.SubItems[0].Text = $"{nick} ({IoHelperCore.UrlRemoveHttp(url)})"; //account
+            item.SubItems[0].ForeColor = Color.FromName(selected ? "DodgerBlue" : "Black");
             item.SubItems.Add("❌"); //proxy error
             item.SubItems.Add(string.IsNullOrEmpty(proxy) ? "/" : proxy + ":" + port); //proxy
             accListView.Items.Add(item);
@@ -118,6 +129,7 @@ namespace TravBotSharp
             button2.Enabled = acc != null && acc.Wb == null;
 
             UpdateFrontEnd();
+            RefreshAccView();
         }
         private void UpdateFrontEnd()
         {
@@ -162,13 +174,14 @@ namespace TravBotSharp
             if (updateVillList)
             {
                 VillagesListView.Items.Clear();
-                foreach (var vill in acc.Villages) //update villages list
+                for (int i = 0; i < acc.Villages.Count; i++) // Update villages list
                 {
                     var item = new ListViewItem();
-                    item.SubItems[0].Text = vill.Name;
-                    item.SubItems.Add(vill.Coordinates.x + "/" + vill.Coordinates.y); //coords
-                    item.SubItems.Add(VillageHelper.VillageType(vill)); //type (resource)
-                    item.SubItems.Add(VillageHelper.ResourceIndicator(vill)); //resources count
+                    item.SubItems[0].Text = acc.Villages[i].Name;
+                    item.SubItems[0].ForeColor = Color.FromName(villSelected == i ? "DodgerBlue" : "Black");
+                    item.SubItems.Add(acc.Villages[i].Coordinates.x + "/" + acc.Villages[i].Coordinates.y); //coords
+                    item.SubItems.Add(VillageHelper.VillageType(acc.Villages[i])); //type (resource)
+                    item.SubItems.Add(VillageHelper.ResourceIndicator(acc.Villages[i])); //resources count
                     VillagesListView.Items.Add(item);
                 }
             }
@@ -219,7 +232,8 @@ namespace TravBotSharp
             var indicies = VillagesListView.SelectedIndices;
             if (indicies.Count > 0)
                 villSelected = indicies[0];
-            UpdateVillageTab(false);
+            UpdateVillageTab(true);
+
         }
 
         public Account GetSelectedAcc()
@@ -238,27 +252,22 @@ namespace TravBotSharp
         public Village GetSelectedVillage(Account acc = null)
         {
             if (acc == null) acc = GetSelectedAcc();
-            //Some error. Reset acc list view, maybe this will help.
+            // Some error. Refresh acc list view, maybe this will help.
             if (villSelected >= acc.Villages.Count)
             {
-                accListView.Items.Clear();
-                foreach (var accInfo in accounts)
-                {
-                    var currentAccess = accInfo.Access.GetCurrentAccess();
-                    InsertAccIntoListView(accInfo.AccInfo.Nickname, accInfo.AccInfo.ServerUrl, currentAccess.Proxy, currentAccess.ProxyPort);
-                }
+                RefreshAccView();
                 return null;
             }
             return acc.Villages[villSelected];
         }
 
-        private void RefreshVill_Click(object sender, EventArgs e)
+        private void RefreshVill_Click(object sender, EventArgs e) // Refresh selected village
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
             RefreshVillage(acc, vill);
         }
-        private void RefreshVillage(Account acc, Village vill)
+        private void RefreshVillage(Account acc, Village vill) // Refresh village
         {
             TaskExecutor.AddTask(acc, new UpdateVillage() { 
                 ExecuteAt = DateTime.Now.AddHours(-1),
@@ -267,7 +276,7 @@ namespace TravBotSharp
             });
         }
 
-        private void RefreshAllVills_Click(object sender, EventArgs e)
+        private void RefreshAllVills_Click(object sender, EventArgs e) // Refresh all villages
         {
             var acc = GetSelectedAcc();
             acc.Villages.ForEach(x => RefreshVillage(acc, x));
@@ -287,6 +296,23 @@ namespace TravBotSharp
         {
             new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
             generalUc1.UpdateBotRunning("false");
+        }
+
+        private void button6_Click(object sender, EventArgs e) // Login all accounts
+        {
+            new Thread(async () =>
+            {
+                var ran = new Random();
+                foreach (var acc in accounts)
+                {
+                    // If account is already running, don't login
+                    if (acc.TaskTimer?.IsBotRunning() ?? false) continue;
+
+                    _ = IoHelperCore.LoginAccount(acc);
+                    await Task.Delay(ran.Next(500, 5000));
+                }
+            }).Start();
+            generalUc1.UpdateBotRunning("true");
         }
     }
 }

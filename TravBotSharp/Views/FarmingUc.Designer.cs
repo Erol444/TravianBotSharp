@@ -70,7 +70,7 @@
             this.StopFarm.Name = "StopFarm";
             this.StopFarm.Size = new System.Drawing.Size(75, 23);
             this.StopFarm.TabIndex = 110;
-            this.StopFarm.Text = "Stop farm";
+            this.StopFarm.Text = "Stop farms";
             this.StopFarm.UseVisualStyleBackColor = true;
             this.StopFarm.Click += new System.EventHandler(this.StopFarm_Click);
             // 
@@ -150,7 +150,7 @@
             this.StartFarm.Name = "StartFarm";
             this.StartFarm.Size = new System.Drawing.Size(75, 23);
             this.StartFarm.TabIndex = 103;
-            this.StartFarm.Text = "Start farm";
+            this.StartFarm.Text = "Start farms";
             this.StartFarm.UseVisualStyleBackColor = true;
             this.StartFarm.Click += new System.EventHandler(this.StartFarm_Click);
             // 

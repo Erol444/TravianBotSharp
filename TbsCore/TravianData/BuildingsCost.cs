@@ -1,4 +1,5 @@
 ﻿using System;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.TravianData
