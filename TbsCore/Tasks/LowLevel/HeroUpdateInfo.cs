@@ -27,6 +27,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 var ran = new Random();
                 this.NextExecute = DateTime.Now.AddMinutes(ran.Next(40, 80));
+                TaskExecutor.RemoveSameTasks(acc, typeof(HeroUpdateInfo), this);
             }
 
             return TaskRes.Executed;

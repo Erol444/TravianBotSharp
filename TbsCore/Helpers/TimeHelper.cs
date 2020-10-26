@@ -20,7 +20,7 @@ namespace TravBotSharp.Files.Helpers
             long[] production = ResourcesHelper.ResourcesToArray(vill.Res.Production);
             long[] resRequired = ResourcesHelper.ResourcesToArray(required);
 
-            TimeSpan timeSpan = new TimeSpan(0);
+            TimeSpan timeSpan = TimeSpan.FromMinutes(5);
             for (int i = 0; i < 4; i++)
             {
                 TimeSpan toWaitForThisRes = new TimeSpan(0);

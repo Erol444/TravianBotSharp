@@ -203,7 +203,10 @@ namespace TravBotSharp.Files.Parsers
             if (node == null) node = htmlDoc.GetElementbyId("content");
             if (node == null) return null;
 
-            var href = node.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("href", "").StartsWith("/karte"));
+            var href = node.Descendants("a").FirstOrDefault(x => 
+                x.GetAttributeValue("href", "").StartsWith("/karte") ||
+                x.GetAttributeValue("href", "").StartsWith("karte") // TTWars
+            );
             if (href == null) return null;
 
             return Convert.ToInt32(href.GetAttributeValue("href", "").Split('=').Last());

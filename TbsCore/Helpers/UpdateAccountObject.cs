@@ -70,7 +70,6 @@ namespace TravBotSharp.Files.Helpers
             });
 
             DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);
-            vill.Build.AutoBuildResourceBonusBuildings = true;
 
             // Copy default settings to the new village. TODO: use automapper for this.
             var defaultSettings = acc.NewVillages.DefaultSettings;

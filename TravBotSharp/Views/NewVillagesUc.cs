@@ -122,9 +122,9 @@ namespace TravBotSharp.Views
             UpdateTab();
         }
 
-        private void NewVillagesUc_Load(object sender, EventArgs e)
+        private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-
+            getSelectedAcc().NewVillages.AutoSettleNewVillages = checkBox3.Checked;
         }
     }
 }

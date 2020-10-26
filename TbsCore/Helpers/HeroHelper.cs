@@ -70,7 +70,7 @@ namespace TravBotSharp.Files.Helpers
 
                 if(equipWith != null && GetHeroItemTier(equipWith.Item) > currentTier)
                 {
-                    TaskExecutor.AddTask(acc, new HeroEquip()
+                    TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip()
                     {
                         ExecuteAt = DateTime.Now,
                         Item = equipWith.Item
