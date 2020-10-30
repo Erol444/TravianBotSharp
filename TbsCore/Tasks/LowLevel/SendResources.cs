@@ -26,7 +26,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var building = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
             if (building == null)
             {
-                //update dorg, no buildingId found?
+                //update dorf, no buildingId found?
                 TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = Vill });
                 Console.WriteLine($"There is no {building} in this village!");
                 return TaskRes.Executed;

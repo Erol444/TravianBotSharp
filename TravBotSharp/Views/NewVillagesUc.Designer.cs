@@ -190,6 +190,7 @@
             this.checkBox3.TabIndex = 135;
             this.checkBox3.Text = "Auto make new villages";
             this.checkBox3.UseVisualStyleBackColor = true;
+            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
             // confirmNewVill
             // 
@@ -448,7 +449,6 @@
             this.Controls.Add(this.panel1);
             this.Name = "NewVillagesUc";
             this.Size = new System.Drawing.Size(913, 509);
-            this.Load += new System.EventHandler(this.NewVillagesUc_Load);
             ((System.ComponentModel.ISupportInitialize)(this.YNewVill)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XNewVill)).EndInit();
             this.panel1.ResumeLayout(false);

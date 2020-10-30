@@ -23,7 +23,7 @@ namespace TravBotSharp.Files.Helpers
 
         public static (CookieContainer, string) GetCookies(Account acc)
         {
-            var cookies = acc.Wb.GetCookes();
+            var cookies = acc.Wb.GetCookies();
 
             cookies.TryGetValue("PHPSESSID", out var phpsessid);
 
@@ -39,7 +39,7 @@ namespace TravBotSharp.Files.Helpers
             return (cookieContainer, phpsessid);
         }
 
-        internal static async Task<string> SendPostReq(Account acc, FormUrlEncodedContent content, string url)
+        internal static async Task<string> SendPostReq(Account acc, HttpContent content, string url)
         {
             (CookieContainer container, string phpsessid) = HttpHelper.GetCookies(acc);
 
@@ -47,7 +47,8 @@ namespace TravBotSharp.Files.Helpers
             using (var client = new HttpClient(handler) { BaseAddress = new System.Uri(acc.AccInfo.ServerUrl) })
             {
                 var headers = client.DefaultRequestHeaders;
-                headers.Add("Cookie", "PHPSESSID=" + phpsessid + ";");
+
+                if(!string.IsNullOrEmpty(phpsessid)) headers.Add("Cookie", "PHPSESSID=" + phpsessid + ";");
                 headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
 
                 HttpResponseMessage result = null;

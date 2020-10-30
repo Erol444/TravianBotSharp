@@ -95,7 +95,7 @@ namespace TravBotSharp.Files.Models.AccModels
             }
         }
 
-        internal Dictionary<string, string> GetCookes()
+        internal Dictionary<string, string> GetCookies()
         {
             var cookies = Driver.Manage().Cookies.AllCookies;
             var cookiesDir = new Dictionary<string, string>();

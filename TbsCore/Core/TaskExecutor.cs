@@ -394,7 +394,7 @@ namespace TravBotSharp.Files.Helpers
             }
         }
         /// <summary>
-        /// Removes all pending BotTasks of specific type for specific village except for the task that called it
+        /// Removes all pending BotTasks of specific type for specific village except for the task calling it
         /// Called by UpdateDorf1/2 since they are called a lot.
         /// </summary>
         /// <param name="acc"></param>
@@ -405,6 +405,19 @@ namespace TravBotSharp.Files.Helpers
         {
             acc.Tasks.RemoveAll(x =>
                 x.Vill == vill &&
+                x.GetType() == type &&
+                x != thisTask
+            );
+        }
+        /// <summary>
+        /// Removes all pending BotTasks of specific type except for the task calling it
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="type">Type of bot tasks to remove</param>
+        /// <param name="thisTask">Task not to remove</param>
+        public static void RemoveSameTasks(Account acc, Type type, BotTask thisTask)
+        {
+            acc.Tasks.RemoveAll(x =>
                 x.GetType() == type &&
                 x != thisTask
             );

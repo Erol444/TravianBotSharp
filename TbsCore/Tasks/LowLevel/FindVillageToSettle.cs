@@ -19,8 +19,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
 
             Coordinates closesCoords = null;
@@ -46,19 +44,25 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:
-                    var mapInfo = new SendMapInfoT4_5();
-                    mapInfo.zoomLevel = 1;
-                    //mapInfo.data.Add()
-                    /*
-                    T4.5 Endpoint:
-                    /api/v1/ajax/mapInfo
-                    Data: {"data":[{"position":{"x0":180,"y0":-320,"x1":189,"y1":-311}},{"position":{"x0":180,"y0":-330,"x1":189,"y1":-321}},{"position":{"x0":180,"y0":-340,"x1":189,"y1":-331}}],"zoomLevel":1}
-                    Response: useless.
+                    //var mapInfo = GenerateMapInfo(mainVill.Coordinates);
+                    //var contentMap = new StringContent(JsonConvert.SerializeObject(mapInfo));
+                    //var mapInfoRes = await HttpHelper.SendPostReq(acc, contentMap, "/api/v1/ajax/mapInfo");
 
-                    /api/v1/ajax/mapPositionData
-                    Data: {"data":{"x":188,"y":-374,"zoomLevel":1,"ignorePositions":[]}}
-                    Response: MapPositionDataT4_5.Root
-                    */
+                    var mapPosition = new SendMapPositionT4_5.Root()
+                    {
+                        data = new SendMapPositionT4_5.Data()
+                        {
+                            x = mainVill.Coordinates.x,
+                            y = mainVill.Coordinates.y,
+                            zoomLevel = 3,
+                            ignorePositions = new List<object>()
+                        }
+                    };
+                    var contentPosition = new StringContent(JsonConvert.SerializeObject(mapPosition));
+                    var mapPositionRes = await HttpHelper.SendPostReq(acc, contentPosition, "/api/v1/ajax/mapPositionData");
+                    var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
+
+                    closesCoords = HandleT4_5Data(acc, mapPositionData);
                     break;
             }
 
@@ -76,13 +80,34 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             return TaskRes.Executed;
         }
 
-        private SendMapInfoT4_5 GenerateMapInfo(Coordinates coords)
+        private Coordinates HandleT4_5Data(Account acc, MapPositionDataT4_5 mapPositionData)
         {
-            var ret = new SendMapInfoT4_5();
-            ret.zoomLevel = 3;
-            ret.data = new List<Datum>();
+            return null;
+        }
 
-            //ret.
+        private SendMapInfoT4_5.Root GenerateMapInfo(Coordinates coords)
+        {
+            int startX = coords.x - (coords.x % 100);
+            int startY = coords.y - (coords.y % 100);
+            var ret = new SendMapInfoT4_5.Root();
+            ret.zoomLevel = 3;
+            ret.data = new List<SendMapInfoT4_5.Datum>();
+
+            for (int x = -1; x <= 1; x++)
+            {
+                for (int y = -1; y <= 1; y++)
+                {
+                    ret.data.Add(new SendMapInfoT4_5.Datum()
+                    {
+                        position = new SendMapInfoT4_5.Position(){
+                            x0 = x * 100 + startX,
+                            y0 = y * 100 + startY,
+                            x1 = (x * 100 + startX) + 99,
+                            y1 = (y * 100 + startY) + 99
+                        }
+                    });
+                }
+            }
 
             return ret;
         }
