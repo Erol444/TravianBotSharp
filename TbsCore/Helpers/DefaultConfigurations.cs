@@ -67,10 +67,10 @@ namespace TravBotSharp.Files.Helpers
             transit.Clay = 90;
             transit.Iron = 90;
             transit.Crop = 90;
-            limit.Wood = 40000;
-            limit.Clay = 40000;
-            limit.Iron = 40000;
-            limit.Crop = 30000;
+            limit.Wood = 20000;
+            limit.Clay = 20000;
+            limit.Iron = 20000;
+            limit.Crop = 15000;
             res.Enabled = true;
             res.BalanceType = Tasks.ResourcesConfiguration.BalanceType.RecieveFrom;
             res.FillLimit = limit;
