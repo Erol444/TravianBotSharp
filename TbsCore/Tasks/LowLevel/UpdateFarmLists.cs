@@ -16,7 +16,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
-            var foundFLs = FarmlistParser.ParseFL(acc.Wb.Html);
+            var foundFLs = FarmlistParser.ParseFL(acc.Wb.Html, acc.AccInfo.ServerVersion);
             if (foundFLs == null)
             {
                 this.Message = "No FL, do you have rally point in this village?";

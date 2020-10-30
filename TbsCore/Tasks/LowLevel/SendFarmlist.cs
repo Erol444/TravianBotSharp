@@ -7,20 +7,20 @@ using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.TroopsModels;
+using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class SendFarmlist : BotTask
     {
         public FarmList FL { get; set; }
-        private HtmlNode GetFlNode(HtmlDocument htmlDoc) => htmlDoc.GetElementbyId("raidList" + this.FL.Id);
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
             //TODO: if there is no rally point, switch to different village!]
-            var flNode = GetFlNode(acc.Wb.Html);
+            var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
             if (flNode == null)
             {
@@ -42,7 +42,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
 
             // Update flNode!
-            flNode = GetFlNode(acc.Wb.Html);
+            flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
             foreach (var farm in flNode.Descendants("tr").Where(x => x.HasClass("slotRow")))
             {
@@ -66,11 +66,31 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             await Task.Delay(AccountHelper.Delay() * 2);
 
-            var sendFlScript = "var wrapper = document.getElementsByClassName('buttonWrapper')[0];";
-            sendFlScript += "wrapper.getElementsByClassName('startButton')[0].click();";
+            string sendFlScript = "";
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case ServerVersionEnum.T4_4:
+                    sendFlScript = $"document.getElementById('{flNode.Id}').childNodes[1].submit()";
+                    break;
+                case ServerVersionEnum.T4_5:
+                    sendFlScript = "var wrapper = document.getElementsByClassName('buttonWrapper')[0];";
+                    sendFlScript += "wrapper.getElementsByClassName('startButton')[0].click();";
+                    break;
+            }
+            
             wb.ExecuteScript(sendFlScript);
 
             return TaskRes.Executed;
+        }
+
+        private HtmlNode GetFlNode(HtmlDocument htmlDoc, ServerVersionEnum version)
+        {
+            switch (version)
+            {
+                case ServerVersionEnum.T4_4: return htmlDoc.GetElementbyId("list" + this.FL.Id);
+                case ServerVersionEnum.T4_5: return htmlDoc.GetElementbyId("raidList" + this.FL.Id);
+                default: return null;
+            }
         }
     }
 }
