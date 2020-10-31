@@ -13,5 +13,7 @@ namespace TravBotSharp.Files.Models
             if (other == null) return false;
             return (other.x == this.x && other.y == this.y);
         }
+
+        public override string ToString() => $"({this.x}/{this.y})";
     }
 }

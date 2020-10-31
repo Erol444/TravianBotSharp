@@ -11,6 +11,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class StartAdventure : BotTask
     {
+        /// <summary>
+        /// In case we want to only update adventures
+        /// </summary>
+        public bool UpdateOnly { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
@@ -20,7 +24,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             HeroHelper.UpdateHeroVillage(acc);
 
-            if (acc.Hero.Adventures == null || acc.Hero.Adventures.Count == 0) return TaskRes.Executed;
+            if (acc.Hero.Adventures == null || acc.Hero.Adventures.Count == 0 || UpdateOnly) return TaskRes.Executed;
 
             var adventures = acc.Hero.Adventures
                 .Where(x =>
@@ -30,7 +34,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (adventures.Count == 0) return TaskRes.Executed;
 
-            var adventure = adventures.FirstOrDefault(x => x.Difficulty == 1);
+            var adventure = adventures.FirstOrDefault(x => x.Difficulty == Classificator.DifficultyEnum.Normal);
             if (adventure == null) adventure = adventures.FirstOrDefault();
 
             acc.Hero.NextHeroSend = DateTime.Now.AddSeconds(adventure.DurationSeconds * 2);

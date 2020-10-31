@@ -1,5 +1,6 @@
 ﻿using Serilog.Formatting.Json;
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -94,14 +95,24 @@ namespace TravBotSharp.Views
             // Update hero info
             string heroInfoStr = $"Health: {acc.Hero.HeroInfo.Health}\n";
             heroInfoStr += $"Hero Status: {acc.Hero.Status}\n";
+            heroInfoStr += $"Hero home village: {HeroHelper.GetHeroHomeVillage(acc)?.Name ?? "UNKNOWN"}\n";
             heroInfoStr += $"Hero Arrival: {acc.Hero.HeroArrival}\n";
             heroInfoStr += $"Level: {acc.Hero.HeroInfo.Level}\n";
             heroInfoStr += $"Experience: {acc.Hero.HeroInfo.Experience}\n";
             heroInfoStr += $"Attack points: {acc.Hero.HeroInfo.FightingStrengthPoints}\n";
             heroInfoStr += $"Off Bonus points: {acc.Hero.HeroInfo.OffBonusPoints}\n";
             heroInfoStr += $"Deff Bonus points: {acc.Hero.HeroInfo.DeffBonusPoints}\n";
-            heroInfoStr += $"Resources points: {acc.Hero.HeroInfo.ResourcesPoints}";
+            heroInfoStr += $"Resources points: {acc.Hero.HeroInfo.ResourcesPoints}\n";
+            heroInfoStr += $"Number of adventures: {acc.Hero.AdventureNum}";
             heroInfo.Text = heroInfoStr;
+
+            //Adventures
+            var advStr = new List<string>();
+            foreach(var adv in acc.Hero.Adventures)
+            {
+                advStr.Add(adv.Coordinates.ToString() + " - " + adv.Difficulty.ToString() + " adventure");
+            }
+            adventures.Text = string.Join("\n", advStr);
         }
         public void Init(ControlPanel _main)
         {
@@ -221,6 +232,16 @@ namespace TravBotSharp.Views
         {
             var acc = getSelectedAcc();
             TaskExecutor.AddTask(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+        }
+
+        private void button2_Click(object sender, EventArgs e) // Update adventures
+        {
+            var acc = getSelectedAcc();
+            TaskExecutor.AddTask(acc, new StartAdventure()
+            {
+                ExecuteAt = DateTime.Now,
+                UpdateOnly = true
+            });
         }
     }
 }

@@ -67,6 +67,10 @@
             this.button1 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.heroInfo = new System.Windows.Forms.RichTextBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.adventures = new System.Windows.Forms.RichTextBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.minHeroHealthUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.strength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offBonus)).BeginInit();
@@ -74,15 +78,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.resources)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxDistanceUpDown)).BeginInit();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // buyAdventuresCheckBox
             // 
             this.buyAdventuresCheckBox.AutoSize = true;
-            this.buyAdventuresCheckBox.Location = new System.Drawing.Point(17, 250);
-            this.buyAdventuresCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buyAdventuresCheckBox.Location = new System.Drawing.Point(13, 203);
             this.buyAdventuresCheckBox.Name = "buyAdventuresCheckBox";
-            this.buyAdventuresCheckBox.Size = new System.Drawing.Size(172, 20);
+            this.buyAdventuresCheckBox.Size = new System.Drawing.Size(141, 17);
             this.buyAdventuresCheckBox.TabIndex = 7;
             this.buyAdventuresCheckBox.Text = "TTWars buy adventures";
             this.buyAdventuresCheckBox.UseVisualStyleBackColor = true;
@@ -91,19 +95,17 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(13, 124);
-            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label13.Location = new System.Drawing.Point(10, 101);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(103, 16);
+            this.label13.Size = new System.Drawing.Size(82, 13);
             this.label13.TabIndex = 6;
             this.label13.Text = "Minimum Health";
             // 
             // minHeroHealthUpDown
             // 
-            this.minHeroHealthUpDown.Location = new System.Drawing.Point(17, 144);
-            this.minHeroHealthUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.minHeroHealthUpDown.Location = new System.Drawing.Point(13, 117);
             this.minHeroHealthUpDown.Name = "minHeroHealthUpDown";
-            this.minHeroHealthUpDown.Size = new System.Drawing.Size(120, 22);
+            this.minHeroHealthUpDown.Size = new System.Drawing.Size(90, 20);
             this.minHeroHealthUpDown.TabIndex = 5;
             this.minHeroHealthUpDown.Value = new decimal(new int[] {
             30,
@@ -115,10 +117,9 @@
             // checkBoxAutoSendToAdventures
             // 
             this.checkBoxAutoSendToAdventures.AutoSize = true;
-            this.checkBoxAutoSendToAdventures.Location = new System.Drawing.Point(17, 18);
-            this.checkBoxAutoSendToAdventures.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.checkBoxAutoSendToAdventures.Location = new System.Drawing.Point(13, 15);
             this.checkBoxAutoSendToAdventures.Name = "checkBoxAutoSendToAdventures";
-            this.checkBoxAutoSendToAdventures.Size = new System.Drawing.Size(171, 20);
+            this.checkBoxAutoSendToAdventures.Size = new System.Drawing.Size(142, 17);
             this.checkBoxAutoSendToAdventures.TabIndex = 4;
             this.checkBoxAutoSendToAdventures.Text = "Auto send to adventures";
             this.checkBoxAutoSendToAdventures.UseVisualStyleBackColor = true;
@@ -126,107 +127,98 @@
             // 
             // strength
             // 
-            this.strength.Location = new System.Drawing.Point(137, 16);
-            this.strength.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.strength.Location = new System.Drawing.Point(103, 13);
             this.strength.Maximum = new decimal(new int[] {
             4,
             0,
             0,
             0});
             this.strength.Name = "strength";
-            this.strength.Size = new System.Drawing.Size(63, 22);
+            this.strength.Size = new System.Drawing.Size(47, 20);
             this.strength.TabIndex = 8;
             this.strength.ValueChanged += new System.EventHandler(this.strength_ValueChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(16, 18);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(12, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(105, 16);
+            this.label1.Size = new System.Drawing.Size(85, 13);
             this.label1.TabIndex = 9;
             this.label1.Text = "Fighting strength";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(59, 53);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Location = new System.Drawing.Point(44, 43);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(64, 16);
+            this.label2.Size = new System.Drawing.Size(53, 13);
             this.label2.TabIndex = 10;
             this.label2.Text = "Off bonus";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(51, 85);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Location = new System.Drawing.Point(38, 69);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(72, 16);
+            this.label3.Size = new System.Drawing.Size(59, 13);
             this.label3.TabIndex = 11;
             this.label3.Text = "Deff bonus";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(52, 117);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Location = new System.Drawing.Point(39, 95);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(74, 16);
+            this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 12;
             this.label4.Text = "Resources";
             // 
             // offBonus
             // 
-            this.offBonus.Location = new System.Drawing.Point(137, 50);
-            this.offBonus.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.offBonus.Location = new System.Drawing.Point(103, 41);
             this.offBonus.Maximum = new decimal(new int[] {
             4,
             0,
             0,
             0});
             this.offBonus.Name = "offBonus";
-            this.offBonus.Size = new System.Drawing.Size(63, 22);
+            this.offBonus.Size = new System.Drawing.Size(47, 20);
             this.offBonus.TabIndex = 13;
             this.offBonus.ValueChanged += new System.EventHandler(this.offBonus_ValueChanged);
             // 
             // deffBonus
             // 
-            this.deffBonus.Location = new System.Drawing.Point(137, 82);
-            this.deffBonus.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deffBonus.Location = new System.Drawing.Point(103, 67);
             this.deffBonus.Maximum = new decimal(new int[] {
             4,
             0,
             0,
             0});
             this.deffBonus.Name = "deffBonus";
-            this.deffBonus.Size = new System.Drawing.Size(63, 22);
+            this.deffBonus.Size = new System.Drawing.Size(47, 20);
             this.deffBonus.TabIndex = 14;
             this.deffBonus.ValueChanged += new System.EventHandler(this.deffBonus_ValueChanged);
             // 
             // resources
             // 
-            this.resources.Location = new System.Drawing.Point(137, 114);
-            this.resources.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.resources.Location = new System.Drawing.Point(103, 93);
             this.resources.Maximum = new decimal(new int[] {
             4,
             0,
             0,
             0});
             this.resources.Name = "resources";
-            this.resources.Size = new System.Drawing.Size(63, 22);
+            this.resources.Size = new System.Drawing.Size(47, 20);
             this.resources.TabIndex = 15;
             this.resources.ValueChanged += new System.EventHandler(this.resources_ValueChanged);
             // 
             // autoSetHeroPoints
             // 
             this.autoSetHeroPoints.AutoSize = true;
-            this.autoSetHeroPoints.Location = new System.Drawing.Point(40, 146);
-            this.autoSetHeroPoints.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.autoSetHeroPoints.Location = new System.Drawing.Point(30, 119);
             this.autoSetHeroPoints.Name = "autoSetHeroPoints";
-            this.autoSetHeroPoints.Size = new System.Drawing.Size(144, 20);
+            this.autoSetHeroPoints.Size = new System.Drawing.Size(120, 17);
             this.autoSetHeroPoints.TabIndex = 16;
             this.autoSetHeroPoints.Text = "Auto set hero points";
             this.autoSetHeroPoints.UseVisualStyleBackColor = true;
@@ -234,15 +226,14 @@
             // 
             // maxDistanceUpDown
             // 
-            this.maxDistanceUpDown.Location = new System.Drawing.Point(17, 206);
-            this.maxDistanceUpDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.maxDistanceUpDown.Location = new System.Drawing.Point(13, 167);
             this.maxDistanceUpDown.Maximum = new decimal(new int[] {
             500,
             0,
             0,
             0});
             this.maxDistanceUpDown.Name = "maxDistanceUpDown";
-            this.maxDistanceUpDown.Size = new System.Drawing.Size(120, 22);
+            this.maxDistanceUpDown.Size = new System.Drawing.Size(90, 20);
             this.maxDistanceUpDown.TabIndex = 17;
             this.maxDistanceUpDown.Value = new decimal(new int[] {
             30,
@@ -254,20 +245,18 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(13, 186);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Location = new System.Drawing.Point(10, 151);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(87, 16);
+            this.label5.Size = new System.Drawing.Size(70, 13);
             this.label5.TabIndex = 18;
             this.label5.Text = "Max distance";
             // 
             // autoReviveHero
             // 
             this.autoReviveHero.AutoSize = true;
-            this.autoReviveHero.Location = new System.Drawing.Point(17, 47);
-            this.autoReviveHero.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.autoReviveHero.Location = new System.Drawing.Point(13, 38);
             this.autoReviveHero.Name = "autoReviveHero";
-            this.autoReviveHero.Size = new System.Drawing.Size(124, 20);
+            this.autoReviveHero.Size = new System.Drawing.Size(104, 17);
             this.autoReviveHero.TabIndex = 19;
             this.autoReviveHero.Text = "Auto revive hero";
             this.autoReviveHero.UseVisualStyleBackColor = true;
@@ -275,10 +264,9 @@
             // 
             // SupplyResourcesButton
             // 
-            this.SupplyResourcesButton.Location = new System.Drawing.Point(197, 318);
-            this.SupplyResourcesButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.SupplyResourcesButton.Location = new System.Drawing.Point(148, 258);
             this.SupplyResourcesButton.Name = "SupplyResourcesButton";
-            this.SupplyResourcesButton.Size = new System.Drawing.Size(95, 28);
+            this.SupplyResourcesButton.Size = new System.Drawing.Size(71, 23);
             this.SupplyResourcesButton.TabIndex = 119;
             this.SupplyResourcesButton.Text = "OK";
             this.SupplyResourcesButton.UseVisualStyleBackColor = true;
@@ -287,10 +275,9 @@
             // SupplyResVillageSelected
             // 
             this.SupplyResVillageSelected.AutoSize = true;
-            this.SupplyResVillageSelected.Location = new System.Drawing.Point(15, 353);
-            this.SupplyResVillageSelected.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.SupplyResVillageSelected.Location = new System.Drawing.Point(11, 287);
             this.SupplyResVillageSelected.Name = "SupplyResVillageSelected";
-            this.SupplyResVillageSelected.Size = new System.Drawing.Size(68, 16);
+            this.SupplyResVillageSelected.Size = new System.Drawing.Size(55, 13);
             this.SupplyResVillageSelected.TabIndex = 118;
             this.SupplyResVillageSelected.Text = "Selected: ";
             // 
@@ -298,8 +285,7 @@
             // 
             this.label17.AutoSize = true;
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(15, 296);
-            this.label17.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label17.Location = new System.Drawing.Point(11, 240);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(108, 16);
             this.label17.TabIndex = 117;
@@ -308,18 +294,16 @@
             // SupplyResVillageComboBox
             // 
             this.SupplyResVillageComboBox.FormattingEnabled = true;
-            this.SupplyResVillageComboBox.Location = new System.Drawing.Point(15, 319);
-            this.SupplyResVillageComboBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.SupplyResVillageComboBox.Location = new System.Drawing.Point(11, 259);
             this.SupplyResVillageComboBox.Name = "SupplyResVillageComboBox";
-            this.SupplyResVillageComboBox.Size = new System.Drawing.Size(172, 24);
+            this.SupplyResVillageComboBox.Size = new System.Drawing.Size(130, 21);
             this.SupplyResVillageComboBox.TabIndex = 116;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(665, 17);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Location = new System.Drawing.Point(487, 9);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(83, 16);
             this.label6.TabIndex = 120;
@@ -335,11 +319,10 @@
             this.heroItemsList.FullRowSelect = true;
             this.heroItemsList.GridLines = true;
             this.heroItemsList.HideSelection = false;
-            this.heroItemsList.Location = new System.Drawing.Point(669, 47);
-            this.heroItemsList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.heroItemsList.Location = new System.Drawing.Point(490, 33);
             this.heroItemsList.MultiSelect = false;
             this.heroItemsList.Name = "heroItemsList";
-            this.heroItemsList.Size = new System.Drawing.Size(369, 490);
+            this.heroItemsList.Size = new System.Drawing.Size(278, 367);
             this.heroItemsList.TabIndex = 143;
             this.heroItemsList.UseCompatibleStateImageBehavior = false;
             this.heroItemsList.View = System.Windows.Forms.View.Details;
@@ -367,10 +350,9 @@
             // lastUpdated
             // 
             this.lastUpdated.AutoSize = true;
-            this.lastUpdated.Location = new System.Drawing.Point(619, 542);
-            this.lastUpdated.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lastUpdated.Location = new System.Drawing.Point(487, 577);
             this.lastUpdated.Name = "lastUpdated";
-            this.lastUpdated.Size = new System.Drawing.Size(89, 16);
+            this.lastUpdated.Size = new System.Drawing.Size(72, 13);
             this.lastUpdated.TabIndex = 144;
             this.lastUpdated.Text = "Last updated:";
             // 
@@ -383,11 +365,10 @@
             this.equiptList.FullRowSelect = true;
             this.equiptList.GridLines = true;
             this.equiptList.HideSelection = false;
-            this.equiptList.Location = new System.Drawing.Point(384, 353);
-            this.equiptList.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.equiptList.Location = new System.Drawing.Point(490, 424);
             this.equiptList.MultiSelect = false;
             this.equiptList.Name = "equiptList";
-            this.equiptList.Size = new System.Drawing.Size(276, 184);
+            this.equiptList.Size = new System.Drawing.Size(278, 150);
             this.equiptList.TabIndex = 145;
             this.equiptList.UseCompatibleStateImageBehavior = false;
             this.equiptList.View = System.Windows.Forms.View.Details;
@@ -395,24 +376,23 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Category";
-            this.columnHeader2.Width = 75;
+            this.columnHeader2.Width = 87;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Item";
-            this.columnHeader3.Width = 82;
+            this.columnHeader3.Width = 100;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "Tier";
-            this.columnHeader4.Width = 39;
+            this.columnHeader4.Width = 56;
             // 
             // label7
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(380, 330);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label7.Location = new System.Drawing.Point(487, 405);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(116, 16);
             this.label7.TabIndex = 146;
@@ -421,10 +401,9 @@
             // refreshInfo
             // 
             this.refreshInfo.AutoSize = true;
-            this.refreshInfo.Location = new System.Drawing.Point(17, 75);
-            this.refreshInfo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.refreshInfo.Location = new System.Drawing.Point(13, 61);
             this.refreshInfo.Name = "refreshInfo";
-            this.refreshInfo.Size = new System.Drawing.Size(152, 20);
+            this.refreshInfo.Size = new System.Drawing.Size(127, 17);
             this.refreshInfo.TabIndex = 147;
             this.refreshInfo.Text = "Auto refresh hero info";
             this.refreshInfo.UseVisualStyleBackColor = true;
@@ -433,10 +412,9 @@
             // autoEquip
             // 
             this.autoEquip.AutoSize = true;
-            this.autoEquip.Location = new System.Drawing.Point(384, 256);
-            this.autoEquip.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.autoEquip.Location = new System.Drawing.Point(11, 37);
             this.autoEquip.Name = "autoEquip";
-            this.autoEquip.Size = new System.Drawing.Size(121, 20);
+            this.autoEquip.Size = new System.Drawing.Size(101, 17);
             this.autoEquip.TabIndex = 148;
             this.autoEquip.Text = "Auto equip hero";
             this.autoEquip.UseVisualStyleBackColor = true;
@@ -445,10 +423,9 @@
             // autoRes
             // 
             this.autoRes.AutoSize = true;
-            this.autoRes.Location = new System.Drawing.Point(384, 284);
-            this.autoRes.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.autoRes.Location = new System.Drawing.Point(11, 60);
             this.autoRes.Name = "autoRes";
-            this.autoRes.Size = new System.Drawing.Size(172, 20);
+            this.autoRes.Size = new System.Drawing.Size(141, 17);
             this.autoRes.TabIndex = 149;
             this.autoRes.Text = "Auto use hero resources";
             this.autoRes.UseVisualStyleBackColor = true;
@@ -466,18 +443,16 @@
             this.panel1.Controls.Add(this.offBonus);
             this.panel1.Controls.Add(this.deffBonus);
             this.panel1.Controls.Add(this.resources);
-            this.panel1.Location = new System.Drawing.Point(356, 18);
-            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panel1.Location = new System.Drawing.Point(254, 117);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(216, 183);
+            this.panel1.Size = new System.Drawing.Size(162, 149);
             this.panel1.TabIndex = 150;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(391, 220);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button1.Location = new System.Drawing.Point(16, 8);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(181, 28);
+            this.button1.Size = new System.Drawing.Size(136, 23);
             this.button1.TabIndex = 151;
             this.button1.Text = "Refresh Hero info";
             this.button1.UseVisualStyleBackColor = true;
@@ -487,8 +462,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(15, 394);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label8.Location = new System.Drawing.Point(11, 320);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(75, 16);
             this.label8.TabIndex = 152;
@@ -496,23 +470,66 @@
             // 
             // heroInfo
             // 
-            this.heroInfo.Location = new System.Drawing.Point(17, 413);
+            this.heroInfo.Location = new System.Drawing.Point(13, 336);
+            this.heroInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.heroInfo.Name = "heroInfo";
             this.heroInfo.ReadOnly = true;
-            this.heroInfo.Size = new System.Drawing.Size(254, 145);
+            this.heroInfo.Size = new System.Drawing.Size(216, 177);
             this.heroInfo.TabIndex = 153;
             this.heroInfo.Text = "";
             // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.Controls.Add(this.button1);
+            this.panel2.Controls.Add(this.autoEquip);
+            this.panel2.Controls.Add(this.autoRes);
+            this.panel2.Location = new System.Drawing.Point(253, 19);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(163, 90);
+            this.panel2.TabIndex = 154;
+            // 
+            // adventures
+            // 
+            this.adventures.Location = new System.Drawing.Point(252, 305);
+            this.adventures.Margin = new System.Windows.Forms.Padding(2);
+            this.adventures.Name = "adventures";
+            this.adventures.ReadOnly = true;
+            this.adventures.Size = new System.Drawing.Size(186, 208);
+            this.adventures.TabIndex = 155;
+            this.adventures.Text = "";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(250, 287);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(86, 16);
+            this.label9.TabIndex = 147;
+            this.label9.Text = "Adventures";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(280, 518);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(136, 23);
+            this.button2.TabIndex = 156;
+            this.button2.Text = "Refresh Adventures";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // HeroUc
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button2);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.adventures);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.heroInfo);
             this.Controls.Add(this.label8);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.autoRes);
-            this.Controls.Add(this.autoEquip);
             this.Controls.Add(this.refreshInfo);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.equiptList);
@@ -530,9 +547,8 @@
             this.Controls.Add(this.label13);
             this.Controls.Add(this.minHeroHealthUpDown);
             this.Controls.Add(this.checkBoxAutoSendToAdventures);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "HeroUc";
-            this.Size = new System.Drawing.Size(1124, 578);
+            this.Size = new System.Drawing.Size(843, 598);
             ((System.ComponentModel.ISupportInitialize)(this.minHeroHealthUpDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.strength)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.offBonus)).EndInit();
@@ -541,6 +557,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.maxDistanceUpDown)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -587,5 +605,9 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.RichTextBox heroInfo;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.RichTextBox adventures;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Button button2;
     }
 }
