@@ -79,7 +79,6 @@ namespace TravBotSharp.Files.Helpers
 
         public static async Task SwitchVillage(Account acc, int id)
         {
-            if (acc.Wb.CurrentUrl == null) acc.Wb.CurrentUrl = acc.AccInfo.ServerUrl;
             string str = "?";
             if (acc.Wb.CurrentUrl.Contains("?")) str = "&";
             var url = $"{acc.Wb.CurrentUrl}{str}newdid={id}";

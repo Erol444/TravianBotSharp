@@ -5,6 +5,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
@@ -152,7 +153,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     return TaskRes.Executed;
                 }
                 //check if button is null!
-                acc.Wb.Driver.ExecuteScript($"document.getElementById('{button.Id}').click()");
+                await DriverHelper.ExecuteScript(acc, $"document.getElementById('{button.Id}').click()");
                 this.Task.ConstructNew = false;
 
                 await PostTaskCheckDorf(acc);
@@ -240,7 +241,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             CheckSettlers(acc, Vill, lvl, DateTime.Now.Add(buildDuration));
 
             Console.WriteLine($"Village {Vill.Name} will upgrade {Task.Building}");
-            acc.Wb.Driver.ExecuteScript($"document.getElementById('{upgradeButton.Id}').click()");
+            await DriverHelper.ExecuteScript(acc, $"document.getElementById('{upgradeButton.Id}').click()");
             await PostTaskCheckDorf(acc);
 
             return TaskRes.Executed;
@@ -263,11 +264,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         private async Task PostTaskCheckDorf(Account acc)
         {
-            await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
-            acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
-
-            if (acc.Wb.Driver.Url.Contains("dorf1")) TaskExecutor.UpdateDorf1Info(acc);
-            else if (acc.Wb.Driver.Url.Contains("dorf2")) TaskExecutor.UpdateDorf2Info(acc);
+            //if (acc.Wb.Driver.Url.Contains("dorf1")) TaskExecutor.UpdateDorf1Info(acc);
+            //else if (acc.Wb.Driver.Url.Contains("dorf2")) TaskExecutor.UpdateDorf2Info(acc);
+            await TaskExecutor.PageLoaded(acc);
         }
 
         //TODO: Have this as postCheck? just so it doesn't get constantly checked

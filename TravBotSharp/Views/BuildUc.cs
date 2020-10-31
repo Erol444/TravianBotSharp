@@ -30,31 +30,8 @@ namespace TravBotSharp.Views
             RefreshBuildingsList(vill);
 
             //Building Tasks ListView
-            buildListView.Items.Clear();
+            UpdateBuildTasks(vill);
 
-            foreach (var task in vill.Build.Tasks)
-            {
-                var item = new ListViewItem();
-                //building
-                if (task.TaskType == BuildingHelper.BuildingType.AutoUpgradeResFields)
-                {
-                    item.SubItems[0].Text = AutoBuildResFieldsStr(task);
-                }
-                else item.SubItems[0].Text = VillageHelper.BuildingTypeToString(task.Building);
-
-                item.SubItems.Add(task.Level.ToString()); //lvl
-                item.SubItems.Add(task.BuildingId.ToString()); //buildingId
-                item.SubItems.Add(""); // Selected task
-
-                var upgradeTask = acc.Tasks?.FirstOrDefault(x =>
-                    x.GetType() == typeof(UpgradeBuilding)
-                    && ((UpgradeBuilding)x).Task == task
-                    );
-
-                item.SubItems.Add(upgradeTask == null ? "" : upgradeTask.ExecuteAt.ToString()); //execute at
-                buildListView.Items.Add(item);
-            }
-            UpdateCurrentlySelected(vill);
             foreach (var task in vill.Build.DemolishTasks)
             {
                 var item = new ListViewItem();
@@ -84,16 +61,37 @@ namespace TravBotSharp.Views
             buildTypeComboBox.Enabled = false;
 
             buildRadioButton.Checked = true;
+            instaUpgradeUpDown.Enabled = vill.Build.InstaBuild;
+            instaUpgradeUpDown.Value = vill.Build.InstaBuildHours;
         }
 
-        private void UpdateCurrentlySelected(Village vill)
+        private void UpdateBuildTasks(Village vill)
         {
-            if (oldSelected >= 0 && oldSelected < vill.Build.Tasks.Count)
+            buildListView.Items.Clear();
+
+            for (int i = 0; i < vill.Build.Tasks.Count; i++)
             {
-                for (int i = 0; i < buildListView.Items.Count; i++)
+                var task = vill.Build.Tasks[i];
+                var item = new ListViewItem();
+                //building
+                if (task.TaskType == BuildingHelper.BuildingType.AutoUpgradeResFields)
                 {
-                    buildListView.Items[i].SubItems[4].Text = (oldSelected == i) ? "⨞" : "";
+                    item.SubItems[0].Text = AutoBuildResFieldsStr(task);
                 }
+                else item.SubItems[0].Text = VillageHelper.BuildingTypeToString(task.Building);
+
+                item.ForeColor = Color.FromName(oldSelected == i ? "DodgerBlue" : "Black");
+
+                item.SubItems.Add(task.Level.ToString()); //lvl
+                item.SubItems.Add(task.BuildingId.ToString()); //buildingId
+
+                //var upgradeTask = acc.Tasks?.FirstOrDefault(x =>
+                //    x.GetType() == typeof(UpgradeBuilding)
+                //    && ((UpgradeBuilding)x).Task == task
+                //    );
+
+                //item.SubItems.Add(upgradeTask == null ? "" : upgradeTask.ExecuteAt.ToString()); //execute at
+                buildListView.Items.Add(item);
             }
         }
 
@@ -200,7 +198,6 @@ namespace TravBotSharp.Views
             return (oldSelected >= 0 && oldSelected < tasks.Count) ? tasks[oldSelected] : tasks[0];
         }
 
-
         private void buildButton_Click(object sender, EventArgs e) //build button
         {
             var acc = getSelectedAcc();
@@ -256,7 +253,7 @@ namespace TravBotSharp.Views
             vill.Build.Tasks.Remove(task);
             vill.Build.Tasks.Insert(0, task);
             oldSelected = 0;
-            UpdateBuildTab();
+            UpdateBuildTasks(vill);
         }
 
         private void button22_Click(object sender, EventArgs e) //move bottom build task
@@ -268,7 +265,7 @@ namespace TravBotSharp.Views
             vill.Build.Tasks.Remove(task);
             vill.Build.Tasks.Add(task);
             oldSelected = vill.Build.Tasks.Count - 1;
-            UpdateBuildTab();
+            UpdateBuildTasks(vill);
         }
 
         private void button11_Click(object sender, EventArgs e) //move up build task
@@ -280,7 +277,7 @@ namespace TravBotSharp.Views
             vill.Build.Tasks.Remove(task);
             vill.Build.Tasks.Insert(index - 1, task);
             oldSelected = index - 1;
-            UpdateBuildTab();
+            UpdateBuildTasks(vill);
         }
 
         private void button12_Click(object sender, EventArgs e) //move down build task
@@ -292,7 +289,7 @@ namespace TravBotSharp.Views
             vill.Build.Tasks.Remove(task);
             vill.Build.Tasks.Insert(index + 1, task);
             oldSelected = index + 1;
-            UpdateBuildTab();
+            UpdateBuildTasks(vill);
         }
 
         private void button13_Click(object sender, EventArgs e) //delete build task
@@ -445,7 +442,20 @@ namespace TravBotSharp.Views
             {
                 oldSelected = indicies[0];
             }
-            UpdateCurrentlySelected(getSelectedVillage());
+            UpdateBuildTasks(getSelectedVillage());
+        }
+
+        private void instaUpgradeCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            var vill = getSelectedVillage();
+            vill.Build.InstaBuild = instaUpgradeCheckbox.Checked;
+            instaUpgradeUpDown.Enabled = instaUpgradeCheckbox.Checked;
+        }
+
+        private void instaUpgradeUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            var vill = getSelectedVillage();
+            vill.Build.InstaBuildHours = (int)instaUpgradeUpDown.Value;
         }
     }
 }

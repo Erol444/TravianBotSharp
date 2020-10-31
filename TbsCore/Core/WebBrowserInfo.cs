@@ -14,7 +14,7 @@ namespace TravBotSharp.Files.Models.AccModels
     public class WebBrowserInfo
     {
         public ChromeDriver Driver { get; set; }
-        public string CurrentUrl { get; set; }
+        public string CurrentUrl => this.Driver.Url;
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
 
@@ -110,7 +110,6 @@ namespace TravBotSharp.Files.Models.AccModels
         {
             if (string.IsNullOrEmpty(url)) return;
 
-            this.CurrentUrl = url;
             int repeatCnt = 0;
             bool repeat;
             do

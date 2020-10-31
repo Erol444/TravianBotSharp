@@ -59,13 +59,9 @@ namespace TravBotSharp.Files.Parsers
                 string name = nameArr.FirstOrDefault(x => !string.IsNullOrEmpty(x.Replace("\r", "").Replace("\n", "")));
                 switch (acc.AccInfo.ServerVersion)
                 {
-                    case Classificator.ServerVersionEnum.T4_5:
-
-                        break;
                     case Classificator.ServerVersionEnum.T4_4:
                         name = name.Replace(levelStr, "");
                         break;
-
                 }
                 var lvl = Parser.RemoveNonNumeric(levelStr);
 

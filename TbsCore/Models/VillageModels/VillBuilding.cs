@@ -17,6 +17,14 @@ namespace TravBotSharp.Files.Models.VillageModels
             DemolishTasks = new List<DemolishTask>();
         }
         public Building[] Buildings { get; set; }
+        /// <summary>
+        /// Whether or not we want to use insta build (2 gold) in this village
+        /// </summary>
+        public bool InstaBuild { get; set; }
+        /// <summary>
+        /// If currently building is above specified hours, insta build
+        /// </summary>
+        public int InstaBuildHours { get; set; }
         public List<BuildingCurrently> CurrentlyBuilding { get; set; }
         public List<DemolishTask> DemolishTasks { get; set; }
         public List<BuildingTask> Tasks { get; set; }

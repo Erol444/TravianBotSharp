@@ -70,7 +70,6 @@ namespace TravBotSharp.Files.Helpers
                 }
                 task.PostTaskCheck.Clear();
             }
-
         }
 
         /// <summary>
@@ -164,7 +163,6 @@ namespace TravBotSharp.Files.Helpers
                 if (acc.Wb.CurrentUrl.Contains("dorf1")) UpdateDorf1Info(acc);
                 else if (acc.Wb.CurrentUrl.Contains("dorf2")) UpdateDorf2Info(acc);
 
-
                 acc.AccInfo.CulturePoints = RightBarParser.GetCulurePoints(html, acc.AccInfo.ServerVersion);
 
                 var villExpansionReady = acc.Villages.FirstOrDefault(x => x.Expansion.ExpansionAvailable);
@@ -235,6 +233,21 @@ namespace TravBotSharp.Files.Helpers
                     });
                 }
                 if (acc.Settings.AutoActivateProductionBoost && CheckProductionBoost(acc)) { TaskExecutor.AddTask(acc, new TTWarsPlusAndBoost() { ExecuteAt = DateTime.Now.AddSeconds(1) }); }
+
+                // Insta upgrade buildings
+                if (activeVill.Build.InstaBuild &&
+                    acc.AccInfo.Gold >= 2 &&
+                    activeVill.Build.CurrentlyBuilding.Count >= (acc.AccInfo.PlusAccount ? 2 : 1) &&
+                    activeVill.Build.CurrentlyBuilding.LastOrDefault().Duration
+                        >= DateTime.Now.AddHours(activeVill.Build.InstaBuildHours)
+                    )
+                {
+                    TaskExecutor.AddTaskIfNotExistInVillage(acc, activeVill, new InstaUpgrade()
+                    {
+                        Vill = activeVill,
+                        ExecuteAt = DateTime.Now.AddHours(-1)
+                    });
+                }
 
                 acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html, acc.AccInfo.ServerVersion);
                 acc.Hero.Status = HeroParser.HeroStatus(html, acc.AccInfo.ServerVersion);

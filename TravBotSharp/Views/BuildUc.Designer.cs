@@ -66,21 +66,31 @@
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.buildingId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.buildLevelUpDown = new System.Windows.Forms.NumericUpDown();
             this.buildRadioButton = new System.Windows.Forms.RadioButton();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.demolishRadioButton = new System.Windows.Forms.RadioButton();
             this.button1 = new System.Windows.Forms.Button();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.instaUpgradeCheckbox = new System.Windows.Forms.CheckBox();
+            this.label9 = new System.Windows.Forms.Label();
+            this.instaUpgradeUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.autoBuildResLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.buildLevelUpDown)).BeginInit();
             this.groupBox1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.instaUpgradeUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // button24
             // 
-            this.button24.Location = new System.Drawing.Point(321, 572);
+            this.button24.Location = new System.Drawing.Point(91, 417);
             this.button24.Name = "button24";
             this.button24.Size = new System.Drawing.Size(75, 23);
             this.button24.TabIndex = 59;
@@ -90,7 +100,7 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(242, 572);
+            this.button9.Location = new System.Drawing.Point(12, 417);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(75, 23);
             this.button9.TabIndex = 58;
@@ -101,7 +111,7 @@
             // label32
             // 
             this.label32.AutoSize = true;
-            this.label32.Location = new System.Drawing.Point(5, 6);
+            this.label32.Location = new System.Drawing.Point(7, 8);
             this.label32.Name = "label32";
             this.label32.Size = new System.Drawing.Size(30, 13);
             this.label32.TabIndex = 57;
@@ -110,14 +120,14 @@
             // buildTypeComboBox
             // 
             this.buildTypeComboBox.FormattingEnabled = true;
-            this.buildTypeComboBox.Location = new System.Drawing.Point(41, 2);
+            this.buildTypeComboBox.Location = new System.Drawing.Point(43, 4);
             this.buildTypeComboBox.Name = "buildTypeComboBox";
             this.buildTypeComboBox.Size = new System.Drawing.Size(102, 21);
             this.buildTypeComboBox.TabIndex = 56;
             // 
             // button22
             // 
-            this.button22.Location = new System.Drawing.Point(359, 164);
+            this.button22.Location = new System.Drawing.Point(4, 36);
             this.button22.Name = "button22";
             this.button22.Size = new System.Drawing.Size(83, 23);
             this.button22.TabIndex = 55;
@@ -127,9 +137,9 @@
             // 
             // button23
             // 
-            this.button23.Location = new System.Drawing.Point(289, 164);
+            this.button23.Location = new System.Drawing.Point(4, 7);
             this.button23.Name = "button23";
-            this.button23.Size = new System.Drawing.Size(64, 23);
+            this.button23.Size = new System.Drawing.Size(83, 23);
             this.button23.TabIndex = 54;
             this.button23.Text = "Move Top";
             this.button23.UseVisualStyleBackColor = true;
@@ -138,7 +148,7 @@
             // AutoBuildBonusBuildings
             // 
             this.AutoBuildBonusBuildings.AutoSize = true;
-            this.AutoBuildBonusBuildings.Location = new System.Drawing.Point(456, 132);
+            this.AutoBuildBonusBuildings.Location = new System.Drawing.Point(456, 129);
             this.AutoBuildBonusBuildings.Name = "AutoBuildBonusBuildings";
             this.AutoBuildBonusBuildings.Size = new System.Drawing.Size(149, 17);
             this.AutoBuildBonusBuildings.TabIndex = 53;
@@ -148,7 +158,7 @@
             // 
             // button20
             // 
-            this.button20.Location = new System.Drawing.Point(633, 132);
+            this.button20.Location = new System.Drawing.Point(521, 162);
             this.button20.Name = "button20";
             this.button20.Size = new System.Drawing.Size(84, 23);
             this.button20.TabIndex = 52;
@@ -158,7 +168,7 @@
             // 
             // button19
             // 
-            this.button19.Location = new System.Drawing.Point(633, 161);
+            this.button19.Location = new System.Drawing.Point(521, 191);
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(84, 23);
             this.button19.TabIndex = 51;
@@ -168,7 +178,7 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(633, 190);
+            this.button6.Location = new System.Drawing.Point(521, 220);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(84, 23);
             this.button6.TabIndex = 50;
@@ -178,7 +188,7 @@
             // 
             // button13
             // 
-            this.button13.Location = new System.Drawing.Point(448, 193);
+            this.button13.Location = new System.Drawing.Point(176, 36);
             this.button13.Name = "button13";
             this.button13.Size = new System.Drawing.Size(57, 23);
             this.button13.TabIndex = 49;
@@ -188,7 +198,7 @@
             // 
             // button12
             // 
-            this.button12.Location = new System.Drawing.Point(359, 193);
+            this.button12.Location = new System.Drawing.Point(89, 36);
             this.button12.Name = "button12";
             this.button12.Size = new System.Drawing.Size(83, 23);
             this.button12.TabIndex = 48;
@@ -198,9 +208,9 @@
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(289, 193);
+            this.button11.Location = new System.Drawing.Point(90, 7);
             this.button11.Name = "button11";
-            this.button11.Size = new System.Drawing.Size(64, 23);
+            this.button11.Size = new System.Drawing.Size(82, 23);
             this.button11.TabIndex = 47;
             this.button11.Text = "Move Up";
             this.button11.UseVisualStyleBackColor = true;
@@ -208,7 +218,7 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(511, 193);
+            this.button8.Location = new System.Drawing.Point(237, 36);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(58, 23);
             this.button8.TabIndex = 46;
@@ -219,9 +229,10 @@
             // label8
             // 
             this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.Location = new System.Drawing.Point(463, 5);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(88, 13);
+            this.label8.Size = new System.Drawing.Size(121, 15);
             this.label8.TabIndex = 45;
             this.label8.Text = "Currently Building";
             // 
@@ -236,7 +247,7 @@
             this.currentlyBuildinglistView.Location = new System.Drawing.Point(456, 24);
             this.currentlyBuildinglistView.MultiSelect = false;
             this.currentlyBuildinglistView.Name = "currentlyBuildinglistView";
-            this.currentlyBuildinglistView.Size = new System.Drawing.Size(274, 102);
+            this.currentlyBuildinglistView.Size = new System.Drawing.Size(274, 96);
             this.currentlyBuildinglistView.TabIndex = 44;
             this.currentlyBuildinglistView.UseCompatibleStateImageBehavior = false;
             this.currentlyBuildinglistView.View = System.Windows.Forms.View.Details;
@@ -362,7 +373,7 @@
             // 
             // buildButton
             // 
-            this.buildButton.Location = new System.Drawing.Point(222, 11);
+            this.buildButton.Location = new System.Drawing.Point(222, 13);
             this.buildButton.Name = "buildButton";
             this.buildButton.Size = new System.Drawing.Size(42, 30);
             this.buildButton.TabIndex = 31;
@@ -373,7 +384,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(2, 32);
+            this.label2.Location = new System.Drawing.Point(4, 34);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(33, 13);
             this.label2.TabIndex = 33;
@@ -394,9 +405,10 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(238, 203);
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(183, 7);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(45, 13);
+            this.label3.Size = new System.Drawing.Size(88, 24);
             this.label3.TabIndex = 35;
             this.label3.Text = "Build list";
             // 
@@ -405,16 +417,13 @@
             this.buildListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader5,
             this.columnHeader6,
-            this.buildingId,
-            this.columnHeader7,
-            this.columnHeader1});
+            this.buildingId});
             this.buildListView.FullRowSelect = true;
             this.buildListView.GridLines = true;
-            this.buildListView.HideSelection = false;
-            this.buildListView.Location = new System.Drawing.Point(241, 222);
+            this.buildListView.Location = new System.Drawing.Point(11, 65);
             this.buildListView.MultiSelect = false;
             this.buildListView.Name = "buildListView";
-            this.buildListView.Size = new System.Drawing.Size(475, 350);
+            this.buildListView.Size = new System.Drawing.Size(249, 350);
             this.buildListView.TabIndex = 34;
             this.buildListView.UseCompatibleStateImageBehavior = false;
             this.buildListView.View = System.Windows.Forms.View.Details;
@@ -434,14 +443,9 @@
             // 
             this.buildingId.Text = "Id";
             // 
-            // columnHeader7
-            // 
-            this.columnHeader7.Text = "Time";
-            this.columnHeader7.Width = 190;
-            // 
             // buildLevelUpDown
             // 
-            this.buildLevelUpDown.Location = new System.Drawing.Point(41, 26);
+            this.buildLevelUpDown.Location = new System.Drawing.Point(43, 28);
             this.buildLevelUpDown.Name = "buildLevelUpDown";
             this.buildLevelUpDown.Size = new System.Drawing.Size(74, 20);
             this.buildLevelUpDown.TabIndex = 32;
@@ -461,7 +465,7 @@
             // 
             this.groupBox1.Controls.Add(this.demolishRadioButton);
             this.groupBox1.Controls.Add(this.buildRadioButton);
-            this.groupBox1.Location = new System.Drawing.Point(146, -2);
+            this.groupBox1.Location = new System.Drawing.Point(148, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(71, 48);
             this.groupBox1.TabIndex = 61;
@@ -490,31 +494,118 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // columnHeader1
+            // panel1
             // 
-            this.columnHeader1.Text = "";
-            this.columnHeader1.Width = 27;
+            this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel1.Controls.Add(this.button23);
+            this.panel1.Controls.Add(this.buildListView);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.button24);
+            this.panel1.Controls.Add(this.button8);
+            this.panel1.Controls.Add(this.button9);
+            this.panel1.Controls.Add(this.button11);
+            this.panel1.Controls.Add(this.button12);
+            this.panel1.Controls.Add(this.button13);
+            this.panel1.Controls.Add(this.button22);
+            this.panel1.Location = new System.Drawing.Point(216, 155);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(299, 446);
+            this.panel1.TabIndex = 63;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.Controls.Add(this.label32);
+            this.panel2.Controls.Add(this.buildLevelUpDown);
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.groupBox1);
+            this.panel2.Controls.Add(this.buildButton);
+            this.panel2.Controls.Add(this.buildTypeComboBox);
+            this.panel2.Location = new System.Drawing.Point(1, -1);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(267, 50);
+            this.panel2.TabIndex = 64;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.label10);
+            this.panel3.Controls.Add(this.instaUpgradeUpDown);
+            this.panel3.Controls.Add(this.label9);
+            this.panel3.Controls.Add(this.instaUpgradeCheckbox);
+            this.panel3.Controls.Add(this.label1);
+            this.panel3.Location = new System.Drawing.Point(521, 509);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(194, 92);
+            this.panel3.TabIndex = 65;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(3, 4);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(103, 16);
+            this.label1.TabIndex = 46;
+            this.label1.Text = "Insta upgrade";
+            // 
+            // instaUpgradeCheckbox
+            // 
+            this.instaUpgradeCheckbox.AutoSize = true;
+            this.instaUpgradeCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.instaUpgradeCheckbox.Location = new System.Drawing.Point(6, 23);
+            this.instaUpgradeCheckbox.Name = "instaUpgradeCheckbox";
+            this.instaUpgradeCheckbox.Size = new System.Drawing.Size(157, 20);
+            this.instaUpgradeCheckbox.TabIndex = 54;
+            this.instaUpgradeCheckbox.Text = "Insta upgrade (2 gold)";
+            this.instaUpgradeCheckbox.UseVisualStyleBackColor = true;
+            this.instaUpgradeCheckbox.CheckedChanged += new System.EventHandler(this.instaUpgradeCheckbox_CheckedChanged);
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(3, 45);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(188, 16);
+            this.label9.TabIndex = 55;
+            this.label9.Text = "When currently building above";
+            // 
+            // instaUpgradeUpDown
+            // 
+            this.instaUpgradeUpDown.Location = new System.Drawing.Point(6, 63);
+            this.instaUpgradeUpDown.Maximum = new decimal(new int[] {
+            999,
+            0,
+            0,
+            0});
+            this.instaUpgradeUpDown.Name = "instaUpgradeUpDown";
+            this.instaUpgradeUpDown.Size = new System.Drawing.Size(57, 20);
+            this.instaUpgradeUpDown.TabIndex = 66;
+            this.instaUpgradeUpDown.ValueChanged += new System.EventHandler(this.instaUpgradeUpDown_ValueChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(68, 65);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(41, 16);
+            this.label10.TabIndex = 67;
+            this.label10.Text = "hours";
             // 
             // BuildUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.button24);
-            this.Controls.Add(this.button9);
-            this.Controls.Add(this.label32);
-            this.Controls.Add(this.buildTypeComboBox);
-            this.Controls.Add(this.button22);
-            this.Controls.Add(this.button23);
             this.Controls.Add(this.AutoBuildBonusBuildings);
             this.Controls.Add(this.button20);
             this.Controls.Add(this.button19);
             this.Controls.Add(this.button6);
-            this.Controls.Add(this.button13);
-            this.Controls.Add(this.button12);
-            this.Controls.Add(this.button11);
-            this.Controls.Add(this.button8);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.currentlyBuildinglistView);
             this.Controls.Add(this.AutBuildResButton);
@@ -525,18 +616,20 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.buildingsList);
-            this.Controls.Add(this.buildButton);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.autoBuildResType);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.buildListView);
-            this.Controls.Add(this.buildLevelUpDown);
             this.Name = "BuildUc";
             this.Size = new System.Drawing.Size(742, 604);
             ((System.ComponentModel.ISupportInitialize)(this.autoBuildResLevel)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.buildLevelUpDown)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.instaUpgradeUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -582,12 +675,18 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.ColumnHeader buildingId;
-        private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.NumericUpDown buildLevelUpDown;
         private System.Windows.Forms.RadioButton buildRadioButton;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.RadioButton demolishRadioButton;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.NumericUpDown instaUpgradeUpDown;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.CheckBox instaUpgradeCheckbox;
+        private System.Windows.Forms.Label label1;
     }
 }
