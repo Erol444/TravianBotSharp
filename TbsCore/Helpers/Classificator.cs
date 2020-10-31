@@ -349,5 +349,14 @@
             _4356,
             _5436,
         }
+
+        /// <summary>
+        /// Adventure difficulty enumeration
+        /// </summary>
+        public enum DifficultyEnum
+        {
+            Normal = 1,
+            Difficult = 2
+        }
     }
 }

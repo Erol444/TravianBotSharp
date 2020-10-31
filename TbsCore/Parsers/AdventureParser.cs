@@ -2,6 +2,7 @@
 using System.Linq;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models;
+using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Parsers
 {
@@ -23,7 +24,19 @@ namespace TravBotSharp.Files.Parsers
                 if (string.IsNullOrEmpty(adv.Id)) continue;
                 var sec = (int)TimeParser.ParseDuration(adv.Descendants("td").FirstOrDefault(x => x.HasClass("moveTime")).InnerText).TotalSeconds;
                 var coordinates = CoordinateParser.GetCoordinates(adv.Descendants("td").FirstOrDefault(x => x.HasClass("coords")).InnerText);
-                var difficulty = (adv.Descendants("img").FirstOrDefault().GetAttributeValue("alt", "") == "Normal") ? 1 : 2;
+
+                DifficultyEnum difficulty = DifficultyEnum.Normal;
+                switch (version)
+                {
+                    case ServerVersionEnum.T4_4:
+                        difficulty = adv.Descendants("img").FirstOrDefault().GetAttributeValue("alt", "") == "Normal" ?
+                            DifficultyEnum.Normal : DifficultyEnum.Difficult;
+                        break;
+                    case ServerVersionEnum.T4_5:
+                        difficulty = adv.Descendants("img").FirstOrDefault().GetAttributeValue("class", "") == "adventureDifficulty1" ?
+                            DifficultyEnum.Normal : DifficultyEnum.Difficult;
+                        break;
+                }
 
                 var secStr = adv.Descendants("td").FirstOrDefault(x => x.HasClass("timeLeft"))?.InnerText;
                 int secRemaining = int.MaxValue;
