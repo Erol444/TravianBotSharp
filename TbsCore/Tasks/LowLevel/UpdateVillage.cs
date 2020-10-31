@@ -39,10 +39,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var firstTroop = TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe);
             Vill.Troops.TroopToTrain = firstTroop;
-            // Use hashmap here?
-            Vill.Troops.Researched.Add(firstTroop);
+            TroopsHelper.AddTroopToResearched(Vill, firstTroop);
 
-            if(await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
+            if (await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
             {
                 // Village has town hall, parse celebration duration
                 Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
@@ -94,13 +93,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             foreach(var trainingBuilding in trainingBuildings)
             {
-                var building = Vill.Build.Buildings.FirstOrDefault(x => x.Type == trainingBuilding);
-                if (building == null) continue;
+                if (!await VillageHelper.EnterBuilding(acc, Vill, trainingBuilding)) continue;
 
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}");
-
+                // Mark troops that user can train in building as researched
+                TroopsHelper.UpdateTroopsResearched(Vill, acc.Wb.Html);
+                
                 var ct = TroopsParser.GetTroopsCurrentlyTraining(acc.Wb.Html);
-                switch (building.Type)
+                switch (trainingBuilding)
                 {
                     case Classificator.BuildingEnum.Barracks:
                         Vill.Troops.CurrentlyTraining.Barracks = ct;

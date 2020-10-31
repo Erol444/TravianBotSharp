@@ -33,6 +33,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBoxTroopsToTrain = new System.Windows.Forms.ComboBox();
             this.autoImprove = new System.Windows.Forms.CheckBox();
+            this.troopsInfo = new System.Windows.Forms.RichTextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // labelTroopsToTrain
@@ -82,17 +84,38 @@
             this.autoImprove.UseVisualStyleBackColor = true;
             this.autoImprove.CheckedChanged += new System.EventHandler(this.autoImprove_CheckedChanged);
             // 
+            // troopsInfo
+            // 
+            this.troopsInfo.Location = new System.Drawing.Point(269, 33);
+            this.troopsInfo.Name = "troopsInfo";
+            this.troopsInfo.ReadOnly = true;
+            this.troopsInfo.Size = new System.Drawing.Size(456, 231);
+            this.troopsInfo.TabIndex = 28;
+            this.troopsInfo.Text = "";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(266, 12);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(134, 16);
+            this.label2.TabIndex = 29;
+            this.label2.Text = "Village troops info";
+            // 
             // TroopsUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.troopsInfo);
             this.Controls.Add(this.autoImprove);
             this.Controls.Add(this.labelTroopsToTrain);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.comboBoxTroopsToTrain);
             this.Name = "TroopsUc";
-            this.Size = new System.Drawing.Size(404, 142);
+            this.Size = new System.Drawing.Size(728, 292);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -104,5 +127,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBoxTroopsToTrain;
         private System.Windows.Forms.CheckBox autoImprove;
+        private System.Windows.Forms.RichTextBox troopsInfo;
+        private System.Windows.Forms.Label label2;
     }
 }

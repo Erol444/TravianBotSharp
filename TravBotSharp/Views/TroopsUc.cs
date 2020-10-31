@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -50,6 +51,32 @@ namespace TravBotSharp.Views
             }
 
             autoImprove.Checked = acc.Settings.AutoImprove;
+
+            // Village troops info
+            string infoText = "-- Troops already researched:\n";
+            infoText += string.Join(", ", vill.Troops.Researched) + "\n";
+            infoText += "-- Troops to be researched:\n";
+            infoText += string.Join(", ", vill.Troops.ToResearch) + "\n";
+            infoText += "-- Troop smithy levels:\n";
+
+            List<string> levels = new List<string>();
+            foreach(var level in vill.Troops.Levels)
+            {
+                levels.Add(level.Troop + ": " + level.Level);
+            }
+            infoText += string.Join(", ", levels) + "\n";
+
+            infoText += "-- Troop to be improved:\n";
+            infoText += string.Join(", ", vill.Troops.ToImprove) + "\n";
+            infoText += $"-- Settlers already trained: {vill.Troops.Settlers}";
+
+            //List<string> ctStr = new List<string>();
+            //foreach(var ct in vill.Troops.CurrentlyTraining.)
+            //{
+            //    ctStr.Add(ct.)
+            //}
+            
+            troopsInfo.Text = infoText;
         }
 
         private void button10_Click(object sender, EventArgs e) //select troop to train

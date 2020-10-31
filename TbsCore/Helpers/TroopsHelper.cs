@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.BuildingModels;
@@ -229,7 +230,6 @@ namespace TravBotSharp.Files.Helpers
                 }
             }
 
-
             return true;
         }
 
@@ -320,6 +320,32 @@ namespace TravBotSharp.Files.Helpers
             return ret;
         }
 
+        /// <summary>
+        /// When inside the training building (barracks/stable...) add troops that you can train to 
+        /// village researched list
+        /// </summary>
+        /// <param name="vill">Village</param>
+        /// <param name="html">Html</param>
+        public static void UpdateTroopsResearched(Village vill, HtmlDocument html)
+        {
+            var build = html.GetElementbyId("build");
+            var troopImages = build.Descendants("img").Where(x => x.HasClass("unit"));
+
+            foreach(var img in troopImages)
+            {
+                var troopNum = img.GetClasses().FirstOrDefault(x => x != "unit");
+                var troop = (TroopsEnum)Parser.RemoveNonNumeric(troopNum);
+                AddTroopToResearched(vill, troop);
+            }
+        }
+
+        public static void AddTroopToResearched(Village vill, TroopsEnum troop)
+        {
+            if (!vill.Troops.Researched.Any(x => x == troop))
+            {
+                vill.Troops.Researched.Add(troop);
+            }
+        }
         /// <summary>
         /// For getting building requirements for troop research
         /// This is for academy research only, for training check for training building!
