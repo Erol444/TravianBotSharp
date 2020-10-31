@@ -39,12 +39,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var firstTroop = TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe);
             Vill.Troops.TroopToTrain = firstTroop;
+            // Use hashmap here?
             Vill.Troops.Researched.Add(firstTroop);
 
             if(await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
             {
                 // Village has town hall, parse celebration duration
-                Vill.Expansion.CelebrationEnd = DateTime.Now + TimeParser.GetCelebrationTime(acc.Wb.Html);
+                Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
             }
 
             return TaskRes.Executed;

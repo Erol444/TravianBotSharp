@@ -26,10 +26,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={townHall.Id}");
 
             var celebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
-            if (TimeSpan.Zero <= celebrationEnd)
+            if (DateTime.Now <= celebrationEnd)
             {
                 // We already have a celebration running
-                this.NextExecute = DateTime.Now + celebrationEnd;
+                this.NextExecute = celebrationEnd;
                 return TaskRes.Executed;
             }
 
@@ -46,7 +46,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await StartCelebration(acc, bigCeleb);
 
             // Post task check for celebration duration
-            Vill.Expansion.CelebrationEnd = DateTime.Now + TimeParser.GetCelebrationTime(acc.Wb.Html);
+            Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
 
             if (Vill.Expansion.AutoCelebrations) this.NextExecute = Vill.Expansion.CelebrationEnd;
 
