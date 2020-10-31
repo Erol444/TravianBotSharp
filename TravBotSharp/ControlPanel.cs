@@ -79,6 +79,7 @@ namespace TravBotSharp
             for (int i = 0; i < accounts.Count; i++)
             {
                 var access = accounts[i].Access.GetCurrentAccess();
+                if (access == null) continue;
                 InsertAccIntoListView(accounts[i].AccInfo.Nickname,
                     accounts[i].AccInfo.ServerUrl,
                     access.Proxy,

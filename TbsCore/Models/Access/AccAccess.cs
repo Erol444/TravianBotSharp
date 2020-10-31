@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 
@@ -10,7 +11,7 @@ namespace TravBotSharp.Files.Models.AccModels
     {
         public List<Access> AllAccess { get; set; }
         public int CurrentAccess { get; set; }
-        public Access GetCurrentAccess() => AllAccess[CurrentAccess];
+        public Access GetCurrentAccess() => AllAccess.ElementAtOrDefault(CurrentAccess);
 
         public void Init()
         {
