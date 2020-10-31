@@ -41,6 +41,9 @@ namespace TravBotSharp
                 accessListView.Items.Add(item);
             }
             AuthCheckbox();
+
+            // Save button enabled
+            button4.Enabled = Acc.Access.AllAccess.Count > 0;
         }
 
         private void button2_Click(object sender, EventArgs e) // Add a new access

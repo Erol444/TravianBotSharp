@@ -67,7 +67,6 @@
             this.button3 = new System.Windows.Forms.Button();
             this.accListView = new System.Windows.Forms.ListView();
             this.accAccountHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.accProxyOkHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.accProxyHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button7 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
@@ -124,7 +123,7 @@
             this.tabGeneral.Controls.Add(this.generalUc1);
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
             this.tabGeneral.Size = new System.Drawing.Size(945, 635);
             this.tabGeneral.TabIndex = 3;
             this.tabGeneral.Text = "General";
@@ -134,7 +133,7 @@
             // 
             this.generalUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.generalUc1.Location = new System.Drawing.Point(3, 3);
-            this.generalUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.generalUc1.Margin = new System.Windows.Forms.Padding(4);
             this.generalUc1.Name = "generalUc1";
             this.generalUc1.Size = new System.Drawing.Size(939, 629);
             this.generalUc1.TabIndex = 0;
@@ -153,7 +152,7 @@
             // 
             this.heroUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.heroUc1.Location = new System.Drawing.Point(0, 0);
-            this.heroUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.heroUc1.Margin = new System.Windows.Forms.Padding(4);
             this.heroUc1.Name = "heroUc1";
             this.heroUc1.Size = new System.Drawing.Size(945, 635);
             this.heroUc1.TabIndex = 0;
@@ -166,7 +165,7 @@
             this.tabVillages.Controls.Add(this.villageTabController);
             this.tabVillages.Location = new System.Drawing.Point(4, 22);
             this.tabVillages.Name = "tabVillages";
-            this.tabVillages.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabVillages.Padding = new System.Windows.Forms.Padding(3);
             this.tabVillages.Size = new System.Drawing.Size(945, 635);
             this.tabVillages.TabIndex = 0;
             this.tabVillages.Text = "Villages";
@@ -251,7 +250,7 @@
             this.villTabBuild.Controls.Add(this.buildUc1);
             this.villTabBuild.Location = new System.Drawing.Point(4, 22);
             this.villTabBuild.Name = "villTabBuild";
-            this.villTabBuild.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.villTabBuild.Padding = new System.Windows.Forms.Padding(3);
             this.villTabBuild.Size = new System.Drawing.Size(733, 603);
             this.villTabBuild.TabIndex = 0;
             this.villTabBuild.Text = "Build";
@@ -261,7 +260,7 @@
             // 
             this.buildUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.buildUc1.Location = new System.Drawing.Point(3, 3);
-            this.buildUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.buildUc1.Margin = new System.Windows.Forms.Padding(4);
             this.buildUc1.Name = "buildUc1";
             this.buildUc1.Size = new System.Drawing.Size(727, 597);
             this.buildUc1.TabIndex = 0;
@@ -271,8 +270,8 @@
             this.villTabMarket.Controls.Add(this.marketUc1);
             this.villTabMarket.Location = new System.Drawing.Point(4, 22);
             this.villTabMarket.Name = "villTabMarket";
-            this.villTabMarket.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.villTabMarket.Size = new System.Drawing.Size(733, 28);
+            this.villTabMarket.Padding = new System.Windows.Forms.Padding(3);
+            this.villTabMarket.Size = new System.Drawing.Size(733, 42);
             this.villTabMarket.TabIndex = 1;
             this.villTabMarket.Text = "Market";
             this.villTabMarket.UseVisualStyleBackColor = true;
@@ -281,9 +280,9 @@
             // 
             this.marketUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.marketUc1.Location = new System.Drawing.Point(3, 3);
-            this.marketUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.marketUc1.Margin = new System.Windows.Forms.Padding(4);
             this.marketUc1.Name = "marketUc1";
-            this.marketUc1.Size = new System.Drawing.Size(727, 22);
+            this.marketUc1.Size = new System.Drawing.Size(727, 36);
             this.marketUc1.TabIndex = 0;
             // 
             // villTabTroops
@@ -291,7 +290,7 @@
             this.villTabTroops.Controls.Add(this.troopsUc1);
             this.villTabTroops.Location = new System.Drawing.Point(4, 22);
             this.villTabTroops.Name = "villTabTroops";
-            this.villTabTroops.Size = new System.Drawing.Size(733, 28);
+            this.villTabTroops.Size = new System.Drawing.Size(733, 42);
             this.villTabTroops.TabIndex = 2;
             this.villTabTroops.Text = "Troops";
             this.villTabTroops.UseVisualStyleBackColor = true;
@@ -300,9 +299,9 @@
             // 
             this.troopsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.troopsUc1.Location = new System.Drawing.Point(0, 0);
-            this.troopsUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.troopsUc1.Margin = new System.Windows.Forms.Padding(4);
             this.troopsUc1.Name = "troopsUc1";
-            this.troopsUc1.Size = new System.Drawing.Size(733, 28);
+            this.troopsUc1.Size = new System.Drawing.Size(733, 42);
             this.troopsUc1.TabIndex = 0;
             // 
             // villTabAttack
@@ -310,8 +309,8 @@
             this.villTabAttack.Controls.Add(this.attackUc1);
             this.villTabAttack.Location = new System.Drawing.Point(4, 22);
             this.villTabAttack.Name = "villTabAttack";
-            this.villTabAttack.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.villTabAttack.Size = new System.Drawing.Size(733, 28);
+            this.villTabAttack.Padding = new System.Windows.Forms.Padding(3);
+            this.villTabAttack.Size = new System.Drawing.Size(733, 42);
             this.villTabAttack.TabIndex = 3;
             this.villTabAttack.Text = "Attack";
             this.villTabAttack.UseVisualStyleBackColor = true;
@@ -320,9 +319,9 @@
             // 
             this.attackUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.attackUc1.Location = new System.Drawing.Point(3, 3);
-            this.attackUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.attackUc1.Margin = new System.Windows.Forms.Padding(4);
             this.attackUc1.Name = "attackUc1";
-            this.attackUc1.Size = new System.Drawing.Size(727, 22);
+            this.attackUc1.Size = new System.Drawing.Size(727, 36);
             this.attackUc1.TabIndex = 0;
             // 
             // tabOverview
@@ -330,7 +329,7 @@
             this.tabOverview.Controls.Add(this.overviewUc1);
             this.tabOverview.Location = new System.Drawing.Point(4, 22);
             this.tabOverview.Name = "tabOverview";
-            this.tabOverview.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabOverview.Padding = new System.Windows.Forms.Padding(3);
             this.tabOverview.Size = new System.Drawing.Size(945, 635);
             this.tabOverview.TabIndex = 4;
             this.tabOverview.Text = "Overview";
@@ -340,7 +339,7 @@
             // 
             this.overviewUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.overviewUc1.Location = new System.Drawing.Point(3, 3);
-            this.overviewUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.overviewUc1.Margin = new System.Windows.Forms.Padding(4);
             this.overviewUc1.Name = "overviewUc1";
             this.overviewUc1.Size = new System.Drawing.Size(939, 629);
             this.overviewUc1.TabIndex = 0;
@@ -359,7 +358,7 @@
             // 
             this.farmingUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.farmingUc1.Location = new System.Drawing.Point(0, 0);
-            this.farmingUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.farmingUc1.Margin = new System.Windows.Forms.Padding(4);
             this.farmingUc1.Name = "farmingUc1";
             this.farmingUc1.Size = new System.Drawing.Size(945, 635);
             this.farmingUc1.TabIndex = 0;
@@ -369,7 +368,7 @@
             this.newVillagesTab.Controls.Add(this.newVillagesUc1);
             this.newVillagesTab.Location = new System.Drawing.Point(4, 22);
             this.newVillagesTab.Name = "newVillagesTab";
-            this.newVillagesTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.newVillagesTab.Padding = new System.Windows.Forms.Padding(3);
             this.newVillagesTab.Size = new System.Drawing.Size(945, 635);
             this.newVillagesTab.TabIndex = 6;
             this.newVillagesTab.Text = "New villages";
@@ -379,7 +378,7 @@
             // 
             this.newVillagesUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.newVillagesUc1.Location = new System.Drawing.Point(3, 3);
-            this.newVillagesUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.newVillagesUc1.Margin = new System.Windows.Forms.Padding(4);
             this.newVillagesUc1.Name = "newVillagesUc1";
             this.newVillagesUc1.Size = new System.Drawing.Size(939, 629);
             this.newVillagesUc1.TabIndex = 0;
@@ -389,7 +388,7 @@
             this.deffendingTab.Controls.Add(this.deffendingUc1);
             this.deffendingTab.Location = new System.Drawing.Point(4, 22);
             this.deffendingTab.Name = "deffendingTab";
-            this.deffendingTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.deffendingTab.Padding = new System.Windows.Forms.Padding(3);
             this.deffendingTab.Size = new System.Drawing.Size(945, 635);
             this.deffendingTab.TabIndex = 7;
             this.deffendingTab.Text = "Deffending";
@@ -399,7 +398,7 @@
             // 
             this.deffendingUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.deffendingUc1.Location = new System.Drawing.Point(3, 3);
-            this.deffendingUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deffendingUc1.Margin = new System.Windows.Forms.Padding(4);
             this.deffendingUc1.Name = "deffendingUc1";
             this.deffendingUc1.Size = new System.Drawing.Size(939, 629);
             this.deffendingUc1.TabIndex = 0;
@@ -409,7 +408,7 @@
             this.questsTab.Controls.Add(this.questsUc1);
             this.questsTab.Location = new System.Drawing.Point(4, 22);
             this.questsTab.Name = "questsTab";
-            this.questsTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.questsTab.Padding = new System.Windows.Forms.Padding(3);
             this.questsTab.Size = new System.Drawing.Size(945, 635);
             this.questsTab.TabIndex = 9;
             this.questsTab.Text = "Quests";
@@ -419,7 +418,7 @@
             // 
             this.questsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.questsUc1.Location = new System.Drawing.Point(3, 3);
-            this.questsUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.questsUc1.Margin = new System.Windows.Forms.Padding(4);
             this.questsUc1.Name = "questsUc1";
             this.questsUc1.Size = new System.Drawing.Size(939, 629);
             this.questsUc1.TabIndex = 0;
@@ -429,7 +428,7 @@
             this.debugTab.Controls.Add(this.debugUc1);
             this.debugTab.Location = new System.Drawing.Point(4, 22);
             this.debugTab.Name = "debugTab";
-            this.debugTab.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.debugTab.Padding = new System.Windows.Forms.Padding(3);
             this.debugTab.Size = new System.Drawing.Size(945, 635);
             this.debugTab.TabIndex = 8;
             this.debugTab.Text = "Debug";
@@ -439,7 +438,7 @@
             // 
             this.debugUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.debugUc1.Location = new System.Drawing.Point(3, 3);
-            this.debugUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.debugUc1.Margin = new System.Windows.Forms.Padding(4);
             this.debugUc1.Name = "debugUc1";
             this.debugUc1.Size = new System.Drawing.Size(939, 629);
             this.debugUc1.TabIndex = 0;
@@ -468,7 +467,6 @@
             // 
             this.accListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.accAccountHeader,
-            this.accProxyOkHeader,
             this.accProxyHeader});
             this.accListView.FullRowSelect = true;
             this.accListView.HideSelection = false;
@@ -484,17 +482,12 @@
             // accAccountHeader
             // 
             this.accAccountHeader.Text = "Account";
-            this.accAccountHeader.Width = 79;
-            // 
-            // accProxyOkHeader
-            // 
-            this.accProxyOkHeader.Text = "Proxy OK";
-            this.accProxyOkHeader.Width = 78;
+            this.accAccountHeader.Width = 93;
             // 
             // accProxyHeader
             // 
             this.accProxyHeader.Text = "Proxy";
-            this.accProxyHeader.Width = 88;
+            this.accProxyHeader.Width = 95;
             // 
             // button7
             // 
@@ -584,7 +577,6 @@
         private System.Windows.Forms.ListView accListView;
         private System.Windows.Forms.ColumnHeader accAccountHeader;
         private System.Windows.Forms.ColumnHeader accProxyHeader;
-        private System.Windows.Forms.ColumnHeader accProxyOkHeader;
         private System.Windows.Forms.ListView VillagesListView;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;

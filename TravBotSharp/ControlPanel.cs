@@ -79,11 +79,10 @@ namespace TravBotSharp
             for (int i = 0; i < accounts.Count; i++)
             {
                 var access = accounts[i].Access.GetCurrentAccess();
-                if (access == null) continue;
                 InsertAccIntoListView(accounts[i].AccInfo.Nickname,
                     accounts[i].AccInfo.ServerUrl,
-                    access.Proxy,
-                    access.ProxyPort,
+                    access?.Proxy ?? "NO ACCESS",
+                    access?.ProxyPort ?? 0,
                     i == accSelected);
             }
         }
@@ -92,15 +91,26 @@ namespace TravBotSharp
             var item = new ListViewItem();
             item.SubItems[0].Text = $"{nick} ({IoHelperCore.UrlRemoveHttp(url)})"; //account
             item.SubItems[0].ForeColor = Color.FromName(selected ? "DodgerBlue" : "Black");
-            item.SubItems.Add("❌"); //proxy error
+            //item.SubItems.Add("❌"); //proxy error
             item.SubItems.Add(string.IsNullOrEmpty(proxy) ? "/" : proxy + ":" + port); //proxy
             accListView.Items.Add(item);
         }
 
         private async void button2_Click(object sender, EventArgs e) //login button
         {
-            new Thread(() => _ = IoHelperCore.LoginAccount(GetSelectedAcc())).Start();
-            generalUc1.UpdateBotRunning("true");
+            var acc = GetSelectedAcc();
+            if (acc.Access.AllAccess.Count > 0)
+            {
+                new Thread(() => _ = IoHelperCore.LoginAccount(acc)).Start();
+                generalUc1.UpdateBotRunning("true");
+                return;
+            }
+
+            // Alert user that account has no access defined
+            string message = "Account you are trying to login has no access' defined. Please edit the account.";
+            string caption = "Error in account";
+            MessageBoxButtons buttons = MessageBoxButtons.OK;
+            DialogResult result = MessageBox.Show(message, caption, buttons);
         }
 
         private void button3_Click(object sender, EventArgs e) // Remove an account
