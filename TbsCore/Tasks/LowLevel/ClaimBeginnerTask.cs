@@ -14,8 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public Quest QuestToClaim { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var questId = QuestId(QuestToClaim);
-            var script = $"document.getElementById('mentorTaskList').querySelector('[data-questid=\"{questId}\"]').click();";
+            var script = $"document.getElementById('mentorTaskList').querySelector('[data-questid=\"{this.QuestToClaim.Id}\"]').click();";
             await DriverHelper.ExecuteScript(acc, script);
             await Task.Delay(AccountHelper.Delay() * 2);
 
@@ -23,7 +22,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.T4_5:
-                buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("questid", "") == questId).Id;
+                buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("questid", "") == this.QuestToClaim.Id).Id;
                     break;
 
                 case Classificator.ServerVersionEnum.T4_4:
@@ -33,15 +32,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             acc.Wb.Driver.ExecuteScript($"document.getElementById('{buttonId}').click();");
             return TaskRes.Executed;
-        }
-
-        private string QuestId(Quest q)
-        {
-            string ret = q.category.ToString();
-            ret += "_";
-            var num = q.level;
-            ret += (num >= 10 ? num.ToString() : "0" + num);
-            return ret;
         }
     }
 }

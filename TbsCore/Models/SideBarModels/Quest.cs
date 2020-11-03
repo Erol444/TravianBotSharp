@@ -2,9 +2,18 @@
 {
     public class Quest
     {
+        /// <summary>
+        /// Category of the quest
+        /// </summary>
         public Category category { get; set; }
-        public byte level { get; set; }
+        /// <summary>
+        /// Is the quest already finished
+        /// </summary>
         public bool finished { get; set; }
+        /// <summary>
+        /// Id of the quest
+        /// </summary>
+        public string Id { get; set; }
     }
     public enum Category
     {

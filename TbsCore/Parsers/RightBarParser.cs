@@ -138,7 +138,8 @@ namespace TravBotSharp.Files.Parsers
                 {
                     case Classificator.ServerVersionEnum.T4_5:
                         if (node.Descendants("svg").FirstOrDefault(x => x.HasClass("check")) != null) quest.finished = true;
-                        quest.level = byte.Parse(node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value.Split('_')[1]);
+                        //quest.level  = (byte)Parser.RemoveNonNumeric(node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value);
+                        quest.Id = node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value;
                         switch (node.Attributes.FirstOrDefault(x => x.Name == "data-category").Value)
                         {
                             case "battle":
@@ -155,7 +156,8 @@ namespace TravBotSharp.Files.Parsers
                     case Classificator.ServerVersionEnum.T4_4:
                         if (node.Descendants("img").FirstOrDefault(x => x.HasClass("finished")) != null) quest.finished = true;
                         var node1 = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
-                        quest.level = byte.Parse(node1.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value.Split('_')[1]);
+                        //quest.level = byte.Parse(.Split('_')[1]);
+                        quest.Id = node1.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value;
                         switch (node1.Attributes.FirstOrDefault(x => x.Name == "data-category").Value)
                         {
                             case "battle":
