@@ -16,11 +16,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             acc.Wb.Close();
 
+            TimeSpan nextTask;
             do
             {
                 await Task.Delay(1000);
+                nextTask = TimeHelper.NextNormalOrHighPrioTask(acc);
+                this.Message = $"Chrome will reopen in {nextTask.TotalMinutes} min";
             }
-            while (TimeHelper.NextNormalOrHighPrioTask(acc) > TimeSpan.Zero);
+            while (nextTask > TimeSpan.Zero);
 
             // Use the same access
             await acc.Wb.InitSelenium(acc, false);
