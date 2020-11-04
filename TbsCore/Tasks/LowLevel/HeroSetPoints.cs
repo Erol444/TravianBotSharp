@@ -23,11 +23,21 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php");
 
             HeroHelper.ParseHeroPage(acc);
+
+            float sum = 0;
+            for (int i = 0; i < 4; i++) sum += acc.Hero.Settings.Upgrades[i];
+            if(sum == 0)
+            {
+                // Upgrade points were not set. Set points to default
+                acc.Hero.Settings.Upgrades = new byte[4] { 2, 0, 0, 2 };
+                sum = 4;
+            }
+
             var points = acc.Hero.HeroInfo.AvaliblePoints;
 
             for (int i = 0; i < 4; i++)
             {
-                var amount = Math.Ceiling(acc.Hero.Settings.Upgrades[i] * points / 4.0);
+                var amount = Math.Ceiling(acc.Hero.Settings.Upgrades[i] * points / sum);
                 if (amount == 0) continue;
 
                 var script = $"var attribute = document.getElementById('{domId[i]}');";

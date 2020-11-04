@@ -27,12 +27,12 @@ namespace TravBotSharp.Views
             autoRes.Checked = acc.Hero.Settings.AutoUseRes;
             autoEquip.Checked = acc.Hero.Settings.AutoEquip;
 
+
+            var heroUpgrade = acc.Hero.Settings.Upgrades;
             strength.Value = 0;
             offBonus.Value = 0;
             deffBonus.Value = 0;
             resources.Value = 0;
-
-            var heroUpgrade = acc.Hero.Settings.Upgrades;
             strength.Value = heroUpgrade[0];
             offBonus.Value = heroUpgrade[1];
             deffBonus.Value = heroUpgrade[2];
