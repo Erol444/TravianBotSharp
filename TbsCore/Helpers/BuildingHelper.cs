@@ -136,6 +136,7 @@ namespace TravBotSharp.Files.Helpers
         private static bool BuildingIsOnLevel(Classificator.BuildingEnum building, int lvl, Village vill)
         {
             //if there already is a building on specific level or there is a task for this building
+            // TODO: change FristOrDefault to Any
             return (vill.Build.Buildings.FirstOrDefault(x => x.Level == lvl && x.Type == building) != null || vill.Build.Tasks.FirstOrDefault(x => x.Level == lvl && x.Building == building) != null);
         }
 
@@ -566,7 +567,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         #region Functions for auto-building resource fields
-        private static Models.ResourceModels.Building FindLowestLevelBuilding(List<Models.ResourceModels.Building> buildings)
+        public static Models.ResourceModels.Building FindLowestLevelBuilding(List<Models.ResourceModels.Building> buildings)
         {
             if (buildings.Count == 0) return null;
             int lowestLvl = 100;

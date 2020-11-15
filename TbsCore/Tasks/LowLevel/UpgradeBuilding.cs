@@ -3,6 +3,7 @@
 using HtmlAgilityPack;
 using OpenQA.Selenium.Chrome;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
@@ -254,11 +255,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var res = ResourceParser.GetResourceCost(resWrapper);
             this.PostTaskCheck.Remove(ConfigNextExecute);
             this.NextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, res, this.Task);
-            // Crop supply is low. Upgrade crop field first. TODO: detect this beforehand
-            if (this.NextExecute <= DateTime.Now)
-            {
-                this.Task.Building = BuildingEnum.Cropland;
-            }
             return TaskRes.Executed;
         }
 
@@ -298,6 +294,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Best case: now
             if (Vill.Build.AutoBuildResourceBonusBuildings) CheckResourceBonus(Vill);
 
+            // Checks if we have enough FreeCrop (above 0)
+            CheckFreeCrop();
+
             (var nextTask, var time) = FindBuildingTask(acc, Vill);
             if (nextTask == null)
             {
@@ -306,6 +305,29 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             this.Task = nextTask;
             this.NextExecute = time.AddSeconds(1);
             //Console.WriteLine($"-------Next build execute: {this.task?.Building}, in {((this.NextExecute ?? DateTime.Now) - DateTime.Now).TotalSeconds}s");
+        }
+
+        /// <summary>
+        /// Checks if we have enough free crop in the village (otherwise we can't upgrade any building)
+        /// </summary>
+        private void CheckFreeCrop()
+        {
+            if (this.Vill.Res.FreeCrop <= 0 && Vill.Build.Tasks.FirstOrDefault().Building != BuildingEnum.Cropland)
+            {
+                var croplandsInVill = Vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Cropland).ToList();
+                var cropland = FindLowestLevelBuilding(croplandsInVill);
+                var CB = cropland.UnderConstruction ? 1 : 0;
+
+                var cropTask = new BuildingTask()
+                {
+                    TaskType = BuildingType.General,
+                    Building = BuildingEnum.Cropland,
+                    Level = cropland.Level + 1 + CB,
+                    BuildingId = cropland.Id
+                };
+                
+                Vill.Build.Tasks.Insert(0, cropTask);
+            }
         }
 
         /// <summary>
