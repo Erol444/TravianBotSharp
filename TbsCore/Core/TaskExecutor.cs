@@ -23,7 +23,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc"></param>
         public static async Task PageLoaded(Account acc)
         {
-            if (IsCaptcha(acc) || IsWWMsg(acc)) //Check if a captcha is detected or WW there is a WW msg
+            if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc)) //Check if a captcha/ban/end of server
             {
                 acc.TaskTimer.Stop();
                 return;
@@ -44,8 +44,15 @@ namespace TravBotSharp.Files.Helpers
             }
 
             //TODO: limit this for performance reasons?
-            PreTaskRefresh(acc);
+            PostLoadTasks(acc);
         }
+
+        /// <summary>
+        /// Checks if account is banned (T4.5)
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>Whether account is banned</returns>
+        private static bool IsBanMsg(Account acc) => acc.Wb.Html.GetElementbyId("punishmentMsgButtons") != null;
 
         /// <summary>
         /// Checks if there are cookies to be accepted
@@ -143,147 +150,184 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Will be called before each task to update resources/msg?,villages,quests,hero health, adventures num, gold/silver
+        /// Is called after every page load.
+        /// TODO: don't execute all tasks every PostLoad due to performance?
         /// </summary>
         /// <param name="acc">Account</param>
-        /// <returns>True if successful, false if error</returns>
-        private static bool PreTaskRefresh(Account acc)
+        private static void PostLoadTasks(Account acc)
+        {
+            foreach (var task in GetPostLoadTasks(acc))
+            {
+                try
+                {
+                    task.Invoke();
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error in PreTask " +
+                        e.Message + "\n\nStack Trace: " +
+                        e.StackTrace + "\n-----------------------");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets tasks that should be executed after loading a page
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>List of tasks</returns>
+        private static List<Action> GetPostLoadTasks(Account acc)
         {
             var html = acc.Wb.Html;
-            try
-            {
-                //check & update dorf1/dorf2
-                if (!UpdateAccountObject.UpdateVillages(html, acc)) return false; //Web browser not initialized
-                var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
 
-                //update server version
-                acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4);
+            //Web browser not initialized
+            if (!UpdateAccountObject.UpdateVillages(html, acc)) return new List<Action>();
+            var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
 
-                //update dorf1/dorf2
-                if (acc.Wb.CurrentUrl.Contains("dorf1")) UpdateDorf1Info(acc);
-                else if (acc.Wb.CurrentUrl.Contains("dorf2")) UpdateDorf2Info(acc);
-
-                acc.AccInfo.CulturePoints = RightBarParser.GetCulurePoints(html, acc.AccInfo.ServerVersion);
-
-                var villExpansionReady = acc.Villages.FirstOrDefault(x => x.Expansion.ExpansionAvailable);
-                if (acc.AccInfo.CulturePoints.MaxVillages > acc.AccInfo.CulturePoints.VillageCount &&
-                    villExpansionReady != null)
+            return new List<Action>() {
+                () => acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4),
+                () => {
+                    if (acc.Wb.CurrentUrl.Contains("dorf1")) UpdateDorf1Info(acc);
+                    else if (acc.Wb.CurrentUrl.Contains("dorf2")) UpdateDorf2Info(acc);
+                },
+                () => acc.AccInfo.CulturePoints = RightBarParser.GetCulurePoints(html, acc.AccInfo.ServerVersion),
+                () => // Village expansion
                 {
-                    villExpansionReady.Expansion.ExpansionAvailable = false;
-                    TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady });
-                }
-                // Beginner Quests
-                acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html, acc.AccInfo.ServerVersion);
-                var claimQuest = acc.Quests?.Quests?.FirstOrDefault(x => x.finished);
-                if (claimQuest != null
-                    && acc.Quests.ClaimBeginnerQuests
-                    )
-                {
-                    TaskExecutor.AddTaskIfNotExists(acc, new ClaimBeginnerTask()
+                    var villExpansionReady = acc.Villages.FirstOrDefault(x => x.Expansion.ExpansionAvailable);
+                    if (acc.AccInfo.CulturePoints.MaxVillages > acc.AccInfo.CulturePoints.VillageCount &&
+                        villExpansionReady != null)
                     {
-                        ExecuteAt = DateTime.Now,
-                        QuestToClaim = claimQuest,
-                        Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim)
-                    });
-                }
-                // Daily quest
-                if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
+                        villExpansionReady.Expansion.ExpansionAvailable = false;
+                        TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady });
+                    }
+                },
+                () => // Beginner Quests
+                {
+                    acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html, acc.AccInfo.ServerVersion);
+                    var claimQuest = acc.Quests?.Quests?.FirstOrDefault(x => x.finished);
+                    if (claimQuest != null
+                        && acc.Quests.ClaimBeginnerQuests
+                        )
+                    {
+                        TaskExecutor.AddTaskIfNotExists(acc, new ClaimBeginnerTask()
+                        {
+                            ExecuteAt = DateTime.Now,
+                            QuestToClaim = claimQuest,
+                            Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim)
+                        });
+                    }
+                },
+                () => // Daily Quest
+                {
+                    if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
                     RightBarParser.CheckDailyQuest(html) &&
                     acc.Quests.ClaimDailyQuests)
-                {
-                    TaskExecutor.AddTaskIfNotExists(acc, new ClaimDailyTask()
                     {
-                        ExecuteAt = DateTime.Now,
-                        Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim)
-                    });
-                }
-
-
-                var goldSilver = RightBarParser.GetGoldAndSilver(html, acc.AccInfo.ServerVersion);
-                acc.AccInfo.Gold = goldSilver[0];
-                acc.AccInfo.Silver = goldSilver[1];
-                acc.AccInfo.PlusAccount = RightBarParser.HasPlusAccount(html, acc.AccInfo.ServerVersion);
-                //Check reports/msg count
-                if (MsgParser.UnreadMessages(html, acc.AccInfo.ServerVersion) > 0
-                    && !acc.Wb.CurrentUrl.Contains("messages.php")
-                    && acc.Settings.AutoReadIgms)
+                        TaskExecutor.AddTaskIfNotExists(acc, new ClaimDailyTask()
+                        {
+                            ExecuteAt = DateTime.Now,
+                            Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim)
+                        });
+                    }
+                },
+                () =>
                 {
-                    var ran = new Random();
-                    TaskExecutor.AddTaskIfNotExists(acc, new ReadMessage() {
-                        ExecuteAt = DateTime.Now.AddSeconds(ran.Next(10, 600)), // Read msg in next 10-600 seconds
-                        Priority = TaskPriority.Low
-                    });
-                }
-
-                activeVill.Res.FreeCrop = RightBarParser.GetFreeCrop(html);
-                activeVill.Res.Capacity = ResourceParser.GetResourceCapacity(html, acc.AccInfo.ServerVersion);
-                activeVill.Res.Stored = ResourceParser.GetResources(html);
-                activeVill.Timings.LastVillRefresh = DateTime.Now;
-
-                float ratio = (float)activeVill.Res.Stored.Resources.Crop / activeVill.Res.Capacity.GranaryCapacity;
-                if (ratio >= 0.99 &&
-                    acc.AccInfo.Gold >= 3 &&
-                    activeVill.Market.Npc.Enabled &&
-                    (activeVill.Market.Npc.NpcIfOverflow || !MarketHelper.NpcWillOverflow(activeVill)))
-                {  //npc crop!
-                    TaskExecutor.AddTaskIfNotExistInVillage(acc, activeVill, new NPC()
+                    var goldSilver = RightBarParser.GetGoldAndSilver(html, acc.AccInfo.ServerVersion);
+                    acc.AccInfo.Gold = goldSilver[0];
+                    acc.AccInfo.Silver = goldSilver[1];
+                },
+                () => acc.AccInfo.PlusAccount = RightBarParser.HasPlusAccount(html, acc.AccInfo.ServerVersion),
+                () => // Check messages
+                {
+                    if (MsgParser.UnreadMessages(html, acc.AccInfo.ServerVersion) > 0
+                        && !acc.Wb.CurrentUrl.Contains("messages.php")
+                        && acc.Settings.AutoReadIgms)
                     {
-                        ExecuteAt = DateTime.MinValue,
-                        Vill = activeVill
-                    });
-                }
-                if (acc.Settings.AutoActivateProductionBoost && CheckProductionBoost(acc)) { TaskExecutor.AddTask(acc, new TTWarsPlusAndBoost() { ExecuteAt = DateTime.Now.AddSeconds(1) }); }
-
-                // Insta upgrade buildings
-                if (activeVill.Build.InstaBuild &&
-                    acc.AccInfo.Gold >= 2 &&
-                    activeVill.Build.CurrentlyBuilding.Count >= (acc.AccInfo.PlusAccount ? 2 : 1) &&
-                    activeVill.Build.CurrentlyBuilding.LastOrDefault().Duration
-                        >= DateTime.Now.AddHours(activeVill.Build.InstaBuildHours)
-                    )
+                        var ran = new Random();
+                        TaskExecutor.AddTaskIfNotExists(acc, new ReadMessage()
+                        {
+                            ExecuteAt = DateTime.Now.AddSeconds(ran.Next(10, 600)), // Read msg in next 10-600 seconds
+                            Priority = TaskPriority.Low
+                        });
+                    }
+                },
+                () => {
+                    activeVill.Res.FreeCrop = RightBarParser.GetFreeCrop(html);
+                    },
+                () => activeVill.Res.Capacity = ResourceParser.GetResourceCapacity(html, acc.AccInfo.ServerVersion),
+                () => activeVill.Res.Stored = ResourceParser.GetResources(html),
+                () => activeVill.Timings.LastVillRefresh = DateTime.Now,
+                () => // NPC
                 {
-                    TaskExecutor.AddTaskIfNotExistInVillage(acc, activeVill, new InstaUpgrade()
+                    float ratio = (float)activeVill.Res.Stored.Resources.Crop / activeVill.Res.Capacity.GranaryCapacity;
+                    if (ratio >= 0.99 &&
+                        acc.AccInfo.Gold >= 3 &&
+                        activeVill.Market.Npc.Enabled &&
+                        (activeVill.Market.Npc.NpcIfOverflow || !MarketHelper.NpcWillOverflow(activeVill)))
+                    {  //npc crop!
+                        TaskExecutor.AddTaskIfNotExistInVillage(acc, activeVill, new NPC()
+                        {
+                            ExecuteAt = DateTime.MinValue,
+                            Vill = activeVill
+                        });
+                    }
+                },
+                () => {
+                    if (acc.Settings.AutoActivateProductionBoost && CheckProductionBoost(acc))
                     {
-                        Vill = activeVill,
-                        ExecuteAt = DateTime.Now.AddHours(-1)
-                    });
-                }
-
-                acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html, acc.AccInfo.ServerVersion);
-                acc.Hero.Status = HeroParser.HeroStatus(html, acc.AccInfo.ServerVersion);
-                acc.Hero.HeroInfo.Health = HeroParser.GetHeroHealth(html, acc.AccInfo.ServerVersion);
-
-                bool heroReady = (acc.Hero.HeroInfo.Health > acc.Hero.Settings.MinHealth &&
-                    acc.Hero.Settings.AutoSendToAdventure &&
-                    acc.Hero.Status == Hero.StatusEnum.Home &&
-                    acc.Hero.NextHeroSend < DateTime.Now);
-                // Update adventures
-                if (heroReady
-                    && (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc))
-                    ) //update adventures
+                        TaskExecutor.AddTask(acc, new TTWarsPlusAndBoost() {
+                            ExecuteAt = DateTime.Now.AddSeconds(1)
+                        });
+                    }
+                },
+                () =>
                 {
-                    AddTaskIfNotExists(acc, new StartAdventure() { ExecuteAt = DateTime.Now.AddSeconds(10) });
-                }
-                if (acc.Hero.AdventureNum == 0 && acc.Hero.Settings.BuyAdventures) //for UNL servers, buy adventures
+                    if (activeVill.Build.InstaBuild &&
+                        acc.AccInfo.Gold >= 2 &&
+                        activeVill.Build.CurrentlyBuilding.Count >= (acc.AccInfo.PlusAccount ? 2 : 1) &&
+                        activeVill.Build.CurrentlyBuilding.LastOrDefault().Duration
+                            >= DateTime.Now.AddHours(activeVill.Build.InstaBuildHours))
+                    {
+                        TaskExecutor.AddTaskIfNotExistInVillage(acc, activeVill, new InstaUpgrade()
+                        {
+                            Vill = activeVill,
+                            ExecuteAt = DateTime.Now.AddHours(-1)
+                        });
+                    }
+                },
+                () => acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html, acc.AccInfo.ServerVersion),
+                () => acc.Hero.Status = HeroParser.HeroStatus(html, acc.AccInfo.ServerVersion),
+                () => acc.Hero.HeroInfo.Health = HeroParser.GetHeroHealth(html, acc.AccInfo.ServerVersion),
+                () =>
                 {
-                    AddTaskIfNotExists(acc, new TTWarsBuyAdventure() { ExecuteAt = DateTime.Now.AddSeconds(5) });
+                    bool heroReady = (acc.Hero.HeroInfo.Health > acc.Hero.Settings.MinHealth &&
+                        acc.Hero.Settings.AutoSendToAdventure &&
+                        acc.Hero.Status == Hero.StatusEnum.Home &&
+                        acc.Hero.NextHeroSend < DateTime.Now);
+                    // Update adventures
+                    if (heroReady
+                        && (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc))
+                        ) //update adventures
+                    {
+                        AddTaskIfNotExists(acc, new StartAdventure() { ExecuteAt = DateTime.Now.AddSeconds(10) });
+                    }
+                    if (acc.Hero.AdventureNum == 0 && acc.Hero.Settings.BuyAdventures) //for UNL servers, buy adventures
+                    {
+                        AddTaskIfNotExists(acc, new TTWarsBuyAdventure() { ExecuteAt = DateTime.Now.AddSeconds(5) });
+                    }
+                    if (acc.Hero.Status == Hero.StatusEnum.Dead && acc.Hero.Settings.AutoReviveHero) //if hero is dead, revive him
+                    {
+                        AddTaskIfNotExists(acc, new ReviveHero() { 
+                            ExecuteAt = DateTime.Now.AddSeconds(5),
+                            Vill = AccountHelper.GetHeroReviveVillage(acc) 
+                        });
+                    }
+                    if (HeroParser.LeveledUp(html, acc.AccInfo.ServerVersion) && acc.Hero.Settings.AutoSetPoints)
+                    {
+                        AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
+                    }
                 }
-                if (acc.Hero.Status == Hero.StatusEnum.Dead && acc.Hero.Settings.AutoReviveHero) //if hero is dead, revive him
-                {
-                    AddTaskIfNotExists(acc, new ReviveHero() { ExecuteAt = DateTime.Now.AddSeconds(5), Vill = AccountHelper.GetHeroReviveVillage(acc) });
-                }
-                if (HeroParser.LeveledUp(html, acc.AccInfo.ServerVersion) && acc.Hero.Settings.AutoSetPoints)
-                {
-                    AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
-                }
-
-                return true;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine("Error in PreTask " + e.Message + "\n\nStack Trace: " + e.StackTrace + "\n-----------------------");
-                return false;
-            }
+            };
         }
 
         public static void UpdateDorf2Info(Account acc)
