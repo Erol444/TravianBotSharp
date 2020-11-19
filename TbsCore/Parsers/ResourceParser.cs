@@ -90,9 +90,9 @@ namespace TravBotSharp.Files.Parsers
                 case Classificator.ServerVersionEnum.T4_5:
                     var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.Name == "div").ToList();
                     List<Building> resFields5 = new List<Building>();
-                    for (int i = 0; i < 18; i++)
+                    foreach(var field in fields5)
                     {
-                        var vals = fields5.ElementAt(i).GetClasses(); //.GetAttributeValue("class", "").Split(' ');
+                        var vals = field.GetClasses(); //.GetAttributeValue("class", "").Split(' ');
                         //fields5.ElementAt(1).GetClasses().
                         var building = new Building();
 

@@ -28,7 +28,7 @@ namespace TravBotSharp.Files.Models.AccModels
         public List<string> Logs { get; set; }
         public event EventHandler LogHandler;
         public void Log(string message, Exception e) =>
-                    Log(message + $"\nMessage: {e.Message}\n\nStack Trace:\n{e.StackTrace}\n---------------------------\n");
+                    Log(message + $"\n\nMessage: {e.Message}\nStack Trace:\n{e.StackTrace}\n---------------------------\n");
         public void Log(string msg)
         {
             msg = DateTime.Now.ToString("HH:mm:ss") + ": " + msg;
