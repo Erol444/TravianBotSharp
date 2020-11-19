@@ -5,16 +5,15 @@ using TravBotSharp.Files.Models.AccModels;
 
 namespace TravBotSharp.Views
 {
-    public partial class QuestsUc : UserControl
+    public partial class QuestsUc : TbsBaseUc
     {
-        ControlPanel main;
         public QuestsUc()
         {
             InitializeComponent();
         }
         public void UpdateTab()
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
 
             claimDaily.Checked = acc.Quests.ClaimDailyQuests;
             claimBeginner.Checked = acc.Quests.ClaimBeginnerQuests;
@@ -30,28 +29,20 @@ namespace TravBotSharp.Views
                 claimVillLabel.Text = "Selected: " + AccountHelper.GetQuestsClaimVillage(acc).Name;
             }
         }
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-        }
-        private Account getSelectedAcc()
-        {
-            return main != null ? main.GetSelectedAcc() : null;
-        }
 
         private void claimDailyQuests_CheckedChanged(object sender, EventArgs e) // Claim daily quests
         {
-            getSelectedAcc().Quests.ClaimDailyQuests = claimDaily.Checked;
+            GetSelectedAcc().Quests.ClaimDailyQuests = claimDaily.Checked;
         }
 
         private void claimBeginnerQuests_CheckedChanged(object sender, EventArgs e) // Claim beginner quests
         {
-            getSelectedAcc().Quests.ClaimBeginnerQuests = claimBeginner.Checked;
+            GetSelectedAcc().Quests.ClaimBeginnerQuests = claimBeginner.Checked;
         }
 
         private void claimVillButton_Click(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             var vill = acc.Villages[claimVill.SelectedIndex];
             acc.Quests.VillToClaim = vill.Id;
             claimVillLabel.Text = "Selected: " + vill.Name;

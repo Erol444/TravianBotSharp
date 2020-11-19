@@ -1,5 +1,4 @@
-﻿using Serilog.Formatting.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
@@ -8,16 +7,15 @@ using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Views
 {
-    public partial class HeroUc : UserControl
+    public partial class HeroUc : TbsBaseUc
     {
-        ControlPanel main;
         public HeroUc()
         {
             InitializeComponent();
         }
         public void UpdateTab()
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             buyAdventuresCheckBox.Checked = acc.Hero.Settings.BuyAdventures;
             checkBoxAutoSendToAdventures.Checked = acc.Hero.Settings.AutoSendToAdventure;
             minHeroHealthUpDown.Value = acc.Hero.Settings.MinHealth;
@@ -114,28 +112,20 @@ namespace TravBotSharp.Views
             }
             adventures.Text = string.Join("\n", advStr);
         }
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-        }
-        private Account getSelectedAcc()
-        {
-            return main != null ? main.GetSelectedAcc() : null;
-        }
 
         private void checkBoxAutoSendToAdventures_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Hero.Settings.AutoSendToAdventure = checkBoxAutoSendToAdventures.Checked;
+            GetSelectedAcc().Hero.Settings.AutoSendToAdventure = checkBoxAutoSendToAdventures.Checked;
         }
 
         private void buyAdventuresCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Hero.Settings.BuyAdventures = buyAdventuresCheckBox.Checked;
+            GetSelectedAcc().Hero.Settings.BuyAdventures = buyAdventuresCheckBox.Checked;
         }
 
         private void minHeroHealthUpDown_ValueChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Hero.Settings.MinHealth = (int)minHeroHealthUpDown.Value;
+            GetSelectedAcc().Hero.Settings.MinHealth = (int)minHeroHealthUpDown.Value;
         }
 
         private void strength_ValueChanged(object sender, EventArgs e)
@@ -172,29 +162,29 @@ namespace TravBotSharp.Views
             offBonus.Maximum = offBonus.Value + 4 - lockPoints;
             deffBonus.Maximum = deffBonus.Value + 4 - lockPoints;
             resources.Maximum = resources.Value + 4 - lockPoints;
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             var vals = new byte[] { (byte)strength.Value, (byte)offBonus.Value, (byte)deffBonus.Value, (byte)resources.Value };
             acc.Hero.Settings.Upgrades = vals;
         }
 
         private void autoSetHeroPoints_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Hero.Settings.AutoSetPoints = autoSetHeroPoints.Checked;
+            GetSelectedAcc().Hero.Settings.AutoSetPoints = autoSetHeroPoints.Checked;
         }
 
         private void maxDistanceUpDown_ValueChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Hero.Settings.MaxDistance = (int)maxDistanceUpDown.Value;
+            GetSelectedAcc().Hero.Settings.MaxDistance = (int)maxDistanceUpDown.Value;
         }
 
         private void autoReviveHero_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Hero.Settings.AutoReviveHero = autoReviveHero.Checked;
+            GetSelectedAcc().Hero.Settings.AutoReviveHero = autoReviveHero.Checked;
         }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             var vill = acc.Villages[SupplyResVillageComboBox.SelectedIndex];
             acc.Hero.ReviveInVillage = vill.Id;
             SupplyResVillageSelected.Text = "Selected: " + vill.Name;
@@ -202,19 +192,19 @@ namespace TravBotSharp.Views
 
         private void refreshInfo_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Hero.Settings.AutoRefreshInfo = refreshInfo.Checked;
+            GetSelectedAcc().Hero.Settings.AutoRefreshInfo = refreshInfo.Checked;
         }
 
         private void autoEquip_CheckedChanged(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             acc.Hero.Settings.AutoEquip = autoEquip.Checked;
             if (autoEquip.Checked) TurnOnAutoRefresh(acc);
         }
 
         private void autoRes_CheckedChanged(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             acc.Hero.Settings.AutoUseRes = autoRes.Checked;
             if (autoRes.Checked) TurnOnAutoRefresh(acc);
         }
@@ -230,13 +220,13 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             TaskExecutor.AddTask(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
         }
 
         private void button2_Click(object sender, EventArgs e) // Update adventures
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             TaskExecutor.AddTask(acc, new StartAdventure()
             {
                 ExecuteAt = DateTime.Now,

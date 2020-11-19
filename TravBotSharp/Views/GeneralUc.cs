@@ -11,25 +11,16 @@ using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Views
 {
-    public partial class GeneralUc : UserControl
+    public partial class GeneralUc : TbsBaseUc
     {
-        ControlPanel main;
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-            UpdateGeneralTab();
-        }
         public GeneralUc()
         {
             InitializeComponent();
         }
-        private Account getSelectedAcc()
-        {
-            return main.GetSelectedAcc();
-        }
+
         public void UpdateGeneralTab()
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             if (acc == null) return;
 
 
@@ -63,7 +54,7 @@ namespace TravBotSharp.Views
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             var vill = acc.Villages[SupplyResVillageComboBox.SelectedIndex];
             acc.Settings.MainVillage = vill.Id;
             SupplyResVillageSelected.Text = "Selected: " + vill.Name;
@@ -72,7 +63,7 @@ namespace TravBotSharp.Views
 
         private void button21_Click(object sender, EventArgs e) //start UNL server tasks
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             int sec = 1;
             TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec) });
             TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
@@ -87,12 +78,12 @@ namespace TravBotSharp.Views
 
         private void checkBox4_CheckedChanged(object sender, EventArgs e) //auto +25% and plus acc activator
         {
-            getSelectedAcc().Settings.AutoActivateProductionBoost = checkBox4.Checked;
+            GetSelectedAcc().Settings.AutoActivateProductionBoost = checkBox4.Checked;
         }
 
         private void startTimersButton_Click(object sender, EventArgs e) //start timer
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             acc.TaskTimer.Start();
 
             acc.Tasks.Clear();
@@ -102,7 +93,7 @@ namespace TravBotSharp.Views
 
         private void button16_Click(object sender, EventArgs e) //all villages farm tasks
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.FarmVillagePlan(acc, vill);
@@ -112,7 +103,7 @@ namespace TravBotSharp.Views
 
         private void button17_Click(object sender, EventArgs e) //all villages support tasks
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.SupplyVillagePlan(acc, vill);
@@ -122,7 +113,7 @@ namespace TravBotSharp.Views
 
         private void button14_Click(object sender, EventArgs e) //all villages deff tasks
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.DeffVillagePlan(acc, vill);
@@ -132,7 +123,7 @@ namespace TravBotSharp.Views
 
         private void button4_Click(object sender, EventArgs e) //all villages off tasks
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.OffVillagePlan(acc, vill);
@@ -142,7 +133,7 @@ namespace TravBotSharp.Views
 
         private void button5_Click(object sender, EventArgs e) //all villages select from file
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
 
             string location = IoHelperForms.PromptUserForBuidTasksLocation();
 
@@ -163,7 +154,7 @@ namespace TravBotSharp.Views
 
         private void button18_Click(object sender, EventArgs e) //clear all villages build tasks
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             foreach (var vill in acc.Villages)
             {
                 vill.Build.Tasks.Clear();
@@ -177,7 +168,7 @@ namespace TravBotSharp.Views
         /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             var expandTimes = (int)numericUpDown4.Value;
             var seconds = (int)numericUpDown5.Value;
             numericUpDown4.Value = 0;
@@ -194,7 +185,7 @@ namespace TravBotSharp.Views
 
         private void button3_Click(object sender, EventArgs e) //get only resources on UNL TTwars servers
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             int sec = 1;
             TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec) });
             TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
@@ -203,32 +194,32 @@ namespace TravBotSharp.Views
 
         private void fillInAdvanceUpDown_ValueChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Settings.FillInAdvance = (int)fillInAdvanceUpDown.Value;
+            GetSelectedAcc().Settings.FillInAdvance = (int)fillInAdvanceUpDown.Value;
         }
 
         private void FillForUpDown_ValueChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Settings.FillFor = (int)FillForUpDown.Value;
+            GetSelectedAcc().Settings.FillFor = (int)FillForUpDown.Value;
         }
         private void autoReadIGMs_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Settings.AutoReadIgms = autoReadIGMs.Checked;
+            GetSelectedAcc().Settings.AutoReadIgms = autoReadIGMs.Checked;
         }
 
         private void button6_Click(object sender, EventArgs e) // Stop timers
         {
-            getSelectedAcc().TaskTimer?.Stop();
+            GetSelectedAcc().TaskTimer?.Stop();
             UpdateBotRunning();
         }
 
         private void headlessCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Settings.HeadlessMode = headlessCheckbox.Checked;
+            GetSelectedAcc().Settings.HeadlessMode = headlessCheckbox.Checked;
         }
 
         private void disableImagesCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Settings.DisableImages = disableImagesCheckbox.Checked;
+            GetSelectedAcc().Settings.DisableImages = disableImagesCheckbox.Checked;
         }
 
         private void workMin_ValueChanged(object sender, EventArgs e)
@@ -237,7 +228,7 @@ namespace TravBotSharp.Views
             if (val > (int)workMax.Value) {
                 workMin.Value = workMax.Value;
             }
-            getSelectedAcc().Settings.Time.MinWork = (int)workMin.Value;
+            GetSelectedAcc().Settings.Time.MinWork = (int)workMin.Value;
         }
 
         private void workMax_ValueChanged(object sender, EventArgs e)
@@ -247,7 +238,7 @@ namespace TravBotSharp.Views
             {
                 workMax.Value = workMin.Value;
             }
-            getSelectedAcc().Settings.Time.MaxWork = (int)workMax.Value;
+            GetSelectedAcc().Settings.Time.MaxWork = (int)workMax.Value;
         }
 
         private void sleepMin_ValueChanged(object sender, EventArgs e)
@@ -257,7 +248,7 @@ namespace TravBotSharp.Views
             {
                 sleepMin.Value = sleepMax.Value;
             }
-            getSelectedAcc().Settings.Time.MinSleep = (int)sleepMin.Value;
+            GetSelectedAcc().Settings.Time.MinSleep = (int)sleepMin.Value;
         }
 
         private void sleepMax_ValueChanged(object sender, EventArgs e)
@@ -267,27 +258,27 @@ namespace TravBotSharp.Views
             {
                 sleepMax.Value = sleepMin.Value;
             }
-            getSelectedAcc().Settings.Time.MaxSleep = (int)sleepMax.Value;
+            GetSelectedAcc().Settings.Time.MaxSleep = (int)sleepMax.Value;
         }
 
         private void reopenChrome_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Settings.AutoCloseDriver = reopenChrome.Checked;
+            GetSelectedAcc().Settings.AutoCloseDriver = reopenChrome.Checked;
         }
 
         private void autoRandomTasks_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Settings.AutoRandomTasks = autoRandomTasks.Checked;
+            GetSelectedAcc().Settings.AutoRandomTasks = autoRandomTasks.Checked;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            getSelectedAcc().TaskTimer.Start();
+            GetSelectedAcc().TaskTimer.Start();
             UpdateBotRunning();
         }
         public void UpdateBotRunning(string running = null)
         {
-            if(string.IsNullOrEmpty(running)) running = getSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
+            if(string.IsNullOrEmpty(running)) running = GetSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
             botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
         }
     }

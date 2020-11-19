@@ -6,29 +6,16 @@ using TravBotSharp.Files.Models.AccModels;
 
 namespace TravBotSharp.Views
 {
-    public partial class TroopsUc : UserControl
+    public partial class TroopsUc : TbsBaseUc
     {
-        ControlPanel main;
         public TroopsUc()
         {
             InitializeComponent();
         }
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-        }
-        private Account getSelectedAcc()
-        {
-            return main != null ? main.GetSelectedAcc() : null;
-        }
-        public Village getSelectedVillage(Account acc = null)
-        {
-            return main != null ? main.GetSelectedVillage(acc) : null;
-        }
         public void UpdateTroopTab()
         {
-            var acc = getSelectedAcc();
-            var vill = getSelectedVillage(acc);
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
             if (acc.AccInfo.Tribe != null)
             {
                 if (vill.Troops.TroopToTrain != null)
@@ -81,8 +68,8 @@ namespace TravBotSharp.Views
 
         private void button10_Click(object sender, EventArgs e) //select troop to train
         {
-            var acc = getSelectedAcc();
-            var vill = getSelectedVillage();
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage();
             int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
             var troopSelected = troopsEnum + comboBoxTroopsToTrain.SelectedIndex + 1;
             vill.Troops.TroopToTrain = (Classificator.TroopsEnum)troopSelected;
@@ -91,7 +78,7 @@ namespace TravBotSharp.Views
 
         private void autoImprove_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().Settings.AutoImprove = autoImprove.Checked;
+            GetSelectedAcc().Settings.AutoImprove = autoImprove.Checked;
         }
     }
 }

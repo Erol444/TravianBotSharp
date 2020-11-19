@@ -11,26 +11,18 @@ using XPTable.Models;
 
 namespace TravBotSharp.Views
 {
-    public partial class OverviewUc : UserControl
+    public partial class OverviewUc : TbsBaseUc
     {
         TableModel tableModelMain = new TableModel();
         TableModel tableModelGlobal = new TableModel();
-        ControlPanel main;
         public OverviewUc()
         {
             InitializeComponent();
         }
-        public void Init(ControlPanel _main)
+
+        internal void UpdateTab()
         {
-            main = _main;
-        }
-        private Account getSelectedAcc()
-        {
-            return main?.GetSelectedAcc();
-        }
-        internal void UpdateOverviewTab()
-        {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             if (acc.Villages.Count == 0) return;
 
             InitTable();
@@ -59,7 +51,7 @@ namespace TravBotSharp.Views
         private void InitGlobalTable()
         {
             XpTableGlobal.TableModel = tableModelGlobal;
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             var vill = acc.Villages.FirstOrDefault();
             
 
@@ -243,7 +235,7 @@ namespace TravBotSharp.Views
         {
             List<string> ret = new List<string>();
             ret.Add("None");
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             if (acc.Villages.Count == 0) return ret.ToArray(); //Acc has now been initialised
             int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
             for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
@@ -260,7 +252,7 @@ namespace TravBotSharp.Views
         //Save button
         private void button1_Click(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             //change vill names list
             var changeVillNames = new List<(int, string)>();
             for (int i = 0; i < tableModelMain.Rows.Count; i++)
@@ -356,7 +348,7 @@ namespace TravBotSharp.Views
         }
         private void UpdateVillageType(Village vill, CellCollection cells, int column)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             var type = (VillType)Enum.Parse(typeof(VillType), cells[column].Text);
             if (type != vill.Settings.Type)
             {
@@ -410,7 +402,7 @@ namespace TravBotSharp.Views
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
 
             string location = IoHelperForms.PromptUserForBuidTasksLocation();
             if (location == null) return;

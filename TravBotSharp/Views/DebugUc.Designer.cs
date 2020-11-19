@@ -38,6 +38,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.logTextBox = new System.Windows.Forms.RichTextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // taskListView
@@ -117,16 +118,30 @@
             this.logTextBox.TabIndex = 38;
             this.logTextBox.Text = "";
             // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(690, 18);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(242, 9);
+            this.label3.TabIndex = 39;
+            this.label3.Text = "Log will auto-update only if you access the log tab from some other tab!";
+            // 
             // DebugUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CausesValidation = false;
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.logTextBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.taskListView);
             this.Name = "DebugUc";
             this.Size = new System.Drawing.Size(939, 629);
+            this.Enter += new System.EventHandler(this.DebugUc_Enter);
+            this.Leave += new System.EventHandler(this.DebugUc_Leave);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -144,5 +159,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RichTextBox logTextBox;
+        private System.Windows.Forms.Label label3;
     }
 }

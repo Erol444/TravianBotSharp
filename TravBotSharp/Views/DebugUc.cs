@@ -10,40 +10,38 @@ using System.Windows.Forms;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TbsCore.Helpers;
+using static TravBotSharp.Files.Models.AccModels.WebBrowserInfo;
 
 namespace TravBotSharp.Views
 {
-    public partial class DebugUc : UserControl
+    public partial class DebugUc : TbsBaseUc
     {
-        private ControlPanel main;
-
         public DebugUc()
         {
             InitializeComponent();
         }
-        public void Init(ControlPanel main)
+
+        // For thread safety
+        public bool ControlInvokeRequired(Control c, Action a)
         {
-            this.main = main;
-            Utils.LoggerSink.NewLogHandler += TbsLogger_NewLogHandler;
+            if (c.InvokeRequired) c.Invoke(new MethodInvoker(delegate { a(); }));
+            else return false;
+            return true;
         }
-
-        private void TbsLogger_NewLogHandler(object sender, EventArgs e)
+        public void NewLogHandler(object sender, EventArgs e)
         {
-            var log = ((LogEventArgs)e).Log;
-
-            var previousLogs = this.logTextBox.Text;
-            // Max 10k chars of log (performance)
-            if (10000 < previousLogs.Length) previousLogs = previousLogs.Substring(0, 10000);
-
-            this.logTextBox.Text =
-                $"{log.Timestamp.DateTime.ToString("HH:mm:ss")}: " +
-                $"{log.MessageTemplate}\n{previousLogs}"; 
+            var newLog = ((LogEventArgs)e).Log;
+            if (ControlInvokeRequired(this.main, () => NewLogHandler(sender, e))) return;
+            logTextBox.Text = newLog + "\n" + logTextBox.Text;
         }
 
         public void UpdateTab()
         {
-            var acc = main.GetSelectedAcc();
+            var acc = GetSelectedAcc();
+
             taskListView.Items.Clear();
+            logTextBox.Clear();
+
             if (acc.Tasks == null) return;
             foreach(var task in acc.Tasks.ToList())
             {
@@ -56,6 +54,23 @@ namespace TravBotSharp.Views
                 item.SubItems.Add(task.Message ?? "");
                 taskListView.Items.Add(item);
             }
+            
+            foreach(var log in acc.Wb.Logs)
+            {
+                logTextBox.AppendText(log + "\n");
+            }
         }
+
+        private void DebugUc_Enter(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            if (WbAvailable(acc)) acc.Wb.LogHandler += NewLogHandler;
+        }
+        private void DebugUc_Leave(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            if (WbAvailable(acc)) acc.Wb.LogHandler -= NewLogHandler;
+        }
+        private bool WbAvailable(Account acc) => acc?.Wb != null;
     }
 }

@@ -12,18 +12,17 @@ using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Views
 {
-    public partial class BuildUc : UserControl
+    public partial class BuildUc : TbsBaseUc
     {
         Building selectedBuilding;
-        ControlPanel main;
         public BuildUc()
         {
             InitializeComponent();
         }
         public void UpdateBuildTab()
         {
-            Account acc = getSelectedAcc();
-            var vill = getSelectedVillage();
+            Account acc = GetSelectedAcc();
+            var vill = GetSelectedVillage();
 
             if (vill == null) return;
 
@@ -175,23 +174,10 @@ namespace TravBotSharp.Views
             }
         }
 
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-        }
-        public Village getSelectedVillage(Account acc = null)
-        {
-            return main != null ? main.GetSelectedVillage(acc) : null;
-        }
-        public Account getSelectedAcc()
-        {
-            return main != null ? main.GetSelectedAcc() : null;
-        }
-
         private int oldSelected = 0;
-        private BuildingTask getSelectedBuildingTask()
+        private BuildingTask GetSelectedBuildingTask()
         {
-            var vill = getSelectedVillage();
+            var vill = GetSelectedVillage();
             var tasks = vill.Build.Tasks;
             if (tasks.Count == 0) return null;
 
@@ -200,8 +186,8 @@ namespace TravBotSharp.Views
 
         private void buildButton_Click(object sender, EventArgs e) //build button
         {
-            var acc = getSelectedAcc();
-            var vill = getSelectedVillage(acc);
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
 
             var indicies = buildingsList.SelectedIndices;
             if (indicies.Count > 0)
@@ -246,8 +232,8 @@ namespace TravBotSharp.Views
 
         private void button23_Click(object sender, EventArgs e) //move top build task
         {
-            var vill = getSelectedVillage();
-            var task = getSelectedBuildingTask();
+            var vill = GetSelectedVillage();
+            var task = GetSelectedBuildingTask();
             var index = vill.Build.Tasks.IndexOf(task);
             if (index == 0) return;
             vill.Build.Tasks.Remove(task);
@@ -258,8 +244,8 @@ namespace TravBotSharp.Views
 
         private void button22_Click(object sender, EventArgs e) //move bottom build task
         {
-            var vill = getSelectedVillage();
-            var task = getSelectedBuildingTask();
+            var vill = GetSelectedVillage();
+            var task = GetSelectedBuildingTask();
             var index = vill.Build.Tasks.IndexOf(task);
             if (index == vill.Build.Tasks.Count - 1) return; //already at the bottom
             vill.Build.Tasks.Remove(task);
@@ -270,8 +256,8 @@ namespace TravBotSharp.Views
 
         private void button11_Click(object sender, EventArgs e) //move up build task
         {
-            var vill = getSelectedVillage();
-            var task = getSelectedBuildingTask();
+            var vill = GetSelectedVillage();
+            var task = GetSelectedBuildingTask();
             var index = vill.Build.Tasks.IndexOf(task);
             if (index == 0) return;
             vill.Build.Tasks.Remove(task);
@@ -282,8 +268,8 @@ namespace TravBotSharp.Views
 
         private void button12_Click(object sender, EventArgs e) //move down build task
         {
-            var vill = getSelectedVillage();
-            var task = getSelectedBuildingTask();
+            var vill = GetSelectedVillage();
+            var task = GetSelectedBuildingTask();
             var index = vill.Build.Tasks.IndexOf(task);
             if (index == vill.Build.Tasks.Count - 1) return;
             vill.Build.Tasks.Remove(task);
@@ -294,15 +280,15 @@ namespace TravBotSharp.Views
 
         private void button13_Click(object sender, EventArgs e) //delete build task
         {
-            var vill = getSelectedVillage();
-            var task = getSelectedBuildingTask();
+            var vill = GetSelectedVillage();
+            var task = GetSelectedBuildingTask();
             var index = vill.Build.Tasks.Remove(task);
             UpdateBuildTab();
         }
 
         private void button8_Click(object sender, EventArgs e) //clear all build tasks
         {
-            var vill = getSelectedVillage();
+            var vill = GetSelectedVillage();
             vill.Build.Tasks.Clear();
             buildListView.Items.Clear();
             vill.Build.DemolishTasks.Clear();
@@ -311,8 +297,8 @@ namespace TravBotSharp.Views
 
         private void AutBuildResButton_Click(object sender, EventArgs e) //auto res build button
         {
-            var acc = getSelectedAcc();
-            var vill = getSelectedVillage(acc);
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
 
             var task = new BuildingTask
             {
@@ -327,8 +313,8 @@ namespace TravBotSharp.Views
 
         private void button20_Click(object sender, EventArgs e) //support vill button
         {
-            var acc = getSelectedAcc();
-            var vill = getSelectedVillage();
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage();
             DefaultConfigurations.SupplyVillagePlan(acc, vill);
             BuildingHelper.RemoveCompletedTasks(vill, acc);
             UpdateBuildTab();
@@ -336,8 +322,8 @@ namespace TravBotSharp.Views
 
         private void button19_Click(object sender, EventArgs e) //off vill button
         {
-            var acc = getSelectedAcc();
-            var vill = getSelectedVillage();
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage();
             DefaultConfigurations.OffVillagePlan(acc, vill);
             BuildingHelper.RemoveCompletedTasks(vill, acc);
             UpdateBuildTab();
@@ -345,8 +331,8 @@ namespace TravBotSharp.Views
 
         private void button6_Click(object sender, EventArgs e) //deff vill button
         {
-            var acc = getSelectedAcc();
-            var vill = getSelectedVillage();
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage();
             DefaultConfigurations.DeffVillagePlan(acc, vill);
             BuildingHelper.RemoveCompletedTasks(vill, acc);
             UpdateBuildTab();
@@ -355,15 +341,15 @@ namespace TravBotSharp.Views
         private void button9_Click(object sender, EventArgs e) //export build tasks button
         {
             //remove buildingIds, they will get choosen appropriately when imported
-            var buildTasks = getSelectedVillage().Build.Tasks;
+            var buildTasks = GetSelectedVillage().Build.Tasks;
             buildTasks.ToList().ForEach(x => x.BuildingId = null);
             IoHelperForms.ExportBuildTasks(JsonConvert.SerializeObject(buildTasks));
         }
 
         private void button24_Click(object sender, EventArgs e) //import build tasks button
         {
-            var acc = getSelectedAcc();
-            var vill = getSelectedVillage();
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage();
 
             string location = IoHelperForms.PromptUserForBuidTasksLocation();
             if (location == null) return;
@@ -373,15 +359,15 @@ namespace TravBotSharp.Views
 
         private void AutoBuildBonusBuildings_CheckedChanged(object sender, EventArgs e)
         {
-            var vill = getSelectedVillage();
+            var vill = GetSelectedVillage();
             vill.Build.AutoBuildResourceBonusBuildings = AutoBuildBonusBuildings.Checked;
         }
 
         private void buildingsList_SelectedIndexChanged(object sender, EventArgs e)
         {
             selectedBuilding = null;
-            var acc = getSelectedAcc();
-            var vill = getSelectedVillage();
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage();
 
             var indicies = buildingsList.SelectedIndices;
 
@@ -442,19 +428,19 @@ namespace TravBotSharp.Views
             {
                 oldSelected = indicies[0];
             }
-            UpdateBuildTasks(getSelectedVillage());
+            UpdateBuildTasks(GetSelectedVillage());
         }
 
         private void instaUpgradeCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            var vill = getSelectedVillage();
+            var vill = GetSelectedVillage();
             vill.Build.InstaBuild = instaUpgradeCheckbox.Checked;
             instaUpgradeUpDown.Enabled = instaUpgradeCheckbox.Checked;
         }
 
         private void instaUpgradeUpDown_ValueChanged(object sender, EventArgs e)
         {
-            var vill = getSelectedVillage();
+            var vill = GetSelectedVillage();
             vill.Build.InstaBuildHours = (int)instaUpgradeUpDown.Value;
         }
     }

@@ -11,9 +11,9 @@ using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Views
 {
-    public partial class AttackUc : UserControl
+    public partial class AttackUc : TbsBaseUc
     {
-        ControlPanel main;
+        
         List<List<SendWaveModel>> sendWaves = new List<List<SendWaveModel>>();
         public AttackUc()
         {
@@ -22,21 +22,10 @@ namespace TravBotSharp.Views
             dateTimePicker1.Format = DateTimePickerFormat.Time;
             dateTimePicker1.ShowUpDown = true;
         }
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-        }
-        private Account getSelectedAcc()
-        {
-            return main != null ? main.GetSelectedAcc() : null;
-        }
-        public Village getSelectedVillage(Account acc = null)
-        {
-            return main != null ? main.GetSelectedVillage(acc) : null;
-        }
+        
         public void UpdateTab()
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
 
             richTextBox1.Text = "";
             foreach (var sendWave in sendWaves)
@@ -112,11 +101,11 @@ namespace TravBotSharp.Views
                 var waveTask = new SendWaves()
                 {
                     ExecuteAt = DateTime.Now.AddHours(-100), // Execute now, on we will create a correct ExecuteAt later
-                    Vill = getSelectedVillage(),
+                    Vill = GetSelectedVillage(),
                     SendWaveModels = wave.ToList(),
                     Priority = Files.Tasks.BotTask.TaskPriority.High
                 };
-                TaskExecutor.AddTask(getSelectedAcc(), waveTask);
+                TaskExecutor.AddTask(GetSelectedAcc(), waveTask);
             }
             sendWaves.Clear();
             UpdateTab();

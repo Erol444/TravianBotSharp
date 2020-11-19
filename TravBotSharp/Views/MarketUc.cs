@@ -5,28 +5,16 @@ using TravBotSharp.Files.Models.ResourceModels;
 
 namespace TravBotSharp.Views
 {
-    public partial class MarketUc : UserControl
+    public partial class MarketUc : TbsBaseUc
     {
-        ControlPanel main;
         public MarketUc()
         {
             InitializeComponent();
         }
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-        }
-        private Account getSelectedAcc()
-        {
-            return main != null ? main.GetSelectedAcc() : null;
-        }
-        public Village getSelectedVillage()
-        {
-            return main != null ? main.GetSelectedVillage() : null;
-        }
+
         public void UpdateMarketTab()
         {
-            var vill = getSelectedVillage();
+            var vill = GetSelectedVillage();
             TargetLimitWood.Value = vill.Market.Settings.Configuration.TargetLimit.Wood;
             TargetLimitClay.Value = vill.Market.Settings.Configuration.TargetLimit.Clay;
             TargetLimitIron.Value = vill.Market.Settings.Configuration.TargetLimit.Iron;
@@ -47,7 +35,7 @@ namespace TravBotSharp.Views
 
         private void button15_Click(object sender, EventArgs e)
         {
-            var vill = getSelectedVillage();
+            var vill = GetSelectedVillage();
             var limitFill = new Resources();
             var targetLimit = new Resources();
             targetLimit.Wood = (int)TargetLimitWood.Value;
@@ -73,43 +61,43 @@ namespace TravBotSharp.Views
 
         private void transitResEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedVillage().Market.Settings.Configuration.Enabled = transitResEnabled.Checked;
+            GetSelectedVillage().Market.Settings.Configuration.Enabled = transitResEnabled.Checked;
         }
 
         private void overflowProtection_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedVillage().Market.Npc.NpcIfOverflow = overflowProtection.Checked;
+            GetSelectedVillage().Market.Npc.NpcIfOverflow = overflowProtection.Checked;
         }
 
         private void numericUpDown4_ValueChanged(object sender, EventArgs e)
         {
-            getSelectedVillage().Market.Npc.ResourcesRatio.Wood = (long)numericUpDown4.Value;
+            GetSelectedVillage().Market.Npc.ResourcesRatio.Wood = (long)numericUpDown4.Value;
         }
 
         private void numericUpDown3_ValueChanged(object sender, EventArgs e)
         {
-            getSelectedVillage().Market.Npc.ResourcesRatio.Clay = (long)numericUpDown3.Value;
+            GetSelectedVillage().Market.Npc.ResourcesRatio.Clay = (long)numericUpDown3.Value;
         }
 
         private void numericUpDown2_ValueChanged(object sender, EventArgs e)
         {
-            getSelectedVillage().Market.Npc.ResourcesRatio.Iron = (long)numericUpDown2.Value;
+            GetSelectedVillage().Market.Npc.ResourcesRatio.Iron = (long)numericUpDown2.Value;
         }
 
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
-            getSelectedVillage().Market.Npc.ResourcesRatio.Crop = (long)numericUpDown1.Value;
+            GetSelectedVillage().Market.Npc.ResourcesRatio.Crop = (long)numericUpDown1.Value;
         }
 
         private void npcEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedVillage().Market.Npc.Enabled = npcEnabled.Checked;
+            GetSelectedVillage().Market.Npc.Enabled = npcEnabled.Checked;
         }
 
         // Send to main village configuration
         private void button1_Click(object sender, EventArgs e)
         {
-            var vill = getSelectedVillage();
+            var vill = GetSelectedVillage();
             Resources limit = new Resources()
             {
                 Wood = (int)woodSend.Value,

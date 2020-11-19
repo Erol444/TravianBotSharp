@@ -11,28 +11,19 @@ using XPTable.Models;
 
 namespace TravBotSharp.Views
 {
-    public partial class DeffendingUc : UserControl
+    public partial class DeffendingUc : TbsBaseUc
     {
         TableModel tableModelMain = new TableModel();
         TableModel tableModelGlobal = new TableModel();
-        ControlPanel main;
+
         public DeffendingUc()
         {
             InitializeComponent();
         }
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-            InitTables();
-            InitGlobalTable();
-        }
-        private Account getSelectedAcc()
-        {
-            return main?.GetSelectedAcc();
-        }
+        
         public void UpdateTab()
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             if (acc.Villages.Count == 0) return;
 
             tableModelMain.Rows.Clear();
@@ -118,7 +109,7 @@ namespace TravBotSharp.Views
         //Save button
         private void button1_Click(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             //change vill names list
             var changeVillNames = new List<(int, string)>();
             for (int i = 0; i < tableModelMain.Rows.Count; i++)

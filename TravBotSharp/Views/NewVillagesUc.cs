@@ -6,25 +6,15 @@ using TravBotSharp.Files.Models.AccModels;
 
 namespace TravBotSharp.Views
 {
-    public partial class NewVillagesUc : UserControl
+    public partial class NewVillagesUc : TbsBaseUc
     {
-        ControlPanel main;
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-            UpdateTab();
-        }
-        private Account getSelectedAcc()
-        {
-            return main != null ? main.GetSelectedAcc() : null;
-        }
         public NewVillagesUc()
         {
             InitializeComponent();
         }
         public void UpdateTab()
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             if (acc == null) return;
 
             BuildTasksLocationTextBox.Text = acc.NewVillages.BuildingTasksLocationNewVillage;
@@ -66,7 +56,7 @@ namespace TravBotSharp.Views
             {
                 var i = indicies[0];
                 NewVillList.Items.RemoveAt(i);
-                getSelectedAcc().NewVillages.Locations.RemoveAt(i);
+                GetSelectedAcc().NewVillages.Locations.RemoveAt(i);
             }
         }
 
@@ -75,7 +65,7 @@ namespace TravBotSharp.Views
             Coordinates c = new Coordinates();
             c.x = (int)XNewVill.Value;
             c.y = (int)YNewVill.Value;
-            getSelectedAcc().NewVillages.Locations.Add(new Files.Models.VillageModels.NewVillage() { coordinates = c, Name = NewVillName.Text });
+            GetSelectedAcc().NewVillages.Locations.Add(new Files.Models.VillageModels.NewVillage() { coordinates = c, Name = NewVillName.Text });
             //clear values
             XNewVill.Value = 0;
             YNewVill.Value = 0;
@@ -85,7 +75,7 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var acc = getSelectedAcc();
+            var acc = GetSelectedAcc();
             var selected = (string)valleyType.SelectedItem;
             selected = "_" + selected;
             var type = (Classificator.VillTypeEnum)Enum.Parse(typeof(Classificator.VillTypeEnum), selected);
@@ -95,36 +85,36 @@ namespace TravBotSharp.Views
 
         private void button2_Click(object sender, EventArgs e)
         {
-            getSelectedAcc().NewVillages.Types.Clear();
+            GetSelectedAcc().NewVillages.Types.Clear();
             UpdateTab();
         }
 
         private void autoNewVillagesToSettle_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().NewVillages.AutoFindVillages = autoNewVillagesToSettle.Checked;
+            GetSelectedAcc().NewVillages.AutoFindVillages = autoNewVillagesToSettle.Checked;
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            getSelectedAcc().NewVillages.Locations.Clear();
+            GetSelectedAcc().NewVillages.Locations.Clear();
             UpdateTab();
         }
 
         private void villName_TextChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().NewVillages.NameTemplate = villName.Text;
+            GetSelectedAcc().NewVillages.NameTemplate = villName.Text;
         }
 
         private void Button25_Click(object sender, EventArgs e) //select building tasks for new village
         {
             string location = IoHelperForms.PromptUserForBuidTasksLocation();
-            getSelectedAcc().NewVillages.BuildingTasksLocationNewVillage = location;
+            GetSelectedAcc().NewVillages.BuildingTasksLocationNewVillage = location;
             UpdateTab();
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            getSelectedAcc().NewVillages.AutoSettleNewVillages = checkBox3.Checked;
+            GetSelectedAcc().NewVillages.AutoSettleNewVillages = checkBox3.Checked;
         }
     }
 }

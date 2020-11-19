@@ -8,21 +8,16 @@ using TravBotSharp.Files.Tasks.SecondLevel;
 
 namespace TravBotSharp.Views
 {
-    public partial class FarmingUc : UserControl
+    public partial class FarmingUc : TbsBaseUc
     {
-        ControlPanel main;
         public FarmingUc()
         {
             InitializeComponent();
             RaidStyle.Items.AddRange(new string[] { "No losses only", "Some losses", "All losses" });
         }
-        public void Init(ControlPanel _main)
-        {
-            main = _main;
-        }
         public void UpdateTab()
         {
-            var acc = main.GetSelectedAcc();
+            var acc = GetSelectedAcc();
             minFarmInterval.Value = acc.Farming.MinInterval;
             maxFarmInterval.Value = acc.Farming.MaxInterval;
 
@@ -38,7 +33,7 @@ namespace TravBotSharp.Views
         }
         private void StartFarm_Click(object sender, EventArgs e)//start farming
         {
-            var acc = main.GetSelectedAcc();
+            var acc = GetSelectedAcc();
             acc.Farming.MinInterval = (int)minFarmInterval.Value;
             acc.Farming.MaxInterval = (int)maxFarmInterval.Value;
             acc.Farming.Enabled = true;
@@ -47,12 +42,12 @@ namespace TravBotSharp.Views
 
         private void trainTroopsAfterFLcheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            main.GetSelectedAcc().Farming.TrainTroopsAfterFL = trainTroopsAfterFLcheckbox.Checked;
+            GetSelectedAcc().Farming.TrainTroopsAfterFL = trainTroopsAfterFLcheckbox.Checked;
         }
 
         private void button1_Click(object sender, EventArgs e) //refresh FLs
         {
-            TaskExecutor.AddTaskIfNotExists(main.GetSelectedAcc(), new UpdateFarmLists() { ExecuteAt = DateTime.Now });
+            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new UpdateFarmLists() { ExecuteAt = DateTime.Now });
         }
 
         private int GetSelectedFL()
@@ -61,7 +56,7 @@ namespace TravBotSharp.Views
         }
         private void UpdateFlInfo()
         {
-            var acc = main.GetSelectedAcc();
+            var acc = GetSelectedAcc();
 
             var fl = acc.Farming.FL[GetSelectedFL()];
             FlName.Text = fl.Name;
@@ -72,7 +67,7 @@ namespace TravBotSharp.Views
         private void RaidStyle_SelectedIndexChanged(object sender, EventArgs e)
         {
             //save raid style
-            var acc = main.GetSelectedAcc();
+            var acc = GetSelectedAcc();
             acc.Farming.FL[GetSelectedFL()].RaidStyle = (Files.Models.TroopsModels.RaidStyle)RaidStyle.SelectedIndex;
         }
 
@@ -83,13 +78,13 @@ namespace TravBotSharp.Views
 
         private void FlEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            var acc = main.GetSelectedAcc();
+            var acc = GetSelectedAcc();
             acc.Farming.FL[GetSelectedFL()].Enabled = FlEnabled.Checked;
         }
 
         private void button2_Click(object sender, EventArgs e) //add natar vilalges to this FL
         {
-            var acc = main.GetSelectedAcc();
+            var acc = GetSelectedAcc();
             var task = new TTWarsAddNatarsToFL
             {
                 FL = acc.Farming.FL[GetSelectedFL()],
@@ -102,7 +97,7 @@ namespace TravBotSharp.Views
 
         private void StopFarm_Click(object sender, EventArgs e) // Stop farming
         {
-            var acc = main.GetSelectedAcc();
+            var acc = GetSelectedAcc();
             acc.Farming.Enabled = false;
             //remove all SendFarmlist tasks
             var flTasks = acc.Tasks.Where(x => x.GetType() == typeof(SendFLs) || x.GetType() == typeof(SendFarmlist)).ToList();
