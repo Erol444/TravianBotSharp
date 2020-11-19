@@ -312,7 +312,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// </summary>
         private void CheckFreeCrop()
         {
-            if (this.Vill.Res.FreeCrop <= 0 && Vill.Build.Tasks.FirstOrDefault().Building != BuildingEnum.Cropland)
+            if (this.Vill.Res.FreeCrop < 0 && Vill.Build.Tasks.FirstOrDefault()?.Building != BuildingEnum.Cropland)
             {
                 var croplandsInVill = Vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Cropland).ToList();
                 var cropland = FindLowestLevelBuilding(croplandsInVill);

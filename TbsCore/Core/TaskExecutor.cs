@@ -105,7 +105,7 @@ namespace TravBotSharp.Files.Helpers
                     case TaskRes.Retry:
                         if (task.Message != null)
                         {
-                            Utils.log.Warning(LogHelper(acc, task, "warning") + "\n" + task.Message);
+                            //Utils.log.Warning(LogHelper(acc, task, "warning") + "\n" + task.Message);
                         }
 
                         // There was probably a problem, retry executing the task later.
@@ -119,7 +119,7 @@ namespace TravBotSharp.Files.Helpers
             }
             catch (Exception e)
             {
-                Utils.log.Error(LogHelper(acc, task, "error") + $"\nStack Trace:\n{e.StackTrace}\n\nMessage:" + e.Message + "\n------------------------\n");
+                Utils.Log.Error(LogHelper(acc, task, "error") + $"\nStack Trace:\n{e.StackTrace}\n\nMessage:" + e.Message + "\n------------------------\n");
                 task.RetryCounter++;
                 if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
             }

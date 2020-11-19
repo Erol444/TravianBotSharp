@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TravBotSharp.Views
 {
@@ -22,7 +24,22 @@ namespace TravBotSharp.Views
         public void Init(ControlPanel main)
         {
             this.main = main;
+            Utils.LoggerSink.NewLogHandler += TbsLogger_NewLogHandler;
         }
+
+        private void TbsLogger_NewLogHandler(object sender, EventArgs e)
+        {
+            var log = ((LogEventArgs)e).Log;
+
+            var previousLogs = this.logTextBox.Text;
+            // Max 10k chars of log (performance)
+            if (10000 < previousLogs.Length) previousLogs = previousLogs.Substring(0, 10000);
+
+            this.logTextBox.Text =
+                $"{log.Timestamp.DateTime.ToString("HH:mm:ss")}: " +
+                $"{log.MessageTemplate}\n{previousLogs}"; 
+        }
+
         public void UpdateTab()
         {
             var acc = main.GetSelectedAcc();

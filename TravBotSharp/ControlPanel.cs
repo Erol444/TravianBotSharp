@@ -295,12 +295,13 @@ namespace TravBotSharp
 
         private void button4_Click(object sender, EventArgs e)
         {
-            var acc = GetSelectedAcc();
-            TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
-            {
-                Vill = AccountHelper.GetMainVillage(acc),
-                ExecuteAt = DateTime.MinValue.AddHours(10)
-            });
+            Utils.Log.Error("Clicked DON'T CLICK BUTTON");
+            //var acc = GetSelectedAcc();
+            //TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
+            //{
+            //    Vill = AccountHelper.GetMainVillage(acc),
+            //    ExecuteAt = DateTime.MinValue.AddHours(10)
+            //});
         }
 
         private void button5_Click(object sender, EventArgs e) // Logout

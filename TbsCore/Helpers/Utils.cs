@@ -1,15 +1,25 @@
 ﻿using Serilog;
+using System;
 using System.Net.Http;
+using TbsCore.Helpers;
 
 namespace TravBotSharp.Files.Helpers
 {
     public static class Utils
     {
-        //TODO: don't have static classes, use singleton architecture. Gl hf to me
-        public static readonly Serilog.Core.Logger log = new LoggerConfiguration()
-             .WriteTo.Elasticsearch("https://elasticsearch.rike.pro")
-             //.WriteTo.Http("https://logstash.rike.pro")
-             .CreateLogger();
+        public static TbsLoggerSink LoggerSink = new TbsLoggerSink();
+
+#if DEBUG
+        public static readonly Serilog.Core.Logger Log = new LoggerConfiguration()
+                    //.WriteTo.Elasticsearch("https://elasticsearch.rike.pro")
+                    .WriteTo.Sink(LoggerSink)
+                    .CreateLogger();
+#else
+        public static readonly Serilog.Core.Logger Log = new LoggerConfiguration()
+                            //.WriteTo.Elasticsearch("https://elasticsearch.rike.pro")
+                            .WriteTo.Sink(TbsLogger)
+                            .CreateLogger();
+#endif
 
         public static readonly HttpClient HttpClient = new HttpClient();
     }

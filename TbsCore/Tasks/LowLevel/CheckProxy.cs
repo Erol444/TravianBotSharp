@@ -23,7 +23,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 ip.Trim() != currentProxy.Trim())
             {
                 // Proxy error!
-                Utils.log.Information($"Failed proxy {currentProxy} for account {acc.AccInfo.Nickname}! Trying to get new proxy.");
+                //Utils.log.Information($"Failed proxy {currentProxy} for account {acc.AccInfo.Nickname}! Trying to get new proxy.");
                 if (acc.Access.AllAccess.Count > 1)
                 {
                     // Try another access.
@@ -33,7 +33,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 }
                 else
                 {
-                    Utils.log.Information($"Will sleep and retry the same proxy..");
+                    //Utils.log.Information($"Will sleep and retry the same proxy..");
                     await Task.Delay(AccountHelper.Delay() * 15);
                     this.NextExecute = DateTime.MinValue.AddMinutes(1);
                 }

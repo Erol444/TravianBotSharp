@@ -34,8 +34,10 @@
             this.cH3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cHvill = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cH4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label1 = new System.Windows.Forms.Label();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.logTextBox = new System.Windows.Forms.RichTextBox();
             this.SuspendLayout();
             // 
             // taskListView
@@ -50,10 +52,10 @@
             this.taskListView.FullRowSelect = true;
             this.taskListView.GridLines = true;
             this.taskListView.HideSelection = false;
-            this.taskListView.Location = new System.Drawing.Point(3, 42);
+            this.taskListView.Location = new System.Drawing.Point(3, 30);
             this.taskListView.MultiSelect = false;
             this.taskListView.Name = "taskListView";
-            this.taskListView.Size = new System.Drawing.Size(690, 394);
+            this.taskListView.Size = new System.Drawing.Size(555, 596);
             this.taskListView.TabIndex = 35;
             this.taskListView.UseCompatibleStateImageBehavior = false;
             this.taskListView.View = System.Windows.Forms.View.Details;
@@ -79,31 +81,52 @@
             // cH4
             // 
             this.cH4.Text = "Execute at";
-            this.cH4.Width = 190;
+            this.cH4.Width = 130;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Message";
+            this.columnHeader1.Width = 145;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(3, 19);
+            this.label1.Location = new System.Drawing.Point(-1, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(160, 20);
             this.label1.TabIndex = 36;
             this.label1.Text = "Tasks to be executed";
             // 
-            // columnHeader1
+            // label2
             // 
-            this.columnHeader1.Text = "Message";
-            this.columnHeader1.Width = 179;
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(564, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(36, 20);
+            this.label2.TabIndex = 37;
+            this.label2.Text = "Log";
+            // 
+            // logTextBox
+            // 
+            this.logTextBox.Location = new System.Drawing.Point(564, 30);
+            this.logTextBox.Name = "logTextBox";
+            this.logTextBox.ReadOnly = true;
+            this.logTextBox.Size = new System.Drawing.Size(368, 596);
+            this.logTextBox.TabIndex = 38;
+            this.logTextBox.Text = "";
             // 
             // DebugUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.logTextBox);
+            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.taskListView);
             this.Name = "DebugUc";
-            this.Size = new System.Drawing.Size(842, 439);
+            this.Size = new System.Drawing.Size(939, 629);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -119,5 +142,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ColumnHeader cHvill;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.RichTextBox logTextBox;
     }
 }
