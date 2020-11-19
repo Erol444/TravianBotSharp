@@ -21,7 +21,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 await Task.Delay(1000);
                 nextTask = TimeHelper.NextNormalOrHighPrioTask(acc);
-                this.Message = $"Chrome will reopen in {nextTask.TotalMinutes} min";
+                acc.Wb.Log($"Chrome will reopen in {nextTask.TotalMinutes} min");
             }
             while (nextTask > TimeSpan.Zero);
 

@@ -27,7 +27,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
             if (troopNode == null)
             {
-                this.Message = $"Researching {troop} was not possible! Bot assumes you already have it researched";
+                acc.Wb.Log($"Researching {troop} was not possible! Bot assumes you already have it researched");
                 TroopsHelper.AddTroopToResearched(Vill, troop);
                 return TaskRes.Retry;
             }

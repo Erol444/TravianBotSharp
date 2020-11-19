@@ -27,8 +27,8 @@ namespace TravBotSharp.Files.Models.AccModels
         // Account Logs
         public List<string> Logs { get; set; }
         public event EventHandler LogHandler;
-        public void Log(string message, Exception e) => 
-                    Log(message + $"\nStack Trace:\n{e.StackTrace}\n\nMessage:" + e.Message + "\n------------------------\n");
+        public void Log(string message, Exception e) =>
+                    Log(message + $"\nMessage: {e.Message}\n\nStack Trace:\n{e.StackTrace}\n---------------------------\n");
         public void Log(string msg)
         {
             msg = DateTime.Now.ToString("HH:mm:ss") + ": " + msg;
@@ -63,6 +63,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 var checkproxy = new CheckProxy();
                 await checkproxy.Execute(acc);
             }
+            else this.Navigate(acc.AccInfo.ServerUrl);
         }
 
         private void SetupChromeDriver(Access access, string username, string server)

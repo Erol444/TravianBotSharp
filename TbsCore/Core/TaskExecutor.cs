@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks;
@@ -29,9 +30,9 @@ namespace TravBotSharp.Files.Helpers
                 return;
             }
             if (CheckCookies(acc))
-            {
-                acc.Wb.Driver.ExecuteScript("document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click()");
-            }
+                DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click()");
+            if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc))
+                DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonSkipTutorial')[0].click()");
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
                 var login = new LoginTask();
@@ -46,6 +47,8 @@ namespace TravBotSharp.Files.Helpers
             //TODO: limit this for performance reasons?
             PostLoadTasks(acc);
         }
+        private static bool CheckSkipTutorial(Account acc) =>
+            acc.Wb.Html.DocumentNode.Descendants().Any(x => x.HasClass("questButtonSkipTutorial"));
 
         /// <summary>
         /// Checks if account is banned (T4.5)
@@ -95,7 +98,6 @@ namespace TravBotSharp.Files.Helpers
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
-            task.Message = null;
             //Console.WriteLine($"Executing task {task.GetName()}");
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
             try
@@ -105,31 +107,22 @@ namespace TravBotSharp.Files.Helpers
                 switch (await task.Execute(acc))
                 {
                     case TaskRes.Retry:
-                        if (task.Message != null)
-                        {
-                            //Utils.log.Warning(LogHelper(acc, task, "warning") + "\n" + task.Message);
-                        }
-
-                        // There was probably a problem, retry executing the task later.
                         task.RetryCounter++;
                         if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
                         break;
-
                     default:
                         break;
                 }
             }
             catch (Exception e)
             {
-                acc.Wb.Log($"Error executing task {task.GetName()}! Vill {task.Vill?.Name}", e);
+                if (acc.Wb != null) acc.Wb.Log($"Error executing task {task.GetName()}! Vill {task.Vill?.Name}", e);
                 task.RetryCounter++;
                 if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
             }
 
             // Execute post tasks
             PostTask(task, acc);
-
-            task.Message = null;
 
             //We want to re-execute the same task later
             if (task.NextExecute != null && task.RetryCounter < 3)

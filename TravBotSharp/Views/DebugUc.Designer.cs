@@ -34,7 +34,6 @@
             this.cH3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cHvill = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cH4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.logTextBox = new System.Windows.Forms.RichTextBox();
@@ -48,15 +47,14 @@
             this.cH2,
             this.cH3,
             this.cHvill,
-            this.cH4,
-            this.columnHeader1});
+            this.cH4});
             this.taskListView.FullRowSelect = true;
             this.taskListView.GridLines = true;
             this.taskListView.HideSelection = false;
             this.taskListView.Location = new System.Drawing.Point(3, 30);
             this.taskListView.MultiSelect = false;
             this.taskListView.Name = "taskListView";
-            this.taskListView.Size = new System.Drawing.Size(555, 596);
+            this.taskListView.Size = new System.Drawing.Size(401, 596);
             this.taskListView.TabIndex = 35;
             this.taskListView.UseCompatibleStateImageBehavior = false;
             this.taskListView.View = System.Windows.Forms.View.Details;
@@ -84,11 +82,6 @@
             this.cH4.Text = "Execute at";
             this.cH4.Width = 130;
             // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "Message";
-            this.columnHeader1.Width = 145;
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -103,7 +96,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(564, 9);
+            this.label2.Location = new System.Drawing.Point(417, 7);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(36, 20);
             this.label2.TabIndex = 37;
@@ -111,10 +104,10 @@
             // 
             // logTextBox
             // 
-            this.logTextBox.Location = new System.Drawing.Point(564, 30);
+            this.logTextBox.Location = new System.Drawing.Point(410, 30);
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
-            this.logTextBox.Size = new System.Drawing.Size(368, 596);
+            this.logTextBox.Size = new System.Drawing.Size(522, 596);
             this.logTextBox.TabIndex = 38;
             this.logTextBox.Text = "";
             // 
@@ -122,7 +115,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(624, 15);
+            this.label3.Location = new System.Drawing.Point(459, 13);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(308, 12);
             this.label3.TabIndex = 39;
@@ -156,7 +149,6 @@
         private System.Windows.Forms.ColumnHeader cH4;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ColumnHeader cHvill;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RichTextBox logTextBox;
         private System.Windows.Forms.Label label3;

@@ -25,7 +25,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             int sleepSec = rand.Next(MinSleepSec, MaxSleepSec);
             var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
 
-            this.Message = $"Bot will wake up at {sleepEnd}";
+            acc.Wb.Log($"Bot will wake up at {sleepEnd}");
 
             do
             {

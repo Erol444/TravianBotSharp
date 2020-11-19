@@ -74,7 +74,6 @@ namespace TravBotSharp.Files.Tasks
             Low, // For tasks that can wait few hours. For example updating hero items, account info, TOP10, dorf1 (for attacks) etc.
             High // Time-critical tasks, for example sending catapult waves, sending deff troops - tasks that require to-second precision.
         }
-        public string Message { get; set; }
 
         /// <summary>
         /// Gets name of the task

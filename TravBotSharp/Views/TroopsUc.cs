@@ -12,7 +12,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
-        public void UpdateTroopTab()
+        public void UpdateTab()
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
