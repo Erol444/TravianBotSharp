@@ -105,7 +105,9 @@ namespace TravBotSharp.Files.Parsers
                 {
                     Troop = GetTroopFromImage(research),
                     Level = (int)Parser.RemoveNonNumeric(lvl),
-                    UpgradeCost = ResourceParser.GetResourceCost(research.Descendants("div").First(x => x.HasClass("showCosts"))),
+                    UpgradeCost = ResourceParser.GetResourceCost(research
+                                .Descendants("div")
+                                .FirstOrDefault(x => x.HasClass("showCosts") || x.HasClass("resourceWrapper"))),
                     TimeCost = TimeParser.ParseDuration(research), //TODO!
                 };
                 list.Add(troopLvl);

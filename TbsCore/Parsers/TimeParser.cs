@@ -8,7 +8,12 @@ namespace TravBotSharp.Files.Parsers
     {
         public static TimeSpan ParseDuration(HtmlNode node)
         {
-            var duration = node.Descendants().FirstOrDefault(x => x.HasClass("duration") || x.HasClass("clocks") || x.HasClass("value"));
+            var duration = node.Descendants()
+                .FirstOrDefault(x => x.InnerText.Count(c => c == ':') == 2 &&
+                                    (x.HasClass("duration") ||
+                                     x.HasClass("clocks") ||
+                                     x.HasClass("value")));
+
             return ParseDuration(duration.InnerText);
         }
 
