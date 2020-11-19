@@ -1,5 +1,4 @@
-﻿using Elasticsearch.Net.Specification.IndexLifecycleManagementApi;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -159,8 +158,7 @@ namespace TravBotSharp.Files.Helpers
             }
             catch (IOException e)
             {
-
-                Console.WriteLine("Can't read accounts.txt, Exception thrown: " + e.Message);
+                Console.WriteLine(", Exception thrown: " + e.Message);
             }
             return accounts;
         }

@@ -75,5 +75,15 @@ namespace TravBotSharp.Files.Tasks
             High // Time-critical tasks, for example sending catapult waves, sending deff troops - tasks that require to-second precision.
         }
         public string Message { get; set; }
+
+        /// <summary>
+        /// Gets name of the task
+        /// </summary>
+        /// <returns>Name of the task</returns>
+        public string GetName() {
+            var type = this.GetType().ToString().Split('.');
+            if (type.Length == 0) return null;
+            return type[type.Length - 1];
+        }
     }
 }

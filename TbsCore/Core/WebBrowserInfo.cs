@@ -13,10 +13,38 @@ namespace TravBotSharp.Files.Models.AccModels
 {
     public class WebBrowserInfo
     {
+        const int maxLogCnt = 1000;
+        public WebBrowserInfo()
+        {
+            Logs = new List<string>();
+        }
+        
         public ChromeDriver Driver { get; set; }
         public string CurrentUrl => this.Driver.Url;
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
+
+        // Account Logs
+        public List<string> Logs { get; set; }
+        public event EventHandler LogHandler;
+        public void Log(string message, Exception e) => 
+                    Log(message + $"\nStack Trace:\n{e.StackTrace}\n\nMessage:" + e.Message + "\n------------------------\n");
+        public void Log(string msg)
+        {
+            msg = DateTime.Now.ToString("HH:mm:ss") + ": " + msg;
+            Logs.Insert(0, msg);
+
+            LogHandler?.Invoke(typeof(WebBrowserInfo), new LogEventArgs() { Log = msg });
+            
+            if(maxLogCnt < Logs.Count)
+            {
+                Logs.RemoveRange(maxLogCnt, Logs.Count - 1);
+            }
+        }
+        public class LogEventArgs : EventArgs
+        {
+            public string Log { get; set; }
+        }
 
         public async Task InitSelenium(Account acc, bool newAccess = true)
         {
@@ -91,7 +119,7 @@ namespace TravBotSharp.Files.Models.AccModels
             }
             catch(Exception e)
             {
-                // TODO: log exception
+                Log($"Error opening chrome driver! Is it already opened?", e);
             }
         }
 
@@ -122,6 +150,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
                 catch (Exception e)
                 {
+                    acc.Wb.Log($"Error sending http request to {url}", e);
                     repeat = true;
                     if (++repeatCnt >= 5 && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {
@@ -131,6 +160,7 @@ namespace TravBotSharp.Files.Models.AccModels
                         await changeAccess.Execute(acc);
                         await Task.Delay(AccountHelper.Delay() * 5);
                     }
+                    await Task.Delay(AccountHelper.Delay());
                 }
             }
             while(repeat);
@@ -155,7 +185,7 @@ namespace TravBotSharp.Files.Models.AccModels
             }
             catch(Exception e)
             {
-                Utils.log.Warning($"Exception occured when trying to close selenium driver. Acc {acc.AccInfo.Nickname}\n{e.Message}");
+                Log($"Error closing chrome driver", e);
             }
         }
     }

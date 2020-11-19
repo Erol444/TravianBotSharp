@@ -1,5 +1,4 @@
-﻿using Elasticsearch.Net;
-using System;
+﻿using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TravBotSharp.Files.Models.AccModels;

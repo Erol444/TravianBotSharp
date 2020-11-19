@@ -144,7 +144,8 @@ namespace TravBotSharp
         }
         private void UpdateFrontEnd()
         {
-            if (GetSelectedAcc() == null) return;
+            var acc = GetSelectedAcc();
+            if (acc == null) return;
             //refresh data in this tab!
             switch (accTabController.SelectedIndex) // AccTabController
             {
@@ -158,7 +159,7 @@ namespace TravBotSharp
                     UpdateVillageTab();
                     break;
                 case 3: // Overview
-                    overviewUc1.UpdateOverviewTab();
+                    overviewUc1.UpdateTab();
                     break;
                 case 4: // Farming
                     farmingUc1.UpdateTab();
@@ -174,6 +175,7 @@ namespace TravBotSharp
                     break;
                 case 8: // Debug tab
                     debugUc1.UpdateTab();
+                    debugUc1.Focus();
                     break;
                 default: break;
             }
@@ -207,7 +209,7 @@ namespace TravBotSharp
                     marketUc1.UpdateMarketTab();
                     break;
                 case 2: // Troops
-                    troopsUc1.UpdateTroopTab();
+                    troopsUc1.UpdateTab();
                     break;
                 case 3: // Attack tab
                     attackUc1.UpdateTab();
@@ -295,7 +297,6 @@ namespace TravBotSharp
 
         private void button4_Click(object sender, EventArgs e)
         {
-            Utils.Log.Error("Clicked DON'T CLICK BUTTON");
             //var acc = GetSelectedAcc();
             //TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
             //{

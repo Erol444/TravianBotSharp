@@ -1,5 +1,4 @@
 ﻿
-using Elasticsearch.Net;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
@@ -25,6 +24,7 @@ namespace TravBotSharp.Files.Helpers
         {
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc)) //Check if a captcha/ban/end of server
             {
+                acc.Wb.Log("Captcha/WW/Ban found! Stopping timer!");
                 acc.TaskTimer.Stop();
                 return;
             }
@@ -96,10 +96,12 @@ namespace TravBotSharp.Files.Helpers
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
             task.Message = null;
-            //Console.WriteLine($"Executing task {task.GetType()}");
+            //Console.WriteLine($"Executing task {task.GetName()}");
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
             try
             {
+                acc.Wb.Log($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
+
                 switch (await task.Execute(acc))
                 {
                     case TaskRes.Retry:
@@ -119,7 +121,7 @@ namespace TravBotSharp.Files.Helpers
             }
             catch (Exception e)
             {
-                Utils.Log.Error(LogHelper(acc, task, "error") + $"\nStack Trace:\n{e.StackTrace}\n\nMessage:" + e.Message + "\n------------------------\n");
+                acc.Wb.Log($"Error executing task {task.GetName()}! Vill {task.Vill?.Name}", e);
                 task.RetryCounter++;
                 if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
             }
@@ -143,12 +145,6 @@ namespace TravBotSharp.Files.Helpers
             acc.Tasks.Remove(task);
         }
 
-        private static string LogHelper(Account acc, BotTask task, string type)
-        {
-            var msg = $"Account {acc.AccInfo.Nickname}, \nserver {acc.AccInfo.ServerUrl}, \ncurrent url {acc.Wb.CurrentUrl}\n";
-            return msg + $"Task: {task.GetType()}, village {task.Vill?.Name} encountered a {type}";
-        }
-
         /// <summary>
         /// Is called after every page load.
         /// TODO: don't execute all tasks every PostLoad due to performance?
@@ -164,9 +160,7 @@ namespace TravBotSharp.Files.Helpers
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Error in PreTask " +
-                        e.Message + "\n\nStack Trace: " +
-                        e.StackTrace + "\n-----------------------");
+                    acc.Wb.Log($"Error in PreTask {task.GetType()}", e);
                 }
             }
         }
@@ -390,19 +384,22 @@ namespace TravBotSharp.Files.Helpers
         }
         private static bool IsWWMsg(Account acc)
         {
-            var wwImg = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.GetAttributeValue("src", "") == "/img/ww100.png");
+            var wwImg = acc.Wb.Html.DocumentNode
+                .Descendants("img")
+                .FirstOrDefault(x => x.GetAttributeValue("src", "") == "/img/ww100.png");
+
             // This image is in the natars profile as well
             return wwImg != null && !acc.Wb.CurrentUrl.EndsWith("/spieler.php?uid=1");
         }
-        private static bool IsCaptcha(Account acc)
-        {
-            var captcha = acc.Wb.Html.GetElementbyId("recaptchaImage");
-            return captcha != null;
-        }
+        private static bool IsCaptcha(Account acc) => acc.Wb.Html.GetElementbyId("recaptchaImage") != null;
+        
         //will be called before executing PreTaskRefresh
         internal static bool IsLoginScreen(Account acc)
         {
-            var outerLoginBox = acc.Wb.Html.DocumentNode.Descendants("form").FirstOrDefault(x => x.GetAttributeValue("name", "") == "login");
+            var outerLoginBox = acc.Wb.Html.DocumentNode
+                .Descendants("form")
+                .FirstOrDefault(x => x.GetAttributeValue("name", "") == "login");
+
             if (outerLoginBox != null)
             {
                 if (!IsCaptcha(acc)) return true;
@@ -417,9 +414,7 @@ namespace TravBotSharp.Files.Helpers
 
         public static void AddTask(Account acc, BotTask task)
         {
-            //acc.Tasks.FirstOrDefault(x=>x.GetType == task.GetType)
             acc.Tasks.Add(task);
-            //Console.WriteLine($"{DateTime.Now.ToString()}] Adding task {task.GetType()} for village {task.vill?.Name}, will get executed in {(task.ExecuteAt - DateTime.Now).TotalSeconds}s");
             ReorderTaskList(acc);
         }
         public static void AddTask(Account acc, List<BotTask> tasks)

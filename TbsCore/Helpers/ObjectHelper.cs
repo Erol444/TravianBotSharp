@@ -63,7 +63,7 @@ namespace TbsCore.Helpers
             }
             catch(Exception e)
             {
-                // Log me
+                acc.Wb.Log($"Error in ${typeof(ObjectHelper)}", e);
             }
         }
 

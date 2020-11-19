@@ -23,7 +23,10 @@ namespace TbsCore.Helpers
                 await Task.Delay(AccountHelper.Delay() * 2);
                 acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
             }
-            catch(Exception e) { }
+            catch(Exception e) 
+            {
+                acc.Wb.Log($"Error executing JS script:\n{script}", e);
+            }
         }
     }
 }

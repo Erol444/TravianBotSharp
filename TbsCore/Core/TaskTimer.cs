@@ -38,10 +38,7 @@ namespace TravBotSharp.Files.Models.AccModels
             {
                 NewTick();
             }
-            catch(Exception excep)
-            {
-
-            }
+            catch(Exception exception){}
         }
 
         private async void NewTick()
