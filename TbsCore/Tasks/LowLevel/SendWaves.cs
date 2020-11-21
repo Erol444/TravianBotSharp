@@ -38,7 +38,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Prepare the waves
             for (int i = 0; i < SendWaveModels.Count; i++)
             {
-                Console.WriteLine(DateTime.Now + "Send wave 1");
                 await Task.Delay(rnd.Next(800, 1000));
 
                 var htmlDoc1 = await HttpHelper.SendGetReq(acc, "/build.php?tt=2&id=39");
@@ -117,6 +116,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // Get time it takes for troops to the target, for later usage
                 var timespan = TroopsMovementParser.GetTimeOfMovement(htmlDoc2);
                 lastArriveAt = TroopsMovementParser.GetArrivalTime(htmlDoc2);
+
                 if (timeDifference == TimeSpan.Zero)
                 {
                     var serverTime = TimeParser.GetServerTime(htmlDoc2);
@@ -178,15 +178,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     Content = new FormUrlEncodedContent(values2),
                     MovementTime = timespan
                 });
-
-                Console.WriteLine(DateTime.Now + "Send wave 2");
             }
 
             var waitMs = 1000 - DateTime.Now.Millisecond - reqTripMs;
             if (waitMs < 0) waitMs += 1000;
             var wait = new TimeSpan(0, 0, 0, 0, waitMs);
 
-            // Calculate how much you need to wait so waves will arrive at correct time!
+            // Calculate how much you need to wait so waves arrive at the correct time!
             var targetArrival = SendWaveModels.FirstOrDefault(x => x.Arrival != DateTime.MinValue).Arrival;
             TimeSpan waitForTarget = (targetArrival - lastArriveAt);
             if (waitForTarget > TimeSpan.Zero)
@@ -207,6 +205,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 _ = HttpHelper.SendPostReq(acc, wavesReady[i].Content, "/build.php?tt=2&id=39");
             }
+            acc.Wb.Log($"Successfully sent {wavesReady.Count} waves!");
 
             await Task.Delay(AccountHelper.Delay() * 2);
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=2&subfilters=4");

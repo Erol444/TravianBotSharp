@@ -19,7 +19,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 //update dorg, no buildingId found?
                 TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = Vill });
-                Console.WriteLine($"There is no Residence/Palace/CommandCenter in this village!");
+                acc.Wb.Log($"There is no Residence/Palace/CommandCenter in this village!");
                 return TaskRes.Executed;
             }
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?s=1&id={building.Id}");

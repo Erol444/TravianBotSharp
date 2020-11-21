@@ -16,13 +16,15 @@ namespace TravBotSharp.Files.Helpers
             List<VillageChecked> foundVills = RightBarParser.GetVillages(htmlDoc);
             if (foundVills.Count == 0) return false; //some problem in GetVillages function!
 
-            foreach (var oldVill in acc.Villages)
+            for (int i = 0; i < acc.Villages.Count; i++)
             {
+                var oldVill = acc.Villages[i];
                 var foundVill = foundVills.Where(x => x.Id == oldVill.Id).FirstOrDefault();
                 //Village was not found -> destroyed/chiefed
                 if (foundVill == null)
                 {
-                    acc.Villages.Remove(oldVill);
+                    acc.Villages.RemoveAt(i);
+                    i--;
                     continue;
                 }
                 oldVill.Name = foundVill.Name;

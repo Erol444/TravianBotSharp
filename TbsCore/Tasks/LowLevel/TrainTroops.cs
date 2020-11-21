@@ -55,7 +55,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if(troopNode == null)
             {
-                //TaskExecutor.AddTaskIfNotExistInVillage(acc, Vill)
+                acc.Wb.Log($"Bot tried to train {Troop} in {Vill.Name}, but couldn't find it in {building}! Are you sure you have {Troop} researched?");
                 return TaskRes.Executed;
             }
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;

@@ -25,14 +25,14 @@ namespace TravBotSharp.Files.Helpers
         {
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc)) //Check if a captcha/ban/end of server
             {
-                acc.Wb.Log("Captcha/WW/Ban found! Stopping timer!");
+                acc.Wb.Log("Captcha/WW/Ban found! Stopping bot for this account!");
                 acc.TaskTimer.Stop();
                 return;
             }
             if (CheckCookies(acc))
-                DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click()");
+                await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click()");
             if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc))
-                DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonSkipTutorial')[0].click()");
+                await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonSkipTutorial')[0].click()");
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
                 var login = new LoginTask();
@@ -53,15 +53,11 @@ namespace TravBotSharp.Files.Helpers
         /// <summary>
         /// Checks if account is banned (T4.5)
         /// </summary>
-        /// <param name="acc">Account</param>
-        /// <returns>Whether account is banned</returns>
         private static bool IsBanMsg(Account acc) => acc.Wb.Html.GetElementbyId("punishmentMsgButtons") != null;
 
         /// <summary>
         /// Checks if there are cookies to be accepted
         /// </summary>
-        /// <param name="acc">Account</param>
-        /// <returns>Whether there are cookies to be accepted</returns>
         private static bool CheckCookies(Account acc) =>
             acc.Wb.Html.GetElementbyId("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll") != null;
 
@@ -93,13 +89,14 @@ namespace TravBotSharp.Files.Helpers
         {
             //Before every execution, wait a random delay. TODO: needed?
             if (task.PostTaskCheck == null) task.PostTaskCheck = new List<Action<HtmlDocument, Account>>();
-            if (acc.Wb?.CurrentUrl == null &&
-                task.GetType() != typeof(CheckProxy))
+            
+            if (acc.Wb?.CurrentUrl == null && task.GetType() != typeof(CheckProxy))
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
-            //Console.WriteLine($"Executing task {task.GetName()}");
+            
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
+
             try
             {
                 acc.Wb.Log($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));

@@ -14,16 +14,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            Console.WriteLine(DateTime.Now.ToString() + " Checking proxy " + acc.Access.GetCurrentAccess().Proxy);
+            var currentProxy = acc.Access.GetCurrentAccess().Proxy;
+            acc.Wb.Log("Checking proxy " + currentProxy);
+
             await acc.Wb.Navigate("https://api.ipify.org/");
             var ip = acc.Wb.Html.DocumentNode.InnerText;
-
-            var currentProxy = acc.Access.GetCurrentAccess().Proxy;
+            
             if (!string.IsNullOrEmpty(currentProxy) &&
                 ip.Trim() != currentProxy.Trim())
             {
                 // Proxy error!
-                //Utils.log.Information($"Failed proxy {currentProxy} for account {acc.AccInfo.Nickname}! Trying to get new proxy.");
+                acc.Wb.Log($"Proxy {currentProxy} doesn't work! Trying different proxy");
                 if (acc.Access.AllAccess.Count > 1)
                 {
                     // Try another access.
@@ -33,7 +34,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 }
                 else
                 {
-                    //Utils.log.Information($"Will sleep and retry the same proxy..");
+                    acc.Wb.Log($"There's only one access to this account! Will retry same proxy after 1 min...");
                     await Task.Delay(AccountHelper.Delay() * 15);
                     this.NextExecute = DateTime.MinValue.AddMinutes(1);
                 }
@@ -41,6 +42,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             else
             {
                 // Proxy OK
+                acc.Wb.Log($"Proxy OK!");
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
             return TaskRes.Executed;
