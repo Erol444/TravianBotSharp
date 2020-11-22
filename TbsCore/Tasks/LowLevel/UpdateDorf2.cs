@@ -13,8 +13,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             TaskExecutor.RemoveSameTasksForVillage(acc, Vill, this.GetType(), this);
 
-            var url = $"{acc.AccInfo.ServerUrl}/dorf2.php";
-            await acc.Wb.Navigate(url);
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
             Vill.Timings.LastVillRefresh = DateTime.Now;
             return TaskRes.Executed;
         }

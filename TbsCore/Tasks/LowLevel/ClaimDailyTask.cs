@@ -12,6 +12,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+
             await DriverHelper.ExecuteScript(acc, "Travian.Game.Quest.openTodoListDialog('', true);");
 
             var script = "var dialog = document.getElementById('dialogContent');";

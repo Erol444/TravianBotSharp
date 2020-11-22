@@ -10,33 +10,33 @@ namespace TravBotSharp.Files.Helpers
     public static class TimeHelper
     {
         /// <summary>
-        /// Get TimeSpan when there will be enough resources, based on production
+        /// Get DateTime when there will be enough resources, based on production
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="required">Resources required</param>
-        /// <returns>TimeSpan</returns>
-        public static TimeSpan EnoughResToUpgrade(Village vill, Resources required)
+        /// <returns>DateTime</returns>
+        public static DateTime EnoughResToUpgrade(Village vill, Resources required)
         {
             long[] production = ResourcesHelper.ResourcesToArray(vill.Res.Production);
             long[] resRequired = ResourcesHelper.ResourcesToArray(required);
 
-            TimeSpan timeSpan = TimeSpan.FromMinutes(5);
+            DateTime ret = DateTime.Now.AddMinutes(3);
             for (int i = 0; i < 4; i++)
             {
-                TimeSpan toWaitForThisRes = new TimeSpan(0);
+                DateTime toWaitForThisRes = DateTime.MinValue;
                 if (resRequired[i] > 0)
                 {
                     // In case of negative crop, we will never have enough crop
-                    if (production[i] <= 0) return TimeSpan.MaxValue;
+                    if (production[i] <= 0) return DateTime.MaxValue;
 
                     float hoursToWait = (float)resRequired[i] / (float)production[i];
                     float secToWait = hoursToWait * 3600;
-                    toWaitForThisRes = new TimeSpan(0, 0, (int)secToWait);
+                    toWaitForThisRes = DateTime.Now.AddSeconds(secToWait);
                 }
 
-                if (toWaitForThisRes > timeSpan) timeSpan = toWaitForThisRes;
+                if (ret < toWaitForThisRes) ret = toWaitForThisRes;
             }
-            return timeSpan;
+            return ret;
         }
 
         /// <summary>

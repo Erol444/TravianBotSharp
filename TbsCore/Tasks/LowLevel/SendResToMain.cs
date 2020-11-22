@@ -18,15 +18,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            var building = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Marketplace);
-            if (building == null)
-            {
-                //update dorg, no buildingId found?
-                TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = Vill });
-                Console.WriteLine($"There is no {building} in this village!");
+
+            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
                 return TaskRes.Executed;
-            }
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}&t=5");
 
             if (this.Vill.Settings.Type == Models.Settings.VillType.Support && this.Vill.Settings.SendRes)
             {

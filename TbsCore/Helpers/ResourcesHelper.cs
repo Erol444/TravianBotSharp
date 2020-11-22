@@ -35,10 +35,7 @@ namespace TravBotSharp.Files.Helpers
             //We have enough resources
             if (IsZeroResources(stillNeededRes)) return DateTime.MinValue;
 
-            DateTime enoughRes = DateTime.Now.Add(TimeHelper.EnoughResToUpgrade(vill, stillNeededRes));
-
-            var mainVill = AccountHelper.GetMainVillage(acc);
-            if (mainVill == vill) return enoughRes;
+            DateTime enoughRes = TimeHelper.EnoughResToUpgrade(vill, stillNeededRes);
 
             //Not enough resources, send resources or use hero resources
             if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 && // Only T4.5 has resources in hero inv
@@ -59,6 +56,9 @@ namespace TravBotSharp.Files.Helpers
                 // ~10sec - after EquipHero tasks are executed. If not, still send res from Main Vill
                 if (IsZeroResources(resLeft)) return DateTime.Now.AddSeconds(10);
             }
+
+            var mainVill = AccountHelper.GetMainVillage(acc);
+            if (mainVill == vill) return enoughRes;
 
             DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
             return (enoughRes < resTransit ? enoughRes : resTransit);

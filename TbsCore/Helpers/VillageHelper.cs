@@ -92,7 +92,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="vill">Village</param>
         /// <param name="buildingEnum">Building to enter</param>
         /// <returns>Whether it was successful</returns>
-        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum)
+        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, string query = "")
         {
             var building = vill.Build
                 .Buildings
@@ -100,12 +100,11 @@ namespace TravBotSharp.Files.Helpers
 
             if (building == null)
             {
-                //TaskExecutor.AddTask(acc, new UpdateDorf2() { ExecuteAt = DateTime.Now, Vill = vill });
-                Console.WriteLine($"There is no {buildingEnum} in this village!");
+                acc.Wb.Log($"Tried to enter {buildingEnum} but couldn't find it in village {vill.Name}!");
                 return false;
             }
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}");
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}{query}");
             return true;
         }
     }
