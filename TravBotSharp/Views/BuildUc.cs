@@ -96,19 +96,20 @@ namespace TravBotSharp.Views
 
         private string AutoBuildResFieldsStr(BuildingTask task)
         {
-            var str = "Auto-upgrade Res Fields - ";
+            var str = "";
             switch (task.ResourceType)
             {
                 case ResTypeEnum.AllResources:
-                    str += "All resources - ";
+                    str += "All fields";
                     break;
                 case ResTypeEnum.ExcludeCrop:
-                    str += "Exclude cropland - ";
+                    str += "Exclude crop";
                     break;
                 case ResTypeEnum.OnlyCrop:
-                    str += "Only cropland - ";
+                    str += "Only crop";
                     break;
             }
+            str += "-";
             switch (task.BuildingStrategy)
             {
                 case BuildingStrategyEnum.BasedOnLevel:
@@ -139,6 +140,7 @@ namespace TravBotSharp.Views
                 string buildingName = VillageHelper.BuildingTypeToString(building.Type);
                 //if there is a task for upgrading/construction the building on this site
                 string upgradeLvl = "";
+
                 var upgradeBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == id);
                 if (upgradeBuilding != null)
                 {

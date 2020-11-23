@@ -54,10 +54,8 @@ namespace TravBotSharp.Files.Helpers
             if (type == "11115") type = "15c";
             return type;
         }
-        public static string BuildingTypeToString(Classificator.BuildingEnum building)
-        {
-            return EnumStrToString(building.ToString());
-        }
+        public static string BuildingTypeToString(Classificator.BuildingEnum building) => EnumStrToString(building.ToString());
+        
         public static string EnumStrToString(string str)
         {
             var len = str.Length;

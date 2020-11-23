@@ -125,9 +125,15 @@ namespace TravBotSharp.Files.Parsers
             switch (version)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    return htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("levelUp")) != null;
+                    return htmlDoc.DocumentNode
+                        .Descendants("div")
+                        .Any(x => x.HasClass("levelUp"));
                 case Classificator.ServerVersionEnum.T4_5:
-                    return htmlDoc.DocumentNode.Descendants("i").FirstOrDefault(x => x.HasClass("levelUp")) != null;
+                    // TODO: fix this! 
+                    // http://prntscr.com/vo19dy
+                    return htmlDoc.DocumentNode
+                        .Descendants("i")
+                        .Any(x => x.HasClass("levelUp") && x.HasClass("show"));
             }
             return false;
         }

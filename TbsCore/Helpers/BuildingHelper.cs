@@ -61,7 +61,8 @@ namespace TravBotSharp.Files.Helpers
                 Random ran = new Random();
                 id = (byte)ran.Next(19, 39);
             } //search for available building id;
-            while (vill.Build.Buildings.FirstOrDefault(x => x.Id == id).Type != Classificator.BuildingEnum.Site || vill.Build.Tasks.FirstOrDefault(x => x.BuildingId == id) != null);
+            while (vill.Build.Buildings.FirstOrDefault(x => x.Id == id).Type != Classificator.BuildingEnum.Site ||
+                   vill.Build.Tasks.Any(x => x.BuildingId == id));
             //if new village, you should return build.php?id=25&category=3
             task.BuildingId = id;
             return true;
