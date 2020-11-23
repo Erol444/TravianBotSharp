@@ -31,7 +31,9 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>True if successful</returns>
         public static bool FindBuildingId(Village vill, BuildingTask task)
         {
-            if (task.TaskType != BuildingType.General) return true; //auto field upgrade/demolish task, no need for Id
+            //auto field upgrade/demolish task, no need for Id
+            if (task.TaskType == BuildingType.AutoUpgradeResFields) return true;
+
             var FreePlaces = vill.Build.Buildings.Where(x => x.Type == Classificator.BuildingEnum.Site).ToList();
             bool FreePlace = false;
             foreach (var freePlc in FreePlaces)
@@ -39,14 +41,22 @@ namespace TravBotSharp.Files.Helpers
                 if (!vill.Build.Tasks.Any(x => x.BuildingId == freePlc.Id)) FreePlace = true;
             }
 
-            var ExistingBuilding = vill.Build.Buildings.FirstOrDefault(x => x.Type == task.Building);
+            // Only special buildings (warehouse, cranny, grannary etc.) can have multiple 
+            // buildings of it's type and use ConstructNew option
+            if (!CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
+
+            var ExistingBuilding = vill.Build
+                    .Buildings
+                    .FirstOrDefault(x => x.Type == task.Building);
             if (ExistingBuilding != null && !task.ConstructNew)
             {
                 task.BuildingId = ExistingBuilding.Id;
                 return true;
             }
 
-            var ExistingBuildingTask = vill.Build.Tasks.FirstOrDefault(x => x.Building == task.Building && x.BuildingId != null);
+            var ExistingBuildingTask = vill.Build
+                    .Tasks
+                    .FirstOrDefault(x => x.Building == task.Building && x.BuildingId != null);
             if (ExistingBuildingTask != null && !task.ConstructNew)
             {
                 task.BuildingId = ExistingBuildingTask.BuildingId;
@@ -67,6 +77,17 @@ namespace TravBotSharp.Files.Helpers
             task.BuildingId = id;
             return true;
         }
+
+        private static readonly Classificator.BuildingEnum[] multipleBuildingsAllowes = new Classificator.BuildingEnum[] {
+            Classificator.BuildingEnum.Warehouse,
+            Classificator.BuildingEnum.Granary,
+            Classificator.BuildingEnum.GreatWarehouse,
+            Classificator.BuildingEnum.GreatGranary,
+            Classificator.BuildingEnum.Trapper,
+            Classificator.BuildingEnum.Cranny
+        };
+        private static bool CanHaveMultipleBuildings(Classificator.BuildingEnum building) =>
+            multipleBuildingsAllowes.Any(x => x == building);
 
         public static void ReStartBuilding(Account acc, Village vill)
         {
