@@ -30,8 +30,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         acc.Hero.NextHeroSend :
                         acc.Hero.HeroArrival;
 
+                    var in5Min = DateTime.Now.AddMinutes(5);
+                    if (nextExecute < in5Min) nextExecute = in5Min;
                     this.NextExecute = nextExecute;
-                    return TaskRes.Executed;
+                    return TaskRes.Retry;
                 }
             }
 

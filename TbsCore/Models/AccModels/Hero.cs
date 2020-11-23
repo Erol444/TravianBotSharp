@@ -51,7 +51,8 @@ namespace TravBotSharp.Files.Models.AccModels
             Home,
             Away,
             Dead,
-            Regenerating
+            Regenerating,
+            Reinforcing
         }
         //TODO: SELL HERO STUFF, EQUIP HERO!!
     }

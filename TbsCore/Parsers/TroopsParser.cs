@@ -101,16 +101,14 @@ namespace TravBotSharp.Files.Parsers
                 {
                     lvl = lvl.Split('+')[0];
                 }
-                var troopLvl = new TroopLevel()
-                {
-                    Troop = GetTroopFromImage(research),
-                    Level = (int)Parser.RemoveNonNumeric(lvl),
-                    UpgradeCost = ResourceParser.GetResourceCost(research
+                var troop = new TroopLevel();
+                troop.Troop = GetTroopFromImage(research);
+                troop.Level = (int)Parser.RemoveNonNumeric(lvl);
+                troop.UpgradeCost = ResourceParser.GetResourceCost(research
                                 .Descendants("div")
-                                .FirstOrDefault(x => x.HasClass("showCosts") || x.HasClass("resourceWrapper"))),
-                    TimeCost = TimeParser.ParseDuration(research), //TODO!
-                };
-                list.Add(troopLvl);
+                                .FirstOrDefault(x => x.HasClass("showCosts") || x.HasClass("resourceWrapper")));
+                troop.TimeCost = TimeParser.ParseDuration(research); //TODO!
+                list.Add(troop);
             }
             return list;
         }

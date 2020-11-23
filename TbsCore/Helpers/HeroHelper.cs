@@ -68,7 +68,9 @@ namespace TravBotSharp.Files.Helpers
                     })
                     .LastOrDefault();
 
-                if(equipWith != null && GetHeroItemTier(equipWith.Item) > currentTier)
+                if (equipWith != null &&
+                    GetHeroItemTier(equipWith.Item) > currentTier &&
+                    acc.Hero.Status == Hero.StatusEnum.Home)
                 {
                     TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip()
                     {

@@ -170,6 +170,8 @@ namespace TravBotSharp.Files.Parsers
                             return Hero.StatusEnum.Dead;
                         case "heroReviving":
                             return Hero.StatusEnum.Regenerating;
+                        case "heroReinforcing":
+                            return Hero.StatusEnum.Reinforcing;
                         default: return Hero.StatusEnum.Unknown;
                             //TODO ADD FOR DEAD, REGENERATING
                     }
