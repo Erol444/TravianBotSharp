@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Extensions;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
@@ -45,10 +46,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var enoughResAt = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, resources);
             if (enoughResAt <= DateTime.Now.AddMilliseconds(1)) //we have enough res, create new settler!
             {
-                wb.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
-                await Task.Delay(AccountHelper.Delay());
+                await acc.Wb.Driver.FindElementByName("t10").Write(maxNum);
+                
                 // Click Train button
-                await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, "document.getElementById('s1').click()");
+                await acc.Wb.Driver.FindElementById("s1").Click(acc);
+                
                 Vill.Troops.Settlers = (int)available + (int)maxNum;
 
                 var training = TroopsHelper.TrainingDuration(acc.Wb.Html);

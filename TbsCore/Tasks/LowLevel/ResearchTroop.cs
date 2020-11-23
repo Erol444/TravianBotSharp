@@ -44,7 +44,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (nextExecute < DateTime.Now.AddMilliseconds(1)) //We have enough resources, click Research button
             {
-                wb.ExecuteScript($"document.getElementById('{button.Id}').click()");
+                wb.FindElementById(button.Id).Click();
+
                 var executeNext = DateTime.Now.Add(dur).AddMilliseconds(10 * AccountHelper.Delay());
                 TaskExecutor.AddTask(acc,
                     new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) }

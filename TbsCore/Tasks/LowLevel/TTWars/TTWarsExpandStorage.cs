@@ -26,7 +26,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 acc.Wb.Log("No such button, are you sure you are on TTWars vip/unl?");
                 return TaskRes.Executed;
             }
-            wb.ExecuteScript($"document.getElementById('{button.Id}').click()"); //exapand the storage button
+            wb.FindElementById(button.Id).Click();
 
             if (this.Times > 1)
             {

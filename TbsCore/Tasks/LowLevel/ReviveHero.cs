@@ -22,7 +22,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             if (reviveButton.HasClass("green"))
             {
-                wb.ExecuteScript("document.getElementById('heroRegeneration').click()"); //revive hero
+                wb.FindElementById("heroRegeneration").Click();
                 return TaskRes.Executed;
             }
             else

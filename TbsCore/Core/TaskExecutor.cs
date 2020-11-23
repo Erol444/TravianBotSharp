@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
@@ -30,13 +31,14 @@ namespace TravBotSharp.Files.Helpers
                 return;
             }
             if (CheckCookies(acc))
-                await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click()");
+                await acc.Wb.Driver.FindElementById("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll").Click(acc);
             if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc))
-                await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonSkipTutorial')[0].click()");
+                await acc.Wb.Driver.FindElementByClassName("questButtonSkipTutorial").Click(acc);
+
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
-                var login = new LoginTask();
-                await login.Execute(acc);
+                AddTask(acc, new LoginTask() { ExecuteAt = DateTime.MinValue });
+                return;
             }
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
             {

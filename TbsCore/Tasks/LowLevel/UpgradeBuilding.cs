@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -155,7 +156,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     return TaskRes.Executed;
                 }
                 //check if button is null!
-                await DriverHelper.ExecuteScript(acc, $"document.getElementById('{button.Id}').click()");
+                await acc.Wb.Driver.FindElementById(button.Id).Click(acc);
                 this.Task.ConstructNew = false;
 
                 acc.Wb.Log($"Started construction of {this.Task.Building} in {this.Vill?.Name}");
@@ -174,12 +175,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// Building is already constructed, upgrade it
         /// </summary>
         /// <param name="acc">Account</param>
-        /// <param name="upgradeBuildingContract">HtmlNode</param>
+        /// <param name="node">HtmlNode</param>
         /// <returns>TaskResult</returns>
-        private async Task<TaskRes> Upgrade(Account acc, HtmlNode upgradeBuildingContract)
+        private async Task<TaskRes> Upgrade(Account acc, HtmlNode node)
         {
 
-            (var buildingEnum, var lvl) = InfrastructureParser.UpgradeBuildingGetInfo(upgradeBuildingContract);
+            (var buildingEnum, var lvl) = InfrastructureParser.UpgradeBuildingGetInfo(node);
 
             if (buildingEnum == BuildingEnum.Site || lvl == -1)
             {
@@ -246,7 +247,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //TODO move this
             CheckSettlers(acc, Vill, lvl, DateTime.Now.Add(buildDuration));
 
-            await DriverHelper.ExecuteScript(acc, $"document.getElementById('{upgradeButton.Id}').click()");
+            // +25% speed upgrade
+            {
+
+                if (await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('videoFeatureButton green')[0].click();", false))
+                {
+                    // wait
+                    //acc.Wb.Driver.FindElementsByClassName("videoFeatureButton").First().Click();
+                }
+                else await acc.Wb.Driver.FindElementById(upgradeButton.Id).Click(acc);
+            }
+            
             acc.Wb.Log($"Started upgrading {this.Task.Building} to level {lvl + 1} in {this.Vill?.Name}");
             await PostTaskCheckDorf(acc);
 

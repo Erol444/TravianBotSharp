@@ -31,7 +31,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             await Task.Delay(AccountHelper.Delay());
 
-            wb.ExecuteScript("document.getElementById('PlayerProfileEditor').submit()"); //click save button
+            wb.FindElementById("PlayerProfileEditor").Click();
 
             return TaskRes.Executed;
         }

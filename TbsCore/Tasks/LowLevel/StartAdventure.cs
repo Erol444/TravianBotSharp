@@ -50,7 +50,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         this.NextExecute = DateTime.Now.AddMinutes(10);
                         return TaskRes.Executed;
                     }
-                    wb.ExecuteScript("document.getElementById('start').click()");
+                    wb.FindElementById("start").Click();
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:

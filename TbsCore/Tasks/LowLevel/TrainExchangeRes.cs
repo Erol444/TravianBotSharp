@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -30,16 +31,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //finding the correct "Exchange resources" button
             var exchangeResButton = troopNode.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
 
-            string script = $"document.getElementById('{exchangeResButton.GetAttributeValue("id", "")}').click()";
-            await DriverHelper.ExecuteScript(acc, script);
+            await acc.Wb.Driver.FindElementById(exchangeResButton.Id).Click(acc);
 
             var distribute = acc.Wb.Html.DocumentNode.SelectNodes("//*[text()[contains(., 'Distribute remaining resources.')]]")[0];
             while (distribute.Name != "button") distribute = distribute.ParentNode;
-            string distributeid = distribute.GetAttributeValue("id", "");
-            wb.ExecuteScript($"document.getElementById('{distributeid}').click()"); //Distribute resources button
+            
+            wb.FindElementById(distribute.Id).Click();
 
             await Task.Delay(AccountHelper.Delay());
-            wb.ExecuteScript($"document.getElementById('npc_market_button').click()"); //Exchange resources button
+            wb.FindElementById("npc_market_button").Click();
 
             return TaskRes.Executed;
         }

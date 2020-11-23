@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using OpenQA.Selenium.Chrome;
 using System.Threading.Tasks;
+using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -27,15 +28,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             //select coordinates
-            wb.ExecuteScript($"document.getElementById('xCoordInput').value='{TroopsMovement.Coordinates.x}'");
-            wb.ExecuteScript($"document.getElementById('yCoordInput').value='{TroopsMovement.Coordinates.y}'");
+            await wb.FindElementById("xCoordInput").Write(TroopsMovement.Coordinates.x);
+            await wb.FindElementById("yCoordInput").Write(TroopsMovement.Coordinates.y);
+
             //Select type of troop sending
             string script = "var radio = document.getElementsByClassName(\"radio\");for(var i = 0; i < radio.length; i++){";
             script += $"if(radio[i].value == \"{(int)TroopsMovement.MovementType}\") radio[i].checked = \"checked\"}}";
             await DriverHelper.ExecuteScript(acc, script);
 
             //Click on "Send" button
-            wb.ExecuteScript($"document.getElementById('btn_ok').click()");
+            wb.FindElementById("xCoordInput").Click();
 
             return TaskRes.Executed;
         }

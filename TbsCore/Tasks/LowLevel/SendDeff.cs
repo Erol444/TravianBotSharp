@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models;
@@ -65,18 +66,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             //select coordinates
-            wb.ExecuteScript($"document.getElementById('xCoordInput').value='{TargetVillage.x}'");
-            wb.ExecuteScript($"document.getElementById('yCoordInput').value='{TargetVillage.y}'");
-            await Task.Delay(AccountHelper.Delay());
+            await wb.FindElementById("xCoordInput").Write(TargetVillage.x);
+            await wb.FindElementById("yCoordInput").Write(TargetVillage.y);
 
             //Select reinforcement
             string script = "var radio = document.getElementsByClassName(\"radio\");for(var i = 0; i < radio.length; i++){";
             script += $"if(radio[i].value == '2') radio[i].checked = \"checked\"}}";
             await DriverHelper.ExecuteScript(acc, script);
-            await DriverHelper.ExecuteScript(acc, "document.getElementById('btn_ok').click()");
+            await acc.Wb.Driver.FindElementById("btn_ok").Click(acc);
 
             // Confirm
-            wb.ExecuteScript($"document.getElementById('btn_ok').click()"); //Click send
+            wb.FindElementById("btn_ok").Click();
             return TaskRes.Executed;
         }
     }

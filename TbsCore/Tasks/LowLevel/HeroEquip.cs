@@ -48,7 +48,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             }
 
-
             await DriverHelper.ExecuteScript(acc, script);
 
             // No amount specified, meaning we have already equipt the item

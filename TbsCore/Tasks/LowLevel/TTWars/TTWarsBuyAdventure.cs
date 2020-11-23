@@ -20,7 +20,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 acc.Wb.Log("No button 'Buy' button found, perhaps you are not on vip ttwars server?");
                 return TaskRes.Executed;
             }
-            wb.ExecuteScript($"document.getElementById('{button.Id}').click()"); //Excgabge resources button
+            wb.FindElementById(button.Id).Click();
             return TaskRes.Executed;
         }
     }

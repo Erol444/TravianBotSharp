@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -27,7 +28,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (id == null) return TaskRes.Executed; //No more demolish tasks
 
             await DriverHelper.ExecuteScript(acc, $"document.getElementById('demolish').value={id}");
-            await DriverHelper.ExecuteScript(acc, "document.getElementById('btn_demolish').click()");
+            //acc.Wb.Driver.FindElementById("demolish")
+
+            await acc.Wb.Driver.FindElementById("btn_demolish").Click(acc);
 
             this.NextExecute = NextDemolishTime(acc.Wb.Html, acc);
 

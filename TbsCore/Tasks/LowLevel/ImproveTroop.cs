@@ -64,7 +64,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 }
 
 
-                wb.ExecuteScript($"document.getElementById('{button.Id}').click()");
+                wb.FindElementById(button.Id).Click();
                 // If we have plus account and there is currently no other troop to improve, go ahead and improve the unit again
                 this.NextExecute = (currentlyImproving.Count() == 0 && maxImproving == 2) ?
                     DateTime.MinValue :

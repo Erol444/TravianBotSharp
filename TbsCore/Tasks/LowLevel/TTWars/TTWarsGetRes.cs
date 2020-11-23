@@ -45,8 +45,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 acc.Wb.Log("Can't find the button with class buyResources6. Are you sure you are on vip/unl TTWars server?");
                 return TaskRes.Executed;
             }
-            var buyId = buy.GetAttributeValue("id", "");
-            wb.ExecuteScript($"document.getElementById('{buyId}').click()");
+
+            wb.FindElementById(buy.Id).Click();
+
             return TaskRes.Executed;
         }
     }
