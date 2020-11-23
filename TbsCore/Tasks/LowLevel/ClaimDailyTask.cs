@@ -17,9 +17,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             await DriverHelper.ExecuteScript(acc, "Travian.Game.Quest.openTodoListDialog('', true);");
 
-            var script = "var dialog = document.getElementById('dialogContent');";
-            script += "dialog.getElementsByClassName('active')[0].click();";
-            await DriverHelper.ExecuteScript(acc, script);
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_4:
+                    var script = "var dialog = document.getElementById('dialogContent');";
+                    script += "dialog.getElementsByClassName('active')[0].click();";
+                    await DriverHelper.ExecuteScript(acc, script);
+                    break;
+                case Classificator.ServerVersionEnum.T4_5:
+                    await acc.Wb.Driver.FindElementByClassName("rewardReady").Click(acc);
+                    break;
+            }
+            
 
             await acc.Wb.Driver.FindElementByClassName("questButtonGainReward").Click(acc);
 
