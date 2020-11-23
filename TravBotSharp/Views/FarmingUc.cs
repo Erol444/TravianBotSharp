@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models.TroopsModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Files.Tasks.SecondLevel;
 
@@ -50,25 +51,27 @@ namespace TravBotSharp.Views
             TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new UpdateFarmLists() { ExecuteAt = DateTime.Now });
         }
 
-        private int GetSelectedFL()
-        {
-            return FlCombo.SelectedIndex;
-        }
+        /// <summary>
+        /// Get's selected FarmList
+        /// </summary>
+        /// <returns>FarmList</returns>
+        private FarmList GetSelectedFL() =>
+            GetSelectedAcc().Farming.FL.ElementAtOrDefault(FlCombo.SelectedIndex) ?? null;
+
         private void UpdateFlInfo()
         {
             var acc = GetSelectedAcc();
 
-            var fl = acc.Farming.FL[GetSelectedFL()];
+            var fl = GetSelectedFL();
             FlName.Text = fl.Name;
             RaidStyle.SelectedIndex = (int)fl.RaidStyle;
             FarmNum.Text = fl.NumOfFarms.ToString();
             FlEnabled.Checked = fl.Enabled;
+            flInterval.Value = fl.Interval;
         }
-        private void RaidStyle_SelectedIndexChanged(object sender, EventArgs e)
+        private void RaidStyle_SelectedIndexChanged(object sender, EventArgs e) //save raid style
         {
-            //save raid style
-            var acc = GetSelectedAcc();
-            acc.Farming.FL[GetSelectedFL()].RaidStyle = (Files.Models.TroopsModels.RaidStyle)RaidStyle.SelectedIndex;
+            GetSelectedFL().RaidStyle = (Files.Models.TroopsModels.RaidStyle)RaidStyle.SelectedIndex;
         }
 
         private void FlCombo_SelectedIndexChanged(object sender, EventArgs e)
@@ -78,8 +81,7 @@ namespace TravBotSharp.Views
 
         private void FlEnabled_CheckedChanged(object sender, EventArgs e)
         {
-            var acc = GetSelectedAcc();
-            acc.Farming.FL[GetSelectedFL()].Enabled = FlEnabled.Checked;
+            GetSelectedFL().Enabled = FlEnabled.Checked;
         }
 
         private void button2_Click(object sender, EventArgs e) //add natar vilalges to this FL
@@ -87,7 +89,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var task = new TTWarsAddNatarsToFL
             {
-                FL = acc.Farming.FL[GetSelectedFL()],
+                FL = GetSelectedFL(),
                 ExecuteAt = DateTime.Now,
                 MaxPop = (int)maxPopNatar.Value,
                 MinPop = (int)minPopNatar.Value
@@ -106,6 +108,11 @@ namespace TravBotSharp.Views
                 acc.Tasks.Remove(flTasks[0]);
                 flTasks.RemoveAt(0);
             }
+        }
+
+        private void flInterval_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedFL().Interval = (int)flInterval.Value;
         }
     }
 }

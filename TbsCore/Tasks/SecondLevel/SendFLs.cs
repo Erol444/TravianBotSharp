@@ -20,11 +20,8 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
                 // Check interval of the farmlist
                 if (fl.Interval > 1)
                 {
-                    if (fl.IntervalCounter <= fl.Interval)
-                    {
-                        fl.IntervalCounter++;
-                        continue;
-                    }
+                    fl.IntervalCounter++;
+                    if (fl.IntervalCounter <= fl.Interval) continue;
                     fl.IntervalCounter = 0;
                 }
 

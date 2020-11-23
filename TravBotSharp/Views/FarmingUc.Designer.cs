@@ -191,7 +191,7 @@
             this.FlCombo.FormattingEnabled = true;
             this.FlCombo.Location = new System.Drawing.Point(316, 47);
             this.FlCombo.Name = "FlCombo";
-            this.FlCombo.Size = new System.Drawing.Size(160, 28);
+            this.FlCombo.Size = new System.Drawing.Size(195, 28);
             this.FlCombo.TabIndex = 119;
             this.FlCombo.SelectedIndexChanged += new System.EventHandler(this.FlCombo_SelectedIndexChanged);
             // 
@@ -345,6 +345,7 @@
             this.flInterval.Name = "flInterval";
             this.flInterval.Size = new System.Drawing.Size(91, 20);
             this.flInterval.TabIndex = 135;
+            this.flInterval.ValueChanged += new System.EventHandler(this.flInterval_ValueChanged);
             // 
             // label8
             // 
