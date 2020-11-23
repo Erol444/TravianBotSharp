@@ -19,30 +19,36 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
-            //TODO: if there is no rally point, switch to different village!]
             var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
+            // If there is no rally point, switch to different village
             if (flNode == null)
             {
                 var mainVill = AccountHelper.GetMainVillage(acc);
                 if (mainVill == this.Vill) return TaskRes.Executed; // No gold account?
                 await VillageHelper.SwitchVillage(acc, mainVill.Id);
+                flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
             }
-            if (acc.Farming.TrainTroopsAfterFL)
+
+            if (acc.Farming.TrainTroopsAfterFL) // For TTWars servers
             {
                 TaskExecutor.AddTask(acc, new TrainTroops()
                 {
                     ExecuteAt = DateTime.Now.AddSeconds(2),
-                    Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
+                    Troop = Vill.Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
                     Vill = this.Vill,
                     HighSpeedServer = true
                 });
             }
 
-            await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
-
-            // Update flNode!
-            flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
+            // If FL is collapsed, expand it
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
+                flNode.Descendants("div").Any(x => x.HasClass("expandCollapse") && x.HasClass("collapsed")))
+            {
+                await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
+                // Update flNode!
+                flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
+            }
 
             foreach (var farm in flNode.Descendants("tr").Where(x => x.HasClass("slotRow")))
             {
@@ -66,20 +72,19 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             await Task.Delay(AccountHelper.Delay() * 2);
 
-            string sendFlScript = "";
             switch (acc.AccInfo.ServerVersion)
             {
                 case ServerVersionEnum.T4_4:
-                    sendFlScript = $"document.getElementById('{flNode.Id}').childNodes[1].submit()";
+                    var sendFlScript = $"document.getElementById('{flNode.Id}').childNodes[1].submit()";
+                    wb.ExecuteScript(sendFlScript);
                     break;
                 case ServerVersionEnum.T4_5:
-                    sendFlScript = "var wrapper = document.getElementsByClassName('buttonWrapper')[0];";
-                    sendFlScript += "wrapper.getElementsByClassName('startButton')[0].click();";
+                    var startRaid = flNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
+                    acc.Wb.Driver.FindElementById(startRaid.Id).Click();
                     break;
             }
             
-            wb.ExecuteScript(sendFlScript);
-
+            acc.Wb.Log($"FarmList '{this.FL.Name}' was sent");
             return TaskRes.Executed;
         }
 

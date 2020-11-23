@@ -248,16 +248,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             CheckSettlers(acc, Vill, lvl, DateTime.Now.Add(buildDuration));
 
             // +25% speed upgrade
-            {
+            //{
+            //    if (await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('videoFeatureButton green')[0].click();", false))
+            //    {
+            //        // wait
+            //        //acc.Wb.Driver.FindElementsByClassName("videoFeatureButton").First().Click();
+            //    }
+            //    else 
+            //}
+            await acc.Wb.Driver.FindElementById(upgradeButton.Id).Click(acc);
 
-                if (await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('videoFeatureButton green')[0].click();", false))
-                {
-                    // wait
-                    //acc.Wb.Driver.FindElementsByClassName("videoFeatureButton").First().Click();
-                }
-                else await acc.Wb.Driver.FindElementById(upgradeButton.Id).Click(acc);
-            }
-            
             acc.Wb.Log($"Started upgrading {this.Task.Building} to level {lvl + 1} in {this.Vill?.Name}");
             await PostTaskCheckDorf(acc);
 
