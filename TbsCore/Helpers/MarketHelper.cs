@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
@@ -16,11 +17,8 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class MarketHelper
     {
-        private static int[] MerchantSpeed = { 0, 16, 12, 24, 0, 0, 16, 20 };
-        public static int GetMerchantsSpeed(Classificator.TribeEnum tribe)
-        {
-            return MerchantSpeed[(int)tribe];
-        }
+        private static readonly int[] MerchantSpeed = { 0, 16, 12, 24, 0, 0, 16, 20 };
+        public static int GetMerchantsSpeed(Classificator.TribeEnum tribe) => MerchantSpeed[(int)tribe];
 
         /// <summary>
         /// Will send resources from main village to the target village
@@ -29,19 +27,21 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Returns DateTime when approximately will resources get transited to target village </returns>
         public static DateTime TransitResourcesFromMain(Account acc, Village vill)
         {
-            //Transit resources for this village is disabled.
+            // Transit resources for this village is disabled.
             if (!vill.Market.Settings.Configuration.Enabled) return DateTime.MaxValue;
 
-            //there already is a sendResources BotTask for this village
+            // There already is a sendResources BotTask for this village
             var transitTask = (SendResources)acc.Tasks.FirstOrDefault(x =>
                 x.GetType() == typeof(SendResources) &&
                 ((SendResources)x).Coordinates == vill.Coordinates
             );
+            //vill.Market.Settings.Configuration.
             if (transitTask != null) return transitTask.Configuration.TransitArrival;
             //Less than 5min ago we already sent resources. Just to catch bugs.
             //if(vill.Market.)
 
-            if (vill.Market.Settings.Configuration.TransitArrival > DateTime.Now) return vill.Market.Settings.Configuration.TransitArrival; //merchants are on their way
+            // Merchants are on their way
+            if (vill.Market.Settings.Configuration.TransitArrival > DateTime.Now) return vill.Market.Settings.Configuration.TransitArrival; 
 
             //send resources
             var sendRes = new Resources();
@@ -154,13 +154,13 @@ namespace TravBotSharp.Files.Helpers
                     var remainder = sendRes[i] % (long)Math.Pow(10, digits - 2);
                     sendRes[i] -= remainder;
                 }
-                wb.ExecuteScript($"document.getElementById('r{i + 1}').value='{sendRes[i]}'");
+                await wb.FindElementById("r" + (i + 1)).Write(sendRes[i]);
                 await Task.Delay(AccountHelper.Delay() / 5);
             }
 
-            wb.ExecuteScript($"document.getElementById('xCoordInput').value='{targetVillage.Coordinates.x}'");
+            await acc.Wb.Driver.FindElementById("xCoordInput").Write(targetVillage.Coordinates.x);
             await Task.Delay(AccountHelper.Delay() / 5);
-            wb.ExecuteScript($"document.getElementById('yCoordInput').value='{targetVillage.Coordinates.y}'");
+            await acc.Wb.Driver.FindElementById("yCoordInput").Write(targetVillage.Coordinates.y);
             await Task.Delay(AccountHelper.Delay() / 5);
 
             //Select x2/x3
@@ -170,12 +170,7 @@ namespace TravBotSharp.Files.Helpers
                 await Task.Delay(AccountHelper.Delay() / 5);
             }
 
-            // Some bot protection here I guess. Just remove the class of the DOM.
-            var script = @"
-                    var button = document.getElementById('enabledButton');
-                    button.click();
-                    ";
-            await DriverHelper.ExecuteScript(acc, script);
+            await acc.Wb.Driver.FindElementById("enabledButton").Click(acc);
 
             var durNode = acc.Wb.Html.GetElementbyId("target_validate");
 
@@ -184,7 +179,7 @@ namespace TravBotSharp.Files.Helpers
             var dur = durNode.Descendants("td").ToList()[3].InnerText.Replace("\t", "").Replace("\n", "");
 
             // Will NOT trigger a page reload! Thus we should await some time before continuing.
-            await DriverHelper.ExecuteScript(acc, "document.getElementById('enabledButton').click()");
+            await acc.Wb.Driver.FindElementById("enabledButton").Click(acc);
 
             var duration = TimeParser.ParseDuration(dur);
             return TimeSpan.FromTicks(duration.Ticks * (times * 2 - 1));
