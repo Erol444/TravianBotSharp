@@ -8,12 +8,12 @@ using TravBotSharp.Files.Models;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.AttackModels;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
-    public partial class AttackUc : TbsBaseUc
+    public partial class AttackUc : BaseVillageUc, ITbsUc
     {
-        
         List<List<SendWaveModel>> sendWaves = new List<List<SendWaveModel>>();
         public AttackUc()
         {
@@ -22,8 +22,8 @@ namespace TravBotSharp.Views
             dateTimePicker1.Format = DateTimePickerFormat.Time;
             dateTimePicker1.ShowUpDown = true;
         }
-        
-        public void UpdateTab()
+
+        public void UpdateUc()
         {
             var acc = GetSelectedAcc();
 
@@ -85,7 +85,7 @@ namespace TravBotSharp.Views
                 attacks.Add(attk);
             }
             sendWaves.Add(attacks);
-            UpdateTab();
+            UpdateUc();
         }
 
         private void sendNow_CheckedChanged(object sender, EventArgs e)
@@ -108,7 +108,7 @@ namespace TravBotSharp.Views
                 TaskExecutor.AddTask(GetSelectedAcc(), waveTask);
             }
             sendWaves.Clear();
-            UpdateTab();
+            UpdateUc();
         }
 
         private void button2_Click(object sender, EventArgs e) // Send fake
@@ -137,7 +137,7 @@ namespace TravBotSharp.Views
                 attacks.Add(attk);
             }
             sendWaves.Add(attacks);
-            UpdateTab();
+            UpdateUc();
         }
 
         private DateTime GetArrival()

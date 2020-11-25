@@ -2,17 +2,18 @@
 using System.Windows.Forms;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
-    public partial class MarketUc : TbsBaseUc
+    public partial class MarketUc : BaseVillageUc, ITbsUc
     {
         public MarketUc()
         {
             InitializeComponent();
         }
 
-        public void UpdateMarketTab()
+        public void UpdateUc()
         {
             var vill = GetSelectedVillage();
             TargetLimitWood.Value = vill.Market.Settings.Configuration.TargetLimit.Wood;

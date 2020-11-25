@@ -14,12 +14,12 @@ namespace TravBotSharp.Views
     public class TbsBaseUc : UserControl
     {
         public ControlPanel main;
-        public void Init(ControlPanel main)
+        public void Init(object main)
         {
-            this.main = main;
+            this.main = (ControlPanel)main;
         }
         public Account GetSelectedAcc() => main?.GetSelectedAcc();
-        public Village GetSelectedVillage(Account acc = null) => main?.GetSelectedVillage(acc);
+        //public Village GetSelectedVillage(Account acc = null) => main?.GetSelectedVillage(acc);
 
         // This won't work since it's partial class. Designer.cs class can't override this method
         //public abstract void UpdateTab();

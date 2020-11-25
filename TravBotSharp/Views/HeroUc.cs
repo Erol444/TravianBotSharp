@@ -4,16 +4,17 @@ using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
-    public partial class HeroUc : TbsBaseUc
+    public partial class HeroUc : TbsBaseUc, ITbsUc
     {
         public HeroUc()
         {
             InitializeComponent();
         }
-        public void UpdateTab()
+        public void UpdateUc()
         {
             var acc = GetSelectedAcc();
             buyAdventuresCheckBox.Checked = acc.Hero.Settings.BuyAdventures;

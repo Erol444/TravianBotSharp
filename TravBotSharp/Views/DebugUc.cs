@@ -11,10 +11,11 @@ using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TbsCore.Helpers;
 using static TravBotSharp.Files.Models.AccModels.WebBrowserInfo;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
-    public partial class DebugUc : TbsBaseUc
+    public partial class DebugUc : TbsBaseUc, ITbsUc
     {
         public DebugUc()
         {
@@ -35,7 +36,7 @@ namespace TravBotSharp.Views
             logTextBox.Text = newLog + "\n" + logTextBox.Text;
         }
 
-        public void UpdateTab()
+        public void UpdateUc()
         {
             var acc = GetSelectedAcc();
 
@@ -58,6 +59,8 @@ namespace TravBotSharp.Views
             {
                 logTextBox.AppendText(log + "\n");
             }
+
+            this.Focus();
         }
 
         private void DebugUc_Enter(object sender, EventArgs e)

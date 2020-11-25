@@ -6,12 +6,13 @@ using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.Settings;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Interfaces;
 using XPTable.Editors;
 using XPTable.Models;
 
 namespace TravBotSharp.Views
 {
-    public partial class OverviewUc : TbsBaseUc
+    public partial class OverviewUc : TbsBaseUc, ITbsUc
     {
         TableModel tableModelMain = new TableModel();
         TableModel tableModelGlobal = new TableModel();
@@ -19,8 +20,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
-
-        internal void UpdateTab()
+        public void UpdateUc()
         {
             var acc = GetSelectedAcc();
             if (acc.Villages.Count == 0) return;
@@ -123,7 +123,7 @@ namespace TravBotSharp.Views
             {
                 Text = "Type",
                 ToolTipText = "Type of the village",
-                Width = 100
+                Width = 70
             };
 
             ComboBoxCellEditor typeEditor = new ComboBoxCellEditor
@@ -205,7 +205,7 @@ namespace TravBotSharp.Views
             CheckBoxColumn GetRes = new CheckBoxColumn
             {
                 Text = "Get Res",
-                Width = 70,
+                Width = 60,
                 ToolTipText = "Select the supplying village when there are not enough resources"
             };
             columnModel.Columns.Add(GetRes);
@@ -213,20 +213,20 @@ namespace TravBotSharp.Views
             columnModel.Columns.Add(new CheckBoxColumn
             {
                 Text = "Send Res",
-                Width = 70,
+                Width = 75,
                 ToolTipText = "Select where to send resources when too many"
             });
 
             columnModel.Columns.Add(new CheckBoxColumn
             {
-                Text = "Auto Celeb",
-                Width = 80,
+                Text = "Celebs",
+                Width = 60,
                 ToolTipText = "Automatically start celebrations"
             });
             columnModel.Columns.Add(new CheckBoxColumn
             {
                 Text = "Big Celeb",
-                Width = 80,
+                Width = 70,
                 ToolTipText = "Automatically start big celebrations"
             });
         }

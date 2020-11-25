@@ -2,16 +2,17 @@
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
-    public partial class QuestsUc : TbsBaseUc
+    public partial class QuestsUc : TbsBaseUc, ITbsUc
     {
         public QuestsUc()
         {
             InitializeComponent();
         }
-        public void UpdateTab()
+        public void UpdateUc()
         {
             var acc = GetSelectedAcc();
 

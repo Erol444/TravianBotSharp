@@ -12,6 +12,7 @@ using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp
 {
@@ -19,7 +20,9 @@ namespace TravBotSharp
     {
         private List<Account> accounts = new List<Account>();
         private int accSelected = 0;
-        private int villSelected = 0;
+        
+
+        private ITbsUc[] Ucs;
         public ControlPanel()
         {
             InitializeComponent();
@@ -27,18 +30,22 @@ namespace TravBotSharp
             LoadAccounts();
             accListView.Select();
 
-            generalUc1.Init(this);
-            heroUc1.Init(this);
-            buildUc1.Init(this);
-            marketUc1.Init(this);
-            troopsUc1.Init(this);
-            overviewUc1.Init(this);
-            farmingUc1.Init(this);
-            newVillagesUc1.Init(this);
-            deffendingUc1.Init(this);
-            attackUc1.Init(this);
-            debugUc1.Init(this);
-            questsUc1.Init(this);
+            // Be sure to have these in correct order!
+            Ucs = new ITbsUc[]
+            {
+                generalUc1,
+                heroUc1,
+                villagesUc1,
+                overviewUc1,
+                farmingUc1,
+                newVillagesUc1,
+                deffendingUc1,
+                questsUc1,
+                debugUc1,
+            };
+
+            // Initialize all the views
+            foreach(var uc in Ucs) uc.Init(this);
         }
 
         private void LoadAccounts()
@@ -73,7 +80,7 @@ namespace TravBotSharp
         /// <summary>
         /// Refreshes the account view. Account currently selected will be colored in blue.
         /// </summary>
-        private void RefreshAccView()
+        public void RefreshAccView()
         {
             accListView.Items.Clear();
             for (int i = 0; i < accounts.Count; i++)
@@ -146,81 +153,9 @@ namespace TravBotSharp
         {
             var acc = GetSelectedAcc();
             if (acc == null) return;
-            //refresh data in this tab!
-            switch (accTabController.SelectedIndex) // AccTabController
-            {
-                case 0: // General
-                    generalUc1.UpdateGeneralTab();
-                    break;
-                case 1: // Hero
-                    heroUc1.UpdateTab();
-                    break;
-                case 2: // Villages
-                    UpdateVillageTab();
-                    break;
-                case 3: // Overview
-                    overviewUc1.UpdateTab();
-                    break;
-                case 4: // Farming
-                    farmingUc1.UpdateTab();
-                    break;
-                case 5: // New villages
-                    newVillagesUc1.UpdateTab();
-                    break;
-                case 6: // Deffending
-                    deffendingUc1.UpdateTab();
-                    break;
-                case 7: // Quests
-                    questsUc1.UpdateTab();
-                    break;
-                case 8: // Debug tab
-                    debugUc1.UpdateTab();
-                    debugUc1.Focus();
-                    break;
-                default: break;
-            }
-        }
-        private void UpdateVillageTab(bool updateVillList = true)
-        {
-            if (accounts.Count == 0) return;
-            var acc = GetSelectedAcc();
-            if (updateVillList)
-            {
-                VillagesListView.Items.Clear();
-                for (int i = 0; i < acc.Villages.Count; i++) // Update villages list
-                {
-                    var item = new ListViewItem();
-                    item.SubItems[0].Text = acc.Villages[i].Name;
-                    item.SubItems[0].ForeColor = Color.FromName(villSelected == i ? "DodgerBlue" : "Black");
-                    item.SubItems.Add(acc.Villages[i].Coordinates.x + "/" + acc.Villages[i].Coordinates.y); //coords
-                    item.SubItems.Add(VillageHelper.VillageType(acc.Villages[i])); //type (resource)
-                    item.SubItems.Add(VillageHelper.ResourceIndicator(acc.Villages[i])); //resources count
-                    VillagesListView.Items.Add(item);
-                }
-            }
 
-            if (acc.Villages.Count <= 0) return;
-            switch (villageTabController.SelectedIndex)
-            {
-                case 0: // Build
-                    buildUc1.UpdateBuildTab();
-                    break;
-                case 1: // Market
-                    marketUc1.UpdateMarketTab();
-                    break;
-                case 2: // Troops
-                    troopsUc1.UpdateTab();
-                    break;
-                case 3: // Attack tab
-                    attackUc1.UpdateTab();
-                    break;
-                default: break;
-            }
-        }
-
-        private void villageTabController_SelectedIndexChanged(object sender, EventArgs e) //villageTabController tab changed event
-        {
-            UpdateVillageTab();
+            // Refresh data in this tab!
+            Ucs.ElementAtOrDefault(accTabController.SelectedIndex)?.UpdateUc();
         }
 
         private void button7_Click(object sender, EventArgs e) // Edit an account
@@ -239,16 +174,6 @@ namespace TravBotSharp
                 }
             }
         }
-
-        private void VillagesListView_SelectedIndexChanged(object sender, EventArgs e) //update building tab if its selected
-        {
-            var indicies = VillagesListView.SelectedIndices;
-            if (indicies.Count > 0)
-                villSelected = indicies[0];
-            UpdateVillageTab(true);
-
-        }
-
         public Account GetSelectedAcc()
         {
             try
@@ -260,39 +185,6 @@ namespace TravBotSharp
             {
                 return null;
             }
-        }
-
-        public Village GetSelectedVillage(Account acc = null)
-        {
-            if (acc == null) acc = GetSelectedAcc();
-            // Some error. Refresh acc list view, maybe this will help.
-            if (villSelected >= acc.Villages.Count)
-            {
-                RefreshAccView();
-                return null;
-            }
-            return acc.Villages[villSelected];
-        }
-
-        private void RefreshVill_Click(object sender, EventArgs e) // Refresh selected village
-        {
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage(acc);
-            RefreshVillage(acc, vill);
-        }
-        private void RefreshVillage(Account acc, Village vill) // Refresh village
-        {
-            TaskExecutor.AddTask(acc, new UpdateVillage() { 
-                ExecuteAt = DateTime.Now.AddHours(-1),
-                Vill = vill,
-                ImportTasks = false 
-            });
-        }
-
-        private void RefreshAllVills_Click(object sender, EventArgs e) // Refresh all villages
-        {
-            var acc = GetSelectedAcc();
-            acc.Villages.ForEach(x => RefreshVillage(acc, x));
         }
 
         private void button4_Click(object sender, EventArgs e)

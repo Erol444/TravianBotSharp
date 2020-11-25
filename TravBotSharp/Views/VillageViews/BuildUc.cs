@@ -9,17 +9,18 @@ using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.Building;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
-    public partial class BuildUc : TbsBaseUc
+    public partial class BuildUc : BaseVillageUc, ITbsUc
     {
         Building selectedBuilding;
         public BuildUc()
         {
             InitializeComponent();
         }
-        public void UpdateBuildTab()
+        public void UpdateUc()
         {
             Account acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
@@ -229,7 +230,7 @@ namespace TravBotSharp.Views
                 //TODO: ReStartDemolish
                 TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { ExecuteAt = DateTime.Now, Vill = vill });
             }
-            UpdateBuildTab();
+            UpdateUc();
         }
 
         private void button23_Click(object sender, EventArgs e) //move top build task
@@ -285,7 +286,7 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage();
             var task = GetSelectedBuildingTask();
             var index = vill.Build.Tasks.Remove(task);
-            UpdateBuildTab();
+            UpdateUc();
         }
 
         private void button8_Click(object sender, EventArgs e) //clear all build tasks
@@ -294,7 +295,7 @@ namespace TravBotSharp.Views
             vill.Build.Tasks.Clear();
             buildListView.Items.Clear();
             vill.Build.DemolishTasks.Clear();
-            UpdateBuildTab();
+            UpdateUc();
         }
 
         private void AutBuildResButton_Click(object sender, EventArgs e) //auto res build button
@@ -310,7 +311,7 @@ namespace TravBotSharp.Views
                 BuildingStrategy = (BuildingStrategyEnum)autoBuildResStrat.SelectedIndex
             };
             BuildingHelper.AddBuildingTask(acc, vill, task);
-            UpdateBuildTab();
+            UpdateUc();
         }
 
         private void button20_Click(object sender, EventArgs e) //support vill button
@@ -319,7 +320,7 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage();
             DefaultConfigurations.SupplyVillagePlan(acc, vill);
             BuildingHelper.RemoveCompletedTasks(vill, acc);
-            UpdateBuildTab();
+            UpdateUc();
         }
 
         private void button19_Click(object sender, EventArgs e) //off vill button
@@ -328,7 +329,7 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage();
             DefaultConfigurations.OffVillagePlan(acc, vill);
             BuildingHelper.RemoveCompletedTasks(vill, acc);
-            UpdateBuildTab();
+            UpdateUc();
         }
 
         private void button6_Click(object sender, EventArgs e) //deff vill button
@@ -337,7 +338,7 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage();
             DefaultConfigurations.DeffVillagePlan(acc, vill);
             BuildingHelper.RemoveCompletedTasks(vill, acc);
-            UpdateBuildTab();
+            UpdateUc();
         }
 
         private void button9_Click(object sender, EventArgs e) //export build tasks button
@@ -356,7 +357,7 @@ namespace TravBotSharp.Views
             string location = IoHelperForms.PromptUserForBuidTasksLocation();
             if (location == null) return;
             IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
-            UpdateBuildTab();
+            UpdateUc();
         }
 
         private void AutoBuildBonusBuildings_CheckedChanged(object sender, EventArgs e)
@@ -420,7 +421,7 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e) //refreshes building list
         {
-            UpdateBuildTab(); //just update whole tab
+            UpdateUc(); //just update whole tab
         }
 
         private void buildListView_SelectedIndexChanged(object sender, EventArgs e)

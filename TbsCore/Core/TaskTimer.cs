@@ -38,23 +38,11 @@ namespace TravBotSharp.Files.Models.AccModels
             {
                 NewTick();
             }
-            catch(Exception exception){}
+            catch(Exception exception) { }
         }
 
         private async void NewTick()
         {
-            // Dirty hack. TODO fix the code, so building/troops filling tasks won't fail by themselves
-            //restartTasksCounter++;
-            //if (restartTasksCounter > 7200)
-            //{
-            //    restartTasksCounter = 0;
-            //    foreach (var vill in acc.Villages)
-            //    {
-            //        if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
-            //        BuildingHelper.ReStartBuilding(acc, vill);
-            //    }
-            //}
-
             if (acc.Tasks.Count == 0) return; //No tasks
 
             // Another task is already in progress. wait

@@ -6,17 +6,18 @@ using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.TroopsModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Files.Tasks.SecondLevel;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
-    public partial class FarmingUc : TbsBaseUc
+    public partial class FarmingUc : TbsBaseUc, ITbsUc
     {
         public FarmingUc()
         {
             InitializeComponent();
             RaidStyle.Items.AddRange(new string[] { "No losses only", "Some losses", "All losses" });
         }
-        public void UpdateTab()
+        public void UpdateUc()
         {
             var acc = GetSelectedAcc();
             minFarmInterval.Value = acc.Farming.MinInterval;
