@@ -19,6 +19,7 @@ namespace TbsCore.Extensions
         /// <param name="text">Text to be written</param>
         internal static async Task Write(this IWebElement element, string text)
         {
+            element.Clear(); // Clear the 0 (default value)
             Random ran = new Random();
             foreach (char c in text)
             {
