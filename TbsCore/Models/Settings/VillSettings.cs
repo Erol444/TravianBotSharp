@@ -17,6 +17,7 @@ namespace TravBotSharp.Files.Models.Settings
         public Classificator.TroopsEnum WorkshopTrain { get; set; }
         public bool GetRes { get; set; }
         public bool SendRes { get; set; }
+        public bool AutoExpandStorage { get; set; }
     }
     public enum VillType
     {

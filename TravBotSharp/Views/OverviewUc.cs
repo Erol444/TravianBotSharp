@@ -44,6 +44,7 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
                 r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
                 r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
+                r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -70,6 +71,7 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
             r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
             r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
+            r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
             tableModelGlobal.Rows.Add(r);
 
             //var newVills = acc.NewVillages.DefaultSettings;
@@ -229,6 +231,12 @@ namespace TravBotSharp.Views
                 Width = 70,
                 ToolTipText = "Automatically start big celebrations"
             });
+            columnModel.Columns.Add(new CheckBoxColumn
+            {
+                Text = "Auto-Expand",
+                Width = 80,
+                ToolTipText = "Automatically Expand storage when it's full"
+            });
         }
         #endregion
         private string[] GetPossibleTroops(Classificator.BuildingEnum building)
@@ -289,6 +297,8 @@ namespace TravBotSharp.Views
                 vill.Expansion.AutoCelebrations = cells[column].Checked;
                 column++;
                 vill.Expansion.BigCelebrations = cells[column].Checked;
+                column++;
+                vill.Settings.AutoExpandStorage = cells[column].Checked;
 
                 // Reset training
                 if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
