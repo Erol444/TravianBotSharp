@@ -62,7 +62,24 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
             var inputName = troopNode.Descendants("input").FirstOrDefault().GetAttributeValue("name", "");
 
-            var maxNum = Parser.RemoveNonNumeric(troopNode.ChildNodes.First(x=>x.HasClass("cta")).ChildNodes.First(x => x.Name == "a").InnerText);
+            long maxNum = 0;
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case ServerVersionEnum.T4_4:
+                    maxNum = Parser.RemoveNonNumeric(
+                        troopNode.ChildNodes
+                        .FirstOrDefault(x => x.Name == "a")?.InnerText ?? "0"
+                        );
+                    break;
+                case ServerVersionEnum.T4_5:
+                    maxNum = Parser.RemoveNonNumeric(
+                            troopNode.ChildNodes
+                            .First(x => x.HasClass("cta"))
+                            .ChildNodes
+                            .First(x => x.Name == "a")
+                            .InnerText);
+                    break;
+            }
 
             if (!HighSpeedServer)
             {
@@ -78,7 +95,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            await acc.Wb.Driver.FindElementByName(inputName).Write(maxNum);
+            VersionHelper.Switch(acc, 
+                () => wb.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'"), 
+                async () => await acc.Wb.Driver.FindElementByName(inputName).Write(maxNum));
+
             await Task.Delay(100);
 
             await acc.Wb.Driver.FindElementByName("s1").Click(acc);

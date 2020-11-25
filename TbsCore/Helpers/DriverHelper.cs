@@ -14,18 +14,21 @@ namespace TbsCore.Helpers
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="script">JavaScript</param>
-        /// <returns>/</returns>
-        public static async Task ExecuteScript(Account acc, string script)
+        /// <param name="log">Log exception if it happens</param>
+        /// <returns>Whether the execution was successful</returns>
+        public static async Task<bool> ExecuteScript(Account acc, string script, bool log = true)
         {
             try
             {
                 acc.Wb.Driver.ExecuteScript(script);
                 await Task.Delay(AccountHelper.Delay() * 2);
                 acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
+                return true;
             }
             catch(Exception e) 
             {
-                acc.Wb.Log($"Error executing JS script:\n{script}", e);
+                if (log) acc.Wb.Log($"Error executing JS script:\n{script}", e);
+                return false;
             }
         }
     }
