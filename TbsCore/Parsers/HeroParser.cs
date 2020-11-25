@@ -74,7 +74,7 @@ namespace TravBotSharp.Files.Parsers
 
             var heroInfo = new HeroInfo();
             heroInfo.Health = (int)Parser.ParseNum(health.Replace("%", ""));
-            heroInfo.Experience = (int)Parser.ParseNum(experience);
+            heroInfo.Experience = (int)Parser.RemoveNonNumeric(experience);
             heroInfo.AvaliblePoints = (int)Parser.ParseNum(availablePoints.Split('/').LastOrDefault());
 
             if(heroInfo.AvaliblePoints == 0)
