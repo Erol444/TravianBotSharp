@@ -21,7 +21,7 @@ namespace TravBotSharp.Files.Models.AccModels
         {
             Logs = new CircularBuffer<string>(maxLogCnt);
         }
-        
+
         public ChromeDriver Driver { get; set; }
         public string CurrentUrl => this.Driver.Url;
         private Account acc;
@@ -61,7 +61,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 var checkproxy = new CheckProxy();
                 await checkproxy.Execute(acc);
             }
-            else this.Navigate(acc.AccInfo.ServerUrl);
+            else await this.Navigate(acc.AccInfo.ServerUrl);
         }
 
         private void SetupChromeDriver(Access access, string username, string server)

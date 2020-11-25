@@ -23,11 +23,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
             // Sets building task to be built
             //if (this.Task == null)
-                ConfigNextExecute(acc.Wb.Html, acc);
+            ConfigNextExecute(acc.Wb.Html, acc);
 
             this.NextExecute = DateTime.Now.AddMinutes(2);
             if (this.Task == null)
@@ -56,9 +54,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     "dorf1.php" :
                     "dorf2.php";
 
-                // For localization purposes, bot sends raw http req to Travian servers. We need localized building
-                // names, and JS hides the title of the buildings on selenium browser.
-
+                // For localization purposes, bot sends raw http req to Travian servers. 
+                // We need localized building names, and JS hides the title of the 
+                //buildings on selenium browser.
                 acc.Wb.Html = await HttpHelper.SendGetReq(acc, navigateTo);
                 await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
 
@@ -100,7 +98,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //    }
             //}
 
-            //append correct tab
+            // Append correct tab
             switch (this.Task.Building)
             {
                 case BuildingEnum.RallyPoint:
@@ -112,23 +110,23 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             await acc.Wb.Navigate(url);
 
-            this.PostTaskCheck.Add(ConfigNextExecute);
+            // Check if enough resources
+            //BuildingsCost.GetBuildingCost()
+
             this.NextExecute = DateTime.Now.AddMinutes(2);
 
             var contractBuilding = acc.Wb.Html.GetElementbyId($"contract_building{(int)Task.Building}");
             var upgradeBuildingContract = acc.Wb.Html.GetElementbyId("build");
+            TaskRes res;
             if (contractBuilding != null) //Construct a new building
-            {
-                return await Construct(acc, contractBuilding);
-            }
+                res = await Construct(acc, contractBuilding);
             else if (upgradeBuildingContract != null) // Upgrade building
-            {
-                return await Upgrade(acc, upgradeBuildingContract);
-            }
+                res = await Upgrade(acc, upgradeBuildingContract);
             else
-            {
                 throw new Exception("No construct or upgrade contract was found!");
-            }
+
+            ConfigNextExecute(acc.Wb.Html, acc);
+            return res;
         }
 
         /// <summary>
@@ -152,7 +150,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 if (button == null)
                 {
                     this.NextExecute = Vill.Build.CurrentlyBuilding.LastOrDefault()?.Duration;
-                    this.PostTaskCheck.Remove(ConfigNextExecute);
                     return TaskRes.Executed;
                 }
                 //check if button is null!
@@ -167,7 +164,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             //not enough resources, wait until resources get produced/transited from main village
             this.NextExecute = nextExecute;
-            this.PostTaskCheck.Remove(ConfigNextExecute);
             return TaskRes.Executed;
         }
 
@@ -269,17 +265,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var contract = acc.Wb.Html.GetElementbyId("contract");
             var resWrapper = contract.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var res = ResourceParser.GetResourceCost(resWrapper);
-            this.PostTaskCheck.Remove(ConfigNextExecute);
             this.NextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, res, this.Task);
             return TaskRes.Executed;
         }
 
-        private async Task PostTaskCheckDorf(Account acc)
-        {
-            //if (acc.Wb.Driver.Url.Contains("dorf1")) TaskExecutor.UpdateDorf1Info(acc);
-            //else if (acc.Wb.Driver.Url.Contains("dorf2")) TaskExecutor.UpdateDorf2Info(acc);
-            await TaskExecutor.PageLoaded(acc);
-        }
+        private async Task PostTaskCheckDorf(Account acc) => await TaskExecutor.PageLoaded(acc);
+
 
         //TODO: Have this as postCheck? just so it doesn't get constantly checked
         private void CheckSettlers(Account acc, Village vill, int currentLevel, DateTime finishBuilding)
@@ -328,7 +319,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// </summary>
         private void CheckFreeCrop()
         {
-            if (this.Vill.Res.FreeCrop < 0 && Vill.Build.Tasks.FirstOrDefault()?.Building != BuildingEnum.Cropland)
+            // 5 is maximum a building can take up free crop (stable lvl 1)
+            if (this.Vill.Res.FreeCrop <= 5 && Vill.Build.Tasks.FirstOrDefault()?.Building != BuildingEnum.Cropland)
             {
                 var croplandsInVill = Vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Cropland).ToList();
                 var cropland = FindLowestLevelBuilding(croplandsInVill);

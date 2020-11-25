@@ -50,11 +50,6 @@ namespace TravBotSharp.Files.Tasks
         /// </summary>
         public TaskPriority Priority { get; set; }
 
-        /// <summary>
-        /// List of actions to take after execution, when browser loads new page, check for some data (html)
-        /// </summary>
-        public List<Action<HtmlAgilityPack.HtmlDocument, Account>> PostTaskCheck { get; set; }
-
         public enum TaskRes
         {
             Executed,
@@ -70,19 +65,21 @@ namespace TravBotSharp.Files.Tasks
         /// </summary>
         public enum TaskPriority
         {
-            Medium = 0, // For normal tasks, not urgent. For example building, adventures, sending resources etc. Selected by default.
-            Low, // For tasks that can wait few hours. For example updating hero items, account info, TOP10, dorf1 (for attacks) etc.
-            High // Time-critical tasks, for example sending catapult waves, sending deff troops - tasks that require to-second precision.
-        }
-
-        /// <summary>
-        /// Gets name of the task
-        /// </summary>
-        /// <returns>Name of the task</returns>
-        public string GetName() {
-            var type = this.GetType().ToString().Split('.');
-            if (type.Length == 0) return null;
-            return type[type.Length - 1];
+            /// <summary>
+            /// For normal tasks, not urgent. For example building, adventures, 
+            /// sending resources etc. Selected by default.
+            /// </summary>
+            Medium = 0,
+            /// <summary>
+            /// For tasks that can wait few hours. For example updating hero items,
+            /// account info, TOP10, dorf1 (for attacks) etc.
+            /// </summary>
+            Low,
+            /// <summary>
+            /// Time-critical tasks, for example sending catapult waves, sending 
+            /// deff troops - tasks that require to-second precision.
+            /// </summary>
+            High
         }
     }
 }
