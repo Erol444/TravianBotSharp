@@ -3,16 +3,17 @@ using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models;
 using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
-    public partial class NewVillagesUc : TbsBaseUc
+    public partial class NewVillagesUc : TbsBaseUc, ITbsUc
     {
         public NewVillagesUc()
         {
             InitializeComponent();
         }
-        public void UpdateTab()
+        public void UpdateUc()
         {
             var acc = GetSelectedAcc();
             if (acc == null) return;
@@ -70,7 +71,7 @@ namespace TravBotSharp.Views
             XNewVill.Value = 0;
             YNewVill.Value = 0;
             NewVillName.Text = "";
-            UpdateTab();
+            UpdateUc();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -80,13 +81,13 @@ namespace TravBotSharp.Views
             selected = "_" + selected;
             var type = (Classificator.VillTypeEnum)Enum.Parse(typeof(Classificator.VillTypeEnum), selected);
             acc.NewVillages.Types.Add(type);
-            UpdateTab();
+            UpdateUc();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
             GetSelectedAcc().NewVillages.Types.Clear();
-            UpdateTab();
+            UpdateUc();
         }
 
         private void autoNewVillagesToSettle_CheckedChanged(object sender, EventArgs e)
@@ -97,7 +98,7 @@ namespace TravBotSharp.Views
         private void button3_Click(object sender, EventArgs e)
         {
             GetSelectedAcc().NewVillages.Locations.Clear();
-            UpdateTab();
+            UpdateUc();
         }
 
         private void villName_TextChanged(object sender, EventArgs e)
@@ -109,7 +110,7 @@ namespace TravBotSharp.Views
         {
             string location = IoHelperForms.PromptUserForBuidTasksLocation();
             GetSelectedAcc().NewVillages.BuildingTasksLocationNewVillage = location;
-            UpdateTab();
+            UpdateUc();
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)

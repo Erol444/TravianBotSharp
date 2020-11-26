@@ -8,17 +8,18 @@ using TravBotSharp.Files.Models;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
-    public partial class GeneralUc : TbsBaseUc
+    public partial class GeneralUc : TbsBaseUc, ITbsUc
     {
         public GeneralUc()
         {
             InitializeComponent();
         }
 
-        public void UpdateGeneralTab()
+        public void UpdateUc()
         {
             var acc = GetSelectedAcc();
             if (acc == null) return;
@@ -273,7 +274,7 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e)
         {
-            GetSelectedAcc().TaskTimer.Start();
+            GetSelectedAcc().TaskTimer?.Start();
             UpdateBotRunning();
         }
         public void UpdateBotRunning(string running = null)

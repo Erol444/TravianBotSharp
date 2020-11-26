@@ -64,23 +64,6 @@ namespace TravBotSharp.Files.Helpers
             acc.Wb.Html.GetElementbyId("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll") != null;
 
         /// <summary>
-        /// Invoke all PostTasks that a task might have.
-        /// </summary>
-        /// <param name="task">The task</param>
-        /// <param name="acc">Account</param>
-        private static void PostTask(BotTask task, Account acc)
-        {
-            if (task.PostTaskCheck != null)
-            {
-                foreach (var postTask in task.PostTaskCheck)
-                {
-                    postTask.Invoke(acc.Wb.Html, acc);
-                }
-                task.PostTaskCheck.Clear();
-            }
-        }
-
-        /// <summary>
         /// Called PageLoaded (after navigating to a specific url) or from
         /// Task timer, if there is no url/bot is already on the url
         /// </summary>
@@ -90,13 +73,12 @@ namespace TravBotSharp.Files.Helpers
         public static async Task Execute(Account acc, BotTask task)
         {
             //Before every execution, wait a random delay. TODO: needed?
-            if (task.PostTaskCheck == null) task.PostTaskCheck = new List<Action<HtmlDocument, Account>>();
-            
+
             if (acc.Wb?.CurrentUrl == null && task.GetType() != typeof(CheckProxy))
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
-            
+
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
 
             try
@@ -119,9 +101,6 @@ namespace TravBotSharp.Files.Helpers
                 task.RetryCounter++;
                 if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
             }
-
-            // Execute post tasks
-            PostTask(task, acc);
 
             //We want to re-execute the same task later
             if (task.NextExecute != null && task.RetryCounter < 3)
@@ -303,9 +282,9 @@ namespace TravBotSharp.Files.Helpers
                     }
                     if (acc.Hero.Status == Hero.StatusEnum.Dead && acc.Hero.Settings.AutoReviveHero) //if hero is dead, revive him
                     {
-                        AddTaskIfNotExists(acc, new ReviveHero() { 
+                        AddTaskIfNotExists(acc, new ReviveHero() {
                             ExecuteAt = DateTime.Now.AddSeconds(5),
-                            Vill = AccountHelper.GetHeroReviveVillage(acc) 
+                            Vill = AccountHelper.GetHeroReviveVillage(acc)
                         });
                     }
                     if (HeroParser.LeveledUp(html, acc.AccInfo.ServerVersion) && acc.Hero.Settings.AutoSetPoints)
@@ -384,7 +363,7 @@ namespace TravBotSharp.Files.Helpers
             return wwImg != null && !acc.Wb.CurrentUrl.EndsWith("/spieler.php?uid=1");
         }
         private static bool IsCaptcha(Account acc) => acc.Wb.Html.GetElementbyId("recaptchaImage") != null;
-        
+
         //will be called before executing PreTaskRefresh
         internal static bool IsLoginScreen(Account acc)
         {

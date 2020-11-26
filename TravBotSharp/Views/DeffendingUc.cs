@@ -6,12 +6,13 @@ using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.VillageModels;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Interfaces;
 using XPTable.Editors;
 using XPTable.Models;
 
 namespace TravBotSharp.Views
 {
-    public partial class DeffendingUc : TbsBaseUc
+    public partial class DeffendingUc : TbsBaseUc, ITbsUc
     {
         TableModel tableModelMain = new TableModel();
         TableModel tableModelGlobal = new TableModel();
@@ -19,14 +20,17 @@ namespace TravBotSharp.Views
         public DeffendingUc()
         {
             InitializeComponent();
+
+            InitTables();
+            InitGlobalTable();
         }
         
-        public void UpdateTab()
+        public void UpdateUc()
         {
             var acc = GetSelectedAcc();
             if (acc.Villages.Count == 0) return;
 
-            tableModelMain.Rows.Clear();
+            tableModelMain?.Rows?.Clear();
             foreach (var vill in acc.Villages)
             {
                 var r = new Row();
@@ -52,10 +56,6 @@ namespace TravBotSharp.Views
         private void InitTables()
         {
             ColumnModel columnModel = new ColumnModel();
-
-            // set the Table's ColumModel and TableModel
-            table1.ColumnModel = columnModel;
-            XpTableGlobal.ColumnModel = columnModel;
 
             //VillageId
             TextColumn villId = new TextColumn
@@ -102,6 +102,10 @@ namespace TravBotSharp.Views
             };
             columnModel.Columns.Add(onHero);
 
+            // set the Table's ColumModel and TableModel
+            table1.ColumnModel = columnModel;
+            XpTableGlobal.ColumnModel = columnModel;
+
             table1.TableModel = tableModelMain;
         }
         #endregion
@@ -128,9 +132,7 @@ namespace TravBotSharp.Views
             //Change name of village/s
             if (changeVillNames.Count > 0)
             {
-                TaskExecutor.AddTaskIfNotExists(acc,
-                        new ChangeVillageName()
-                        {
+                TaskExecutor.AddTaskIfNotExists(acc, new ChangeVillageName() {
                             ExecuteAt = DateTime.Now,
                             ChangeList = changeVillNames
                         });
