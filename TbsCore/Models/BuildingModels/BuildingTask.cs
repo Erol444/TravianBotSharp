@@ -24,7 +24,7 @@ namespace TravBotSharp.Files.Tasks
         /// <summary>
         /// Which type of building task this is
         /// </summary>
-        public BuildingType TaskType { get; set; }
+        public Classificator.BuildingType TaskType { get; set; }
 
         //for auto build res fields
         public ResTypeEnum ResourceType { get; set; }

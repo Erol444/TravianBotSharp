@@ -9,6 +9,7 @@ using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.Building;
 using TravBotSharp.Files.Tasks.LowLevel;
+using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Views
 {
@@ -62,6 +63,11 @@ namespace TravBotSharp.Views
             buildRadioButton.Checked = true;
             instaUpgradeUpDown.Enabled = vill.Build.InstaBuild;
             instaUpgradeUpDown.Value = vill.Build.InstaBuildHours;
+
+            var prereqComboList = BuildingHelper.SetPrereqCombo(acc, vill);
+            prereqCombo.Items.Clear();
+            prereqComboList.ForEach(x => prereqCombo.Items.Add(x));
+            if (0 < prereqComboList.Count) prereqCombo.SelectedIndex = 0;
         }
 
         private void UpdateBuildTasks(Village vill)
@@ -73,7 +79,7 @@ namespace TravBotSharp.Views
                 var task = vill.Build.Tasks[i];
                 var item = new ListViewItem();
                 //building
-                if (task.TaskType == BuildingHelper.BuildingType.AutoUpgradeResFields)
+                if (task.TaskType == BuildingType.AutoUpgradeResFields)
                 {
                     item.SubItems[0].Text = AutoBuildResFieldsStr(task);
                 }
@@ -153,19 +159,19 @@ namespace TravBotSharp.Views
                 //set color
                 switch(building.Type)
                 {
-                    case Classificator.BuildingEnum.Woodcutter:
+                    case BuildingEnum.Woodcutter:
                         item.ForeColor = Color.LightGreen;
                         break;
-                    case Classificator.BuildingEnum.ClayPit:
+                    case BuildingEnum.ClayPit:
                         item.ForeColor = Color.Orange;
                         break;
-                    case Classificator.BuildingEnum.IronMine:
+                    case BuildingEnum.IronMine:
                         item.ForeColor = Color.Gray;
                         break;
-                    case Classificator.BuildingEnum.Cropland:
+                    case BuildingEnum.Cropland:
                         item.ForeColor = Color.Yellow;
                         break;
-                    case Classificator.BuildingEnum.Site:
+                    case BuildingEnum.Site:
                         item.ForeColor = (buildingName == "Site" ? Color.White : Color.LightBlue);
                         break;
                     default:
@@ -199,15 +205,15 @@ namespace TravBotSharp.Views
             {
                 var task = new BuildingTask
                 {
-                    TaskType = BuildingHelper.BuildingType.General,
+                    TaskType = BuildingType.General,
                     Level = (int)buildLevelUpDown.Value,
                     BuildingId = selectedBuilding.Id
                 };
 
                 //Create building task, construct new building
-                if (selectedBuilding.Type == Classificator.BuildingEnum.Site)
+                if (selectedBuilding.Type == BuildingEnum.Site)
                 {
-                    Enum.TryParse(buildTypeComboBox.SelectedItem.ToString(), out Classificator.BuildingEnum building);
+                    Enum.TryParse(buildTypeComboBox.SelectedItem.ToString(), out BuildingEnum building);
                     task.Building = building;
                     task.ConstructNew = true;
                 }
@@ -304,7 +310,7 @@ namespace TravBotSharp.Views
 
             var task = new BuildingTask
             {
-                TaskType = BuildingHelper.BuildingType.AutoUpgradeResFields,
+                TaskType = BuildingType.AutoUpgradeResFields,
                 Level = (int)autoBuildResLevel.Value,
                 ResourceType = (ResTypeEnum)autoBuildResType.SelectedIndex,
                 BuildingStrategy = (BuildingStrategyEnum)autoBuildResStrat.SelectedIndex
@@ -380,7 +386,7 @@ namespace TravBotSharp.Views
             var planedBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == selectedBuilding.Id);
 
             // Building level selector
-            if (selectedBuilding.Type != Classificator.BuildingEnum.Site) buildLevelUpDown.Value = selectedBuilding.Level + 1;
+            if (selectedBuilding.Type != BuildingEnum.Site) buildLevelUpDown.Value = selectedBuilding.Level + 1;
             else if (planedBuilding != null) buildLevelUpDown.Value = planedBuilding.Level + 1;
             else buildLevelUpDown.Value = 1;
 
@@ -388,7 +394,7 @@ namespace TravBotSharp.Views
             buildTypeComboBox.Items.Clear();
 
             buildTypeComboBox.Enabled = false;
-            if (selectedBuilding.Type == Classificator.BuildingEnum.Site)
+            if (selectedBuilding.Type == BuildingEnum.Site)
             {
                 if (planedBuilding != null)
                 {
@@ -400,9 +406,9 @@ namespace TravBotSharp.Views
                 buildTypeComboBox.Enabled = true;
                 for (int i = 5; i <= 45; i++)
                 {
-                    if (BuildingHelper.BuildingRequirementsAreMet((Classificator.BuildingEnum)i, vill, acc.AccInfo.Tribe ?? Classificator.TribeEnum.Natars))
+                    if (BuildingHelper.BuildingRequirementsAreMet((BuildingEnum)i, vill, acc.AccInfo.Tribe ?? TribeEnum.Natars))
                     {
-                        buildTypeComboBox.Items.Add(((Classificator.BuildingEnum)i).ToString());
+                        buildTypeComboBox.Items.Add(((BuildingEnum)i).ToString());
                     }
                 }
             }
@@ -444,6 +450,23 @@ namespace TravBotSharp.Views
         {
             var vill = GetSelectedVillage();
             vill.Build.InstaBuildHours = (int)instaUpgradeUpDown.Value;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            Enum.TryParse(prereqCombo.SelectedItem.ToString(), out BuildingEnum building);
+            BuildingHelper.AddBuildingPrerequisites(acc, vill, building);
+
+            BuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
+            {
+                Building = building,
+                Level = 1,
+                TaskType = BuildingType.General
+            });
+
+            UpdateBuildTab();
         }
     }
 }

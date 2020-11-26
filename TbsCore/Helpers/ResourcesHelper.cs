@@ -98,7 +98,7 @@ namespace TravBotSharp.Files.Helpers
             var task = new BuildingTask()
             {
                 Building = building,
-                TaskType = BuildingHelper.BuildingType.General
+                TaskType = Classificator.BuildingType.General
             };
             var current = vill.Build.Buildings.FirstOrDefault(x =>
                 x.Type == building &&
@@ -182,14 +182,14 @@ namespace TravBotSharp.Files.Helpers
 
             // A BuildTask needed the resources. If it was auto-build res fields task, make a new
             // general building task - so resources actually get used for intended building upgrade
-            if (task != null && task.TaskType == BuildingHelper.BuildingType.AutoUpgradeResFields)
+            if (task != null && task.TaskType == Classificator.BuildingType.AutoUpgradeResFields)
             {
                 var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId);
                 var lvl = building.Level;
                 if (building.UnderConstruction) lvl++;
                 vill.Build.Tasks.Insert(0, new BuildingTask()
                 {
-                    TaskType = BuildingHelper.BuildingType.General,
+                    TaskType = Classificator.BuildingType.General,
                     Building = task.Building,
                     BuildingId = task.BuildingId,
                     Level = ++lvl

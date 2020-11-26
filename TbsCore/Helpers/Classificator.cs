@@ -16,7 +16,7 @@
             Bakery,
             Warehouse,
             Granary,
-            Blacksmith,
+            Blacksmith, // Deprecated
             Smithy,
             TournamentSquare,
             MainBuilding,
@@ -357,6 +357,18 @@
         {
             Normal = 1,
             Difficult = 2
+        }
+        public enum BuildingCategoryEnum
+        {
+            Infrastructure = 1,
+            Military = 2,
+            Resources = 3
+        }
+
+        public enum BuildingType
+        {
+            General,
+            AutoUpgradeResFields
         }
     }
 }
