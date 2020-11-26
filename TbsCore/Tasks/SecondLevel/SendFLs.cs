@@ -21,7 +21,7 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
                 if (fl.Interval > 1)
                 {
                     fl.IntervalCounter++;
-                    if (fl.IntervalCounter <= fl.Interval) continue;
+                    if (fl.IntervalCounter < fl.Interval) continue;
                     fl.IntervalCounter = 0;
                 }
 

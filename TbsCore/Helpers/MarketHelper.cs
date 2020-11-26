@@ -147,14 +147,14 @@ namespace TravBotSharp.Files.Helpers
             for (int i = 0; i < 4; i++)
             {
                 // To avoid exception devide by zero
-                if (sendRes[i] != 0)
+                if (50 <= sendRes[i])
                 {
                     //round the number to about -1%, for rounder numbers
                     var digits = Math.Ceiling(Math.Log10(sendRes[i]));
                     var remainder = sendRes[i] % (long)Math.Pow(10, digits - 2);
                     sendRes[i] -= remainder;
+                    await wb.FindElementById("r" + (i + 1)).Write(sendRes[i]);
                 }
-                await wb.FindElementById("r" + (i + 1)).Write(sendRes[i]);
                 await Task.Delay(AccountHelper.Delay() / 5);
             }
 

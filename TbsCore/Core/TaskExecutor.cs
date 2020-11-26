@@ -72,7 +72,8 @@ namespace TravBotSharp.Files.Helpers
         /// <returns></returns>
         public static async Task Execute(Account acc, BotTask task)
         {
-            //Before every execution, wait a random delay. TODO: needed?
+            // Before every execution, wait a random delay
+            if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5) await Task.Delay(AccountHelper.Delay());
 
             if (acc.Wb?.CurrentUrl == null && task.GetType() != typeof(CheckProxy))
             {
