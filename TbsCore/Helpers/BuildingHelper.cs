@@ -190,14 +190,7 @@ namespace TravBotSharp.Files.Helpers
 
         public static void RemoveFinishedCB(Village vill)
         {
-            for (int i = 0; i < vill.Build.CurrentlyBuilding.Count; i++)
-            {
-                if (vill.Build.CurrentlyBuilding[i].Duration.AddMilliseconds(500) < DateTime.Now)
-                {
-                    vill.Build.CurrentlyBuilding.RemoveAt(i);
-                    i--;
-                }
-            }
+            vill.Build.CurrentlyBuilding.RemoveAll(x => x.Duration < DateTime.Now);
         }
 
         /// <summary>
@@ -353,7 +346,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="vill"></param>
         /// <param name="building"></param>
         /// <returns>Whether we have all prerequisite buildings</returns>
-        public static bool AddBuildingPrerequisites(Account acc, Village vill, BuildingEnum building)
+        public static bool AddBuildingPrerequisites(Account acc, Village vill, BuildingEnum building, bool bottom = true)
         {
             (var tribe, var prereqs) = GetBuildingPrerequisites(building);
             if (acc.AccInfo.Tribe != tribe && tribe != TribeEnum.Any) return false;
@@ -366,7 +359,7 @@ namespace TravBotSharp.Files.Helpers
                 // Prerequired building already exists and is on on/above desired level
                 if (prereqBuilding.Any(x => prereq.Level <= x.Level)) continue;
 
-                if (vill.Build.Tasks.Any(x => prereq.Building == x.Building &&
+                if (bottom && vill.Build.Tasks.Any(x => prereq.Building == x.Building &&
                                               prereq.Level <= x.Level)) continue;
                 
                 // If there is no required building, build it's prerequisites first
@@ -377,7 +370,7 @@ namespace TravBotSharp.Files.Helpers
                     Building = prereq.Building,
                     Level = prereq.Level,
                     TaskType = BuildingType.General
-                });
+                }, bottom);
                 ret = false;
             }
             return ret;

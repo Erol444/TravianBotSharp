@@ -9,6 +9,7 @@ using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.Building;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Interfaces;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Views
@@ -466,7 +467,7 @@ namespace TravBotSharp.Views
                 TaskType = BuildingType.General
             });
 
-            UpdateBuildTab();
+            UpdateUc();
         }
     }
 }
