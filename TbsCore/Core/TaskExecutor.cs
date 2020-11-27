@@ -298,20 +298,20 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Describe me pls
+        /// Checks whether the resources at more than 95% of the capacity and incrases if it's true.
         /// </summary>
-        /// <param name="acc"></param>
+        /// <param name="account"></param>
         /// <param name="vill"></param>
-        private static void AutoExpandStorage(Account acc, Village vill)
+        private static void AutoExpandStorage(Account account, Village village)
         {
-            long warehouse_delta = vill.Res.Capacity.WarehouseCapacity * (long)0.95;
-            long granary_delta = vill.Res.Capacity.GranaryCapacity * (long)0.95;
+            long warehouse_delta = village.Res.Capacity.WarehouseCapacity * (long)0.95;
+            long granary_delta = village.Res.Capacity.GranaryCapacity * (long)0.95;
 
-            if (vill.Settings.AutoExpandStorage == true &&
-                (vill.Res.Stored.Resources.Wood >= warehouse_delta || vill.Res.Stored.Resources.Clay >= warehouse_delta
-                || vill.Res.Stored.Resources.Iron >= warehouse_delta || vill.Res.Stored.Resources.Crop >= granary_delta))
+            if (village.Settings.AutoExpandStorage == true &&
+                (village.Res.Stored.Resources.Wood >= warehouse_delta || village.Res.Stored.Resources.Clay >= warehouse_delta
+                || village.Res.Stored.Resources.Iron >= warehouse_delta || village.Res.Stored.Resources.Crop >= granary_delta))
             {
-                AddTask(acc, new TTWarsExpandStorage() { Vill = vill });
+                AddTask(account, new TTWarsExpandStorage() { Vill = village });
             }
         }
 
