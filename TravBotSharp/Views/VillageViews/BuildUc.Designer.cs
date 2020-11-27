@@ -81,9 +81,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.buildPrerequisitesButton = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.label13 = new System.Windows.Forms.Label();
             this.prereqCombo = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.autoBuildResLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.buildLevelUpDown)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -622,16 +621,13 @@
             this.panel4.Size = new System.Drawing.Size(163, 80);
             this.panel4.TabIndex = 67;
             // 
-            // checkBox1
+            // prereqCombo
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(585, 324);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(157, 20);
-            this.checkBox1.TabIndex = 54;
-            this.checkBox1.Text = "Insta upgrade (2 gold)";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.prereqCombo.FormattingEnabled = true;
+            this.prereqCombo.Location = new System.Drawing.Point(12, 24);
+            this.prereqCombo.Name = "prereqCombo";
+            this.prereqCombo.Size = new System.Drawing.Size(134, 21);
+            this.prereqCombo.TabIndex = 68;
             // 
             // label13
             // 
@@ -643,20 +639,11 @@
             this.label13.TabIndex = 46;
             this.label13.Text = "Build prerequisites";
             // 
-            // prereqCombo
-            // 
-            this.prereqCombo.FormattingEnabled = true;
-            this.prereqCombo.Location = new System.Drawing.Point(12, 24);
-            this.prereqCombo.Name = "prereqCombo";
-            this.prereqCombo.Size = new System.Drawing.Size(134, 21);
-            this.prereqCombo.TabIndex = 68;
-            // 
             // BuildUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel4);
-            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -753,6 +740,5 @@
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.ComboBox prereqCombo;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.CheckBox checkBox1;
     }
 }

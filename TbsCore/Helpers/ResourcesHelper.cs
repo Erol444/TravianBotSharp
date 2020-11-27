@@ -61,7 +61,11 @@ namespace TravBotSharp.Files.Helpers
             if (mainVill == vill) return enoughRes;
 
             DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
-            return (enoughRes < resTransit ? enoughRes : resTransit);
+            if (resTransit < enoughRes) enoughRes = resTransit;
+
+            if (enoughRes < DateTime.Now) return DateTime.Now;
+
+            return enoughRes;
         }
 
         /// <summary>

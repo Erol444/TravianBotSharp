@@ -117,6 +117,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var contractBuilding = acc.Wb.Html.GetElementbyId($"contract_building{(int)Task.Building}");
             var upgradeBuildingContract = acc.Wb.Html.GetElementbyId("build");
             TaskRes res;
+            this.NextExecute = null;
             if (contractBuilding != null) //Construct a new building
                 res = await Construct(acc, contractBuilding);
             else if (upgradeBuildingContract != null) // Upgrade building
@@ -124,7 +125,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             else
                 throw new Exception("No construct or upgrade contract was found!");
 
-            ConfigNextExecute(acc);
+            if (this.NextExecute == null) ConfigNextExecute(acc);
             return res;
         }
 
@@ -330,7 +331,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (Vill.Build.AutoBuildResourceBonusBuildings) CheckResourceBonus(Vill);
 
             // Checks if we have enough FreeCrop (above 0)
-            CheckFreeCrop();
+            CheckFreeCrop(acc);
 
             // Worst case: leave nextExecute as is (after the current building finishes)
             // Best case: now
@@ -351,24 +352,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// <summary>
         /// Checks if we have enough free crop in the village (otherwise we can't upgrade any building)
         /// </summary>
-        private void CheckFreeCrop()
+        private void CheckFreeCrop(Account acc)
         {
             // 5 is maximum a building can take up free crop (stable lvl 1)
             if (this.Vill.Res.FreeCrop <= 5 && Vill.Build.Tasks.FirstOrDefault()?.Building != BuildingEnum.Cropland)
             {
-                var croplandsInVill = Vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Cropland).ToList();
-                var cropland = FindLowestLevelBuilding(croplandsInVill);
-                var CB = cropland.UnderConstruction ? 1 : 0;
-
-                var cropTask = new BuildingTask()
-                {
-                    TaskType = BuildingType.General,
-                    Building = BuildingEnum.Cropland,
-                    Level = cropland.Level + 1 + CB,
-                    BuildingId = cropland.Id
-                };
-                
-                Vill.Build.Tasks.Insert(0, cropTask);
+                BuildingHelper.UpgradeBuildingForOneLvl(acc, this.Vill, BuildingEnum.Cropland);
             }
         }
 
