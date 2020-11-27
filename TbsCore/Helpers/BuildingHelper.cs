@@ -12,17 +12,26 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class BuildingHelper
     {
-        public static void AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
+        /// <summary>
+        /// Adds the building task to the village list of building tasks. Restarts BotTask UpgradeBuilding if needed.
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="vill">Village</param>
+        /// <param name="task">BuildingTask to add</param>
+        /// <param name="bottom">Whether to insert the BuildingTask on the bottom of the list</param>
+        /// <returns>Whether the method completed successfully</returns>
+        public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
         {
             if (task.BuildingId == null && task.TaskType == BuildingType.General)
             {
                 //Check if bot has any space to build new buildings, otherwise return
-                if (!FindBuildingId(vill, task)) return;
+                if (!FindBuildingId(vill, task)) return false;
             }
             if (bottom) vill.Build.Tasks.Add(task);
             else vill.Build.Tasks.Insert(0, task);
 
             if (acc.Wb != null) ReStartBuilding(acc, vill);
+            return true;
         }
 
         /// <summary>
@@ -45,7 +54,7 @@ namespace TravBotSharp.Files.Helpers
 
             // Only special buildings (warehouse, cranny, grannary etc.) can have multiple 
             // buildings of it's type and use ConstructNew option
-            if (!CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
+            if (!BuildingsData.CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
 
             var ExistingBuilding = vill.Build
                     .Buildings
@@ -328,30 +337,47 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Upgrades specified building for exactly one level. Will upgrade the lowest lvl building.
+        /// Upgrades specified building for exactly one level. Will upgrade the lowest level building.
         /// </summary>
-        /// <param name="acc"></param>
-        /// <param name="vill"></param>
-        /// <param name="cropland"></param>
-        internal static void UpgradeBuildingForOneLvl(Account acc, Village vill, BuildingEnum building)
+        /// <param name="acc">Account</param>
+        /// <param name="vill">Village</param>
+        /// <param name="building">Building to be upgraded by one</param>
+        /// <param name="bottom">Whether to insert the building task on the bottom of the build list</param>
+        /// <returns>Whether the method executed successfully</returns>
+        internal static bool UpgradeBuildingForOneLvl(Account acc, Village vill, BuildingEnum building, bool bottom = true)
         {
-            var upgradeBuilding = vill.Build
+            var upgrade = vill.Build
                 .Buildings
                 .OrderBy(x => x.Level)
                 .FirstOrDefault(x => x.Type == building);
 
-            //upgradeBuilding
-            var CB = cropland.UnderConstruction ? 1 : 0;
+            var currentLvl = (int)upgrade.Level;
 
-            var cropTask = new BuildingTask()
+            RemoveFinishedCB(vill);
+            currentLvl += vill.Build.CurrentlyBuilding.Count(x => x.Building == building);
+
+            if (BuildingsData.MaxBuildingLevel(acc, upgrade.Type) == currentLvl)
             {
-                TaskType = BuildingType.General,
-                Building = BuildingEnum.Cropland,
-                Level = cropland.Level + 1 + CB,
-                BuildingId = cropland.Id
-            };
+                // Building is on max level, construct new building if possible
+                if (!BuildingsData.CanHaveMultipleBuildings(building)) return false;
 
-            Vill.Build.Tasks.Insert(0, cropTask);
+                return AddBuildingTask(acc, vill, new BuildingTask()
+                {
+                    TaskType = BuildingType.General,
+                    Building = building,
+                    Level = 1,
+                }, bottom);
+            }
+            else // Upgrade the defined building
+            {
+                return AddBuildingTask(acc, vill, new BuildingTask()
+                {
+                    TaskType = BuildingType.General,
+                    Building = building,
+                    Level = currentLvl + 1, 
+                    BuildingId = upgrade.Id
+                }, bottom);
+            }
         }
 
 
