@@ -292,8 +292,22 @@ namespace TravBotSharp.Files.Helpers
                     {
                         AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                     }
-                }
+                },
+                () => AutoExpandStorage(acc, activeVill)
             };
+        }
+
+        private static void AutoExpandStorage(Account acc, Village vill)
+        {
+            long warehouse_delta = vill.Res.Capacity.WarehouseCapacity * (long)0.95;
+            long granary_delta = vill.Res.Capacity.GranaryCapacity * (long)0.95;
+
+            if (vill.Settings.AutoExpandStorage == true &&
+                (vill.Res.Stored.Resources.Wood >= warehouse_delta || vill.Res.Stored.Resources.Clay >= warehouse_delta
+                || vill.Res.Stored.Resources.Iron >= warehouse_delta || vill.Res.Stored.Resources.Crop >= granary_delta))
+            {
+                AddTask(acc, new TTWarsExpandStorage() { Vill = vill });
+            }
         }
 
         public static void UpdateDorf2Info(Account acc)
