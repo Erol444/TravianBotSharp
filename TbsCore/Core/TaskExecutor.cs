@@ -297,6 +297,11 @@ namespace TravBotSharp.Files.Helpers
             };
         }
 
+        /// <summary>
+        /// Describe me pls
+        /// </summary>
+        /// <param name="acc"></param>
+        /// <param name="vill"></param>
         private static void AutoExpandStorage(Account acc, Village vill)
         {
             long warehouse_delta = vill.Res.Capacity.WarehouseCapacity * (long)0.95;
