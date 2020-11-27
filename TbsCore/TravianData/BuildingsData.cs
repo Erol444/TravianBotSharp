@@ -4,6 +4,7 @@ using System.Linq;
 using TbsCore.Helpers;
 using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models.AccModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.TravianData
@@ -29,6 +30,11 @@ namespace TravBotSharp.Files.TravianData
             return ret;
         }
 
+        /// <summary>
+        /// Whether there can be multiple buildings of this type in a village
+        /// </summary>
+        /// <param name="building">Building</param>
+        /// <returns></returns>
         public static bool CanHaveMultipleBuildings(BuildingEnum building) =>
             multipleBuildingsAllowes.Any(x => x == building);
 
@@ -37,15 +43,46 @@ namespace TravBotSharp.Files.TravianData
         /// </summary>
         /// <param name="building">Building</param>
         /// <returns>Max level</returns>
-        public static int MaxBuildingLevel(BuildingEnum building)
+        public static int MaxBuildingLevel(Account acc, BuildingEnum building)
         {
             switch (building)
             {
-                case BuildingEnum.Bakery:
+                case BuildingEnum.Brewery:
+                    switch (acc.AccInfo.ServerVersion)
+                    {
+                        case ServerVersionEnum.T4_4: return 10;
+                        default: return 20;
+                    }
 
+                case BuildingEnum.Bakery:
+                case BuildingEnum.Brickyard:
+                case BuildingEnum.IronFoundry:
+                case BuildingEnum.GrainMill:
+                case BuildingEnum.Sawmill:
                     return 5;
+
+                case BuildingEnum.Cranny: return 10;
+
+                default: return 20;
+            }
+        }
+
+        public static BuildingEnum GetTribesWall(Classificator.TribeEnum? tribe)
+        {
+            switch (tribe)
+            {
+                case TribeEnum.Teutons:
+                    return BuildingEnum.EarthWall;
+                case TribeEnum.Romans:
+                    return BuildingEnum.CityWall;
+                case TribeEnum.Gauls:
+                    return BuildingEnum.Palisade;
+                case TribeEnum.Egyptians:
+                    return BuildingEnum.StoneWall;
+                case TribeEnum.Huns:
+                    return BuildingEnum.MakeshiftWall;
                 default:
-                    return 20;
+                    return BuildingEnum.Site;
             }
         }
 
