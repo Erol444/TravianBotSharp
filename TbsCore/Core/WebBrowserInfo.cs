@@ -180,7 +180,7 @@ namespace TravBotSharp.Files.Models.AccModels
         {
             try
             {
-                this.Driver.Quit();
+                this.Driver?.Quit();
             }
             catch(Exception e)
             {

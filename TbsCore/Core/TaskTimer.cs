@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks;
@@ -32,16 +33,16 @@ namespace TravBotSharp.Files.Models.AccModels
             Timer.Enabled = false;
         }
 
-        private void TimerElapsed(Object source, ElapsedEventArgs e)
+        private async void TimerElapsed(Object source, ElapsedEventArgs e)
         {
             try
             {
-                NewTick();
+                await NewTick();
             }
             catch(Exception exception) { }
         }
 
-        private async void NewTick()
+        private async Task NewTick()
         {
             if (acc.Tasks.Count == 0) return; //No tasks
 

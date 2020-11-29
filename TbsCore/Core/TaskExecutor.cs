@@ -93,6 +93,7 @@ namespace TravBotSharp.Files.Helpers
                         if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
                         break;
                     default:
+                        task.RetryCounter = 0;
                         break;
                 }
             }
@@ -109,7 +110,6 @@ namespace TravBotSharp.Files.Helpers
                 task.ExecuteAt = task.NextExecute ?? default;
                 task.NextExecute = null;
                 task.Stage = TaskStage.Start;
-                task.RetryCounter = 0;
                 ReorderTaskList(acc);
                 return;
             }
@@ -271,10 +271,14 @@ namespace TravBotSharp.Files.Helpers
                         acc.Hero.Status == Hero.StatusEnum.Home &&
                         acc.Hero.NextHeroSend < DateTime.Now);
                     // Update adventures
-                    if (heroReady
-                        && (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc))
-                        ) //update adventures
+                    if (heroReady && 
+                        HeroHelper.GetHeroHomeVillage(acc) // RallyPoint in village
+                            .Build
+                            .Buildings
+                            .Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level) &&
+                        (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc))) 
                     {
+                        // Update adventures
                         AddTaskIfNotExists(acc, new StartAdventure() { ExecuteAt = DateTime.Now.AddSeconds(10) });
                     }
                     if (acc.Hero.AdventureNum == 0 && acc.Hero.Settings.BuyAdventures) //for UNL servers, buy adventures

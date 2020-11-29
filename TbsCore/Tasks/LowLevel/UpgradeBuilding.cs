@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
 using TbsCore.Helpers;
+using TbsCore.Resources;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
@@ -27,7 +28,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //if (this.Task == null)
             ConfigNextExecute(acc);
 
-            this.NextExecute = DateTime.Now.AddMinutes(2);
             if (this.Task == null)
             {
                 // There is no building task left. Remove the BotTask
@@ -36,7 +36,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             // Check if the task is complete
-            var urlId = BuildingHelper.GetUrlForBuilding(Vill, Task);
+            var (urlId, constructNew) = GetUrlForBuilding(Vill, Task);
             if (urlId == null)
             {
                 //no space for this building
@@ -98,85 +98,79 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //}
 
             // Append correct tab
-            switch (this.Task.Building)
+            if (!constructNew)
             {
-                case BuildingEnum.RallyPoint:
-                    url += "&tt=0";
-                    break;
-                case BuildingEnum.Marketplace:
-                    url += "&t=0";
-                    break;
+                switch (this.Task.Building)
+                {
+                    case BuildingEnum.RallyPoint:
+                        url += "&tt=0";
+                        break;
+                    case BuildingEnum.Marketplace:
+                        url += "&t=0";
+                        break;
+                }
             }
+
             await acc.Wb.Navigate(url);
 
-            // Check if enough resources
-            //BuildingsCost.GetBuildingCost()
+            var constructContract = acc.Wb.Html.GetElementbyId($"contract_building{(int)Task.Building}");
+            var upgradeContract = acc.Wb.Html.GetElementbyId("build");
 
-            this.NextExecute = DateTime.Now.AddMinutes(2);
-
-            var contractBuilding = acc.Wb.Html.GetElementbyId($"contract_building{(int)Task.Building}");
-            var upgradeBuildingContract = acc.Wb.Html.GetElementbyId("build");
-            TaskRes res;
+            TaskRes response;
             this.NextExecute = null;
-            if (contractBuilding != null) //Construct a new building
-                res = await Construct(acc, contractBuilding);
-            else if (upgradeBuildingContract != null) // Upgrade building
-                res = await Upgrade(acc, upgradeBuildingContract);
-            else
-                throw new Exception("No construct or upgrade contract was found!");
+
+            if (constructContract != null)
+            {
+                if (!IsEnoughRes(acc, constructContract)) return TaskRes.Retry;
+                response = await Construct(acc, constructContract);
+            }
+            else if (upgradeContract != null)
+            {
+                if (!IsEnoughRes(acc, upgradeContract)) return TaskRes.Retry;
+                response = await Upgrade(acc, upgradeContract);
+            }
+            else throw new Exception("No propercontract was found!");
 
             if (this.NextExecute == null) ConfigNextExecute(acc);
-            return res;
+            return response;
         }
 
         /// <summary>
         /// Building isn't constructed yet - construct it
         /// </summary>
         /// <param name="acc">Account</param>
-        /// <param name="contractBuilding">HtmlNode</param>
-        /// <returns>TaskResult</returns>
-        private async Task<TaskRes> Construct(Account acc, HtmlNode contractBuilding)
+        /// <returns>TaskResult</returnss>
+        private async Task<TaskRes> Construct(Account acc, HtmlNode node)
         {
-            var resWrapper = contractBuilding.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
-            var res = ResourceParser.GetResourceCost(resWrapper);
+            var button = node.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
 
-            var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, res);
-
-            if (nextExecute < DateTime.Now.AddMilliseconds(1)) // we have enough res, go construct that building boii
+            // Check for prerequisites
+            if (button == null)
             {
-                var button = contractBuilding.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
-
-                // Check for prerequisites
-                if (button == null)
+                // Add prerequisite buildings in order to construct this building.
+                if (!AddBuildingPrerequisites(acc, Vill, Task.Building, false))
                 {
-                    // Add prerequisite buildings in order to construct this building.
-                    if (!AddBuildingPrerequisites(acc, Vill, Task.Building, false))
-                    {
-                        // Next execute after the last building finishes
-                        this.NextExecute = Vill.Build.CurrentlyBuilding.LastOrDefault()?.Duration;
-                        return TaskRes.Executed;
-                    }
-                    else
-                    {
-                        acc.Wb.Log($"Error trying to construct {Task.Building}! Prerequisites are met but there is no 'Build' button!");
-
-                        return TaskRes.Retry;
-                    }
+                    // Next execute after the last building finishes
+                    this.NextExecute = Vill.Build.CurrentlyBuilding.LastOrDefault()?.Duration;
+                    return TaskRes.Executed;
                 }
+                else
+                {
+                    acc.Wb.Log($"Error trying to construct {Task.Building}! Prerequisites are met but there is no 'Build' button!");
 
-                await acc.Wb.Driver.FindElementById(button.Id).Click(acc);
-                this.Task.ConstructNew = false;
-
-                CheckIfTaskFinished(1);
-
-                acc.Wb.Log($"Started construction of {this.Task.Building} in {this.Vill?.Name}");
-
-                await PostTaskCheckDorf(acc);
-
-                return TaskRes.Executed;
+                    return TaskRes.Retry;
+                }
             }
-            //not enough resources, wait until resources get produced/transited from main village
-            this.NextExecute = nextExecute;
+
+            await acc.Wb.Driver.FindElementById(button.Id).Click(acc);
+            this.Task.ConstructNew = false;
+
+            CheckIfTaskFinished(1);
+
+            acc.Wb.Log($"Started construction of {this.Task.Building} in {this.Vill?.Name}");
+
+            await PostTaskCheckDorf(acc);
+
             return TaskRes.Executed;
         }
 
@@ -184,11 +178,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// Building is already constructed, upgrade it
         /// </summary>
         /// <param name="acc">Account</param>
-        /// <param name="node">HtmlNode</param>
         /// <returns>TaskResult</returns>
         private async Task<TaskRes> Upgrade(Account acc, HtmlNode node)
         {
-
             (var buildingEnum, var lvl) = InfrastructureParser.UpgradeBuildingGetInfo(node);
 
             if (buildingEnum == BuildingEnum.Site || lvl == -1)
@@ -236,10 +228,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             switch (acc.AccInfo.ServerVersion)
             {
                 case ServerVersionEnum.T4_4:
-                    if (upgradeButton == null) return NotEnoughRes(acc);
+                    if (upgradeButton == null)
+                        throw new Exception($"We wanted to upgrade {Task.Building}, but no 'upgrade' button was found!");
                     break;
                 case ServerVersionEnum.T4_5:
-                    if (errorMessage != null) return NotEnoughRes(acc);
+                    if (errorMessage != null)
+                        throw new Exception($"We wanted to upgrade {Task.Building}, but there was an error message!");
                     break;
             }
 
@@ -288,21 +282,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         private void RemoveCurrentTask() => this.Vill.Build.Tasks.Remove(this.Task);
 
-        private TaskRes NotEnoughRes(Account acc)
-        {
-            var contract = acc.Wb.Html.GetElementbyId("contract");
-            var resWrapper = contract.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
-            var res = ResourceParser.GetResourceCost(resWrapper);
-            var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, res, this.Task);
-            acc.Wb.Log($"Not enough resources for the building! Next execute in {(nextExecute - DateTime.Now).TotalSeconds} sec");
-            this.NextExecute = nextExecute;
-            return TaskRes.Retry;
-        }
-
         private async Task PostTaskCheckDorf(Account acc) => await TaskExecutor.PageLoaded(acc);
 
-
-        //TODO: Have this as postCheck? just so it doesn't get constantly checked
+        // TODO: move. 
         private void CheckSettlers(Account acc, Village vill, int currentLevel, DateTime finishBuilding)
         {
             if (this.Task.Building == BuildingEnum.Residence &&
@@ -328,14 +310,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             RemoveFinishedCB(Vill);
 
-            if (Vill.Build.AutoBuildResourceBonusBuildings) CheckResourceBonus(Vill);
+            if (Vill.Build.AutoBuildResourceBonusBuildings) CheckResourceBonus(acc, Vill);
 
             // Checks if we have enough FreeCrop (above 0)
             CheckFreeCrop(acc);
 
             // Worst case: leave nextExecute as is (after the current building finishes)
             // Best case: now
-            (var nextTask, var time) = FindBuildingTask(acc, Vill);
+            (var nextTask, var time) = UpgradeBuildingHelper.NextBuildingTask(acc, Vill);
             
             if (nextTask == null) return;
 
@@ -350,6 +332,26 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         }
 
         /// <summary>
+        /// Checks if we have enough resources to build the building. If we don't have enough resources,
+        /// method sets NextExecute DateTime.
+        /// </summary>
+        /// <param name="node">Node of the contract</param>
+        /// <returns>Whether we have enough resources</returns>
+        private bool IsEnoughRes(Account acc, HtmlNode node)
+        {
+            var resWrapper = node.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
+            var cost = ResourceParser.GetResourceCost(resWrapper).ToArray();
+
+            // We have enough resources, go on and build it
+            if (ResourcesHelper.EnoughRes(Vill.Res.Stored.Resources.ToArray(), cost)) return true;
+
+            var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost, this.Task);
+            acc.Wb.Log($"Not enough resources for the building! Next execute in {(nextExecute - DateTime.Now).TotalSeconds} sec");
+            this.NextExecute = nextExecute;
+            return false;
+        }
+
+        /// <summary>
         /// Checks if we have enough free crop in the village (otherwise we can't upgrade any building)
         /// </summary>
         private void CheckFreeCrop(Account acc)
@@ -357,31 +359,20 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // 5 is maximum a building can take up free crop (stable lvl 1)
             if (this.Vill.Res.FreeCrop <= 5 && Vill.Build.Tasks.FirstOrDefault()?.Building != BuildingEnum.Cropland)
             {
-                BuildingHelper.UpgradeBuildingForOneLvl(acc, this.Vill, BuildingEnum.Cropland);
+                UpgradeBuildingForOneLvl(acc, this.Vill, BuildingEnum.Cropland);
             }
         }
 
         /// <summary>
-        /// After fast upgrading, check if browser is inside the building view. If so, building is already on max and should be removed from the buildingTask list.
-        /// This will get called before the ConfigureNextExecute.
+        /// For auto-building resource bonus building
         /// </summary>
-        /// <param name="htmlDoc">Html</param>
         /// <param name="acc">Account</param>
-        public void PostCheckFastUpgrade(HtmlDocument htmlDoc, Account acc)
+        /// <param name="vill">Village</param>
+        private void CheckResourceBonus(Account acc, Village vill)
         {
-            var upgradeBuildingContract = htmlDoc.GetElementbyId("build");
-            if (upgradeBuildingContract != null) // Building is already on max level. Remove it from queue.
-            {
-                Vill.Build.Tasks.Remove(this.Task);
-            }
-        }
-
-
-        private void CheckResourceBonus(Village vill)
-        {
-            //For auto building resource bonus buildings
+            // If enabled and MainBuilding is above level 5
             if (vill.Build.AutoBuildResourceBonusBuildings &&
-                vill.Build.Buildings.Any(x => x.Type == BuildingEnum.MainBuilding && x.Level >= 5)) // If enabled and MainBuilding is above lvl 5
+                vill.Build.Buildings.Any(x => x.Type == BuildingEnum.MainBuilding && x.Level >= 5)) 
             {
                 var bonusBuilding = CheckBonusBuildings(vill);
                 if (bonusBuilding != BuildingEnum.Site)
@@ -393,70 +384,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         Level = 5,
                     };
 
-                    if (BuildingHelper.FindBuildingId(vill, bonusTask))
-                    {
-                        vill.Build.Tasks.Insert(0, bonusTask);
-                    }
+                    BuildingHelper.AddBuildingTask(acc, vill, bonusTask, false);
                 }
             }
-        }
-
-        private (BuildingTask, DateTime) FindBuildingTask(Account acc, Village vill)
-        {
-            if (vill.Build.Tasks.Count == 0) return (null, DateTime.Now);
-
-            var now = DateTime.Now.AddHours(-2); // Since we are already in the village
-            var later = DateTime.Now.AddMilliseconds(500);
-            var totalBuild = vill.Build.CurrentlyBuilding.Count;
-            if (totalBuild > 0) later = vill.Build.CurrentlyBuilding.First().Duration;
-
-            var maxBuild = 1;
-            if (acc.AccInfo.PlusAccount) maxBuild++;
-            if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuild++;
-
-            BuildingTask task = null;
-
-            // If (roman OR ttwars+plus acc) -> build 1 res + 1 infra at the same time
-            if (1 <= totalBuild &&
-               (acc.AccInfo.Tribe == TribeEnum.Romans ||
-               (acc.AccInfo.PlusAccount && acc.AccInfo.ServerUrl.ToLower().Contains("ttwars"))
-                ))
-            {
-                //find the CurrentlyBuilding that executes sooner
-                var cb = vill.Build.CurrentlyBuilding.OrderBy(x => x.Duration).First();
-                later = cb.Duration;
-
-                var isResField = IsResourceField(cb.Building);
-
-                task = isResField ? GetFirstInfrastructureTask(vill) : GetFirstResTask(vill);
-                
-                if (task != null) return (task, now);
-                maxBuild--;
-            } 
-            
-            task = vill.Build.Tasks.First();
-
-            //If this task is already complete, remove it and repeat the finding process
-            if (IsTaskCompleted(vill, acc, task))
-            {
-                vill.Build.Tasks.Remove(task); //task has been completed
-                return FindBuildingTask(acc, vill);
-            }
-
-            //if buildingId is not yet defined, find one.
-            if (task.BuildingId == null && task.TaskType == BuildingType.General)
-            {
-                var found = FindBuildingId(vill, task);
-                //no space found for this building, remove the buildTask
-                if (!found)
-                {
-                    vill.Build.Tasks.Remove(task);
-                    return FindBuildingTask(acc, vill);
-                }
-            }
-
-            if (totalBuild < maxBuild) return (task, now);
-            else return (task, later);
         }
 
         private BuildingEnum CheckBonusBuildings(Village vill)
@@ -469,7 +399,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return BuildingEnum.IronFoundry;
             if (BonusHelper(vill, BuildingEnum.Cropland, BuildingEnum.GrainMill, 5))
                 return BuildingEnum.GrainMill;
-            if (BonusHelper(vill, BuildingEnum.Cropland, BuildingEnum.Bakery, 10) && vill.Build.Buildings.FirstOrDefault(x => x.Type == BuildingEnum.GrainMill && x.Level >= 5) != null)
+            if (BonusHelper(vill, BuildingEnum.Cropland, BuildingEnum.Bakery, 10) && 
+                vill.Build.Buildings.Any(x => x.Type == BuildingEnum.GrainMill && x.Level >= 5))
                 return BuildingEnum.Bakery;
 
             return BuildingEnum.Site;
@@ -480,21 +411,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //res field is high enoguh, bonus building is not on 5, there is still space left to build, there isn't already a bonus building buildtask
             return (!vill.Build.Buildings.Any(x => x.Type == bonus && x.Level >= 5) &&
                 vill.Build.Buildings.Any(x => x.Type == field && x.Level >= fieldLvl) &&
-                vill.Build.Buildings.Any(x => x.Type == Classificator.BuildingEnum.Site) &&
+                vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Site) &&
                 !vill.Build.Tasks.Any(x => x.Building == bonus));
-        }
-
-        private BuildingTask GetFirstResTask(Village vill)
-        {
-            return vill.Build.Tasks.FirstOrDefault(x =>
-            x.TaskType == BuildingType.AutoUpgradeResFields || IsResourceField(x.Building)
-            );
-        }
-        private BuildingTask GetFirstInfrastructureTask(Village vill)
-        {
-            return vill.Build.Tasks.FirstOrDefault(x =>
-            x.TaskType != BuildingType.AutoUpgradeResFields && !IsResourceField(x.Building)
-            );
         }
     }
 }
