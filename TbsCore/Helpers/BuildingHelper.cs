@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Helpers;
 using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
@@ -22,7 +23,8 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Whether the method completed successfully</returns>
         public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
         {
-            if (task.BuildingId == null && task.TaskType == BuildingType.General)
+            if (task.BuildingId == null || 
+                vill.Build.Buildings.Any(x=>x.Id == task.BuildingId && x.Type != task.Building))
             {
                 //Check if bot has any space to build new buildings, otherwise return
                 if (!FindBuildingId(vill, task)) return false;
@@ -45,48 +47,41 @@ namespace TravBotSharp.Files.Helpers
             //auto field upgrade/demolish task, no need for Id
             if (task.TaskType == BuildingType.AutoUpgradeResFields) return true;
 
-            var FreePlaces = vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Site).ToList();
-            bool FreePlace = false;
-            foreach (var freePlc in FreePlaces)
-            {
-                if (!vill.Build.Tasks.Any(x => x.BuildingId == freePlc.Id)) FreePlace = true;
-            }
+            var ExistingBuilding = vill.Build.Buildings
+                    .FirstOrDefault(x => x.Type == task.Building);
 
-            // Only special buildings (warehouse, cranny, grannary etc.) can have multiple 
+            // Only special buildings (warehouse, cranny, granary etc.) can have multiple 
             // buildings of it's type and use ConstructNew option
             if (!BuildingsData.CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
-
-            var ExistingBuilding = vill.Build
-                    .Buildings
-                    .FirstOrDefault(x => x.Type == task.Building);
+            
             if (ExistingBuilding != null && !task.ConstructNew)
             {
                 task.BuildingId = ExistingBuilding.Id;
                 return true;
             }
 
-            var ExistingBuildingTask = vill.Build
-                    .Tasks
+            var ExistingBuildingTask = vill.Build.Tasks
                     .FirstOrDefault(x => x.Building == task.Building && x.BuildingId != null);
+
             if (ExistingBuildingTask != null && !task.ConstructNew)
             {
                 task.BuildingId = ExistingBuildingTask.BuildingId;
                 return true;
             }
 
-            if (!FreePlace) return false; //there is no space in the village to construct a new building
-
-            byte id;
-            do
+            var FreeSites = vill.Build.Buildings
+                .Where(x => x.Type == BuildingEnum.Site && 19 <= x.Id && x.Id <= 39)
+                .ToList();
+            foreach (var FreeSite in FreeSites)
             {
-                Random ran = new Random();
-                id = (byte)ran.Next(19, 39);
-            } //search for available building id;
-            while (vill.Build.Buildings.FirstOrDefault(x => x.Id == id).Type != BuildingEnum.Site ||
-                   vill.Build.Tasks.Any(x => x.BuildingId == id));
-            //if new village, you should return build.php?id=25&category=3
-            task.BuildingId = id;
-            return true;
+                if (!vill.Build.Tasks.Any(x => x.BuildingId == FreeSite.Id))
+                {
+                    // Site is free and there's no building task that reserves it.
+                    task.BuildingId = FreeSite.Id;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static List<string> SetPrereqCombo(Account acc, Village vill)
@@ -126,23 +121,16 @@ namespace TravBotSharp.Files.Helpers
 
             if (vill.Build.Tasks.Count == 0) return; //No build tasks
 
-            var nextExecution = DateTime.Now.AddSeconds(5);
-            var lastCB = vill.Build.CurrentlyBuilding.LastOrDefault();
-
-            var maxBuildings = 1;
-            if (acc.AccInfo.PlusAccount) maxBuildings++;
-            if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuildings++;
-
-            if (lastCB != null && lastCB.Duration > nextExecution && vill.Build.CurrentlyBuilding.Count >= maxBuildings) nextExecution = lastCB.Duration;
-
-            var building = new UpgradeBuilding()
+            var (_, nextExecution) = UpgradeBuildingHelper.NextBuildingTask(acc, vill);
+            
+            TaskExecutor.AddTask(acc, new UpgradeBuilding()
             {
                 Vill = vill,
                 ExecuteAt = nextExecution,
-            };
-            TaskExecutor.AddTask(acc, building);
+            });
         }
 
+       
         public static void ReStartDemolishing(Account acc, Village vill)
         {
             if (vill.Build.DemolishTasks.Count > 0)
@@ -199,16 +187,16 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="vill">Village</param>
         /// <param name="task">BotTask</param>
         /// <returns></returns>
-        public static string GetUrlForBuilding(Village vill, BuildingTask task)
+        public static (string, bool) GetUrlForBuilding(Village vill, BuildingTask task)
         {
             switch (task.TaskType)
             {
                 case BuildingType.General:
                     return GetUrlGeneralTask(vill, task);
                 case BuildingType.AutoUpgradeResFields:
-                    return GetUrlAutoResFields(vill, task);
+                    return (GetUrlAutoResFields(vill, task), false);
             }
-            return null;
+            return (null, true);
         }
 
         public static bool IsTaskCompleted(Village vill, Account acc, BuildingTask task)
@@ -252,7 +240,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return false;
         }
-        private static string GetUrlGeneralTask(Village vill, BuildingTask task)
+        private static (string, bool) GetUrlGeneralTask(Village vill, BuildingTask task)
         {
             // Check if there is already a different building in this spot
             if (task.BuildingId == null || vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId).Type != task.Building)
@@ -267,18 +255,21 @@ namespace TravBotSharp.Files.Helpers
                 {
                     if (!BuildingHelper.FindBuildingId(vill, task))
                     {
-                        return null;
+                        return (null, false);
                     }
                 }
             }
 
             var url = task.BuildingId.ToString();
+
+            bool constructNew = false;
             // If there is no building in that space currently, construct a new building
             if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Site && x.Id == task.BuildingId))
             {
                 url += "&category=" + (int)BuildingsData.GetBuildingsCategory(task.Building);
+                constructNew = true;
             }
-            return url;
+            return (url, constructNew);
         }
         public static string GetUrlAutoResFields(Village vill, BuildingTask task)
         {
