@@ -28,6 +28,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 if (mainVill == this.Vill) return TaskRes.Executed; // No gold account?
                 await VillageHelper.SwitchVillage(acc, mainVill.Id);
                 flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
+                if (flNode == null) return TaskRes.Retry;
             }
 
             if (acc.Farming.TrainTroopsAfterFL) // For TTWars servers

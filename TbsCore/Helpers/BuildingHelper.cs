@@ -337,17 +337,32 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Whether the method executed successfully</returns>
         internal static bool UpgradeBuildingForOneLvl(Account acc, Village vill, BuildingEnum building, bool bottom = true)
         {
+            // We already have a build task
+            if (!bottom && vill.Build.Tasks.FirstOrDefault()?.Building == building) return true;
+            if (bottom && vill.Build.Tasks.LastOrDefault()?.Building == building) return true;
+
             var upgrade = vill.Build
                 .Buildings
                 .OrderBy(x => x.Level)
                 .FirstOrDefault(x => x.Type == building);
+
+            // We don't have this building in the village yet
+            if (upgrade == null)
+            {
+                return AddBuildingTask(acc, vill, new BuildingTask()
+                {
+                    TaskType = BuildingType.General,
+                    Building = building,
+                    Level = 1,
+                }, bottom);
+            }
 
             var currentLvl = (int)upgrade.Level;
 
             RemoveFinishedCB(vill);
             currentLvl += vill.Build.CurrentlyBuilding.Count(x => x.Building == building);
 
-            if (BuildingsData.MaxBuildingLevel(acc, upgrade.Type) == currentLvl)
+            if (BuildingsData.MaxBuildingLevel(acc, building) == currentLvl)
             {
                 // Building is on max level, construct new building if possible
                 if (!BuildingsData.CanHaveMultipleBuildings(building)) return false;

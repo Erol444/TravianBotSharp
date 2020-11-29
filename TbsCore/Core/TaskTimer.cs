@@ -33,16 +33,16 @@ namespace TravBotSharp.Files.Models.AccModels
             Timer.Enabled = false;
         }
 
-        private async void TimerElapsed(Object source, ElapsedEventArgs e)
+        private void TimerElapsed(Object source, ElapsedEventArgs e)
         {
             try
             {
-                await NewTick();
+                NewTick();
             }
             catch(Exception exception) { }
         }
 
-        private async Task NewTick()
+        private async void NewTick()
         {
             if (acc.Tasks.Count == 0) return; //No tasks
 
@@ -72,7 +72,7 @@ namespace TravBotSharp.Files.Models.AccModels
                     await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
                 }
             }
-            _ = TaskExecutor.Execute(acc, firstTask);
+            await TaskExecutor.Execute(acc, firstTask);
         }
 
         private void NoTasks(Account acc)

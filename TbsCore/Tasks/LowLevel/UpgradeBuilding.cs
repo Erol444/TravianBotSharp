@@ -129,7 +129,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 if (!IsEnoughRes(acc, upgradeContract)) return TaskRes.Retry;
                 response = await Upgrade(acc, upgradeContract);
             }
-            else throw new Exception("No propercontract was found!");
+            else throw new Exception("No contract was found!");
 
             if (this.NextExecute == null) ConfigNextExecute(acc);
             return response;
@@ -224,20 +224,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var errorMessage = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("errorMessage"));
             HtmlNode upgradeButton = buttons.FirstOrDefault(x => x.HasClass("build"));
 
-            // Not enough resources
-            switch (acc.AccInfo.ServerVersion)
+            if (upgradeButton == null)
             {
-                case ServerVersionEnum.T4_4:
-                    if (upgradeButton == null)
-                        throw new Exception($"We wanted to upgrade {Task.Building}, but no 'upgrade' button was found!");
-                    break;
-                case ServerVersionEnum.T4_5:
-                    if (errorMessage != null)
-                        throw new Exception($"We wanted to upgrade {Task.Building}, but there was an error message!");
-                    break;
+                acc.Wb.Log($"We wanted to upgrade {Task.Building}, but no 'upgrade' button was found!");
+                return TaskRes.Retry;
             }
 
-            // TODO: check if there is no upgrade button due to already building another building
+            // Not enough resources?
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
+            {
+                acc.Wb.Log($"We wanted to upgrade {Task.Building}, but there was an error message!");
+                return TaskRes.Retry;     
+            }
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
 
@@ -282,7 +280,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         private void RemoveCurrentTask() => this.Vill.Build.Tasks.Remove(this.Task);
 
-        private async Task PostTaskCheckDorf(Account acc) => await TaskExecutor.PageLoaded(acc);
+        private async Task PostTaskCheckDorf(Account acc)
+        {
+            await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
+            await TaskExecutor.PageLoaded(acc);
+        }
 
         // TODO: move. 
         private void CheckSettlers(Account acc, Village vill, int currentLevel, DateTime finishBuilding)
@@ -359,7 +361,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // 5 is maximum a building can take up free crop (stable lvl 1)
             if (this.Vill.Res.FreeCrop <= 5 && Vill.Build.Tasks.FirstOrDefault()?.Building != BuildingEnum.Cropland)
             {
-                UpgradeBuildingForOneLvl(acc, this.Vill, BuildingEnum.Cropland);
+                UpgradeBuildingForOneLvl(acc, this.Vill, BuildingEnum.Cropland, false);
             }
         }
 

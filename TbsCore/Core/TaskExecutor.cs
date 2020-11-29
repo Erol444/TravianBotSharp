@@ -160,7 +160,7 @@ namespace TravBotSharp.Files.Helpers
                 () => // Village expansion
                 {
                     var villExpansionReady = acc.Villages.FirstOrDefault(x => x.Expansion.ExpansionAvailable);
-                    if (acc.AccInfo.CulturePoints.MaxVillages > acc.AccInfo.CulturePoints.VillageCount &&
+                    if (acc.AccInfo.CulturePoints?.MaxVillages > acc.AccInfo.CulturePoints?.VillageCount &&
                         villExpansionReady != null)
                     {
                         villExpansionReady.Expansion.ExpansionAvailable = false;
@@ -272,10 +272,10 @@ namespace TravBotSharp.Files.Helpers
                         acc.Hero.NextHeroSend < DateTime.Now);
                     // Update adventures
                     if (heroReady && 
-                        HeroHelper.GetHeroHomeVillage(acc) // RallyPoint in village
-                            .Build
-                            .Buildings
-                            .Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level) &&
+                        (HeroHelper.GetHeroHomeVillage(acc)? // RallyPoint in village
+                            .Build?
+                            .Buildings?
+                            .Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level) ?? false) &&
                         (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc))) 
                     {
                         // Update adventures
@@ -316,7 +316,11 @@ namespace TravBotSharp.Files.Helpers
             if (warehouse_delta <= vill.Res.Stored.Resources.Wood || 
                 warehouse_delta <= vill.Res.Stored.Resources.Clay ||
                 warehouse_delta <= vill.Res.Stored.Resources.Iron)
+            {
                 BuildingHelper.UpgradeBuildingForOneLvl(acc, vill, Classificator.BuildingEnum.Warehouse, false);
+                return;
+            }
+                
 
             if (granary_delta <= vill.Res.Stored.Resources.Crop)
                 BuildingHelper.UpgradeBuildingForOneLvl(acc, vill, Classificator.BuildingEnum.Granary, false);

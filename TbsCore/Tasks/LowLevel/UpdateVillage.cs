@@ -32,9 +32,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 else
                     IoHelperCore.AddBuildTasksFromFile(acc, Vill, acc.NewVillages.BuildingTasksLocationNewVillage);
             }
-            
 
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+            await Task.Delay(AccountHelper.Delay());
             await UpdateTroopsResearchedAndLevels(acc);
+
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+            await Task.Delay(AccountHelper.Delay());
             await UpdateTroopsTraining(acc);
 
             var firstTroop = TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe);
@@ -91,7 +95,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public async Task UpdateTroopsTraining(Account acc)
         {
-            foreach(var trainingBuilding in trainingBuildings)
+            foreach (var trainingBuilding in trainingBuildings)
             {
                 if (!await VillageHelper.EnterBuilding(acc, Vill, trainingBuilding)) continue;
 
@@ -117,6 +121,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         Vill.Troops.CurrentlyTraining.Workshop = ct;
                         break;
                 }
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+                await Task.Delay(AccountHelper.Delay());
             }
         }
         private void UpdateResearchedTroops(Village vill)
