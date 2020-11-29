@@ -128,8 +128,8 @@ namespace TravBotSharp.Files.Helpers
         /// <returns></returns>
         private static Resources ResStillNeeded(Village vill, Resources required)
         {
-            long[] resStored = ResourcesToArray(vill.Res.Stored.Resources);
-            long[] resRequired = ResourcesToArray(required);
+            long[] resStored = vill.Res.Stored.Resources.ToArray();
+            long[] resRequired = required.ToArray();
             long[] neededRes = new long[4];
             for (int i = 0; i < 4; i++)
             {
@@ -148,8 +148,8 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="task">Potential BuildingTask that requires the resources</param>
         private static void UseHeroResources(Account acc, Village vill, Resources neededRes, Resources heroRes, BuildingTask task = null)
         {
-            var neededResArr = ResourcesToArray(neededRes);
-            var heroResArr = ResourcesToArray(heroRes);
+            var neededResArr = neededRes.ToArray();
+            var heroResArr = heroRes.ToArray();
 
             for (int i = 0; i < 4; i++)
             {
@@ -237,10 +237,6 @@ namespace TravBotSharp.Files.Helpers
                 Crop = res[3],
             };
         }
-        public static long[] ResourcesToArray(Resources res)
-        {
-            return new long[] { res.Wood, res.Clay, res.Iron, res.Crop };
-        }
 
         public static int MaxTroopsToTrain(long[] stored1, long[] stored2, int[] cost)
         {
@@ -259,8 +255,8 @@ namespace TravBotSharp.Files.Helpers
 
         private static Resources SubtractResources(Resources subtractFrom, Resources subtract, bool capToZero)
         {
-            var subtractFromArr = ResourcesHelper.ResourcesToArray(subtractFrom);
-            var subtractArr = ResourcesHelper.ResourcesToArray(subtract);
+            var subtractFromArr = subtractFrom.ToArray();
+            var subtractArr = subtract.ToArray();
             var ret = new long[4];
 
             for (int i = 0; i < 4; i++)

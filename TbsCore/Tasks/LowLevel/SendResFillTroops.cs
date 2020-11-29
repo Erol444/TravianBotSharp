@@ -36,8 +36,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var trainNum = TroopsHelper.TroopsToFill(acc, TargetVill, TrainTask.Troop, TrainTask.Great);
 
             //how many troops we can train with resources that we have
-            var mainVillResStored = ResourcesHelper.ResourcesToArray(Vill.Res.Stored.Resources);
-            var targetVillStoredRes = ResourcesHelper.ResourcesToArray(TargetVill.Res.Stored.Resources);
+            var mainVillResStored = Vill.Res.Stored.Resources.ToArray();
+            var targetVillStoredRes = TargetVill.Res.Stored.Resources.ToArray();
 
             // Max troops we can train with resources that we have
             var maxTroopsToTrain = ResourcesHelper.MaxTroopsToTrain(mainVillResStored, targetVillStoredRes, troopCost);

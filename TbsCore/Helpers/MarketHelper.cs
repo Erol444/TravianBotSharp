@@ -96,7 +96,7 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Time it will take for transit to complete</returns>
         public static async Task<TimeSpan?> MarketSendResource(Account acc, Resources resources, Village targetVillage, BotTask botTask)
         {
-            var res = ResourcesHelper.ResourcesToArray(resources);
+            var res = resources.ToArray();
             return await MarketSendResource(acc, res, targetVillage, botTask);
         }
 
@@ -127,8 +127,9 @@ namespace TravBotSharp.Files.Helpers
                 var activeVill = acc.Villages.FirstOrDefault(x => x.Active); // Could also just pass that in params
 
                 var nextTry = SoonestAvailableMerchants(acc, activeVill, targetVillage, transits);
+                if (nextTry != DateTime.MaxValue) nextTry = nextTry.AddSeconds(5);
 
-                botTask.NextExecute = nextTry.AddSeconds(5);
+                botTask.NextExecute = nextTry;
                 // Just return something, will get overwritten anyways.
                 return new TimeSpan((int)(nextTry - DateTime.Now).TotalHours + 1, 0, 0);
             }
@@ -262,9 +263,9 @@ namespace TravBotSharp.Files.Helpers
         public static long[] SendResCapToStorage(Account acc, Resources resources)
         {
             var mainVill = AccountHelper.GetMainVillage(acc);
-            var stored = ResourcesHelper.ResourcesToArray(mainVill.Res.Stored.Resources);
+            var stored = mainVill.Res.Stored.Resources.ToArray();
 
-            var resSend = ResourcesHelper.ResourcesToArray(resources);
+            var resSend = resources.ToArray();
             long[] ret = new long[4];
             for (int i = 0; i < 4; i++)
             {
@@ -282,8 +283,8 @@ namespace TravBotSharp.Files.Helpers
         public static long[] GetResToMainVillage(Village vill)
         {
             var ret = new long[4];
-            var res = ResourcesHelper.ResourcesToArray(vill.Res.Stored.Resources);
-            var limit = ResourcesHelper.ResourcesToArray(vill.Market.Settings.Configuration.SendResLimit);
+            var res = vill.Res.Stored.Resources.ToArray();
+            var limit = vill.Market.Settings.Configuration.SendResLimit.ToArray();
             for (int i = 0; i < 4; i++)
             {
                 // % into resource mode
