@@ -109,8 +109,8 @@ namespace TravBotSharp.Files.Helpers
             {
                 task.ExecuteAt = task.NextExecute ?? default;
                 task.NextExecute = null;
-                task.Stage = TaskStage.Start;
                 ReorderTaskList(acc);
+                task.Stage = TaskStage.Start;
                 return;
             }
             // Remove the task from the task list
@@ -302,21 +302,24 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Checks whether the resources at more than 95% of the capacity and incrases if it's true.
+        /// Checks whether the resources at more than 95% of the capacity and increases if it's true.
         /// </summary>
-        /// <param name="account"></param>
+        /// <param name="acc"></param>
         /// <param name="vill"></param>
-        private static void AutoExpandStorage(Account account, Village village)
+        private static void AutoExpandStorage(Account acc, Village vill)
         {
-            long warehouse_delta = village.Res.Capacity.WarehouseCapacity * (long)0.95;
-            long granary_delta = village.Res.Capacity.GranaryCapacity * (long)0.95;
+            if (!vill.Settings.AutoExpandStorage) return;
 
-            if (village.Settings.AutoExpandStorage == true &&
-                (village.Res.Stored.Resources.Wood >= warehouse_delta || village.Res.Stored.Resources.Clay >= warehouse_delta
-                || village.Res.Stored.Resources.Iron >= warehouse_delta || village.Res.Stored.Resources.Crop >= granary_delta))
-            {
-                AddTask(account, new TTWarsExpandStorage() { Vill = village });
-            }
+            long warehouse_delta = vill.Res.Capacity.WarehouseCapacity * (long)0.95;
+            long granary_delta = vill.Res.Capacity.GranaryCapacity * (long)0.95;
+
+            if (warehouse_delta <= vill.Res.Stored.Resources.Wood || 
+                warehouse_delta <= vill.Res.Stored.Resources.Clay ||
+                warehouse_delta <= vill.Res.Stored.Resources.Iron)
+                BuildingHelper.UpgradeBuildingForOneLvl(acc, vill, Classificator.BuildingEnum.Warehouse, false);
+
+            if (granary_delta <= vill.Res.Stored.Resources.Crop)
+                BuildingHelper.UpgradeBuildingForOneLvl(acc, vill, Classificator.BuildingEnum.Granary, false);
         }
 
         public static void UpdateDorf2Info(Account acc)
