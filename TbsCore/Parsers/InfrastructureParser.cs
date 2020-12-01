@@ -39,8 +39,8 @@ namespace TravBotSharp.Files.Parsers
                     uc
                 ));
             }
-            buildings.FirstOrDefault(x => x.Id == 39).Type = Helpers.Classificator.BuildingEnum.RallyPoint;
-            buildings.FirstOrDefault(x => x.Id == 40).Type = InfrastructureHelper.GetTribesWall(acc.AccInfo.Tribe);
+            buildings.FirstOrDefault(x => x.Id == 39).Type = Classificator.BuildingEnum.RallyPoint;
+            buildings.FirstOrDefault(x => x.Id == 40).Type = BuildingsData.GetTribesWall(acc.AccInfo.Tribe);
             return buildings;
         }
 

@@ -81,9 +81,10 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(11, 12);
+            this.button1.Location = new System.Drawing.Point(15, 15);
+            this.button1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(178, 23);
+            this.button1.Size = new System.Drawing.Size(237, 28);
             this.button1.TabIndex = 1;
             this.button1.Text = "Add account";
             this.button1.UseVisualStyleBackColor = true;
@@ -102,19 +103,21 @@
             this.accTabController.Controls.Add(this.debugTab);
             this.accTabController.Dock = System.Windows.Forms.DockStyle.Fill;
             this.accTabController.Location = new System.Drawing.Point(0, 0);
+            this.accTabController.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.accTabController.Name = "accTabController";
             this.accTabController.SelectedIndex = 0;
-            this.accTabController.Size = new System.Drawing.Size(971, 661);
+            this.accTabController.Size = new System.Drawing.Size(1294, 814);
             this.accTabController.TabIndex = 3;
             this.accTabController.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabGeneral
             // 
             this.tabGeneral.Controls.Add(this.generalUc1);
-            this.tabGeneral.Location = new System.Drawing.Point(4, 22);
+            this.tabGeneral.Location = new System.Drawing.Point(4, 25);
+            this.tabGeneral.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGeneral.Size = new System.Drawing.Size(963, 635);
+            this.tabGeneral.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabGeneral.Size = new System.Drawing.Size(1286, 785);
             this.tabGeneral.TabIndex = 3;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
@@ -122,18 +125,19 @@
             // generalUc1
             // 
             this.generalUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.generalUc1.Location = new System.Drawing.Point(3, 3);
-            this.generalUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.generalUc1.Location = new System.Drawing.Point(4, 4);
+            this.generalUc1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.generalUc1.Name = "generalUc1";
-            this.generalUc1.Size = new System.Drawing.Size(957, 629);
+            this.generalUc1.Size = new System.Drawing.Size(1278, 777);
             this.generalUc1.TabIndex = 0;
             // 
             // tabHero
             // 
             this.tabHero.Controls.Add(this.heroUc1);
-            this.tabHero.Location = new System.Drawing.Point(4, 22);
+            this.tabHero.Location = new System.Drawing.Point(4, 25);
+            this.tabHero.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabHero.Name = "tabHero";
-            this.tabHero.Size = new System.Drawing.Size(685, 100);
+            this.tabHero.Size = new System.Drawing.Size(1286, 785);
             this.tabHero.TabIndex = 2;
             this.tabHero.Text = "Hero";
             this.tabHero.UseVisualStyleBackColor = true;
@@ -142,18 +146,19 @@
             // 
             this.heroUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.heroUc1.Location = new System.Drawing.Point(0, 0);
-            this.heroUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.heroUc1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.heroUc1.Name = "heroUc1";
-            this.heroUc1.Size = new System.Drawing.Size(685, 100);
+            this.heroUc1.Size = new System.Drawing.Size(1286, 785);
             this.heroUc1.TabIndex = 0;
             // 
             // tabVillages
             // 
             this.tabVillages.Controls.Add(this.villagesUc1);
-            this.tabVillages.Location = new System.Drawing.Point(4, 22);
+            this.tabVillages.Location = new System.Drawing.Point(4, 25);
+            this.tabVillages.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabVillages.Name = "tabVillages";
-            this.tabVillages.Padding = new System.Windows.Forms.Padding(3);
-            this.tabVillages.Size = new System.Drawing.Size(685, 100);
+            this.tabVillages.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabVillages.Size = new System.Drawing.Size(1286, 785);
             this.tabVillages.TabIndex = 0;
             this.tabVillages.Text = "Villages";
             this.tabVillages.UseVisualStyleBackColor = true;
@@ -161,18 +166,20 @@
             // villagesUc1
             // 
             this.villagesUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.villagesUc1.Location = new System.Drawing.Point(3, 3);
+            this.villagesUc1.Location = new System.Drawing.Point(4, 4);
+            this.villagesUc1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.villagesUc1.Name = "villagesUc1";
-            this.villagesUc1.Size = new System.Drawing.Size(679, 94);
+            this.villagesUc1.Size = new System.Drawing.Size(1278, 777);
             this.villagesUc1.TabIndex = 0;
             // 
             // tabOverview
             // 
             this.tabOverview.Controls.Add(this.overviewUc1);
-            this.tabOverview.Location = new System.Drawing.Point(4, 22);
+            this.tabOverview.Location = new System.Drawing.Point(4, 25);
+            this.tabOverview.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.tabOverview.Name = "tabOverview";
-            this.tabOverview.Padding = new System.Windows.Forms.Padding(3);
-            this.tabOverview.Size = new System.Drawing.Size(685, 100);
+            this.tabOverview.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabOverview.Size = new System.Drawing.Size(1286, 785);
             this.tabOverview.TabIndex = 4;
             this.tabOverview.Text = "Overview";
             this.tabOverview.UseVisualStyleBackColor = true;
@@ -180,18 +187,19 @@
             // overviewUc1
             // 
             this.overviewUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.overviewUc1.Location = new System.Drawing.Point(3, 3);
-            this.overviewUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.overviewUc1.Location = new System.Drawing.Point(4, 4);
+            this.overviewUc1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.overviewUc1.Name = "overviewUc1";
-            this.overviewUc1.Size = new System.Drawing.Size(679, 94);
+            this.overviewUc1.Size = new System.Drawing.Size(1278, 777);
             this.overviewUc1.TabIndex = 0;
             // 
             // FarmingTab
             // 
             this.FarmingTab.Controls.Add(this.farmingUc1);
-            this.FarmingTab.Location = new System.Drawing.Point(4, 22);
+            this.FarmingTab.Location = new System.Drawing.Point(4, 25);
+            this.FarmingTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.FarmingTab.Name = "FarmingTab";
-            this.FarmingTab.Size = new System.Drawing.Size(685, 100);
+            this.FarmingTab.Size = new System.Drawing.Size(1286, 785);
             this.FarmingTab.TabIndex = 5;
             this.FarmingTab.Text = "Farming";
             this.FarmingTab.UseVisualStyleBackColor = true;
@@ -200,18 +208,19 @@
             // 
             this.farmingUc1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.farmingUc1.Location = new System.Drawing.Point(0, 0);
-            this.farmingUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.farmingUc1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.farmingUc1.Name = "farmingUc1";
-            this.farmingUc1.Size = new System.Drawing.Size(685, 100);
+            this.farmingUc1.Size = new System.Drawing.Size(1286, 785);
             this.farmingUc1.TabIndex = 0;
             // 
             // newVillagesTab
             // 
             this.newVillagesTab.Controls.Add(this.newVillagesUc1);
-            this.newVillagesTab.Location = new System.Drawing.Point(4, 22);
+            this.newVillagesTab.Location = new System.Drawing.Point(4, 25);
+            this.newVillagesTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.newVillagesTab.Name = "newVillagesTab";
-            this.newVillagesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.newVillagesTab.Size = new System.Drawing.Size(685, 100);
+            this.newVillagesTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.newVillagesTab.Size = new System.Drawing.Size(1286, 785);
             this.newVillagesTab.TabIndex = 6;
             this.newVillagesTab.Text = "New villages";
             this.newVillagesTab.UseVisualStyleBackColor = true;
@@ -219,19 +228,20 @@
             // newVillagesUc1
             // 
             this.newVillagesUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.newVillagesUc1.Location = new System.Drawing.Point(3, 3);
-            this.newVillagesUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.newVillagesUc1.Location = new System.Drawing.Point(4, 4);
+            this.newVillagesUc1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.newVillagesUc1.Name = "newVillagesUc1";
-            this.newVillagesUc1.Size = new System.Drawing.Size(679, 94);
+            this.newVillagesUc1.Size = new System.Drawing.Size(1278, 777);
             this.newVillagesUc1.TabIndex = 0;
             // 
             // deffendingTab
             // 
             this.deffendingTab.Controls.Add(this.deffendingUc1);
-            this.deffendingTab.Location = new System.Drawing.Point(4, 22);
+            this.deffendingTab.Location = new System.Drawing.Point(4, 25);
+            this.deffendingTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.deffendingTab.Name = "deffendingTab";
-            this.deffendingTab.Padding = new System.Windows.Forms.Padding(3);
-            this.deffendingTab.Size = new System.Drawing.Size(685, 100);
+            this.deffendingTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.deffendingTab.Size = new System.Drawing.Size(1286, 785);
             this.deffendingTab.TabIndex = 7;
             this.deffendingTab.Text = "Deffending";
             this.deffendingTab.UseVisualStyleBackColor = true;
@@ -239,19 +249,20 @@
             // deffendingUc1
             // 
             this.deffendingUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.deffendingUc1.Location = new System.Drawing.Point(3, 3);
-            this.deffendingUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.deffendingUc1.Location = new System.Drawing.Point(4, 4);
+            this.deffendingUc1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.deffendingUc1.Name = "deffendingUc1";
-            this.deffendingUc1.Size = new System.Drawing.Size(679, 94);
+            this.deffendingUc1.Size = new System.Drawing.Size(1278, 777);
             this.deffendingUc1.TabIndex = 0;
             // 
             // questsTab
             // 
             this.questsTab.Controls.Add(this.questsUc1);
-            this.questsTab.Location = new System.Drawing.Point(4, 22);
+            this.questsTab.Location = new System.Drawing.Point(4, 25);
+            this.questsTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.questsTab.Name = "questsTab";
-            this.questsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.questsTab.Size = new System.Drawing.Size(685, 100);
+            this.questsTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.questsTab.Size = new System.Drawing.Size(1286, 785);
             this.questsTab.TabIndex = 9;
             this.questsTab.Text = "Quests";
             this.questsTab.UseVisualStyleBackColor = true;
@@ -259,19 +270,20 @@
             // questsUc1
             // 
             this.questsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.questsUc1.Location = new System.Drawing.Point(3, 3);
-            this.questsUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.questsUc1.Location = new System.Drawing.Point(4, 4);
+            this.questsUc1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.questsUc1.Name = "questsUc1";
-            this.questsUc1.Size = new System.Drawing.Size(679, 94);
+            this.questsUc1.Size = new System.Drawing.Size(1278, 777);
             this.questsUc1.TabIndex = 0;
             // 
             // debugTab
             // 
             this.debugTab.Controls.Add(this.debugUc1);
-            this.debugTab.Location = new System.Drawing.Point(4, 22);
+            this.debugTab.Location = new System.Drawing.Point(4, 25);
+            this.debugTab.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.debugTab.Name = "debugTab";
-            this.debugTab.Padding = new System.Windows.Forms.Padding(3);
-            this.debugTab.Size = new System.Drawing.Size(685, 100);
+            this.debugTab.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.debugTab.Size = new System.Drawing.Size(1286, 785);
             this.debugTab.TabIndex = 8;
             this.debugTab.Text = "Debug";
             this.debugTab.UseVisualStyleBackColor = true;
@@ -280,17 +292,18 @@
             // 
             this.debugUc1.CausesValidation = false;
             this.debugUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.debugUc1.Location = new System.Drawing.Point(3, 3);
-            this.debugUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.debugUc1.Location = new System.Drawing.Point(4, 4);
+            this.debugUc1.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
             this.debugUc1.Name = "debugUc1";
-            this.debugUc1.Size = new System.Drawing.Size(679, 94);
+            this.debugUc1.Size = new System.Drawing.Size(1278, 777);
             this.debugUc1.TabIndex = 0;
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(15, 12);
+            this.button2.Location = new System.Drawing.Point(20, 15);
+            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.Size = new System.Drawing.Size(100, 28);
             this.button2.TabIndex = 4;
             this.button2.Text = "Login";
             this.button2.UseVisualStyleBackColor = true;
@@ -298,9 +311,10 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(101, 41);
+            this.button3.Location = new System.Drawing.Point(135, 50);
+            this.button3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(78, 23);
+            this.button3.Size = new System.Drawing.Size(104, 28);
             this.button3.TabIndex = 5;
             this.button3.Text = "Delete";
             this.button3.UseVisualStyleBackColor = true;
@@ -315,9 +329,10 @@
             this.accListView.FullRowSelect = true;
             this.accListView.HideSelection = false;
             this.accListView.Location = new System.Drawing.Point(0, 0);
+            this.accListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.accListView.MultiSelect = false;
             this.accListView.Name = "accListView";
-            this.accListView.Size = new System.Drawing.Size(200, 505);
+            this.accListView.Size = new System.Drawing.Size(267, 622);
             this.accListView.TabIndex = 6;
             this.accListView.UseCompatibleStateImageBehavior = false;
             this.accListView.View = System.Windows.Forms.View.Details;
@@ -335,9 +350,10 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(15, 41);
+            this.button7.Location = new System.Drawing.Point(20, 50);
+            this.button7.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
+            this.button7.Size = new System.Drawing.Size(100, 28);
             this.button7.TabIndex = 7;
             this.button7.Text = "Edit";
             this.button7.UseVisualStyleBackColor = true;
@@ -345,9 +361,10 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(46, 113);
+            this.button4.Location = new System.Drawing.Point(61, 139);
+            this.button4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
+            this.button4.Size = new System.Drawing.Size(100, 28);
             this.button4.TabIndex = 8;
             this.button4.Text = "dont click";
             this.button4.UseVisualStyleBackColor = true;
@@ -355,9 +372,10 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(101, 12);
+            this.button5.Location = new System.Drawing.Point(135, 15);
+            this.button5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(78, 23);
+            this.button5.Size = new System.Drawing.Size(104, 28);
             this.button5.TabIndex = 9;
             this.button5.Text = "Logout";
             this.button5.UseVisualStyleBackColor = true;
@@ -365,9 +383,10 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(15, 79);
+            this.button6.Location = new System.Drawing.Point(20, 97);
+            this.button6.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(164, 23);
+            this.button6.Size = new System.Drawing.Size(219, 28);
             this.button6.TabIndex = 10;
             this.button6.Text = "Login all";
             this.button6.UseVisualStyleBackColor = true;
@@ -380,17 +399,19 @@
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 661);
+            this.panel1.Size = new System.Drawing.Size(267, 814);
             this.panel1.TabIndex = 11;
             // 
             // panel4
             // 
             this.panel4.Controls.Add(this.accListView);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(0, 46);
+            this.panel4.Location = new System.Drawing.Point(0, 57);
+            this.panel4.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(200, 505);
+            this.panel4.Size = new System.Drawing.Size(267, 622);
             this.panel4.TabIndex = 13;
             // 
             // panel3
@@ -402,9 +423,10 @@
             this.panel3.Controls.Add(this.button6);
             this.panel3.Controls.Add(this.button2);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(0, 551);
+            this.panel3.Location = new System.Drawing.Point(0, 679);
+            this.panel3.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(200, 110);
+            this.panel3.Size = new System.Drawing.Size(267, 135);
             this.panel3.TabIndex = 12;
             // 
             // panel2
@@ -412,26 +434,29 @@
             this.panel2.Controls.Add(this.button1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(200, 46);
+            this.panel2.Size = new System.Drawing.Size(267, 57);
             this.panel2.TabIndex = 11;
             // 
             // panel5
             // 
             this.panel5.Controls.Add(this.accTabController);
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(200, 0);
+            this.panel5.Location = new System.Drawing.Point(267, 0);
+            this.panel5.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(971, 661);
+            this.panel5.Size = new System.Drawing.Size(1294, 814);
             this.panel5.TabIndex = 12;
             // 
             // ControlPanel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1171, 661);
+            this.ClientSize = new System.Drawing.Size(1561, 814);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel1);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "ControlPanel";
             this.Text = "Control Panel";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlPanel_FormClosing);

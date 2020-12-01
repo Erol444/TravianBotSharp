@@ -21,7 +21,7 @@ namespace TbsCore.TravianData
         public static bool EnoughResForCelebration(Village vill, bool big)
         {
             var cost = CelebrationCost(big);
-            var res = ResourcesHelper.ResourcesToArray(vill.Res.Stored.Resources);
+            var res = vill.Res.Stored.Resources.ToArray();
             
             return ResourcesHelper.EnoughRes(res, cost);
         }

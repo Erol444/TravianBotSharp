@@ -62,7 +62,7 @@ namespace TravBotSharp.Files.Models.Settings
         /// </summary>
         public bool AutoCloseDriver { get; set; }
         /// <summary>
-        /// Localization strings
+        /// Localization strings for buildings
         /// </summary>
         public Dictionary<string, BuildingEnum> Localization { get; set; }
         /// <summary>

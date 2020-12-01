@@ -1,27 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Helpers;
 using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Files.TravianData;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Helpers
 {
     public static class BuildingHelper
     {
-        public static void AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
+        /// <summary>
+        /// Adds the building task to the village list of building tasks. Restarts BotTask UpgradeBuilding if needed.
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="vill">Village</param>
+        /// <param name="task">BuildingTask to add</param>
+        /// <param name="bottom">Whether to insert the BuildingTask on the bottom of the list</param>
+        /// <returns>Whether the method completed successfully</returns>
+        public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
         {
-            if (task.BuildingId == null && task.TaskType == BuildingType.General)
+            if (task.BuildingId == null || 
+                vill.Build.Buildings.Any(x=>x.Id == task.BuildingId && x.Type != task.Building))
             {
                 //Check if bot has any space to build new buildings, otherwise return
-                if (!FindBuildingId(vill, task)) return;
+                if (!FindBuildingId(vill, task)) return false;
             }
             if (bottom) vill.Build.Tasks.Add(task);
             else vill.Build.Tasks.Insert(0, task);
 
             if (acc.Wb != null) ReStartBuilding(acc, vill);
+            return true;
         }
 
         /// <summary>
@@ -35,48 +47,41 @@ namespace TravBotSharp.Files.Helpers
             //auto field upgrade/demolish task, no need for Id
             if (task.TaskType == BuildingType.AutoUpgradeResFields) return true;
 
-            var FreePlaces = vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Site).ToList();
-            bool FreePlace = false;
-            foreach (var freePlc in FreePlaces)
-            {
-                if (!vill.Build.Tasks.Any(x => x.BuildingId == freePlc.Id)) FreePlace = true;
-            }
-
-            // Only special buildings (warehouse, cranny, grannary etc.) can have multiple 
-            // buildings of it's type and use ConstructNew option
-            if (!CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
-
-            var ExistingBuilding = vill.Build
-                    .Buildings
+            var ExistingBuilding = vill.Build.Buildings
                     .FirstOrDefault(x => x.Type == task.Building);
+
+            // Only special buildings (warehouse, cranny, granary etc.) can have multiple 
+            // buildings of it's type and use ConstructNew option
+            if (!BuildingsData.CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
+            
             if (ExistingBuilding != null && !task.ConstructNew)
             {
                 task.BuildingId = ExistingBuilding.Id;
                 return true;
             }
 
-            var ExistingBuildingTask = vill.Build
-                    .Tasks
+            var ExistingBuildingTask = vill.Build.Tasks
                     .FirstOrDefault(x => x.Building == task.Building && x.BuildingId != null);
+
             if (ExistingBuildingTask != null && !task.ConstructNew)
             {
                 task.BuildingId = ExistingBuildingTask.BuildingId;
                 return true;
             }
 
-            if (!FreePlace) return false; //there is no space in the village to construct a new building
-
-            byte id;
-            do
+            var FreeSites = vill.Build.Buildings
+                .Where(x => x.Type == BuildingEnum.Site && 19 <= x.Id && x.Id <= 39)
+                .ToList();
+            foreach (var FreeSite in FreeSites)
             {
-                Random ran = new Random();
-                id = (byte)ran.Next(19, 39);
-            } //search for available building id;
-            while (vill.Build.Buildings.FirstOrDefault(x => x.Id == id).Type != BuildingEnum.Site ||
-                   vill.Build.Tasks.Any(x => x.BuildingId == id));
-            //if new village, you should return build.php?id=25&category=3
-            task.BuildingId = id;
-            return true;
+                if (!vill.Build.Tasks.Any(x => x.BuildingId == FreeSite.Id))
+                {
+                    // Site is free and there's no building task that reserves it.
+                    task.BuildingId = FreeSite.Id;
+                    return true;
+                }
+            }
+            return false;
         }
 
         public static List<string> SetPrereqCombo(Account acc, Village vill)
@@ -94,7 +99,7 @@ namespace TravBotSharp.Files.Helpers
                 if (vill.Build.Buildings.Any(x => x.Type == building)) continue;
                 if (vill.Build.Tasks.Any(x => x.Building == building)) continue;
 
-                (var reqTribe, var prerequisites) = GetBuildingPrerequisites((BuildingEnum)i);
+                (var reqTribe, var prerequisites) = BuildingsData.GetBuildingPrerequisites((BuildingEnum)i);
 
                 if (reqTribe != TribeEnum.Any && reqTribe != acc.AccInfo.Tribe) continue;
 
@@ -104,16 +109,6 @@ namespace TravBotSharp.Files.Helpers
             return ret;
         }
 
-        private static readonly BuildingEnum[] multipleBuildingsAllowes = new BuildingEnum[] {
-            BuildingEnum.Warehouse,
-            BuildingEnum.Granary,
-            BuildingEnum.GreatWarehouse,
-            BuildingEnum.GreatGranary,
-            BuildingEnum.Trapper,
-            BuildingEnum.Cranny
-        };
-        private static bool CanHaveMultipleBuildings(BuildingEnum building) =>
-            multipleBuildingsAllowes.Any(x => x == building);
 
         public static void ReStartBuilding(Account acc, Village vill)
         {
@@ -126,23 +121,16 @@ namespace TravBotSharp.Files.Helpers
 
             if (vill.Build.Tasks.Count == 0) return; //No build tasks
 
-            var nextExecution = DateTime.Now.AddSeconds(5);
-            var lastCB = vill.Build.CurrentlyBuilding.LastOrDefault();
-
-            var maxBuildings = 1;
-            if (acc.AccInfo.PlusAccount) maxBuildings++;
-            if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuildings++;
-
-            if (lastCB != null && lastCB.Duration > nextExecution && vill.Build.CurrentlyBuilding.Count >= maxBuildings) nextExecution = lastCB.Duration;
-
-            var building = new UpgradeBuilding()
+            var (_, nextExecution) = UpgradeBuildingHelper.NextBuildingTask(acc, vill);
+            
+            TaskExecutor.AddTask(acc, new UpgradeBuilding()
             {
                 Vill = vill,
                 ExecuteAt = nextExecution,
-            };
-            TaskExecutor.AddTask(acc, building);
+            });
         }
 
+       
         public static void ReStartDemolishing(Account acc, Village vill)
         {
             if (vill.Build.DemolishTasks.Count > 0)
@@ -170,7 +158,7 @@ namespace TravBotSharp.Files.Helpers
             }
 
             //check for prerequisites for this building
-            (var ReqTribe, var Prerequisites) = GetBuildingPrerequisites(building);
+            (var ReqTribe, var Prerequisites) = BuildingsData.GetBuildingPrerequisites(building);
             if (ReqTribe != TribeEnum.Any && ReqTribe != tribe) return false;
             //if we either already have this building OR is on our build task list, requirements are met.
             foreach (var prerequisite in Prerequisites)
@@ -199,16 +187,16 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="vill">Village</param>
         /// <param name="task">BotTask</param>
         /// <returns></returns>
-        public static string GetUrlForBuilding(Village vill, BuildingTask task)
+        public static (string, bool) GetUrlForBuilding(Village vill, BuildingTask task)
         {
             switch (task.TaskType)
             {
                 case BuildingType.General:
                     return GetUrlGeneralTask(vill, task);
                 case BuildingType.AutoUpgradeResFields:
-                    return GetUrlAutoResFields(vill, task);
+                    return (GetUrlAutoResFields(vill, task), false);
             }
-            return null;
+            return (null, true);
         }
 
         public static bool IsTaskCompleted(Village vill, Account acc, BuildingTask task)
@@ -252,7 +240,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return false;
         }
-        private static string GetUrlGeneralTask(Village vill, BuildingTask task)
+        private static (string, bool) GetUrlGeneralTask(Village vill, BuildingTask task)
         {
             // Check if there is already a different building in this spot
             if (task.BuildingId == null || vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId).Type != task.Building)
@@ -267,18 +255,21 @@ namespace TravBotSharp.Files.Helpers
                 {
                     if (!BuildingHelper.FindBuildingId(vill, task))
                     {
-                        return null;
+                        return (null, false);
                     }
                 }
             }
 
             var url = task.BuildingId.ToString();
+
+            bool constructNew = false;
             // If there is no building in that space currently, construct a new building
             if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Site && x.Id == task.BuildingId))
             {
-                url += "&category=" + (int)BuildingHelper.GetBuildingsCategory(task.Building);
+                url += "&category=" + (int)BuildingsData.GetBuildingsCategory(task.Building);
+                constructNew = true;
             }
-            return url;
+            return (url, constructNew);
         }
         public static string GetUrlAutoResFields(Village vill, BuildingTask task)
         {
@@ -336,6 +327,65 @@ namespace TravBotSharp.Files.Helpers
             vill.Build.Tasks = vill.Build.Tasks.Distinct().ToList();
         }
 
+        /// <summary>
+        /// Upgrades specified building for exactly one level. Will upgrade the lowest level building.
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="vill">Village</param>
+        /// <param name="building">Building to be upgraded by one</param>
+        /// <param name="bottom">Whether to insert the building task on the bottom of the build list</param>
+        /// <returns>Whether the method executed successfully</returns>
+        internal static bool UpgradeBuildingForOneLvl(Account acc, Village vill, BuildingEnum building, bool bottom = true)
+        {
+            // We already have a build task
+            if (!bottom && vill.Build.Tasks.FirstOrDefault()?.Building == building) return true;
+            if (bottom && vill.Build.Tasks.LastOrDefault()?.Building == building) return true;
+
+            var upgrade = vill.Build
+                .Buildings
+                .OrderBy(x => x.Level)
+                .FirstOrDefault(x => x.Type == building);
+
+            // We don't have this building in the village yet
+            if (upgrade == null)
+            {
+                return AddBuildingTask(acc, vill, new BuildingTask()
+                {
+                    TaskType = BuildingType.General,
+                    Building = building,
+                    Level = 1,
+                }, bottom);
+            }
+
+            var currentLvl = (int)upgrade.Level;
+
+            RemoveFinishedCB(vill);
+            currentLvl += vill.Build.CurrentlyBuilding.Count(x => x.Building == building);
+
+            if (BuildingsData.MaxBuildingLevel(acc, building) == currentLvl)
+            {
+                // Building is on max level, construct new building if possible
+                if (!BuildingsData.CanHaveMultipleBuildings(building)) return false;
+
+                return AddBuildingTask(acc, vill, new BuildingTask()
+                {
+                    TaskType = BuildingType.General,
+                    Building = building,
+                    Level = 1,
+                }, bottom);
+            }
+            else // Upgrade the defined building
+            {
+                return AddBuildingTask(acc, vill, new BuildingTask()
+                {
+                    TaskType = BuildingType.General,
+                    Building = building,
+                    Level = currentLvl + 1, 
+                    BuildingId = upgrade.Id
+                }, bottom);
+            }
+        }
+
 
 
         /// <summary>
@@ -348,7 +398,7 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Whether we have all prerequisite buildings</returns>
         public static bool AddBuildingPrerequisites(Account acc, Village vill, BuildingEnum building, bool bottom = true)
         {
-            (var tribe, var prereqs) = GetBuildingPrerequisites(building);
+            (var tribe, var prereqs) = BuildingsData.GetBuildingPrerequisites(building);
             if (acc.AccInfo.Tribe != tribe && tribe != TribeEnum.Any) return false;
             if (prereqs.Count == 0) return true;
             var ret = true;
@@ -391,215 +441,14 @@ namespace TravBotSharp.Files.Helpers
             }
         }
 
-
-        /// <summary>
-        /// Buildings that are always build in the same spot
-        /// </summary>
-        //public static BuildingEnum[] StaticBuildings = new BuildingEnum[] {
-        //    BuildingEnum.Wall,
-        //    BuildingEnum.MakeshiftWall,
-        //    BuildingEnum.Palisade,
-        //    BuildingEnum.StoneWall,
-        //    BuildingEnum.EarthWall,
-        //    BuildingEnum.CityWall,
-        //    BuildingEnum.RallyPoint,
-        //    BuildingEnum.WW
-        //};
-        public static BuildingCategoryEnum GetBuildingsCategory(BuildingEnum building)
-        {
-            switch (building)
-            {
-                case BuildingEnum.GrainMill:
-                case BuildingEnum.Sawmill:
-                case BuildingEnum.Brickyard:
-                case BuildingEnum.IronFoundry:
-                case BuildingEnum.Bakery:
-                    return BuildingCategoryEnum.Resources;
-                case BuildingEnum.RallyPoint:
-                case BuildingEnum.EarthWall:
-                case BuildingEnum.CityWall:
-                case BuildingEnum.MakeshiftWall:
-                case BuildingEnum.StoneWall:
-                case BuildingEnum.Palisade:
-                case BuildingEnum.Barracks:
-                case BuildingEnum.HerosMansion:
-                case BuildingEnum.Academy:
-                case BuildingEnum.Smithy:
-                case BuildingEnum.Stable:
-                case BuildingEnum.GreatBarracks:
-                case BuildingEnum.GreatStable:
-                case BuildingEnum.Workshop:
-                case BuildingEnum.TournamentSquare:
-                    return BuildingCategoryEnum.Military;
-                default:
-                    return BuildingCategoryEnum.Infrastructure;
-            }
-        }
-
-        public static (TribeEnum, List<Prerequisite>) GetBuildingPrerequisites(BuildingEnum building)
-        {
-            TribeEnum tribe = TribeEnum.Any;
-            var ret = new List<Prerequisite>();
-            switch (building)
-            {
-                case BuildingEnum.Woodcutter:
-                case BuildingEnum.ClayPit:
-                case BuildingEnum.IronMine:
-                case BuildingEnum.Cropland:
-                    break;
-                case BuildingEnum.Sawmill:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Woodcutter, Level = 10 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
-                    break;
-                case BuildingEnum.Brickyard:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.ClayPit, Level = 10 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
-                    break;
-                case BuildingEnum.IronFoundry:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.IronMine, Level = 10 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
-                    break;
-                case BuildingEnum.GrainMill:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Cropland, Level = 5 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
-                    break;
-                case BuildingEnum.Bakery:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Cropland, Level = 10 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.GrainMill, Level = 5 });
-                    break;
-                case BuildingEnum.Warehouse:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 1 });
-                    break;
-                case BuildingEnum.Granary:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 1 });
-                    break;
-                case BuildingEnum.Blacksmith:
-                    //DOESN'T EXIST ANYMORE
-                    tribe = TribeEnum.Nature; //Just a dirty hack, since user can't be Nature, he can't build Blacksmith
-                    break;
-                case BuildingEnum.Smithy:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 1 });
-                    break;
-                case BuildingEnum.TournamentSquare:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 15 });
-                    break;
-                case BuildingEnum.MainBuilding:
-                    break;
-                case BuildingEnum.RallyPoint:
-                    break;
-                case BuildingEnum.Marketplace:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Warehouse, Level = 1 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Granary, Level = 1 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
-                    break;
-                case BuildingEnum.Embassy:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 1 });
-                    break;
-                case BuildingEnum.Barracks:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 1 });
-                    break;
-                case BuildingEnum.Stable:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Smithy, Level = 3 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
-                    break;
-                case BuildingEnum.Workshop:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 10 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
-                    break;
-                case BuildingEnum.Academy:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Barracks, Level = 3 });
-                    break;
-                case BuildingEnum.Cranny:
-                    break;
-                case BuildingEnum.TownHall:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 10 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 10 });
-                    break;
-                case BuildingEnum.Residence:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 }); //no palace!
-                    break;
-                case BuildingEnum.Palace:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 }); //no residence!
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Embassy, Level = 1 });
-                    break;
-                case BuildingEnum.Treasury:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 10 });
-                    break;
-                case BuildingEnum.TradeOffice:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 10 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Marketplace, Level = 20 });
-                    break;
-                case BuildingEnum.GreatBarracks:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Barracks, Level = 20 }); //not capital!
-                    break;
-                case BuildingEnum.GreatStable:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 20 }); //not capital
-                    break;
-                case BuildingEnum.CityWall:
-                    tribe = TribeEnum.Romans;
-                    break;
-                case BuildingEnum.EarthWall:
-                    tribe = TribeEnum.Teutons;
-                    break;
-                case BuildingEnum.Palisade:
-                    tribe = TribeEnum.Gauls;
-                    break;
-                case BuildingEnum.StonemasonsLodge:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 }); //capital
-                    break;
-                case BuildingEnum.Brewery:
-                    tribe = TribeEnum.Teutons;
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Granary, Level = 20 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 10 });
-                    break;
-                case BuildingEnum.Trapper:
-                    tribe = TribeEnum.Gauls;
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 1 });
-                    break;
-                case BuildingEnum.HerosMansion:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 1 });
-                    break;
-                case BuildingEnum.GreatWarehouse:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 10 }); //art/ww vill
-                    break;
-                case BuildingEnum.GreatGranary:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 10 }); //art/ww vill
-                    break;
-                case BuildingEnum.WW: //ww vill
-                    tribe = TribeEnum.Nature; //Just a dirty hack, since user can't be Nature, bot can't construct WW.
-                    break;
-                case BuildingEnum.HorseDrinkingTrough:
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 10 });
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 20 });
-                    tribe = TribeEnum.Romans;
-                    break;
-                case BuildingEnum.StoneWall:
-                    tribe = TribeEnum.Egyptians;
-                    break;
-                case BuildingEnum.MakeshiftWall:
-                    tribe = TribeEnum.Huns;
-                    break;
-                case BuildingEnum.CommandCenter: //no res/palace
-                    tribe = TribeEnum.Huns;
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
-                    break;
-                case BuildingEnum.Waterworks:
-                    tribe = TribeEnum.Egyptians;
-                    ret.Add(new Prerequisite() { Building = BuildingEnum.HerosMansion, Level = 10 });
-                    break;
-                default: break;
-            }
-            return (tribe, ret);
-        }
-
         #region Functions for auto-building resource fields
         public static Models.ResourceModels.Building FindLowestLevelBuilding(List<Models.ResourceModels.Building> buildings)
         {
+            // TODO: test after implementation
+            //return buildings
+            //        .OrderBy(x => x.Level + (x.UnderConstruction ? 1 : 0))
+            //        .FirstOrDefault();
+
             if (buildings.Count == 0) return null;
             int lowestLvl = 100;
             Models.ResourceModels.Building lowestBuilding = new Models.ResourceModels.Building();

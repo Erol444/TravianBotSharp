@@ -4,6 +4,7 @@ using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.Building;
+using TravBotSharp.Files.TravianData;
 
 namespace TravBotSharp.Files.Models.VillageModels
 {
@@ -40,8 +41,8 @@ namespace TravBotSharp.Files.Models.VillageModels
                 building.Init(i + 1, 0, 0, false);
                 array[i] = building;
             }
-            array[39].Type = InfrastructureHelper.GetTribesWall(acc.AccInfo.Tribe);
-            array[38].Type = Helpers.Classificator.BuildingEnum.RallyPoint;
+            array[39].Type = BuildingsData.GetTribesWall(acc.AccInfo.Tribe);
+            array[38].Type = Classificator.BuildingEnum.RallyPoint;
             return array;
         }
     }

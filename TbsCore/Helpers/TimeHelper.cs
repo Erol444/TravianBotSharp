@@ -17,8 +17,8 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>DateTime</returns>
         public static DateTime EnoughResToUpgrade(Village vill, Resources required)
         {
-            long[] production = ResourcesHelper.ResourcesToArray(vill.Res.Production);
-            long[] resRequired = ResourcesHelper.ResourcesToArray(required);
+            long[] production = vill.Res.Production.ToArray();
+            long[] resRequired = required.ToArray();
 
             DateTime ret = DateTime.Now.AddMinutes(3);
             for (int i = 0; i < 4; i++)

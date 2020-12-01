@@ -138,18 +138,13 @@ namespace TravBotSharp.Views
 
             string location = IoHelperForms.PromptUserForBuidTasksLocation();
 
-            List<BuildingTask> tasks;
-            using (StreamReader sr = new StreamReader(location))
-            {
-                tasks = JsonConvert.DeserializeObject<List<BuildingTask>>(sr.ReadToEnd());
-            }
+            if (location == null) return;
+            
+
             foreach (var vill in acc.Villages)
             {
-                foreach (var task in tasks)
-                {
-                    BuildingHelper.AddBuildingTask(acc, vill, task);
-                }
-                BuildingHelper.RemoveCompletedTasks(vill, acc);
+                IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
+
             }
         }
 

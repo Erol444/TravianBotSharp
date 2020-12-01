@@ -53,7 +53,7 @@ namespace TravBotSharp.Files.Parsers
             var heroLevel = htmlDoc.DocumentNode.Descendants()
                 .FirstOrDefault(x => x.HasClass("titleInHeader"))
                 .InnerText
-                .Split(' ')
+                .Split('-')
                 .Last();
 
             var production = htmlDoc.DocumentNode.Descendants()
@@ -85,7 +85,7 @@ namespace TravBotSharp.Files.Parsers
                 heroInfo.ResourcesPoints = (int)Parser.ParseNum(heroPoints[3]);
             }
 
-            heroInfo.Level = (int)Parser.ParseNum(heroLevel);
+            heroInfo.Level = (int)Parser.RemoveNonNumeric(heroLevel);
             heroInfo.SelectedResource = resSelectedByte;
             heroInfo.HeroProduction = (int)Parser.RemoveNonNumeric(production);
 

@@ -349,9 +349,16 @@ namespace TravBotSharp.Views
 
         private void button9_Click(object sender, EventArgs e) //export build tasks button
         {
-            //remove buildingIds, they will get choosen appropriately when imported
+            DialogResult dialog = MessageBox.Show("Do you want to save building locations?", 
+                "Exporting build tasks", 
+                MessageBoxButtons.YesNoCancel);
+            if (dialog == DialogResult.Cancel) return;
+
             var buildTasks = GetSelectedVillage().Build.Tasks;
-            buildTasks.ToList().ForEach(x => x.BuildingId = null);
+
+            // Remove buildingIds if user wants that
+            if (dialog == DialogResult.No) buildTasks.ToList().ForEach(x => x.BuildingId = null);
+            
             IoHelperForms.ExportBuildTasks(JsonConvert.SerializeObject(buildTasks));
         }
 

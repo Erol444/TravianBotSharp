@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks;
@@ -71,7 +72,7 @@ namespace TravBotSharp.Files.Models.AccModels
                     await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
                 }
             }
-            _ = TaskExecutor.Execute(acc, firstTask);
+            await TaskExecutor.Execute(acc, firstTask);
         }
 
         private void NoTasks(Account acc)
