@@ -41,6 +41,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (TaskExecutor.IsLoginScreen(acc))
             {
                 // Wrong password/nickname
+                acc.Wb.Log("Password is incorrect!");
                 acc.TaskTimer.Stop();
 
             }
