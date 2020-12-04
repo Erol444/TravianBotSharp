@@ -14,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            acc.Wb.Close();
+            acc.Wb.Dispose();
 
             TimeSpan nextTask;
             do

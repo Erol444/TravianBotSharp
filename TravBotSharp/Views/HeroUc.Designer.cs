@@ -54,7 +54,6 @@
             this.columnHeader17 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader19 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.lastUpdated = new System.Windows.Forms.Label();
             this.equiptList = new System.Windows.Forms.ListView();
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -347,15 +346,6 @@
             this.columnHeader1.Text = "Amount";
             this.columnHeader1.Width = 71;
             // 
-            // lastUpdated
-            // 
-            this.lastUpdated.AutoSize = true;
-            this.lastUpdated.Location = new System.Drawing.Point(487, 577);
-            this.lastUpdated.Name = "lastUpdated";
-            this.lastUpdated.Size = new System.Drawing.Size(72, 13);
-            this.lastUpdated.TabIndex = 144;
-            this.lastUpdated.Text = "Last updated:";
-            // 
             // equiptList
             // 
             this.equiptList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -471,7 +461,7 @@
             // heroInfo
             // 
             this.heroInfo.Location = new System.Drawing.Point(13, 336);
-            this.heroInfo.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.heroInfo.Margin = new System.Windows.Forms.Padding(2);
             this.heroInfo.Name = "heroInfo";
             this.heroInfo.ReadOnly = true;
             this.heroInfo.Size = new System.Drawing.Size(216, 177);
@@ -533,7 +523,6 @@
             this.Controls.Add(this.refreshInfo);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.equiptList);
-            this.Controls.Add(this.lastUpdated);
             this.Controls.Add(this.heroItemsList);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.SupplyResourcesButton);
@@ -592,7 +581,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader17;
         private System.Windows.Forms.ColumnHeader columnHeader19;
         private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.Label lastUpdated;
         private System.Windows.Forms.ListView equiptList;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;

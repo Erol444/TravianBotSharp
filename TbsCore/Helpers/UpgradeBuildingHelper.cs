@@ -18,10 +18,10 @@ namespace TbsCore.Helpers
         {
             if (vill.Build.Tasks.Count == 0) return (null, DateTime.Now);
 
-            var now = DateTime.Now.AddHours(-2); // Since we are already in the village
-            var later = DateTime.Now.AddMilliseconds(500);
+            var now = DateTime.Now.AddMinutes(-3); // Since we are already in the village
+            var later = DateTime.Now.AddSeconds(1);
             var totalBuild = vill.Build.CurrentlyBuilding.Count;
-            if (totalBuild > 0) later = vill.Build.CurrentlyBuilding.First().Duration;
+            if (totalBuild > 0) later = GetNextBuildTime(vill);
 
             var maxBuild = 1;
             if (acc.AccInfo.PlusAccount) maxBuild++;
@@ -70,6 +70,23 @@ namespace TbsCore.Helpers
 
             if (totalBuild < maxBuild) return (task, now);
             else return (task, later);
+        }
+
+        /// <summary>
+        /// Gets time for next build event. This depends on how long the current building takes
+        /// </summary>
+        /// <param name="vill">Village</param>
+        /// <returns>Time for next build</returns>
+        private static DateTime GetNextBuildTime(Village vill)
+        {
+            var dur = vill.Build.CurrentlyBuilding.First().Duration;
+            var diff = (dur - DateTime.Now).Seconds;
+
+            Random ran = new Random();
+            var percentage = ran.Next(1, 20); // add 1% - 20% to the duration
+            var sec = diff * (1 + (percentage / 100));
+
+            return DateTime.Now + TimeSpan.FromSeconds(sec);
         }
 
         private static BuildingTask GetFirstResTask(Village vill) =>

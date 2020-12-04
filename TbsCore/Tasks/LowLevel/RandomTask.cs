@@ -30,7 +30,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var id = ran.Next(0, Url.Length - 1);
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}{Url[id]}");
-            await Task.Delay(ran.Next(6000, 12000));
+            await Task.Delay(ran.Next(5000, 20000));
 
             return TaskRes.Executed;
         }

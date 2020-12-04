@@ -213,15 +213,15 @@ namespace TravBotSharp.Files.Helpers
         {
             if (acc.TaskTimer != null)
             {
-                acc.TaskTimer.Stop();
-                acc.TaskTimer = null;
+                acc.TaskTimer.Dispose();
+                acc.TaskTimer = default;
             }
             if (acc.Wb != null)
             {
-                acc.Wb.Close();
-                acc.Wb = null;
+                acc.Wb.Dispose();
+                acc.Wb = default;
             }
-            acc.Tasks = null; //TODO: somehow save tasks, JSON cant parse/stringify abstract classes :(
+            acc.Tasks = default; //TODO: somehow save tasks, JSON cant parse/stringify abstract classes :(
         }
 
         /// <summary>

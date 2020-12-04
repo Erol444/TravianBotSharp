@@ -52,7 +52,6 @@ namespace TravBotSharp.Views
                 SupplyResVillageSelected.Text = "Selected: " + AccountHelper.GetHeroReviveVillage(acc).Name;
             }
 
-            lastUpdated.Text = "Last updated: " + acc.Settings.Timing.LastHeroRefresh.ToString();
             if (acc.Hero.Items == null) return;
 
             heroItemsList.Items.Clear();

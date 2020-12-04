@@ -12,7 +12,7 @@ using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Files.Models.AccModels
 {
-    public class WebBrowserInfo
+    public class WebBrowserInfo : IDisposable
     {
         // Average log length is 70 chars. 20 overhead + 70 * 2 (each char => 2 bytes)
         // Average memory consumption for logs will thus be: 160 * maxLogCnt => ~500kB
@@ -149,7 +149,8 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
                 catch (Exception e)
                 {
-                    acc.Wb.Log($"Error sending http request to {url}", e);
+                    if (acc.Wb == null) return;
+                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet", e);
                     repeat = true;
                     if (++repeatCnt >= 5 && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {
@@ -172,20 +173,18 @@ namespace TravBotSharp.Files.Models.AccModels
             //    await Task.Delay(AccountHelper.Delay() * 2);
             //}
 
-            this.Html.LoadHtml(this.Driver.PageSource);
+            Html.LoadHtml(Driver.PageSource);
             await TaskExecutor.PageLoaded(acc);
         }
 
-        public void Close()
+        public void Dispose()
         {
-            try
+            if (Driver != null)
             {
-                this.Driver?.Quit();
+                Driver.Quit(); // Also disposes
+                Driver = default;
             }
-            catch(Exception e)
-            {
-                Log($"Error closing chrome driver", e);
-            }
+
         }
     }
 }

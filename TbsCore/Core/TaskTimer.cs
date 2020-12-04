@@ -9,7 +9,7 @@ using static TravBotSharp.Files.Tasks.BotTask;
 
 namespace TravBotSharp.Files.Models.AccModels
 {
-    public class TaskTimer
+    public class TaskTimer : IDisposable
     {
         private readonly Account acc;
         private Timer Timer { get; set; }
@@ -33,67 +33,56 @@ namespace TravBotSharp.Files.Models.AccModels
             Timer.Enabled = false;
         }
 
-        private void TimerElapsed(Object source, ElapsedEventArgs e)
-        {
-            try
-            {
-                NewTick();
-            }
-            catch(Exception exception) { }
-        }
+        private void TimerElapsed(Object source, ElapsedEventArgs e) => NewTick();
 
         private async void NewTick()
         {
-            if (acc.Tasks.Count == 0) return; //No tasks
-
-            // Another task is already in progress. wait
-            var taskInProgress = acc.Tasks.FirstOrDefault(x => x.Stage != TaskStage.Start);
-            if (taskInProgress != null) return;
-
-            var tasks = acc.Tasks.Where(x => x.ExecuteAt <= DateTime.Now).ToList();
-            if (tasks.Count == 0)
+            try
             {
-                NoTasks(acc);
-                return;
-            }
+                if (acc.Tasks.Count == 0) return; //No tasks
 
-            BotTask firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
-            if (firstTask == null) firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.Medium);
-            if (firstTask == null) firstTask = tasks.FirstOrDefault();
+                // Another task is already in progress. wait
+                if( acc.Tasks.Any(x => x.Stage != TaskStage.Start)) return;
 
-            firstTask.Stage = TaskStage.Executing;
-
-            //If correct village is selected, otherwise change village
-            if (firstTask.Vill != null)
-            {
-                var active = acc.Villages.FirstOrDefault(x => x.Active);
-                if (active != null && active != firstTask.Vill)
+                var tasks = acc.Tasks.Where(x => x.ExecuteAt <= DateTime.Now).ToList();
+                if (tasks.Count == 0)
                 {
-                    await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
+                    NoTasks(acc);
+                    return;
                 }
+
+                BotTask firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
+                if (firstTask == null) firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.Medium);
+                if (firstTask == null) firstTask = tasks.FirstOrDefault();
+
+                firstTask.Stage = TaskStage.Executing;
+
+                //If correct village is selected, otherwise change village
+                if (firstTask.Vill != null)
+                {
+                    var active = acc.Villages.FirstOrDefault(x => x.Active);
+                    if (active != null && active != firstTask.Vill)
+                    {
+                        await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
+                    }
+                }
+                await TaskExecutor.Execute(acc, firstTask);
             }
-            await TaskExecutor.Execute(acc, firstTask);
+            catch (Exception e) { }
         }
 
         private void NoTasks(Account acc)
         {
             BotTask task = null;
-            var updateVill = acc.Villages.FirstOrDefault(x => x.Timings.LastVillRefresh + TimeSpan.FromMinutes(30) < DateTime.Now);
+            var updateVill = acc.Villages.FirstOrDefault(x => x.Timings.NextVillRefresh < DateTime.Now);
 
             if (updateVill != null)
             {
                 // Update the village
-                task = new UpdateDorf1
-                {
-                    Vill = updateVill
-                };
-            }
-            else if (acc.Hero.Settings.AutoRefreshInfo && acc.Settings.Timing.LastHeroRefresh + TimeSpan.FromMinutes(30) < DateTime.Now)
-            {
-                task = new HeroUpdateInfo();
+                task = new UpdateDorf1 { Vill = updateVill };
             }
             else if (acc.Settings.AutoCloseDriver &&
-                TimeHelper.NextNormalOrHighPrioTask(acc) > TimeSpan.FromMinutes(5))
+                TimeSpan.FromMinutes(5) < TimeHelper.NextNormalOrHighPrioTask(acc))
             {
                 // Auto close chrome and reopen when there is a high/normal prio BotTask
                 task = new ReopenDriver();
@@ -110,6 +99,11 @@ namespace TravBotSharp.Files.Models.AccModels
                 TaskExecutor.AddTask(acc, task);
             }
 
+        }
+
+        public void Dispose()
+        {
+            this.Timer.Dispose();
         }
     }
 }

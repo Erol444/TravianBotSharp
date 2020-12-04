@@ -8,6 +8,7 @@ using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Parsers;
+using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Files.Helpers
@@ -75,7 +76,10 @@ namespace TravBotSharp.Files.Helpers
                     TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip()
                     {
                         ExecuteAt = DateTime.Now,
-                        Item = equipWith.Item
+                        Items = new List<(Classificator.HeroItemEnum, int)>()
+                        {
+                            (equipWith.Item, 0)
+                        }
                     });
                 }
             }
@@ -114,7 +118,6 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc">Account</param>
         public static void ParseHeroPage(Account acc)
         {
-            acc.Settings.Timing.LastHeroRefresh = DateTime.Now;
             acc.Hero.HeroInfo = HeroParser.GetHeroInfo(acc.Wb.Html);
             acc.Hero.Items = HeroParser.GetHeroItems(acc.Wb.Html);
             acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
@@ -122,6 +125,7 @@ namespace TravBotSharp.Files.Helpers
 
             UpdateHeroVillage(acc);
         }
+
         public static void UpdateHeroVillage(Account acc)
         {
             var hrefId = HeroParser.GetHeroVillageHref(acc.Wb.Html);

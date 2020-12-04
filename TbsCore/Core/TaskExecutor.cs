@@ -183,6 +183,7 @@ namespace TravBotSharp.Files.Helpers
                 foreach (var b in currentlyb) vill.Build.CurrentlyBuilding.Add(b);
         }
 
+        #region Game checks
         private static bool IsWWMsg(Account acc)
         {
             var wwImg = acc.Wb.Html.DocumentNode
@@ -227,6 +228,7 @@ namespace TravBotSharp.Files.Helpers
             var msg = acc.Wb.Html.GetElementbyId("sysmsg");
             return msg != null;
         }
+#endregion
 
         public static void AddTask(Account acc, BotTask task)
         {
@@ -281,8 +283,9 @@ namespace TravBotSharp.Files.Helpers
         /// Removes all pending BotTasks of specific type except for the task calling it
         /// </summary>
         /// <param name="acc">Account</param>
-        /// <param name="type">Type of bot tasks to remove</param>
         /// <param name="thisTask">Task not to remove</param>
+        public static void RemoveSameTasks(Account acc, BotTask thisTask) =>
+            RemoveSameTasks(acc, thisTask.GetType(), thisTask);
         public static void RemoveSameTasks(Account acc, Type type, BotTask thisTask)
         {
             acc.Tasks.RemoveAll(x =>

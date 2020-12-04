@@ -16,6 +16,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2&z=1");
 
+            // TODO: if there is no rally point, navigate to some other village.
+            // If there's no rally point on entire account, build one.
             var yStr = acc.Wb.Html.GetElementbyId("yCoordInput").GetAttributeValue("value", "");
             var y = (int)Parser.RemoveNonNumeric(yStr);
             acc.AccInfo.MapSize = Math.Abs(y);

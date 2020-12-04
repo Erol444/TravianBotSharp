@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using TravBotSharp.Files.Models.AccModels;
@@ -151,6 +152,7 @@ namespace TravBotSharp.Files.Helpers
             var neededResArr = neededRes.ToArray();
             var heroResArr = heroRes.ToArray();
 
+            var useRes = new List<(Classificator.HeroItemEnum, int)>();
             for (int i = 0; i < 4; i++)
             {
                 if (neededResArr[i] == 0 || heroResArr[i] == 0) continue;
@@ -174,15 +176,16 @@ namespace TravBotSharp.Files.Helpers
                         item = HeroItemEnum.Others_Crop_0;
                         break;
                 }
-
-                TaskExecutor.AddTask(acc, new HeroEquip()
-                {
-                    Item = item,
-                    Amount = (int)resToBeUsed,
-                    ExecuteAt = DateTime.Now.AddHours(-2), // -2 since sendRes is -1
-                    Vill = vill
-                });
+                useRes.Add((item, (int)resToBeUsed));
             }
+
+            TaskExecutor.AddTask(acc, new HeroEquip()
+            {
+                Items = useRes,
+                ExecuteAt = DateTime.Now.AddHours(-2), // -2 since sendRes is -1
+                Vill = vill
+            });
+
 
             // A BuildTask needed the resources. If it was auto-build res fields task, make a new
             // general building task - so resources actually get used for intended building upgrade
@@ -191,13 +194,13 @@ namespace TravBotSharp.Files.Helpers
                 var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId);
                 var lvl = building.Level;
                 if (building.UnderConstruction) lvl++;
-                vill.Build.Tasks.Insert(0, new BuildingTask()
+                BuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
                 {
                     TaskType = Classificator.BuildingType.General,
                     Building = task.Building,
                     BuildingId = task.BuildingId,
                     Level = ++lvl
-                });
+                }, false);
             }
 
         }

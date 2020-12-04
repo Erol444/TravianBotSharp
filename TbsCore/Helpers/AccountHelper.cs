@@ -60,6 +60,8 @@ namespace TravBotSharp.Files.Helpers
         }
         public static void StartAccountTasks(Account acc)
         {
+            Random ran = new Random();
+
             // If we don't know server speed, go and get it
             if (acc.AccInfo.ServerSpeed == 0) TaskExecutor.AddTaskIfNotExists(acc, new GetServerSpeed() { ExecuteAt = DateTime.MinValue.AddHours(2) });
             if (acc.AccInfo.MapSize == 0 ||
@@ -93,6 +95,16 @@ namespace TravBotSharp.Files.Helpers
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
+            }
+
+            // Hero update info
+            if (acc.Hero.Settings.AutoRefreshInfo)
+            {
+                TaskExecutor.AddTask(acc, new HeroUpdateInfo()
+                {
+                    ExecuteAt = DateTime.Now.AddMinutes(ran.Next(40, 80)),
+                    Priority = Tasks.BotTask.TaskPriority.Low
+                });
             }
         }
 

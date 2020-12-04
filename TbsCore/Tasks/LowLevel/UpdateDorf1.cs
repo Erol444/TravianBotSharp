@@ -11,11 +11,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            //remove all same tasks
             TaskExecutor.RemoveSameTasksForVillage(acc, Vill, this.GetType(), this);
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
-            Vill.Timings.LastVillRefresh = DateTime.Now;
             return TaskRes.Executed;
         }
     }

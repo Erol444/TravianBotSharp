@@ -9,10 +9,7 @@ namespace TbsCore.Models.Settings
     /// </summary>
     public class TimingData
     {
-        public void Init()
-        {
-
-        }
-        public DateTime LastHeroRefresh { get; set; }
+        public void Init() { }
+        public DateTime NextHeroRefresh { get; set; }
     }
 }

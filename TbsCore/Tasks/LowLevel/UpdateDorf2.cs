@@ -14,7 +14,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             TaskExecutor.RemoveSameTasksForVillage(acc, Vill, this.GetType(), this);
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
-            Vill.Timings.LastVillRefresh = DateTime.Now;
             return TaskRes.Executed;
         }
     }

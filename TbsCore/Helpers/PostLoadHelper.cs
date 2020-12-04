@@ -24,6 +24,8 @@ namespace TbsCore.Helpers
         {
             var html = acc.Wb.Html;
 
+            var ran = new Random();
+
             //Web browser not initialized
             if (!UpdateAccountObject.UpdateVillages(html, acc)) return new List<Action>();
             var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
@@ -87,7 +89,7 @@ namespace TbsCore.Helpers
                         && !acc.Wb.CurrentUrl.Contains("messages.php")
                         && acc.Settings.AutoReadIgms)
                     {
-                        var ran = new Random();
+                        
                         TaskExecutor.AddTaskIfNotExists(acc, new ReadMessage()
                         {
                             ExecuteAt = DateTime.Now.AddSeconds(ran.Next(10, 600)), // Read msg in next 10-600 seconds
@@ -100,7 +102,7 @@ namespace TbsCore.Helpers
                     },
                 () => activeVill.Res.Capacity = ResourceParser.GetResourceCapacity(html, acc.AccInfo.ServerVersion),
                 () => activeVill.Res.Stored = ResourceParser.GetResources(html),
-                () => activeVill.Timings.LastVillRefresh = DateTime.Now,
+                () => activeVill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(30,60)),
                 () => // NPC
                 {
                     float ratio = (float)activeVill.Res.Stored.Resources.Crop / activeVill.Res.Capacity.GranaryCapacity;

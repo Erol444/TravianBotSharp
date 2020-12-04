@@ -8,8 +8,8 @@ namespace TbsCore.Models.VillageModels
     {
         public void Init() { }
         /// <summary>
-        /// When was the village last refreshed (for resources only)
+        /// When will be the next village refreshed (for resources only)
         /// </summary>
-        public DateTime LastVillRefresh { get; set; }
+        public DateTime NextVillRefresh { get; set; }
     }
 }
