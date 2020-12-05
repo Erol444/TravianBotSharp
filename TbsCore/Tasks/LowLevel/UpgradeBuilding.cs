@@ -275,7 +275,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// <param name="lvl">Level of the building</param>
         private void CheckIfTaskFinished(int lvl)
         {
-            if (this.Task.Level <= lvl) RemoveCurrentTask();
+            if (this.Task.Level <= lvl && this.Task.TaskType == BuildingType.General) RemoveCurrentTask();
         }
 
         private void RemoveCurrentTask() => this.Vill.Build.Tasks.Remove(this.Task);

@@ -24,7 +24,7 @@ namespace TravBotSharp.Files.Helpers
         public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
         {
             if (task.BuildingId == null || 
-                vill.Build.Buildings.Any(x=>x.Id == task.BuildingId && x.Type != task.Building))
+                vill.Build.Buildings.Any(x=>x.Id == task.BuildingId && x.Type != task.Building && x.Type != BuildingEnum.Site))
             {
                 //Check if bot has any space to build new buildings, otherwise return
                 if (!FindBuildingId(vill, task)) return false;
