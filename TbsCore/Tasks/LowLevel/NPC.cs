@@ -36,7 +36,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             for (int i = 0; i < 4; i++)
             {
-                await acc.Wb.Driver.FindElementById($"m2[{i}]").Write(targetRes[i]);
+                //await acc.Wb.Driver.FindElementById($"m2[{i}]").Write(targetRes[i]);
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case Classificator.ServerVersionEnum.T4_4:
+                        await acc.Wb.Driver.FindElementById($"m2[{i}]").Write(targetRes[i]);
+                        break;
+                    case Classificator.ServerVersionEnum.T4_5:
+                        await acc.Wb.Driver.FindElementByName($"desired{i}").Write(targetRes[i]);
+                        break;
+                }
             }
 
             var submit = acc.Wb.Html.GetElementbyId("submitText");
