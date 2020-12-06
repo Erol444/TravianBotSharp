@@ -56,13 +56,15 @@ namespace TravBotSharp.Views
         /// Get's selected FarmList
         /// </summary>
         /// <returns>FarmList</returns>
-        private FarmList GetSelectedFL() =>
-            GetSelectedAcc().Farming.FL.ElementAtOrDefault(FlCombo.SelectedIndex) ?? null;
+        private FarmList GetSelectedFL()
+        {
+            var acc = GetSelectedAcc();
+            return acc.Farming.FL.ElementAtOrDefault(FlCombo.SelectedIndex) ?? acc.Farming.FL.FirstOrDefault();
+        }
+            
 
         private void UpdateFlInfo()
         {
-            var acc = GetSelectedAcc();
-
             var fl = GetSelectedFL();
             FlName.Text = fl.Name;
             RaidStyle.SelectedIndex = (int)fl.RaidStyle;
@@ -72,7 +74,7 @@ namespace TravBotSharp.Views
         }
         private void RaidStyle_SelectedIndexChanged(object sender, EventArgs e) //save raid style
         {
-            GetSelectedFL().RaidStyle = (Files.Models.TroopsModels.RaidStyle)RaidStyle.SelectedIndex;
+            GetSelectedFL().RaidStyle = (RaidStyle)RaidStyle.SelectedIndex;
         }
 
         private void FlCombo_SelectedIndexChanged(object sender, EventArgs e)

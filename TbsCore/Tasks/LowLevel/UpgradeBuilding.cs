@@ -233,7 +233,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Not enough resources?
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
             {
-                acc.Wb.Log($"We wanted to upgrade {Task.Building}, but there was an error message!");
+                acc.Wb.Log($"We wanted to upgrade {Task.Building}, but there was an error message:\n{errorMessage.InnerText}");
                 return TaskRes.Retry;     
             }
 
