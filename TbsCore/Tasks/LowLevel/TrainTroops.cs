@@ -95,9 +95,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            VersionHelper.Switch(acc, 
-                () => wb.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'"), 
-                async () => await acc.Wb.Driver.FindElementByName(inputName).Write(maxNum));
+            switch (acc.AccInfo.ServerVersion) 
+            {
+                case ServerVersionEnum.T4_4:
+                    wb.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
+                    break;
+                case ServerVersionEnum.T4_5:
+                    await acc.Wb.Driver.FindElementByName(inputName).Write(maxNum);
+                    break;
+            }
 
             await Task.Delay(100);
 
