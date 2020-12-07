@@ -196,8 +196,8 @@ namespace TbsCore.Helpers
         {
             if (!vill.Settings.AutoExpandStorage) return;
 
-            long warehouse_delta = vill.Res.Capacity.WarehouseCapacity * (long)0.95;
-            long granary_delta = vill.Res.Capacity.GranaryCapacity * (long)0.95;
+            double warehouse_delta = vill.Res.Capacity.WarehouseCapacity * 0.95;
+            double granary_delta = vill.Res.Capacity.GranaryCapacity * 0.95;
 
             if (warehouse_delta <= vill.Res.Stored.Resources.Wood ||
                 warehouse_delta <= vill.Res.Stored.Resources.Clay ||
