@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -20,7 +21,7 @@ namespace TravBotSharp
     {
         private List<Account> accounts = new List<Account>();
         private int accSelected = 0;
-        
+        private System.Timers.Timer saveAccountsTimer;
 
         private ITbsUc[] Ucs;
         public ControlPanel()
@@ -46,7 +47,15 @@ namespace TravBotSharp
 
             // Initialize all the views
             foreach(var uc in Ucs) uc.Init(this);
+
+            saveAccountsTimer = new System.Timers.Timer(1000 * 60 * 30); // Every 30 min
+            saveAccountsTimer.Elapsed += SaveAccounts_TimerElapsed;
+            saveAccountsTimer.Start();
+            saveAccountsTimer.Enabled = true;
+            saveAccountsTimer.AutoReset = true;
         }
+
+        private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts);
 
         private void LoadAccounts()
         {

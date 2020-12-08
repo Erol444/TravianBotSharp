@@ -184,11 +184,21 @@ namespace TravBotSharp.Files.Helpers
             {
                 Logout(acc);
             }
+            SaveAccounts(accounts);
+        }
+
+        /// <summary>
+        /// Saves accounts into the accounts.txt file
+        /// </summary>
+        /// <param name="accounts"></param>
+        public static void SaveAccounts(List<Account> accounts)
+        {
             using (StreamWriter sw = new StreamWriter(AccountsPath))
             {
                 sw.Write(JsonConvert.SerializeObject(accounts));
             }
         }
+
         /// <summary>
         /// Login into account and initialize everything
         /// </summary>
