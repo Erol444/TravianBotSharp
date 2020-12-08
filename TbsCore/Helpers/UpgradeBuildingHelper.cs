@@ -21,7 +21,7 @@ namespace TbsCore.Helpers
             var now = DateTime.Now.AddMinutes(-3); // Since we are already in the village
             var later = DateTime.Now.AddSeconds(1);
             var totalBuild = vill.Build.CurrentlyBuilding.Count;
-            if (totalBuild > 0) later = GetNextBuildTime(vill);
+            if (0 < totalBuild) later = GetNextBuildTime(vill);
 
             var maxBuild = 1;
             if (acc.AccInfo.PlusAccount) maxBuild++;
@@ -35,7 +35,7 @@ namespace TbsCore.Helpers
                (acc.AccInfo.PlusAccount && acc.AccInfo.ServerUrl.ToLower().Contains("ttwars"))
                 ))
             {
-                //find the CurrentlyBuilding that executes sooner
+                // Find the CurrentlyBuilding that executes sooner
                 var cb = vill.Build.CurrentlyBuilding.OrderBy(x => x.Duration).First();
                 later = cb.Duration;
 

@@ -316,7 +316,6 @@ namespace TravBotSharp.Files.Helpers
                     AddBuildingPrerequisites(acc, vill, prerequisite.Building);
                 }
             }
-            BuildingHelper.RemoveDuplicateBuildingTasks(vill);
             return ret;
         }
 

@@ -47,16 +47,16 @@ namespace TravBotSharp.Files.Helpers
             //auto field upgrade/demolish task, no need for Id
             if (task.TaskType == BuildingType.AutoUpgradeResFields) return true;
 
-            var ExistingBuilding = vill.Build.Buildings
+            var existingBuilding = vill.Build.Buildings
                     .FirstOrDefault(x => x.Type == task.Building);
 
             // Only special buildings (warehouse, cranny, granary etc.) can have multiple 
             // buildings of it's type and use ConstructNew option
             if (!BuildingsData.CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
             
-            if (ExistingBuilding != null && !task.ConstructNew)
+            if (existingBuilding != null && !task.ConstructNew)
             {
-                task.BuildingId = ExistingBuilding.Id;
+                task.BuildingId = existingBuilding.Id;
                 return true;
             }
 
@@ -133,10 +133,12 @@ namespace TravBotSharp.Files.Helpers
        
         public static void ReStartDemolishing(Account acc, Village vill)
         {
-            if (vill.Build.DemolishTasks.Count > 0)
-            {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) });
-            }
+            if (vill.Build.DemolishTasks.Count <= 0) return;
+            
+            TaskExecutor.AddTaskIfNotExistInVillage(acc, 
+                vill, 
+                new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) }
+                );
         }
 
         public static bool BuildingRequirementsAreMet(BuildingEnum building, Village vill, TribeEnum tribe) //check if user can construct this building
@@ -321,12 +323,6 @@ namespace TravBotSharp.Files.Helpers
             return buildingToUpgrade.Id.ToString();
         }
 
-        internal static void RemoveDuplicateBuildingTasks(Village vill)
-        {
-            if (vill.Build.Tasks.Count == 0) return;
-            vill.Build.Tasks = vill.Build.Tasks.Distinct().ToList();
-        }
-
         /// <summary>
         /// Upgrades specified building for exactly one level. Will upgrade the lowest level building.
         /// </summary>
@@ -432,14 +428,14 @@ namespace TravBotSharp.Files.Helpers
             // If id between 1 and 4, it's resource field
             return buildingInt < 5 && buildingInt > 0;
         }
-        public static void RemoveCompletedTasks(Village vill, Account acc)
-        {
-            foreach (var task in vill.Build.Tasks.ToList())
-            {
-                if (IsTaskCompleted(vill, acc, task))
-                    vill.Build.Tasks.Remove(task);
-            }
-        }
+
+        /// <summary>
+        /// Removes all complete building tasks
+        /// </summary>
+        /// <param name="vill">Village</param>
+        /// <param name="acc">Account</param>
+        public static void RemoveCompletedTasks(Village vill, Account acc) =>
+            vill.Build.Tasks.RemoveAll(task => IsTaskCompleted(vill, acc, task));
 
         #region Functions for auto-building resource fields
         public static Models.ResourceModels.Building FindLowestLevelBuilding(List<Models.ResourceModels.Building> buildings)

@@ -202,6 +202,7 @@ namespace TravBotSharp.Views
             if (indicies.Count > 0)
                 selectedBuilding = vill.Build.Buildings[indicies[0]];
             else return; //no building selected :(
+
             if (buildRadioButton.Checked)
             {
                 var task = new BuildingTask
@@ -211,17 +212,28 @@ namespace TravBotSharp.Views
                     BuildingId = selectedBuilding.Id
                 };
 
+                // Building already planned on this ID
+                var plannedBuilding = vill.Build.Tasks.FirstOrDefault(x => x.BuildingId == task.BuildingId);
+
                 //Create building task, construct new building
                 if (selectedBuilding.Type == BuildingEnum.Site)
                 {
-                    Enum.TryParse(buildTypeComboBox.SelectedItem.ToString(), out BuildingEnum building);
-                    task.Building = building;
-                    task.ConstructNew = true;
+                    if (plannedBuilding == null) // No building has been planned on this ID
+                    {
+                        Enum.TryParse(buildTypeComboBox.SelectedItem.ToString(), out BuildingEnum building);
+                        task.Building = building;
+                        task.ConstructNew = true;
+                    }
+                    else // Building was already planned
+                    {
+                        task.Building = plannedBuilding.Building;
+                    }
                 }
                 else //upgrade existing building
                 {
                     task.Building = selectedBuilding.Type;
                 }
+
                 BuildingHelper.AddBuildingTask(acc, vill, task);
             }
             else if (demolishRadioButton.Checked)
