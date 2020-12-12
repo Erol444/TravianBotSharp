@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using OpenQA.Selenium.Chrome;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
@@ -23,11 +24,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var script = "window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});";
             await DriverHelper.ExecuteScript(acc, script);
 
-            script = "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#3').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');";
+            script = "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#3').addClass('active');$$('.paymentWizardMenu#buyAnimal').removeClass('hide');";
             await DriverHelper.ExecuteScript(acc, script);
 
-            var buy = acc.Wb.Html.DocumentNode.SelectNodes("//*[text()[contains(., '3000')]]")[0];
-            while (buy.Name != "button") buy = buy.ParentNode;
+            var buy = acc.Wb.Html.DocumentNode.Descendants().First(x => x.HasClass("buyAnimal5"));
             
             wb.FindElementById(buy.Id).Click();
 
