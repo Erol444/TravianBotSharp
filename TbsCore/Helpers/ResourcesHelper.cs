@@ -39,10 +39,8 @@ namespace TravBotSharp.Files.Helpers
             DateTime enoughRes = TimeHelper.EnoughResToUpgrade(vill, stillNeededRes);
 
             //Not enough resources, send resources or use hero resources
-            if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 && // Only T4.5 has resources in hero inv
-                acc.Hero.Settings.AutoUseRes && // Auto use resources is enabled
-                VillageHelper.VillageFromId(acc, acc.Hero.HomeVillageId) == vill // Hero is in village where we need resources
-                )
+            if (acc.Hero.Settings.AutoUseRes && // Auto use resources is enabled
+                acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
             {
                 var heroRes = HeroHelper.GetHeroResources(acc);
 
