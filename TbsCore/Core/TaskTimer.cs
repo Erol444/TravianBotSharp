@@ -82,10 +82,11 @@ namespace TravBotSharp.Files.Models.AccModels
                 task = new UpdateDorf1 { Vill = updateVill };
             }
             else if (acc.Settings.AutoCloseDriver &&
-                TimeSpan.FromMinutes(5) < TimeHelper.NextNormalOrHighPrioTask(acc))
+                TimeSpan.FromMinutes(5) < TimeHelper.NextPrioTask(acc, TaskPriority.Medium))
             {
                 // Auto close chrome and reopen when there is a high/normal prio BotTask
                 task = new ReopenDriver();
+                ((ReopenDriver)task).LowestPrio = TaskPriority.Medium;
             }
             else if (acc.Settings.AutoRandomTasks)
             {

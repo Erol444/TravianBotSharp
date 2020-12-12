@@ -87,12 +87,28 @@ namespace TravBotSharp.Files.Helpers
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TimeSpan</returns>
-        public static TimeSpan NextNormalOrHighPrioTask(Account acc)
+        public static TimeSpan NextPrioTask(Account acc, Tasks.BotTask.TaskPriority prio)
         {
-            var firstTask = acc.Tasks.FirstOrDefault(x =>
-                x.Priority == Tasks.BotTask.TaskPriority.Medium ||
-                x.Priority == Tasks.BotTask.TaskPriority.High
-            );
+            Tasks.BotTask firstTask = null;
+
+            switch (prio)
+            {
+                case Tasks.BotTask.TaskPriority.High:
+                    firstTask = acc.Tasks.FirstOrDefault(x =>
+                        x.Priority == Tasks.BotTask.TaskPriority.High
+                    );
+                    break;
+                case Tasks.BotTask.TaskPriority.Medium:
+                    firstTask = acc.Tasks.FirstOrDefault(x =>
+                        x.Priority == Tasks.BotTask.TaskPriority.High ||
+                        x.Priority == Tasks.BotTask.TaskPriority.Medium
+                    );
+                    break;
+                case Tasks.BotTask.TaskPriority.Low:
+                    firstTask = acc.Tasks.FirstOrDefault();
+                    break;
+            }
+
             if (firstTask == null) return TimeSpan.MaxValue;
 
             return (firstTask.ExecuteAt - DateTime.Now);

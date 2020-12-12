@@ -25,13 +25,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             int sleepSec = rand.Next(MinSleepSec, MaxSleepSec);
             var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
 
-            acc.Wb.Log($"Bot will wake up at {sleepEnd}");
-
-            do
+            var reopenDriver = new ReopenDriver()
             {
-                await Task.Delay(AccountHelper.Delay());
-            }
-            while (DateTime.Now < sleepEnd && NoHighPriorityTask(acc));
+                LowestPrio = TaskPriority.High,
+                ReopenAt = sleepEnd
+            };
+
+            await reopenDriver.Execute(acc);
 
 
             if (AutoSleep)
