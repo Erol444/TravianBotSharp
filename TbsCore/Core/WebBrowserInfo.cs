@@ -4,6 +4,7 @@ using OpenQA.Selenium.Remote;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
@@ -16,7 +17,7 @@ namespace TravBotSharp.Files.Models.AccModels
     {
         // Average log length is 70 chars. 20 overhead + 70 * 2 (each char => 2 bytes)
         // Average memory consumption for logs will thus be: 160 * maxLogCnt => ~500kB
-        const int maxLogCnt = 3000;
+        const int maxLogCnt = 1000;
         public WebBrowserInfo()
         {
             Logs = new CircularBuffer<string>(maxLogCnt);
@@ -179,12 +180,18 @@ namespace TravBotSharp.Files.Models.AccModels
 
         public void Dispose()
         {
-            if (Driver != null)
-            {
-                Driver.Quit(); // Also disposes
-                Driver = default;
-            }
-
+            //new Thread(() => {
+                do
+                {
+                    try
+                    {
+                        Driver.Quit(); // Also disposes
+                        Driver = default;
+                    }
+                    catch { }
+                }
+                while (Driver != default);
+            //}).Start();
         }
     }
 }

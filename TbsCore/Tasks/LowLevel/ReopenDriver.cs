@@ -33,7 +33,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await Task.Delay(1000);
                 nextTask = TimeHelper.NextPrioTask(acc, LowestPrio);
 
-                var log = $"Chrome will reopen in {nextTask.TotalMinutes} min";
+                var log = $"Chrome will reopen in {(int)nextTask.TotalMinutes} min";
                 if (log != previousLog)
                 {
                     acc.Wb.Log(log);
