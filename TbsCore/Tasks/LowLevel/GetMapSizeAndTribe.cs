@@ -11,6 +11,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class GetMapSizeAndTribe : BotTask
     {
+        /// <summary>
+        /// To get tribe in T4.5, in dorf1 you can parse "<div id="resourceFieldContainer" class="resourceField7 tribe1">"
+        /// 
+        /// </summary>
+        /// <param name="acc"></param>
+        /// <returns></returns>
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;

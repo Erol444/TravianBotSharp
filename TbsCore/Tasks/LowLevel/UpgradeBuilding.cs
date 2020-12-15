@@ -219,7 +219,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var container = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
             var buttons = container?.Descendants("button");
             if (buttons == null)
-                throw new Exception($"We wanted to upgrade {Task.Building}, but no 'upgrade' button was found!");
+            {
+                acc.Wb.Log($"We wanted to upgrade {Task.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}");
+                return TaskRes.Retry;
+            }
 
             var errorMessage = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("errorMessage"));
             HtmlNode upgradeButton = buttons.FirstOrDefault(x => x.HasClass("build"));

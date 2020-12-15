@@ -9,6 +9,7 @@ namespace TravBotSharp.Files.Parsers
 {
     public static class ResourceParser
     {
+        // JS resources.storage returns resources
         public static StoredResources GetResources(HtmlDocument htmlDoc)
         {
             return new StoredResources()
@@ -23,6 +24,8 @@ namespace TravBotSharp.Files.Parsers
                 LastRefresh = DateTime.Now
             };
         }
+
+        // JS resources.production returns production
         public static Resources GetProduction(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             var Res = htmlDoc.GetElementbyId("production").ChildNodes[3].ChildNodes;
@@ -41,6 +44,8 @@ namespace TravBotSharp.Files.Parsers
             string decoded = System.Net.WebUtility.HtmlDecode(text);
             return Parser.RemoveNonNumeric(decoded);
         }
+
+        // JS resources.maxStorage returns capacity
         public static ResourceCapacity GetResourceCapacity(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             string WarehouseCap = "";

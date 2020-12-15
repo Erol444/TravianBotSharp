@@ -54,8 +54,10 @@ namespace TravBotSharp.Views
                 item.SubItems.Add(task.ExecuteAt.ToString());
                 taskListView.Items.Add(item);
             }
-            
-            foreach(var log in acc.Wb.Logs)
+
+
+            //new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
+            foreach (var log in acc.Wb.Logs)
             {
                 logTextBox.AppendText(log + "\n");
             }

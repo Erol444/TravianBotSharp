@@ -10,6 +10,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// <summary>
     /// For calculating how what is the transit speed (factor) of this server. On normal (x1) servers,
     /// this factor should be 1.
+    /// 
+    /// On TTWars and Travian T4.5, you can use Travian.Game.speed; TODO
     /// </summary>
     public class GetServerSpeed : BotTask
     {
