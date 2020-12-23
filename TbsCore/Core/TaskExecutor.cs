@@ -32,6 +32,9 @@ namespace TravBotSharp.Files.Helpers
             }
             if (CheckCookies(acc))
                 await acc.Wb.Driver.FindElementById("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll").Click(acc);
+            if (CheckCookiesNew(acc))
+                await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('cmpboxbtnyes')[0].click();");
+
             if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc))
                 await acc.Wb.Driver.FindElementByClassName("questButtonSkipTutorial").Click(acc);
 
@@ -207,6 +210,8 @@ namespace TravBotSharp.Files.Helpers
         /// </summary>
         private static bool CheckCookies(Account acc) =>
             acc.Wb.Html.GetElementbyId("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll") != null;
+        private static bool CheckCookiesNew(Account acc) =>
+            acc.Wb.Html.GetElementbyId("cmpbox") != null;
 
         private static bool IsCaptcha(Account acc) => acc.Wb.Html.GetElementbyId("recaptchaImage") != null;
 
