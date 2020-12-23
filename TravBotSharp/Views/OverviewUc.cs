@@ -302,6 +302,7 @@ namespace TravBotSharp.Views
 
                 // Reset training
                 if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
+                if (vill.Expansion.AutoCelebrations) AccountHelper.ReStartCelebration(acc, vill);
             }
             //Change name of village/s
             if (changeVillNames.Count > 0)

@@ -108,7 +108,7 @@ namespace TravBotSharp.Files.Helpers
             }
         }
 
-        private static void ReStartCelebration(Account acc, Village vill)
+        public static void ReStartCelebration(Account acc, Village vill)
         {
             // If we don't want auto-celebrations, return
             if (!vill.Expansion.AutoCelebrations) return;
