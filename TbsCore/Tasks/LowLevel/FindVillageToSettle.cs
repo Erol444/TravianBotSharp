@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using Newtonsoft.Json;
-using OpenQA.Selenium.Chrome;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -99,7 +97,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 {
                     ret.data.Add(new SendMapInfoT4_5.Datum()
                     {
-                        position = new SendMapInfoT4_5.Position(){
+                        position = new SendMapInfoT4_5.Position()
+                        {
                             x0 = x * 100 + startX,
                             y0 = y * 100 + startY,
                             x1 = (x * 100 + startX) + 99,

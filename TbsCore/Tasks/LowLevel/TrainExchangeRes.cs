@@ -1,10 +1,6 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
-using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -35,7 +31,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var distribute = acc.Wb.Html.DocumentNode.SelectNodes("//*[text()[contains(., 'Distribute remaining resources.')]]")[0];
             while (distribute.Name != "button") distribute = distribute.ParentNode;
-            
+
             wb.FindElementById(distribute.Id).Click();
 
             await Task.Delay(AccountHelper.Delay());

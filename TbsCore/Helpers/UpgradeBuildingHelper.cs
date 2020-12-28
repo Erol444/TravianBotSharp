@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;

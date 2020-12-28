@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -25,7 +23,7 @@ namespace TbsCore.Helpers
                 acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
                 return true;
             }
-            catch(Exception e) 
+            catch (Exception e)
             {
                 if (log) acc.Wb.Log($"Error executing JS script:\n{script}", e);
                 return false;

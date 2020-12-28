@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -84,7 +83,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     acc.Wb.Driver.FindElementById(startRaid.Id).Click();
                     break;
             }
-            
+
             acc.Wb.Log($"FarmList '{this.FL.Name}' was sent");
             return TaskRes.Executed;
         }

@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
@@ -30,7 +28,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 if (acc.NewVillages.AutoFindVillages) // Find new village to settle
                 {
-                    TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle() {
+                    TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
+                    {
                         Vill = AccountHelper.GetMainVillage(acc),
                         ExecuteAt = DateTime.MinValue.AddHours(10)
                     });

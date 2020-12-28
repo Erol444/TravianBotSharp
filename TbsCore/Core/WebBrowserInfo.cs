@@ -1,10 +1,7 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
+﻿using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
@@ -52,7 +49,7 @@ namespace TravBotSharp.Files.Models.AccModels
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
-            if(this.Html == null)
+            if (this.Html == null)
             {
                 this.Html = new HtmlAgilityPack.HtmlDocument();
             }
@@ -94,7 +91,7 @@ namespace TravBotSharp.Files.Models.AccModels
             }
 
             // Make browser headless to preserve memory resources
-            if(acc.Settings.HeadlessMode) options.AddArguments("headless");
+            if (acc.Settings.HeadlessMode) options.AddArguments("headless");
 
             // Do not download images in order to preserve memory resources
             if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false");
@@ -117,7 +114,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 // Set timeout
                 this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log($"Error opening chrome driver! Is it already opened?", e);
             }
@@ -164,7 +161,7 @@ namespace TravBotSharp.Files.Models.AccModels
                     await Task.Delay(AccountHelper.Delay());
                 }
             }
-            while(repeat);
+            while (repeat);
 
 
             await Task.Delay(AccountHelper.Delay());
@@ -181,16 +178,16 @@ namespace TravBotSharp.Files.Models.AccModels
         public void Dispose()
         {
             //new Thread(() => {
-                do
+            do
+            {
+                try
                 {
-                    try
-                    {
-                        Driver.Quit(); // Also disposes
-                        Driver = default;
-                    }
-                    catch { }
+                    Driver.Quit(); // Also disposes
+                    Driver = default;
                 }
-                while (Driver != default);
+                catch { }
+            }
+            while (Driver != default);
             //}).Start();
         }
     }

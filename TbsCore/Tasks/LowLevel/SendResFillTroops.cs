@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
@@ -25,10 +23,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            
+
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
                 return TaskRes.Executed;
-            
+
 
             //get troop resource/time cost
             var troopCost = TroopCost.GetResourceCost(TrainTask.Troop, TrainTask.Great);

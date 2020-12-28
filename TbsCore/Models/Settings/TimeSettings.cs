@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TravBotSharp.Files.Models.AccModels;
-
-namespace TbsCore.Models.Settings
+﻿namespace TbsCore.Models.Settings
 {
     public class TimeSettings
     {

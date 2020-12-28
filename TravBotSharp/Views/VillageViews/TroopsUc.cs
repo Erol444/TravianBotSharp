@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -48,7 +46,7 @@ namespace TravBotSharp.Views
             infoText += "-- Troop smithy levels:\n";
 
             List<string> levels = new List<string>();
-            foreach(var level in vill.Troops.Levels)
+            foreach (var level in vill.Troops.Levels)
             {
                 levels.Add(level.Troop + ": " + level.Level);
             }
@@ -63,7 +61,7 @@ namespace TravBotSharp.Views
             //{
             //    ctStr.Add(ct.)
             //}
-            
+
             troopsInfo.Text = infoText;
         }
 

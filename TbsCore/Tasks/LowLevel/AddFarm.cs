@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
 using TravBotSharp.Files.Helpers;
@@ -23,7 +21,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             wb.ExecuteScript($"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');"); //show "Add raid" popup
             await Task.Delay(AccountHelper.Delay());
-            
+
             //select coordinates
             await wb.FindElementById("xCoordInput").Write(Coordinates.x);
             await wb.FindElementById("yCoordInput").Write(Coordinates.y);

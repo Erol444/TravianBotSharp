@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TbsCore.Database;
 using TbsCore.Helpers;
@@ -185,9 +183,9 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="accounts"></param>
         public static void SaveAccounts(List<Account> accounts, bool logout)
         {
-            foreach(var acc in accounts)
+            foreach (var acc in accounts)
             {
-                if(logout) Logout(acc);
+                if (logout) Logout(acc);
                 DbRepository.SaveAccount(acc);
             }
         }
@@ -240,7 +238,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 int limit = agents.Length - i;
                 int num = rnd.Next(1, limit);
-                if(num <= 1 + limit / 10)
+                if (num <= 1 + limit / 10)
                 {
                     return agents[i].Replace("\r", "");
                 }

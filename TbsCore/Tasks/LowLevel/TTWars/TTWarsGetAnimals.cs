@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
@@ -28,7 +26,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.ExecuteScript(acc, script);
 
             var buy = acc.Wb.Html.DocumentNode.Descendants().First(x => x.HasClass("buyAnimal5"));
-            
+
             wb.FindElementById(buy.Id).Click();
 
             //Clicking on buy button DOES NOT trigger a page reloag. We have to do it manually.

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TbsCore.Helpers;
+﻿using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -14,7 +11,7 @@ namespace TbsCore.TravianData
             { 29700, 33250, 32000, 6700 } // Big celebration
         };
 
-        public static long[] CelebrationCost(bool big) => big ? 
+        public static long[] CelebrationCost(bool big) => big ?
             celebrationResources.GetRow(1) :
             celebrationResources.GetRow(0);
 
@@ -22,7 +19,7 @@ namespace TbsCore.TravianData
         {
             var cost = CelebrationCost(big);
             var res = vill.Res.Stored.Resources.ToArray();
-            
+
             return ResourcesHelper.EnoughRes(res, cost);
         }
     }

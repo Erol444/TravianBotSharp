@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TravBotSharp.Files.Models.AccModels
+﻿namespace TravBotSharp.Files.Models.AccModels
 {
     public class HeroInfo
     {

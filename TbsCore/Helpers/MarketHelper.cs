@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
-using TbsCore.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Parsers;
@@ -41,7 +40,7 @@ namespace TravBotSharp.Files.Helpers
             //if(vill.Market.)
 
             // Merchants are on their way
-            if (vill.Market.Settings.Configuration.TransitArrival > DateTime.Now) return vill.Market.Settings.Configuration.TransitArrival; 
+            if (vill.Market.Settings.Configuration.TransitArrival > DateTime.Now) return vill.Market.Settings.Configuration.TransitArrival;
 
             //send resources
             var sendRes = new Resources();

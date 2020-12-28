@@ -1,6 +1,4 @@
-﻿using System;
-using System.Net.Http;
-using TbsCore.Helpers;
+﻿using System.Net.Http;
 
 namespace TravBotSharp.Files.Helpers
 {

@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
@@ -47,10 +45,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (enoughResAt <= DateTime.Now.AddMilliseconds(1)) //we have enough res, create new settler!
             {
                 await acc.Wb.Driver.FindElementByName("t10").Write(maxNum);
-                
+
                 // Click Train button
                 await acc.Wb.Driver.FindElementById("s1").Click(acc);
-                
+
                 Vill.Troops.Settlers = (int)available + (int)maxNum;
 
                 var training = TroopsHelper.TrainingDuration(acc.Wb.Html);

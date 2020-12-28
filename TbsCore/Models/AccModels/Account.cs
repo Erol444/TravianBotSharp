@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TravBotSharp.Files.Models.Settings;
-using TravBotSharp.Files.Models.SideBarModels;
 using TravBotSharp.Files.Tasks;
 
 namespace TravBotSharp.Files.Models.AccModels
