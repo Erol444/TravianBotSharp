@@ -9,6 +9,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using TbsCore.Database;
+using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
@@ -55,11 +57,18 @@ namespace TravBotSharp
             saveAccountsTimer.AutoReset = true;
         }
 
-        private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts);
+        private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);
 
         private void LoadAccounts()
         {
-            accounts = IoHelperCore.ReadAccounts();
+            // For migration purposes only! Remove after few versions
+            if (IoHelperCore.AccountsTxtExists() && !IoHelperCore.SQLiteExists())
+            {
+                DbRepository.SyncAccountsTxt();
+                File.Delete(IoHelperCore.AccountsPath);
+            }
+            
+            accounts = DbRepository.GetAccounts();
             RefreshAccView();
         }
 
@@ -83,7 +92,7 @@ namespace TravBotSharp
 
         private void ControlPanel_FormClosing(object sender, FormClosingEventArgs e)
         {
-            IoHelperCore.Quit(accounts);
+            IoHelperCore.SaveAccounts(accounts, true);
         }
 
         /// <summary>

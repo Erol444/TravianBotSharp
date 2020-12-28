@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using TbsCore.Database;
 using TbsCore.Helpers;
 using TbsCore.Resources;
 using TravBotSharp.Files.Models.AccModels;
@@ -18,6 +19,9 @@ namespace TravBotSharp.Files.Helpers
     {
         public static string AccountsPath => Path.Combine(TbsPath(), "accounts.txt");
         public static string CachePath => Path.Combine(TbsPath(), "cache");
+        public static string SqlitePath => Path.Combine(TbsPath(), "db.sqlite");
+        public static bool SQLiteExists() => File.Exists(SqlitePath);
+        public static bool AccountsTxtExists() => File.Exists(AccountsPath);
         public static string GetCacheDir(string username, string server, Access access)
         {
             return Path.Combine(IoHelperCore.CachePath, GetCacheFolder(username, server, access.Proxy));
@@ -174,28 +178,17 @@ namespace TravBotSharp.Files.Helpers
         {
             return $"{username}_{IoHelperCore.UrlRemoveHttp(server)}_{proxy}";
         }
-        /// <summary>
-        /// Quit (stop) the program. This will logout (close drivers) from all accounts and save them into the file
-        /// </summary>
-        /// <param name="accounts"></param>
-        public static void Quit(List<Account> accounts)
-        {
-            foreach (var acc in accounts)
-            {
-                Logout(acc);
-            }
-            SaveAccounts(accounts);
-        }
 
         /// <summary>
-        /// Saves accounts into the accounts.txt file
+        /// Saves accounts into the SQLite DB
         /// </summary>
         /// <param name="accounts"></param>
-        public static void SaveAccounts(List<Account> accounts)
+        public static void SaveAccounts(List<Account> accounts, bool logout)
         {
-            using (StreamWriter sw = new StreamWriter(AccountsPath))
+            foreach(var acc in accounts)
             {
-                sw.Write(JsonConvert.SerializeObject(accounts));
+                if(logout) Logout(acc);
+                DbRepository.SaveAccount(acc);
             }
         }
 
