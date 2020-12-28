@@ -12,6 +12,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// this factor should be 1.
     /// 
     /// On TTWars and Travian T4.5, you can use Travian.Game.speed; TODO
+    /// Also at Travian.Game => language, version, worldId
     /// </summary>
     public class GetServerSpeed : BotTask
     {

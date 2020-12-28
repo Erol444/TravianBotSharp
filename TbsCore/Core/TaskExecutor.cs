@@ -210,8 +210,9 @@ namespace TravBotSharp.Files.Helpers
         /// </summary>
         private static bool CheckCookies(Account acc) =>
             acc.Wb.Html.GetElementbyId("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll") != null;
+        
         private static bool CheckCookiesNew(Account acc) =>
-            acc.Wb.Html.GetElementbyId("cmpbox") != null;
+            acc.Wb.Html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes"));
 
         private static bool IsCaptcha(Account acc) => acc.Wb.Html.GetElementbyId("recaptchaImage") != null;
 

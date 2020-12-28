@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbsWinForms", "TravBotSharp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TbsCore", "TbsCore\TbsCore.csproj", "{E343F06A-B322-41B6-889D-E349865341D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbsBackend", "TbsBackend\TbsBackend.csproj", "{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,18 +41,6 @@ Global
 		{E343F06A-B322-41B6-889D-E349865341D7}.Release|x64.Build.0 = Release|Any CPU
 		{E343F06A-B322-41B6-889D-E349865341D7}.Release|x86.ActiveCfg = Release|Any CPU
 		{E343F06A-B322-41B6-889D-E349865341D7}.Release|x86.Build.0 = Release|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Debug|x64.Build.0 = Debug|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Debug|x86.Build.0 = Debug|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Release|x64.ActiveCfg = Release|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Release|x64.Build.0 = Release|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Release|x86.ActiveCfg = Release|Any CPU
-		{5E8702DC-66E5-45DC-B846-B1A5AFF4EFAB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
