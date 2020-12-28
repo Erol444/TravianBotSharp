@@ -1,7 +1,10 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
@@ -23,7 +26,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             float sum = 0;
             for (int i = 0; i < 4; i++) sum += acc.Hero.Settings.Upgrades[i];
-            if (sum == 0)
+            if(sum == 0)
             {
                 // Upgrade points were not set. Set points to default
                 acc.Hero.Settings.Upgrades = new byte[4] { 2, 0, 0, 2 };

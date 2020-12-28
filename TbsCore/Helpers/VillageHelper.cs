@@ -1,6 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Tasks.LowLevel;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Helpers
@@ -53,7 +55,7 @@ namespace TravBotSharp.Files.Helpers
             return type;
         }
         public static string BuildingTypeToString(Classificator.BuildingEnum building) => EnumStrToString(building.ToString());
-
+        
         public static string EnumStrToString(string str)
         {
             var len = str.Length;

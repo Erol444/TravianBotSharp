@@ -1,4 +1,7 @@
-﻿using TravBotSharp.Files.Helpers;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Models.TroopsModels
 {

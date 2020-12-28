@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Tasks;
@@ -31,7 +32,7 @@ namespace TravBotSharp.Files.Helpers
             if (IsStorageTooLow(acc, vill, requiredRes)) return DateTime.Now.AddMinutes(30);
 
             var stillNeededRes = ResStillNeeded(vill, requiredRes);
-
+            
             //We have enough resources
             if (IsZeroResources(stillNeededRes)) return DateTime.MinValue;
 

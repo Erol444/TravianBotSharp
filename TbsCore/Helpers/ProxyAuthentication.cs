@@ -1,5 +1,8 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
+using System.Text;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 
@@ -51,8 +54,8 @@ var config = {
     rules: {
         singleProxy: {
             scheme: 'http',
-            host: '" + access.Proxy.Trim() + @"',
-            port: " + access.ProxyPort + @"
+            host: '" + access.Proxy.Trim() +@"',
+            port: "+ access.ProxyPort +@"
         },
         bypassList:['localhost']
     }

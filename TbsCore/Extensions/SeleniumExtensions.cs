@@ -1,6 +1,8 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Interactions;
 using System;
+using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;

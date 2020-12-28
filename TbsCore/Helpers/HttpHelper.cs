@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -47,7 +48,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 var headers = client.DefaultRequestHeaders;
 
-                if (!string.IsNullOrEmpty(phpsessid)) headers.Add("Cookie", "PHPSESSID=" + phpsessid + ";");
+                if(!string.IsNullOrEmpty(phpsessid)) headers.Add("Cookie", "PHPSESSID=" + phpsessid + ";");
                 headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
 
                 HttpResponseMessage result = null;

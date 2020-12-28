@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Models.AccModels;
 

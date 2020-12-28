@@ -1,5 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models;
+using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
@@ -132,7 +139,7 @@ namespace TravBotSharp.Views
             string location = IoHelperForms.PromptUserForBuidTasksLocation();
 
             if (location == null) return;
-
+            
 
             foreach (var vill in acc.Villages)
             {
@@ -214,8 +221,7 @@ namespace TravBotSharp.Views
         private void workMin_ValueChanged(object sender, EventArgs e)
         {
             var val = (int)workMin.Value;
-            if (val > (int)workMax.Value)
-            {
+            if (val > (int)workMax.Value) {
                 workMin.Value = workMax.Value;
             }
             GetSelectedAcc().Settings.Time.MinWork = (int)workMin.Value;
@@ -268,7 +274,7 @@ namespace TravBotSharp.Views
         }
         public void UpdateBotRunning(string running = null)
         {
-            if (string.IsNullOrEmpty(running)) running = GetSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
+            if(string.IsNullOrEmpty(running)) running = GetSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
             botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
         }
     }

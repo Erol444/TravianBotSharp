@@ -1,4 +1,6 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models;
@@ -17,8 +19,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            TaskExecutor.AddTaskIfNotExists(acc, new TransitToMainAcc
-            {
+            TaskExecutor.AddTaskIfNotExists(acc, new TransitToMainAcc {
                 coords = this.coords,
                 delay = this.delay,
                 ExecuteAt = DateTime.Now.AddSeconds(delay),

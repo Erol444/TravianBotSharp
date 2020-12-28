@@ -1,4 +1,9 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using RestSharp;
+using System;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -14,7 +19,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             await acc.Wb.Navigate("https://api.ipify.org/");
             var ip = acc.Wb.Html.DocumentNode.InnerText;
-
+            
             if (!string.IsNullOrEmpty(currentProxy) &&
                 ip.Trim() != currentProxy.Trim())
             {

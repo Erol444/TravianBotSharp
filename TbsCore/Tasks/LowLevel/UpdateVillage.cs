@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -22,7 +25,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2
 
             // On new village import the building tasks
-            if (ImportTasks)
+            if (ImportTasks) 
             {
                 if (string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
                     DefaultConfigurations.FarmVillagePlan(acc, Vill);
@@ -96,7 +99,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 // Mark troops that user can train in building as researched
                 TroopsHelper.UpdateTroopsResearched(Vill, acc.Wb.Html);
-
+                
                 var ct = TroopsParser.GetTroopsCurrentlyTraining(acc.Wb.Html);
                 switch (trainingBuilding)
                 {

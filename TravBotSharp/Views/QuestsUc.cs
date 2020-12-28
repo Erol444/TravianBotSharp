@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views

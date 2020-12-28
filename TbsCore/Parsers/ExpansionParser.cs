@@ -1,4 +1,9 @@
-﻿namespace TbsCore.Parsers
+﻿using HtmlAgilityPack;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace TbsCore.Parsers
 {
     public static class ExpansionParser
     {

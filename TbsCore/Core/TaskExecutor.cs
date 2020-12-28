@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -208,7 +210,7 @@ namespace TravBotSharp.Files.Helpers
         /// </summary>
         private static bool CheckCookies(Account acc) =>
             acc.Wb.Html.GetElementbyId("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll") != null;
-
+        
         private static bool CheckCookiesNew(Account acc) =>
             acc.Wb.Html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes"));
 
@@ -232,7 +234,7 @@ namespace TravBotSharp.Files.Helpers
             var msg = acc.Wb.Html.GetElementbyId("sysmsg");
             return msg != null;
         }
-        #endregion
+#endregion
 
         public static void AddTask(Account acc, BotTask task)
         {
@@ -297,6 +299,6 @@ namespace TravBotSharp.Files.Helpers
                 x != thisTask
             );
         }
-
+        
     }
 }

@@ -1,4 +1,5 @@
 ﻿using TravBotSharp.Files.Helpers;
+using static TravBotSharp.Files.Helpers.BuildingHelper;
 
 namespace TravBotSharp.Files.Tasks
 {

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
@@ -14,7 +16,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?s=2");
 
-            if (acc.Wb.Html.GetElementbyId("PlayerProfileEditor") == null)
+            if(acc.Wb.Html.GetElementbyId("PlayerProfileEditor") == null)
             {
                 // Sitter. Can't change the name of the village. TODO: check if sitter before
                 // creating the task.

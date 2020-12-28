@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using HtmlAgilityPack;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using static TravBotSharp.Files.Helpers.Classificator;
@@ -29,7 +31,7 @@ namespace TravBotSharp.Files.TravianData
         }
         public static BuildingEnum BuildingFromString(string str, Account acc)
         {
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4)
+            if(acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4)
             {
                 // TTwars, just use English localization
                 var index = EnglishTranslation.IndexOf(str.Trim().ToLower());

@@ -1,4 +1,7 @@
-﻿using System;
+﻿
+using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;

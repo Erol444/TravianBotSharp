@@ -1,4 +1,6 @@
-﻿using System;
+﻿using OpenQA.Selenium.Chrome;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Models.AccModels;
 

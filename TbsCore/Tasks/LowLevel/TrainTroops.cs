@@ -1,8 +1,10 @@
 ﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
@@ -52,7 +54,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)Troop));
 
-            if (troopNode == null)
+            if(troopNode == null)
             {
                 acc.Wb.Log($"Bot tried to train {Troop} in {Vill.Name}, but couldn't find it in {building}! Are you sure you have {Troop} researched?");
                 return TaskRes.Executed;
@@ -93,7 +95,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            switch (acc.AccInfo.ServerVersion)
+            switch (acc.AccInfo.ServerVersion) 
             {
                 case ServerVersionEnum.T4_4:
                     wb.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
@@ -20,11 +22,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.T4_5:
-                    buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("questid", "") == this.QuestToClaim.Id).Id;
+                buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("questid", "") == this.QuestToClaim.Id).Id;
                     break;
 
                 case Classificator.ServerVersionEnum.T4_4:
-                    buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("questButtonNext"))?.Id;
+                buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("questButtonNext"))?.Id;
                     break;
             }
 

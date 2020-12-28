@@ -1,11 +1,14 @@
 ﻿
 
 using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
 using TbsCore.Helpers;
+using TbsCore.Resources;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
@@ -234,7 +237,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
             {
                 acc.Wb.Log($"We wanted to upgrade {Task.Building}, but there was an error message:\n{errorMessage.InnerText}");
-                return TaskRes.Retry;
+                return TaskRes.Retry;     
             }
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
@@ -320,7 +323,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Worst case: leave nextExecute as is (after the current building finishes)
             // Best case: now
             (var nextTask, var time) = UpgradeBuildingHelper.NextBuildingTask(acc, Vill);
-
+            
             if (nextTask == null) return;
 
             this.Task = nextTask;
@@ -374,7 +377,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             // If enabled and MainBuilding is above level 5
             if (vill.Build.AutoBuildResourceBonusBuildings &&
-                vill.Build.Buildings.Any(x => x.Type == BuildingEnum.MainBuilding && x.Level >= 5))
+                vill.Build.Buildings.Any(x => x.Type == BuildingEnum.MainBuilding && x.Level >= 5)) 
             {
                 var bonusBuilding = CheckBonusBuildings(vill);
                 if (bonusBuilding != BuildingEnum.Site)
@@ -401,7 +404,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return BuildingEnum.IronFoundry;
             if (BonusHelper(vill, BuildingEnum.Cropland, BuildingEnum.GrainMill, 5))
                 return BuildingEnum.GrainMill;
-            if (BonusHelper(vill, BuildingEnum.Cropland, BuildingEnum.Bakery, 10) &&
+            if (BonusHelper(vill, BuildingEnum.Cropland, BuildingEnum.Bakery, 10) && 
                 vill.Build.Buildings.Any(x => x.Type == BuildingEnum.GrainMill && x.Level >= 5))
                 return BuildingEnum.Bakery;
 

@@ -1,5 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Remote;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml;
 using TbsCore.Extensions;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 

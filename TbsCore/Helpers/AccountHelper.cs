@@ -81,7 +81,7 @@ namespace TravBotSharp.Files.Helpers
 
             // Access change
             var nextAccessChange = TimeHelper.GetNextProxyChange(acc);
-            if (nextAccessChange != TimeSpan.MaxValue)
+            if(nextAccessChange != TimeSpan.MaxValue)
             {
                 TaskExecutor.AddTaskIfNotExists(acc, new ChangeAccess() { ExecuteAt = DateTime.Now + nextAccessChange });
             }
@@ -128,7 +128,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 tasks.Add(Task.Run(() =>
                 {
-                    Console.WriteLine(DateTime.Now.ToString() + "]Start ip " + a.Proxy);
+                    Console.WriteLine(DateTime.Now.ToString()+"]Start ip "+a.Proxy);
                     var restClient = new RestClient
                     {
                         BaseUrl = new Uri("https://api.ipify.org/"),
@@ -153,7 +153,7 @@ namespace TravBotSharp.Files.Helpers
                         Method = Method.GET,
                         Timeout = 5000,
                     });
-                    Console.WriteLine(DateTime.Now.ToString() + "] Complete ip" + a.Proxy + $", Credentials: {!string.IsNullOrEmpty(a.ProxyUsername)}, content:" + response.Content);
+                    Console.WriteLine(DateTime.Now.ToString() + "] Complete ip" + a.Proxy + $", Credentials: {!string.IsNullOrEmpty(a.ProxyUsername)}, content:"+response.Content);
                     HtmlDocument doc = new HtmlDocument();
                     doc.LoadHtml(response.Content);
 

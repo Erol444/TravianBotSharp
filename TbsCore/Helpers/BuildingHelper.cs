@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Helpers;
+using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
@@ -22,8 +23,8 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Whether the method completed successfully</returns>
         public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
         {
-            if (task.BuildingId == null ||
-                vill.Build.Buildings.Any(x => x.Id == task.BuildingId && x.Type != task.Building && x.Type != BuildingEnum.Site))
+            if (task.BuildingId == null || 
+                vill.Build.Buildings.Any(x=>x.Id == task.BuildingId && x.Type != task.Building && x.Type != BuildingEnum.Site))
             {
                 //Check if bot has any space to build new buildings, otherwise return
                 if (!FindBuildingId(vill, task)) return false;
@@ -52,7 +53,7 @@ namespace TravBotSharp.Files.Helpers
             // Only special buildings (warehouse, cranny, granary etc.) can have multiple 
             // buildings of it's type and use ConstructNew option
             if (!BuildingsData.CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
-
+            
             if (existingBuilding != null && !task.ConstructNew)
             {
                 task.BuildingId = existingBuilding.Id;
@@ -121,7 +122,7 @@ namespace TravBotSharp.Files.Helpers
             if (vill.Build.Tasks.Count == 0) return; //No build tasks
 
             var (_, nextExecution) = UpgradeBuildingHelper.NextBuildingTask(acc, vill);
-
+            
             TaskExecutor.AddTask(acc, new UpgradeBuilding()
             {
                 Vill = vill,
@@ -129,13 +130,13 @@ namespace TravBotSharp.Files.Helpers
             });
         }
 
-
+       
         public static void ReStartDemolishing(Account acc, Village vill)
         {
             if (vill.Build.DemolishTasks.Count <= 0) return;
-
-            TaskExecutor.AddTaskIfNotExistInVillage(acc,
-                vill,
+            
+            TaskExecutor.AddTaskIfNotExistInVillage(acc, 
+                vill, 
                 new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) }
                 );
         }
@@ -375,7 +376,7 @@ namespace TravBotSharp.Files.Helpers
                 {
                     TaskType = BuildingType.General,
                     Building = building,
-                    Level = currentLvl + 1,
+                    Level = currentLvl + 1, 
                     BuildingId = upgrade.Id
                 }, bottom);
             }
@@ -400,13 +401,13 @@ namespace TravBotSharp.Files.Helpers
             foreach (var prereq in prereqs)
             {
                 var prereqBuilding = vill.Build.Buildings.Where(x => x.Type == prereq.Building);
-
+                
                 // Prerequired building already exists and is on on/above desired level
                 if (prereqBuilding.Any(x => prereq.Level <= x.Level)) continue;
 
                 if (bottom && vill.Build.Tasks.Any(x => prereq.Building == x.Building &&
                                               prereq.Level <= x.Level)) continue;
-
+                
                 // If there is no required building, build it's prerequisites first
                 if (!prereqBuilding.Any()) AddBuildingPrerequisites(acc, vill, prereq.Building);
 

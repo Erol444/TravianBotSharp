@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.AttackModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 

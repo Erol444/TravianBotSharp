@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.VillageModels;
@@ -23,7 +24,7 @@ namespace TravBotSharp.Views
             InitTables();
             InitGlobalTable();
         }
-
+        
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -131,11 +132,10 @@ namespace TravBotSharp.Views
             //Change name of village/s
             if (changeVillNames.Count > 0)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new ChangeVillageName()
-                {
-                    ExecuteAt = DateTime.Now,
-                    ChangeList = changeVillNames
-                });
+                TaskExecutor.AddTaskIfNotExists(acc, new ChangeVillageName() {
+                            ExecuteAt = DateTime.Now,
+                            ChangeList = changeVillNames
+                        });
             }
         }
 

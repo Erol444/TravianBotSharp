@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
+using TbsCore.Helpers;
+using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Parsers;
+using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Files.Helpers
@@ -46,7 +51,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 if (category == Classificator.HeroItemCategory.Others) continue; // Don't equip into hero bag
                 int currentTier = 0;
-                if (acc.Hero.Equipt.TryGetValue(category, out var item))
+                if(acc.Hero.Equipt.TryGetValue(category, out var item))
                 {
                     // Hero already has an equipt item for this category
                     currentTier = GetHeroItemTier(item);

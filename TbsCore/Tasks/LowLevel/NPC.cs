@@ -1,9 +1,12 @@
-﻿using System.Linq;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Extensions;
+using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
+using TbsCore.Extensions;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
