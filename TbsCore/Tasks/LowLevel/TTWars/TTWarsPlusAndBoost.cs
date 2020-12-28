@@ -18,7 +18,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 return TaskRes.Executed;
             }
-            wb.FindElementById(button.Id).Click();
+            var buttonid = button.GetAttributeValue("id", "");
+            acc.Wb.Driver.ExecuteScript($"document.getElementById('{buttonid}').click()"); //boost production
 
             return TaskRes.Executed;
         }

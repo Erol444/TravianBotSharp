@@ -3,7 +3,6 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -23,12 +22,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 .Descendants("div")
                 .FirstOrDefault(x => x.HasClass("finishNow"));
             var button = finishClass.Descendants("button").FirstOrDefault();
-            await acc.Wb.Driver.FindElementById(button.Id).Click(acc);
+            await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, $"document.getElementById('{button.GetAttributeValue("id", "")}').click()");
 
             var dialog = acc.Wb.Html.GetElementbyId("finishNowDialog");
             var useButton = dialog.Descendants("button").FirstOrDefault();
-
-            await acc.Wb.Driver.FindElementById(useButton.Id).Click(acc);
+            await DriverHelper.ExecuteScript(acc, $"document.getElementById('{useButton.GetAttributeValue("id", "")}').click()");
 
             // Execute next build task right away
             var task = acc.Tasks.FirstOrDefault(x =>

@@ -46,11 +46,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var enoughResAt = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, resources);
             if (enoughResAt <= DateTime.Now.AddMilliseconds(1)) //we have enough res, create new settler!
             {
-                await acc.Wb.Driver.FindElementByName("t10").Write(maxNum);
-                
+                wb.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
+                await Task.Delay(AccountHelper.Delay());
                 // Click Train button
-                await acc.Wb.Driver.FindElementById("s1").Click(acc);
-                
+                await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, "document.getElementById('s1').click()");
                 Vill.Troops.Settlers = (int)available + (int)maxNum;
 
                 var training = TroopsHelper.TrainingDuration(acc.Wb.Html);

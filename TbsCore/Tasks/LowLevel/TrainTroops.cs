@@ -3,7 +3,6 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
@@ -95,20 +94,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            switch (acc.AccInfo.ServerVersion) 
-            {
-                case ServerVersionEnum.T4_4:
-                    wb.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
-                    break;
-                case ServerVersionEnum.T4_5:
-                    await acc.Wb.Driver.FindElementByName(inputName).Write(maxNum);
-                    break;
-            }
+            wb.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
 
             await Task.Delay(100);
 
-            await acc.Wb.Driver.FindElementByName("s1").Click(acc);
-
+            await DriverHelper.ExecuteScript(acc, "document.getElementsByName('s1')[0].click()");
             UpdateCurrentlyTraining(acc.Wb.Html, acc);
 
             if (!HighSpeedServer) RepeatTrainingCycle(acc.Wb.Html, acc);

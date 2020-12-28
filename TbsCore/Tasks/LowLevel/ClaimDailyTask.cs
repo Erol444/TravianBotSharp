@@ -2,7 +2,6 @@
 using OpenQA.Selenium.Chrome;
 using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -25,12 +24,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     await DriverHelper.ExecuteScript(acc, script);
                     break;
                 case Classificator.ServerVersionEnum.T4_5:
-                    await acc.Wb.Driver.FindElementByClassName("rewardReady").Click(acc);
+                    await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('rewardReady')[0].click();");
                     break;
             }
             
-
-            await acc.Wb.Driver.FindElementByClassName("questButtonGainReward").Click(acc);
+            await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonGainReward')[0].click();");
 
             return TaskRes.Executed;
         }

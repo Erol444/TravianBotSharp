@@ -32,12 +32,12 @@ namespace TravBotSharp.Files.Helpers
                 return;
             }
             if (CheckCookies(acc))
-                await acc.Wb.Driver.FindElementById("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll").Click(acc);
+                await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click();");
             if (CheckCookiesNew(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('cmpboxbtnyes')[0].click();");
 
             if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc))
-                await acc.Wb.Driver.FindElementByClassName("questButtonSkipTutorial").Click(acc);
+                await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonSkipTutorial')[0].click();");
 
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {

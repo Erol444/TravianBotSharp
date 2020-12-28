@@ -1,11 +1,9 @@
 ﻿using HtmlAgilityPack;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml;
-using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -26,16 +24,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (acc.AccInfo.ServerUrl.Contains("ttwars"))
             {
-                await acc.Wb.Driver.FindElementByName("user").Write(acc.AccInfo.Nickname);
-                await acc.Wb.Driver.FindElementByName("pw").Write(access.Password);
+                acc.Wb.Driver.ExecuteScript($"document.getElementsByName('user')[0].value='{acc.AccInfo.Nickname}'");
+                acc.Wb.Driver.ExecuteScript($"document.getElementsByName('pw')[0].value='{access.Password}'");
             }
             else
             {
-                await acc.Wb.Driver.FindElementByName("name").Write(acc.AccInfo.Nickname);
-                await acc.Wb.Driver.FindElementByName("password").Write(access.Password);
+                acc.Wb.Driver.ExecuteScript($"document.getElementsByName('name')[0].value='{acc.AccInfo.Nickname}'");
+                acc.Wb.Driver.ExecuteScript($"document.getElementsByName('password')[0].value='{access.Password}'");
             }
 
-            await acc.Wb.Driver.FindElementByName("s1").Click(acc);
+            await DriverHelper.ExecuteScript(acc, "document.getElementsByName('s1')[0].click()");
 
             if (TaskExecutor.IsLoginScreen(acc))
             {

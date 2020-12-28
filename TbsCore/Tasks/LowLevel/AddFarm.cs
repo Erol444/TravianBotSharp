@@ -23,18 +23,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             wb.ExecuteScript($"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');"); //show "Add raid" popup
             await Task.Delay(AccountHelper.Delay());
-            
             //select coordinates
-            await wb.FindElementById("xCoordInput").Write(Coordinates.x);
-            await wb.FindElementById("yCoordInput").Write(Coordinates.y);
-
+            wb.ExecuteScript($"document.getElementById('xCoordInput').value='{Coordinates.x}'");
+            wb.ExecuteScript($"document.getElementById('yCoordInput').value='{Coordinates.y}'");
             await Task.Delay(AccountHelper.Delay());
 
             //add number of troops to the input boxes
             foreach (var troop in Troops)
             {
                 int troopNum = (int)troop.Type % 10;
-                await wb.FindElementByName("t" + troopNum).Write(troop.Number);
+                wb.ExecuteScript($"document.getElementsByName('{"t" + troopNum}')[0].value='{troop.Number}'");
             }
             await Task.Delay(AccountHelper.Delay());
 

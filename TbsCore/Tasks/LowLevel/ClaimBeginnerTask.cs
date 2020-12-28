@@ -30,7 +30,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     break;
             }
 
-            acc.Wb.Driver.FindElementById(buttonId).Click();
+            acc.Wb.Driver.ExecuteScript($"document.getElementById('{buttonId}').click();");
             return TaskRes.Executed;
         }
     }

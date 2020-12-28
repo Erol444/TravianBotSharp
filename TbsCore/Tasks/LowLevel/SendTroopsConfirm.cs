@@ -14,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var wb = acc.Wb.Driver;
             await Task.Delay(AccountHelper.Delay());
-            wb.FindElementById("btn_ok").Click();
+            wb.ExecuteScript($"document.getElementById('btn_ok').click()"); //Click send
 
             return TaskRes.Executed;
         }

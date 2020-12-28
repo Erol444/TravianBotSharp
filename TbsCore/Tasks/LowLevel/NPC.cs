@@ -21,7 +21,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var npcMerchant = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
             var npcButton = npcMerchant.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
 
-            wb.FindElementById(npcButton.Id).Click();
+            wb.ExecuteScript($"document.getElementById('{npcButton.GetAttributeValue("id", "")}').click()"); //Excgabge resources button
 
             await Task.Delay(AccountHelper.Delay() * 2);
 
@@ -40,10 +40,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 switch (acc.AccInfo.ServerVersion)
                 {
                     case Classificator.ServerVersionEnum.T4_4:
-                        await acc.Wb.Driver.FindElementById($"m2[{i}]").Write(targetRes[i]);
+                        await DriverHelper.ExecuteScript(acc, $"document.getElementById('m2[{i}]').value='{targetRes[i]}'");
                         break;
                     case Classificator.ServerVersionEnum.T4_5:
-                        await acc.Wb.Driver.FindElementByName($"desired{i}").Write(targetRes[i]);
+                        await DriverHelper.ExecuteScript(acc, $"document.getElementsByName('desired{i}')[0].value='{targetRes[i]}'");
                         break;
                 }
             }
@@ -51,8 +51,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var submit = acc.Wb.Html.GetElementbyId("submitText");
             var distribute = submit.Descendants("button").FirstOrDefault();
 
-            await acc.Wb.Driver.FindElementById(distribute.Id).Click(acc);
-            acc.Wb.Driver.FindElementById("npc_market_button").Click();
+            await DriverHelper.ExecuteScript(acc, $"document.getElementById('{distribute.Id}').click()");
+            wb.ExecuteScript($"document.getElementById('npc_market_button').click()"); //Exchange resources button
             return TaskRes.Executed;
         }
     }

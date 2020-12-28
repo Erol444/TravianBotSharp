@@ -156,14 +156,15 @@ namespace TravBotSharp.Files.Helpers
                     var digits = Math.Ceiling(Math.Log10(sendRes[i]));
                     var remainder = sendRes[i] % (long)Math.Pow(10, digits - 2);
                     sendRes[i] -= remainder;
-                    await wb.FindElementById("r" + (i + 1)).Write(sendRes[i]);
+                    await DriverHelper.WriteById(acc, "r" + (i + 1), sendRes[i]);
+
                 }
                 await Task.Delay(AccountHelper.Delay() / 5);
             }
 
-            await acc.Wb.Driver.FindElementById("xCoordInput").Write(targetVillage.Coordinates.x);
+            await DriverHelper.WriteById(acc, "xCoordInput", targetVillage.Coordinates.x);
             await Task.Delay(AccountHelper.Delay() / 5);
-            await acc.Wb.Driver.FindElementById("yCoordInput").Write(targetVillage.Coordinates.y);
+            await DriverHelper.WriteById(acc, "yCoordInput", targetVillage.Coordinates.y);
             await Task.Delay(AccountHelper.Delay() / 5);
 
             //Select x2/x3
@@ -172,8 +173,7 @@ namespace TravBotSharp.Files.Helpers
                 wb.ExecuteScript($"document.getElementById('x2').value='{times}'");
                 await Task.Delay(AccountHelper.Delay() / 5);
             }
-
-            await acc.Wb.Driver.FindElementById("enabledButton").Click(acc);
+            await DriverHelper.ClickById(acc, "enabledButton");
 
             var durNode = acc.Wb.Html.GetElementbyId("target_validate");
 
@@ -182,7 +182,7 @@ namespace TravBotSharp.Files.Helpers
             var dur = durNode.Descendants("td").ToList()[3].InnerText.Replace("\t", "").Replace("\n", "");
 
             // Will NOT trigger a page reload! Thus we should await some time before continuing.
-            await acc.Wb.Driver.FindElementById("enabledButton").Click(acc);
+            await DriverHelper.ClickById(acc, "enabledButton");
 
             var duration = TimeParser.ParseDuration(dur);
             return TimeSpan.FromTicks(duration.Ticks * (times * 2 - 1));

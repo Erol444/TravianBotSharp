@@ -28,8 +28,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.ExecuteScript(acc, script);
 
             var buy = acc.Wb.Html.DocumentNode.Descendants().First(x => x.HasClass("buyAnimal5"));
-            
-            wb.FindElementById(buy.Id).Click();
+            //wb.FindElementById(buy.Id).Click();
+            //var buy = acc.Wb.Html.DocumentNode.SelectNodes("//*[text()[contains(., '3000')]]")[0];
+            //while (buy.Name != "button") buy = buy.ParentNode;
+            //var buyId = buy.GetAttributeValue("id", "");
+            wb.ExecuteScript($"document.getElementById('{buy.Id}').click()");
 
             //Clicking on buy button DOES NOT trigger a page reloag. We have to do it manually.
             return TaskRes.Executed;

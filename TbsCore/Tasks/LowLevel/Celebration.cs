@@ -3,7 +3,6 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Parsers;
@@ -63,7 +62,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var button = node.Descendants("button").FirstOrDefault();
 
-            await acc.Wb.Driver.FindElementById(button.Id.ToString()).Click(acc);
+            await DriverHelper.ExecuteScript(acc, $"document.getElementById('{button.Id}').click()");
         }
     }
 }

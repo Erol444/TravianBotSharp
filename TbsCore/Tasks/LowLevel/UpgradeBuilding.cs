@@ -162,8 +162,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     return TaskRes.Retry;
                 }
             }
+            await DriverHelper.ClickById(acc, button.Id);
 
-            await acc.Wb.Driver.FindElementById(button.Id).Click(acc);
             this.Task.ConstructNew = false;
 
             CheckIfTaskFinished(1);
@@ -261,7 +261,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //    }
             //    else 
             //}
-            await acc.Wb.Driver.FindElementById(upgradeButton.Id).Click(acc);
+            await DriverHelper.ClickById(acc, upgradeButton.Id);
 
             lvl++;
             CheckIfTaskFinished(lvl);
