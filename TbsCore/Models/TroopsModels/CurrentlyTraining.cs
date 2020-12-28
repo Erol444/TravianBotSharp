@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TravBotSharp.Files.Models.TroopsModels
+namespace TbsCore.Models.TroopsModels
 {
     public class CurrentlyTraining
     {

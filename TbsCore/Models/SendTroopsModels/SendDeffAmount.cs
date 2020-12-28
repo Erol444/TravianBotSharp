@@ -1,4 +1,4 @@
-﻿namespace TravBotSharp.Files.Models.SendTroopsModels
+﻿namespace TbsCore.Models.SendTroopsModels
 {
     public class SendDeffAmount
     {

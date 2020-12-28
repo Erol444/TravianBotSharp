@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 using TbsCore.Extensions;
+using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {

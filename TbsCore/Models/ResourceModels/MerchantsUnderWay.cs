@@ -1,6 +1,7 @@
 ﻿using System;
+using TravBotSharp.Files.Models.ResourceModels;
 
-namespace TravBotSharp.Files.Models.ResourceModels
+namespace TbsCore.Models.ResourceModels
 {
     public class MerchantsUnderWay
     {
@@ -10,6 +11,10 @@ namespace TravBotSharp.Files.Models.ResourceModels
         public int TargetVillageId { get; set; }
         public int RepeatTimes { get; set; }
     }
+}
+
+namespace TravBotSharp.Files.Models.ResourceModels
+{
     public enum TransitType
     {
         Returning, // Merchants from this village coming back

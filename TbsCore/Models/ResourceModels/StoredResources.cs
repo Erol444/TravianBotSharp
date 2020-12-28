@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TravBotSharp.Files.Models.ResourceModels
+namespace TbsCore.Models.ResourceModels
 {
     public class StoredResources
     {

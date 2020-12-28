@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using TbsCore.Models.MapModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Interfaces;
 
@@ -66,7 +67,7 @@ namespace TravBotSharp.Views
             Coordinates c = new Coordinates();
             c.x = (int)XNewVill.Value;
             c.y = (int)YNewVill.Value;
-            GetSelectedAcc().NewVillages.Locations.Add(new Files.Models.VillageModels.NewVillage() { coordinates = c, Name = NewVillName.Text });
+            GetSelectedAcc().NewVillages.Locations.Add(new NewVillage() { coordinates = c, Name = NewVillName.Text });
             //clear values
             XNewVill.Value = 0;
             YNewVill.Value = 0;

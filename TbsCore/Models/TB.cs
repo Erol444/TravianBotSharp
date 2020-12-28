@@ -4,6 +4,9 @@ using System.Text;
 
 namespace TbsCore.Models
 {
+    /// <summary>
+    /// Class of TravianBuilder templates
+    /// </summary>
     class TB
     {
         public class BuildingDemolish

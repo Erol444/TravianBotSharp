@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace TravBotSharp.Files.Models.AttackModels
+namespace TbsCore.Models.SendTroopsModels
 {
     public class WaveReadyModel
     {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.TravianData

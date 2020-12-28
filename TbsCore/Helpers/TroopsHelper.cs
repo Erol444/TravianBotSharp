@@ -2,8 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Files.TravianData;

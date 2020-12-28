@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.MapModels;
+using TbsCore.Models.SideBarModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models;
 using TravBotSharp.Files.Models.SideBarModels;
 
 namespace TravBotSharp.Files.Parsers

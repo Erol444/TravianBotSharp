@@ -1,7 +1,7 @@
 ﻿using System;
-using TravBotSharp.Files.Models.ResourceModels;
+using TravBotSharp.Files.Tasks.ResourcesConfiguration;
 
-namespace TravBotSharp.Files.Tasks.ResourcesConfiguration
+namespace TbsCore.Models.ResourceModels
 {
     public class SendResourcesConfiguration
     {
@@ -30,6 +30,10 @@ namespace TravBotSharp.Files.Tasks.ResourcesConfiguration
         public DateTime LastTransit { get; set; }
         public DateTime TransitArrival { get; set; }
     }
+}
+
+namespace TravBotSharp.Files.Tasks.ResourcesConfiguration
+{
     public enum BalanceType
     {
         SendTo,

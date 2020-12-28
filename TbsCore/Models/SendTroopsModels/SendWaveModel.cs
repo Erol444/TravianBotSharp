@@ -1,6 +1,4 @@
-﻿using TravBotSharp.Files.Models.SendTroopsModels;
-
-namespace TravBotSharp.Files.Models.AttackModels
+﻿namespace TbsCore.Models.SendTroopsModels
 {
     public class SendWaveModel : TroopsMovementModel
     {

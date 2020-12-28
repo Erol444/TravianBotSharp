@@ -1,4 +1,7 @@
-﻿using TravBotSharp.Files.Models.AccModels;
+﻿using TbsCore.Models.AccModels;
+using TbsCore.Models.BuildingModels;
+using TbsCore.Models.ResourceModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Tasks;
 using static TravBotSharp.Files.Helpers.Classificator;

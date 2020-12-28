@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
+using TbsCore.Models.Access;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 
 namespace TbsCore.Helpers
 {

@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.AccModels;
 
 namespace TbsCore.Helpers
 {

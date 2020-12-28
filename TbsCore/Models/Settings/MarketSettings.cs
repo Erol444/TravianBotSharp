@@ -1,6 +1,6 @@
-﻿using TravBotSharp.Files.Tasks.ResourcesConfiguration;
+﻿using TbsCore.Models.ResourceModels;
 
-namespace TravBotSharp.Files.Models.Settings
+namespace TbsCore.Models.Settings
 {
     public class MarketSettings
     {

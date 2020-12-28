@@ -1,8 +1,9 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Linq;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 
 namespace TravBotSharp.Files.Parsers
 {
@@ -39,7 +40,7 @@ namespace TravBotSharp.Files.Parsers
 
                         if (!vill.Troops.Levels.Any(x => x.Troop == troopEnum))
                         {
-                            vill.Troops.Levels.Add(new Models.TroopsModels.TroopLevel()
+                            vill.Troops.Levels.Add(new TroopLevel()
                             {
                                 Troop = troopEnum,
                                 Level = level

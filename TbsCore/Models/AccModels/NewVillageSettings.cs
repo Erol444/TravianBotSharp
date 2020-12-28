@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using TbsCore.Models.Settings;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.Settings;
-using TravBotSharp.Files.Models.VillageModels;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class NewVillageSettings
     {

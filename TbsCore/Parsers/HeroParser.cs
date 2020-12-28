@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 
 namespace TravBotSharp.Files.Parsers
 {

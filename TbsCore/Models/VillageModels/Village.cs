@@ -1,9 +1,9 @@
-﻿using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Models.Settings;
-using TravBotSharp.Files.Models.TroopsModels;
-using TravBotSharp.Files.Models.VillageModels;
+﻿using TbsCore.Models.AccModels;
+using TbsCore.Models.MapModels;
+using TbsCore.Models.Settings;
+using TbsCore.Models.TroopsModels;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.VillageModels
 {
     public class Village
     {

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.BuildingModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Tasks;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TbsCore.Helpers

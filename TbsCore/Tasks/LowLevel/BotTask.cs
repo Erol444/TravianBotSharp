@@ -2,7 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.VillageModels;
 
 namespace TravBotSharp.Files.Tasks
 {

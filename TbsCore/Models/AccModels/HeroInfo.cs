@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class HeroInfo
     {

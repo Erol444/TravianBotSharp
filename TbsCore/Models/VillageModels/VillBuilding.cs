@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.ResourceModels;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.Building;
 using TravBotSharp.Files.TravianData;
 
-namespace TravBotSharp.Files.Models.VillageModels
+namespace TbsCore.Models.VillageModels
 {
     public class VillBuilding
     {

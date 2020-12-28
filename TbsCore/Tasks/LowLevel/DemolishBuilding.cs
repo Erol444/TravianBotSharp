@@ -5,8 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.TravianData;
 

@@ -5,10 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.MapModels;
+using TbsCore.Models.SendTroopsModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.SendTroopsModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.TravianData;
 

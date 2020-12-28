@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.ResourceModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Parsers;
 using static TravBotSharp.Files.Helpers.Classificator;
 

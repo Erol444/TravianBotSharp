@@ -3,9 +3,9 @@ using OpenQA.Selenium.Chrome;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.SendTroopsModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.SendTroopsModels;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {

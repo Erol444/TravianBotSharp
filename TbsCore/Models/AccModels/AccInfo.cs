@@ -1,13 +1,13 @@
-﻿using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.SideBarModels;
+﻿using TbsCore.Models.SideBarModels;
+using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class AccInfo
     {
         public void Init()
         {
-            this.CulturePoints = new CulturePoints();
+            CulturePoints = new CulturePoints();
         }
         /// <summary>
         /// Account username/nickname

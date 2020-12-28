@@ -8,7 +8,10 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TbsCore.Database;
 using TbsCore.Helpers;
-using TbsCore.Resources;
+using TbsCore.Models.Access;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.BuildingModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
 using static TbsCore.Models.TB;
@@ -235,7 +238,7 @@ namespace TravBotSharp.Files.Helpers
         public static string GetUseragent()
         {
             Random rnd = new Random();
-            var agents = Resources.useragents.Split('\n');
+            var agents = TbsCore.Files.Resources.useragents.Split('\n');
             for (int i = 0; i < agents.Length; i++)
             {
                 int limit = agents.Length - i;

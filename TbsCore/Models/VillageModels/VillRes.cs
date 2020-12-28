@@ -1,6 +1,6 @@
-﻿using TravBotSharp.Files.Models.ResourceModels;
+﻿using TbsCore.Models.ResourceModels;
 
-namespace TravBotSharp.Files.Models.VillageModels
+namespace TbsCore.Models.VillageModels
 {
     public class VillRes
     {

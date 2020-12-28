@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.Access
 {
     public class AccessRaw
     {

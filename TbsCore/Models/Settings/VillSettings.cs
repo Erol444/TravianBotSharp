@@ -1,6 +1,7 @@
 ﻿using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Models.Settings;
 
-namespace TravBotSharp.Files.Models.Settings
+namespace TbsCore.Models.Settings
 {
     public class VillSettings
     {
@@ -19,6 +20,10 @@ namespace TravBotSharp.Files.Models.Settings
         public bool SendRes { get; set; }
         public bool AutoExpandStorage { get; set; }
     }
+}
+
+namespace TravBotSharp.Files.Models.Settings
+{
     public enum VillType
     {
         Farm,

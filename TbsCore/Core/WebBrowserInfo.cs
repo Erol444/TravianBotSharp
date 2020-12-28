@@ -8,6 +8,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
+using TbsCore.Models.Access;
+using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
 

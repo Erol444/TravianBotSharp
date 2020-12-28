@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
-using TravBotSharp.Files.Models.ResourceModels;
-using TravBotSharp.Files.Models.Settings;
+using TbsCore.Models.ResourceModels;
+using TbsCore.Models.Settings;
 
-namespace TravBotSharp.Files.Models.VillageModels
+namespace TbsCore.Models.VillageModels
 {
     public class VillMarket
     {

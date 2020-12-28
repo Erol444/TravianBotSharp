@@ -1,4 +1,4 @@
-﻿using TravBotSharp.Files.Models;
+﻿using TbsCore.Models.MapModels;
 
 namespace TravBotSharp.Files.Parsers
 {

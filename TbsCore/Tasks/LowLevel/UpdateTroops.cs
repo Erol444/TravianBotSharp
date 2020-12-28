@@ -3,8 +3,9 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
@@ -60,7 +61,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (vill.Troops.Levels.Count > 0) vill.Troops.Researched = vill.Troops.Levels.Select(x => x.Troop).ToList();
         }
 
-        private Models.ResourceModels.Building GetBuilding(int check)
+        private Building GetBuilding(int check)
         {
             switch (check)
             {

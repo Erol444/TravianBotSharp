@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace TravBotSharp.Files.Models
+namespace TbsCore.Models.MapModels
 {
     public class Coordinates : IEquatable<Coordinates>
     {
@@ -11,9 +11,9 @@ namespace TravBotSharp.Files.Models
         public bool Equals(Coordinates other)
         {
             if (other == null) return false;
-            return (other.x == this.x && other.y == this.y);
+            return other.x == x && other.y == y;
         }
 
-        public override string ToString() => $"({this.x}/{this.y})";
+        public override string ToString() => $"({x}/{y})";
     }
 }

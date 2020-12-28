@@ -6,11 +6,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.MapModels;
 using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
@@ -66,12 +65,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     break;
             }
 
-
-
-
             if (closesCoords == null) return TaskRes.Retry;
 
-            acc.NewVillages.Locations.Add(new Models.VillageModels.NewVillage()
+            acc.NewVillages.Locations.Add(new NewVillage()
             {
                 coordinates = closesCoords,
                 Name = NewVillageHelper.GenerateName(acc),

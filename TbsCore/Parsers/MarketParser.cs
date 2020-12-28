@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.ResourceModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.TravianData;
 

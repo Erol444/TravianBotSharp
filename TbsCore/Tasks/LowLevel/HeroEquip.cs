@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Tasks.LowLevel

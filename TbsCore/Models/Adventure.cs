@@ -1,6 +1,7 @@
-﻿using static TravBotSharp.Files.Helpers.Classificator;
+﻿using TbsCore.Models.MapModels;
+using static TravBotSharp.Files.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Models
+namespace TbsCore.Models
 {
     public class Adventure
     {

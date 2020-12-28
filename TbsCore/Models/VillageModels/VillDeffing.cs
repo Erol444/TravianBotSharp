@@ -1,4 +1,6 @@
-﻿namespace TravBotSharp.Files.Models.VillageModels
+﻿using TravBotSharp.Files.Models.VillageModels;
+
+namespace TbsCore.Models.VillageModels
 {
     public class VillDeffing
     {
@@ -15,6 +17,10 @@
         // TODO: Add: Deff type: Full deff, cut waves, remove troops etc.
 
     }
+}
+
+namespace TravBotSharp.Files.Models.VillageModels
+{
     public enum AlertTypeEnum
     {
         Disabled,

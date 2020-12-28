@@ -5,7 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.Access;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Files.Tasks.SecondLevel;
 

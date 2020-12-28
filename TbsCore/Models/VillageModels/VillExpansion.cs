@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace TravBotSharp.Files.Models.VillageModels
+namespace TbsCore.Models.VillageModels
 {
 
     public class VillExpansion

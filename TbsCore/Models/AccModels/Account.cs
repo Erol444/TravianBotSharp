@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using TravBotSharp.Files.Models.Settings;
+using TbsCore.Models.Access;
+using TbsCore.Models.Settings;
+using TbsCore.Models.VillageModels;
+using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.SideBarModels;
 using TravBotSharp.Files.Tasks;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class Account
     {

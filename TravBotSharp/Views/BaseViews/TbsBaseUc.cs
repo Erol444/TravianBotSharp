@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Views
 {

@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 
-namespace TravBotSharp.Files.Models.TroopsModels
+namespace TbsCore.Models.TroopsModels
 {
     public class VillTroops
     {

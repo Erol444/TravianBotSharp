@@ -2,8 +2,9 @@
 using System;
 using System.Linq;
 using System.Net;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.ResourceModels;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.ResourceModels;
+using TbsCore.Models.VillageModels;
 
 namespace TravBotSharp.Files.Helpers
 {

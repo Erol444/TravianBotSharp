@@ -4,8 +4,9 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Models.TroopsModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 

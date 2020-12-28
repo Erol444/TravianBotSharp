@@ -3,10 +3,10 @@ using OpenQA.Selenium.Chrome;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.MapModels;
+using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.TroopsModels;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {

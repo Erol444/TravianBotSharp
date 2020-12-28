@@ -3,9 +3,9 @@ using OpenQA.Selenium.Chrome;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.SideBarModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.SideBarModels;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {

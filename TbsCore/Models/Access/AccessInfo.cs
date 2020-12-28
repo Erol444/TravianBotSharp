@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.Access
 {
     public class AccessInfo
     {
@@ -37,18 +38,19 @@ namespace TravBotSharp.Files.Models.AccModels
         }
         public void AddNewAccess(AccessRaw raw)
         {
-            var accs = new Access()
+            var access = new Access()
             {
                 Password = raw.Password,
                 Proxy = raw.Proxy,
                 ProxyPort = raw.ProxyPort,
                 ProxyUsername = raw.ProxyUsername,
                 ProxyPassword = raw.ProxyPassword,
-                UserAgent = IoHelperCore.GetUseragent(),
                 IsSittering = false,
+                UserAgent = IoHelperCore.GetUseragent(),
                 LastUsed = DateTime.MinValue
             };
-            AllAccess.Add(accs);
+            
+            AllAccess.Add(access);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.Models.TroopsModels
+namespace TbsCore.Models.TroopsModels
 {
     public class TroopsCurrentlyTraining
     {

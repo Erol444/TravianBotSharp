@@ -1,4 +1,6 @@
-﻿namespace TravBotSharp.Files.Models.SideBarModels
+﻿using TravBotSharp.Files.Models.SideBarModels;
+
+namespace TbsCore.Models.SideBarModels
 {
     public class Quest
     {
@@ -15,6 +17,10 @@
         /// </summary>
         public string Id { get; set; }
     }
+}
+
+namespace TravBotSharp.Files.Models.SideBarModels
+{
     public enum Category
     {
         Battle,

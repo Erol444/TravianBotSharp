@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Net.Security;
 using System.Windows.Forms;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.Access;
+using TbsCore.Models.AccModels;
 
 namespace TravBotSharp
 {

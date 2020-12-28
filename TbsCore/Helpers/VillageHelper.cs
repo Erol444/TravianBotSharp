@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using static TravBotSharp.Files.Helpers.Classificator;
 

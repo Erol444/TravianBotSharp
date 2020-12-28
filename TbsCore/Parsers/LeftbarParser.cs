@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 
 namespace TravBotSharp.Files.Parsers
 {

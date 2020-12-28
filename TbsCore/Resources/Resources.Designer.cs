@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TbsCore.Resources {
+namespace TbsCore.Files {
     using System;
     
     

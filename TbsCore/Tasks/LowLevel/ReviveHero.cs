@@ -2,7 +2,7 @@
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Threading.Tasks;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {

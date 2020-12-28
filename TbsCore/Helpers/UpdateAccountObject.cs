@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TravBotSharp.Files.Models;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.Settings;
+using TbsCore.Models.SideBarModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;
@@ -75,7 +78,7 @@ namespace TravBotSharp.Files.Helpers
 
             // Copy default settings to the new village. TODO: use automapper for this.
             var defaultSettings = acc.NewVillages.DefaultSettings;
-            vill.Settings = new Models.Settings.VillSettings()
+            vill.Settings = new VillSettings()
             {
                 Type = defaultSettings.Type,
                 BarracksTrain = defaultSettings.BarracksTrain,

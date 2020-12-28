@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using TbsCore.Models.Settings;
 using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.Settings;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class Hero
     {

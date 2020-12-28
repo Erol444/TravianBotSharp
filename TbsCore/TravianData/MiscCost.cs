@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using TbsCore.Helpers;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 
 namespace TbsCore.TravianData
 {

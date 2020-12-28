@@ -7,11 +7,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TbsCore.Helpers;
 using static TravBotSharp.Files.Models.AccModels.WebBrowserInfo;
 using TravBotSharp.Interfaces;
+using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Views
 {

@@ -1,4 +1,4 @@
-﻿using TravBotSharp.Files.Models.AccModels;
+﻿using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Files.Helpers
 {

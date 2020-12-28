@@ -1,7 +1,7 @@
 ﻿using System;
 using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.Models.ResourceModels
+namespace TbsCore.Models.VillageModels
 {
     public class Building
     {

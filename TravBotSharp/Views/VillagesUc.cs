@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using TravBotSharp.Interfaces;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.VillageModels;
 
 namespace TravBotSharp.Views
 {

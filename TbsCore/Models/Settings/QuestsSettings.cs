@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using TravBotSharp.Files.Models.SideBarModels;
+using TbsCore.Models.SideBarModels;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.Settings
 {
     public class QuestsSettings
     {
-        public  void Init()
+        public void Init()
         {
             Quests = new List<Quest>();
         }

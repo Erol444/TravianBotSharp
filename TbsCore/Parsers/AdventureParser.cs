@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Parsers

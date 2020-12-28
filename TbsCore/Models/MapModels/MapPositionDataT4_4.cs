@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TravBotSharp.Files.Models.MapModels
+namespace TbsCore.Models.MapModels
 {
     public class MapPositionDataT4_4
     {

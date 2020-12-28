@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using TravBotSharp.Files.Models.TroopsModels;
+using TbsCore.Models.TroopsModels;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class Farming
     {

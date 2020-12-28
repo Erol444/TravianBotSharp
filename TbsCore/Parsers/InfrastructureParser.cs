@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.ResourceModels;
-using TravBotSharp.Files.Models.VillageModels;
 using TravBotSharp.Files.TravianData;
 
 namespace TravBotSharp.Files.Parsers

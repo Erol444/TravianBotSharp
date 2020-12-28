@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using TravBotSharp.Files.Models.TroopsModels;
+using TbsCore.Models.TroopsModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Parsers

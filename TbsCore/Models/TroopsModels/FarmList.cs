@@ -1,4 +1,6 @@
-﻿namespace TravBotSharp.Files.Models.TroopsModels
+﻿using TravBotSharp.Files.Models.TroopsModels;
+
+namespace TbsCore.Models.TroopsModels
 {
     public class FarmList
     {
@@ -17,6 +19,10 @@
         public RaidStyle RaidStyle { get; set; }
         public bool Enabled { get; set; }
     }
+}
+
+namespace TravBotSharp.Files.Models.TroopsModels
+{
     public enum RaidStyle
     {
         RaidSuccessful,

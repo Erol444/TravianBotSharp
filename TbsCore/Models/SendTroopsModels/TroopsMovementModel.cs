@@ -1,7 +1,8 @@
 ﻿using System;
+using TbsCore.Models.MapModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Models.SendTroopsModels
+namespace TbsCore.Models.SendTroopsModels
 {
     public class TroopsMovementModel
     {

@@ -1,4 +1,4 @@
-﻿namespace TravBotSharp.Files.Models.ResourceModels
+﻿namespace TbsCore.Models.ResourceModels
 {
     public class ResourceCapacity
     {

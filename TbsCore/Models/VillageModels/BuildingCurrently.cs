@@ -1,7 +1,7 @@
 ﻿using System;
 using static TravBotSharp.Files.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Models.VillageModels
+namespace TbsCore.Models.VillageModels
 {
     public class BuildingCurrently
     {

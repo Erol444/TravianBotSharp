@@ -1,4 +1,4 @@
-﻿namespace TravBotSharp.Files.Models.TroopsModels
+﻿namespace TbsCore.Models.TroopsModels
 {
     /// <summary>
     /// For u1-u9 inside the attack

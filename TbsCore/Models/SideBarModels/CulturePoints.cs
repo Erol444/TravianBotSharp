@@ -1,4 +1,4 @@
-﻿namespace TravBotSharp.Files.Models.SideBarModels
+﻿namespace TbsCore.Models.SideBarModels
 {
     public class CulturePoints
     {

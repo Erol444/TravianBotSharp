@@ -5,8 +5,8 @@ using System;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {

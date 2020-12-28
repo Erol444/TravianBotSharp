@@ -1,8 +1,8 @@
 ﻿using System;
+using TbsCore.Models.ResourceModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.ResourceModels;
 
-namespace TravBotSharp.Files.Models.TroopsModels
+namespace TbsCore.Models.TroopsModels
 {
     /// <summary>
     /// For troops upgraded in smithy. Based on this we can also know which troops have already been researched

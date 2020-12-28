@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using TbsCore.Models.MapModels;
+using TbsCore.Models.SendTroopsModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models;
 using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.AttackModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Files.TravianData;
@@ -275,7 +276,7 @@ namespace TravBotSharp.Files.Helpers
         }
         public static string GetUrlAutoResFields(Village vill, BuildingTask task)
         {
-            List<Models.ResourceModels.Building> buildings; // Potential buildings to be upgraded next
+            List<Building> buildings; // Potential buildings to be upgraded next
             switch (task.ResourceType)
             {
                 case ResTypeEnum.AllResources:
@@ -299,7 +300,7 @@ namespace TravBotSharp.Files.Helpers
             // Filter resource fields by type
             //buildings = buildings.Where(x => x.Type == task.Building).ToList();
 
-            Models.ResourceModels.Building buildingToUpgrade = null;
+            Building buildingToUpgrade = null;
             switch (task.BuildingStrategy)
             {
                 case BuildingStrategyEnum.BasedOnLevel:
@@ -438,7 +439,7 @@ namespace TravBotSharp.Files.Helpers
             vill.Build.Tasks.RemoveAll(task => IsTaskCompleted(vill, acc, task));
 
         #region Functions for auto-building resource fields
-        public static Models.ResourceModels.Building FindLowestLevelBuilding(List<Models.ResourceModels.Building> buildings)
+        public static Building FindLowestLevelBuilding(List<Building> buildings)
         {
             // TODO: test after implementation
             //return buildings
@@ -447,7 +448,7 @@ namespace TravBotSharp.Files.Helpers
 
             if (buildings.Count == 0) return null;
             int lowestLvl = 100;
-            Models.ResourceModels.Building lowestBuilding = new Models.ResourceModels.Building();
+            Building lowestBuilding = new Building();
             for (int i = 0; i < buildings.Count; i++)
             {
                 var buildingLevel = buildings[i].Level;
@@ -460,7 +461,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return lowestBuilding;
         }
-        private static Models.ResourceModels.Building GetLowestProduction(List<Models.ResourceModels.Building> buildings, Village vill)
+        private static Building GetLowestProduction(List<Building> buildings, Village vill)
         {
             //get distinct field types
             var distinct = buildings.Select(x => x.Type).Distinct().ToList();
@@ -476,7 +477,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }
-        private static Models.ResourceModels.Building GetLowestRes(List<Models.ResourceModels.Building> buildings, Village vill)
+        private static Building GetLowestRes(List<Building> buildings, Village vill)
         {
             //get distinct field types
             var distinct = buildings.Select(x => x.Type).Distinct().ToList();

@@ -1,4 +1,6 @@
-﻿namespace TravBotSharp.Files.Models
+﻿using TbsCore.Models.MapModels;
+
+namespace TbsCore.Models.SideBarModels
 {
     public class VillageChecked
     {

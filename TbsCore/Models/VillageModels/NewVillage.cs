@@ -1,4 +1,6 @@
-﻿namespace TravBotSharp.Files.Models.VillageModels
+﻿using TbsCore.Models.MapModels;
+
+namespace TbsCore.Models.VillageModels
 {
     public class NewVillage
     {

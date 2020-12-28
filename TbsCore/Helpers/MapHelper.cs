@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using TravBotSharp.Files.Models;
-using TravBotSharp.Files.Models.AccModels;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.MapModels;
 
 namespace TravBotSharp.Files.Helpers
 {

@@ -1,7 +1,8 @@
 ﻿using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Tasks;
 using static TravBotSharp.Files.Helpers.BuildingHelper;
 
-namespace TravBotSharp.Files.Tasks
+namespace TbsCore.Models.BuildingModels
 {
     public class BuildingTask
     {
@@ -30,6 +31,10 @@ namespace TravBotSharp.Files.Tasks
         public ResTypeEnum ResourceType { get; set; }
         public BuildingStrategyEnum BuildingStrategy { get; set; }
     }
+}
+
+namespace TravBotSharp.Files.Tasks
+{
     public enum ResTypeEnum
     {
         AllResources = 0,

@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
-using TbsCore.Models.Settings;
 using TravBotSharp.Files.Models.AccModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Models.Settings
+namespace TbsCore.Models.Settings
 {
     public class GeneralSettings
     {
         public void Init()
         {
-            this.FillFor = 2;
-            this.FillInAdvance = 4;
-            this.AutoReadIgms = true;
-            this.Time = new TimeSettings();
-            this.Time.Init();
-            this.Timing = new TimingData();
-            this.Localization = new Dictionary<string, BuildingEnum>();
+            FillFor = 2;
+            FillInAdvance = 4;
+            AutoReadIgms = true;
+            Time = new TimeSettings();
+            Time.Init();
+            Timing = new TimingData();
+            Localization = new Dictionary<string, BuildingEnum>();
         }
         public bool AutoActivateProductionBoost { get; set; }
 

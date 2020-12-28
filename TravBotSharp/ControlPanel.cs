@@ -12,7 +12,6 @@ using System.Windows.Forms;
 using TbsCore.Database;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
@@ -121,7 +120,7 @@ namespace TravBotSharp
             accListView.Items.Add(item);
         }
 
-        private async void button2_Click(object sender, EventArgs e) //login button
+        private void button2_Click(object sender, EventArgs e) //login button
         {
             var acc = GetSelectedAcc();
             if (acc.Access.AllAccess.Count > 0)
