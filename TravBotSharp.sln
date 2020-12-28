@@ -7,11 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbsWinForms", "TravBotSharp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TbsCore", "TbsCore\TbsCore.csproj", "{E343F06A-B322-41B6-889D-E349865341D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Server", "Web\Server\Web.Server.csproj", "{64C5D675-27B0-4A08-99BB-DE17DA4390A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Server", "Web\Server\Web.Server.csproj", "{64C5D675-27B0-4A08-99BB-DE17DA4390A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Client", "Web\Client\Web.Client.csproj", "{6FCF15A0-7CB2-4E50-B4E3-6D5B1A952C65}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Client", "Web\Client\Web.Client.csproj", "{6FCF15A0-7CB2-4E50-B4E3-6D5B1A952C65}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Web.Shared", "Web\Shared\Web.Shared.csproj", "{06D7C42F-CE20-4B85-BA0D-689B7D867CD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Shared", "Web\Shared\Web.Shared.csproj", "{06D7C42F-CE20-4B85-BA0D-689B7D867CD4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

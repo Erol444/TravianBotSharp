@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\TbsCore\TbsCore.csproj" />
     <ProjectReference Include="..\Shared\Web.Shared.csproj" />
   </ItemGroup>
 

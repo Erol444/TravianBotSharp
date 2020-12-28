@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Database
