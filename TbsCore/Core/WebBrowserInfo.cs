@@ -101,7 +101,10 @@ namespace TravBotSharp.Files.Models.AccModels
             //options.AddArguments("--disable-gpu-shader-disk-cache");
             //options.AddArguments("--aggressive-cache-discard");
             //options.AddArguments("--arc-disable-gms-core-cache");
-            
+
+            // Mute audio because of the Ads
+            options.AddArguments("--mute-audio");
+
 
             // Make browser headless to preserve memory resources
             if (acc.Settings.HeadlessMode) options.AddArguments("headless");
@@ -122,12 +125,15 @@ namespace TravBotSharp.Files.Models.AccModels
             service.HideCommandPromptWindow = true;
             try
             {
-                options.AddArguments("--window-position=5000,5000");
+                if (acc.Settings.OpenMinimized)
+                {
+                    options.AddArguments("--window-position=5000,5000");
+                    this.Driver = new ChromeDriver(service, options);
+                    this.Driver.Manage().Window.Position = new System.Drawing.Point(200, 200); // TODO: change coords?
+                    this.Driver.Manage().Window.Minimize();
+                }
+                else this.Driver = new ChromeDriver(service, options);
 
-                this.Driver = new ChromeDriver(service, options);
-
-                this.Driver.Manage().Window.Position = new System.Drawing.Point(200, 200); // TODO: change coords?
-                this.Driver.Manage().Window.Minimize();
                 // Set timeout
                 this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
 
@@ -189,10 +195,11 @@ namespace TravBotSharp.Files.Models.AccModels
             //    await Task.Delay(AccountHelper.Delay() * 2);
             //}
 
-            Html.LoadHtml(Driver.PageSource);
+            UpdateHtml();
             await TaskExecutor.PageLoaded(acc);
         }
 
+        public void UpdateHtml() => Html.LoadHtml(Driver.PageSource);
         public void Dispose()
         {
             //new Thread(() => {
