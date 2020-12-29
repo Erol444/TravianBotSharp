@@ -35,6 +35,12 @@ namespace TravBotSharp.Files.Helpers
                 await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click();");
             if (CheckCookiesNew(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('cmpboxbtnyes')[0].click();");
+            
+            if (CheckContextualHelp(acc) &&
+                acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5)
+            {
+                AddTaskIfNotExists(acc, new DisableContextualHelp() { ExecuteAt = DateTime.Now.AddHours(-1) });
+            }
 
             if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonSkipTutorial')[0].click();");
@@ -53,6 +59,9 @@ namespace TravBotSharp.Files.Helpers
             //TODO: limit this for performance reasons?
             PostLoadTasks(acc);
         }
+
+        private static bool CheckContextualHelp(Account acc) =>
+            acc.Wb.Html.GetElementbyId("contextualHelp") != null;
 
         /// <summary>
         /// Called PageLoaded (after navigating to a specific url) or from
