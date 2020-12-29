@@ -28,6 +28,49 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.botRunning = new System.Windows.Forms.Label();
+            this.startTimersButton = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.button6 = new System.Windows.Forms.Button();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label20 = new System.Windows.Forms.Label();
+            this.autoRandomTasks = new System.Windows.Forms.CheckBox();
+            this.autoReadIGMs = new System.Windows.Forms.CheckBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.openMinimizedCheckbox = new System.Windows.Forms.CheckBox();
+            this.reopenChrome = new System.Windows.Forms.CheckBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.headlessCheckbox = new System.Windows.Forms.CheckBox();
+            this.disableImagesCheckbox = new System.Windows.Forms.CheckBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.sleepMax = new System.Windows.Forms.NumericUpDown();
+            this.workMax = new System.Windows.Forms.NumericUpDown();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.sleepMin = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.workMin = new System.Windows.Forms.NumericUpDown();
+            this.label13 = new System.Windows.Forms.Label();
+            this.FillForUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.numericUpDown5 = new System.Windows.Forms.NumericUpDown();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.fillInAdvanceUpDown = new System.Windows.Forms.NumericUpDown();
+            this.button3 = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.label35 = new System.Windows.Forms.Label();
@@ -41,188 +84,53 @@
             this.SupplyResVillageSelected = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
             this.SupplyResVillageComboBox = new System.Windows.Forms.ComboBox();
-            this.startTimersButton = new System.Windows.Forms.Button();
             this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
-            this.label7 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
-            this.fillInAdvanceUpDown = new System.Windows.Forms.NumericUpDown();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.numericUpDown5 = new System.Windows.Forms.NumericUpDown();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.FillForUpDown = new System.Windows.Forms.NumericUpDown();
-            this.autoReadIGMs = new System.Windows.Forms.CheckBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.headlessCheckbox = new System.Windows.Forms.CheckBox();
-            this.disableImagesCheckbox = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.workMin = new System.Windows.Forms.NumericUpDown();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label18 = new System.Windows.Forms.Label();
-            this.label16 = new System.Windows.Forms.Label();
-            this.sleepMax = new System.Windows.Forms.NumericUpDown();
-            this.workMax = new System.Windows.Forms.NumericUpDown();
-            this.label15 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.sleepMin = new System.Windows.Forms.NumericUpDown();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.reopenChrome = new System.Windows.Forms.CheckBox();
-            this.label19 = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.label20 = new System.Windows.Forms.Label();
-            this.autoRandomTasks = new System.Windows.Forms.CheckBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.botRunning = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.fillInAdvanceUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FillForUpDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workMin)).BeginInit();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.label23 = new System.Windows.Forms.Label();
+            this.watchAdsUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label24 = new System.Windows.Forms.Label();
+            this.panel4.SuspendLayout();
+            this.panel3.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sleepMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.workMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sleepMin)).BeginInit();
-            this.panel2.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.workMin)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FillForUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fillInAdvanceUpDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
+            this.panel5.SuspendLayout();
+            this.panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.watchAdsUpDown)).BeginInit();
             this.SuspendLayout();
             // 
-            // button5
+            // panel4
             // 
-            this.button5.Location = new System.Drawing.Point(635, 174);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(110, 23);
-            this.button5.TabIndex = 121;
-            this.button5.Text = "select from file";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.panel4.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel4.Controls.Add(this.botRunning);
+            this.panel4.Controls.Add(this.startTimersButton);
+            this.panel4.Controls.Add(this.button1);
+            this.panel4.Controls.Add(this.button6);
+            this.panel4.Location = new System.Drawing.Point(17, 133);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(138, 136);
+            this.panel4.TabIndex = 175;
             // 
-            // button4
+            // botRunning
             // 
-            this.button4.Location = new System.Drawing.Point(635, 145);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(110, 23);
-            this.button4.TabIndex = 120;
-            this.button4.Text = "off tasks building";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label35.Location = new System.Drawing.Point(632, 30);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(127, 18);
-            this.label35.TabIndex = 119;
-            this.label35.Text = "Affects all villages:";
-            // 
-            // label33
-            // 
-            this.label33.AutoSize = true;
-            this.label33.Location = new System.Drawing.Point(17, 305);
-            this.label33.Name = "label33";
-            this.label33.Size = new System.Drawing.Size(196, 13);
-            this.label33.TabIndex = 115;
-            this.label33.Text = "Also for selection of UNL res/animals vill";
-            // 
-            // button21
-            // 
-            this.button21.Location = new System.Drawing.Point(34, 53);
-            this.button21.Name = "button21";
-            this.button21.Size = new System.Drawing.Size(106, 30);
-            this.button21.TabIndex = 111;
-            this.button21.Text = "Animals+Res";
-            this.button21.UseVisualStyleBackColor = true;
-            this.button21.Click += new System.EventHandler(this.button21_Click);
-            // 
-            // button18
-            // 
-            this.button18.Location = new System.Drawing.Point(635, 203);
-            this.button18.Name = "button18";
-            this.button18.Size = new System.Drawing.Size(110, 30);
-            this.button18.TabIndex = 110;
-            this.button18.Text = "Clear all";
-            this.button18.UseVisualStyleBackColor = true;
-            this.button18.Click += new System.EventHandler(this.button18_Click);
-            // 
-            // button17
-            // 
-            this.button17.Location = new System.Drawing.Point(635, 87);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(110, 23);
-            this.button17.TabIndex = 109;
-            this.button17.Text = "sup tasks building";
-            this.button17.UseVisualStyleBackColor = true;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
-            // 
-            // button16
-            // 
-            this.button16.Location = new System.Drawing.Point(635, 58);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(110, 23);
-            this.button16.TabIndex = 108;
-            this.button16.Text = "farm tasks building";
-            this.button16.UseVisualStyleBackColor = true;
-            this.button16.Click += new System.EventHandler(this.button16_Click);
-            // 
-            // button14
-            // 
-            this.button14.Location = new System.Drawing.Point(635, 116);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(110, 23);
-            this.button14.TabIndex = 107;
-            this.button14.Text = "deff tasks building";
-            this.button14.UseVisualStyleBackColor = true;
-            this.button14.Click += new System.EventHandler(this.button14_Click);
-            // 
-            // SupplyResourcesButton
-            // 
-            this.SupplyResourcesButton.Location = new System.Drawing.Point(154, 336);
-            this.SupplyResourcesButton.Name = "SupplyResourcesButton";
-            this.SupplyResourcesButton.Size = new System.Drawing.Size(71, 23);
-            this.SupplyResourcesButton.TabIndex = 106;
-            this.SupplyResourcesButton.Text = "OK";
-            this.SupplyResourcesButton.UseVisualStyleBackColor = true;
-            this.SupplyResourcesButton.Click += new System.EventHandler(this.SupplyResourcesButton_Click);
-            // 
-            // SupplyResVillageSelected
-            // 
-            this.SupplyResVillageSelected.AutoSize = true;
-            this.SupplyResVillageSelected.Location = new System.Drawing.Point(17, 364);
-            this.SupplyResVillageSelected.Name = "SupplyResVillageSelected";
-            this.SupplyResVillageSelected.Size = new System.Drawing.Size(55, 13);
-            this.SupplyResVillageSelected.TabIndex = 105;
-            this.SupplyResVillageSelected.Text = "Selected: ";
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(17, 318);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(157, 16);
-            this.label17.TabIndex = 104;
-            this.label17.Text = "Main resource village";
-            // 
-            // SupplyResVillageComboBox
-            // 
-            this.SupplyResVillageComboBox.FormattingEnabled = true;
-            this.SupplyResVillageComboBox.Location = new System.Drawing.Point(17, 337);
-            this.SupplyResVillageComboBox.Name = "SupplyResVillageComboBox";
-            this.SupplyResVillageComboBox.Size = new System.Drawing.Size(130, 21);
-            this.SupplyResVillageComboBox.TabIndex = 103;
+            this.botRunning.AutoSize = true;
+            this.botRunning.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.botRunning.Location = new System.Drawing.Point(9, 109);
+            this.botRunning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.botRunning.Name = "botRunning";
+            this.botRunning.Size = new System.Drawing.Size(77, 16);
+            this.botRunning.TabIndex = 176;
+            this.botRunning.Text = "Bot running:";
             // 
             // startTimersButton
             // 
@@ -234,178 +142,58 @@
             this.startTimersButton.UseVisualStyleBackColor = true;
             this.startTimersButton.Click += new System.EventHandler(this.startTimersButton_Click);
             // 
-            // checkBox4
+            // button1
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(424, 177);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(142, 17);
-            this.checkBox4.TabIndex = 94;
-            this.checkBox4.Text = "Auto +25% and Plus acc";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
+            this.button1.Location = new System.Drawing.Point(16, 43);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(92, 23);
+            this.button1.TabIndex = 174;
+            this.button1.Text = "Resume bot";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // label6
+            // button6
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(22, 418);
-            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(183, 17);
-            this.label6.TabIndex = 142;
-            this.label6.Text = "Expand storage TTWars";
+            this.button6.Location = new System.Drawing.Point(16, 72);
+            this.button6.Name = "button6";
+            this.button6.Size = new System.Drawing.Size(92, 23);
+            this.button6.TabIndex = 162;
+            this.button6.Text = "Pause bot";
+            this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
-            // numericUpDown4
+            // panel3
             // 
-            this.numericUpDown4.Location = new System.Drawing.Point(26, 439);
-            this.numericUpDown4.Margin = new System.Windows.Forms.Padding(2);
-            this.numericUpDown4.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.numericUpDown4.Name = "numericUpDown4";
-            this.numericUpDown4.Size = new System.Drawing.Size(74, 20);
-            this.numericUpDown4.TabIndex = 143;
+            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.label20);
+            this.panel3.Controls.Add(this.autoRandomTasks);
+            this.panel3.Controls.Add(this.autoReadIGMs);
+            this.panel3.Location = new System.Drawing.Point(635, 242);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(217, 100);
+            this.panel3.TabIndex = 173;
             // 
-            // label7
+            // label20
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(100, 441);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(31, 13);
-            this.label7.TabIndex = 144;
-            this.label7.Text = "times";
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(10, 70);
+            this.label20.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(195, 13);
+            this.label20.TabIndex = 174;
+            this.label20.Text = "* if there is no other task to be executed";
             // 
-            // button2
+            // autoRandomTasks
             // 
-            this.button2.Location = new System.Drawing.Point(26, 485);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(52, 23);
-            this.button2.TabIndex = 148;
-            this.button2.Text = "OK";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(22, 33);
-            this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(149, 17);
-            this.label14.TabIndex = 149;
-            this.label14.Text = "TTWars UNL tasks:";
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(34, 87);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(106, 23);
-            this.button3.TabIndex = 150;
-            this.button3.Text = "Res only";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // fillInAdvanceUpDown
-            // 
-            this.fillInAdvanceUpDown.Location = new System.Drawing.Point(419, 51);
-            this.fillInAdvanceUpDown.Maximum = new decimal(new int[] {
-            24,
-            0,
-            0,
-            0});
-            this.fillInAdvanceUpDown.Name = "fillInAdvanceUpDown";
-            this.fillInAdvanceUpDown.Size = new System.Drawing.Size(77, 20);
-            this.fillInAdvanceUpDown.TabIndex = 151;
-            this.fillInAdvanceUpDown.ValueChanged += new System.EventHandler(this.fillInAdvanceUpDown_ValueChanged);
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(416, 30);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(125, 16);
-            this.label9.TabIndex = 152;
-            this.label9.Text = "Fill troops above";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(502, 53);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(33, 13);
-            this.label10.TabIndex = 153;
-            this.label10.Text = "hours";
-            // 
-            // numericUpDown5
-            // 
-            this.numericUpDown5.Location = new System.Drawing.Point(60, 460);
-            this.numericUpDown5.Margin = new System.Windows.Forms.Padding(2);
-            this.numericUpDown5.Maximum = new decimal(new int[] {
-            3600,
-            0,
-            0,
-            0});
-            this.numericUpDown5.Name = "numericUpDown5";
-            this.numericUpDown5.Size = new System.Drawing.Size(66, 20);
-            this.numericUpDown5.TabIndex = 154;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(23, 462);
-            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(33, 13);
-            this.label8.TabIndex = 155;
-            this.label8.Text = "every";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(130, 462);
-            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(47, 13);
-            this.label11.TabIndex = 156;
-            this.label11.Text = "seconds";
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(416, 74);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(142, 16);
-            this.label12.TabIndex = 157;
-            this.label12.Text = "When below, fill for ";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(502, 95);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(33, 13);
-            this.label13.TabIndex = 159;
-            this.label13.Text = "hours";
-            // 
-            // FillForUpDown
-            // 
-            this.FillForUpDown.Location = new System.Drawing.Point(419, 93);
-            this.FillForUpDown.Maximum = new decimal(new int[] {
-            24,
-            0,
-            0,
-            0});
-            this.FillForUpDown.Name = "FillForUpDown";
-            this.FillForUpDown.Size = new System.Drawing.Size(77, 20);
-            this.FillForUpDown.TabIndex = 158;
-            this.FillForUpDown.ValueChanged += new System.EventHandler(this.FillForUpDown_ValueChanged);
+            this.autoRandomTasks.AutoSize = true;
+            this.autoRandomTasks.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.autoRandomTasks.Location = new System.Drawing.Point(13, 52);
+            this.autoRandomTasks.Name = "autoRandomTasks";
+            this.autoRandomTasks.Size = new System.Drawing.Size(146, 21);
+            this.autoRandomTasks.TabIndex = 162;
+            this.autoRandomTasks.Text = "Add random tasks*";
+            this.autoRandomTasks.UseVisualStyleBackColor = true;
+            this.autoRandomTasks.CheckedChanged += new System.EventHandler(this.autoRandomTasks_CheckedChanged);
             // 
             // autoReadIGMs
             // 
@@ -419,15 +207,53 @@
             this.autoReadIGMs.UseVisualStyleBackColor = true;
             this.autoReadIGMs.CheckedChanged += new System.EventHandler(this.autoReadIGMs_CheckedChanged);
             // 
-            // button6
+            // panel2
             // 
-            this.button6.Location = new System.Drawing.Point(16, 72);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(92, 23);
-            this.button6.TabIndex = 162;
-            this.button6.Text = "Pause bot";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.Controls.Add(this.openMinimizedCheckbox);
+            this.panel2.Controls.Add(this.reopenChrome);
+            this.panel2.Controls.Add(this.label19);
+            this.panel2.Controls.Add(this.headlessCheckbox);
+            this.panel2.Controls.Add(this.disableImagesCheckbox);
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Location = new System.Drawing.Point(635, 348);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(243, 156);
+            this.panel2.TabIndex = 172;
+            // 
+            // openMinimizedCheckbox
+            // 
+            this.openMinimizedCheckbox.AutoSize = true;
+            this.openMinimizedCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.openMinimizedCheckbox.Location = new System.Drawing.Point(14, 80);
+            this.openMinimizedCheckbox.Name = "openMinimizedCheckbox";
+            this.openMinimizedCheckbox.Size = new System.Drawing.Size(178, 21);
+            this.openMinimizedCheckbox.TabIndex = 172;
+            this.openMinimizedCheckbox.Text = "Chrome open minimized";
+            this.openMinimizedCheckbox.UseVisualStyleBackColor = true;
+            this.openMinimizedCheckbox.CheckedChanged += new System.EventHandler(this.openMinimizedCheckbox_CheckedChanged);
+            // 
+            // reopenChrome
+            // 
+            this.reopenChrome.AutoSize = true;
+            this.reopenChrome.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.reopenChrome.Location = new System.Drawing.Point(14, 104);
+            this.reopenChrome.Name = "reopenChrome";
+            this.reopenChrome.Size = new System.Drawing.Size(199, 21);
+            this.reopenChrome.TabIndex = 170;
+            this.reopenChrome.Text = "Close and reopen chrome* ";
+            this.reopenChrome.UseVisualStyleBackColor = true;
+            this.reopenChrome.CheckedChanged += new System.EventHandler(this.reopenChrome_CheckedChanged);
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(11, 128);
+            this.label19.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(153, 13);
+            this.label19.TabIndex = 171;
+            this.label19.Text = "* if there is no task in next 5min";
             // 
             // headlessCheckbox
             // 
@@ -459,23 +285,9 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(11, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(220, 16);
+            this.label1.Size = new System.Drawing.Size(119, 16);
             this.label1.TabIndex = 165;
-            this.label1.Text = "For decreased memory usage:";
-            // 
-            // workMin
-            // 
-            this.workMin.Location = new System.Drawing.Point(88, 57);
-            this.workMin.Margin = new System.Windows.Forms.Padding(2);
-            this.workMin.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.workMin.Name = "workMin";
-            this.workMin.Size = new System.Drawing.Size(74, 20);
-            this.workMin.TabIndex = 168;
-            this.workMin.ValueChanged += new System.EventHandler(this.workMin_ValueChanged);
+            this.label1.Text = "Chrome settings";
             // 
             // panel1
             // 
@@ -604,124 +416,411 @@
             this.label2.TabIndex = 169;
             this.label2.Text = "Working time";
             // 
-            // reopenChrome
+            // workMin
             // 
-            this.reopenChrome.AutoSize = true;
-            this.reopenChrome.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.reopenChrome.Location = new System.Drawing.Point(14, 80);
-            this.reopenChrome.Name = "reopenChrome";
-            this.reopenChrome.Size = new System.Drawing.Size(199, 21);
-            this.reopenChrome.TabIndex = 170;
-            this.reopenChrome.Text = "Close and reopen chrome* ";
-            this.reopenChrome.UseVisualStyleBackColor = true;
-            this.reopenChrome.CheckedChanged += new System.EventHandler(this.reopenChrome_CheckedChanged);
+            this.workMin.Location = new System.Drawing.Point(88, 57);
+            this.workMin.Margin = new System.Windows.Forms.Padding(2);
+            this.workMin.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.workMin.Name = "workMin";
+            this.workMin.Size = new System.Drawing.Size(74, 20);
+            this.workMin.TabIndex = 168;
+            this.workMin.ValueChanged += new System.EventHandler(this.workMin_ValueChanged);
             // 
-            // label19
+            // label13
             // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(11, 104);
-            this.label19.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(153, 13);
-            this.label19.TabIndex = 171;
-            this.label19.Text = "* if there is no task in next 5min";
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(102, 79);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(33, 13);
+            this.label13.TabIndex = 159;
+            this.label13.Text = "hours";
             // 
-            // panel2
+            // FillForUpDown
             // 
-            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel2.Controls.Add(this.reopenChrome);
-            this.panel2.Controls.Add(this.label19);
-            this.panel2.Controls.Add(this.headlessCheckbox);
-            this.panel2.Controls.Add(this.disableImagesCheckbox);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Location = new System.Drawing.Point(635, 373);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(243, 131);
-            this.panel2.TabIndex = 172;
+            this.FillForUpDown.Location = new System.Drawing.Point(19, 77);
+            this.FillForUpDown.Maximum = new decimal(new int[] {
+            24,
+            0,
+            0,
+            0});
+            this.FillForUpDown.Name = "FillForUpDown";
+            this.FillForUpDown.Size = new System.Drawing.Size(77, 20);
+            this.FillForUpDown.TabIndex = 158;
+            this.FillForUpDown.ValueChanged += new System.EventHandler(this.FillForUpDown_ValueChanged);
             // 
-            // panel3
+            // label12
             // 
-            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel3.Controls.Add(this.label20);
-            this.panel3.Controls.Add(this.autoRandomTasks);
-            this.panel3.Controls.Add(this.autoReadIGMs);
-            this.panel3.Location = new System.Drawing.Point(635, 259);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(217, 100);
-            this.panel3.TabIndex = 173;
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(16, 58);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(142, 16);
+            this.label12.TabIndex = 157;
+            this.label12.Text = "When below, fill for ";
             // 
-            // label20
+            // label11
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(10, 70);
-            this.label20.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(195, 13);
-            this.label20.TabIndex = 174;
-            this.label20.Text = "* if there is no other task to be executed";
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(130, 462);
+            this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(47, 13);
+            this.label11.TabIndex = 156;
+            this.label11.Text = "seconds";
             // 
-            // autoRandomTasks
+            // label8
             // 
-            this.autoRandomTasks.AutoSize = true;
-            this.autoRandomTasks.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.autoRandomTasks.Location = new System.Drawing.Point(13, 52);
-            this.autoRandomTasks.Name = "autoRandomTasks";
-            this.autoRandomTasks.Size = new System.Drawing.Size(146, 21);
-            this.autoRandomTasks.TabIndex = 162;
-            this.autoRandomTasks.Text = "Add random tasks*";
-            this.autoRandomTasks.UseVisualStyleBackColor = true;
-            this.autoRandomTasks.CheckedChanged += new System.EventHandler(this.autoRandomTasks_CheckedChanged);
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(23, 462);
+            this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(33, 13);
+            this.label8.TabIndex = 155;
+            this.label8.Text = "every";
             // 
-            // button1
+            // numericUpDown5
             // 
-            this.button1.Location = new System.Drawing.Point(16, 43);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(92, 23);
-            this.button1.TabIndex = 174;
-            this.button1.Text = "Resume bot";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.numericUpDown5.Location = new System.Drawing.Point(60, 460);
+            this.numericUpDown5.Margin = new System.Windows.Forms.Padding(2);
+            this.numericUpDown5.Maximum = new decimal(new int[] {
+            3600,
+            0,
+            0,
+            0});
+            this.numericUpDown5.Name = "numericUpDown5";
+            this.numericUpDown5.Size = new System.Drawing.Size(66, 20);
+            this.numericUpDown5.TabIndex = 154;
             // 
-            // panel4
+            // label10
             // 
-            this.panel4.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel4.Controls.Add(this.botRunning);
-            this.panel4.Controls.Add(this.startTimersButton);
-            this.panel4.Controls.Add(this.button1);
-            this.panel4.Controls.Add(this.button6);
-            this.panel4.Location = new System.Drawing.Point(17, 133);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(138, 136);
-            this.panel4.TabIndex = 175;
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(102, 37);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(33, 13);
+            this.label10.TabIndex = 153;
+            this.label10.Text = "hours";
             // 
-            // botRunning
+            // label9
             // 
-            this.botRunning.AutoSize = true;
-            this.botRunning.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.botRunning.Location = new System.Drawing.Point(9, 109);
-            this.botRunning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.botRunning.Name = "botRunning";
-            this.botRunning.Size = new System.Drawing.Size(77, 16);
-            this.botRunning.TabIndex = 176;
-            this.botRunning.Text = "Bot running:";
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(16, 14);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(125, 16);
+            this.label9.TabIndex = 152;
+            this.label9.Text = "Fill troops above";
+            // 
+            // fillInAdvanceUpDown
+            // 
+            this.fillInAdvanceUpDown.Location = new System.Drawing.Point(19, 35);
+            this.fillInAdvanceUpDown.Maximum = new decimal(new int[] {
+            24,
+            0,
+            0,
+            0});
+            this.fillInAdvanceUpDown.Name = "fillInAdvanceUpDown";
+            this.fillInAdvanceUpDown.Size = new System.Drawing.Size(77, 20);
+            this.fillInAdvanceUpDown.TabIndex = 151;
+            this.fillInAdvanceUpDown.ValueChanged += new System.EventHandler(this.fillInAdvanceUpDown_ValueChanged);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(34, 87);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(106, 23);
+            this.button3.TabIndex = 150;
+            this.button3.Text = "Res only";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(22, 33);
+            this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(149, 17);
+            this.label14.TabIndex = 149;
+            this.label14.Text = "TTWars UNL tasks:";
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(26, 485);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(52, 23);
+            this.button2.TabIndex = 148;
+            this.button2.Text = "OK";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(100, 441);
+            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(31, 13);
+            this.label7.TabIndex = 144;
+            this.label7.Text = "times";
+            // 
+            // numericUpDown4
+            // 
+            this.numericUpDown4.Location = new System.Drawing.Point(26, 439);
+            this.numericUpDown4.Margin = new System.Windows.Forms.Padding(2);
+            this.numericUpDown4.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDown4.Name = "numericUpDown4";
+            this.numericUpDown4.Size = new System.Drawing.Size(74, 20);
+            this.numericUpDown4.TabIndex = 143;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(22, 418);
+            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(183, 17);
+            this.label6.TabIndex = 142;
+            this.label6.Text = "Expand storage TTWars";
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(635, 174);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(110, 23);
+            this.button5.TabIndex = 121;
+            this.button5.Text = "select from file";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(635, 145);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(110, 23);
+            this.button4.TabIndex = 120;
+            this.button4.Text = "off tasks building";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // label35
+            // 
+            this.label35.AutoSize = true;
+            this.label35.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label35.Location = new System.Drawing.Point(632, 30);
+            this.label35.Name = "label35";
+            this.label35.Size = new System.Drawing.Size(127, 18);
+            this.label35.TabIndex = 119;
+            this.label35.Text = "Affects all villages:";
+            // 
+            // label33
+            // 
+            this.label33.AutoSize = true;
+            this.label33.Location = new System.Drawing.Point(17, 305);
+            this.label33.Name = "label33";
+            this.label33.Size = new System.Drawing.Size(196, 13);
+            this.label33.TabIndex = 115;
+            this.label33.Text = "Also for selection of UNL res/animals vill";
+            // 
+            // button21
+            // 
+            this.button21.Location = new System.Drawing.Point(34, 53);
+            this.button21.Name = "button21";
+            this.button21.Size = new System.Drawing.Size(106, 30);
+            this.button21.TabIndex = 111;
+            this.button21.Text = "Animals+Res";
+            this.button21.UseVisualStyleBackColor = true;
+            this.button21.Click += new System.EventHandler(this.button21_Click);
+            // 
+            // button18
+            // 
+            this.button18.Location = new System.Drawing.Point(635, 203);
+            this.button18.Name = "button18";
+            this.button18.Size = new System.Drawing.Size(110, 30);
+            this.button18.TabIndex = 110;
+            this.button18.Text = "Clear all";
+            this.button18.UseVisualStyleBackColor = true;
+            this.button18.Click += new System.EventHandler(this.button18_Click);
+            // 
+            // button17
+            // 
+            this.button17.Location = new System.Drawing.Point(635, 87);
+            this.button17.Name = "button17";
+            this.button17.Size = new System.Drawing.Size(110, 23);
+            this.button17.TabIndex = 109;
+            this.button17.Text = "sup tasks building";
+            this.button17.UseVisualStyleBackColor = true;
+            this.button17.Click += new System.EventHandler(this.button17_Click);
+            // 
+            // button16
+            // 
+            this.button16.Location = new System.Drawing.Point(635, 58);
+            this.button16.Name = "button16";
+            this.button16.Size = new System.Drawing.Size(110, 23);
+            this.button16.TabIndex = 108;
+            this.button16.Text = "farm tasks building";
+            this.button16.UseVisualStyleBackColor = true;
+            this.button16.Click += new System.EventHandler(this.button16_Click);
+            // 
+            // button14
+            // 
+            this.button14.Location = new System.Drawing.Point(635, 116);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(110, 23);
+            this.button14.TabIndex = 107;
+            this.button14.Text = "deff tasks building";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click);
+            // 
+            // SupplyResourcesButton
+            // 
+            this.SupplyResourcesButton.Location = new System.Drawing.Point(154, 336);
+            this.SupplyResourcesButton.Name = "SupplyResourcesButton";
+            this.SupplyResourcesButton.Size = new System.Drawing.Size(71, 23);
+            this.SupplyResourcesButton.TabIndex = 106;
+            this.SupplyResourcesButton.Text = "OK";
+            this.SupplyResourcesButton.UseVisualStyleBackColor = true;
+            this.SupplyResourcesButton.Click += new System.EventHandler(this.SupplyResourcesButton_Click);
+            // 
+            // SupplyResVillageSelected
+            // 
+            this.SupplyResVillageSelected.AutoSize = true;
+            this.SupplyResVillageSelected.Location = new System.Drawing.Point(17, 364);
+            this.SupplyResVillageSelected.Name = "SupplyResVillageSelected";
+            this.SupplyResVillageSelected.Size = new System.Drawing.Size(55, 13);
+            this.SupplyResVillageSelected.TabIndex = 105;
+            this.SupplyResVillageSelected.Text = "Selected: ";
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(17, 318);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(157, 16);
+            this.label17.TabIndex = 104;
+            this.label17.Text = "Main resource village";
+            // 
+            // SupplyResVillageComboBox
+            // 
+            this.SupplyResVillageComboBox.FormattingEnabled = true;
+            this.SupplyResVillageComboBox.Location = new System.Drawing.Point(17, 337);
+            this.SupplyResVillageComboBox.Name = "SupplyResVillageComboBox";
+            this.SupplyResVillageComboBox.Size = new System.Drawing.Size(130, 21);
+            this.SupplyResVillageComboBox.TabIndex = 103;
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Location = new System.Drawing.Point(424, 177);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(142, 17);
+            this.checkBox4.TabIndex = 94;
+            this.checkBox4.Text = "Auto +25% and Plus acc";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel5.Controls.Add(this.FillForUpDown);
+            this.panel5.Controls.Add(this.fillInAdvanceUpDown);
+            this.panel5.Controls.Add(this.label9);
+            this.panel5.Controls.Add(this.label10);
+            this.panel5.Controls.Add(this.label12);
+            this.panel5.Controls.Add(this.label13);
+            this.panel5.Location = new System.Drawing.Point(411, 33);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(167, 108);
+            this.panel5.TabIndex = 176;
+            // 
+            // panel6
+            // 
+            this.panel6.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel6.Controls.Add(this.label23);
+            this.panel6.Controls.Add(this.watchAdsUpDown);
+            this.panel6.Controls.Add(this.label21);
+            this.panel6.Controls.Add(this.label22);
+            this.panel6.Controls.Add(this.label24);
+            this.panel6.Location = new System.Drawing.Point(207, 33);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(189, 89);
+            this.panel6.TabIndex = 177;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label23.Location = new System.Drawing.Point(16, 53);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(40, 15);
+            this.label23.TabIndex = 160;
+            this.label23.Text = "above";
+            // 
+            // watchAdsUpDown
+            // 
+            this.watchAdsUpDown.Location = new System.Drawing.Point(62, 52);
+            this.watchAdsUpDown.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.watchAdsUpDown.Name = "watchAdsUpDown";
+            this.watchAdsUpDown.Size = new System.Drawing.Size(67, 20);
+            this.watchAdsUpDown.TabIndex = 158;
+            this.watchAdsUpDown.ValueChanged += new System.EventHandler(this.watchAdsUpDown_ValueChanged);
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label21.Location = new System.Drawing.Point(16, 14);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(81, 16);
+            this.label21.TabIndex = 152;
+            this.label21.Text = "Watch ads";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label22.Location = new System.Drawing.Point(16, 30);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(167, 15);
+            this.label22.TabIndex = 153;
+            this.label22.Text = "Watch ad when buiding takes";
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(135, 55);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(43, 13);
+            this.label24.TabIndex = 159;
+            this.label24.Text = "minutes";
             // 
             // GeneralUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel6);
+            this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.label13);
-            this.Controls.Add(this.FillForUpDown);
-            this.Controls.Add(this.label12);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.numericUpDown5);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.fillInAdvanceUpDown);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.button2);
@@ -744,22 +843,27 @@
             this.Controls.Add(this.checkBox4);
             this.Name = "GeneralUc";
             this.Size = new System.Drawing.Size(950, 536);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.fillInAdvanceUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FillForUpDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.workMin)).EndInit();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.sleepMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.workMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sleepMin)).EndInit();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.workMin)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.FillForUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.fillInAdvanceUpDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.watchAdsUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -822,5 +926,13 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label botRunning;
+        private System.Windows.Forms.CheckBox openMinimizedCheckbox;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Panel panel6;
+        private System.Windows.Forms.NumericUpDown watchAdsUpDown;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label label22;
     }
 }

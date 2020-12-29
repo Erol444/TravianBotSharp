@@ -21,11 +21,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var npcMerchant = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
             var npcButton = npcMerchant.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
 
-            wb.ExecuteScript($"document.getElementById('{npcButton.GetAttributeValue("id", "")}').click()"); //Excgabge resources button
-
-            await Task.Delay(AccountHelper.Delay() * 2);
-
-            acc.Wb.Html.LoadHtml(wb.PageSource);
+            // Exchange resources button
+            await DriverHelper.ClickById(acc, npcButton.Id);
 
             var resSum = Parser.RemoveNonNumeric(acc.Wb.Html.GetElementbyId("remain").InnerText);
             var targetRes = MarketHelper.NpcTargetResources(Vill, resSum);

@@ -27,10 +27,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (id == null) return TaskRes.Executed; //No more demolish tasks
 
-            await DriverHelper.ExecuteScript(acc, $"document.getElementById('demolish').value={id}");
-            await DriverHelper.ExecuteScript(acc, "document.getElementById('btn_demolish').click()");
+            await DriverHelper.WriteById(acc, "demolish", id);
+            await DriverHelper.ClickById(acc, "btn_demolish");
 
-            this.NextExecute = NextDemolishTime(acc.Wb.Html, acc);
+            this.NextExecute = NextDemolishTime(acc);
 
             return TaskRes.Executed;
         }
@@ -73,10 +73,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// </summary>
         /// <param name="htmlDoc">The html of the page</param>
         /// <param name="acc">account</param>
-        public DateTime NextDemolishTime(HtmlDocument htmlDoc, Account acc)
+        public DateTime NextDemolishTime(Account acc)
         {
-            htmlDoc.LoadHtml(acc.Wb.Driver.PageSource);
-            var table = htmlDoc.GetElementbyId("demolish");
+            var table = acc.Wb.Html.GetElementbyId("demolish");
             if (table == null) //No building is being demolished
             {
                 return DateTime.Now;

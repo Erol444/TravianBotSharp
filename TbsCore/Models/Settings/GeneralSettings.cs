@@ -15,6 +15,8 @@ namespace TbsCore.Models.Settings
             Time.Init();
             Timing = new TimingData();
             Localization = new Dictionary<string, BuildingEnum>();
+            OpenMinimized = true;
+            WatchAdAbove = 30;
         }
         public bool AutoActivateProductionBoost { get; set; }
 
@@ -68,5 +70,13 @@ namespace TbsCore.Models.Settings
         /// Whether to automatically add random tasks when there is no other task to be executed
         /// </summary>
         public bool AutoRandomTasks { get; set; }
+        /// <summary>
+        /// Minimize the chrome right after opening it
+        /// </summary>
+        public bool OpenMinimized { get; set; }
+        /// <summary>
+        /// If building takes longer than {value} minutes, watch an ad!
+        /// </summary>
+        public int WatchAdAbove { get; set; }
     }
 }

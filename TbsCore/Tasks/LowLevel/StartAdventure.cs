@@ -3,6 +3,7 @@ using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
@@ -56,11 +57,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 case Classificator.ServerVersionEnum.T4_5:
                     string script = $"var div = document.getElementById('{adventure.AdventureId}');";
                     script += $"div.children[0].submit();";
-                    wb.ExecuteScript(script);
+                    await DriverHelper.ExecuteScript(acc, script);
 
                     // Check hero outgoing time
-                    await Task.Delay(AccountHelper.Delay());
-                    acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
                     var outTime = HeroParser.GetHeroArrival(acc.Wb.Html);
                     // At least 1.5x longer (if hero has Large map)
                     acc.Hero.NextHeroSend = DateTime.Now + TimeSpan.FromTicks((long)(outTime.Ticks * 1.5));

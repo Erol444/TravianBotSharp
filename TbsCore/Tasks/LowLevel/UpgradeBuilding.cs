@@ -257,15 +257,40 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             CheckSettlers(acc, Vill, lvl, DateTime.Now.Add(buildDuration));
 
             // +25% speed upgrade
-            //{
-            //    if (await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('videoFeatureButton green')[0].click();", false))
-            //    {
-            //        // wait
-            //        //acc.Wb.Driver.FindElementsByClassName("videoFeatureButton").First().Click();
-            //    }
-            //    else 
-            //}
-            await DriverHelper.ClickById(acc, upgradeButton.Id);
+            if(acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 &&
+               acc.Settings.WatchAdAbove <= buildDuration.TotalMinutes)
+            {
+                //DriverHelper.ClickByClassName(acc, "videoFeatureButton green");
+                if (await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('videoFeatureButton green')[0].click();", false))
+                {
+                    // Accept ads
+                    if(await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen", false))
+                    {
+                        await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
+                    }
+
+                    // Has to be a legit "click"
+                    acc.Wb.Driver.FindElementById("videoFeature").Click(); 
+
+                    var timeout = DateTime.Now.AddSeconds(100);
+                    do
+                    {
+                        await System.Threading.Tasks.Task.Delay(1000);
+                        if (timeout < DateTime.Now) throw new Exception("+25% upgrade with Ads timeout!");
+                    }
+                    while(acc.Wb.Driver.Url.Contains("build.php"));
+
+                    // Don't show again
+                    acc.Wb.UpdateHtml();
+                    if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
+                    {
+                        await DriverHelper.ClickById(acc, "dontShowThisAgain");
+                        await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
+                    }
+                }
+                else await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
+            }
+            else await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
 
             lvl++;
             CheckIfTaskFinished(lvl);

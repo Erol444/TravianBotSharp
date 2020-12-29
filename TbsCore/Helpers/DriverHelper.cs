@@ -22,7 +22,7 @@ namespace TbsCore.Helpers
             {
                 acc.Wb.Driver.ExecuteScript(script);
                 await Task.Delay(AccountHelper.Delay() * 2);
-                acc.Wb.Html.LoadHtml(acc.Wb.Driver.PageSource);
+                acc.Wb.UpdateHtml();
                 return true;
             }
             catch (Exception e)
@@ -32,18 +32,18 @@ namespace TbsCore.Helpers
             }
         }
 
-        public static async Task<bool> ClickById(Account acc, string query) =>
-            await ExecuteAction(acc, new QueryById(query), new ActionClick());
-        public static async Task<bool> WriteById(Account acc, string query, object text) =>
-            await ExecuteAction(acc, new QueryById(query), new ActionWrite(text));
-        public static async Task<bool> ClickByClassName(Account acc, string query) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionClick());
-        public static async Task<bool> WriteByClassName(Account acc, string query, object text) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionWrite(text));
-        public static async Task<bool> ClickByName(Account acc, string query) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionClick());
-        public static async Task<bool> WriteByName(Account acc, string query, object text) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text));
+        public static async Task<bool> ClickById(Account acc, string query, bool log = true) =>
+            await ExecuteAction(acc, new QueryById(query), new ActionClick(), log);
+        public static async Task<bool> WriteById(Account acc, string query, object text, bool log = true) =>
+            await ExecuteAction(acc, new QueryById(query), new ActionWrite(text), log);
+        public static async Task<bool> ClickByClassName(Account acc, string query, bool log = true) =>
+            await ExecuteAction(acc, new QueryByClassName(query), new ActionClick(), log);
+        public static async Task<bool> WriteByClassName(Account acc, string query, object text, bool log = true) =>
+            await ExecuteAction(acc, new QueryByClassName(query), new ActionWrite(text), log);
+        public static async Task<bool> ClickByName(Account acc, string query, bool log = true) =>
+            await ExecuteAction(acc, new QueryByName(query), new ActionClick(), log);
+        public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true) =>
+            await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text), log);
 
         private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true) =>
             await ExecuteScript(acc, $"document.{query.val}{action.val}", log);

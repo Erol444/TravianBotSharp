@@ -41,10 +41,13 @@ namespace TravBotSharp.Views
 
             autoReadIGMs.Checked = acc.Settings.AutoReadIgms;
             autoRandomTasks.Checked = acc.Settings.AutoRandomTasks;
+            
+            watchAdsUpDown.Value = acc.Settings.WatchAdAbove;
 
             disableImagesCheckbox.Checked = acc.Settings.DisableImages;
             headlessCheckbox.Checked = acc.Settings.HeadlessMode;
             reopenChrome.Checked = acc.Settings.AutoCloseDriver;
+            openMinimizedCheckbox.Checked = acc.Settings.OpenMinimized;
 
             sleepMax.Value = acc.Settings.Time.MaxSleep;
             sleepMin.Value = acc.Settings.Time.MinSleep;
@@ -276,6 +279,16 @@ namespace TravBotSharp.Views
         {
             if(string.IsNullOrEmpty(running)) running = GetSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
             botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
+        }
+
+        private void openMinimizedCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Settings.OpenMinimized = openMinimizedCheckbox.Checked;
+        }
+
+        private void watchAdsUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Settings.WatchAdAbove = (int)watchAdsUpDown.Value;
         }
     }
 }

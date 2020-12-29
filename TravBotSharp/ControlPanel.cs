@@ -81,6 +81,7 @@ namespace TravBotSharp
                 if (result == DialogResult.OK)
                 {
                     var acc = form.Acc;
+                    DbRepository.SaveAccount(acc);
                     if (string.IsNullOrEmpty(acc.AccInfo.Nickname) ||
                         string.IsNullOrEmpty(acc.AccInfo.ServerUrl)) return;
 
@@ -185,6 +186,7 @@ namespace TravBotSharp
                 using (var form = new AddAccount(acc))
                 {
                     form.UpdateWindow();
+                    DbRepository.SaveAccount(acc);
                     var result = form.ShowDialog();
                     if (result != DialogResult.OK)
                     {
