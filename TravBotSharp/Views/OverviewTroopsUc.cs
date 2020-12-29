@@ -13,11 +13,11 @@ using XPTable.Models;
 
 namespace TravBotSharp.Views
 {
-    public partial class OverviewUc : TbsBaseUc, ITbsUc
+    public partial class OverviewTroopsUc : TbsBaseUc, ITbsUc
     {
         TableModel tableModelMain = new TableModel();
         TableModel tableModelGlobal = new TableModel();
-        public OverviewUc()
+        public OverviewTroopsUc()
         {
             InitializeComponent();
         }
@@ -35,13 +35,11 @@ namespace TravBotSharp.Views
                 var r = new Row();
                 r.Cells.Add(new Cell(vill.Id.ToString())); //vill id
                 r.Cells.Add(new Cell(vill.Name)); //vill name
-                r.Cells.Add(new Cell(vill.Settings.Type.ToString())); //vill type
-                r.Cells.Add(new Cell("", vill.Settings.GetRes)); //Get resources from
-                r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
-                r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
-                r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
-                r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
-                r.Cells.Add(new Cell("", vill.Settings.UseHeroRes)); // Use hero res
+                r.Cells.Add(new Cell(vill.Settings.BarracksTrain.ToString())); //barracks training
+                r.Cells.Add(new Cell("", vill.Settings.GreatBarracksTrain)); //GB
+                r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
+                r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
+                r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -58,13 +56,11 @@ namespace TravBotSharp.Views
             var r = new Row();
             r.Cells.Add(new Cell("")); //vill id
             r.Cells.Add(new Cell("CHANGE MULTIPLE")); //vill name
-            r.Cells.Add(new Cell(vill.Settings.Type.ToString())); //vill type
-            r.Cells.Add(new Cell("", vill.Settings.GetRes)); //Get resources from
-            r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
-            r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
-            r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
-            r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
-            r.Cells.Add(new Cell("", vill.Settings.UseHeroRes)); // Use hero res
+            r.Cells.Add(new Cell(vill.Settings.BarracksTrain.ToString())); //barracks training
+            r.Cells.Add(new Cell("", vill.Settings.GreatBarracksTrain)); //GB
+            r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
+            r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
+            r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
             tableModelGlobal.Rows.Add(r);
 
             //var newVills = acc.NewVillages.DefaultSettings;
@@ -113,65 +109,91 @@ namespace TravBotSharp.Views
             };
             columnModel.Columns.Add(vill);
 
-            //Village type
-            ComboBoxColumn typeColumn = new ComboBoxColumn
+            //Village barracks trainign
+            ComboBoxColumn barracks = new ComboBoxColumn
             {
-                Text = "Type",
-                ToolTipText = "Type of the village",
-                Width = 70
+                Text = "Barracks",
+                ToolTipText = "Troops to train in Barracks",
+                Width = 100
             };
 
-            ComboBoxCellEditor typeEditor = new ComboBoxCellEditor
+            ComboBoxCellEditor barracksEditor = new ComboBoxCellEditor
             {
                 DropDownStyle = DropDownStyle.DropDownList
             };
-            typeEditor.Items.AddRange(new string[] { "Farm", "Support", "Deff", "Off" });
-            typeColumn.Editor = typeEditor;
+            barracksEditor.Items.AddRange(GetPossibleTroops(Classificator.BuildingEnum.Barracks));
+            barracks.Editor = barracksEditor;
 
-            columnModel.Columns.Add(typeColumn);
+            columnModel.Columns.Add(barracks);
 
-            //get resources for building
-            CheckBoxColumn GetRes = new CheckBoxColumn
+            //great barracks training
+            CheckBoxColumn GB = new CheckBoxColumn
             {
-                Text = "Get Res",
-                Width = 60,
-                ToolTipText = "Select the supplying village when there are not enough resources"
+                Text = "GB",
+                ToolTipText = "Train troops in Great Barracks",
+                Width = 40
             };
-            columnModel.Columns.Add(GetRes);
-            //get resources for troops
-            columnModel.Columns.Add(new CheckBoxColumn
-            {
-                Text = "Send Res",
-                Width = 75,
-                ToolTipText = "Select where to send resources when too many"
-            });
+            columnModel.Columns.Add(GB);
 
-            columnModel.Columns.Add(new CheckBoxColumn
+            //stable
+            ComboBoxColumn stable = new ComboBoxColumn
             {
-                Text = "Celebs",
-                Width = 60,
-                ToolTipText = "Automatically start celebrations"
-            });
-            columnModel.Columns.Add(new CheckBoxColumn
+                Text = "Stable",
+                ToolTipText = "Troops to train in Stable",
+                Width = 100
+            };
+
+            ComboBoxCellEditor stableEditor = new ComboBoxCellEditor
             {
-                Text = "Big Celeb",
-                Width = 70,
-                ToolTipText = "Automatically start big celebrations"
-            });
-            columnModel.Columns.Add(new CheckBoxColumn
+                DropDownStyle = DropDownStyle.DropDownList
+            };
+            stableEditor.Items.AddRange(GetPossibleTroops(Classificator.BuildingEnum.Stable));
+            stable.Editor = stableEditor;
+
+            columnModel.Columns.Add(stable);
+            //great stable
+            CheckBoxColumn GS = new CheckBoxColumn
             {
-                Text = "Auto-Expand",
-                Width = 100,
-                ToolTipText = "Automatically Expand storage when it's full"
-            });
-            columnModel.Columns.Add(new CheckBoxColumn
+                Text = "GS",
+                ToolTipText = "Train troops in Great Stable",
+                Width = 40
+            };
+            columnModel.Columns.Add(GS);
+            //workshop
+            ComboBoxColumn workshop = new ComboBoxColumn
             {
-                Text = "Hero Res",
-                Width = 80,
-                ToolTipText = "Use hero resources"
-            });
+                Text = "Workshop",
+                ToolTipText = "Troops to train in Workshop",
+                Width = 100
+            };
+
+            ComboBoxCellEditor workshopEditor = new ComboBoxCellEditor
+            {
+                DropDownStyle = DropDownStyle.DropDownList
+            };
+            workshopEditor.Items.AddRange(GetPossibleTroops(Classificator.BuildingEnum.Workshop));
+            workshop.Editor = workshopEditor;
+
+            columnModel.Columns.Add(workshop);
         }
         #endregion
+        private string[] GetPossibleTroops(Classificator.BuildingEnum building)
+        {
+            List<string> ret = new List<string>();
+            ret.Add("None");
+            var acc = GetSelectedAcc();
+            if (acc.Villages.Count == 0) return ret.ToArray(); //Acc has now been initialised
+            int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
+            for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
+            {
+                Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
+                if (TroopsHelper.GetTroopBuilding(troop, false) == building)
+                {
+                    ret.Add(VillageHelper.EnumStrToString(troop.ToString()));
+                }
+            }
+            return ret.ToArray();
+        }
 
         //Save button
         private void button1_Click(object sender, EventArgs e)
@@ -194,21 +216,18 @@ namespace TravBotSharp.Views
                     changeVillNames.Add((id, name));
                 }
                 column++;
-                UpdateVillageType(vill, cells, column);
+                UpdateBarracks(acc, vill, cells, column);
                 column++;
-                vill.Settings.GetRes = cells[column].Checked;
+                UpdateGB(acc, vill, cells, column);
                 column++;
-                vill.Settings.SendRes = cells[column].Checked;
+                UpdateStable(acc, vill, cells, column);
                 column++;
-                vill.Expansion.AutoCelebrations = cells[column].Checked;
+                UpdateGS(acc, vill, cells, column);
                 column++;
-                vill.Expansion.BigCelebrations = cells[column].Checked;
-                column++;
-                vill.Settings.AutoExpandStorage = cells[column].Checked;
-                column++;
-                vill.Settings.UseHeroRes = cells[column].Checked;
+                UpdateWorkshop(acc, vill, cells, column);
 
-                if (vill.Expansion.AutoCelebrations) AccountHelper.ReStartCelebration(acc, vill);
+                // Reset training
+                if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
             }
             //Change name of village/s
             if (changeVillNames.Count > 0)
@@ -222,30 +241,46 @@ namespace TravBotSharp.Views
             }
         }
 
-        private void UpdateVillageType(Village vill, CellCollection cells, int column)
+        private void UpdateBarracks(Account acc, Village vill, CellCollection cells, int column)
         {
-            var acc = GetSelectedAcc();
-            var type = (VillType)Enum.Parse(typeof(VillType), cells[column].Text);
-            if (type != vill.Settings.Type)
-            {
-                vill.Settings.Type = type;
-                //User just selected different Village Type
-                switch (type)
-                {
-                    case VillType.Farm:
-                        DefaultConfigurations.FarmVillagePlan(acc, vill);
-                        return;
-                    case VillType.Support:
-                        DefaultConfigurations.SupplyVillagePlan(acc, vill);
-                        return;
-                    case VillType.Deff:
-                        DefaultConfigurations.DeffVillagePlan(acc, vill);
-                        return;
-                    case VillType.Off:
-                        DefaultConfigurations.OffVillagePlan(acc, vill);
-                        return;
-                }
-            }
+            var text = cells[column].Text;
+            var troop = (Classificator.TroopsEnum)Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
+            if (troop == vill.Settings.BarracksTrain) return; //no difference
+
+            vill.Settings.BarracksTrain = troop;
+            TroopsHelper.ReStartResearchAndImprovement(acc, vill);
+        }
+        private void UpdateStable(Account acc, Village vill, CellCollection cells, int column)
+        {
+            var text = cells[column].Text;
+            var troop = (Classificator.TroopsEnum)Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
+            if (troop == vill.Settings.StableTrain) return; //no difference
+
+            vill.Settings.StableTrain = troop;
+            TroopsHelper.ReStartResearchAndImprovement(acc, vill);
+        }
+        private void UpdateWorkshop(Account acc, Village vill, CellCollection cells, int column)
+        {
+            var text = cells[column].Text;
+            var troop = (Classificator.TroopsEnum)Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
+            if (troop == vill.Settings.WorkshopTrain) return; //no difference
+
+            vill.Settings.WorkshopTrain = troop;
+            TroopsHelper.ReStartResearchAndImprovement(acc, vill);
+        }
+        private void UpdateGB(Account acc, Village vill, CellCollection cells, int column)
+        {
+            bool enabled = cells[column].Checked;
+            if (vill.Settings.GreatBarracksTrain == enabled) return; //no difference
+
+            vill.Settings.GreatBarracksTrain = enabled;
+        }
+        private void UpdateGS(Account acc, Village vill, CellCollection cells, int column)
+        {
+            bool enabled = cells[column].Checked;
+            if (vill.Settings.GreatStableTrain == enabled) return; //no difference
+
+            vill.Settings.GreatStableTrain = enabled;
         }
 
         private void button2_Click(object sender, EventArgs e)

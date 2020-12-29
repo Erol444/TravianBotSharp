@@ -61,7 +61,6 @@
             this.label7 = new System.Windows.Forms.Label();
             this.refreshInfo = new System.Windows.Forms.CheckBox();
             this.autoEquip = new System.Windows.Forms.CheckBox();
-            this.autoRes = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.button1 = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
@@ -410,17 +409,6 @@
             this.autoEquip.UseVisualStyleBackColor = true;
             this.autoEquip.CheckedChanged += new System.EventHandler(this.autoEquip_CheckedChanged);
             // 
-            // autoRes
-            // 
-            this.autoRes.AutoSize = true;
-            this.autoRes.Location = new System.Drawing.Point(11, 60);
-            this.autoRes.Name = "autoRes";
-            this.autoRes.Size = new System.Drawing.Size(141, 17);
-            this.autoRes.TabIndex = 149;
-            this.autoRes.Text = "Auto use hero resources";
-            this.autoRes.UseVisualStyleBackColor = true;
-            this.autoRes.CheckedChanged += new System.EventHandler(this.autoRes_CheckedChanged);
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
@@ -473,10 +461,9 @@
             this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.autoEquip);
-            this.panel2.Controls.Add(this.autoRes);
-            this.panel2.Location = new System.Drawing.Point(253, 19);
+            this.panel2.Location = new System.Drawing.Point(255, 25);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(163, 90);
+            this.panel2.Size = new System.Drawing.Size(163, 69);
             this.panel2.TabIndex = 154;
             // 
             // adventures
@@ -588,7 +575,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.CheckBox refreshInfo;
         private System.Windows.Forms.CheckBox autoEquip;
-        private System.Windows.Forms.CheckBox autoRes;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label8;

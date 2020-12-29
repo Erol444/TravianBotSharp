@@ -23,7 +23,6 @@ namespace TravBotSharp.Views
             autoReviveHero.Checked = acc.Hero.Settings.AutoReviveHero;
             refreshInfo.Checked = acc.Hero.Settings.AutoRefreshInfo;
 
-            autoRes.Checked = acc.Hero.Settings.AutoUseRes;
             autoEquip.Checked = acc.Hero.Settings.AutoEquip;
 
 
@@ -202,12 +201,6 @@ namespace TravBotSharp.Views
             if (autoEquip.Checked) TurnOnAutoRefresh(acc);
         }
 
-        private void autoRes_CheckedChanged(object sender, EventArgs e)
-        {
-            var acc = GetSelectedAcc();
-            acc.Hero.Settings.AutoUseRes = autoRes.Checked;
-            if (autoRes.Checked) TurnOnAutoRefresh(acc);
-        }
         /// <summary>
         /// If you want to use Auto-use res or Auto-Equip hero, you need to auto-refresh hero info
         /// </summary>

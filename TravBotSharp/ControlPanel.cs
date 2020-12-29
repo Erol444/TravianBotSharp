@@ -39,6 +39,7 @@ namespace TravBotSharp
                 heroUc1,
                 villagesUc1,
                 overviewUc1,
+                overviewTroopsUc1,
                 farmingUc1,
                 newVillagesUc1,
                 deffendingUc1,
@@ -144,6 +145,7 @@ namespace TravBotSharp
 
             IoHelperCore.RemoveCache(acc);
             accounts.Remove(acc);
+            DbRepository.RemoveAccount(acc);
             accListView.Items.RemoveAt(accSelected);
         }
 

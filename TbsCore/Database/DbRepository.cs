@@ -32,8 +32,7 @@ namespace TbsCore.Database
         {
             using (var context = new TbsContext())
             {
-                var saved = context.DbAccount
-                    .FirstOrDefault(x => x.Username == acc.AccInfo.Nickname && x.Server == acc.AccInfo.ServerUrl);
+                var saved = FindDbAccount(acc, context);
 
                 if (saved == null)
                 {
@@ -44,6 +43,15 @@ namespace TbsCore.Database
                     saved.JsonData = JsonConvert.SerializeObject(acc);
                 }
 
+                context.SaveChanges();
+            }
+        }
+
+        public static void RemoveAccount(Account acc)
+        {
+            using (var context = new TbsContext())
+            {
+                context.DbAccount.Remove(FindDbAccount(acc, context));
                 context.SaveChanges();
             }
         }
@@ -64,6 +72,9 @@ namespace TbsCore.Database
                 context.SaveChanges();
             }
         }
+
+        private static DbAccount FindDbAccount(Account acc, TbsContext context) =>
+            context.DbAccount.FirstOrDefault(x => x.Username == acc.AccInfo.Nickname && x.Server == acc.AccInfo.ServerUrl);
 
         private static DbAccount ConvertAcc(Account acc) =>
             new DbAccount

@@ -113,7 +113,7 @@ namespace TravBotSharp.Files.Helpers
         public static void ReStartTroopTraining(Account acc, Village vill)
         {
             //remove training tasks
-            acc.Tasks.RemoveAll(x =>
+            acc.Tasks?.RemoveAll(x =>
                 x.Vill == vill &&
                 x.GetType() == typeof(TrainTroops)
                 );

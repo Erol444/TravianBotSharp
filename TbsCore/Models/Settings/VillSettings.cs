@@ -9,6 +9,7 @@ namespace TbsCore.Models.Settings
         {
             GetRes = true;
             SendRes = false;
+            UseHeroRes = true;
         }
         public VillType Type { get; set; }
         public Classificator.TroopsEnum BarracksTrain { get; set; }
@@ -19,6 +20,7 @@ namespace TbsCore.Models.Settings
         public bool GetRes { get; set; }
         public bool SendRes { get; set; }
         public bool AutoExpandStorage { get; set; }
+        public bool UseHeroRes { get; set; }
     }
 }
 

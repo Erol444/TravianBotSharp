@@ -290,6 +290,12 @@
     <Compile Include="Views\BaseViews\BaseVillageUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Views\OverviewTroopsUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\OverviewTroopsUc.Designer.cs">
+      <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\VillageViews\BuildUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -390,6 +396,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Views\OverviewTroopsUc.resx">
+      <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\VillageViews\BuildUc.resx">
       <DependentUpon>BuildUc.cs</DependentUpon>
     </EmbeddedResource>

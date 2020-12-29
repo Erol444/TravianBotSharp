@@ -20,10 +20,6 @@
         /// </summary>
         public bool AutoRefreshInfo { get; set; } = true;
         /// <summary>
-        /// Auto use resources from hero inventory
-        /// </summary>
-        public bool AutoUseRes { get; set; } = true;
-        /// <summary>
         /// Auto equip hero with better items
         /// </summary>
         public bool AutoEquip { get; set; } = true;
