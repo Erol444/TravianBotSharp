@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using TbsCore.Models.Access;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
@@ -36,13 +37,17 @@ namespace TbsCore.Models.AccModels
         public AccessInfo Access { get; set; }
         public List<Village> Villages { get; set; }
         public Farming Farming { get; set; }
-        public List<BotTask> Tasks { get; set; }
         public Hero Hero { get; set; }
-        public WebBrowserInfo Wb { get; set; }
         public QuestsSettings Quests { get; set; }
-        public TaskTimer TaskTimer { get; set; }
         public NewVillageSettings NewVillages { get; set; }
         public GeneralSettings Settings { get; set; }
+
+        [JsonIgnore]
+        public WebBrowserInfo Wb { get; set; }
+        [JsonIgnore]
+        public List<BotTask> Tasks { get; set; }
+        [JsonIgnore]
+        public TaskTimer TaskTimer { get; set; }
 
     }
 }

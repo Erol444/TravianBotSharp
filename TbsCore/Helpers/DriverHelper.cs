@@ -27,7 +27,7 @@ namespace TbsCore.Helpers
             }
             catch (Exception e)
             {
-                if (log) acc.Wb.Log($"Error executing JS script:\n{script}", e);
+                if (log) acc.Wb?.Log($"Error executing JS script:\n{script}", e);
                 return false;
             }
         }

@@ -95,11 +95,19 @@ namespace TravBotSharp.Files.Models.AccModels
                 options.AddArgument("--user-agent=" + access.UserAgent);
             }
 
+            //options.AddArguments("--disable-logging");
+            //options.AddArguments("--disable-metrics");
+            //options.AddArguments("--disable-dev-tools");
+            //options.AddArguments("--disable-gpu-shader-disk-cache");
+            //options.AddArguments("--aggressive-cache-discard");
+            //options.AddArguments("--arc-disable-gms-core-cache");
+            
+
             // Make browser headless to preserve memory resources
-            if(acc.Settings.HeadlessMode) options.AddArguments("headless");
+            if (acc.Settings.HeadlessMode) options.AddArguments("headless");
 
             // Do not download images in order to preserve memory resources
-            if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false");
+            if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
 
             // Add browser caching
             var dir = IoHelperCore.GetCacheDir(username, server, access);
@@ -114,10 +122,15 @@ namespace TravBotSharp.Files.Models.AccModels
             service.HideCommandPromptWindow = true;
             try
             {
+                options.AddArguments("--window-position=5000,5000");
+
                 this.Driver = new ChromeDriver(service, options);
 
+                this.Driver.Manage().Window.Position = new System.Drawing.Point(200, 200); // TODO: change coords?
+                this.Driver.Manage().Window.Minimize();
                 // Set timeout
                 this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+
             }
             catch(Exception e)
             {

@@ -24,16 +24,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (acc.AccInfo.ServerUrl.Contains("ttwars"))
             {
-                acc.Wb.Driver.ExecuteScript($"document.getElementsByName('user')[0].value='{acc.AccInfo.Nickname}'");
-                acc.Wb.Driver.ExecuteScript($"document.getElementsByName('pw')[0].value='{access.Password}'");
+                await DriverHelper.WriteByName(acc, "user", acc.AccInfo.Nickname);
+                await DriverHelper.WriteByName(acc, "pw", access.Password);
             }
             else
             {
-                acc.Wb.Driver.ExecuteScript($"document.getElementsByName('name')[0].value='{acc.AccInfo.Nickname}'");
-                acc.Wb.Driver.ExecuteScript($"document.getElementsByName('password')[0].value='{access.Password}'");
+                await DriverHelper.WriteByName(acc, "name", acc.AccInfo.Nickname);
+                await DriverHelper.WriteByName(acc, "password", access.Password);
             }
 
-            await DriverHelper.ExecuteScript(acc, "document.getElementsByName('s1')[0].click()");
+            await DriverHelper.ClickByName(acc, "s1");
 
             if (TaskExecutor.IsLoginScreen(acc))
             {

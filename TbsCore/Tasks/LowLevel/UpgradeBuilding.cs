@@ -109,6 +109,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     case BuildingEnum.Marketplace:
                         url += "&t=0";
                         break;
+                    case BuildingEnum.Residence:
+                    case BuildingEnum.Palace:
+                        url += "&s=0";
+                        break;
                 }
             }
 
