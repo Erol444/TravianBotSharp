@@ -1,12 +1,7 @@
-﻿
-
-using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
+﻿using HtmlAgilityPack;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
@@ -229,7 +224,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Retry;
             }
 
-            var errorMessage = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("errorMessage"));
+            var errorMessage = acc.Wb.Html.GetElementbyId("build")
+                .Descendants("div")
+                .FirstOrDefault(x => x.HasClass("upgradeBuilding"))?
+                .Descendants("div")?
+                .FirstOrDefault(x => x.HasClass("errorMessage"));
             HtmlNode upgradeButton = buttons.FirstOrDefault(x => x.HasClass("build"));
 
             if (upgradeButton == null)
@@ -256,41 +255,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             //TODO move this
             CheckSettlers(acc, Vill, lvl, DateTime.Now.Add(buildDuration));
 
-            // +25% speed upgrade
-            if(acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 &&
-               acc.Settings.WatchAdAbove <= buildDuration.TotalMinutes)
+            if(acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
+               buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
+               !await TryFastUpgrade(acc)) // +25% speed upgrade
             {
-                //DriverHelper.ClickByClassName(acc, "videoFeatureButton green");
-                if (await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('videoFeatureButton green')[0].click();", false))
-                {
-                    // Accept ads
-                    if(await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen", false))
-                    {
-                        await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
-                    }
-
-                    // Has to be a legit "click"
-                    acc.Wb.Driver.FindElementById("videoFeature").Click(); 
-
-                    var timeout = DateTime.Now.AddSeconds(100);
-                    do
-                    {
-                        await System.Threading.Tasks.Task.Delay(1000);
-                        if (timeout < DateTime.Now) throw new Exception("+25% upgrade with Ads timeout!");
-                    }
-                    while(acc.Wb.Driver.Url.Contains("build.php"));
-
-                    // Don't show again
-                    acc.Wb.UpdateHtml();
-                    if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
-                    {
-                        await DriverHelper.ClickById(acc, "dontShowThisAgain");
-                        await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
-                    }
-                }
-                else await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
+                await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
             }
-            else await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
 
             lvl++;
             CheckIfTaskFinished(lvl);
@@ -334,6 +304,43 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         Vill = vill
                     });
             }
+        }
+
+        /// <summary>
+        /// Tries to watch an Ad for +25% faster upgrade
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>Whether bot watched the ad</returns>
+        private async Task<bool> TryFastUpgrade(Account acc)
+        {
+            if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
+            
+            // Accept ads
+            if (await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen", false))
+            {
+                await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
+            }
+
+            // Has to be a legit "click"
+            acc.Wb.Driver.FindElementById("videoFeature").Click();
+
+            var timeout = DateTime.Now.AddSeconds(100);
+            do
+            {
+                await System.Threading.Tasks.Task.Delay(1000);
+                if (timeout < DateTime.Now) return false;
+            }
+            while (acc.Wb.Driver.Url.Contains("build.php"));
+
+            // Don't show again
+            acc.Wb.UpdateHtml();
+            if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
+            {
+                await DriverHelper.ClickById(acc, "dontShowThisAgain");
+                await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
+            }
+            return true;
+            
         }
 
         /// <summary>
