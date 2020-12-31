@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using Web.Server.Interfaces;
+using Web.Server.Services;
 
 namespace Web.Server
 {
@@ -22,6 +24,14 @@ namespace Web.Server
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSql(
+            //        Configuration.GetConnectionString("DefaultConnection"),
+            //        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName))
+            //    );
+            //services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
+
+            services.AddSingleton<IAccountService, AccountService>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();

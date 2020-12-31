@@ -1,6 +1,5 @@
 ﻿using HtmlAgilityPack;
 using OpenQA.Selenium.Chrome;
-using RestSharp;
 using System;
 using System.Net;
 using System.Threading;

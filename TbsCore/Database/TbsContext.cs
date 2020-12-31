@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TbsCore.Models.Database;
 using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Database
