@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using Newtonsoft.Json;
 using OpenQA.Selenium.Chrome;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,16 +28,20 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 case Classificator.ServerVersionEnum.T4_4:
                     var ajaxToken = HttpHelper.GetAjaxToken(acc);
-                    var values = new Dictionary<string, string>
+
+                    var req = new RestRequest
                     {
-                        {"cmd", "mapPositionData"},
-                        {"data[x]", mainVill.Coordinates.x.ToString()},
-                        {"data[y]", mainVill.Coordinates.y.ToString()},
-                        {"data[zoomLevel]", "3"},
-                        {"ajaxToken", ajaxToken},
+                        Resource = "/ajax.php?cmd=mapPositionData",
+                        Method = Method.POST,
                     };
-                    var content = new FormUrlEncodedContent(values);
-                    var resString = await HttpHelper.SendPostReq(acc, content, "/ajax.php?cmd=mapPositionData");
+
+                    req.AddParameter("cmd", "mapPositionData");
+                    req.AddParameter("data[x]", mainVill.Coordinates.x.ToString());
+                    req.AddParameter("data[y]", mainVill.Coordinates.y.ToString());
+                    req.AddParameter("data[zoomLevel]", "3");
+                    req.AddParameter("ajaxToken", ajaxToken);
+
+                    var resString = HttpHelper.SendPostReq(acc, req);
 
                     var root = JsonConvert.DeserializeObject<MapPositionDataT4_4.Root>(resString);
                     closesCoords = HandleT4_4Data(acc, root);
@@ -58,10 +63,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         }
                     };
                     var contentPosition = new StringContent(JsonConvert.SerializeObject(mapPosition));
-                    var mapPositionRes = await HttpHelper.SendPostReq(acc, contentPosition, "/api/v1/ajax/mapPositionData");
-                    var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
+                    //var mapPositionRes = await HttpHelper.SendPostReq(acc, contentPosition, "/api/v1/ajax/mapPositionData");
+                    //var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
 
-                    closesCoords = HandleT4_5Data(acc, mapPositionData);
+                    //closesCoords = HandleT4_5Data(acc, mapPositionData);
                     break;
             }
 

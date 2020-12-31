@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
@@ -125,51 +126,6 @@ namespace TravBotSharp.Files.Helpers
                 Vill = vill,
                 BigCelebration = vill.Expansion.BigCelebrations,
             });
-        }
-
-        public static async Task CheckProxies(List<Access> access)
-        {
-            List<Task> tasks = new List<Task>(access.Count);
-            access.ForEach(a =>
-            {
-                tasks.Add(Task.Run(() =>
-                {
-                    Console.WriteLine(DateTime.Now.ToString() + "]Start ip " + a.Proxy);
-                    var restClient = new RestClient
-                    {
-                        BaseUrl = new Uri("https://api.ipify.org/"),
-                    };
-
-                    if (!string.IsNullOrEmpty(a.Proxy))
-                    {
-                        if (!string.IsNullOrEmpty(a.ProxyUsername)) // Proxy auth
-                        {
-                            ICredentials credentials = new NetworkCredential(a.ProxyUsername, a.ProxyPassword);
-                            restClient.Proxy = new WebProxy($"{a.Proxy}:{a.ProxyPort}", false, null, credentials);
-                        }
-                        else // Without proxy auth
-                        {
-                            restClient.Proxy = new WebProxy(a.Proxy, a.ProxyPort);
-                        }
-                    }
-
-                    var response = restClient.Execute(new RestRequest
-                    {
-                        Resource = "api/ip",
-                        Method = Method.GET,
-                        Timeout = 5000,
-                    });
-                    Console.WriteLine(DateTime.Now.ToString() + "] Complete ip" + a.Proxy + $", Credentials: {!string.IsNullOrEmpty(a.ProxyUsername)}, content:" + response.Content);
-                    HtmlDocument doc = new HtmlDocument();
-                    doc.LoadHtml(response.Content);
-
-                    var ip = doc.DocumentNode.InnerText;
-
-                    a.Ok = ip == a.Proxy;
-                }));
-            });
-            await Task.WhenAll(tasks);
-            Console.WriteLine(DateTime.Now.ToString() + "]all tasks complete");
         }
     }
 }

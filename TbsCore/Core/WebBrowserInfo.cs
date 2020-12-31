@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using RestSharp;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
@@ -12,6 +13,7 @@ using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
+using System.Net;
 
 namespace TravBotSharp.Files.Models.AccModels
 {
@@ -31,6 +33,10 @@ namespace TravBotSharp.Files.Models.AccModels
         public string CurrentUrl => this.Driver.Url;
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
+        /// <summary>
+        /// Http client, configured with proxy
+        /// </summary>
+        public RestClient RestClient { get; set; }
 
         // Account Logs
         public CircularBuffer<string> Logs { get; set; }
@@ -55,12 +61,13 @@ namespace TravBotSharp.Files.Models.AccModels
             Access access = newAccess ? await acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
-
+            
             if(this.Html == null)
             {
                 this.Html = new HtmlAgilityPack.HtmlDocument();
             }
 
+            InitHttpClient(access);
             if (!string.IsNullOrEmpty(access.Proxy))
             {
                 var checkproxy = new CheckProxy();
@@ -68,6 +75,9 @@ namespace TravBotSharp.Files.Models.AccModels
             }
             else await this.Navigate(acc.AccInfo.ServerUrl);
         }
+
+        private void InitHttpClient(Access a) =>
+            this.RestClient = HttpHelper.InitRestClient(a, this.acc.AccInfo.ServerUrl);
 
         private void SetupChromeDriver(Access access, string username, string server)
         {
@@ -84,8 +94,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    var proxyAuth = new ProxyAuthentication();
-                    var extensionPath = proxyAuth.CreateExtension(username, server, access);
+                    var extensionPath = ProxyHelper.CreateExtension(username, server, access);
                     options.AddExtension(extensionPath);
                 }
 

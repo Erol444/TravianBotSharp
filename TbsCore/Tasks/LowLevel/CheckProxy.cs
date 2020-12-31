@@ -10,6 +10,10 @@ using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
+    /// <summary>
+    /// TODO: replace selenium navigation with RestSharp client!
+    /// ProxyHelper.TestProxy(acc);
+    /// </summary>
     public class CheckProxy : BotTask
     {
         public override async Task<TaskRes> Execute(Account acc)

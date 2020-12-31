@@ -39,6 +39,7 @@
             this.tabOverview = new System.Windows.Forms.TabPage();
             this.overviewUc1 = new TravBotSharp.Views.OverviewUc();
             this.troopsTab = new System.Windows.Forms.TabPage();
+            this.overviewTroopsUc1 = new TravBotSharp.Views.OverviewTroopsUc();
             this.FarmingTab = new System.Windows.Forms.TabPage();
             this.farmingUc1 = new TravBotSharp.Views.FarmingUc();
             this.newVillagesTab = new System.Windows.Forms.TabPage();
@@ -63,7 +64,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.overviewTroopsUc1 = new TravBotSharp.Views.OverviewTroopsUc();
+            this.button8 = new System.Windows.Forms.Button();
             this.accTabController.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
@@ -201,6 +202,14 @@
             this.troopsTab.TabIndex = 10;
             this.troopsTab.Text = "Troops";
             this.troopsTab.UseVisualStyleBackColor = true;
+            // 
+            // overviewTroopsUc1
+            // 
+            this.overviewTroopsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.overviewTroopsUc1.Location = new System.Drawing.Point(3, 3);
+            this.overviewTroopsUc1.Name = "overviewTroopsUc1";
+            this.overviewTroopsUc1.Size = new System.Drawing.Size(957, 629);
+            this.overviewTroopsUc1.TabIndex = 0;
             // 
             // FarmingTab
             // 
@@ -381,9 +390,9 @@
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(15, 79);
+            this.button6.Location = new System.Drawing.Point(15, 70);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(164, 23);
+            this.button6.Size = new System.Drawing.Size(88, 23);
             this.button6.TabIndex = 10;
             this.button6.Text = "Login all";
             this.button6.UseVisualStyleBackColor = true;
@@ -411,6 +420,7 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.button8);
             this.panel3.Controls.Add(this.button5);
             this.panel3.Controls.Add(this.button3);
             this.panel3.Controls.Add(this.button4);
@@ -441,13 +451,15 @@
             this.panel5.Size = new System.Drawing.Size(971, 661);
             this.panel5.TabIndex = 12;
             // 
-            // overviewTroopsUc1
+            // button8
             // 
-            this.overviewTroopsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.overviewTroopsUc1.Location = new System.Drawing.Point(3, 3);
-            this.overviewTroopsUc1.Name = "overviewTroopsUc1";
-            this.overviewTroopsUc1.Size = new System.Drawing.Size(957, 629);
-            this.overviewTroopsUc1.TabIndex = 0;
+            this.button8.Location = new System.Drawing.Point(112, 70);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(88, 23);
+            this.button8.TabIndex = 11;
+            this.button8.Text = "dont click";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
             // ControlPanel
             // 
@@ -516,5 +528,6 @@
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.TabPage troopsTab;
         private Views.OverviewTroopsUc overviewTroopsUc1;
+        private System.Windows.Forms.Button button8;
     }
 }

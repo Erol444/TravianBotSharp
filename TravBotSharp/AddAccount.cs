@@ -2,6 +2,7 @@
 using System.Net.Security;
 using System.Threading;
 using System.Windows.Forms;
+using TbsCore.Helpers;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -172,7 +173,7 @@ namespace TravBotSharp
         {
             new Thread(async () =>
             {
-                await AccountHelper.CheckProxies(Acc.Access.AllAccess);
+                await ProxyHelper.TestProxies(Acc.Access.AllAccess);
                 try
                 {
                     this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));

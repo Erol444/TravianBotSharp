@@ -53,7 +53,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // For localization purposes, bot sends raw http req to Travian servers. 
                 // We need localized building names, and JS hides the title of the 
                 //buildings on selenium browser.
-                acc.Wb.Html = await HttpHelper.SendGetReq(acc, navigateTo);
+                acc.Wb.Html = HttpHelper.SendGetReq(acc, navigateTo);
                 await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
 
                 if (navigateTo.EndsWith("dorf1.php")) TaskExecutor.UpdateDorf1Info(acc);

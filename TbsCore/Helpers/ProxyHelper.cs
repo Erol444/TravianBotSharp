@@ -1,19 +1,24 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using TbsCore.Models.Access;
+using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Helpers
 {
-    public class ProxyAuthentication
+    public static class ProxyHelper
     {
         /// <summary>
         /// Manifest.json string for the chrome extension
         /// </summary>
-        private readonly string manifestJson = "{\"version\": \"1.0.0\",\"manifest_version\": 2,\"name\": \"TBS Proxy Auth Extension\",\"permissions\": [\"proxy\",\"tabs\",\"unlimitedStorage\",\"storage\",\"<all_urls>\",\"webRequest\",\"webRequestBlocking\"],\"background\": {\"scripts\": [\"background.js\"]},\"minimum_chrome_version\":\"22.0.0\"}";
+        private static readonly string manifestJson = "{\"version\": \"1.0.0\",\"manifest_version\": 2,\"name\": \"TBS Proxy Auth Extension\",\"permissions\": [\"proxy\",\"tabs\",\"unlimitedStorage\",\"storage\",\"<all_urls>\",\"webRequest\",\"webRequestBlocking\"],\"background\": {\"scripts\": [\"background.js\"]},\"minimum_chrome_version\":\"22.0.0\"}";
 
         /// <summary>
         /// Creates chrome extension (.crx) for proxy authentication
@@ -22,7 +27,7 @@ namespace TbsCore.Helpers
         /// <param name="server">Travian server</param>
         /// <param name="access">Access</param>
         /// <returns>Path of the chrome extension</returns>
-        public string CreateExtension(string username, string server, Access access)
+        public static string CreateExtension(string username, string server, Access access)
         {
             var cacheDir = IoHelperCore.GetCacheDir(username, server, access);
             var dir = Path.Combine(cacheDir, "ProxyAuthExtension");
@@ -46,7 +51,7 @@ namespace TbsCore.Helpers
         /// </summary>
         /// <param name="access">Extension</param>
         /// <returns>JS code for the extension</returns>
-        private string GenerateBackgroundJs(Access access)
+        private static string GenerateBackgroundJs(Access access)
         {
             return @"
 var config = {
@@ -54,8 +59,8 @@ var config = {
     rules: {
         singleProxy: {
             scheme: 'http',
-            host: '" + access.Proxy.Trim() +@"',
-            port: "+ access.ProxyPort +@"
+            host: '" + access.Proxy.Trim() + @"',
+            port: " + access.ProxyPort + @"
         },
         bypassList:['localhost']
     }
@@ -80,12 +85,52 @@ chrome.webRequest.onAuthRequired.addListener(
         /// </summary>
         /// <param name="path">Path where to create the file</param>
         /// <param name="text">Text to write to the file</param>
-        private void CreateFile(string path, string text)
+        private static void CreateFile(string path, string text)
         {
             using (StreamWriter writer = File.CreateText(path))
             {
                 writer.Write(text);
             }
+        }
+
+        public static async Task TestProxies(List<Access> access)
+        {
+            List<Task> tasks = new List<Task>(access.Count);
+            access.ForEach(a =>
+            {
+                tasks.Add(Task.Run(() =>
+                {
+                    Console.WriteLine(DateTime.Now.ToString() + "]Start ip " + a.Proxy);
+                    var restClient = HttpHelper.InitRestClient(a, "https://api.ipify.org/");
+                    ProxyHelper.TestProxy(restClient, a.Proxy);
+                }));
+            });
+            await Task.WhenAll(tasks);
+            Console.WriteLine(DateTime.Now.ToString() + "]all tasks complete");
+        }
+
+        public static bool TestProxy(Account acc) =>
+            TestProxy(acc.Wb.RestClient, acc.Access.GetCurrentAccess().Proxy);
+
+        public static bool TestProxy(RestClient client, string proxyIp)
+        {
+            var baseUrl = client.BaseUrl;
+
+            client.BaseUrl = new Uri("https://api.ipify.org/");
+
+            var response = client.Execute(new RestRequest
+            {
+                Resource = "",
+                Method = Method.GET,
+            });
+
+            HtmlDocument doc = new HtmlDocument();
+            doc.LoadHtml(response.Content);
+
+            var ip = doc.DocumentNode.InnerText;
+
+            client.BaseUrl = baseUrl;
+            return ip == proxyIp;
         }
     }
 }
