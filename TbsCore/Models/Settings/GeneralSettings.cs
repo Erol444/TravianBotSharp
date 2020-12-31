@@ -16,7 +16,7 @@ namespace TbsCore.Models.Settings
             Timing = new TimingData();
             Localization = new Dictionary<string, BuildingEnum>();
             OpenMinimized = true;
-            WatchAdAbove = 30;
+            WatchAdAbove = 80;
         }
         public bool AutoActivateProductionBoost { get; set; }
 

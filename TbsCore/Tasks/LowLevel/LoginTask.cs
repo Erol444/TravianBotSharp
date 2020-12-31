@@ -40,8 +40,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // Wrong password/nickname
                 acc.Wb.Log("Password is incorrect!");
                 acc.TaskTimer.Stop();
-
             }
+            else await TaskExecutor.PageLoaded(acc);
+
             return TaskRes.Executed;
         }
     }

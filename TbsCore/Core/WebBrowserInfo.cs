@@ -26,6 +26,8 @@ namespace TravBotSharp.Files.Models.AccModels
         }
 
         public ChromeDriver Driver { get; set; }
+
+        private ChromeDriverService chromeService;
         public string CurrentUrl => this.Driver.Url;
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
@@ -121,18 +123,18 @@ namespace TravBotSharp.Files.Models.AccModels
             //options.AddArgument("--excludeSwitches=enable-automation"); // Doesn't work anymore
 
             // Hide command prompt
-            var service = ChromeDriverService.CreateDefaultService();
-            service.HideCommandPromptWindow = true;
+            chromeService = ChromeDriverService.CreateDefaultService();
+            chromeService.HideCommandPromptWindow = true;
             try
             {
                 if (acc.Settings.OpenMinimized)
                 {
                     options.AddArguments("--window-position=5000,5000");
-                    this.Driver = new ChromeDriver(service, options);
+                    this.Driver = new ChromeDriver(chromeService, options);
                     this.Driver.Manage().Window.Position = new System.Drawing.Point(200, 200); // TODO: change coords?
                     this.Driver.Manage().Window.Minimize();
                 }
-                else this.Driver = new ChromeDriver(service, options);
+                else this.Driver = new ChromeDriver(chromeService, options);
 
                 // Set timeout
                 this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
@@ -202,17 +204,20 @@ namespace TravBotSharp.Files.Models.AccModels
         public void UpdateHtml() => Html.LoadHtml(Driver.PageSource);
         public void Dispose()
         {
+            
             //new Thread(() => {
-                do
+            do
+            {
+                try
                 {
-                    try
-                    {
-                        Driver.Quit(); // Also disposes
-                        Driver = default;
-                    }
-                    catch { }
+                    Driver.Close();
+                    Driver.Quit(); // Also disposes
+                    Driver = default;
                 }
-                while (Driver != default);
+                catch { }
+            }
+            while (Driver != default);
+            chromeService.Dispose();
             //}).Start();
         }
     }
