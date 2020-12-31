@@ -12,6 +12,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// </summary>
     public class RandomTask : BotTask
     {
+        public int MinWait { get; set; } = 5000;
+        public int MaxWait { get; set; } = 20000;
+
         private readonly string[] Url = new string[] {
             "/statistiken.php", // player
             "/statistiken.php?id=1", // ally
@@ -30,7 +33,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var id = ran.Next(0, Url.Length - 1);
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}{Url[id]}");
-            await Task.Delay(ran.Next(5000, 20000));
+            await Task.Delay(ran.Next(MinWait, MaxWait));
 
             return TaskRes.Executed;
         }

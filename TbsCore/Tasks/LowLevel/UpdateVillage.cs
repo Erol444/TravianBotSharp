@@ -42,7 +42,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var firstTroop = TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe);
             Vill.Troops.TroopToTrain = firstTroop;
-            TroopsHelper.AddTroopToResearched(Vill, firstTroop);
+            Vill.Troops.Researched.Add(firstTroop);
 
             if (await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
             {
@@ -80,7 +80,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // If smithy exists, we get all researched troops and their levels
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
                 Vill.Troops.Levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
-                UpdateResearchedTroops(Vill);
+                TroopsHelper.UpdateResearchedTroops(Vill);
                 return;
             }
         }
@@ -124,9 +124,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await Task.Delay(AccountHelper.Delay());
             }
         }
-        private void UpdateResearchedTroops(Village vill)
-        {
-            if (vill.Troops.Levels.Count > 0) vill.Troops.Researched = vill.Troops.Levels.Select(x => x.Troop).ToList();
-        }
+        
     }
 }

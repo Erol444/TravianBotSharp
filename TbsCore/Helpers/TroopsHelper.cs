@@ -247,7 +247,7 @@ namespace TravBotSharp.Files.Helpers
                 if (troop == TroopsEnum.None) continue;
 
                 // Research
-                if (!vill.Troops.Researched.Exists(x => x == troop)
+                if (!vill.Troops.Researched.Contains(troop)
                     && ((int)troop % 10) != 1) // Don't try to research 1. troops of each tribe (clubs, phalanx...)
                 {
                     if (TroopsHelper.AddBuildingsForTroop(acc, vill, troop))
@@ -335,17 +335,26 @@ namespace TravBotSharp.Files.Helpers
             {
                 var troopNum = img.GetClasses().FirstOrDefault(x => x != "unit");
                 var troop = (TroopsEnum)Parser.RemoveNonNumeric(troopNum);
-                AddTroopToResearched(vill, troop);
-            }
-        }
-
-        public static void AddTroopToResearched(Village vill, TroopsEnum troop)
-        {
-            if (!vill.Troops.Researched.Any(x => x == troop))
-            {
                 vill.Troops.Researched.Add(troop);
             }
         }
+
+        /// <summary>
+        /// Updates researched troops based on troop level
+        /// </summary>
+        /// <param name="vill"></param>
+        public static void UpdateResearchedTroops(Village vill)
+        {
+            if (0 < vill.Troops.Levels.Count)
+            {
+                vill.Troops.Researched.Clear();
+                vill.Troops.Levels
+                    .Select(x => x.Troop)
+                    .ToList()
+                    .ForEach(x => vill.Troops.Researched.Add(x));
+            }
+        }
+
         /// <summary>
         /// For getting building requirements for troop research
         /// This is for academy research only, for training check for training building!

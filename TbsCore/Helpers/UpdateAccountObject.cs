@@ -70,7 +70,7 @@ namespace TravBotSharp.Files.Helpers
             // Update the village
             TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateVillage()
             {
-                ExecuteAt = DateTime.Now,
+                ExecuteAt = DateTime.Now.AddHours(-2),
                 Vill = vill
             });
 

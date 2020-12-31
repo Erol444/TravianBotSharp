@@ -29,7 +29,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (troopNode == null)
             {
                 acc.Wb.Log($"Researching {troop} was not possible! Bot assumes you already have it researched");
-                TroopsHelper.AddTroopToResearched(Vill, troop);
+                Vill.Troops.Researched.Add(troop);
                 return TaskRes.Retry;
             }
             while (!troopNode.HasClass("research")) troopNode = troopNode.ParentNode;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,21 @@ namespace TbsCore.Helpers
                 if (log) acc.Wb?.Log($"Error executing JS script:\n{script}", e);
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Gets JS object from the game. Query examples: 
+        /// window.TravianDefaults.Map.Size.top
+        /// resources.maxStorage
+        /// Travian.Game.speed
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="obj">JS object</param>
+        /// <returns>Long for number, bool for boolean, string otherwise</returns>
+        public static T GetJsObj<T>(Account acc, string obj)
+        {
+            IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
+            return (T)js.ExecuteScript($"return {obj};");
         }
 
         public static async Task<bool> ClickById(Account acc, string query, bool log = true) =>

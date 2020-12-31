@@ -64,13 +64,17 @@ namespace TravBotSharp.Files.Helpers
         {
             Random ran = new Random();
 
-            // If we don't know server speed, go and get it
-            if (acc.AccInfo.ServerSpeed == 0) TaskExecutor.AddTaskIfNotExists(acc, new GetServerSpeed() { ExecuteAt = DateTime.MinValue.AddHours(2) });
-            if (acc.AccInfo.MapSize == 0 ||
-                acc.AccInfo.Tribe == Classificator.TribeEnum.Any)
+            // Get the server info (on first running the account)
+            if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0) 
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new GetMapSizeAndTribe() { ExecuteAt = DateTime.MinValue.AddHours(2) });
+                TaskExecutor.AddTaskIfNotExists(acc, new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) }); 
             }
+
+            if (acc.AccInfo.Tribe == null)
+            {
+                TaskExecutor.AddTaskIfNotExists(acc, new GetTribe() { ExecuteAt = DateTime.MinValue.AddHours(3) });
+            }
+
             //FL
             if (acc.Farming.Enabled) TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
 
@@ -125,12 +129,12 @@ namespace TravBotSharp.Files.Helpers
 
         public static async Task CheckProxies(List<Access> access)
         {
-            List<Task> tasks = new List<Task>();
+            List<Task> tasks = new List<Task>(access.Count);
             access.ForEach(a =>
             {
                 tasks.Add(Task.Run(() =>
                 {
-                    Console.WriteLine(DateTime.Now.ToString()+"]Start ip "+a.Proxy);
+                    Console.WriteLine(DateTime.Now.ToString() + "]Start ip " + a.Proxy);
                     var restClient = new RestClient
                     {
                         BaseUrl = new Uri("https://api.ipify.org/"),
@@ -155,7 +159,7 @@ namespace TravBotSharp.Files.Helpers
                         Method = Method.GET,
                         Timeout = 5000,
                     });
-                    Console.WriteLine(DateTime.Now.ToString() + "] Complete ip" + a.Proxy + $", Credentials: {!string.IsNullOrEmpty(a.ProxyUsername)}, content:"+response.Content);
+                    Console.WriteLine(DateTime.Now.ToString() + "] Complete ip" + a.Proxy + $", Credentials: {!string.IsNullOrEmpty(a.ProxyUsername)}, content:" + response.Content);
                     HtmlDocument doc = new HtmlDocument();
                     doc.LoadHtml(response.Content);
 

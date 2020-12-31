@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Net.Security;
+using System.Threading;
 using System.Windows.Forms;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
+using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp
 {
@@ -19,7 +21,7 @@ namespace TravBotSharp
             }
             else this.Acc = acc;
         }
-        public void UpdateWindow()
+        public void UpdateWindow(bool showStatus = false)
         {
             textBox4.Text = Acc.AccInfo.ServerUrl;
             textBox1.Text = Acc.AccInfo.Nickname;
@@ -38,6 +40,7 @@ namespace TravBotSharp
                 item.SubItems.Add(access.Proxy);
                 item.SubItems.Add(access.ProxyPort + "");
                 item.SubItems.Add(access.ProxyUsername);
+                if(showStatus) item.SubItems.Add(access.Ok ? "✔" : "❌");
 
                 accessListView.Items.Add(item);
             }
@@ -163,6 +166,18 @@ namespace TravBotSharp
             }
             proxyUsername.ReadOnly = !check;
             proxyPassword.ReadOnly = !check;
+        }
+
+        private void button5_Click(object sender, EventArgs e) // Checks proxies
+        {
+            new Thread(async () =>
+            {
+                await AccountHelper.CheckProxies(Acc.Access.AllAccess);
+                try
+                {
+                    this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));
+                } catch { }
+            }).Start();
         }
     }
 }

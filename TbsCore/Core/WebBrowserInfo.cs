@@ -204,9 +204,9 @@ namespace TravBotSharp.Files.Models.AccModels
         public void UpdateHtml() => Html.LoadHtml(Driver.PageSource);
         public void Dispose()
         {
-            
+
             //new Thread(() => {
-            do
+            while (Driver != default)
             {
                 try
                 {
@@ -216,7 +216,6 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
                 catch { }
             }
-            while (Driver != default);
             chromeService.Dispose();
             //}).Start();
         }

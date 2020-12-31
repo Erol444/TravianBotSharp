@@ -43,7 +43,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
                 Vill.Troops.Levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
-                UpdateResearchedTroops(Vill);
+                TroopsHelper.UpdateResearchedTroops(Vill);
                 return TaskRes.Executed;
             }
 
@@ -54,11 +54,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // TODO: parse content
             }
             return TaskRes.Executed;
-        }
-
-        private void UpdateResearchedTroops(Village vill)
-        {
-            if (vill.Troops.Levels.Count > 0) vill.Troops.Researched = vill.Troops.Levels.Select(x => x.Troop).ToList();
         }
 
         private Building GetBuilding(int check)

@@ -67,6 +67,7 @@ namespace TravBotSharp.Files.Helpers
         {
             (CookieContainer container, string phpsessid) = HttpHelper.GetCookies(acc);
 
+            //url = "http://www.amibehindaproxy.com/";
             using (var handler = new HttpClientHandler() { CookieContainer = container })
             using (var client = new HttpClient(handler) { BaseAddress = new System.Uri(acc.AccInfo.ServerUrl) })
             {

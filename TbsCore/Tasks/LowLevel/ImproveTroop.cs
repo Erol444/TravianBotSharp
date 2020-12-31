@@ -29,7 +29,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
             Vill.Troops.Levels = levels;
-            UpdateResearchedTroops(Vill);
+            TroopsHelper.UpdateResearchedTroops(Vill);
 
             var currentlyImproving = TroopsParser.GetImprovingTroops(acc.Wb.Html);
             var troop = TroopToImprove(Vill, currentlyImproving);
@@ -78,11 +78,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 this.NextExecute = nextExecute;
                 return TaskRes.Executed;
             }
-        }
-
-        private void UpdateResearchedTroops(Village vill)
-        {
-            if (vill.Troops.Levels.Count > 0) vill.Troops.Researched = vill.Troops.Levels.Select(x => x.Troop).ToList();
         }
 
         private Classificator.TroopsEnum TroopToImprove(Village vill, List<TroopCurrentlyImproving> improving)
