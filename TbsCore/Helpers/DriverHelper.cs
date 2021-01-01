@@ -48,6 +48,12 @@ namespace TbsCore.Helpers
             return (T)js.ExecuteScript($"return {obj};");
         }
 
+        public static string GetBearerToken(Account acc)
+        {
+            IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
+            return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+        }
+
         public static async Task<bool> ClickById(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionClick(), log);
         public static async Task<bool> WriteById(Account acc, string query, object text, bool log = true) =>

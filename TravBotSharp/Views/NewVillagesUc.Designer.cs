@@ -62,6 +62,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.YNewVill)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XNewVill)).BeginInit();
             this.panel1.SuspendLayout();
@@ -392,7 +393,7 @@
             this.panel1.Controls.Add(this.valleyType);
             this.panel1.Controls.Add(this.button1);
             this.panel1.Controls.Add(this.label3);
-            this.panel1.Location = new System.Drawing.Point(271, 105);
+            this.panel1.Location = new System.Drawing.Point(20, 105);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(223, 393);
             this.panel1.TabIndex = 159;
@@ -403,7 +404,7 @@
             this.panel2.Controls.Add(this.label5);
             this.panel2.Controls.Add(this.villName);
             this.panel2.Controls.Add(this.label4);
-            this.panel2.Location = new System.Drawing.Point(387, 14);
+            this.panel2.Location = new System.Drawing.Point(20, 14);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(223, 85);
             this.panel2.TabIndex = 160;
@@ -411,6 +412,7 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.button4);
             this.panel3.Controls.Add(this.confirmNewVill);
             this.panel3.Controls.Add(this.label36);
             this.panel3.Controls.Add(this.XNewVill);
@@ -422,9 +424,9 @@
             this.panel3.Controls.Add(this.removeNewVill);
             this.panel3.Controls.Add(this.label40);
             this.panel3.Controls.Add(this.NewVillList);
-            this.panel3.Location = new System.Drawing.Point(20, 106);
+            this.panel3.Location = new System.Drawing.Point(254, 14);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(225, 393);
+            this.panel3.Size = new System.Drawing.Size(225, 432);
             this.panel3.TabIndex = 161;
             // 
             // panel4
@@ -434,10 +436,20 @@
             this.panel4.Controls.Add(this.BuildTasksLocationTextBox);
             this.panel4.Controls.Add(this.label34);
             this.panel4.Controls.Add(this.Button25);
-            this.panel4.Location = new System.Drawing.Point(20, 14);
+            this.panel4.Location = new System.Drawing.Point(485, 14);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(361, 85);
             this.panel4.TabIndex = 162;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(3, 406);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(219, 23);
+            this.button4.TabIndex = 163;
+            this.button4.Text = "Find new village to settle";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // NewVillagesUc
             // 
@@ -499,5 +511,6 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
+        private System.Windows.Forms.Button button4;
     }
 }

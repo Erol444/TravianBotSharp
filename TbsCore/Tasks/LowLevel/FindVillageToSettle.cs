@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
@@ -27,7 +28,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    var ajaxToken = HttpHelper.GetAjaxToken(acc);
+                    var ajaxToken = DriverHelper.GetJsObj<string>(acc, "ajaxToken");
 
                     var req = new RestRequest
                     {
@@ -44,13 +45,26 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     var resString = HttpHelper.SendPostReq(acc, req);
 
                     var root = JsonConvert.DeserializeObject<MapPositionDataT4_4.Root>(resString);
-                    closesCoords = HandleT4_4Data(acc, root);
+                    if (root.response.error) throw new Exception("Unable to get T4.4 map position data!\n" + root.response.error);
+
+                    var mapTiles = root.response.data.tiles.Select(x => x.GetMapTile()).ToList();
+                    closesCoords = GetClosestCoordinates(acc, mapTiles);
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:
-                    //var mapInfo = GenerateMapInfo(mainVill.Coordinates);
-                    //var contentMap = new StringContent(JsonConvert.SerializeObject(mapInfo));
-                    //var mapInfoRes = await HttpHelper.SendPostReq(acc, contentMap, "/api/v1/ajax/mapInfo");
+                    var bearerToken = DriverHelper.GetBearerToken(acc);
+
+                    var reqMapInfo = new RestRequest
+                    {
+                        Resource = "/api/v1/ajax/mapInfo",
+                        Method = Method.POST,
+                        RequestFormat = DataFormat.Json
+                    };
+                    reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
+                    reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
+                    reqMapInfo.AddJsonBody(GenerateMapInfo(mainVill.Coordinates));
+
+                    var mapInfoRes = HttpHelper.SendPostReq(acc, reqMapInfo);
 
                     var mapPosition = new SendMapPositionT4_5.Root()
                     {
@@ -62,11 +76,22 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                             ignorePositions = new List<object>()
                         }
                     };
-                    var contentPosition = new StringContent(JsonConvert.SerializeObject(mapPosition));
-                    //var mapPositionRes = await HttpHelper.SendPostReq(acc, contentPosition, "/api/v1/ajax/mapPositionData");
-                    //var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
 
-                    //closesCoords = HandleT4_5Data(acc, mapPositionData);
+                    var reqMapPosition = new RestRequest
+                    {
+                        Resource = "/api/v1/ajax/mapPositionData",
+                        Method = Method.POST,
+                        RequestFormat = DataFormat.Json
+                    };
+                    reqMapPosition.AddHeader("authorization", $"Bearer {bearerToken}");
+                    reqMapPosition.AddHeader("content-type", "application/json; charset=UTF-8");
+                    reqMapPosition.AddJsonBody(mapPosition);
+                    //reqMapPosition.AddParameter("application/json", , ParameterType.RequestBody);
+                    var mapPositionRes = HttpHelper.SendPostReq(acc, reqMapPosition);
+                    var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
+
+                    var mapTilesT45 = mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
+                    closesCoords = GetClosestCoordinates(acc, mapTilesT45);
                     break;
             }
 
@@ -81,9 +106,31 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             return TaskRes.Executed;
         }
 
-        private Coordinates HandleT4_5Data(Account acc, MapPositionDataT4_5 mapPositionData)
+        private Coordinates GetClosestCoordinates(Account acc, List<MapTile> tiles)
         {
-            return null;
+            var mainVill = AccountHelper.GetMainVillage(acc);
+            var closesCoords = new Coordinates();
+            var closest = 1000.0;
+            foreach (var tile in tiles)
+            {
+                if (tile.Title == null || !tile.Title.StartsWith("{k.vt}")) continue;
+
+                // Check if village type meets criteria
+                if (acc.NewVillages.Types.Count != 0)
+                {
+                    var num = (int)Parser.RemoveNonNumeric(tile.Title.Split('f')[1]);
+                    var type = (Classificator.VillTypeEnum)(num);
+                    if (!acc.NewVillages.Types.Any(x => x == type)) continue;
+                }
+
+                var distance = MapHelper.CalculateDistance(acc, mainVill.Coordinates, tile.Coordinates);
+                if (distance < closest)
+                {
+                    closest = distance;
+                    closesCoords = tile.Coordinates;
+                }
+            }
+            return closesCoords;
         }
 
         private SendMapInfoT4_5.Root GenerateMapInfo(Coordinates coords)
@@ -100,7 +147,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 {
                     ret.data.Add(new SendMapInfoT4_5.Datum()
                     {
-                        position = new SendMapInfoT4_5.Position(){
+                        position = new SendMapInfoT4_5.Position()
+                        {
                             x0 = x * 100 + startX,
                             y0 = y * 100 + startY,
                             x1 = (x * 100 + startX) + 99,
@@ -111,42 +159,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             return ret;
-        }
-        private Coordinates HandleT4_4Data(Account acc, MapPositionDataT4_4.Root root)
-        {
-            var mainVill = AccountHelper.GetMainVillage(acc);
-
-            if (!root.response.error)
-            {
-                var closesCoords = new Coordinates();
-                var closest = 1000.0;
-                foreach (var tile in root.response.data.tiles)
-                {
-                    if (tile.c == null || !tile.c.StartsWith("{k.vt}")) continue;
-
-                    // Check if village type meets criteria
-                    if (acc.NewVillages.Types.Count != 0)
-                    {
-                        var num = (int)Parser.RemoveNonNumeric(tile.c.Split('f')[1]);
-                        var type = (Classificator.VillTypeEnum)(++num);
-                        if (!acc.NewVillages.Types.Any(x => x == type)) continue;
-                    }
-
-                    Coordinates coords = new Coordinates()
-                    {
-                        x = Int32.Parse(tile.x),
-                        y = Int32.Parse(tile.y),
-                    };
-                    var distance = MapHelper.CalculateDistance(acc, mainVill.Coordinates, coords);
-                    if (closest > distance)
-                    {
-                        closest = distance;
-                        closesCoords = coords;
-                    }
-                }
-                return closesCoords;
-            }
-            return null;
         }
     }
 }

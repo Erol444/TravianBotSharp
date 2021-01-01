@@ -240,10 +240,5 @@ namespace TravBotSharp
             }).Start();
             generalUc1.UpdateBotRunning("true");
         }
-
-        private void button8_Click(object sender, EventArgs e)
-        {
-            TaskExecutor.AddTask(GetSelectedAcc(), new FindVillageToSettle() { ExecuteAt = DateTime.Now });
-        }
     }
 }

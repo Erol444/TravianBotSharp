@@ -13,18 +13,6 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class HttpHelper
     {
-        public static string GetAjaxToken(Account acc)
-        {
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.T4_4:
-                    IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
-                    return js.ExecuteScript("return ajaxToken;") as string;
-                default:
-                    return "";
-            }
-        }
-
         public static (CookieContainer, string) GetCookies(Account acc)
         {
             var cookies = acc.Wb.GetCookies();
@@ -52,7 +40,7 @@ namespace TravBotSharp.Files.Helpers
             req.AddHeader("Cookie", "PHPSESSID=" + phpsessid + ";");
 
             var response = acc.Wb.RestClient.Execute(req);
-            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!" + response.StatusCode);
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
 
             return response.Content;
         }
