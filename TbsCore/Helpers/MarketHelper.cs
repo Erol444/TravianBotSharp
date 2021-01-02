@@ -70,11 +70,15 @@ namespace TravBotSharp.Files.Helpers
             if (ResourcesHelper.IsZeroResources(sendRes)) //we have enough res :)
                 return DateTime.MinValue;
 
+            // Send resources to a village only once per 5 minutes
+            TimeSpan transitAfter = vill.Market.LastTransit.AddMinutes(5) - DateTime.Now;
+            if (transitAfter < TimeSpan.Zero) transitAfter = TimeSpan.Zero;
+
             var sendResTask = new SendResources
             {
                 Configuration = conf,
                 Coordinates = vill.Coordinates,
-                ExecuteAt = DateTime.Now.AddHours(-1),
+                ExecuteAt = DateTime.Now + transitAfter,
                 Vill = AccountHelper.GetMainVillage(acc),
                 Resources = sendRes
             };
@@ -86,7 +90,7 @@ namespace TravBotSharp.Files.Helpers
             //go to the marketplace and send resources
             //TransitArrival will get updated to more specific time
 
-            return DateTime.Now.Add(CalculateTransitTimeMainVillage(acc, vill)).AddMinutes(1);
+            return DateTime.Now.Add(transitAfter + CalculateTransitTimeMainVillage(acc, vill)).AddMinutes(1);
         }
 
         /// <summary>
@@ -183,6 +187,8 @@ namespace TravBotSharp.Files.Helpers
 
             // Will NOT trigger a page reload! Thus we should await some time before continuing.
             await DriverHelper.ClickById(acc, "enabledButton");
+
+            targetVillage.Market.LastTransit = DateTime.Now;
 
             var duration = TimeParser.ParseDuration(dur);
             return TimeSpan.FromTicks(duration.Ticks * (times * 2 - 1));

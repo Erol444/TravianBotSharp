@@ -71,7 +71,8 @@ namespace TravBotSharp.Files.Helpers
             TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateVillage()
             {
                 ExecuteAt = DateTime.Now.AddHours(-2),
-                Vill = vill
+                Vill = vill,
+                ImportTasks = true
             });
 
             DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);

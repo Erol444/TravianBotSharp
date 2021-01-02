@@ -35,6 +35,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var resToSend = MarketHelper.SendResCapToStorage(acc, this.Resources);
 
             var targetVillage = acc.Villages.FirstOrDefault(x => x.Coordinates == this.Coordinates);
+            
             var duration = await MarketHelper.MarketSendResource(acc, resToSend, targetVillage, this);
 
             var targetVill = acc.Villages.FirstOrDefault(x => x.Coordinates == Coordinates);
@@ -43,7 +44,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (this.Configuration != null && duration != null)
             {
                 this.Configuration.TransitArrival = DateTime.Now.Add(duration);
-                this.Configuration.LastTransit = DateTime.Now;
             }
             // When you send resources there actually isn't a page load
             return TaskRes.Executed;

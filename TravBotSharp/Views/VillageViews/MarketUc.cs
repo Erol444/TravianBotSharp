@@ -26,7 +26,7 @@ namespace TravBotSharp.Views
             FillLimitCrop.Value = vill.Market.Settings.Configuration.FillLimit.Crop;
             transitResEnabled.Checked = vill.Market.Settings.Configuration.Enabled;
             TransitArrival.Text = vill.Market.Settings.Configuration.TransitArrival.ToString();
-            LastTransit.Text = vill.Market.Settings.Configuration.LastTransit.ToString();
+            LastTransit.Text = vill.Market.LastTransit.ToString();
             //Send res to main vill config
             woodSend.Value = vill.Market.Settings.Configuration.SendResLimit.Wood;
             claySend.Value = vill.Market.Settings.Configuration.SendResLimit.Clay;
