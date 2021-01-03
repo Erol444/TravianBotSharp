@@ -59,15 +59,8 @@ namespace TravBotSharp.Files.Helpers
                 }
 
                 var equipWith = acc.Hero.Items
-                    .Where(x => // Filter by category
-                    {
-                        (var itemCategory, var itemName, var itemTier) = ParseHeroItem(x.Item);
-                        return itemCategory == category;
-                    })
-                    .OrderBy(x => // Order by tier
-                    {
-                        return GetHeroItemTier(x.Item);
-                    })
+                    .Where(x => GetHeroItemCategory(x.Item) == category)
+                    .OrderBy(x => GetHeroItemTier(x.Item))
                     .LastOrDefault();
 
                 if (equipWith != null &&
@@ -109,8 +102,18 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Tier</returns>
         public static int GetHeroItemTier(Classificator.HeroItemEnum item)
         {
-            (var newCategory, var itemName, var itemTier) = ParseHeroItem(item);
+            var (_, _, itemTier) = ParseHeroItem(item);
             return itemTier;
+        }
+        public static string GetHeroItemName(Classificator.HeroItemEnum item)
+        {
+            var (_, name, _) = ParseHeroItem(item);
+            return name;
+        }
+        public static Classificator.HeroItemCategory GetHeroItemCategory(Classificator.HeroItemEnum item)
+        {
+            var (category, _, _) = ParseHeroItem(item);
+            return category;
         }
 
         /// <summary>
@@ -160,6 +163,58 @@ namespace TravBotSharp.Files.Helpers
             };
 
             return res;
+        }
+
+        /// <summary>
+        /// Checks if bot should first switch hero helmets
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="troop">Troop to train</param>
+        /// <returns>Whether to switch helmets first</returns>
+        public static bool SwitchHelmet(Account acc, Village trainVill, Classificator.BuildingEnum building, TrainTroops task)
+        {
+            if (!acc.Hero.Settings.AutoSwitchHelmets) return false;
+
+            // In T4.5, helmet will only have effect in hero home village
+            // In TTWars, helmets have acc-wide effect
+            // TODO: for T4.5, add auto-move hero feature (for helmet effect purposes)
+            if (GetHeroHomeVillage(acc) != trainVill && 
+                acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_4) return false;
+
+            string type = "";
+            if (building == Classificator.BuildingEnum.Barracks ||
+                building == Classificator.BuildingEnum.GreatBarracks) type = "Infantry";
+            if (building == Classificator.BuildingEnum.Stable ||
+                building == Classificator.BuildingEnum.GreatStable) type = "Cavalry";
+
+            // No helmet helps us for training in workshop
+            if (string.IsNullOrEmpty(type)) return false;
+
+            var equipWith = acc.Hero.Items
+                .Where(x => GetHeroItemName(x.Item) == type)
+                .OrderBy(x => GetHeroItemTier(x.Item))
+                .LastOrDefault();
+            if (equipWith == null) return false; // No appropriate helmet to equip
+
+            var (equipCategory, equipName, equipTier) = ParseHeroItem(equipWith.Item);
+
+            if (acc.Hero.Equipt.TryGetValue(Classificator.HeroItemCategory.Helmet, out var equiped))
+            {
+                var (category, name, tier) = ParseHeroItem(equiped);
+                if (name == type && 
+                    equipTier <= tier) return false; // We already have the correct helmet
+            }
+            
+            TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip()
+            {
+                ExecuteAt = acc.Hero.Status == Hero.StatusEnum.Home ? DateTime.Now : acc.Hero.HeroArrival,
+                Items = new List<(Classificator.HeroItemEnum, int)>()
+                {
+                    (equipWith.Item, 0)
+                },
+                NextTask = task
+            });
+            return true;
         }
     }
 }

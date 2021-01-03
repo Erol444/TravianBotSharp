@@ -22,9 +22,8 @@ namespace TravBotSharp.Views
             minHeroHealthUpDown.Value = acc.Hero.Settings.MinHealth;
             autoReviveHero.Checked = acc.Hero.Settings.AutoReviveHero;
             refreshInfo.Checked = acc.Hero.Settings.AutoRefreshInfo;
-
+            helmetSwitcher.Checked = acc.Hero.Settings.AutoSwitchHelmets;
             autoEquip.Checked = acc.Hero.Settings.AutoEquip;
-
 
             var heroUpgrade = acc.Hero.Settings.Upgrades;
             strength.Value = 0;
@@ -213,8 +212,7 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var acc = GetSelectedAcc();
-            TaskExecutor.AddTask(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+            TaskExecutor.AddTask(GetSelectedAcc(), new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
         }
 
         private void button2_Click(object sender, EventArgs e) // Update adventures
@@ -225,6 +223,11 @@ namespace TravBotSharp.Views
                 ExecuteAt = DateTime.Now,
                 UpdateOnly = true
             });
+        }
+
+        private void helmetSwitcher_CheckedChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Hero.Settings.AutoSwitchHelmets = helmetSwitcher.Checked;
         }
     }
 }

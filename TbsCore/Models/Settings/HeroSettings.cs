@@ -33,5 +33,10 @@
         /// What attributes (in what amount) should be improved on auto set hero points
         /// </summary>
         public byte[] Upgrades { get; set; }
+
+        /// <summary>
+        /// Switch helmets before training troops
+        /// </summary>
+        public bool AutoSwitchHelmets { get; set; }
     }
 }

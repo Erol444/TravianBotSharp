@@ -39,7 +39,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
+            
             building = TroopsHelper.GetTroopBuilding(Troop, Great);
+
+            // Switch hero helmet. If hero will be switched, this TrainTroops task 
+            // will be executed right after the hero helmet switch
+            if (HeroHelper.SwitchHelmet(acc, this.Vill, building, this)) return TaskRes.Executed;
 
             if (!await VillageHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
@@ -137,7 +142,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var trainingEnds = TroopsHelper.GetTrainingTimeForBuilding(building, Vill);
 
             // If sendRes is activated and there are some resources left to send
-            if (Vill.Settings.SendRes && MarketHelper.GetResToMainVillage(this.Vill).Sum() > 0)
+            if (Vill.Settings.SendRes && 0 < MarketHelper.GetResToMainVillage(this.Vill).Sum())
             {
                 // Check If all troops are filled in this vill before sending resources back to main village
                 if (TroopsHelper.EverythingFilled(acc, Vill))
@@ -150,6 +155,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (Vill.Settings.GetRes && mainVill != this.Vill)
             {
                 var nextCycle = trainingEnds.AddHours(-acc.Settings.FillInAdvance);
+
+                if (nextCycle < Vill.Market.LastTransit.AddMinutes(5))
+                    nextCycle = Vill.Market.LastTransit.AddMinutes(5);
+
                 if (nextCycle < DateTime.Now)
                 {
                     // Send resources asap.

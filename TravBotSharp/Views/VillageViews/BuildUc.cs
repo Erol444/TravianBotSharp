@@ -399,7 +399,7 @@ namespace TravBotSharp.Views
 
             var indicies = buildingsList.SelectedIndices;
 
-            if (indicies.Count > 0) selectedBuilding = vill.Build.Buildings[indicies[0]];
+            if (0 < indicies.Count) selectedBuilding = vill.Build.Buildings[indicies[0]];
             else return;
 
             // Check if there is already a building planner for that id

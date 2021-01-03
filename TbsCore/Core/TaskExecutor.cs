@@ -94,6 +94,13 @@ namespace TravBotSharp.Files.Helpers
                         break;
                     default:
                         task.RetryCounter = 0;
+                        if(task.NextTask != null)
+                        {
+                            task.NextTask.ExecuteAt = DateTime.MinValue.AddHours(5);
+                            task.NextTask.Stage = TaskStage.Start;
+                            TaskExecutor.AddTask(acc, task.NextTask);
+                            task.NextTask = null;
+                        }
                         break;
                 }
             }
