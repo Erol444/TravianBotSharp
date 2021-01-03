@@ -373,3 +373,7 @@ Temporary Items
 
 # Others
 data/
+
+Web/Client/
+Web/Server/
+Web/Shared/
