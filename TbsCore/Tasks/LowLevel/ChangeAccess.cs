@@ -17,16 +17,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             acc.Wb.Dispose();
 
             //TODO: make this configurable (wait time between switches)
+            var rand = new Random();
+            int sleepSec = rand.Next(30, 600);
+            var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
 
-            // Wait some time (1min) between the proxy switching.
-            var sleep = new Sleep()
-            {
-                AutoSleep = false,
-                MinSleepSec = 10,
-                MaxSleepSec = 60,
-            };
-            // sleep will stop if there is a high priority task
-            await sleep.Execute(acc);
+            await TimeHelper.SleepUntilPrioTask(acc, TaskPriority.High, sleepEnd);
 
             await acc.Wb.InitSelenium(acc);
 

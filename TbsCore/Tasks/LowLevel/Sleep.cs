@@ -9,7 +9,7 @@ using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class Sleep : BotTask
+    public class Sleep : ReopenDriver
     {
         public bool AutoSleep { get; set; }
         public int MinSleepSec { get; set; }
@@ -27,13 +27,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             acc.Wb.Log($"Sleep will end at {sleepEnd}");
 
-            var reopenDriver = new ReopenDriver()
-            {
-                LowestPrio = TaskPriority.High,
-                ReopenAt = sleepEnd
-            };
-
-            await reopenDriver.Execute(acc);
+            base.LowestPrio = TaskPriority.High;
+            base.ReopenAt = sleepEnd;
+            
+            await base.Execute(acc);
 
 
             if (AutoSleep)
@@ -42,20 +39,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             return TaskRes.Executed;
-        }
-
-        /// <summary>
-        /// Check if there is a high priority task that has to be executed.
-        /// If there is, sleep should stop.
-        /// </summary>
-        /// <param name="acc">Account</param>
-        /// <returns>Whether there are high priority tasks to be executed</returns>
-        private bool NoHighPriorityTask(Account acc)
-        {
-            return !acc.Tasks.Any(x =>
-                x.ExecuteAt <= DateTime.Now &&
-                x.Priority == TaskPriority.High
-            );
         }
     }
 }

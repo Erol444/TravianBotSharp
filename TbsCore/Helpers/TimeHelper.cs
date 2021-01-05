@@ -3,6 +3,7 @@ using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
+using static TravBotSharp.Files.Tasks.BotTask;
 
 namespace TravBotSharp.Files.Helpers
 {
@@ -111,6 +112,34 @@ namespace TravBotSharp.Files.Helpers
             if (firstTask == null) return TimeSpan.MaxValue;
 
             return (firstTask.ExecuteAt - DateTime.Now);
+        }
+
+        public static async Task SleepUntilPrioTask(Account acc, TaskPriority lowestPrio, DateTime? reopenAt)
+        {
+            string previousLog = "";
+            TimeSpan nextTask;
+            do
+            {
+                await Task.Delay(1000);
+                nextTask = TimeHelper.NextPrioTask(acc, lowestPrio);
+
+                var log = $"Chrome will reopen in {(int)nextTask.TotalMinutes} min";
+                if (log != previousLog)
+                {
+                    acc.Wb.Log(log);
+                    previousLog = log;
+                }
+
+                // After ReopenAt, set lowest prio to medium. ReopenAt is used only by Sleep BotTask,
+                // so initially bot will only wakeup when high prio task is ready to be executed, but after
+                // ReopenAt, bot will wakeup on medium prio task as well.
+                if (reopenAt != null && reopenAt < DateTime.Now)
+                {
+                    reopenAt = null;
+                    lowestPrio = TaskPriority.Medium; ;
+                }
+            }
+            while (TimeSpan.Zero < nextTask);
         }
     }
 }
