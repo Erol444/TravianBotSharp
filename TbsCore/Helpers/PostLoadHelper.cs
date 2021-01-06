@@ -50,6 +50,13 @@ namespace TbsCore.Helpers
                 },
                 () => // Beginner Quests
                 {
+                    if(acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
+                        acc.Wb.Html.GetElementbyId("sidebarBoxQuestmaster")?
+                        .Descendants()?.FirstOrDefault(x=>x.HasClass("newQuestSpeechBubble")) != null)
+                    {
+                        TaskExecutor.AddTaskIfNotExists(acc, new ClaimBeginnerTask2021() { ExecuteAt = DateTime.Now});
+                    }
+
                     acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html, acc.AccInfo.ServerVersion);
                     var claimQuest = acc.Quests?.Quests?.FirstOrDefault(x => x.finished);
                     if (claimQuest != null

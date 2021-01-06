@@ -128,6 +128,11 @@ namespace TravBotSharp.Files.Helpers
             acc.Hero.HeroArrival = DateTime.Now + HeroParser.GetHeroArrivalInfo(acc.Wb.Html);
 
             UpdateHeroVillage(acc);
+
+            if (acc.Hero.Settings.AutoEquip)
+            {
+                HeroHelper.AutoEquipHero(acc);
+            }
         }
 
         public static void UpdateHeroVillage(Account acc)

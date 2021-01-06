@@ -9,6 +9,9 @@ namespace TbsCore.Models.Settings
         public void Init()
         {
             Quests = new List<Quest>();
+
+            ClaimDailyQuests = true;
+            ClaimBeginnerQuests = true;
         }
         /// <summary>
         /// Whether bot should claim daily quests

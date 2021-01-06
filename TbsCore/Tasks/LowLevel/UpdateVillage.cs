@@ -26,12 +26,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2
 
             // On new village import the building tasks
-            if (ImportTasks) 
+            if (ImportTasks && !string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
             {
-                if (string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
-                    DefaultConfigurations.FarmVillagePlan(acc, Vill);
-                else
-                    IoHelperCore.AddBuildTasksFromFile(acc, Vill, acc.NewVillages.BuildingTasksLocationNewVillage);
+                IoHelperCore.AddBuildTasksFromFile(acc, Vill, acc.NewVillages.BuildingTasksLocationNewVillage);
             }
 
             await UpdateTroopsResearchedAndLevels(acc);

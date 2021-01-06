@@ -16,11 +16,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             HeroHelper.ParseHeroPage(acc);
 
-            if (acc.Hero.Settings.AutoEquip)
-            {
-                HeroHelper.AutoEquipHero(acc);
-            }
-
             TaskExecutor.RemoveSameTasksForVillage(acc, Vill, typeof(HeroUpdateInfo), this);
 
             if (acc.Hero.Settings.AutoRefreshInfo)
