@@ -5,7 +5,6 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.SideBarModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;
 

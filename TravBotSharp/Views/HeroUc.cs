@@ -104,7 +104,7 @@ namespace TravBotSharp.Views
 
             //Adventures
             var advStr = new List<string>();
-            foreach(var adv in acc.Hero.Adventures)
+            foreach (var adv in acc.Hero.Adventures)
             {
                 advStr.Add(adv.Coordinates.ToString() + " - " + adv.Difficulty.ToString() + " adventure");
             }

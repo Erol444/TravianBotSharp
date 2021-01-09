@@ -1,7 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Files.Tasks.LowLevel

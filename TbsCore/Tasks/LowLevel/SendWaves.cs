@@ -1,10 +1,7 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using RestSharp;
+﻿using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;

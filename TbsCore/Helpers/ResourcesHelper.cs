@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.ResourceModels;
@@ -33,7 +32,7 @@ namespace TravBotSharp.Files.Helpers
             if (IsStorageTooLow(acc, vill, requiredRes)) return DateTime.Now.AddMinutes(30);
 
             var stillNeededRes = ResStillNeeded(vill, requiredRes);
-            
+
             //We have enough resources
             if (IsZeroResources(stillNeededRes)) return DateTime.MinValue;
 

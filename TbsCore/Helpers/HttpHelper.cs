@@ -1,11 +1,6 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using RestSharp;
+﻿using RestSharp;
 using System;
-using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 
@@ -36,7 +31,7 @@ namespace TravBotSharp.Files.Helpers
             (CookieContainer container, string phpsessid) = HttpHelper.GetCookies(acc);
 
             acc.Wb.RestClient.CookieContainer = container;
-            
+
             req.AddHeader("Cookie", "PHPSESSID=" + phpsessid + ";");
 
             var response = acc.Wb.RestClient.Execute(req);
@@ -74,6 +69,7 @@ namespace TravBotSharp.Files.Helpers
                 BaseUrl = new Uri(baseUrl),
                 Timeout = 5000
             };
+            client.UserAgent = access.UserAgent;
 
             // Set proxy
             if (!string.IsNullOrEmpty(access.Proxy))

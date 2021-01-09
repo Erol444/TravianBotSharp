@@ -1,6 +1,5 @@
 ﻿using RestSharp;
 using System;
-using System.Net.Http;
 
 namespace TbsCore.Models.SendTroopsModels
 {

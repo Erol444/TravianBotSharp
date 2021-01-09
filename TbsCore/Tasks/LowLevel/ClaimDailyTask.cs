@@ -1,7 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -27,7 +24,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('rewardReady')[0].click();");
                     break;
             }
-            
+
             await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonGainReward')[0].click();");
 
             return TaskRes.Executed;

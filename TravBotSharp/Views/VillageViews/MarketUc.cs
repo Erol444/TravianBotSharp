@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -62,7 +59,7 @@ namespace TravBotSharp.Views
 
         private void npcEnabled_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Npc.Enabled = npcEnabled.Checked;
-        
+
         #region SendMainVill Callbacks
         private void woodSend_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Wood = (long)woodSend.Value;

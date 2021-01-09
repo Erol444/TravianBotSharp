@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -51,7 +49,7 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
                     TaskExecutor.AddTask(acc, new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(nextSend) });
                     break;
             }
-            
+
             return TaskRes.Executed;
         }
     }

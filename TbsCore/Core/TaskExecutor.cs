@@ -1,6 +1,4 @@
-﻿
-using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,7 +33,7 @@ namespace TravBotSharp.Files.Helpers
                 await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click();");
             if (CheckCookiesNew(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('cmpboxbtnyes')[0].click();");
-            
+
             if (CheckContextualHelp(acc) &&
                 acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5)
             {
@@ -94,7 +92,7 @@ namespace TravBotSharp.Files.Helpers
                         break;
                     default:
                         task.RetryCounter = 0;
-                        if(task.NextTask != null)
+                        if (task.NextTask != null)
                         {
                             task.NextTask.ExecuteAt = DateTime.MinValue.AddHours(5);
                             task.NextTask.Stage = TaskStage.Start;
@@ -228,7 +226,7 @@ namespace TravBotSharp.Files.Helpers
         /// </summary>
         private static bool CheckCookies(Account acc) =>
             acc.Wb.Html.GetElementbyId("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll") != null;
-        
+
         private static bool CheckCookiesNew(Account acc) =>
             acc.Wb.Html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes"));
 
@@ -252,7 +250,7 @@ namespace TravBotSharp.Files.Helpers
             var msg = acc.Wb.Html.GetElementbyId("sysmsg");
             return msg != null;
         }
-#endregion
+        #endregion
 
         public static void AddTask(Account acc, BotTask task)
         {
@@ -317,6 +315,6 @@ namespace TravBotSharp.Files.Helpers
                 x != thisTask
             );
         }
-        
+
     }
 }

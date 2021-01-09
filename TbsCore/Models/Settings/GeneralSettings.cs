@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using TravBotSharp.Files.Models.AccModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TbsCore.Models.Settings

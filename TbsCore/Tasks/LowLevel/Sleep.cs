@@ -1,8 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
+﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -29,7 +25,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             base.LowestPrio = TaskPriority.High;
             base.ReopenAt = sleepEnd;
-            
+
             await base.Execute(acc);
 
 

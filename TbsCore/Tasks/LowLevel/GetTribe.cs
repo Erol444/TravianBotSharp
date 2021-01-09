@@ -1,10 +1,7 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 
@@ -19,10 +16,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             base.MinWait = 500;
             base.MaxWait = 3000;
-            await base.Execute(acc); 
+            await base.Execute(acc);
 
             var questMaster = acc.Wb.Html.GetElementbyId("questmasterButton");
-            if(questMaster != null)
+            if (questMaster != null)
             {
                 var vid = questMaster.GetClasses().FirstOrDefault(x => x.StartsWith("vid"));
                 var tribeId = Parser.RemoveNonNumeric(vid);
@@ -36,9 +33,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39");
 
             List<int> idsChecked = new List<int>(acc.Villages.Count);
-            
+
             // If no rally point, navigate somewhere else
-            while (acc.Wb.Html.GetElementbyId("contract") != null)
+            while (acc.Wb.Html.GetElementbyId("contract") == null)
             {
                 idsChecked.Add(this.Vill.Id);
 

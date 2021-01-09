@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using TbsCore.Models.SendTroopsModels;
-using TravBotSharp.Files.Models.AccModels;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Parsers

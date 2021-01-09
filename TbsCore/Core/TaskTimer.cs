@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Timers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -43,7 +42,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 if (acc.Tasks.Count == 0) return; //No tasks
 
                 // Another task is already in progress. wait
-                if( acc.Tasks.Any(x => x.Stage != TaskStage.Start)) return;
+                if (acc.Tasks.Any(x => x.Stage != TaskStage.Start)) return;
 
                 var tasks = acc.Tasks.Where(x => x.ExecuteAt <= DateTime.Now).ToList();
                 if (tasks.Count == 0)

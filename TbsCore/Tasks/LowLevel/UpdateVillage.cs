@@ -1,10 +1,6 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 
@@ -97,7 +93,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 // Mark troops that user can train in building as researched
                 TroopsHelper.UpdateTroopsResearched(Vill, acc.Wb.Html);
-                
+
                 var ct = TroopsParser.GetTroopsCurrentlyTraining(acc.Wb.Html);
                 switch (trainingBuilding)
                 {
@@ -121,6 +117,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await Task.Delay(AccountHelper.Delay());
             }
         }
-        
+
     }
 }

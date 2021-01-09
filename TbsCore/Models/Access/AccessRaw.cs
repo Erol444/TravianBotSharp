@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TbsCore.Models.Access
+﻿namespace TbsCore.Models.Access
 {
     public class AccessRaw
     {

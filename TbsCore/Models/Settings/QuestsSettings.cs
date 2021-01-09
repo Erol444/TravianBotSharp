@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using TbsCore.Models.SideBarModels;
 
 namespace TbsCore.Models.Settings

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using TbsCore.Models.AccModels;
 
 namespace TbsCore.Helpers
@@ -50,7 +47,7 @@ namespace TbsCore.Helpers
                     }
                     else if (IsIEnumerable(property.GetValue(obj))) // If object has interface IEnumerable, loop through it's items
                     {
-                        if(property.GetValue(obj) != null)
+                        if (property.GetValue(obj) != null)
                         {
                             foreach (object item in (IEnumerable)property.GetValue(obj))
                             {
@@ -61,7 +58,7 @@ namespace TbsCore.Helpers
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 acc.Wb.Log($"Error in ${typeof(ObjectHelper)}", e);
             }

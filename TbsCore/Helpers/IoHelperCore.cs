@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using TbsCore.Database;
 using TbsCore.Helpers;
@@ -20,9 +18,12 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class IoHelperCore
     {
-        public static string AccountsPath => Path.Combine(TbsPath(), "accounts.txt");
-        public static string CachePath => Path.Combine(TbsPath(), "cache");
-        public static string SqlitePath => Path.Combine(TbsPath(), "db.sqlite");
+        public static string AccountsPath => Path.Combine(TbsPath, "accounts.txt");
+        public static string CachePath => Path.Combine(TbsPath, "cache");
+        public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
+        public static string TbsPath =>
+            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TravBotSharp");
+
         public static bool SQLiteExists() => File.Exists(SqlitePath);
         public static bool AccountsTxtExists() => File.Exists(AccountsPath);
         public static string GetCacheDir(string username, string server, Access access)
@@ -105,12 +106,6 @@ namespace TravBotSharp.Files.Helpers
             return ResTypeEnum.AllResources;
         }
 
-        public static string TbsPath()
-        {
-            string appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(appData, "TravBotSharp");
-        }
-
         /// <summary>
         /// Removes the cache folders that were created by Selenium driver, since they take a lot of space (70MB+)
         /// </summary>
@@ -152,8 +147,7 @@ namespace TravBotSharp.Files.Helpers
             try
             {
                 // Open the text file using a stream reader.
-                var folder = IoHelperCore.TbsPath();
-                System.IO.Directory.CreateDirectory(folder);
+                System.IO.Directory.CreateDirectory(IoHelperCore.TbsPath);
 
                 using (StreamReader sr = new StreamReader(IoHelperCore.AccountsPath))
                 {
@@ -188,9 +182,9 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="accounts"></param>
         public static void SaveAccounts(List<Account> accounts, bool logout)
         {
-            foreach(var acc in accounts)
+            foreach (var acc in accounts)
             {
-                if(logout) Logout(acc);
+                if (logout) Logout(acc);
                 DbRepository.SaveAccount(acc);
             }
         }
@@ -243,7 +237,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 int limit = agents.Length - i;
                 int num = rnd.Next(1, limit);
-                if(num <= 1 + limit / 10)
+                if (num <= 1 + limit / 10)
                 {
                     return agents[i].Replace("\r", "");
                 }

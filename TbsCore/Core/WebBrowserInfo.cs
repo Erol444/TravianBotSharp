@@ -1,11 +1,8 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
+﻿using OpenQA.Selenium.Chrome;
+using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
-using RestSharp;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
@@ -13,7 +10,6 @@ using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
-using System.Net;
 
 namespace TravBotSharp.Files.Models.AccModels
 {
@@ -61,8 +57,8 @@ namespace TravBotSharp.Files.Models.AccModels
             Access access = newAccess ? await acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
-            
-            if(this.Html == null)
+
+            if (this.Html == null)
             {
                 this.Html = new HtmlAgilityPack.HtmlDocument();
             }
@@ -149,7 +145,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log($"Error opening chrome driver! Is it already opened?", e);
             }
@@ -196,7 +192,7 @@ namespace TravBotSharp.Files.Models.AccModels
                     await Task.Delay(AccountHelper.Delay());
                 }
             }
-            while(repeat);
+            while (repeat);
 
 
             await Task.Delay(AccountHelper.Delay());

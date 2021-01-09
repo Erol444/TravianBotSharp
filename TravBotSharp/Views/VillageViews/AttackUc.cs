@@ -6,8 +6,6 @@ using System.Windows.Forms;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 

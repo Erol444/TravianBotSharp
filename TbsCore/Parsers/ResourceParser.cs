@@ -96,7 +96,7 @@ namespace TravBotSharp.Files.Parsers
                 case Classificator.ServerVersionEnum.T4_5:
                     var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.Name == "div").ToList();
                     List<Building> resFields5 = new List<Building>();
-                    foreach(var field in fields5)
+                    foreach (var field in fields5)
                     {
                         var vals = field.GetClasses(); //.GetAttributeValue("class", "").Split(' ');
                         //fields5.ElementAt(1).GetClasses().
@@ -118,6 +118,7 @@ namespace TravBotSharp.Files.Parsers
         public static Resources GetResourceCost(HtmlNode node)
         {
             var res = new Resources();
+            if (node == null) return res;
             var resNodes = node.ChildNodes.Where(x => x.HasClass("resource") || x.HasClass("resources")).ToList();
             if (resNodes.Count < 4) return null;
             res.Wood = Parser.RemoveNonNumeric(resNodes[0].InnerText);

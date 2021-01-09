@@ -1,8 +1,4 @@
-﻿
-
-using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
@@ -35,7 +31,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var resToSend = MarketHelper.SendResCapToStorage(acc, this.Resources);
 
             var targetVillage = acc.Villages.FirstOrDefault(x => x.Coordinates == this.Coordinates);
-            
+
             var duration = await MarketHelper.MarketSendResource(acc, resToSend, targetVillage, this);
 
             var targetVill = acc.Villages.FirstOrDefault(x => x.Coordinates == Coordinates);

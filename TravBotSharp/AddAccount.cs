@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Net.Security;
 using System.Threading;
 using System.Windows.Forms;
 using TbsCore.Helpers;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp
 {
@@ -41,7 +39,7 @@ namespace TravBotSharp
                 item.SubItems.Add(access.Proxy);
                 item.SubItems.Add(access.ProxyPort + "");
                 item.SubItems.Add(access.ProxyUsername);
-                if(showStatus) item.SubItems.Add(access.Ok ? "✔" : "❌");
+                if (showStatus) item.SubItems.Add(access.Ok ? "✔" : "❌");
 
                 accessListView.Items.Add(item);
             }
@@ -177,7 +175,8 @@ namespace TravBotSharp
                 try
                 {
                     this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));
-                } catch { }
+                }
+                catch { }
             }).Start();
         }
     }

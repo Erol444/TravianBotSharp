@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TbsCore.Models.Database
+﻿namespace TbsCore.Models.Database
 {
     public class AccRawDTO
     {

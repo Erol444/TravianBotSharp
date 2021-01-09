@@ -1,7 +1,5 @@
 ﻿using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -70,7 +68,7 @@ namespace TbsCore.Helpers
         private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true) =>
             await ExecuteScript(acc, $"document.{query.val}{action.val}", log);
 
-        
+
         public class QueryById : Query { public QueryById(string str) => base.val = $"getElementById('{str}')"; }
         public class QueryByName : Query { public QueryByName(string str) => base.val = $"getElementsByName('{str}')[0]"; }
         public class QueryByClassName : Query { public QueryByClassName(string str) => base.val = $"getElementsByClassName('{str}')[0]"; }

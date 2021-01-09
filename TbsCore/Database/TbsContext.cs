@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.IO;
 using TbsCore.Models.Database;
 using TravBotSharp.Files.Helpers;
 
@@ -8,6 +9,7 @@ namespace TbsCore.Database
     {
         public TbsContext()
         {
+            if (!Directory.Exists(IoHelperCore.TbsPath)) Directory.CreateDirectory(IoHelperCore.TbsPath);
             Database.EnsureCreated();
         }
         public TbsContext(DbContextOptions<TbsContext> options) : base(options) { }

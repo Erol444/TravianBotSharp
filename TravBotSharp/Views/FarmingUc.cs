@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
-using System.Windows.Forms;
 using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.TroopsModels;
@@ -62,7 +61,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             return acc.Farming.FL.ElementAtOrDefault(FlCombo.SelectedIndex) ?? acc.Farming.FL.FirstOrDefault();
         }
-            
+
 
         private void UpdateFlInfo()
         {

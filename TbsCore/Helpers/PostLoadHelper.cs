@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;

@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
@@ -13,7 +11,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class HeroEquip : BotTask
     {
         public List<(HeroItemEnum, int)> Items { get; set; }
-        
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php");

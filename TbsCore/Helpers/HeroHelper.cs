@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
-using TbsCore.Models.TroopsModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Files.Helpers
@@ -52,7 +47,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 if (category == Classificator.HeroItemCategory.Others) continue; // Don't equip into hero bag
                 int currentTier = 0;
-                if(acc.Hero.Equipt.TryGetValue(category, out var item))
+                if (acc.Hero.Equipt.TryGetValue(category, out var item))
                 {
                     // Hero already has an equipt item for this category
                     currentTier = GetHeroItemTier(item);
@@ -183,7 +178,7 @@ namespace TravBotSharp.Files.Helpers
             // In T4.5, helmet will only have effect in hero home village
             // In TTWars, helmets have acc-wide effect
             // TODO: for T4.5, add auto-move hero feature (for helmet effect purposes)
-            if (GetHeroHomeVillage(acc) != trainVill && 
+            if (GetHeroHomeVillage(acc) != trainVill &&
                 acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_4) return false;
 
             string type = "";
@@ -206,10 +201,10 @@ namespace TravBotSharp.Files.Helpers
             if (acc.Hero.Equipt.TryGetValue(Classificator.HeroItemCategory.Helmet, out var equiped))
             {
                 var (category, name, tier) = ParseHeroItem(equiped);
-                if (name == type && 
+                if (name == type &&
                     equipTier <= tier) return false; // We already have the correct helmet
             }
-            
+
             TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip()
             {
                 ExecuteAt = acc.Hero.Status == Hero.StatusEnum.Home ? DateTime.Now : acc.Hero.HeroArrival,

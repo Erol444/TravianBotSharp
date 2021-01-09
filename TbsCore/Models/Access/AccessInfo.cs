@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using TravBotSharp.Files.Helpers;
 
@@ -49,7 +47,7 @@ namespace TbsCore.Models.Access
                 UserAgent = IoHelperCore.GetUseragent(),
                 LastUsed = DateTime.MinValue
             };
-            
+
             AllAccess.Add(access);
         }
     }

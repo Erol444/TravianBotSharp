@@ -3,7 +3,6 @@ using System.Windows.Forms;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 

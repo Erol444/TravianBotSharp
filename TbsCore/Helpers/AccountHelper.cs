@@ -1,12 +1,5 @@
-﻿using HtmlAgilityPack;
-using RestSharp;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using TbsCore.Helpers;
-using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Tasks.LowLevel;
@@ -66,9 +59,9 @@ namespace TravBotSharp.Files.Helpers
             Random ran = new Random();
 
             // Get the server info (on first running the account)
-            if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0) 
+            if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) }); 
+                TaskExecutor.AddTaskIfNotExists(acc, new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) });
             }
 
             if (acc.AccInfo.Tribe == null)
@@ -88,7 +81,7 @@ namespace TravBotSharp.Files.Helpers
 
             // Access change
             var nextAccessChange = TimeHelper.GetNextProxyChange(acc);
-            if(nextAccessChange != TimeSpan.MaxValue)
+            if (nextAccessChange != TimeSpan.MaxValue)
             {
                 TaskExecutor.AddTaskIfNotExists(acc, new ChangeAccess() { ExecuteAt = DateTime.Now + nextAccessChange });
             }

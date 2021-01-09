@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TbsCore.Models.MapModels
+﻿namespace TbsCore.Models.MapModels
 {
     public class MapTile
     {

@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -39,7 +38,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            
+
             building = TroopsHelper.GetTroopBuilding(Troop, Great);
 
             // Switch hero helmet. If hero will be switched, this TrainTroops task 
@@ -58,7 +57,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)Troop));
 
-            if(troopNode == null)
+            if (troopNode == null)
             {
                 acc.Wb.Log($"Bot tried to train {Troop} in {Vill.Name}, but couldn't find it in {building}! Are you sure you have {Troop} researched?");
                 return TaskRes.Executed;

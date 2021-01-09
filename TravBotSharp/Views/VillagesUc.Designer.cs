@@ -164,7 +164,7 @@
             this.villTabMarket.Location = new System.Drawing.Point(4, 22);
             this.villTabMarket.Name = "villTabMarket";
             this.villTabMarket.Padding = new System.Windows.Forms.Padding(3);
-            this.villTabMarket.Size = new System.Drawing.Size(733, 603);
+            this.villTabMarket.Size = new System.Drawing.Size(737, 609);
             this.villTabMarket.TabIndex = 1;
             this.villTabMarket.Text = "Market";
             this.villTabMarket.UseVisualStyleBackColor = true;
@@ -175,7 +175,7 @@
             this.marketUc1.Location = new System.Drawing.Point(3, 3);
             this.marketUc1.Margin = new System.Windows.Forms.Padding(4);
             this.marketUc1.Name = "marketUc1";
-            this.marketUc1.Size = new System.Drawing.Size(727, 597);
+            this.marketUc1.Size = new System.Drawing.Size(731, 603);
             this.marketUc1.TabIndex = 0;
             // 
             // villTabTroops
@@ -183,7 +183,7 @@
             this.villTabTroops.Controls.Add(this.troopsUc1);
             this.villTabTroops.Location = new System.Drawing.Point(4, 22);
             this.villTabTroops.Name = "villTabTroops";
-            this.villTabTroops.Size = new System.Drawing.Size(733, 603);
+            this.villTabTroops.Size = new System.Drawing.Size(737, 609);
             this.villTabTroops.TabIndex = 2;
             this.villTabTroops.Text = "Troops";
             this.villTabTroops.UseVisualStyleBackColor = true;
@@ -194,7 +194,7 @@
             this.troopsUc1.Location = new System.Drawing.Point(0, 0);
             this.troopsUc1.Margin = new System.Windows.Forms.Padding(4);
             this.troopsUc1.Name = "troopsUc1";
-            this.troopsUc1.Size = new System.Drawing.Size(733, 603);
+            this.troopsUc1.Size = new System.Drawing.Size(737, 609);
             this.troopsUc1.TabIndex = 0;
             // 
             // villTabAttack
@@ -203,7 +203,7 @@
             this.villTabAttack.Location = new System.Drawing.Point(4, 22);
             this.villTabAttack.Name = "villTabAttack";
             this.villTabAttack.Padding = new System.Windows.Forms.Padding(3);
-            this.villTabAttack.Size = new System.Drawing.Size(733, 603);
+            this.villTabAttack.Size = new System.Drawing.Size(737, 609);
             this.villTabAttack.TabIndex = 3;
             this.villTabAttack.Text = "Attack";
             this.villTabAttack.UseVisualStyleBackColor = true;
@@ -214,7 +214,7 @@
             this.attackUc1.Location = new System.Drawing.Point(3, 3);
             this.attackUc1.Margin = new System.Windows.Forms.Padding(4);
             this.attackUc1.Name = "attackUc1";
-            this.attackUc1.Size = new System.Drawing.Size(727, 597);
+            this.attackUc1.Size = new System.Drawing.Size(731, 603);
             this.attackUc1.TabIndex = 0;
             // 
             // VillagesUc

@@ -1,11 +1,8 @@
-﻿using HtmlAgilityPack;
-using Newtonsoft.Json;
-using OpenQA.Selenium.Chrome;
+﻿using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;

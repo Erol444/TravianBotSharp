@@ -331,7 +331,7 @@ namespace TravBotSharp.Files.Helpers
             var build = html.GetElementbyId("build");
             var troopImages = build.Descendants("img").Where(x => x.HasClass("unit"));
 
-            foreach(var img in troopImages)
+            foreach (var img in troopImages)
             {
                 var troopNum = img.GetClasses().FirstOrDefault(x => x != "unit");
                 var troop = (TroopsEnum)Parser.RemoveNonNumeric(troopNum);
