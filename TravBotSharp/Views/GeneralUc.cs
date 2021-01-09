@@ -1,8 +1,10 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models;
 using TravBotSharp.Files.Models.AccModels;
@@ -14,6 +16,9 @@ namespace TravBotSharp.Views
 {
     public partial class GeneralUc : TbsBaseUc, ITbsUc
     {
+        private readonly string[] allyBonus = new string[] { "Recruitment", "Philosophy", "Metallurgy", "Commerce" };
+        private int bonusSelected = 0;
+
         public GeneralUc()
         {
             InitializeComponent();
@@ -41,7 +46,8 @@ namespace TravBotSharp.Views
 
             autoReadIGMs.Checked = acc.Settings.AutoReadIgms;
             autoRandomTasks.Checked = acc.Settings.AutoRandomTasks;
-            
+            extendProtection.Checked = acc.Settings.ExtendProtection;
+
             watchAdsUpDown.Value = acc.Settings.WatchAdAbove;
 
             disableImagesCheckbox.Checked = acc.Settings.DisableImages;
@@ -54,6 +60,7 @@ namespace TravBotSharp.Views
             workMax.Value = acc.Settings.Time.MaxWork;
             workMin.Value = acc.Settings.Time.MinWork;
             UpdateBotRunning();
+            UpdaterBonusPrio(acc);
         }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages
@@ -289,6 +296,46 @@ namespace TravBotSharp.Views
         private void watchAdsUpDown_ValueChanged(object sender, EventArgs e)
         {
             GetSelectedAcc().Settings.WatchAdAbove = (int)watchAdsUpDown.Value;
+        }
+
+        private void extendProtection_CheckedChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Settings.ExtendProtection = extendProtection.Checked;
+        }
+
+        private void button8_Click(object sender, EventArgs e) => MoveBonusPrio(false); // Move bonus prio down
+        private void button7_Click(object sender, EventArgs e) => MoveBonusPrio(true); // Move bonus prio up
+        
+        private void MoveBonusPrio(bool up)
+        {
+            if ((bonusSelected == 0 && up) || (bonusSelected == 3 && !up)) return;
+
+            var acc = GetSelectedAcc();
+            var curVal = acc.Settings.BonusPriority[bonusSelected];
+            var nextIndex = up ? -1 : 1;
+            acc.Settings.BonusPriority[bonusSelected] = acc.Settings.BonusPriority[bonusSelected + nextIndex];
+            acc.Settings.BonusPriority[bonusSelected + nextIndex] = curVal;
+            bonusSelected += nextIndex;
+            UpdaterBonusPrio(acc);
+        }
+        private void UpdaterBonusPrio(Account acc)
+        {
+            if (acc.Settings.BonusPriority == null) acc.Settings.BonusPriority = new byte[4] { 0, 1, 2, 3 };
+            priorityList.Items.Clear();
+            for (int i = 0; i < 4; i++)
+            {
+                var item = new ListViewItem();
+                item.Text = allyBonus[acc.Settings.BonusPriority[i]];
+                item.ForeColor = Color.FromName(bonusSelected == i ? "DodgerBlue" : "Black");
+                priorityList.Items.Add(item);
+            }
+        }
+
+        private void priorityList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bonusSelected = priorityList.SelectedItems[0].Index;
+            if (bonusSelected < 0 || 3 < bonusSelected) bonusSelected = 0;
+            UpdaterBonusPrio(GetSelectedAcc());
         }
     }
 }

@@ -167,7 +167,12 @@ namespace TravBotSharp
             button2.Enabled = acc != null && acc.Wb == null;
 
             UpdateFrontEnd();
-            RefreshAccView();
+            
+            foreach (ListViewItem item in accListView.Items)
+            {
+                item.SubItems[0].ForeColor = Color.FromName("Black");
+            }
+            accListView.Items[accSelected].SubItems[0].ForeColor = Color.FromName("DodgerBlue");
         }
         private void UpdateFrontEnd()
         {

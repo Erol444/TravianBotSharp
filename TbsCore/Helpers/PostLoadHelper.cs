@@ -32,13 +32,17 @@ namespace TbsCore.Helpers
             var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
 
             return new List<Action>() {
+                // 1:
                 () => acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4),
+                // 2:
                 () => {
                     if (acc.Wb.CurrentUrl.Contains("dorf1")) TaskExecutor.UpdateDorf1Info(acc);
                     else if (acc.Wb.CurrentUrl.Contains("dorf2")) TaskExecutor.UpdateDorf2Info(acc);
                 },
+                // 3:
                 () => acc.AccInfo.CulturePoints = RightBarParser.GetCulurePoints(html, acc.AccInfo.ServerVersion),
-                () => // Village expansion
+                // 4 Village expansion:
+                () =>
                 {
                     var villExpansionReady = acc.Villages.FirstOrDefault(x => x.Expansion.ExpansionAvailable);
                     if (acc.AccInfo.CulturePoints?.MaxVillages > acc.AccInfo.CulturePoints?.VillageCount &&
@@ -48,13 +52,16 @@ namespace TbsCore.Helpers
                         TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady });
                     }
                 },
-                () => // Beginner Quests
+                // 5. Beginner Quests:
+                () =>
                 {
                     if(acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
                         acc.Wb.Html.GetElementbyId("sidebarBoxQuestmaster")?
-                        .Descendants()?.FirstOrDefault(x=>x.HasClass("newQuestSpeechBubble")) != null)
+                        .Descendants()?.FirstOrDefault(x=>x.HasClass("newQuestSpeechBubble")) != null &&
+                        acc.Wb.Html.GetElementbyId("mentorTaskList") == null)
                     {
                         TaskExecutor.AddTaskIfNotExists(acc, new ClaimBeginnerTask2021() { ExecuteAt = DateTime.Now});
+                        return;
                     }
 
                     acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html, acc.AccInfo.ServerVersion);
@@ -71,7 +78,8 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                () => // Daily Quest
+                // 6. Daily Quest:
+                () =>
                 {
                     if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
                     RightBarParser.CheckDailyQuest(html) &&
@@ -84,20 +92,23 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
+                // 7. Parse gold/silver
                 () =>
                 {
                     var goldSilver = RightBarParser.GetGoldAndSilver(html, acc.AccInfo.ServerVersion);
                     acc.AccInfo.Gold = goldSilver[0];
                     acc.AccInfo.Silver = goldSilver[1];
                 },
+                // 8:
                 () => acc.AccInfo.PlusAccount = RightBarParser.HasPlusAccount(html, acc.AccInfo.ServerVersion),
-                () => // Check messages
+                // 9 Check msgs:
+                () =>
                 {
                     if (MsgParser.UnreadMessages(html, acc.AccInfo.ServerVersion) > 0
                         && !acc.Wb.CurrentUrl.Contains("messages.php")
                         && acc.Settings.AutoReadIgms)
                     {
-                        
+
                         TaskExecutor.AddTaskIfNotExists(acc, new ReadMessage()
                         {
                             ExecuteAt = DateTime.Now.AddSeconds(ran.Next(10, 600)), // Read msg in next 10-600 seconds
@@ -105,13 +116,18 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
+                // 10: FreeCrop
                 () => {
                     activeVill.Res.FreeCrop = RightBarParser.GetFreeCrop(html);
                     },
+                // 11:
                 () => activeVill.Res.Capacity = ResourceParser.GetResourceCapacity(html, acc.AccInfo.ServerVersion),
+                // 12:
                 () => activeVill.Res.Stored = ResourceParser.GetResources(html),
+                // 13:
                 () => activeVill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(30,60)),
-                () => // NPC
+                // 14 NPC:
+                () =>
                 {
                     float ratio = (float)activeVill.Res.Stored.Resources.Crop / activeVill.Res.Capacity.GranaryCapacity;
                     if (ratio >= 0.99 &&
@@ -126,6 +142,7 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
+                // 15:
                 () => {
                     if (acc.Settings.AutoActivateProductionBoost && CheckProductionBoost(acc))
                     {
@@ -134,6 +151,7 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
+                // 16. Insta upgrade:
                 () =>
                 {
                     if (activeVill.Build.InstaBuild &&
@@ -149,9 +167,13 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
+                // 17 
                 () => acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html, acc.AccInfo.ServerVersion),
+                // 18
                 () => acc.Hero.Status = HeroParser.HeroStatus(html, acc.AccInfo.ServerVersion),
+                // 19
                 () => acc.Hero.HeroInfo.Health = HeroParser.GetHeroHealth(html, acc.AccInfo.ServerVersion),
+                // 20 Hero:
                 () =>
                 {
                     bool heroReady = (acc.Hero.HeroInfo.Health > acc.Hero.Settings.MinHealth &&
@@ -185,7 +207,16 @@ namespace TbsCore.Helpers
                         TaskExecutor.AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                     }
                 },
-                () => AutoExpandStorage(acc, activeVill)
+                // 21:
+                () => AutoExpandStorage(acc, activeVill),
+                // 22: Extend protection
+                () => {
+                    if (acc.Settings.ExtendProtection &&
+                    acc.Wb.Html.GetElementbyId("sidebarBoxInfobox").Descendants("button").Any(x=>x.GetAttributeValue("value", "") == "Extend"))
+                    {
+                        TaskExecutor.AddTaskIfNotExists(acc, new ExtendProtection() { ExecuteAt = DateTime.Now });
+                    }
+                }
             };
         }
 

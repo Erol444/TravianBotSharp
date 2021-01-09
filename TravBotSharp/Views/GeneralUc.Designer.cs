@@ -34,6 +34,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.extendProtection = new System.Windows.Forms.CheckBox();
             this.label20 = new System.Windows.Forms.Label();
             this.autoRandomTasks = new System.Windows.Forms.CheckBox();
             this.autoReadIGMs = new System.Windows.Forms.CheckBox();
@@ -92,6 +93,13 @@
             this.label21 = new System.Windows.Forms.Label();
             this.label22 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
+            this.priorityList = new System.Windows.Forms.ListView();
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.button7 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.label26 = new System.Windows.Forms.Label();
+            this.label25 = new System.Windows.Forms.Label();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -107,6 +115,7 @@
             this.panel5.SuspendLayout();
             this.panel6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.watchAdsUpDown)).BeginInit();
+            this.panel7.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel4
@@ -165,6 +174,7 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.extendProtection);
             this.panel3.Controls.Add(this.label20);
             this.panel3.Controls.Add(this.autoRandomTasks);
             this.panel3.Controls.Add(this.autoReadIGMs);
@@ -173,10 +183,22 @@
             this.panel3.Size = new System.Drawing.Size(217, 100);
             this.panel3.TabIndex = 173;
             // 
+            // extendProtection
+            // 
+            this.extendProtection.AutoSize = true;
+            this.extendProtection.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.extendProtection.Location = new System.Drawing.Point(14, 69);
+            this.extendProtection.Name = "extendProtection";
+            this.extendProtection.Size = new System.Drawing.Size(137, 21);
+            this.extendProtection.TabIndex = 175;
+            this.extendProtection.Text = "Extend protection";
+            this.extendProtection.UseVisualStyleBackColor = true;
+            this.extendProtection.CheckedChanged += new System.EventHandler(this.extendProtection_CheckedChanged);
+            // 
             // label20
             // 
             this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(10, 70);
+            this.label20.Location = new System.Drawing.Point(10, 53);
             this.label20.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label20.Name = "label20";
             this.label20.Size = new System.Drawing.Size(195, 13);
@@ -187,7 +209,7 @@
             // 
             this.autoRandomTasks.AutoSize = true;
             this.autoRandomTasks.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.autoRandomTasks.Location = new System.Drawing.Point(13, 52);
+            this.autoRandomTasks.Location = new System.Drawing.Point(13, 35);
             this.autoRandomTasks.Name = "autoRandomTasks";
             this.autoRandomTasks.Size = new System.Drawing.Size(146, 21);
             this.autoRandomTasks.TabIndex = 162;
@@ -808,10 +830,87 @@
             this.label24.TabIndex = 159;
             this.label24.Text = "minutes";
             // 
+            // priorityList
+            // 
+            this.priorityList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2});
+            this.priorityList.FullRowSelect = true;
+            this.priorityList.GridLines = true;
+            this.priorityList.HideSelection = false;
+            this.priorityList.Location = new System.Drawing.Point(11, 48);
+            this.priorityList.MultiSelect = false;
+            this.priorityList.Name = "priorityList";
+            this.priorityList.Size = new System.Drawing.Size(94, 100);
+            this.priorityList.TabIndex = 178;
+            this.priorityList.UseCompatibleStateImageBehavior = false;
+            this.priorityList.View = System.Windows.Forms.View.Details;
+            this.priorityList.SelectedIndexChanged += new System.EventHandler(this.priorityList_SelectedIndexChanged);
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "Priority";
+            this.columnHeader2.Width = 85;
+            // 
+            // button7
+            // 
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.Location = new System.Drawing.Point(111, 66);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(24, 33);
+            this.button7.TabIndex = 179;
+            this.button7.Text = "↑";
+            this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // button8
+            // 
+            this.button8.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button8.Location = new System.Drawing.Point(111, 103);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(24, 33);
+            this.button8.TabIndex = 180;
+            this.button8.Text = "↓";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // panel7
+            // 
+            this.panel7.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel7.Controls.Add(this.label26);
+            this.panel7.Controls.Add(this.label25);
+            this.panel7.Controls.Add(this.button8);
+            this.panel7.Controls.Add(this.priorityList);
+            this.panel7.Controls.Add(this.button7);
+            this.panel7.Location = new System.Drawing.Point(207, 133);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(175, 154);
+            this.panel7.TabIndex = 181;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label26.Location = new System.Drawing.Point(8, 28);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(159, 15);
+            this.label26.TabIndex = 182;
+            this.label26.Text = "Donate to the top bonus first";
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label25.Location = new System.Drawing.Point(8, 12);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(132, 16);
+            this.label25.TabIndex = 181;
+            this.label25.Text = "Ally bonus priority";
+            // 
             // GeneralUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel7);
             this.Controls.Add(this.panel6);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
@@ -864,6 +963,8 @@
             this.panel6.ResumeLayout(false);
             this.panel6.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.watchAdsUpDown)).EndInit();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -934,5 +1035,13 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.CheckBox extendProtection;
+        private System.Windows.Forms.ListView priorityList;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Panel panel7;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.Label label25;
     }
 }

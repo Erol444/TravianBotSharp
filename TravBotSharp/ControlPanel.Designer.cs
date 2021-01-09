@@ -31,15 +31,25 @@
             this.button1 = new System.Windows.Forms.Button();
             this.accTabController = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.generalUc1 = new TravBotSharp.Views.GeneralUc();
             this.tabHero = new System.Windows.Forms.TabPage();
+            this.heroUc1 = new TravBotSharp.Views.HeroUc();
             this.tabVillages = new System.Windows.Forms.TabPage();
+            this.villagesUc1 = new TravBotSharp.Views.VillagesUc();
             this.tabOverview = new System.Windows.Forms.TabPage();
+            this.overviewUc1 = new TravBotSharp.Views.OverviewUc();
             this.troopsTab = new System.Windows.Forms.TabPage();
+            this.overviewTroopsUc1 = new TravBotSharp.Views.OverviewTroopsUc();
             this.FarmingTab = new System.Windows.Forms.TabPage();
+            this.farmingUc1 = new TravBotSharp.Views.FarmingUc();
             this.newVillagesTab = new System.Windows.Forms.TabPage();
+            this.newVillagesUc1 = new TravBotSharp.Views.NewVillagesUc();
             this.deffendingTab = new System.Windows.Forms.TabPage();
+            this.deffendingUc1 = new TravBotSharp.Views.DeffendingUc();
             this.questsTab = new System.Windows.Forms.TabPage();
+            this.questsUc1 = new TravBotSharp.Views.QuestsUc();
             this.debugTab = new System.Windows.Forms.TabPage();
+            this.debugUc1 = new TravBotSharp.Views.DebugUc();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.accListView = new System.Windows.Forms.ListView();
@@ -54,16 +64,6 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.generalUc1 = new TravBotSharp.Views.GeneralUc();
-            this.heroUc1 = new TravBotSharp.Views.HeroUc();
-            this.villagesUc1 = new TravBotSharp.Views.VillagesUc();
-            this.overviewUc1 = new TravBotSharp.Views.OverviewUc();
-            this.overviewTroopsUc1 = new TravBotSharp.Views.OverviewTroopsUc();
-            this.farmingUc1 = new TravBotSharp.Views.FarmingUc();
-            this.newVillagesUc1 = new TravBotSharp.Views.NewVillagesUc();
-            this.deffendingUc1 = new TravBotSharp.Views.DeffendingUc();
-            this.questsUc1 = new TravBotSharp.Views.QuestsUc();
-            this.debugUc1 = new TravBotSharp.Views.DebugUc();
             this.accTabController.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
@@ -123,6 +123,15 @@
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
             // 
+            // generalUc1
+            // 
+            this.generalUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.generalUc1.Location = new System.Drawing.Point(3, 3);
+            this.generalUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.generalUc1.Name = "generalUc1";
+            this.generalUc1.Size = new System.Drawing.Size(957, 629);
+            this.generalUc1.TabIndex = 0;
+            // 
             // tabHero
             // 
             this.tabHero.Controls.Add(this.heroUc1);
@@ -132,6 +141,15 @@
             this.tabHero.TabIndex = 2;
             this.tabHero.Text = "Hero";
             this.tabHero.UseVisualStyleBackColor = true;
+            // 
+            // heroUc1
+            // 
+            this.heroUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.heroUc1.Location = new System.Drawing.Point(0, 0);
+            this.heroUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.heroUc1.Name = "heroUc1";
+            this.heroUc1.Size = new System.Drawing.Size(963, 635);
+            this.heroUc1.TabIndex = 0;
             // 
             // tabVillages
             // 
@@ -144,6 +162,15 @@
             this.tabVillages.Text = "Villages";
             this.tabVillages.UseVisualStyleBackColor = true;
             // 
+            // villagesUc1
+            // 
+            this.villagesUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.villagesUc1.Location = new System.Drawing.Point(3, 3);
+            this.villagesUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.villagesUc1.Name = "villagesUc1";
+            this.villagesUc1.Size = new System.Drawing.Size(957, 629);
+            this.villagesUc1.TabIndex = 0;
+            // 
             // tabOverview
             // 
             this.tabOverview.Controls.Add(this.overviewUc1);
@@ -154,6 +181,15 @@
             this.tabOverview.TabIndex = 4;
             this.tabOverview.Text = "Overview";
             this.tabOverview.UseVisualStyleBackColor = true;
+            // 
+            // overviewUc1
+            // 
+            this.overviewUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.overviewUc1.Location = new System.Drawing.Point(3, 3);
+            this.overviewUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.overviewUc1.Name = "overviewUc1";
+            this.overviewUc1.Size = new System.Drawing.Size(957, 629);
+            this.overviewUc1.TabIndex = 0;
             // 
             // troopsTab
             // 
@@ -166,6 +202,14 @@
             this.troopsTab.Text = "Troops";
             this.troopsTab.UseVisualStyleBackColor = true;
             // 
+            // overviewTroopsUc1
+            // 
+            this.overviewTroopsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.overviewTroopsUc1.Location = new System.Drawing.Point(3, 3);
+            this.overviewTroopsUc1.Name = "overviewTroopsUc1";
+            this.overviewTroopsUc1.Size = new System.Drawing.Size(957, 629);
+            this.overviewTroopsUc1.TabIndex = 0;
+            // 
             // FarmingTab
             // 
             this.FarmingTab.Controls.Add(this.farmingUc1);
@@ -175,6 +219,15 @@
             this.FarmingTab.TabIndex = 5;
             this.FarmingTab.Text = "Farming";
             this.FarmingTab.UseVisualStyleBackColor = true;
+            // 
+            // farmingUc1
+            // 
+            this.farmingUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.farmingUc1.Location = new System.Drawing.Point(0, 0);
+            this.farmingUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.farmingUc1.Name = "farmingUc1";
+            this.farmingUc1.Size = new System.Drawing.Size(963, 635);
+            this.farmingUc1.TabIndex = 0;
             // 
             // newVillagesTab
             // 
@@ -187,6 +240,15 @@
             this.newVillagesTab.Text = "New villages";
             this.newVillagesTab.UseVisualStyleBackColor = true;
             // 
+            // newVillagesUc1
+            // 
+            this.newVillagesUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.newVillagesUc1.Location = new System.Drawing.Point(3, 3);
+            this.newVillagesUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.newVillagesUc1.Name = "newVillagesUc1";
+            this.newVillagesUc1.Size = new System.Drawing.Size(957, 629);
+            this.newVillagesUc1.TabIndex = 0;
+            // 
             // deffendingTab
             // 
             this.deffendingTab.Controls.Add(this.deffendingUc1);
@@ -197,6 +259,15 @@
             this.deffendingTab.TabIndex = 7;
             this.deffendingTab.Text = "Deffending";
             this.deffendingTab.UseVisualStyleBackColor = true;
+            // 
+            // deffendingUc1
+            // 
+            this.deffendingUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.deffendingUc1.Location = new System.Drawing.Point(3, 3);
+            this.deffendingUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.deffendingUc1.Name = "deffendingUc1";
+            this.deffendingUc1.Size = new System.Drawing.Size(957, 629);
+            this.deffendingUc1.TabIndex = 0;
             // 
             // questsTab
             // 
@@ -209,6 +280,15 @@
             this.questsTab.Text = "Quests";
             this.questsTab.UseVisualStyleBackColor = true;
             // 
+            // questsUc1
+            // 
+            this.questsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.questsUc1.Location = new System.Drawing.Point(3, 3);
+            this.questsUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.questsUc1.Name = "questsUc1";
+            this.questsUc1.Size = new System.Drawing.Size(957, 629);
+            this.questsUc1.TabIndex = 0;
+            // 
             // debugTab
             // 
             this.debugTab.Controls.Add(this.debugUc1);
@@ -219,6 +299,16 @@
             this.debugTab.TabIndex = 8;
             this.debugTab.Text = "Debug";
             this.debugTab.UseVisualStyleBackColor = true;
+            // 
+            // debugUc1
+            // 
+            this.debugUc1.CausesValidation = false;
+            this.debugUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.debugUc1.Location = new System.Drawing.Point(3, 3);
+            this.debugUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.debugUc1.Name = "debugUc1";
+            this.debugUc1.Size = new System.Drawing.Size(957, 629);
+            this.debugUc1.TabIndex = 0;
             // 
             // button2
             // 
@@ -242,12 +332,12 @@
             // 
             // accListView
             // 
+            this.accListView.CausesValidation = false;
             this.accListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.accAccountHeader,
             this.accProxyHeader});
             this.accListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.accListView.FullRowSelect = true;
-            this.accListView.HideSelection = false;
             this.accListView.Location = new System.Drawing.Point(0, 0);
             this.accListView.MultiSelect = false;
             this.accListView.Name = "accListView";
@@ -358,96 +448,6 @@
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(971, 661);
             this.panel5.TabIndex = 12;
-            // 
-            // generalUc1
-            // 
-            this.generalUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.generalUc1.Location = new System.Drawing.Point(3, 3);
-            this.generalUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.generalUc1.Name = "generalUc1";
-            this.generalUc1.Size = new System.Drawing.Size(957, 629);
-            this.generalUc1.TabIndex = 0;
-            // 
-            // heroUc1
-            // 
-            this.heroUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.heroUc1.Location = new System.Drawing.Point(0, 0);
-            this.heroUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.heroUc1.Name = "heroUc1";
-            this.heroUc1.Size = new System.Drawing.Size(963, 635);
-            this.heroUc1.TabIndex = 0;
-            // 
-            // villagesUc1
-            // 
-            this.villagesUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.villagesUc1.Location = new System.Drawing.Point(3, 3);
-            this.villagesUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.villagesUc1.Name = "villagesUc1";
-            this.villagesUc1.Size = new System.Drawing.Size(957, 629);
-            this.villagesUc1.TabIndex = 0;
-            // 
-            // overviewUc1
-            // 
-            this.overviewUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.overviewUc1.Location = new System.Drawing.Point(3, 3);
-            this.overviewUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.overviewUc1.Name = "overviewUc1";
-            this.overviewUc1.Size = new System.Drawing.Size(957, 629);
-            this.overviewUc1.TabIndex = 0;
-            // 
-            // overviewTroopsUc1
-            // 
-            this.overviewTroopsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.overviewTroopsUc1.Location = new System.Drawing.Point(3, 3);
-            this.overviewTroopsUc1.Name = "overviewTroopsUc1";
-            this.overviewTroopsUc1.Size = new System.Drawing.Size(957, 629);
-            this.overviewTroopsUc1.TabIndex = 0;
-            // 
-            // farmingUc1
-            // 
-            this.farmingUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.farmingUc1.Location = new System.Drawing.Point(0, 0);
-            this.farmingUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.farmingUc1.Name = "farmingUc1";
-            this.farmingUc1.Size = new System.Drawing.Size(963, 635);
-            this.farmingUc1.TabIndex = 0;
-            // 
-            // newVillagesUc1
-            // 
-            this.newVillagesUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.newVillagesUc1.Location = new System.Drawing.Point(3, 3);
-            this.newVillagesUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.newVillagesUc1.Name = "newVillagesUc1";
-            this.newVillagesUc1.Size = new System.Drawing.Size(957, 629);
-            this.newVillagesUc1.TabIndex = 0;
-            // 
-            // deffendingUc1
-            // 
-            this.deffendingUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.deffendingUc1.Location = new System.Drawing.Point(3, 3);
-            this.deffendingUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.deffendingUc1.Name = "deffendingUc1";
-            this.deffendingUc1.Size = new System.Drawing.Size(957, 629);
-            this.deffendingUc1.TabIndex = 0;
-            // 
-            // questsUc1
-            // 
-            this.questsUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.questsUc1.Location = new System.Drawing.Point(3, 3);
-            this.questsUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.questsUc1.Name = "questsUc1";
-            this.questsUc1.Size = new System.Drawing.Size(957, 629);
-            this.questsUc1.TabIndex = 0;
-            // 
-            // debugUc1
-            // 
-            this.debugUc1.CausesValidation = false;
-            this.debugUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.debugUc1.Location = new System.Drawing.Point(3, 3);
-            this.debugUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.debugUc1.Name = "debugUc1";
-            this.debugUc1.Size = new System.Drawing.Size(957, 629);
-            this.debugUc1.TabIndex = 0;
             // 
             // ControlPanel
             // 

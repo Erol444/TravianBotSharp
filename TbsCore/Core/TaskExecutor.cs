@@ -131,15 +131,16 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc">Account</param>
         private static void PostLoadTasks(Account acc)
         {
-            foreach (var task in PostLoadHelper.GetPostLoadTasks(acc))
+            var tasks = PostLoadHelper.GetPostLoadTasks(acc);
+            for (int i = 0; i < tasks.Count; i++)
             {
                 try
                 {
-                    task.Invoke();
+                    tasks[i].Invoke();
                 }
                 catch (Exception e)
                 {
-                    acc.Wb.Log($"Error in PreTask {task.GetType()}", e);
+                    acc.Wb.Log($"Error in {i + 1}. PreTask", e);
                 }
             }
         }

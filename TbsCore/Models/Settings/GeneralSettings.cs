@@ -17,6 +17,7 @@ namespace TbsCore.Models.Settings
             Localization = new Dictionary<string, BuildingEnum>();
             OpenMinimized = false;
             WatchAdAbove = 80;
+            BonusPriority = new byte[4] { 0, 1, 2, 3 };
         }
         public bool AutoActivateProductionBoost { get; set; }
 
@@ -78,5 +79,13 @@ namespace TbsCore.Models.Settings
         /// If building takes longer than {value} minutes, watch an ad!
         /// </summary>
         public int WatchAdAbove { get; set; }
+        /// <summary>
+        /// Whether we want to extend account beginners protection
+        /// </summary>
+        public bool ExtendProtection { get; set; }
+        /// <summary>
+        /// Ally bonus donation priority
+        /// </summary>
+        public byte[] BonusPriority { get; set; }
     }
 }
