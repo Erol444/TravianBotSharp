@@ -278,5 +278,15 @@ namespace TravBotSharp.Files.Helpers
             long remainder = res % 100;
             return res + (100 - remainder);
         }
+
+        internal static long[] SumArr(long[] arr1, long[] arr2)
+        {
+            var ret = new long[4];
+            for (int i = 0; i < 4; i++)
+            {
+                ret[i] = arr1[i] + arr2[i];
+            }
+            return ret;
+        }
     }
 }

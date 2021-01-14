@@ -24,6 +24,7 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Whether the method completed successfully</returns>
         public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
         {
+            if (vill == null) return false;
             if (task.BuildingId == null ||
                 vill.Build.Buildings.Any(x => x.Id == task.BuildingId && x.Type != task.Building && x.Type != BuildingEnum.Site))
             {
@@ -190,14 +191,14 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="vill">Village</param>
         /// <param name="task">BotTask</param>
         /// <returns></returns>
-        public static (string, bool) GetUrlForBuilding(Village vill, BuildingTask task)
+        public static (string, bool) GetUrlForBuilding(Account acc, Village vill, BuildingTask task)
         {
             switch (task.TaskType)
             {
                 case BuildingType.General:
                     return GetUrlGeneralTask(vill, task);
                 case BuildingType.AutoUpgradeResFields:
-                    return (GetUrlAutoResFields(vill, task), false);
+                    return (GetUrlAutoResFields(acc, vill, task), false);
             }
             return (null, true);
         }
@@ -274,7 +275,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return (url, constructNew);
         }
-        public static string GetUrlAutoResFields(Village vill, BuildingTask task)
+        public static string GetUrlAutoResFields(Account acc, Village vill, BuildingTask task)
         {
             List<Building> buildings; // Potential buildings to be upgraded next
             switch (task.ResourceType)
@@ -310,7 +311,7 @@ namespace TravBotSharp.Files.Helpers
                     buildingToUpgrade = GetLowestProduction(buildings, vill);
                     break;
                 case BuildingStrategyEnum.BasedOnRes:
-                    buildingToUpgrade = GetLowestRes(buildings, vill);
+                    buildingToUpgrade = GetLowestRes(acc, vill, buildings);
                     break;
             }
             if (buildingToUpgrade == null)
@@ -477,21 +478,47 @@ namespace TravBotSharp.Files.Helpers
             }
             return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }
-        private static Building GetLowestRes(List<Building> buildings, Village vill)
+        private static Building GetLowestRes(Account acc, Village vill, List<Building> buildings)
         {
             //get distinct field types
             var distinct = buildings.Select(x => x.Type).Distinct().ToList();
             long lowestRes = long.MaxValue;
             BuildingEnum toUpgrade = BuildingEnum.Cropland;
 
+            var heroRes = vill.Settings.UseHeroRes ?
+                HeroHelper.GetHeroResources(acc).ToArray() :
+                new long[] { 0, 0, 0, 0 };
+
+            var resSum = ResourcesHelper.SumArr(vill.Res.Stored.Resources.ToArray(), heroRes);
+
             foreach (var distinctType in distinct)
             {
-                if (distinctType == BuildingEnum.Woodcutter && vill.Res.Stored.Resources.Wood < lowestRes) { lowestRes = vill.Res.Stored.Resources.Wood; toUpgrade = BuildingEnum.Woodcutter; }
-                if (distinctType == BuildingEnum.ClayPit && vill.Res.Stored.Resources.Clay < lowestRes) { lowestRes = vill.Res.Stored.Resources.Clay; toUpgrade = BuildingEnum.ClayPit; }
-                if (distinctType == BuildingEnum.IronMine && vill.Res.Stored.Resources.Iron < lowestRes) { lowestRes = vill.Res.Stored.Resources.Iron; toUpgrade = BuildingEnum.IronMine; }
-                if (distinctType == BuildingEnum.Cropland && vill.Res.Stored.Resources.Crop < lowestRes) { lowestRes = vill.Res.Stored.Resources.Crop; toUpgrade = BuildingEnum.Cropland; }
+                if (distinctType == BuildingEnum.Woodcutter &&
+                    resSum[0] < lowestRes) 
+                { 
+                    lowestRes = resSum[0];
+                    toUpgrade = BuildingEnum.Woodcutter; 
+                }
+                else if (distinctType == BuildingEnum.ClayPit &&
+                    resSum[1] < lowestRes) 
+                {
+                    lowestRes = resSum[1];
+                    toUpgrade = BuildingEnum.ClayPit; 
+                }
+                else if (distinctType == BuildingEnum.IronMine &&
+                    resSum[2] < lowestRes) 
+                { 
+                    lowestRes = resSum[2];
+                    toUpgrade = BuildingEnum.IronMine; 
+                }
+                else if (distinctType == BuildingEnum.Cropland &&
+                    resSum[3] < lowestRes) 
+                { 
+                    lowestRes = resSum[3];
+                    toUpgrade = BuildingEnum.Cropland; 
+                }
             }
-            return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
+          return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }
         private static bool CheckExcludeCrop(Village vill, BuildingTask task)
         {

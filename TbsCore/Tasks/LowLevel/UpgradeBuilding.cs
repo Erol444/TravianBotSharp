@@ -32,7 +32,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             // Check if the task is complete
-            var (urlId, constructNew) = GetUrlForBuilding(Vill, Task);
+            var (urlId, constructNew) = GetUrlForBuilding(acc, Vill, Task);
             if (urlId == null)
             {
                 //no space for this building
