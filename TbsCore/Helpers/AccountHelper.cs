@@ -111,13 +111,12 @@ namespace TravBotSharp.Files.Helpers
         public static void ReStartCelebration(Account acc, Village vill)
         {
             // If we don't want auto-celebrations, return
-            if (!vill.Expansion.AutoCelebrations) return;
+            if (vill.Expansion.Celebrations == CelebrationEnum.None ) return;
 
             TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new Celebration()
             {
                 ExecuteAt = vill.Expansion.CelebrationEnd.AddSeconds(7),
-                Vill = vill,
-                BigCelebration = vill.Expansion.BigCelebrations,
+                Vill = vill
             });
         }
     }

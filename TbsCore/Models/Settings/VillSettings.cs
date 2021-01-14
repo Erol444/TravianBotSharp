@@ -21,6 +21,10 @@ namespace TbsCore.Models.Settings
         public bool SendRes { get; set; }
         public bool AutoExpandStorage { get; set; }
         public bool UseHeroRes { get; set; }
+        /// <summary>
+        /// Auto-Improve troops in smithy
+        /// </summary>
+        public bool AutoImprove { get; set; }
     }
 }
 

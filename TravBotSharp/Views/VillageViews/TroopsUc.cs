@@ -36,8 +36,6 @@ namespace TravBotSharp.Views
                 comboBoxTroopsToTrain.Items.Clear();
             }
 
-            autoImprove.Checked = acc.Settings.AutoImprove;
-
             // Village troops info
             string infoText = "-- Troops already researched:\n";
             infoText += string.Join(", ", vill.Troops.Researched) + "\n";
@@ -73,11 +71,6 @@ namespace TravBotSharp.Views
             var troopSelected = troopsEnum + comboBoxTroopsToTrain.SelectedIndex + 1;
             vill.Troops.TroopToTrain = (Classificator.TroopsEnum)troopSelected;
             labelTroopsToTrain.Text = $"Selected: {VillageHelper.EnumStrToString(vill.Troops.TroopToTrain.ToString() ?? "")}";
-        }
-
-        private void autoImprove_CheckedChanged(object sender, EventArgs e)
-        {
-            GetSelectedAcc().Settings.AutoImprove = autoImprove.Checked;
         }
     }
 }

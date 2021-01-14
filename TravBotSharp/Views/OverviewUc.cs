@@ -36,8 +36,7 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Settings.Type.ToString())); //vill type
                 r.Cells.Add(new Cell("", vill.Settings.GetRes)); //Get resources from
                 r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
-                r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
-                r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
+                r.Cells.Add(new Cell(vill.Expansion.Celebrations.ToString())); // Auto-celebrations
                 r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
                 r.Cells.Add(new Cell("", vill.Settings.UseHeroRes)); // Use hero res
                 tableModelMain.Rows.Add(r);
@@ -59,8 +58,7 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell(vill.Settings.Type.ToString())); //vill type
             r.Cells.Add(new Cell("", vill.Settings.GetRes)); //Get resources from
             r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
-            r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
-            r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
+            r.Cells.Add(new Cell(vill.Expansion.Celebrations.ToString())); // Auto-celebrations
             r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
             r.Cells.Add(new Cell("", vill.Settings.UseHeroRes)); // Use hero res
             tableModelGlobal.Rows.Add(r);
@@ -144,28 +142,30 @@ namespace TravBotSharp.Views
                 ToolTipText = "Select where to send resources when too many"
             });
 
-            columnModel.Columns.Add(new CheckBoxColumn
+            ComboBoxCellEditor celebrationsEditor = new ComboBoxCellEditor
             {
-                Text = "Celebs",
-                Width = 60,
-                ToolTipText = "Automatically start celebrations"
+                DropDownStyle = DropDownStyle.DropDownList
+            };
+            celebrationsEditor.Items.AddRange(new string[] { "None", "Small", "Big" });
+
+            columnModel.Columns.Add(new ComboBoxColumn
+            {
+                Text = "Celebrations",
+                ToolTipText = "Auto-Start celebrations",
+                Editor = celebrationsEditor,
+                Width = 85
             });
+
             columnModel.Columns.Add(new CheckBoxColumn
             {
-                Text = "Big Celeb",
-                Width = 70,
-                ToolTipText = "Automatically start big celebrations"
-            });
-            columnModel.Columns.Add(new CheckBoxColumn
-            {
-                Text = "Auto-Expand",
-                Width = 100,
+                Text = "AutoExpandStorage",
+                Width = 130,
                 ToolTipText = "Automatically Expand storage when it's full"
             });
             columnModel.Columns.Add(new CheckBoxColumn
             {
-                Text = "Hero Res",
-                Width = 80,
+                Text = "UseHeroRes",
+                Width = 85,
                 ToolTipText = "Use hero resources"
             });
         }
@@ -198,15 +198,13 @@ namespace TravBotSharp.Views
                 column++;
                 vill.Settings.SendRes = cells[column].Checked;
                 column++;
-                vill.Expansion.AutoCelebrations = cells[column].Checked;
-                column++;
-                vill.Expansion.BigCelebrations = cells[column].Checked;
+                vill.Expansion.Celebrations = (CelebrationEnum)Enum.Parse(typeof(CelebrationEnum), cells[column].Text);
                 column++;
                 vill.Settings.AutoExpandStorage = cells[column].Checked;
                 column++;
                 vill.Settings.UseHeroRes = cells[column].Checked;
 
-                if (vill.Expansion.AutoCelebrations) AccountHelper.ReStartCelebration(acc, vill);
+                if (vill.Expansion.Celebrations != CelebrationEnum.None) AccountHelper.ReStartCelebration(acc, vill);
             }
             //Change name of village/s
             if (changeVillNames.Count > 0)

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
@@ -11,7 +12,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class Celebration : BotTask
     {
-        public bool BigCelebration { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
             var townHall = Vill.Build
@@ -30,10 +30,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
+            var bigCeleb = Vill.Expansion.Celebrations == CelebrationEnum.Big && 10 <= townHall.Level;
+
             // Check if enough resources
-
-            var bigCeleb = BigCelebration && 10 <= townHall.Level;
-
             if (!MiscCost.EnoughResForCelebration(Vill, bigCeleb))
             {
                 // If we don't have enough res, wait until enough res / transit
@@ -45,7 +44,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Post task check for celebration duration
             Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
 
-            if (Vill.Expansion.AutoCelebrations) this.NextExecute = Vill.Expansion.CelebrationEnd;
+            if (Vill.Expansion.Celebrations != CelebrationEnum.None) this.NextExecute = Vill.Expansion.CelebrationEnd;
 
             return TaskRes.Executed;
         }

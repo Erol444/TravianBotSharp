@@ -38,6 +38,7 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
                 r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
                 r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
+                r.Cells.Add(new Cell(vill.Settings.AutoImprove)); // Auto-improve troops
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -59,6 +60,7 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
             r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
             r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
+            r.Cells.Add(new Cell(vill.Settings.AutoImprove)); // Auto-improve troops
             tableModelGlobal.Rows.Add(r);
 
             //var newVills = acc.NewVillages.DefaultSettings;
@@ -173,6 +175,14 @@ namespace TravBotSharp.Views
             workshop.Editor = workshopEditor;
 
             columnModel.Columns.Add(workshop);
+
+            // Auto-Improve troops
+            columnModel.Columns.Add(new CheckBoxColumn
+            {
+                Text = "AutoImprove",
+                ToolTipText = "Auto Improve troops in smithy",
+                Width = 100
+            });
         }
         #endregion
         private string[] GetPossibleTroops(Classificator.BuildingEnum building)
@@ -223,6 +233,8 @@ namespace TravBotSharp.Views
                 UpdateGS(acc, vill, cells, column);
                 column++;
                 UpdateWorkshop(acc, vill, cells, column);
+                column++;
+                vill.Settings.AutoImprove = cells[column].Checked;
 
                 // Reset training
                 if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
