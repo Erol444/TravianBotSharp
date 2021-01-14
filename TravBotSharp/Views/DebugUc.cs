@@ -49,9 +49,9 @@ namespace TravBotSharp.Views
 
 
             //new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
-            foreach (var log in acc.Wb.Logs)
+            if(acc.Wb != null)
             {
-                logTextBox.AppendText(log + "\n");
+                foreach (var log in acc.Wb.Logs) logTextBox.AppendText(log + "\n");
             }
 
             this.Focus();
