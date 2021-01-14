@@ -56,7 +56,6 @@
             this.accAccountHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.accProxyHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button7 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.button6 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -64,6 +63,7 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
             this.accTabController.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
@@ -338,10 +338,11 @@
             this.accProxyHeader});
             this.accListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.accListView.FullRowSelect = true;
+            this.accListView.HideSelection = false;
             this.accListView.Location = new System.Drawing.Point(0, 0);
             this.accListView.MultiSelect = false;
             this.accListView.Name = "accListView";
-            this.accListView.Size = new System.Drawing.Size(200, 505);
+            this.accListView.Size = new System.Drawing.Size(200, 509);
             this.accListView.TabIndex = 6;
             this.accListView.UseCompatibleStateImageBehavior = false;
             this.accListView.View = System.Windows.Forms.View.Details;
@@ -367,16 +368,6 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(46, 113);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 8;
-            this.button4.Text = "dont click";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
             // button5
             // 
             this.button5.Location = new System.Drawing.Point(101, 12);
@@ -391,7 +382,7 @@
             // 
             this.button6.Location = new System.Drawing.Point(15, 70);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(164, 23);
+            this.button6.Size = new System.Drawing.Size(75, 23);
             this.button6.TabIndex = 10;
             this.button6.Text = "Login all";
             this.button6.UseVisualStyleBackColor = true;
@@ -414,21 +405,21 @@
             this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel4.Location = new System.Drawing.Point(0, 46);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(200, 505);
+            this.panel4.Size = new System.Drawing.Size(200, 509);
             this.panel4.TabIndex = 13;
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.button4);
             this.panel3.Controls.Add(this.button5);
             this.panel3.Controls.Add(this.button3);
-            this.panel3.Controls.Add(this.button4);
             this.panel3.Controls.Add(this.button7);
             this.panel3.Controls.Add(this.button6);
             this.panel3.Controls.Add(this.button2);
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(0, 551);
+            this.panel3.Location = new System.Drawing.Point(0, 555);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(200, 110);
+            this.panel3.Size = new System.Drawing.Size(200, 106);
             this.panel3.TabIndex = 12;
             // 
             // panel2
@@ -448,6 +439,16 @@
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(971, 661);
             this.panel5.TabIndex = 12;
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(101, 70);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(78, 23);
+            this.button4.TabIndex = 11;
+            this.button4.Text = "Logout all";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // ControlPanel
             // 
@@ -497,7 +498,6 @@
         private Views.OverviewUc overviewUc1;
         private System.Windows.Forms.TabPage FarmingTab;
         private Views.FarmingUc farmingUc1;
-        private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TabPage newVillagesTab;
         private Views.NewVillagesUc newVillagesUc1;
         private System.Windows.Forms.TabPage deffendingTab;
@@ -516,5 +516,6 @@
         private System.Windows.Forms.Panel panel5;
         private System.Windows.Forms.TabPage troopsTab;
         private Views.OverviewTroopsUc overviewTroopsUc1;
+        private System.Windows.Forms.Button button4;
     }
 }

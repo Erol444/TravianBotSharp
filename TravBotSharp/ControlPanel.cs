@@ -209,16 +209,6 @@ namespace TravBotSharp
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            //var acc = GetSelectedAcc();
-            //TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
-            //{
-            //    Vill = AccountHelper.GetMainVillage(acc),
-            //    ExecuteAt = DateTime.MinValue.AddHours(10)
-            //});
-        }
-
         private void button5_Click(object sender, EventArgs e) // Logout
         {
             new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
@@ -240,6 +230,18 @@ namespace TravBotSharp
                 }
             }).Start();
             generalUc1.UpdateBotRunning("true");
+        }
+
+        private void button4_Click(object sender, EventArgs e) // Logout all accounts
+        {
+            new Thread(async () =>
+            {
+                foreach (var acc in accounts)
+                {
+                    IoHelperCore.Logout(acc);
+                }
+            }).Start();
+            generalUc1.UpdateBotRunning("false");
         }
     }
 }
