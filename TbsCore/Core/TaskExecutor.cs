@@ -183,8 +183,6 @@ namespace TravBotSharp.Files.Helpers
 
             UpdateCurrentlyBuilding(acc, activeVill);
 
-            activeVill.Res.Production = ResourceParser.GetProduction(acc.Wb.Html);
-
             var resFields = ResourceParser.GetResourcefields(acc.Wb.Html, acc.AccInfo.ServerVersion);
             foreach (var field in resFields)
             {

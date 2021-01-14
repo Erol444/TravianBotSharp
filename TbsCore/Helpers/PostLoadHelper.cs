@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.JsObjects;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
@@ -115,14 +117,25 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                // 10: FreeCrop
+                // 10: JS resources
                 () => {
-                    activeVill.Res.FreeCrop = RightBarParser.GetFreeCrop(html);
-                    },
+                    // TODO: cast directly from object to ResourcesJsObject, no de/serialization!
+                    var resJson = DriverHelper.GetJsObj<string>(acc, "JSON.stringify(resources);");
+                    var resJs = JsonConvert.DeserializeObject<ResourcesJsObject>(resJson);
+
+                    activeVill.Res.Capacity.GranaryCapacity = resJs.maxStorage.l4;
+                    activeVill.Res.Capacity.WarehouseCapacity = resJs.maxStorage.l1;
+
+                    activeVill.Res.Stored.Resources = resJs.storage.GetResources();
+                    activeVill.Res.Stored.LastRefresh = DateTime.Now;
+
+                    activeVill.Res.Production = resJs.production.GetResources();
+                    activeVill.Res.FreeCrop = resJs.production.l5;
+                },
                 // 11:
-                () => activeVill.Res.Capacity = ResourceParser.GetResourceCapacity(html, acc.AccInfo.ServerVersion),
+                () => { },
                 // 12:
-                () => activeVill.Res.Stored = ResourceParser.GetResources(html),
+                () => { },
                 // 13:
                 () => activeVill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(30,60)),
                 // 14 NPC:
