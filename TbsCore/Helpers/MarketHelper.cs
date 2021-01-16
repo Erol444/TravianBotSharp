@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
+using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Parsers;
@@ -228,16 +229,11 @@ namespace TravBotSharp.Files.Helpers
         {
             if (resSum == -1)
             {
-                var res = vill.Res.Stored.Resources;
-                resSum = res.Wood + res.Clay + res.Iron + res.Crop;
+                resSum = vill.Res.Stored.Resources.Sum();
             }
-            var rr = vill.Market.Npc.ResourcesRatio;
-            long[] ratio = new long[] { rr.Wood, rr.Clay, rr.Iron, rr.Crop };
-            long ratioSum = 0;
-            for (int i = 0; i < 4; i++)
-            {
-                ratioSum += ratio[i];
-            }
+            var ratio = vill.Market.Npc.ResourcesRatio.ToArray();
+            long ratioSum = vill.Market.Npc.ResourcesRatio.Sum();
+
             var onePoint = resSum / ratioSum;
 
             long[] resTarget = new long[4];
@@ -356,7 +352,7 @@ namespace TravBotSharp.Files.Helpers
         {
             acc.Tasks.RemoveAll(x => x.GetType() == typeof(SendResToMain) && x.Vill == vill);
 
-            if (vill.Settings.Type == Models.Settings.VillType.Support && vill.Settings.SendRes)
+            if (vill.Settings.Type == VillType.Support && vill.Settings.SendRes)
             {
                 TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new SendResToMain()
                 {

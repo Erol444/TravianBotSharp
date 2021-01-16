@@ -17,7 +17,7 @@ namespace TravBotSharp.Files.Models.AccModels
     {
         // Average log length is 70 chars. 20 overhead + 70 * 2 (each char => 2 bytes)
         // Average memory consumption for logs will thus be: 160 * maxLogCnt => ~500kB
-        const int maxLogCnt = 1000;
+        private const int maxLogCnt = 1000;
         public WebBrowserInfo()
         {
             Logs = new CircularBuffer<string>(maxLogCnt);
@@ -116,16 +116,13 @@ namespace TravBotSharp.Files.Models.AccModels
             // Make browser headless to preserve memory resources
             if (acc.Settings.HeadlessMode) options.AddArguments("headless");
 
-            // Do not download images in order to preserve memory resources
+            // Do not download images in order to preserve memory resources / proxy traffic
             if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
 
             // Add browser caching
             var dir = IoHelperCore.GetCacheDir(username, server, access);
             Directory.CreateDirectory(dir);
             options.AddArguments("user-data-dir=" + dir);
-
-            // Disable message "Chrome is being controlled by automated test software"
-            //options.AddArgument("--excludeSwitches=enable-automation"); // Doesn't work anymore
 
             // Hide command prompt
             chromeService = ChromeDriverService.CreateDefaultService();
@@ -181,7 +178,7 @@ namespace TravBotSharp.Files.Models.AccModels
                     if (acc.Wb == null) return;
                     acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet", e);
                     repeat = true;
-                    if (++repeatCnt >= 5 && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
+                    if (5 <= ++repeatCnt && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {
                         // Change access
                         repeatCnt = 0;
@@ -194,13 +191,7 @@ namespace TravBotSharp.Files.Models.AccModels
             }
             while (repeat);
 
-
             await Task.Delay(AccountHelper.Delay());
-            //if (!string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
-            //{
-            //    // We are using proxy. Connection is probably slower -> additional delay.
-            //    await Task.Delay(AccountHelper.Delay() * 2);
-            //}
 
             UpdateHtml();
             await TaskExecutor.PageLoaded(acc);
@@ -209,8 +200,6 @@ namespace TravBotSharp.Files.Models.AccModels
         public void UpdateHtml() => Html.LoadHtml(Driver.PageSource);
         public void Dispose()
         {
-
-            //new Thread(() => {
             while (Driver != default)
             {
                 try
@@ -222,7 +211,6 @@ namespace TravBotSharp.Files.Models.AccModels
                 catch { }
             }
             chromeService.Dispose();
-            //}).Start();
         }
     }
 }

@@ -9,7 +9,7 @@ namespace TbsCore.Models.TroopsModels
         //TODO add my troops in other villages, with village coords  etc
         //TODO: troops count, troops researched, market stuff
 
-        public void Init(Account acc)
+        public void Init()
         {
             //TroopsInVillage = new List<TroopsRaw>();
             //MyTroops = new List<TroopsRaw>();

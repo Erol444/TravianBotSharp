@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.Settings;
 using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
@@ -19,7 +20,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
                 return TaskRes.Executed;
 
-            if (this.Vill.Settings.Type == Models.Settings.VillType.Support && this.Vill.Settings.SendRes)
+            if (this.Vill.Settings.Type == VillType.Support && this.Vill.Settings.SendRes)
             {
                 // Repeat this task
                 this.NextExecute = DateTime.Now.AddHours(1);

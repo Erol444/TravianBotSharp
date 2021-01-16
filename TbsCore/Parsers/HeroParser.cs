@@ -99,7 +99,7 @@ namespace TravBotSharp.Files.Parsers
         public static TimeSpan GetHeroArrivalInfo(HtmlDocument html)
         {
             var statusMsg = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
-            if (statusMsg == null) return TimeSpan.Zero;
+            if (statusMsg == null) return new TimeSpan(-1, 0, 0); // -1 hour
 
             return TimeParser.ParseTimer(statusMsg);
         }
@@ -129,8 +129,6 @@ namespace TravBotSharp.Files.Parsers
                         .Descendants("div")
                         .Any(x => x.HasClass("levelUp"));
                 case Classificator.ServerVersionEnum.T4_5:
-                    // TODO: fix this! 
-                    // http://prntscr.com/vo19dy
                     return htmlDoc.DocumentNode
                         .Descendants("i")
                         .Any(x => x.HasClass("levelUp") && x.HasClass("show"));

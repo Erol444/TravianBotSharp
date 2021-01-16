@@ -14,12 +14,11 @@ namespace TravBotSharp.Files.Helpers
         /// Get DateTime when there will be enough resources, based on production
         /// </summary>
         /// <param name="vill">Village</param>
-        /// <param name="required">Resources required</param>
-        /// <returns>DateTime</returns>
-        public static DateTime EnoughResToUpgrade(Village vill, Resources required)
+        /// <param name="resRequired">Resources required</param>
+        /// <returns>When we will have enough resources only from production</returns>
+        public static DateTime EnoughResToUpgrade(Village vill, long[] resRequired)
         {
             long[] production = vill.Res.Production.ToArray();
-            long[] resRequired = required.ToArray();
 
             DateTime ret = DateTime.Now.AddMinutes(3);
             for (int i = 0; i < 4; i++)
@@ -142,5 +141,7 @@ namespace TravBotSharp.Files.Helpers
             }
             while (TimeSpan.Zero < nextTask);
         }
+
+        internal static double InSeconds(DateTime time) => (time - DateTime.Now).TotalSeconds;
     }
 }

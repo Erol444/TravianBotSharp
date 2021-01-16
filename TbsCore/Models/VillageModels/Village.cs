@@ -1,4 +1,6 @@
-﻿using TbsCore.Models.AccModels;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.TroopsModels;
@@ -9,10 +11,8 @@ namespace TbsCore.Models.VillageModels
     {
         public void Init(Account acc)
         {
-            //When creating new village, init objects: coordinates, production and building array
-            //Coordinates = new Coordinates();
             Troops = new VillTroops();
-            Troops.Init(acc);
+            Troops.Init();
             Res = new VillRes();
             Res.Init();
             Build = new VillBuilding();
@@ -37,6 +37,7 @@ namespace TbsCore.Models.VillageModels
         public string Name { get; set; }
         /// <summary>
         /// Is village under attack. Plus account usage
+        /// TODO: move to vill.Deffing.UnderAttack
         /// </summary>
         public bool UnderAttack { get; set; }
         /// <summary>
@@ -86,6 +87,12 @@ namespace TbsCore.Models.VillageModels
         /// Timings for the village
         /// </summary>
         public VillTiming Timings { get; set; }
+        
+        /// <summary>
+        /// Tasks that weren't finished due to the lack of resources
+        /// </summary>
+        [JsonIgnore]
+        public List<VillUnfinishedTask> UnfinishedTasks { get; set; }
         #endregion
     }
 }

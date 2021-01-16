@@ -31,10 +31,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await DriverHelper.ClickById(acc, radioId);
             }
 
+            var donateArr = ResToDonate.ToArray();
             for (int i = 0; i < 4; i++)
             {
-                await DriverHelper.WriteById(acc, $"donate{(i + 1)}", ResToDonate.ToArray()[i]);
+                await DriverHelper.WriteById(acc, $"donate{(i + 1)}", donateArr[i]);
             }
+
             await DriverHelper.ClickById(acc, "donate_green");
             return TaskRes.Executed;
         }

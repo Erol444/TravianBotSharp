@@ -20,7 +20,7 @@ namespace TbsCore.TravianData
             var cost = CelebrationCost(big);
             var res = vill.Res.Stored.Resources.ToArray();
 
-            return ResourcesHelper.EnoughRes(res, cost);
+            return ResourcesHelper.IsEnoughRes(res, cost);
         }
     }
 }

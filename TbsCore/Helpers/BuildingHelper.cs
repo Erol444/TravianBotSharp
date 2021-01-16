@@ -486,7 +486,7 @@ namespace TravBotSharp.Files.Helpers
             BuildingEnum toUpgrade = BuildingEnum.Cropland;
 
             var heroRes = vill.Settings.UseHeroRes ?
-                HeroHelper.GetHeroResources(acc).ToArray() :
+                HeroHelper.GetHeroResources(acc) :
                 new long[] { 0, 0, 0, 0 };
 
             var resSum = ResourcesHelper.SumArr(vill.Res.Stored.Resources.ToArray(), heroRes);

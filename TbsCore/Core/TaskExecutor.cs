@@ -58,9 +58,6 @@ namespace TravBotSharp.Files.Helpers
             PostLoadTasks(acc);
         }
 
-        private static bool CheckContextualHelp(Account acc) =>
-            acc.Wb.Html.GetElementbyId("contextualHelp") != null;
-
         /// <summary>
         /// Called PageLoaded (after navigating to a specific url) or from
         /// Task timer, if there is no url/bot is already on the url
@@ -213,6 +210,9 @@ namespace TravBotSharp.Files.Helpers
 
         private static bool CheckSkipTutorial(Account acc) =>
             acc.Wb.Html.DocumentNode.Descendants().Any(x => x.HasClass("questButtonSkipTutorial"));
+
+        private static bool CheckContextualHelp(Account acc) =>
+            acc.Wb.Html.GetElementbyId("contextualHelp") != null;
 
         /// <summary>
         /// Checks if account is banned (T4.5)
