@@ -27,6 +27,7 @@ namespace TravBotSharp.Views
                 marketUc1,
                 troopsUc1,
                 attackUc1,
+                infoUc1,
             };
 
             // Initialize all the views

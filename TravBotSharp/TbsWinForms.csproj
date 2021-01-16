@@ -353,6 +353,12 @@
     <Compile Include="Views\BaseViews\TbsBaseUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Views\VillageViews\InfoUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\VillageViews\InfoUc.Designer.cs">
+      <DependentUpon>InfoUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\VillageViews\TroopsUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -431,6 +437,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\VillageViews\AttackUc.resx">
       <DependentUpon>AttackUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\VillageViews\InfoUc.resx">
+      <DependentUpon>InfoUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\VillageViews\TroopsUc.resx">
       <DependentUpon>TroopsUc.cs</DependentUpon>
