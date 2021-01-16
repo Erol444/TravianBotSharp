@@ -10,7 +10,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             TaskExecutor.RemoveSameTasksForVillage(acc, Vill, this.GetType(), this);
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
+            if (!acc.Wb.CurrentUrl.Contains("/dorf1.php")) // Don't re-navigate
+            {
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
+            }
             return TaskRes.Executed;
         }
     }

@@ -370,7 +370,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var upperLimitSec = 60;
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4) upperLimitSec = 3;
             this.NextExecute = time.AddSeconds(ran.Next(1, upperLimitSec));
-            //Console.WriteLine($"-------Next build execute: {this.task?.Building}, in {((this.NextExecute ?? DateTime.Now) - DateTime.Now).TotalSeconds}s");
         }
 
         /// <summary>
@@ -385,11 +384,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var cost = ResourceParser.GetResourceCost(resWrapper).ToArray();
 
             // We have enough resources, go on and build it
-            if (ResourcesHelper.EnoughRes(Vill.Res.Stored.Resources.ToArray(), cost)) return true;
+            if (ResourcesHelper.IsEnoughRes(Vill.Res.Stored.Resources.ToArray(), cost)) return true;
 
-            var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost, this.Task);
-            acc.Wb.Log($"Not enough resources for the building! Next execute in {(nextExecute - DateTime.Now).TotalSeconds} sec");
-            this.NextExecute = nextExecute;
+            ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost, this, this.Task);
+            
             return false;
         }
 

@@ -6,7 +6,7 @@ using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class TrainExchangeRes : BotTask
+    public class TrainExchangeRes : UpdateDorf2
     {
         public bool Great { get; set; }
         public Classificator.TroopsEnum troop { get; set; }
@@ -16,8 +16,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             if (Vill == null) Vill = AccountHelper.GetMainVillage(acc);
 
-            Classificator.BuildingEnum building = (Great == false) ? TroopsHelper.GetTroopBuilding(troop, false) : TroopsHelper.GetTroopBuilding(troop, true);
+            await base.Execute(acc);
 
+            var building = TroopsHelper.GetTroopBuilding(troop, Great);
             if (!await VillageHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
 

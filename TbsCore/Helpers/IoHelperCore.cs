@@ -196,8 +196,11 @@ namespace TravBotSharp.Files.Helpers
         public static async Task LoginAccount(Account acc)
         {
             if (acc.Wb == null)
-            { // If Agent doesn't exist yet
+            {
+                // Create new lists of tasks
                 acc.Tasks = new List<BotTask>();
+                acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
+
                 acc.Wb = new WebBrowserInfo();
                 await acc.Wb.InitSelenium(acc);
                 acc.TaskTimer = new TaskTimer(acc);

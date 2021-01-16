@@ -10,15 +10,26 @@ using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class Celebration : BotTask
+    public class Celebration : UpdateDorf2
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
+            await base.Execute(acc); // Navigate to dorf2
+
             var townHall = Vill.Build
                 .Buildings
                 .FirstOrDefault(x => x.Type == Classificator.BuildingEnum.TownHall);
 
             if (townHall == null) return TaskRes.Executed;
+
+            var bigCeleb = Vill.Expansion.Celebrations == CelebrationEnum.Big && 10 <= townHall.Level;
+
+            // Check if enough resources to start a celebration
+            if (!MiscCost.EnoughResForCelebration(Vill, bigCeleb))
+            {
+                ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, MiscCost.CelebrationCost(bigCeleb), this);
+                return TaskRes.Executed;
+            }
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={townHall.Id}");
 
@@ -30,15 +41,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            var bigCeleb = Vill.Expansion.Celebrations == CelebrationEnum.Big && 10 <= townHall.Level;
-
-            // Check if enough resources
-            if (!MiscCost.EnoughResForCelebration(Vill, bigCeleb))
-            {
-                // If we don't have enough res, wait until enough res / transit
-                this.NextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, MiscCost.CelebrationCost(bigCeleb));
-                return TaskRes.Executed;
-            }
             await StartCelebration(acc, bigCeleb);
 
             // Post task check for celebration duration

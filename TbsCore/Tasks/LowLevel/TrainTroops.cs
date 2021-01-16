@@ -14,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// <summary>
     /// Old train troops task, only here because of high speed TTWars servers.
     /// </summary>
-    public class TrainTroops : BotTask
+    public class TrainTroops : UpdateDorf2
     {
         /// <summary>
         /// Great barracks/stable?
@@ -37,13 +37,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
             building = TroopsHelper.GetTroopBuilding(Troop, Great);
 
             // Switch hero helmet. If hero will be switched, this TrainTroops task 
             // will be executed right after the hero helmet switch
             if (HeroHelper.SwitchHelmet(acc, this.Vill, building, this)) return TaskRes.Executed;
+
+            await base.Execute(acc);
 
             if (!await VillageHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
@@ -98,7 +98,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            wb.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
+            acc.Wb.Driver.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
 
             await Task.Delay(100);
 

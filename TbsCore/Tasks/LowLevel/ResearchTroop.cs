@@ -10,12 +10,13 @@ using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class ResearchTroop : BotTask
+    public class ResearchTroop : UpdateDorf2
     {
         //If Troop == null, just update the troop levels
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
+            await base.Execute(acc); // Navigate to dorf2
+
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Academy))
                 return TaskRes.Executed;
 
@@ -38,31 +39,29 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             (TimeSpan dur, Resources cost) = TroopsParser.AcademyResearchCost(acc.Wb.Html, troop);
 
-            var nextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost);
-
-            if (nextExecute < DateTime.Now.AddMilliseconds(1)) //We have enough resources, click Research button
+            // Check if we have enough resources to research the troop
+            if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
             {
-                wb.ExecuteScript($"document.getElementById('{button.Id}').click()");
-                var executeNext = DateTime.Now.Add(dur).AddMilliseconds(10 * AccountHelper.Delay());
-                TaskExecutor.AddTask(acc,
-                    new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) }
-                    );
-                RepeatTask(Vill, troop, executeNext);
-
+                ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost, this);
                 return TaskRes.Executed;
             }
-            else //Retry same task after resources get produced/transited
-            {
-                this.NextExecute = nextExecute;
-                return TaskRes.Executed;
-            }
+
+            acc.Wb.Driver.ExecuteScript($"document.getElementById('{button.Id}').click()");
+            
+            var executeNext = DateTime.Now.Add(dur).AddMilliseconds(10 * AccountHelper.Delay());
+            TaskExecutor.AddTask(acc,
+                new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) }
+                );
+            RepeatTask(Vill, troop, executeNext);
+
+            return TaskRes.Executed;
         }
 
         private void RepeatTask(Village vill, Classificator.TroopsEnum troop, DateTime nextExecute)
         {
             vill.Troops.ToResearch.Remove(troop);
             //Next research when this one finishes
-            if (vill.Troops.ToResearch.Count > 0) this.NextExecute = nextExecute;
+            if (0 < vill.Troops.ToResearch.Count) this.NextExecute = nextExecute;
         }
     }
 }
