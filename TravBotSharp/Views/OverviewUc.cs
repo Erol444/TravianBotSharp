@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.Settings;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
@@ -39,6 +39,7 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Expansion.Celebrations.ToString())); // Auto-celebrations
                 r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
                 r.Cells.Add(new Cell("", vill.Settings.UseHeroRes)); // Use hero res
+                r.Cells.Add(new Cell(vill.Settings.Donate.ToString())); // Donate to ally bonus
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -61,6 +62,7 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell(vill.Expansion.Celebrations.ToString())); // Auto-celebrations
             r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
             r.Cells.Add(new Cell("", vill.Settings.UseHeroRes)); // Use hero res
+            r.Cells.Add(new Cell(vill.Settings.Donate.ToString())); // Donate to ally bonus
             tableModelGlobal.Rows.Add(r);
 
             //var newVills = acc.NewVillages.DefaultSettings;
@@ -168,6 +170,21 @@ namespace TravBotSharp.Views
                 Width = 85,
                 ToolTipText = "Use hero resources"
             });
+            // Donate resources to ally bonus
+            ComboBoxCellEditor donationEditor = new ComboBoxCellEditor
+            {
+                DropDownStyle = DropDownStyle.DropDownList
+            };
+            donationEditor.Items.AddRange(new string[] { "None", "ExcludeCrop", "OnlyCrop" });
+
+            columnModel.Columns.Add(new ComboBoxColumn
+            {
+                Text = "Donate",
+                Width = 70,
+                ToolTipText = "Donate resources to the ally bonuses",
+                Editor = donationEditor
+            });
+
         }
         #endregion
 
@@ -203,11 +220,13 @@ namespace TravBotSharp.Views
                 vill.Settings.AutoExpandStorage = cells[column].Checked;
                 column++;
                 vill.Settings.UseHeroRes = cells[column].Checked;
+                column++;
+                vill.Settings.Donate = (DonateEnum)Enum.Parse(typeof(DonateEnum), cells[column].Text);
 
-                if (vill.Expansion.Celebrations != CelebrationEnum.None) AccountHelper.ReStartCelebration(acc, vill);
+                if (vill.Expansion.Celebrations != CelebrationEnum.None && acc.Tasks != null) AccountHelper.ReStartCelebration(acc, vill);
             }
             //Change name of village/s
-            if (changeVillNames.Count > 0)
+            if (0 < changeVillNames.Count && acc.Tasks != null)
             {
                 TaskExecutor.AddTaskIfNotExists(acc,
                         new ChangeVillageName()
@@ -222,25 +241,25 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             var type = (VillType)Enum.Parse(typeof(VillType), cells[column].Text);
-            if (type != vill.Settings.Type)
+            if (type == vill.Settings.Type) return;
+            vill.Settings.Type = type;
+
+            if (acc.Wb == null) return;
+            //User just selected different Village Type
+            switch (type)
             {
-                vill.Settings.Type = type;
-                //User just selected different Village Type
-                switch (type)
-                {
-                    case VillType.Farm:
-                        DefaultConfigurations.FarmVillagePlan(acc, vill);
-                        return;
-                    case VillType.Support:
-                        DefaultConfigurations.SupplyVillagePlan(acc, vill);
-                        return;
-                    case VillType.Deff:
-                        DefaultConfigurations.DeffVillagePlan(acc, vill);
-                        return;
-                    case VillType.Off:
-                        DefaultConfigurations.OffVillagePlan(acc, vill);
-                        return;
-                }
+                case VillType.Farm:
+                    DefaultConfigurations.FarmVillagePlan(acc, vill);
+                    return;
+                case VillType.Support:
+                    DefaultConfigurations.SupplyVillagePlan(acc, vill);
+                    return;
+                case VillType.Deff:
+                    DefaultConfigurations.DeffVillagePlan(acc, vill);
+                    return;
+                case VillType.Off:
+                    DefaultConfigurations.OffVillagePlan(acc, vill);
+                    return;
             }
         }
 

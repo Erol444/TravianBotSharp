@@ -151,11 +151,9 @@ namespace TravBotSharp.Views
         }
         private string GetWaveType(SendWaveModel attk)
         {
-            string type = "";
-            if (attk.FakeAttack) type = "Fake attack";
-            else if (attk.AllOff) type = "Real attack";
-            else type = "Catas";
-            return type;
+            if (attk.FakeAttack) return "Fake attack";
+            else if (attk.AllOff) return "Real attack";
+            else return "Catas";
         }
     }
 }

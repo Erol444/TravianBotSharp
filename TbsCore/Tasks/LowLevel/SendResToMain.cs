@@ -11,11 +11,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// Send all resources (except 30k crop(TODO: SELECTABLE)) above 20% (todo: selectable) to main village.
     /// If we have auto celebration selected, leave res for that (calculate based on production)
     /// </summary>
-    public class SendResToMain : BotTask
+    public class SendResToMain : UpdateDorf2
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
+            await base.Execute(acc);
 
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
                 return TaskRes.Executed;
@@ -23,7 +23,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (this.Vill.Settings.Type == VillType.Support && this.Vill.Settings.SendRes)
             {
                 // Repeat this task
-                this.NextExecute = DateTime.Now.AddHours(1);
+                var ran = new Random();
+                this.NextExecute = DateTime.Now.AddMinutes(ran.Next(30, 60));
             }
 
             var mainVill = AccountHelper.GetMainVillage(acc);

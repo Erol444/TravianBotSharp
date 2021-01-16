@@ -143,8 +143,8 @@ namespace TbsCore.Helpers
                 () =>
                 {
                     float ratio = (float)vill.Res.Stored.Resources.Crop / vill.Res.Capacity.GranaryCapacity;
-                    if (ratio >= 0.99 &&
-                        acc.AccInfo.Gold >= 3 &&
+                    if (0.99 <= ratio &&
+                        3 <= acc.AccInfo.Gold &&
                         vill.Market.Npc.Enabled &&
                         (vill.Market.Npc.NpcIfOverflow || !MarketHelper.NpcWillOverflow(vill)))
                     {  //npc crop!

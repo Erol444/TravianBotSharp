@@ -8,7 +8,7 @@ using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class SendResources : BotTask
+    public class SendResources : UpdateDorf2
     {
         public SendResourcesConfiguration Configuration { get; set; }
         public Resources Resources { get; set; }
@@ -17,8 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
+            await base.Execute(acc);
 
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
                 return TaskRes.Executed;

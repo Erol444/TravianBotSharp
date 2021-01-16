@@ -51,7 +51,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Check if we have enough resources to improve the troop
             if (!ResourcesHelper.IsEnoughRes(Vill, cost.UpgradeCost.ToArray()))
             {
-                ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost.UpgradeCost, this);
+                ResourcesHelper.NotEnoughRes(acc, Vill, cost.UpgradeCost, this);
                 return TaskRes.Executed;
             }
 

@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.Settings;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
@@ -11,7 +12,7 @@ namespace TravBotSharp.Views
     public partial class GeneralUc : TbsBaseUc, ITbsUc
     {
         private readonly string[] allyBonus = new string[] { "Recruitment", "Philosophy", "Metallurgy", "Commerce" };
-        private int bonusSelected = 0;
+        private int bonusSelected = 0, resPrioSel = 0;
 
         public GeneralUc()
         {
@@ -49,12 +50,16 @@ namespace TravBotSharp.Views
             reopenChrome.Checked = acc.Settings.AutoCloseDriver;
             openMinimizedCheckbox.Checked = acc.Settings.OpenMinimized;
 
+            donateAbove.Value = acc.Settings.DonateAbove;
+            donateExcessOf.Value = acc.Settings.DonateExcessOf;
+
             sleepMax.Value = acc.Settings.Time.MaxSleep;
             sleepMin.Value = acc.Settings.Time.MinSleep;
             workMax.Value = acc.Settings.Time.MaxWork;
             workMin.Value = acc.Settings.Time.MinWork;
             UpdateBotRunning();
             UpdaterBonusPrio(acc);
+            UpdaterResPrio(acc);
         }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages
@@ -331,6 +336,65 @@ namespace TravBotSharp.Views
             bonusSelected = priorityList.SelectedItems[0].Index;
             if (bonusSelected < 0 || 3 < bonusSelected) bonusSelected = 0;
             UpdaterBonusPrio(GetSelectedAcc());
+        }
+
+        private void donateAbove_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Settings.DonateAbove = (int)donateAbove.Value;
+        }
+
+        private void donateExcessOf_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Settings.DonateExcessOf = (int)donateExcessOf.Value;
+        }
+
+        private void button9_Click(object sender, EventArgs e) // Change account access
+        {
+            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new ChangeAccess() { 
+                ExecuteAt = DateTime.Now,
+                WaitSecMin = 0,
+                WaitSecMax = 1
+            });
+        }
+
+        private void button11_Click(object sender, EventArgs e) => MoveResPrio(true);
+        private void button10_Click(object sender, EventArgs e) => MoveResPrio(false);
+        private void MoveResPrio(bool up)
+        {
+            if ((resPrioSel == 0 && up) || (resPrioSel == 2 && !up)) return;
+
+            var acc = GetSelectedAcc();
+            var curVal = acc.Settings.ResSpendingPriority[resPrioSel];
+            var nextIndex = up ? -1 : 1;
+            acc.Settings.ResSpendingPriority[resPrioSel] = acc.Settings.ResSpendingPriority[resPrioSel + nextIndex];
+            acc.Settings.ResSpendingPriority[resPrioSel + nextIndex] = curVal;
+            resPrioSel += nextIndex;
+            UpdaterResPrio(acc);
+        }
+
+        private void resPrioView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            resPrioSel = resPrioView.SelectedItems[0].Index;
+            if (resPrioSel < 0 || 2 < resPrioSel) resPrioSel = 0;
+            UpdaterResPrio(GetSelectedAcc());
+        }
+
+        private void UpdaterResPrio(Account acc)
+        {
+            if (acc.Settings.ResSpendingPriority == null) acc.Settings.ResSpendingPriority = new ResSpendTypeEnum[3] {
+                ResSpendTypeEnum.Celebrations,
+                ResSpendTypeEnum.Building,
+                ResSpendTypeEnum.Troops
+            }; 
+
+            resPrioView.Items.Clear();
+            for (int i = 0; i < 3; i++)
+            {
+                var item = new ListViewItem();
+                item.Text = acc.Settings.ResSpendingPriority[i].ToString();
+                item.ForeColor = Color.FromName(resPrioSel == i ? "DodgerBlue" : "Black");
+                resPrioView.Items.Add(item);
+            }
         }
     }
 }

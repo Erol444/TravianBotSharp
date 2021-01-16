@@ -386,7 +386,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // We have enough resources, go on and build it
             if (ResourcesHelper.IsEnoughRes(Vill.Res.Stored.Resources.ToArray(), cost)) return true;
 
-            ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost, this, this.Task);
+            ResourcesHelper.NotEnoughRes(acc, Vill, cost, this, this.Task);
             
             return false;
         }

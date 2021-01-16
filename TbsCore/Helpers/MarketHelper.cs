@@ -272,7 +272,7 @@ namespace TravBotSharp.Files.Helpers
             long[] ret = new long[4];
             for (int i = 0; i < 4; i++)
             {
-                ret[i] = resSend[i] > stored[i] ? stored[i] : resSend[i];
+                ret[i] = stored[i] < resSend[i] ? stored[i] : resSend[i];
             }
             return ret;
         }

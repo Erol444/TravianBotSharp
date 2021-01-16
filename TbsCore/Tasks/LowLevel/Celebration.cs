@@ -27,7 +27,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Check if enough resources to start a celebration
             if (!MiscCost.EnoughResForCelebration(Vill, bigCeleb))
             {
-                ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, MiscCost.CelebrationCost(bigCeleb), this);
+                ResourcesHelper.NotEnoughRes(acc, Vill, MiscCost.CelebrationCost(bigCeleb), this);
                 return TaskRes.Executed;
             }
 

@@ -42,7 +42,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Check if we have enough resources to research the troop
             if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
             {
-                ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost, this);
+                ResourcesHelper.NotEnoughRes(acc, Vill, cost, this);
                 return TaskRes.Executed;
             }
 

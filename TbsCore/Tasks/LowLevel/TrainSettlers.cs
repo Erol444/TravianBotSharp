@@ -48,7 +48,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if(!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
             {
-                ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, cost, this);
+                ResourcesHelper.NotEnoughRes(acc, Vill, cost, this);
                 return TaskRes.Executed;
             }
 

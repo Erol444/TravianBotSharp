@@ -18,7 +18,7 @@ namespace TbsCoreTest
             var acc = factory.CreateAccount();
             var vill = acc.Villages[0];
 
-            Assert.False(ResSpendingHelper.CheckUnfinishedTasks(acc, vill, true), "CheckUnfinishedTasks should return false!");
+            Assert.False(ResSpendingHelper.CheckUnfinishedTasks(acc, vill), "CheckUnfinishedTasks should return false!");
 
             var celeb = new VillUnfinishedTask()
             {
@@ -51,8 +51,9 @@ namespace TbsCoreTest
             vill.UnfinishedTasks.Add(research);
             vill.UnfinishedTasks.Add(celeb);
             vill.UnfinishedTasks.Add(settlers);
+            vill.UnfinishedTasks.Add(celeb);
 
-            Assert.False(ResSpendingHelper.CheckUnfinishedTasks(acc, vill, true), "CheckUnfinishedTasks should return false! No Res");
+            Assert.False(ResSpendingHelper.CheckUnfinishedTasks(acc, vill), "CheckUnfinishedTasks should return false! No Res");
 
             vill.Res.Stored.Resources = new Resources() { Wood = 10, Clay = 10, Iron = 10, Crop = 10 };
 
@@ -63,7 +64,7 @@ namespace TbsCoreTest
             };
 
             // Unfinished tasks get sorted
-            Assert.True(ResSpendingHelper.CheckUnfinishedTasks(acc, vill, true), "CheckUnfinishedTasks should return true, enough res");
+            Assert.True(ResSpendingHelper.CheckUnfinishedTasks(acc, vill), "CheckUnfinishedTasks should return true, enough res");
 
             Assert.Equal(celeb, vill.UnfinishedTasks[0]);
             Assert.Equal(upgrade, vill.UnfinishedTasks[1]);
@@ -78,13 +79,12 @@ namespace TbsCoreTest
             };
 
             // Unfinished tasks get sorted
-            Assert.True(ResSpendingHelper.CheckUnfinishedTasks(acc, vill, true), "CheckUnfinishedTasks should return true, enough res");
+            Assert.True(ResSpendingHelper.CheckUnfinishedTasks(acc, vill), "CheckUnfinishedTasks should return true, enough res");
 
-            Assert.Equal(celeb, vill.UnfinishedTasks[0]);
-            Assert.Equal(improve, vill.UnfinishedTasks[1]);
-            Assert.Equal(research, vill.UnfinishedTasks[2]);
-            Assert.Equal(settlers, vill.UnfinishedTasks[3]);
-            Assert.Equal(upgrade, vill.UnfinishedTasks[4]);
+            Assert.Equal(improve, vill.UnfinishedTasks[0]);
+            Assert.Equal(research, vill.UnfinishedTasks[1]);
+            Assert.Equal(settlers, vill.UnfinishedTasks[2]);
+            Assert.Equal(upgrade, vill.UnfinishedTasks[3]);
         }
     }
 }

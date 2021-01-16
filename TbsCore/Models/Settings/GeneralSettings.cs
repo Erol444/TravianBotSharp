@@ -17,6 +17,15 @@ namespace TbsCore.Models.Settings
             OpenMinimized = false;
             WatchAdAbove = 80;
             BonusPriority = new byte[4] { 0, 1, 2, 3 };
+
+            ResSpendingPriority = new ResSpendTypeEnum[3] { 
+                ResSpendTypeEnum.Celebrations,
+                ResSpendTypeEnum.Building,
+                ResSpendTypeEnum.Troops 
+            };
+
+            DonateAbove = 90;
+            DonateExcessOf = 50;
         }
         public bool AutoActivateProductionBoost { get; set; }
 
@@ -86,5 +95,27 @@ namespace TbsCore.Models.Settings
         /// Ally bonus donation priority
         /// </summary>
         public byte[] BonusPriority { get; set; }
+        /// <summary>
+        /// Resource spending priority, which tasks should be done first if resources are low
+        /// </summary>
+        public ResSpendTypeEnum[] ResSpendingPriority { get; set; }
+        /// <summary>
+        /// When there are excess resources above this value [%], bot will donate them to ally bonus (if enabled in village)
+        /// </summary>
+        public int DonateAbove { get; set; }
+        /// <summary>
+        /// When donating resources, leave DonateExcessOf [%] of resources in the village
+        /// </summary>
+        public int DonateExcessOf { get; set; }
+    }
+
+    /// <summary>
+    /// Different ways to spend resources. User will be able to prioritize resource spending
+    /// </summary>
+    public enum ResSpendTypeEnum
+    {
+        Celebrations,
+        Building,
+        Troops
     }
 }

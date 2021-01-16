@@ -10,13 +10,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// </summary>
     public class ChangeAccess : BotTask
     {
+        public int? WaitSecMin { get; set; }
+        public int? WaitSecMax { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
             acc.Wb.Dispose();
 
             //TODO: make this configurable (wait time between switches)
             var rand = new Random();
-            int sleepSec = rand.Next(30, 600);
+            int sleepSec = rand.Next(WaitSecMin ?? 30, WaitSecMax ?? 600);
             var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
 
             await TimeHelper.SleepUntilPrioTask(acc, TaskPriority.High, sleepEnd);
@@ -24,7 +26,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await acc.Wb.InitSelenium(acc);
 
             // Remove all other ChangeAccess tasks
-            acc.Tasks.RemoveAll(x => x.GetType() == typeof(ChangeAccess) && x != this);
+            TaskExecutor.RemoveSameTasks(acc, this);
 
             var nextProxyChange = TimeHelper.GetNextProxyChange(acc);
             if (nextProxyChange != TimeSpan.MaxValue)
