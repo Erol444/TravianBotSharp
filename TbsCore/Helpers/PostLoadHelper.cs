@@ -193,12 +193,15 @@ namespace TbsCore.Helpers
                         acc.Hero.Settings.AutoSendToAdventure &&
                         acc.Hero.Status == Hero.StatusEnum.Home &&
                         acc.Hero.NextHeroSend < DateTime.Now);
+
+                    var homeVill = HeroHelper.GetHeroHomeVillage(acc);
                     // Update adventures
-                    if (heroReady &&
-                        (HeroHelper.GetHeroHomeVillage(acc)? // RallyPoint in village
-                            .Build?
-                            .Buildings?
-                            .Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level) ?? false) &&
+                    if(homeVill == null)
+                    {
+                        TaskExecutor.AddTaskIfNotExists(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+                    }
+                    else if (heroReady &&
+                        (homeVill.Build.Buildings.Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level)) &&
                         (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc)))
                     {
                         // Update adventures

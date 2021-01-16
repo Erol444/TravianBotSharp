@@ -31,10 +31,8 @@ namespace TravBotSharp.Files.Helpers
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>Hero home village</returns>
-        public static Village GetHeroHomeVillage(Account acc)
-        {
-            return acc.Villages.FirstOrDefault(x => x.Id == acc.Hero.HomeVillageId);
-        }
+        public static Village GetHeroHomeVillage(Account acc) =>
+            acc.Villages.FirstOrDefault(x => x.Id == acc.Hero.HomeVillageId);
 
         /// <summary>
         /// Auto equip hero if there is better equipment available
