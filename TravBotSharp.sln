@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Client", "Web\Client\We
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web.Shared", "Web\Shared\Web.Shared.csproj", "{06D7C42F-CE20-4B85-BA0D-689B7D867CD4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbsCoreTest", "TbsCoreTest\TbsCoreTest.csproj", "{BD027CDE-12E3-4548-8B32-3EEF83B73646}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +85,18 @@ Global
 		{06D7C42F-CE20-4B85-BA0D-689B7D867CD4}.Release|x64.Build.0 = Release|Any CPU
 		{06D7C42F-CE20-4B85-BA0D-689B7D867CD4}.Release|x86.ActiveCfg = Release|Any CPU
 		{06D7C42F-CE20-4B85-BA0D-689B7D867CD4}.Release|x86.Build.0 = Release|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Debug|x64.Build.0 = Debug|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Debug|x86.Build.0 = Debug|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Release|x64.ActiveCfg = Release|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Release|x64.Build.0 = Release|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Release|x86.ActiveCfg = Release|Any CPU
+		{BD027CDE-12E3-4548-8B32-3EEF83B73646}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
