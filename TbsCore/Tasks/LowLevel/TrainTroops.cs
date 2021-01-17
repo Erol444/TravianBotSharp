@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// <summary>
     /// Old train troops task, only here because of high speed TTWars servers.
     /// </summary>
-    public class TrainTroops : BotTask
+    public class TrainTroops : UpdateDorf2
     {
         /// <summary>
         /// Great barracks/stable?
@@ -38,8 +37,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             building = TroopsHelper.GetTroopBuilding(Troop, Great);
+
+            // Switch hero helmet. If hero will be switched, this TrainTroops task 
+            // will be executed right after the hero helmet switch
+            if (HeroHelper.SwitchHelmet(acc, this.Vill, building, this)) return TaskRes.Executed;
+
+            await base.Execute(acc);
 
             if (!await VillageHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
@@ -53,7 +57,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)Troop));
 
-            if(troopNode == null)
+            if (troopNode == null)
             {
                 acc.Wb.Log($"Bot tried to train {Troop} in {Vill.Name}, but couldn't find it in {building}! Are you sure you have {Troop} researched?");
                 return TaskRes.Executed;
@@ -94,7 +98,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            wb.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
+            acc.Wb.Driver.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
 
             await Task.Delay(100);
 
@@ -137,7 +141,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var trainingEnds = TroopsHelper.GetTrainingTimeForBuilding(building, Vill);
 
             // If sendRes is activated and there are some resources left to send
-            if (Vill.Settings.SendRes && MarketHelper.GetResToMainVillage(this.Vill).Sum() > 0)
+            if (Vill.Settings.SendRes && 0 < MarketHelper.GetResToMainVillage(this.Vill).Sum())
             {
                 // Check If all troops are filled in this vill before sending resources back to main village
                 if (TroopsHelper.EverythingFilled(acc, Vill))
@@ -150,6 +154,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (Vill.Settings.GetRes && mainVill != this.Vill)
             {
                 var nextCycle = trainingEnds.AddHours(-acc.Settings.FillInAdvance);
+
+                if (nextCycle < Vill.Market.LastTransit.AddMinutes(5))
+                    nextCycle = Vill.Market.LastTransit.AddMinutes(5);
+
                 if (nextCycle < DateTime.Now)
                 {
                     // Send resources asap.

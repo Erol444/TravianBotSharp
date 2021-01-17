@@ -27,7 +27,6 @@ namespace TbsCore.Models.ResourceModels
         /// When sending resources to main village, only send above these %:
         /// </summary>
         public Resources SendResLimit { get; set; }
-        public DateTime LastTransit { get; set; }
         public DateTime TransitArrival { get; set; }
     }
 }

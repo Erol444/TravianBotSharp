@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -25,43 +23,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             acc.Wb.Dispose();
 
-
-            string previousLog = "";
-            TimeSpan nextTask;
-            do
-            {
-                await Task.Delay(1000);
-                nextTask = TimeHelper.NextPrioTask(acc, LowestPrio);
-
-                var log = $"Chrome will reopen in {(int)nextTask.TotalMinutes} min";
-                if (log != previousLog)
-                {
-                    acc.Wb.Log(log);
-                    previousLog = log;
-                }
-
-                if (ReopenAt != null) CheckTime();
-            }
-            while (TimeSpan.Zero < nextTask);
+            await TimeHelper.SleepUntilPrioTask(acc, LowestPrio, ReopenAt);
 
             // Use the same access
             await acc.Wb.InitSelenium(acc, false);
 
             return TaskRes.Executed;
-        }
-
-        /// <summary>
-        /// After ReopenAt, set lowest prio to medium. ReopenAt is used only by SLeep BotTask,
-        /// so initially bot will only wakeup when high prio task is ready to be executed, but after
-        /// ReopenAt, bot will wakeup on medium prio task as well.
-        /// </summary>
-        private void CheckTime()
-        {
-            if (ReopenAt < DateTime.Now)
-            {
-                LowestPrio = TaskPriority.Medium;
-                ReopenAt = null; // So bot won't check it anymore
-            }
         }
     }
 }

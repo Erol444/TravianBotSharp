@@ -1,7 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 
@@ -13,7 +10,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             TaskExecutor.RemoveSameTasksForVillage(acc, Vill, this.GetType(), this);
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+            if (!acc.Wb.CurrentUrl.Contains("/dorf2.php")) // Don't re-navigate
+            {
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+            }
+            
             return TaskRes.Executed;
         }
     }

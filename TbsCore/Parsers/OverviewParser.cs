@@ -34,7 +34,7 @@ namespace TravBotSharp.Files.Parsers
                     {
                         if (!vill.Troops.Researched.Any(x => x == troopEnum))
                         {
-                            TroopsHelper.AddTroopToResearched(vill, troopEnum);
+                            vill.Troops.Researched.Add(troopEnum);
                             vill.Troops.ToResearch.Remove(troopEnum);
                         }
 

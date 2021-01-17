@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
@@ -46,7 +44,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/{adventure.Ref}");
 
                     var startButton = acc.Wb.Html.GetElementbyId("start");
-                    if (startButton == null){
+                    if (startButton == null)
+                    {
                         //Hero is probably out of the village.
                         this.NextExecute = DateTime.Now.AddMinutes(10);
                         return TaskRes.Executed;

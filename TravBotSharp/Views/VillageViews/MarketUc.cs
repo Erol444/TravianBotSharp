@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -26,7 +23,7 @@ namespace TravBotSharp.Views
             FillLimitCrop.Value = vill.Market.Settings.Configuration.FillLimit.Crop;
             transitResEnabled.Checked = vill.Market.Settings.Configuration.Enabled;
             TransitArrival.Text = vill.Market.Settings.Configuration.TransitArrival.ToString();
-            LastTransit.Text = vill.Market.Settings.Configuration.LastTransit.ToString();
+            LastTransit.Text = vill.Market.LastTransit.ToString();
             //Send res to main vill config
             woodSend.Value = vill.Market.Settings.Configuration.SendResLimit.Wood;
             claySend.Value = vill.Market.Settings.Configuration.SendResLimit.Clay;
@@ -62,7 +59,7 @@ namespace TravBotSharp.Views
 
         private void npcEnabled_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Npc.Enabled = npcEnabled.Checked;
-        
+
         #region SendMainVill Callbacks
         private void woodSend_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Wood = (long)woodSend.Value;

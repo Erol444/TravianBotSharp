@@ -45,12 +45,15 @@
             this.troopsUc1 = new TravBotSharp.Views.TroopsUc();
             this.villTabAttack = new System.Windows.Forms.TabPage();
             this.attackUc1 = new TravBotSharp.Views.AttackUc();
+            this.villInfo = new System.Windows.Forms.TabPage();
+            this.infoUc1 = new TravBotSharp.Views.InfoUc();
             this.panel1.SuspendLayout();
             this.villageTabController.SuspendLayout();
             this.villTabBuild.SuspendLayout();
             this.villTabMarket.SuspendLayout();
             this.villTabTroops.SuspendLayout();
             this.villTabAttack.SuspendLayout();
+            this.villInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -130,6 +133,7 @@
             this.villageTabController.Controls.Add(this.villTabMarket);
             this.villageTabController.Controls.Add(this.villTabTroops);
             this.villageTabController.Controls.Add(this.villTabAttack);
+            this.villageTabController.Controls.Add(this.villInfo);
             this.villageTabController.Dock = System.Windows.Forms.DockStyle.Fill;
             this.villageTabController.Location = new System.Drawing.Point(200, 0);
             this.villageTabController.Name = "villageTabController";
@@ -164,7 +168,7 @@
             this.villTabMarket.Location = new System.Drawing.Point(4, 22);
             this.villTabMarket.Name = "villTabMarket";
             this.villTabMarket.Padding = new System.Windows.Forms.Padding(3);
-            this.villTabMarket.Size = new System.Drawing.Size(733, 603);
+            this.villTabMarket.Size = new System.Drawing.Size(737, 609);
             this.villTabMarket.TabIndex = 1;
             this.villTabMarket.Text = "Market";
             this.villTabMarket.UseVisualStyleBackColor = true;
@@ -175,7 +179,7 @@
             this.marketUc1.Location = new System.Drawing.Point(3, 3);
             this.marketUc1.Margin = new System.Windows.Forms.Padding(4);
             this.marketUc1.Name = "marketUc1";
-            this.marketUc1.Size = new System.Drawing.Size(727, 597);
+            this.marketUc1.Size = new System.Drawing.Size(731, 603);
             this.marketUc1.TabIndex = 0;
             // 
             // villTabTroops
@@ -183,7 +187,7 @@
             this.villTabTroops.Controls.Add(this.troopsUc1);
             this.villTabTroops.Location = new System.Drawing.Point(4, 22);
             this.villTabTroops.Name = "villTabTroops";
-            this.villTabTroops.Size = new System.Drawing.Size(733, 603);
+            this.villTabTroops.Size = new System.Drawing.Size(737, 609);
             this.villTabTroops.TabIndex = 2;
             this.villTabTroops.Text = "Troops";
             this.villTabTroops.UseVisualStyleBackColor = true;
@@ -194,7 +198,7 @@
             this.troopsUc1.Location = new System.Drawing.Point(0, 0);
             this.troopsUc1.Margin = new System.Windows.Forms.Padding(4);
             this.troopsUc1.Name = "troopsUc1";
-            this.troopsUc1.Size = new System.Drawing.Size(733, 603);
+            this.troopsUc1.Size = new System.Drawing.Size(737, 609);
             this.troopsUc1.TabIndex = 0;
             // 
             // villTabAttack
@@ -203,7 +207,7 @@
             this.villTabAttack.Location = new System.Drawing.Point(4, 22);
             this.villTabAttack.Name = "villTabAttack";
             this.villTabAttack.Padding = new System.Windows.Forms.Padding(3);
-            this.villTabAttack.Size = new System.Drawing.Size(733, 603);
+            this.villTabAttack.Size = new System.Drawing.Size(737, 609);
             this.villTabAttack.TabIndex = 3;
             this.villTabAttack.Text = "Attack";
             this.villTabAttack.UseVisualStyleBackColor = true;
@@ -214,8 +218,27 @@
             this.attackUc1.Location = new System.Drawing.Point(3, 3);
             this.attackUc1.Margin = new System.Windows.Forms.Padding(4);
             this.attackUc1.Name = "attackUc1";
-            this.attackUc1.Size = new System.Drawing.Size(727, 597);
+            this.attackUc1.Size = new System.Drawing.Size(731, 603);
             this.attackUc1.TabIndex = 0;
+            // 
+            // villInfo
+            // 
+            this.villInfo.Controls.Add(this.infoUc1);
+            this.villInfo.Location = new System.Drawing.Point(4, 22);
+            this.villInfo.Name = "villInfo";
+            this.villInfo.Padding = new System.Windows.Forms.Padding(3);
+            this.villInfo.Size = new System.Drawing.Size(737, 609);
+            this.villInfo.TabIndex = 4;
+            this.villInfo.Text = "Info";
+            this.villInfo.UseVisualStyleBackColor = true;
+            // 
+            // infoUc1
+            // 
+            this.infoUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.infoUc1.Location = new System.Drawing.Point(3, 3);
+            this.infoUc1.Name = "infoUc1";
+            this.infoUc1.Size = new System.Drawing.Size(731, 603);
+            this.infoUc1.TabIndex = 0;
             // 
             // VillagesUc
             // 
@@ -231,6 +254,7 @@
             this.villTabMarket.ResumeLayout(false);
             this.villTabTroops.ResumeLayout(false);
             this.villTabAttack.ResumeLayout(false);
+            this.villInfo.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -254,5 +278,7 @@
         private TroopsUc troopsUc1;
         private System.Windows.Forms.TabPage villTabAttack;
         private AttackUc attackUc1;
+        private System.Windows.Forms.TabPage villInfo;
+        private InfoUc infoUc1;
     }
 }

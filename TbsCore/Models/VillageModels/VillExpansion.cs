@@ -18,14 +18,17 @@ namespace TbsCore.Models.VillageModels
         /// <summary>
         /// Whether bot automatically starts celebrations
         /// </summary>
-        public bool AutoCelebrations { get; set; }
-        /// <summary>
-        /// Auto-Celebrate big celebrations. Otherwise small celebrations
-        /// </summary>
-        public bool BigCelebrations { get; set; }
+        public CelebrationEnum Celebrations { get; set; }
         /// <summary>
         /// When will the current celebration finish
         /// </summary>
         public DateTime CelebrationEnd { get; set; }
+    }
+
+    public enum CelebrationEnum
+    {
+        None,
+        Small,
+        Big
     }
 }

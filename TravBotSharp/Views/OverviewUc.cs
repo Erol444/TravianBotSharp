@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
-using TbsCore.Models.AccModels;
+using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.Settings;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
@@ -38,10 +36,10 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Settings.Type.ToString())); //vill type
                 r.Cells.Add(new Cell("", vill.Settings.GetRes)); //Get resources from
                 r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
-                r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
-                r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
+                r.Cells.Add(new Cell(vill.Expansion.Celebrations.ToString())); // Auto-celebrations
                 r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
                 r.Cells.Add(new Cell("", vill.Settings.UseHeroRes)); // Use hero res
+                r.Cells.Add(new Cell(vill.Settings.Donate.ToString())); // Donate to ally bonus
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -51,7 +49,7 @@ namespace TravBotSharp.Views
             XpTableGlobal.TableModel = tableModelGlobal;
             var acc = GetSelectedAcc();
             var vill = acc.Villages.FirstOrDefault();
-            
+
 
             tableModelGlobal.Rows.Clear();
             // Change multiple row
@@ -61,10 +59,10 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell(vill.Settings.Type.ToString())); //vill type
             r.Cells.Add(new Cell("", vill.Settings.GetRes)); //Get resources from
             r.Cells.Add(new Cell("", vill.Settings.SendRes)); //Send resources to
-            r.Cells.Add(new Cell("", vill.Expansion.AutoCelebrations)); // Auto-celebrations
-            r.Cells.Add(new Cell("", vill.Expansion.BigCelebrations)); // Big celebrations
+            r.Cells.Add(new Cell(vill.Expansion.Celebrations.ToString())); // Auto-celebrations
             r.Cells.Add(new Cell("", vill.Settings.AutoExpandStorage)); // Auto-Expand storage
             r.Cells.Add(new Cell("", vill.Settings.UseHeroRes)); // Use hero res
+            r.Cells.Add(new Cell(vill.Settings.Donate.ToString())); // Donate to ally bonus
             tableModelGlobal.Rows.Add(r);
 
             //var newVills = acc.NewVillages.DefaultSettings;
@@ -146,30 +144,47 @@ namespace TravBotSharp.Views
                 ToolTipText = "Select where to send resources when too many"
             });
 
-            columnModel.Columns.Add(new CheckBoxColumn
+            ComboBoxCellEditor celebrationsEditor = new ComboBoxCellEditor
             {
-                Text = "Celebs",
-                Width = 60,
-                ToolTipText = "Automatically start celebrations"
+                DropDownStyle = DropDownStyle.DropDownList
+            };
+            celebrationsEditor.Items.AddRange(new string[] { "None", "Small", "Big" });
+
+            columnModel.Columns.Add(new ComboBoxColumn
+            {
+                Text = "Celebrations",
+                ToolTipText = "Auto-Start celebrations",
+                Editor = celebrationsEditor,
+                Width = 85
             });
+
             columnModel.Columns.Add(new CheckBoxColumn
             {
-                Text = "Big Celeb",
-                Width = 70,
-                ToolTipText = "Automatically start big celebrations"
-            });
-            columnModel.Columns.Add(new CheckBoxColumn
-            {
-                Text = "Auto-Expand",
-                Width = 100,
+                Text = "AutoExpandStorage",
+                Width = 130,
                 ToolTipText = "Automatically Expand storage when it's full"
             });
             columnModel.Columns.Add(new CheckBoxColumn
             {
-                Text = "Hero Res",
-                Width = 80,
+                Text = "UseHeroRes",
+                Width = 85,
                 ToolTipText = "Use hero resources"
             });
+            // Donate resources to ally bonus
+            ComboBoxCellEditor donationEditor = new ComboBoxCellEditor
+            {
+                DropDownStyle = DropDownStyle.DropDownList
+            };
+            donationEditor.Items.AddRange(new string[] { "None", "ExcludeCrop", "OnlyCrop" });
+
+            columnModel.Columns.Add(new ComboBoxColumn
+            {
+                Text = "Donate",
+                Width = 70,
+                ToolTipText = "Donate resources to the ally bonuses",
+                Editor = donationEditor
+            });
+
         }
         #endregion
 
@@ -200,18 +215,18 @@ namespace TravBotSharp.Views
                 column++;
                 vill.Settings.SendRes = cells[column].Checked;
                 column++;
-                vill.Expansion.AutoCelebrations = cells[column].Checked;
-                column++;
-                vill.Expansion.BigCelebrations = cells[column].Checked;
+                vill.Expansion.Celebrations = (CelebrationEnum)Enum.Parse(typeof(CelebrationEnum), cells[column].Text);
                 column++;
                 vill.Settings.AutoExpandStorage = cells[column].Checked;
                 column++;
                 vill.Settings.UseHeroRes = cells[column].Checked;
+                column++;
+                vill.Settings.Donate = (DonateEnum)Enum.Parse(typeof(DonateEnum), cells[column].Text);
 
-                if (vill.Expansion.AutoCelebrations) AccountHelper.ReStartCelebration(acc, vill);
+                if (vill.Expansion.Celebrations != CelebrationEnum.None && acc.Tasks != null) AccountHelper.ReStartCelebration(acc, vill);
             }
             //Change name of village/s
-            if (changeVillNames.Count > 0)
+            if (0 < changeVillNames.Count && acc.Tasks != null)
             {
                 TaskExecutor.AddTaskIfNotExists(acc,
                         new ChangeVillageName()
@@ -226,25 +241,25 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             var type = (VillType)Enum.Parse(typeof(VillType), cells[column].Text);
-            if (type != vill.Settings.Type)
+            if (type == vill.Settings.Type) return;
+            vill.Settings.Type = type;
+
+            if (acc.Wb == null) return;
+            //User just selected different Village Type
+            switch (type)
             {
-                vill.Settings.Type = type;
-                //User just selected different Village Type
-                switch (type)
-                {
-                    case VillType.Farm:
-                        DefaultConfigurations.FarmVillagePlan(acc, vill);
-                        return;
-                    case VillType.Support:
-                        DefaultConfigurations.SupplyVillagePlan(acc, vill);
-                        return;
-                    case VillType.Deff:
-                        DefaultConfigurations.DeffVillagePlan(acc, vill);
-                        return;
-                    case VillType.Off:
-                        DefaultConfigurations.OffVillagePlan(acc, vill);
-                        return;
-                }
+                case VillType.Farm:
+                    DefaultConfigurations.FarmVillagePlan(acc, vill);
+                    return;
+                case VillType.Support:
+                    DefaultConfigurations.SupplyVillagePlan(acc, vill);
+                    return;
+                case VillType.Deff:
+                    DefaultConfigurations.DeffVillagePlan(acc, vill);
+                    return;
+                case VillType.Off:
+                    DefaultConfigurations.OffVillagePlan(acc, vill);
+                    return;
             }
         }
 

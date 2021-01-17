@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace TbsCore.Models.AccModels
+﻿namespace TbsCore.Models.AccModels
 {
     public class HeroInfo
     {

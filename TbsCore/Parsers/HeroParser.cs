@@ -69,7 +69,7 @@ namespace TravBotSharp.Files.Parsers
             byte resSelectedByte = 0;
             if (resRadioChecked != null)
             {
-                resSelectedByte = (byte) Parser.RemoveNonNumeric(resRadioChecked.GetAttributeValue("value", "0"));
+                resSelectedByte = (byte)Parser.RemoveNonNumeric(resRadioChecked.GetAttributeValue("value", "0"));
             }
 
             var heroInfo = new HeroInfo();
@@ -77,7 +77,7 @@ namespace TravBotSharp.Files.Parsers
             heroInfo.Experience = (int)Parser.RemoveNonNumeric(experience);
             heroInfo.AvaliblePoints = (int)Parser.ParseNum(availablePoints.Split('/').LastOrDefault());
 
-            if(heroInfo.AvaliblePoints == 0)
+            if (heroInfo.AvaliblePoints == 0)
             {
                 heroInfo.FightingStrengthPoints = (int)Parser.ParseNum(heroPoints[0]);
                 heroInfo.OffBonusPoints = (int)Parser.ParseNum(heroPoints[1]);
@@ -99,7 +99,7 @@ namespace TravBotSharp.Files.Parsers
         public static TimeSpan GetHeroArrivalInfo(HtmlDocument html)
         {
             var statusMsg = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
-            if (statusMsg == null) return TimeSpan.Zero;
+            if (statusMsg == null) return new TimeSpan(-1, 0, 0); // -1 hour
 
             return TimeParser.ParseTimer(statusMsg);
         }
@@ -129,8 +129,6 @@ namespace TravBotSharp.Files.Parsers
                         .Descendants("div")
                         .Any(x => x.HasClass("levelUp"));
                 case Classificator.ServerVersionEnum.T4_5:
-                    // TODO: fix this! 
-                    // http://prntscr.com/vo19dy
                     return htmlDoc.DocumentNode
                         .Descendants("i")
                         .Any(x => x.HasClass("levelUp") && x.HasClass("show"));
@@ -211,7 +209,7 @@ namespace TravBotSharp.Files.Parsers
             if (node == null) node = htmlDoc.GetElementbyId("content");
             if (node == null) return null;
 
-            var href = node.Descendants("a").FirstOrDefault(x => 
+            var href = node.Descendants("a").FirstOrDefault(x =>
                 x.GetAttributeValue("href", "").StartsWith("/karte") ||
                 x.GetAttributeValue("href", "").StartsWith("karte") // TTWars
             );

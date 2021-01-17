@@ -1,6 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -12,26 +10,23 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// </summary>
     public class ChangeAccess : BotTask
     {
+        public int? WaitSecMin { get; set; }
+        public int? WaitSecMax { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
             acc.Wb.Dispose();
 
             //TODO: make this configurable (wait time between switches)
+            var rand = new Random();
+            int sleepSec = rand.Next(WaitSecMin ?? 30, WaitSecMax ?? 600);
+            var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
 
-            // Wait some time (1min) between the proxy switching.
-            var sleep = new Sleep()
-            {
-                AutoSleep = false,
-                MinSleepSec = 10,
-                MaxSleepSec = 60,
-            };
-            // sleep will stop if there is a high priority task
-            await sleep.Execute(acc);
+            await TimeHelper.SleepUntilPrioTask(acc, TaskPriority.High, sleepEnd);
 
             await acc.Wb.InitSelenium(acc);
 
             // Remove all other ChangeAccess tasks
-            acc.Tasks.RemoveAll(x => x.GetType() == typeof(ChangeAccess) && x != this);
+            TaskExecutor.RemoveSameTasks(acc, this);
 
             var nextProxyChange = TimeHelper.GetNextProxyChange(acc);
             if (nextProxyChange != TimeSpan.MaxValue)

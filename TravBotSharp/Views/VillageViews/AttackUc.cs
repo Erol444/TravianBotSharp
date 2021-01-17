@@ -6,8 +6,6 @@ using System.Windows.Forms;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
@@ -153,11 +151,9 @@ namespace TravBotSharp.Views
         }
         private string GetWaveType(SendWaveModel attk)
         {
-            string type = "";
-            if (attk.FakeAttack) type = "Fake attack";
-            else if (attk.AllOff) type = "Real attack";
-            else type = "Catas";
-            return type;
+            if (attk.FakeAttack) return "Fake attack";
+            else if (attk.AllOff) return "Real attack";
+            else return "Catas";
         }
     }
 }

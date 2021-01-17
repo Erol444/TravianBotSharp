@@ -1,5 +1,5 @@
-﻿using System;
-using System.Net.Http;
+﻿using RestSharp;
+using System;
 
 namespace TbsCore.Models.SendTroopsModels
 {
@@ -8,7 +8,7 @@ namespace TbsCore.Models.SendTroopsModels
         /// <summary>
         /// Content of the wave request
         /// </summary>
-        public FormUrlEncodedContent Content { get; set; }
+        public RestRequest Request { get; set; }
         /// <summary>
         /// Time it takes for troops to arrive at the destination
         /// </summary>

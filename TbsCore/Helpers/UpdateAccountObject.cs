@@ -5,7 +5,6 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.SideBarModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;
 
@@ -70,8 +69,9 @@ namespace TravBotSharp.Files.Helpers
             // Update the village
             TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateVillage()
             {
-                ExecuteAt = DateTime.Now,
-                Vill = vill
+                ExecuteAt = DateTime.Now.AddHours(-2),
+                Vill = vill,
+                ImportTasks = true
             });
 
             DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);

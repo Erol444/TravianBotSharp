@@ -1,10 +1,10 @@
-﻿using RestSharp;
-using System;
+﻿using System;
 using System.Linq;
-using System.Net;
+using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
+using static TravBotSharp.Files.Tasks.BotTask;
 
 namespace TravBotSharp.Files.Helpers
 {
@@ -14,12 +14,11 @@ namespace TravBotSharp.Files.Helpers
         /// Get DateTime when there will be enough resources, based on production
         /// </summary>
         /// <param name="vill">Village</param>
-        /// <param name="required">Resources required</param>
-        /// <returns>DateTime</returns>
-        public static DateTime EnoughResToUpgrade(Village vill, Resources required)
+        /// <param name="resRequired">Resources required</param>
+        /// <returns>When we will have enough resources only from production</returns>
+        public static DateTime EnoughResToUpgrade(Village vill, long[] resRequired)
         {
             long[] production = vill.Res.Production.ToArray();
-            long[] resRequired = required.ToArray();
 
             DateTime ret = DateTime.Now.AddMinutes(3);
             for (int i = 0; i < 4; i++)
@@ -114,5 +113,35 @@ namespace TravBotSharp.Files.Helpers
 
             return (firstTask.ExecuteAt - DateTime.Now);
         }
+
+        public static async Task SleepUntilPrioTask(Account acc, TaskPriority lowestPrio, DateTime? reopenAt)
+        {
+            string previousLog = "";
+            TimeSpan nextTask;
+            do
+            {
+                await Task.Delay(1000);
+                nextTask = TimeHelper.NextPrioTask(acc, lowestPrio);
+
+                var log = $"Chrome will reopen in {(int)nextTask.TotalMinutes} min";
+                if (log != previousLog)
+                {
+                    acc.Wb.Log(log);
+                    previousLog = log;
+                }
+
+                // After ReopenAt, set lowest prio to medium. ReopenAt is used only by Sleep BotTask,
+                // so initially bot will only wakeup when high prio task is ready to be executed, but after
+                // ReopenAt, bot will wakeup on medium prio task as well.
+                if (reopenAt != null && reopenAt < DateTime.Now)
+                {
+                    reopenAt = null;
+                    lowestPrio = TaskPriority.Medium; ;
+                }
+            }
+            while (TimeSpan.Zero < nextTask);
+        }
+
+        internal static double InSeconds(DateTime time) => (time - DateTime.Now).TotalSeconds;
     }
 }

@@ -1,11 +1,5 @@
-﻿using HtmlAgilityPack;
-using RestSharp;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Tasks.LowLevel;
@@ -64,13 +58,17 @@ namespace TravBotSharp.Files.Helpers
         {
             Random ran = new Random();
 
-            // If we don't know server speed, go and get it
-            if (acc.AccInfo.ServerSpeed == 0) TaskExecutor.AddTaskIfNotExists(acc, new GetServerSpeed() { ExecuteAt = DateTime.MinValue.AddHours(2) });
-            if (acc.AccInfo.MapSize == 0 ||
-                acc.AccInfo.Tribe == Classificator.TribeEnum.Any)
+            // Get the server info (on first running the account)
+            if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new GetMapSizeAndTribe() { ExecuteAt = DateTime.MinValue.AddHours(2) });
+                TaskExecutor.AddTaskIfNotExists(acc, new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) });
             }
+
+            if (acc.AccInfo.Tribe == null)
+            {
+                TaskExecutor.AddTaskIfNotExists(acc, new GetTribe() { ExecuteAt = DateTime.MinValue.AddHours(3) });
+            }
+
             //FL
             if (acc.Farming.Enabled) TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
 
@@ -83,7 +81,7 @@ namespace TravBotSharp.Files.Helpers
 
             // Access change
             var nextAccessChange = TimeHelper.GetNextProxyChange(acc);
-            if(nextAccessChange != TimeSpan.MaxValue)
+            if (nextAccessChange != TimeSpan.MaxValue)
             {
                 TaskExecutor.AddTaskIfNotExists(acc, new ChangeAccess() { ExecuteAt = DateTime.Now + nextAccessChange });
             }
@@ -113,59 +111,13 @@ namespace TravBotSharp.Files.Helpers
         public static void ReStartCelebration(Account acc, Village vill)
         {
             // If we don't want auto-celebrations, return
-            if (!vill.Expansion.AutoCelebrations) return;
+            if (vill.Expansion.Celebrations == CelebrationEnum.None ) return;
 
             TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new Celebration()
             {
                 ExecuteAt = vill.Expansion.CelebrationEnd.AddSeconds(7),
-                Vill = vill,
-                BigCelebration = vill.Expansion.BigCelebrations,
+                Vill = vill
             });
-        }
-
-        public static async Task CheckProxies(List<Access> access)
-        {
-            List<Task> tasks = new List<Task>();
-            access.ForEach(a =>
-            {
-                tasks.Add(Task.Run(() =>
-                {
-                    Console.WriteLine(DateTime.Now.ToString()+"]Start ip "+a.Proxy);
-                    var restClient = new RestClient
-                    {
-                        BaseUrl = new Uri("https://api.ipify.org/"),
-                    };
-
-                    if (!string.IsNullOrEmpty(a.Proxy))
-                    {
-                        if (!string.IsNullOrEmpty(a.ProxyUsername)) // Proxy auth
-                        {
-                            ICredentials credentials = new NetworkCredential(a.ProxyUsername, a.ProxyPassword);
-                            restClient.Proxy = new WebProxy($"{a.Proxy}:{a.ProxyPort}", false, null, credentials);
-                        }
-                        else // Without proxy auth
-                        {
-                            restClient.Proxy = new WebProxy(a.Proxy, a.ProxyPort);
-                        }
-                    }
-
-                    var response = restClient.Execute(new RestRequest
-                    {
-                        Resource = "api/ip",
-                        Method = Method.GET,
-                        Timeout = 5000,
-                    });
-                    Console.WriteLine(DateTime.Now.ToString() + "] Complete ip" + a.Proxy + $", Credentials: {!string.IsNullOrEmpty(a.ProxyUsername)}, content:"+response.Content);
-                    HtmlDocument doc = new HtmlDocument();
-                    doc.LoadHtml(response.Content);
-
-                    var ip = doc.DocumentNode.InnerText;
-
-                    a.Ok = ip == a.Proxy;
-                }));
-            });
-            await Task.WhenAll(tasks);
-            Console.WriteLine(DateTime.Now.ToString() + "]all tasks complete");
         }
     }
 }

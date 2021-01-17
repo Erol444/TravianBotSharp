@@ -1,10 +1,6 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 
@@ -26,12 +22,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2
 
             // On new village import the building tasks
-            if (ImportTasks) 
+            if (ImportTasks && !string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
             {
-                if (string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
-                    DefaultConfigurations.FarmVillagePlan(acc, Vill);
-                else
-                    IoHelperCore.AddBuildTasksFromFile(acc, Vill, acc.NewVillages.BuildingTasksLocationNewVillage);
+                IoHelperCore.AddBuildTasksFromFile(acc, Vill, acc.NewVillages.BuildingTasksLocationNewVillage);
             }
 
             await UpdateTroopsResearchedAndLevels(acc);
@@ -42,7 +35,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var firstTroop = TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe);
             Vill.Troops.TroopToTrain = firstTroop;
-            TroopsHelper.AddTroopToResearched(Vill, firstTroop);
+            Vill.Troops.Researched.Add(firstTroop);
 
             if (await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
             {
@@ -80,7 +73,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // If smithy exists, we get all researched troops and their levels
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
                 Vill.Troops.Levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
-                UpdateResearchedTroops(Vill);
+                TroopsHelper.UpdateResearchedTroops(Vill);
                 return;
             }
         }
@@ -100,7 +93,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 // Mark troops that user can train in building as researched
                 TroopsHelper.UpdateTroopsResearched(Vill, acc.Wb.Html);
-                
+
                 var ct = TroopsParser.GetTroopsCurrentlyTraining(acc.Wb.Html);
                 switch (trainingBuilding)
                 {
@@ -124,9 +117,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await Task.Delay(AccountHelper.Delay());
             }
         }
-        private void UpdateResearchedTroops(Village vill)
-        {
-            if (vill.Troops.Levels.Count > 0) vill.Troops.Researched = vill.Troops.Levels.Select(x => x.Troop).ToList();
-        }
+
     }
 }

@@ -32,7 +32,6 @@
             this.button10 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBoxTroopsToTrain = new System.Windows.Forms.ComboBox();
-            this.autoImprove = new System.Windows.Forms.CheckBox();
             this.troopsInfo = new System.Windows.Forms.RichTextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -73,17 +72,6 @@
             this.comboBoxTroopsToTrain.Size = new System.Drawing.Size(121, 21);
             this.comboBoxTroopsToTrain.TabIndex = 23;
             // 
-            // autoImprove
-            // 
-            this.autoImprove.AutoSize = true;
-            this.autoImprove.Location = new System.Drawing.Point(17, 122);
-            this.autoImprove.Name = "autoImprove";
-            this.autoImprove.Size = new System.Drawing.Size(113, 17);
-            this.autoImprove.TabIndex = 27;
-            this.autoImprove.Text = "Auto improve units";
-            this.autoImprove.UseVisualStyleBackColor = true;
-            this.autoImprove.CheckedChanged += new System.EventHandler(this.autoImprove_CheckedChanged);
-            // 
             // troopsInfo
             // 
             this.troopsInfo.Location = new System.Drawing.Point(269, 33);
@@ -109,7 +97,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.troopsInfo);
-            this.Controls.Add(this.autoImprove);
             this.Controls.Add(this.labelTroopsToTrain);
             this.Controls.Add(this.button10);
             this.Controls.Add(this.label1);
@@ -126,7 +113,6 @@
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBoxTroopsToTrain;
-        private System.Windows.Forms.CheckBox autoImprove;
         private System.Windows.Forms.RichTextBox troopsInfo;
         private System.Windows.Forms.Label label2;
     }

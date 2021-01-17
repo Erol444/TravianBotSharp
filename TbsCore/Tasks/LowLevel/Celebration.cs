@@ -1,22 +1,21 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Parsers;
+using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class Celebration : BotTask
+    public class Celebration : UpdateDorf2
     {
-        public bool BigCelebration { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
+            await base.Execute(acc); // Navigate to dorf2
+
             var townHall = Vill.Build
                 .Buildings
                 .FirstOrDefault(x => x.Type == Classificator.BuildingEnum.TownHall);
@@ -29,26 +28,26 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (DateTime.Now <= celebrationEnd)
             {
                 // We already have a celebration running
+                Vill.Expansion.CelebrationEnd = celebrationEnd;
                 this.NextExecute = celebrationEnd;
                 return TaskRes.Executed;
             }
 
-            // Check if enough resources
+            var bigCeleb = Vill.Expansion.Celebrations == CelebrationEnum.Big && 10 <= townHall.Level;
 
-            var bigCeleb = BigCelebration && 10 <= townHall.Level;
-
+            // Check if enough resources to start a celebration
             if (!MiscCost.EnoughResForCelebration(Vill, bigCeleb))
             {
-                // If we don't have enough res, wait until enough res / transit
-                this.NextExecute = ResourcesHelper.EnoughResourcesOrTransit(acc, Vill, MiscCost.CelebrationCost(bigCeleb));
+                ResourcesHelper.NotEnoughRes(acc, Vill, MiscCost.CelebrationCost(bigCeleb), this);
                 return TaskRes.Executed;
             }
+
             await StartCelebration(acc, bigCeleb);
 
             // Post task check for celebration duration
             Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
 
-            if (Vill.Expansion.AutoCelebrations) this.NextExecute = Vill.Expansion.CelebrationEnd;
+            if (Vill.Expansion.Celebrations != CelebrationEnum.None) this.NextExecute = Vill.Expansion.CelebrationEnd;
 
             return TaskRes.Executed;
         }

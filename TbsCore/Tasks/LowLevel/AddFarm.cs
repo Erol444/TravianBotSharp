@@ -1,8 +1,5 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TbsCore.Extensions;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.TroopsModels;

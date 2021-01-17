@@ -1,26 +1,13 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+﻿using RestSharp;
+using System;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Files.Helpers
 {
     public static class HttpHelper
     {
-        public static string GetAjaxToken(Account acc)
-        {
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.T4_4:
-                    IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
-                    return js.ExecuteScript("return ajaxToken;") as string;
-                default:
-                    return "";
-            }
-        }
-
         public static (CookieContainer, string) GetCookies(Account acc)
         {
             var cookies = acc.Wb.GetCookies();
@@ -39,57 +26,68 @@ namespace TravBotSharp.Files.Helpers
             return (cookieContainer, phpsessid);
         }
 
-        internal static async Task<string> SendPostReq(Account acc, HttpContent content, string url)
+        public static string SendPostReq(Account acc, RestRequest req)
         {
             (CookieContainer container, string phpsessid) = HttpHelper.GetCookies(acc);
 
-            using (var handler = new HttpClientHandler() { CookieContainer = container })
-            using (var client = new HttpClient(handler) { BaseAddress = new System.Uri(acc.AccInfo.ServerUrl) })
-            {
-                var headers = client.DefaultRequestHeaders;
+            acc.Wb.RestClient.CookieContainer = container;
 
-                if(!string.IsNullOrEmpty(phpsessid)) headers.Add("Cookie", "PHPSESSID=" + phpsessid + ";");
-                headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
+            req.AddHeader("Cookie", "PHPSESSID=" + phpsessid + ";");
 
-                HttpResponseMessage result = null;
-                var success = false;
-                do
-                {
-                    result = await client.PostAsync(url, content);
-                    if (result.StatusCode == HttpStatusCode.OK) success = true;
-                }
-                while (!success);
+            var response = acc.Wb.RestClient.Execute(req);
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
 
-                return await result.Content.ReadAsStringAsync();
-            }
+            return response.Content;
         }
-        public static async Task<HtmlAgilityPack.HtmlDocument> SendGetReq(Account acc, string url)
+
+        public static HtmlAgilityPack.HtmlDocument SendGetReq(Account acc, string url)
         {
             (CookieContainer container, string phpsessid) = HttpHelper.GetCookies(acc);
 
-            using (var handler = new HttpClientHandler() { CookieContainer = container })
-            using (var client = new HttpClient(handler) { BaseAddress = new System.Uri(acc.AccInfo.ServerUrl) })
+            acc.Wb.RestClient.CookieContainer = container;
+
+            var req = new RestRequest
             {
-                var headers = client.DefaultRequestHeaders;
-                headers.Add("Cookie", "PHPSESSID=" + phpsessid + ";");
-                headers.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("*/*"));
+                Resource = url,
+                Method = Method.GET,
+            };
+            req.AddHeader("Cookie", "PHPSESSID=" + phpsessid + ";");
 
-                HttpResponseMessage result = null;
-                var success = false;
-                do
+            var response = acc.Wb.RestClient.Execute(req);
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!" + response.StatusCode);
+
+            var htmlDoc = new HtmlAgilityPack.HtmlDocument();
+            htmlDoc.LoadHtml(response.Content);
+
+            return htmlDoc;
+        }
+
+        public static RestClient InitRestClient(Access access, string baseUrl)
+        {
+            var client = new RestClient
+            {
+                BaseUrl = new Uri(baseUrl),
+                Timeout = 5000
+            };
+            client.UserAgent = access.UserAgent;
+
+            // Set proxy
+            if (!string.IsNullOrEmpty(access.Proxy))
+            {
+                if (!string.IsNullOrEmpty(access.ProxyUsername)) // Proxy auth
                 {
-                    result = await client.GetAsync(url);
-                    if (result.StatusCode == HttpStatusCode.OK) success = true;
+                    ICredentials credentials = new NetworkCredential(access.ProxyUsername, access.ProxyPassword);
+                    client.Proxy = new WebProxy($"{access.Proxy}:{access.ProxyPort}", false, null, credentials);
                 }
-                while (!success);
-
-                var html = await result.Content.ReadAsStringAsync();
-
-                var htmlDoc = new HtmlAgilityPack.HtmlDocument();
-                htmlDoc.LoadHtml(html);
-
-                return htmlDoc;
+                else // Without proxy auth
+                {
+                    client.Proxy = new WebProxy(access.Proxy, access.ProxyPort);
+                }
             }
+
+            client.AddDefaultHeader("Accept", "*/*");
+
+            return client;
         }
     }
 }

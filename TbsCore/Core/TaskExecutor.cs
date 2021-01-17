@@ -1,6 +1,4 @@
-﻿
-using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,7 +33,7 @@ namespace TravBotSharp.Files.Helpers
                 await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click();");
             if (CheckCookiesNew(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('cmpboxbtnyes')[0].click();");
-            
+
             if (CheckContextualHelp(acc) &&
                 acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5)
             {
@@ -59,9 +57,6 @@ namespace TravBotSharp.Files.Helpers
             //TODO: limit this for performance reasons?
             PostLoadTasks(acc);
         }
-
-        private static bool CheckContextualHelp(Account acc) =>
-            acc.Wb.Html.GetElementbyId("contextualHelp") != null;
 
         /// <summary>
         /// Called PageLoaded (after navigating to a specific url) or from
@@ -94,6 +89,13 @@ namespace TravBotSharp.Files.Helpers
                         break;
                     default:
                         task.RetryCounter = 0;
+                        if (task.NextTask != null)
+                        {
+                            task.NextTask.ExecuteAt = DateTime.MinValue.AddHours(5);
+                            task.NextTask.Stage = TaskStage.Start;
+                            TaskExecutor.AddTask(acc, task.NextTask);
+                            task.NextTask = null;
+                        }
                         break;
                 }
             }
@@ -124,15 +126,16 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc">Account</param>
         private static void PostLoadTasks(Account acc)
         {
-            foreach (var task in PostLoadHelper.GetPostLoadTasks(acc))
+            var tasks = PostLoadHelper.GetPostLoadTasks(acc);
+            for (int i = 0; i < tasks.Count; i++)
             {
                 try
                 {
-                    task.Invoke();
+                    tasks[i].Invoke();
                 }
                 catch (Exception e)
                 {
-                    acc.Wb.Log($"Error in PreTask {task.GetType()}", e);
+                    acc.Wb.Log($"Error in {i + 1}. PreTask", e);
                 }
             }
         }
@@ -177,8 +180,6 @@ namespace TravBotSharp.Files.Helpers
 
             UpdateCurrentlyBuilding(acc, activeVill);
 
-            activeVill.Res.Production = ResourceParser.GetProduction(acc.Wb.Html);
-
             var resFields = ResourceParser.GetResourcefields(acc.Wb.Html, acc.AccInfo.ServerVersion);
             foreach (var field in resFields)
             {
@@ -210,6 +211,9 @@ namespace TravBotSharp.Files.Helpers
         private static bool CheckSkipTutorial(Account acc) =>
             acc.Wb.Html.DocumentNode.Descendants().Any(x => x.HasClass("questButtonSkipTutorial"));
 
+        private static bool CheckContextualHelp(Account acc) =>
+            acc.Wb.Html.GetElementbyId("contextualHelp") != null;
+
         /// <summary>
         /// Checks if account is banned (T4.5)
         /// </summary>
@@ -220,7 +224,7 @@ namespace TravBotSharp.Files.Helpers
         /// </summary>
         private static bool CheckCookies(Account acc) =>
             acc.Wb.Html.GetElementbyId("CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll") != null;
-        
+
         private static bool CheckCookiesNew(Account acc) =>
             acc.Wb.Html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes"));
 
@@ -244,7 +248,7 @@ namespace TravBotSharp.Files.Helpers
             var msg = acc.Wb.Html.GetElementbyId("sysmsg");
             return msg != null;
         }
-#endregion
+        #endregion
 
         public static void AddTask(Account acc, BotTask task)
         {
@@ -309,6 +313,6 @@ namespace TravBotSharp.Files.Helpers
                 x != thisTask
             );
         }
-        
+
     }
 }

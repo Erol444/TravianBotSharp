@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.Settings;
 
@@ -27,5 +28,10 @@ namespace TbsCore.Models.VillageModels
         /// List of all ongoing resource transits
         /// </summary>
         public List<MerchantsUnderWay> OngoingMerchants { get; set; }
+        /// <summary>
+        /// Last transit of resources to this village
+        /// </summary>
+        public DateTime LastTransit { get; set; }
+
     }
 }

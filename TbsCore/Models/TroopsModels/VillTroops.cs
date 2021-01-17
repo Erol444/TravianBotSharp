@@ -9,17 +9,17 @@ namespace TbsCore.Models.TroopsModels
         //TODO add my troops in other villages, with village coords  etc
         //TODO: troops count, troops researched, market stuff
 
-        public void Init(Account acc)
+        public void Init()
         {
             //TroopsInVillage = new List<TroopsRaw>();
             //MyTroops = new List<TroopsRaw>();
             CurrentlyTraining = new CurrentlyTraining();
             CurrentlyTraining.Init();
-            Researched = new List<Classificator.TroopsEnum>();
+            Researched = new HashSet<Classificator.TroopsEnum>();
 
             Levels = new List<TroopLevel>();
-            ToResearch = new List<Classificator.TroopsEnum>();
-            ToImprove = new List<Classificator.TroopsEnum>();
+            ToResearch = new HashSet<Classificator.TroopsEnum>();
+            ToImprove = new HashSet<Classificator.TroopsEnum>();
         }
 
         public int Settlers { get; set; } // For settling new village. TODO: make creation of new villages more error-proof
@@ -38,18 +38,18 @@ namespace TbsCore.Models.TroopsModels
         /// Already researched troops. First troop type (eg. legionair/clubswinger/phalax...) should
         /// be added when adding new village.
         /// </summary>
-        public List<Classificator.TroopsEnum> Researched { get; set; }
+        public HashSet<Classificator.TroopsEnum> Researched { get; set; }
 
         /// <summary>
         /// Troops that need to be researched in academy
         /// </summary>
-        public List<Classificator.TroopsEnum> ToResearch { get; set; }
+        public HashSet<Classificator.TroopsEnum> ToResearch { get; set; }
 
         /// <summary>
         /// Troops that need to be improved in smithy. Troops will be improved to lvl 20 by default.
         /// TODO: make this changeable
         /// </summary>
-        public List<Classificator.TroopsEnum> ToImprove { get; set; }
+        public HashSet<Classificator.TroopsEnum> ToImprove { get; set; }
         //public List<TroopsRaw> TroopsInVillage { get; set; } //Got from dorf1 parse
         //public List<TroopsRaw> MyTroops { get; set; } //got from rally point parse
     }

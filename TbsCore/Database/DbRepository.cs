@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.Database;
 using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Database
@@ -15,14 +16,13 @@ namespace TbsCore.Database
             {
                 try
                 {
-                    var accounts = context.DbAccount.Select(x => JsonConvert.DeserializeObject<Account>(x.JsonData)).ToList();
+                    var accounts = context.DbAccount.Select(x => x.Deserialize()).ToList();
                     //accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
                     return accounts;
                 }
                 catch (Exception e)
                 {
                     Console.WriteLine("Exception thrown: " + e.Message);
-
                 }
                 return new List<Account>();
             }

@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
 using System.Data;
+using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using TravBotSharp.Interfaces;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
+using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Tasks.LowLevel;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
@@ -31,6 +27,7 @@ namespace TravBotSharp.Views
                 marketUc1,
                 troopsUc1,
                 attackUc1,
+                infoUc1,
             };
 
             // Initialize all the views

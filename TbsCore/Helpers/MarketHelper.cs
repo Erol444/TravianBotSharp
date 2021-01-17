@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
+using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Models.ResourceModels;
 using TravBotSharp.Files.Parsers;
@@ -43,7 +43,7 @@ namespace TravBotSharp.Files.Helpers
             //if(vill.Market.)
 
             // Merchants are on their way
-            if (vill.Market.Settings.Configuration.TransitArrival > DateTime.Now) return vill.Market.Settings.Configuration.TransitArrival; 
+            if (vill.Market.Settings.Configuration.TransitArrival > DateTime.Now) return vill.Market.Settings.Configuration.TransitArrival;
 
             //send resources
             var sendRes = new Resources();
@@ -70,11 +70,15 @@ namespace TravBotSharp.Files.Helpers
             if (ResourcesHelper.IsZeroResources(sendRes)) //we have enough res :)
                 return DateTime.MinValue;
 
+            // Send resources to a village only once per 5 minutes
+            TimeSpan transitAfter = vill.Market.LastTransit.AddMinutes(5) - DateTime.Now;
+            if (transitAfter < TimeSpan.Zero) transitAfter = TimeSpan.Zero;
+
             var sendResTask = new SendResources
             {
                 Configuration = conf,
                 Coordinates = vill.Coordinates,
-                ExecuteAt = DateTime.Now.AddHours(-1),
+                ExecuteAt = DateTime.Now + transitAfter,
                 Vill = AccountHelper.GetMainVillage(acc),
                 Resources = sendRes
             };
@@ -86,7 +90,7 @@ namespace TravBotSharp.Files.Helpers
             //go to the marketplace and send resources
             //TransitArrival will get updated to more specific time
 
-            return DateTime.Now.Add(CalculateTransitTimeMainVillage(acc, vill)).AddMinutes(1);
+            return DateTime.Now.Add(transitAfter + CalculateTransitTimeMainVillage(acc, vill)).AddMinutes(1);
         }
 
         /// <summary>
@@ -184,6 +188,8 @@ namespace TravBotSharp.Files.Helpers
             // Will NOT trigger a page reload! Thus we should await some time before continuing.
             await DriverHelper.ClickById(acc, "enabledButton");
 
+            targetVillage.Market.LastTransit = DateTime.Now;
+
             var duration = TimeParser.ParseDuration(dur);
             return TimeSpan.FromTicks(duration.Ticks * (times * 2 - 1));
         }
@@ -223,16 +229,11 @@ namespace TravBotSharp.Files.Helpers
         {
             if (resSum == -1)
             {
-                var res = vill.Res.Stored.Resources;
-                resSum = res.Wood + res.Clay + res.Iron + res.Crop;
+                resSum = vill.Res.Stored.Resources.Sum();
             }
-            var rr = vill.Market.Npc.ResourcesRatio;
-            long[] ratio = new long[] { rr.Wood, rr.Clay, rr.Iron, rr.Crop };
-            long ratioSum = 0;
-            for (int i = 0; i < 4; i++)
-            {
-                ratioSum += ratio[i];
-            }
+            var ratio = vill.Market.Npc.ResourcesRatio.ToArray();
+            long ratioSum = vill.Market.Npc.ResourcesRatio.Sum();
+
             var onePoint = resSum / ratioSum;
 
             long[] resTarget = new long[4];
@@ -271,7 +272,7 @@ namespace TravBotSharp.Files.Helpers
             long[] ret = new long[4];
             for (int i = 0; i < 4; i++)
             {
-                ret[i] = resSend[i] > stored[i] ? stored[i] : resSend[i];
+                ret[i] = stored[i] < resSend[i] ? stored[i] : resSend[i];
             }
             return ret;
         }
@@ -351,7 +352,7 @@ namespace TravBotSharp.Files.Helpers
         {
             acc.Tasks.RemoveAll(x => x.GetType() == typeof(SendResToMain) && x.Vill == vill);
 
-            if (vill.Settings.Type == Models.Settings.VillType.Support && vill.Settings.SendRes)
+            if (vill.Settings.Type == VillType.Support && vill.Settings.SendRes)
             {
                 TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new SendResToMain()
                 {

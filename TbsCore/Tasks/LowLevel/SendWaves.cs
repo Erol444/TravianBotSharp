@@ -1,9 +1,7 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
+﻿using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
@@ -40,24 +38,28 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 await Task.Delay(rnd.Next(800, 1000));
 
-                var htmlDoc1 = await HttpHelper.SendGetReq(acc, "/build.php?tt=2&id=39");
+                var htmlDoc1 = HttpHelper.SendGetReq(acc, "/build.php?tt=2&id=39");
 
                 var build = htmlDoc1.GetElementbyId("build");
 
-                var values = new Dictionary<string, string>
+
+                var req = new RestRequest
                 {
-                    {"dname", ""}, // Name of the village, empty. Bot uses coordinates
-                    {"x", SendWaveModels[i].Coordinates.x.ToString()},
-                    {"y", SendWaveModels[i].Coordinates.y.ToString()},
-                    {"c", ((int)SendWaveModels[i].MovementType).ToString()}, // 2 = reinformance, 3 = attack, 4 = raid
-                    {"s1", "ok"}
+                    Resource = "/build.php?tt=2&id=39",
+                    Method = Method.POST,
                 };
+
+                req.AddParameter("dname", "");
+                req.AddParameter("x", SendWaveModels[i].Coordinates.x.ToString());
+                req.AddParameter("y", SendWaveModels[i].Coordinates.y.ToString());
+                req.AddParameter("c", ((int)SendWaveModels[i].MovementType).ToString());
+                req.AddParameter("s1", "ok");
 
                 foreach (var hidden in hiddenFields)
                 {
                     var value = build.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "") == hidden);
                     if (value == null) continue;
-                    values.Add(hidden, value.GetAttributeValue("value", ""));
+                    req.AddParameter(hidden, value.GetAttributeValue("value", ""));
                 }
 
                 // Get available troops
@@ -94,21 +96,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     switch (acc.AccInfo.ServerVersion)
                     {
                         case Classificator.ServerVersionEnum.T4_4:
-                            values.Add($"t{j + 1}", TroopCount(SendWaveModels[i].Troops[j]));
+                            req.AddParameter($"t{j + 1}", TroopCount(SendWaveModels[i].Troops[j]));
                             break;
                         case Classificator.ServerVersionEnum.T4_5:
-                            values.Add($"troops[0][t{j + 1}]", TroopCount(SendWaveModels[i].Troops[j]));
+                            req.AddParameter($"troops[0][t{j + 1}]", TroopCount(SendWaveModels[i].Troops[j]));
                             break;
                     }
 
                 }
-
-
-                var content = new FormUrlEncodedContent(values);
-
                 await Task.Delay(rnd.Next(800, 1000));
 
-                var ret = await HttpHelper.SendPostReq(acc, content, "/build.php?tt=2&id=39");
+                var ret = HttpHelper.SendPostReq(acc, req);
 
                 var htmlDoc2 = new HtmlAgilityPack.HtmlDocument();
                 htmlDoc2.LoadHtml(ret);
@@ -136,10 +134,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 }
 
                 //var ajaxToken = await HttpHelper.GetAjaxToken(wb);
-                var values2 = new Dictionary<string, string>
+                var req2 = new RestRequest
                 {
-                    {"s1", "ok"},
+                    Resource = "/build.php?tt=2&id=39",
+                    Method = Method.POST,
                 };
+
+                req2.AddParameter("s1", "ok");
 
                 // Copy all hidden names and values
                 var build2 = htmlDoc2.GetElementbyId("build");
@@ -148,7 +149,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 {
                     var val = hidden2.GetAttributeValue("value", "");
                     var name = hidden2.GetAttributeValue("name", "");
-                    values2.Add(name, val);
+                    req2.AddParameter(name, val);
                 }
 
                 // Add catapult targets
@@ -156,26 +157,26 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 switch (acc.AccInfo.ServerVersion)
                 {
                     case Classificator.ServerVersionEnum.T4_4:
-                        values2.TryGetValue("t8", out cataCount);
+                        cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "t8").Value.ToString();
                         break;
                     case Classificator.ServerVersionEnum.T4_5:
-                        values2.TryGetValue("troops[0][t8]", out cataCount);
+                        cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "troops[0][t8]").Value.ToString();
                         // If T4.5, we need to get value "a" as well - From Confirm button
                         var button = htmlDoc2.GetElementbyId("btn_ok");
                         string a = button.GetAttributeValue("value", "");
-                        values2.Add("a", a);
+                        req2.AddParameter("a", a);
                         break;
                 }
 
                 if (int.Parse(cataCount) > 0)
                 {
-                    values2.Add("ctar1", "99"); // 99 = Random, 1 = woodcuter, 2 = claypit..
-                    values2.Add("ctar2", "99"); // 99 = Random
+                    req2.AddParameter("ctar1", "99"); // 99 = Random, 1 = woodcuter, 2 = claypit..
+                    req2.AddParameter("ctar2", "99"); // 99 = Random
                 }
 
                 wavesReady.Add(new WaveReadyModel
                 {
-                    Content = new FormUrlEncodedContent(values2),
+                    Request = req2,
                     MovementTime = timespan
                 });
             }
@@ -203,7 +204,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 var delay10Percent = (int)delay / 10;
                 await Task.Delay(rnd.Next(delay - delay10Percent, delay + delay10Percent));
 
-                _ = HttpHelper.SendPostReq(acc, wavesReady[i].Content, "/build.php?tt=2&id=39");
+                _ = HttpHelper.SendPostReq(acc, wavesReady[i].Request);
             }
             acc.Wb.Log($"Successfully sent {wavesReady.Count} waves!");
 

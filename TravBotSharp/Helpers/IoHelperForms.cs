@@ -1,10 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using System.Windows.Forms;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Tasks;
 
 namespace TravBotSharp.Files.Helpers
 {

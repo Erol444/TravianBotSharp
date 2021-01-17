@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using OpenQA.Selenium;
+using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
@@ -32,6 +31,27 @@ namespace TbsCore.Helpers
             }
         }
 
+        /// <summary>
+        /// Gets JS object from the game. Query examples: 
+        /// window.TravianDefaults.Map.Size.top
+        /// resources.maxStorage
+        /// Travian.Game.speed
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <param name="obj">JS object</param>
+        /// <returns>Long for number, bool for boolean, string otherwise</returns>
+        public static T GetJsObj<T>(Account acc, string obj)
+        {
+            IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
+            return (T)js.ExecuteScript($"return {obj};");
+        }
+
+        public static string GetBearerToken(Account acc)
+        {
+            IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
+            return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+        }
+
         public static async Task<bool> ClickById(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionClick(), log);
         public static async Task<bool> WriteById(Account acc, string query, object text, bool log = true) =>
@@ -48,7 +68,7 @@ namespace TbsCore.Helpers
         private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true) =>
             await ExecuteScript(acc, $"document.{query.val}{action.val}", log);
 
-        
+
         public class QueryById : Query { public QueryById(string str) => base.val = $"getElementById('{str}')"; }
         public class QueryByName : Query { public QueryByName(string str) => base.val = $"getElementsByName('{str}')[0]"; }
         public class QueryByClassName : Query { public QueryByClassName(string str) => base.val = $"getElementsByClassName('{str}')[0]"; }

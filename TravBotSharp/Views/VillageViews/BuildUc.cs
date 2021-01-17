@@ -158,7 +158,7 @@ namespace TravBotSharp.Views
 
                 item.SubItems.Add(building.Level.ToString() + upgradeLvl); //level
                 //set color
-                switch(building.Type)
+                switch (building.Type)
                 {
                     case BuildingEnum.Woodcutter:
                         item.ForeColor = Color.LightGreen;
@@ -361,8 +361,8 @@ namespace TravBotSharp.Views
 
         private void button9_Click(object sender, EventArgs e) //export build tasks button
         {
-            DialogResult dialog = MessageBox.Show("Do you want to save building locations?", 
-                "Exporting build tasks", 
+            DialogResult dialog = MessageBox.Show("Do you want to save building locations?",
+                "Exporting build tasks",
                 MessageBoxButtons.YesNoCancel);
             if (dialog == DialogResult.Cancel) return;
 
@@ -370,7 +370,7 @@ namespace TravBotSharp.Views
 
             // Remove buildingIds if user wants that
             if (dialog == DialogResult.No) buildTasks.ToList().ForEach(x => x.BuildingId = null);
-            
+
             IoHelperForms.ExportBuildTasks(JsonConvert.SerializeObject(buildTasks));
         }
 
@@ -399,7 +399,7 @@ namespace TravBotSharp.Views
 
             var indicies = buildingsList.SelectedIndices;
 
-            if (indicies.Count > 0) selectedBuilding = vill.Build.Buildings[indicies[0]];
+            if (0 < indicies.Count) selectedBuilding = vill.Build.Buildings[indicies[0]];
             else return;
 
             // Check if there is already a building planner for that id

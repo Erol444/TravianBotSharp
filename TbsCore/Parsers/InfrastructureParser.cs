@@ -24,7 +24,8 @@ namespace TravBotSharp.Files.Parsers
                 var gid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("g")).Replace("g", ""));
 
                 byte lvl;
-                var lvlNode = fields[i].Descendants("div").FirstOrDefault(x => x.HasClass("labelLayer"));
+                // TODO: aid
+                var lvlNode = fields[i].Descendants("div").FirstOrDefault(x => x.HasClass("aid" + location));
                 if (lvlNode == null) lvl = 0;
                 else lvl = Convert.ToByte(lvlNode.InnerText);
 

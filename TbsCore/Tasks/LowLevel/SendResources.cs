@@ -1,8 +1,4 @@
-﻿
-
-using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
@@ -12,7 +8,7 @@ using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class SendResources : BotTask
+    public class SendResources : UpdateDorf2
     {
         public SendResourcesConfiguration Configuration { get; set; }
         public Resources Resources { get; set; }
@@ -21,8 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
+            await base.Execute(acc);
 
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
                 return TaskRes.Executed;
@@ -35,6 +30,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var resToSend = MarketHelper.SendResCapToStorage(acc, this.Resources);
 
             var targetVillage = acc.Villages.FirstOrDefault(x => x.Coordinates == this.Coordinates);
+
             var duration = await MarketHelper.MarketSendResource(acc, resToSend, targetVillage, this);
 
             var targetVill = acc.Villages.FirstOrDefault(x => x.Coordinates == Coordinates);
@@ -43,7 +39,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (this.Configuration != null && duration != null)
             {
                 this.Configuration.TransitArrival = DateTime.Now.Add(duration);
-                this.Configuration.LastTransit = DateTime.Now;
             }
             // When you send resources there actually isn't a page load
             return TaskRes.Executed;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace TbsCore.Models.MapModels
 {
@@ -18,6 +19,19 @@ namespace TbsCore.Models.MapModels
             public string d { get; set; }
             public string u { get; set; }
             public string a { get; set; }
+
+            public MapTile GetMapTile()
+            {
+                return new MapTile()
+                {
+                    Coordinates = new Coordinates()
+                    {
+                        x = Int32.Parse(this.x),
+                        y = Int32.Parse(this.y)
+                    },
+                    Title = this.c
+                };
+            }
         }
 
         public class Data

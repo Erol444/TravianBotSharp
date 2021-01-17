@@ -180,8 +180,8 @@
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="RestSharp, Version=106.11.4.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.106.11.4\lib\net452\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=106.11.7.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.106.11.7\lib\net452\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SQLitePCLRaw.batteries_v2, Version=2.0.2.669, Culture=neutral, PublicKeyToken=8226ea5df37bcae9, processorArchitecture=MSIL">
       <HintPath>..\packages\SQLitePCLRaw.bundle_e_sqlite3.2.0.2\lib\net461\SQLitePCLRaw.batteries_v2.dll</HintPath>
@@ -353,6 +353,12 @@
     <Compile Include="Views\BaseViews\TbsBaseUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Views\VillageViews\InfoUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\VillageViews\InfoUc.Designer.cs">
+      <DependentUpon>InfoUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\VillageViews\TroopsUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -431,6 +437,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\VillageViews\AttackUc.resx">
       <DependentUpon>AttackUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\VillageViews\InfoUc.resx">
+      <DependentUpon>InfoUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\VillageViews\TroopsUc.resx">
       <DependentUpon>TroopsUc.cs</DependentUpon>

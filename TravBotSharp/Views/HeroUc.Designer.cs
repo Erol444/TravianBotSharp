@@ -69,6 +69,7 @@
             this.adventures = new System.Windows.Forms.RichTextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
+            this.helmetSwitcher = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.minHeroHealthUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.strength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offBonus)).BeginInit();
@@ -459,11 +460,12 @@
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.Controls.Add(this.helmetSwitcher);
             this.panel2.Controls.Add(this.button1);
             this.panel2.Controls.Add(this.autoEquip);
             this.panel2.Location = new System.Drawing.Point(255, 25);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(163, 69);
+            this.panel2.Size = new System.Drawing.Size(163, 86);
             this.panel2.TabIndex = 154;
             // 
             // adventures
@@ -495,6 +497,17 @@
             this.button2.Text = "Refresh Adventures";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // helmetSwitcher
+            // 
+            this.helmetSwitcher.AutoSize = true;
+            this.helmetSwitcher.Location = new System.Drawing.Point(11, 60);
+            this.helmetSwitcher.Name = "helmetSwitcher";
+            this.helmetSwitcher.Size = new System.Drawing.Size(120, 17);
+            this.helmetSwitcher.TabIndex = 152;
+            this.helmetSwitcher.Text = "Auto switch helmets";
+            this.helmetSwitcher.UseVisualStyleBackColor = true;
+            this.helmetSwitcher.CheckedChanged += new System.EventHandler(this.helmetSwitcher_CheckedChanged);
             // 
             // HeroUc
             // 
@@ -583,5 +596,6 @@
         private System.Windows.Forms.RichTextBox adventures;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.CheckBox helmetSwitcher;
     }
 }

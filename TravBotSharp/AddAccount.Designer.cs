@@ -53,6 +53,8 @@
             this.proxyUsername = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.button5 = new System.Windows.Forms.Button();
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
@@ -171,7 +173,8 @@
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3,
-            this.columnHeader4});
+            this.columnHeader4,
+            this.columnHeader5});
             this.accessListView.FullRowSelect = true;
             this.accessListView.GridLines = true;
             this.accessListView.HideSelection = false;
@@ -192,17 +195,17 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "Proxy";
-            this.columnHeader2.Width = 137;
+            this.columnHeader2.Width = 116;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "Port";
-            this.columnHeader3.Width = 70;
+            this.columnHeader3.Width = 78;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "Proxy username";
-            this.columnHeader4.Width = 100;
+            this.columnHeader4.Width = 95;
             // 
             // button1
             // 
@@ -305,11 +308,28 @@
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
+            // button5
+            // 
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(378, 362);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(100, 30);
+            this.button5.TabIndex = 36;
+            this.button5.Text = "Check proxies";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Ok";
+            this.columnHeader5.Width = 28;
+            // 
             // AddAccount
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(490, 395);
+            this.Controls.Add(this.button5);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
@@ -358,5 +378,7 @@
         private System.Windows.Forms.TextBox proxyUsername;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.Button button5;
     }
 }

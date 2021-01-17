@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TravBotSharp.Files.Tasks;
+﻿using TravBotSharp.Files.Tasks;
 
 namespace TbsCore.Extensions
 {

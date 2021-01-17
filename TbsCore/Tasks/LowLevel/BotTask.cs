@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium.Chrome;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
@@ -28,16 +26,18 @@ namespace TravBotSharp.Files.Tasks
         /// When we want to re-execute a continuous task (build/demolish building, improve unit etc.)
         /// </summary>
         public DateTime? NextExecute { get; set; }
+        /// <summary>
+        /// BotTask to be executed right after this one. Used only is specific cases.
+        /// </summary>
+        public BotTask NextTask { get; set; }
 
         /// <summary>
         /// After each execution, if return bool is true, there has to be a new browser load event. Bot will wait for that event.
         /// If there is no browser load event (just parsing some data eg. GetMapSize, return false and browser will navigate to dorf1/2.
         /// </summary>
-        /// <param name="htmlDoc">The html doc of the webpage</param>
-        /// <param name="wb">Selenium driver</param>
         /// <param name="acc">Account</param>
         /// <returns>TaskRes</returns>
-        public abstract Task<TaskRes> Execute(Account acc); //execute the task
+        public abstract Task<TaskRes> Execute(Account acc);
 
         /// <summary>
         /// Counts how many times we retried executing the task. After 3rd try, stop retrying. Something is clearly wrong

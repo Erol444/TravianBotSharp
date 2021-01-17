@@ -1,6 +1,5 @@
 ﻿using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks;
-using static TravBotSharp.Files.Helpers.BuildingHelper;
 
 namespace TbsCore.Models.BuildingModels
 {

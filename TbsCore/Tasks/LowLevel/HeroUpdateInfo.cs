@@ -1,10 +1,7 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
@@ -16,12 +13,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             HeroHelper.ParseHeroPage(acc);
 
-            if (acc.Hero.Settings.AutoEquip)
-            {
-                HeroHelper.AutoEquipHero(acc);
-            }
-
-            TaskExecutor.RemoveSameTasksForVillage(acc, Vill, typeof(HeroUpdateInfo), this);
+            TaskExecutor.RemoveSameTasks(acc, typeof(HeroUpdateInfo), this);
 
             if (acc.Hero.Settings.AutoRefreshInfo)
             {

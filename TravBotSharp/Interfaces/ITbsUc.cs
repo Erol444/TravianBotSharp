@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TravBotSharp.Interfaces
+﻿namespace TravBotSharp.Interfaces
 {
     /// <summary>
     /// Interface for TBS UserControls
@@ -20,6 +14,6 @@ namespace TravBotSharp.Interfaces
         /// Update the view
         /// </summary>
         void UpdateUc();
-        
+
     }
 }

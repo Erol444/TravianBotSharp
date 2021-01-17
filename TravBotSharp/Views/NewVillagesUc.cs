@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.AccModels;
+using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -117,6 +117,11 @@ namespace TravBotSharp.Views
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
             GetSelectedAcc().NewVillages.AutoSettleNewVillages = checkBox3.Checked;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            TaskExecutor.AddTask(GetSelectedAcc(), new FindVillageToSettle() { ExecuteAt = DateTime.Now });
         }
     }
 }

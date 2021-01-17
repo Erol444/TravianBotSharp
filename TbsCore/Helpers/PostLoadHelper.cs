@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.JsObjects;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
@@ -29,16 +30,20 @@ namespace TbsCore.Helpers
 
             //Web browser not initialized
             if (!UpdateAccountObject.UpdateVillages(html, acc)) return new List<Action>();
-            var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
+            var vill = acc.Villages.FirstOrDefault(x => x.Active);
 
             return new List<Action>() {
+                // 1:
                 () => acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4),
+                // 2:
                 () => {
                     if (acc.Wb.CurrentUrl.Contains("dorf1")) TaskExecutor.UpdateDorf1Info(acc);
                     else if (acc.Wb.CurrentUrl.Contains("dorf2")) TaskExecutor.UpdateDorf2Info(acc);
                 },
+                // 3:
                 () => acc.AccInfo.CulturePoints = RightBarParser.GetCulurePoints(html, acc.AccInfo.ServerVersion),
-                () => // Village expansion
+                // 4 Village expansion:
+                () =>
                 {
                     var villExpansionReady = acc.Villages.FirstOrDefault(x => x.Expansion.ExpansionAvailable);
                     if (acc.AccInfo.CulturePoints?.MaxVillages > acc.AccInfo.CulturePoints?.VillageCount &&
@@ -48,12 +53,23 @@ namespace TbsCore.Helpers
                         TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady });
                     }
                 },
-                () => // Beginner Quests
+                // 5. Beginner Quests:
+                () =>
                 {
+                    if(acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
+                        acc.Wb.Html.GetElementbyId("sidebarBoxQuestmaster")?
+                        .Descendants()?.FirstOrDefault(x=>x.HasClass("newQuestSpeechBubble")) != null &&
+                        acc.Wb.Html.GetElementbyId("mentorTaskList") == null &&
+                        acc.Quests.ClaimBeginnerQuests)
+                    {
+                        TaskExecutor.AddTaskIfNotExists(acc, new ClaimBeginnerTask2021() { ExecuteAt = DateTime.Now});
+                        return;
+                    }
+
                     acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html, acc.AccInfo.ServerVersion);
                     var claimQuest = acc.Quests?.Quests?.FirstOrDefault(x => x.finished);
-                    if (claimQuest != null
-                        && acc.Quests.ClaimBeginnerQuests
+                    if (claimQuest != null &&
+                        acc.Quests.ClaimBeginnerQuests
                         )
                     {
                         TaskExecutor.AddTaskIfNotExists(acc, new ClaimBeginnerTask()
@@ -64,7 +80,8 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                () => // Daily Quest
+                // 6. Daily Quest:
+                () =>
                 {
                     if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
                     RightBarParser.CheckDailyQuest(html) &&
@@ -77,20 +94,23 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
+                // 7. Parse gold/silver
                 () =>
                 {
                     var goldSilver = RightBarParser.GetGoldAndSilver(html, acc.AccInfo.ServerVersion);
                     acc.AccInfo.Gold = goldSilver[0];
                     acc.AccInfo.Silver = goldSilver[1];
                 },
+                // 8:
                 () => acc.AccInfo.PlusAccount = RightBarParser.HasPlusAccount(html, acc.AccInfo.ServerVersion),
-                () => // Check messages
+                // 9 Check msgs:
+                () =>
                 {
                     if (MsgParser.UnreadMessages(html, acc.AccInfo.ServerVersion) > 0
                         && !acc.Wb.CurrentUrl.Contains("messages.php")
                         && acc.Settings.AutoReadIgms)
                     {
-                        
+
                         TaskExecutor.AddTaskIfNotExists(acc, new ReadMessage()
                         {
                             ExecuteAt = DateTime.Now.AddSeconds(ran.Next(10, 600)), // Read msg in next 10-600 seconds
@@ -98,27 +118,44 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
+                // 10: JS resources
                 () => {
-                    activeVill.Res.FreeCrop = RightBarParser.GetFreeCrop(html);
-                    },
-                () => activeVill.Res.Capacity = ResourceParser.GetResourceCapacity(html, acc.AccInfo.ServerVersion),
-                () => activeVill.Res.Stored = ResourceParser.GetResources(html),
-                () => activeVill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(30,60)),
-                () => // NPC
+                    // TODO: cast directly from object to ResourcesJsObject, no de/serialization!
+                    var resJson = DriverHelper.GetJsObj<string>(acc, "JSON.stringify(resources);");
+                    var resJs = JsonConvert.DeserializeObject<ResourcesJsObject>(resJson);
+
+                    vill.Res.Capacity.GranaryCapacity = resJs.maxStorage.l4;
+                    vill.Res.Capacity.WarehouseCapacity = resJs.maxStorage.l1;
+
+                    vill.Res.Stored.Resources = resJs.storage.GetResources();
+                    vill.Res.Stored.LastRefresh = DateTime.Now;
+
+                    vill.Res.Production = resJs.production.GetResources();
+                    vill.Res.FreeCrop = resJs.production.l5;
+                },
+                // 11: Check if there are unfinished tasks
+                () => ResSpendingHelper.CheckUnfinishedTasks(acc, vill),
+                // 12: Donate to ally bonus'
+                () => DonateToAlly(acc, vill),
+                // 13:
+                () => vill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(30,60)),
+                // 14 NPC:
+                () =>
                 {
-                    float ratio = (float)activeVill.Res.Stored.Resources.Crop / activeVill.Res.Capacity.GranaryCapacity;
-                    if (ratio >= 0.99 &&
-                        acc.AccInfo.Gold >= 3 &&
-                        activeVill.Market.Npc.Enabled &&
-                        (activeVill.Market.Npc.NpcIfOverflow || !MarketHelper.NpcWillOverflow(activeVill)))
+                    float ratio = (float)vill.Res.Stored.Resources.Crop / vill.Res.Capacity.GranaryCapacity;
+                    if (0.99 <= ratio &&
+                        3 <= acc.AccInfo.Gold &&
+                        vill.Market.Npc.Enabled &&
+                        (vill.Market.Npc.NpcIfOverflow || !MarketHelper.NpcWillOverflow(vill)))
                     {  //npc crop!
-                        TaskExecutor.AddTaskIfNotExistInVillage(acc, activeVill, new NPC()
+                        TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new NPC()
                         {
                             ExecuteAt = DateTime.MinValue,
-                            Vill = activeVill
+                            Vill = vill
                         });
                     }
                 },
+                // 15:
                 () => {
                     if (acc.Settings.AutoActivateProductionBoost && CheckProductionBoost(acc))
                     {
@@ -127,36 +164,44 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
+                // 16. Insta upgrade:
                 () =>
                 {
-                    if (activeVill.Build.InstaBuild &&
+                    if (vill.Build.InstaBuild &&
                         acc.AccInfo.Gold >= 2 &&
-                        activeVill.Build.CurrentlyBuilding.Count >= (acc.AccInfo.PlusAccount ? 2 : 1) &&
-                        activeVill.Build.CurrentlyBuilding.LastOrDefault().Duration
-                            >= DateTime.Now.AddHours(activeVill.Build.InstaBuildHours))
+                        vill.Build.CurrentlyBuilding.Count >= (acc.AccInfo.PlusAccount ? 2 : 1) &&
+                        vill.Build.CurrentlyBuilding.LastOrDefault().Duration
+                            >= DateTime.Now.AddHours(vill.Build.InstaBuildHours))
                     {
-                        TaskExecutor.AddTaskIfNotExistInVillage(acc, activeVill, new InstaUpgrade()
+                        TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new InstaUpgrade()
                         {
-                            Vill = activeVill,
+                            Vill = vill,
                             ExecuteAt = DateTime.Now.AddHours(-1)
                         });
                     }
                 },
+                // 17 
                 () => acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html, acc.AccInfo.ServerVersion),
+                // 18
                 () => acc.Hero.Status = HeroParser.HeroStatus(html, acc.AccInfo.ServerVersion),
+                // 19
                 () => acc.Hero.HeroInfo.Health = HeroParser.GetHeroHealth(html, acc.AccInfo.ServerVersion),
+                // 20 Hero:
                 () =>
                 {
                     bool heroReady = (acc.Hero.HeroInfo.Health > acc.Hero.Settings.MinHealth &&
                         acc.Hero.Settings.AutoSendToAdventure &&
                         acc.Hero.Status == Hero.StatusEnum.Home &&
                         acc.Hero.NextHeroSend < DateTime.Now);
+
+                    var homeVill = HeroHelper.GetHeroHomeVillage(acc);
                     // Update adventures
-                    if (heroReady &&
-                        (HeroHelper.GetHeroHomeVillage(acc)? // RallyPoint in village
-                            .Build?
-                            .Buildings?
-                            .Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level) ?? false) &&
+                    if(homeVill == null)
+                    {
+                        TaskExecutor.AddTask(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+                    }
+                    else if (heroReady &&
+                        (homeVill.Build.Buildings.Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level)) &&
                         (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc)))
                     {
                         // Update adventures
@@ -178,7 +223,16 @@ namespace TbsCore.Helpers
                         TaskExecutor.AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                     }
                 },
-                () => AutoExpandStorage(acc, activeVill)
+                // 21:
+                () => AutoExpandStorage(acc, vill),
+                // 22: Extend protection
+                () => {
+                    if (acc.Settings.ExtendProtection &&
+                    acc.Wb.Html.GetElementbyId("sidebarBoxInfobox").Descendants("button").Any(x=>x.GetAttributeValue("value", "") == "Extend"))
+                    {
+                        TaskExecutor.AddTaskIfNotExists(acc, new ExtendProtection() { ExecuteAt = DateTime.Now });
+                    }
+                }
             };
         }
 
@@ -211,6 +265,13 @@ namespace TbsCore.Helpers
 
             if (granary_delta <= vill.Res.Stored.Resources.Crop)
                 BuildingHelper.UpgradeBuildingForOneLvl(acc, vill, Classificator.BuildingEnum.Granary, false);
+        }
+
+        private static void DonateToAlly(Account acc, Village vill)
+        {
+            //if (vill.Market.Npc.Enabled) return;
+            //double warehouseDelta = vill.Res.Capacity.WarehouseCapacity * acc.Settings.DonateAbove;
+            //double granaryDelta = vill.Res.Capacity.GranaryCapacity * acc.Settings.DonateAbove;
         }
     }
 }

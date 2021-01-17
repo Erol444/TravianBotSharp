@@ -1,10 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
@@ -12,8 +10,6 @@ using System.Windows.Forms;
 using TbsCore.Database;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp
@@ -48,7 +44,7 @@ namespace TravBotSharp
             };
 
             // Initialize all the views
-            foreach(var uc in Ucs) uc.Init(this);
+            foreach (var uc in Ucs) uc.Init(this);
 
             saveAccountsTimer = new System.Timers.Timer(1000 * 60 * 30); // Every 30 min
             saveAccountsTimer.Elapsed += SaveAccounts_TimerElapsed;
@@ -67,7 +63,7 @@ namespace TravBotSharp
                 DbRepository.SyncAccountsTxt();
                 File.Delete(IoHelperCore.AccountsPath);
             }
-            
+
             accounts = DbRepository.GetAccounts();
             RefreshAccView();
         }
@@ -89,7 +85,7 @@ namespace TravBotSharp
                     RefreshAccView();
                 }
             }
-       }
+        }
 
         private void ControlPanel_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -167,7 +163,12 @@ namespace TravBotSharp
             button2.Enabled = acc != null && acc.Wb == null;
 
             UpdateFrontEnd();
-            RefreshAccView();
+
+            foreach (ListViewItem item in accListView.Items)
+            {
+                item.SubItems[0].ForeColor = Color.FromName("Black");
+            }
+            accListView.Items[accSelected].SubItems[0].ForeColor = Color.FromName("DodgerBlue");
         }
         private void UpdateFrontEnd()
         {
@@ -208,16 +209,6 @@ namespace TravBotSharp
             }
         }
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            //var acc = GetSelectedAcc();
-            //TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
-            //{
-            //    Vill = AccountHelper.GetMainVillage(acc),
-            //    ExecuteAt = DateTime.MinValue.AddHours(10)
-            //});
-        }
-
         private void button5_Click(object sender, EventArgs e) // Logout
         {
             new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
@@ -239,6 +230,18 @@ namespace TravBotSharp
                 }
             }).Start();
             generalUc1.UpdateBotRunning("true");
+        }
+
+        private void button4_Click(object sender, EventArgs e) // Logout all accounts
+        {
+            new Thread(async () =>
+            {
+                foreach (var acc in accounts)
+                {
+                    IoHelperCore.Logout(acc);
+                }
+            }).Start();
+            generalUc1.UpdateBotRunning("false");
         }
     }
 }

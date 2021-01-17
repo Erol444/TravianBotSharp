@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.Settings;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
@@ -40,6 +38,7 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
                 r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
                 r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
+                r.Cells.Add(new Cell(vill.Settings.AutoImprove)); // Auto-improve troops
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -49,7 +48,7 @@ namespace TravBotSharp.Views
             XpTableGlobal.TableModel = tableModelGlobal;
             var acc = GetSelectedAcc();
             var vill = acc.Villages.FirstOrDefault();
-            
+
 
             tableModelGlobal.Rows.Clear();
             // Change multiple row
@@ -61,6 +60,7 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
             r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
             r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
+            r.Cells.Add(new Cell(vill.Settings.AutoImprove)); // Auto-improve troops
             tableModelGlobal.Rows.Add(r);
 
             //var newVills = acc.NewVillages.DefaultSettings;
@@ -175,6 +175,14 @@ namespace TravBotSharp.Views
             workshop.Editor = workshopEditor;
 
             columnModel.Columns.Add(workshop);
+
+            // Auto-Improve troops
+            columnModel.Columns.Add(new CheckBoxColumn
+            {
+                Text = "AutoImprove",
+                ToolTipText = "Auto Improve troops in smithy",
+                Width = 100
+            });
         }
         #endregion
         private string[] GetPossibleTroops(Classificator.BuildingEnum building)
@@ -225,12 +233,14 @@ namespace TravBotSharp.Views
                 UpdateGS(acc, vill, cells, column);
                 column++;
                 UpdateWorkshop(acc, vill, cells, column);
+                column++;
+                vill.Settings.AutoImprove = cells[column].Checked;
 
                 // Reset training
-                if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
+                if (!TroopsHelper.EverythingFilled(acc, vill) && acc.Tasks != null) TroopsHelper.ReStartTroopTraining(acc, vill);
             }
             //Change name of village/s
-            if (changeVillNames.Count > 0)
+            if (0 < changeVillNames.Count && acc.Tasks != null)
             {
                 TaskExecutor.AddTaskIfNotExists(acc,
                         new ChangeVillageName()
@@ -246,8 +256,9 @@ namespace TravBotSharp.Views
             var text = cells[column].Text;
             var troop = (Classificator.TroopsEnum)Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
             if (troop == vill.Settings.BarracksTrain) return; //no difference
-
             vill.Settings.BarracksTrain = troop;
+
+            if (acc.Wb == null) return;
             TroopsHelper.ReStartResearchAndImprovement(acc, vill);
         }
         private void UpdateStable(Account acc, Village vill, CellCollection cells, int column)
@@ -255,8 +266,9 @@ namespace TravBotSharp.Views
             var text = cells[column].Text;
             var troop = (Classificator.TroopsEnum)Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
             if (troop == vill.Settings.StableTrain) return; //no difference
-
             vill.Settings.StableTrain = troop;
+
+            if (acc.Wb == null) return;
             TroopsHelper.ReStartResearchAndImprovement(acc, vill);
         }
         private void UpdateWorkshop(Account acc, Village vill, CellCollection cells, int column)
@@ -264,8 +276,9 @@ namespace TravBotSharp.Views
             var text = cells[column].Text;
             var troop = (Classificator.TroopsEnum)Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
             if (troop == vill.Settings.WorkshopTrain) return; //no difference
-
             vill.Settings.WorkshopTrain = troop;
+
+            if (acc.Wb == null) return;
             TroopsHelper.ReStartResearchAndImprovement(acc, vill);
         }
         private void UpdateGB(Account acc, Village vill, CellCollection cells, int column)

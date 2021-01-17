@@ -1,7 +1,4 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
@@ -13,16 +10,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            //Sitters cannot extend protection on TTWARS!
-            var extendButton = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("value", "") == "Extend");
-            if (extendButton == null)
-            {
-                acc.Wb.Log("Could not extend protection! Are you a sitter?");
-                return TaskRes.Executed;
-            }
-
-            //class dialogButtonOk
-            //type submit http://prntscr.com/ryunwj
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/options/game?extendBeginnersProtection");
             return TaskRes.Executed;
 
         }

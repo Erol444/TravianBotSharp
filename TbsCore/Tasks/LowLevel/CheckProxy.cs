@@ -1,15 +1,14 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium.Chrome;
-using RestSharp;
-using System;
-using System.Net;
-using System.Threading;
+﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
+    /// <summary>
+    /// TODO: replace selenium navigation with RestSharp client!
+    /// ProxyHelper.TestProxy(acc);
+    /// </summary>
     public class CheckProxy : BotTask
     {
         public override async Task<TaskRes> Execute(Account acc)
@@ -19,7 +18,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             await acc.Wb.Navigate("https://api.ipify.org/");
             var ip = acc.Wb.Html.DocumentNode.InnerText;
-            
+
             if (!string.IsNullOrEmpty(currentProxy) &&
                 ip.Trim() != currentProxy.Trim())
             {
