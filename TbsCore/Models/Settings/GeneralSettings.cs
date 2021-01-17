@@ -24,8 +24,8 @@ namespace TbsCore.Models.Settings
                 ResSpendTypeEnum.Troops 
             };
 
-            DonateAbove = 90;
-            DonateExcessOf = 50;
+            DonateAbove = 95;
+            DonateExcessOf = 65;
         }
         public bool AutoActivateProductionBoost { get; set; }
 

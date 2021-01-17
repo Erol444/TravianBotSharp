@@ -364,12 +364,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (nextTask == null) return;
 
             this.Task = nextTask;
-
-            Random ran = new Random();
-
-            var upperLimitSec = 60;
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4) upperLimitSec = 3;
-            this.NextExecute = time.AddSeconds(ran.Next(1, upperLimitSec));
+            this.NextExecute = TimeHelper.RanDelay(acc, time, 20);
         }
 
         /// <summary>
