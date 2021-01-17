@@ -65,9 +65,14 @@ namespace TravBotSharp.Files.Parsers
         /// <returns>When celebration will end</returns>
         public static DateTime GetCelebrationTime(HtmlDocument html)
         {
-            var content = html.GetElementbyId("content");
+            var underProgress = html.GetElementbyId("under_progress"); // T4.4
 
-            var underProgress = content.Descendants().FirstOrDefault(x => x.HasClass("under_progress"));
+            if (underProgress == null) // T4.5
+            {
+                var content = html.GetElementbyId("content");
+                underProgress = content.Descendants().FirstOrDefault(x => x.HasClass("under_progress"));
+            }
+            
             if (underProgress == null) return DateTime.MinValue; // No celebration is under progress
 
             return DateTime.Now + TimeParser.ParseTimer(underProgress);

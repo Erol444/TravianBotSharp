@@ -23,12 +23,10 @@ namespace TravBotSharp.Views
             infoText += "-- Village's unfinished tasks (due to low res)\n";
             if(vill.UnfinishedTasks != null)
             {
-                List<string> unfinishedTasks = new List<string>();
                 foreach (var tasks in vill.UnfinishedTasks)
                 {
-                    unfinishedTasks.Add(tasks.Task.GetName() + " - Needed " + tasks.ResNeeded.ToString());
+                    infoText += $"{tasks.Task.GetName()} - Needed {tasks.ResNeeded}\n";
                 }
-                infoText += string.Join("\n ", unfinishedTasks);
             }
 
             infoText += "-- Village next update\n";

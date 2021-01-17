@@ -22,22 +22,23 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (townHall == null) return TaskRes.Executed;
 
-            var bigCeleb = Vill.Expansion.Celebrations == CelebrationEnum.Big && 10 <= townHall.Level;
-
-            // Check if enough resources to start a celebration
-            if (!MiscCost.EnoughResForCelebration(Vill, bigCeleb))
-            {
-                ResourcesHelper.NotEnoughRes(acc, Vill, MiscCost.CelebrationCost(bigCeleb), this);
-                return TaskRes.Executed;
-            }
-
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={townHall.Id}");
 
             var celebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
             if (DateTime.Now <= celebrationEnd)
             {
                 // We already have a celebration running
+                Vill.Expansion.CelebrationEnd = celebrationEnd;
                 this.NextExecute = celebrationEnd;
+                return TaskRes.Executed;
+            }
+
+            var bigCeleb = Vill.Expansion.Celebrations == CelebrationEnum.Big && 10 <= townHall.Level;
+
+            // Check if enough resources to start a celebration
+            if (!MiscCost.EnoughResForCelebration(Vill, bigCeleb))
+            {
+                ResourcesHelper.NotEnoughRes(acc, Vill, MiscCost.CelebrationCost(bigCeleb), this);
                 return TaskRes.Executed;
             }
 

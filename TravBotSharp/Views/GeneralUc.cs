@@ -98,6 +98,7 @@ namespace TravBotSharp.Views
 
             acc.Tasks.Clear();
             AccountHelper.StartAccountTasks(acc);
+            acc.Villages.ForEach(x => x.UnfinishedTasks.Clear());
             UpdateBotRunning();
         }
 

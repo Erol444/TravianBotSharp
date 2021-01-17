@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
@@ -46,12 +47,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            acc.Wb.Driver.ExecuteScript($"document.getElementById('{button.Id}').click()");
+            await DriverHelper.ClickById(acc, button.Id);
             
             var executeNext = DateTime.Now.Add(dur).AddMilliseconds(10 * AccountHelper.Delay());
-            TaskExecutor.AddTask(acc,
-                new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) }
-                );
+            if (Vill.Settings.AutoImprove)
+            {
+                TaskExecutor.AddTask(acc,new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) });
+            }
+            
             RepeatTask(Vill, troop, executeNext);
 
             return TaskRes.Executed;

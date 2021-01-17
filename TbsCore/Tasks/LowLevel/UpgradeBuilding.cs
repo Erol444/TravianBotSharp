@@ -121,12 +121,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (constructContract != null)
             {
-                if (!IsEnoughRes(acc, constructContract)) return TaskRes.Retry;
+                if (!IsEnoughRes(acc, constructContract)) return TaskRes.Executed;
                 response = await Construct(acc, constructContract);
             }
             else if (upgradeContract != null)
             {
-                if (!IsEnoughRes(acc, upgradeContract)) return TaskRes.Retry;
+                if (!IsEnoughRes(acc, upgradeContract)) return TaskRes.Executed;
                 response = await Upgrade(acc, upgradeContract);
             }
             else throw new Exception("No contract was found!");

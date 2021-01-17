@@ -13,7 +13,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             HeroHelper.ParseHeroPage(acc);
 
-            TaskExecutor.RemoveSameTasksForVillage(acc, Vill, typeof(HeroUpdateInfo), this);
+            TaskExecutor.RemoveSameTasks(acc, typeof(HeroUpdateInfo), this);
 
             if (acc.Hero.Settings.AutoRefreshInfo)
             {

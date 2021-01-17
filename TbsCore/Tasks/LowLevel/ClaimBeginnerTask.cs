@@ -28,7 +28,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     break;
             }
 
-            acc.Wb.Driver.ExecuteScript($"document.getElementById('{buttonId}').click();");
+            await DriverHelper.ClickById(acc, buttonId);
+            await TaskExecutor.PageLoaded(acc); // Optional
+
             return TaskRes.Executed;
         }
     }
