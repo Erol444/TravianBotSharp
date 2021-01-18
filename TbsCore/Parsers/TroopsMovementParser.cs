@@ -57,6 +57,9 @@ namespace TravBotSharp.Files.Parsers
         internal static int[] GetTroopsInRallyPoint(HtmlDocument html)
         {
             int[] ret = new int[11];
+            // No rally point!
+            if (html.GetElementbyId("contract_building16") != null) return ret;
+
             var tds = html.GetElementbyId("troops").Descendants("td");
             foreach (var td in tds)
             {
