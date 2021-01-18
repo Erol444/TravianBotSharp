@@ -37,7 +37,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // If no rally point, navigate somewhere else
             while (acc.Wb.Html.GetElementbyId("contract") == null)
             {
-                idsChecked.Add(this.Vill.Id);
+                idsChecked.Add(acc.Villages.FirstOrDefault(x => x.Active).Id);
 
                 var nextId = NextVillCheck(acc, idsChecked);
                 if (nextId == 0) throw new System.Exception("Can't get account tribe! Please build rally point!");
