@@ -95,12 +95,10 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
 
                 options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
-                options.AddArgument("ignore-certificate-errors");
+                options.AddArgument("ignore-certificate-errors"); // --ignore-certificate-errors ?
             }
-            if (!string.IsNullOrEmpty(access.UserAgent))
-            {
-                options.AddArgument("--user-agent=" + access.UserAgent);
-            }
+            
+            options.AddArgument($"--user-agent=\"{access.UserAgent}\"");
 
             //options.AddArguments("--disable-logging");
             //options.AddArguments("--disable-metrics");
