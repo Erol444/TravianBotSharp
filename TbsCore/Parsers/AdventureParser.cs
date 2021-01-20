@@ -18,7 +18,7 @@ namespace TravBotSharp.Files.Parsers
         {
             List<Adventure> adventuresList = new List<Adventure>();
             var adventures = htmlDoc.GetElementbyId("adventureListForm");
-            if (adventures == null) return null;
+            if (adventures == null) return adventuresList;
             foreach (var adv in adventures.Descendants("tr"))
             {
                 if (string.IsNullOrEmpty(adv.Id)) continue;

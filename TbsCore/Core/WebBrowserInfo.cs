@@ -90,11 +90,15 @@ namespace TravBotSharp.Files.Models.AccModels
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    var extensionPath = ProxyHelper.CreateExtension(username, server, access);
-                    options.AddExtension(extensionPath);
+                    var auth = new SeleniumProxyAuth.Models.ProxyAuth(access.Proxy, access.ProxyPort, access.ProxyUsername, access.ProxyPassword);
+                    var localPort = ProxyHelper.proxyServer.AddEndpoint(auth);
+                    options.AddArgument($"--proxy-server=127.0.0.1:{localPort}");
                 }
-
-                options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
+                else
+                {
+                    options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
+                }
+                
                 options.AddArgument("ignore-certificate-errors"); // --ignore-certificate-errors ?
             }
             
