@@ -98,13 +98,11 @@ chrome.webRequest.onAuthRequired.addListener(
             {
                 tasks.Add(Task.Run(() =>
                 {
-                    Console.WriteLine(DateTime.Now.ToString() + "]Start ip " + a.Proxy);
                     var restClient = HttpHelper.InitRestClient(a, "https://api.ipify.org/");
-                    ProxyHelper.TestProxy(restClient, a.Proxy);
+                    a.Ok = ProxyHelper.TestProxy(restClient, a.Proxy);
                 }));
             });
             await Task.WhenAll(tasks);
-            Console.WriteLine(DateTime.Now.ToString() + "]all tasks complete");
         }
 
         public static bool TestProxy(Account acc) =>
