@@ -46,6 +46,7 @@
             this.gb = new XPTable.Models.CheckBoxColumn();
             this.stable = new XPTable.Models.ComboBoxColumn();
             this.gs = new XPTable.Models.CheckBoxColumn();
+            this.NYS = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XpTableGlobal)).BeginInit();
             this.SuspendLayout();
@@ -53,7 +54,7 @@
             // SaveButton
             // 
             this.SaveButton.Location = new System.Drawing.Point(457, 589);
-            this.SaveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(2);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(82, 25);
             this.SaveButton.TabIndex = 1;
@@ -127,7 +128,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(791, 65);
+            this.button3.Location = new System.Drawing.Point(756, 64);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(124, 23);
             this.button3.TabIndex = 7;
@@ -185,10 +186,22 @@
             this.gs.ToolTipText = "Train troops in Great Stable";
             this.gs.Width = 40;
             // 
-            // OverviewUc
+            // NYS
+            // 
+            this.NYS.AutoSize = true;
+            this.NYS.Location = new System.Drawing.Point(903, 69);
+            this.NYS.Name = "NYS";
+            this.NYS.Size = new System.Drawing.Size(48, 17);
+            this.NYS.TabIndex = 8;
+            this.NYS.Text = "NYS";
+            this.NYS.UseVisualStyleBackColor = true;
+            this.NYS.CheckedChanged += new System.EventHandler(this.NYS_CheckedChanged);
+            // 
+            // OverviewTroopsUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.NYS);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
@@ -196,7 +209,7 @@
             this.Controls.Add(this.XpTableGlobal);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.table1);
-            this.Name = "OverviewUc";
+            this.Name = "OverviewTroopsUc";
             this.Size = new System.Drawing.Size(988, 617);
             ((System.ComponentModel.ISupportInitialize)(this.table1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XpTableGlobal)).EndInit();
@@ -220,5 +233,6 @@
         private XPTable.Models.CheckBoxColumn gb;
         private XPTable.Models.ComboBoxColumn stable;
         private XPTable.Models.CheckBoxColumn gs;
+        private System.Windows.Forms.CheckBox NYS;
     }
 }

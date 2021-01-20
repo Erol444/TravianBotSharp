@@ -191,13 +191,28 @@ namespace TravBotSharp.Views
             ret.Add("None");
             var acc = GetSelectedAcc();
             if (acc.Villages.Count == 0) return ret.ToArray(); //Acc has now been initialised
-            int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
-            for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
+
+            var tribes = new List<Classificator.TribeEnum>(5);
+            if (NYS.Checked)
             {
-                Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
-                if (TroopsHelper.GetTroopBuilding(troop, false) == building)
+                tribes.Add(Classificator.TribeEnum.Egyptians);
+                tribes.Add(Classificator.TribeEnum.Gauls);
+                tribes.Add(Classificator.TribeEnum.Huns);
+                tribes.Add(Classificator.TribeEnum.Romans);
+                tribes.Add(Classificator.TribeEnum.Teutons);
+            }
+            else tribes.Add(acc.AccInfo.Tribe ?? Classificator.TribeEnum.Any);
+
+            foreach (var tribe in tribes)
+            {
+                int troopsEnum = ((int)tribe - 1) * 10;
+                for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
                 {
-                    ret.Add(VillageHelper.EnumStrToString(troop.ToString()));
+                    Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
+                    if (TroopsHelper.GetTroopBuilding(troop, false) == building)
+                    {
+                        ret.Add(VillageHelper.EnumStrToString(troop.ToString()));
+                    }
                 }
             }
             return ret.ToArray();
@@ -349,6 +364,12 @@ namespace TravBotSharp.Views
         private void button3_Click(object sender, EventArgs e) // Save new village settings
         {
 
+        }
+
+        private void NYS_CheckedChanged(object sender, EventArgs e)
+        {
+            if (!NYS.Checked) return;
+            UpdateUc();
         }
     }
 }

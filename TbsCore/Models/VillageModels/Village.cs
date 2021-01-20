@@ -4,6 +4,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.TroopsModels;
+using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Models.VillageModels
 {
@@ -87,7 +88,11 @@ namespace TbsCore.Models.VillageModels
         /// Timings for the village
         /// </summary>
         public VillTiming Timings { get; set; }
-        
+        /// <summary>
+        /// For NewYearSpecial servers where account's villages can be of different tribe
+        /// </summary>
+        public Classificator.TribeEnum NysTribe { get; internal set; }
+
         /// <summary>
         /// Tasks that weren't finished due to the lack of resources
         /// </summary>
