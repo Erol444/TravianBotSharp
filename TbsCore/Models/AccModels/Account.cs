@@ -31,6 +31,7 @@ namespace TbsCore.Models.AccModels
             NewVillages = new NewVillageSettings();
             NewVillages.Init();
         }
+
         public AccInfo AccInfo { get; set; }
         public AccessInfo Access { get; set; }
         public List<Village> Villages { get; set; }
@@ -42,10 +43,11 @@ namespace TbsCore.Models.AccModels
 
         [JsonIgnore]
         public WebBrowserInfo Wb { get; set; }
+
         [JsonIgnore]
         public List<BotTask> Tasks { get; set; }
+
         [JsonIgnore]
         public TaskTimer TaskTimer { get; set; }
-
     }
 }
