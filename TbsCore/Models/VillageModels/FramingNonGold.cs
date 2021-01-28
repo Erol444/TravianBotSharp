@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 
-namespace TbsCore.Models.FarmingNonGoldModels
+namespace TbsCore.Models.VillageModels
 {
-    public class Framing
+    public class FramingNonGold
     {
-        public Framing()
+        public void Init()
         {
             ListFarm = new List<FarmList>();
         }

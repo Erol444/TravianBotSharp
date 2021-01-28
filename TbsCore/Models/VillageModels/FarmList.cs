@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using TbsCore.Models.MapModels;
-using TbsCore.Models.TroopsModels;
 
-namespace TbsCore.Models.FarmingNonGoldModels
+namespace TbsCore.Models.VillageModels
 {
     public class FarmList
     {

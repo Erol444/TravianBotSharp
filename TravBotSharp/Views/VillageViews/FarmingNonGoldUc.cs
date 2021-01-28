@@ -3,8 +3,8 @@
 using TravBotSharp.Interfaces;
 using TravBotSharp.Files.Helpers;
 
+using TbsCore.Models.VillageModels;
 using TbsCore.Models.MapModels;
-using TbsCore.Models.FarmingNonGoldModels;
 using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Views

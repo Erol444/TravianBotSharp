@@ -4,7 +4,6 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.TroopsModels;
-using TbsCore.Models.FarmingNonGoldModels;
 
 namespace TbsCore.Models.VillageModels
 {
@@ -25,7 +24,7 @@ namespace TbsCore.Models.VillageModels
             Deffing = new VillDeffing();
             Expansion = new VillExpansion();
             Timings = new VillTiming();
-            FarmingNonGold = new Framing();
+            FarmingNonGold = new FramingNonGold();
         }
 
         #region General info
@@ -108,7 +107,7 @@ namespace TbsCore.Models.VillageModels
         /// <summary>
         /// Farm list for non gold
         /// </summary>
-        public Framing FarmingNonGold { get; set; }
+        public FramingNonGold FarmingNonGold { get; set; }
 
         /// <summary>
         /// Tasks that weren't finished due to the lack of resources
