@@ -326,6 +326,12 @@
     <Compile Include="Views\HeroUc.Designer.cs">
       <DependentUpon>HeroUc.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\VillageViews\FarmingNonGoldUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\VillageViews\FarmingNonGoldUc.Designer.cs">
+      <DependentUpon>FarmingNonGoldUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\VillageViews\MarketUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -422,6 +428,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\HeroUc.resx">
       <DependentUpon>HeroUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\VillageViews\FarmingNonGoldUc.resx">
+      <DependentUpon>FarmingNonGoldUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\VillageViews\MarketUc.resx">
       <DependentUpon>MarketUc.cs</DependentUpon>

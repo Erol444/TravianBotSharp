@@ -8,10 +8,17 @@ namespace TbsCore.Models.FarmingNonGoldModels
     {
         public FarmList()
         {
-            targets = new List<Coordinates>();
+            Targets = new List<Farm>();
         }
 
-        public List<Coordinates> targets { get; set; }
-        public List<TroopsRaw> troops { get; set; }
+        public string Name { get; set; }
+        public List<Farm> Targets { get; set; }
+    }
+
+    public class Farm
+    {
+        public Coordinates coord { get; set; }
+        public int Troop { get; set; }
+        public int Amount { get; set; }
     }
 }

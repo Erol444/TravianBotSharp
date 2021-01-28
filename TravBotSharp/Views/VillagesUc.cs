@@ -16,6 +16,7 @@ namespace TravBotSharp.Views
         private int villSelected = 0;
 
         private ITbsUc[] Ucs;
+
         public VillagesUc()
         {
             InitializeComponent();
@@ -27,6 +28,7 @@ namespace TravBotSharp.Views
                 marketUc1,
                 troopsUc1,
                 attackUc1,
+                farmingNonGoldUc1,
                 infoUc1,
             };
 
@@ -36,6 +38,7 @@ namespace TravBotSharp.Views
 
         // To satisfy Interface
         public void UpdateUc() => UpdateUc(true);
+
         private void UpdateUc(bool updateVillList = true)
         {
             var acc = GetSelectedAcc();
