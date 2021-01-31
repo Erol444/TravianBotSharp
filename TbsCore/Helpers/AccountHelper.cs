@@ -54,10 +54,9 @@ namespace TravBotSharp.Files.Helpers
             Random rnd = new Random();
             return rnd.Next(500, 900);
         }
+
         public static void StartAccountTasks(Account acc)
         {
-            Random ran = new Random();
-
             // Get the server info (on first running the account)
             if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0)
             {
@@ -100,6 +99,7 @@ namespace TravBotSharp.Files.Helpers
             // Hero update info
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
+                Random ran = new Random();
                 TaskExecutor.AddTask(acc, new HeroUpdateInfo()
                 {
                     ExecuteAt = DateTime.Now.AddMinutes(ran.Next(40, 80)),

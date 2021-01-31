@@ -31,9 +31,8 @@ namespace TravBotSharp.Files.Helpers
         {
             var enoughResAt = NewUnfinishedTask(acc, vill, requiredRes, task, buildingTask);
             if (enoughResAt == null) return;
-            
-            var ran = new Random();
-            DateTime nextRefresh = (enoughResAt ?? DateTime.Now).AddSeconds(ran.Next(1, 200));
+
+            var nextRefresh = TimeHelper.RanDelay(acc, enoughResAt ?? DateTime.Now);
 
             if (nextRefresh < vill.Timings.NextVillRefresh) vill.Timings.NextVillRefresh = nextRefresh;
         }

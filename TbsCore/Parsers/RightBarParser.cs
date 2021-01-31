@@ -10,7 +10,7 @@ namespace TravBotSharp.Files.Parsers
 {
     public static class RightBarParser
     {
-        public static CulturePoints GetCulurePoints(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static CulturePoints GetCulturePoints(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
 
             var slot = htmlDoc.GetElementbyId("sidebarBoxVillagelist");

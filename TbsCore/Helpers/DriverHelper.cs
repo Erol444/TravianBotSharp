@@ -56,14 +56,28 @@ namespace TbsCore.Helpers
             await ExecuteAction(acc, new QueryById(query), new ActionClick(), log);
         public static async Task<bool> WriteById(Account acc, string query, object text, bool log = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionWrite(text), log);
+        public static async Task<bool> CheckById(Account acc, string query, bool check, bool log = true) =>
+            await ExecuteAction(acc, new QueryById(query), new ActionCheck(check), log);
+        public static async Task<bool> SelectIndexById(Account acc, string query, int index, bool log = true) =>
+            await ExecuteAction(acc, new QueryById(query), new ActionSelectIndex(index), log);
+
         public static async Task<bool> ClickByClassName(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryByClassName(query), new ActionClick(), log);
         public static async Task<bool> WriteByClassName(Account acc, string query, object text, bool log = true) =>
             await ExecuteAction(acc, new QueryByClassName(query), new ActionWrite(text), log);
+        public static async Task<bool> CheckByClassName (Account acc, string query, bool check, bool log = true) =>
+            await ExecuteAction(acc, new QueryByClassName(query), new ActionCheck(check), log);
+        public static async Task<bool> SelectIndexByClassName(Account acc, string query, int index, bool log = true) =>
+            await ExecuteAction(acc, new QueryByClassName(query), new ActionSelectIndex(index), log);
+        
         public static async Task<bool> ClickByName(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query), new ActionClick(), log);
         public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text), log);
+        public static async Task<bool> CheckByName(Account acc, string query, bool check, bool log = true) =>
+            await ExecuteAction(acc, new QueryByName(query), new ActionCheck(check), log);
+        public static async Task<bool> SelectIndexByName(Account acc, string query, int index, bool log = true) =>
+            await ExecuteAction(acc, new QueryByName(query), new ActionSelectIndex(index), log);
 
         private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true) =>
             await ExecuteScript(acc, $"document.{query.val}{action.val}", log);
@@ -74,6 +88,8 @@ namespace TbsCore.Helpers
         public class QueryByClassName : Query { public QueryByClassName(string str) => base.val = $"getElementsByClassName('{str}')[0]"; }
         public class ActionWrite : Action { public ActionWrite(object str) => base.val = $".value='{str}';"; }
         public class ActionClick : Action { public ActionClick() => base.val = ".click();"; }
+        public class ActionCheck : Action { public ActionCheck(bool check) => base.val = $".checked={check};"; }
+        public class ActionSelectIndex : Action { public ActionSelectIndex(int index) => base.val = $".selectedIndex = {index};"; }
 
         public abstract class Action { public string val; }
         public abstract class Query { public string val; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.VillageModels;
@@ -175,7 +176,28 @@ namespace TravBotSharp.Views
 
         private void button1_Click_1(object sender, EventArgs e) // Send deff to specific coordinates
         {
+            var acc = GetSelectedAcc();
+            var amount = new SendDeffAmount() { Amount = (int)maxDeff.Value };
+            
+            SendDeff node = new SendDeff();
+            foreach (var vill in acc.Villages)
+            {
+                var sendDeff = new SendDeff()
+                {
+                    Vill = vill,
+                    DeffAmount = amount,
+                    TargetVillage = new TbsCore.Models.MapModels.Coordinates() { 
+                        x = (int)sendDeffX.Value,
+                        y = (int)sendDeffY.Value,
+                    },
+                    Priority = Files.Tasks.BotTask.TaskPriority.High,
+                    NextTask = node,
+                };
+                node = sendDeff;
+            }
 
+            node.ExecuteAt = DateTime.MinValue;
+            TaskExecutor.AddTaskIfNotExists(acc, node);
         }
     }
 }

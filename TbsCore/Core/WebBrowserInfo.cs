@@ -90,17 +90,19 @@ namespace TravBotSharp.Files.Models.AccModels
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    var extensionPath = ProxyHelper.CreateExtension(username, server, access);
-                    options.AddExtension(extensionPath);
+                    var auth = new SeleniumProxyAuth.Models.ProxyAuth(access.Proxy, access.ProxyPort, access.ProxyUsername, access.ProxyPassword);
+                    var localPort = ProxyHelper.proxyServer.AddEndpoint(auth);
+                    options.AddArgument($"--proxy-server=127.0.0.1:{localPort}");
                 }
-
-                options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
-                options.AddArgument("ignore-certificate-errors");
+                else
+                {
+                    options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
+                }
+                
+                options.AddArgument("ignore-certificate-errors"); // --ignore-certificate-errors ?
             }
-            if (!string.IsNullOrEmpty(access.UserAgent))
-            {
-                options.AddArgument("--user-agent=" + access.UserAgent);
-            }
+            
+            options.AddArgument($"--user-agent={access.UserAgent}");
 
             //options.AddArguments("--disable-logging");
             //options.AddArguments("--disable-metrics");

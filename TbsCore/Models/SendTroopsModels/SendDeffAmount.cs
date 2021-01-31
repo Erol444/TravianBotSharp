@@ -3,8 +3,8 @@
     public class SendDeffAmount
     {
         /// <summary>
-        /// Amount of deff to be sent to a village. If null, send all deff.
+        /// Amount of deff to be sent to a village. If 0, send all deff.
         /// </summary>
-        public int? DeffCount { get; set; }
+        public int Amount { get; set; }
     }
 }

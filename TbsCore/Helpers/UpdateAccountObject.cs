@@ -61,7 +61,8 @@ namespace TravBotSharp.Files.Helpers
                 Coordinates = newVill.Coordinates,
                 Id = newVill.Id,
                 Name = newVill.Name,
-                UnderAttack = newVill.UnderAttack
+                UnderAttack = newVill.UnderAttack,
+                UnfinishedTasks = new List<VillUnfinishedTask>()
             };
             vill.Init(acc);
             acc.Villages.Add(vill);

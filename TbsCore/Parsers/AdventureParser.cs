@@ -18,12 +18,12 @@ namespace TravBotSharp.Files.Parsers
         {
             List<Adventure> adventuresList = new List<Adventure>();
             var adventures = htmlDoc.GetElementbyId("adventureListForm");
-            if (adventures == null) return null;
+            if (adventures == null) return adventuresList;
             foreach (var adv in adventures.Descendants("tr"))
             {
                 if (string.IsNullOrEmpty(adv.Id)) continue;
                 var sec = (int)TimeParser.ParseDuration(adv.Descendants("td").FirstOrDefault(x => x.HasClass("moveTime")).InnerText).TotalSeconds;
-                var coordinates = CoordinateParser.GetCoordinates(adv.Descendants("td").FirstOrDefault(x => x.HasClass("coords")).InnerText);
+                var coordinates = MapParser.GetCoordinates(adv.Descendants("td").FirstOrDefault(x => x.HasClass("coords")).InnerText);
 
                 DifficultyEnum difficulty = DifficultyEnum.Normal;
                 switch (version)

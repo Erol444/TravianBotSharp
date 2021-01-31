@@ -38,7 +38,6 @@
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
             this.villId = new XPTable.Models.TextColumn();
             this.vill = new XPTable.Models.TextColumn();
             this.type = new XPTable.Models.ComboBoxColumn();
@@ -46,6 +45,7 @@
             this.gb = new XPTable.Models.CheckBoxColumn();
             this.stable = new XPTable.Models.ComboBoxColumn();
             this.gs = new XPTable.Models.CheckBoxColumn();
+            this.NYS = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XpTableGlobal)).BeginInit();
             this.SuspendLayout();
@@ -53,7 +53,7 @@
             // SaveButton
             // 
             this.SaveButton.Location = new System.Drawing.Point(457, 589);
-            this.SaveButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.SaveButton.Margin = new System.Windows.Forms.Padding(2);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(82, 25);
             this.SaveButton.TabIndex = 1;
@@ -125,16 +125,6 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(791, 65);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(124, 23);
-            this.button3.TabIndex = 7;
-            this.button3.Text = "Save new vill settings";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
             // villId
             // 
             this.villId.Editable = false;
@@ -185,18 +175,29 @@
             this.gs.ToolTipText = "Train troops in Great Stable";
             this.gs.Width = 40;
             // 
-            // OverviewUc
+            // NYS
+            // 
+            this.NYS.AutoSize = true;
+            this.NYS.Location = new System.Drawing.Point(903, 69);
+            this.NYS.Name = "NYS";
+            this.NYS.Size = new System.Drawing.Size(48, 17);
+            this.NYS.TabIndex = 8;
+            this.NYS.Text = "NYS";
+            this.NYS.UseVisualStyleBackColor = true;
+            this.NYS.CheckedChanged += new System.EventHandler(this.NYS_CheckedChanged);
+            // 
+            // OverviewTroopsUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.NYS);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.XpTableGlobal);
             this.Controls.Add(this.SaveButton);
             this.Controls.Add(this.table1);
-            this.Name = "OverviewUc";
+            this.Name = "OverviewTroopsUc";
             this.Size = new System.Drawing.Size(988, 617);
             ((System.ComponentModel.ISupportInitialize)(this.table1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XpTableGlobal)).EndInit();
@@ -212,7 +213,6 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button3;
         private XPTable.Models.TextColumn villId;
         private XPTable.Models.TextColumn vill;
         private XPTable.Models.ComboBoxColumn type;
@@ -220,5 +220,6 @@
         private XPTable.Models.CheckBoxColumn gb;
         private XPTable.Models.ComboBoxColumn stable;
         private XPTable.Models.CheckBoxColumn gs;
+        private System.Windows.Forms.CheckBox NYS;
     }
 }
