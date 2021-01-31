@@ -225,6 +225,7 @@ namespace TravBotSharp.Views
             this.button6.TabIndex = 162;
             this.button6.Text = "Attack one";
             this.button6.UseVisualStyleBackColor = true;
+            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button7
             // 
@@ -234,6 +235,7 @@ namespace TravBotSharp.Views
             this.button7.TabIndex = 163;
             this.button7.Text = "Attack list";
             this.button7.UseVisualStyleBackColor = true;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
             // 
             // comboBox_NameList
             // 

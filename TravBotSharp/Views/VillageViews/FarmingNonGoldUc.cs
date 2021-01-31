@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using System.Threading.Tasks;
 using System.Drawing;
 
 using TravBotSharp.Interfaces;
@@ -223,6 +224,40 @@ namespace TravBotSharp.Views
             vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Clear();
 
             loadFarmList(currentFarmList_index);
+        }
+
+        /// <summary>
+        /// Attack current show
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button6_Click(object sender, System.EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            Farm f = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
+
+            // send troops
+        }
+
+        /// <summary>
+        /// Attack all targets in current farm list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button7_Click(object sender, System.EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            var targets = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets;
+            for (int i = 0; i < targets.Count; i++)
+            {
+                Farm f = targets[i];
+                // send troops like above
+
+                // do we need wait task above finish ?
+                // and how do we do that ?
+            }
         }
     }
 }
