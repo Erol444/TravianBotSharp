@@ -41,7 +41,7 @@ namespace TbsCore.Helpers
                     else if (acc.Wb.CurrentUrl.Contains("dorf2")) TaskExecutor.UpdateDorf2Info(acc);
                 },
                 // 3:
-                () => acc.AccInfo.CulturePoints = RightBarParser.GetCulurePoints(html, acc.AccInfo.ServerVersion),
+                () => acc.AccInfo.CulturePoints = RightBarParser.GetCulturePoints(html, acc.AccInfo.ServerVersion),
                 // 4 Village expansion:
                 () =>
                 {

@@ -102,7 +102,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 options.AddArgument("ignore-certificate-errors"); // --ignore-certificate-errors ?
             }
             
-            options.AddArgument($"--user-agent=\"{access.UserAgent}\"");
+            options.AddArgument($"--user-agent={access.UserAgent}");
 
             //options.AddArguments("--disable-logging");
             //options.AddArguments("--disable-metrics");

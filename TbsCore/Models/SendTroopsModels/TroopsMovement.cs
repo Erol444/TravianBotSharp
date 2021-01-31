@@ -1,10 +1,11 @@
 ﻿using System;
 using TbsCore.Models.MapModels;
+using TravBotSharp.Files.Helpers;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TbsCore.Models.SendTroopsModels
 {
-    public class TroopsMovementModel
+    public class TroopsMovement
     {
         /// <summary>
         /// Type of movement (raid/attack/reinforcement)
@@ -23,5 +24,23 @@ namespace TbsCore.Models.SendTroopsModels
         /// Target village (the one we are attacking or is attacking us)
         /// </summary>
         public Coordinates Coordinates { get; set; }
+        /// <summary>
+        /// Whether we want to redeploy hero
+        /// </summary>
+        public bool RedeployHero { get; set; }
+
+        /// <summary>
+        /// Catapult targets
+        /// </summary>
+        public BuildingEnum Target1 { get; set; }
+        public BuildingEnum Target2 { get; set; }
+        public ScoutEnum ScoutType { get; set; }
+    }
+
+    public enum ScoutEnum
+    {
+        None = 0,
+        Resources,
+        Defences
     }
 }

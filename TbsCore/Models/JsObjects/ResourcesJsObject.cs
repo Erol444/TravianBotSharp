@@ -14,11 +14,11 @@ namespace TbsCore.Models.JsObjects
 
     public class Production
     {
-        public int l1 { get; set; }
-        public int l2 { get; set; }
-        public int l3 { get; set; }
-        public int l4 { get; set; }
-        public int l5 { get; set; }
+        public long l1 { get; set; }
+        public long l2 { get; set; }
+        public long l3 { get; set; }
+        public long l4 { get; set; }
+        public long l5 { get; set; }
 
         public Resources GetResources()
         {
@@ -34,10 +34,10 @@ namespace TbsCore.Models.JsObjects
 
     public class Storage
     {
-        public int l1 { get; set; }
-        public int l2 { get; set; }
-        public int l3 { get; set; }
-        public int l4 { get; set; }
+        public long l1 { get; set; }
+        public long l2 { get; set; }
+        public long l3 { get; set; }
+        public long l4 { get; set; }
 
         public Resources GetResources()
         {
@@ -53,9 +53,9 @@ namespace TbsCore.Models.JsObjects
 
     public class MaxStorage
     {
-        public int l1 { get; set; }
-        public int l2 { get; set; }
-        public int l3 { get; set; }
-        public int l4 { get; set; }
+        public long l1 { get; set; }
+        public long l2 { get; set; }
+        public long l3 { get; set; }
+        public long l4 { get; set; }
     }
 }
