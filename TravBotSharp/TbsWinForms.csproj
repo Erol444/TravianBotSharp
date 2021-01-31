@@ -296,6 +296,12 @@
     <Compile Include="Views\OverviewTroopsUc.Designer.cs">
       <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\VillageViews\AddNewFarmlistNonGoldForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Views\VillageViews\AddNewFarmlistNonGoldForm.Designer.cs">
+      <DependentUpon>AddNewFarmlistNonGoldForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\VillageViews\BuildUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -410,6 +416,9 @@
     </Compile>
     <EmbeddedResource Include="Views\OverviewTroopsUc.resx">
       <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\VillageViews\AddNewFarmlistNonGoldForm.resx">
+      <DependentUpon>AddNewFarmlistNonGoldForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\VillageViews\BuildUc.resx">
       <DependentUpon>BuildUc.cs</DependentUpon>

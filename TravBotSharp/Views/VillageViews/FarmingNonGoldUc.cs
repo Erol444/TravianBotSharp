@@ -1,4 +1,5 @@
 ﻿using System.Windows.Forms;
+using System.Drawing;
 
 using TravBotSharp.Interfaces;
 using TravBotSharp.Files.Helpers;
@@ -15,6 +16,8 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
+
+        private int currentFarmList_index;
 
         public void UpdateUc()
         {
@@ -36,12 +39,13 @@ namespace TravBotSharp.Views
                 comboBox_TroopToFarm.Items.Clear();
             }
 
+            comboBox_NameList.Items.Clear();
             for (var i = 0; i < vill.FarmingNonGold.ListFarm.Count; i++)
             {
                 comboBox_NameList.Items.Add(vill.FarmingNonGold.ListFarm[i].Name);
             }
 
-            loadFarmList(0);
+            farmingList.Items.Clear();
         }
 
         private void loadFarmList(int index)
@@ -51,7 +55,7 @@ namespace TravBotSharp.Views
 
             var targets = vill.FarmingNonGold.ListFarm[index].Targets;
 
-            farmingList.Clear();
+            farmingList.Items.Clear();
             for (var i = 0; i < targets.Count; i++)
             {
                 addFarm2ViewList(acc, targets[i]);
@@ -60,33 +64,47 @@ namespace TravBotSharp.Views
 
         private void addFarm2ViewList(Account acc, Farm farm)
         {
-            var item = new ListViewItem();
-
-            item.SubItems[0].Text = (farmingList.Items.Count).ToString();
-            item.SubItems[1].Text = farm.coord.x.ToString();
-            item.SubItems[2].Text = farm.coord.y.ToString();
+            // i dont know why Id column cannot show value, it always shifts to right
+            ListViewItem item = new ListViewItem();
+            item.SubItems.Add(farm.coord.x.ToString());
+            item.SubItems.Add(farm.coord.y.ToString());
 
             if (acc.AccInfo.Tribe != null)
             {
                 int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
                 Classificator.TroopsEnum troop = (Classificator.TroopsEnum)(troopsEnum + 1 + farm.Troop);
 
-                item.SubItems[3].Text = VillageHelper.EnumStrToString(troop.ToString());
+                item.SubItems.Add(VillageHelper.EnumStrToString(troop.ToString()));
             }
             else
             {
-                item.SubItems[3].Text = "Don't know";
+                item.SubItems.Add("Don't know");
             }
 
-            item.SubItems[4].Text = farm.Amount.ToString();
+            item.SubItems.Add(farm.Amount.ToString());
+            item.ForeColor = Color.White;
 
             farmingList.Items.Add(item);
         }
 
         private void comboBox_NameList_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            var index = comboBox_NameList.SelectedIndex;
-            loadFarmList(index);
+            currentFarmList_index = comboBox_NameList.SelectedIndex;
+
+            loadFarmList(currentFarmList_index);
+        }
+
+        private void farmingList_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            if (farmingList.FocusedItem == null) return;
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            var farm = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
+
+            X.Value = farm.coord.x;
+            Y.Value = farm.coord.y;
+            comboBox_TroopToFarm.SelectedIndex = farm.Troop;
+            Amount.Value = farm.Amount;
         }
 
         /// <summary>
@@ -96,29 +114,25 @@ namespace TravBotSharp.Views
         /// <param name="e"></param>
         private void button1_Click(object sender, System.EventArgs e)
         {
-            if (comboBox_NameList.Text == "")
+            var addName = new AddNewFarmListNameForm();
+            DialogResult dr = addName.ShowDialog(this);
+            if (dr == DialogResult.Cancel)
             {
-                return;
+                addName.Close();
             }
+            else if (dr == DialogResult.OK)
+            {
+                var acc = GetSelectedAcc();
+                var vill = GetSelectedVillage(acc);
+                var farmlist = new FarmList();
 
-            var coord = new Coordinates();
-            coord.x = (int)X.Value;
-            coord.y = (int)Y.Value;
+                farmlist.Name = addName.getName();
+                addName.Close();
 
-            var farm = new Farm();
-            farm.Troop = comboBox_TroopToFarm.SelectedIndex;
-            farm.Amount = (int)Amount.Value;
-            farm.coord = coord;
-
-            var list = new FarmList();
-            list.Name = comboBox_NameList.Text;
-            list.Targets.Add(farm);
-
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage(acc);
-            vill.FarmingNonGold.ListFarm.Add(list);
-
-            UpdateUc();
+                vill.FarmingNonGold.ListFarm.Add(farmlist);
+                comboBox_NameList.Items.Add(farmlist.Name);
+                comboBox_NameList.SelectedIndex = comboBox_NameList.Items.Count - 1;
+            }
         }
 
         /// <summary>
@@ -142,15 +156,73 @@ namespace TravBotSharp.Views
             farm.Amount = (int)Amount.Value;
             farm.coord = coord;
 
-            var list = new FarmList();
-            list.Name = comboBox_NameList.Text;
-            list.Targets.Add(farm);
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+
+            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Add(farm);
+
+            addFarm2ViewList(acc, farm);
+        }
+
+        /// <summary>
+        /// update
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button4_Click(object sender, System.EventArgs e)
+        {
+            if (comboBox_NameList.Text == "")
+            {
+                return;
+            }
+
+            var coord = new Coordinates();
+            coord.x = (int)X.Value;
+            coord.y = (int)Y.Value;
+
+            var farm = new Farm();
+            farm.Troop = comboBox_TroopToFarm.SelectedIndex;
+            farm.Amount = (int)Amount.Value;
+            farm.coord = coord;
 
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
-            vill.FarmingNonGold.ListFarm.Find(f => f.Name == comboBox_NameList.Text).Targets.Add(farm);
+            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index] = farm;
 
-            addFarm2ViewList(acc, farm);
+            loadFarmList(currentFarmList_index);
+        }
+
+        /// <summary>
+        /// Delete
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button3_Click(object sender, System.EventArgs e)
+        {
+            if (comboBox_NameList.Text == "")
+            {
+                return;
+            }
+
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.RemoveAt(farmingList.FocusedItem.Index);
+
+            loadFarmList(currentFarmList_index);
+        }
+
+        /// <summary>
+        /// Clear
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button5_Click(object sender, System.EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Clear();
+
+            loadFarmList(currentFarmList_index);
         }
     }
 }

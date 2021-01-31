@@ -46,7 +46,6 @@ namespace TravBotSharp.Views
             this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.comboBox_NameList = new System.Windows.Forms.ComboBox();
-            this.button8 = new System.Windows.Forms.Button();
             this.farmingIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.farmingXHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.farmingYHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -61,6 +60,16 @@ namespace TravBotSharp.Views
             // X
             // 
             this.X.Location = new System.Drawing.Point(56, 74);
+            this.X.Maximum = new decimal(new int[] {
+            400,
+            0,
+            0,
+            0});
+            this.X.Minimum = new decimal(new int[] {
+            400,
+            0,
+            0,
+            -2147483648});
             this.X.Name = "X";
             this.X.Size = new System.Drawing.Size(58, 20);
             this.X.TabIndex = 0;
@@ -68,9 +77,20 @@ namespace TravBotSharp.Views
             // Y
             // 
             this.Y.Location = new System.Drawing.Point(176, 74);
+            this.Y.Maximum = new decimal(new int[] {
+            400,
+            0,
+            0,
+            0});
+            this.Y.Minimum = new decimal(new int[] {
+            400,
+            0,
+            0,
+            -2147483648});
             this.Y.Name = "Y";
             this.Y.Size = new System.Drawing.Size(58, 20);
             this.Y.TabIndex = 1;
+            this.Y.ThousandsSeparator = true;
             // 
             // label38
             // 
@@ -148,6 +168,7 @@ namespace TravBotSharp.Views
             this.button3.TabIndex = 157;
             this.button3.Text = "Delete";
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // button4
             // 
@@ -157,6 +178,7 @@ namespace TravBotSharp.Views
             this.button4.TabIndex = 158;
             this.button4.Text = "Update";
             this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button5
             // 
@@ -166,13 +188,24 @@ namespace TravBotSharp.Views
             this.button5.TabIndex = 159;
             this.button5.Text = "Clear";
             this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // Amount
             // 
             this.Amount.Location = new System.Drawing.Point(103, 138);
+            this.Amount.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.Amount.Name = "Amount";
             this.Amount.Size = new System.Drawing.Size(58, 20);
             this.Amount.TabIndex = 160;
+            this.Amount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             // 
             // label4
             // 
@@ -204,21 +237,13 @@ namespace TravBotSharp.Views
             // 
             // comboBox_NameList
             // 
+            this.comboBox_NameList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_NameList.FormattingEnabled = true;
             this.comboBox_NameList.Location = new System.Drawing.Point(103, 30);
             this.comboBox_NameList.Name = "comboBox_NameList";
             this.comboBox_NameList.Size = new System.Drawing.Size(131, 21);
             this.comboBox_NameList.TabIndex = 164;
             this.comboBox_NameList.SelectedIndexChanged += new System.EventHandler(this.comboBox_NameList_SelectedIndexChanged);
-            // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(37, 206);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(58, 23);
-            this.button8.TabIndex = 166;
-            this.button8.Text = "Save";
-            this.button8.UseVisualStyleBackColor = true;
             // 
             // farmingIdHeader
             // 
@@ -266,10 +291,10 @@ namespace TravBotSharp.Views
             this.farmingList.TabIndex = 165;
             this.farmingList.UseCompatibleStateImageBehavior = false;
             this.farmingList.View = System.Windows.Forms.View.Details;
+            this.farmingList.SelectedIndexChanged += new System.EventHandler(this.farmingList_SelectedIndexChanged);
             // 
             // FarmingNonGoldUc
             // 
-            this.Controls.Add(this.button8);
             this.Controls.Add(this.farmingList);
             this.Controls.Add(this.comboBox_NameList);
             this.Controls.Add(this.button7);
@@ -317,7 +342,6 @@ namespace TravBotSharp.Views
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.ComboBox comboBox_NameList;
-        private System.Windows.Forms.Button button8;
         private System.Windows.Forms.ColumnHeader farmingIdHeader;
         private System.Windows.Forms.ColumnHeader farmingXHeader;
         private System.Windows.Forms.ColumnHeader farmingYHeader;

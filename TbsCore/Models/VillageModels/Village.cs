@@ -25,6 +25,7 @@ namespace TbsCore.Models.VillageModels
             Expansion = new VillExpansion();
             Timings = new VillTiming();
             FarmingNonGold = new FramingNonGold();
+            FarmingNonGold.Init();
         }
 
         #region General info
