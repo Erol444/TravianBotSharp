@@ -19,25 +19,42 @@ namespace TravBotSharp.Views
         }
 
         private int currentFarmList_index;
+        private Farm currentFarm;
 
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
+
+            if (vill == null) return;
+
             if (acc.AccInfo.Tribe != null)
             {
+                currentFarm = new Farm();
                 comboBox_TroopToFarm.Items.Clear();
+                troopList.Items.Clear();
+
                 int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
-                for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
+
+                for (var i = troopsEnum + 1; i < troopsEnum + 7; i++)
                 {
                     Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
-                    comboBox_TroopToFarm.Items.Add(VillageHelper.EnumStrToString(troop.ToString()));
+                    var type = VillageHelper.EnumStrToString(troop.ToString());
+                    comboBox_TroopToFarm.Items.Add(type);
+
+                    var item = new ListViewItem();
+                    item.SubItems[0].Text = (i - troopsEnum).ToString();
+                    item.SubItems.Add(type);
+                    item.SubItems.Add("0");
+                    item.ForeColor = Color.White;
+                    troopList.Items.Add(item);
                 }
                 if (comboBox_TroopToFarm.Items.Count > 0) comboBox_TroopToFarm.SelectedIndex = 0;
             }
             else
             {
                 comboBox_TroopToFarm.Items.Clear();
+                troopList.Items.Clear();
             }
 
             comboBox_NameList.Items.Clear();
@@ -46,6 +63,8 @@ namespace TravBotSharp.Views
                 comboBox_NameList.Items.Add(vill.FarmingNonGold.ListFarm[i].Name);
             }
 
+            currentFarm = new Farm();
+
             farmingList.Items.Clear();
         }
 
@@ -53,6 +72,7 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
+            if (vill == null) return;
 
             var targets = vill.FarmingNonGold.ListFarm[index].Targets;
 
@@ -61,51 +81,20 @@ namespace TravBotSharp.Views
             {
                 addFarm2ViewList(acc, targets[i]);
             }
+
+            currentFarm = new Farm();
         }
 
         private void addFarm2ViewList(Account acc, Farm farm)
         {
-            // i dont know why Id column cannot show value, it always shifts to right
             ListViewItem item = new ListViewItem();
-            item.SubItems.Add(farm.coord.x.ToString());
-            item.SubItems.Add(farm.coord.y.ToString());
+            item.SubItems[0].Text = (farmingList.Items.Count + 1).ToString();
+            item.SubItems.Add(farm.Coord.x.ToString());
+            item.SubItems.Add(farm.Coord.y.ToString());
 
-            if (acc.AccInfo.Tribe != null)
-            {
-                int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
-                Classificator.TroopsEnum troop = (Classificator.TroopsEnum)(troopsEnum + 1 + farm.Troop);
-
-                item.SubItems.Add(VillageHelper.EnumStrToString(troop.ToString()));
-            }
-            else
-            {
-                item.SubItems.Add("Don't know");
-            }
-
-            item.SubItems.Add(farm.Amount.ToString());
             item.ForeColor = Color.White;
 
             farmingList.Items.Add(item);
-        }
-
-        private void comboBox_NameList_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            currentFarmList_index = comboBox_NameList.SelectedIndex;
-
-            loadFarmList(currentFarmList_index);
-        }
-
-        private void farmingList_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            if (farmingList.FocusedItem == null) return;
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage(acc);
-            var farm = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
-
-            X.Value = farm.coord.x;
-            Y.Value = farm.coord.y;
-            comboBox_TroopToFarm.SelectedIndex = farm.Troop;
-            Amount.Value = farm.Amount;
         }
 
         /// <summary>
@@ -125,6 +114,8 @@ namespace TravBotSharp.Views
             {
                 var acc = GetSelectedAcc();
                 var vill = GetSelectedVillage(acc);
+                if (vill == null) return;
+
                 var farmlist = new FarmList();
 
                 farmlist.Name = addName.getName();
@@ -148,21 +139,13 @@ namespace TravBotSharp.Views
                 return;
             }
 
-            var coord = new Coordinates();
-            coord.x = (int)X.Value;
-            coord.y = (int)Y.Value;
-
-            var farm = new Farm();
-            farm.Troop = comboBox_TroopToFarm.SelectedIndex;
-            farm.Amount = (int)Amount.Value;
-            farm.coord = coord;
-
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
+            if (vill == null) return;
 
-            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Add(farm);
+            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Add(currentFarm);
 
-            addFarm2ViewList(acc, farm);
+            addFarm2ViewList(acc, currentFarm);
         }
 
         /// <summary>
@@ -177,18 +160,12 @@ namespace TravBotSharp.Views
                 return;
             }
 
-            var coord = new Coordinates();
-            coord.x = (int)X.Value;
-            coord.y = (int)Y.Value;
-
-            var farm = new Farm();
-            farm.Troop = comboBox_TroopToFarm.SelectedIndex;
-            farm.Amount = (int)Amount.Value;
-            farm.coord = coord;
-
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
-            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index] = farm;
+            if (vill == null) return;
+            if (troopList.FocusedItem == null) return;
+
+            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index] = currentFarm;
 
             loadFarmList(currentFarmList_index);
         }
@@ -207,6 +184,9 @@ namespace TravBotSharp.Views
 
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
+            if (vill == null) return;
+            if (troopList.FocusedItem == null) return;
+
             vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.RemoveAt(farmingList.FocusedItem.Index);
 
             loadFarmList(currentFarmList_index);
@@ -221,27 +201,15 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
+            if (vill == null) return;
+
             vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Clear();
 
             loadFarmList(currentFarmList_index);
         }
 
         /// <summary>
-        /// Attack current show
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button6_Click(object sender, System.EventArgs e)
-        {
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage(acc);
-            Farm f = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
-
-            // send troops
-        }
-
-        /// <summary>
-        /// Attack all targets in current farm list
+        /// Attack
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -249,15 +217,63 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
+            if (vill == null) return;
+
             var targets = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets;
             for (int i = 0; i < targets.Count; i++)
             {
                 Farm f = targets[i];
-                // send troops like above
-
-                // do we need wait task above finish ?
-                // and how do we do that ?
             }
+        }
+
+        private void comboBox_NameList_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            currentFarmList_index = comboBox_NameList.SelectedIndex;
+
+            loadFarmList(currentFarmList_index);
+        }
+
+        private void farmingList_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            if (vill == null) return;
+
+            if (farmingList.FocusedItem == null) return;
+            var farm = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
+
+            currentFarm = new Farm(farm);
+
+            X.Value = farm.Coord.x;
+            Y.Value = farm.Coord.y;
+
+            for (int i = 0; i < farm.Troops.Length; i++)
+            {
+                troopList.Items[i].SubItems[2].Text = farm.Troops[i].ToString();
+            }
+
+            comboBox_TroopToFarm.SelectedIndex = 0;
+        }
+
+        private void comboBox_TroopToFarm_SelectedIndexChanged(object sender, System.EventArgs e)
+        {
+            Amount.Value = currentFarm.Troops[comboBox_TroopToFarm.SelectedIndex];
+        }
+
+        private void X_ValueChanged(object sender, System.EventArgs e)
+        {
+            currentFarm.Coord.x = (int)X.Value;
+        }
+
+        private void Y_ValueChanged(object sender, System.EventArgs e)
+        {
+            currentFarm.Coord.y = (int)Y.Value;
+        }
+
+        private void Amount_ValueChanged(object sender, System.EventArgs e)
+        {
+            currentFarm.Troops[comboBox_TroopToFarm.SelectedIndex] = (int)Amount.Value;
+            troopList.Items[comboBox_TroopToFarm.SelectedIndex].SubItems[2].Text = Amount.Value.ToString();
         }
     }
 }

@@ -16,8 +16,29 @@ namespace TbsCore.Models.VillageModels
 
     public class Farm
     {
-        public Coordinates coord { get; set; }
-        public int Troop { get; set; }
-        public int Amount { get; set; }
+        public Farm()
+        {
+            // 6 type for farming
+            // no one (do they ?) use ram, cata, chief or settler
+            // and hero ._.
+            Troops = new int[6];
+            Coord = new Coordinates();
+        }
+
+        public Farm(Farm f)
+        {
+            Troops = new int[6];
+            for (int i = 0; i < 6; i++)
+            {
+                Troops[i] = f.Troops[i];
+            }
+
+            Coord = new Coordinates();
+            Coord.x = f.Coord.x;
+            Coord.y = f.Coord.y;
+        }
+
+        public Coordinates Coord { get; set; }
+        public int[] Troops { get; set; }
     }
 }

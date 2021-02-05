@@ -49,11 +49,10 @@ namespace TravBotSharp.Views
             this.label3 = new System.Windows.Forms.Label();
             this.comboBox_TroopToFarm = new System.Windows.Forms.ComboBox();
             this.Amount = new System.Windows.Forms.NumericUpDown();
-            this.listView2 = new System.Windows.Forms.ListView();
+            this.troopList = new System.Windows.Forms.ListView();
+            this.farmingTroopId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.farmingTroopType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.farmingTroopAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.button6 = new System.Windows.Forms.Button();
-            this.button8 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.X)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Y)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Amount)).BeginInit();
@@ -75,6 +74,7 @@ namespace TravBotSharp.Views
             this.X.Name = "X";
             this.X.Size = new System.Drawing.Size(58, 20);
             this.X.TabIndex = 0;
+            this.X.ValueChanged += new System.EventHandler(this.X_ValueChanged);
             // 
             // Y
             // 
@@ -93,6 +93,7 @@ namespace TravBotSharp.Views
             this.Y.Size = new System.Drawing.Size(58, 20);
             this.Y.TabIndex = 1;
             this.Y.ThousandsSeparator = true;
+            this.Y.ValueChanged += new System.EventHandler(this.Y_ValueChanged);
             // 
             // label38
             // 
@@ -126,7 +127,7 @@ namespace TravBotSharp.Views
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(254, 57);
+            this.button1.Location = new System.Drawing.Point(37, 57);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(56, 23);
             this.button1.TabIndex = 155;
@@ -136,7 +137,7 @@ namespace TravBotSharp.Views
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(254, 86);
+            this.button2.Location = new System.Drawing.Point(254, 57);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(56, 23);
             this.button2.TabIndex = 156;
@@ -146,7 +147,7 @@ namespace TravBotSharp.Views
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(254, 144);
+            this.button3.Location = new System.Drawing.Point(254, 115);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(56, 23);
             this.button3.TabIndex = 157;
@@ -156,7 +157,7 @@ namespace TravBotSharp.Views
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(254, 115);
+            this.button4.Location = new System.Drawing.Point(254, 86);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(56, 23);
             this.button4.TabIndex = 158;
@@ -166,7 +167,7 @@ namespace TravBotSharp.Views
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(254, 173);
+            this.button5.Location = new System.Drawing.Point(254, 144);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(56, 23);
             this.button5.TabIndex = 159;
@@ -252,51 +253,50 @@ namespace TravBotSharp.Views
             // 
             // comboBox_TroopToFarm
             // 
+            this.comboBox_TroopToFarm.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox_TroopToFarm.FormattingEnabled = true;
             this.comboBox_TroopToFarm.Location = new System.Drawing.Point(405, 90);
             this.comboBox_TroopToFarm.Name = "comboBox_TroopToFarm";
             this.comboBox_TroopToFarm.Size = new System.Drawing.Size(131, 21);
             this.comboBox_TroopToFarm.TabIndex = 154;
+            this.comboBox_TroopToFarm.SelectedIndexChanged += new System.EventHandler(this.comboBox_TroopToFarm_SelectedIndexChanged);
             // 
             // Amount
             // 
             this.Amount.Location = new System.Drawing.Point(405, 117);
-            this.Amount.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             this.Amount.Name = "Amount";
             this.Amount.Size = new System.Drawing.Size(58, 20);
             this.Amount.TabIndex = 160;
-            this.Amount.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
+            this.Amount.ValueChanged += new System.EventHandler(this.Amount_ValueChanged);
             // 
-            // listView2
+            // troopList
             // 
-            this.listView2.BackColor = System.Drawing.SystemColors.MenuText;
-            this.listView2.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.troopList.BackColor = System.Drawing.SystemColors.MenuText;
+            this.troopList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.farmingTroopId,
             this.farmingTroopType,
             this.farmingTroopAmount});
-            this.listView2.FullRowSelect = true;
-            this.listView2.GridLines = true;
-            this.listView2.HideSelection = false;
-            this.listView2.Location = new System.Drawing.Point(558, 57);
-            this.listView2.MultiSelect = false;
-            this.listView2.Name = "listView2";
-            this.listView2.Size = new System.Drawing.Size(126, 385);
-            this.listView2.TabIndex = 167;
-            this.listView2.UseCompatibleStateImageBehavior = false;
-            this.listView2.View = System.Windows.Forms.View.Details;
+            this.troopList.FullRowSelect = true;
+            this.troopList.GridLines = true;
+            this.troopList.HideSelection = false;
+            this.troopList.Location = new System.Drawing.Point(542, 57);
+            this.troopList.MultiSelect = false;
+            this.troopList.Name = "troopList";
+            this.troopList.Size = new System.Drawing.Size(198, 130);
+            this.troopList.TabIndex = 167;
+            this.troopList.UseCompatibleStateImageBehavior = false;
+            this.troopList.View = System.Windows.Forms.View.Details;
+            // 
+            // farmingTroopId
+            // 
+            this.farmingTroopId.Text = "Id";
+            this.farmingTroopId.Width = 23;
             // 
             // farmingTroopType
             // 
             this.farmingTroopType.Text = "Type";
             this.farmingTroopType.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.farmingTroopType.Width = 69;
+            this.farmingTroopType.Width = 117;
             // 
             // farmingTroopAmount
             // 
@@ -304,30 +304,9 @@ namespace TravBotSharp.Views
             this.farmingTroopAmount.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.farmingTroopAmount.Width = 53;
             // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(407, 143);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(56, 23);
-            this.button6.TabIndex = 168;
-            this.button6.Text = "Add";
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // button8
-            // 
-            this.button8.Location = new System.Drawing.Point(478, 144);
-            this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(58, 23);
-            this.button8.TabIndex = 169;
-            this.button8.Text = "Update";
-            this.button8.UseVisualStyleBackColor = true;
-            // 
             // FarmingNonGoldUc
             // 
-            this.Controls.Add(this.button8);
-            this.Controls.Add(this.button6);
-            this.Controls.Add(this.listView2);
-            this.Controls.Add(this.farmingList);
+            this.Controls.Add(this.troopList);
             this.Controls.Add(this.comboBox_NameList);
             this.Controls.Add(this.button7);
             this.Controls.Add(this.label4);
@@ -344,8 +323,9 @@ namespace TravBotSharp.Views
             this.Controls.Add(this.label38);
             this.Controls.Add(this.Y);
             this.Controls.Add(this.X);
+            this.Controls.Add(this.farmingList);
             this.Name = "FarmingNonGoldUc";
-            this.Size = new System.Drawing.Size(702, 446);
+            this.Size = new System.Drawing.Size(790, 446);
             ((System.ComponentModel.ISupportInitialize)(this.X)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Y)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Amount)).EndInit();
@@ -376,10 +356,9 @@ namespace TravBotSharp.Views
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comboBox_TroopToFarm;
         private System.Windows.Forms.NumericUpDown Amount;
-        private System.Windows.Forms.ListView listView2;
-        private System.Windows.Forms.ColumnHeader farmingTroopType;
+        private System.Windows.Forms.ListView troopList;
         private System.Windows.Forms.ColumnHeader farmingTroopAmount;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.ColumnHeader farmingTroopId;
+        private System.Windows.Forms.ColumnHeader farmingTroopType;
     }
 }

@@ -889,7 +889,7 @@
             this.columnHeader2.Text = "Priority";
             this.columnHeader2.Width = 85;
             // 
-            // button7
+            // button6
             // 
             this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button7.Location = new System.Drawing.Point(111, 66);
