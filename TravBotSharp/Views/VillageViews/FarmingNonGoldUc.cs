@@ -1,11 +1,14 @@
-﻿using System.Windows.Forms;
-using System.Threading.Tasks;
+﻿using System;
+using System.Windows.Forms;
 using System.Drawing;
 
 using TravBotSharp.Interfaces;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Tasks;
+using TravBotSharp.Files.Tasks.LowLevel;
 
 using TbsCore.Models.VillageModels;
+using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.AccModels;
 
@@ -219,10 +222,35 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage(acc);
             if (vill == null) return;
 
+            SendTroops taskSendTroops;
+            Farm f;
             var targets = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets;
             for (int i = 0; i < targets.Count; i++)
             {
-                Farm f = targets[i];
+                f = targets[i];
+                taskSendTroops = new SendTroops()
+                {
+                    ExecuteAt = DateTime.Now,
+                    Vill = vill,
+                    TroopsMovement = new TroopsMovement()
+                    {
+                        Coordinates = new Coordinates()
+                        {
+                            x = f.Coord.x,
+                            y = f.Coord.y
+                        },
+                        Troops = new int[12]
+                    }
+                };
+
+                for (int index = 0; index < f.Troops.Length; index++)
+                {
+                    taskSendTroops.TroopsMovement.Troops[index] = f.Troops[index];
+                }
+
+                taskSendTroops.TroopsMovement.MovementType = Classificator.MovementType.Raid;
+
+                TaskExecutor.AddTask(acc, taskSendTroops);
             }
         }
 
