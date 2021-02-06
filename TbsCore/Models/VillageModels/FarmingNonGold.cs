@@ -2,7 +2,7 @@
 
 namespace TbsCore.Models.VillageModels
 {
-    public class FramingNonGold
+    public class FarmingNonGold
     {
         public void Init()
         {

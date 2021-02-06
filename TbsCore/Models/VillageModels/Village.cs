@@ -25,7 +25,7 @@ namespace TbsCore.Models.VillageModels
             Deffing = new VillDeffing();
             Expansion = new VillExpansion();
             Timings = new VillTiming();
-            FarmingNonGold = new FramingNonGold();
+            FarmingNonGold = new FarmingNonGold();
             FarmingNonGold.Init();
         }
 
@@ -109,7 +109,7 @@ namespace TbsCore.Models.VillageModels
         /// <summary>
         /// Farm list for non gold
         /// </summary>
-        public FramingNonGold FarmingNonGold { get; set; }
+        public FarmingNonGold FarmingNonGold { get; set; }
         /// <summary>
         /// For NewYearSpecial servers where account's villages can be of different tribe
         /// </summary>
