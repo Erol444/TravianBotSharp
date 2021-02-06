@@ -84,8 +84,6 @@ namespace TravBotSharp.Views
             {
                 addFarm2ViewList(acc, targets[i]);
             }
-
-            currentFarm = new Farm();
         }
 
         private void addFarm2ViewList(Account acc, Farm farm)
@@ -146,9 +144,7 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage(acc);
             if (vill == null) return;
 
-            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Add(currentFarm);
-
-            addFarm2ViewList(acc, currentFarm);
+            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Add(new Farm(currentFarm));
         }
 
         /// <summary>
@@ -168,7 +164,7 @@ namespace TravBotSharp.Views
             if (vill == null) return;
             if (troopList.FocusedItem == null) return;
 
-            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index] = currentFarm;
+            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index] = new Farm(currentFarm);
 
             loadFarmList(currentFarmList_index);
         }
@@ -188,7 +184,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
             if (vill == null) return;
-            if (troopList.FocusedItem == null) return;
+            if (farmingList.FocusedItem == null) return;
 
             vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.RemoveAt(farmingList.FocusedItem.Index);
 
