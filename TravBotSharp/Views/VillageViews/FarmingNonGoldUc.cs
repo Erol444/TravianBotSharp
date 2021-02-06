@@ -145,6 +145,7 @@ namespace TravBotSharp.Views
             if (vill == null) return;
 
             vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Add(new Farm(currentFarm));
+            addFarm2ViewList(acc, currentFarm);
         }
 
         /// <summary>
