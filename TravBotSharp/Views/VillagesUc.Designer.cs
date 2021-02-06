@@ -45,6 +45,8 @@
             this.troopsUc1 = new TravBotSharp.Views.TroopsUc();
             this.villTabAttack = new System.Windows.Forms.TabPage();
             this.attackUc1 = new TravBotSharp.Views.AttackUc();
+            this.villTabFarming = new System.Windows.Forms.TabPage();
+            this.farmingNonGoldUc1 = new TravBotSharp.Views.FarmingNonGoldUc();
             this.villInfo = new System.Windows.Forms.TabPage();
             this.infoUc1 = new TravBotSharp.Views.InfoUc();
             this.panel1.SuspendLayout();
@@ -53,6 +55,7 @@
             this.villTabMarket.SuspendLayout();
             this.villTabTroops.SuspendLayout();
             this.villTabAttack.SuspendLayout();
+            this.villTabFarming.SuspendLayout();
             this.villInfo.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -133,6 +136,7 @@
             this.villageTabController.Controls.Add(this.villTabMarket);
             this.villageTabController.Controls.Add(this.villTabTroops);
             this.villageTabController.Controls.Add(this.villTabAttack);
+            this.villageTabController.Controls.Add(this.villTabFarming);
             this.villageTabController.Controls.Add(this.villInfo);
             this.villageTabController.Dock = System.Windows.Forms.DockStyle.Fill;
             this.villageTabController.Location = new System.Drawing.Point(200, 0);
@@ -221,6 +225,24 @@
             this.attackUc1.Size = new System.Drawing.Size(731, 603);
             this.attackUc1.TabIndex = 0;
             // 
+            // villTabFarming
+            // 
+            this.villTabFarming.Controls.Add(this.farmingNonGoldUc1);
+            this.villTabFarming.Location = new System.Drawing.Point(4, 22);
+            this.villTabFarming.Name = "villTabFarming";
+            this.villTabFarming.Size = new System.Drawing.Size(737, 609);
+            this.villTabFarming.TabIndex = 5;
+            this.villTabFarming.Text = "Farming";
+            this.villTabFarming.UseVisualStyleBackColor = true;
+            // 
+            // farmingNonGoldUc1
+            // 
+            this.farmingNonGoldUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.farmingNonGoldUc1.Location = new System.Drawing.Point(3, 3);
+            this.farmingNonGoldUc1.Name = "farmingNonGoldUc1";
+            this.farmingNonGoldUc1.Size = new System.Drawing.Size(731, 603);
+            this.farmingNonGoldUc1.TabIndex = 0;
+            // 
             // villInfo
             // 
             this.villInfo.Controls.Add(this.infoUc1);
@@ -254,6 +276,7 @@
             this.villTabMarket.ResumeLayout(false);
             this.villTabTroops.ResumeLayout(false);
             this.villTabAttack.ResumeLayout(false);
+            this.villTabFarming.ResumeLayout(false);
             this.villInfo.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -280,5 +303,7 @@
         private AttackUc attackUc1;
         private System.Windows.Forms.TabPage villInfo;
         private InfoUc infoUc1;
+        private System.Windows.Forms.TabPage villTabFarming;
+        private FarmingNonGoldUc farmingNonGoldUc1;
     }
 }

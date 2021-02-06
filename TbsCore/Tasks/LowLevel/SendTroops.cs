@@ -19,14 +19,23 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             for (int i = 0; i < TroopsMovement.Troops.Length; i++)
             {
                 if (TroopsMovement.Troops[i] == 0) continue;
-                await DriverHelper.WriteByName(acc, $"t{i + 1}", TroopsMovement.Troops[i]);
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case Classificator.ServerVersionEnum.T4_4:
+                        await DriverHelper.WriteByName(acc, $"t{i + 1}", TroopsMovement.Troops[i]);
+                        break;
+
+                    case Classificator.ServerVersionEnum.T4_5:
+                        await DriverHelper.WriteByName(acc, $"troops[0][t{i + 1}]", TroopsMovement.Troops[i]);
+                        break;
+                }
             }
 
             //select coordinates
             await DriverHelper.WriteById(acc, "xCoordInput", TroopsMovement.Coordinates.x);
             await DriverHelper.WriteById(acc, "yCoordInput", TroopsMovement.Coordinates.y);
-            //Select type of troop sending
 
+            //Select type of troop sending
             string script = $"Array.from(document.getElementsByName('c')).find(x=>x.value=={(int)TroopsMovement.MovementType}).checked=true;";
             await DriverHelper.ExecuteScript(acc, script);
 

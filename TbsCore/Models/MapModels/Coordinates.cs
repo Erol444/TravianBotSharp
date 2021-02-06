@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace TbsCore.Models.MapModels
 {

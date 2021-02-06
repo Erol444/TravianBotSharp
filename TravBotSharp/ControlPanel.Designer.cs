@@ -358,7 +358,7 @@
             this.accProxyHeader.Text = "Proxy";
             this.accProxyHeader.Width = 95;
             // 
-            // button7
+            // button6
             // 
             this.button7.Location = new System.Drawing.Point(15, 41);
             this.button7.Name = "button7";
