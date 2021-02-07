@@ -65,10 +65,16 @@ namespace TravBotSharp.Views
             {
                 comboBox_NameList.Items.Add(vill.FarmingNonGold.ListFarm[i].Name);
             }
-
+            if (vill.FarmingNonGold.ListFarm.Count > 0)
+            {
+                comboBox_NameList.SelectedIndex = 0;
+                loadFarmList(0);
+            }
+            else
+            {
+                farmingList.Items.Clear();
+            }
             currentFarm = new Farm();
-
-            farmingList.Items.Clear();
         }
 
         private void loadFarmList(int index)
