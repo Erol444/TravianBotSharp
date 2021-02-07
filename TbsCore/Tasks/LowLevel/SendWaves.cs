@@ -37,11 +37,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             for (int i = 0; i < SendWaveModels.Count; i++)
             {
                 await Task.Delay(rnd.Next(800, 1000));
-
+                acc.Wb.Log($"Preparing {i + 1}. wave...");
                 var htmlDoc1 = HttpHelper.SendGetReq(acc, "/build.php?tt=2&id=39");
 
                 var build = htmlDoc1.GetElementbyId("build");
-
 
                 var req = new RestRequest
                 {
