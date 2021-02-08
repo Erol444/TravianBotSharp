@@ -11,7 +11,7 @@ using TravBotSharp.Files.TravianData;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class SendDeff : BotTask
+    public class SendDeff : SendTroops
     {
         public SendDeffAmount DeffAmount { get; set; }
         public Coordinates TargetVillage { get; set; }
@@ -20,18 +20,29 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Can't send deff to home village or to 0/0
             if (TargetVillage == null ||
                 TargetVillage.Equals(Vill.Coordinates) ||
-                TargetVillage.Equals(new Coordinates() { x = 0, y = 0 }))
+                TargetVillage.Equals(new Coordinates(0, 0)))
             {
                 return TaskRes.Executed;
             }
 
-            if (!acc.Wb.CurrentUrl.Contains("/build.php?tt=2&id=39"))
+            base.TroopsMovement = new TroopsMovement()
             {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
-            }
+                Coordinates = TargetVillage,
+                MovementType = Classificator.MovementType.Reinforcement,
+                // Bot will configure amount of troops to be sent when it parses
+                // the amount of troops available at home
+                Troops = new int[10],
+            };
 
-            int[] troopsAtHome = TroopsMovementParser.GetTroopsInRallyPoint(acc.Wb.Html);
+            base.TroopsCallback = TroopsCountRecieved;
 
+            await base.Execute(acc);
+
+            return TaskRes.Executed;
+        }
+
+        public bool TroopsCountRecieved(Account acc, int[] troopsAtHome)
+        {
             int upkeepSent = 0;
 
             for (int i = 0; i < 10; i++)
@@ -52,31 +63,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     sendAmount = toSend;
                 }
 
-                await DriverHelper.WriteByName(acc, $"t{i + 1}", sendAmount);
+                base.TroopsMovement.Troops[i] = sendAmount;
+
                 upkeepSent += sendAmount * upkeep;
 
                 if (finished) break;
             }
 
-            // No troops in this village
-            if (upkeepSent == 0) return TaskRes.Executed;
-
             this.DeffAmount.Amount -= upkeepSent;
             acc.Wb.Log($"Bot will send {upkeepSent} deff (in upkeep) from {this.Vill.Name} to {this.TargetVillage}. Still needed {this.DeffAmount.Amount} deff");
-            
-            //select coordinates
-            await DriverHelper.WriteById(acc, "xCoordInput", TargetVillage.x);
-            await DriverHelper.WriteById(acc, "yCoordInput", TargetVillage.y);
 
-            //Select reinforcement
-            string script = "var radio = document.getElementsByClassName(\"radio\");for(var i = 0; i < radio.length; i++){";
-            script += $"if(radio[i].value == '2') radio[i].checked = \"checked\"}}";
-            await DriverHelper.ExecuteScript(acc, script);
-            await DriverHelper.ClickById(acc, "btn_ok");
-
-            // Confirm
-            await DriverHelper.ClickById(acc, "btn_ok"); // Click send
-            return TaskRes.Executed;
+            return true;
         }
     }
 }

@@ -1,19 +1,27 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class SendTroops : BotTask
     {
         public TroopsMovement TroopsMovement { get; set; }
+        public Func<Account, int[], bool> TroopsCallback { get; set; }
 
         public override async Task<TaskRes> Execute(Account acc)
         {
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
+
+            TroopsCallback?.Invoke(acc, TroopsMovementParser.GetTroopsInRallyPoint(acc.Wb.Html));
+
+            // No troops selected to be sent from this village
+            if (this.TroopsMovement.Troops.Sum() == 0) return TaskRes.Executed;
 
             //add number of troops to the input boxes
             for (int i = 0; i < TroopsMovement.Troops.Length; i++)
