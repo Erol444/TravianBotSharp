@@ -9,6 +9,8 @@ namespace TbsCore.Models.Settings
             GetRes = true;
             SendRes = false;
             UseHeroRes = true;
+            RefreshMin = 30;
+            RefreshMax = 60;
         }
         public VillType Type { get; set; }
         public Classificator.TroopsEnum BarracksTrain { get; set; }

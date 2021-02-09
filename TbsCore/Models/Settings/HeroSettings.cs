@@ -9,6 +9,8 @@
             MinHealth = 15;
             MaxDistance = 30;
             Upgrades = new byte[4] { 2, 0, 0, 2 };
+            MinUpdate = 40;
+            MaxUpdate = 80;
         }
         public bool AutoReviveHero { get; set; }
         public bool AutoSendToAdventure { get; set; }

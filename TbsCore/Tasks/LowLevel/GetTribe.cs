@@ -59,6 +59,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private void SetTribe(Account acc, Classificator.TribeEnum tribe) => acc.AccInfo.Tribe = tribe;
 
         private int NextVillCheck(Account acc, List<int> villsChecked) =>
-            acc.Villages.FirstOrDefault(x => !villsChecked.Contains(x.Id)).Id;
+            acc.Villages.FirstOrDefault(x => !villsChecked.Contains(x.Id))?.Id ?? 0;
     }
 }

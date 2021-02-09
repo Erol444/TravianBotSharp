@@ -20,6 +20,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
+            // force village update if some building has finished building
+            bool updateVill = RemoveFinishedCB(Vill);
+
             // Sets building task to be built
             //if (this.Task == null)
             ConfigNextExecute(acc);
@@ -42,7 +45,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             // In which dorf is the building. So bot is less suspicious.
-            if (!acc.Wb.CurrentUrl.Contains($"/dorf{((Task.BuildingId ?? default) < 19 ? 1 : 2)}.php"))
+            if (updateVill ||
+                !acc.Wb.CurrentUrl.Contains($"/dorf{((Task.BuildingId ?? default) < 19 ? 1 : 2)}.php"))
             {
                 string navigateTo = $"{acc.AccInfo.ServerUrl}/";
                 //Switch village!
@@ -77,21 +81,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var url = $"{acc.AccInfo.ServerUrl}/build.php?id={urlId}";
 
-            // Fast building for TTWars, only if we have enough resources
-            //if (acc.AccInfo.ServerUrl.Contains("ttwars") && !url.Contains("category") && false) // disabling this
-            //{
-            //    var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == this.task.BuildingId);
-            //    var lvl = building.Level;
-            //    if (building.UnderConstruction) lvl++;
-
-            //    var storedRes = ResourcesHelper.ResourcesToArray(vill.Res.Stored.Resources);
-            //    var neededRes = BuildingsCost.GetBuildingCost(this.task.Building, lvl + 1);
-            //    if (ResourcesHelper.EnoughRes(storedRes, neededRes))
-            //    {
-            //        //url += "&fastUP=1";
-            //        return TaskRes.Executed;
-            //    }
-            //}
+            // Fast building for TTWars
+            if (acc.AccInfo.ServerUrl.Contains("ttwars") &&
+                !constructNew &&
+                await TTWarsTryFastUpgrade(acc, url))
+            { 
+                return TaskRes.Executed; 
+            }
 
             // Append correct tab
             if (!constructNew)
@@ -106,6 +102,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         break;
                     case BuildingEnum.Residence:
                     case BuildingEnum.Palace:
+                    case BuildingEnum.CommandCenter:
+                    case BuildingEnum.Treasury:
                         url += "&s=0";
                         break;
                 }
@@ -148,19 +146,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (button == null)
             {
                 // Add prerequisite buildings in order to construct this building.
-                if (!AddBuildingPrerequisites(acc, Vill, Task.Building, false))
-                {
-                    // Next execute after the last building finishes
-                    this.NextExecute = Vill.Build.CurrentlyBuilding.LastOrDefault()?.Duration;
-                    return TaskRes.Executed;
-                }
-                else
-                {
-                    acc.Wb.Log($"Error trying to construct {Task.Building}! Prerequisites are met but there is no 'Build' button!");
+                AddBuildingPrerequisites(acc, Vill, Task.Building, false);
+                
+                // Next execute after the last building finishes
+                this.NextExecute = Vill.Build.CurrentlyBuilding.LastOrDefault()?.Duration;
 
-                    return TaskRes.Retry;
-                }
+                acc.Wb.Log($"Wanted to construct {this.Task.Building} but prerequired buildings are missing");
+                return TaskRes.Executed;
             }
+
             await DriverHelper.ClickById(acc, button.Id);
 
             this.Task.ConstructNew = false;
@@ -208,7 +202,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var building = Vill.Build.Buildings.FirstOrDefault(x => x.Id == this.Task.BuildingId);
             lvl = building.Level;
             if (building.UnderConstruction) lvl++;
-            if (lvl >= Task.Level)
+            if (Task.Level <= lvl)
             {
                 acc.Wb.Log($"{this.Task.Building} is on level {lvl}, on/above desired {Task.Level}. Removing it from queue.");
                 RemoveCurrentTask();
@@ -252,9 +246,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 RemoveCurrentTask();
                 return TaskRes.Executed;
             }
-            //TODO move this
-            CheckSettlers(acc, Vill, lvl, DateTime.Now.Add(buildDuration));
-
+            
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
                buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
                !await TryFastUpgrade(acc)) // +25% speed upgrade
@@ -287,21 +279,23 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
             await TaskExecutor.PageLoaded(acc);
-        }
 
-        // TODO: move. 
-        private void CheckSettlers(Account acc, Village vill, int currentLevel, DateTime finishBuilding)
-        {
-            if (this.Task.Building == BuildingEnum.Residence &&
-                currentLevel >= 9 &&
+            // Check if residence is getting upgraded to level 10 => train settlers
+            var cbResidence = Vill.Build
+                .CurrentlyBuilding
+                .FirstOrDefault(x => x.Building == BuildingEnum.Residence && x.Level == 10);
+
+            if (cbResidence != null &&
                 acc.NewVillages.AutoSettleNewVillages &&
-                vill.Troops.Settlers == 0)
+                Vill.Troops.Settlers == 0)
             {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill,
+                TaskExecutor.AddTaskIfNotExistInVillage(acc, Vill,
                     new TrainSettlers()
                     {
-                        ExecuteAt = finishBuilding.AddSeconds(5),
-                        Vill = vill
+                        ExecuteAt = cbResidence.Duration.AddSeconds(5),
+                        Vill = Vill,
+                        // For high speed servers, you want to train settlers asap
+                        Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
                     });
             }
         }
@@ -340,7 +334,33 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
             }
             return true;
+        }
 
+        public async Task<bool> TTWarsTryFastUpgrade(Account acc, string url)
+        {
+            var building = Vill.Build.Buildings.FirstOrDefault(x => x.Id == this.Task.BuildingId);
+            var lvl = building.Level;
+            if (building.UnderConstruction) lvl++;
+
+            var neededRes = BuildingsData.GetBuildingCost(building.Type, lvl + 1);
+
+            if (ResourcesHelper.IsEnoughRes(Vill, neededRes) &&
+                lvl != 0 &&
+                lvl < Task.Level)
+            {
+                await acc.Wb.Navigate(url + "&fastUP=1");
+
+                CheckIfTaskFinished(++lvl);
+
+                acc.Wb.Log($"Started (fast) upgrading {building.Type} to level {lvl} in {this.Vill?.Name}");
+
+                await PostTaskCheckDorf(acc);
+
+                ConfigNextExecute(acc);
+                return true;
+            }
+
+            return false;
         }
 
         /// <summary>

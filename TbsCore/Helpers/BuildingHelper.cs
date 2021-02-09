@@ -182,9 +182,14 @@ namespace TravBotSharp.Files.Helpers
             return (vill.Build.Buildings.FirstOrDefault(x => x.Level == lvl && x.Type == building) != null || vill.Build.Tasks.FirstOrDefault(x => x.Level == lvl && x.Building == building) != null);
         }
 
-        public static void RemoveFinishedCB(Village vill)
+        /// <summary>
+        /// Remove all finished "currently building"
+        /// </summary>
+        /// <param name="vill"></param>
+        /// <returns>Whether there were some tasks removed</returns>
+        public static bool RemoveFinishedCB(Village vill)
         {
-            vill.Build.CurrentlyBuilding.RemoveAll(x => x.Duration < DateTime.Now);
+            return 0 < vill.Build.CurrentlyBuilding.RemoveAll(x => x.Duration < DateTime.Now);
         }
 
         /// <summary>
@@ -398,6 +403,8 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Whether we have all prerequisite buildings</returns>
         public static bool AddBuildingPrerequisites(Account acc, Village vill, BuildingEnum building, bool bottom = true)
         {
+            RemoveFinishedCB(vill);
+
             (var tribe, var prereqs) = BuildingsData.GetBuildingPrerequisites(building);
             if (acc.AccInfo.Tribe != tribe && tribe != TribeEnum.Any) return false;
             if (prereqs.Count == 0) return true;
@@ -406,8 +413,10 @@ namespace TravBotSharp.Files.Helpers
             {
                 var prereqBuilding = vill.Build.Buildings.Where(x => x.Type == prereq.Building);
 
-                // Prerequired building already exists and is on on/above desired level
-                if (prereqBuilding.Any(x => prereq.Level <= x.Level)) continue;
+                // Prerequired building already exists and is on on/above/being upgraded on desired level
+                if (prereqBuilding.Any(x => 
+                        prereq.Level <= x.Level + (x.UnderConstruction ? 1 : 0))
+                    ) continue;
 
                 if (bottom && vill.Build.Tasks.Any(x => prereq.Building == x.Building &&
                                               prereq.Level <= x.Level)) continue;
