@@ -5,6 +5,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
+using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.TravianData;
@@ -48,7 +49,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             for (int i = 0; i < 10; i++)
             {
                 var troop = TroopsHelper.TroopFromInt(acc, i);
-                if (!TroopsHelper.IsTroopDefensive(troop) || troopsAtHome[i] == 0) continue;
+                if (!TroopsData.IsTroopDefensive(troop) || troopsAtHome[i] == 0) continue;
 
                 var upkeep = TroopSpeed.GetTroopUpkeep(troop);
                 int sendAmount = troopsAtHome[i];

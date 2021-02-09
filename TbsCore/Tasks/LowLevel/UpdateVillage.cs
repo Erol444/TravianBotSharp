@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
+using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 
@@ -33,7 +34,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await Task.Delay(AccountHelper.Delay());
             await UpdateTroopsTraining(acc);
 
-            var firstTroop = TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe);
+            var firstTroop = TroopsData.TribeFirstTroop(acc.AccInfo.Tribe);
             Vill.Troops.TroopToTrain = firstTroop;
             Vill.Troops.Researched.Add(firstTroop);
 

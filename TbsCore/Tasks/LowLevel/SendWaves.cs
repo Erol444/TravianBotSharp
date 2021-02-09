@@ -6,6 +6,7 @@ using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
+using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 
@@ -69,7 +70,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     for (int j = 0; j < 10; j++)
                     {
                         var troop = TroopsHelper.TroopFromInt(acc, j);
-                        if (TroopsHelper.IsTroopOffensive(troop) || TroopsHelper.IsTroopRam(troop))
+                        if (TroopsData.IsTroopOffensive(troop) || TroopsData.IsTroopRam(troop))
                         {
                             SendWaveModels[i].Troops[j] = troopsAtHome[j];
                             troopsAtHome[j] = 0;
