@@ -28,6 +28,12 @@ namespace TbsCore.Models.Settings
         /// Donate excess resources to alliance bonus
         /// </summary>
         public DonateEnum Donate { get; set; }
+
+        /// <summary>
+        /// Refresh village min/max interval
+        /// </summary>
+        public int RefreshMin { get; set; }
+        public int RefreshMax { get; set; }
     }
 
     public enum VillType
