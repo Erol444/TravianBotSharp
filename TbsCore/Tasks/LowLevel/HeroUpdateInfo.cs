@@ -18,7 +18,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
                 var ran = new Random();
-                this.NextExecute = DateTime.Now.AddMinutes(ran.Next(40, 80));
+                
+                this.NextExecute = DateTime.Now.AddMinutes(
+                    ran.Next(acc.Hero.Settings.MinUpdate, acc.Hero.Settings.MaxUpdate)
+                    );
                 TaskExecutor.RemoveSameTasks(acc, this);
             }
 

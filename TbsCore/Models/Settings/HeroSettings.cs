@@ -38,5 +38,11 @@
         /// Switch helmets before training troops
         /// </summary>
         public bool AutoSwitchHelmets { get; set; }
+
+        /// <summary>
+        /// Hero update min/max interval
+        /// </summary>
+        public int MinUpdate { get; set; }
+        public int MaxUpdate { get; set; }
     }
 }

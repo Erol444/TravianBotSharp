@@ -39,6 +39,9 @@ namespace TravBotSharp.Views
             maxDistanceUpDown.Value = acc.Hero.Settings.MaxDistance;
             LimitHeroPoints();
 
+            maxInterval.Value = acc.Hero.Settings.MaxUpdate;
+            minInterval.Value = acc.Hero.Settings.MinUpdate;
+
             SupplyResVillageComboBox.Items.Clear();
             foreach (var vill in acc.Villages)
             {
@@ -165,20 +168,14 @@ namespace TravBotSharp.Views
             acc.Hero.Settings.Upgrades = vals;
         }
 
-        private void autoSetHeroPoints_CheckedChanged(object sender, EventArgs e)
-        {
+        private void autoSetHeroPoints_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.AutoSetPoints = autoSetHeroPoints.Checked;
-        }
 
-        private void maxDistanceUpDown_ValueChanged(object sender, EventArgs e)
-        {
+        private void maxDistanceUpDown_ValueChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.MaxDistance = (int)maxDistanceUpDown.Value;
-        }
 
-        private void autoReviveHero_CheckedChanged(object sender, EventArgs e)
-        {
+        private void autoReviveHero_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.AutoReviveHero = autoReviveHero.Checked;
-        }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e)
         {
@@ -188,10 +185,8 @@ namespace TravBotSharp.Views
             SupplyResVillageSelected.Text = "Selected: " + vill.Name;
         }
 
-        private void refreshInfo_CheckedChanged(object sender, EventArgs e)
-        {
+        private void refreshInfo_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.AutoRefreshInfo = refreshInfo.Checked;
-        }
 
         private void autoEquip_CheckedChanged(object sender, EventArgs e)
         {
@@ -225,9 +220,13 @@ namespace TravBotSharp.Views
             });
         }
 
-        private void helmetSwitcher_CheckedChanged(object sender, EventArgs e)
-        {
+        private void helmetSwitcher_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.AutoSwitchHelmets = helmetSwitcher.Checked;
-        }
+
+        private void minInterval_ValueChanged(object sender, EventArgs e) =>
+            GetSelectedAcc().Hero.Settings.MinUpdate = (int)minInterval.Value;
+
+        private void maxInterval_ValueChanged(object sender, EventArgs e) =>
+            GetSelectedAcc().Hero.Settings.MaxUpdate = (int)maxInterval.Value;
     }
 }
