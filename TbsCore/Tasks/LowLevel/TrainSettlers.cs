@@ -87,7 +87,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers()
             {
                 ExecuteAt = training,
-                Vill = this.Vill
+                Vill = this.Vill,
+                // For high speed servers, you want to train settlers asap
+                Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
             });
         }
     }

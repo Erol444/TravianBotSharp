@@ -12,8 +12,12 @@ namespace TravBotSharp.Files.Parsers
     {
         public static List<Building> GetBuildings(Account acc, HtmlAgilityPack.HtmlDocument htmlDoc)
         {
-            var fields = htmlDoc.GetElementbyId("village_map").ChildNodes.Where(x => x.Name == "div").ToList();
             List<Building> buildings = new List<Building>();
+            var villMap = htmlDoc.GetElementbyId("village_map");
+            if (villMap == null) return buildings;
+            
+            var fields = villMap.ChildNodes.Where(x => x.Name == "div").ToList();
+
             for (byte i = 0; i < fields.Count; i++)
             {
                 var vals = fields[i].GetAttributeValue("class", "").Split(' ');

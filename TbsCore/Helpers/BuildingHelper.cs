@@ -73,7 +73,9 @@ namespace TravBotSharp.Files.Helpers
 
             var FreeSites = vill.Build.Buildings
                 .Where(x => x.Type == BuildingEnum.Site && 19 <= x.Id && x.Id <= 39)
+                .OrderBy(a => Guid.NewGuid()) // Shuffle the free sites
                 .ToList();
+
             foreach (var FreeSite in FreeSites)
             {
                 if (!vill.Build.Tasks.Any(x => x.BuildingId == FreeSite.Id))

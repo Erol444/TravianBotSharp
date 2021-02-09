@@ -177,7 +177,10 @@ namespace TravBotSharp.Views
         private void button1_Click_1(object sender, EventArgs e) // Send deff to specific coordinates
         {
             var acc = GetSelectedAcc();
-            var amount = new SendDeffAmount() { Amount = (int)maxDeff.Value };
+
+            var deffCount = (int)maxDeff.Value;
+            if (deffCount == 0) deffCount = int.MaxValue;
+            var amount = new SendDeffAmount() { Amount = deffCount };
             
             SendDeff node = new SendDeff();
             foreach (var vill in acc.Villages)

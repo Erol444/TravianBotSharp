@@ -20,7 +20,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Can't send deff to home village or to 0/0
             if (TargetVillage == null ||
                 TargetVillage.Equals(Vill.Coordinates) ||
-                TargetVillage.Equals(new Coordinates(0, 0)))
+                TargetVillage.Equals(new Coordinates(0, 0) { x = 0, y = 0 }))
             {
                 return TaskRes.Executed;
             }
