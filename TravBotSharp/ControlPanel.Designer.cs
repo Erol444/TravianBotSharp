@@ -61,9 +61,11 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.button4 = new System.Windows.Forms.Button();
+            this.farmFinderTab = new System.Windows.Forms.TabPage();
+            this.farmFinderUc1 = new TravBotSharp.FarmFinderUc();
             this.accTabController.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
@@ -80,6 +82,7 @@
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             this.panel5.SuspendLayout();
+            this.farmFinderTab.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -103,6 +106,7 @@
             this.accTabController.Controls.Add(this.newVillagesTab);
             this.accTabController.Controls.Add(this.deffendingTab);
             this.accTabController.Controls.Add(this.questsTab);
+            this.accTabController.Controls.Add(this.farmFinderTab);
             this.accTabController.Controls.Add(this.debugTab);
             this.accTabController.Dock = System.Windows.Forms.DockStyle.Fill;
             this.accTabController.Location = new System.Drawing.Point(0, 0);
@@ -358,7 +362,7 @@
             this.accProxyHeader.Text = "Proxy";
             this.accProxyHeader.Width = 95;
             // 
-            // button6
+            // button7
             // 
             this.button7.Location = new System.Drawing.Point(15, 41);
             this.button7.Name = "button7";
@@ -422,6 +426,16 @@
             this.panel3.Size = new System.Drawing.Size(200, 106);
             this.panel3.TabIndex = 12;
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(101, 70);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(78, 23);
+            this.button4.TabIndex = 11;
+            this.button4.Text = "Logout all";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.button1);
@@ -440,15 +454,23 @@
             this.panel5.Size = new System.Drawing.Size(971, 661);
             this.panel5.TabIndex = 12;
             // 
-            // button4
+            // farmFinderTab
             // 
-            this.button4.Location = new System.Drawing.Point(101, 70);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(78, 23);
-            this.button4.TabIndex = 11;
-            this.button4.Text = "Logout all";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.farmFinderTab.Controls.Add(this.farmFinderUc1);
+            this.farmFinderTab.Location = new System.Drawing.Point(4, 22);
+            this.farmFinderTab.Name = "farmFinderTab";
+            this.farmFinderTab.Padding = new System.Windows.Forms.Padding(3);
+            this.farmFinderTab.Size = new System.Drawing.Size(963, 635);
+            this.farmFinderTab.TabIndex = 11;
+            this.farmFinderTab.Text = "Farm Finder";
+            this.farmFinderTab.UseVisualStyleBackColor = true;
+            // 
+            // farmFinderUc1
+            // 
+            this.farmFinderUc1.Location = new System.Drawing.Point(2, 2);
+            this.farmFinderUc1.Name = "farmFinderUc1";
+            this.farmFinderUc1.Size = new System.Drawing.Size(953, 627);
+            this.farmFinderUc1.TabIndex = 0;
             // 
             // ControlPanel
             // 
@@ -476,6 +498,7 @@
             this.panel3.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel5.ResumeLayout(false);
+            this.farmFinderTab.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -517,5 +540,7 @@
         private System.Windows.Forms.TabPage troopsTab;
         private Views.OverviewTroopsUc overviewTroopsUc1;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.TabPage farmFinderTab;
+        private FarmFinderUc farmFinderUc1;
     }
 }

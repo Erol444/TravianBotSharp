@@ -307,6 +307,12 @@
     <Compile Include="ControlPanel.Designer.cs">
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\FarmFinderUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\FarmFinderUc.Designer.cs">
+      <DependentUpon>FarmFinderUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\IoHelperForms.cs" />
     <Compile Include="AlertForm.cs">
       <SubType>Form</SubType>
@@ -433,6 +439,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\FarmFinderUc.resx">
+      <DependentUpon>FarmFinderUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
