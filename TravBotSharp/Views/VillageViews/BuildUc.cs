@@ -26,8 +26,6 @@ namespace TravBotSharp.Views
             Account acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
 
-            if (vill == null) return;
-
             RefreshBuildingsList(vill);
 
             //Building Tasks ListView

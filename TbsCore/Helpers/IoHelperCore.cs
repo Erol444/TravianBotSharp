@@ -139,6 +139,7 @@ namespace TravBotSharp.Files.Helpers
 
         /// <summary>
         /// Read accounts from the accounts.txt file
+        /// TODO: remove in future version
         /// </summary>
         /// <returns>Accounts saved in the file</returns>
         public static List<Account> ReadAccounts()

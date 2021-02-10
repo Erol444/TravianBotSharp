@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using TbsCore.Database;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Interfaces;
@@ -65,6 +66,9 @@ namespace TravBotSharp
             }
 
             accounts = DbRepository.GetAccounts();
+
+            accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
+
             RefreshAccView();
         }
 
