@@ -67,7 +67,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 }
 
                 var checkbox = farm.Descendants("input").FirstOrDefault(x => x.HasClass("markSlot"));
-                await DriverHelper.CheckById(acc, checkbox.Id, true);
+                await DriverHelper.CheckById(acc, checkbox.Id, true, update: false);
             }
 
             await Task.Delay(AccountHelper.Delay() * 2);
