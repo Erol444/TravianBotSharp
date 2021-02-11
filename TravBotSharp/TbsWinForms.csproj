@@ -307,6 +307,7 @@
     <Compile Include="ControlPanel.Designer.cs">
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="CustomClass\ListViewColumnSorter.cs" />
     <Compile Include="Views\FarmFinderUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
