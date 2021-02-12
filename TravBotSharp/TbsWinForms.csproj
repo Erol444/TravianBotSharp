@@ -268,10 +268,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddAccount.cs">
+    <Compile Include="Forms\AddAccount.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AddAccount.Designer.cs">
+    <Compile Include="Forms\AddAccount.Designer.cs">
       <DependentUpon>AddAccount.cs</DependentUpon>
     </Compile>
     <Compile Include="ControlPanel.cs">
@@ -285,16 +285,46 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FormsResources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\IoHelperForms.cs" />
-    <Compile Include="AlertForm.cs">
+    <Compile Include="Forms\AddFarmNonGold.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="AlertForm.Designer.cs">
+    <Compile Include="Forms\AddFarmNonGold.Designer.cs">
+      <DependentUpon>AddFarmNonGold.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\TroopsDisplayUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\TroopsDisplayUc.Designer.cs">
+      <DependentUpon>TroopsDisplayUc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\TroopsSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\TroopsSelector.Designer.cs">
+      <DependentUpon>TroopsSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\TroopsSelectorUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\TroopsSelectorUc.Designer.cs">
+      <DependentUpon>TroopsSelectorUc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\IoHelperForms.cs" />
+    <Compile Include="Forms\AlertForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AlertForm.Designer.cs">
       <DependentUpon>AlertForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Interfaces\ITbsUc.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserControls\CoordinatesUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\CoordinatesUc.Designer.cs">
+      <DependentUpon>CoordinatesUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\BaseViews\BaseVillageUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -304,11 +334,11 @@
     <Compile Include="Views\OverviewTroopsUc.Designer.cs">
       <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
     </Compile>
-    <Compile Include="Views\VillageViews\AddNewFarmlistNonGoldForm.cs">
+    <Compile Include="Forms\AddFarmlistNonGold.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\VillageViews\AddNewFarmlistNonGoldForm.Designer.cs">
-      <DependentUpon>AddNewFarmlistNonGoldForm.cs</DependentUpon>
+    <Compile Include="Forms\AddFarmlistNonGold.Designer.cs">
+      <DependentUpon>AddFarmlistNonGold.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\VillageViews\BuildUc.cs">
       <SubType>UserControl</SubType>
@@ -403,18 +433,30 @@
     <Compile Include="Views\VillagesUc.Designer.cs">
       <DependentUpon>VillagesUc.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="AddAccount.resx">
+    <EmbeddedResource Include="Forms\AddAccount.resx">
       <DependentUpon>AddAccount.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel.resx">
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="AlertForm.resx">
+    <EmbeddedResource Include="Forms\AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FormsResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddFarmNonGold.resx">
+      <DependentUpon>AddFarmNonGold.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\TroopsDisplayUc.resx">
+      <DependentUpon>TroopsDisplayUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\TroopsSelector.resx">
+      <DependentUpon>TroopsSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\TroopsSelectorUc.resx">
+      <DependentUpon>TroopsSelectorUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -426,11 +468,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="UserControls\CoordinatesUc.resx">
+      <DependentUpon>CoordinatesUc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\OverviewTroopsUc.resx">
       <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\VillageViews\AddNewFarmlistNonGoldForm.resx">
-      <DependentUpon>AddNewFarmlistNonGoldForm.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\AddFarmlistNonGold.resx">
+      <DependentUpon>AddFarmlistNonGold.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\VillageViews\BuildUc.resx">
       <DependentUpon>BuildUc.cs</DependentUpon>
@@ -511,6 +556,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\alert.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Teutons.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Romans.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Gauls.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Nature.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\Egyptians.gif" />
+    <Content Include="Resources\Huns.gif" />
+    <Content Include="Resources\Natars.gif" />
+    <Content Include="Resources\Specials.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Selenium.WebDriver.ChromeDriver.87.0.4280.8800\build\Selenium.WebDriver.ChromeDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.ChromeDriver.87.0.4280.8800\build\Selenium.WebDriver.ChromeDriver.targets')" />
