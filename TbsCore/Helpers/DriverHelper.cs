@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.MapModels;
 using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Helpers
@@ -49,10 +50,43 @@ namespace TbsCore.Helpers
             return (T)js.ExecuteScript($"return {obj};");
         }
 
+        /// <summary>
+        /// Get bearer token for Travian T4.5
+        /// </summary>
         public static string GetBearerToken(Account acc)
         {
             IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
             return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+        }
+
+        /// <summary>
+        /// Write troop numbers into the number inputs. Used when sending troops, adding farms etc.
+        /// </summary>
+        public static async Task WriteTroops(Account acc, int[] troops, bool update = true)
+        {
+            for (int i = 0; i < troops.Length; i++)
+            {
+                if (troops[i] == 0) continue;
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case Classificator.ServerVersionEnum.T4_4:
+                        await WriteByName(acc, $"t{i + 1}", troops[i], update: update);
+                        break;
+
+                    case Classificator.ServerVersionEnum.T4_5:
+                        await WriteByName(acc, $"troops[0][t{i + 1}]", troops[i], update: update);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Write coordinates into the number inputs. Used when sending troops, resources etc.
+        /// </summary>
+        internal static async Task WriteCoordinates(Account acc, Coordinates coordinates)
+        {
+            await WriteById(acc, "xCoordInput", coordinates.x);
+            await WriteById(acc, "yCoordInput", coordinates.y);
         }
 
         public static async Task<bool> ClickById(Account acc, string query, bool log = true) =>
@@ -75,8 +109,8 @@ namespace TbsCore.Helpers
         
         public static async Task<bool> ClickByName(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query), new ActionClick(), log);
-        public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text), log);
+        public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true, bool update = true) =>
+            await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text), log, update);
         public static async Task<bool> CheckByName(Account acc, string query, bool check, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query), new ActionCheck(check), log);
         public static async Task<bool> SelectIndexByName(Account acc, string query, int index, bool log = true) =>

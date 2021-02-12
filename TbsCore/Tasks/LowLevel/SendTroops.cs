@@ -27,25 +27,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // No troops selected to be sent from this village
             if (this.TroopsMovement.Troops.Sum() == 0) return TaskRes.Executed;
 
-            //add number of troops to the input boxes
-            for (int i = 0; i < TroopsMovement.Troops.Length; i++)
-            {
-                if (TroopsMovement.Troops[i] == 0) continue;
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.T4_4:
-                        await DriverHelper.WriteByName(acc, $"t{i + 1}", TroopsMovement.Troops[i]);
-                        break;
+            // Add number of troops to the input boxes
+            await DriverHelper.WriteTroops(acc, TroopsMovement.Troops);
 
-                    case Classificator.ServerVersionEnum.T4_5:
-                        await DriverHelper.WriteByName(acc, $"troops[0][t{i + 1}]", TroopsMovement.Troops[i]);
-                        break;
-                }
-            }
-
-            //select coordinates
-            await DriverHelper.WriteById(acc, "xCoordInput", TroopsMovement.Coordinates.x);
-            await DriverHelper.WriteById(acc, "yCoordInput", TroopsMovement.Coordinates.y);
+            // Select coordinates
+            await DriverHelper.WriteCoordinates(acc, TroopsMovement.Coordinates);
 
             //Select type of troop sending
             string script = $"Array.from(document.getElementsByName('c')).find(x=>x.value=={(int)TroopsMovement.MovementType}).checked=true;";

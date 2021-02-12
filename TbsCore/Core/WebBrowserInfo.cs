@@ -178,7 +178,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 catch (Exception e)
                 {
                     if (acc.Wb == null) return;
-                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet", e);
+                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened", e);
                     repeat = true;
                     if (5 <= ++repeatCnt && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.TroopsModels;
@@ -11,26 +12,22 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public int FarmListId { get; set; }
         public Coordinates Coordinates { get; set; }
-        public List<TroopsRaw> Troops { get; set; }
+        public int[] Troops { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
-            wb.ExecuteScript($"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');"); //show "Add raid" popup
-            await Task.Delay(AccountHelper.Delay());
-            //select coordinates
-            wb.ExecuteScript($"document.getElementById('xCoordInput').value='{Coordinates.x}'");
-            wb.ExecuteScript($"document.getElementById('yCoordInput').value='{Coordinates.y}'");
-            await Task.Delay(AccountHelper.Delay());
+            // Show "Add raid" popup
+            await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');");
 
-            //add number of troops to the input boxes
-            foreach (var troop in Troops)
-            {
-                int troopNum = (int)troop.Type % 10;
-                wb.ExecuteScript($"document.getElementsByName('{"t" + troopNum}')[0].value='{troop.Number}'");
-            }
+            // Input coordinates
+            await DriverHelper.WriteCoordinates(acc, Coordinates);
+
+            // Input troops
+            await DriverHelper.WriteTroops(acc, Troops, false);
+            
             await Task.Delay(AccountHelper.Delay());
 
             //click "save"
