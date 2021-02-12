@@ -18,24 +18,12 @@ namespace TbsCore.Models.VillageModels
     {
         public Farm()
         {
-            // 6 type for farming
-            // no one (do they ?) use ram, cata, chief or settler
-            // and hero ._.
-            Troops = new int[6];
-            Coord = new Coordinates();
         }
 
-        public Farm(Farm f)
+        public Farm(int[] troops, Coordinates coords)
         {
-            Troops = new int[6];
-            for (int i = 0; i < 6; i++)
-            {
-                Troops[i] = f.Troops[i];
-            }
-
-            Coord = new Coordinates();
-            Coord.x = f.Coord.x;
-            Coord.y = f.Coord.y;
+            this.Troops = troops;
+            this.Coord = coords;
         }
 
         public Coordinates Coord { get; set; }

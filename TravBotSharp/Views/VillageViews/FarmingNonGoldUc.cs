@@ -11,6 +11,7 @@ using TbsCore.Models.VillageModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.AccModels;
+using TravBotSharp.Forms;
 
 namespace TravBotSharp.Views
 {
@@ -19,10 +20,12 @@ namespace TravBotSharp.Views
         public FarmingNonGoldUc()
         {
             InitializeComponent();
+
+            troopsSelectorUc1.TroopsEditable = false;
+            troopsSelectorUc1.HeroEditable = false;
         }
 
         private int currentFarmList_index;
-        private Farm currentFarm;
 
         public void UpdateUc()
         {
@@ -30,35 +33,6 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage(acc);
 
             if (vill == null) return;
-
-            if (acc.AccInfo.Tribe != null)
-            {
-                currentFarm = new Farm();
-                comboBox_TroopToFarm.Items.Clear();
-                troopList.Items.Clear();
-
-                int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
-
-                for (var i = troopsEnum + 1; i < troopsEnum + 7; i++)
-                {
-                    Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
-                    var type = VillageHelper.EnumStrToString(troop.ToString());
-                    comboBox_TroopToFarm.Items.Add(type);
-
-                    var item = new ListViewItem();
-                    item.SubItems[0].Text = (i - troopsEnum).ToString();
-                    item.SubItems.Add(type);
-                    item.SubItems.Add("0");
-                    item.ForeColor = Color.White;
-                    troopList.Items.Add(item);
-                }
-                if (comboBox_TroopToFarm.Items.Count > 0) comboBox_TroopToFarm.SelectedIndex = 0;
-            }
-            else
-            {
-                comboBox_TroopToFarm.Items.Clear();
-                troopList.Items.Clear();
-            }
 
             comboBox_NameList.Items.Clear();
             for (var i = 0; i < vill.FarmingNonGold.ListFarm.Count; i++)
@@ -68,19 +42,23 @@ namespace TravBotSharp.Views
             if (vill.FarmingNonGold.ListFarm.Count > 0)
             {
                 comboBox_NameList.SelectedIndex = 0;
-                loadFarmList(0);
+                UpdateFarmList(0);
             }
             else
             {
                 farmingList.Items.Clear();
             }
-            currentFarm = new Farm();
+
+            troopsSelectorUc1.Init(acc.AccInfo.Tribe);
         }
 
-        private void loadFarmList(int index)
+        /// <summary>
+        /// Updates FarmList ListView
+        /// </summary>
+        /// <param name="index">FarmList index</param>
+        private void UpdateFarmList(int index)
         {
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage(acc);
+            var vill = GetSelectedVillage();
             if (vill == null) return;
 
             var targets = vill.FarmingNonGold.ListFarm[index].Targets;
@@ -88,11 +66,11 @@ namespace TravBotSharp.Views
             farmingList.Items.Clear();
             for (var i = 0; i < targets.Count; i++)
             {
-                addFarm2ViewList(acc, targets[i]);
+                AddFarmToViewList(targets[i]);
             }
         }
 
-        private void addFarm2ViewList(Account acc, Farm farm)
+        private void AddFarmToViewList(Farm farm)
         {
             ListViewItem item = new ListViewItem();
             item.SubItems[0].Text = (farmingList.Items.Count + 1).ToString();
@@ -105,10 +83,8 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        ///  New
+        /// Create new FarmList
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void button1_Click(object sender, System.EventArgs e)
         {
             var addName = new AddNewFarmListNameForm();
@@ -146,16 +122,22 @@ namespace TravBotSharp.Views
                 return;
             }
 
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage(acc);
+            var vill = GetSelectedVillage();
             if (vill == null) return;
 
-            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Add(new Farm(currentFarm));
-            addFarm2ViewList(acc, currentFarm);
+            using (var form = new AddFarmNonGold(GetSelectedAcc().AccInfo.Tribe))
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Add(form.Farm);
+                    UpdateFarmList(currentFarmList_index);
+                }
+            }
         }
 
         /// <summary>
-        /// update
+        /// Update
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -166,14 +148,20 @@ namespace TravBotSharp.Views
                 return;
             }
 
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage(acc);
+            var vill = GetSelectedVillage();
             if (vill == null) return;
-            if (troopList.FocusedItem == null) return;
 
-            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index] = new Farm(currentFarm);
-
-            loadFarmList(currentFarmList_index);
+            using (var form = new AddFarmNonGold(GetSelectedAcc().AccInfo.Tribe))
+            {
+                form.Farm = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index] = form.Farm;
+                    UpdateFarmList(currentFarmList_index);
+                    UpdateFarmTroops();
+                }
+            }
         }
 
         /// <summary>
@@ -195,7 +183,7 @@ namespace TravBotSharp.Views
 
             vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.RemoveAt(farmingList.FocusedItem.Index);
 
-            loadFarmList(currentFarmList_index);
+            UpdateFarmList(currentFarmList_index);
         }
 
         /// <summary>
@@ -211,7 +199,7 @@ namespace TravBotSharp.Views
 
             vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Clear();
 
-            loadFarmList(currentFarmList_index);
+            UpdateFarmList(currentFarmList_index);
         }
 
         /// <summary>
@@ -226,32 +214,19 @@ namespace TravBotSharp.Views
             if (vill == null) return;
 
             SendTroops taskSendTroops;
-            Farm f;
-            var targets = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets;
-            for (int i = 0; i < targets.Count; i++)
+            foreach(var f in vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets)
             {
-                f = targets[i];
                 taskSendTroops = new SendTroops()
                 {
                     ExecuteAt = DateTime.Now,
                     Vill = vill,
                     TroopsMovement = new TroopsSendModel()
                     {
-                        Coordinates = new Coordinates()
-                        {
-                            x = f.Coord.x,
-                            y = f.Coord.y
-                        },
-                        Troops = new int[12]
+                        Coordinates = f.Coord,
+                        Troops = f.Troops,
+                        MovementType = Classificator.MovementType.Raid
                     }
                 };
-
-                for (int index = 0; index < f.Troops.Length; index++)
-                {
-                    taskSendTroops.TroopsMovement.Troops[index] = f.Troops[index];
-                }
-
-                taskSendTroops.TroopsMovement.MovementType = Classificator.MovementType.Raid;
 
                 TaskExecutor.AddTask(acc, taskSendTroops);
             }
@@ -261,50 +236,26 @@ namespace TravBotSharp.Views
         {
             currentFarmList_index = comboBox_NameList.SelectedIndex;
 
-            loadFarmList(currentFarmList_index);
+            UpdateFarmList(currentFarmList_index);
         }
 
         private void farmingList_SelectedIndexChanged(object sender, System.EventArgs e)
         {
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage(acc);
+            UpdateFarmTroops();
+        }
+
+        /// <summary>
+        /// Updates TroopsSelectorUc that displays the troop count of the selected farm
+        /// </summary>
+        private void UpdateFarmTroops()
+        {
+            var vill = GetSelectedVillage();
             if (vill == null) return;
 
             if (farmingList.FocusedItem == null) return;
+
             var farm = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
-
-            currentFarm = new Farm(farm);
-
-            X.Value = farm.Coord.x;
-            Y.Value = farm.Coord.y;
-
-            for (int i = 0; i < farm.Troops.Length; i++)
-            {
-                troopList.Items[i].SubItems[2].Text = farm.Troops[i].ToString();
-            }
-
-            comboBox_TroopToFarm.SelectedIndex = 0;
-        }
-
-        private void comboBox_TroopToFarm_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            Amount.Value = currentFarm.Troops[comboBox_TroopToFarm.SelectedIndex];
-        }
-
-        private void X_ValueChanged(object sender, System.EventArgs e)
-        {
-            currentFarm.Coord.x = (int)X.Value;
-        }
-
-        private void Y_ValueChanged(object sender, System.EventArgs e)
-        {
-            currentFarm.Coord.y = (int)Y.Value;
-        }
-
-        private void Amount_ValueChanged(object sender, System.EventArgs e)
-        {
-            currentFarm.Troops[comboBox_TroopToFarm.SelectedIndex] = (int)Amount.Value;
-            troopList.Items[comboBox_TroopToFarm.SelectedIndex].SubItems[2].Text = Amount.Value.ToString();
+            troopsSelectorUc1.Troops = farm.Troops;
         }
     }
 }
