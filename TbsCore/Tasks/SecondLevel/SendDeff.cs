@@ -26,7 +26,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            base.TroopsMovement = new TroopsMovement()
+            base.TroopsMovement = new TroopsSendModel()
             {
                 Coordinates = TargetVillage,
                 MovementType = Classificator.MovementType.Reinforcement,

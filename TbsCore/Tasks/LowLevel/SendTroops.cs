@@ -11,7 +11,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class SendTroops : BotTask
     {
-        public TroopsMovement TroopsMovement { get; set; }
+        public TroopsSendModel TroopsMovement { get; set; }
         /// <summary>
         /// Other tasks (like SendDeff) can extend this task and configure amount of troops to
         /// send when getting amount of troops at home

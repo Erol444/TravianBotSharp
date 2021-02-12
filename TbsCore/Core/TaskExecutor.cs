@@ -37,7 +37,10 @@ namespace TravBotSharp.Files.Helpers
             if (CheckContextualHelp(acc) &&
                 acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5)
             {
-                AddTaskIfNotExists(acc, new DisableContextualHelp() { ExecuteAt = DateTime.Now.AddHours(-1) });
+                AddTaskIfNotExists(acc, new EditPreferences() { 
+                    ExecuteAt = DateTime.Now.AddHours(-1),
+                    ContextualHelp = true 
+                });
             }
 
             if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc))

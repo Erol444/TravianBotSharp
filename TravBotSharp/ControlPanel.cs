@@ -52,6 +52,9 @@ namespace TravBotSharp
             saveAccountsTimer.Start();
             saveAccountsTimer.Enabled = true;
             saveAccountsTimer.AutoReset = true;
+
+            // So TbsCore can access forms and alert user
+            IoHelperCore.AlertUser = IoHelperForms.AlertUser;
         }
 
         private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);

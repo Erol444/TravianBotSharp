@@ -37,7 +37,7 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Id.ToString())); //vill id
                 r.Cells.Add(new Cell(vill.Name)); //vill name
                 r.Cells.Add(new Cell(vill.Deffing.AlertType.ToString())); //Type of alert
-                r.Cells.Add(new Cell("", vill.Deffing.AlertOnHero)); //Alert only on hero
+                r.Cells.Add(new Cell("", vill.Deffing.OnlyAlertOnHero)); //Alert only on hero
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -127,7 +127,7 @@ namespace TravBotSharp.Views
                 column++;
                 UpdateAlertType(vill, cells, column);
                 column++;
-                vill.Deffing.AlertOnHero = cells[column].Checked;
+                vill.Deffing.OnlyAlertOnHero = cells[column].Checked;
             }
             //Change name of village/s
             if (changeVillNames.Count > 0)

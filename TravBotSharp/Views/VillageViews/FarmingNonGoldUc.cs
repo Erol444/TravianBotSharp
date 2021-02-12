@@ -235,7 +235,7 @@ namespace TravBotSharp.Views
                 {
                     ExecuteAt = DateTime.Now,
                     Vill = vill,
-                    TroopsMovement = new TroopsMovement()
+                    TroopsMovement = new TroopsSendModel()
                     {
                         Coordinates = new Coordinates()
                         {

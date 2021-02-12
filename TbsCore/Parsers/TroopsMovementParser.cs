@@ -4,37 +4,76 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
+using TravBotSharp.Files.Helpers;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Parsers
 {
     public static class TroopsMovementParser
     {
-        public static List<IncomingAttackModel> FullAttackWithHero(HtmlDocument html)
+        public static List<TroopsMovementModel> ParseIncomingAttacks(Account acc, HtmlDocument html)
         {
-            var ret = new List<IncomingAttackModel>();
+            var ret = new List<TroopsMovementModel>();
+
             var attacks = html.DocumentNode.Descendants("table").Where(x => x.HasClass("troop_details"));
             if (attacks == null) return ret;
-            var count = attacks.Count();
-            foreach (var attack in attacks)
+
+            foreach (var attackNode in attacks)
             {
-                var attackModel = new IncomingAttackModel();
+                var attack = new TroopsMovementModel();
 
-                attackModel.MovementType = MovementType.Attack;
-                if (attack.HasClass("inRaid")) attackModel.MovementType = MovementType.Raid;
+                attack.MovementType = MovementType.Attack;
+                if (attackNode.HasClass("inRaid")) attack.MovementType = MovementType.Raid;
 
-                var troops = attack.Descendants("tbody").FirstOrDefault(x => x.HasClass("last") && x.HasClass("units"));
-                var troopsNum = troops.Descendants("td").Where(x => x.HasClass("unit"));
-                // Hero can be "0" -> false only if user has stronger spies art or number of attacking troops
-                // are below rally point level
-                attackModel.Hero = false;
-                if (troopsNum.Last().InnerText == "?") attackModel.Hero = true;
+                // If attack.Troops.Sum() is less than 11, we are able to view troop types attacking
+                attack.Troops = ParseIncomingTroops(attackNode);
 
-                var infos = attack.Descendants("tbody").FirstOrDefault(x => x.HasClass("infos"));
-                attackModel.Arrival = DateTime.Now.Add(TimeParser.ParseTimer(infos));
+                var infos = attackNode.Descendants("tbody").FirstOrDefault(x => x.HasClass("infos"));
+                attack.Arrival = DateTime.Now.Add(TimeParser.ParseTimer(infos));
+
+                var kid = MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("role")));
+                attack.Coordinates = MapHelper.CoordinatesFromKid(kid ?? 0, acc);
+
+                ret.Add(attack);
             }
             return ret;
+        }
+
+        /// <summary>
+        /// If account has spies art or attacking troops count is lower than rally point level,
+        /// bot can see "?" on only troop types that are incoming and "0" at troop types that 
+        /// are not present in attack
+        /// </summary>
+        private static int[] ParseIncomingTroops(HtmlNode attackNode) 
+        {
+            var troopsBody = attackNode.Descendants("tbody").First(x => x.HasClass("last") && x.HasClass("units"));
+
+            var troops = troopsBody.Descendants("td").Where(x => x.HasClass("unit")).ToList();
+            int[] ret = new int[troops.Count];
+            for (int i = 0; i < troops.Count; i++)
+            {
+                ret[i] = troops[i].InnerHtml.Trim() == "?" ? 1 : 0;
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// Get page count from paginator
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns>Page count</returns>
+        public static int GetPageCount(HtmlDocument html)
+        {
+            var build = html.GetElementbyId("build");
+
+            var spans = build.Descendants("div")
+                .First(x => x.HasClass("paginator"))
+                .ChildNodes
+                .Where(x => x.HasClass("number"));
+
+            return spans.Count();
         }
 
         public static TimeSpan GetTimeOfMovement(HtmlDocument html)
