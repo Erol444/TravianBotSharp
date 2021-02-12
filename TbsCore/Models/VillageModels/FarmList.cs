@@ -23,10 +23,10 @@ namespace TbsCore.Models.VillageModels
         public Farm(int[] troops, Coordinates coords)
         {
             this.Troops = troops;
-            this.Coord = coords;
+            this.Coords = coords;
         }
 
-        public Coordinates Coord { get; set; }
+        public Coordinates Coords { get; set; }
         public int[] Troops { get; set; }
     }
 }

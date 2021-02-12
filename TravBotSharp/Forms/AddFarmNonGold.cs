@@ -24,7 +24,7 @@ namespace TravBotSharp.Forms
             }
             set
             {
-                coordinatesUc1.Coords = value.Coord;
+                coordinatesUc1.Coords = value.Coords;
                 troopsSelectorUc1.Troops = value.Troops;
             }
         }

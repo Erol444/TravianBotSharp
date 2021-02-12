@@ -74,8 +74,8 @@ namespace TravBotSharp.Views
         {
             ListViewItem item = new ListViewItem();
             item.SubItems[0].Text = (farmingList.Items.Count + 1).ToString();
-            item.SubItems.Add(farm.Coord.x.ToString());
-            item.SubItems.Add(farm.Coord.y.ToString());
+            item.SubItems.Add(farm.Coords.x.ToString());
+            item.SubItems.Add(farm.Coords.y.ToString());
 
             item.ForeColor = Color.White;
 
@@ -222,7 +222,7 @@ namespace TravBotSharp.Views
                     Vill = vill,
                     TroopsMovement = new TroopsSendModel()
                     {
-                        Coordinates = f.Coord,
+                        Coordinates = f.Coords,
                         Troops = f.Troops,
                         MovementType = Classificator.MovementType.Raid
                     }

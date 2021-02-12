@@ -4,6 +4,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.TroopsModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
@@ -11,8 +12,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class AddFarm : BotTask
     {
         public int FarmListId { get; set; }
-        public Coordinates Coordinates { get; set; }
-        public int[] Troops { get; set; }
+        public Farm Farm { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
@@ -23,10 +23,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');");
 
             // Input coordinates
-            await DriverHelper.WriteCoordinates(acc, Coordinates);
+            await DriverHelper.WriteCoordinates(acc, Farm.Coords);
 
             // Input troops
-            await DriverHelper.WriteTroops(acc, Troops, false);
+            await DriverHelper.WriteTroops(acc, Farm.Troops, false);
             
             await Task.Delay(AccountHelper.Delay());
 
