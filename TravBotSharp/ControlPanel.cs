@@ -11,6 +11,7 @@ using TbsCore.Database;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp
@@ -128,7 +129,7 @@ namespace TravBotSharp
         private void button2_Click(object sender, EventArgs e) //login button
         {
             var acc = GetSelectedAcc();
-            if (acc.Access.AllAccess.Count > 0)
+            if (0 < acc.Access.AllAccess.Count)
             {
                 new Thread(() => _ = IoHelperCore.LoginAccount(acc)).Start();
                 generalUc1.UpdateBotRunning("true");
