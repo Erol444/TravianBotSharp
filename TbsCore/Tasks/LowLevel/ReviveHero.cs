@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
+using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
@@ -9,7 +10,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php");
+            await HeroHelper.NavigateToHeroAttributes(acc);
 
             //heroRegeneration
             var reviveButton = acc.Wb.Html.GetElementbyId("heroRegeneration");

@@ -93,6 +93,9 @@ namespace TravBotSharp.Files.Parsers
             return DateTime.Today.Add(dur);
         }
 
+        /// <summary>
+        /// Gets available troops inside the "Send Troops" tab of the rally point
+        /// </summary>
         internal static int[] GetTroopsInRallyPoint(HtmlDocument html)
         {
             int[] ret = new int[11];

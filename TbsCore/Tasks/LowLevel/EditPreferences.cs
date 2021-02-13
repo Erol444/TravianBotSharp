@@ -18,7 +18,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/options");
+            VersionHelper.Navigate(acc, "/options.php", "/options");
 
             if(ContextualHelp != null)
                 await DriverHelper.CheckById(acc, "v13", ContextualHelp ?? true);

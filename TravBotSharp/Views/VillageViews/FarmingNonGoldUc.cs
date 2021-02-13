@@ -66,7 +66,8 @@ namespace TravBotSharp.Views
             farmingList.Items.Clear();
             for (var i = 0; i < targets.Count; i++)
             {
-                AddFarmToViewList(targets[i]);
+                try { AddFarmToViewList(targets[i]); }
+                catch { }
             }
         }
 

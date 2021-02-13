@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;
+using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Helpers
 {
@@ -210,6 +213,13 @@ namespace TravBotSharp.Files.Helpers
                 NextTask = task
             });
             return true;
+        }
+
+        internal static async Task NavigateToHeroAttributes(Account acc)
+        {
+            // Even if default tab is switched to other tab (not attributes), navigate
+            // to attributes tab
+            await VersionHelper.Navigate(acc, "/hero.php?t=1", "/hero/attributes");
         }
     }
 }
