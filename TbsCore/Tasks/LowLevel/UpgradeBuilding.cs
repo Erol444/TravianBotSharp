@@ -44,33 +44,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return await Execute(acc);
             }
 
-            // In which dorf is the building. So bot is less suspicious.
-            if (updateVill ||
-                !acc.Wb.CurrentUrl.Contains($"/dorf{((Task.BuildingId ?? default) < 19 ? 1 : 2)}.php"))
-            {
-                string navigateTo = $"{acc.AccInfo.ServerUrl}/";
-                //Switch village!
-                navigateTo += (Task.BuildingId ?? default) < 19 ?
-                    "dorf1.php" :
-                    "dorf2.php";
-
-                // For localization purposes, bot sends raw http req to Travian servers. 
-                // We need localized building names, and JS hides the title of the 
-                //buildings on selenium browser.
-                acc.Wb.Html = HttpHelper.SendGetReq(acc, navigateTo);
-                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
-
-                if (navigateTo.EndsWith("dorf1.php")) TaskExecutor.UpdateDorf1Info(acc);
-                else TaskExecutor.UpdateDorf2Info(acc); // dorf2 ok
-
-                Localizations.UpdateLocalization(acc);
-            }
-
             // Check if there are already too many buildings currently constructed
             var maxBuild = 1;
             if (acc.AccInfo.PlusAccount) maxBuild++;
             if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuild++;
-            if (Vill.Build.CurrentlyBuilding.Count >= maxBuild)
+            if (maxBuild <= Vill.Build.CurrentlyBuilding.Count)
             {
                 //Execute next upgrade task after currently building
                 this.NextExecute = Vill.Build.CurrentlyBuilding.First().Duration.AddSeconds(3);
@@ -78,15 +56,21 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-
             var url = $"{acc.AccInfo.ServerUrl}/build.php?id={urlId}";
 
             // Fast building for TTWars
             if (acc.AccInfo.ServerUrl.Contains("ttwars") &&
                 !constructNew &&
                 await TTWarsTryFastUpgrade(acc, url))
-            { 
-                return TaskRes.Executed; 
+            {
+                return TaskRes.Executed;
+            }
+
+            // Navigate to the dorf in which the building is, so bot is less suspicious
+            string dorfUrl = $"/dorf{((Task.BuildingId ?? default) < 19 ? 1 : 2)}.php"; // "dorf1" / "dorf2"
+            if (updateVill || !acc.Wb.CurrentUrl.Contains(dorfUrl))
+            {
+                await acc.Wb.Navigate(acc.AccInfo.ServerUrl + dorfUrl);
             }
 
             // Append correct tab

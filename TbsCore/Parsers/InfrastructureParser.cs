@@ -48,32 +48,24 @@ namespace TravBotSharp.Files.Parsers
             return buildings;
         }
 
-
+        /// <summary>
+        /// Get currently building (upgrading/constructing) buildings from dorf1/dorf2
+        /// </summary>
         public static List<BuildingCurrently> CurrentlyBuilding(HtmlAgilityPack.HtmlDocument htmlDoc, Account acc)
         {
             var finishButton = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("finishNow"));
             if (finishButton == null) return null;
+
             var ret = new List<BuildingCurrently>();
             foreach (var row in finishButton.ParentNode.Descendants("li").ToList())
             {
                 var duration = TimeParser.ParseTimer(row);
-                var nameArr = row.Descendants("div").FirstOrDefault(x => x.HasClass("name")).InnerText.Split('\t'); //[1].Trim();
-
-                var levelStr = row.Descendants("span").FirstOrDefault(x => x.HasClass("lvl")).InnerText;
-                string name = nameArr.FirstOrDefault(x => !string.IsNullOrEmpty(x.Replace("\r", "").Replace("\n", "")));
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.T4_4:
-                        name = name.Replace(levelStr, "");
-                        break;
-                }
-                var lvl = Parser.RemoveNonNumeric(levelStr);
+                var level = row.Descendants("span").FirstOrDefault(x => x.HasClass("lvl")).InnerText;
 
                 ret.Add(new BuildingCurrently()
                 {
                     Duration = DateTime.Now.Add(duration),
-                    Level = (byte)lvl,
-                    Building = Localizations.BuildingFromString(name, acc)
+                    Level = (int)Parser.RemoveNonNumeric(level),
                 });
             }
             return ret;

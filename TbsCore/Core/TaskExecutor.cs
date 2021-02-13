@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.JsObjects;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks;
@@ -71,7 +73,7 @@ namespace TravBotSharp.Files.Helpers
         public static async Task Execute(Account acc, BotTask task)
         {
             // Before every execution, wait a random delay
-            if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5) await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay());
 
             if (acc.Wb?.CurrentUrl == null && task.GetType() != typeof(CheckProxy))
             {
@@ -195,9 +197,23 @@ namespace TravBotSharp.Files.Helpers
         private static void UpdateCurrentlyBuilding(Account acc, Village vill)
         {
             vill.Build.CurrentlyBuilding.Clear();
-            var currentlyb = InfrastructureParser.CurrentlyBuilding(acc.Wb.Html, acc);
-            if (currentlyb != null)
-                foreach (var b in currentlyb) vill.Build.CurrentlyBuilding.Add(b);
+            var cb = InfrastructureParser.CurrentlyBuilding(acc.Wb.Html, acc);
+            if (cb == null) return; // Nothing is currently building
+
+            var bldJson = DriverHelper.GetJsObj<string>(acc, "JSON.stringify(bld);");
+            var bldJs = JsonConvert.DeserializeObject<List<Bld>>(bldJson);
+
+            // Combine data from two sources about currently building (JS object and HTML table)
+            // We get time duration and level from HTML
+            // and build location, level and building (type) from JSON
+            for (int i = 0; i < cb.Count; i++)
+            {
+                cb[i].Building = bldJs[i].Building;
+                cb[i].Location = bldJs[i].Location;
+                cb[i].Level = bldJs[i].Level;
+
+                vill.Build.CurrentlyBuilding.Add(cb[i]);
+            }
         }
 
         #region Game checks
