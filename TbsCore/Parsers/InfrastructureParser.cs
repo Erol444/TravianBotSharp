@@ -29,11 +29,11 @@ namespace TravBotSharp.Files.Parsers
 
                 byte lvl;
                 // TODO: aid
-                var lvlNode = fields[i].Descendants("div").FirstOrDefault(x => x.HasClass("aid" + location));
+                var lvlNode = fields[i].Descendants().FirstOrDefault(x => x.HasClass("aid" + location));
                 if (lvlNode == null) lvl = 0;
                 else lvl = Convert.ToByte(lvlNode.InnerText);
 
-                var uc = fields[i].Descendants("div").FirstOrDefault(x => x.HasClass("underConstruction")) != null;
+                var uc = fields[i].Descendants().FirstOrDefault(x => x.HasClass("underConstruction")) != null;
                 //var b = fields[i].Child
                 var building = new Building();
                 buildings.Add(building.Init(
