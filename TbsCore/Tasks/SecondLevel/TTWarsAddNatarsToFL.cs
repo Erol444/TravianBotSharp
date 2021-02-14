@@ -27,23 +27,28 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
             {
                 var name = vill.ChildNodes.First(x => x.HasClass("name")).InnerText;
                 var pop = (int)Parser.RemoveNonNumeric(vill.Descendants().First(x => x.HasClass("inhabitants")).InnerHtml);
-                if (pop > MinPop && pop < MaxPop)
+                if (MinPop < pop && pop < MaxPop)
                 {
                     var href = vill.Descendants("a").First(x => x.GetAttributeValue("href", "").StartsWith("karte.php?x=")).GetAttributeValue("href", "").Split('?')[1];
                     var xy = href.Split('&');
+
                     Coordinates coords = new Coordinates
                     {
                         x = (int)Parser.RemoveNonNumeric(xy[0].Split('=')[1]),
                         y = (int)Parser.RemoveNonNumeric(xy[1].Split('=')[1])
                     };
-                    var task = new AddFarm()
+
+                    TaskExecutor.AddTask(acc, new AddFarm()
                     {
-                        Coordinates = coords,
                         ExecuteAt = DateTime.Now.AddMilliseconds(addedFarms),
+                        Farm = new TbsCore.Models.VillageModels.Farm()
+                        {
+                            Troops = new int[] { 100 },
+                            Coords = coords,
+                        },
                         FarmListId = this.FL.Id,
-                        Troops = new List<TroopsRaw>() { new TroopsRaw() { Type = 1, Number = 10 } } //just add 10 of 1st troops
-                    };
-                    TaskExecutor.AddTask(acc, task);
+                    });
+
                     addedFarms++;
                     if (FL.NumOfFarms + addedFarms >= 100) break; //no more slots FL slots!
                 }

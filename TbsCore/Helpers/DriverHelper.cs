@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.MapModels;
 using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Helpers
@@ -15,13 +16,16 @@ namespace TbsCore.Helpers
         /// <param name="script">JavaScript</param>
         /// <param name="log">Log exception if it happens</param>
         /// <returns>Whether the execution was successful</returns>
-        public static async Task<bool> ExecuteScript(Account acc, string script, bool log = true)
+        public static async Task<bool> ExecuteScript(Account acc, string script, bool log = true, bool update = true)
         {
             try
             {
                 acc.Wb.Driver.ExecuteScript(script);
-                await Task.Delay(AccountHelper.Delay() * 2);
-                acc.Wb.UpdateHtml();
+                if (update)
+                {
+                    await Task.Delay(AccountHelper.Delay());
+                    acc.Wb.UpdateHtml();
+                }
                 return true;
             }
             catch (Exception e)
@@ -46,18 +50,51 @@ namespace TbsCore.Helpers
             return (T)js.ExecuteScript($"return {obj};");
         }
 
+        /// <summary>
+        /// Get bearer token for Travian T4.5
+        /// </summary>
         public static string GetBearerToken(Account acc)
         {
             IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
             return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
         }
 
+        /// <summary>
+        /// Write troop numbers into the number inputs. Used when sending troops, adding farms etc.
+        /// </summary>
+        public static async Task WriteTroops(Account acc, int[] troops, bool update = true)
+        {
+            for (int i = 0; i < troops.Length; i++)
+            {
+                if (troops[i] == 0) continue;
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case Classificator.ServerVersionEnum.T4_4:
+                        await WriteByName(acc, $"t{i + 1}", troops[i], update: update);
+                        break;
+
+                    case Classificator.ServerVersionEnum.T4_5:
+                        await WriteByName(acc, $"troops[0][t{i + 1}]", troops[i], update: update);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Write coordinates into the number inputs. Used when sending troops, resources etc.
+        /// </summary>
+        internal static async Task WriteCoordinates(Account acc, Coordinates coordinates)
+        {
+            await WriteById(acc, "xCoordInput", coordinates.x);
+            await WriteById(acc, "yCoordInput", coordinates.y);
+        }
+
         public static async Task<bool> ClickById(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionClick(), log);
         public static async Task<bool> WriteById(Account acc, string query, object text, bool log = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionWrite(text), log);
-        public static async Task<bool> CheckById(Account acc, string query, bool check, bool log = true) =>
-            await ExecuteAction(acc, new QueryById(query), new ActionCheck(check), log);
+        public static async Task<bool> CheckById(Account acc, string query, bool check, bool log = true, bool update = true) =>
+            await ExecuteAction(acc, new QueryById(query), new ActionCheck(check), log, update);
         public static async Task<bool> SelectIndexById(Account acc, string query, int index, bool log = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionSelectIndex(index), log);
 
@@ -72,15 +109,15 @@ namespace TbsCore.Helpers
         
         public static async Task<bool> ClickByName(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query), new ActionClick(), log);
-        public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text), log);
+        public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true, bool update = true) =>
+            await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text), log, update);
         public static async Task<bool> CheckByName(Account acc, string query, bool check, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query), new ActionCheck(check), log);
         public static async Task<bool> SelectIndexByName(Account acc, string query, int index, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query), new ActionSelectIndex(index), log);
 
-        private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true) =>
-            await ExecuteScript(acc, $"document.{query.val}{action.val}", log);
+        private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true, bool update = true) =>
+            await ExecuteScript(acc, $"document.{query.val}{action.val}", log, update);
 
 
         public class QueryById : Query { public QueryById(string str) => base.val = $"getElementById('{str}')"; }
@@ -88,7 +125,7 @@ namespace TbsCore.Helpers
         public class QueryByClassName : Query { public QueryByClassName(string str) => base.val = $"getElementsByClassName('{str}')[0]"; }
         public class ActionWrite : Action { public ActionWrite(object str) => base.val = $".value='{str}';"; }
         public class ActionClick : Action { public ActionClick() => base.val = ".click();"; }
-        public class ActionCheck : Action { public ActionCheck(bool check) => base.val = $".checked={check};"; }
+        public class ActionCheck : Action { public ActionCheck(bool check) => base.val = $".checked={(check ? "true" : "false")};"; }
         public class ActionSelectIndex : Action { public ActionSelectIndex(int index) => base.val = $".selectedIndex = {index};"; }
 
         public abstract class Action { public string val; }

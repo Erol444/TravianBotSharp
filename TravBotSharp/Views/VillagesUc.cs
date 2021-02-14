@@ -60,6 +60,9 @@ namespace TravBotSharp.Views
                     VillagesListView.Items.Add(item);
                 }
             }
+
+            // Don't update village view if there is no village selected!
+            if (GetSelectedVillage() == null) return;
             Ucs.ElementAtOrDefault(villageTabController.SelectedIndex)?.UpdateUc();
         }
 

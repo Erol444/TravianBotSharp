@@ -66,10 +66,18 @@
             this.label8 = new System.Windows.Forms.Label();
             this.heroInfo = new System.Windows.Forms.RichTextBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.helmetSwitcher = new System.Windows.Forms.CheckBox();
             this.adventures = new System.Windows.Forms.RichTextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
-            this.helmetSwitcher = new System.Windows.Forms.CheckBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.maxInterval = new System.Windows.Forms.NumericUpDown();
+            this.minInterval = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.minHeroHealthUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.strength)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.offBonus)).BeginInit();
@@ -78,6 +86,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.maxDistanceUpDown)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxInterval)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minInterval)).BeginInit();
             this.SuspendLayout();
             // 
             // buyAdventuresCheckBox
@@ -468,13 +479,24 @@
             this.panel2.Size = new System.Drawing.Size(163, 86);
             this.panel2.TabIndex = 154;
             // 
+            // helmetSwitcher
+            // 
+            this.helmetSwitcher.AutoSize = true;
+            this.helmetSwitcher.Location = new System.Drawing.Point(11, 60);
+            this.helmetSwitcher.Name = "helmetSwitcher";
+            this.helmetSwitcher.Size = new System.Drawing.Size(120, 17);
+            this.helmetSwitcher.TabIndex = 152;
+            this.helmetSwitcher.Text = "Auto switch helmets";
+            this.helmetSwitcher.UseVisualStyleBackColor = true;
+            this.helmetSwitcher.CheckedChanged += new System.EventHandler(this.helmetSwitcher_CheckedChanged);
+            // 
             // adventures
             // 
             this.adventures.Location = new System.Drawing.Point(252, 305);
             this.adventures.Margin = new System.Windows.Forms.Padding(2);
             this.adventures.Name = "adventures";
             this.adventures.ReadOnly = true;
-            this.adventures.Size = new System.Drawing.Size(186, 208);
+            this.adventures.Size = new System.Drawing.Size(186, 133);
             this.adventures.TabIndex = 155;
             this.adventures.Text = "";
             // 
@@ -490,7 +512,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(280, 518);
+            this.button2.Location = new System.Drawing.Point(271, 443);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(136, 23);
             this.button2.TabIndex = 156;
@@ -498,21 +520,108 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // helmetSwitcher
+            // panel3
             // 
-            this.helmetSwitcher.AutoSize = true;
-            this.helmetSwitcher.Location = new System.Drawing.Point(11, 60);
-            this.helmetSwitcher.Name = "helmetSwitcher";
-            this.helmetSwitcher.Size = new System.Drawing.Size(120, 17);
-            this.helmetSwitcher.TabIndex = 152;
-            this.helmetSwitcher.Text = "Auto switch helmets";
-            this.helmetSwitcher.UseVisualStyleBackColor = true;
-            this.helmetSwitcher.CheckedChanged += new System.EventHandler(this.helmetSwitcher_CheckedChanged);
+            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.label10);
+            this.panel3.Controls.Add(this.label12);
+            this.panel3.Controls.Add(this.label11);
+            this.panel3.Controls.Add(this.label14);
+            this.panel3.Controls.Add(this.label15);
+            this.panel3.Controls.Add(this.maxInterval);
+            this.panel3.Controls.Add(this.minInterval);
+            this.panel3.Location = new System.Drawing.Point(252, 484);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(175, 90);
+            this.panel3.TabIndex = 157;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(8, 9);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(145, 16);
+            this.label10.TabIndex = 116;
+            this.label10.Text = "Update hero frequency";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(122, 61);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(23, 13);
+            this.label12.TabIndex = 115;
+            this.label12.Text = "min";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(122, 35);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(23, 13);
+            this.label11.TabIndex = 114;
+            this.label11.Text = "min";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(8, 61);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(27, 13);
+            this.label14.TabIndex = 113;
+            this.label14.Text = "Max";
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(8, 35);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(24, 13);
+            this.label15.TabIndex = 112;
+            this.label15.Text = "Min";
+            // 
+            // maxInterval
+            // 
+            this.maxInterval.Location = new System.Drawing.Point(38, 59);
+            this.maxInterval.Maximum = new decimal(new int[] {
+            10001,
+            0,
+            0,
+            0});
+            this.maxInterval.Name = "maxInterval";
+            this.maxInterval.Size = new System.Drawing.Size(78, 20);
+            this.maxInterval.TabIndex = 111;
+            this.maxInterval.Value = new decimal(new int[] {
+            60,
+            0,
+            0,
+            0});
+            this.maxInterval.ValueChanged += new System.EventHandler(this.maxInterval_ValueChanged);
+            // 
+            // minInterval
+            // 
+            this.minInterval.Location = new System.Drawing.Point(38, 33);
+            this.minInterval.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.minInterval.Name = "minInterval";
+            this.minInterval.Size = new System.Drawing.Size(78, 20);
+            this.minInterval.TabIndex = 110;
+            this.minInterval.Value = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.minInterval.ValueChanged += new System.EventHandler(this.minInterval_ValueChanged);
             // 
             // HeroUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.adventures);
@@ -548,6 +657,10 @@
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.maxInterval)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.minInterval)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -597,5 +710,13 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.CheckBox helmetSwitcher;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.NumericUpDown maxInterval;
+        private System.Windows.Forms.NumericUpDown minInterval;
     }
 }

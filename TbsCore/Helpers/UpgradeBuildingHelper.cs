@@ -43,7 +43,8 @@ namespace TbsCore.Helpers
                 task = isResField ? GetFirstInfrastructureTask(vill) : GetFirstResTask(vill);
 
                 if (task != null) return (task, now);
-                maxBuild--;
+                
+                if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuild--;
             }
 
             task = vill.Build.Tasks.First();

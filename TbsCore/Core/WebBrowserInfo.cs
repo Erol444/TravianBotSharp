@@ -96,15 +96,11 @@ namespace TravBotSharp.Files.Models.AccModels
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    var auth = new SeleniumProxyAuth.Models.ProxyAuth(access.Proxy, access.ProxyPort, access.ProxyUsername, access.ProxyPassword);
-                    var localPort = ProxyHelper.proxyServer.AddEndpoint(auth);
-                    options.AddArgument($"--proxy-server=127.0.0.1:{localPort}");
-                }
-                else
-                {
-                    options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
+                    var extensionPath = ProxyHelper.CreateExtension(username, server, access);
+                    options.AddExtension(extensionPath);
                 }
 
+                options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
                 options.AddArgument("ignore-certificate-errors"); // --ignore-certificate-errors ?
             }
 
@@ -182,7 +178,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 catch (Exception e)
                 {
                     if (acc.Wb == null) return;
-                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet", e);
+                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened", e);
                     repeat = true;
                     if (5 <= ++repeatCnt && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {

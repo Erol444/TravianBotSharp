@@ -27,6 +27,8 @@ namespace TbsCore.Models.VillageModels
             Timings = new VillTiming();
             FarmingNonGold = new FarmingNonGold();
             FarmingNonGold.Init();
+            TroopMovements = new VillTroopMovements();
+            TroopMovements.Init();
         }
 
         #region General info
@@ -95,6 +97,11 @@ namespace TbsCore.Models.VillageModels
         /// For deffending settings, Deffing tab
         /// </summary>
         public VillDeffing Deffing { get; set; }
+
+        /// <summary>
+        /// Troops moving to/from the village
+        /// </summary>
+        public VillTroopMovements TroopMovements { get; set; }
 
         /// <summary>
         /// For village expansion (new village - settlers), culture points

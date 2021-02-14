@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using TbsCore.Database;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp
@@ -53,6 +55,9 @@ namespace TravBotSharp
             saveAccountsTimer.Start();
             saveAccountsTimer.Enabled = true;
             saveAccountsTimer.AutoReset = true;
+
+            // So TbsCore can access forms and alert user
+            IoHelperCore.AlertUser = IoHelperForms.AlertUser;
         }
 
         private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);
@@ -67,6 +72,9 @@ namespace TravBotSharp
             }
 
             accounts = DbRepository.GetAccounts();
+
+            accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
+
             RefreshAccView();
         }
 
@@ -124,7 +132,7 @@ namespace TravBotSharp
         private void button2_Click(object sender, EventArgs e) //login button
         {
             var acc = GetSelectedAcc();
-            if (acc.Access.AllAccess.Count > 0)
+            if (0 < acc.Access.AllAccess.Count)
             {
                 new Thread(() => _ = IoHelperCore.LoginAccount(acc)).Start();
                 generalUc1.UpdateBotRunning("true");

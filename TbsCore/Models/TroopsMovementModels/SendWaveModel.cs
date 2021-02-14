@@ -1,6 +1,6 @@
 ﻿namespace TbsCore.Models.SendTroopsModels
 {
-    public class SendWaveModel : TroopsMovement
+    public class SendWaveModel : TroopsSendModel
     {
         /// <summary>
         /// Number of milliseconds to be waited before sending another attack.

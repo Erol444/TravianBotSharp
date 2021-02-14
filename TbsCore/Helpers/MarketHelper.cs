@@ -166,10 +166,8 @@ namespace TravBotSharp.Files.Helpers
                 await Task.Delay(AccountHelper.Delay() / 5);
             }
 
-            await DriverHelper.WriteById(acc, "xCoordInput", targetVillage.Coordinates.x);
-            await Task.Delay(AccountHelper.Delay() / 5);
-            await DriverHelper.WriteById(acc, "yCoordInput", targetVillage.Coordinates.y);
-            await Task.Delay(AccountHelper.Delay() / 5);
+            // Input coordinates
+            await DriverHelper.WriteCoordinates(acc, targetVillage.Coordinates);
 
             //Select x2/x3
             if (times != 1)

@@ -38,7 +38,7 @@ namespace TravBotSharp.Files.Parsers
                     }
                     return resFields;
                 case Classificator.ServerVersionEnum.T4_5:
-                    var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.Name == "div").ToList();
+                    var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.HasClass("level")).ToList();
                     List<Building> resFields5 = new List<Building>();
                     foreach (var field in fields5)
                     {
