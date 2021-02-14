@@ -383,11 +383,8 @@ namespace TravBotSharp.Views
             UpdateUc();
         }
 
-        private void AutoBuildBonusBuildings_CheckedChanged(object sender, EventArgs e)
-        {
-            var vill = GetSelectedVillage();
-            vill.Build.AutoBuildResourceBonusBuildings = AutoBuildBonusBuildings.Checked;
-        }
+        private void AutoBuildBonusBuildings_CheckedChanged(object sender, EventArgs e) =>
+            GetSelectedVillage().Build.AutoBuildResourceBonusBuildings = AutoBuildBonusBuildings.Checked;
 
         private void buildingsList_SelectedIndexChanged(object sender, EventArgs e)
         {

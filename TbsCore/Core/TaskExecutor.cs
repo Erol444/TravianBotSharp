@@ -149,22 +149,22 @@ namespace TravBotSharp.Files.Helpers
         public static void UpdateDorf2Info(Account acc)
         {
             //update buildings, currentlyBuilding, resources, capacity
-            var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
-            if (activeVill == null) return;
+            var vill = acc.Villages.FirstOrDefault(x => x.Active);
+            if (vill == null) return;
 
             //remove any further UpdateDorf1 BotTasks for this village (if below 5min)
             acc.Tasks.RemoveAll(x =>
                 x.GetType() == typeof(UpdateDorf2) &&
-                x.Vill == activeVill &&
+                x.Vill == vill &&
                 x.ExecuteAt < DateTime.Now.AddMinutes(5)
             );
 
-            UpdateCurrentlyBuilding(acc, activeVill);
+            UpdateCurrentlyBuilding(acc, vill);
 
             var buildings = InfrastructureParser.GetBuildings(acc, acc.Wb.Html);
             foreach (var field in buildings)
             {
-                var building = activeVill.Build.Buildings.FirstOrDefault(x => x.Id == field.Id);
+                var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == field.Id);
                 building.Level = field.Level;
                 building.Type = field.Type;
                 building.UnderConstruction = field.UnderConstruction;
@@ -173,22 +173,36 @@ namespace TravBotSharp.Files.Helpers
 
         public static void UpdateDorf1Info(Account acc)
         {
-            var activeVill = acc.Villages.FirstOrDefault(x => x.Active);
-            if (activeVill == null) return;
+            var vill = acc.Villages.FirstOrDefault(x => x.Active);
+            if (vill == null) return;
 
             //remove any further UpdateDorf1 BotTasks for this village (if below 5min)
             acc.Tasks.RemoveAll(x =>
                 x.GetType() == typeof(UpdateDorf1) &&
-                x.Vill == activeVill &&
+                x.Vill == vill &&
                 x.ExecuteAt < DateTime.Now.AddMinutes(5)
             );
 
-            UpdateCurrentlyBuilding(acc, activeVill);
+            UpdateCurrentlyBuilding(acc, vill);
+
+            var dorf1Movements = TroopsMovementParser.ParseDorf1Movements(acc.Wb.Html);
+
+            // Check attacks if there are incoming attacks and alerts aren't disabled and task isn't already on task list 
+            if (dorf1Movements.Any(x=>x.Type == Classificator.MovementTypeDorf1.IncomingAttack) &&
+                vill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
+            {
+                AddTaskIfNotExistInVillage(acc, vill, new CheckAttacks()
+                {
+                    ExecuteAt = DateTime.Now,
+                    Priority = TaskPriority.High
+                });
+            }
+            vill.TroopMovements.Dorf1Movements = dorf1Movements;
 
             var resFields = ResourceParser.GetResourcefields(acc.Wb.Html, acc.AccInfo.ServerVersion);
             foreach (var field in resFields)
             {
-                var building = activeVill.Build.Buildings.FirstOrDefault(x => x.Id == field.Id);
+                var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == field.Id);
                 building.Level = field.Level;
                 building.Type = field.Type;
                 building.UnderConstruction = field.UnderConstruction;
@@ -210,7 +224,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 cb[i].Building = bldJs[i].Building;
                 cb[i].Location = bldJs[i].Location;
-                cb[i].Level = bldJs[i].Level;
+                cb[i].Level = (byte)bldJs[i].Level;
 
                 vill.Build.CurrentlyBuilding.Add(cb[i]);
             }
@@ -293,15 +307,14 @@ namespace TravBotSharp.Files.Helpers
         }
         public static void AddTaskIfNotExistInVillage(Account acc, Village vill, BotTask task)
         {
-            var taskExists = acc.Tasks.Any(x =>
-                        x.GetType() == task.GetType() &&
-                        x.Vill == vill
-                    );
-            if (!taskExists)
+            if (!TaskExistsInVillage(acc, vill, task.GetType()))
             {
                 AddTask(acc, task);
             }
         }
+        public static bool TaskExistsInVillage(Account acc, Village vill, Type taskType) =>
+            acc.Tasks.Any(x => x.GetType() == taskType && x.Vill == vill);
+
         /// <summary>
         /// Removes all pending BotTasks of specific type for specific village except for the task calling it
         /// Called by UpdateDorf1/2 since they are called a lot.

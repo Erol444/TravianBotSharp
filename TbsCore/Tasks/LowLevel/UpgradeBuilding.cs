@@ -23,9 +23,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // force village update if some building has finished building
             bool updateVill = RemoveFinishedCB(Vill);
 
-            // Sets building task to be built
-            //if (this.Task == null)
-            ConfigNextExecute(acc);
+            ConfigNextExecute(acc, false);
 
             if (this.Task == null)
             {
@@ -352,11 +350,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// configure correct time and get correct id if it doesn't exist yet.
         /// </summary>
         /// <param name="acc">Account</param>
-        public void ConfigNextExecute(Account acc)
+        public void ConfigNextExecute(Account acc, bool restart = true)
         {
             RemoveFinishedCB(Vill);
 
-            if (Vill.Build.AutoBuildResourceBonusBuildings) CheckResourceBonus(acc, Vill);
+            if (Vill.Build.AutoBuildResourceBonusBuildings) CheckResourceBonus(acc, Vill, restart);
 
             // Checks if we have enough FreeCrop (above 0)
             CheckFreeCrop(acc);
@@ -407,24 +405,22 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="vill">Village</param>
-        private void CheckResourceBonus(Account acc, Village vill)
+        private void CheckResourceBonus(Account acc, Village vill, bool restart = true)
         {
             // If enabled and MainBuilding is above level 5
-            if (vill.Build.AutoBuildResourceBonusBuildings &&
-                vill.Build.Buildings.Any(x => x.Type == BuildingEnum.MainBuilding && x.Level >= 5))
+            if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.MainBuilding && 5 <= x.Level))
             {
                 var bonusBuilding = CheckBonusBuildings(vill);
-                if (bonusBuilding != BuildingEnum.Site)
+                if (bonusBuilding == BuildingEnum.Site) return;
+                
+                var bonusTask = new BuildingTask()
                 {
-                    var bonusTask = new BuildingTask()
-                    {
-                        TaskType = BuildingType.General,
-                        Building = bonusBuilding,
-                        Level = 5,
-                    };
+                    TaskType = BuildingType.General,
+                    Building = bonusBuilding,
+                    Level = 5,
+                };
 
-                    BuildingHelper.AddBuildingTask(acc, vill, bonusTask, false);
-                }
+                AddBuildingTask(acc, vill, bonusTask, false, restart);
             }
         }
 

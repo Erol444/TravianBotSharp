@@ -65,7 +65,7 @@ namespace TravBotSharp.Files.Parsers
                 ret.Add(new BuildingCurrently()
                 {
                     Duration = DateTime.Now.Add(duration),
-                    Level = (int)Parser.RemoveNonNumeric(level),
+                    Level = (byte)Parser.RemoveNonNumeric(level),
                 });
             }
             return ret;

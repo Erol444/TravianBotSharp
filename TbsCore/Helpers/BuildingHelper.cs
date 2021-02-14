@@ -22,7 +22,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="task">BuildingTask to add</param>
         /// <param name="bottom">Whether to insert the BuildingTask on the bottom of the list</param>
         /// <returns>Whether the method completed successfully</returns>
-        public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
+        public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true, bool restart = true)
         {
             if (vill == null) return false;
             if (task.BuildingId == null ||
@@ -34,7 +34,7 @@ namespace TravBotSharp.Files.Helpers
             if (bottom) vill.Build.Tasks.Add(task);
             else vill.Build.Tasks.Insert(0, task);
 
-            if (acc.Wb != null) ReStartBuilding(acc, vill);
+            if (acc.Wb != null && restart) ReStartBuilding(acc, vill);
             return true;
         }
 
