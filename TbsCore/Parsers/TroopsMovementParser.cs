@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
+using TbsCore.Models.TroopsMovementModels;
 using TravBotSharp.Files.Helpers;
 using static TravBotSharp.Files.Helpers.Classificator;
 
@@ -116,5 +117,59 @@ namespace TravBotSharp.Files.Parsers
             }
             return ret;
         }
+
+        public static List<TroopMovementDorf1> ParseDorf1Movements(HtmlDocument html)
+        {
+            var ret = new List<TroopMovementDorf1>();
+            
+            var movements = html.GetElementbyId("movements");
+            if (movements == null) return ret;
+            
+            foreach(var movement in movements.Descendants("tr"))
+            {
+                var img = movement.Descendants("img").FirstOrDefault();
+                if (img == null) continue; // Not a movement row
+                var movementType = ParseMovementImg(img.GetClasses().First());
+
+                var numStr = movement.Descendants("div").First(x => x.HasClass("mov")).InnerText;
+                var num = (int)Parser.RemoveNonNumeric(numStr);
+
+                var time = TimeParser.ParseTimer(movement.Descendants("div").First(x => x.HasClass("dur_r")));
+
+                ret.Add(new TroopMovementDorf1()
+                {
+                    Type = movementType,
+                    Count = num,
+                    Time = DateTime.Now.Add(time)
+                });
+            }
+            return ret;
+        }
+
+        private static MovementTypeDorf1 ParseMovementImg(string imgClass)
+        {
+            switch (imgClass)
+            {
+                case "att1": return MovementTypeDorf1.IncomingAttack;
+                case "att2": return MovementTypeDorf1.OutgoingAttack;
+                case "att3": return MovementTypeDorf1.IncomingAttackOasis;
+                case "def1": return MovementTypeDorf1.IncomingReinforcement;
+                case "def2": return MovementTypeDorf1.OutgoingReinforcement;
+                case "def3": return MovementTypeDorf1.IncomingReinforcementOasis;
+                case "hero_on_adventure": return MovementTypeDorf1.HeroAdventure;
+                case "settlersOnTheWay": return MovementTypeDorf1.Settlers;
+                default: throw new Exception("Failed to parse movement image! Class: " + imgClass);
+            }
+        }
+        // att1 => incoming attack to the village (red swords)
+        // att2 => outgoing attack (yellow swords)
+        // att3 => outgoing attack to your oasis (purple swords)
+
+        // def1 => incoming reinforcement to the village (green shield)
+        // def2 => outgoing reinforcement (yellow shield)
+        // def3 => incoming reinforcement to the oasis (purple shield)
+
+        // hero_on_adventure => hero going to an adventure
+        // settlersOnTheWay => settlers
     }
 }

@@ -334,6 +334,24 @@
             Attack,
             Raid
         }
+
+
+        /// <summary>
+        /// Different movement types viewed from dorf1 (top right corner)
+        /// </summary>
+        public enum MovementTypeDorf1
+        {
+            IncomingAttack, // Red swords
+            OutgoingAttack, // Yellow swords
+            IncomingAttackOasis, // Purple swords
+            IncomingReinforcement, // Green shield
+            OutgoingReinforcement, // Yellow shield
+            IncomingReinforcementOasis, // Purple shield
+            HeroAdventure, // Blue map
+            Settlers, // Blue hat
+        }
+
+
         public enum VillTypeEnum
         {
             _9c = 1,
