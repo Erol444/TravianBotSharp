@@ -4,8 +4,11 @@ namespace TbsCore.Models.MapModels
 {
     public class Coordinates : IEquatable<Coordinates>
     {
-        public Coordinates() { }
-        public Coordinates(int x, int y) 
+        public Coordinates()
+        {
+        }
+
+        public Coordinates(int x, int y)
         {
             this.x = x;
             this.y = y;
@@ -20,6 +23,6 @@ namespace TbsCore.Models.MapModels
             return other.x == x && other.y == y;
         }
 
-        public override string ToString() => $"({x}/{y})";
+        public override string ToString() => $"({x}|{y})";
     }
 }

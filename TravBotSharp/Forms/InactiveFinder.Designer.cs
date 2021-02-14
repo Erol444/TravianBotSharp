@@ -1,7 +1,7 @@
 ﻿
 namespace TravBotSharp.Forms
 {
-    partial class FarmFinder
+    partial class InactiveFinder
     {
         /// <summary>
         /// Required designer variable.
@@ -32,7 +32,6 @@ namespace TravBotSharp.Forms
             TbsCore.Models.MapModels.Coordinates coordinates1 = new TbsCore.Models.MapModels.Coordinates();
             this.countFarmChose = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.coordinatesUc1 = new TravBotSharp.UserControls.CoordinatesUc();
             this.InactivePop = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.InactiveVill = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.InactiveAlly = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -41,7 +40,6 @@ namespace TravBotSharp.Forms
             this.InactiveDis = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.InactiveId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label3 = new System.Windows.Forms.Label();
-            this.troopsSelectorUc1 = new TravBotSharp.Forms.TroopsSelectorUc();
             this.InactiveList = new System.Windows.Forms.ListView();
             this.button1 = new System.Windows.Forms.Button();
             this.Distance = new System.Windows.Forms.NumericUpDown();
@@ -49,6 +47,8 @@ namespace TravBotSharp.Forms
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
+            this.coordinatesUc1 = new TravBotSharp.UserControls.CoordinatesUc();
+            this.troopsSelectorUc1 = new TravBotSharp.Forms.TroopsSelectorUc();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).BeginInit();
             this.SuspendLayout();
             // 
@@ -69,17 +69,6 @@ namespace TravBotSharp.Forms
             this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 180;
             this.label2.Text = "Distance";
-            // 
-            // coordinatesUc1
-            // 
-            this.coordinatesUc1.BackColor = System.Drawing.SystemColors.ControlDark;
-            coordinates1.x = 0;
-            coordinates1.y = 0;
-            this.coordinatesUc1.Coords = coordinates1;
-            this.coordinatesUc1.Location = new System.Drawing.Point(22, 88);
-            this.coordinatesUc1.Name = "coordinatesUc1";
-            this.coordinatesUc1.Size = new System.Drawing.Size(107, 56);
-            this.coordinatesUc1.TabIndex = 179;
             // 
             // InactivePop
             // 
@@ -131,25 +120,6 @@ namespace TravBotSharp.Forms
             this.label3.TabIndex = 182;
             this.label3.Text = "Farms chosen:";
             // 
-            // troopsSelectorUc1
-            // 
-            this.troopsSelectorUc1.Hero = false;
-            this.troopsSelectorUc1.Location = new System.Drawing.Point(763, 74);
-            this.troopsSelectorUc1.Name = "troopsSelectorUc1";
-            this.troopsSelectorUc1.Size = new System.Drawing.Size(139, 264);
-            this.troopsSelectorUc1.TabIndex = 181;
-            this.troopsSelectorUc1.Troops = new int[] {
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0};
-            // 
             // InactiveList
             // 
             this.InactiveList.BackColor = System.Drawing.SystemColors.MenuText;
@@ -171,6 +141,7 @@ namespace TravBotSharp.Forms
             this.InactiveList.UseCompatibleStateImageBehavior = false;
             this.InactiveList.View = System.Windows.Forms.View.Details;
             this.InactiveList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.InactiveList_ColumnClick);
+            this.InactiveList.SelectedIndexChanged += new System.EventHandler(this.InactiveList_SelectedIndexChanged);
             // 
             // button1
             // 
@@ -180,6 +151,7 @@ namespace TravBotSharp.Forms
             this.button1.TabIndex = 177;
             this.button1.Text = "GET SERVER CODE";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // Distance
             // 
@@ -205,6 +177,7 @@ namespace TravBotSharp.Forms
             this.comboBoxVillages.Name = "comboBoxVillages";
             this.comboBoxVillages.Size = new System.Drawing.Size(121, 21);
             this.comboBoxVillages.TabIndex = 175;
+            this.comboBoxVillages.SelectedIndexChanged += new System.EventHandler(this.comboBoxVillages_SelectedIndexChanged);
             // 
             // button2
             // 
@@ -216,6 +189,7 @@ namespace TravBotSharp.Forms
             this.button2.TabIndex = 174;
             this.button2.Text = "Search";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // label1
             // 
@@ -236,12 +210,41 @@ namespace TravBotSharp.Forms
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // coordinatesUc1
+            // 
+            this.coordinatesUc1.BackColor = System.Drawing.SystemColors.ControlDark;
+            coordinates1.x = 0;
+            coordinates1.y = 0;
+            this.coordinatesUc1.Coords = coordinates1;
+            this.coordinatesUc1.Location = new System.Drawing.Point(22, 88);
+            this.coordinatesUc1.Name = "coordinatesUc1";
+            this.coordinatesUc1.Size = new System.Drawing.Size(107, 56);
+            this.coordinatesUc1.TabIndex = 179;
+            // 
+            // troopsSelectorUc1
+            // 
+            this.troopsSelectorUc1.Hero = false;
+            this.troopsSelectorUc1.Location = new System.Drawing.Point(763, 74);
+            this.troopsSelectorUc1.Name = "troopsSelectorUc1";
+            this.troopsSelectorUc1.Size = new System.Drawing.Size(139, 264);
+            this.troopsSelectorUc1.TabIndex = 181;
+            this.troopsSelectorUc1.Troops = new int[] {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0};
+            // 
             // FarmFinder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(921, 450);
-            this.ControlBox = false;
             this.Controls.Add(this.button3);
             this.Controls.Add(this.countFarmChose);
             this.Controls.Add(this.label2);

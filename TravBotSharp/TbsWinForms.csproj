@@ -281,11 +281,11 @@
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomClass\ListViewColumnSorter.cs" />
-    <Compile Include="Forms\FarmFinder.cs">
+    <Compile Include="Forms\InactiveFinder.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\FarmFinder.Designer.cs">
-      <DependentUpon>FarmFinder.cs</DependentUpon>
+    <Compile Include="Forms\InactiveFinder.Designer.cs">
+      <DependentUpon>InactiveFinder.cs</DependentUpon>
     </Compile>
     <Compile Include="FormsResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -449,8 +449,8 @@
     <EmbeddedResource Include="Forms\AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\FarmFinder.resx">
-      <DependentUpon>FarmFinder.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\InactiveFinder.resx">
+      <DependentUpon>InactiveFinder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

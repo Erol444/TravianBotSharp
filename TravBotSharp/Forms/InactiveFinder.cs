@@ -16,19 +16,19 @@ using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Forms
 {
-    public partial class FarmFinder : Form
+    public partial class InactiveFinder : Form
     {
         private ListViewColumnSorter lvwColumnSorter;
 
         private RestClient Client;
         private List<Village> Villages;
 
-        public List<Farm> InactiveFarm
+        public List<Farm> InactiveFarms
         {
             get
             {
                 List<Farm> result = new List<Farm>();
-                foreach (ListViewItem item in InactiveList.Items)
+                foreach (ListViewItem item in InactiveList.SelectedItems)
                 {
                     result.Add(new Farm()
                     {
@@ -43,7 +43,7 @@ namespace TravBotSharp.Forms
         private string ServerUrl;
         public string ServerCode;
 
-        public FarmFinder(string ServerUrl, List<Village> Villages, Classificator.TribeEnum? tribeEnum)
+        public InactiveFinder(string ServerUrl, List<Village> Villages, Classificator.TribeEnum? tribeEnum)
         {
             InitializeComponent();
             // list view sorter
@@ -55,6 +55,7 @@ namespace TravBotSharp.Forms
 
             //
             this.ServerUrl = ServerUrl;
+            this.ServerCode = "";
             this.Villages = Villages;
             troopsSelectorUc1.HeroEditable = false;
             troopsSelectorUc1.Init(tribeEnum ?? Classificator.TribeEnum.Nature);
@@ -66,24 +67,8 @@ namespace TravBotSharp.Forms
             }
             comboBoxVillages.SelectedIndex = 0;
 
-            if (ServerCode.Length < 1)
-            {
-                //update server code button
-                button1.Enabled = true;
-                button1.Text = "GET SERVER CODE";
-
-                //disable search button untill we get code server
-                button1.Enabled = false;
-            }
-            else
-            {
-                //update server code button
-                button1.Enabled = false;
-                button1.Text = ServerCode;
-
-                //enable search button since we got code server
-                button1.Enabled = true;
-            }
+            //disable search button untill we get code server
+            button2.Enabled = false;
         }
 
         /// <summary>
@@ -169,11 +154,24 @@ namespace TravBotSharp.Forms
             return result;
         }
 
-        private async void button1_Click(object sender, System.EventArgs e)
+        private async void button2_Click(object sender, System.EventArgs e)
         {
-            button1.Enabled = false;
-            var Inactives = await GetFarms(ServerCode);
-            button1.Enabled = true;
+            button2.Enabled = false;
+            List<InactiveFarm> Inactives;
+            while (true)
+            {
+                try
+                {
+                    Inactives = await GetFarms(ServerCode);
+                    break;
+                }
+                catch (Exception)
+                {
+                    continue;
+                }
+            }
+
+            button2.Enabled = true;
 
             InactiveList.Items.Clear();
 
@@ -184,7 +182,7 @@ namespace TravBotSharp.Forms
                 var Inactive = Inactives[i];
                 var item = new ListViewItem();
 
-                item.SubItems[0].Text = i.ToString();
+                item.SubItems[0].Text = (i + 1).ToString();
                 item.SubItems.Add(Inactive.distance.ToString());
                 item.SubItems.Add(Inactive.coord.ToString());
                 item.SubItems.Add(Inactive.namePlayer);
@@ -209,9 +207,9 @@ namespace TravBotSharp.Forms
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void button2_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            button2.Enabled = false;
+            button1.Enabled = false;
             ServerCode = await GetServerCode(ServerUrl);
 
             button1.Enabled = false;
@@ -223,6 +221,7 @@ namespace TravBotSharp.Forms
             }
 
             button1.Text = ServerCode;
+            button2.Enabled = true;
         }
 
         private void InactiveList_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -255,17 +254,7 @@ namespace TravBotSharp.Forms
 
         private void InactiveList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            InactiveFarm.Clear();
-            foreach (ListViewItem item in InactiveList.Items)
-            {
-                InactiveFarm.Add(new Farm()
-                {
-                    Coords = MapParser.GetCoordinates(item.SubItems[2].Text),
-                    Troops = troopsSelectorUc1.Troops
-                });
-            }
-
-            countFarmChose.Text = InactiveFarm.Count.ToString();
+            countFarmChose.Text = InactiveList.SelectedItems.Count.ToString();
         }
 
         private void button3_Click(object sender, EventArgs e)
