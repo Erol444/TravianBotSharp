@@ -189,7 +189,22 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Whether there were some tasks removed</returns>
         public static bool RemoveFinishedCB(Village vill)
         {
-            return 0 < vill.Build.CurrentlyBuilding.RemoveAll(x => x.Duration < DateTime.Now);
+            var tasksDone = vill.Build
+                .CurrentlyBuilding
+                .Where(x => x.Duration < DateTime.Now)
+                .ToList();
+
+            if (tasksDone.Count == 0) return false;
+
+            foreach(var taskDone in tasksDone)
+            {
+                var building = vill.Build.Buildings.First(x => x.Id == taskDone.Location);
+                if (building.Type != taskDone.Building) continue;
+
+                if(building.Level < taskDone.Level) building.Level = taskDone.Level;
+                vill.Build.CurrentlyBuilding.Remove(taskDone);
+            }
+            return true;
         }
 
         /// <summary>

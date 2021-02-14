@@ -89,7 +89,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 //if (vill.Troops.Researched.Count == 0) TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = DateTime.Now, vill = vill });
                 TroopsHelper.ReStartResearchAndImprovement(acc, vill);
-                if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
+                TroopsHelper.ReStartTroopTraining(acc, vill);
                 BuildingHelper.ReStartBuilding(acc, vill);
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);

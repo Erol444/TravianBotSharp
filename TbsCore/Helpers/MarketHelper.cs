@@ -126,7 +126,6 @@ namespace TravBotSharp.Files.Helpers
 
             //round the resources that we want to send, so it looks less like a bot
 
-            //TODO: check if we have enough merchants
             (var merchantsCapacity, var merchantsNum) = MarketHelper.ParseMerchantsInfo(acc.Wb.Html);
             // We don't have any merchants.
             if (merchantsNum == 0)
@@ -182,7 +181,10 @@ namespace TravBotSharp.Files.Helpers
 
             var durNode = acc.Wb.Html.GetElementbyId("target_validate");
 
-
+            if(durNode == null && acc.Wb.Html.GetElementbyId("prepareError") != null)
+            {
+                // Error "Abuse! You have not enough resources." is displayed.
+            }
             //get duration of transit
             var dur = durNode.Descendants("td").ToList()[3].InnerText.Replace("\t", "").Replace("\n", "");
 

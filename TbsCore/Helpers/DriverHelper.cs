@@ -44,10 +44,18 @@ namespace TbsCore.Helpers
         /// <param name="acc">Account</param>
         /// <param name="obj">JS object</param>
         /// <returns>Long for number, bool for boolean, string otherwise</returns>
-        public static T GetJsObj<T>(Account acc, string obj)
+        public static T GetJsObj<T>(Account acc, string obj, bool log = true)
         {
-            IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
-            return (T)js.ExecuteScript($"return {obj};");
+            try
+            {
+                IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
+                return (T)js.ExecuteScript($"return {obj};");
+            }
+            catch(Exception e)
+            {
+                if (log) acc.Wb?.Log($"Error getting JS object '{obj}'!", e);
+                return default;
+            }
         }
 
         /// <summary>

@@ -215,6 +215,7 @@ namespace TravBotSharp.Files.Helpers
             if (cb == null) return; // Nothing is currently building
 
             var bldJson = DriverHelper.GetJsObj<string>(acc, "JSON.stringify(bld);");
+            if (string.IsNullOrEmpty(bldJson)) return;
             var bldJs = JsonConvert.DeserializeObject<List<Bld>>(bldJson);
 
             // Combine data from two sources about currently building (JS object and HTML table)
