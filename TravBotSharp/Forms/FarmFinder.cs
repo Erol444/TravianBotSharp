@@ -8,64 +8,97 @@ using System.Windows.Forms;
 
 using RestSharp;
 
-using TbsCore.Models.MapModels;
-using TbsCore.Models.AccModels;
+using TbsCore.Models;
+using TbsCore.Models.VillageModels;
 
 using TravBotSharp.Files.Parsers;
-using TravBotSharp.Views;
-using TravBotSharp.Interfaces;
+using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp
+namespace TravBotSharp.Forms
 {
-    public partial class FarmFinderUc : TbsBaseUc, ITbsUc
+    public partial class FarmFinder : Form
     {
         private ListViewColumnSorter lvwColumnSorter;
 
-        private RestClient client;
+        private RestClient Client;
+        private List<Village> Villages;
 
-        public FarmFinderUc()
+        public List<Farm> InactiveFarm
+        {
+            get
+            {
+                List<Farm> result = new List<Farm>();
+                foreach (ListViewItem item in InactiveList.Items)
+                {
+                    result.Add(new Farm()
+                    {
+                        Coords = MapParser.GetCoordinates(item.SubItems[2].Text),
+                        Troops = troopsSelectorUc1.Troops
+                    });
+                }
+                return result;
+            }
+        }
+
+        private string ServerUrl;
+        public string ServerCode;
+
+        public FarmFinder(string ServerUrl, List<Village> Villages, Classificator.TribeEnum? tribeEnum)
         {
             InitializeComponent();
-            client = new RestClient("https://travianstats.de/index.php");
-        }
+            // list view sorter
+            lvwColumnSorter = new ListViewColumnSorter();
+            this.InactiveList.ListViewItemSorter = lvwColumnSorter;
 
-        public void Init()
-        {
-        }
+            //client http
+            Client = new RestClient("https://travianstats.de/index.php");
 
-        public void UpdateUc()
-        {
-            var acc = GetSelectedAcc();
-            comboBoxVillages.Items.Clear();
-            foreach (var vill in acc.Villages)
+            //
+            this.ServerUrl = ServerUrl;
+            this.Villages = Villages;
+            troopsSelectorUc1.HeroEditable = false;
+            troopsSelectorUc1.Init(tribeEnum ?? Classificator.TribeEnum.Nature);
+
+            // UI
+            foreach (var vill in Villages)
             {
                 comboBoxVillages.Items.Add(vill.Name);
             }
             comboBoxVillages.SelectedIndex = 0;
 
-            //update server code
-            button2.Enabled = true;
-            button2.Text = "SERVER CODE";
+            if (ServerCode.Length < 1)
+            {
+                //update server code button
+                button1.Enabled = true;
+                button1.Text = "GET SERVER CODE";
 
-            //disable search button untill we got code server
-            button1.Enabled = false;
+                //disable search button untill we get code server
+                button1.Enabled = false;
+            }
+            else
+            {
+                //update server code button
+                button1.Enabled = false;
+                button1.Text = ServerCode;
 
-            InactiveList.Items.Clear();
+                //enable search button since we got code server
+                button1.Enabled = true;
+            }
         }
 
         /// <summary>
         /// world code for our world from travianstats.de
         /// </summary>
         /// <returns></returns>
-        private async Task<string> GetServerCode(Account acc)
+        private async Task<string> GetServerCode(string ServerUrl)
         {
             // get serverUrl without https://
-            var url = (new UriBuilder(acc.AccInfo.ServerUrl)).Host;
+            var url = (new UriBuilder(ServerUrl)).Host;
 
             //request to travaianstats.de
             var request = new RestRequest();
 
-            var response = await client.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
 
             if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
 
@@ -86,18 +119,18 @@ namespace TravBotSharp
             return "";
         }
 
-        private async Task<List<InactiveFarmModel>> GetFarms(Account acc)
+        private async Task<List<InactiveFarm>> GetFarms(string ServerCode)
         {
-            var request = new RestRequest($"?m=inactive_finder&w={acc.AccInfo.ServerCode}", Method.POST);
+            var request = new RestRequest($"?m=inactive_finder&w={ServerCode}", Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.AddHeader("Cookie", $"tcn_world={acc.AccInfo.ServerCode}");
+            request.AddHeader("Cookie", $"tcn_world={ServerCode}");
             request.AddParameter("m", "inactivefinder");
-            request.AddParameter("w", acc.AccInfo.ServerCode);
-            request.AddParameter("x", ((int)X.Value).ToString());
-            request.AddParameter("y", ((int)Y.Value).ToString());
+            request.AddParameter("w", ServerCode);
+            request.AddParameter("x", ((int)coordinatesUc1.Coords.x).ToString());
+            request.AddParameter("y", ((int)coordinatesUc1.Coords.y).ToString());
             request.AddParameter("distance", ((int)Distance.Value).ToString());
 
-            var response = await client.ExecuteAsync(request);
+            var response = await Client.ExecuteAsync(request);
 
             if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
 
@@ -117,10 +150,10 @@ namespace TravBotSharp
                         .Select(tr => tr.Elements("td").Select(td => td.InnerText.Trim().Replace("\t", "").Replace("\n", "")).ToList())
                         .ToList();
 
-            var result = new List<InactiveFarmModel>();
+            var result = new List<InactiveFarm>();
             foreach (var row in table)
             {
-                result.Add(new InactiveFarmModel()
+                result.Add(new InactiveFarm()
                 {
                     //status = row[0]
                     distance = Int32.Parse(row[1]),
@@ -138,9 +171,8 @@ namespace TravBotSharp
 
         private async void button1_Click(object sender, System.EventArgs e)
         {
-            var acc = GetSelectedAcc();
             button1.Enabled = false;
-            var Inactives = await GetFarms(acc);
+            var Inactives = await GetFarms(ServerCode);
             button1.Enabled = true;
 
             InactiveList.Items.Clear();
@@ -167,12 +199,9 @@ namespace TravBotSharp
 
         private void comboBoxVillages_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var acc = GetSelectedAcc();
-
-            var vill = acc.Villages[comboBoxVillages.SelectedIndex];
+            var vill = Villages[comboBoxVillages.SelectedIndex];
             if (vill == null) return;
-            X.Value = vill.Coordinates.x;
-            Y.Value = vill.Coordinates.y;
+            coordinatesUc1.Coords = vill.Coordinates;
         }
 
         /// <summary>
@@ -182,19 +211,18 @@ namespace TravBotSharp
         /// <param name="e"></param>
         private async void button2_Click(object sender, EventArgs e)
         {
-            var acc = GetSelectedAcc();
-            acc.AccInfo.ServerCode = await GetServerCode(acc);
-
             button2.Enabled = false;
+            ServerCode = await GetServerCode(ServerUrl);
 
-            if (acc.AccInfo.ServerCode.Length < 1)
+            button1.Enabled = false;
+
+            if (ServerCode.Length < 1)
             {
-                button2.Text = "CANNOT FIND";
+                button1.Text = "CANNOT FIND";
                 return;
             }
 
-            button2.Text = acc.AccInfo.ServerCode;
-            button1.Enabled = true;
+            button1.Text = ServerCode;
         }
 
         private void InactiveList_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -224,15 +252,26 @@ namespace TravBotSharp
             // Perform the sort with these new sort options.
             this.InactiveList.Sort();
         }
-    }
 
-    public class InactiveFarmModel
-    {
-        public Coordinates coord { get; set; }
-        public int distance { get; set; }
-        public string namePlayer { get; set; }
-        public string nameAlly { get; set; }
-        public string nameVill { get; set; }
-        public int population { get; set; }
+        private void InactiveList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            InactiveFarm.Clear();
+            foreach (ListViewItem item in InactiveList.Items)
+            {
+                InactiveFarm.Add(new Farm()
+                {
+                    Coords = MapParser.GetCoordinates(item.SubItems[2].Text),
+                    Troops = troopsSelectorUc1.Troops
+                });
+            }
+
+            countFarmChose.Text = InactiveFarm.Count.ToString();
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
     }
 }

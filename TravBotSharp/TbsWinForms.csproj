@@ -281,12 +281,12 @@
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomClass\ListViewColumnSorter.cs" />
-    <Compile Include="Views\FarmFinderUc.cs">
-      <SubType>UserControl</SubType>
+    <Compile Include="Forms\FarmFinder.cs">
+      <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Views\FarmFinderUc.Designer.cs">
-      <DependentUpon>FarmFinderUc.cs</DependentUpon>
-	</Compile>
+    <Compile Include="Forms\FarmFinder.Designer.cs">
+      <DependentUpon>FarmFinder.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -449,9 +449,9 @@
     <EmbeddedResource Include="Forms\AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\FarmFinderUc.resx">
-      <DependentUpon>FarmFinderUc.cs</DependentUpon>
-	</EmbeddedResource>
+    <EmbeddedResource Include="Forms\FarmFinder.resx">
+      <DependentUpon>FarmFinder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FormsResources.Designer.cs</LastGenOutput>

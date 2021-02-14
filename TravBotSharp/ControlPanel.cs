@@ -43,7 +43,6 @@ namespace TravBotSharp
                 newVillagesUc1,
                 deffendingUc1,
                 questsUc1,
-                farmFinderUc1,
                 debugUc1,
             };
 
