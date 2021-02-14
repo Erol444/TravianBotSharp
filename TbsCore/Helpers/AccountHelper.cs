@@ -94,7 +94,15 @@ namespace TravBotSharp.Files.Helpers
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
+
+                // Remove in later updates!
+                if (vill.Settings.RefreshMin == 0) vill.Settings.RefreshMin = 30;
+                if (vill.Settings.RefreshMax == 0) vill.Settings.RefreshMax = 60;
             }
+            // Remove in later updates!
+            if (acc.Hero.Settings.MinUpdate == 0) acc.Hero.Settings.MinUpdate = 40;
+            if (acc.Hero.Settings.MaxUpdate == 0) acc.Hero.Settings.MaxUpdate = 80;
+
 
             // Hero update info
             if (acc.Hero.Settings.AutoRefreshInfo)

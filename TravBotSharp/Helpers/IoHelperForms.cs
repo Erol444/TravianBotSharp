@@ -39,10 +39,11 @@ namespace TravBotSharp.Files.Helpers
             return null;
 
         }
-        public static void AlertUser(string msg)
+        public static bool AlertUser(string msg)
         {
             var alert = new AlertForm(msg);
             alert.ShowDialog();
+            return true;
         }
     }
 }

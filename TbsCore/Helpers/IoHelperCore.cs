@@ -23,13 +23,16 @@ namespace TravBotSharp.Files.Helpers
         public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
         public static string TbsPath =>
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TravBotSharp");
-
         public static bool SQLiteExists() => File.Exists(SqlitePath);
         public static bool AccountsTxtExists() => File.Exists(AccountsPath);
         public static string GetCacheDir(string username, string server, Access access)
         {
             return Path.Combine(IoHelperCore.CachePath, GetCacheFolder(username, server, access.Proxy));
         }
+        /// <summary>
+        /// Gets set by WinForms on startup, so TbsCore can alert user (sound+popup)
+        /// </summary>
+        public static Func<string, bool> AlertUser { get; set; }
 
         public static void AddBuildTasksFromFile(Account acc, Village vill, string location)
         {
@@ -139,6 +142,7 @@ namespace TravBotSharp.Files.Helpers
 
         /// <summary>
         /// Read accounts from the accounts.txt file
+        /// TODO: remove in future version
         /// </summary>
         /// <returns>Accounts saved in the file</returns>
         public static List<Account> ReadAccounts()

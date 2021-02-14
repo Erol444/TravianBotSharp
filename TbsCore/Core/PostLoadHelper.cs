@@ -138,7 +138,7 @@ namespace TbsCore.Helpers
                 // 12: Donate to ally bonus'
                 () => DonateToAlly(acc, vill),
                 // 13:
-                () => vill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(30,60)),
+                () => vill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(vill.Settings.RefreshMin,vill.Settings.RefreshMax)),
                 // 14 NPC:
                 () =>
                 {

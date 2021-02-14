@@ -9,6 +9,9 @@
             MinHealth = 15;
             MaxDistance = 30;
             Upgrades = new byte[4] { 2, 0, 0, 2 };
+            MinUpdate = 40;
+            MaxUpdate = 80;
+            AutoSetPoints = true;
         }
         public bool AutoReviveHero { get; set; }
         public bool AutoSendToAdventure { get; set; }
@@ -38,5 +41,11 @@
         /// Switch helmets before training troops
         /// </summary>
         public bool AutoSwitchHelmets { get; set; }
+
+        /// <summary>
+        /// Hero update min/max interval
+        /// </summary>
+        public int MinUpdate { get; set; }
+        public int MaxUpdate { get; set; }
     }
 }

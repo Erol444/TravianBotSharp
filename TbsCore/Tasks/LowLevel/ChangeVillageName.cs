@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 
@@ -12,7 +13,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var wb = acc.Wb.Driver;
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?s=2");
+            await VersionHelper.Navigate(acc, "/spieler.php?s=2", "/profile");
 
             if (acc.Wb.Html.GetElementbyId("PlayerProfileEditor") == null)
             {

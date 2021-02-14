@@ -78,18 +78,18 @@ namespace TravBotSharp.Files.Helpers
             DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);
 
             // Copy default settings to the new village. TODO: use automapper for this.
-            var defaultSettings = acc.NewVillages.DefaultSettings;
-            vill.Settings = new VillSettings()
-            {
-                Type = defaultSettings.Type,
-                BarracksTrain = defaultSettings.BarracksTrain,
-                StableTrain = defaultSettings.StableTrain,
-                WorkshopTrain = defaultSettings.WorkshopTrain,
-                GreatBarracksTrain = defaultSettings.GreatBarracksTrain,
-                GreatStableTrain = defaultSettings.GreatStableTrain,
-                SendRes = defaultSettings.SendRes,
-                GetRes = defaultSettings.GetRes,
-            };
+            //var defaultSettings = acc.NewVillages.DefaultSettings;
+            //vill.Settings = new VillSettings()
+            //{
+            //    Type = defaultSettings.Type,
+            //    BarracksTrain = defaultSettings.BarracksTrain,
+            //    StableTrain = defaultSettings.StableTrain,
+            //    WorkshopTrain = defaultSettings.WorkshopTrain,
+            //    GreatBarracksTrain = defaultSettings.GreatBarracksTrain,
+            //    GreatStableTrain = defaultSettings.GreatStableTrain,
+            //    SendRes = defaultSettings.SendRes,
+            //    GetRes = defaultSettings.GetRes,
+            //};
 
             // Change village name
             var newVillageFromList = acc.NewVillages.Locations

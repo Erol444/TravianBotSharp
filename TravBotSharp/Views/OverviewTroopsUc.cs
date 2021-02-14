@@ -38,7 +38,7 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
                 r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
                 r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
-                r.Cells.Add(new Cell(vill.Settings.AutoImprove)); // Auto-improve troops
+                r.Cells.Add(new Cell("", vill.Settings.AutoImprove)); // Auto-improve troops
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -60,7 +60,7 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
             r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
             r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
-            r.Cells.Add(new Cell(vill.Settings.AutoImprove)); // Auto-improve troops
+            r.Cells.Add(new Cell("", vill.Settings.AutoImprove)); // Auto-improve troops
             tableModelGlobal.Rows.Add(r);
 
             //var newVills = acc.NewVillages.DefaultSettings;
@@ -358,7 +358,6 @@ namespace TravBotSharp.Views
                     IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
                 }
             }
-
         }
 
         private void NYS_CheckedChanged(object sender, EventArgs e)

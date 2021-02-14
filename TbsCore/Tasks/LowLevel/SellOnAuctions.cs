@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
@@ -9,14 +10,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public int ItemId { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php?t=4&action=sell");
+            await VersionHelper.Navigate(acc, "/hero.php?t=4&action=sell", "/hero/auction?action=sell");
 
-            var yesButton = acc.Wb.Html.DocumentNode.Descendants().Where(x => x.Attributes.Any(a => a.Value.Contains("green ok dialogButtonOk"))).First();
-            //if()
-            //Make dropdown menu selectable!
-
-            wb.ExecuteScript($"document.getElementsByClassName(\"green ok dialogButtonOk\")[0].click()");
+            acc.Wb.Driver.ExecuteScript($"document.getElementsByClassName(\"green ok dialogButtonOk\")[0].click()");
 
             return TaskRes.Executed;
         }

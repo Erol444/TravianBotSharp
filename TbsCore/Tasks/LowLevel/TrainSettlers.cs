@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
+using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 
@@ -28,7 +29,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?s=1&id={building.Id}");
 
-            var settler = TroopsHelper.TribeSettler(acc.AccInfo.Tribe);
+            var settler = TroopsData.TribeSettler(acc.AccInfo.Tribe);
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settler));
 
             if (troopNode == null)
@@ -87,7 +88,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers()
             {
                 ExecuteAt = training,
-                Vill = this.Vill
+                Vill = this.Vill,
+                // For high speed servers, you want to train settlers asap
+                Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
             });
         }
     }
