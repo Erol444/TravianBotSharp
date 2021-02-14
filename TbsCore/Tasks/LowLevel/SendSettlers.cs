@@ -34,10 +34,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     });
                     this.NextExecute = DateTime.MinValue.AddHours(11);
                 }
-                else
-                {
-                    acc.Tasks.Remove(this);
-                }
+
                 return TaskRes.Executed;
             }
 

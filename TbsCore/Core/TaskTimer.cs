@@ -68,7 +68,10 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
                 await TaskExecutor.Execute(acc, firstTask);
             }
-            catch (Exception e) { }
+            catch (Exception e) 
+            {
+                acc.Wb.Log($"Error in TaskTimer! {e.Message}\n{e.StackTrace}");
+            }
         }
 
         private void NoTasks(Account acc)

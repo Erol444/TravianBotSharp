@@ -14,7 +14,6 @@ namespace TravBotSharp.Files.Helpers
     {
         public static bool UpdateVillages(HtmlAgilityPack.HtmlDocument htmlDoc, Account acc)
         {
-            //Parse HTML
             List<VillageChecked> foundVills = RightBarParser.GetVillages(htmlDoc);
             if (foundVills.Count == 0) return false; //some problem in GetVillages function!
 
@@ -62,7 +61,7 @@ namespace TravBotSharp.Files.Helpers
                 Id = newVill.Id,
                 Name = newVill.Name,
                 UnderAttack = newVill.UnderAttack,
-                UnfinishedTasks = new List<VillUnfinishedTask>()
+                UnfinishedTasks = new List<VillUnfinishedTask>() // Move this inside Init()?
             };
             vill.Init(acc);
             acc.Villages.Add(vill);
@@ -95,8 +94,8 @@ namespace TravBotSharp.Files.Helpers
             var newVillageFromList = acc.NewVillages.Locations
                 .FirstOrDefault(x =>
                     x.SettlersSent &&
-                    x.coordinates.x == vill.Coordinates.x &&
-                    x.coordinates.y == vill.Coordinates.y
+                    x.Coordinates.x == vill.Coordinates.x &&
+                    x.Coordinates.y == vill.Coordinates.y
                     );
 
             if (newVillageFromList != null)

@@ -9,5 +9,6 @@ namespace TbsCore.Models.SideBarModels
         public Coordinates Coordinates { get; set; }
         public int Id { get; set; }
         public bool Active { get; set; }
+        public string Href { get; set; }
     }
 }

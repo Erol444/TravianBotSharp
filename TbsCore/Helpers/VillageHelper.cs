@@ -79,26 +79,20 @@ namespace TravBotSharp.Files.Helpers
 
         public static async Task SwitchVillage(Account acc, int id)
         {
-            Uri currentUri = new Uri(acc.Wb.CurrentUrl);
-            
-            var parameters = HttpUtility.ParseQueryString(currentUri.Query);
-            parameters["newdid"] = id.ToString();
+            // Parse village list again and find correct href
+            Uri uri = new Uri(acc.Wb.CurrentUrl);
 
-            if(acc.Wb.CurrentUrl.Contains("build.php")) // Add gid to the url
+            var vills = RightBarParser.GetVillages(acc.Wb.Html);
+            var href = vills.FirstOrDefault(x => x.Id == id)?.Href;
+
+            if (string.IsNullOrEmpty(href)) // Login screen, server messages etc.
             {
-                Uri uri = new Uri(acc.Wb.CurrentUrl);
-
-                var currentId = HttpUtility.ParseQueryString(uri.Query).Get("id");
-                var vill = acc.Villages.First(x => x.Active);
-                var building = vill.Build.Buildings.First(x => x.Id == Parser.RemoveNonNumeric(currentId));
-                if(building.Type != BuildingEnum.Site)
-                {
-                    parameters["gid"] = ((int)building.Type).ToString();
-                }
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?newdid={id}");
+                return;
             }
 
-            
-            await acc.Wb.Navigate(acc.AccInfo.ServerUrl + currentUri.AbsolutePath + "?" + parameters.ToString());
+            if (href.Contains(acc.AccInfo.ServerUrl)) await acc.Wb.Navigate(href);
+            else await acc.Wb.Navigate(uri.Scheme + "://" + uri.Host + uri.AbsolutePath + href);
         }
 
         /// <summary>

@@ -285,6 +285,7 @@ namespace TravBotSharp.Files.Helpers
 
         public static void AddTask(Account acc, BotTask task)
         {
+            if (task.ExecuteAt == null) task.ExecuteAt = DateTime.Now;
             acc.Tasks.Add(task);
             ReorderTaskList(acc);
         }
