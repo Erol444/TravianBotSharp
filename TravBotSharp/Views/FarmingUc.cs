@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Windows.Forms;
 using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.TroopsModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Files.Tasks.SecondLevel;
 using TravBotSharp.Interfaces;
+using TravBotSharp.Forms;
 
 namespace TravBotSharp.Views
 {
@@ -17,6 +19,7 @@ namespace TravBotSharp.Views
             InitializeComponent();
             RaidStyle.Items.AddRange(new string[] { "No losses only", "Some losses", "All losses" });
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -33,6 +36,7 @@ namespace TravBotSharp.Views
                 UpdateFlInfo();
             }
         }
+
         private void StartFarm_Click(object sender, EventArgs e)//start farming
         {
             var acc = GetSelectedAcc();
@@ -62,7 +66,6 @@ namespace TravBotSharp.Views
             return acc.Farming.FL.ElementAtOrDefault(FlCombo.SelectedIndex) ?? acc.Farming.FL.FirstOrDefault();
         }
 
-
         private void UpdateFlInfo()
         {
             var fl = GetSelectedFL();
@@ -72,6 +75,7 @@ namespace TravBotSharp.Views
             FlEnabled.Checked = fl.Enabled;
             flInterval.Value = fl.Interval;
         }
+
         private void RaidStyle_SelectedIndexChanged(object sender, EventArgs e) //save raid style
         {
             GetSelectedFL().RaidStyle = (RaidStyle)RaidStyle.SelectedIndex;
@@ -116,6 +120,34 @@ namespace TravBotSharp.Views
         private void flInterval_ValueChanged(object sender, EventArgs e)
         {
             GetSelectedFL().Interval = (int)flInterval.Value;
+        }
+
+        /// <summary>
+        /// more farm open
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+
+            using (var form = new InactiveFinder(acc.AccInfo.ServerUrl, acc.Villages, acc.AccInfo.Tribe))
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    acc.AccInfo.ServerCode = form.ServerCode;
+                    foreach (var item in form.InactiveFarms)
+                    {
+                        var task = new AddFarm()
+                        {
+                            Farm = item,
+                            FarmListId = GetSelectedFL().Id,
+                        };
+                        TaskExecutor.AddTask(acc, task);
+                    };
+                }
+            }
         }
     }
 }
