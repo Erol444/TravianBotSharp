@@ -20,9 +20,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            // force village update if some building has finished building
-            bool updateVill = RemoveFinishedCB(Vill);
-
             ConfigNextExecute(acc, false);
 
             if (this.Task == null)
@@ -66,7 +63,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // Navigate to the dorf in which the building is, so bot is less suspicious
             string dorfUrl = $"/dorf{((Task.BuildingId ?? default) < 19 ? 1 : 2)}.php"; // "dorf1" / "dorf2"
-            if (updateVill || !acc.Wb.CurrentUrl.Contains(dorfUrl))
+            if (!acc.Wb.CurrentUrl.Contains(dorfUrl))
             {
                 await acc.Wb.Navigate(acc.AccInfo.ServerUrl + dorfUrl);
             }

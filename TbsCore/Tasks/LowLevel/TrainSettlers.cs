@@ -8,12 +8,10 @@ using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class TrainSettlers : UpdateDorf2
+    public class TrainSettlers : BotTask
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await base.Execute(acc); // Navigate to dorf2
-
             var building = Vill.Build.Buildings
                 .FirstOrDefault(x => 
                     x.Type == Classificator.BuildingEnum.Residence ||
@@ -21,13 +19,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     x.Type == Classificator.BuildingEnum.CommandCenter
                 );
 
-            if (building == null)
-            {
-                acc.Wb.Log($"Can't train settlers, there is no Residence/Palace/CommandCenter in this village!");
+            if (!await VillageHelper.EnterBuilding(acc, Vill, building, "&s=1"))
                 return TaskRes.Executed;
-            }
-
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?s=1&id={building.Id}");
 
             var settler = TroopsData.TribeSettler(acc.AccInfo.Tribe);
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settler));

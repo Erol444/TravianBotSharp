@@ -11,13 +11,11 @@ using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class ResearchTroop : UpdateDorf2
+    public class ResearchTroop : BotTask
     {
         //If Troop == null, just update the troop levels
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await base.Execute(acc); // Navigate to dorf2
-
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Academy))
                 return TaskRes.Executed;
 

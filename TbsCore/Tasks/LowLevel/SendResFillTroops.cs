@@ -14,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     /// So if we want to keep barracks filled for 4h in advance, on this task we will send enough res to fill for up to
     /// 6 hours in advance.
     /// </summary>
-    public class SendResFillTroops : UpdateDorf2
+    public class SendResFillTroops : BotTask
     {
         /// <summary>
         /// Village to send resources to
@@ -23,11 +23,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public TrainTroops TrainTask { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await base.Execute(acc);
-
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
                 return TaskRes.Executed;
-
 
             //get troop resource/time cost
             var troopCost = TroopCost.GetResourceCost(TrainTask.Troop, TrainTask.Great);

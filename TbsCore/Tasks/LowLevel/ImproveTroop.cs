@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
 using TbsCore.Models.VillageModels;
@@ -10,12 +11,10 @@ using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class ImproveTroop : UpdateDorf2
+    public class ImproveTroop : BotTask
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await base.Execute(acc); // Navigate to dorf2
-
             if (Vill == null) Vill = acc.Villages.First(x => x.Active);
 
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Smithy))
@@ -67,8 +66,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Retry;
             }
 
+            await DriverHelper.ClickById(acc, button.Id);
 
-            acc.Wb.Driver.ExecuteScript($"document.getElementById('{button.Id}').click()");
             // If we have plus account and there is currently no other troop to improve, go ahead and improve the unit again
             this.NextExecute = (currentlyImproving.Count() == 0 && maxImproving == 2) ?
                 DateTime.MinValue :

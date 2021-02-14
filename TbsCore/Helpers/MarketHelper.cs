@@ -119,6 +119,9 @@ namespace TravBotSharp.Files.Helpers
             if (acc.AccInfo.GoldClub ?? false) times = 3;
             else if (acc.AccInfo.PlusAccount) times = 2;
 
+            // No resources to send
+            if (resources.Sum() == 0) return TimeSpan.Zero;
+
             var sendRes = resources.Select(x => x / times).ToArray();
 
             //round the resources that we want to send, so it looks less like a bot
