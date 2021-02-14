@@ -6,10 +6,8 @@ namespace TbsCore.Models.VillageModels
 {
     public class VillDeffing
     {
-        public void Init()
-        {
-            IncomingAttacks = new List<TroopsMovementModel>();
-        }
+        public void Init() { }
+
         /// <summary>
         /// In which cases do we alert the user
         /// </summary>
@@ -20,13 +18,7 @@ namespace TbsCore.Models.VillageModels
         /// </summary>
         public bool OnlyAlertOnHero { get; set; }
 
-        // TODO: Add: Deff type: Full deff, cut waves, remove troops etc.
-
-        /// <summary>
-        /// Incoming attacks
-        /// </summary>
-        public List<TroopsMovementModel> IncomingAttacks { get; set; }
-
+        // TODO: Add: Deff type: Full deff, cut waves, hide troops etc.
     }
 }
 

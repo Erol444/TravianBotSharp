@@ -73,10 +73,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var newAttacks = attacks.ToList();
 
             // In case it was null
-            if (Vill.Deffing.IncomingAttacks == null) Vill.Deffing.IncomingAttacks = new List<TroopsMovementModel>();
+            if (Vill.TroopMovements.IncomingAttacks == null) Vill.TroopMovements.IncomingAttacks = new List<TroopsMovementModel>();
 
             int sameAttacks = 0;
-            foreach(var oldAttack in Vill.Deffing.IncomingAttacks)
+            foreach(var oldAttack in Vill.TroopMovements.IncomingAttacks)
             {
                 // Remove all attacks that were discovered previously
                 sameAttacks += attacks.RemoveAll(x => x.Equals(oldAttack));
@@ -100,7 +100,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             if (!String.IsNullOrEmpty(alertStr) ||
-                sameAttacks != Vill.Deffing.IncomingAttacks.Count)
+                sameAttacks != Vill.TroopMovements.IncomingAttacks.Count)
             {
                 // Popup + sound
                 new Thread(() => 
@@ -108,7 +108,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 ).Start();
             }
 
-            Vill.Deffing.IncomingAttacks = newAttacks;
+            Vill.TroopMovements.IncomingAttacks = newAttacks;
             // Next check for new attacks should be in:
             // - 1x speed = 20 min
             // - 3x speed = 6:40 min
