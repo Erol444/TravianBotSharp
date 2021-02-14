@@ -57,6 +57,7 @@
             this.flInterval = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.maxFarmInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minFarmInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minPopNatar)).BeginInit();
@@ -367,10 +368,21 @@
             this.label13.TabIndex = 137;
             this.label13.Text = "If above 1, this FL will not get send every interval";
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(562, 47);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(105, 28);
+            this.button3.TabIndex = 138;
+            this.button3.Text = "More farm";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // FarmingUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button3);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.flInterval);
@@ -443,5 +455,6 @@
         private System.Windows.Forms.NumericUpDown flInterval;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button button3;
     }
 }

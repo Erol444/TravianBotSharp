@@ -215,7 +215,7 @@ namespace TravBotSharp.Views
             if (vill == null) return;
 
             SendTroops taskSendTroops;
-            foreach(var f in vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets)
+            foreach (var f in vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets)
             {
                 taskSendTroops = new SendTroops()
                 {
@@ -257,6 +257,34 @@ namespace TravBotSharp.Views
 
             var farm = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
             troopsSelectorUc1.Troops = farm.Troops;
+        }
+
+        /// <summary>
+        /// more farm
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (comboBox_NameList.Text == "")
+            {
+                return;
+            }
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            if (vill == null) return;
+            using (var form = new InactiveFinder(acc.AccInfo.ServerUrl, acc.Villages, acc.AccInfo.Tribe))
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    acc.AccInfo.ServerCode = form.ServerCode;
+                    vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.AddRange(form.InactiveFarms);
+
+                    UpdateFarmList(currentFarmList_index);
+                    UpdateFarmTroops();
+                }
+            }
         }
     }
 }

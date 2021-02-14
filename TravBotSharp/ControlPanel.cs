@@ -23,6 +23,7 @@ namespace TravBotSharp
         private System.Timers.Timer saveAccountsTimer;
 
         private ITbsUc[] Ucs;
+
         public ControlPanel()
         {
             InitializeComponent();
@@ -116,6 +117,7 @@ namespace TravBotSharp
                     i == accSelected);
             }
         }
+
         private void InsertAccIntoListView(string nick, string url, string proxy, int port, bool selected = false)
         {
             var item = new ListViewItem();
@@ -178,6 +180,7 @@ namespace TravBotSharp
             }
             accListView.Items[accSelected].SubItems[0].ForeColor = Color.FromName("DodgerBlue");
         }
+
         private void UpdateFrontEnd()
         {
             var acc = GetSelectedAcc();
@@ -204,6 +207,7 @@ namespace TravBotSharp
                 }
             }
         }
+
         public Account GetSelectedAcc()
         {
             try
