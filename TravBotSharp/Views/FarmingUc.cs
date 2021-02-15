@@ -131,23 +131,39 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
 
-            using (var form = new InactiveFinder(acc.AccInfo.ServerUrl, acc.Villages, acc.AccInfo.Tribe))
+            // This feature is not available for TTWars
+            if (acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_5)
+            {
+                MessageUser("This feature is only available for normal travian servers.");
+                return;
+            }
+
+            var fl = GetSelectedFL();
+            if (fl == null)
+            {
+                MessageUser("No FarmList selected!");
+                return;
+            }
+
+            var label = $"Inactive farm finder for the (Goldclub) Farm List {fl.Name}";
+            using (var form = new InactiveFinder(acc, label))
             {
                 var result = form.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    acc.AccInfo.ServerCode = form.ServerCode;
                     foreach (var item in form.InactiveFarms)
                     {
-                        var task = new AddFarm()
+                        TaskExecutor.AddTask(acc, new AddFarm()
                         {
                             Farm = item,
-                            FarmListId = GetSelectedFL().Id,
-                        };
-                        TaskExecutor.AddTask(acc, task);
+                            FarmListId = fl.Id,
+                        });
                     };
                 }
             }
         }
+
+        private void MessageUser(string message) =>
+            MessageBox.Show(message, "Error", MessageBoxButtons.OK);
     }
 }

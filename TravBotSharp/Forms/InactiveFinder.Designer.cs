@@ -41,12 +41,12 @@ namespace TravBotSharp.Forms
             this.InactiveId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label3 = new System.Windows.Forms.Label();
             this.InactiveList = new System.Windows.Forms.ListView();
-            this.button1 = new System.Windows.Forms.Button();
             this.Distance = new System.Windows.Forms.NumericUpDown();
             this.comboBoxVillages = new System.Windows.Forms.ComboBox();
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button3 = new System.Windows.Forms.Button();
+            this.flName = new System.Windows.Forms.Label();
             this.coordinatesUc1 = new TravBotSharp.UserControls.CoordinatesUc();
             this.troopsSelectorUc1 = new TravBotSharp.Forms.TroopsSelectorUc();
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).BeginInit();
@@ -55,7 +55,7 @@ namespace TravBotSharp.Forms
             // countFarmChose
             // 
             this.countFarmChose.AutoSize = true;
-            this.countFarmChose.Location = new System.Drawing.Point(851, 43);
+            this.countFarmChose.Location = new System.Drawing.Point(851, 65);
             this.countFarmChose.Name = "countFarmChose";
             this.countFarmChose.Size = new System.Drawing.Size(13, 13);
             this.countFarmChose.TabIndex = 183;
@@ -64,7 +64,7 @@ namespace TravBotSharp.Forms
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(19, 64);
+            this.label2.Location = new System.Drawing.Point(19, 86);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 180;
@@ -114,7 +114,7 @@ namespace TravBotSharp.Forms
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(760, 43);
+            this.label3.Location = new System.Drawing.Point(760, 65);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(76, 13);
             this.label3.TabIndex = 182;
@@ -134,7 +134,7 @@ namespace TravBotSharp.Forms
             this.InactiveList.FullRowSelect = true;
             this.InactiveList.GridLines = true;
             this.InactiveList.HideSelection = false;
-            this.InactiveList.Location = new System.Drawing.Point(215, 35);
+            this.InactiveList.Location = new System.Drawing.Point(215, 57);
             this.InactiveList.Name = "InactiveList";
             this.InactiveList.Size = new System.Drawing.Size(531, 352);
             this.InactiveList.TabIndex = 178;
@@ -143,19 +143,9 @@ namespace TravBotSharp.Forms
             this.InactiveList.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.InactiveList_ColumnClick);
             this.InactiveList.SelectedIndexChanged += new System.EventHandler(this.InactiveList_SelectedIndexChanged);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(135, 62);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(65, 82);
-            this.button1.TabIndex = 177;
-            this.button1.Text = "GET SERVER CODE";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // Distance
             // 
-            this.Distance.Location = new System.Drawing.Point(79, 62);
+            this.Distance.Location = new System.Drawing.Point(79, 84);
             this.Distance.Minimum = new decimal(new int[] {
             1,
             0,
@@ -173,7 +163,7 @@ namespace TravBotSharp.Forms
             // comboBoxVillages
             // 
             this.comboBoxVillages.FormattingEnabled = true;
-            this.comboBoxVillages.Location = new System.Drawing.Point(79, 35);
+            this.comboBoxVillages.Location = new System.Drawing.Point(79, 57);
             this.comboBoxVillages.Name = "comboBoxVillages";
             this.comboBoxVillages.Size = new System.Drawing.Size(121, 21);
             this.comboBoxVillages.TabIndex = 175;
@@ -181,9 +171,8 @@ namespace TravBotSharp.Forms
             // 
             // button2
             // 
-            this.button2.Enabled = false;
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(22, 150);
+            this.button2.Location = new System.Drawing.Point(22, 172);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(178, 33);
             this.button2.TabIndex = 174;
@@ -194,7 +183,7 @@ namespace TravBotSharp.Forms
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(19, 38);
+            this.label1.Location = new System.Drawing.Point(19, 60);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 13);
             this.label1.TabIndex = 173;
@@ -202,7 +191,7 @@ namespace TravBotSharp.Forms
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(790, 343);
+            this.button3.Location = new System.Drawing.Point(790, 365);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(111, 43);
             this.button3.TabIndex = 184;
@@ -210,13 +199,22 @@ namespace TravBotSharp.Forms
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
+            // flName
+            // 
+            this.flName.AutoSize = true;
+            this.flName.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.flName.Location = new System.Drawing.Point(27, 9);
+            this.flName.Name = "flName";
+            this.flName.Size = new System.Drawing.Size(0, 31);
+            this.flName.TabIndex = 185;
+            // 
             // coordinatesUc1
             // 
             this.coordinatesUc1.BackColor = System.Drawing.SystemColors.ControlDark;
             coordinates1.x = 0;
             coordinates1.y = 0;
             this.coordinatesUc1.Coords = coordinates1;
-            this.coordinatesUc1.Location = new System.Drawing.Point(22, 88);
+            this.coordinatesUc1.Location = new System.Drawing.Point(54, 110);
             this.coordinatesUc1.Name = "coordinatesUc1";
             this.coordinatesUc1.Size = new System.Drawing.Size(107, 56);
             this.coordinatesUc1.TabIndex = 179;
@@ -224,7 +222,7 @@ namespace TravBotSharp.Forms
             // troopsSelectorUc1
             // 
             this.troopsSelectorUc1.Hero = false;
-            this.troopsSelectorUc1.Location = new System.Drawing.Point(763, 74);
+            this.troopsSelectorUc1.Location = new System.Drawing.Point(763, 96);
             this.troopsSelectorUc1.Name = "troopsSelectorUc1";
             this.troopsSelectorUc1.Size = new System.Drawing.Size(139, 264);
             this.troopsSelectorUc1.TabIndex = 181;
@@ -240,11 +238,12 @@ namespace TravBotSharp.Forms
         0,
         0};
             // 
-            // FarmFinder
+            // InactiveFinder
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(921, 450);
+            this.Controls.Add(this.flName);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.countFarmChose);
             this.Controls.Add(this.label2);
@@ -252,12 +251,11 @@ namespace TravBotSharp.Forms
             this.Controls.Add(this.label3);
             this.Controls.Add(this.troopsSelectorUc1);
             this.Controls.Add(this.InactiveList);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.Distance);
             this.Controls.Add(this.comboBoxVillages);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.label1);
-            this.Name = "FarmFinder";
+            this.Name = "InactiveFinder";
             this.Text = "FarmFinder";
             ((System.ComponentModel.ISupportInitialize)(this.Distance)).EndInit();
             this.ResumeLayout(false);
@@ -279,11 +277,11 @@ namespace TravBotSharp.Forms
         private System.Windows.Forms.Label label3;
         private TroopsSelectorUc troopsSelectorUc1;
         private System.Windows.Forms.ListView InactiveList;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.NumericUpDown Distance;
         private System.Windows.Forms.ComboBox comboBoxVillages;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Label flName;
     }
 }

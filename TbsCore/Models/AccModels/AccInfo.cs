@@ -80,11 +80,5 @@ namespace TbsCore.Models.AccModels
         /// Version of the server account is playing on
         /// </summary>
         public Classificator.ServerVersionEnum ServerVersion { get; set; }
-
-        /// <summary>
-        /// Server code of the server account is playing on for travianstats.de
-        /// **only for server listed in https://travianstats.de/**
-        /// </summary>
-        public string ServerCode { get; set; }
     }
 }

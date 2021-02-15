@@ -154,16 +154,21 @@ namespace TravBotSharp.Views
 
             using (var form = new AddFarmNonGold(GetSelectedAcc().AccInfo.Tribe))
             {
-                form.Farm = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
+                form.Farm = GetSelectedFarm();
                 var result = form.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index] = form.Farm;
+                    GetSelectedFl().Targets[farmingList.FocusedItem.Index] = form.Farm;
                     UpdateFarmList(currentFarmList_index);
                     UpdateFarmTroops();
                 }
             }
         }
+
+        private FarmList GetSelectedFl() =>
+            GetSelectedVillage().FarmingNonGold.ListFarm[currentFarmList_index];
+        private Farm GetSelectedFarm() =>
+            GetSelectedFl().Targets[farmingList.FocusedItem.Index];
 
         /// <summary>
         /// Delete
@@ -182,7 +187,7 @@ namespace TravBotSharp.Views
             if (vill == null) return;
             if (farmingList.FocusedItem == null) return;
 
-            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.RemoveAt(farmingList.FocusedItem.Index);
+            GetSelectedFl().Targets.RemoveAt(farmingList.FocusedItem.Index);
 
             UpdateFarmList(currentFarmList_index);
         }
@@ -198,7 +203,7 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage(acc);
             if (vill == null) return;
 
-            vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Clear();
+            GetSelectedFl().Targets.Clear();
 
             UpdateFarmList(currentFarmList_index);
         }
@@ -215,7 +220,7 @@ namespace TravBotSharp.Views
             if (vill == null) return;
 
             SendTroops taskSendTroops;
-            foreach (var f in vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets)
+            foreach (var f in GetSelectedFl().Targets)
             {
                 taskSendTroops = new SendTroops()
                 {
@@ -223,7 +228,7 @@ namespace TravBotSharp.Views
                     Vill = vill,
                     TroopsMovement = new TroopsSendModel()
                     {
-                        Coordinates = f.Coords,
+                        TargetCoordinates = f.Coords,
                         Troops = f.Troops,
                         MovementType = Classificator.MovementType.Raid
                     }
@@ -255,8 +260,7 @@ namespace TravBotSharp.Views
 
             if (farmingList.FocusedItem == null) return;
 
-            var farm = vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets[farmingList.FocusedItem.Index];
-            troopsSelectorUc1.Troops = farm.Troops;
+            troopsSelectorUc1.Troops = GetSelectedFarm().Troops;
         }
 
         /// <summary>
@@ -273,12 +277,26 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
             if (vill == null) return;
-            using (var form = new InactiveFinder(acc.AccInfo.ServerUrl, acc.Villages, acc.AccInfo.Tribe))
+
+            // This feature is not available for TTWars
+            if (acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_5)
+            {
+                MessageUser("This feature is only available for normal travian servers.");
+                return;
+            }
+
+            var fl = GetSelectedFl();
+            if(fl == null)
+            {
+                MessageUser("No FL selected!");
+                return;
+            }
+            var label = $"Inactive farm finder for the (Non-Goldclub) Farm List {fl.Name}";
+            using (var form = new InactiveFinder(acc, label))
             {
                 var result = form.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    acc.AccInfo.ServerCode = form.ServerCode;
                     vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.AddRange(form.InactiveFarms);
 
                     UpdateFarmList(currentFarmList_index);
@@ -286,5 +304,7 @@ namespace TravBotSharp.Views
                 }
             }
         }
+        private void MessageUser(string message) =>
+            MessageBox.Show(message, "Error", MessageBoxButtons.OK);
     }
 }

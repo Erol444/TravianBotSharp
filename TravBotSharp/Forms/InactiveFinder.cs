@@ -13,6 +13,7 @@ using TbsCore.Models.VillageModels;
 
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Helpers;
+using TbsCore.Models.AccModels;
 
 namespace TravBotSharp.Forms
 {
@@ -21,7 +22,6 @@ namespace TravBotSharp.Forms
         private ListViewColumnSorter lvwColumnSorter;
 
         private RestClient Client;
-        private List<Village> Villages;
 
         public List<Farm> InactiveFarms
         {
@@ -40,77 +40,77 @@ namespace TravBotSharp.Forms
             }
         }
 
-        private string ServerUrl;
-        public string ServerCode;
+        private Account acc;
 
-        public InactiveFinder(string ServerUrl, List<Village> Villages, Classificator.TribeEnum? tribeEnum)
+        public InactiveFinder(Account acc, string label)
         {
             InitializeComponent();
+
             // list view sorter
             lvwColumnSorter = new ListViewColumnSorter();
             this.InactiveList.ListViewItemSorter = lvwColumnSorter;
 
-            //client http
+            // TODO: use acc.Wb.RestClient - for proxy & to save resources
             Client = new RestClient("https://travianstats.de/index.php");
 
-            //
-            this.ServerUrl = ServerUrl;
-            this.ServerCode = "";
-            this.Villages = Villages;
+            this.acc = acc;
+            this.flName.Text = label;
+
             troopsSelectorUc1.HeroEditable = false;
-            troopsSelectorUc1.Init(tribeEnum ?? Classificator.TribeEnum.Nature);
+            troopsSelectorUc1.Init(acc.AccInfo.Tribe);
 
             // UI
-            foreach (var vill in Villages)
+            foreach (var vill in acc.Villages)
             {
                 comboBoxVillages.Items.Add(vill.Name);
             }
             comboBoxVillages.SelectedIndex = 0;
-
-            //disable search button untill we get code server
-            button2.Enabled = false;
         }
 
         /// <summary>
         /// world code for our world from travianstats.de
         /// </summary>
-        /// <returns></returns>
-        private async Task<string> GetServerCode(string ServerUrl)
+        private async Task<string> GetServerCode()
         {
+            var serverUrl = acc.AccInfo.ServerUrl;
+
             // get serverUrl without https://
-            var url = (new UriBuilder(ServerUrl)).Host;
+            var url = (new UriBuilder(serverUrl)).Host;
 
             //request to travaianstats.de
             var request = new RestRequest();
 
             var response = await Client.ExecuteAsync(request);
 
-            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
+            if (response.StatusCode != HttpStatusCode.OK) return null;
 
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(response.Content);
             // use this form to search code of our server
-            var form = doc.GetElementbyId("welt");
 
             // find our server
-            foreach (var node in form.Descendants())
-            {
-                if (node.InnerText.Contains(url))
-                {
-                    return node.Attributes["value"].Value;
-                }
-            }
-
-            return "";
+            return doc.GetElementbyId("welt")
+                .Descendants()
+                .FirstOrDefault(x => x.InnerText.Contains(url))?
+                .GetAttributeValue("value", "");
         }
 
-        private async Task<List<InactiveFarm>> GetFarms(string ServerCode)
+        private async Task<List<InactiveFarm>> GetFarms()
         {
-            var request = new RestRequest($"?m=inactive_finder&w={ServerCode}", Method.POST);
+            var serverCode = await GetServerCode();
+            if (string.IsNullOrEmpty(serverCode))
+            {
+                string message = "Bot was unable to find the server code! This feature is only available for normal travian servers.";
+                string caption = "Error getting server code";
+                MessageBox.Show(message, caption, MessageBoxButtons.OK);
+                return null;
+            }
+
+            var request = new RestRequest($"?m=inactive_finder&w={serverCode}", Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.AddHeader("Cookie", $"tcn_world={ServerCode}");
+            request.AddHeader("Cookie", $"tcn_world={serverCode}");
             request.AddParameter("m", "inactivefinder");
-            request.AddParameter("w", ServerCode);
+            request.AddParameter("w", serverCode);
             request.AddParameter("x", ((int)coordinatesUc1.Coords.x).ToString());
             request.AddParameter("y", ((int)coordinatesUc1.Coords.y).ToString());
             request.AddParameter("distance", ((int)Distance.Value).ToString());
@@ -138,17 +138,21 @@ namespace TravBotSharp.Forms
             var result = new List<InactiveFarm>();
             foreach (var row in table)
             {
-                result.Add(new InactiveFarm()
+                try
                 {
-                    //status = row[0]
-                    distance = Int32.Parse(row[1]),
-                    coord = MapParser.GetCoordinates(row[2]),
-                    namePlayer = row[3],
-                    nameAlly = row[4],
-                    nameVill = row[5],
-                    population = Int32.Parse(row[6])
-                    //functions = row[7]
-                });
+                    result.Add(new InactiveFarm()
+                    {
+                        //status = row[0]
+                        distance = Int32.Parse(row[1]),
+                        coord = MapParser.GetCoordinates(row[2]),
+                        namePlayer = row[3],
+                        nameAlly = row[4],
+                        nameVill = row[5],
+                        population = Int32.Parse(row[6])
+                        //functions = row[7]
+                    });
+                }
+                catch (Exception) { }
             }
 
             return result;
@@ -156,22 +160,7 @@ namespace TravBotSharp.Forms
 
         private async void button2_Click(object sender, System.EventArgs e)
         {
-            button2.Enabled = false;
-            List<InactiveFarm> Inactives;
-            while (true)
-            {
-                try
-                {
-                    Inactives = await GetFarms(ServerCode);
-                    break;
-                }
-                catch (Exception)
-                {
-                    continue;
-                }
-            }
-
-            button2.Enabled = true;
+            var Inactives = await GetFarms();
 
             InactiveList.Items.Clear();
 
@@ -197,31 +186,9 @@ namespace TravBotSharp.Forms
 
         private void comboBoxVillages_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var vill = Villages[comboBoxVillages.SelectedIndex];
+            var vill = acc.Villages[comboBoxVillages.SelectedIndex];
             if (vill == null) return;
             coordinatesUc1.Coords = vill.Coordinates;
-        }
-
-        /// <summary>
-        /// Get server code
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            button1.Enabled = false;
-            ServerCode = await GetServerCode(ServerUrl);
-
-            button1.Enabled = false;
-
-            if (ServerCode.Length < 1)
-            {
-                button1.Text = "CANNOT FIND";
-                return;
-            }
-
-            button1.Text = ServerCode;
-            button2.Enabled = true;
         }
 
         private void InactiveList_ColumnClick(object sender, ColumnClickEventArgs e)
