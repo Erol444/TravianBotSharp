@@ -25,7 +25,7 @@ jobs:
       
       #setup-msbuild
       - name: setup-msbuild
-      - uses: microsoft/setup-msbuild@v1
+        uses: microsoft/setup-msbuild@v1
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
