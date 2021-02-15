@@ -45,3 +45,10 @@ jobs:
       - name: Build Solution
         run: |
           msbuild.exe TravBotSharp.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
+      - name: GitHub Releases
+        uses: fnkr/github-action-ghr@v1.3
+        env:
+          GHR_COMPRESS: zip
+          GHR_PATH: _build/
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
