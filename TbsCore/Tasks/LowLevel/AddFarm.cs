@@ -26,12 +26,25 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.WriteCoordinates(acc, Farm.Coords);
 
             // Input troops
-            await DriverHelper.WriteTroops(acc, Farm.Troops, false);
-            
+            for (int i = 0; i < Farm.Troops.Length; i++)
+            {
+                if (Farm.Troops[i] == 0) continue;
+                await DriverHelper.WriteById(acc, $"t{i + 1}", Farm.Troops[i]);
+            }
+
             await Task.Delay(AccountHelper.Delay());
 
-            //click "save"
-            wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
+            // Click "save"
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_4:
+                    wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
+                    break;
+                case Classificator.ServerVersionEnum.T4_5:
+                    await DriverHelper.ClickById(acc, "save");
+                    break;
+            }
+
             return TaskRes.Executed;
         }
     }

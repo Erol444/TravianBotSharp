@@ -36,7 +36,7 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Gets JS object from the game. Query examples: 
+        /// Gets JS object from the game. Query examples:
         /// window.TravianDefaults.Map.Size.top
         /// resources.maxStorage
         /// Travian.Game.speed
@@ -68,27 +68,6 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Write troop numbers into the number inputs. Used when sending troops, adding farms etc.
-        /// </summary>
-        public static async Task WriteTroops(Account acc, int[] troops, bool update = true)
-        {
-            for (int i = 0; i < troops.Length; i++)
-            {
-                if (troops[i] == 0) continue;
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.T4_4:
-                        await WriteByName(acc, $"t{i + 1}", troops[i], update: update);
-                        break;
-
-                    case Classificator.ServerVersionEnum.T4_5:
-                        await WriteByName(acc, $"troops[0][t{i + 1}]", troops[i], update: update);
-                        break;
-                }
-            }
-        }
-
-        /// <summary>
         /// Write coordinates into the number inputs. Used when sending troops, resources etc.
         /// </summary>
         internal static async Task WriteCoordinates(Account acc, Coordinates coordinates)
@@ -114,7 +93,7 @@ namespace TbsCore.Helpers
             await ExecuteAction(acc, new QueryByClassName(query), new ActionCheck(check), log);
         public static async Task<bool> SelectIndexByClassName(Account acc, string query, int index, bool log = true) =>
             await ExecuteAction(acc, new QueryByClassName(query), new ActionSelectIndex(index), log);
-        
+
         public static async Task<bool> ClickByName(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query), new ActionClick(), log);
         public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true, bool update = true) =>
