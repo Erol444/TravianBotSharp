@@ -30,12 +30,18 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+      
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Create Build Directory
+        run: mkdir _build
+      
+      - name: Restore Packages
+        run: nuget restore TravBotSharp.sln
+
+      - name: Build Solution
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          msbuild.exe TravBotSharp.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
