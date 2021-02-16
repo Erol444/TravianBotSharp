@@ -54,7 +54,7 @@ jobs:
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: TBS
+          name: TBS ${{ github.ref }}
           path: TravBotSharp\bin
           if-no-files-found: error
 
