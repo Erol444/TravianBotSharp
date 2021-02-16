@@ -42,12 +42,11 @@ jobs:
       - name: Cache
         uses: actions/cache@v2.1.4
         with:
-          path: packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }} #hash of project files
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
       
       - name: Restore Packages
+        if: steps.cache.outputs.cache-hit != 'true'
         run: nuget restore TravBotSharp.sln
 
       - name: Build Solution
