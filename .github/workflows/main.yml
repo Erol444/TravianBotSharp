@@ -42,8 +42,8 @@ jobs:
       - name: Cache
         uses: actions/cache@v2.1.4
         with:
-          path: packages          
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          path: packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }} #hash of project files
           restore-keys: |
             ${{ runner.os }}-nuget-
       
@@ -52,7 +52,7 @@ jobs:
 
       - name: Build Solution
         run: |
-          msbuild.exe TravBotSharp.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
+          msbuild.exe TravBotSharp.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build" /m
     
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
@@ -66,8 +66,5 @@ jobs:
           DISCORD: ${{ secrets.DISCORD }}
         run: |
           echo $DISCORD
-          curl --location --request POST '$DISCORD' \
-          --header 'Content-Type: application/json' \
-          --header 'Cookie: __cfduid=dd9e3c0b23b254ea96aa45a0b73d5b58d1613465471' \
-          --data-raw '{"content":"@here We have another build for you guys\n Check <#750744155239743548>","embeds":[{"title":"Download","url":"https://nightly.link/vinaghost/TravianBotSharp/workflows/main/master/TBS.zip"}]}'
+          curl --location --request POST '$DISCORD' --header 'Content-Type: application/json' --header 'Cookie: __cfduid=dd9e3c0b23b254ea96aa45a0b73d5b58d1613465471' --data-raw '{"content":"@here We have another build for you guys\n Check <#750744155239743548>","embeds":[{"title":"Download","url":"https://nightly.link/vinaghost/TravianBotSharp/workflows/main/master/TBS.zip"}]}'
 
