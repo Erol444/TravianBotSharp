@@ -55,6 +55,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: TBS
-          path: TravBotSharp\bin\Release
+          path: TravBotSharp\bin
           if-no-files-found: error
 
