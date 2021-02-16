@@ -47,12 +47,14 @@ jobs:
           msbuild.exe TravBotSharp.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build"
       
       - name: Check file
-        run: ls -R
-        
+        run: |
+          cd _build
+          ls
+          cd ..        
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
           name: TBS
-          path: /_build
+          path: TravBotSharp\bin\Release
           if-no-files-found: error
 
