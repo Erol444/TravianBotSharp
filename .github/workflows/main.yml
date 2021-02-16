@@ -42,7 +42,10 @@ jobs:
       - name: Cache
         uses: actions/cache@v2.1.4
         with:
-          path: packages
+          path: packages          
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
       
       - name: Restore Packages
         run: nuget restore TravBotSharp.sln
@@ -59,7 +62,8 @@ jobs:
           if-no-files-found: error
         
       - name: Send to Discord Server
-        env: DISCORD:${{ secrets.DISCORD }}
+        env: 
+          DISCORD: ${{ secrets.DISCORD }}
         run: |
           echo $DISCORD
           curl --location --request POST '$DISCORD' \
