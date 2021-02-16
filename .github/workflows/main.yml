@@ -60,7 +60,7 @@ jobs:
           name: TBS
           path: TravBotSharp\bin
           if-no-files-found: error
-        
+                 
       - name: Send to Discord Server
         env: 
           DISCORD: ${{ secrets.DISCORD }}
