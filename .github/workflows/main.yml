@@ -52,4 +52,21 @@ jobs:
           name: TBS
           path: TravBotSharp\bin
           if-no-files-found: error
+        
+      - name: Send to Discord Server
+        env: |
+          BODY: |
+            {
+              "content": "@here We have another build for you guys",
+               "embeds": [{
+                          "title": "Download link",`
+                          "url": "https://nightly.link/vinaghost/TravianBotSharp/workflows/main/master/TBS.zip"`
+                          }],
+            }   
+          DISCORD:${{ secrets.DISCORD }}
+        run: |
+          echo $BODY
+          echo $DISCORD
+          curl -X POST -H "Content-Type: application/json" -d $BODY $DISCORD
+        
 
