@@ -38,6 +38,11 @@ jobs:
 
       - name: Create Build Directory
         run: mkdir _build
+        
+      - name: Cache
+        uses: actions/cache@v2.1.4
+        with:
+          path: packages
       
       - name: Restore Packages
         run: nuget restore TravBotSharp.sln
@@ -54,19 +59,11 @@ jobs:
           if-no-files-found: error
         
       - name: Send to Discord Server
-        env: |
-          BODY: |
-            {
-              "content": "@here We have another build for you guys",
-               "embeds": [{
-                          "title": "Download link",
-                          "url": "https://nightly.link/vinaghost/TravianBotSharp/workflows/main/master/TBS.zip"
-                          }]
-            }   
-          DISCORD:${{ secrets.DISCORD }}
+        env: DISCORD:${{ secrets.DISCORD }}
         run: |
-          echo $BODY
           echo $DISCORD
-          curl -X POST -H "Content-Type: application/json" -d $BODY $DISCORD
-        
+          curl --location --request POST '$DISCORD' \
+          --header 'Content-Type: application/json' \
+          --header 'Cookie: __cfduid=dd9e3c0b23b254ea96aa45a0b73d5b58d1613465471' \
+          --data-raw '{"content":"@here We have another build for you guys\n Check <#750744155239743548>","embeds":[{"title":"Download","url":"https://nightly.link/vinaghost/TravianBotSharp/workflows/main/master/TBS.zip"}]}'
 
