@@ -1,0 +1,69 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the action will run. 
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      
+      #setup-msbuild
+      - name: setup-msbuild
+        uses: microsoft/setup-msbuild@v1
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+      
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+
+      - name: Create Build Directory
+        run: mkdir _build
+        
+      - name: Cache
+        uses: actions/cache@v2.1.4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+      
+      - name: Restore Packages
+        if: steps.cache.outputs.cache-hit != 'true'
+        run: nuget restore TravBotSharp.sln
+
+      - name: Build Solution
+        run: |
+          msbuild.exe TravBotSharp.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build" /m
+    
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: TBS
+          path: TravBotSharp\bin
+          if-no-files-found: error
+                 
+      - name: Send to Discord Server
+        env: 
+          DISCORD: ${{ secrets.DISCORD }}
+        run: |
+          echo $DISCORD
+          curl --location --request POST '$DISCORD' --header 'Content-Type: application/json' --header 'Cookie: __cfduid=dd9e3c0b23b254ea96aa45a0b73d5b58d1613465471' --data-raw '{"content":"@here We have another build for you guys\n Check <#750744155239743548>","embeds":[{"title":"Download","url":"https://nightly.link/vinaghost/TravianBotSharp/workflows/main/master/TBS.zip"}]}'
+
