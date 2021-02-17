@@ -38,16 +38,8 @@ jobs:
 
       - name: Create Build Directory
         run: mkdir _build
-        
-      - name: Cache
-        id: cache-nuget
-        uses: actions/cache@v2.1.4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
       
       - name: Restore Packages
-        if: steps.cache-nuget.outputs.cache-hit != 'true'
         run: nuget restore TravBotSharp.sln
 
       - name: Build Solution
@@ -60,10 +52,16 @@ jobs:
           name: TBS
           path: TravBotSharp\bin
           if-no-files-found: error
+  discord:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
 
+      # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
       - name: Send to Discord Server
         run: |
-          echo ${{ secrets.DISCORD_BOT }}
-          curl -X POST`
-          -H "Content-Type: application/json"`
-          -d '{"content":"@here We have another build for you guys\n Check <#750744155239743548>","embeds":[{"title":"Download","url":"https://nightly.link/Erol444/TravianBotSharp/workflows/main/master/TBS.zip"}]}' "${{ secrets.DISCORD_BOT }}"
+            echo ${{ secrets.DISCORD_BOT }}
+            curl -X POST`
+            -H "Content-Type: application/json"`
+            -d '{"content":"@here We have another build for you guys\n Check <#750744155239743548>","embeds":[{"title":"Download","url":"https://nightly.link/Erol444/TravianBotSharp/workflows/main/master/TBS.zip"}]}' "${{ secrets.DISCORD_BOT }}"
+      
