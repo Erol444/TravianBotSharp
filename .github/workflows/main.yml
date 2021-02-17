@@ -55,6 +55,8 @@ jobs:
         run: |
           $version = Get-Content ./version.txt -Raw
           $version = [string]::join("",($version.Split("`n")))
+          echo "${version}"
+          echo "VERSION=${version}"
           echo "VERSION=${version}" >> $GITHUB_ENV
           
       - name: Upload a Build Artifact
