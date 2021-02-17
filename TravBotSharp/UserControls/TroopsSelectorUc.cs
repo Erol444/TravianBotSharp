@@ -15,7 +15,7 @@ namespace TravBotSharp.Forms
     {
         public int[] Troops
         {
-            get 
+            get
             {
                 int[] ret = new int[10];
                 for (int i = 0; i < numerics.Length; i++)
@@ -79,7 +79,7 @@ namespace TravBotSharp.Forms
         }
         public void Init(Classificator.TribeEnum tribe)
         {
-            troopsDisplayUc1.Init(tribe);            
+            troopsDisplayUc1.Init(tribe);
         }
     }
 }

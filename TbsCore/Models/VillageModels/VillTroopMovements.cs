@@ -10,13 +10,13 @@ namespace TbsCore.Models.VillageModels
     {
         public void Init() 
         {
-            IncomingAttacks = new List<TroopsMovementModel>();
+            IncomingAttacks = new List<TroopsMovementRallyPoint>();
         }
 
         /// <summary>
         /// Incoming attacks
         /// </summary>
-        public List<TroopsMovementModel> IncomingAttacks { get; set; }
+        public List<TroopsMovementRallyPoint> IncomingAttacks { get; set; }
 
         /// <summary>
         /// Troops movement parsed from dorf1

@@ -30,12 +30,14 @@ namespace TravBotSharp.Files.Helpers
                 }
                 oldVill.Name = foundVill.Name;
                 oldVill.Active = foundVill.Active;
+
                 if (oldVill.UnderAttack != foundVill.UnderAttack &&
                     foundVill.UnderAttack &&
                     oldVill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
                 {
-                    TaskExecutor.AddTaskIfNotExistInVillage(acc, oldVill, new CheckAttacks() { Vill = oldVill, ExecuteAt = DateTime.Now.AddMinutes(-30) });
+                    TaskExecutor.AddTaskIfNotExistInVillage(acc, oldVill, new CheckAttacks() { Vill = oldVill, Priority = Tasks.BotTask.TaskPriority.High });
                 }
+
                 oldVill.UnderAttack = foundVill.UnderAttack;
                 foundVills.Remove(foundVill);
             }

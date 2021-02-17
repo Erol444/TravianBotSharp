@@ -14,19 +14,22 @@ namespace TravBotSharp.Files.Parsers
 {
     public static class TroopsMovementParser
     {
-        public static List<TroopsMovementModel> ParseIncomingAttacks(Account acc, HtmlDocument html)
+        /// <summary>
+        /// Parse troops from the overview tab inside the rally point
+        /// </summary>
+        public static List<TroopsMovementRallyPoint> ParseTroopsOverview(Account acc, HtmlDocument html)
         {
-            var ret = new List<TroopsMovementModel>();
+            var ret = new List<TroopsMovementRallyPoint>();
 
             var attacks = html.DocumentNode.Descendants("table").Where(x => x.HasClass("troop_details"));
             if (attacks == null) return ret;
 
             foreach (var attackNode in attacks)
             {
-                var attack = new TroopsMovementModel();
+                var attack = new TroopsMovementRallyPoint();
 
-                attack.MovementType = MovementType.Attack;
-                if (attackNode.HasClass("inRaid")) attack.MovementType = MovementType.Raid;
+                var movementClass = attackNode.GetClasses().FirstOrDefault(x => x != "troop_details");
+                attack.MovementType = ParseMovementClass(movementClass);
 
                 // If attack.Troops.Sum() is less than 11, we are able to view troop types attacking
                 attack.Troops = ParseIncomingTroops(attackNode);
@@ -34,8 +37,18 @@ namespace TravBotSharp.Files.Parsers
                 var infos = attackNode.Descendants("tbody").FirstOrDefault(x => x.HasClass("infos"));
                 attack.Arrival = DateTime.Now.Add(TimeParser.ParseTimer(infos));
 
-                var kid = MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("role")));
-                attack.Coordinates = MapHelper.CoordinatesFromKid(kid ?? 0, acc);
+                var sourceId = MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("role")));
+                attack.SourceCoordinates = MapHelper.CoordinatesFromKid(sourceId, acc);
+
+                var targetId = MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("troopHeadline")));
+                attack.TargetCoordinates = MapHelper.CoordinatesFromKid(targetId, acc);
+
+                var unitImg = attackNode.Descendants("img").First(x => x.HasClass("unit"));
+                var unitInt = Parser.RemoveNonNumeric(unitImg.GetClasses().First(x => x != "unit"));
+                int tribeInt = (int)(unitInt / 10);
+                // ++ since the first element in Classificator.TribeEnum is Any, second is Romans.
+                tribeInt++;
+                attack.Tribe = ((Classificator.TribeEnum)tribeInt);
 
                 ret.Add(attack);
             }
@@ -44,10 +57,10 @@ namespace TravBotSharp.Files.Parsers
 
         /// <summary>
         /// If account has spies art or attacking troops count is lower than rally point level,
-        /// bot can see "?" on only troop types that are incoming and "0" at troop types that 
+        /// bot can see "?" on only troop types that are incoming and "0" at troop types that
         /// are not present in attack
         /// </summary>
-        private static int[] ParseIncomingTroops(HtmlNode attackNode) 
+        private static int[] ParseIncomingTroops(HtmlNode attackNode)
         {
             var troopsBody = attackNode.Descendants("tbody").First(x => x.HasClass("last") && x.HasClass("units"));
 
@@ -121,10 +134,10 @@ namespace TravBotSharp.Files.Parsers
         public static List<TroopMovementDorf1> ParseDorf1Movements(HtmlDocument html)
         {
             var ret = new List<TroopMovementDorf1>();
-            
+
             var movements = html.GetElementbyId("movements");
             if (movements == null) return ret;
-            
+
             foreach(var movement in movements.Descendants("tr"))
             {
                 var img = movement.Descendants("img").FirstOrDefault();
@@ -161,15 +174,16 @@ namespace TravBotSharp.Files.Parsers
                 default: throw new Exception("Failed to parse movement image! Class: " + imgClass);
             }
         }
-        // att1 => incoming attack to the village (red swords)
-        // att2 => outgoing attack (yellow swords)
-        // att3 => outgoing attack to your oasis (purple swords)
 
-        // def1 => incoming reinforcement to the village (green shield)
-        // def2 => outgoing reinforcement (yellow shield)
-        // def3 => incoming reinforcement to the oasis (purple shield)
+        /// <summary>
+        /// Parse movement type from class name of the (html) table inside rally point, overview tab
+        /// </summary>
+        private static MovementTypeRallyPoint ParseMovementClass(string className)
+        {
+            if (string.IsNullOrEmpty(className)) return MovementTypeRallyPoint.atHome;
+            if (Enum.TryParse(className, out MovementTypeRallyPoint type)) return type;
+            return MovementTypeRallyPoint.atHome;
+        }
 
-        // hero_on_adventure => hero going to an adventure
-        // settlersOnTheWay => settlers
     }
 }

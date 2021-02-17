@@ -70,7 +70,7 @@ namespace TravBotSharp.Files.Models.AccModels
             }
             catch (Exception e) 
             {
-                acc.Wb.Log($"Error in TaskTimer! {e.Message}\n{e.StackTrace}");
+                acc?.Wb?.Log($"Error in TaskTimer! {e.Message}\n{e.StackTrace}");
             }
         }
 

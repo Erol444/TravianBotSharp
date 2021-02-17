@@ -142,7 +142,7 @@ namespace TravBotSharp.Files.Helpers
             while (TimeSpan.Zero < nextTask);
         }
 
-        internal static double InSeconds(DateTime time) => (time - DateTime.Now).TotalSeconds;
+        internal static int InSeconds(DateTime time) => (int)(time - DateTime.Now).TotalSeconds;
 
         public static DateTime RanDelay(Account acc, DateTime finish, int maxPercentageDelay = 10)
         {

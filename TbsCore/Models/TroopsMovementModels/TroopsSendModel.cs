@@ -8,8 +8,13 @@ namespace TbsCore.Models.SendTroopsModels
     /// <summary>
     /// Used when sending troops
     /// </summary>
-    public class TroopsSendModel : TroopsMovementModel
+    public class TroopsSendModel : TroopsMovementBase
     {
+        /// <summary>
+        /// Type of movement
+        /// </summary>
+        public MovementType MovementType { get; set; }
+
         /// <summary>
         /// Whether we want to redeploy the hero
         /// </summary>

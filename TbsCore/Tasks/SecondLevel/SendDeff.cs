@@ -28,7 +28,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             base.TroopsMovement = new TroopsSendModel()
             {
-                Coordinates = TargetVillage,
+                TargetCoordinates = TargetVillage,
                 MovementType = Classificator.MovementType.Reinforcement,
                 // Bot will configure amount of troops to be sent when it parses
                 // the amount of troops available at home

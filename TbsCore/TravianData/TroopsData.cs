@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TravBotSharp.Files.Helpers;
 using static TravBotSharp.Files.Helpers.Classificator;
@@ -15,7 +16,7 @@ namespace TbsCore.TravianData
         /// </summary>
         /// <param name="troop">Troop to get building prerequisites for</param>
         /// <returns>List of prerequisites</returns>
-        public static List<Prerequisite> GetBuildingPrerequisites(Classificator.TroopsEnum troop)
+        public static List<Prerequisite> GetBuildingPrerequisites(TroopsEnum troop)
         {
             var ret = new List<Prerequisite>();
             switch (troop)
@@ -188,33 +189,35 @@ namespace TbsCore.TravianData
             }
         }
 
-        public static Classificator.TroopsEnum TribeFirstTroop(Classificator.TribeEnum? tribe)
+        public static TroopsEnum TribeFirstTroop(TribeEnum? tribe)
         {
             switch (tribe)
             {
-                case TribeEnum.Romans: return Classificator.TroopsEnum.Legionnaire;
-                case TribeEnum.Teutons: return Classificator.TroopsEnum.Clubswinger;
-                case TribeEnum.Gauls: return Classificator.TroopsEnum.Phalanx;
-                case TribeEnum.Egyptians: return Classificator.TroopsEnum.SlaveMilitia;
-                case TribeEnum.Huns: return Classificator.TroopsEnum.Mercenary;
+                case TribeEnum.Romans: return TroopsEnum.Legionnaire;
+                case TribeEnum.Teutons: return TroopsEnum.Clubswinger;
+                case TribeEnum.Gauls: return TroopsEnum.Phalanx;
+                case TribeEnum.Egyptians: return TroopsEnum.SlaveMilitia;
+                case TribeEnum.Huns: return TroopsEnum.Mercenary;
                 default: return TroopsEnum.None;
             }
         }
 
-        public static Classificator.TroopsEnum TribeSettler(Classificator.TribeEnum? tribe)
+        public static TroopsEnum TribeSettler(TribeEnum? tribe)
         {
             switch (tribe)
             {
-                case TribeEnum.Romans: return Classificator.TroopsEnum.RomanSettler;
-                case TribeEnum.Teutons: return Classificator.TroopsEnum.TeutonSettler;
-                case TribeEnum.Gauls: return Classificator.TroopsEnum.GaulSettler;
-                case TribeEnum.Egyptians: return Classificator.TroopsEnum.EgyptianSettler;
-                case TribeEnum.Huns: return Classificator.TroopsEnum.HunSettler;
+                case TribeEnum.Romans: return TroopsEnum.RomanSettler;
+                case TribeEnum.Teutons: return TroopsEnum.TeutonSettler;
+                case TribeEnum.Gauls: return TroopsEnum.GaulSettler;
+                case TribeEnum.Egyptians: return TroopsEnum.EgyptianSettler;
+                case TribeEnum.Huns: return TroopsEnum.HunSettler;
                 default: return TroopsEnum.None;
             }
         }
 
-        public static bool IsTroopDefensive(Classificator.TroopsEnum troop)
+        public static bool IsTroopDefensive(Account acc, int i) =>
+            IsTroopDefensive(TroopsHelper.TroopFromInt(acc, i));
+        public static bool IsTroopDefensive(TroopsEnum troop)
         {
             switch (troop)
             {
@@ -236,7 +239,9 @@ namespace TbsCore.TravianData
             }
         }
 
-        public static bool IsTroopOffensive(Classificator.TroopsEnum troop)
+        public static bool IsTroopOffensive(Account acc, int i) =>
+            IsTroopOffensive(TroopsHelper.TroopFromInt(acc, i));
+        public static bool IsTroopOffensive(TroopsEnum troop)
         {
             switch (troop)
             {
@@ -251,12 +256,9 @@ namespace TbsCore.TravianData
                 case TroopsEnum.Axeman:
                 case TroopsEnum.TeutonicKnight:
                 case TroopsEnum.Mercenary:
-                case TroopsEnum.Marksman:
                 case TroopsEnum.Bowman:
                 case TroopsEnum.SteppeRider:
                 case TroopsEnum.Marauder:
-                case TroopsEnum.SlaveMilitia:
-                case TroopsEnum.AshWarden:
                 case TroopsEnum.KhopeshWarrior:
                 case TroopsEnum.ReshephChariot:
                     return true;
@@ -264,19 +266,8 @@ namespace TbsCore.TravianData
                     return false;
             }
         }
-        public static bool IsTroopRam(Classificator.TroopsEnum troop)
-        {
-            switch (troop)
-            {
-                case TroopsEnum.EgyptianRam:
-                case TroopsEnum.GaulRam:
-                case TroopsEnum.HunRam:
-                case TroopsEnum.RomanRam:
-                case TroopsEnum.TeutonRam:
-                    return true;
-                default:
-                    return false;
-            }
-        }
+
+        public static bool IsTroopRam(TroopsEnum troop) => IsTroopRam((int)troop);
+        public static bool IsTroopRam(int troopInt) => (troopInt % 10) == 7;
     }
 }

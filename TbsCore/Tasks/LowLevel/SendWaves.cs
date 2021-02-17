@@ -15,6 +15,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class SendWaves : BotTask
     {
         public List<SendWaveModel> SendWaveModels { get; set; }
+
         // Time difference between server and computer time
         private TimeSpan timeDifference;
         private DateTime lastArriveAt;
@@ -50,8 +51,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 };
 
                 req.AddParameter("dname", "");
-                req.AddParameter("x", SendWaveModels[i].Coordinates.x.ToString());
-                req.AddParameter("y", SendWaveModels[i].Coordinates.y.ToString());
+                req.AddParameter("x", SendWaveModels[i].TargetCoordinates.x.ToString());
+                req.AddParameter("y", SendWaveModels[i].TargetCoordinates.y.ToString());
                 req.AddParameter("c", ((int)SendWaveModels[i].MovementType).ToString());
                 req.AddParameter("s1", "ok");
 
@@ -64,19 +65,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 // Get available troops
                 int[] troopsAtHome = TroopsMovementParser.GetTroopsInRallyPoint(htmlDoc1);
-                // Send all off dirty hack
-                if (SendWaveModels[i].AllOff)
-                {
-                    for (int j = 0; j < 10; j++)
-                    {
-                        var troop = TroopsHelper.TroopFromInt(acc, j);
-                        if (TroopsData.IsTroopOffensive(troop) || TroopsData.IsTroopRam(troop))
-                        {
-                            SendWaveModels[i].Troops[j] = troopsAtHome[j];
-                            troopsAtHome[j] = 0;
-                        }
-                    }
-                }
+
                 // Send fake attack dirty hack
                 if (SendWaveModels[i].FakeAttack)
                 {
@@ -93,6 +82,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 for (int j = 0; j < SendWaveModels[i].Troops.Length; j++)
                 {
+                    // If negative value, send all available units
+                    if(SendWaveModels[i].Troops[j] < 0)
+                    {
+                        SendWaveModels[i].Troops[j] = troopsAtHome[j];
+                        troopsAtHome[j] = 0;
+                    }
+
                     switch (acc.AccInfo.ServerVersion)
                     {
                         case Classificator.ServerVersionEnum.T4_4:
@@ -125,9 +121,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     timeDifference = timeDifference.Subtract(new TimeSpan(0, 0, 0, 0, negateMillis));
 
                     var executeTime = CorrectExecuteTime(timespan);
-                    if (DateTime.Now.AddMinutes(2) < executeTime)
+                    if (DateTime.Now.AddMinutes(1) < executeTime)
                     {
                         // Restart this task at the correct time
+                        
+                        acc.Wb.Log($"Bot will send waves in {TimeHelper.InSeconds(executeTime)} seconds");
                         this.NextExecute = executeTime;
                         return TaskRes.Executed;
                     }
@@ -190,21 +188,31 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             TimeSpan waitForTarget = (targetArrival - lastArriveAt);
             if (waitForTarget > TimeSpan.Zero)
             {
-                var waitForTargetSec = waitForTarget.Seconds + (waitForTarget.Minutes * 60) - 1; // -1 to compensate
+                var waitForTargetSec = (int)waitForTarget.TotalSeconds - 1; // -1 to compensate
                 var waitForTargetTimeSpan = new TimeSpan(0, 0, waitForTargetSec);
                 wait = wait.Add(waitForTargetTimeSpan);
             }
             await Task.Delay(wait);
 
             // Send the waves
+            DateTime lastSent = default;
+            var cookies = HttpHelper.GetCookies(acc);
             for (int i = 0; i < wavesReady.Count; i++)
             {
+                lastSent = DateTime.Now;
+                acc.Wb.Log($"{DateTime.Now.Second}.{DateTime.Now.Millisecond}] Sending wave {i + 1}");
+                _ = HttpHelper.SendPostReq(acc, wavesReady[i].Request, cookies);
+
                 // Wait +- 10% selected delay
                 var delay = SendWaveModels[i].DelayMs;
-                var delay10Percent = (int)delay / 10;
-                await Task.Delay(rnd.Next(delay - delay10Percent, delay + delay10Percent));
 
-                _ = HttpHelper.SendPostReq(acc, wavesReady[i].Request);
+                // Negate the time it took to send the request
+                delay -= (int)(DateTime.Now - lastSent).TotalMilliseconds;
+                Console.WriteLine("New Delay " + delay);
+
+                //var delay10Percent = (int)delay / 100;
+                //await Task.Delay(rnd.Next(delay - delay10Percent, delay + delay10Percent));
+                if (0 < delay) await Task.Delay(delay);
             }
             acc.Wb.Log($"Successfully sent {wavesReady.Count} waves!");
 
@@ -223,7 +231,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private DateTime CorrectExecuteTime(TimeSpan troopTime)
         {
             var sec = 10; // Base value
-            sec += 4 * this.SendWaveModels.Count(); // + 4 sec for each wave
+            sec += 2 * this.SendWaveModels.Count(); // + 4 sec for each wave
             var targetArrival = SendWaveModels.FirstOrDefault(x => x.Arrival != DateTime.MinValue).Arrival;
 
             DateTime executeAt = targetArrival.Add(timeDifference);
