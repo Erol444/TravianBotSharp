@@ -40,6 +40,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 await Task.Delay(rnd.Next(800, 1000));
                 acc.Wb.Log($"Preparing {i + 1}. wave...");
+
+                // TODO: eliminate the need of this first request, will send a second on each wave
                 var htmlDoc1 = HttpHelper.SendGetReq(acc, "/build.php?tt=2&id=39");
 
                 var build = htmlDoc1.GetElementbyId("build");
@@ -196,12 +198,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // Send the waves
             DateTime lastSent = default;
-            var cookies = HttpHelper.GetCookies(acc);
             for (int i = 0; i < wavesReady.Count; i++)
             {
                 lastSent = DateTime.Now;
                 acc.Wb.Log($"{DateTime.Now.Second}.{DateTime.Now.Millisecond}] Sending wave {i + 1}");
-                _ = HttpHelper.SendPostReq(acc, wavesReady[i].Request, cookies);
+                _ = HttpHelper.SendPostReq(acc, wavesReady[i].Request);
 
                 // Wait +- 10% selected delay
                 var delay = SendWaveModels[i].DelayMs;
