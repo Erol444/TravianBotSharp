@@ -38,23 +38,34 @@ jobs:
 
       - name: Create Build Directory
         run: mkdir _build
-      
+      - name: Cache
+        uses: actions/cache@v2.1.4
+        with:
+          path: packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
+
       - name: Restore Packages
         run: nuget restore TravBotSharp.sln
 
       - name: Build Solution
         run: |
           msbuild.exe TravBotSharp.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build" /m
-    
+      
+      - name: Get version
+        run: |
+          $version = Get-Content ./version.txt -Raw
+          $version = [string]::join("",($version.Split("`n")))
+          Write-Output "::set-env name=VERSION::$version"
+          
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: TBS
+          name: TBS-${{ env.VERSION }}
           path: TravBotSharp\bin
           if-no-files-found: error
-        
+
       - name: Send to Discord Server
         run: |
-            curl -X POST -H "Content-Type: application/json" -d '{\"content\":\"@here We have another build for you guys\n Check <#750744155239743548>\",\"embeds\":[{\"title\":\"Download\",\"url\":\"https://nightly.link/Erol444/TravianBotSharp/workflows/main/master/TBS.zip\"}]}' ${{ secrets.DISCORD_BOT }}
+            curl -X POST -H "Content-Type: application/json" -d '{\"content\":\"@here We have another build for you guys\n Check <#750744155239743548>\",\"embeds\":[{\"title\":\"Download\",\"url\":\"https://nightly.link/Erol444/TravianBotSharp/workflows/main/master/TBS-${{ env.VERSION }}.zip\"}]}' ${{ secrets.DISCORD_BOT }}
       
       
