@@ -32,23 +32,20 @@
             XPTable.Renderers.DragDropRenderer dragDropRenderer1 = new XPTable.Renderers.DragDropRenderer();
             XPTable.Models.DataSourceColumnBinder dataSourceColumnBinder2 = new XPTable.Models.DataSourceColumnBinder();
             XPTable.Renderers.DragDropRenderer dragDropRenderer2 = new XPTable.Renderers.DragDropRenderer();
+            TbsCore.Models.MapModels.Coordinates coordinates1 = new TbsCore.Models.MapModels.Coordinates();
             this.SaveButton = new System.Windows.Forms.Button();
             this.table1 = new XPTable.Models.Table();
             this.XpTableGlobal = new XPTable.Models.Table();
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.sendDeffY = new System.Windows.Forms.NumericUpDown();
-            this.sendDeffX = new System.Windows.Forms.NumericUpDown();
             this.maxDeff = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.sendDeffCoords = new TravBotSharp.UserControls.CoordinatesUc();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XpTableGlobal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sendDeffY)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sendDeffX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxDeff)).BeginInit();
             this.SuspendLayout();
             // 
@@ -128,58 +125,6 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(810, 107);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(14, 13);
-            this.label2.TabIndex = 140;
-            this.label2.Text = "Y";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(810, 84);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 13);
-            this.label3.TabIndex = 139;
-            this.label3.Text = "X";
-            // 
-            // sendDeffY
-            // 
-            this.sendDeffY.Location = new System.Drawing.Point(830, 105);
-            this.sendDeffY.Maximum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            0});
-            this.sendDeffY.Minimum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            -2147483648});
-            this.sendDeffY.Name = "sendDeffY";
-            this.sendDeffY.Size = new System.Drawing.Size(75, 20);
-            this.sendDeffY.TabIndex = 138;
-            // 
-            // sendDeffX
-            // 
-            this.sendDeffX.Location = new System.Drawing.Point(830, 82);
-            this.sendDeffX.Maximum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            0});
-            this.sendDeffX.Minimum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            -2147483648});
-            this.sendDeffX.Name = "sendDeffX";
-            this.sendDeffX.Size = new System.Drawing.Size(75, 20);
-            this.sendDeffX.TabIndex = 137;
-            // 
             // maxDeff
             // 
             this.maxDeff.Location = new System.Drawing.Point(813, 131);
@@ -212,17 +157,37 @@
             this.label5.TabIndex = 143;
             this.label5.Text = "If 0, send all available deff";
             // 
+            // sendDeffCoords
+            // 
+            this.sendDeffCoords.BackColor = System.Drawing.SystemColors.ControlDark;
+            coordinates1.x = 0;
+            coordinates1.y = 0;
+            this.sendDeffCoords.Coords = coordinates1;
+            this.sendDeffCoords.Location = new System.Drawing.Point(802, 69);
+            this.sendDeffCoords.Name = "sendDeffCoords";
+            this.sendDeffCoords.Size = new System.Drawing.Size(113, 56);
+            this.sendDeffCoords.TabIndex = 144;
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(810, 359);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(92, 22);
+            this.button3.TabIndex = 146;
+            this.button3.Text = "Cut waves";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
             // DeffendingUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.sendDeffCoords);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.maxDeff);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.sendDeffY);
-            this.Controls.Add(this.sendDeffX);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button2);
@@ -233,8 +198,6 @@
             this.Size = new System.Drawing.Size(1011, 628);
             ((System.ComponentModel.ISupportInitialize)(this.table1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XpTableGlobal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sendDeffY)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.sendDeffX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.maxDeff)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -248,12 +211,10 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.NumericUpDown sendDeffY;
-        private System.Windows.Forms.NumericUpDown sendDeffX;
         private System.Windows.Forms.NumericUpDown maxDeff;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
+        private UserControls.CoordinatesUc sendDeffCoords;
+        private System.Windows.Forms.Button button3;
     }
 }

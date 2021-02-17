@@ -28,10 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label39 = new System.Windows.Forms.Label();
-            this.label38 = new System.Windows.Forms.Label();
-            this.Y = new System.Windows.Forms.NumericUpDown();
-            this.X = new System.Windows.Forms.NumericUpDown();
+            TbsCore.Models.MapModels.Coordinates coordinates1 = new TbsCore.Models.MapModels.Coordinates();
             this.confirmNewVill = new System.Windows.Forms.Button();
             this.WavesCount = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -53,68 +50,13 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.label7 = new System.Windows.Forms.Label();
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            ((System.ComponentModel.ISupportInitialize)(this.Y)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.X)).BeginInit();
+            this.label7 = new System.Windows.Forms.Label();
+            this.coordinatesUc1 = new TravBotSharp.UserControls.CoordinatesUc();
             ((System.ComponentModel.ISupportInitialize)(this.WavesCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wavesPerSec)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.catasPerWave)).BeginInit();
             this.SuspendLayout();
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label39.Location = new System.Drawing.Point(158, 24);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(17, 16);
-            this.label39.TabIndex = 147;
-            this.label39.Text = "Y";
-            // 
-            // label38
-            // 
-            this.label38.AutoSize = true;
-            this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label38.Location = new System.Drawing.Point(43, 24);
-            this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(16, 16);
-            this.label38.TabIndex = 146;
-            this.label38.Text = "X";
-            // 
-            // Y
-            // 
-            this.Y.Location = new System.Drawing.Point(178, 22);
-            this.Y.Maximum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            0});
-            this.Y.Minimum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            -2147483648});
-            this.Y.Name = "Y";
-            this.Y.Size = new System.Drawing.Size(75, 20);
-            this.Y.TabIndex = 144;
-            // 
-            // X
-            // 
-            this.X.Location = new System.Drawing.Point(63, 22);
-            this.X.Maximum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            0});
-            this.X.Minimum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            -2147483648});
-            this.X.Name = "X";
-            this.X.Size = new System.Drawing.Size(75, 20);
-            this.X.TabIndex = 143;
             // 
             // confirmNewVill
             // 
@@ -128,7 +70,7 @@
             // 
             // WavesCount
             // 
-            this.WavesCount.Location = new System.Drawing.Point(63, 66);
+            this.WavesCount.Location = new System.Drawing.Point(173, 35);
             this.WavesCount.Maximum = new decimal(new int[] {
             30,
             0,
@@ -152,7 +94,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(8, 68);
+            this.label1.Location = new System.Drawing.Point(254, 39);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(51, 16);
             this.label1.TabIndex = 149;
@@ -170,7 +112,7 @@
             // 
             // wavesPerSec
             // 
-            this.wavesPerSec.Location = new System.Drawing.Point(178, 66);
+            this.wavesPerSec.Location = new System.Drawing.Point(173, 67);
             this.wavesPerSec.Maximum = new decimal(new int[] {
             50,
             0,
@@ -194,7 +136,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(259, 66);
+            this.label2.Location = new System.Drawing.Point(254, 67);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(79, 16);
             this.label2.TabIndex = 152;
@@ -348,6 +290,11 @@
             this.columnHeader4.Text = "ExecuteAt";
             this.columnHeader4.Width = 116;
             // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Arrival time";
+            this.columnHeader5.Width = 107;
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -358,15 +305,22 @@
             this.label7.TabIndex = 164;
             this.label7.Text = "Send wave tasks:";
             // 
-            // columnHeader5
+            // coordinatesUc1
             // 
-            this.columnHeader5.Text = "Arrival time";
-            this.columnHeader5.Width = 107;
+            this.coordinatesUc1.BackColor = System.Drawing.SystemColors.ControlDark;
+            coordinates1.x = 0;
+            coordinates1.y = 0;
+            this.coordinatesUc1.Coords = coordinates1;
+            this.coordinatesUc1.Location = new System.Drawing.Point(31, 33);
+            this.coordinatesUc1.Name = "coordinatesUc1";
+            this.coordinatesUc1.Size = new System.Drawing.Size(113, 56);
+            this.coordinatesUc1.TabIndex = 165;
             // 
             // AttackUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.coordinatesUc1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.currentlyBuildinglistView);
             this.Controls.Add(this.label6);
@@ -384,15 +338,9 @@
             this.Controls.Add(this.dateTimePicker1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.WavesCount);
-            this.Controls.Add(this.label39);
-            this.Controls.Add(this.label38);
-            this.Controls.Add(this.Y);
-            this.Controls.Add(this.X);
             this.Controls.Add(this.confirmNewVill);
             this.Name = "AttackUc";
             this.Size = new System.Drawing.Size(724, 491);
-            ((System.ComponentModel.ISupportInitialize)(this.Y)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.X)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WavesCount)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.wavesPerSec)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.catasPerWave)).EndInit();
@@ -402,11 +350,6 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label39;
-        private System.Windows.Forms.Label label38;
-        private System.Windows.Forms.NumericUpDown Y;
-        private System.Windows.Forms.NumericUpDown X;
         private System.Windows.Forms.Button confirmNewVill;
         private System.Windows.Forms.NumericUpDown WavesCount;
         private System.Windows.Forms.Label label1;
@@ -430,5 +373,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ColumnHeader columnHeader5;
+        private UserControls.CoordinatesUc coordinatesUc1;
     }
 }

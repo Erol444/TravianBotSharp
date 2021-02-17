@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
+using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
@@ -189,10 +191,7 @@ namespace TravBotSharp.Views
                 {
                     Vill = vill,
                     DeffAmount = amount,
-                    TargetVillage = new TbsCore.Models.MapModels.Coordinates() { 
-                        x = (int)sendDeffX.Value,
-                        y = (int)sendDeffY.Value,
-                    },
+                    TargetVillage = sendDeffCoords.Coords,
                     Priority = Files.Tasks.BotTask.TaskPriority.High,
                     NextTask = node,
                 };
@@ -201,6 +200,44 @@ namespace TravBotSharp.Views
 
             node.ExecuteAt = DateTime.MinValue;
             TaskExecutor.AddTaskIfNotExists(acc, node);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not yet implemented");
+            return;
+            var acc = GetSelectedAcc();
+            var coords = new Coordinates(-52, -59);
+
+            var waves = new List<SendWaveModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var attk = new SendWaveModel();
+                attk.Troops = new int[11];
+                if (i == 0)
+                {
+                    attk.Arrival = DateTime.Now.AddHours(-1).AddMinutes(2);
+                    attk.Arrival = attk.Arrival.AddSeconds(60 - attk.Arrival.Second);
+                    acc.Wb.Log($"Arrive at {attk.Arrival}");
+                }
+                else attk.DelayMs = 1000;
+
+                attk.TargetCoordinates = coords;
+                attk.MovementType = Classificator.MovementType.Reinforcement;
+                attk.Troops[0] = 5555;
+
+                waves.Add(attk);
+            }
+
+            
+            var waveTask = new SendWaves()
+            {
+                ExecuteAt = DateTime.Now,
+                Vill = AccountHelper.GetMainVillage(acc),
+                SendWaveModels = waves.ToList(),
+                Priority = Files.Tasks.BotTask.TaskPriority.High
+            };
+            TaskExecutor.AddTask(acc, waveTask);
         }
     }
 }

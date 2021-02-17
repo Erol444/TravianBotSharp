@@ -215,7 +215,7 @@ namespace TravBotSharp
                 if (accounts.Count <= accSelected) return accounts.FirstOrDefault();
                 return accounts[accSelected];
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -246,7 +246,7 @@ namespace TravBotSharp
 
         private void button4_Click(object sender, EventArgs e) // Logout all accounts
         {
-            new Thread(async () =>
+            new Thread(() =>
             {
                 foreach (var acc in accounts)
                 {
