@@ -55,7 +55,7 @@ jobs:
         run: |
           $version = Get-Content ./version.txt -Raw
           $version = [string]::join("",($version.Split("`n")))
-          Write-Output "::set-env name=VERSION::$version"
+          echo "VERSION=${version}" >> $GITHUB_ENV
           
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
@@ -66,6 +66,6 @@ jobs:
 
       - name: Send to Discord Server
         run: |
-            curl -X POST -H "Content-Type: application/json" -d '{\"content\":\"@here We have another build for you guys\n Check <#750744155239743548>\",\"embeds\":[{\"title\":\"Download\",\"url\":\"https://nightly.link/Erol444/TravianBotSharp/workflows/main/master/TBS-${{ env.VERSION }}.zip\"}]}' ${{ secrets.DISCORD_BOT }}
+            curl -X POST -H "Content-Type: application/json" -d '{\"content\":\"@here We have another build for you guys\n Check <#750744155239743548>\",\"embeds\":[{\"title\":\"Download TBS-${{ env.VERSION }}\",\"url\":\"https://nightly.link/Erol444/TravianBotSharp/workflows/main/master/TBS-${{ env.VERSION }}.zip\"}]}' ${{ secrets.DISCORD_BOT }}
       
       
