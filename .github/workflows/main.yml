@@ -37,13 +37,17 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Create Build Directory
-        run: mkdir _build
+        run: |
+          mkdir _build
+          ls
+
       - name: Cache
         uses: actions/cache@v2.1.4
         with:
           path: packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
-
+      - run: |
+          ls
       - name: Restore Packages
         run: nuget restore TravBotSharp.sln
 
