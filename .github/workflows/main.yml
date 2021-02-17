@@ -7,8 +7,6 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -37,33 +35,30 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Create Build Directory
-        run: mkdir _build
-        
-      - name: Cache
-        uses: actions/cache@v2.1.4
-        with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-      
+        run: |
+          mkdir _build
+
       - name: Restore Packages
-        if: steps.cache.outputs.cache-hit != 'true'
         run: nuget restore TravBotSharp.sln
 
       - name: Build Solution
         run: |
           msbuild.exe TravBotSharp.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build" /m
-    
+      
+      - name: Get version
+        run: |
+          $version = Get-Content ./version.txt
+          Write-Output "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: TBS
+          name: TBS-${{ env.VERSION }}
           path: TravBotSharp\bin
           if-no-files-found: error
-                 
-      - name: Send to Discord Server
-        env: 
-          DISCORD: ${{ secrets.DISCORD }}
-        run: |
-          echo $DISCORD
-          curl --location --request POST '$DISCORD' --header 'Content-Type: application/json' --header 'Cookie: __cfduid=dd9e3c0b23b254ea96aa45a0b73d5b58d1613465471' --data-raw '{"content":"@here We have another build for you guys\n Check <#750744155239743548>","embeds":[{"title":"Download","url":"https://nightly.link/vinaghost/TravianBotSharp/workflows/main/master/TBS.zip"}]}'
 
+      - name: Send to Discord Server
+        run: |
+            curl -X POST -H "Content-Type: application/json" -d '{\"content\":\"@here We have another build for you guys\n Check <#750744155239743548>\",\"embeds\":[{\"title\":\"Download TBS-${{ env.VERSION }}\",\"url\":\"https://nightly.link/Erol444/TravianBotSharp/workflows/main/master/TBS-${{ env.VERSION }}.zip\"}]}' ${{ secrets.DISCORD_BOT }}
+      
+      
