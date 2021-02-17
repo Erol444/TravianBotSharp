@@ -180,7 +180,7 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                // 17 
+                // 17
                 () => acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html, acc.AccInfo.ServerVersion),
                 // 18
                 () => acc.Hero.Status = HeroParser.HeroStatus(html, acc.AccInfo.ServerVersion),
@@ -230,6 +230,7 @@ namespace TbsCore.Helpers
                     if (acc.Settings.ExtendProtection &&
                     acc.Wb.Html.GetElementbyId("sidebarBoxInfobox").Descendants("button").Any(x=>x.GetAttributeValue("value", "") == "Extend"))
                     {
+                        // infoType_25 ?
                         TaskExecutor.AddTaskIfNotExists(acc, new ExtendProtection() { ExecuteAt = DateTime.Now });
                     }
                 }

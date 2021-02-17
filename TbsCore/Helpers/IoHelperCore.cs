@@ -50,7 +50,7 @@ namespace TravBotSharp.Files.Helpers
                     else tasks = JsonConvert.DeserializeObject<List<BuildingTask>>(sr.ReadToEnd());
                 }
             }
-            catch (Exception e) { return; } // User canceled
+            catch (Exception) { return; } // User canceled
 
             foreach (var task in tasks)
             {

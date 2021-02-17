@@ -39,9 +39,9 @@ namespace TravBotSharp.Files.Helpers
             if (CheckContextualHelp(acc) &&
                 acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5)
             {
-                AddTaskIfNotExists(acc, new EditPreferences() { 
+                AddTaskIfNotExists(acc, new EditPreferences() {
                     ExecuteAt = DateTime.Now.AddHours(-1),
-                    ContextualHelp = true 
+                    ContextualHelp = true
                 });
             }
 
@@ -187,7 +187,7 @@ namespace TravBotSharp.Files.Helpers
 
             var dorf1Movements = TroopsMovementParser.ParseDorf1Movements(acc.Wb.Html);
 
-            // Check attacks if there are incoming attacks and alerts aren't disabled and task isn't already on task list 
+            // Check attacks if there are incoming attacks and alerts aren't disabled and task isn't already on task list
             if (dorf1Movements.Any(x=>x.Type == Classificator.MovementTypeDorf1.IncomingAttack) &&
                 vill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
             {

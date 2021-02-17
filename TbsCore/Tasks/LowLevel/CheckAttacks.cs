@@ -17,7 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=1&subfilters=1");
 
-            var attacks = TroopsMovementParser.ParseIncomingAttacks(acc, acc.Wb.Html);
+            var attacks = TroopsMovementParser.ParseTroopsOverview(acc, acc.Wb.Html);
 
             var pageCnt = TroopsMovementParser.GetPageCount(acc.Wb.Html);
 
@@ -42,7 +42,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             do
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=1&subfilters=1&page={++page}");
-                var pageAttacks = TroopsMovementParser.ParseIncomingAttacks(acc, acc.Wb.Html);
+                var pageAttacks = TroopsMovementParser.ParseTroopsOverview(acc, acc.Wb.Html);
                 attacks.AddRange(pageAttacks);
                 await Task.Delay(AccountHelper.Delay());
             }
@@ -54,17 +54,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 .First()
                 .HasClass("disabled")
                 );
-           
+
             return CheckCompleted(acc, attacks);
         }
 
         /// <summary>
-        /// After getting all attacks, check for differences in attacks, alert user and 
+        /// After getting all attacks, check for differences in attacks, alert user and
         /// configure this task for next check
         /// </summary>
         /// <param name="attacks">Incoming attacks</param>
         /// <returns>TaskRes.Executed</returns>
-        private TaskRes CheckCompleted(Account acc, List<TroopsMovementModel> attacks)
+        private TaskRes CheckCompleted(Account acc, List<TroopsMovementRallyPoint> attacks)
         {
             // There are no attacks on the village
             if (attacks.Count == 0 || Vill.Deffing.AlertType == AlertTypeEnum.Disabled) return TaskRes.Executed;
@@ -73,7 +73,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var newAttacks = attacks.ToList();
 
             // In case it was null
-            if (Vill.TroopMovements.IncomingAttacks == null) Vill.TroopMovements.IncomingAttacks = new List<TroopsMovementModel>();
+            if (Vill.TroopMovements.IncomingAttacks == null) Vill.TroopMovements.IncomingAttacks = new List<TroopsMovementRallyPoint>();
 
             int sameAttacks = 0;
             foreach(var oldAttack in Vill.TroopMovements.IncomingAttacks)
@@ -89,21 +89,21 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // Check if hero is present in the attack
                 if (Vill.Deffing.OnlyAlertOnHero && newAttack.Troops[10] == 0) continue;
 
-                if (newAttack.MovementType == Classificator.MovementType.Raid)
+                if (newAttack.MovementType == Classificator.MovementTypeRallyPoint.inRaid)
                 {
                     if(Vill.Deffing.AlertType == AlertTypeEnum.AnyAttack)
                     {
-                        alertStr += $"Raid from {newAttack.Coordinates} at {newAttack.Arrival}\n";
+                        alertStr += $"Raid from {newAttack.SourceCoordinates} at {newAttack.Arrival}\n";
                     }
                 }
-                else alertStr += $"Normal attack from {newAttack.Coordinates} at {newAttack.Arrival}\n";
+                else alertStr += $"Normal attack from {newAttack.SourceCoordinates} at {newAttack.Arrival}\n";
             }
 
             if (!String.IsNullOrEmpty(alertStr) ||
                 sameAttacks != Vill.TroopMovements.IncomingAttacks.Count)
             {
                 // Popup + sound
-                new Thread(() => 
+                new Thread(() =>
                     IoHelperCore.AlertUser?.Invoke($"Village {Vill.Name} is under {attacks.Count} new attacks!\n{alertStr}")
                 ).Start();
             }
