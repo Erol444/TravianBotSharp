@@ -61,9 +61,9 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.button4 = new System.Windows.Forms.Button();
             this.accTabController.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
@@ -422,6 +422,16 @@
             this.panel3.Size = new System.Drawing.Size(200, 106);
             this.panel3.TabIndex = 12;
             // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(101, 70);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(78, 23);
+            this.button4.TabIndex = 11;
+            this.button4.Text = "Logout all";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.button1);
@@ -439,16 +449,6 @@
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(971, 661);
             this.panel5.TabIndex = 12;
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(101, 70);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(78, 23);
-            this.button4.TabIndex = 11;
-            this.button4.Text = "Logout all";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // ControlPanel
             // 

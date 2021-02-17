@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
+using TbsCore.Models.MapModels;
+using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.VillageModels;
@@ -36,7 +39,7 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Id.ToString())); //vill id
                 r.Cells.Add(new Cell(vill.Name)); //vill name
                 r.Cells.Add(new Cell(vill.Deffing.AlertType.ToString())); //Type of alert
-                r.Cells.Add(new Cell("", vill.Deffing.AlertOnHero)); //Alert only on hero
+                r.Cells.Add(new Cell("", vill.Deffing.OnlyAlertOnHero)); //Alert only on hero
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -126,7 +129,7 @@ namespace TravBotSharp.Views
                 column++;
                 UpdateAlertType(vill, cells, column);
                 column++;
-                vill.Deffing.AlertOnHero = cells[column].Checked;
+                vill.Deffing.OnlyAlertOnHero = cells[column].Checked;
             }
             //Change name of village/s
             if (changeVillNames.Count > 0)
@@ -175,7 +178,66 @@ namespace TravBotSharp.Views
 
         private void button1_Click_1(object sender, EventArgs e) // Send deff to specific coordinates
         {
+            var acc = GetSelectedAcc();
 
+            var deffCount = (int)maxDeff.Value;
+            if (deffCount == 0) deffCount = int.MaxValue;
+            var amount = new SendDeffAmount() { Amount = deffCount };
+            
+            SendDeff node = new SendDeff();
+            foreach (var vill in acc.Villages)
+            {
+                var sendDeff = new SendDeff()
+                {
+                    Vill = vill,
+                    DeffAmount = amount,
+                    TargetVillage = sendDeffCoords.Coords,
+                    Priority = Files.Tasks.BotTask.TaskPriority.High,
+                    NextTask = node,
+                };
+                node = sendDeff;
+            }
+
+            node.ExecuteAt = DateTime.MinValue;
+            TaskExecutor.AddTaskIfNotExists(acc, node);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Not yet implemented");
+            return;
+            var acc = GetSelectedAcc();
+            var coords = new Coordinates(-52, -59);
+
+            var waves = new List<SendWaveModel>();
+            for (int i = 0; i < 10; i++)
+            {
+                var attk = new SendWaveModel();
+                attk.Troops = new int[11];
+                if (i == 0)
+                {
+                    attk.Arrival = DateTime.Now.AddHours(-1).AddMinutes(2);
+                    attk.Arrival = attk.Arrival.AddSeconds(60 - attk.Arrival.Second);
+                    acc.Wb.Log($"Arrive at {attk.Arrival}");
+                }
+                else attk.DelayMs = 1000;
+
+                attk.TargetCoordinates = coords;
+                attk.MovementType = Classificator.MovementType.Reinforcement;
+                attk.Troops[0] = 5555;
+
+                waves.Add(attk);
+            }
+
+            
+            var waveTask = new SendWaves()
+            {
+                ExecuteAt = DateTime.Now,
+                Vill = AccountHelper.GetMainVillage(acc),
+                SendWaveModels = waves.ToList(),
+                Priority = Files.Tasks.BotTask.TaskPriority.High
+            };
+            TaskExecutor.AddTask(acc, waveTask);
         }
     }
 }

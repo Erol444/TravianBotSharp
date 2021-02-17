@@ -54,10 +54,9 @@ namespace TravBotSharp.Files.Helpers
             Random rnd = new Random();
             return rnd.Next(500, 900);
         }
+
         public static void StartAccountTasks(Account acc)
         {
-            Random ran = new Random();
-
             // Get the server info (on first running the account)
             if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0)
             {
@@ -90,16 +89,25 @@ namespace TravBotSharp.Files.Helpers
             {
                 //if (vill.Troops.Researched.Count == 0) TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = DateTime.Now, vill = vill });
                 TroopsHelper.ReStartResearchAndImprovement(acc, vill);
-                if (!TroopsHelper.EverythingFilled(acc, vill)) TroopsHelper.ReStartTroopTraining(acc, vill);
+                TroopsHelper.ReStartTroopTraining(acc, vill);
                 BuildingHelper.ReStartBuilding(acc, vill);
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
+
+                // Remove in later updates!
+                if (vill.Settings.RefreshMin == 0) vill.Settings.RefreshMin = 30;
+                if (vill.Settings.RefreshMax == 0) vill.Settings.RefreshMax = 60;
             }
+            // Remove in later updates!
+            if (acc.Hero.Settings.MinUpdate == 0) acc.Hero.Settings.MinUpdate = 40;
+            if (acc.Hero.Settings.MaxUpdate == 0) acc.Hero.Settings.MaxUpdate = 80;
+
 
             // Hero update info
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
+                Random ran = new Random();
                 TaskExecutor.AddTask(acc, new HeroUpdateInfo()
                 {
                     ExecuteAt = DateTime.Now.AddMinutes(ran.Next(40, 80)),

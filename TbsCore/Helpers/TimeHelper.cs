@@ -93,18 +93,18 @@ namespace TravBotSharp.Files.Helpers
 
             switch (prio)
             {
-                case Tasks.BotTask.TaskPriority.High:
+                case TaskPriority.High:
                     firstTask = acc.Tasks.FirstOrDefault(x =>
-                        x.Priority == Tasks.BotTask.TaskPriority.High
+                        x.Priority == TaskPriority.High
                     );
                     break;
-                case Tasks.BotTask.TaskPriority.Medium:
+                case TaskPriority.Medium:
                     firstTask = acc.Tasks.FirstOrDefault(x =>
-                        x.Priority == Tasks.BotTask.TaskPriority.High ||
-                        x.Priority == Tasks.BotTask.TaskPriority.Medium
+                        x.Priority == TaskPriority.High ||
+                        x.Priority == TaskPriority.Medium
                     );
                     break;
-                case Tasks.BotTask.TaskPriority.Low:
+                case TaskPriority.Low:
                     firstTask = acc.Tasks.FirstOrDefault();
                     break;
             }
@@ -142,6 +142,16 @@ namespace TravBotSharp.Files.Helpers
             while (TimeSpan.Zero < nextTask);
         }
 
-        internal static double InSeconds(DateTime time) => (time - DateTime.Now).TotalSeconds;
+        internal static int InSeconds(DateTime time) => (int)(time - DateTime.Now).TotalSeconds;
+
+        public static DateTime RanDelay(Account acc, DateTime finish, int maxPercentageDelay = 10)
+        {
+            if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_4) return finish.AddSeconds(3);
+
+            var ran = new Random();
+
+            var totalSec = (finish - DateTime.Now).TotalSeconds;
+            return DateTime.Now.AddSeconds(totalSec * (100 + ran.Next(1, maxPercentageDelay)) / 100);
+        }
     }
 }

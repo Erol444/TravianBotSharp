@@ -334,6 +334,98 @@
             Attack,
             Raid
         }
+
+        /// <summary>
+        /// Different movement types viewed from the Rally Point, from Overview tab
+        /// </summary>
+        public enum MovementTypeRallyPoint
+        {
+            /// <summary>
+            /// Getting troops back
+            /// </summary>
+            inReturn,
+            /// <summary>
+            /// Getting raid attack
+            /// </summary>
+            inRaid,
+            /// <summary>
+            /// Getting normal attack
+            /// </summary>
+            inAttack,
+            /// <summary>
+            /// Getting troops (reinforcement) from some other village
+            /// </summary>
+            inSupply,
+            /// <summary>
+            /// Sending out raid attack
+            /// </summary>
+            outRaid,
+            /// <summary>
+            /// Sending out normal attack
+            /// </summary>
+            outAttack,
+            /// <summary>
+            /// Getting troops back
+            /// </summary>
+            outSupply,
+            /// <summary>
+            /// Sending out scouts
+            /// </summary>
+            outSpy,
+            /// <summary>
+            /// Sending hero on adventure
+            /// </summary>
+            outHero,
+            /// <summary>
+            /// Settling new village
+            /// </summary>
+            outSettler,
+            /// <summary>
+            /// If table has no class name besides 'troop_details', troops are at home
+            /// </summary>
+            atHome
+        }
+
+        /// <summary>
+        /// Different movement types viewed from dorf1 (top right corner)
+        /// </summary>
+        public enum MovementTypeDorf1
+        {
+            /// <summary>
+            /// Red swords picture
+            /// </summary>
+            IncomingAttack,
+            /// <summary>
+            /// Yellow swords picture
+            /// </summary>
+            OutgoingAttack,
+            /// <summary>
+            /// Purple swords picture
+            /// </summary>
+            IncomingAttackOasis,
+            /// <summary>
+            /// Green shield picture
+            /// </summary>
+            IncomingReinforcement,
+            /// <summary>
+            /// Yellow shield picture
+            /// </summary>
+            OutgoingReinforcement,
+            /// <summary>
+            /// Purple shield picture
+            /// </summary>
+            IncomingReinforcementOasis,
+            /// <summary>
+            /// Blue map picture
+            /// </summary>
+            HeroAdventure,
+            /// <summary>
+            /// Blue hat picture
+            /// </summary>
+            Settlers,
+        }
+
+
         public enum VillTypeEnum
         {
             _9c = 1,

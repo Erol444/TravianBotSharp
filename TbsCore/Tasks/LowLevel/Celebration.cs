@@ -10,19 +10,12 @@ using TravBotSharp.Files.Parsers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-    public class Celebration : UpdateDorf2
+    public class Celebration : BotTask
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await base.Execute(acc); // Navigate to dorf2
-
-            var townHall = Vill.Build
-                .Buildings
-                .FirstOrDefault(x => x.Type == Classificator.BuildingEnum.TownHall);
-
-            if (townHall == null) return TaskRes.Executed;
-
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={townHall.Id}");
+            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
+                return TaskRes.Executed;
 
             var celebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
             if (DateTime.Now <= celebrationEnd)
@@ -33,7 +26,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            var bigCeleb = Vill.Expansion.Celebrations == CelebrationEnum.Big && 10 <= townHall.Level;
+            var buildingNode = acc.Wb.Html.GetElementbyId("build");
+            (_, var level) = InfrastructureParser.UpgradeBuildingGetInfo(buildingNode);
+
+            var bigCeleb = Vill.Expansion.Celebrations == CelebrationEnum.Big && 10 <= level;
 
             // Check if enough resources to start a celebration
             if (!MiscCost.EnoughResForCelebration(Vill, bigCeleb))

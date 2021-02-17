@@ -12,8 +12,12 @@ namespace TravBotSharp.Files.Parsers
     {
         public static List<Building> GetBuildings(Account acc, HtmlAgilityPack.HtmlDocument htmlDoc)
         {
-            var fields = htmlDoc.GetElementbyId("village_map").ChildNodes.Where(x => x.Name == "div").ToList();
             List<Building> buildings = new List<Building>();
+            var villMap = htmlDoc.GetElementbyId("village_map");
+            if (villMap == null) return buildings;
+            
+            var fields = villMap.ChildNodes.Where(x => x.Name == "div").ToList();
+
             for (byte i = 0; i < fields.Count; i++)
             {
                 var vals = fields[i].GetAttributeValue("class", "").Split(' ');
@@ -25,11 +29,11 @@ namespace TravBotSharp.Files.Parsers
 
                 byte lvl;
                 // TODO: aid
-                var lvlNode = fields[i].Descendants("div").FirstOrDefault(x => x.HasClass("aid" + location));
+                var lvlNode = fields[i].Descendants().FirstOrDefault(x => x.HasClass("aid" + location));
                 if (lvlNode == null) lvl = 0;
                 else lvl = Convert.ToByte(lvlNode.InnerText);
 
-                var uc = fields[i].Descendants("div").FirstOrDefault(x => x.HasClass("underConstruction")) != null;
+                var uc = fields[i].Descendants().FirstOrDefault(x => x.HasClass("underConstruction")) != null;
                 //var b = fields[i].Child
                 var building = new Building();
                 buildings.Add(building.Init(
@@ -44,32 +48,24 @@ namespace TravBotSharp.Files.Parsers
             return buildings;
         }
 
-
+        /// <summary>
+        /// Get currently building (upgrading/constructing) buildings from dorf1/dorf2
+        /// </summary>
         public static List<BuildingCurrently> CurrentlyBuilding(HtmlAgilityPack.HtmlDocument htmlDoc, Account acc)
         {
             var finishButton = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("finishNow"));
             if (finishButton == null) return null;
+
             var ret = new List<BuildingCurrently>();
             foreach (var row in finishButton.ParentNode.Descendants("li").ToList())
             {
                 var duration = TimeParser.ParseTimer(row);
-                var nameArr = row.Descendants("div").FirstOrDefault(x => x.HasClass("name")).InnerText.Split('\t'); //[1].Trim();
-
-                var levelStr = row.Descendants("span").FirstOrDefault(x => x.HasClass("lvl")).InnerText;
-                string name = nameArr.FirstOrDefault(x => !string.IsNullOrEmpty(x.Replace("\r", "").Replace("\n", "")));
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.T4_4:
-                        name = name.Replace(levelStr, "");
-                        break;
-                }
-                var lvl = Parser.RemoveNonNumeric(levelStr);
+                var level = row.Descendants("span").FirstOrDefault(x => x.HasClass("lvl")).InnerText;
 
                 ret.Add(new BuildingCurrently()
                 {
                     Duration = DateTime.Now.Add(duration),
-                    Level = (byte)lvl,
-                    Building = Localizations.BuildingFromString(name, acc)
+                    Level = (byte)Parser.RemoveNonNumeric(level),
                 });
             }
             return ret;

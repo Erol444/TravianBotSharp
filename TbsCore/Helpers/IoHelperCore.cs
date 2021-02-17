@@ -23,13 +23,16 @@ namespace TravBotSharp.Files.Helpers
         public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
         public static string TbsPath =>
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TravBotSharp");
-
         public static bool SQLiteExists() => File.Exists(SqlitePath);
         public static bool AccountsTxtExists() => File.Exists(AccountsPath);
         public static string GetCacheDir(string username, string server, Access access)
         {
             return Path.Combine(IoHelperCore.CachePath, GetCacheFolder(username, server, access.Proxy));
         }
+        /// <summary>
+        /// Gets set by WinForms on startup, so TbsCore can alert user (sound+popup)
+        /// </summary>
+        public static Func<string, bool> AlertUser { get; set; }
 
         public static void AddBuildTasksFromFile(Account acc, Village vill, string location)
         {
@@ -47,7 +50,7 @@ namespace TravBotSharp.Files.Helpers
                     else tasks = JsonConvert.DeserializeObject<List<BuildingTask>>(sr.ReadToEnd());
                 }
             }
-            catch (Exception e) { return; } // User canceled
+            catch (Exception) { return; } // User canceled
 
             foreach (var task in tasks)
             {
@@ -139,6 +142,7 @@ namespace TravBotSharp.Files.Helpers
 
         /// <summary>
         /// Read accounts from the accounts.txt file
+        /// TODO: remove in future version
         /// </summary>
         /// <returns>Accounts saved in the file</returns>
         public static List<Account> ReadAccounts()
@@ -225,27 +229,6 @@ namespace TravBotSharp.Files.Helpers
                 acc.Wb = default;
             }
             acc.Tasks = default; //TODO: somehow save tasks, JSON cant parse/stringify abstract classes :(
-        }
-
-        /// <summary>
-        /// Gets a random useragent. Useragents written higher in the file are more popular, thus should be
-        /// used by the bot more frequently.
-        /// </summary>
-        /// <returns>Random useragent string</returns>
-        public static string GetUseragent()
-        {
-            Random rnd = new Random();
-            var agents = TbsCore.Files.Resources.useragents.Split('\n');
-            for (int i = 0; i < agents.Length; i++)
-            {
-                int limit = agents.Length - i;
-                int num = rnd.Next(1, limit);
-                if (num <= 1 + limit / 10)
-                {
-                    return agents[i].Replace("\r", "");
-                }
-            }
-            return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36";
         }
     }
 }

@@ -22,7 +22,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="task">BuildingTask to add</param>
         /// <param name="bottom">Whether to insert the BuildingTask on the bottom of the list</param>
         /// <returns>Whether the method completed successfully</returns>
-        public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true)
+        public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true, bool restart = true)
         {
             if (vill == null) return false;
             if (task.BuildingId == null ||
@@ -34,7 +34,7 @@ namespace TravBotSharp.Files.Helpers
             if (bottom) vill.Build.Tasks.Add(task);
             else vill.Build.Tasks.Insert(0, task);
 
-            if (acc.Wb != null) ReStartBuilding(acc, vill);
+            if (acc.Wb != null && restart) ReStartBuilding(acc, vill);
             return true;
         }
 
@@ -73,7 +73,9 @@ namespace TravBotSharp.Files.Helpers
 
             var FreeSites = vill.Build.Buildings
                 .Where(x => x.Type == BuildingEnum.Site && 19 <= x.Id && x.Id <= 39)
+                .OrderBy(a => Guid.NewGuid()) // Shuffle the free sites
                 .ToList();
+
             foreach (var FreeSite in FreeSites)
             {
                 if (!vill.Build.Tasks.Any(x => x.BuildingId == FreeSite.Id))
@@ -180,9 +182,29 @@ namespace TravBotSharp.Files.Helpers
             return (vill.Build.Buildings.FirstOrDefault(x => x.Level == lvl && x.Type == building) != null || vill.Build.Tasks.FirstOrDefault(x => x.Level == lvl && x.Building == building) != null);
         }
 
-        public static void RemoveFinishedCB(Village vill)
+        /// <summary>
+        /// Remove all finished "currently building"
+        /// </summary>
+        /// <param name="vill"></param>
+        /// <returns>Whether there were some tasks removed</returns>
+        public static bool RemoveFinishedCB(Village vill)
         {
-            vill.Build.CurrentlyBuilding.RemoveAll(x => x.Duration < DateTime.Now);
+            var tasksDone = vill.Build
+                .CurrentlyBuilding
+                .Where(x => x.Duration < DateTime.Now)
+                .ToList();
+
+            if (tasksDone.Count == 0) return false;
+
+            foreach(var taskDone in tasksDone)
+            {
+                var building = vill.Build.Buildings.First(x => x.Id == taskDone.Location);
+                if (building.Type != taskDone.Building) continue;
+
+                if(building.Level < taskDone.Level) building.Level = taskDone.Level;
+                vill.Build.CurrentlyBuilding.Remove(taskDone);
+            }
+            return true;
         }
 
         /// <summary>
@@ -396,6 +418,8 @@ namespace TravBotSharp.Files.Helpers
         /// <returns>Whether we have all prerequisite buildings</returns>
         public static bool AddBuildingPrerequisites(Account acc, Village vill, BuildingEnum building, bool bottom = true)
         {
+            RemoveFinishedCB(vill);
+
             (var tribe, var prereqs) = BuildingsData.GetBuildingPrerequisites(building);
             if (acc.AccInfo.Tribe != tribe && tribe != TribeEnum.Any) return false;
             if (prereqs.Count == 0) return true;
@@ -404,8 +428,10 @@ namespace TravBotSharp.Files.Helpers
             {
                 var prereqBuilding = vill.Build.Buildings.Where(x => x.Type == prereq.Building);
 
-                // Prerequired building already exists and is on on/above desired level
-                if (prereqBuilding.Any(x => prereq.Level <= x.Level)) continue;
+                // Prerequired building already exists and is on on/above/being upgraded on desired level
+                if (prereqBuilding.Any(x => 
+                        prereq.Level <= x.Level + (x.UnderConstruction ? 1 : 0))
+                    ) continue;
 
                 if (bottom && vill.Build.Tasks.Any(x => prereq.Building == x.Building &&
                                               prereq.Level <= x.Level)) continue;

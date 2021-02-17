@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.TroopsModels;
+using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
@@ -10,31 +12,39 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class AddFarm : BotTask
     {
         public int FarmListId { get; set; }
-        public Coordinates Coordinates { get; set; }
-        public List<TroopsRaw> Troops { get; set; }
+        public Farm Farm { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
-            wb.ExecuteScript($"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');"); //show "Add raid" popup
-            await Task.Delay(AccountHelper.Delay());
-            //select coordinates
-            wb.ExecuteScript($"document.getElementById('xCoordInput').value='{Coordinates.x}'");
-            wb.ExecuteScript($"document.getElementById('yCoordInput').value='{Coordinates.y}'");
-            await Task.Delay(AccountHelper.Delay());
+            // Show "Add raid" popup
+            await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');");
 
-            //add number of troops to the input boxes
-            foreach (var troop in Troops)
+            // Input coordinates
+            await DriverHelper.WriteCoordinates(acc, Farm.Coords);
+
+            // Input troops
+            for (int i = 0; i < Farm.Troops.Length; i++)
             {
-                int troopNum = (int)troop.Type % 10;
-                wb.ExecuteScript($"document.getElementsByName('{"t" + troopNum}')[0].value='{troop.Number}'");
+                if (Farm.Troops[i] == 0) continue;
+                await DriverHelper.WriteById(acc, $"t{i + 1}", Farm.Troops[i]);
             }
+
             await Task.Delay(AccountHelper.Delay());
 
-            //click "save"
-            wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
+            // Click "save"
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_4:
+                    wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
+                    break;
+                case Classificator.ServerVersionEnum.T4_5:
+                    await DriverHelper.ClickById(acc, "save");
+                    break;
+            }
+
             return TaskRes.Executed;
         }
     }

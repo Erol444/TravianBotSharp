@@ -10,68 +10,12 @@ namespace TravBotSharp.Files.Parsers
 {
     public static class ResourceParser
     {
-        // JS resources.storage returns resources
-        public static StoredResources GetResources(HtmlDocument htmlDoc)
-        {
-            return new StoredResources()
-            {
-                Resources = new Resources()
-                {
-                    Wood = ParseHtml(htmlDoc.GetElementbyId("l1").InnerText),
-                    Clay = ParseHtml(htmlDoc.GetElementbyId("l2").InnerText),
-                    Iron = ParseHtml(htmlDoc.GetElementbyId("l3").InnerText),
-                    Crop = ParseHtml(htmlDoc.GetElementbyId("l4").InnerText)
-                },
-                LastRefresh = DateTime.Now
-            };
-        }
-
-        // JS resources.production returns production
-        public static Resources GetProduction(HtmlAgilityPack.HtmlDocument htmlDoc)
-        {
-            var Res = htmlDoc.GetElementbyId("production").ChildNodes[3].ChildNodes;
-            //1,3,5,7
-
-            return new Resources()
-            {
-                Wood = ParseHtml(Res[1].ChildNodes[5].InnerText),
-                Clay = ParseHtml(Res[3].ChildNodes[5].InnerText),
-                Iron = ParseHtml(Res[5].ChildNodes[5].InnerText),
-                Crop = ParseHtml(Res[7].ChildNodes[5].InnerText)
-            };
-        }
         private static long ParseHtml(string text)
         {
             string decoded = System.Net.WebUtility.HtmlDecode(text);
             return Parser.RemoveNonNumeric(decoded);
         }
 
-        // JS resources.maxStorage returns capacity
-        public static ResourceCapacity GetResourceCapacity(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
-        {
-            string WarehouseCap = "";
-            string GranaryCap = "";
-
-            switch (version)
-            {
-                case Classificator.ServerVersionEnum.T4_4:
-                    WarehouseCap = htmlDoc.GetElementbyId("stockBarWarehouse").InnerText;
-                    GranaryCap = htmlDoc.GetElementbyId("stockBarGranary").InnerText;
-                    break;
-                case Classificator.ServerVersionEnum.T4_5:
-                    var cap = htmlDoc.DocumentNode.Descendants("div").Where(x => x.HasClass("capacity")).ToList();
-
-                    WarehouseCap = cap[0].Descendants("div").FirstOrDefault(x => x.HasClass("value")).InnerText;
-                    GranaryCap = cap[1].Descendants("div").FirstOrDefault(x => x.HasClass("value")).InnerText;
-                    break;
-
-            }
-            return new ResourceCapacity()
-            {
-                WarehouseCapacity = Parser.RemoveNonNumeric(WarehouseCap),
-                GranaryCapacity = Parser.RemoveNonNumeric(GranaryCap)
-            };
-        }
         public static List<Building> GetResourcefields(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
@@ -94,7 +38,7 @@ namespace TravBotSharp.Files.Parsers
                     }
                     return resFields;
                 case Classificator.ServerVersionEnum.T4_5:
-                    var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.Name == "div").ToList();
+                    var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.HasClass("level")).ToList();
                     List<Building> resFields5 = new List<Building>();
                     foreach (var field in fields5)
                     {

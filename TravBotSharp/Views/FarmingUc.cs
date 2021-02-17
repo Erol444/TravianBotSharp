@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Data;
 using System.Linq;
+using System.Windows.Forms;
 using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.TroopsModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Files.Tasks.SecondLevel;
 using TravBotSharp.Interfaces;
+using TravBotSharp.Forms;
 
 namespace TravBotSharp.Views
 {
@@ -17,6 +19,7 @@ namespace TravBotSharp.Views
             InitializeComponent();
             RaidStyle.Items.AddRange(new string[] { "No losses only", "Some losses", "All losses" });
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -33,6 +36,7 @@ namespace TravBotSharp.Views
                 UpdateFlInfo();
             }
         }
+
         private void StartFarm_Click(object sender, EventArgs e)//start farming
         {
             var acc = GetSelectedAcc();
@@ -62,7 +66,6 @@ namespace TravBotSharp.Views
             return acc.Farming.FL.ElementAtOrDefault(FlCombo.SelectedIndex) ?? acc.Farming.FL.FirstOrDefault();
         }
 
-
         private void UpdateFlInfo()
         {
             var fl = GetSelectedFL();
@@ -72,6 +75,7 @@ namespace TravBotSharp.Views
             FlEnabled.Checked = fl.Enabled;
             flInterval.Value = fl.Interval;
         }
+
         private void RaidStyle_SelectedIndexChanged(object sender, EventArgs e) //save raid style
         {
             GetSelectedFL().RaidStyle = (RaidStyle)RaidStyle.SelectedIndex;
@@ -117,5 +121,49 @@ namespace TravBotSharp.Views
         {
             GetSelectedFL().Interval = (int)flInterval.Value;
         }
+
+        /// <summary>
+        /// more farm open
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+
+            // This feature is not available for TTWars
+            if (acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_5)
+            {
+                MessageUser("This feature is only available for normal travian servers.");
+                return;
+            }
+
+            var fl = GetSelectedFL();
+            if (fl == null)
+            {
+                MessageUser("No FarmList selected!");
+                return;
+            }
+
+            var label = $"Inactive farm finder for the (Goldclub) Farm List {fl.Name}";
+            using (var form = new InactiveFinder(acc, label))
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    foreach (var item in form.InactiveFarms)
+                    {
+                        TaskExecutor.AddTask(acc, new AddFarm()
+                        {
+                            Farm = item,
+                            FarmListId = fl.Id,
+                        });
+                    };
+                }
+            }
+        }
+
+        private void MessageUser(string message) =>
+            MessageBox.Show(message, "Error", MessageBoxButtons.OK);
     }
 }

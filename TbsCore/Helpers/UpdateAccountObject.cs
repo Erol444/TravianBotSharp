@@ -14,7 +14,6 @@ namespace TravBotSharp.Files.Helpers
     {
         public static bool UpdateVillages(HtmlAgilityPack.HtmlDocument htmlDoc, Account acc)
         {
-            //Parse HTML
             List<VillageChecked> foundVills = RightBarParser.GetVillages(htmlDoc);
             if (foundVills.Count == 0) return false; //some problem in GetVillages function!
 
@@ -31,12 +30,14 @@ namespace TravBotSharp.Files.Helpers
                 }
                 oldVill.Name = foundVill.Name;
                 oldVill.Active = foundVill.Active;
+
                 if (oldVill.UnderAttack != foundVill.UnderAttack &&
                     foundVill.UnderAttack &&
                     oldVill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
                 {
-                    TaskExecutor.AddTaskIfNotExistInVillage(acc, oldVill, new CheckAttacks() { Vill = oldVill, ExecuteAt = DateTime.Now.AddMinutes(-30) });
+                    TaskExecutor.AddTaskIfNotExistInVillage(acc, oldVill, new CheckAttacks() { Vill = oldVill, Priority = Tasks.BotTask.TaskPriority.High });
                 }
+
                 oldVill.UnderAttack = foundVill.UnderAttack;
                 foundVills.Remove(foundVill);
             }
@@ -61,7 +62,8 @@ namespace TravBotSharp.Files.Helpers
                 Coordinates = newVill.Coordinates,
                 Id = newVill.Id,
                 Name = newVill.Name,
-                UnderAttack = newVill.UnderAttack
+                UnderAttack = newVill.UnderAttack,
+                UnfinishedTasks = new List<VillUnfinishedTask>() // Move this inside Init()?
             };
             vill.Init(acc);
             acc.Villages.Add(vill);
@@ -77,25 +79,25 @@ namespace TravBotSharp.Files.Helpers
             DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);
 
             // Copy default settings to the new village. TODO: use automapper for this.
-            var defaultSettings = acc.NewVillages.DefaultSettings;
-            vill.Settings = new VillSettings()
-            {
-                Type = defaultSettings.Type,
-                BarracksTrain = defaultSettings.BarracksTrain,
-                StableTrain = defaultSettings.StableTrain,
-                WorkshopTrain = defaultSettings.WorkshopTrain,
-                GreatBarracksTrain = defaultSettings.GreatBarracksTrain,
-                GreatStableTrain = defaultSettings.GreatStableTrain,
-                SendRes = defaultSettings.SendRes,
-                GetRes = defaultSettings.GetRes,
-            };
+            //var defaultSettings = acc.NewVillages.DefaultSettings;
+            //vill.Settings = new VillSettings()
+            //{
+            //    Type = defaultSettings.Type,
+            //    BarracksTrain = defaultSettings.BarracksTrain,
+            //    StableTrain = defaultSettings.StableTrain,
+            //    WorkshopTrain = defaultSettings.WorkshopTrain,
+            //    GreatBarracksTrain = defaultSettings.GreatBarracksTrain,
+            //    GreatStableTrain = defaultSettings.GreatStableTrain,
+            //    SendRes = defaultSettings.SendRes,
+            //    GetRes = defaultSettings.GetRes,
+            //};
 
             // Change village name
             var newVillageFromList = acc.NewVillages.Locations
                 .FirstOrDefault(x =>
                     x.SettlersSent &&
-                    x.coordinates.x == vill.Coordinates.x &&
-                    x.coordinates.y == vill.Coordinates.y
+                    x.Coordinates.x == vill.Coordinates.x &&
+                    x.Coordinates.y == vill.Coordinates.y
                     );
 
             if (newVillageFromList != null)

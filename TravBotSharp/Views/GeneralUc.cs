@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
@@ -351,7 +352,7 @@ namespace TravBotSharp.Views
 
         private void button9_Click(object sender, EventArgs e) // Change account access
         {
-            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new ChangeAccess() { 
+            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new ChangeAccess() {
                 ExecuteAt = DateTime.Now,
                 WaitSecMin = 0,
                 WaitSecMax = 1
@@ -386,7 +387,7 @@ namespace TravBotSharp.Views
                 ResSpendTypeEnum.Celebrations,
                 ResSpendTypeEnum.Building,
                 ResSpendTypeEnum.Troops
-            }; 
+            };
 
             resPrioView.Items.Clear();
             for (int i = 0; i < 3; i++)

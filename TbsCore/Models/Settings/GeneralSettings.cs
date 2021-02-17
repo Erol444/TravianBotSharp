@@ -13,7 +13,6 @@ namespace TbsCore.Models.Settings
             Time = new TimeSettings();
             Time.Init();
             Timing = new TimingData();
-            Localization = new Dictionary<string, BuildingEnum>();
             OpenMinimized = false;
             WatchAdAbove = 80;
             BonusPriority = new byte[4] { 0, 1, 2, 3 };
@@ -24,8 +23,8 @@ namespace TbsCore.Models.Settings
                 ResSpendTypeEnum.Troops 
             };
 
-            DonateAbove = 90;
-            DonateExcessOf = 50;
+            DonateAbove = 95;
+            DonateExcessOf = 65;
         }
         public bool AutoActivateProductionBoost { get; set; }
 
@@ -71,10 +70,6 @@ namespace TbsCore.Models.Settings
         /// Whether to close and reopen chrome if there is no task in the next 5 min
         /// </summary>
         public bool AutoCloseDriver { get; set; }
-        /// <summary>
-        /// Localization strings for buildings
-        /// </summary>
-        public Dictionary<string, BuildingEnum> Localization { get; set; }
         /// <summary>
         /// Whether to automatically add random tasks when there is no other task to be executed
         /// </summary>

@@ -13,8 +13,8 @@ namespace TbsCore.Models.AccModels
             Types = new List<Classificator.VillTypeEnum>();
             AutoSettleNewVillages = true;
             NameTemplate = "0#NUM#";
-            DefaultSettings = new VillSettings();
-            DefaultSettings.Init();
+            //DefaultSettings = new VillSettings();
+            //DefaultSettings.Init();
         }
         /// <summary>
         /// Auto settle new villages. This includes training settler when residence is 10.
@@ -39,7 +39,7 @@ namespace TbsCore.Models.AccModels
         /// <summary>
         /// The default village settings for all new villages. Configurable inside the overview tab.
         /// </summary>
-        public VillSettings DefaultSettings { get; set; }
+        //public VillSettings DefaultSettings { get; set; }
         /// <summary>
         /// Name template for new villages
         /// </summary>

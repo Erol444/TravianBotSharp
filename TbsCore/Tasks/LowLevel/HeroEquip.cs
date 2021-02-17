@@ -14,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php");
+            await HeroHelper.NavigateToHeroAttributes(acc);
 
             HeroHelper.ParseHeroPage(acc);
 

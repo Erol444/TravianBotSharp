@@ -10,7 +10,7 @@ namespace TravBotSharp.Files.Parsers
 {
     public static class RightBarParser
     {
-        public static CulturePoints GetCulurePoints(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static CulturePoints GetCulturePoints(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
 
             var slot = htmlDoc.GetElementbyId("sidebarBoxVillagelist");
@@ -41,41 +41,47 @@ namespace TravBotSharp.Files.Parsers
 
         public static List<VillageChecked> GetVillages(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
+            List<VillageChecked> ret = new List<VillageChecked>();
+
             try
             {
-                List<VillageChecked> VillageList = new List<VillageChecked>();
-
                 var villsNode = htmlDoc.GetElementbyId("sidebarBoxVillagelist");
-                if (villsNode == null) return VillageList;
+                if (villsNode == null) return ret;
+
                 var vills = villsNode.Descendants("li").ToList();
                 foreach (var node in vills)
                 {
                     bool underAttack = false, active = false;
 
-                    if (node.Attributes.Where(x => x.Name == "class").FirstOrDefault().Value.Contains("attack"))
+                    if (node.HasClass("attack"))
                         underAttack = true;
-                    if (node.Attributes.Where(x => x.Name == "class").FirstOrDefault().Value.Contains("active"))
+                    if (node.HasClass("active"))
                         active = true;
 
-                    var villId = Convert.ToInt32(node.ChildNodes.FirstOrDefault(x => x.Name == "a").Attributes.FirstOrDefault(x => x.Name == "href").Value.Split('=')[1].Split('&')[0]);
+                    var href = System.Net.WebUtility.HtmlDecode(node.ChildNodes.First(x => x.Name == "a").GetAttributeValue("href", ""));
+
+                    var villId = Convert.ToInt32(href.Split('=')[1].Split('&')[0]);
+
                     var villName = node.Descendants().FirstOrDefault(x => x.HasClass("name")).InnerText;
                     var coords = new Coordinates()
                     {
                         x = (int)Parser.ParseNum(node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateX")).InnerText.Replace("(", "")),
                         y = (int)Parser.ParseNum(node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateY")).InnerText.Replace(")", ""))
                     };
-                    VillageList.Add(new VillageChecked()
+
+                    ret.Add(new VillageChecked()
                     {
                         Id = villId,
                         UnderAttack = underAttack,
                         Name = villName,
                         Coordinates = coords,
-                        Active = active
+                        Active = active,
+                        Href = href,
                     });
                 }
-                return VillageList;
             }
-            catch (Exception e) { Console.WriteLine("error " + e.Message); return null; }
+            catch (Exception e) { Console.WriteLine("error " + e.Message); }
+            return ret;
 
         }
         public static bool HasPlusAccount(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)

@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
 using TbsCore.Database;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
+using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp
@@ -21,6 +23,7 @@ namespace TravBotSharp
         private System.Timers.Timer saveAccountsTimer;
 
         private ITbsUc[] Ucs;
+
         public ControlPanel()
         {
             InitializeComponent();
@@ -51,6 +54,9 @@ namespace TravBotSharp
             saveAccountsTimer.Start();
             saveAccountsTimer.Enabled = true;
             saveAccountsTimer.AutoReset = true;
+
+            // So TbsCore can access forms and alert user
+            IoHelperCore.AlertUser = IoHelperForms.AlertUser;
         }
 
         private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);
@@ -65,6 +71,9 @@ namespace TravBotSharp
             }
 
             accounts = DbRepository.GetAccounts();
+
+            accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
+
             RefreshAccView();
         }
 
@@ -108,6 +117,7 @@ namespace TravBotSharp
                     i == accSelected);
             }
         }
+
         private void InsertAccIntoListView(string nick, string url, string proxy, int port, bool selected = false)
         {
             var item = new ListViewItem();
@@ -121,7 +131,7 @@ namespace TravBotSharp
         private void button2_Click(object sender, EventArgs e) //login button
         {
             var acc = GetSelectedAcc();
-            if (acc.Access.AllAccess.Count > 0)
+            if (0 < acc.Access.AllAccess.Count)
             {
                 new Thread(() => _ = IoHelperCore.LoginAccount(acc)).Start();
                 generalUc1.UpdateBotRunning("true");
@@ -170,6 +180,7 @@ namespace TravBotSharp
             }
             accListView.Items[accSelected].SubItems[0].ForeColor = Color.FromName("DodgerBlue");
         }
+
         private void UpdateFrontEnd()
         {
             var acc = GetSelectedAcc();
@@ -196,6 +207,7 @@ namespace TravBotSharp
                 }
             }
         }
+
         public Account GetSelectedAcc()
         {
             try
@@ -203,7 +215,7 @@ namespace TravBotSharp
                 if (accounts.Count <= accSelected) return accounts.FirstOrDefault();
                 return accounts[accSelected];
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }
@@ -234,7 +246,7 @@ namespace TravBotSharp
 
         private void button4_Click(object sender, EventArgs e) // Logout all accounts
         {
-            new Thread(async () =>
+            new Thread(() =>
             {
                 foreach (var acc in accounts)
                 {

@@ -96,7 +96,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             acc.NewVillages.Locations.Add(new NewVillage()
             {
-                coordinates = closesCoords,
+                Coordinates = closesCoords,
                 Name = NewVillageHelper.GenerateName(acc),
             });
 

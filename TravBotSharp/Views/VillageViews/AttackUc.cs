@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
+using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
@@ -31,7 +32,7 @@ namespace TravBotSharp.Views
             {
                 foreach (var attk in sendWave)
                 {
-                    var coords = $"({attk.Coordinates.x}/{attk.Coordinates.y}) ";
+                    var coords = $"({attk.TargetCoordinates.x}/{attk.TargetCoordinates.y}) ";
                     var type = GetWaveType(attk);
                     richTextBox1.AppendText(coords + type + " - " + attk.Arrival + "\n");
                 }
@@ -49,7 +50,7 @@ namespace TravBotSharp.Views
                 var firstWave = task.SendWaveModels.FirstOrDefault();
 
                 item.SubItems[0].Text = sendWaveTask.Vill.Name; // name of the village you are sending from
-                item.SubItems.Add(firstWave.Coordinates.x + "/" + firstWave.Coordinates.y); //target coordinates
+                item.SubItems.Add(firstWave.TargetCoordinates.x + "/" + firstWave.TargetCoordinates.y); //target coordinates
                 item.SubItems.Add(GetWaveType(firstWave)); // type of the wave
                 item.SubItems.Add(task.ExecuteAt.ToString()); // execute at
                 item.SubItems.Add(firstWave.Arrival.ToString()); // arrive at
@@ -59,7 +60,7 @@ namespace TravBotSharp.Views
 
         private void confirmNewVill_Click(object sender, EventArgs e)
         {
-            var coords = new Coordinates() { x = (int)X.Value, y = (int)Y.Value };
+            var coords = coordinatesUc1.Coords;
             var numOfWaves = (int)WavesCount.Value;
             var perSec = (int)wavesPerSec.Value;
             var catas = (int)catasPerWave.Value;
@@ -69,22 +70,39 @@ namespace TravBotSharp.Views
             for (int i = 0; i < numOfWaves; i++)
             {
                 var attk = new SendWaveModel();
-                attk.Troops = new int[11];
+                attk.Troops = SendAllTroops();
                 if (i == 0)
                 {
-                    attk.AllOff = true;
                     attk.Arrival = firstWave;
                     attk.Troops[10] = hero.Checked ? 1 : 0;
                 }
                 else attk.DelayMs = (int)(1000 / perSec);
 
-                attk.Coordinates = coords;
+                attk.TargetCoordinates = coords;
                 attk.MovementType = Classificator.MovementType.Attack;
                 attk.Troops[7] = catas;
                 attacks.Add(attk);
             }
             sendWaves.Add(attacks);
             UpdateUc();
+        }
+
+        /// <summary>
+        ///  Populate the troops array with negative values - which means bot will send 
+        ///  all available units of that type
+        /// </summary>
+        private int[] SendAllTroops()
+        {
+            var ret = new int[11];
+            var acc = GetSelectedAcc();
+            for (int i = 0; i < 10; i++)
+            {
+                if (TroopsData.IsTroopOffensive(acc, i) || TroopsData.IsTroopRam(i))
+                {
+                    ret[i] = -1;
+                }
+            }
+            return ret;
         }
 
         private void sendNow_CheckedChanged(object sender, EventArgs e)
@@ -112,7 +130,7 @@ namespace TravBotSharp.Views
 
         private void button2_Click(object sender, EventArgs e) // Send fake
         {
-            var coords = new Coordinates() { x = (int)X.Value, y = (int)Y.Value };
+            var coords = coordinatesUc1.Coords;
             var numOfWaves = (int)WavesCount.Value;
             var perSec = (int)wavesPerSec.Value;
 
@@ -130,7 +148,7 @@ namespace TravBotSharp.Views
                 else attk.DelayMs = (int)(1000 / perSec);
 
                 attk.FakeAttack = true;
-                attk.Coordinates = coords;
+                attk.TargetCoordinates = coords;
                 attk.MovementType = Classificator.MovementType.Attack;
                 attk.Troops[7] = 1;
                 attacks.Add(attk);
@@ -152,7 +170,7 @@ namespace TravBotSharp.Views
         private string GetWaveType(SendWaveModel attk)
         {
             if (attk.FakeAttack) return "Fake attack";
-            else if (attk.AllOff) return "Real attack";
+            else if (attk.Troops.Any(x => x < 0)) return "Real attack";
             else return "Catas";
         }
     }

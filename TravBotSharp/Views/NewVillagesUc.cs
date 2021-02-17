@@ -28,8 +28,8 @@ namespace TravBotSharp.Views
                 foreach (var newvill in acc.NewVillages.Locations)
                 {
                     var item = new ListViewItem();
-                    item.SubItems[0].Text = newvill.coordinates.x.ToString();
-                    item.SubItems.Add(newvill.coordinates.y.ToString());
+                    item.SubItems[0].Text = newvill.Coordinates.x.ToString();
+                    item.SubItems.Add(newvill.Coordinates.y.ToString());
                     item.SubItems.Add(newvill.Name);
                     NewVillList.Items.Add(item);
                 }
@@ -67,7 +67,7 @@ namespace TravBotSharp.Views
             Coordinates c = new Coordinates();
             c.x = (int)XNewVill.Value;
             c.y = (int)YNewVill.Value;
-            GetSelectedAcc().NewVillages.Locations.Add(new NewVillage() { coordinates = c, Name = NewVillName.Text });
+            GetSelectedAcc().NewVillages.Locations.Add(new NewVillage() { Coordinates = c, Name = NewVillName.Text });
             //clear values
             XNewVill.Value = 0;
             YNewVill.Value = 0;

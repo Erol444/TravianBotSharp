@@ -18,7 +18,15 @@ namespace TravBotSharp.Files.Helpers
         public static int KidFromCoordinates(Coordinates coords, Account acc)
         {
             return 1 + ((acc.AccInfo.MapSize - coords.y) * (acc.AccInfo.MapSize * 2 + 1)) + acc.AccInfo.MapSize + coords.x;
+
         }
+
+        public static Coordinates CoordinatesFromKid(int? kid, Account acc)
+        {
+            if (kid == null) return null;
+            return CoordinatesFromKid(kid ?? 0, acc);
+        }
+
         public static Coordinates CoordinatesFromKid(int kid, Account acc)
         {
             var size = acc.AccInfo.MapSize;

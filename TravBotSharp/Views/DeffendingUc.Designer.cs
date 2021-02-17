@@ -28,29 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            XPTable.Models.DataSourceColumnBinder dataSourceColumnBinder7 = new XPTable.Models.DataSourceColumnBinder();
-            XPTable.Renderers.DragDropRenderer dragDropRenderer7 = new XPTable.Renderers.DragDropRenderer();
-            XPTable.Models.DataSourceColumnBinder dataSourceColumnBinder8 = new XPTable.Models.DataSourceColumnBinder();
-            XPTable.Renderers.DragDropRenderer dragDropRenderer8 = new XPTable.Renderers.DragDropRenderer();
+            XPTable.Models.DataSourceColumnBinder dataSourceColumnBinder1 = new XPTable.Models.DataSourceColumnBinder();
+            XPTable.Renderers.DragDropRenderer dragDropRenderer1 = new XPTable.Renderers.DragDropRenderer();
+            XPTable.Models.DataSourceColumnBinder dataSourceColumnBinder2 = new XPTable.Models.DataSourceColumnBinder();
+            XPTable.Renderers.DragDropRenderer dragDropRenderer2 = new XPTable.Renderers.DragDropRenderer();
+            TbsCore.Models.MapModels.Coordinates coordinates1 = new TbsCore.Models.MapModels.Coordinates();
             this.SaveButton = new System.Windows.Forms.Button();
             this.table1 = new XPTable.Models.Table();
             this.XpTableGlobal = new XPTable.Models.Table();
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.minPopNatar = new System.Windows.Forms.NumericUpDown();
+            this.maxDeff = new System.Windows.Forms.NumericUpDown();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
+            this.sendDeffCoords = new TravBotSharp.UserControls.CoordinatesUc();
+            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.XpTableGlobal)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.minPopNatar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maxDeff)).BeginInit();
             this.SuspendLayout();
             // 
             // SaveButton
@@ -68,9 +64,9 @@
             // 
             this.table1.BorderColor = System.Drawing.Color.Black;
             this.table1.DataMember = null;
-            this.table1.DataSourceColumnBinder = dataSourceColumnBinder7;
-            dragDropRenderer7.ForeColor = System.Drawing.Color.Red;
-            this.table1.DragDropRenderer = dragDropRenderer7;
+            this.table1.DataSourceColumnBinder = dataSourceColumnBinder1;
+            dragDropRenderer1.ForeColor = System.Drawing.Color.Red;
+            this.table1.DragDropRenderer = dragDropRenderer1;
             this.table1.GridLinesContrainedToData = false;
             this.table1.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.table1.Location = new System.Drawing.Point(0, 82);
@@ -85,9 +81,9 @@
             // 
             this.XpTableGlobal.BorderColor = System.Drawing.Color.Black;
             this.XpTableGlobal.DataMember = null;
-            this.XpTableGlobal.DataSourceColumnBinder = dataSourceColumnBinder8;
-            dragDropRenderer8.ForeColor = System.Drawing.Color.Red;
-            this.XpTableGlobal.DragDropRenderer = dragDropRenderer8;
+            this.XpTableGlobal.DataSourceColumnBinder = dataSourceColumnBinder2;
+            dragDropRenderer2.ForeColor = System.Drawing.Color.Red;
+            this.XpTableGlobal.DragDropRenderer = dragDropRenderer2;
             this.XpTableGlobal.GridLinesContrainedToData = false;
             this.XpTableGlobal.HeaderFont = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.XpTableGlobal.Location = new System.Drawing.Point(0, 3);
@@ -120,77 +116,26 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(813, 166);
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(810, 164);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(83, 23);
+            this.button1.Size = new System.Drawing.Size(92, 22);
             this.button1.TabIndex = 6;
             this.button1.Text = "Send deff";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click_1);
             // 
-            // label2
+            // maxDeff
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(810, 107);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(14, 13);
-            this.label2.TabIndex = 140;
-            this.label2.Text = "Y";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(810, 84);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(14, 13);
-            this.label3.TabIndex = 139;
-            this.label3.Text = "X";
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.Location = new System.Drawing.Point(830, 105);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
-            400,
-            0,
+            this.maxDeff.Location = new System.Drawing.Point(813, 131);
+            this.maxDeff.Maximum = new decimal(new int[] {
+            1215752191,
+            23,
             0,
             0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            -2147483648});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(75, 20);
-            this.numericUpDown1.TabIndex = 138;
-            // 
-            // numericUpDown2
-            // 
-            this.numericUpDown2.Location = new System.Drawing.Point(830, 82);
-            this.numericUpDown2.Maximum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            0});
-            this.numericUpDown2.Minimum = new decimal(new int[] {
-            400,
-            0,
-            0,
-            -2147483648});
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(75, 20);
-            this.numericUpDown2.TabIndex = 137;
-            // 
-            // minPopNatar
-            // 
-            this.minPopNatar.Location = new System.Drawing.Point(813, 131);
-            this.minPopNatar.Maximum = new decimal(new int[] {
-            9999999,
-            0,
-            0,
-            0});
-            this.minPopNatar.Name = "minPopNatar";
-            this.minPopNatar.Size = new System.Drawing.Size(92, 20);
-            this.minPopNatar.TabIndex = 141;
+            this.maxDeff.Name = "maxDeff";
+            this.maxDeff.Size = new System.Drawing.Size(92, 20);
+            this.maxDeff.TabIndex = 141;
             // 
             // label4
             // 
@@ -206,34 +151,43 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(798, 151);
+            this.label5.Location = new System.Drawing.Point(800, 151);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(107, 12);
+            this.label5.Size = new System.Drawing.Size(111, 12);
             this.label5.TabIndex = 143;
-            this.label5.Text = "If 0, send all deff at home";
+            this.label5.Text = "If 0, send all available deff";
             // 
-            // label6
+            // sendDeffCoords
             // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(754, 192);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(190, 12);
-            this.label6.TabIndex = 144;
-            this.label6.Text = "Will only send deff from villages of type \"Deff\"";
+            this.sendDeffCoords.BackColor = System.Drawing.SystemColors.ControlDark;
+            coordinates1.x = 0;
+            coordinates1.y = 0;
+            this.sendDeffCoords.Coords = coordinates1;
+            this.sendDeffCoords.Location = new System.Drawing.Point(802, 69);
+            this.sendDeffCoords.Name = "sendDeffCoords";
+            this.sendDeffCoords.Size = new System.Drawing.Size(113, 56);
+            this.sendDeffCoords.TabIndex = 144;
+            // 
+            // button3
+            // 
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(810, 359);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(92, 22);
+            this.button3.TabIndex = 146;
+            this.button3.Text = "Cut waves";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // DeffendingUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label6);
+            this.Controls.Add(this.button3);
+            this.Controls.Add(this.sendDeffCoords);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.minPopNatar);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.numericUpDown1);
-            this.Controls.Add(this.numericUpDown2);
+            this.Controls.Add(this.maxDeff);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button2);
@@ -244,9 +198,7 @@
             this.Size = new System.Drawing.Size(1011, 628);
             ((System.ComponentModel.ISupportInitialize)(this.table1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.XpTableGlobal)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.minPopNatar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maxDeff)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -259,13 +211,10 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.NumericUpDown minPopNatar;
+        private System.Windows.Forms.NumericUpDown maxDeff;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
+        private UserControls.CoordinatesUc sendDeffCoords;
+        private System.Windows.Forms.Button button3;
     }
 }

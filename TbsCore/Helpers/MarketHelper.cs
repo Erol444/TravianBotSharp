@@ -119,11 +119,13 @@ namespace TravBotSharp.Files.Helpers
             if (acc.AccInfo.GoldClub ?? false) times = 3;
             else if (acc.AccInfo.PlusAccount) times = 2;
 
+            // No resources to send
+            if (resources.Sum() == 0) return TimeSpan.Zero;
+
             var sendRes = resources.Select(x => x / times).ToArray();
 
             //round the resources that we want to send, so it looks less like a bot
 
-            //TODO: check if we have enough merchants
             (var merchantsCapacity, var merchantsNum) = MarketHelper.ParseMerchantsInfo(acc.Wb.Html);
             // We don't have any merchants.
             if (merchantsNum == 0)
@@ -166,10 +168,8 @@ namespace TravBotSharp.Files.Helpers
                 await Task.Delay(AccountHelper.Delay() / 5);
             }
 
-            await DriverHelper.WriteById(acc, "xCoordInput", targetVillage.Coordinates.x);
-            await Task.Delay(AccountHelper.Delay() / 5);
-            await DriverHelper.WriteById(acc, "yCoordInput", targetVillage.Coordinates.y);
-            await Task.Delay(AccountHelper.Delay() / 5);
+            // Input coordinates
+            await DriverHelper.WriteCoordinates(acc, targetVillage.Coordinates);
 
             //Select x2/x3
             if (times != 1)
@@ -181,7 +181,10 @@ namespace TravBotSharp.Files.Helpers
 
             var durNode = acc.Wb.Html.GetElementbyId("target_validate");
 
-
+            if(durNode == null && acc.Wb.Html.GetElementbyId("prepareError") != null)
+            {
+                // Error "Abuse! You have not enough resources." is displayed.
+            }
             //get duration of transit
             var dur = durNode.Descendants("td").ToList()[3].InnerText.Replace("\t", "").Replace("\n", "");
 

@@ -9,6 +9,8 @@ namespace TbsCore.Models.Settings
             GetRes = true;
             SendRes = false;
             UseHeroRes = true;
+            RefreshMin = 30;
+            RefreshMax = 60;
         }
         public VillType Type { get; set; }
         public Classificator.TroopsEnum BarracksTrain { get; set; }
@@ -28,6 +30,12 @@ namespace TbsCore.Models.Settings
         /// Donate excess resources to alliance bonus
         /// </summary>
         public DonateEnum Donate { get; set; }
+
+        /// <summary>
+        /// Refresh village min/max interval
+        /// </summary>
+        public int RefreshMin { get; set; }
+        public int RefreshMax { get; set; }
     }
 
     public enum VillType

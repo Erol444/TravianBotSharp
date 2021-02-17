@@ -17,8 +17,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/hero.php?t=3");
 
+            await VersionHelper.Navigate(acc, "/hero.php?t=3", "/hero/adventures");
+            
             acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
             HeroHelper.UpdateHeroVillage(acc);

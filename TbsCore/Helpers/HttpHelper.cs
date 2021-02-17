@@ -8,11 +8,9 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class HttpHelper
     {
-        public static (CookieContainer, string) GetCookies(Account acc)
+        public static CookieContainer GetCookies(Account acc)
         {
             var cookies = acc.Wb.GetCookies();
-
-            cookies.TryGetValue("PHPSESSID", out var phpsessid);
 
             var cookieContainer = new CookieContainer();
             var cookiesStr = "";
@@ -23,16 +21,12 @@ namespace TravBotSharp.Files.Helpers
             cookiesStr = cookiesStr.Remove(cookiesStr.Length - 1);
 
             cookieContainer.SetCookies(new System.Uri(acc.AccInfo.ServerUrl), cookiesStr);
-            return (cookieContainer, phpsessid);
+            return cookieContainer;
         }
 
         public static string SendPostReq(Account acc, RestRequest req)
         {
-            (CookieContainer container, string phpsessid) = HttpHelper.GetCookies(acc);
-
-            acc.Wb.RestClient.CookieContainer = container;
-
-            req.AddHeader("Cookie", "PHPSESSID=" + phpsessid + ";");
+            acc.Wb.RestClient.CookieContainer = HttpHelper.GetCookies(acc);
 
             var response = acc.Wb.RestClient.Execute(req);
             if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
@@ -42,16 +36,13 @@ namespace TravBotSharp.Files.Helpers
 
         public static HtmlAgilityPack.HtmlDocument SendGetReq(Account acc, string url)
         {
-            (CookieContainer container, string phpsessid) = HttpHelper.GetCookies(acc);
-
-            acc.Wb.RestClient.CookieContainer = container;
+            acc.Wb.RestClient.CookieContainer = HttpHelper.GetCookies(acc);
 
             var req = new RestRequest
             {
                 Resource = url,
                 Method = Method.GET,
             };
-            req.AddHeader("Cookie", "PHPSESSID=" + phpsessid + ";");
 
             var response = acc.Wb.RestClient.Execute(req);
             if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!" + response.StatusCode);

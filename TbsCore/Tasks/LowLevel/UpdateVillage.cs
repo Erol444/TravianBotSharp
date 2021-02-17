@@ -1,6 +1,8 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
+using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 
@@ -33,7 +35,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await Task.Delay(AccountHelper.Delay());
             await UpdateTroopsTraining(acc);
 
-            var firstTroop = TroopsHelper.TribeFirstTroop(acc.AccInfo.Tribe);
+            var firstTroop = TroopsData.TribeFirstTroop(acc.AccInfo.Tribe);
             Vill.Troops.TroopToTrain = firstTroop;
             Vill.Troops.Researched.Add(firstTroop);
 
@@ -52,15 +54,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (acc.AccInfo.PlusAccount)
             {
                 // From overview we get all researched troops and their levels
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.T4_4:
-                        await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf3.php?s=5&su=2");
-                        break;
-                    case Classificator.ServerVersionEnum.T4_5:
-                        await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/village/statistics/troops?su=2");
-                        break;
-                }
+                await VersionHelper.Navigate(acc, "/dorf3.php?s=5&su=2", "/village/statistics/troops?su=2");
+                
                 OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);
                 // We have updated all villages at the same time. No need to continue.
                 acc.Tasks.RemoveAll(x => x.GetType() == typeof(UpdateTroops));

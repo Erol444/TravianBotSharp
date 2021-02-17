@@ -18,6 +18,7 @@ namespace TravBotSharp.Files.Models.AccModels
         // Average log length is 70 chars. 20 overhead + 70 * 2 (each char => 2 bytes)
         // Average memory consumption for logs will thus be: 160 * maxLogCnt => ~500kB
         private const int maxLogCnt = 1000;
+
         public WebBrowserInfo()
         {
             Logs = new CircularBuffer<string>(maxLogCnt);
@@ -29,6 +30,7 @@ namespace TravBotSharp.Files.Models.AccModels
         public string CurrentUrl => this.Driver.Url;
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
+
         /// <summary>
         /// Http client, configured with proxy
         /// </summary>
@@ -36,9 +38,12 @@ namespace TravBotSharp.Files.Models.AccModels
 
         // Account Logs
         public CircularBuffer<string> Logs { get; set; }
+
         public event EventHandler LogHandler;
+
         public void Log(string message, Exception e) =>
                     Log(message + $"\n---------------------------\n{e}\n---------------------------\n");
+
         public void Log(string msg)
         {
             msg = DateTime.Now.ToString("HH:mm:ss") + ": " + msg;
@@ -46,6 +51,7 @@ namespace TravBotSharp.Files.Models.AccModels
 
             LogHandler?.Invoke(typeof(WebBrowserInfo), new LogEventArgs() { Log = msg });
         }
+
         public class LogEventArgs : EventArgs
         {
             public string Log { get; set; }
@@ -95,12 +101,10 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
 
                 options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
-                options.AddArgument("ignore-certificate-errors");
+                options.AddArgument("ignore-certificate-errors"); // --ignore-certificate-errors ?
             }
-            if (!string.IsNullOrEmpty(access.UserAgent))
-            {
-                options.AddArgument("--user-agent=" + access.UserAgent);
-            }
+
+            options.AddArgument($"--user-agent={access.UserAgent}");
 
             //options.AddArguments("--disable-logging");
             //options.AddArguments("--disable-metrics");
@@ -111,7 +115,6 @@ namespace TravBotSharp.Files.Models.AccModels
 
             // Mute audio because of the Ads
             options.AddArguments("--mute-audio");
-
 
             // Make browser headless to preserve memory resources
             if (acc.Settings.HeadlessMode) options.AddArguments("headless");
@@ -140,7 +143,6 @@ namespace TravBotSharp.Files.Models.AccModels
 
                 // Set timeout
                 this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
-
             }
             catch (Exception e)
             {
@@ -176,7 +178,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 catch (Exception e)
                 {
                     if (acc.Wb == null) return;
-                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet", e);
+                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened", e);
                     repeat = true;
                     if (5 <= ++repeatCnt && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {
@@ -198,6 +200,7 @@ namespace TravBotSharp.Files.Models.AccModels
         }
 
         public void UpdateHtml() => Html.LoadHtml(Driver.PageSource);
+
         public void Dispose()
         {
             while (Driver != default)

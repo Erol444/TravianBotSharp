@@ -38,7 +38,7 @@ namespace TravBotSharp.Views
                 r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
                 r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
                 r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
-                r.Cells.Add(new Cell(vill.Settings.AutoImprove)); // Auto-improve troops
+                r.Cells.Add(new Cell("", vill.Settings.AutoImprove)); // Auto-improve troops
                 tableModelMain.Rows.Add(r);
             }
         }
@@ -60,7 +60,7 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell(vill.Settings.StableTrain.ToString())); //stable training
             r.Cells.Add(new Cell("", vill.Settings.GreatStableTrain)); //GS
             r.Cells.Add(new Cell(vill.Settings.WorkshopTrain.ToString())); //workshop training
-            r.Cells.Add(new Cell(vill.Settings.AutoImprove)); // Auto-improve troops
+            r.Cells.Add(new Cell("", vill.Settings.AutoImprove)); // Auto-improve troops
             tableModelGlobal.Rows.Add(r);
 
             //var newVills = acc.NewVillages.DefaultSettings;
@@ -191,13 +191,28 @@ namespace TravBotSharp.Views
             ret.Add("None");
             var acc = GetSelectedAcc();
             if (acc.Villages.Count == 0) return ret.ToArray(); //Acc has now been initialised
-            int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
-            for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
+
+            var tribes = new List<Classificator.TribeEnum>(5);
+            if (NYS.Checked)
             {
-                Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
-                if (TroopsHelper.GetTroopBuilding(troop, false) == building)
+                tribes.Add(Classificator.TribeEnum.Egyptians);
+                tribes.Add(Classificator.TribeEnum.Gauls);
+                tribes.Add(Classificator.TribeEnum.Huns);
+                tribes.Add(Classificator.TribeEnum.Romans);
+                tribes.Add(Classificator.TribeEnum.Teutons);
+            }
+            else tribes.Add(acc.AccInfo.Tribe ?? Classificator.TribeEnum.Any);
+
+            foreach (var tribe in tribes)
+            {
+                int troopsEnum = ((int)tribe - 1) * 10;
+                for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
                 {
-                    ret.Add(VillageHelper.EnumStrToString(troop.ToString()));
+                    Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
+                    if (TroopsHelper.GetTroopBuilding(troop, false) == building)
+                    {
+                        ret.Add(VillageHelper.EnumStrToString(troop.ToString()));
+                    }
                 }
             }
             return ret.ToArray();
@@ -343,12 +358,12 @@ namespace TravBotSharp.Views
                     IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
                 }
             }
-
         }
 
-        private void button3_Click(object sender, EventArgs e) // Save new village settings
+        private void NYS_CheckedChanged(object sender, EventArgs e)
         {
-
+            if (!NYS.Checked) return;
+            UpdateUc();
         }
     }
 }
