@@ -60,8 +60,5 @@ jobs:
     steps:
       - name: Send to Discord Server
         run: |
-            echo ${{ secrets.DISCORD_BOT }}
-            curl -X POST`
-            -H "Content-Type: application/json"`
-            -d '{"content":"@here We have another build for you guys\n Check <#750744155239743548>","embeds":[{"title":"Download","url":"https://nightly.link/Erol444/TravianBotSharp/workflows/main/master/TBS.zip"}]}' "${{ secrets.DISCORD_BOT }}"
+            curl -X POST -H "Content-Type: application/json" -d '{\"content\":\"@here We have another build for you guys\n Check <#750744155239743548>\",\"embeds\":[{\"title\":\"Download\",\"url\":\"https://nightly.link/Erol444/TravianBotSharp/workflows/main/master/TBS.zip\"}]}' ${{ secrets.DISCORD_BOT }}
       
