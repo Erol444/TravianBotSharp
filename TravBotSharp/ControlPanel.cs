@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 using System.Windows.Forms;
+using Discord.Webhook;
 using TbsCore.Database;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
@@ -21,7 +22,6 @@ namespace TravBotSharp
         private List<Account> accounts = new List<Account>();
         private int accSelected = 0;
         private System.Timers.Timer saveAccountsTimer;
-
         private ITbsUc[] Ucs;
 
         public ControlPanel()
@@ -43,6 +43,7 @@ namespace TravBotSharp
                 newVillagesUc1,
                 deffendingUc1,
                 questsUc1,
+                discordUc1,
                 debugUc1,
             };
 

@@ -48,6 +48,7 @@
             this.deffendingUc1 = new TravBotSharp.Views.DeffendingUc();
             this.questsTab = new System.Windows.Forms.TabPage();
             this.questsUc1 = new TravBotSharp.Views.QuestsUc();
+            this.discordTab = new System.Windows.Forms.TabPage();
             this.debugTab = new System.Windows.Forms.TabPage();
             this.debugUc1 = new TravBotSharp.Views.DebugUc();
             this.button2 = new System.Windows.Forms.Button();
@@ -64,6 +65,7 @@
             this.button4 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.discordUc1 = new TravBotSharp.Views.DiscordUc();
             this.accTabController.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
@@ -74,6 +76,7 @@
             this.newVillagesTab.SuspendLayout();
             this.deffendingTab.SuspendLayout();
             this.questsTab.SuspendLayout();
+            this.discordTab.SuspendLayout();
             this.debugTab.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel4.SuspendLayout();
@@ -103,6 +106,7 @@
             this.accTabController.Controls.Add(this.newVillagesTab);
             this.accTabController.Controls.Add(this.deffendingTab);
             this.accTabController.Controls.Add(this.questsTab);
+            this.accTabController.Controls.Add(this.discordTab);
             this.accTabController.Controls.Add(this.debugTab);
             this.accTabController.Dock = System.Windows.Forms.DockStyle.Fill;
             this.accTabController.Location = new System.Drawing.Point(0, 0);
@@ -289,6 +293,18 @@
             this.questsUc1.Size = new System.Drawing.Size(957, 629);
             this.questsUc1.TabIndex = 0;
             // 
+            // discordTab
+            // 
+            this.discordTab.Controls.Add(this.discordUc1);
+            this.discordTab.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.discordTab.Location = new System.Drawing.Point(4, 22);
+            this.discordTab.Name = "discordTab";
+            this.discordTab.Padding = new System.Windows.Forms.Padding(3);
+            this.discordTab.Size = new System.Drawing.Size(963, 635);
+            this.discordTab.TabIndex = 11;
+            this.discordTab.Text = "Discord";
+            this.discordTab.UseVisualStyleBackColor = true;
+            // 
             // debugTab
             // 
             this.debugTab.Controls.Add(this.debugUc1);
@@ -450,6 +466,13 @@
             this.panel5.Size = new System.Drawing.Size(971, 661);
             this.panel5.TabIndex = 12;
             // 
+            // discordUc1
+            // 
+            this.discordUc1.Location = new System.Drawing.Point(2, 2);
+            this.discordUc1.Name = "discordUc1";
+            this.discordUc1.Size = new System.Drawing.Size(950, 536);
+            this.discordUc1.TabIndex = 0;
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -470,6 +493,7 @@
             this.newVillagesTab.ResumeLayout(false);
             this.deffendingTab.ResumeLayout(false);
             this.questsTab.ResumeLayout(false);
+            this.discordTab.ResumeLayout(false);
             this.debugTab.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
@@ -517,5 +541,7 @@
         private System.Windows.Forms.TabPage troopsTab;
         private Views.OverviewTroopsUc overviewTroopsUc1;
         private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.TabPage discordTab;
+        private Views.DiscordUc discordUc1;
     }
 }

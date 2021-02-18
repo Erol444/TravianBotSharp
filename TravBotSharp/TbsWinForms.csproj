@@ -350,6 +350,12 @@
     <Compile Include="Views\BaseViews\BaseVillageUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Views\DiscordUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\DiscordUc.Designer.cs">
+      <DependentUpon>DiscordUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\OverviewTroopsUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -495,6 +501,9 @@
     </Compile>
     <EmbeddedResource Include="UserControls\CoordinatesUc.resx">
       <DependentUpon>CoordinatesUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\DiscordUc.resx">
+      <DependentUpon>DiscordUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\OverviewTroopsUc.resx">
       <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
