@@ -29,9 +29,9 @@ namespace TravBotSharp.Views
         /// </summary>
         private void InitializeComponent()
         {
-            this.Add = new System.Windows.Forms.Button();
-            this.Delete = new System.Windows.Forms.Button();
-            this.Test = new System.Windows.Forms.Button();
+            this.BtnAdd = new System.Windows.Forms.Button();
+            this.BtnDelete = new System.Windows.Forms.Button();
+            this.BtnTest = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.textboxWebhookURL = new System.Windows.Forms.TextBox();
@@ -39,35 +39,45 @@ namespace TravBotSharp.Views
             this.UserList = new System.Windows.Forms.ListView();
             this.discordIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.discordNameHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.Show = new System.Windows.Forms.Button();
+            this.BtnShow = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.DiscordAll = new System.Windows.Forms.RadioButton();
+            this.DiscordHere = new System.Windows.Forms.RadioButton();
+            this.DiscordUserList = new System.Windows.Forms.RadioButton();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // Add
+            // BtnAdd
             // 
-            this.Add.Location = new System.Drawing.Point(317, 94);
-            this.Add.Name = "Add";
-            this.Add.Size = new System.Drawing.Size(78, 20);
-            this.Add.TabIndex = 2;
-            this.Add.Text = "Add";
-            this.Add.UseVisualStyleBackColor = true;
+            this.BtnAdd.Location = new System.Drawing.Point(172, 1);
+            this.BtnAdd.Name = "BtnAdd";
+            this.BtnAdd.Size = new System.Drawing.Size(78, 20);
+            this.BtnAdd.TabIndex = 2;
+            this.BtnAdd.Text = "Add";
+            this.BtnAdd.UseVisualStyleBackColor = true;
+            this.BtnAdd.Click += new System.EventHandler(this.BtnAdd_Click);
             // 
-            // Delete
+            // BtnDelete
             // 
-            this.Delete.Location = new System.Drawing.Point(401, 94);
-            this.Delete.Name = "Delete";
-            this.Delete.Size = new System.Drawing.Size(78, 20);
-            this.Delete.TabIndex = 3;
-            this.Delete.Text = "Delete";
-            this.Delete.UseVisualStyleBackColor = true;
+            this.BtnDelete.Location = new System.Drawing.Point(255, 1);
+            this.BtnDelete.Name = "BtnDelete";
+            this.BtnDelete.Size = new System.Drawing.Size(78, 20);
+            this.BtnDelete.TabIndex = 3;
+            this.BtnDelete.Text = "Delete";
+            this.BtnDelete.UseVisualStyleBackColor = true;
+            this.BtnDelete.Click += new System.EventHandler(this.BtnDelete_Click);
             // 
-            // Test
+            // BtnTest
             // 
-            this.Test.Location = new System.Drawing.Point(146, 324);
-            this.Test.Name = "Test";
-            this.Test.Size = new System.Drawing.Size(333, 40);
-            this.Test.TabIndex = 4;
-            this.Test.Text = "TEST";
-            this.Test.UseVisualStyleBackColor = true;
+            this.BtnTest.Location = new System.Drawing.Point(146, 355);
+            this.BtnTest.Name = "BtnTest";
+            this.BtnTest.Size = new System.Drawing.Size(333, 40);
+            this.BtnTest.TabIndex = 4;
+            this.BtnTest.Text = "TEST";
+            this.BtnTest.UseVisualStyleBackColor = true;
             // 
             // label1
             // 
@@ -81,7 +91,7 @@ namespace TravBotSharp.Views
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(97, 94);
+            this.label2.Location = new System.Drawing.Point(97, 125);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(46, 13);
             this.label2.TabIndex = 6;
@@ -97,7 +107,7 @@ namespace TravBotSharp.Views
             // 
             // textboxUserId
             // 
-            this.textboxUserId.Location = new System.Drawing.Point(146, 94);
+            this.textboxUserId.Location = new System.Drawing.Point(1, 1);
             this.textboxUserId.Name = "textboxUserId";
             this.textboxUserId.Size = new System.Drawing.Size(165, 20);
             this.textboxUserId.TabIndex = 10;
@@ -111,13 +121,14 @@ namespace TravBotSharp.Views
             this.UserList.FullRowSelect = true;
             this.UserList.GridLines = true;
             this.UserList.HideSelection = false;
-            this.UserList.Location = new System.Drawing.Point(146, 120);
+            this.UserList.Location = new System.Drawing.Point(1, 27);
             this.UserList.MultiSelect = false;
             this.UserList.Name = "UserList";
             this.UserList.Size = new System.Drawing.Size(333, 198);
             this.UserList.TabIndex = 31;
             this.UserList.UseCompatibleStateImageBehavior = false;
             this.UserList.View = System.Windows.Forms.View.Details;
+            this.UserList.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.UserList_ItemSelectionChanged);
             // 
             // discordIdHeader
             // 
@@ -130,39 +141,108 @@ namespace TravBotSharp.Views
             this.discordNameHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.discordNameHeader.Width = 192;
             // 
-            // Show
+            // BtnShow
             // 
-            this.Show.Location = new System.Drawing.Point(401, 66);
-            this.Show.Name = "Show";
-            this.Show.Size = new System.Drawing.Size(78, 20);
-            this.Show.TabIndex = 32;
-            this.Show.Text = "Show";
-            this.Show.UseVisualStyleBackColor = true;
+            this.BtnShow.Location = new System.Drawing.Point(401, 66);
+            this.BtnShow.Name = "BtnShow";
+            this.BtnShow.Size = new System.Drawing.Size(78, 20);
+            this.BtnShow.TabIndex = 32;
+            this.BtnShow.Text = "Show";
+            this.BtnShow.UseVisualStyleBackColor = true;
+            this.BtnShow.Click += new System.EventHandler(this.BtnShow_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(69, 93);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(74, 13);
+            this.label3.TabIndex = 34;
+            this.label3.Text = "Who got ping:";
+            // 
+            // DiscordAll
+            // 
+            this.DiscordAll.AutoSize = true;
+            this.DiscordAll.Checked = true;
+            this.DiscordAll.Location = new System.Drawing.Point(5, 3);
+            this.DiscordAll.Name = "DiscordAll";
+            this.DiscordAll.Size = new System.Drawing.Size(36, 17);
+            this.DiscordAll.TabIndex = 35;
+            this.DiscordAll.TabStop = true;
+            this.DiscordAll.Text = "All";
+            this.DiscordAll.UseVisualStyleBackColor = true;
+            // 
+            // DiscordHere
+            // 
+            this.DiscordHere.AutoSize = true;
+            this.DiscordHere.Location = new System.Drawing.Point(98, 3);
+            this.DiscordHere.Name = "DiscordHere";
+            this.DiscordHere.Size = new System.Drawing.Size(48, 17);
+            this.DiscordHere.TabIndex = 36;
+            this.DiscordHere.TabStop = true;
+            this.DiscordHere.Text = "Here";
+            this.DiscordHere.UseVisualStyleBackColor = true;
+            // 
+            // DiscordUserList
+            // 
+            this.DiscordUserList.AutoSize = true;
+            this.DiscordUserList.Location = new System.Drawing.Point(184, 3);
+            this.DiscordUserList.Name = "DiscordUserList";
+            this.DiscordUserList.Size = new System.Drawing.Size(62, 17);
+            this.DiscordUserList.TabIndex = 37;
+            this.DiscordUserList.TabStop = true;
+            this.DiscordUserList.Text = "User list";
+            this.DiscordUserList.UseVisualStyleBackColor = true;
+            this.DiscordUserList.CheckedChanged += new System.EventHandler(this.DiscordUserList_CheckedChanged);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.DiscordAll);
+            this.panel1.Controls.Add(this.DiscordUserList);
+            this.panel1.Controls.Add(this.DiscordHere);
+            this.panel1.Location = new System.Drawing.Point(146, 93);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(249, 23);
+            this.panel1.TabIndex = 38;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.textboxUserId);
+            this.panel2.Controls.Add(this.BtnAdd);
+            this.panel2.Controls.Add(this.BtnDelete);
+            this.panel2.Controls.Add(this.UserList);
+            this.panel2.Location = new System.Drawing.Point(145, 125);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(333, 231);
+            this.panel2.TabIndex = 39;
             // 
             // DiscordUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.Show);
-            this.Controls.Add(this.UserList);
-            this.Controls.Add(this.textboxUserId);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.BtnShow);
             this.Controls.Add(this.textboxWebhookURL);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.Test);
-            this.Controls.Add(this.Delete);
-            this.Controls.Add(this.Add);
+            this.Controls.Add(this.BtnTest);
             this.Name = "DiscordUc";
             this.Size = new System.Drawing.Size(950, 536);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.Button Add;
-        private System.Windows.Forms.Button Delete;
-        private System.Windows.Forms.Button Test;
+        private System.Windows.Forms.Button BtnAdd;
+        private System.Windows.Forms.Button BtnDelete;
+        private System.Windows.Forms.Button BtnTest;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox textboxWebhookURL;
@@ -170,6 +250,12 @@ namespace TravBotSharp.Views
         private System.Windows.Forms.ListView UserList;
         private System.Windows.Forms.ColumnHeader discordIdHeader;
         private System.Windows.Forms.ColumnHeader discordNameHeader;
-        private System.Windows.Forms.Button Show;
+        private System.Windows.Forms.Button BtnShow;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.RadioButton DiscordAll;
+        private System.Windows.Forms.RadioButton DiscordHere;
+        private System.Windows.Forms.RadioButton DiscordUserList;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panel2;
     }
 }
