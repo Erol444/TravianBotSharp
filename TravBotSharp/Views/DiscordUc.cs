@@ -87,10 +87,30 @@ namespace TravBotSharp.Views
 
         private void BtnTest_Click(object sender, System.EventArgs e)
         {
+            if (string.IsNullOrEmpty(textboxWebhookURL.Text)) return;
             var acc = GetSelectedAcc();
-            acc.WebhookClient = DiscordHelper.InitWebhookClient(textboxWebhookURL.Text);
-
-            DiscordHelper.SendMessage(acc, "Text");
+            try
+            {
+                acc.WebhookClient = DiscordHelper.InitWebhookClient(textboxWebhookURL.Text);
+                DiscordHelper.SendMessage(acc, "This is the test message from TravianBotSharp");
+                acc.AccInfo.WebhookUrl = textboxWebhookURL.Text;
+            }
+            catch (System.ArgumentException)
+            {
+                MessageBox.Show("The given webhook Url was not in a vaild format");
+            }
+            catch (Discord.Net.HttpException error)
+            {
+                MessageBox.Show(error.Message, error.HelpLink);
+            }
+            catch (System.InvalidOperationException error)
+            {
+                MessageBox.Show(error.Message);
+            }
+            catch (System.Exception error)
+            {
+                acc.Wb.Log(error.ToString());
+            }
         }
     }
 }
