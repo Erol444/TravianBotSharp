@@ -47,6 +47,7 @@ namespace TravBotSharp.Views
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.UseDiscordAlert = new System.Windows.Forms.CheckBox();
+            this.onlineAnnouncement = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -243,10 +244,22 @@ namespace TravBotSharp.Views
             this.UseDiscordAlert.UseVisualStyleBackColor = true;
             this.UseDiscordAlert.CheckedChanged += new System.EventHandler(this.UseDiscordAlert_CheckedChanged);
             // 
+            // onlineAnnouncement
+            // 
+            this.onlineAnnouncement.AutoSize = true;
+            this.onlineAnnouncement.Location = new System.Drawing.Point(287, 33);
+            this.onlineAnnouncement.Name = "onlineAnnouncement";
+            this.onlineAnnouncement.Size = new System.Drawing.Size(187, 17);
+            this.onlineAnnouncement.TabIndex = 41;
+            this.onlineAnnouncement.Text = "Make announcement when online";
+            this.onlineAnnouncement.UseVisualStyleBackColor = true;
+            this.onlineAnnouncement.CheckedChanged += new System.EventHandler(this.onlineAnnouncement_CheckedChanged);
+            // 
             // DiscordUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.onlineAnnouncement);
             this.Controls.Add(this.UseDiscordAlert);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
@@ -287,5 +300,6 @@ namespace TravBotSharp.Views
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.CheckBox UseDiscordAlert;
+        private System.Windows.Forms.CheckBox onlineAnnouncement;
     }
 }

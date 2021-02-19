@@ -92,6 +92,16 @@ namespace TravBotSharp.Views
             }
         }
 
+        private void onlineAnnouncement_CheckedChanged(object sender, System.EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            // same with UseDiscordAlert checkbox
+            if (!UseDiscordAlert.Checked)
+            {
+                acc.Settings.DiscordOnlineAnnouncement = onlineAnnouncement.Checked;
+            }
+        }
+
         private void BtnTest_Click(object sender, System.EventArgs e)
         {
             if (string.IsNullOrEmpty(textboxWebhookURL.Text)) return;
@@ -102,6 +112,7 @@ namespace TravBotSharp.Views
                 DiscordHelper.SendMessage(acc, "This is the test message from TravianBotSharp");
                 acc.AccInfo.WebhookUrl = textboxWebhookURL.Text;
                 acc.Settings.DiscordWebhook = UseDiscordAlert.Checked;
+                acc.Settings.DiscordOnlineAnnouncement = onlineAnnouncement.Checked;
             }
             catch (System.ArgumentException)
             {

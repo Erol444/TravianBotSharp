@@ -126,6 +126,11 @@ namespace TbsCore.Models.Settings
         /// Use discord to alert
         /// </summary>
         public bool DiscordWebhook { get; set; }
+
+        /// <summary>
+        /// Announce every bot online
+        /// </summary>
+        public bool DiscordOnlineAnnouncement { get; set; }
     }
 
     /// <summary>

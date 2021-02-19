@@ -225,7 +225,10 @@ namespace TravBotSharp.Files.Helpers
             if (acc.Settings.DiscordWebhook && !string.IsNullOrEmpty(acc.AccInfo.WebhookUrl))
             {
                 acc.WebhookClient = new DiscordWebhookClient(acc.AccInfo.WebhookUrl);
-                DiscordHelper.SendMessage(acc, "TravianBotSharp is online now");
+                if (acc.Settings.DiscordOnlineAnnouncement)
+                {
+                    DiscordHelper.SendMessage(acc, "TravianBotSharp is online now");
+                }
             }
         }
 
