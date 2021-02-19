@@ -46,6 +46,7 @@ namespace TravBotSharp.Views
             this.DiscordUserList = new System.Windows.Forms.RadioButton();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.UseDiscordAlert = new System.Windows.Forms.CheckBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -78,6 +79,7 @@ namespace TravBotSharp.Views
             this.BtnTest.TabIndex = 4;
             this.BtnTest.Text = "TEST";
             this.BtnTest.UseVisualStyleBackColor = true;
+            this.BtnTest.Click += new System.EventHandler(this.BtnTest_Click);
             // 
             // label1
             // 
@@ -216,10 +218,22 @@ namespace TravBotSharp.Views
             this.panel2.Size = new System.Drawing.Size(333, 231);
             this.panel2.TabIndex = 39;
             // 
+            // UseDiscordAlert
+            // 
+            this.UseDiscordAlert.AutoSize = true;
+            this.UseDiscordAlert.Location = new System.Drawing.Point(149, 33);
+            this.UseDiscordAlert.Name = "UseDiscordAlert";
+            this.UseDiscordAlert.Size = new System.Drawing.Size(108, 17);
+            this.UseDiscordAlert.TabIndex = 40;
+            this.UseDiscordAlert.Text = "Use Discord Alert";
+            this.UseDiscordAlert.UseVisualStyleBackColor = true;
+            this.UseDiscordAlert.CheckedChanged += new System.EventHandler(this.UseDiscordAlert_CheckedChanged);
+            // 
             // DiscordUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.UseDiscordAlert);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label3);
@@ -257,5 +271,6 @@ namespace TravBotSharp.Views
         private System.Windows.Forms.RadioButton DiscordUserList;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.CheckBox UseDiscordAlert;
     }
 }

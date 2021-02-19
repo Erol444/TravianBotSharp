@@ -1,6 +1,7 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
 using TravBotSharp.Interfaces;
+using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Views
 {
@@ -75,6 +76,21 @@ namespace TravBotSharp.Views
                 BtnDelete.Enabled = false;
                 UserList.Enabled = false;
             }
+        }
+
+        private void UseDiscordAlert_CheckedChanged(object sender, System.EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+
+            acc.Settings.DiscordWebhook = UseDiscordAlert.Checked;
+        }
+
+        private void BtnTest_Click(object sender, System.EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            acc.WebhookClient = DiscordHelper.InitWebhookClient(textboxWebhookURL.Text);
+
+            DiscordHelper.SendMessage(acc, "Text");
         }
     }
 }
