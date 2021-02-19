@@ -13,9 +13,14 @@ namespace TravBotSharp.Files.Helpers
             return client;
         }
 
-        public async static void SendMessage(Account acc, string text, Embed[] embeds = null)
+        public async static void SendMessage(Account acc, string text)
         {
-            await acc.WebhookClient.SendMessageAsync(text: text, embeds: embeds);
+            var embed = new EmbedBuilder
+            {
+                Title = "Server: " + acc.AccInfo.ServerUrl,
+                Description = "Username: " + acc.AccInfo.Nickname
+            };
+            await acc.WebhookClient.SendMessageAsync(text: "@here " + text, embeds: new[] { embed.Build() });
         }
     }
 }

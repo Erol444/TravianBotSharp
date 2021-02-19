@@ -219,12 +219,13 @@ namespace TravBotSharp.Files.Helpers
                 await acc.Wb.InitSelenium(acc);
                 acc.TaskTimer = new TaskTimer(acc);
 
-                if (string.IsNullOrEmpty(acc.AccInfo.WebhookUrl))
-                {
-                    acc.WebhookClient = new DiscordWebhookClient(acc.AccInfo.WebhookUrl);
-                }
-
                 AccountHelper.StartAccountTasks(acc);
+            }
+
+            if (acc.Settings.DiscordWebhook && !string.IsNullOrEmpty(acc.AccInfo.WebhookUrl))
+            {
+                acc.WebhookClient = new DiscordWebhookClient(acc.AccInfo.WebhookUrl);
+                DiscordHelper.SendMessage(acc, "TravianBotSharp is online now");
             }
         }
 

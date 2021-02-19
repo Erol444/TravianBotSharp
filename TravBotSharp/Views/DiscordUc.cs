@@ -20,6 +20,9 @@ namespace TravBotSharp.Views
             BtnAdd.Enabled = false;
             BtnDelete.Enabled = false;
             UserList.Enabled = false;
+
+            UseDiscordAlert.Checked = acc.Settings.DiscordWebhook;
+            textboxWebhookURL.Text = acc.AccInfo.WebhookUrl;
         }
 
         private void BtnShow_Click(object sender, System.EventArgs e)
@@ -81,8 +84,12 @@ namespace TravBotSharp.Views
         private void UseDiscordAlert_CheckedChanged(object sender, System.EventArgs e)
         {
             var acc = GetSelectedAcc();
-
-            acc.Settings.DiscordWebhook = UseDiscordAlert.Checked;
+            // we only save this to setting when user UNCHECK
+            // if user wants to save, he/she need press Test button to save
+            if (!UseDiscordAlert.Checked)
+            {
+                acc.Settings.DiscordWebhook = UseDiscordAlert.Checked;
+            }
         }
 
         private void BtnTest_Click(object sender, System.EventArgs e)
@@ -94,6 +101,7 @@ namespace TravBotSharp.Views
                 acc.WebhookClient = DiscordHelper.InitWebhookClient(textboxWebhookURL.Text);
                 DiscordHelper.SendMessage(acc, "This is the test message from TravianBotSharp");
                 acc.AccInfo.WebhookUrl = textboxWebhookURL.Text;
+                acc.Settings.DiscordWebhook = UseDiscordAlert.Checked;
             }
             catch (System.ArgumentException)
             {
