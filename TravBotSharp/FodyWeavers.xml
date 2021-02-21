@@ -2,6 +2,7 @@
   <Costura>
     <ExcludeAssemblies>
       SQLitePCLRaw.*
+      WebDriver
     </ExcludeAssemblies>
   </Costura>
 </Weavers>
