@@ -38,8 +38,10 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Restore Packages
-        run: nuget restore
-
+        run: |
+          nuget restore TbsCore/TbsCore.csproj
+          nuget restore TravBotSharp/TravBotSharp.csproj
+          
       - name: Build Solution
         run: |
           msbuild.exe TravBotSharp.sln /nologo /nr:false  /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m
