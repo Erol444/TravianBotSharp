@@ -48,7 +48,7 @@ jobs:
       - name: Build Solution
         run: |
           msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false  /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true
-          "%MSBUILD_PATH%" /build /project "TravianBotSharp\TravianBotSharp.vdproj" /projectconfig "Release|Any CPU"
+          & "%MSBUILD_PATH%" /build /project "TravianBotSharp\TravianBotSharp.vdproj" /projectconfig "Release|Any CPU"
       
       - name: Get version
         run: |
