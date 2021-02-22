@@ -7,6 +7,9 @@ on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [ develop ]
+    
+  pull_request:
+    branches: [ develop ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -40,7 +43,7 @@ jobs:
       - name: Build Solution
         run: |
           msbuild.exe TravBotSharp.sln /nologo /nr:false  /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m
-          devenv TravianBotSharp\TravianBotSharp.vdproj /build "Release|Any CPU"
+          devenv.exe TravianBotSharp\TravianBotSharp.vdproj /build "Release|Any CPU"
       
       - name: Get version
         run: |
