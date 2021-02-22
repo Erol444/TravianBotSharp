@@ -28,9 +28,9 @@ jobs:
         run: |
           $currentPath = Get-Location
       - run: |
-          cd "C:\"
+          cd "C:\Program Files (x86)"
           Get-Location
-    # Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\"
+    # \Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\"
       - run: |
           ls
       - run: 
