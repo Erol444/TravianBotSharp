@@ -40,7 +40,7 @@ jobs:
       - name: Restore Packages
         run: |
           nuget restore TbsCore/TbsCore.csproj
-          nuget restore TravBotSharp/TravBotSharp.csproj
+          nuget restore TravBotSharp/TbsWinForms.csproj
           
       - name: Build Solution
         run: |
