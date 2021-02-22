@@ -34,27 +34,23 @@ jobs:
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
 
-      - name: Create Build Directory
-        run: |
-          mkdir _build
-
       - name: Restore Packages
         run: nuget restore TravBotSharp.sln
 
       - name: Build Solution
         run: |
-          msbuild.exe TravBotSharp.sln /nologo /nr:false /p:DeployOnBuild=true /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /p:PublishUrl="../_build" /m
+          msbuild.exe TravBotSharp.sln /nologo /nr:false  /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m
       
       - name: Get version
         run: |
-          $version = Get-Content ./version.txt
+          $version = (Get-Command TravBotSharp\bin\Release\TravBotSharp.exe).FileVersionInfo.FileVersion
           Write-Output "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
           name: TBS-${{ env.VERSION }}
-          path: TravBotSharp\bin
+          path: TravianBotSharp\Release
           if-no-files-found: error
 
       - name: Send to Discord Server
