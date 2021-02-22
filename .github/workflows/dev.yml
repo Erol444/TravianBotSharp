@@ -47,7 +47,10 @@ jobs:
           msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false  /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true
       - name: Fix 
         run: |
-          "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\DisableOutOfProcBuild.exe"
+          $currentPath = Get-Location
+          cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\"
+          DisableOutOfProcBuild.exe
+          cd $currentPath
       - name: Build Installer
         run: |
           & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.com" TravianBotSharp\TravianBotSharp.vdproj /Build "Release|Any CPU"
