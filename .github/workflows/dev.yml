@@ -48,7 +48,7 @@ jobs:
       
       - name: Build Installer
         run: |          
-          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.com" /Build /Project "TravianBotSharp\TravianBotSharp.vdproj" /Projectconfig "Release|Any CPU"
+          & "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.com" TravianBotSharp\TravianBotSharp.vdproj /Build "Release|Any CPU"
       
       - name: Get version
         run: |
