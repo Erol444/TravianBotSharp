@@ -25,7 +25,7 @@ jobs:
         
       - name: Build Bot
         run: |
-          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false  /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true
+          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true
       
       - name: Get version
         run: |
@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: TBS-${{ env.VERSION }}-pre
-          path: TravianBotSharp\Release
+          path: TravBotSharp\bin\Release
           if-no-files-found: error
 
       - name: Send to Discord Server
