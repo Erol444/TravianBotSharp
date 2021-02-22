@@ -28,10 +28,9 @@ jobs:
         run: |
           $currentPath = Get-Location
       - run: |
-          cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft"
+          cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild"
           Get-Location
-          Get-ChildItem
-    # \VSI\DisableOutOfProcBuild\"
+          Get-ChildItem -Name
       - run: 
           DisableOutOfProcBuild.exe          
           cd $currentPath
