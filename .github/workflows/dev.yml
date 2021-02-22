@@ -44,7 +44,8 @@ jobs:
           
       - name: Build Solution
         run: |
-          msbuild.exe TravBotSharp.sln /nologo /nr:false  /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m
+          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false  /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true
+
           devenv.exe TravianBotSharp\TravianBotSharp.vdproj /build "Release|Any CPU"
       
       - name: Get version
