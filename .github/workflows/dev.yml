@@ -24,6 +24,18 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       
+      - name: Fix 
+        run: |
+          $currentPath = Get-Location
+      - run: |
+          cd "C:\"
+    # Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\"
+      - run: |
+          ls
+      - run: 
+          DisableOutOfProcBuild.exe          
+          cd $currentPath
+          
       #setup-msbuild
       - name: setup-msbuild
         uses: microsoft/setup-msbuild@v1
@@ -37,16 +49,7 @@ jobs:
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
         
-      - name: Fix 
-        run: |
-          $currentPath = Get-Location
-      - run: |
-          cd "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\CommonExtensions\Microsoft\VSI\DisableOutOfProcBuild\"
-      - run: |
-          ls
-      - run: 
-          DisableOutOfProcBuild.exe          
-          cd $currentPath
+      
           
       - name: Restore Packages
         run: |
