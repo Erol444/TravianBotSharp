@@ -38,7 +38,7 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Restore Packages
-        run: nuget restore TravBotSharp.sln
+        run: nuget restore
 
       - name: Build Solution
         run: |
