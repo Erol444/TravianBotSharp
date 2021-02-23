@@ -219,17 +219,17 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage(acc);
             if (vill == null) return;
 
-            SendTroops taskSendTroops;
-            foreach (var f in GetSelectedFl().Targets)
+            var fl = GetSelectedFl();
+            for (int i = 0; i < fl.Targets.Count(); i++)
             {
-                taskSendTroops = new SendTroops()
+                var taskSendTroops = new SendTroops()
                 {
-                    ExecuteAt = DateTime.Now,
+                    ExecuteAt = DateTime.Now.AddMilliseconds(i * 15 * AccountHelper.Delay()),
                     Vill = vill,
                     TroopsMovement = new TroopsSendModel()
                     {
-                        TargetCoordinates = f.Coords,
-                        Troops = f.Troops,
+                        TargetCoordinates = fl[i].Coords,
+                        Troops = fl[i].Troops,
                         MovementType = Classificator.MovementType.Raid
                     }
                 };
