@@ -70,9 +70,9 @@ namespace TravBotSharp.Files.Helpers
             }
         }
 
-        internal static Classificator.TroopsEnum TroopFromInt(Account acc, int num)
+        internal static TroopsEnum TroopFromInt(Account acc, int num)
         {
-            return (Classificator.TroopsEnum)(num + 1 + (((int)acc.AccInfo.Tribe - 1) * 10));
+            return (TroopsEnum)(num + 1 + (((int)acc.AccInfo.Tribe - 1) * 10));
         }
 
         /// <summary>
