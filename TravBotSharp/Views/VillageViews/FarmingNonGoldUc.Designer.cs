@@ -128,19 +128,19 @@ namespace TravBotSharp.Views
             // farmingIdHeader
             // 
             this.farmingIdHeader.Text = "Id";
-            this.farmingIdHeader.Width = 25;
+            this.farmingIdHeader.Width = 28;
             // 
             // farmingXHeader
             // 
             this.farmingXHeader.Text = "X";
             this.farmingXHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.farmingXHeader.Width = 50;
+            this.farmingXHeader.Width = 40;
             // 
             // farmingYHeader
             // 
             this.farmingYHeader.Text = "Y";
             this.farmingYHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.farmingYHeader.Width = 51;
+            this.farmingYHeader.Width = 40;
             // 
             // farmingList
             // 
