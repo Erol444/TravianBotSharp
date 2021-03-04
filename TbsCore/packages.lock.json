@@ -33,6 +33,12 @@
           "Microsoft.NETCore.Platforms": "1.1.0"
         }
       },
+      "RandomUserAgent": {
+        "type": "Direct",
+        "requested": "[1.1.2, )",
+        "resolved": "1.1.2",
+        "contentHash": "jj0nKiIZaApcvj6tUv5RJn0rAznpz19ncN1SP0mqZhWf+m2DEcfqTTCT2ZKOXJ7HXNprlH7X18gTkhFFu16S+Q=="
+      },
       "RestSharp": {
         "type": "Direct",
         "requested": "[106.11.7, )",
@@ -50,9 +56,9 @@
       },
       "Selenium.WebDriver.ChromeDriver": {
         "type": "Direct",
-        "requested": "[87.0.4280.8800, )",
-        "resolved": "87.0.4280.8800",
-        "contentHash": "7bgZ2QNhYFofxDdlGVfUVgNJ6B785u/UeoFjEzB7O2EiggPitosPqqB/TG0KpJwvqgQTs+nNJus3rn9yNMHa1A=="
+        "requested": "[89.0.4389.2300, )",
+        "resolved": "89.0.4389.2300",
+        "contentHash": "/lnt6U3hogvJtFBP9l9Vm3F7zVBTClCANeVzcyWwyUf/uW686KEgGU+9x6sebstjd02qrmvcP42MKHTID1tq/A=="
       },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
