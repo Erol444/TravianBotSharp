@@ -290,25 +290,22 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
 
-            // Accept ads
-            if (await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen", false))
-            {
-                await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
-            }
-
             // Has to be a legit "click"
             acc.Wb.Driver.FindElementById("videoFeature").Click();
 
             // use script to skip ads instead of waiting, found out by Merlin#7649
-            // tested with travian company's ads, not yet with 3rd company, pls tell me (VINAGHOST) about error show in debug tab
+            // tested with travian company's ads, not yet with 3rd company, pls send me (VINAGHOST) screenshot Debug tab
+
+            // delay 5s for ping issue or whatever can happen =))
+            await System.Threading.Tasks.Task.Delay(5000);
 
             //they use ifarme to emebed ads video to their game
             var iframe = acc.Wb.Driver.FindElementById("videoArea");
-            acc.Wb.Log(iframe.Text);
+            acc.Wb.Log($"Ads Url: {iframe.GetAttribute("src")}");
             acc.Wb.Driver.SwitchTo().Frame(iframe);
 
             // trick to skip
-            await DriverHelper.ExecuteScript(acc, "console.log('hello');var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration;", true, false);
+            await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration;", true, false);
 
             //back to first page
             acc.Wb.Driver.SwitchTo().DefaultContent();
