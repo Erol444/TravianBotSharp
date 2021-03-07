@@ -51,7 +51,9 @@ namespace TravBotSharp.Forms
             this.InactiveList.ListViewItemSorter = lvwColumnSorter;
 
             // TODO: use acc.Wb.RestClient - for proxy & to save resources
-            Client = new RestClient("https://travianstats.de/index.php");
+            // i dont think we need this ^
+            // because some proxies limit your bandwith and that is not worth to use proxy - VINAGHOST
+            Client = new RestClient();
 
             this.acc = acc;
             this.flName.Text = label;
@@ -78,6 +80,7 @@ namespace TravBotSharp.Forms
             var url = (new UriBuilder(serverUrl)).Host;
 
             //request to travaianstats.de
+            Client.BaseUrl = new Uri("https://travianstats.de");
             var request = new RestRequest();
 
             var response = await Client.ExecuteAsync(request);
@@ -95,17 +98,14 @@ namespace TravBotSharp.Forms
                 .GetAttributeValue("value", "");
         }
 
-        private async Task<List<InactiveFarm>> GetFarms()
+        /// <summary>
+        /// This function for travianstats.de
+        /// </summary>
+        /// <param name="serverCode"></param>
+        /// <returns></returns>
+        private async Task<List<InactiveFarm>> GetFarms_TravianstatDE(string serverCode)
         {
-            var serverCode = await GetServerCode();
-            if (string.IsNullOrEmpty(serverCode))
-            {
-                string message = "Bot was unable to find the server code! This feature is only available for normal travian servers.";
-                string caption = "Error getting server code";
-                MessageBox.Show(message, caption, MessageBoxButtons.OK);
-                return null;
-            }
-
+            Client.BaseUrl = new Uri("https://travianstats.de");
             var request = new RestRequest($"?m=inactive_finder&w={serverCode}", Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
             request.AddHeader("Cookie", $"tcn_world={serverCode}");
@@ -158,9 +158,75 @@ namespace TravBotSharp.Forms
             return result;
         }
 
+        /// <summary>
+        /// This function for www.inactivesearch.it
+        /// </summary>
+        /// <returns></returns>
+        private async Task<List<InactiveFarm>> GetFarms_InactiveSearchIt()
+        {
+            var serverUrl = acc.AccInfo.ServerUrl;
+            // get serverUrl without https://
+            var url = (new UriBuilder(serverUrl)).Host;
+            Client.BaseUrl = new Uri($"https://www.inactivesearch.it/inactives/{url}");
+
+            var request = new RestRequest($"?c={(int)coordinatesUc1.Coords.x}|{(int)coordinatesUc1.Coords.y}", Method.GET);
+            request.AddHeader("Cookie", $"IS_filters=mnd=0&mxd={(int)Distance.Value}&d=4&mnp=0&mxp=100000&mnv=0&mxv=3000&mnc=0&mxc=0&iw=1&ha=&hp=&hr=0&ht=0&hg=0&hn=0&hf=undefined&hmv=1&hma=1&sn=1");
+
+            var response = await Client.ExecuteAsync(request);
+
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
+
+            if (response.Content.Contains("Nothing found"))
+            {
+                return null;
+            }
+
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(response.Content);
+
+            // table
+            var table = doc.DocumentNode.SelectNodes("//table[@class='table table-condensed table-inactives table-shadow']//tbody") // they use myTable for naming their table ?_?
+                        .Descendants("tr")
+                        .Where(tr => tr.Elements("td").Count() > 1)
+                        .Select(tr => tr.Elements("td").Select(td => td.InnerText.Trim().Replace("\t", "").Replace("\n", "")).ToList())
+                        .ToList();
+
+            var result = new List<InactiveFarm>();
+            foreach (var row in table)
+            {
+                try
+                {
+                    result.Add(new InactiveFarm()
+                    {
+                        distance = int.Parse(row[0]),
+                        coord = MapParser.GetCoordinates(row[1]),
+                        nameVill = row[2],
+                        // row[3] hide village button
+                        // row[4] attack button
+                        population = int.Parse(row[5]),
+                        // row[6], [7], [8], [9] population previous day
+                        namePlayer = row[10],
+                        nameAlly = row[11],
+                    });
+                }
+                catch (Exception) { }
+            }
+
+            return result;
+        }
+
         private async void button2_Click(object sender, System.EventArgs e)
         {
-            var Inactives = await GetFarms();
+            var serverCode = await GetServerCode();
+            List<InactiveFarm> Inactives;
+            if (!string.IsNullOrEmpty(serverCode))
+            {
+                Inactives = await GetFarms_TravianstatDE(serverCode);
+            }
+            else
+            {
+                Inactives = await GetFarms_InactiveSearchIt();
+            }
 
             InactiveList.Items.Clear();
 
