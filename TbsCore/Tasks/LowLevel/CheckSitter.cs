@@ -13,7 +13,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             // sitter cannot access to auction
             // so we check auction button
-            // since auction button is hown in all page in game
+            // since auction button is shown in all page of game
             // we just make sure call this after login task and it will be fine
 
             var auction = acc.Wb.Html.DocumentNode.SelectSingleNode("//a[contains(@class,'auction')]");
