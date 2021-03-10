@@ -79,7 +79,7 @@ namespace TravBotSharp.Files.Models.AccModels
         }
 
         private void InitHttpClient(Access a) =>
-            this.RestClient = HttpHelper.InitRestClient(a, this.acc.AccInfo.ServerUrl);
+            this.RestClient = HttpHelper.InitRestClient(a);
 
         private void SetupChromeDriver(Access access, string username, string server)
         {

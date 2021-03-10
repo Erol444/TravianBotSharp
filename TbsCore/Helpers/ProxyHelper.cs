@@ -2,6 +2,7 @@
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
@@ -94,27 +95,39 @@ chrome.webRequest.onAuthRequired.addListener(
         public static async Task TestProxies(List<Access> access)
         {
             List<Task> tasks = new List<Task>(access.Count);
+            var restClient = new RestClient("https://api.ipify.org/");
             access.ForEach(a =>
             {
-                tasks.Add(Task.Run(() =>
+                tasks.Add(Task.Run(async () =>
                 {
-                    var restClient = HttpHelper.InitRestClient(a, "https://api.ipify.org/");
-                    a.Ok = ProxyHelper.TestProxy(restClient, a.Proxy);
+                    // Set proxy
+                    if (!string.IsNullOrEmpty(a.Proxy))
+                    {
+                        if (!string.IsNullOrEmpty(a.ProxyUsername)) // Proxy auth
+                        {
+                            ICredentials credentials = new NetworkCredential(a.ProxyUsername, a.ProxyPassword);
+                            restClient.Proxy = new WebProxy($"{a.Proxy}:{a.ProxyPort}", false, null, credentials);
+                        }
+                        else // Without proxy auth
+                        {
+                            restClient.Proxy = new WebProxy(a.Proxy, a.ProxyPort);
+                        }
+                    }
+
+                    restClient.AddDefaultHeader("Accept", "*/*");
+                    a.Ok = await ProxyHelper.TestProxy(restClient, a.Proxy);
                 }));
             });
             await Task.WhenAll(tasks);
         }
 
-        public static bool TestProxy(Account acc) =>
-            TestProxy(acc.Wb.RestClient, acc.Access.GetCurrentAccess().Proxy);
+        /*public static async Task<bool> TestProxy(Account acc) =>
+            await TestProxy(acc.Wb.RestClient, acc.Access.GetCurrentAccess().Proxy);
+        */
 
-        public static bool TestProxy(RestClient client, string proxyIp)
+        public static async Task<bool> TestProxy(RestClient client, string proxyIp)
         {
-            var baseUrl = client.BaseUrl;
-
-            client.BaseUrl = new Uri("https://api.ipify.org/");
-
-            var response = client.Execute(new RestRequest
+            var response = await client.ExecuteAsync(new RestRequest
             {
                 Resource = "",
                 Method = Method.GET,
@@ -124,8 +137,6 @@ chrome.webRequest.onAuthRequired.addListener(
             doc.LoadHtml(response.Content);
 
             var ip = doc.DocumentNode.InnerText;
-
-            client.BaseUrl = baseUrl;
             return ip == proxyIp;
         }
     }

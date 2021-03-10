@@ -26,6 +26,7 @@ namespace TravBotSharp.Files.Helpers
 
         public static string SendPostReq(Account acc, RestRequest req)
         {
+            acc.Wb.RestClient.BaseUrl = new Uri($"{acc.AccInfo.ServerUrl}");
             acc.Wb.RestClient.CookieContainer = HttpHelper.GetCookies(acc);
 
             var response = acc.Wb.RestClient.Execute(req);
@@ -36,6 +37,7 @@ namespace TravBotSharp.Files.Helpers
 
         public static HtmlAgilityPack.HtmlDocument SendGetReq(Account acc, string url)
         {
+            acc.Wb.RestClient.BaseUrl = new Uri($"{acc.AccInfo.ServerUrl}");
             acc.Wb.RestClient.CookieContainer = HttpHelper.GetCookies(acc);
 
             var req = new RestRequest
@@ -53,11 +55,10 @@ namespace TravBotSharp.Files.Helpers
             return htmlDoc;
         }
 
-        public static RestClient InitRestClient(Access access, string baseUrl)
+        public static RestClient InitRestClient(Access access)
         {
             var client = new RestClient
             {
-                BaseUrl = new Uri(baseUrl),
                 Timeout = 5000
             };
             client.UserAgent = access.UserAgent;
