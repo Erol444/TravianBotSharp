@@ -80,10 +80,5 @@ namespace TbsCore.Models.AccModels
         /// Version of the server account is playing on
         /// </summary>
         public Classificator.ServerVersionEnum ServerVersion { get; set; }
-
-        /// <summary>
-        /// Is account sitter ?
-        /// </summary>
-        public bool Sitter { get; set; }
     }
 }
