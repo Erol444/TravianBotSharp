@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Discord.Webhook;
 using TbsCore.Database;
 using TbsCore.Helpers;
 using TbsCore.Models.Access;
@@ -21,14 +22,19 @@ namespace TravBotSharp.Files.Helpers
         public static string AccountsPath => Path.Combine(TbsPath, "accounts.txt");
         public static string CachePath => Path.Combine(TbsPath, "cache");
         public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
+
         public static string TbsPath =>
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TravBotSharp");
+
         public static bool SQLiteExists() => File.Exists(SqlitePath);
+
         public static bool AccountsTxtExists() => File.Exists(AccountsPath);
+
         public static string GetCacheDir(string username, string server, Access access)
         {
             return Path.Combine(IoHelperCore.CachePath, GetCacheFolder(username, server, access.Proxy));
         }
+
         /// <summary>
         /// Gets set by WinForms on startup, so TbsCore can alert user (sound+popup)
         /// </summary>
@@ -78,16 +84,19 @@ namespace TravBotSharp.Files.Helpers
                         task.BuildingStrategy = BuildingStrategyEnum.BasedOnLevel;
                         task.ResourceType = GetTrBuilderResType(cmd.gid);
                         break;
+
                     case 5: // Based on production
                         task.TaskType = Classificator.BuildingType.AutoUpgradeResFields;
                         task.BuildingStrategy = BuildingStrategyEnum.BasedOnProduction;
                         task.ResourceType = GetTrBuilderResType(cmd.gid);
                         break;
+
                     case 6: // Based on storage
                         task.TaskType = Classificator.BuildingType.AutoUpgradeResFields;
                         task.BuildingStrategy = BuildingStrategyEnum.BasedOnRes;
                         task.ResourceType = GetTrBuilderResType(cmd.gid);
                         break;
+
                     default: // Normal build?
                         task.TaskType = Classificator.BuildingType.General;
                         task.Building = (Classificator.BuildingEnum)cmd.gid;
@@ -98,6 +107,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return tasks;
         }
+
         private static ResTypeEnum GetTrBuilderResType(int gid)
         {
             switch (gid)
@@ -211,7 +221,17 @@ namespace TravBotSharp.Files.Helpers
 
                 AccountHelper.StartAccountTasks(acc);
             }
+
+            if (acc.Settings.DiscordWebhook && !string.IsNullOrEmpty(acc.AccInfo.WebhookUrl))
+            {
+                acc.WebhookClient = new DiscordWebhookClient(acc.AccInfo.WebhookUrl);
+                if (acc.Settings.DiscordOnlineAnnouncement)
+                {
+                    DiscordHelper.SendMessage(acc, "TravianBotSharp is online now");
+                }
+            }
         }
+
         /// <summary>
         /// Logout from the account. Closes web driver.
         /// </summary>

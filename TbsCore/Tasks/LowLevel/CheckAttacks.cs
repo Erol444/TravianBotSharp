@@ -76,7 +76,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (Vill.TroopMovements.IncomingAttacks == null) Vill.TroopMovements.IncomingAttacks = new List<TroopsMovementRallyPoint>();
 
             int sameAttacks = 0;
-            foreach(var oldAttack in Vill.TroopMovements.IncomingAttacks)
+            foreach (var oldAttack in Vill.TroopMovements.IncomingAttacks)
             {
                 // Remove all attacks that were discovered previously
                 sameAttacks += attacks.RemoveAll(x => x.Equals(oldAttack));
@@ -84,14 +84,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // Alert user if new attacks were found
             string alertStr = "";
-            foreach(var newAttack in attacks)
+            foreach (var newAttack in attacks)
             {
                 // Check if hero is present in the attack
                 if (Vill.Deffing.OnlyAlertOnHero && newAttack.Troops[10] == 0) continue;
 
                 if (newAttack.MovementType == Classificator.MovementTypeRallyPoint.inRaid)
                 {
-                    if(Vill.Deffing.AlertType == AlertTypeEnum.AnyAttack)
+                    if (Vill.Deffing.AlertType == AlertTypeEnum.AnyAttack)
                     {
                         alertStr += $"Raid from {newAttack.SourceCoordinates} at {newAttack.Arrival}\n";
                     }
@@ -106,6 +106,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 new Thread(() =>
                     IoHelperCore.AlertUser?.Invoke($"Village {Vill.Name} is under {attacks.Count} new attacks!\n{alertStr}")
                 ).Start();
+
+                //send to discord webhook
+                if (acc.Settings.DiscordWebhook)
+                {
+                    new Thread(() =>
+                       DiscordHelper.SendMessage(acc, $"Village {Vill.Name} is under {attacks.Count} new attacks!\n{alertStr}")
+                        ).Start();
+                }
             }
 
             Vill.TroopMovements.IncomingAttacks = newAttacks;

@@ -16,9 +16,9 @@ namespace TbsCore.Database
             {
                 try
                 {
-                    var accounts = context.DbAccount.Select(x => x.Deserialize()).ToList();
+                    var accounts = context.DbAccount.AsQueryable().Select(x => x.Deserialize());
                     //accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
-                    return accounts;
+                    return accounts.ToList();
                 }
                 catch (Exception e)
                 {
