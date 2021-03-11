@@ -33,16 +33,14 @@ namespace TbsCore.Helpers
             var vill = acc.Villages.FirstOrDefault(x => x.Active);
 
             return new List<Action>() {
-                // get server version
-                () => acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4),
-                // update info
+                // 1: update info
                 () => {
                     if (acc.Wb.CurrentUrl.Contains("dorf1")) TaskExecutor.UpdateDorf1Info(acc);
                     else if (acc.Wb.CurrentUrl.Contains("dorf2")) TaskExecutor.UpdateDorf2Info(acc);
                 },
-                // get culture point
+                // 2: get culture point
                 () => acc.AccInfo.CulturePoints = RightBarParser.GetCulturePoints(html, acc.AccInfo.ServerVersion),
-                // Village expansion:
+                // 3: Village expansion:
                 () =>
                 {
                     var villExpansionReady = acc.Villages.FirstOrDefault(x => x.Expansion.ExpansionAvailable);
@@ -53,7 +51,7 @@ namespace TbsCore.Helpers
                         TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady });
                     }
                 },
-                // claim Beginner Quests:
+                // 4: claim Beginner Quests:
                 () =>
                 {
                     if(acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
@@ -80,7 +78,7 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                // claim Daily Quest:
+                // 5: claim Daily Quest:
                 () =>
                 {
                     if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
@@ -94,20 +92,17 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                // Parse gold/silver
+                // 6: Parse gold/silver
                 () =>
                 {
                     var goldSilver = RightBarParser.GetGoldAndSilver(html, acc.AccInfo.ServerVersion);
                     acc.AccInfo.Gold = goldSilver[0];
                     acc.AccInfo.Silver = goldSilver[1];
                 },
-                // plus acconunt
+                // 7: plus acconunt
                 () => acc.AccInfo.PlusAccount = RightBarParser.HasPlusAccount(html, acc.AccInfo.ServerVersion),
 
-                // sitter account
-                () => acc.Access.GetCurrentAccess().IsSittering = SitterHelper.isSitter(html, acc.AccInfo.ServerVersion),
-
-                // Check msgs:
+                // 8: Check msgs:
                 () =>
                 {
                     if (MsgParser.UnreadMessages(html, acc.AccInfo.ServerVersion) > 0
@@ -121,7 +116,7 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                // JS resources
+                // 9: JS resources
                 () => {
                     // TODO: cast directly from object to ResourcesJsObject, no de/serialization!
                     var resJson = DriverHelper.GetJsObj<string>(acc, "JSON.stringify(resources);");
@@ -136,13 +131,13 @@ namespace TbsCore.Helpers
                     vill.Res.Production = resJs.production.GetResources();
                     vill.Res.FreeCrop = resJs.production.l5;
                 },
-                // Check if there are unfinished tasks
+                // 10: Check if there are unfinished tasks
                 () => ResSpendingHelper.CheckUnfinishedTasks(acc, vill),
-                // Donate to ally bonus'
+                // 11: Donate to ally bonus'
                 () => DonateToAlly(acc, vill),
-                // increase next village refresh time
+                // 12: increase next village refresh time
                 () => vill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(vill.Settings.RefreshMin,vill.Settings.RefreshMax)),
-                // NPC:
+                // 13: NPC:
                 () =>
                 {
                     float ratio = (float)vill.Res.Stored.Resources.Crop / vill.Res.Capacity.GranaryCapacity;
@@ -158,7 +153,7 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                // TTwars plus and boost
+                // 14: TTwars plus and boost
                 () => {
                     if (acc.Settings.AutoActivateProductionBoost && CheckProductionBoost(acc))
                     {
@@ -167,7 +162,7 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                // Insta upgrade:
+                // 15: Insta upgrade:
                 () =>
                 {
                     if (vill.Build.InstaBuild &&
@@ -183,13 +178,13 @@ namespace TbsCore.Helpers
                         });
                     }
                 },
-                // Adventure num
+                // 16: Adventure num
                 () => acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html, acc.AccInfo.ServerVersion),
-                // status of hero
+                // 17: status of hero
                 () => acc.Hero.Status = HeroParser.HeroStatus(html, acc.AccInfo.ServerVersion),
-                // health of hero
+                // 18: health of hero
                 () => acc.Hero.HeroInfo.Health = HeroParser.GetHeroHealth(html, acc.AccInfo.ServerVersion),
-                //  Hero:
+                // 19:  Hero:
                 () =>
                 {
                     bool heroReady = (acc.Hero.HeroInfo.Health > acc.Hero.Settings.MinHealth &&
@@ -226,9 +221,9 @@ namespace TbsCore.Helpers
                         TaskExecutor.AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                     }
                 },
-                // buildmore storage
+                // 20: buildmore storage
                 () => AutoExpandStorage(acc, vill),
-                // Extend protection
+                // 21: Extend protection
                 () => {
                     if (acc.Settings.ExtendProtection &&
                     acc.Wb.Html.GetElementbyId("sidebarBoxInfobox").Descendants("button").Any(x=>x.GetAttributeValue("value", "") == "Extend"))
