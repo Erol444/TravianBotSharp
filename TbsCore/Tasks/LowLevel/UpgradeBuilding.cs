@@ -76,9 +76,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     case BuildingEnum.RallyPoint:
                         url += "&tt=0";
                         break;
+
                     case BuildingEnum.Marketplace:
                         url += "&t=0";
                         break;
+
                     case BuildingEnum.Residence:
                     case BuildingEnum.Palace:
                     case BuildingEnum.CommandCenter:
@@ -126,7 +128,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 // Add prerequisite buildings in order to construct this building.
                 AddBuildingPrerequisites(acc, Vill, Task.Building, false);
-                
+
                 // Next execute after the last building finishes
                 this.NextExecute = Vill.Build.CurrentlyBuilding.LastOrDefault()?.Duration;
 
@@ -225,7 +227,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 RemoveCurrentTask();
                 return TaskRes.Executed;
             }
-            
+
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
                buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
                !await TryFastUpgrade(acc)) // +25% speed upgrade
@@ -288,15 +290,27 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
 
-            // Accept ads
-            if (await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen", false))
-            {
-                await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
-            }
-
             // Has to be a legit "click"
             acc.Wb.Driver.FindElementById("videoFeature").Click();
 
+            // use script to skip ads instead of waiting, found out by Merlin#7649
+            // tested with travian company's ads, not yet with 3rd company, pls send me (VINAGHOST) screenshot Debug tab
+
+            // delay 5s for ping issue or whatever can happen =))
+            await System.Threading.Tasks.Task.Delay(5000);
+
+            //they use ifarme to emebed ads video to their game
+            var iframe = acc.Wb.Driver.FindElementById("videoArea");
+            acc.Wb.Log($"Ads Url: {iframe.GetAttribute("src")}");
+            acc.Wb.Driver.SwitchTo().Frame(iframe);
+
+            // trick to skip
+            await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration;", true, false);
+
+            //back to first page
+            acc.Wb.Driver.SwitchTo().DefaultContent();
+
+            // wait for finish watching ads
             var timeout = DateTime.Now.AddSeconds(100);
             do
             {
@@ -381,7 +395,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (ResourcesHelper.IsEnoughRes(Vill.Res.Stored.Resources.ToArray(), cost)) return true;
 
             ResourcesHelper.NotEnoughRes(acc, Vill, cost, this, this.Task);
-            
+
             return false;
         }
 
@@ -409,7 +423,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 var bonusBuilding = CheckBonusBuildings(vill);
                 if (bonusBuilding == BuildingEnum.Site) return;
-                
+
                 var bonusTask = new BuildingTask()
                 {
                     TaskType = BuildingType.General,
