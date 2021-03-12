@@ -55,12 +55,9 @@ namespace TravBotSharp.Files.Helpers
             return htmlDoc;
         }
 
-        public static RestClient InitRestClient(Access access)
+        public static void InitRestClient(Access access, RestClient client)
         {
-            var client = new RestClient
-            {
-                Timeout = 5000
-            };
+            client.Timeout = 5000;
             client.UserAgent = access.UserAgent;
 
             // Set proxy
@@ -78,8 +75,6 @@ namespace TravBotSharp.Files.Helpers
             }
 
             client.AddDefaultHeader("Accept", "*/*");
-
-            return client;
         }
     }
 }

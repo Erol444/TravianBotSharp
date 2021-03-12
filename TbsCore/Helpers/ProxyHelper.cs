@@ -94,31 +94,19 @@ chrome.webRequest.onAuthRequired.addListener(
 
         public static async Task TestProxies(List<Access> access)
         {
-            List<Task> tasks = new List<Task>(access.Count);
+            var tasks = new List<Task<bool>>();
             var restClient = new RestClient("https://api.ipify.org/");
-            access.ForEach(a =>
-            {
-                tasks.Add(Task.Run(async () =>
-                {
-                    // Set proxy
-                    if (!string.IsNullOrEmpty(a.Proxy))
-                    {
-                        if (!string.IsNullOrEmpty(a.ProxyUsername)) // Proxy auth
-                        {
-                            ICredentials credentials = new NetworkCredential(a.ProxyUsername, a.ProxyPassword);
-                            restClient.Proxy = new WebProxy($"{a.Proxy}:{a.ProxyPort}", false, null, credentials);
-                        }
-                        else // Without proxy auth
-                        {
-                            restClient.Proxy = new WebProxy(a.Proxy, a.ProxyPort);
-                        }
-                    }
 
-                    restClient.AddDefaultHeader("Accept", "*/*");
-                    a.Ok = await ProxyHelper.TestProxy(restClient, a.Proxy);
-                }));
-            });
+            foreach (var a in access)
+            {
+                HttpHelper.InitRestClient(a, restClient);
+                tasks.Add(ProxyHelper.TestProxy(restClient, a.Proxy));
+            }
             await Task.WhenAll(tasks);
+            for (int i = 0; i < access.Count; i++)
+            {
+                access[i].Ok = tasks[i].Result;
+            }
         }
 
         /*public static async Task<bool> TestProxy(Account acc) =>
