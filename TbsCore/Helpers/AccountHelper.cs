@@ -69,13 +69,6 @@ namespace TravBotSharp.Files.Helpers
                 TaskExecutor.AddTaskIfNotExists(acc, new GetTribe() { ExecuteAt = DateTime.MinValue.AddHours(3) });
             }
 
-            // check server version
-            acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4);
-
-            // check sitter account
-            acc.Access.GetCurrentAccess().IsSittering = SitterHelper.isSitter(acc.Wb.Html, acc.AccInfo.ServerVersion);
-            if (acc.Access.GetCurrentAccess().IsSittering) acc.Wb.Log("This is sitter account");
-
             //FL
             if (acc.Farming.Enabled) TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
 
