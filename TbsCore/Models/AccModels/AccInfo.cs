@@ -80,5 +80,10 @@ namespace TbsCore.Models.AccModels
         /// Version of the server account is playing on
         /// </summary>
         public Classificator.ServerVersionEnum ServerVersion { get; set; }
+
+        /// <summary>
+        /// Discord webhook url
+        /// </summary>
+        public string WebhookUrl { get; set; }
     }
 }

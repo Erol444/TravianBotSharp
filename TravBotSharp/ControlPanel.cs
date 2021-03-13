@@ -21,7 +21,6 @@ namespace TravBotSharp
         private List<Account> accounts = new List<Account>();
         private int accSelected = 0;
         private System.Timers.Timer saveAccountsTimer;
-
         private ITbsUc[] Ucs;
 
         public ControlPanel()
@@ -43,6 +42,7 @@ namespace TravBotSharp
                 newVillagesUc1,
                 deffendingUc1,
                 questsUc1,
+                discordUc1,
                 debugUc1,
             };
 

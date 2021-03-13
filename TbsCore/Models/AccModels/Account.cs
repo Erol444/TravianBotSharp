@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
+using Discord.Webhook;
 using TbsCore.Models.Access;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
@@ -49,5 +50,8 @@ namespace TbsCore.Models.AccModels
 
         [JsonIgnore]
         public TaskTimer TaskTimer { get; set; }
+
+        [JsonIgnore]
+        public DiscordWebhookClient WebhookClient { get; set; }
     }
 }
