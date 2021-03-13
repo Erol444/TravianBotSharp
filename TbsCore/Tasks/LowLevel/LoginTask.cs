@@ -36,7 +36,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 acc.Wb.Log("Password is incorrect!");
                 acc.TaskTimer.Stop();
             }
-            else await TaskExecutor.PageLoaded(acc);
+            else
+            {
+                await TaskExecutor.PageLoaded(acc);
+                foreach (var vill in acc.Villages)
+                {
+                    BuildingHelper.ReStartBuilding(acc, vill);
+                }
+            }
 
             return TaskRes.Executed;
         }
