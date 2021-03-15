@@ -167,6 +167,7 @@ namespace TravBotSharp.Views
 
         private FarmList GetSelectedFl() =>
             GetSelectedVillage().FarmingNonGold.ListFarm[currentFarmList_index];
+
         private Farm GetSelectedFarm() =>
             GetSelectedFl().Targets[farmingList.FocusedItem.Index];
 
@@ -220,7 +221,7 @@ namespace TravBotSharp.Views
             if (vill == null) return;
 
             var fl = GetSelectedFl();
-            for (int i = 0; i < fl.Targets.Count(); i++)
+            for (int i = 0; i < fl.Targets.Count; i++)
             {
                 var taskSendTroops = new SendTroops()
                 {
@@ -228,8 +229,8 @@ namespace TravBotSharp.Views
                     Vill = vill,
                     TroopsMovement = new TroopsSendModel()
                     {
-                        TargetCoordinates = fl[i].Coords,
-                        Troops = fl[i].Troops,
+                        TargetCoordinates = fl.Targets[i].Coords,
+                        Troops = fl.Targets[i].Troops,
                         MovementType = Classificator.MovementType.Raid
                     }
                 };
@@ -286,7 +287,7 @@ namespace TravBotSharp.Views
             }
 
             var fl = GetSelectedFl();
-            if(fl == null)
+            if (fl == null)
             {
                 MessageUser("No FL selected!");
                 return;
@@ -304,6 +305,7 @@ namespace TravBotSharp.Views
                 }
             }
         }
+
         private void MessageUser(string message) =>
             MessageBox.Show(message, "Error", MessageBoxButtons.OK);
     }
