@@ -308,5 +308,22 @@ namespace TravBotSharp.Views
 
         private void MessageUser(string message) =>
             MessageBox.Show(message, "Error", MessageBoxButtons.OK);
+
+        /// <summary>
+        /// Delete farm list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button8_Click(object sender, EventArgs e)
+        {
+            // delete
+            GetSelectedVillage(GetSelectedAcc()).FarmingNonGold.ListFarm.RemoveAt(currentFarmList_index);
+            comboBox_NameList.Items.RemoveAt(currentFarmList_index);
+
+            // update
+            currentFarmList_index = 0;
+            comboBox_NameList.SelectedIndex = currentFarmList_index;
+            UpdateFarmList(currentFarmList_index);
+        }
     }
 }

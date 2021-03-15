@@ -43,6 +43,7 @@ namespace TravBotSharp.Views
             this.farmingList = new System.Windows.Forms.ListView();
             this.troopsSelectorUc1 = new TravBotSharp.Forms.TroopsSelectorUc();
             this.button6 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -190,8 +191,19 @@ namespace TravBotSharp.Views
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(38, 89);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(54, 26);
+            this.button8.TabIndex = 168;
+            this.button8.Text = "Delete";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
             // FarmingNonGoldUc
             // 
+            this.Controls.Add(this.button8);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.troopsSelectorUc1);
             this.Controls.Add(this.comboBox_NameList);
@@ -225,5 +237,6 @@ namespace TravBotSharp.Views
         private System.Windows.Forms.ListView farmingList;
         private Forms.TroopsSelectorUc troopsSelectorUc1;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button8;
     }
 }
