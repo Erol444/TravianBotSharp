@@ -167,6 +167,7 @@ namespace TravBotSharp.Views
 
         private FarmList GetSelectedFl() =>
             GetSelectedVillage().FarmingNonGold.ListFarm[currentFarmList_index];
+
         private Farm GetSelectedFarm() =>
             GetSelectedFl().Targets[farmingList.FocusedItem.Index];
 
@@ -219,17 +220,17 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage(acc);
             if (vill == null) return;
 
-            SendTroops taskSendTroops;
-            foreach (var f in GetSelectedFl().Targets)
+            var fl = GetSelectedFl();
+            for (int i = 0; i < fl.Targets.Count; i++)
             {
-                taskSendTroops = new SendTroops()
+                var taskSendTroops = new SendTroops()
                 {
-                    ExecuteAt = DateTime.Now,
+                    ExecuteAt = DateTime.Now.AddMilliseconds(i * 15 * AccountHelper.Delay()),
                     Vill = vill,
                     TroopsMovement = new TroopsSendModel()
                     {
-                        TargetCoordinates = f.Coords,
-                        Troops = f.Troops,
+                        TargetCoordinates = fl.Targets[i].Coords,
+                        Troops = fl.Targets[i].Troops,
                         MovementType = Classificator.MovementType.Raid
                     }
                 };
@@ -286,7 +287,7 @@ namespace TravBotSharp.Views
             }
 
             var fl = GetSelectedFl();
-            if(fl == null)
+            if (fl == null)
             {
                 MessageUser("No FL selected!");
                 return;
@@ -304,7 +305,25 @@ namespace TravBotSharp.Views
                 }
             }
         }
+
         private void MessageUser(string message) =>
             MessageBox.Show(message, "Error", MessageBoxButtons.OK);
+
+        /// <summary>
+        /// Delete farm list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button8_Click(object sender, EventArgs e)
+        {
+            // delete
+            GetSelectedVillage(GetSelectedAcc()).FarmingNonGold.ListFarm.RemoveAt(currentFarmList_index);
+            comboBox_NameList.Items.RemoveAt(currentFarmList_index);
+
+            // update
+            currentFarmList_index = 0;
+            comboBox_NameList.SelectedIndex = currentFarmList_index;
+            UpdateFarmList(currentFarmList_index);
+        }
     }
 }

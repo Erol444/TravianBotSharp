@@ -43,6 +43,9 @@ namespace TravBotSharp.Views
             this.farmingList = new System.Windows.Forms.ListView();
             this.troopsSelectorUc1 = new TravBotSharp.Forms.TroopsSelectorUc();
             this.button6 = new System.Windows.Forms.Button();
+            this.button8 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -190,8 +193,41 @@ namespace TravBotSharp.Views
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
+            // button8
+            // 
+            this.button8.Location = new System.Drawing.Point(38, 89);
+            this.button8.Name = "button8";
+            this.button8.Size = new System.Drawing.Size(54, 26);
+            this.button8.TabIndex = 168;
+            this.button8.Text = "Delete";
+            this.button8.UseVisualStyleBackColor = true;
+            this.button8.Click += new System.EventHandler(this.button8_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(369, 344);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(369, 25);
+            this.label2.TabIndex = 169;
+            this.label2.Text = "Every non-gold farmlist is limited 15 farms";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(368, 386);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(330, 31);
+            this.label3.TabIndex = 170;
+            this.label3.Text = "USE AT YOUR OWN RISK";
+            // 
             // FarmingNonGoldUc
             // 
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.button8);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.troopsSelectorUc1);
             this.Controls.Add(this.comboBox_NameList);
@@ -225,5 +261,8 @@ namespace TravBotSharp.Views
         private System.Windows.Forms.ListView farmingList;
         private Forms.TroopsSelectorUc troopsSelectorUc1;
         private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
