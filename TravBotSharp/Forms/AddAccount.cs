@@ -10,6 +10,7 @@ namespace TravBotSharp
     public partial class AddAccount : Form
     {
         public Account Acc { get; set; }
+
         public AddAccount(Account acc = null)
         {
             InitializeComponent();
@@ -20,6 +21,7 @@ namespace TravBotSharp
             }
             else this.Acc = acc;
         }
+
         public void UpdateWindow(bool showStatus = false)
         {
             textBox4.Text = Acc.AccInfo.ServerUrl;
@@ -91,6 +93,7 @@ namespace TravBotSharp
             access.ProxyUsername = input.ProxyUsername;
             UpdateWindow();
         }
+
         private AccessRaw GetAccessInput()
         {
             AccessRaw accessRaw = new AccessRaw
@@ -128,8 +131,8 @@ namespace TravBotSharp
         private void accessListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateAccessView(GetCurrentAccess());
-
         }
+
         private void UpdateAccessView(Access access)
         {
             textBox2.Text = access.Password;
@@ -167,17 +170,18 @@ namespace TravBotSharp
             proxyPassword.ReadOnly = !check;
         }
 
-        private void button5_Click(object sender, EventArgs e) // Checks proxies
+        private async void button5_Click(object sender, EventArgs e) // Checks proxies
         {
-            new Thread(async () =>
+            button5.Enabled = false;
+            button5.Text = "Waiting ...";
+            await ProxyHelper.TestProxies(Acc.Access.AllAccess);
+            try
             {
-                await ProxyHelper.TestProxies(Acc.Access.AllAccess);
-                try
-                {
-                    this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));
-                }
-                catch { }
-            }).Start();
+                this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));
+            }
+            catch { }
+            button5.Text = "Check proxies";
+            button5.Enabled = true;
         }
     }
 }

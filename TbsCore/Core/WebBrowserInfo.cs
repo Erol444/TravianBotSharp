@@ -78,8 +78,11 @@ namespace TravBotSharp.Files.Models.AccModels
             else await this.Navigate(acc.AccInfo.ServerUrl);
         }
 
-        private void InitHttpClient(Access a) =>
-            this.RestClient = HttpHelper.InitRestClient(a, this.acc.AccInfo.ServerUrl);
+        private void InitHttpClient(Access a)
+        {
+            RestClient = new RestClient();
+            HttpHelper.InitRestClient(a, RestClient);
+        }
 
         private void SetupChromeDriver(Access access, string username, string server)
         {
