@@ -20,6 +20,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return main;
         }
+
         public static Village GetHeroReviveVillage(Account acc)
         {
             var heroVill = acc.Villages.FirstOrDefault(x => x.Id == acc.Hero.ReviveInVillage);
@@ -103,7 +104,6 @@ namespace TravBotSharp.Files.Helpers
             if (acc.Hero.Settings.MinUpdate == 0) acc.Hero.Settings.MinUpdate = 40;
             if (acc.Hero.Settings.MaxUpdate == 0) acc.Hero.Settings.MaxUpdate = 80;
 
-
             // Hero update info
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
@@ -119,7 +119,7 @@ namespace TravBotSharp.Files.Helpers
         public static void ReStartCelebration(Account acc, Village vill)
         {
             // If we don't want auto-celebrations, return
-            if (vill.Expansion.Celebrations == CelebrationEnum.None ) return;
+            if (vill.Expansion.Celebrations == CelebrationEnum.None) return;
 
             TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new Celebration()
             {
