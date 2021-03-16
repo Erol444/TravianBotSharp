@@ -58,6 +58,11 @@ namespace TravBotSharp.Views
         /// <param name="index">FarmList index</param>
         private void UpdateFarmList(int index)
         {
+            if (index == -1)
+            {
+                farmingList.Items.Clear();
+                return;
+            }
             var vill = GetSelectedVillage();
             if (vill == null) return;
 
@@ -125,7 +130,11 @@ namespace TravBotSharp.Views
 
             var vill = GetSelectedVillage();
             if (vill == null) return;
-
+            if (GetSelectedAcc().AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_4 && vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
+            {
+                MessageBox.Show("Activities cannot be done by humans - RET (Rule Enforcement team)", "Limited at 15 farm per list");
+                return;
+            }
             using (var form = new AddFarmNonGold(GetSelectedAcc().AccInfo.Tribe))
             {
                 var result = form.ShowDialog();
@@ -292,6 +301,13 @@ namespace TravBotSharp.Views
                 MessageUser("No FL selected!");
                 return;
             }
+
+            if (vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
+            {
+                MessageBox.Show("Activities cannot be done by humans - RET (Rule Enforcement team)", "Limited at 15 farm per list");
+                return;
+            }
+
             var label = $"Inactive farm finder for the (Non-Goldclub) Farm List {fl.Name}";
             using (var form = new InactiveFinder(acc, label))
             {
@@ -299,6 +315,10 @@ namespace TravBotSharp.Views
                 if (result == DialogResult.OK)
                 {
                     vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.AddRange(form.InactiveFarms);
+                    if (vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
+                    {
+                        vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.RemoveRange(15, vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count - 15);
+                    }
 
                     UpdateFarmList(currentFarmList_index);
                     UpdateFarmTroops();
@@ -321,8 +341,16 @@ namespace TravBotSharp.Views
             comboBox_NameList.Items.RemoveAt(currentFarmList_index);
 
             // update
-            currentFarmList_index = 0;
-            comboBox_NameList.SelectedIndex = currentFarmList_index;
+            if (comboBox_NameList.Items.Count > 0)
+            {
+                currentFarmList_index = 0;
+                comboBox_NameList.SelectedIndex = currentFarmList_index;
+            }
+            else
+            {
+                currentFarmList_index = -1;
+                comboBox_NameList.Text = "";
+            }
             UpdateFarmList(currentFarmList_index);
         }
     }
