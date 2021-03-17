@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using VueCliMiddleware;
 
-namespace WebInterface
+namespace TBSWeb
 {
     public class Startup
     {

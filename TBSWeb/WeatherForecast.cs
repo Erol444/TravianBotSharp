@@ -1,6 +1,6 @@
 using System;
 
-namespace WebInterface
+namespace TBSWeb
 {
     public class WeatherForecast
     {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace WebInterface
+namespace TBSWeb
 {
     public class Program
     {

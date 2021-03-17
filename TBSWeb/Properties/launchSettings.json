@@ -16,7 +16,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "WebInterface": {
+    "TBSWeb": {
       "commandName": "Project",
       "launchBrowser": true,
       "launchUrl": "weatherforecast",
