@@ -1,6 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.css'
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+import { BootstrapVue } from 'bootstrap-vue'
 
-createApp(App).use(router).mount('#app')
+import { h, createApp } from 'vue'
+import App from './App.vue'
+
+createApp({ render: () => h(App) }).use(BootstrapVue).mount('#app')

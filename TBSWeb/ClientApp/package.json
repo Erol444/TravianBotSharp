@@ -10,10 +10,12 @@
   "dependencies": {
     "axios": "^0.20.0-0",
     "bootstrap": "^4.5.3",
+    "bootstrap-vue": "^2.21.2",
     "core-js": "^3.7.0",
+    "jquery": "^3.6.0",
+    "popper.js": "^1.16.1",
     "vue": "^3.0.2",
-    "vue-loader-v16": "npm:vue-loader@^16.0.0-alpha.3",
-    "vue-router": "^4.0.0-rc.5"
+    "vue-loader-v16": "npm:vue-loader@^16.0.0-alpha.3"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.9",
