@@ -31,7 +31,6 @@
     "chai": "^4.1.2",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^6.2.2",
@@ -42,19 +41,28 @@
     "sass": "^1.26.11",
     "sass-loader": "^10.0.2",
     "vue-cli-plugin-bootstrap-vue": "~0.7.0",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "standardx": "^7.0.0"
   },
   "eslintConfig": {
     "root": true,
     "env": {
       "node": true
     },
+    "plugins": [
+      "promise",
+      "import"
+    ],
     "extends": [
       "plugin:vue/essential",
-      "@vue/standard"
+      "@vue/standard",
+      "plugin:vue/recommended",
+      "standard",
+      "plugin:promise/recommended",
+      "plugin:import/recommended"
     ],
     "parserOptions": {
-      "parser": "babel-eslint"
+        "parser": "babel-eslint"
     },
     "rules": {
       "semi": [
@@ -68,6 +76,20 @@
       "indent": [
         "error",
         4
+      ],
+      "vue/script-indent": [
+        "error",
+        4,
+        {
+          "baseIndent": 1
+        }
+      ],
+      "vue/html-indent": [
+        "error", 
+        4, 
+        {
+          "baseIndent": 1
+        }
       ]
     },
     "overrides": [
@@ -78,6 +100,14 @@
         ],
         "env": {
           "mocha": true
+        }
+      },
+      {
+        "files": [
+          "*.vue"
+        ],
+        "rules": {
+          "indent": "off"
         }
       }
     ]
@@ -95,5 +125,8 @@
       "vue-cli-service lint",
       "git add"
     ]
-  }
+  },
+  "engines": {
+    "node": ">=14.0.0"
+}
 }
