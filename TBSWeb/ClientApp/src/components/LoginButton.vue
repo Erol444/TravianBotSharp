@@ -39,7 +39,7 @@
     </table>
 </template>
 <script>
-    export default {
-        name: 'LoginButton'
-    }
+export default {
+    name: 'LoginButton',
+};
 </script>

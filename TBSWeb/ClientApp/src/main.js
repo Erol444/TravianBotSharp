@@ -1,8 +1,10 @@
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-import { BootstrapVue } from 'bootstrap-vue'
+import '@babel/polyfill';
+import 'mutationobserver-shim';
+import './plugins/bootstrap-vue';
+import Vue from 'vue';
+import App from './App.vue';
 
-import { h, createApp } from 'vue'
-import App from './App.vue'
-
-createApp({ render: () => h(App) }).use(BootstrapVue).mount('#app')
+// eslint-disable-next-line no-unused-vars
+const app = new Vue({
+    render: h => h(App),
+}).$mount('#app');

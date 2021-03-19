@@ -1,9 +1,9 @@
 <template>
-    General
+    <div>General</div>
 </template>
 
 <script>
-    export default {
-        name: 'View_General'
-    };
+export default {
+    name: 'View_General',
+};
 </script>
