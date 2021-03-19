@@ -16,10 +16,15 @@
                 </td>
             </tr>
             <tr class="layout">
-                <td><ListAccount /></td>
+                <td>
+                    <ListAccount />
+                </td>
             </tr>
+
             <tr class="layout">
-                <td><Buttons /></td>
+                <td>
+                    <Buttons />
+                </td>
             </tr>
         </tbody>
     </table>
@@ -43,10 +48,11 @@
 <style scoped>
     table td {
         vertical-align: top;
+        text-align: center;
     }
 
     .layout {
-        border: 1px solid black;
+        border: 1px solid rgb(3, 3, 3);
         border-collapse: collapse;
     }
 </style>
