@@ -1,21 +1,23 @@
 <template>
-    <md-table
-        v-model="accs"
-        md-card
-        md-fixed-header
-    >
-        <md-table-row
-            slot="md-table-row"
-            slot-scope="{ item }"
+    <b-card no-body>
+        <md-table
+            v-model="accs"
+            md-card
+            md-fixed-header
         >
-            <md-table-cell md-label="username">
-                {{ item.username }}
-            </md-table-cell>
-            <md-table-cell md-label="server">
-                {{ item.server }}
-            </md-table-cell>
-        </md-table-row>
-    </md-table>
+            <md-table-row
+                slot="md-table-row"
+                slot-scope="{ item }"
+            >
+                <md-table-cell md-label="username">
+                    {{ item.username }}
+                </md-table-cell>
+                <md-table-cell md-label="server">
+                    {{ item.server }}
+                </md-table-cell>
+            </md-table-row>
+        </md-table>
+    </b-card>
 </template>
 
 <script>

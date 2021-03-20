@@ -1,21 +1,17 @@
 <template>
     <table
-        class="layout"
-        style="margin: 25px 25px; border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-top-width: 1px"
+        style="margin: 25px 25px;"
         cellspacing="10"
         cellpadding="10"
     >
         <tbody>
-            <tr class="layout">
+            <tr>
                 <td>Travian Bot Sharp</td>
-                <td
-                    rowspan="3"
-                    class="layout"
-                >
+                <td rowspan="3">
                     <Views />
                 </td>
             </tr>
-            <tr class="layout center">
+            <tr class=" center">
                 <td>
                     <center>
                         <Buttons />
@@ -23,7 +19,7 @@
                 </td>
             </tr>
 
-            <tr class="layout">
+            <tr>
                 <td>
                     <ListAccount />
                 </td>
