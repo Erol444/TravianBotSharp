@@ -15,9 +15,11 @@
                     <Views />
                 </td>
             </tr>
-            <tr class="layout">
+            <tr class="layout center">
                 <td>
-                    <Buttons />
+                    <center>
+                        <Buttons />
+                    </center>
                 </td>
             </tr>
 
@@ -54,5 +56,9 @@
     .layout {
         border: 1px solid rgb(3, 3, 3);
         border-collapse: collapse;
+    }
+    .center {
+        text-align: center;
+        vertical-align: middle;
     }
 </style>

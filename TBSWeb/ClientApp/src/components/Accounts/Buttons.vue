@@ -1,72 +1,59 @@
 <template>
-    <table style="border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px; border-top-width: 1px">
-        <tbody>
-            <tr>
-                <td colspan="2">
-                    <button
-                        type="button"
-                        class="btn btn-primary btn-block"
-                    >
-                        Add account
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button
-                        type="button"
-                        class="btn btn-success btn-block"
-                    >
-                        Login
-                    </button>
-                </td>
-                <td>
-                    <button
-                        type="button"
-                        class="btn btn-dark btn-block"
-                    >
-                        Logout
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button
-                        type="button"
-                        class="btn btn-info btn-block"
-                    >
-                        Edit
-                    </button>
-                </td>
-                <td>
-                    <button
-                        type="button"
-                        class="btn btn-danger btn-block"
-                    >
-                        Delete
-                    </button>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button
-                        type="button"
-                        class="btn btn-success btn-block"
-                    >
-                        Login all
-                    </button>
-                </td>
-                <td>
-                    <button
-                        type="button"
-                        class="btn btn-dark btn-block"
-                    >
-                        Logout all
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+    <b-button-group
+        vertical
+    >
+        <b-button-group>
+            <b-button
+                variant="danger"
+                block="true"
+                class="mb-1"
+            >
+                Add account
+            </b-button>
+        </b-button-group>
+        <b-button-group>
+            <b-button
+                variant="success"
+                class="mb-1 mr-1"
+            >
+                Edit
+            </b-button>
+            <b-button
+                variant="success"
+                class="mb-1"
+            >
+                Delete
+            </b-button>
+        </b-button-group>
+        <b-button-group>
+            <b-button
+                variant="warning"
+                class="mb-1 mr-1"
+            >
+                Login
+            </b-button>
+            <b-button
+                variant="warning"
+                class="mb-1"
+            >
+                Logout
+            </b-button>
+        </b-button-group>
+        <b-button-group>
+            <b-button
+                variant="info"
+                class="mb-1 mr-1"
+            >
+                Login all
+            </b-button>
+            <b-button
+                variant="info"
+                class="mb-1"
+            >
+                Logout all
+            </b-button>
+        </b-button-group>
+    </b-button-group>
 </template>
 <script>
     export default {
