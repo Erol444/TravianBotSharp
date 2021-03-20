@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RootNamespace>TBSWeb</RootNamespace>
+    <RootNamespace>TbsWeb</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -52,6 +52,4 @@
       </ResolvedFileToPublish>
     </ItemGroup>
   </Target>
-
-
 </Project>
