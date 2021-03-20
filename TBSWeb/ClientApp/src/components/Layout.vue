@@ -17,13 +17,13 @@
             </tr>
             <tr class="layout">
                 <td>
-                    <ListAccount />
+                    <Buttons />
                 </td>
             </tr>
 
             <tr class="layout">
                 <td>
-                    <Buttons />
+                    <ListAccount />
                 </td>
             </tr>
         </tbody>
