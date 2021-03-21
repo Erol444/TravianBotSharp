@@ -6,38 +6,12 @@
                 fill
                 card
             >
-                <b-tab title="General">
-                    <General />
-                </b-tab>
-                <b-tab title="Hero">
-                    hero
-                </b-tab>
-                <b-tab title="Villages">
-                    Villages
-                </b-tab>
-                <b-tab title="Overview">
-                    Overview
-                </b-tab>
-                <b-tab title="Troops">
-                    Troops
-                </b-tab>
-                <b-tab title="Farming">
-                    Farming
-                </b-tab>
-                <b-tab title="New villages">
-                    New villages
-                </b-tab>
-                <b-tab title="Defending">
-                    <p>Defending</p>
-                </b-tab>
-                <b-tab title="Quests">
-                    <p>Quests</p>
-                </b-tab>
-                <b-tab title="Discord">
-                    <p>Discord</p>
-                </b-tab>
-                <b-tab title="Debug">
-                    <p>Debug</p>
+                <b-tab
+                    v-for="tab in tabs"
+                    :key="tab"
+                    :title="tab.title"
+                >
+                    <component :is="tab.component" />
                 </b-tab>
             </b-tabs>
         </b-card>
@@ -46,11 +20,79 @@
 
 <script>
     import General from './General';
+    import Hero from './Hero';
+    import Villages from './Villages';
+    import Overview from './Overview';
+    import Troops from './Troops';
+    import Farming from './Farming';
+    import NewVillages from './NewVillages';
+    import Defending from './Defending';
+    import Quests from './Quests';
+    import Discord from './Discord';
+    import Debug from './Debug';
 
     export default {
         name: 'Views',
         components: {
             General,
+            Hero,
+            Villages,
+            Overview,
+            Troops,
+            Farming,
+            NewVillages,
+            Defending,
+            Quests,
+            Discord,
+            Debug,
         },
+        data: () => ({
+            tabs: [
+                {
+                    title: 'General',
+                    component: General,
+                },
+                {
+                    title: 'Hero',
+                    component: Hero,
+                },
+                {
+                    title: 'Villages',
+                    component: Villages,
+                },
+                {
+                    title: 'Overview',
+                    component: Overview,
+                },
+                {
+                    title: 'Troops',
+                    component: Troops,
+                },
+                {
+                    title: 'Farming',
+                    component: Farming,
+                },
+                {
+                    title: 'New Villages',
+                    component: NewVillages,
+                },
+                {
+                    title: 'Defending',
+                    component: Defending,
+                },
+                {
+                    title: 'Quests',
+                    component: Quests,
+                },
+                {
+                    title: 'Discord',
+                    component: Discord,
+                },
+                {
+                    title: 'Debug',
+                    component: Debug,
+                },
+            ],
+        }),
     };
 </script>

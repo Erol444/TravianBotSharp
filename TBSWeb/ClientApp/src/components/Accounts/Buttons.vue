@@ -2,19 +2,18 @@
     <b-card no-body>
         <b-button-group
             vertical
-            class="mb-1"
         >
-            <b-button-group>
+            <b-button-group class="mb-1">
                 <b-button
                     variant="danger"
-                    block="true"
                 >
                     Add account
                 </b-button>
             </b-button-group>
-            <b-button-group>
+            <b-button-group class="mb-1">
                 <b-button
                     variant="success"
+                    class="mr-1"
                 >
                     Edit
                 </b-button>
@@ -24,26 +23,28 @@
                     Delete
                 </b-button>
             </b-button-group>
-            <b-button-group
-                variant="warning"
-            >
-                <b-button class="mr-1">
+            <b-button-group class="mb-1">
+                <b-button
+                    variant="warning"
+                    class="mr-1"
+                >
                     Login
                 </b-button>
-                <b-button>
+                <b-button
+                    variant="warning"
+                >
                     Logout
                 </b-button>
             </b-button-group>
-            <b-button-group>
+            <b-button-group class="mb-1">
                 <b-button
                     variant="info"
-                    class="mb-1 mr-1"
+                    class="mr-1"
                 >
                     Login all
                 </b-button>
                 <b-button
                     variant="info"
-                    class="mb-1"
                 >
                     Logout all
                 </b-button>
