@@ -257,5 +257,27 @@
 <script>
     export default {
         name: 'ViewHero',
+        data () {
+            return {
+                Info: '',
+                Items: [],
+                AutoSelected: [],
+
+                StrengthPoint: 1,
+                OffPoint: 1,
+                DefPoint: 1,
+                ResPoint: 1,
+
+                HealthMin: 1,
+                MaxDistance: 1,
+
+                Adventures: [],
+                Equipment: [],
+
+                MinUpdate: 1,
+                MaxUpdate: 1,
+
+            };
+        },
     };
 </script>

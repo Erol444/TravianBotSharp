@@ -20,7 +20,7 @@
                                     /><br>
                                     <div class="mt-2">
                                         Level: <b-form-spinbutton
-                                            v-model="AutoFieldsLevel"
+                                            v-model="BuildLevel"
                                             inline
                                         />
                                     </div><br>
@@ -59,7 +59,10 @@
                 <b-col>
                     <b-container fluid>
                         <b-row>
-                            <b-card no-body>
+                            <b-card
+                                no-body
+                                class="mt-2"
+                            >
                                 <h5 class="ml-auto mr-auto mt-1">
                                     Current building list
                                 </h5>
@@ -89,7 +92,10 @@
                 <b-col>
                     <b-container fluid>
                         <b-row>
-                            <b-card no-body>
+                            <b-card
+                                no-body
+                                class="mt-2"
+                            >
                                 <h5 class="ml-auto mr-auto mt-1">
                                     Auto build fields resource
                                 </h5>
@@ -102,6 +108,12 @@
                                     <div class="mt-2">
                                         Level: <b-form-spinbutton
                                             v-model="AutoFieldsLevel"
+                                            inline
+                                        /><br>
+                                    </div>
+                                    <div class="mt-2">
+                                        Strategy: <b-form-spinbutton
+                                            v-model="AutoFieldsStrategy"
                                             inline
                                         /><br>
                                     </div>
@@ -201,6 +213,18 @@
                 BuildOptions: [
                     'Market',
                 ],
+
+                Build: '',
+                BuildLevel: 0,
+
+                AutoFieldsBuild: '',
+                AutoFieldsLevel: 0,
+                AutoFieldsStrategy: '',
+
+                AutoBuilding: '',
+
+                InstaBuildTime: 1,
+
             };
         },
     };

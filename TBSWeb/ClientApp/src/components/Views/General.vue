@@ -257,6 +257,23 @@
                     { name: 'Building', id: 1 },
                     { name: 'Troops', id: 2 },
                 ],
+
+                MinAds: 1,
+
+                TroopsTrain: 1,
+                TroopsTrainContinue: 1,
+
+                AllyAbove: 1,
+                AllyLeft: 1,
+
+                ChromeSetting: [],
+                AutoTask: [],
+
+                TimeWorkMin: 1,
+                TimeWorkMax: 1,
+                TimeSleepMin: 1,
+                TimeSleepMax: 1,
+
             };
         },
     };

@@ -7,8 +7,8 @@
                 card
             >
                 <b-tab
-                    v-for="tab in tabs"
-                    :key="tab"
+                    v-for="(tab, index) in tabs"
+                    :key="index"
                     :title="tab.title"
                 >
                     <component :is="tab.component" />
