@@ -46,53 +46,22 @@
             Discord,
             Debug,
         },
-        data: () => ({
-            tabs: [
-                {
-                    title: 'General',
-                    component: General,
-                },
-                {
-                    title: 'Hero',
-                    component: Hero,
-                },
-                {
-                    title: 'Villages',
-                    component: Villages,
-                },
-                {
-                    title: 'Overview',
-                    component: Overview,
-                },
-                {
-                    title: 'Troops',
-                    component: Troops,
-                },
-                {
-                    title: 'Farming',
-                    component: Farming,
-                },
-                {
-                    title: 'New Villages',
-                    component: NewVillages,
-                },
-                {
-                    title: 'Defending',
-                    component: Defending,
-                },
-                {
-                    title: 'Quests',
-                    component: Quests,
-                },
-                {
-                    title: 'Discord',
-                    component: Discord,
-                },
-                {
-                    title: 'Debug',
-                    component: Debug,
-                },
-            ],
-        }),
+        data () {
+            return {
+                tabs: [
+                    { title: 'General', component: General },
+                    { title: 'Hero', component: Hero },
+                    { title: 'Villages', component: Villages },
+                    { title: 'Overview', component: Overview },
+                    { title: 'Troops', component: Troops },
+                    { title: 'Farming', component: Farming },
+                    { title: 'New Villages', component: NewVillages },
+                    { title: 'Defending', component: Defending },
+                    { title: 'Quests', component: Quests },
+                    { title: 'Discord', component: Discord },
+                    { title: 'Debug', component: Debug },
+                ],
+            };
+        },
     };
 </script>
