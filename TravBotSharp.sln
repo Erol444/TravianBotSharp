@@ -12,6 +12,9 @@ EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "TravianBotSharp", "TravianBotSharp\TravianBotSharp.vdproj", "{1B5A77C2-06FE-48DB-9478-92C0E462F517}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TbsWeb", "TBSWeb\TbsWeb.csproj", "{053E66C8-0235-452F-942A-CB55BFCEF49C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{E343F06A-B322-41B6-889D-E349865341D7} = {E343F06A-B322-41B6-889D-E349865341D7}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

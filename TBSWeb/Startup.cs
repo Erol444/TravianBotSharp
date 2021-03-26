@@ -11,7 +11,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using VueCliMiddleware;
 
+using TbsWeb.Singleton;
+
 namespace TBSWeb
+
 {
     public class Startup
     {
@@ -25,6 +28,7 @@ namespace TBSWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(AccountManager.Instance);
             services.AddControllers();
             services.AddSpaStaticFiles(configuration =>
             {
@@ -60,7 +64,6 @@ namespace TBSWeb
                 {
                     spa.UseVueCli(npmScript: "serve");
                 }
-
             });
         }
     }
