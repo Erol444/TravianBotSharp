@@ -3,7 +3,6 @@
         <b-table
             responsive
             sticky-header
-            striped
             hover
             :items="accs"
         />
@@ -11,19 +10,23 @@
 </template>
 
 <script>
-
+    import { getListAccounts } from '../../controller/AccountController';
     export default {
         name: 'ListAccount',
-        data: () => ({
-            fields: ['username', 'server'],
-            accs: [
-                { username: 'vinaghost', server: 'ts4' },
-                { username: 'adasdsad', server: 'tsasdas4' },
-                { username: 'adasdsad', server: 'tsasdas4' },
-                { username: 'adasdsad', server: 'tsasdas4' },
-                { username: 'adasdsad', server: 'tsasdas4' },
-            ],
-        }),
+        data () {
+            return {
+                fields: ['username', 'server'],
+                accs: [],
+                listaccs: [],
+            };
+        },
+        async mounted () {
+            this.listaccs = await getListAccounts();
+
+            this.listaccs.forEach(acc => {
+                this.accs.push({ username: acc.username, server: acc.serverUrl.replace(/(^\w+:|^)\/\//, '') });
+            });
+        },
     };
 </script>
 

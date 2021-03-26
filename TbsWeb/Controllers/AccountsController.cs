@@ -11,7 +11,7 @@ using TbsWeb.Models.Accounts;
 
 namespace TbsWeb.Controllers
 {
-    [Route("api/Accounts")]
+    [Route("accounts")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
