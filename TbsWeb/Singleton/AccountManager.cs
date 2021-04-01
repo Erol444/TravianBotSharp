@@ -50,5 +50,10 @@ namespace TbsWeb.Singleton
 
             accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
         }
+
+        public void SaveAccounts()
+        {
+            IoHelperCore.SaveAccounts(accounts, true);
+        }
     }
 }

@@ -1,36 +1,44 @@
 <template>
-    <table
+    <b-container
         style="margin: 25px 25px;"
-        cellspacing="10"
-        cellpadding="10"
+        fluid
     >
-        <tbody>
-            <tr>
-                <td>Travian Bot Sharp</td>
-                <td rowspan="3">
-                    <Views />
-                </td>
-            </tr>
-            <tr class=" center">
-                <td>
-                    <center>
+        <b-row>
+            <b-col md="auto">
+                <b-container>
+                    <b-row
+                        align-h="center"
+                        align-v="center"
+                    >
+                        <h3 class="mt-3">
+                            Travian Bot Sharp
+                        </h3>
+                    </b-row>
+                    <b-row
+                        align-h="center"
+                        class="mt-3"
+                    >
                         <Buttons />
-                    </center>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <ListAccount />
-                </td>
-            </tr>
-        </tbody>
-    </table>
+                    </b-row>
+                    <b-row
+                        align-h="center"
+                        class="mt-3"
+                    >
+                        <ListAccount />
+                    </b-row>
+                </b-container>
+            </b-col>
+            <b-col>
+                <Views />
+            </b-col>
+        </b-row>
+    </b-container>
 </template>
 
 <script>
     import Buttons from './Accounts/Buttons';
     import ListAccount from './Accounts/ListAccount';
+
     import Views from './Views/Views';
 
     export default {
@@ -41,6 +49,7 @@
             Views,
         },
     };
+
 </script>
 
 <style scoped>

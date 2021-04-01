@@ -1,21 +1,19 @@
 <template>
-    <div>
-        <b-card no-body>
-            <b-tabs
-                pills
-                fill
-                card
+    <b-card no-body>
+        <b-tabs
+            pills
+            fill
+            card
+        >
+            <b-tab
+                v-for="(tab, index) in tabs"
+                :key="index"
+                :title="tab.title"
             >
-                <b-tab
-                    v-for="(tab, index) in tabs"
-                    :key="index"
-                    :title="tab.title"
-                >
-                    <component :is="tab.component" />
-                </b-tab>
-            </b-tabs>
-        </b-card>
-    </div>
+                <component :is="tab.component" />
+            </b-tab>
+        </b-tabs>
+    </b-card>
 </template>
 
 <script>

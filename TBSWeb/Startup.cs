@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,6 +31,8 @@ namespace TBSWeb
         {
             services.AddSingleton(AccountManager.Instance);
             services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
+
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp";
@@ -37,7 +40,7 @@ namespace TBSWeb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -65,6 +68,18 @@ namespace TBSWeb
                     spa.UseVueCli(npmScript: "serve");
                 }
             });
+
+            lifetime.ApplicationStopping.Register(OnShutdown, true);
+
+            lifetime.ApplicationStopped.Register(() =>
+            {
+                Console.WriteLine("*** Application is shut down...");
+            }, true);
+        }
+
+        private void OnShutdown()
+        {
+            AccountManager.Instance.SaveAccounts();
         }
     }
 }
