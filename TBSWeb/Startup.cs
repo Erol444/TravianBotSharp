@@ -73,13 +73,14 @@ namespace TBSWeb
 
             lifetime.ApplicationStopped.Register(() =>
             {
-                Console.WriteLine("*** Application is shut down...");
+                Console.WriteLine("*** Application is shut down ***");
             }, true);
         }
 
         private void OnShutdown()
         {
             AccountManager.Instance.SaveAccounts();
+            Console.WriteLine("*** Account saved ***");
         }
     }
 }

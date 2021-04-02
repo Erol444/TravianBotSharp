@@ -32,12 +32,14 @@
                 <b-button
                     variant="warning"
                     class="mr-1"
+                    @click="account_login()"
                 >
                     Login
                 </b-button>
                 <b-button
                     variant="warning"
                     class="mr-3"
+                    @click="account_logout()"
                 >
                     Logout
                 </b-button>
@@ -62,6 +64,7 @@
 <script>
     import { router } from '@/router';
     import { current, deleteAccount } from '@/controller/AccountController';
+    import { login, logout } from '@/controller/DriverController';
     import { EventBus } from '@/EventBus';
     export default {
         name: 'LoginButton',
@@ -70,17 +73,35 @@
                 router.push({ name: 'add_account' });
             },
             account_edit: function () {
-                if (current.account !== -1) {
-                    const index = current.account;
-                    router.push({ name: 'edit_account', params: { id: index } });
+                if (current.account === -1) {
+                    return;
                 }
+                const index = current.account;
+                router.push({ name: 'edit_account', params: { id: index } });
             },
             account_delete: async function () {
-                if (current.account !== -1) {
-                    const index = current.account;
-                    await deleteAccount(index);
-                    EventBus.$emit('update_accountlist');
+                if (current.account === -1) {
+                    return;
                 }
+                const index = current.account;
+                await deleteAccount(index);
+                EventBus.$emit('update_accountlist');
+            },
+            account_login: async function () {
+                if (current.account === -1) {
+                    return;
+                }
+                const index = current.account;
+                await login(index);
+                EventBus.$emit('driver_login');
+            },
+            account_logout: async function () {
+                if (current.account === -1) {
+                    return;
+                }
+                const index = current.account;
+                await logout(index);
+                EventBus.$emit('driver_logout');
             },
         },
 

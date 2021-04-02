@@ -58,7 +58,10 @@ namespace TbsWeb.Controllers
         [HttpPut("{index:int}")]
         public ActionResult EditAccount(int index, [FromBody] AccountInfo data)
         {
-            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1) return NotFound();
+            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
+            {
+                return NotFound();
+            }
 
             if (string.IsNullOrEmpty(data.Username) ||
                 string.IsNullOrEmpty(data.ServerUrl)) return BadRequest();
@@ -89,12 +92,25 @@ namespace TbsWeb.Controllers
         [HttpDelete("{index:int}")]
         public ActionResult DeleteAccount(int index)
         {
-            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1) return BadRequest();
+            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
+            {
+                return NotFound();
+            }
 
             DbRepository.RemoveAccount(AccountManager.Instance.Accounts[index]);
             AccountManager.Instance.Accounts.RemoveAt(index);
 
             return Ok();
         }
+
+        /*[HttpGet("{index:int}/settings")]
+        public ActionResult<GeneralSettings> GetSettings(int index)
+        {
+            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
+            {
+                return NotFound();
+            }
+            return AccountManager.Instance.Accounts[index].Settings;
+        }*/
     }
 }
