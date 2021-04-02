@@ -5,6 +5,7 @@ using System.Web;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Parsers;
+using TravBotSharp.Files.Tasks.LowLevel;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Helpers
@@ -134,6 +135,42 @@ namespace TravBotSharp.Files.Helpers
                 return false;
             }
             return await EnterBuilding(acc, vill, building, query, dorf);
+        }
+
+        /// <summary>
+        /// Finds BotTask that refreshes the village (dorf1) and re-schedules it a random time between
+        /// user specified. If time argument is specified, next village refresh will be executed as specified.
+        /// </summary>
+        public static void SetNextRefresh(Account acc, Village vill, DateTime? time = null)
+        {
+            // In case user sets refresh to 0/1 min
+            if (vill.Settings.RefreshMin < 2) vill.Settings.RefreshMin = 30;
+            if (vill.Settings.RefreshMax < 2) vill.Settings.RefreshMin = 60;
+
+            var ran = new Random();
+            if (time == null) time = DateTime.Now.AddMinutes(ran.Next(vill.Settings.RefreshMin, vill.Settings.RefreshMax));
+
+            var task = acc.Tasks.FirstOrDefault(x => x.Vill == vill && x.GetType() == typeof(UpdateDorf1));
+
+            if(task == null) 
+            {
+                TaskExecutor.AddTask(acc, new UpdateDorf1
+                {
+                    Vill = vill,
+                    ExecuteAt = time ?? default,
+                    Priority = Tasks.BotTask.TaskPriority.Low
+                });
+                return;
+            }
+
+            task.ExecuteAt = time ?? default;
+            TaskExecutor.ReorderTaskList(acc);
+        }
+
+        public static DateTime GetNextRefresh(Account acc, Village vill)
+        {
+            var task = acc.Tasks.FirstOrDefault(x => x.Vill == vill && x.GetType() == typeof(UpdateDorf1));
+            return task.NextExecute ?? DateTime.MaxValue;
         }
     }
 }

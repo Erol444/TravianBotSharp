@@ -95,6 +95,7 @@ namespace TravBotSharp.Files.Helpers
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
+                VillageHelper.SetNextRefresh(acc, vill);
 
                 // Remove in later updates!
                 if (vill.Settings.RefreshMin == 0) vill.Settings.RefreshMin = 30;

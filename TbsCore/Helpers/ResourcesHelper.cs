@@ -34,7 +34,7 @@ namespace TravBotSharp.Files.Helpers
 
             var nextRefresh = TimeHelper.RanDelay(acc, enoughResAt ?? DateTime.Now);
 
-            if (nextRefresh < vill.Timings.NextVillRefresh) vill.Timings.NextVillRefresh = nextRefresh;
+            if (nextRefresh < VillageHelper.GetNextRefresh(acc, vill)) VillageHelper.SetNextRefresh(acc, vill, nextRefresh);
         }
 
         /// <summary>

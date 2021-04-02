@@ -136,7 +136,7 @@ namespace TbsCore.Helpers
                 // 11: Donate to ally bonus'
                 () => DonateToAlly(acc, vill),
                 // 12: increase next village refresh time
-                () => vill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(vill.Settings.RefreshMin,vill.Settings.RefreshMax)),
+                () => VillageHelper.SetNextRefresh(acc, vill),
                 // 13: NPC:
                 () =>
                 {

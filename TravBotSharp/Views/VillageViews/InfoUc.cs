@@ -32,9 +32,6 @@ namespace TravBotSharp.Views
                 }
             }
 
-            infoText += "-- Village next update\n";
-            infoText += vill.Timings.NextVillRefresh + "\n";
-
             villageInfo.Text = infoText;
         }
 
