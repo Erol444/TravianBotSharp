@@ -25,9 +25,9 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc"></param>
         public static async Task PageLoaded(Account acc)
         {
-            if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc)) //Check if a captcha/ban/end of server
+            if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
-                acc.Wb.Log("Captcha/WW/Ban found! Stopping bot for this account!");
+                acc.Wb.Log("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
                 acc.TaskTimer.Stop();
                 return;
             }
@@ -45,8 +45,7 @@ namespace TravBotSharp.Files.Helpers
                 });
             }
 
-            if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc))
-                await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonSkipTutorial')[0].click();");
+            if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc)) await DriverHelper.ClickByClassName(acc, "questButtonSkipTutorial");
 
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
@@ -252,6 +251,11 @@ namespace TravBotSharp.Files.Helpers
         /// Checks if account is banned (T4.5)
         /// </summary>
         private static bool IsBanMsg(Account acc) => acc.Wb.Html.GetElementbyId("punishmentMsgButtons") != null;
+
+        /// <summary>
+        /// Checks whether there is an ongoing maintanance
+        /// </summary>
+        private static bool IsMaintanance(Account acc) => acc.Wb.Html.DocumentNode.Descendants("img").Any(x => x.HasClass("fatalErrorImage"));
 
         /// <summary>
         /// Checks if there are cookies to be accepted
