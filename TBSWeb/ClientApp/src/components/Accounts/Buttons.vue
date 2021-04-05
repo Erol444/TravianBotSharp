@@ -93,7 +93,7 @@
                 }
                 const index = current.account;
                 await login(index);
-                EventBus.$emit('driver_login');
+                EventBus.$emit('driver_login', index);
             },
             account_logout: async function () {
                 if (current.account === -1) {
@@ -101,7 +101,7 @@
                 }
                 const index = current.account;
                 await logout(index);
-                EventBus.$emit('driver_logout');
+                EventBus.$emit('driver_logout', index);
             },
         },
 

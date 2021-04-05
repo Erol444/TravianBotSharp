@@ -9,6 +9,7 @@
                 v-for="(tab, index) in tabs"
                 :key="index"
                 :title="tab.title"
+                lazy
             >
                 <component :is="tab.component" />
             </b-tab>
@@ -44,7 +45,7 @@
             Discord,
             Debug,
         },
-        data () {
+        data: function () {
             return {
                 tabs: [
                     { title: 'General', component: General },

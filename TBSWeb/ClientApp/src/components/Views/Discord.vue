@@ -1,5 +1,10 @@
 <template>
-    <div>Discord</div>
+    <b-overlay
+        :show="!waiting"
+        rounded="sm"
+    >
+        <div>Discord</div>
+    </b-overlay>
 </template>
 
 <script>

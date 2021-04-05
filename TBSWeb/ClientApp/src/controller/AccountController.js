@@ -52,5 +52,6 @@ const current = {
     account: -1,
     village: -1,
 };
+
 Object.seal(current);
 export { current };

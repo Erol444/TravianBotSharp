@@ -26,7 +26,7 @@
                 update: true,
             };
         },
-        mounted: async function () {
+        created: async function () {
             await this.getList();
             this.update = !this.update;
             EventBus.$on('update_accountlist', this.updateList);
@@ -34,6 +34,7 @@
         methods: {
             rowClickHandler: function (record, index) {
                 current.account = index;
+                EventBus.$emit('account_change', index);
             },
             getList: async function () {
                 this.listaccs = await getListAccounts();

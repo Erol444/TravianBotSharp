@@ -49,5 +49,22 @@ namespace TbsWeb.Controllers
 
             return BadRequest();
         }
+
+        [HttpGet("status/{index:int}")]
+        public ActionResult<bool> GetStatus(int index)
+        {
+            if (index < 0 | index > AccountManager.Instance.Accounts.Count)
+            {
+                return NotFound();
+            }
+
+            var acc = AccountManager.Instance.Accounts[index];
+            if (acc.TaskTimer != null && acc.TaskTimer.IsBotRunning() == true)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }
