@@ -42,6 +42,6 @@ jobs:
 
       - name: Send to Discord Server
         run: |
-            curl -X POST -H "Content-Type: application/json" -d '{\"content\":\"We have another pre-build for you guys\",\"embeds\":[{\"title\":\"Download TBS-${{ env.VERSION }}-pre\",\"url\":\"https://nightly.link/Erol444/TravianBotSharp/workflows/dev/develop/TBS-${{ env.VERSION }}-pre.zip\"}]}' ${{ secrets.DISCORD_PRE_BOT }}
+            curl -X POST -H "Content-Type: application/json" -d '{\"content\":\"We have another pre-build for you guys\n**Changelog**: ${{ github.event.head_commit.message }} \",\"embeds\":[{\"title\":\"Download TBS-${{ env.VERSION }}-pre\",\"url\":\"https://nightly.link/Erol444/TravianBotSharp/workflows/dev/develop/TBS-${{ env.VERSION }}-pre.zip\"}]}' ${{ secrets.DISCORD_PRE_BOT }}
       
       
