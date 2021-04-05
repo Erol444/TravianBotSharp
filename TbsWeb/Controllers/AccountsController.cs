@@ -103,14 +103,32 @@ namespace TbsWeb.Controllers
             return Ok();
         }
 
-        /*[HttpGet("{index:int}/settings")]
-        public ActionResult<GeneralSettings> GetSettings(int index)
+        [HttpGet("{index:int}/tasks")]
+        public ActionResult<List<TaskInfo>> GetSettings(int index)
         {
             if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
             {
                 return NotFound();
             }
-            return AccountManager.Instance.Accounts[index].Settings;
-        }*/
+
+            var acc = AccountManager.Instance.Accounts[index];
+            var result = new List<TaskInfo>();
+
+            if (acc.Tasks == null) return result;
+
+            foreach (var task in acc.Tasks.ToList())
+            {
+                result.Add(new TaskInfo
+                {
+                    name = task.ToString().Split('.').Last(),
+                    village = task.Vill?.Name ?? "/",
+                    priority = task.Priority.ToString(),
+                    stage = task.Stage.ToString(),
+                    executeAt = task.ExecuteAt.ToString(),
+                });
+            }
+
+            return result;
+        }
     }
 }

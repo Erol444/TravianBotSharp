@@ -37,7 +37,7 @@
 <script>
 
     import { isLogin, sleep } from '@/utilities';
-    import { current } from '@/controller/AccountController';
+    import { current, getTasks } from '@/controller/AccountController';
     import { EventBus } from '@/EventBus';
 
     export default {
@@ -48,11 +48,7 @@
                 waiting: false,
                 login: false,
                 logger: '11:23:15: Chrome will reopen in 60 min',
-                tasks: [
-                    { Task: 'Sleep', Village: 'VinaTown', Priortity: 'Medium', Stage: 'Start', ExecuteAt: '21/03/2021 11:01:52' },
-                    { Task: 'Sleep', Village: 'VinaTown', Priortity: 'Medium', Stage: 'Start', ExecuteAt: '21/03/2021 11:01:52' },
-                    { Task: 'Sleep', Village: 'VinaTown', Priortity: 'Medium', Stage: 'Start', ExecuteAt: '21/03/2021 11:01:52' },
-                ],
+                tasks: [],
             };
         },
         created: async function () {
@@ -70,7 +66,16 @@
             checkLogin: async function (index) {
                 this.waiting = false;
                 this.login = await isLogin(index);
+
+                if (this.login) {
+                    await this.getList(index);
+                }
+
                 this.waiting = true;
+            },
+
+            getList: async function (index) {
+                this.tasks = await getTasks(index);
             },
         },
     };

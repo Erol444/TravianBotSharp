@@ -48,6 +48,18 @@ export async function deleteAccount (index) {
         console.log(e);
     }
 }
+
+export async function getTasks (index) {
+    try {
+        console.log(index);
+        const { data } = await axios.get(`/accounts/${index}/tasks`);
+        console.log(data);
+        return data;
+    } catch (e) {
+        console.log(e);
+    }
+    return null;
+}
 const current = {
     account: -1,
     village: -1,
