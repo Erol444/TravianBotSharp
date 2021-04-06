@@ -311,12 +311,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 //skip ads from Travian Games
                 //they use ifarme to emebed ads video to their game
-                var iframe = acc.Wb.Driver.FindElementById("videoArea");
-                if (iframe != null)
+                if (acc.Wb.Html.GetElementbyId("videoArea") != null)
                 {
+                    var iframe = acc.Wb.Driver.FindElementById("videoArea");
+
                     acc.Wb.Driver.SwitchTo().Frame(iframe);
                     // trick to skip
-                    await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration;", true, false);
+                    await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration;", false, false);
                     //back to first page
                     acc.Wb.Driver.SwitchTo().DefaultContent();
                 }

@@ -1,9 +1,11 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
+using HtmlAgilityPack;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
@@ -21,11 +23,31 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Exchange resources button
             await DriverHelper.ClickById(acc, npcButton.Id);
 
-            var resSum = Parser.RemoveNonNumeric(acc.Wb.Html.GetElementbyId("remain").InnerText);
+            //wait npc form show
+            var timeout = DateTime.Now.AddSeconds(100);
+
+            HtmlNode remainRes = null;
+            do
+            {
+                await Task.Delay(1000);
+
+                remainRes = acc.Wb.Html.GetElementbyId("remain");
+
+                if (timeout < DateTime.Now)
+                {
+                    acc.Wb.Log($"NPC in village {Vill.Name} is time out. Retry after 3 mins");
+                    this.NextExecute = DateTime.Now.AddMinutes(3);
+                    return TaskRes.Executed;
+                }
+            }
+            while (remainRes == null);
+
+            var resSum = Parser.RemoveNonNumeric(remainRes.InnerText);
             var targetRes = MarketHelper.NpcTargetResources(Vill, resSum);
 
             if (!Vill.Market.Npc.NpcIfOverflow && MarketHelper.NpcWillOverflow(Vill, targetRes))
             {
+                acc.Wb.Log($"NPC in village {Vill.Name} will be overflow. Stop NPC");
                 return TaskRes.Executed;
             }
             for (int i = 0; i < 4; i++)
@@ -36,6 +58,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     case Classificator.ServerVersionEnum.T4_4:
                         await DriverHelper.ExecuteScript(acc, $"document.getElementById('m2[{i}]').value='{targetRes[i]}'");
                         break;
+
                     case Classificator.ServerVersionEnum.T4_5:
                         await DriverHelper.ExecuteScript(acc, $"document.getElementsByName('desired{i}')[0].value='{targetRes[i]}'");
                         break;
@@ -45,8 +68,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var submit = acc.Wb.Html.GetElementbyId("submitText");
             var distribute = submit.Descendants("button").FirstOrDefault();
 
-            await DriverHelper.ExecuteScript(acc, $"document.getElementById('{distribute.Id}').click()");
-            wb.ExecuteScript($"document.getElementById('npc_market_button').click()"); //Exchange resources button
+            await DriverHelper.ClickById(acc, distribute.Id);
+            await DriverHelper.ClickById(acc, "npc_market_button");
+
             return TaskRes.Executed;
         }
     }

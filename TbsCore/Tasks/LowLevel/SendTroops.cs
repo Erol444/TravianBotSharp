@@ -12,6 +12,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class SendTroops : BotTask
     {
         public TroopsSendModel TroopsMovement { get; set; }
+
         /// <summary>
         /// Other tasks (like SendDeff) can extend this task and configure amount of troops to
         /// send when getting amount of troops at home
@@ -20,7 +21,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2");
 
             TroopsCallback?.Invoke(acc, TroopsMovementParser.GetTroopsInRallyPoint(acc.Wb.Html));
 
