@@ -39,8 +39,10 @@ namespace TravBotSharp.Files.Helpers
             if (CheckContextualHelp(acc) &&
                 acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5)
             {
-                AddTaskIfNotExists(acc, new EditPreferences() {
+                AddTaskIfNotExists(acc, new EditPreferences()
+                {
                     ExecuteAt = DateTime.Now.AddHours(-1),
+                    TroopsPerPage = 99,
                     ContextualHelp = true
                 });
             }
@@ -91,6 +93,7 @@ namespace TravBotSharp.Files.Helpers
                         task.RetryCounter++;
                         if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
                         break;
+
                     default:
                         task.RetryCounter = 0;
                         if (task.NextTask != null)
@@ -144,7 +147,6 @@ namespace TravBotSharp.Files.Helpers
             }
         }
 
-
         public static void UpdateDorf2Info(Account acc)
         {
             //update buildings, currentlyBuilding, resources, capacity
@@ -187,7 +189,7 @@ namespace TravBotSharp.Files.Helpers
             var dorf1Movements = TroopsMovementParser.ParseDorf1Movements(acc.Wb.Html);
 
             // Check attacks if there are incoming attacks and alerts aren't disabled and task isn't already on task list
-            if (dorf1Movements.Any(x=>x.Type == Classificator.MovementTypeDorf1.IncomingAttack) &&
+            if (dorf1Movements.Any(x => x.Type == Classificator.MovementTypeDorf1.IncomingAttack) &&
                 vill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
             {
                 AddTaskIfNotExistInVillage(acc, vill, new CheckAttacks()
@@ -207,6 +209,7 @@ namespace TravBotSharp.Files.Helpers
                 building.UnderConstruction = field.UnderConstruction;
             }
         }
+
         private static void UpdateCurrentlyBuilding(Account acc, Village vill)
         {
             vill.Build.CurrentlyBuilding.Clear();
@@ -231,6 +234,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         #region Game checks
+
         private static bool IsWWMsg(Account acc)
         {
             var wwImg = acc.Wb.Html.DocumentNode
@@ -281,12 +285,14 @@ namespace TravBotSharp.Files.Helpers
             }
             return false;
         }
+
         private static bool IsSysMsg(Account acc)
         { //End of server/gold promotions/arts
             var msg = acc.Wb.Html.GetElementbyId("sysmsg");
             return msg != null;
         }
-        #endregion
+
+        #endregion Game checks
 
         public static void AddTask(Account acc, BotTask task)
         {
@@ -294,6 +300,7 @@ namespace TravBotSharp.Files.Helpers
             acc.Tasks.Add(task);
             ReorderTaskList(acc);
         }
+
         public static void AddTask(Account acc, List<BotTask> tasks)
         {
             foreach (var task in tasks)
@@ -302,15 +309,18 @@ namespace TravBotSharp.Files.Helpers
             }
             ReorderTaskList(acc);
         }
+
         public static void ReorderTaskList(Account acc)
         {
             acc.Tasks = acc.Tasks.OrderBy(x => x.ExecuteAt).ToList();
         }
+
         public static void AddTaskIfNotExists(Account acc, BotTask task)
         {
             if (!acc.Tasks.Any(x => x.GetType() == task.GetType()))
                 AddTask(acc, task);
         }
+
         public static void AddTaskIfNotExistInVillage(Account acc, Village vill, BotTask task)
         {
             if (!TaskExistsInVillage(acc, vill, task.GetType()))
@@ -318,6 +328,7 @@ namespace TravBotSharp.Files.Helpers
                 AddTask(acc, task);
             }
         }
+
         public static bool TaskExistsInVillage(Account acc, Village vill, Type taskType) =>
             acc.Tasks.Any(x => x.GetType() == taskType && x.Vill == vill);
 
@@ -337,6 +348,7 @@ namespace TravBotSharp.Files.Helpers
                 x != thisTask
             );
         }
+
         /// <summary>
         /// Removes all pending BotTasks of specific type except for the task calling it
         /// </summary>
@@ -344,6 +356,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="thisTask">Task not to remove</param>
         public static void RemoveSameTasks(Account acc, BotTask thisTask) =>
             RemoveSameTasks(acc, thisTask.GetType(), thisTask);
+
         public static void RemoveSameTasks(Account acc, Type type, BotTask thisTask)
         {
             acc.Tasks.RemoveAll(x =>
@@ -351,6 +364,5 @@ namespace TravBotSharp.Files.Helpers
                 x != thisTask
             );
         }
-
     }
 }

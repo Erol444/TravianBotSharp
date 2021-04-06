@@ -30,6 +30,10 @@ namespace TbsCore.Helpers
 
             //Web browser not initialized
             if (!UpdateAccountObject.UpdateVillages(html, acc)) return new List<Action>();
+
+            //Didnt check version yet
+            if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0) return new List<Action>();
+
             var vill = acc.Villages.FirstOrDefault(x => x.Active);
 
             return new List<Action>() {

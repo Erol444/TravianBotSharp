@@ -17,7 +17,17 @@ jobs:
       
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
-          
+       
+      - name: Get cache
+        uses: actions/cache@v2
+        with:
+          path: |
+              ~/packages
+              ~/TbsCore/obj/project.assets.json
+
+          key: ${{ runner.os }}-nuget-${{ hashFiles('~/TbsCore/packages.lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-nuget-
       - name: Restore Packages
         run: |
           nuget restore TbsCore/TbsCore.csproj

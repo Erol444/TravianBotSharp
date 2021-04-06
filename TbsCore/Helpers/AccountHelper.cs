@@ -46,14 +46,14 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Returns a random delay (click delay, ~0.5-1sec).
+        /// Returns a random delay (click delay, ~0.5-1.6sec).
         /// </summary>
         /// <returns>Random delay in milliseconds</returns>
         public static int Delay()
         {
             //Return random delay
             Random rnd = new Random();
-            return rnd.Next(500, 900);
+            return rnd.Next(500, 1600);
         }
 
         public static void StartAccountTasks(Account acc)

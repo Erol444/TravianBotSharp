@@ -36,6 +36,7 @@ namespace TravBotSharp.Files.Helpers
                 case TroopsEnum.Bowman:
                     if (great) return BuildingEnum.GreatBarracks;
                     return BuildingEnum.Barracks;
+
                 case TroopsEnum.EquitesLegati:
                 case TroopsEnum.EquitesImperatoris:
                 case TroopsEnum.EquitesCaesaris:
@@ -54,6 +55,7 @@ namespace TravBotSharp.Files.Helpers
                 case TroopsEnum.Marauder:
                     if (great) return BuildingEnum.GreatStable;
                     return BuildingEnum.Stable;
+
                 case TroopsEnum.RomanRam:
                 case TroopsEnum.RomanCatapult:
                 case TroopsEnum.TeutonCatapult:
@@ -65,6 +67,7 @@ namespace TravBotSharp.Files.Helpers
                 case TroopsEnum.HunCatapult:
                 case TroopsEnum.HunRam:
                     return BuildingEnum.Workshop;
+
                 default:
                     return BuildingEnum.Site; //idk, should have error handling
             }
@@ -265,15 +268,18 @@ namespace TravBotSharp.Files.Helpers
                 else vill.Troops.ToResearch.Remove(troop);
 
                 // Improvement
-                if (!vill.Troops.Levels.Exists(x => x.Troop == troop && x.Level == 20) && vill.Settings.AutoImprove)
+                if (vill.Troops.Levels != null)
                 {
-                    vill.Troops.ToImprove.Add(troop);
-                    if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Smithy))
+                    if (!vill.Troops.Levels.Exists(x => x.Troop == troop && x.Level == 20) && vill.Settings.AutoImprove)
                     {
-                        TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new ImproveTroop() { Vill = vill, ExecuteAt = DateTime.Now });
+                        vill.Troops.ToImprove.Add(troop);
+                        if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Smithy))
+                        {
+                            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new ImproveTroop() { Vill = vill, ExecuteAt = DateTime.Now });
+                        }
                     }
+                    else vill.Troops.ToImprove.Remove(troop);
                 }
-                else vill.Troops.ToImprove.Remove(troop);
             }
         }
 
@@ -284,14 +290,19 @@ namespace TravBotSharp.Files.Helpers
             {
                 case BuildingEnum.Barracks:
                     return vill.Troops.CurrentlyTraining.Barracks?.LastOrDefault()?.FinishTraining ?? def;
+
                 case BuildingEnum.Stable:
                     return vill.Troops.CurrentlyTraining.Stable?.LastOrDefault()?.FinishTraining ?? def;
+
                 case BuildingEnum.GreatBarracks:
                     return vill.Troops.CurrentlyTraining.GB?.LastOrDefault()?.FinishTraining ?? def;
+
                 case BuildingEnum.GreatStable:
                     return vill.Troops.CurrentlyTraining.GS?.LastOrDefault()?.FinishTraining ?? def;
+
                 case BuildingEnum.Workshop:
                     return vill.Troops.CurrentlyTraining.Workshop?.LastOrDefault()?.FinishTraining ?? def;
+
                 default:
                     return def;
             }
@@ -322,7 +333,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// When inside the training building (barracks/stable...) add troops that you can train to 
+        /// When inside the training building (barracks/stable...) add troops that you can train to
         /// village researched list
         /// </summary>
         /// <param name="vill">Village</param>

@@ -289,32 +289,37 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private async Task<bool> TryFastUpgrade(Account acc)
         {
             if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
+            await System.Threading.Tasks.Task.Delay(1000);
+            // Confirm
+            acc.Wb.UpdateHtml();
+            if (acc.Wb.Html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']") != null)
+            {
+                await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen");
+                await System.Threading.Tasks.Task.Delay(1300);
+                await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
+                await System.Threading.Tasks.Task.Delay(5000);
+            }
 
             // Has to be a legit "click"
             acc.Wb.Driver.FindElementById("videoFeature").Click();
-
-            // use script to skip ads instead of waiting, found out by Merlin#7649
-            // tested with travian company's ads, not yet with 3rd company, pls send me (VINAGHOST) screenshot Debug tab
-
-            // delay 5s for ping issue or whatever can happen =))
-            await System.Threading.Tasks.Task.Delay(5000);
-
-            //they use ifarme to emebed ads video to their game
-            var iframe = acc.Wb.Driver.FindElementById("videoArea");
-            acc.Wb.Log($"Ads Url: {iframe.GetAttribute("src")}");
-            acc.Wb.Driver.SwitchTo().Frame(iframe);
-
-            // trick to skip
-            await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration;", true, false);
-
-            //back to first page
-            acc.Wb.Driver.SwitchTo().DefaultContent();
 
             // wait for finish watching ads
             var timeout = DateTime.Now.AddSeconds(100);
             do
             {
-                await System.Threading.Tasks.Task.Delay(1000);
+                await System.Threading.Tasks.Task.Delay(2000);
+
+                //skip ads from Travian Games
+                //they use ifarme to emebed ads video to their game
+                var iframe = acc.Wb.Driver.FindElementById("videoArea");
+                if (iframe != null)
+                {
+                    acc.Wb.Driver.SwitchTo().Frame(iframe);
+                    // trick to skip
+                    await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration;", true, false);
+                    //back to first page
+                    acc.Wb.Driver.SwitchTo().DefaultContent();
+                }
                 if (timeout < DateTime.Now) return false;
             }
             while (acc.Wb.Driver.Url.Contains("build.php"));
@@ -324,8 +329,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
             {
                 await DriverHelper.ClickById(acc, "dontShowThisAgain");
+                await System.Threading.Tasks.Task.Delay(1300);
                 await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
             }
+
             return true;
         }
 
