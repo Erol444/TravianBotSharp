@@ -120,10 +120,20 @@ namespace TravBotSharp.Files.Helpers
                 task.NextExecute = null;
                 ReorderTaskList(acc);
                 task.Stage = TaskStage.Start;
+                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}"));
+
                 return;
             }
             // Remove the task from the task list
             acc.Tasks.Remove(task);
+            if (task.RetryCounter >= 3)
+            {
+                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is already re-executed 3 times. Ignore it"));
+            }
+            else
+            {
+                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is done."));
+            }
         }
 
         /// <summary>
@@ -142,7 +152,7 @@ namespace TravBotSharp.Files.Helpers
                 }
                 catch (Exception e)
                 {
-                    acc.Wb.Log($"Error in {i + 1}. PreTask", e);
+                    if (acc.Wb != null) acc.Wb.Log($"Error executing pre-task {PostLoadHelper.namePostTask[i]}!", e);
                 }
             }
         }

@@ -17,7 +17,33 @@ namespace TbsCore.Helpers
     /// </summary>
     internal class PostLoadHelper
     {
+        public static readonly List<string> namePostTask = new List<string>()
+        {
+            "Update info",
+            "Get culture point",
+            "Village expansion",
+            "Claim Newbie quest",
+            "Claim Daily quest",
+            "Update gold/silver",
+            "Update Travian Plus account",
+            "Check messages",
+            "Update JS resources",
+            "Check unfinished tasks",
+            "Donate to ally bonus",
+            "Increase next village refresh time",
+            "NPC",
+            "TTwars plus and boost",
+            "Insta upgrade",
+            "Update adventures",
+            "Update status of hero",
+            "Update health of hero",
+            "Update info of hero",
+            "Build more storage",
+            "Extend protection",
+        };
+
         /// <summary>
+
         /// Gets tasks that should be executed after loading a page
         /// </summary>
         /// <param name="acc">Account</param>
@@ -137,7 +163,7 @@ namespace TbsCore.Helpers
                 },
                 // 10: Check if there are unfinished tasks
                 () => ResSpendingHelper.CheckUnfinishedTasks(acc, vill),
-                // 11: Donate to ally bonus'
+                // 11: Donate to ally bonus
                 () => DonateToAlly(acc, vill),
                 // 12: increase next village refresh time
                 () => VillageHelper.SetNextRefresh(acc, vill),
@@ -225,7 +251,7 @@ namespace TbsCore.Helpers
                         TaskExecutor.AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                     }
                 },
-                // 20: buildmore storage
+                // 20: build more storage
                 () => AutoExpandStorage(acc, vill),
                 // 21: Extend protection
                 () => {

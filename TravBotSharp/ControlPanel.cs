@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using System.Reflection;
 using System.Windows.Forms;
 using TbsCore.Database;
 using TbsCore.Helpers;
@@ -57,6 +58,8 @@ namespace TravBotSharp
 
             // So TbsCore can access forms and alert user
             IoHelperCore.AlertUser = IoHelperForms.AlertUser;
+
+            checkNewVersion();
         }
 
         private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);
@@ -254,6 +257,31 @@ namespace TravBotSharp
                 }
             }).Start();
             generalUc1.UpdateBotRunning("false");
+        }
+
+        private void checkNewVersion()
+        {
+            new Thread(async () =>
+            {
+                var result = await Task.WhenAll(GithubHelper.CheckGitHubLatestVersion(), GithubHelper.CheckGitHublatestBuild());
+                var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                currentVersion = new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build);
+                var isNewAvailable = result[0] != null && (currentVersion.CompareTo(result[0]) < 0);
+
+                if (isNewAvailable)
+                {
+                    using (var form = new NewRelease())
+                    {
+                        form.IsNewVersion = isNewAvailable;
+
+                        form.LatestVersion = result[0] ?? currentVersion;
+                        form.LatestBuild = result[1] ?? currentVersion;
+                        form.CurrentVersion = currentVersion;
+
+                        _ = form.ShowDialog();
+                    }
+                }
+            }).Start();
         }
     }
 }

@@ -43,6 +43,12 @@
           "Microsoft.NETCore.Platforms": "1.1.0"
         }
       },
+      "Octokit": {
+        "type": "Direct",
+        "requested": "[0.50.0, )",
+        "resolved": "0.50.0",
+        "contentHash": "J5vqespSvjxIAAtjG1Tc6ghBqyfRgDJtKnk/ifi4N0hD/f3JbPwyEDRT+Eelu/bS4C4M6mu5gt1WJqar+fByzg=="
+      },
       "RandomUserAgent": {
         "type": "Direct",
         "requested": "[1.1.2, )",

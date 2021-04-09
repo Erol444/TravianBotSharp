@@ -228,6 +228,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
+            acc.Wb.Log($"Started upgrading {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
+
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
                buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
                !await TryFastUpgrade(acc)) // +25% speed upgrade
@@ -235,10 +237,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
             }
 
+            acc.Wb.Log($"Upgraded {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
+
             lvl++;
             CheckIfTaskFinished(lvl);
 
-            acc.Wb.Log($"Started upgrading {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
             await PostTaskCheckDorf(acc);
 
             return TaskRes.Executed;
@@ -289,15 +292,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private async Task<bool> TryFastUpgrade(Account acc)
         {
             if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
-            await System.Threading.Tasks.Task.Delay(1000);
+            await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
+
             // Confirm
             acc.Wb.UpdateHtml();
             if (acc.Wb.Html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']") != null)
             {
                 await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen");
-                await System.Threading.Tasks.Task.Delay(1300);
+                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
+
                 await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
-                await System.Threading.Tasks.Task.Delay(5000);
+                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
             }
 
             // Has to be a legit "click"
@@ -307,17 +312,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var timeout = DateTime.Now.AddSeconds(100);
             do
             {
-                await System.Threading.Tasks.Task.Delay(2000);
+                await System.Threading.Tasks.Task.Delay(3000);
 
                 //skip ads from Travian Games
                 //they use ifarme to emebed ads video to their game
+                acc.Wb.UpdateHtml();
                 if (acc.Wb.Html.GetElementbyId("videoArea") != null)
                 {
-                    var iframe = acc.Wb.Driver.FindElementById("videoArea");
-
-                    acc.Wb.Driver.SwitchTo().Frame(iframe);
+                    acc.Wb.Driver.SwitchTo().Frame(acc.Wb.Driver.FindElementById("videoArea"));
                     // trick to skip
-                    await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration;", false, false);
+                    await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration - 1;", false, false);
                     //back to first page
                     acc.Wb.Driver.SwitchTo().DefaultContent();
                 }
@@ -330,7 +334,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
             {
                 await DriverHelper.ClickById(acc, "dontShowThisAgain");
-                await System.Threading.Tasks.Task.Delay(1300);
+                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
                 await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
             }
 

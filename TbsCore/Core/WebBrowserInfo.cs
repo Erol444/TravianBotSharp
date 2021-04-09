@@ -60,7 +60,7 @@ namespace TravBotSharp.Files.Models.AccModels
         public async Task InitSelenium(Account acc, bool newAccess = true)
         {
             this.acc = acc;
-            Access access = newAccess ? await acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
+            Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
