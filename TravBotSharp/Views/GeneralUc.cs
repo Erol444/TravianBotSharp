@@ -405,9 +405,9 @@ namespace TravBotSharp.Views
                 {
                     form.IsNewVersion = isNewAvailable;
 
+                    form.CurrentVersion = currentVersion;
                     form.LatestVersion = result[0] ?? currentVersion;
                     form.LatestBuild = result[1] ?? currentVersion;
-                    form.CurrentVersion = currentVersion;
 
                     _ = form.ShowDialog();
                 }

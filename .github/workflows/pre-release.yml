@@ -95,9 +95,16 @@ jobs:
     runs-on: ubuntu-latest
     needs: [Pre-release, version]
     steps: 
-      - name: Send to Discord Server
-        run: |
-          curl -X POST -H "Content-Type: application/json" -d '{\"content\":\"Changelog is in download link\",\"embeds\":[{\"title\":\"Download TBS-${{needs.version.outputs.version}}\",\"url\":\"https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}\"}]}' ${{ secrets.DISCORD_PRE_BOT }}
+      - name: Send to discord server
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_PRE_BOT }}
+          nodetail: true
+          title: New pre-prelease
+          description: |
+              Version `TBS-${{needs.version.outputs.version}}`
+              Changelog is in download link
+              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
   Clear:
     runs-on: ubuntu-latest
     needs: Pre-release
