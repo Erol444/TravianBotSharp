@@ -28,7 +28,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.WriteById(acc, "demolish", id);
             await DriverHelper.ClickById(acc, "btn_demolish");
 
-            this.NextExecute = NextDemolishTime(acc);
+            this.NextExecute = await NextDemolishTime(acc);
 
             return TaskRes.Executed;
         }
@@ -71,8 +71,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// </summary>
         /// <param name="htmlDoc">The html of the page</param>
         /// <param name="acc">account</param>
-        public DateTime NextDemolishTime(Account acc)
+        public async Task<DateTime> NextDemolishTime(Account acc)
         {
+            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.MainBuilding))
+                return DateTime.Now;
+
             var table = acc.Wb.Html.GetElementbyId("demolish");
             if (table == null) //No building is being demolished
             {
