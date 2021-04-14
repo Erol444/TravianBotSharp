@@ -47,6 +47,7 @@ namespace TravBotSharp.Files.Helpers
             if (vill == null) return 0;
             return vill.Id;
         }
+
         public static string VillageType(Village vill)
         {
             string type = "";
@@ -57,6 +58,7 @@ namespace TravBotSharp.Files.Helpers
             if (type == "11115") type = "15c";
             return type;
         }
+
         public static string BuildingTypeToString(Classificator.BuildingEnum building) => EnumStrToString(building.ToString());
 
         public static string EnumStrToString(string str)
@@ -73,6 +75,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return str;
         }
+
         public static Village VillageFromId(Account acc, int id)
         {
             return acc.Villages.FirstOrDefault(x => x.Id == id);
@@ -109,7 +112,11 @@ namespace TravBotSharp.Files.Helpers
         {
             // If we are already at the desired building (if gid is correct)
             Uri currentUri = new Uri(acc.Wb.CurrentUrl);
-            if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString()) return true;
+            if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString())
+            {
+                acc.Wb.UpdateHtml();
+                return true;
+            }
 
             // If we want to navigate to dorf first
             if (dorf)
@@ -152,7 +159,7 @@ namespace TravBotSharp.Files.Helpers
 
             var task = acc.Tasks.FirstOrDefault(x => x.Vill == vill && x.GetType() == typeof(UpdateDorf1));
 
-            if(task == null) 
+            if (task == null)
             {
                 TaskExecutor.AddTask(acc, new UpdateDorf1
                 {

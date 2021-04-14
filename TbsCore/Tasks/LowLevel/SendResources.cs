@@ -65,8 +65,40 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var diff = (sum - merchantsCapacity);
             if (diff > 0)
             {
-                diff /= 4;
-                res = res.Select(x => (x - diff)).ToArray();
+                // if EriK or someone else look at this section and has another way better, pls change ._.
+                // so my way (vinaghost's way) is reduce one by one untill we can send,
+                // start from iron -> wood -> clay -> crop
+                // why crop last ? i dont know ._.
+                long tmp;
+                // iron
+                if (diff != 0)
+                {
+                    tmp = res[2];
+                    res[2] = (diff > res[2]) ? 0 : res[2] - diff;
+                    diff = (res[2] == 0) ? (diff - tmp) : 0;
+                }
+                // wood
+                if (diff != 0)
+                {
+                    tmp = res[0];
+                    res[0] = (diff > res[0]) ? 0 : res[0] - diff;
+                    diff = (res[0] == 0) ? (diff - tmp) : 0;
+                }
+                // clay
+                if (diff != 0)
+                {
+                    tmp = res[1];
+                    res[1] = (diff > res[1]) ? 0 : res[1] - diff;
+                    diff = (res[1] == 0) ? (diff - tmp) : 0;
+                }
+                // crop
+                if (diff != 0)
+                {
+                    tmp = res[3];
+                    res[3] = (diff > res[3]) ? 0 : res[3] - diff;
+                    diff = (res[3] == 0) ? (diff - tmp) : 0;
+                }
+
                 acc.Wb.Log("Not have enough merchants, village will send as much as posible");
             }
 
@@ -74,13 +106,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             for (int i = 0; i < 4; i++)
             {
                 if (res[i] <= 0) continue;
-                await DriverHelper.WriteById(acc, $"r{(i + 1)}", res[i]);
-            }
-            // again for auto correcting from travian
-            for (int i = 0; i < 4; i++)
-            {
-                if (res[i] <= 0) continue;
-                await DriverHelper.WriteById(acc, $"r{(i + 1)}", res[i]);
+                await DriverHelper.TextById(acc, $"r{(i + 1)}", res[i]);
             }
 
             // Input coordinates

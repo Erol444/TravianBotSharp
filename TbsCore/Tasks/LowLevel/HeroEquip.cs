@@ -47,10 +47,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     case ServerVersionEnum.T4_5:
                         script += $"items.querySelector('div[class$=\"_{(int)item}\"]').click();";
                         break;
+
                     case ServerVersionEnum.T4_4:
                         script += $"items.querySelector('div[class$=\"_{(int)item} \"]').click();";
                         break;
-
                 }
 
                 await DriverHelper.ExecuteScript(acc, script);
@@ -58,7 +58,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // No amount specified, meaning we have already equipt the item
                 if (amount == 0) return Done(acc);
 
-                await DriverHelper.WriteById(acc, "amount", amount);
+                await DriverHelper.TextById(acc, "amount", amount);
 
                 await DriverHelper.ClickByClassName(acc, "ok");
             }

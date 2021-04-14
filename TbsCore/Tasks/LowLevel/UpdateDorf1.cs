@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 
@@ -14,6 +15,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
+
+            // 60% to check update dorf2
+            Random ran = new Random();
+            if (ran.Next(1, 100) > 40)
+            {
+                TaskExecutor.AddTaskIfNotExistInVillage(acc, Vill, new UpdateDorf2()
+                {
+                    ExecuteAt = DateTime.Now.AddMinutes(1),
+                    Vill = Vill
+                });
+            }
+
             return TaskRes.Executed;
         }
     }

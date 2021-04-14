@@ -26,6 +26,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // Train settlers
             // Copy from UpgradeBuilding task
+            if (!acc.Wb.CurrentUrl.Contains("/dorf2.php")) // Don't re-navigate
+            {
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+            }
             await TaskExecutor.PageLoaded(acc);
 
             // Check if residence is getting upgraded to level 10 => train settlers

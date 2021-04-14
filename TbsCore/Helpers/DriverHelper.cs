@@ -86,7 +86,7 @@ namespace TbsCore.Helpers
         public static async Task<bool> ClickById(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionClick(), log);
 
-        public static async Task<bool> WriteById(Account acc, string id, object text, bool log = true)
+        public static async Task<bool> TextById(Account acc, string id, object text, bool log = true)
         {
             try
             {
@@ -102,6 +102,9 @@ namespace TbsCore.Helpers
                 return false;
             }
         }
+
+        public static async Task<bool> WriteById(Account acc, string query, object text, bool log = true) =>
+            await ExecuteAction(acc, new QueryById(query), new ActionWrite(text), log);
 
         public static async Task<bool> CheckById(Account acc, string query, bool check, bool log = true, bool update = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionCheck(check), log, update);

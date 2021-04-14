@@ -57,6 +57,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
+            // check current training before calc to train
+            var currentlyTrainings = UpdateCurrentlyTraining(acc.Wb.Html, acc);
+            if (currentlyTrainings.Count > 0)
+            {
+                var finishTraining = currentlyTrainings.Last().FinishTraining;
+                if ((finishTraining - DateTime.Now).TotalHours > acc.Settings.FillInAdvance)
+                {
+                    NextExecute = currentlyTrainings.Last().FinishTraining.AddHours(-acc.Settings.FillFor);
+                    return TaskRes.Executed;
+                }
+            }
+
             (TimeSpan dur, Resources cost) = TroopsParser.GetTrainCost(acc.Wb.Html, this.Troop);
 
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)Troop));
@@ -104,32 +116,35 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // calculate how many resources we need to train trainNum of troops
             long[] neededRes = cost.ToArray().Select(x => x * trainNum).ToArray();
 
-            //if we dont have enough resources in the target village, send res from main village
-            if (ResourcesHelper.IsEnoughRes(Vill, neededRes))
+            // if we dont have enough resources in the target village, send res from main village
+            // if current village is main, just train with current res noneed to wait
+            if (!ResourcesHelper.IsEnoughRes(Vill, neededRes) && !Vill.Coordinates.Equals(AccountHelper.GetMainVillage(acc).Coordinates))
             {
                 TaskExecutor.AddTask(acc, new SendResFillTroops()
                 {
                     ExecuteAt = DateTime.Now,
                     Vill = AccountHelper.GetMainVillage(acc),
+                    TargetVill = this.Vill,
                     Troop = Troop,
                     Great = Great
                 });
                 return TaskRes.Executed;
             }
-
             // train our troops
             acc.Wb.Driver.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
             await Task.Delay(AccountHelper.Delay());
             await DriverHelper.ExecuteScript(acc, "document.getElementsByName('s1')[0].click()");
 
-            var currentlyTrainings = UpdateCurrentlyTraining(acc.Wb.Html, acc);
+            await Task.Delay(AccountHelper.Delay());
+
+            currentlyTrainings = UpdateCurrentlyTraining(acc.Wb.Html, acc);
 
             // make sefl update by getting last FinishTraining minus half acc.Settings.FillFor
             if (!HighSpeedServer)
             {
                 if (currentlyTrainings.Count > 0)
                 {
-                    NextExecute = currentlyTrainings.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
+                    NextExecute = currentlyTrainings.Last().FinishTraining.AddHours(-acc.Settings.FillFor);
                 }
                 else
                 {

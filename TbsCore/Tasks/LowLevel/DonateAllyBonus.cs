@@ -16,6 +16,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             "bonusSmithyPower",
             "bonusMerchantCapacity"
         };
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/alliance/bonuses");
@@ -34,7 +35,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var donateArr = ResToDonate.ToArray();
             for (int i = 0; i < 4; i++)
             {
-                await DriverHelper.WriteById(acc, $"donate{(i + 1)}", donateArr[i]);
+                await DriverHelper.TextById(acc, $"donate{(i + 1)}", donateArr[i]);
             }
 
             await DriverHelper.ClickById(acc, "donate_green");
