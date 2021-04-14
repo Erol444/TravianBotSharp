@@ -12,6 +12,7 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
         {
             Random rnd = new Random();
             int totalSec = 0;
+            await Task.Delay(AccountHelper.Delay() / 3);
 
             foreach (var fl in acc.Farming.FL)
             {
@@ -32,6 +33,7 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
                             // For TTWars, you need 30sec delay between each FL send
                             totalSec += rnd.Next(acc.Farming.MinInterval, acc.Farming.MaxInterval);
                             break;
+
                         case Classificator.ServerVersionEnum.T4_5:
                             totalSec += rnd.Next(5, 13);
                             break;
@@ -44,6 +46,7 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
                 case Classificator.ServerVersionEnum.T4_4:
                     TaskExecutor.AddTask(acc, new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(totalSec) });
                     break;
+
                 case Classificator.ServerVersionEnum.T4_5:
                     var nextSend = rnd.Next(acc.Farming.MinInterval, acc.Farming.MaxInterval);
                     TaskExecutor.AddTask(acc, new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(nextSend) });

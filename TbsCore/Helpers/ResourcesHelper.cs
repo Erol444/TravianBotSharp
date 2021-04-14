@@ -19,7 +19,7 @@ namespace TravBotSharp.Files.Helpers
             NotEnoughRes(acc, vill, ResourcesHelper.ArrayToResources(requiredRes), task, buildingTask);
 
         /// <summary>
-        /// When a BotTask doesn't have enough resources in the village, this method will add the 
+        /// When a BotTask doesn't have enough resources in the village, this method will add the
         /// BotTask to the village's UnfinishedTasks list. Bot will finish the task when village has enough resources
         /// </summary>
         /// <param name="acc">Account</param>
@@ -97,15 +97,24 @@ namespace TravBotSharp.Files.Helpers
             var mainVill = AccountHelper.GetMainVillage(acc);
             if (mainVill == vill) return enoughRes;
 
-            DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
-            if (resTransit < enoughRes) enoughRes = resTransit;
+            // Just send res from main to this village
+            // if res arrive first or enough res from production, ignore them =))
+            // because when res is come, it will check task again
+            if (vill.Settings.GetRes)
+            {
+                TaskExecutor.AddTask(acc, new SendResources()
+                {
+                    ExecuteAt = DateTime.Now.AddSeconds(3),
+                    Vill = mainVill,
+                    TargetVill = vill,
+                    Resources = requiredRes,
+                });
+            }
 
             if (enoughRes < DateTime.Now) return DateTime.Now;
 
             return enoughRes;
         }
-
-
 
         /// <summary>
         /// Checks if the storage is too low to store required resources
@@ -143,7 +152,7 @@ namespace TravBotSharp.Files.Helpers
                 Building = building,
                 TaskType = Classificator.BuildingType.General
             };
-            
+
             var current = vill.Build.Buildings.FirstOrDefault(x =>
                 x.Type == building &&
                 (x.Level != 20 || (x.Level != 19 && x.UnderConstruction))
@@ -187,12 +196,15 @@ namespace TravBotSharp.Files.Helpers
                     case 0:
                         item = HeroItemEnum.Others_Wood_0;
                         break;
+
                     case 1:
                         item = HeroItemEnum.Others_Clay_0;
                         break;
+
                     case 2:
                         item = HeroItemEnum.Others_Iron_0;
                         break;
+
                     case 3:
                         item = HeroItemEnum.Others_Crop_0;
                         break;
@@ -208,7 +220,6 @@ namespace TravBotSharp.Files.Helpers
             };
 
             TaskExecutor.AddTask(acc, heroEquip);
-
 
             // A BuildTask needed the resources. If it was auto-build res fields task, make a new
             // general building task - so resources actually get used for intended building upgrade
@@ -235,7 +246,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="vill">Village</param>
         /// <param name="cost">Resources needed</param>
         /// <returns>True if we have enough resources</returns>
-        /// 
+        ///
         public static bool IsEnoughRes(Village vill, long[] cost) => IsEnoughRes(vill.Res.Stored.Resources.ToArray(), cost);
 
         public static bool IsEnoughRes(long[] storedRes, long[] targetRes)
@@ -246,7 +257,8 @@ namespace TravBotSharp.Files.Helpers
             }
             return true;
         }
-        public static long[] SendAmount(long[] storedRes, long[] targetRes)
+
+        public static Resources SendAmount(long[] storedRes, long[] targetRes)
         {
             var ret = new long[4];
             for (int i = 0; i < 4; i++)
@@ -254,8 +266,9 @@ namespace TravBotSharp.Files.Helpers
                 ret[i] = targetRes[i] - storedRes[i];
                 if (ret[i] < 0) ret[i] = 0;
             }
-            return ret;
+            return ArrayToResources(ret);
         }
+
         public static Resources ArrayToResources(long[] res)
         {
             if (res.Length != 4) return null;
@@ -270,7 +283,6 @@ namespace TravBotSharp.Files.Helpers
 
         public static int MaxTroopsToTrain(long[] stored1, long[] stored2, int[] cost)
         {
-
             var max = int.MaxValue;
             for (int i = 0; i < 4; i++)
             {
@@ -316,6 +328,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         public static bool IsZeroResources(Resources res) => IsZeroResources(res.ToArray());
+
         public static bool IsZeroResources(long[] arr) => arr.Sum() == 0;
 
         private static long RoundUpTo100(long res)

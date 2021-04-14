@@ -77,15 +77,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return DateTime.Now;
 
             var table = acc.Wb.Html.GetElementbyId("demolish");
-            var now = TimeParser.GetServerTime(acc.Wb.Html);
 
             if (table == null) //No building is being demolished
             {
-                return now;
+                return DateTime.Now;
             }
             //Re-execute the demolish building task
 
-            var time = now.Add(TimeParser.ParseTimer(table));
+            var time = DateTime.Now.Add(TimeParser.ParseTimer(table));
             return time.AddSeconds(2);
         }
     }

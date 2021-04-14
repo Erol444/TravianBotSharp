@@ -21,35 +21,21 @@ namespace TravBotSharp.Files.Parsers
         }
 
         /// <summary>
-        /// Parses the ongoing resource transits in the market.
+        /// Get soonest time own merchant arrive (ignore fact they go away or go back village)
         /// </summary>
         /// <param name="htmlDoc">Html</param>
-        public static List<MerchantsUnderWay> ParseTransits(HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static DateTime GetSoonestMerchant(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
-            var formulat = htmlDoc.GetElementbyId("merchantsOnTheWay");
+            // i know id is incoming, but trust me =))
+            var divOwnMerchants = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("incomingMerchants"));
 
-            var underWay = new List<MerchantsUnderWay>();
-            TransitType transitType = default;
-            foreach (var child in formulat.ChildNodes)
-            {
-                if (child.HasClass("spacer"))
-                {
-                    transitType = Localizations.MercahntDirectionFromString(child.InnerText);
-                    continue;
-                }
-                else if (child.HasClass("traders"))
-                {
-                    underWay.Add(new MerchantsUnderWay()
-                    {
-                        Arrival = DateTime.Now.Add(TimeParser.ParseTimer(child)),
-                        TargetVillageId = (int)Parser.RemoveNonNumeric(child.Descendants("td").First(x => x.HasClass("dorf")).Descendants("a").First().GetAttributeValue("href", "")),
-                        RepeatTimes = (int)Parser.RemoveNonNumeric(child.Descendants("div").First(x => x.HasClass("repeat")).InnerText),
-                        Transit = transitType,
-                        Resources = ResourceParser.ParseResourcesMerchants(child),
-                    });
-                }
-            }
-            return underWay;
+            var table = divOwnMerchants.Descendants("table").FirstOrDefault();
+
+            var now = TimeParser.GetServerTime(htmlDoc);
+
+            var soonest = now.Add(TimeParser.ParseTimer(table));
+
+            return soonest;
         }
     }
 }
