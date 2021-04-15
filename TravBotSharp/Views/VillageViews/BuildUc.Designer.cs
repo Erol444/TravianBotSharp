@@ -83,6 +83,7 @@
             this.panel4 = new System.Windows.Forms.Panel();
             this.prereqCombo = new System.Windows.Forms.ComboBox();
             this.label13 = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.autoBuildResLevel)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.buildLevelUpDown)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -639,10 +640,22 @@
             this.label13.TabIndex = 46;
             this.label13.Text = "Build prerequisites";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(134, 583);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(77, 19);
+            this.button2.TabIndex = 68;
+            this.button2.Text = "Update dorf";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click_1);
+            // 
             // BuildUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
@@ -740,5 +753,6 @@
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.ComboBox prereqCombo;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button button2;
     }
 }

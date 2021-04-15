@@ -13,7 +13,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var building = Vill.Build.Buildings
-                .FirstOrDefault(x => 
+                .FirstOrDefault(x =>
                     x.Type == Classificator.BuildingEnum.Residence ||
                     x.Type == Classificator.BuildingEnum.Palace ||
                     x.Type == Classificator.BuildingEnum.CommandCenter
@@ -34,13 +34,24 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
 
-            var maxNum = Parser.RemoveNonNumeric(troopNode.ChildNodes.First(x => x.Name == "a").InnerText);
+            string innertext = "";
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_4:
+                    innertext = troopNode.ChildNodes.First(x => x.Name == "a").InnerText;
+                    break;
+
+                case Classificator.ServerVersionEnum.T4_5:
+                    innertext = troopNode.Descendants("div").FirstOrDefault(x => x.HasClass("cta")).Descendants("a").FirstOrDefault().InnerText;
+                    break;
+            }
+            var maxNum = Parser.RemoveNonNumeric(innertext);
             var available = TroopsParser.ParseAvailable(troopNode);
 
             var costNode = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var cost = ResourceParser.GetResourceCost(costNode);
 
-            if(!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
+            if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
             {
                 ResourcesHelper.NotEnoughRes(acc, Vill, cost, this);
                 return TaskRes.Executed;

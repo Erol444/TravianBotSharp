@@ -103,7 +103,8 @@ jobs:
           title: New pre-prelease
           description: |
               Version `TBS-${{needs.version.outputs.version}}`
-              Changelog is in download link
+              Changelog:
+              ${{ github.event.head_commit.message }}
               Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
   Clear:
     runs-on: ubuntu-latest

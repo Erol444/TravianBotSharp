@@ -67,6 +67,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 await acc.Wb.Navigate(acc.AccInfo.ServerUrl + dorfUrl);
             }
+            else
+            {
+                acc.Wb.UpdateHtml();
+            }
 
             // Append correct tab
             if (!constructNew)

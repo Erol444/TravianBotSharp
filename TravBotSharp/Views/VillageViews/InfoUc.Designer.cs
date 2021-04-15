@@ -38,6 +38,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.maxInterval = new System.Windows.Forms.NumericUpDown();
             this.minInterval = new System.Windows.Forms.NumericUpDown();
+            this.TrainSettlers = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minInterval)).BeginInit();
@@ -159,10 +160,21 @@
             0});
             this.minInterval.ValueChanged += new System.EventHandler(this.minInterval_ValueChanged);
             // 
+            // TrainSettlers
+            // 
+            this.TrainSettlers.Location = new System.Drawing.Point(529, 137);
+            this.TrainSettlers.Name = "TrainSettlers";
+            this.TrainSettlers.Size = new System.Drawing.Size(75, 23);
+            this.TrainSettlers.TabIndex = 31;
+            this.TrainSettlers.Text = "Train settler";
+            this.TrainSettlers.UseVisualStyleBackColor = true;
+            this.TrainSettlers.Click += new System.EventHandler(this.TrainSettlers_Click);
+            // 
             // InfoUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.TrainSettlers);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.villageInfo);
@@ -188,5 +200,6 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.NumericUpDown maxInterval;
         private System.Windows.Forms.NumericUpDown minInterval;
+        private System.Windows.Forms.Button TrainSettlers;
     }
 }

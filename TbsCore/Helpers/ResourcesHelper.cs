@@ -64,6 +64,7 @@ namespace TravBotSharp.Files.Helpers
 
             if (IsStorageTooLow(acc, vill, requiredRes))
             {
+                acc.Wb.Log($"Storage is too low.");
                 ResSpendingHelper.AddUnfinishedTask(vill, task, requiredRes);
                 return null;
             }

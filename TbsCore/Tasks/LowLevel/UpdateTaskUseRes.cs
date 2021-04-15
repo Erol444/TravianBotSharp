@@ -23,34 +23,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // Celebration task
             AccountHelper.ReStartCelebration(acc, Vill);
-
-            // Train settlers
-            // Copy from UpgradeBuilding task
-            if (!acc.Wb.CurrentUrl.Contains("/dorf2.php")) // Don't re-navigate
-            {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
-            }
-            await TaskExecutor.PageLoaded(acc);
-
-            // Check if residence is getting upgraded to level 10 => train settlers
-            var cbResidence = Vill.Build
-                .CurrentlyBuilding
-                .FirstOrDefault(x => x.Building == Classificator.BuildingEnum.Residence && x.Level == 10);
-
-            if (cbResidence != null &&
-                acc.NewVillages.AutoSettleNewVillages &&
-                Vill.Troops.Settlers == 0)
-            {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, Vill,
-                    new TrainSettlers()
-                    {
-                        ExecuteAt = cbResidence.Duration.AddSeconds(5),
-                        Vill = Vill,
-                        // For high speed servers, you want to train settlers asap
-                        Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
-                    });
-            }
-
             return TaskRes.Executed;
         }
     }
