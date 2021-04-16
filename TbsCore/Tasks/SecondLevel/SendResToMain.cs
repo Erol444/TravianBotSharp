@@ -29,6 +29,12 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
 
             var res = MarketHelper.GetResToMainVillage(Vill);
 
+            if (res.Sum() <= 0)
+            {
+                acc.Wb.Log($"No need send resources to main village from {Vill.Name}");
+                return TaskRes.Executed;
+            }
+
             TaskExecutor.AddTask(acc, new SendResources()
             {
                 ExecuteAt = DateTime.Now.AddSeconds(3),

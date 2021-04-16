@@ -31,9 +31,7 @@ namespace TravBotSharp.Files.Parsers
 
             var table = divOwnMerchants.Descendants("table").FirstOrDefault();
 
-            var now = TimeParser.GetServerTime(htmlDoc);
-
-            var soonest = now.Add(TimeParser.ParseTimer(table));
+            var soonest = DateTime.Now.Add(TimeParser.ParseTimer(table));
 
             return soonest;
         }

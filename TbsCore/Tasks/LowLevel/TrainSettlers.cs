@@ -48,7 +48,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var maxNum = Parser.RemoveNonNumeric(innertext);
             var available = TroopsParser.ParseAvailable(troopNode);
 
-            var costNode = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
+            var costNode = troopNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var cost = ResourceParser.GetResourceCost(costNode);
 
             if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))

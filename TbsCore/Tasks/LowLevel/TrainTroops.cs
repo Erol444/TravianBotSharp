@@ -118,16 +118,30 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // if we dont have enough resources in the target village, send res from main village
             // if current village is main, just train with current res noneed to wait
-            if (!ResourcesHelper.IsEnoughRes(Vill, neededRes) && !Vill.Coordinates.Equals(AccountHelper.GetMainVillage(acc).Coordinates))
+            if (!ResourcesHelper.IsEnoughRes(Vill, neededRes))
             {
-                TaskExecutor.AddTask(acc, new SendResFillTroops()
+                if (!Vill.Coordinates.Equals(AccountHelper.GetMainVillage(acc).Coordinates))
                 {
-                    ExecuteAt = DateTime.Now,
-                    Vill = AccountHelper.GetMainVillage(acc),
-                    TargetVill = this.Vill,
-                    Troop = Troop,
-                    Great = Great
-                });
+                    TaskExecutor.AddTask(acc, new SendResFillTroops()
+                    {
+                        ExecuteAt = DateTime.Now,
+                        Vill = AccountHelper.GetMainVillage(acc),
+                        TargetVill = this.Vill,
+                        Troop = Troop,
+                        Great = Great
+                    });
+                }
+                else
+                {
+                    if (currentlyTrainings.Count > 0)
+                    {
+                        NextExecute = currentlyTrainings.Last().FinishTraining.AddHours(-acc.Settings.FillFor);
+                    }
+                    else
+                    {
+                        NextExecute = DateTime.Now.AddHours(acc.Settings.FillFor);
+                    }
+                }
                 return TaskRes.Executed;
             }
             // train our troops

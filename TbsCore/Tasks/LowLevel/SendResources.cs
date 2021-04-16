@@ -40,7 +40,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 acc.Wb.Log("All merchants are not in village now. Try later");
                 var time = MarketParser.GetSoonestMerchant(acc.Wb.Html);
-                NextExecute = time.AddSeconds(20);
+                NextExecute = time.AddSeconds(10);
                 return TaskRes.Executed;
             }
 

@@ -21,11 +21,15 @@ namespace TravBotSharp.Views
             else return false;
             return true;
         }
+
         public void NewLogHandler(object sender, EventArgs e)
         {
             var newLog = ((LogEventArgs)e).Log;
             if (ControlInvokeRequired(this.main, () => NewLogHandler(sender, e))) return;
             logTextBox.Text = newLog + "\n" + logTextBox.Text;
+
+            // Update task table when debug log got update
+            UpdateTaskTable(GetSelectedAcc());
         }
 
         public void UpdateUc()
@@ -34,22 +38,10 @@ namespace TravBotSharp.Views
 
             taskListView.Items.Clear();
             logTextBox.Clear();
-
-            if (acc.Tasks == null) return;
-            foreach (var task in acc.Tasks.ToList())
-            {
-                var item = new ListViewItem();
-                item.SubItems[0].Text = task.ToString().Split('.').Last(); // Task name
-                item.SubItems.Add(task.Vill?.Name ?? "/"); // Village name
-                item.SubItems.Add(task.Priority.ToString());
-                item.SubItems.Add(task.Stage.ToString());
-                item.SubItems.Add(task.ExecuteAt.ToString());
-                taskListView.Items.Add(item);
-            }
-
+            UpdateTaskTable(acc);
 
             //new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
-            if(acc.Wb != null)
+            if (acc.Wb != null)
             {
                 foreach (var log in acc.Wb.Logs) logTextBox.AppendText(log + "\n");
             }
@@ -62,11 +54,29 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             if (WbAvailable(acc)) acc.Wb.LogHandler += NewLogHandler;
         }
+
         private void DebugUc_Leave(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
             if (WbAvailable(acc)) acc.Wb.LogHandler -= NewLogHandler;
         }
+
         private bool WbAvailable(Account acc) => acc?.Wb != null;
+
+        private void UpdateTaskTable(Account acc)
+        {
+            if (acc.Tasks == null) return;
+            taskListView.Items.Clear();
+            foreach (var task in acc.Tasks.ToList())
+            {
+                var item = new ListViewItem();
+                item.SubItems[0].Text = task.ToString().Split('.').Last(); // Task name
+                item.SubItems.Add(task.Vill?.Name ?? "/"); // Village name
+                item.SubItems.Add(task.Priority.ToString());
+                item.SubItems.Add(task.Stage.ToString());
+                item.SubItems.Add(task.ExecuteAt.ToString());
+                taskListView.Items.Add(item);
+            }
+        }
     }
 }
