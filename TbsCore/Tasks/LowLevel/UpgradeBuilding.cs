@@ -144,8 +144,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             this.Task.ConstructNew = false;
 
-            CheckIfTaskFinished(1);
-
             acc.Wb.Log($"Started construction of {this.Task.Building} in {this.Vill?.Name}");
 
             await PostTaskCheckDorf(acc);
@@ -186,7 +184,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Basic task already on/above desired level, don't upgrade further
             var building = Vill.Build.Buildings.FirstOrDefault(x => x.Id == this.Task.BuildingId);
             lvl = building.Level;
-            if (building.UnderConstruction) lvl++;
+            // Check if building is under construction
+            if (building.UnderConstruction)
+            {
+                // Check currently building
+                var cb = Vill.Build.CurrentlyBuilding.OrderByDescending(x=>x.Level).FirstOrDefault(x => x.Location == building.Id);
+                if (cb != null && lvl < cb.Level) lvl = cb.Level;
+            }
+
             if (Task.Level <= lvl)
             {
                 acc.Wb.Log($"{this.Task.Building} is on level {lvl}, on/above desired {Task.Level}. Removing it from queue.");
@@ -243,22 +248,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             acc.Wb.Log($"Upgraded {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
 
-            lvl++;
-            CheckIfTaskFinished(lvl);
-
             await PostTaskCheckDorf(acc);
 
             return TaskRes.Executed;
-        }
-
-        /// <summary>
-        /// This method is called after successful upgrade/construction
-        /// Check if the selected task was just finished
-        /// </summary>
-        /// <param name="lvl">Level of the building</param>
-        private void CheckIfTaskFinished(int lvl)
-        {
-            if (this.Task.Level <= lvl && this.Task.TaskType == BuildingType.General) RemoveCurrentTask();
         }
 
         private void RemoveCurrentTask() => this.Vill.Build.Tasks.Remove(this.Task);
@@ -286,6 +278,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
                     });
             }
+
+            // Check if the task is completed
+            var taskCb = Vill.Build
+                .CurrentlyBuilding
+                .OrderByDescending(x=>x.Level)
+                .FirstOrDefault(x => x.Location == this.Task.BuildingId);
+            if (this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
         }
 
         /// <summary>
@@ -358,8 +357,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 lvl < Task.Level)
             {
                 await acc.Wb.Navigate(url + "&fastUP=1");
-
-                CheckIfTaskFinished(++lvl);
 
                 acc.Wb.Log($"Started (fast) upgrading {building.Type} to level {lvl} in {this.Vill?.Name}");
 
