@@ -13,9 +13,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
-            await Task.Delay(AccountHelper.Delay() * 3);
-
             // Check if the account has enough culture points
             if (acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
             {
@@ -40,6 +37,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 return TaskRes.Executed;
             }
+
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
+            await Task.Delay(AccountHelper.Delay() * 3);
 
             var newVillage = acc.NewVillages.Locations.FirstOrDefault();
 
