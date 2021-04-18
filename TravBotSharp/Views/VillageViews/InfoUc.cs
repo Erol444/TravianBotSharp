@@ -53,5 +53,16 @@ namespace TravBotSharp.Views
                 Vill = vill
             });
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new SendSettlers()
+            {
+                ExecuteAt = DateTime.Now.AddHours(-2),
+                Vill = vill
+            });
+        }
     }
 }

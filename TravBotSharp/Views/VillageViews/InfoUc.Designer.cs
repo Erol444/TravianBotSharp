@@ -39,6 +39,7 @@
             this.maxInterval = new System.Windows.Forms.NumericUpDown();
             this.minInterval = new System.Windows.Forms.NumericUpDown();
             this.TrainSettlers = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.maxInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minInterval)).BeginInit();
@@ -162,7 +163,7 @@
             // 
             // TrainSettlers
             // 
-            this.TrainSettlers.Location = new System.Drawing.Point(529, 137);
+            this.TrainSettlers.Location = new System.Drawing.Point(525, 144);
             this.TrainSettlers.Name = "TrainSettlers";
             this.TrainSettlers.Size = new System.Drawing.Size(75, 23);
             this.TrainSettlers.TabIndex = 31;
@@ -170,10 +171,21 @@
             this.TrainSettlers.UseVisualStyleBackColor = true;
             this.TrainSettlers.Click += new System.EventHandler(this.TrainSettlers_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(525, 183);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 32;
+            this.button1.Text = "Send settler";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // InfoUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.TrainSettlers);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label2);
@@ -201,5 +213,6 @@
         private System.Windows.Forms.NumericUpDown maxInterval;
         private System.Windows.Forms.NumericUpDown minInterval;
         private System.Windows.Forms.Button TrainSettlers;
+        private System.Windows.Forms.Button button1;
     }
 }
