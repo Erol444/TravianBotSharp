@@ -465,11 +465,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             return BuildingEnum.Site;
         }
 
-        private bool BonusHelper(Village vill, BuildingEnum field, BuildingEnum bonus, int fieldLvl) // vill does not have bonus building on 5, create or upgrade it
+        /// <summary>
+        /// Helper method for checking whether the bot should add the bonus building to the build list
+        /// </summary>
+        private bool BonusHelper(Village vill, BuildingEnum field, BuildingEnum bonus, int fieldLvl)
         {
-            //res field is high enoguh, bonus building is not on 5, there is still space left to build, there isn't already a bonus building buildtask
-            return (!vill.Build.Buildings.Any(x => x.Type == bonus && x.Level >= 5) &&
-                vill.Build.Buildings.Any(x => x.Type == field && x.Level >= fieldLvl) &&
+            // If the bonus building is currently being upgraded to level 5, don't try to re-add it
+            if (vill.Build.CurrentlyBuilding.Any(x => x.Building == bonus && x.Level == 5)) return false;
+
+            // Bonus building is not on 5, res field is high enough, there is still space left to build, there isn't already a bonus building buildtask
+            return (!vill.Build.Buildings.Any(x => x.Type == bonus && 5 <= x.Level) &&
+                vill.Build.Buildings.Any(x => x.Type == field && fieldLvl <= x.Level) &&
                 vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Site) &&
                 !vill.Build.Tasks.Any(x => x.Building == bonus));
         }
