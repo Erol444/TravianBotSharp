@@ -32,7 +32,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
                     {
                         Vill = AccountHelper.GetMainVillage(acc),
-                        ExecuteAt = DateTime.MinValue.AddHours(10)
+                        ExecuteAt = DateTime.MinValue.AddHours(10),
+                        Priority = TaskPriority.High
                     });
                     this.NextExecute = DateTime.MinValue.AddHours(11);
                 }
