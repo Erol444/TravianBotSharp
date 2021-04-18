@@ -74,7 +74,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     break;
             }
             var maxNum = Parser.RemoveNonNumeric(innertext);
-            var available = TroopsParser.ParseAvailable(troopNode);
+            Vill.Troops.Settlers = (int)TroopsParser.ParseAvailable(troopNode);
 
             var costNode = troopNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var cost = ResourceParser.GetResourceCost(costNode);
@@ -87,8 +87,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             acc.Wb.Driver.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
             await Task.Delay(AccountHelper.Delay());
+
             // Click Train button
             await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, "document.getElementById('s1').click()");
+            Vill.Troops.Settlers += (int)maxNum;
 
             if (Vill.Troops.Settlers < 3)
             {
