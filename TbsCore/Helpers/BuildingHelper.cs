@@ -232,24 +232,27 @@ namespace TravBotSharp.Files.Helpers
             switch (task.TaskType)
             {
                 case BuildingType.General:
-
                     if (building == null)
                     {
                         if (vill.Build.Buildings.Any(x => x.Type == task.Building) &&
-                            vill.Build.Buildings.FirstOrDefault(x => x.Type == task.Building).Level >= task.Level)
+                            vill.Build.Buildings.First(x => x.Type == task.Building).Level >= task.Level)
                         {
                             //if ((this.Building == Type.Residence) && (this.Level == 10 || this.Level == 20)) TrainSettlers(vill, acc, 0);
                             return true;
                         }
-                        return false; //this building doest exist yet!
+                        return false; // This building doest exist yet!
                     }
-                    if (building.Level >= task.Level || (building.Level + 1 == task.Level && building.UnderConstruction))
-                    {
-                        //if (this.Building == Type.Residence) TrainSettlers(vill, acc, 30);
-                        return true;
-                    }
-                    return false;
 
+                    // Building is on / above desired level, task is completed
+                    if (task.Level <= building.Level) return true;
+
+                    // If the building is being upgraded to the desired level, task is complete
+                    var cb = vill.Build
+                        .CurrentlyBuilding
+                        .OrderByDescending(x => x.Level)
+                        .FirstOrDefault(x => x.Location == task.BuildingId);
+                    if (cb != null && task.Level <= cb.Level) return true;
+                    break;
                 case BuildingType.AutoUpgradeResFields:
                     if (vill.Build.Buildings[0].Type == BuildingEnum.Site) return false; //for new villages that are not checked yet
                     switch (task.ResourceType)

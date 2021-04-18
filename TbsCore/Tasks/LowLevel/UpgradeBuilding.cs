@@ -34,7 +34,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (urlId == null)
             {
                 //no space for this building
-                Vill.Build.Tasks.Remove(this.Task);
+                RemoveCurrentTask();
                 this.Task = null;
                 return await Execute(acc);
             }
