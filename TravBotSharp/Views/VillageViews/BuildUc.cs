@@ -63,7 +63,7 @@ namespace TravBotSharp.Views
 
             buildRadioButton.Checked = true;
             instaUpgradeUpDown.Enabled = vill.Build.InstaBuild;
-            instaUpgradeUpDown.Value = vill.Build.InstaBuildHours;
+            instaUpgradeUpDown.Value = vill.Build.InstaBuildMinutes;
 
             var prereqComboList = BuildingHelper.SetPrereqCombo(acc, vill);
             prereqCombo.Items.Clear();
@@ -476,7 +476,7 @@ namespace TravBotSharp.Views
         private void instaUpgradeUpDown_ValueChanged(object sender, EventArgs e)
         {
             var vill = GetSelectedVillage();
-            vill.Build.InstaBuildHours = (int)instaUpgradeUpDown.Value;
+            vill.Build.InstaBuildMinutes = (int)instaUpgradeUpDown.Value;
         }
 
         private void button2_Click(object sender, EventArgs e)

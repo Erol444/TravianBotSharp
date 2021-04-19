@@ -199,7 +199,7 @@ namespace TbsCore.Helpers
                         acc.AccInfo.Gold >= 2 &&
                         vill.Build.CurrentlyBuilding.Count >= (acc.AccInfo.PlusAccount ? 2 : 1) &&
                         vill.Build.CurrentlyBuilding.LastOrDefault().Duration
-                            >= DateTime.Now.AddHours(vill.Build.InstaBuildHours))
+                            >= DateTime.Now.AddMinutes(vill.Build.InstaBuildMinutes))
                     {
                         TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new InstaUpgrade()
                         {
