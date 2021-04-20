@@ -39,68 +39,111 @@ namespace TravBotSharp.Views
             numericUpDown1.Value = vill.Market.Npc.ResourcesRatio.Crop;
         }
 
-        private void transitResEnabled_CheckedChanged(object sender, EventArgs e) =>
+        private void transitResEnabled_CheckedChanged(object sender, EventArgs e)
+        {
             GetSelectedVillage().Market.Settings.Configuration.Enabled = transitResEnabled.Checked;
+        }
 
-        private void overflowProtection_CheckedChanged(object sender, EventArgs e) =>
+        private void overflowProtection_CheckedChanged(object sender, EventArgs e)
+        {
             GetSelectedVillage().Market.Npc.NpcIfOverflow = overflowProtection.Checked;
+        }
 
-        private void numericUpDown4_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Npc.ResourcesRatio.Wood = (long)numericUpDown4.Value;
+        private void numericUpDown4_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Npc.ResourcesRatio.Wood = (long) numericUpDown4.Value;
+        }
 
-        private void numericUpDown3_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Npc.ResourcesRatio.Clay = (long)numericUpDown3.Value;
+        private void numericUpDown3_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Npc.ResourcesRatio.Clay = (long) numericUpDown3.Value;
+        }
 
-        private void numericUpDown2_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Npc.ResourcesRatio.Iron = (long)numericUpDown2.Value;
+        private void numericUpDown2_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Npc.ResourcesRatio.Iron = (long) numericUpDown2.Value;
+        }
 
-        private void numericUpDown1_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Npc.ResourcesRatio.Crop = (long)numericUpDown1.Value;
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Npc.ResourcesRatio.Crop = (long) numericUpDown1.Value;
+        }
 
-        private void npcEnabled_CheckedChanged(object sender, EventArgs e) =>
+        private void npcEnabled_CheckedChanged(object sender, EventArgs e)
+        {
             GetSelectedVillage().Market.Npc.Enabled = npcEnabled.Checked;
+        }
 
         #region SendMainVill Callbacks
-        private void woodSend_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Wood = (long)woodSend.Value;
 
-        private void claySend_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Clay = (long)claySend.Value;
+        private void woodSend_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Wood = (long) woodSend.Value;
+        }
 
-        private void ironSend_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Iron = (long)ironSend.Value;
+        private void claySend_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Clay = (long) claySend.Value;
+        }
 
-        private void cropSend_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Crop = (long)cropSend.Value;
+        private void ironSend_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Iron = (long) ironSend.Value;
+        }
+
+        private void cropSend_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Crop = (long) cropSend.Value;
+        }
+
         #endregion
 
         #region TargetLimit Callbacks
-        private void TargetLimitWood_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Wood = (long)TargetLimitWood.Value;
 
-        private void TargetLimitClay_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Clay = (long)TargetLimitClay.Value;
+        private void TargetLimitWood_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Wood = (long) TargetLimitWood.Value;
+        }
 
-        private void TargetLimitIron_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Iron = (long)TargetLimitIron.Value;
+        private void TargetLimitClay_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Clay = (long) TargetLimitClay.Value;
+        }
 
-        private void TargetLimitCrop_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Crop = (long)TargetLimitCrop.Value;
+        private void TargetLimitIron_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Iron = (long) TargetLimitIron.Value;
+        }
+
+        private void TargetLimitCrop_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Crop = (long) TargetLimitCrop.Value;
+        }
+
         #endregion
 
         #region FillLimit Callbacks
-        private void FillLimitWood_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.FillLimit.Wood = (long)FillLimitWood.Value;
 
-        private void FillLimitClay_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.FillLimit.Clay = (long)FillLimitClay.Value;
+        private void FillLimitWood_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.FillLimit.Wood = (long) FillLimitWood.Value;
+        }
 
-        private void FillLimitIron_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.FillLimit.Iron = (long)FillLimitIron.Value;
+        private void FillLimitClay_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.FillLimit.Clay = (long) FillLimitClay.Value;
+        }
 
-        private void FillLimitCrop_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Market.Settings.Configuration.FillLimit.Crop = (long)FillLimitCrop.Value;
+        private void FillLimitIron_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.FillLimit.Iron = (long) FillLimitIron.Value;
+        }
+
+        private void FillLimitCrop_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedVillage().Market.Settings.Configuration.FillLimit.Crop = (long) FillLimitCrop.Value;
+        }
+
         #endregion
-
     }
 }

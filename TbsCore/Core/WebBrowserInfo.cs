@@ -1,9 +1,11 @@
-﻿using OpenQA.Selenium.Chrome;
-using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
+using OpenQA.Selenium.Chrome;
+using RestSharp;
 using TbsCore.Helpers;
 using TbsCore.Models;
 using TbsCore.Models.Access;
@@ -18,6 +20,9 @@ namespace TravBotSharp.Files.Models.AccModels
         // Average log length is 70 chars. 20 overhead + 70 * 2 (each char => 2 bytes)
         // Average memory consumption for logs will thus be: 160 * maxLogCnt => ~500kB
         private const int maxLogCnt = 1000;
+        private Account acc;
+
+        private ChromeDriverService chromeService;
 
         public WebBrowserInfo()
         {
@@ -25,49 +30,56 @@ namespace TravBotSharp.Files.Models.AccModels
         }
 
         public ChromeDriver Driver { get; set; }
-
-        private ChromeDriverService chromeService;
-        public string CurrentUrl => this.Driver.Url;
-        private Account acc;
-        public HtmlAgilityPack.HtmlDocument Html { get; set; }
+        public string CurrentUrl => Driver.Url;
+        public HtmlDocument Html { get; set; }
 
         /// <summary>
-        /// Http client, configured with proxy
+        ///     Http client, configured with proxy
         /// </summary>
         public RestClient RestClient { get; set; }
 
         // Account Logs
         public CircularBuffer<string> Logs { get; set; }
 
+        public void Dispose()
+        {
+            while (Driver != default)
+                try
+                {
+                    Driver.Close();
+                    Driver.Quit(); // Also disposes
+                    Driver = default;
+                }
+                catch
+                {
+                }
+
+            chromeService.Dispose();
+        }
+
         public event EventHandler LogHandler;
 
-        public void Log(string message, Exception e) =>
-                    Log(message + $"\n---------------------------\n{e}\n---------------------------\n");
+        public void Log(string message, Exception e)
+        {
+            Log(message + $"\n---------------------------\n{e}\n---------------------------\n");
+        }
 
         public void Log(string msg)
         {
             msg = DateTime.Now.ToString("HH:mm:ss") + ": " + msg;
             Logs.PushFront(msg);
 
-            LogHandler?.Invoke(typeof(WebBrowserInfo), new LogEventArgs() { Log = msg });
-        }
-
-        public class LogEventArgs : EventArgs
-        {
-            public string Log { get; set; }
+            LogHandler?.Invoke(typeof(WebBrowserInfo), new LogEventArgs {Log = msg});
         }
 
         public async Task InitSelenium(Account acc, bool newAccess = true)
         {
             this.acc = acc;
-            Access access = newAccess ? await acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
+            var access = newAccess ? await acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
-            if (this.Html == null)
-            {
-                this.Html = new HtmlAgilityPack.HtmlDocument();
-            }
+            if (Html == null) Html = new HtmlDocument();
 
             InitHttpClient(access);
             if (!string.IsNullOrEmpty(access.Proxy))
@@ -75,15 +87,20 @@ namespace TravBotSharp.Files.Models.AccModels
                 var checkproxy = new CheckProxy();
                 await checkproxy.Execute(acc);
             }
-            else await this.Navigate(acc.AccInfo.ServerUrl);
+            else
+            {
+                await Navigate(acc.AccInfo.ServerUrl);
+            }
         }
 
-        private void InitHttpClient(Access a) =>
-            this.RestClient = HttpHelper.InitRestClient(a, this.acc.AccInfo.ServerUrl);
+        private void InitHttpClient(Access a)
+        {
+            RestClient = HttpHelper.InitRestClient(a, acc.AccInfo.ServerUrl);
+        }
 
         private void SetupChromeDriver(Access access, string username, string server)
         {
-            ChromeOptions options = new ChromeOptions();
+            var options = new ChromeOptions();
 
             // Turn on logging preferences for buildings localization (string).
             //var loggingPreferences = new OpenQA.Selenium.Chromium.ChromiumPerformanceLoggingPreferences();
@@ -120,7 +137,8 @@ namespace TravBotSharp.Files.Models.AccModels
             if (acc.Settings.HeadlessMode) options.AddArguments("headless");
 
             // Do not download images in order to preserve memory resources / proxy traffic
-            if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
+            if (acc.Settings.DisableImages)
+                options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
 
             // Add browser caching
             var dir = IoHelperCore.GetCacheDir(username, server, access);
@@ -135,18 +153,21 @@ namespace TravBotSharp.Files.Models.AccModels
                 if (acc.Settings.OpenMinimized)
                 {
                     options.AddArguments("--window-position=5000,5000");
-                    this.Driver = new ChromeDriver(chromeService, options);
-                    this.Driver.Manage().Window.Position = new System.Drawing.Point(200, 200); // TODO: change coords?
-                    this.Driver.Manage().Window.Minimize();
+                    Driver = new ChromeDriver(chromeService, options);
+                    Driver.Manage().Window.Position = new Point(200, 200); // TODO: change coords?
+                    Driver.Manage().Window.Minimize();
                 }
-                else this.Driver = new ChromeDriver(chromeService, options);
+                else
+                {
+                    Driver = new ChromeDriver(chromeService, options);
+                }
 
                 // Set timeout
-                this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+                Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
             }
             catch (Exception e)
             {
-                Log($"Error opening chrome driver! Is it already opened?", e);
+                Log("Error opening chrome driver! Is it already opened?", e);
             }
         }
 
@@ -154,10 +175,7 @@ namespace TravBotSharp.Files.Models.AccModels
         {
             var cookies = Driver.Manage().Cookies.AllCookies;
             var cookiesDir = new Dictionary<string, string>();
-            for (int i = 0; i < cookies.Count; i++)
-            {
-                cookiesDir.Add(cookies[i].Name, cookies[i].Value);
-            }
+            for (var i = 0; i < cookies.Count; i++) cookiesDir.Add(cookies[i].Name, cookies[i].Value);
             return cookiesDir;
         }
 
@@ -165,20 +183,22 @@ namespace TravBotSharp.Files.Models.AccModels
         {
             if (string.IsNullOrEmpty(url)) return;
 
-            int repeatCnt = 0;
+            var repeatCnt = 0;
             bool repeat;
             do
             {
                 try
                 {
                     // Will throw exception after timeout
-                    this.Driver.Navigate().GoToUrl(url);
+                    Driver.Navigate().GoToUrl(url);
                     repeat = false;
                 }
                 catch (Exception e)
                 {
                     if (acc.Wb == null) return;
-                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened", e);
+                    acc.Wb.Log(
+                        $"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened",
+                        e);
                     repeat = true;
                     if (5 <= ++repeatCnt && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {
@@ -188,10 +208,10 @@ namespace TravBotSharp.Files.Models.AccModels
                         await changeAccess.Execute(acc);
                         await Task.Delay(AccountHelper.Delay() * 5);
                     }
+
                     await Task.Delay(AccountHelper.Delay());
                 }
-            }
-            while (repeat);
+            } while (repeat);
 
             await Task.Delay(AccountHelper.Delay());
 
@@ -199,21 +219,14 @@ namespace TravBotSharp.Files.Models.AccModels
             await TaskExecutor.PageLoaded(acc);
         }
 
-        public void UpdateHtml() => Html.LoadHtml(Driver.PageSource);
-
-        public void Dispose()
+        public void UpdateHtml()
         {
-            while (Driver != default)
-            {
-                try
-                {
-                    Driver.Close();
-                    Driver.Quit(); // Also disposes
-                    Driver = default;
-                }
-                catch { }
-            }
-            chromeService.Dispose();
+            Html.LoadHtml(Driver.PageSource);
+        }
+
+        public class LogEventArgs : EventArgs
+        {
+            public string Log { get; set; }
         }
     }
 }

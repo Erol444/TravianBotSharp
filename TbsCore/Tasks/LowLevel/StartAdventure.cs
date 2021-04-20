@@ -11,15 +11,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class StartAdventure : BotTask
     {
         /// <summary>
-        /// In case we want to only update adventures
+        ///     In case we want to only update adventures
         /// </summary>
         public bool UpdateOnly { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
 
             await VersionHelper.Navigate(acc, "/hero.php?t=3", "/hero/adventures");
-            
+
             acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
             HeroHelper.UpdateHeroVillage(acc);
@@ -28,7 +29,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             var adventures = acc.Hero.Adventures
                 .Where(x =>
-                    MapHelper.CalculateDistance(acc, x.Coordinates, HeroHelper.GetHeroHomeVillage(acc).Coordinates) <= acc.Hero.Settings.MaxDistance
+                    MapHelper.CalculateDistance(acc, x.Coordinates, HeroHelper.GetHeroHomeVillage(acc).Coordinates) <=
+                    acc.Hero.Settings.MaxDistance
                 )
                 .ToList();
 
@@ -48,21 +50,22 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     if (startButton == null)
                     {
                         //Hero is probably out of the village.
-                        this.NextExecute = DateTime.Now.AddMinutes(10);
+                        NextExecute = DateTime.Now.AddMinutes(10);
                         return TaskRes.Executed;
                     }
+
                     wb.ExecuteScript("document.getElementById('start').click()");
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:
-                    string script = $"var div = document.getElementById('{adventure.AdventureId}');";
-                    script += $"div.children[0].submit();";
+                    var script = $"var div = document.getElementById('{adventure.AdventureId}');";
+                    script += "div.children[0].submit();";
                     await DriverHelper.ExecuteScript(acc, script);
 
                     // Check hero outgoing time
                     var outTime = HeroParser.GetHeroArrival(acc.Wb.Html);
                     // At least 1.5x longer (if hero has Large map)
-                    acc.Hero.NextHeroSend = DateTime.Now + TimeSpan.FromTicks((long)(outTime.Ticks * 1.5));
+                    acc.Hero.NextHeroSend = DateTime.Now + TimeSpan.FromTicks((long) (outTime.Ticks * 1.5));
                     break;
             }
 

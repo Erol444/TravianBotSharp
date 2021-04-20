@@ -7,20 +7,21 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class DonateAllyBonus : BotTask
     {
-        public Resources ResToDonate { get; set; }
-
-        private string[] Ids = new string[]
+        private readonly string[] Ids =
         {
             "bonusTroopProductionSpeed",
             "bonusCPProduction",
             "bonusSmithyPower",
             "bonusMerchantCapacity"
         };
+
+        public Resources ResToDonate { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/alliance/bonuses");
 
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 var radioId = Ids[i];
                 var radio = acc.Wb.Html.GetElementbyId(radioId);
@@ -32,10 +33,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             var donateArr = ResToDonate.ToArray();
-            for (int i = 0; i < 4; i++)
-            {
-                await DriverHelper.WriteById(acc, $"donate{(i + 1)}", donateArr[i]);
-            }
+            for (var i = 0; i < 4; i++) await DriverHelper.WriteById(acc, $"donate{i + 1}", donateArr[i]);
 
             await DriverHelper.ClickById(acc, "donate_green");
             return TaskRes.Executed;

@@ -6,16 +6,17 @@ using TravBotSharp.Files.Helpers;
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     /// <summary>
-    /// Task will close and reopen driver then the next Normal/High priority task has to be executed
+    ///     Task will close and reopen driver then the next Normal/High priority task has to be executed
     /// </summary>
     public class ReopenDriver : BotTask
     {
         /// <summary>
-        /// Lowest task priority that will cause the bot to wake up
+        ///     Lowest task priority that will cause the bot to wake up
         /// </summary>
         public TaskPriority LowestPrio { get; set; }
+
         /// <summary>
-        /// Reopen the chrome at specific time
+        ///     Reopen the chrome at specific time
         /// </summary>
         public DateTime? ReopenAt { get; set; }
 

@@ -17,8 +17,8 @@ namespace TravBotSharp.Files.Helpers
 
         public static int KidFromCoordinates(Coordinates coords, Account acc)
         {
-            return 1 + ((acc.AccInfo.MapSize - coords.y) * (acc.AccInfo.MapSize * 2 + 1)) + acc.AccInfo.MapSize + coords.x;
-
+            return 1 + (acc.AccInfo.MapSize - coords.y) * (acc.AccInfo.MapSize * 2 + 1) + acc.AccInfo.MapSize +
+                   coords.x;
         }
 
         public static Coordinates CoordinatesFromKid(int? kid, Account acc)
@@ -31,14 +31,15 @@ namespace TravBotSharp.Files.Helpers
         {
             var size = acc.AccInfo.MapSize;
             kid--;
-            var y = size - (kid / (size * 2 + 1));
-            var x = (kid % (size * 2 + 1)) - size;
-            return new Coordinates()
+            var y = size - kid / (size * 2 + 1);
+            var x = kid % (size * 2 + 1) - size;
+            return new Coordinates
             {
                 x = x,
                 y = y
             };
         }
+
         public static float CalculateDistance(Account acc, Coordinates coord1, Coordinates coord2)
         {
             var size = acc.AccInfo.MapSize;
@@ -47,7 +48,7 @@ namespace TravBotSharp.Files.Helpers
             if (xDiff > size) xDiff = 2 * size - xDiff;
             if (yDiff > size) yDiff = 2 * size - yDiff;
             var distance = Math.Sqrt(xDiff * xDiff + yDiff * yDiff); //Pitagoras theorem
-            return (float)distance;
+            return (float) distance;
         }
     }
 }

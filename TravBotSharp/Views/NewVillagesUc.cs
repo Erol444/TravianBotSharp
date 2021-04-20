@@ -14,6 +14,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -24,7 +25,6 @@ namespace TravBotSharp.Views
             //new villages coords list
             NewVillList.Items.Clear();
             if (acc.NewVillages.Locations.Count > 0)
-            {
                 foreach (var newvill in acc.NewVillages.Locations)
                 {
                     var item = new ListViewItem();
@@ -33,17 +33,12 @@ namespace TravBotSharp.Views
                     item.SubItems.Add(newvill.Name);
                     NewVillList.Items.Add(item);
                 }
-            }
 
             //new village types to find
             villTypeView.Items.Clear();
             if (acc.NewVillages.Types.Count > 0)
-            {
                 foreach (var type in acc.NewVillages.Types)
-                {
                     villTypeView.Items.Add(new ListViewItem(type.ToString().Replace("_", "")));
-                }
-            }
 
             valleyType.SelectedIndex = 0;
             checkBox3.Checked = acc.NewVillages.AutoSettleNewVillages;
@@ -64,10 +59,10 @@ namespace TravBotSharp.Views
 
         private void confirmNewVill_Click(object sender, EventArgs e)
         {
-            Coordinates c = new Coordinates();
-            c.x = (int)XNewVill.Value;
-            c.y = (int)YNewVill.Value;
-            GetSelectedAcc().NewVillages.Locations.Add(new NewVillage() { Coordinates = c, Name = NewVillName.Text });
+            var c = new Coordinates();
+            c.x = (int) XNewVill.Value;
+            c.y = (int) YNewVill.Value;
+            GetSelectedAcc().NewVillages.Locations.Add(new NewVillage {Coordinates = c, Name = NewVillName.Text});
             //clear values
             XNewVill.Value = 0;
             YNewVill.Value = 0;
@@ -78,9 +73,9 @@ namespace TravBotSharp.Views
         private void button1_Click(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
-            var selected = (string)valleyType.SelectedItem;
+            var selected = (string) valleyType.SelectedItem;
             selected = "_" + selected;
-            var type = (Classificator.VillTypeEnum)Enum.Parse(typeof(Classificator.VillTypeEnum), selected);
+            var type = (Classificator.VillTypeEnum) Enum.Parse(typeof(Classificator.VillTypeEnum), selected);
             acc.NewVillages.Types.Add(type);
             UpdateUc();
         }
@@ -109,7 +104,7 @@ namespace TravBotSharp.Views
 
         private void Button25_Click(object sender, EventArgs e) //select building tasks for new village
         {
-            string location = IoHelperForms.PromptUserForBuidTasksLocation();
+            var location = IoHelperForms.PromptUserForBuidTasksLocation();
             GetSelectedAcc().NewVillages.BuildingTasksLocationNewVillage = location;
             UpdateUc();
         }
@@ -121,7 +116,7 @@ namespace TravBotSharp.Views
 
         private void button4_Click(object sender, EventArgs e)
         {
-            TaskExecutor.AddTask(GetSelectedAcc(), new FindVillageToSettle() { ExecuteAt = DateTime.Now });
+            TaskExecutor.AddTask(GetSelectedAcc(), new FindVillageToSettle {ExecuteAt = DateTime.Now});
         }
     }
 }

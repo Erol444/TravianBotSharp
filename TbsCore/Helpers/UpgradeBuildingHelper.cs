@@ -9,7 +9,7 @@ using static TravBotSharp.Files.Helpers.Classificator;
 namespace TbsCore.Helpers
 {
     /// <summary>
-    /// Helper class for the UpgradeBuilding BotTask
+    ///     Helper class for the UpgradeBuilding BotTask
     /// </summary>
     public class UpgradeBuildingHelper
     {
@@ -30,8 +30,8 @@ namespace TbsCore.Helpers
 
             // If (roman OR ttwars+plus acc) -> build 1 res + 1 infra at the same time
             if (1 <= totalBuild &&
-               (acc.AccInfo.Tribe == TribeEnum.Romans ||
-               (acc.AccInfo.PlusAccount && acc.AccInfo.ServerUrl.ToLower().Contains("ttwars"))
+                (acc.AccInfo.Tribe == TribeEnum.Romans ||
+                 acc.AccInfo.PlusAccount && acc.AccInfo.ServerUrl.ToLower().Contains("ttwars")
                 ))
             {
                 // Find the CurrentlyBuilding that executes sooner
@@ -43,7 +43,7 @@ namespace TbsCore.Helpers
                 task = isResField ? GetFirstInfrastructureTask(vill) : GetFirstResTask(vill);
 
                 if (task != null) return (task, now);
-                
+
                 if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuild--;
             }
 
@@ -69,11 +69,11 @@ namespace TbsCore.Helpers
             }
 
             if (totalBuild < maxBuild) return (task, now);
-            else return (task, later);
+            return (task, later);
         }
 
         /// <summary>
-        /// Gets time for next build event. This depends on how long the current building takes
+        ///     Gets time for next build event. This depends on how long the current building takes
         /// </summary>
         /// <param name="vill">Village</param>
         /// <returns>Time for next build</returns>
@@ -83,12 +83,16 @@ namespace TbsCore.Helpers
             return TimeHelper.RanDelay(acc, dur, 20);
         }
 
-        private static BuildingTask GetFirstResTask(Village vill) =>
-            vill.Build.Tasks.FirstOrDefault(x =>
+        private static BuildingTask GetFirstResTask(Village vill)
+        {
+            return vill.Build.Tasks.FirstOrDefault(x =>
                 x.TaskType == BuildingType.AutoUpgradeResFields || BuildingHelper.IsResourceField(x.Building)
             );
+        }
 
-        private static BuildingTask GetFirstInfrastructureTask(Village vill) =>
-            vill.Build.Tasks.FirstOrDefault(x => !BuildingHelper.IsResourceField(x.Building));
+        private static BuildingTask GetFirstInfrastructureTask(Village vill)
+        {
+            return vill.Build.Tasks.FirstOrDefault(x => !BuildingHelper.IsResourceField(x.Building));
+        }
     }
 }

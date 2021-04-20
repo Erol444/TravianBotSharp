@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.VillageModels;
+using TravBotSharp.Files.Tasks;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
@@ -16,8 +16,8 @@ namespace TravBotSharp.Views
 {
     public partial class DeffendingUc : TbsBaseUc, ITbsUc
     {
-        TableModel tableModelMain = new TableModel();
-        TableModel tableModelGlobal = new TableModel();
+        private readonly TableModel tableModelGlobal = new TableModel();
+        private readonly TableModel tableModelMain = new TableModel();
 
         public DeffendingUc()
         {
@@ -54,13 +54,15 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell("", true)); //Alert only on hero
             tableModelGlobal.Rows.Add(r);
         }
+
         #region Initialize table columns
+
         private void InitTables()
         {
-            ColumnModel columnModel = new ColumnModel();
+            var columnModel = new ColumnModel();
 
             //VillageId
-            TextColumn villId = new TextColumn
+            var villId = new TextColumn
             {
                 Editable = false,
                 Text = "Id",
@@ -69,7 +71,7 @@ namespace TravBotSharp.Views
             };
             columnModel.Columns.Add(villId);
             //Village name
-            TextColumn vill = new TextColumn
+            var vill = new TextColumn
             {
                 Editable = false,
                 Text = "Village",
@@ -79,24 +81,24 @@ namespace TravBotSharp.Views
             columnModel.Columns.Add(vill);
 
             //Alert type
-            ComboBoxColumn alertType = new ComboBoxColumn
+            var alertType = new ComboBoxColumn
             {
                 Text = "Alert Type",
                 ToolTipText = "On what type of attack should I alert you?",
                 Width = 80
             };
 
-            ComboBoxCellEditor typeEditor = new ComboBoxCellEditor
+            var typeEditor = new ComboBoxCellEditor
             {
                 DropDownStyle = DropDownStyle.DropDownList
             };
-            typeEditor.Items.AddRange(new string[] { "Disabled", "FullAttack", "AnyAttack" });
+            typeEditor.Items.AddRange(new[] {"Disabled", "FullAttack", "AnyAttack"});
             alertType.Editor = typeEditor;
 
             columnModel.Columns.Add(alertType);
 
             // Alert only if hero is present in the attack, for spies art users
-            CheckBoxColumn onHero = new CheckBoxColumn
+            var onHero = new CheckBoxColumn
             {
                 Text = "AlertOnHero",
                 Width = 85,
@@ -110,6 +112,7 @@ namespace TravBotSharp.Views
 
             table1.TableModel = tableModelMain;
         }
+
         #endregion
 
         //Save button
@@ -118,12 +121,12 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             //change vill names list
             var changeVillNames = new List<(int, string)>();
-            for (int i = 0; i < tableModelMain.Rows.Count; i++)
+            for (var i = 0; i < tableModelMain.Rows.Count; i++)
             {
                 var cells = tableModelMain.Rows[i].Cells;
-                int column = 0;
+                var column = 0;
                 //Village id
-                var id = Int32.Parse(cells[column].Text);
+                var id = int.Parse(cells[column].Text);
                 var vill = acc.Villages.First(x => x.Id == id);
                 column++;
                 column++;
@@ -131,37 +134,32 @@ namespace TravBotSharp.Views
                 column++;
                 vill.Deffing.OnlyAlertOnHero = cells[column].Checked;
             }
+
             //Change name of village/s
             if (changeVillNames.Count > 0)
-            {
-                TaskExecutor.AddTaskIfNotExists(acc, new ChangeVillageName()
+                TaskExecutor.AddTaskIfNotExists(acc, new ChangeVillageName
                 {
                     ExecuteAt = DateTime.Now,
                     ChangeList = changeVillNames
                 });
-            }
         }
 
         private void UpdateAlertType(Village vill, CellCollection cells, int column)
         {
             var text = cells[column].Text;
-            vill.Deffing.AlertType = (AlertTypeEnum)Enum.Parse(typeof(AlertTypeEnum), text.Replace(" ", ""));
+            vill.Deffing.AlertType = (AlertTypeEnum) Enum.Parse(typeof(AlertTypeEnum), text.Replace(" ", ""));
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            List<CellChanges> selectedCells = new List<CellChanges>();
-            for (int i = 0; i < tableModelMain.Rows.Count; i++)
-            {
-                for (int y = 0; y < tableModelMain.Rows[i].SelectedItems.Count(); y++)
+            var selectedCells = new List<CellChanges>();
+            for (var i = 0; i < tableModelMain.Rows.Count; i++)
+            for (var y = 0; y < tableModelMain.Rows[i].SelectedItems.Count(); y++)
+                selectedCells.Add(new CellChanges
                 {
-                    selectedCells.Add(new CellChanges()
-                    {
-                        Cell = tableModelMain.Rows[i].SelectedItems[y],
-                        Num = tableModelMain.Rows[i].SelectedIndicies[y]
-                    });
-                }
-            }
+                    Cell = tableModelMain.Rows[i].SelectedItems[y],
+                    Num = tableModelMain.Rows[i].SelectedIndicies[y]
+                });
 
             foreach (var selectedCell in selectedCells)
             {
@@ -170,30 +168,25 @@ namespace TravBotSharp.Views
                 selectedCell.Cell.Checked = global.Checked;
             }
         }
-        private class CellChanges
-        {
-            public Cell Cell { get; set; }
-            public int Num { get; set; }
-        }
 
         private void button1_Click_1(object sender, EventArgs e) // Send deff to specific coordinates
         {
             var acc = GetSelectedAcc();
 
-            var deffCount = (int)maxDeff.Value;
+            var deffCount = (int) maxDeff.Value;
             if (deffCount == 0) deffCount = int.MaxValue;
-            var amount = new SendDeffAmount() { Amount = deffCount };
-            
-            SendDeff node = new SendDeff();
+            var amount = new SendDeffAmount {Amount = deffCount};
+
+            var node = new SendDeff();
             foreach (var vill in acc.Villages)
             {
-                var sendDeff = new SendDeff()
+                var sendDeff = new SendDeff
                 {
                     Vill = vill,
                     DeffAmount = amount,
                     TargetVillage = sendDeffCoords.Coords,
-                    Priority = Files.Tasks.BotTask.TaskPriority.High,
-                    NextTask = node,
+                    Priority = BotTask.TaskPriority.High,
+                    NextTask = node
                 };
                 node = sendDeff;
             }
@@ -205,39 +198,48 @@ namespace TravBotSharp.Views
         private void button3_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Not yet implemented");
-            return;
-            var acc = GetSelectedAcc();
-            var coords = new Coordinates(-52, -59);
 
-            var waves = new List<SendWaveModel>();
-            for (int i = 0; i < 10; i++)
-            {
-                var attk = new SendWaveModel();
-                attk.Troops = new int[11];
-                if (i == 0)
-                {
-                    attk.Arrival = DateTime.Now.AddHours(-1).AddMinutes(2);
-                    attk.Arrival = attk.Arrival.AddSeconds(60 - attk.Arrival.Second);
-                    acc.Wb.Log($"Arrive at {attk.Arrival}");
-                }
-                else attk.DelayMs = 1000;
+            //var acc = GetSelectedAcc();
+            //var coords = new Coordinates(-52, -59);
 
-                attk.TargetCoordinates = coords;
-                attk.MovementType = Classificator.MovementType.Reinforcement;
-                attk.Troops[0] = 5555;
+            //var waves = new List<SendWaveModel>();
+            //for (var i = 0; i < 10; i++)
+            //{
+            //    var attk = new SendWaveModel();
+            //    attk.Troops = new int[11];
+            //    if (i == 0)
+            //    {
+            //        attk.Arrival = DateTime.Now.AddHours(-1).AddMinutes(2);
+            //        attk.Arrival = attk.Arrival.AddSeconds(60 - attk.Arrival.Second);
+            //        acc.Wb.Log($"Arrive at {attk.Arrival}");
+            //    }
+            //    else
+            //    {
+            //        attk.DelayMs = 1000;
+            //    }
 
-                waves.Add(attk);
-            }
+            //    attk.TargetCoordinates = coords;
+            //    attk.MovementType = Classificator.MovementType.Reinforcement;
+            //    attk.Troops[0] = 5555;
 
-            
-            var waveTask = new SendWaves()
-            {
-                ExecuteAt = DateTime.Now,
-                Vill = AccountHelper.GetMainVillage(acc),
-                SendWaveModels = waves.ToList(),
-                Priority = Files.Tasks.BotTask.TaskPriority.High
-            };
-            TaskExecutor.AddTask(acc, waveTask);
+            //    waves.Add(attk);
+            //}
+
+
+            //var waveTask = new SendWaves
+            //{
+            //    ExecuteAt = DateTime.Now,
+            //    Vill = AccountHelper.GetMainVillage(acc),
+            //    SendWaveModels = waves.ToList(),
+            //    Priority = BotTask.TaskPriority.High
+            //};
+            //TaskExecutor.AddTask(acc, waveTask);
+        }
+
+        private class CellChanges
+        {
+            public Cell Cell { get; set; }
+            public int Num { get; set; }
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using HtmlAgilityPack;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 
@@ -7,16 +8,15 @@ namespace TravBotSharp.Files.Parsers
     public static class LeftBarParser
     {
         /// <summary>
-        /// This won't work on T4.5 since tribe image isn't shown anymore.
+        ///     This won't work on T4.5 since tribe image isn't shown anymore.
         /// </summary>
         /// <param name="acc"></param>
         /// <param name="htmlDoc"></param>
         /// <returns></returns>
-        public static Classificator.TribeEnum GetAccountTribe(Account acc, HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static Classificator.TribeEnum GetAccountTribe(Account acc, HtmlDocument htmlDoc)
         {
-            int num = 0;
+            var num = 0;
             for (var i = 1; i <= 7; i++)
-            {
                 if (acc.AccInfo.ServerUrl.Contains("ttwars"))
                 {
                     if (htmlDoc.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass($"nation{i}")) != null)
@@ -27,14 +27,15 @@ namespace TravBotSharp.Files.Parsers
                 }
                 else
                 {
-                    if (htmlDoc.DocumentNode.Descendants("i").FirstOrDefault(x => x.HasClass($"tribe{i}_medium")) != null)
+                    if (htmlDoc.DocumentNode.Descendants("i").FirstOrDefault(x => x.HasClass($"tribe{i}_medium")) !=
+                        null)
                     {
                         num = i;
                         break;
                     }
                 }
-            }
-            return (Classificator.TribeEnum)num;
+
+            return (Classificator.TribeEnum) num;
         }
     }
 }

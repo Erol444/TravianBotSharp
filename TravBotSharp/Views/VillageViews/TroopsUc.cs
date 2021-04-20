@@ -11,6 +11,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -18,16 +19,18 @@ namespace TravBotSharp.Views
             if (acc.AccInfo.Tribe != null)
             {
                 if (vill.Troops.TroopToTrain != null)
-                    labelTroopsToTrain.Text = $"Selected: {VillageHelper.EnumStrToString(vill.Troops.TroopToTrain.ToString() ?? "")}";
+                    labelTroopsToTrain.Text =
+                        $"Selected: {VillageHelper.EnumStrToString(vill.Troops.TroopToTrain.ToString() ?? "")}";
                 else labelTroopsToTrain.Text = "Selected:";
 
                 comboBoxTroopsToTrain.Items.Clear();
-                int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
+                var troopsEnum = ((int) acc.AccInfo.Tribe - 1) * 10;
                 for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
                 {
-                    Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
+                    var troop = (Classificator.TroopsEnum) i;
                     comboBoxTroopsToTrain.Items.Add(VillageHelper.EnumStrToString(troop.ToString()));
                 }
+
                 if (comboBoxTroopsToTrain.Items.Count > 0) comboBoxTroopsToTrain.SelectedIndex = 0;
             }
             else
@@ -37,17 +40,14 @@ namespace TravBotSharp.Views
             }
 
             // Village troops info
-            string infoText = "-- Troops already researched:\n";
+            var infoText = "-- Troops already researched:\n";
             infoText += string.Join(", ", vill.Troops.Researched) + "\n";
             infoText += "-- Troops to be researched:\n";
             infoText += string.Join(", ", vill.Troops.ToResearch) + "\n";
             infoText += "-- Troop smithy levels:\n";
 
-            List<string> levels = new List<string>();
-            foreach (var level in vill.Troops.Levels)
-            {
-                levels.Add(level.Troop + ": " + level.Level);
-            }
+            var levels = new List<string>();
+            foreach (var level in vill.Troops.Levels) levels.Add(level.Troop + ": " + level.Level);
             infoText += string.Join(", ", levels) + "\n";
 
             infoText += "-- Troop to be improved:\n";
@@ -67,10 +67,11 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
-            int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
+            var troopsEnum = ((int) acc.AccInfo.Tribe - 1) * 10;
             var troopSelected = troopsEnum + comboBoxTroopsToTrain.SelectedIndex + 1;
-            vill.Troops.TroopToTrain = (Classificator.TroopsEnum)troopSelected;
-            labelTroopsToTrain.Text = $"Selected: {VillageHelper.EnumStrToString(vill.Troops.TroopToTrain.ToString() ?? "")}";
+            vill.Troops.TroopToTrain = (Classificator.TroopsEnum) troopSelected;
+            labelTroopsToTrain.Text =
+                $"Selected: {VillageHelper.EnumStrToString(vill.Troops.TroopToTrain.ToString() ?? "")}";
         }
     }
 }

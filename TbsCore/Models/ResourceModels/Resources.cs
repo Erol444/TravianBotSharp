@@ -7,8 +7,19 @@
         public long Iron { get; set; }
         public long Crop { get; set; }
 
-        public long[] ToArray() => new long[] { Wood, Clay, Iron, Crop };
-        public long Sum() => (Wood + Clay + Iron + Crop);
-        public override string ToString() => $"Wood: {Wood}, Clay: {Clay}, Iron: {Iron}, Crop: {Crop}";
-    };
+        public long[] ToArray()
+        {
+            return new[] {Wood, Clay, Iron, Crop};
+        }
+
+        public long Sum()
+        {
+            return Wood + Clay + Iron + Crop;
+        }
+
+        public override string ToString()
+        {
+            return $"Wood: {Wood}, Clay: {Clay}, Iron: {Iron}, Crop: {Crop}";
+        }
+    }
 }

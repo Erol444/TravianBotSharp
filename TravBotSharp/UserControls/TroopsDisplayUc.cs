@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 using TravBotSharp.Files.Helpers;
 
@@ -13,12 +7,13 @@ namespace TravBotSharp.Forms
 {
     public partial class TroopsDisplayUc : UserControl
     {
-        PictureBox[] pictureBoxes;
+        private readonly PictureBox[] pictureBoxes;
+
         public TroopsDisplayUc()
         {
             InitializeComponent();
 
-            pictureBoxes = new PictureBox[]
+            pictureBoxes = new[]
             {
                 pictureBox1,
                 pictureBox2,
@@ -30,13 +25,14 @@ namespace TravBotSharp.Forms
                 pictureBox8,
                 pictureBox9,
                 pictureBox10,
-                pictureBox11,
+                pictureBox11
             };
         }
+
         public void Init(Classificator.TribeEnum tribe)
         {
             // Nature by default
-            Bitmap tribeGif = FormsResources.Nature;
+            var tribeGif = FormsResources.Nature;
 
             switch (tribe)
             {
@@ -63,19 +59,17 @@ namespace TravBotSharp.Forms
                     break;
             }
 
-            for (int i = 0; i < 10; i++)
-            {
+            for (var i = 0; i < 10; i++)
                 pictureBoxes[i].Image = tribeGif.Clone(
                     new Rectangle(i * 19, 0, 16, 16),
-                    System.Drawing.Imaging.PixelFormat.Format24bppRgb
-                    );
-            }
+                    PixelFormat.Format24bppRgb
+                );
 
             // Hero display
             pictureBoxes[10].Image = FormsResources.Specials.Clone(
-                    new Rectangle(2 * 19, 0, 16, 16),
-                    System.Drawing.Imaging.PixelFormat.Format24bppRgb
-                    );
+                new Rectangle(2 * 19, 0, 16, 16),
+                PixelFormat.Format24bppRgb
+            );
         }
     }
 }

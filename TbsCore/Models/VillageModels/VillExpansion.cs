@@ -2,11 +2,10 @@
 
 namespace TbsCore.Models.VillageModels
 {
-
     public class VillExpansion
     {
         /// <summary>
-        /// Whether there are 3 settlers available for expansion
+        ///     Whether there are 3 settlers available for expansion
         /// </summary>
         public bool ExpansionAvailable { get; set; }
 
@@ -16,11 +15,12 @@ namespace TbsCore.Models.VillageModels
         public int ExpansionsUsed { get; set; }
 
         /// <summary>
-        /// Whether bot automatically starts celebrations
+        ///     Whether bot automatically starts celebrations
         /// </summary>
         public CelebrationEnum Celebrations { get; set; }
+
         /// <summary>
-        /// When will the current celebration finish
+        ///     When will the current celebration finish
         /// </summary>
         public DateTime CelebrationEnd { get; set; }
     }

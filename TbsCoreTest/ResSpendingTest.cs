@@ -1,4 +1,3 @@
-using System;
 using TbsCore.Helpers;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.Settings;
@@ -18,31 +17,32 @@ namespace TbsCoreTest
             var acc = factory.CreateAccount();
             var vill = acc.Villages[0];
 
-            Assert.False(ResSpendingHelper.CheckUnfinishedTasks(acc, vill), "CheckUnfinishedTasks should return false!");
+            Assert.False(ResSpendingHelper.CheckUnfinishedTasks(acc, vill),
+                "CheckUnfinishedTasks should return false!");
 
-            var celeb = new VillUnfinishedTask()
+            var celeb = new VillUnfinishedTask
             {
-                ResNeeded = new Resources() { Wood = 1, Clay = 1, Iron = 1, Crop = 1 },
+                ResNeeded = new Resources {Wood = 1, Clay = 1, Iron = 1, Crop = 1},
                 Task = new Celebration()
             };
-            var improve = new VillUnfinishedTask()
+            var improve = new VillUnfinishedTask
             {
-                ResNeeded = new Resources() { Wood = 1, Clay = 1, Iron = 1, Crop = 1 },
+                ResNeeded = new Resources {Wood = 1, Clay = 1, Iron = 1, Crop = 1},
                 Task = new ImproveTroop()
             };
-            var research = new VillUnfinishedTask()
+            var research = new VillUnfinishedTask
             {
-                ResNeeded = new Resources() { Wood = 1, Clay = 2, Iron = 1, Crop = 1 },
+                ResNeeded = new Resources {Wood = 1, Clay = 2, Iron = 1, Crop = 1},
                 Task = new ResearchTroop()
             };
-            var upgrade = new VillUnfinishedTask()
+            var upgrade = new VillUnfinishedTask
             {
-                ResNeeded = new Resources() { Wood = 1, Clay = 1, Iron = 1, Crop = 1 },
+                ResNeeded = new Resources {Wood = 1, Clay = 1, Iron = 1, Crop = 1},
                 Task = new UpgradeBuilding()
             };
-            var settlers = new VillUnfinishedTask()
+            var settlers = new VillUnfinishedTask
             {
-                ResNeeded = new Resources() { Wood = 1, Clay = 1, Iron = 3, Crop = 1 },
+                ResNeeded = new Resources {Wood = 1, Clay = 1, Iron = 3, Crop = 1},
                 Task = new TrainSettlers()
             };
 
@@ -53,18 +53,21 @@ namespace TbsCoreTest
             vill.UnfinishedTasks.Add(settlers);
             vill.UnfinishedTasks.Add(celeb);
 
-            Assert.False(ResSpendingHelper.CheckUnfinishedTasks(acc, vill), "CheckUnfinishedTasks should return false! No Res");
+            Assert.False(ResSpendingHelper.CheckUnfinishedTasks(acc, vill),
+                "CheckUnfinishedTasks should return false! No Res");
 
-            vill.Res.Stored.Resources = new Resources() { Wood = 10, Clay = 10, Iron = 10, Crop = 10 };
+            vill.Res.Stored.Resources = new Resources {Wood = 10, Clay = 10, Iron = 10, Crop = 10};
 
-            acc.Settings.ResSpendingPriority = new ResSpendTypeEnum[3] {
+            acc.Settings.ResSpendingPriority = new ResSpendTypeEnum[3]
+            {
                 ResSpendTypeEnum.Celebrations,
                 ResSpendTypeEnum.Building,
                 ResSpendTypeEnum.Troops
             };
 
             // Unfinished tasks get sorted
-            Assert.True(ResSpendingHelper.CheckUnfinishedTasks(acc, vill), "CheckUnfinishedTasks should return true, enough res");
+            Assert.True(ResSpendingHelper.CheckUnfinishedTasks(acc, vill),
+                "CheckUnfinishedTasks should return true, enough res");
 
             Assert.Equal(celeb, vill.UnfinishedTasks[0]);
             Assert.Equal(upgrade, vill.UnfinishedTasks[1]);
@@ -72,14 +75,16 @@ namespace TbsCoreTest
             Assert.Equal(research, vill.UnfinishedTasks[3]);
             Assert.Equal(settlers, vill.UnfinishedTasks[4]);
 
-            acc.Settings.ResSpendingPriority = new ResSpendTypeEnum[3] {
+            acc.Settings.ResSpendingPriority = new ResSpendTypeEnum[3]
+            {
                 ResSpendTypeEnum.Celebrations,
                 ResSpendTypeEnum.Troops,
-                ResSpendTypeEnum.Building,
+                ResSpendTypeEnum.Building
             };
 
             // Unfinished tasks get sorted
-            Assert.True(ResSpendingHelper.CheckUnfinishedTasks(acc, vill), "CheckUnfinishedTasks should return true, enough res");
+            Assert.True(ResSpendingHelper.CheckUnfinishedTasks(acc, vill),
+                "CheckUnfinishedTasks should return true, enough res");
 
             Assert.Equal(improve, vill.UnfinishedTasks[0]);
             Assert.Equal(research, vill.UnfinishedTasks[1]);

@@ -1,9 +1,8 @@
-﻿
-using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using HtmlAgilityPack;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsMovementModels;
@@ -15,7 +14,7 @@ namespace TravBotSharp.Files.Parsers
     public static class TroopsMovementParser
     {
         /// <summary>
-        /// Parse troops from the overview tab inside the rally point
+        ///     Parse troops from the overview tab inside the rally point
         /// </summary>
         public static List<TroopsMovementRallyPoint> ParseTroopsOverview(Account acc, HtmlDocument html)
         {
@@ -40,41 +39,40 @@ namespace TravBotSharp.Files.Parsers
                 var sourceId = MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("role")));
                 attack.SourceCoordinates = MapHelper.CoordinatesFromKid(sourceId, acc);
 
-                var targetId = MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("troopHeadline")));
+                var targetId =
+                    MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("troopHeadline")));
                 attack.TargetCoordinates = MapHelper.CoordinatesFromKid(targetId, acc);
 
                 var unitImg = attackNode.Descendants("img").First(x => x.HasClass("unit"));
                 var unitInt = Parser.RemoveNonNumeric(unitImg.GetClasses().First(x => x != "unit"));
-                int tribeInt = (int)(unitInt / 10);
+                var tribeInt = (int) (unitInt / 10);
                 // ++ since the first element in Classificator.TribeEnum is Any, second is Romans.
                 tribeInt++;
-                attack.Tribe = ((Classificator.TribeEnum)tribeInt);
+                attack.Tribe = (TribeEnum) tribeInt;
 
                 ret.Add(attack);
             }
+
             return ret;
         }
 
         /// <summary>
-        /// If account has spies art or attacking troops count is lower than rally point level,
-        /// bot can see "?" on only troop types that are incoming and "0" at troop types that
-        /// are not present in attack
+        ///     If account has spies art or attacking troops count is lower than rally point level,
+        ///     bot can see "?" on only troop types that are incoming and "0" at troop types that
+        ///     are not present in attack
         /// </summary>
         private static int[] ParseIncomingTroops(HtmlNode attackNode)
         {
             var troopsBody = attackNode.Descendants("tbody").First(x => x.HasClass("last") && x.HasClass("units"));
 
             var troops = troopsBody.Descendants("td").Where(x => x.HasClass("unit")).ToList();
-            int[] ret = new int[troops.Count];
-            for (int i = 0; i < troops.Count; i++)
-            {
-                ret[i] = troops[i].InnerHtml.Trim() == "?" ? 1 : 0;
-            }
+            var ret = new int[troops.Count];
+            for (var i = 0; i < troops.Count; i++) ret[i] = troops[i].InnerHtml.Trim() == "?" ? 1 : 0;
             return ret;
         }
 
         /// <summary>
-        /// Get page count from paginator
+        ///     Get page count from paginator
         /// </summary>
         /// <param name="html"></param>
         /// <returns>Page count</returns>
@@ -108,26 +106,31 @@ namespace TravBotSharp.Files.Parsers
         }
 
         /// <summary>
-        /// Gets available troops inside the "Send Troops" tab of the rally point
+        ///     Gets available troops inside the "Send Troops" tab of the rally point
         /// </summary>
         internal static int[] GetTroopsInRallyPoint(HtmlDocument html)
         {
-            int[] ret = new int[11];
+            var ret = new int[11];
             // No rally point!
             if (html.GetElementbyId("contract_building16") != null) return ret;
 
             var tds = html.GetElementbyId("troops").Descendants("td");
             foreach (var td in tds)
             {
-                var troop = td.Descendants("input").FirstOrDefault(x => x.HasClass("text"))?.GetAttributeValue("name", "");
+                var troop = td.Descendants("input").FirstOrDefault(x => x.HasClass("text"))
+                    ?.GetAttributeValue("name", "");
                 if (string.IsNullOrEmpty(troop)) continue; // For spaceholder between last horse and hero
 
-                var troopNum = (int)Parser.RemoveNonNumeric(troop);
+                var troopNum = (int) Parser.RemoveNonNumeric(troop);
 
-                var troopCount = td.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("href", "") == "#")?.InnerText;
-                var troopCountInt = troopCount == null ? 0 : (int)Parser.RemoveNonNumeric(WebUtility.HtmlDecode(troopCount));
+                var troopCount = td.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("href", "") == "#")
+                    ?.InnerText;
+                var troopCountInt = troopCount == null
+                    ? 0
+                    : (int) Parser.RemoveNonNumeric(WebUtility.HtmlDecode(troopCount));
                 ret[troopNum - 1] = troopCountInt;
             }
+
             return ret;
         }
 
@@ -138,24 +141,25 @@ namespace TravBotSharp.Files.Parsers
             var movements = html.GetElementbyId("movements");
             if (movements == null) return ret;
 
-            foreach(var movement in movements.Descendants("tr"))
+            foreach (var movement in movements.Descendants("tr"))
             {
                 var img = movement.Descendants("img").FirstOrDefault();
                 if (img == null) continue; // Not a movement row
                 var movementType = ParseMovementImg(img.GetClasses().First());
 
                 var numStr = movement.Descendants("div").First(x => x.HasClass("mov")).InnerText;
-                var num = (int)Parser.RemoveNonNumeric(numStr);
+                var num = (int) Parser.RemoveNonNumeric(numStr);
 
                 var time = TimeParser.ParseTimer(movement.Descendants("div").First(x => x.HasClass("dur_r")));
 
-                ret.Add(new TroopMovementDorf1()
+                ret.Add(new TroopMovementDorf1
                 {
                     Type = movementType,
                     Count = num,
                     Time = DateTime.Now.Add(time)
                 });
             }
+
             return ret;
         }
 
@@ -176,7 +180,7 @@ namespace TravBotSharp.Files.Parsers
         }
 
         /// <summary>
-        /// Parse movement type from class name of the (html) table inside rally point, overview tab
+        ///     Parse movement type from class name of the (html) table inside rally point, overview tab
         /// </summary>
         private static MovementTypeRallyPoint ParseMovementClass(string className)
         {
@@ -184,6 +188,5 @@ namespace TravBotSharp.Files.Parsers
             if (Enum.TryParse(className, out MovementTypeRallyPoint type)) return type;
             return MovementTypeRallyPoint.atHome;
         }
-
     }
 }

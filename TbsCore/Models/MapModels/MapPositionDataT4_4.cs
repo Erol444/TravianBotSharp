@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace TbsCore.Models.MapModels
 {
@@ -22,14 +21,14 @@ namespace TbsCore.Models.MapModels
 
             public MapTile GetMapTile()
             {
-                return new MapTile()
+                return new MapTile
                 {
-                    Coordinates = new Coordinates()
+                    Coordinates = new Coordinates
                     {
-                        x = Int32.Parse(this.x),
-                        y = Int32.Parse(this.y)
+                        x = int.Parse(x),
+                        y = int.Parse(y)
                     },
-                    Title = this.c
+                    Title = c
                 };
             }
         }

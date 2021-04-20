@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using TbsCore.Models.TroopsModels;
@@ -7,8 +6,8 @@ using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Models.TroopsModels;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Files.Tasks.SecondLevel;
-using TravBotSharp.Interfaces;
 using TravBotSharp.Forms;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
@@ -17,7 +16,7 @@ namespace TravBotSharp.Views
         public FarmingUc()
         {
             InitializeComponent();
-            RaidStyle.Items.AddRange(new string[] { "No losses only", "Some losses", "All losses" });
+            RaidStyle.Items.AddRange(new[] {"No losses only", "Some losses", "All losses"});
         }
 
         public void UpdateUc()
@@ -37,13 +36,13 @@ namespace TravBotSharp.Views
             }
         }
 
-        private void StartFarm_Click(object sender, EventArgs e)//start farming
+        private void StartFarm_Click(object sender, EventArgs e) //start farming
         {
             var acc = GetSelectedAcc();
-            acc.Farming.MinInterval = (int)minFarmInterval.Value;
-            acc.Farming.MaxInterval = (int)maxFarmInterval.Value;
+            acc.Farming.MinInterval = (int) minFarmInterval.Value;
+            acc.Farming.MaxInterval = (int) maxFarmInterval.Value;
             acc.Farming.Enabled = true;
-            TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
+            TaskExecutor.AddTaskIfNotExists(acc, new SendFLs {ExecuteAt = DateTime.Now});
         }
 
         private void trainTroopsAfterFLcheckbox_CheckedChanged(object sender, EventArgs e)
@@ -53,11 +52,11 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e) //refresh FLs
         {
-            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new UpdateFarmLists() { ExecuteAt = DateTime.Now });
+            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new UpdateFarmLists {ExecuteAt = DateTime.Now});
         }
 
         /// <summary>
-        /// Get's selected FarmList
+        ///     Get's selected FarmList
         /// </summary>
         /// <returns>FarmList</returns>
         private FarmList GetSelectedFL()
@@ -70,7 +69,7 @@ namespace TravBotSharp.Views
         {
             var fl = GetSelectedFL();
             FlName.Text = fl.Name;
-            RaidStyle.SelectedIndex = (int)fl.RaidStyle;
+            RaidStyle.SelectedIndex = (int) fl.RaidStyle;
             FarmNum.Text = fl.NumOfFarms.ToString();
             FlEnabled.Checked = fl.Enabled;
             flInterval.Value = fl.Interval;
@@ -78,7 +77,7 @@ namespace TravBotSharp.Views
 
         private void RaidStyle_SelectedIndexChanged(object sender, EventArgs e) //save raid style
         {
-            GetSelectedFL().RaidStyle = (RaidStyle)RaidStyle.SelectedIndex;
+            GetSelectedFL().RaidStyle = (RaidStyle) RaidStyle.SelectedIndex;
         }
 
         private void FlCombo_SelectedIndexChanged(object sender, EventArgs e)
@@ -98,8 +97,8 @@ namespace TravBotSharp.Views
             {
                 FL = GetSelectedFL(),
                 ExecuteAt = DateTime.Now,
-                MaxPop = (int)maxPopNatar.Value,
-                MinPop = (int)minPopNatar.Value
+                MaxPop = (int) maxPopNatar.Value,
+                MinPop = (int) minPopNatar.Value
             };
             TaskExecutor.AddTask(acc, task);
         }
@@ -109,7 +108,8 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             acc.Farming.Enabled = false;
             //remove all SendFarmlist tasks
-            var flTasks = acc.Tasks.Where(x => x.GetType() == typeof(SendFLs) || x.GetType() == typeof(SendFarmlist)).ToList();
+            var flTasks = acc.Tasks.Where(x => x.GetType() == typeof(SendFLs) || x.GetType() == typeof(SendFarmlist))
+                .ToList();
             while (flTasks.Count > 0)
             {
                 acc.Tasks.Remove(flTasks[0]);
@@ -119,11 +119,11 @@ namespace TravBotSharp.Views
 
         private void flInterval_ValueChanged(object sender, EventArgs e)
         {
-            GetSelectedFL().Interval = (int)flInterval.Value;
+            GetSelectedFL().Interval = (int) flInterval.Value;
         }
 
         /// <summary>
-        /// more farm open
+        ///     more farm open
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -152,18 +152,19 @@ namespace TravBotSharp.Views
                 if (result == DialogResult.OK)
                 {
                     foreach (var item in form.InactiveFarms)
-                    {
-                        TaskExecutor.AddTask(acc, new AddFarm()
+                        TaskExecutor.AddTask(acc, new AddFarm
                         {
                             Farm = item,
-                            FarmListId = fl.Id,
+                            FarmListId = fl.Id
                         });
-                    };
+                    ;
                 }
             }
         }
 
-        private void MessageUser(string message) =>
+        private void MessageUser(string message)
+        {
             MessageBox.Show(message, "Error", MessageBoxButtons.OK);
+        }
     }
 }

@@ -3,9 +3,9 @@
 namespace TbsCore.Models
 {
     /// <summary>
-    /// Class of TravianBuilder templates
+    ///     Class of TravianBuilder templates
     /// </summary>
-    class TB
+    internal class TB
     {
         public class BuildingDemolish
         {
@@ -18,28 +18,32 @@ namespace TbsCore.Models
         public class Command
         {
             /// <summary>
-            /// 1 = normal build
-            /// 4 = Auto build res fields, based on lvl
-            /// 5 = Auto build res fields, based on production
-            /// 6 = Auto build res fields, based on storage
+            ///     1 = normal build
+            ///     4 = Auto build res fields, based on lvl
+            ///     5 = Auto build res fields, based on production
+            ///     6 = Auto build res fields, based on storage
             /// </summary>
             public int cmdType { get; set; }
+
             /// <summary>
-            /// Level of the building
+            ///     Level of the building
             /// </summary>
             public int level { get; set; }
+
             /// <summary>
-            /// Location id
+            ///     Location id
             /// </summary>
             public int gid { get; set; }
+
             /// <summary>
-            /// Building id
-            /// If cmdType = 4/5/6:
-            /// 60 = AllRes
-            /// 61 = Exclude crop
-            /// 62 = only crop
+            ///     Building id
+            ///     If cmdType = 4/5/6:
+            ///     60 = AllRes
+            ///     61 = Exclude crop
+            ///     62 = only crop
             /// </summary>
             public int bid { get; set; }
+
             public bool canMoveUp { get; set; }
             public bool canMoveDown { get; set; }
             public bool canDelete { get; set; }

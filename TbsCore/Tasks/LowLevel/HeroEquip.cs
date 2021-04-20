@@ -24,33 +24,30 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 var (category, name, tier) = HeroHelper.ParseHeroItem(item);
                 if (category != HeroItemCategory.Others)
-                {
                     // Check if hero is at home
                     if (acc.Hero.Status != Hero.StatusEnum.Home)
                     {
                         // Wait for hero to come home
-                        var nextExecute = acc.Hero.NextHeroSend > acc.Hero.HeroArrival ?
-                            acc.Hero.NextHeroSend :
-                            acc.Hero.HeroArrival;
+                        var nextExecute = acc.Hero.NextHeroSend > acc.Hero.HeroArrival
+                            ? acc.Hero.NextHeroSend
+                            : acc.Hero.HeroArrival;
 
                         var in5Min = DateTime.Now.AddMinutes(5);
                         if (nextExecute < in5Min) nextExecute = in5Min;
-                        this.NextExecute = nextExecute;
+                        NextExecute = nextExecute;
                         return TaskRes.Retry;
                     }
-                }
 
-                string script = "var items = document.getElementById('itemsToSale');";
+                var script = "var items = document.getElementById('itemsToSale');";
 
                 switch (acc.AccInfo.ServerVersion)
                 {
                     case ServerVersionEnum.T4_5:
-                        script += $"items.querySelector('div[class$=\"_{(int)item}\"]').click();";
+                        script += $"items.querySelector('div[class$=\"_{(int) item}\"]').click();";
                         break;
                     case ServerVersionEnum.T4_4:
-                        script += $"items.querySelector('div[class$=\"_{(int)item} \"]').click();";
+                        script += $"items.querySelector('div[class$=\"_{(int) item} \"]').click();";
                         break;
-
                 }
 
                 await DriverHelper.ExecuteScript(acc, script);
@@ -63,7 +60,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     script = $"document.getElementById('amount').value = {amount};";
                     acc.Wb.Driver.ExecuteScript(script);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     // When using book / artwork / bucket, you don't specify amount, but you have to confirm usage
                 }
@@ -76,11 +73,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         }
 
         /// <summary>
-        /// Refresh the hero page after equipping an item
+        ///     Refresh the hero page after equipping an item
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TaskRes</returns>
-
         private TaskRes Done(Account acc)
         {
             HeroHelper.ParseHeroPage(acc);

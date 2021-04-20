@@ -14,15 +14,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
 
-            Random rnd = new Random();
-            int sec = rnd.Next(725, 740);
-            TaskExecutor.AddTask(acc, new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc) });
+            var rnd = new Random();
+            var sec = rnd.Next(725, 740);
+            TaskExecutor.AddTask(acc,
+                new TTWarsGetAnimals
+                    {ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc)});
 
             //Open payment wizard on tab Plus features (where you can buy stuff with gold)
             var script = "window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});";
             await DriverHelper.ExecuteScript(acc, script);
 
-            script = "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#3').addClass('active');$$('.paymentWizardMenu#buyAnimal').removeClass('hide');";
+            script =
+                "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#3').addClass('active');$$('.paymentWizardMenu#buyAnimal').removeClass('hide');";
             await DriverHelper.ExecuteScript(acc, script);
 
             var buy = acc.Wb.Html.DocumentNode.Descendants().First(x => x.HasClass("buyAnimal5"));

@@ -26,21 +26,19 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 acc.Wb.Log("There was an error at getting Smithy troop levels");
                 return TaskRes.Executed;
             }
+
             Vill.Troops.Levels = levels;
             TroopsHelper.UpdateResearchedTroops(Vill);
 
             var currentlyImproving = TroopsParser.GetImprovingTroops(acc.Wb.Html);
             var troop = TroopToImprove(Vill, currentlyImproving);
-            if (troop == Classificator.TroopsEnum.None)
-            {
-                return TaskRes.Executed;
-            }
+            if (troop == Classificator.TroopsEnum.None) return TaskRes.Executed;
 
             //If we have plus account we can improve 2 troops at the same time
-            int maxImproving = acc.AccInfo.PlusAccount ? 2 : 1;
+            var maxImproving = acc.AccInfo.PlusAccount ? 2 : 1;
             if (maxImproving <= currentlyImproving.Count())
             {
-                this.NextExecute = DateTime.Now.Add(currentlyImproving.Last().Time);
+                NextExecute = DateTime.Now.Add(currentlyImproving.Last().Time);
                 return TaskRes.Executed;
             }
             //call NextImprove() after enough res OR when this improvement finishes.
@@ -55,23 +53,24 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             //Click on the button
-            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
+            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img")
+                .FirstOrDefault(x => x.HasClass("u" + (int) troop));
             while (!troopNode.HasClass("research")) troopNode = troopNode.ParentNode;
 
             var button = troopNode.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
             if (button == null)
             {
                 acc.Wb.Log($"Could not find Upgrade button to improve {troop}");
-                this.NextExecute = DateTime.Now.AddMinutes(1);
+                NextExecute = DateTime.Now.AddMinutes(1);
                 return TaskRes.Retry;
             }
 
             await DriverHelper.ClickById(acc, button.Id);
 
             // If we have plus account and there is currently no other troop to improve, go ahead and improve the unit again
-            this.NextExecute = (currentlyImproving.Count() == 0 && maxImproving == 2) ?
-                DateTime.MinValue :
-                DateTime.Now.Add(cost.TimeCost).AddMilliseconds(5 * AccountHelper.Delay());
+            NextExecute = currentlyImproving.Count() == 0 && maxImproving == 2
+                ? DateTime.MinValue
+                : DateTime.Now.Add(cost.TimeCost).AddMilliseconds(5 * AccountHelper.Delay());
             return TaskRes.Executed;
         }
 
@@ -80,7 +79,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var troop = vill.Troops.ToImprove.FirstOrDefault();
             if (troop == Classificator.TroopsEnum.None) return troop;
             //how many times is this troop improving (0/1/2)
-            int alreadyImprovingTime = improving.Count(x => x.Troop == troop);
+            var alreadyImprovingTime = improving.Count(x => x.Troop == troop);
 
             if (!vill.Troops.Levels.Exists(x => x.Troop == troop) ||
                 vill.Troops.Levels.First(x => x.Troop == troop).Level + alreadyImprovingTime >= 20)
@@ -88,6 +87,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 vill.Troops.ToImprove.Remove(troop);
                 return TroopToImprove(vill, improving);
             }
+
             return troop;
         }
     }

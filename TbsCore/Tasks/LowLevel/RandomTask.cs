@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
+using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     /// <summary>
-    /// Just a random navigation event - to make bot less suspicious to Travian.
+    ///     Just a random navigation event - to make bot less suspicious to Travian.
     /// </summary>
     public class RandomTask : BotTask
     {
-        public int MinWait { get; set; } = 5000;
-        public int MaxWait { get; set; } = 20000;
-
-        private readonly string[] UrlT4_4 = new string[] {
+        private readonly string[] UrlT4_4 =
+        {
             "/statistiken.php", // player
             "/statistiken.php?id=1", // ally
             "/statistiken.php?id=1&idSub=3", // ally TOP10
@@ -27,10 +26,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             "/reports.php?t=1",
             "/reports.php?t=2",
             "/reports.php?t=3",
-            "/reports.php?t=4",
+            "/reports.php?t=4"
         };
 
-        private readonly string[] UrlT4_5 = new string[] {
+        private readonly string[] UrlT4_5 =
+        {
             "/statistics", // player
             "/statistics/alliance", // ally
             "/statistics/alliance?idSub=3", // ally TOP10
@@ -45,18 +45,21 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             "/report/offensive",
             "/report/defensive",
             "/report/scouting",
-            "/report/other",
+            "/report/other"
         };
+
+        public int MinWait { get; set; } = 5000;
+        public int MaxWait { get; set; } = 20000;
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            string[] Urls = new string[0];
+            var Urls = new string[0];
             switch (acc.AccInfo.ServerVersion)
             {
-                case Helpers.Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.T4_4:
                     Urls = UrlT4_4;
                     break;
-                case Helpers.Classificator.ServerVersionEnum.T4_5:
+                case Classificator.ServerVersionEnum.T4_5:
                     Urls = UrlT4_5;
                     break;
             }

@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using TbsCore.Models.Access;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
@@ -10,8 +10,23 @@ namespace TbsCore.Models.AccModels
 {
     public class Account
     {
+        public AccInfo AccInfo { get; set; }
+        public AccessInfo Access { get; set; }
+        public List<Village> Villages { get; set; }
+        public Farming Farming { get; set; }
+        public Hero Hero { get; set; }
+        public QuestsSettings Quests { get; set; }
+        public NewVillageSettings NewVillages { get; set; }
+        public GeneralSettings Settings { get; set; }
+
+        [JsonIgnore] public WebBrowserInfo Wb { get; set; }
+
+        [JsonIgnore] public List<BotTask> Tasks { get; set; }
+
+        [JsonIgnore] public TaskTimer TaskTimer { get; set; }
+
         /// <summary>
-        /// This method is called when new accounts is created
+        ///     This method is called when new accounts is created
         /// </summary>
         public void Init()
         {
@@ -31,23 +46,5 @@ namespace TbsCore.Models.AccModels
             NewVillages = new NewVillageSettings();
             NewVillages.Init();
         }
-
-        public AccInfo AccInfo { get; set; }
-        public AccessInfo Access { get; set; }
-        public List<Village> Villages { get; set; }
-        public Farming Farming { get; set; }
-        public Hero Hero { get; set; }
-        public QuestsSettings Quests { get; set; }
-        public NewVillageSettings NewVillages { get; set; }
-        public GeneralSettings Settings { get; set; }
-
-        [JsonIgnore]
-        public WebBrowserInfo Wb { get; set; }
-
-        [JsonIgnore]
-        public List<BotTask> Tasks { get; set; }
-
-        [JsonIgnore]
-        public TaskTimer TaskTimer { get; set; }
     }
 }

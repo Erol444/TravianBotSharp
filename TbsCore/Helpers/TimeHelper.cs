@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
+using TravBotSharp.Files.Tasks;
 using static TravBotSharp.Files.Tasks.BotTask;
 
 namespace TravBotSharp.Files.Helpers
@@ -11,61 +11,62 @@ namespace TravBotSharp.Files.Helpers
     public static class TimeHelper
     {
         /// <summary>
-        /// Get DateTime when there will be enough resources, based on production
+        ///     Get DateTime when there will be enough resources, based on production
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="resRequired">Resources required</param>
         /// <returns>When we will have enough resources only from production</returns>
         public static DateTime EnoughResToUpgrade(Village vill, long[] resRequired)
         {
-            long[] production = vill.Res.Production.ToArray();
+            var production = vill.Res.Production.ToArray();
 
-            DateTime ret = DateTime.Now.AddMinutes(3);
-            for (int i = 0; i < 4; i++)
+            var ret = DateTime.Now.AddMinutes(3);
+            for (var i = 0; i < 4; i++)
             {
-                DateTime toWaitForThisRes = DateTime.MinValue;
+                var toWaitForThisRes = DateTime.MinValue;
                 if (resRequired[i] > 0)
                 {
                     // In case of negative crop, we will never have enough crop
                     if (production[i] <= 0) return DateTime.MaxValue;
 
-                    float hoursToWait = (float)resRequired[i] / (float)production[i];
-                    float secToWait = hoursToWait * 3600;
+                    var hoursToWait = resRequired[i] / (float) production[i];
+                    var secToWait = hoursToWait * 3600;
                     toWaitForThisRes = DateTime.Now.AddSeconds(secToWait);
                 }
 
                 if (ret < toWaitForThisRes) ret = toWaitForThisRes;
             }
+
             return ret;
         }
 
         /// <summary>
-        /// Multiplies a timespan by some value
+        ///     Multiplies a timespan by some value
         /// </summary>
         /// <param name="timeSpan">Original TimeSpan</param>
         /// <param name="multiplyBy"></param>
         /// <returns>TimeSpan</returns>
         public static TimeSpan MultiplyTimespan(TimeSpan timeSpan, int multiplyBy)
         {
-            return (TimeSpan.FromTicks(timeSpan.Ticks * multiplyBy));
+            return TimeSpan.FromTicks(timeSpan.Ticks * multiplyBy);
         }
 
         /// <summary>
-        /// Calculate when the next sleep will occur
+        ///     Calculate when the next sleep will occur
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TimeSpan of the working time. After this, account should sleep</returns>
         public static TimeSpan GetWorkTime(Account acc)
         {
             var rand = new Random();
-            TimeSpan workTime = new TimeSpan(0,
+            var workTime = new TimeSpan(0,
                 rand.Next(acc.Settings.Time.MinWork, acc.Settings.Time.MaxWork),
                 0);
             return workTime;
         }
 
         /// <summary>
-        /// Calculate when next proxy change should occur
+        ///     Calculate when next proxy change should occur
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TimeSpan when next proxy change should occur</returns>
@@ -74,7 +75,7 @@ namespace TravBotSharp.Files.Helpers
             var proxyCount = acc.Access.AllAccess.Count;
             if (proxyCount == 1) return TimeSpan.MaxValue;
 
-            var min = (int)((24 * 60) / proxyCount);
+            var min = 24 * 60 / proxyCount;
 
             // +- 30min
             var rand = new Random();
@@ -83,13 +84,13 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Gets the TimeSpan when the next normal or high priority task should be executed
+        ///     Gets the TimeSpan when the next normal or high priority task should be executed
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TimeSpan</returns>
-        public static TimeSpan NextPrioTask(Account acc, Tasks.BotTask.TaskPriority prio)
+        public static TimeSpan NextPrioTask(Account acc, TaskPriority prio)
         {
-            Tasks.BotTask firstTask = null;
+            BotTask firstTask = null;
 
             switch (prio)
             {
@@ -111,19 +112,19 @@ namespace TravBotSharp.Files.Helpers
 
             if (firstTask == null) return TimeSpan.MaxValue;
 
-            return (firstTask.ExecuteAt - DateTime.Now);
+            return firstTask.ExecuteAt - DateTime.Now;
         }
 
         public static async Task SleepUntilPrioTask(Account acc, TaskPriority lowestPrio, DateTime? reopenAt)
         {
-            string previousLog = "";
+            var previousLog = "";
             TimeSpan nextTask;
             do
             {
                 await Task.Delay(1000);
-                nextTask = TimeHelper.NextPrioTask(acc, lowestPrio);
+                nextTask = NextPrioTask(acc, lowestPrio);
 
-                var log = $"Chrome will reopen in {(int)nextTask.TotalMinutes} min";
+                var log = $"Chrome will reopen in {(int) nextTask.TotalMinutes} min";
                 if (log != previousLog)
                 {
                     acc.Wb.Log(log);
@@ -136,13 +137,16 @@ namespace TravBotSharp.Files.Helpers
                 if (reopenAt != null && reopenAt < DateTime.Now)
                 {
                     reopenAt = null;
-                    lowestPrio = TaskPriority.Medium; ;
+                    lowestPrio = TaskPriority.Medium;
+                    ;
                 }
-            }
-            while (TimeSpan.Zero < nextTask);
+            } while (TimeSpan.Zero < nextTask);
         }
 
-        internal static int InSeconds(DateTime time) => (int)(time - DateTime.Now).TotalSeconds;
+        internal static int InSeconds(DateTime time)
+        {
+            return (int) (time - DateTime.Now).TotalSeconds;
+        }
 
         public static DateTime RanDelay(Account acc, DateTime finish, int maxPercentageDelay = 10)
         {

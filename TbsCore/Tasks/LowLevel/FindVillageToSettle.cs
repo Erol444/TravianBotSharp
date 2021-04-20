@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using RestSharp;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
@@ -30,7 +30,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     var req = new RestRequest
                     {
                         Resource = "/ajax.php?cmd=mapPositionData",
-                        Method = Method.POST,
+                        Method = Method.POST
                     };
 
                     req.AddParameter("cmd", "mapPositionData");
@@ -42,7 +42,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     var resString = HttpHelper.SendPostReq(acc, req);
 
                     var root = JsonConvert.DeserializeObject<MapPositionDataT4_4.Root>(resString);
-                    if (root.response.error) throw new Exception("Unable to get T4.4 map position data!\n" + root.response.error);
+                    if (root.response.error)
+                        throw new Exception("Unable to get T4.4 map position data!\n" + root.response.error);
 
                     var mapTiles = root.response.data.tiles.Select(x => x.GetMapTile()).ToList();
                     closesCoords = GetClosestCoordinates(acc, mapTiles);
@@ -63,9 +64,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                     var mapInfoRes = HttpHelper.SendPostReq(acc, reqMapInfo);
 
-                    var mapPosition = new SendMapPositionT4_5.Root()
+                    var mapPosition = new SendMapPositionT4_5.Root
                     {
-                        data = new SendMapPositionT4_5.Data()
+                        data = new SendMapPositionT4_5.Data
                         {
                             x = mainVill.Coordinates.x,
                             y = mainVill.Coordinates.y,
@@ -94,10 +95,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (closesCoords == null) return TaskRes.Retry;
 
-            acc.NewVillages.Locations.Add(new NewVillage()
+            acc.NewVillages.Locations.Add(new NewVillage
             {
                 Coordinates = closesCoords,
-                Name = NewVillageHelper.GenerateName(acc),
+                Name = NewVillageHelper.GenerateName(acc)
             });
 
             return TaskRes.Executed;
@@ -115,8 +116,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // Check if village type meets criteria
                 if (acc.NewVillages.Types.Count != 0)
                 {
-                    var num = (int)Parser.RemoveNonNumeric(tile.Title.Split('f')[1]);
-                    var type = (Classificator.VillTypeEnum)(num);
+                    var num = (int) Parser.RemoveNonNumeric(tile.Title.Split('f')[1]);
+                    var type = (Classificator.VillTypeEnum) num;
                     if (!acc.NewVillages.Types.Any(x => x == type)) continue;
                 }
 
@@ -127,33 +128,30 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     closesCoords = tile.Coordinates;
                 }
             }
+
             return closesCoords;
         }
 
         private SendMapInfoT4_5.Root GenerateMapInfo(Coordinates coords)
         {
-            int startX = coords.x - (coords.x % 100);
-            int startY = coords.y - (coords.y % 100);
+            var startX = coords.x - coords.x % 100;
+            var startY = coords.y - coords.y % 100;
             var ret = new SendMapInfoT4_5.Root();
             ret.zoomLevel = 3;
             ret.data = new List<SendMapInfoT4_5.Datum>();
 
-            for (int x = -1; x <= 1; x++)
-            {
-                for (int y = -1; y <= 1; y++)
+            for (var x = -1; x <= 1; x++)
+            for (var y = -1; y <= 1; y++)
+                ret.data.Add(new SendMapInfoT4_5.Datum
                 {
-                    ret.data.Add(new SendMapInfoT4_5.Datum()
+                    position = new SendMapInfoT4_5.Position
                     {
-                        position = new SendMapInfoT4_5.Position()
-                        {
-                            x0 = x * 100 + startX,
-                            y0 = y * 100 + startY,
-                            x1 = (x * 100 + startX) + 99,
-                            y1 = (y * 100 + startY) + 99
-                        }
-                    });
-                }
-            }
+                        x0 = x * 100 + startX,
+                        y0 = y * 100 + startY,
+                        x1 = x * 100 + startX + 99,
+                        y1 = y * 100 + startY + 99
+                    }
+                });
 
             return ret;
         }

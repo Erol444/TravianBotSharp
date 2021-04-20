@@ -1,6 +1,6 @@
-﻿using OpenQA.Selenium;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using OpenQA.Selenium;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TravBotSharp.Files.Helpers;
@@ -10,7 +10,7 @@ namespace TbsCore.Helpers
     public static class DriverHelper
     {
         /// <summary>
-        /// Executes JS, waits for changes and re-loads the html
+        ///     Executes JS, waits for changes and re-loads the html
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="script">JavaScript</param>
@@ -26,6 +26,7 @@ namespace TbsCore.Helpers
                     await Task.Delay(AccountHelper.Delay());
                     acc.Wb.UpdateHtml();
                 }
+
                 return true;
             }
             catch (Exception e)
@@ -36,10 +37,10 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Gets JS object from the game. Query examples:
-        /// window.TravianDefaults.Map.Size.top
-        /// resources.maxStorage
-        /// Travian.Game.speed
+        ///     Gets JS object from the game. Query examples:
+        ///     window.TravianDefaults.Map.Size.top
+        ///     resources.maxStorage
+        ///     Travian.Game.speed
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="obj">JS object</param>
@@ -48,10 +49,10 @@ namespace TbsCore.Helpers
         {
             try
             {
-                IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
-                return (T)js.ExecuteScript($"return {obj};");
+                IJavaScriptExecutor js = acc.Wb.Driver;
+                return (T) js.ExecuteScript($"return {obj};");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 if (log) acc.Wb?.Log($"Error getting JS object '{obj}'!", e);
                 return default;
@@ -59,16 +60,17 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Get bearer token for Travian T4.5
+        ///     Get bearer token for Travian T4.5
         /// </summary>
         public static string GetBearerToken(Account acc)
         {
-            IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
-            return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+            IJavaScriptExecutor js = acc.Wb.Driver;
+            return (string) js.ExecuteScript(
+                "for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
         }
 
         /// <summary>
-        /// Write coordinates into the number inputs. Used when sending troops, resources etc.
+        ///     Write coordinates into the number inputs. Used when sending troops, resources etc.
         /// </summary>
         internal static async Task WriteCoordinates(Account acc, Coordinates coordinates)
         {
@@ -76,46 +78,139 @@ namespace TbsCore.Helpers
             await WriteById(acc, "yCoordInput", coordinates.y);
         }
 
-        public static async Task<bool> ClickById(Account acc, string query, bool log = true) =>
-            await ExecuteAction(acc, new QueryById(query), new ActionClick(), log);
-        public static async Task<bool> WriteById(Account acc, string query, object text, bool log = true) =>
-            await ExecuteAction(acc, new QueryById(query), new ActionWrite(text), log);
-        public static async Task<bool> CheckById(Account acc, string query, bool check, bool log = true, bool update = true) =>
-            await ExecuteAction(acc, new QueryById(query), new ActionCheck(check), log, update);
-        public static async Task<bool> SelectIndexById(Account acc, string query, int index, bool log = true) =>
-            await ExecuteAction(acc, new QueryById(query), new ActionSelectIndex(index), log);
+        public static async Task<bool> ClickById(Account acc, string query, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryById(query), new ActionClick(), log);
+        }
 
-        public static async Task<bool> ClickByClassName(Account acc, string query, bool log = true) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionClick(), log);
-        public static async Task<bool> WriteByClassName(Account acc, string query, object text, bool log = true) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionWrite(text), log);
-        public static async Task<bool> CheckByClassName (Account acc, string query, bool check, bool log = true) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionCheck(check), log);
-        public static async Task<bool> SelectIndexByClassName(Account acc, string query, int index, bool log = true) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionSelectIndex(index), log);
+        public static async Task<bool> WriteById(Account acc, string query, object text, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryById(query), new ActionWrite(text), log);
+        }
 
-        public static async Task<bool> ClickByName(Account acc, string query, bool log = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionClick(), log);
-        public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true, bool update = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text), log, update);
-        public static async Task<bool> CheckByName(Account acc, string query, bool check, bool log = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionCheck(check), log);
-        public static async Task<bool> SelectIndexByName(Account acc, string query, int index, bool log = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionSelectIndex(index), log);
+        public static async Task<bool> CheckById(Account acc, string query, bool check, bool log = true,
+            bool update = true)
+        {
+            return await ExecuteAction(acc, new QueryById(query), new ActionCheck(check), log, update);
+        }
 
-        private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true, bool update = true) =>
-            await ExecuteScript(acc, $"document.{query.val}{action.val}", log, update);
+        public static async Task<bool> SelectIndexById(Account acc, string query, int index, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryById(query), new ActionSelectIndex(index), log);
+        }
+
+        public static async Task<bool> ClickByClassName(Account acc, string query, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryByClassName(query), new ActionClick(), log);
+        }
+
+        public static async Task<bool> WriteByClassName(Account acc, string query, object text, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryByClassName(query), new ActionWrite(text), log);
+        }
+
+        public static async Task<bool> CheckByClassName(Account acc, string query, bool check, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryByClassName(query), new ActionCheck(check), log);
+        }
+
+        public static async Task<bool> SelectIndexByClassName(Account acc, string query, int index, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryByClassName(query), new ActionSelectIndex(index), log);
+        }
+
+        public static async Task<bool> ClickByName(Account acc, string query, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryByName(query), new ActionClick(), log);
+        }
+
+        public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true,
+            bool update = true)
+        {
+            return await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text), log, update);
+        }
+
+        public static async Task<bool> CheckByName(Account acc, string query, bool check, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryByName(query), new ActionCheck(check), log);
+        }
+
+        public static async Task<bool> SelectIndexByName(Account acc, string query, int index, bool log = true)
+        {
+            return await ExecuteAction(acc, new QueryByName(query), new ActionSelectIndex(index), log);
+        }
+
+        private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true,
+            bool update = true)
+        {
+            return await ExecuteScript(acc, $"document.{query.val}{action.val}", log, update);
+        }
 
 
-        public class QueryById : Query { public QueryById(string str) => base.val = $"getElementById('{str}')"; }
-        public class QueryByName : Query { public QueryByName(string str) => base.val = $"getElementsByName('{str}')[0]"; }
-        public class QueryByClassName : Query { public QueryByClassName(string str) => base.val = $"getElementsByClassName('{str}')[0]"; }
-        public class ActionWrite : Action { public ActionWrite(object str) => base.val = $".value='{str}';"; }
-        public class ActionClick : Action { public ActionClick() => base.val = ".click();"; }
-        public class ActionCheck : Action { public ActionCheck(bool check) => base.val = $".checked={(check ? "true" : "false")};"; }
-        public class ActionSelectIndex : Action { public ActionSelectIndex(int index) => base.val = $".selectedIndex = {index};"; }
+        public class QueryById : Query
+        {
+            public QueryById(string str)
+            {
+                val = $"getElementById('{str}')";
+            }
+        }
 
-        public abstract class Action { public string val; }
-        public abstract class Query { public string val; }
+        public class QueryByName : Query
+        {
+            public QueryByName(string str)
+            {
+                val = $"getElementsByName('{str}')[0]";
+            }
+        }
+
+        public class QueryByClassName : Query
+        {
+            public QueryByClassName(string str)
+            {
+                val = $"getElementsByClassName('{str}')[0]";
+            }
+        }
+
+        public class ActionWrite : Action
+        {
+            public ActionWrite(object str)
+            {
+                val = $".value='{str}';";
+            }
+        }
+
+        public class ActionClick : Action
+        {
+            public ActionClick()
+            {
+                val = ".click();";
+            }
+        }
+
+        public class ActionCheck : Action
+        {
+            public ActionCheck(bool check)
+            {
+                val = $".checked={(check ? "true" : "false")};";
+            }
+        }
+
+        public class ActionSelectIndex : Action
+        {
+            public ActionSelectIndex(int index)
+            {
+                val = $".selectedIndex = {index};";
+            }
+        }
+
+        public abstract class Action
+        {
+            public string val;
+        }
+
+        public abstract class Query
+        {
+            public string val;
+        }
     }
 }

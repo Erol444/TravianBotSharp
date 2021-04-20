@@ -22,12 +22,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 // We already have a celebration running
                 Vill.Expansion.CelebrationEnd = celebrationEnd;
-                this.NextExecute = celebrationEnd;
+                NextExecute = celebrationEnd;
                 return TaskRes.Executed;
             }
 
             var buildingNode = acc.Wb.Html.GetElementbyId("build");
-            (_, var level) = InfrastructureParser.UpgradeBuildingGetInfo(buildingNode);
+            var (_, level) = InfrastructureParser.UpgradeBuildingGetInfo(buildingNode);
 
             var bigCeleb = Vill.Expansion.Celebrations == CelebrationEnum.Big && 10 <= level;
 
@@ -43,7 +43,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Post task check for celebration duration
             Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
 
-            if (Vill.Expansion.Celebrations != CelebrationEnum.None) this.NextExecute = Vill.Expansion.CelebrationEnd;
+            if (Vill.Expansion.Celebrations != CelebrationEnum.None) NextExecute = Vill.Expansion.CelebrationEnd;
 
             return TaskRes.Executed;
         }

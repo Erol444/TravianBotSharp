@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.MapModels;
-using TbsCore.Models.TroopsModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 
@@ -13,6 +10,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public int FarmListId { get; set; }
         public Farm Farm { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
@@ -20,13 +18,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
             // Show "Add raid" popup
-            await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');");
+            await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.addSlot({FarmListId},'','','rallyPoint');");
 
             // Input coordinates
             await DriverHelper.WriteCoordinates(acc, Farm.Coords);
 
             // Input troops
-            for (int i = 0; i < Farm.Troops.Length; i++)
+            for (var i = 0; i < Farm.Troops.Length; i++)
             {
                 if (Farm.Troops[i] == 0) continue;
                 await DriverHelper.WriteById(acc, $"t{i + 1}", Farm.Troops[i]);
@@ -38,7 +36,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
+                    wb.ExecuteScript(
+                        "Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
                     break;
                 case Classificator.ServerVersionEnum.T4_5:
                     await DriverHelper.ClickById(acc, "save");

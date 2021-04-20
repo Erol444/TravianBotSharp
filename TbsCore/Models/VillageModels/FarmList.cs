@@ -22,8 +22,8 @@ namespace TbsCore.Models.VillageModels
 
         public Farm(int[] troops, Coordinates coords)
         {
-            this.Troops = troops;
-            this.Coords = coords;
+            Troops = troops;
+            Coords = coords;
         }
 
         public Coordinates Coords { get; set; }

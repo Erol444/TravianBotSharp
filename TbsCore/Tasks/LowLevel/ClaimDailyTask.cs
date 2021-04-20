@@ -25,7 +25,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     break;
             }
 
-            await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonGainReward')[0].click();");
+            await DriverHelper.ExecuteScript(acc,
+                "document.getElementsByClassName('questButtonGainReward')[0].click();");
 
             return TaskRes.Executed;
         }

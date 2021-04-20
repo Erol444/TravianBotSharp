@@ -6,10 +6,9 @@ using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
-
     /// <summary>
-    /// Send all resources (except 30k crop(TODO: SELECTABLE)) above 20% (todo: selectable) to main village.
-    /// If we have auto celebration selected, leave res for that (calculate based on production)
+    ///     Send all resources (except 30k crop(TODO: SELECTABLE)) above 20% (todo: selectable) to main village.
+    ///     If we have auto celebration selected, leave res for that (calculate based on production)
     /// </summary>
     public class SendResToMain : BotTask
     {
@@ -18,11 +17,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
                 return TaskRes.Executed;
 
-            if (this.Vill.Settings.Type == VillType.Support && this.Vill.Settings.SendRes)
+            if (Vill.Settings.Type == VillType.Support && Vill.Settings.SendRes)
             {
                 // Repeat this task
                 var ran = new Random();
-                this.NextExecute = DateTime.Now.AddMinutes(ran.Next(30, 60));
+                NextExecute = DateTime.Now.AddMinutes(ran.Next(30, 60));
             }
 
             var mainVill = AccountHelper.GetMainVillage(acc);

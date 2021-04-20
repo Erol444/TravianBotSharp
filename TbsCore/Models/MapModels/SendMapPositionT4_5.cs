@@ -8,6 +8,7 @@ namespace TbsCore.Models.MapModels
         {
             public Data data { get; set; }
         }
+
         public class Data
         {
             public int x { get; set; }

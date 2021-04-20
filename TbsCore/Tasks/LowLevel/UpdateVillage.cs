@@ -10,10 +10,20 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class UpdateVillage : BotTask
     {
+        private readonly Classificator.BuildingEnum[] trainingBuildings =
+        {
+            Classificator.BuildingEnum.Barracks,
+            Classificator.BuildingEnum.Stable,
+            Classificator.BuildingEnum.Workshop,
+            Classificator.BuildingEnum.GreatBarracks,
+            Classificator.BuildingEnum.GreatStable
+        };
+
         /// <summary>
-        /// If village is new, we want to import the building tasks to the village
+        ///     If village is new, we want to import the building tasks to the village
         /// </summary>
         public bool ImportTasks { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             TaskExecutor.RemoveSameTasksForVillage(acc, Vill, typeof(UpdateDorf1), this);
@@ -25,9 +35,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // On new village import the building tasks
             if (ImportTasks && !string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
-            {
                 IoHelperCore.AddBuildTasksFromFile(acc, Vill, acc.NewVillages.BuildingTasksLocationNewVillage);
-            }
 
             await UpdateTroopsResearchedAndLevels(acc);
 
@@ -40,10 +48,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             Vill.Troops.Researched.Add(firstTroop);
 
             if (await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
-            {
                 // Village has town hall, parse celebration duration
                 Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
-            }
 
             return TaskRes.Executed;
         }
@@ -55,7 +61,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 // From overview we get all researched troops and their levels
                 await VersionHelper.Navigate(acc, "/dorf3.php?s=5&su=2", "/village/statistics/troops?su=2");
-                
+
                 OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);
                 // We have updated all villages at the same time. No need to continue.
                 acc.Tasks.RemoveAll(x => x.GetType() == typeof(UpdateTroops));
@@ -69,16 +75,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
                 Vill.Troops.Levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
                 TroopsHelper.UpdateResearchedTroops(Vill);
-                return;
             }
         }
-        private readonly Classificator.BuildingEnum[] trainingBuildings = new Classificator.BuildingEnum[] {
-            Classificator.BuildingEnum.Barracks,
-            Classificator.BuildingEnum.Stable,
-            Classificator.BuildingEnum.Workshop,
-            Classificator.BuildingEnum.GreatBarracks,
-            Classificator.BuildingEnum.GreatStable
-        };
 
         public async Task UpdateTroopsTraining(Account acc)
         {
@@ -108,10 +106,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         Vill.Troops.CurrentlyTraining.Workshop = ct;
                         break;
                 }
+
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
                 await Task.Delay(AccountHelper.Delay());
             }
         }
-
     }
 }

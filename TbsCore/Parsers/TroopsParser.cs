@@ -1,7 +1,7 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HtmlAgilityPack;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
@@ -11,7 +11,7 @@ namespace TravBotSharp.Files.Parsers
     public static class TroopsParser
     {
         /// <summary>
-        /// Parses the troops inside the village from dorf1
+        ///     Parses the troops inside the village from dorf1
         /// </summary>
         public static Dictionary<Classificator.TroopsEnum, int> GetTroopsInVillage(HtmlDocument htmlDoc)
         {
@@ -21,22 +21,23 @@ namespace TravBotSharp.Files.Parsers
             foreach (var row in troopsNode)
             {
                 var num = row.Descendants().First(x => x.HasClass("num")).InnerHtml;
-                ret.Add(GetTroopFromImage(row), (int)Parser.RemoveNonNumeric(num));
+                ret.Add(GetTroopFromImage(row), (int) Parser.RemoveNonNumeric(num));
             }
+
             return ret;
         }
 
         /// <summary>
-        /// Gets the research time and resource cost for the specific troop. TODO: get this from TravianData.TroopsData
+        ///     Gets the research time and resource cost for the specific troop. TODO: get this from TravianData.TroopsData
         /// </summary>
         public static (TimeSpan, Resources) AcademyResearchCost(HtmlDocument htmlDoc, Classificator.TroopsEnum troop)
         {
-            var troopNode = htmlDoc.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
+            var troopNode = htmlDoc.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int) troop));
             if (troopNode == null) return (new TimeSpan(), null);
             while (!troopNode.HasClass("information")) troopNode = troopNode.ParentNode;
 
             var duration = troopNode.Descendants("div").FirstOrDefault(x => x.HasClass("duration"));
-            TimeSpan dur = TimeParser.ParseDuration(duration);
+            var dur = TimeParser.ParseDuration(duration);
 
             var resWrapper = troopNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var res = ResourceParser.GetResourceCost(resWrapper);
@@ -45,27 +46,27 @@ namespace TravBotSharp.Files.Parsers
         }
 
         /// <summary>
-        /// Gets the training time (in ms) and resource cost for the specific troop. TODO: get this from TravianData.TroopsData
+        ///     Gets the training time (in ms) and resource cost for the specific troop. TODO: get this from TravianData.TroopsData
         /// </summary>
         public static (TimeSpan, Resources) GetTrainCost(HtmlDocument htmlDoc, Classificator.TroopsEnum troop)
         {
-            var troopNode = htmlDoc.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
+            var troopNode = htmlDoc.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int) troop));
             if (troopNode == null) return (new TimeSpan(), null);
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
 
             var duration = troopNode.Descendants("div").FirstOrDefault(x => x.HasClass("duration"));
-            TimeSpan dur = TimeParser.ParseDuration(duration);
+            var dur = TimeParser.ParseDuration(duration);
 
             var resWrapper = troopNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
-            Resources res = ResourceParser.GetResourceCost(resWrapper);
+            var res = ResourceParser.GetResourceCost(resWrapper);
 
             return (dur, res);
         }
 
         /// <summary>
-        /// Parse currently training troops inside barracks/stable/workshop/GB/GS
+        ///     Parse currently training troops inside barracks/stable/workshop/GB/GS
         /// </summary>
-        public static List<TroopsCurrentlyTraining> GetTroopsCurrentlyTraining(HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static List<TroopsCurrentlyTraining> GetTroopsCurrentlyTraining(HtmlDocument htmlDoc)
         {
             var list = new List<TroopsCurrentlyTraining>();
             var table = htmlDoc.DocumentNode.Descendants("table").FirstOrDefault(x => x.HasClass("under_progress"));
@@ -74,20 +75,21 @@ namespace TravBotSharp.Files.Parsers
             var troop = Tbody.Descendants("img").Where(x => x.HasClass("unit")).ToList();
             var time = Tbody.Descendants("span").Where(x => x.HasClass("timer")).ToList();
 
-            for (int i = 0; i < troop.Count; i++)
+            for (var i = 0; i < troop.Count; i++)
             {
                 var ct = new TroopsCurrentlyTraining();
                 var cls = troop[i].GetClasses().FirstOrDefault(x => x != "unit");
-                ct.Troop = (Classificator.TroopsEnum)Parser.RemoveNonNumeric(cls);
-                ct.TrainNumber = (int)Parser.RemoveNonNumeric(troop[i].NextSibling.InnerText);
-                ct.FinishTraining = DateTime.Now.AddSeconds((int)time[i].GetAttributeValue("value", 0));
+                ct.Troop = (Classificator.TroopsEnum) Parser.RemoveNonNumeric(cls);
+                ct.TrainNumber = (int) Parser.RemoveNonNumeric(troop[i].NextSibling.InnerText);
+                ct.FinishTraining = DateTime.Now.AddSeconds(time[i].GetAttributeValue("value", 0));
                 list.Add(ct);
             }
+
             return list;
         }
 
         /// <summary>
-        /// For smithy usage
+        ///     For smithy usage
         /// </summary>
         public static List<TroopLevel> GetTroopLevels(HtmlDocument html)
         {
@@ -99,28 +101,27 @@ namespace TravBotSharp.Files.Parsers
             {
                 var lvl = research.Descendants("span").First(x => x.HasClass("level")).InnerText;
                 if (lvl.Contains("+")) //troop is currently being improved. Only get current level
-                {
                     lvl = lvl.Split('+')[0];
-                }
                 var troop = new TroopLevel();
                 troop.Troop = GetTroopFromImage(research);
-                troop.Level = (int)Parser.RemoveNonNumeric(lvl);
+                troop.Level = (int) Parser.RemoveNonNumeric(lvl);
 
                 if (troop.Level != 20) // If max level, there is no upgrade/time cost
                 {
                     troop.UpgradeCost = ResourceParser.GetResourceCost(research
-                                .Descendants("div")
-                                .FirstOrDefault(x => x.HasClass("showCosts") || x.HasClass("resourceWrapper")));
+                        .Descendants("div")
+                        .FirstOrDefault(x => x.HasClass("showCosts") || x.HasClass("resourceWrapper")));
                     troop.TimeCost = TimeParser.ParseDuration(research); //TODO!
                 }
-                
+
                 list.Add(troop);
             }
+
             return list;
         }
 
         /// <summary>
-        /// Method to get currently improving troops inside the smithy.
+        ///     Method to get currently improving troops inside the smithy.
         /// </summary>
         public static List<TroopCurrentlyImproving> GetImprovingTroops(HtmlDocument html)
         {
@@ -132,7 +133,7 @@ namespace TravBotSharp.Files.Parsers
             foreach (var row in rows)
             {
                 var desc = row.Descendants("td").First(x => x.HasClass("desc"));
-                (Classificator.TroopsEnum, int) troop = GetTroopAndLevel(desc);
+                var troop = GetTroopAndLevel(desc);
                 var time = TimeParser.ParseTimer(row);
                 list.Add(new TroopCurrentlyImproving
                 {
@@ -141,11 +142,12 @@ namespace TravBotSharp.Files.Parsers
                     Time = time
                 });
             }
+
             return list;
         }
 
         /// <summary>
-        /// For getting smithy upgrades
+        ///     For getting smithy upgrades
         /// </summary>
         /// <param name="node">HtmlNode, not needed to be direct parent</param>
         /// <returns></returns>
@@ -153,22 +155,22 @@ namespace TravBotSharp.Files.Parsers
         {
             var troop = GetTroopFromImage(node);
             var level = node.Descendants("span").First(x => x.HasClass("level")).InnerText;
-            return (troop, (int)Parser.RemoveNonNumeric(level));
+            return (troop, (int) Parser.RemoveNonNumeric(level));
         }
 
         /// <summary>
-        /// Gets troop from troop image
+        ///     Gets troop from troop image
         /// </summary>
         /// <param name="node">HtmlNode, no needed to be direct parent</param>
         public static Classificator.TroopsEnum GetTroopFromImage(HtmlNode node)
         {
             var img = node.Descendants("img").First(x => x.HasClass("unit"));
             var troopNum = Parser.RemoveNonNumeric(img.GetClasses().First(x => x != "unit"));
-            return (Classificator.TroopsEnum)troopNum;
+            return (Classificator.TroopsEnum) troopNum;
         }
 
         /// <summary>
-        /// Parses available/present troops of this kind.
+        ///     Parses available/present troops of this kind.
         /// </summary>
         /// <param name="node">Details node of the troop</param>
         /// <returns>Number of troops available</returns>

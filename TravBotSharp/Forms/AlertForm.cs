@@ -6,7 +6,8 @@ namespace TravBotSharp
 {
     public partial class AlertForm : Form
     {
-        SoundPlayer alert;
+        private readonly SoundPlayer alert;
+
         public AlertForm(string msg)
         {
             InitializeComponent();
@@ -16,8 +17,16 @@ namespace TravBotSharp
             BringToTop();
         }
 
-        private void button1_Click(object sender, EventArgs e) => AlertStop();
-        private void AlertForm_FormClosing(object sender, FormClosingEventArgs e) => AlertStop();
+        private void button1_Click(object sender, EventArgs e)
+        {
+            AlertStop();
+        }
+
+        private void AlertForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            AlertStop();
+        }
+
         private void AlertStop()
         {
             alert.Stop();
@@ -27,18 +36,15 @@ namespace TravBotSharp
         public void BringToTop()
         {
             //Checks if the method is called from UI thread or not
-            if (this.InvokeRequired)
+            if (InvokeRequired)
             {
-                this.Invoke(new Action(BringToTop));
+                Invoke(new Action(BringToTop));
             }
             else
             {
-                if (this.WindowState == FormWindowState.Minimized)
-                {
-                    this.WindowState = FormWindowState.Normal;
-                }
+                if (WindowState == FormWindowState.Minimized) WindowState = FormWindowState.Normal;
                 //Keeps the current topmost status of form
-                bool top = TopMost;
+                var top = TopMost;
                 //Brings the form to top
                 TopMost = true;
                 //Set form's topmost status back to whatever it was

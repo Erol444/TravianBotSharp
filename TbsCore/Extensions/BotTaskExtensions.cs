@@ -5,7 +5,7 @@ namespace TbsCore.Extensions
     public static class BotTaskExtensions
     {
         /// <summary>
-        /// Gets name of the task
+        ///     Gets name of the task
         /// </summary>
         /// <returns>Name of the task</returns>
         public static string GetName(this BotTask task)
@@ -14,6 +14,5 @@ namespace TbsCore.Extensions
             if (type.Length == 0) return null;
             return type[type.Length - 1];
         }
-
     }
 }

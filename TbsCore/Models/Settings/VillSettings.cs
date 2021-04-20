@@ -4,14 +4,6 @@ namespace TbsCore.Models.Settings
 {
     public class VillSettings
     {
-        public void Init()
-        {
-            GetRes = true;
-            SendRes = false;
-            UseHeroRes = true;
-            RefreshMin = 30;
-            RefreshMax = 60;
-        }
         public VillType Type { get; set; }
         public Classificator.TroopsEnum BarracksTrain { get; set; }
         public bool GreatBarracksTrain { get; set; }
@@ -22,20 +14,32 @@ namespace TbsCore.Models.Settings
         public bool SendRes { get; set; }
         public bool AutoExpandStorage { get; set; }
         public bool UseHeroRes { get; set; }
+
         /// <summary>
-        /// Auto-Improve troops in smithy
+        ///     Auto-Improve troops in smithy
         /// </summary>
         public bool AutoImprove { get; set; }
+
         /// <summary>
-        /// Donate excess resources to alliance bonus
+        ///     Donate excess resources to alliance bonus
         /// </summary>
         public DonateEnum Donate { get; set; }
 
         /// <summary>
-        /// Refresh village min/max interval
+        ///     Refresh village min/max interval
         /// </summary>
         public int RefreshMin { get; set; }
+
         public int RefreshMax { get; set; }
+
+        public void Init()
+        {
+            GetRes = true;
+            SendRes = false;
+            UseHeroRes = true;
+            RefreshMin = 30;
+            RefreshMax = 60;
+        }
     }
 
     public enum VillType
@@ -45,6 +49,7 @@ namespace TbsCore.Models.Settings
         Deff,
         Off
     }
+
     public enum DonateEnum
     {
         None,

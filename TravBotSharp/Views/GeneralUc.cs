@@ -4,7 +4,6 @@ using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
@@ -12,8 +11,8 @@ namespace TravBotSharp.Views
 {
     public partial class GeneralUc : TbsBaseUc, ITbsUc
     {
-        private readonly string[] allyBonus = new string[] { "Recruitment", "Philosophy", "Metallurgy", "Commerce" };
-        private int bonusSelected = 0, resPrioSel = 0;
+        private readonly string[] allyBonus = {"Recruitment", "Philosophy", "Metallurgy", "Commerce"};
+        private int bonusSelected, resPrioSel;
 
         public GeneralUc()
         {
@@ -27,10 +26,7 @@ namespace TravBotSharp.Views
 
 
             SupplyResVillageComboBox.Items.Clear();
-            foreach (var vill in acc.Villages)
-            {
-                SupplyResVillageComboBox.Items.Add(vill.Name);
-            }
+            foreach (var vill in acc.Villages) SupplyResVillageComboBox.Items.Add(vill.Name);
             if (SupplyResVillageComboBox.Items.Count > 0)
             {
                 SupplyResVillageComboBox.SelectedIndex = 0;
@@ -63,7 +59,8 @@ namespace TravBotSharp.Views
             UpdaterResPrio(acc);
         }
 
-        private void SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages
+        private void
+            SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages
         {
             var acc = GetSelectedAcc();
             var vill = acc.Villages[SupplyResVillageComboBox.SelectedIndex];
@@ -75,16 +72,21 @@ namespace TravBotSharp.Views
         private void button21_Click(object sender, EventArgs e) //start UNL server tasks
         {
             var acc = GetSelectedAcc();
-            int sec = 1;
-            TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec) });
-            TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
-            TaskExecutor.AddTask(acc, new TrainTroops()
+            var sec = 1;
+            TaskExecutor.AddTask(acc, new TTWarsGetRes {ExecuteAt = DateTime.Now.AddSeconds(sec)});
+            TaskExecutor.AddTask(acc,
+                new TrainExchangeRes
+                {
+                    ExecuteAt = DateTime.Now.AddSeconds(sec + 5),
+                    troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero
+                });
+            TaskExecutor.AddTask(acc, new TrainTroops
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec + 11),
                 Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
                 HighSpeedServer = true
             });
-            TaskExecutor.AddTask(acc, new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec + 33) });
+            TaskExecutor.AddTask(acc, new TTWarsGetAnimals {ExecuteAt = DateTime.Now.AddSeconds(sec + 33)});
         }
 
         private void checkBox4_CheckedChanged(object sender, EventArgs e) //auto +25% and plus acc activator
@@ -147,67 +149,69 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
 
-            string location = IoHelperForms.PromptUserForBuidTasksLocation();
+            var location = IoHelperForms.PromptUserForBuidTasksLocation();
 
             if (location == null) return;
 
 
-            foreach (var vill in acc.Villages)
-            {
-                IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
-
-            }
+            foreach (var vill in acc.Villages) IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
         }
 
         private void button18_Click(object sender, EventArgs e) //clear all villages build tasks
         {
             var acc = GetSelectedAcc();
-            foreach (var vill in acc.Villages)
-            {
-                vill.Build.Tasks.Clear();
-            }
+            foreach (var vill in acc.Villages) vill.Build.Tasks.Clear();
         }
 
         /// <summary>
-        /// Automatically expand storage. For TTwars UNL/VIP servers
+        ///     Automatically expand storage. For TTwars UNL/VIP servers
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button2_Click(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
-            var expandTimes = (int)numericUpDown4.Value;
-            var seconds = (int)numericUpDown5.Value;
+            var expandTimes = (int) numericUpDown4.Value;
+            var seconds = (int) numericUpDown5.Value;
             numericUpDown4.Value = 0;
             numericUpDown5.Value = 0;
             if (expandTimes != 0)
-            {
-                TaskExecutor.AddTaskIfNotExists(acc, new TTWarsExpandStorage() { ExecuteAt = DateTime.Now, Times = expandTimes });
-            }
+                TaskExecutor.AddTaskIfNotExists(acc,
+                    new TTWarsExpandStorage {ExecuteAt = DateTime.Now, Times = expandTimes});
             else if (seconds != 0)
-            {
-                TaskExecutor.AddTaskIfNotExists(acc, new TTWarsExpandStorage() { ExecuteAt = DateTime.Now, Seconds = seconds });
-            }
+                TaskExecutor.AddTaskIfNotExists(acc,
+                    new TTWarsExpandStorage {ExecuteAt = DateTime.Now, Seconds = seconds});
         }
 
         private void button3_Click(object sender, EventArgs e) //get only resources on UNL TTwars servers
         {
             var acc = GetSelectedAcc();
-            int sec = 1;
-            TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec) });
-            TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
-            TaskExecutor.AddTask(acc, new TrainTroops() { ExecuteAt = DateTime.Now.AddSeconds(sec + 11), Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
+            var sec = 1;
+            TaskExecutor.AddTask(acc, new TTWarsGetRes {ExecuteAt = DateTime.Now.AddSeconds(sec)});
+            TaskExecutor.AddTask(acc,
+                new TrainExchangeRes
+                {
+                    ExecuteAt = DateTime.Now.AddSeconds(sec + 5),
+                    troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero
+                });
+            TaskExecutor.AddTask(acc,
+                new TrainTroops
+                {
+                    ExecuteAt = DateTime.Now.AddSeconds(sec + 11),
+                    Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero
+                });
         }
 
         private void fillInAdvanceUpDown_ValueChanged(object sender, EventArgs e)
         {
-            GetSelectedAcc().Settings.FillInAdvance = (int)fillInAdvanceUpDown.Value;
+            GetSelectedAcc().Settings.FillInAdvance = (int) fillInAdvanceUpDown.Value;
         }
 
         private void FillForUpDown_ValueChanged(object sender, EventArgs e)
         {
-            GetSelectedAcc().Settings.FillFor = (int)FillForUpDown.Value;
+            GetSelectedAcc().Settings.FillFor = (int) FillForUpDown.Value;
         }
+
         private void autoReadIGMs_CheckedChanged(object sender, EventArgs e)
         {
             GetSelectedAcc().Settings.AutoReadIgms = autoReadIGMs.Checked;
@@ -231,42 +235,30 @@ namespace TravBotSharp.Views
 
         private void workMin_ValueChanged(object sender, EventArgs e)
         {
-            var val = (int)workMin.Value;
-            if (val > (int)workMax.Value)
-            {
-                workMin.Value = workMax.Value;
-            }
-            GetSelectedAcc().Settings.Time.MinWork = (int)workMin.Value;
+            var val = (int) workMin.Value;
+            if (val > (int) workMax.Value) workMin.Value = workMax.Value;
+            GetSelectedAcc().Settings.Time.MinWork = (int) workMin.Value;
         }
 
         private void workMax_ValueChanged(object sender, EventArgs e)
         {
-            var val = (int)workMax.Value;
-            if (val < (int)workMin.Value)
-            {
-                workMax.Value = workMin.Value;
-            }
-            GetSelectedAcc().Settings.Time.MaxWork = (int)workMax.Value;
+            var val = (int) workMax.Value;
+            if (val < (int) workMin.Value) workMax.Value = workMin.Value;
+            GetSelectedAcc().Settings.Time.MaxWork = (int) workMax.Value;
         }
 
         private void sleepMin_ValueChanged(object sender, EventArgs e)
         {
-            var val = (int)sleepMin.Value;
-            if (val > (int)sleepMax.Value)
-            {
-                sleepMin.Value = sleepMax.Value;
-            }
-            GetSelectedAcc().Settings.Time.MinSleep = (int)sleepMin.Value;
+            var val = (int) sleepMin.Value;
+            if (val > (int) sleepMax.Value) sleepMin.Value = sleepMax.Value;
+            GetSelectedAcc().Settings.Time.MinSleep = (int) sleepMin.Value;
         }
 
         private void sleepMax_ValueChanged(object sender, EventArgs e)
         {
-            var val = (int)sleepMax.Value;
-            if (val < (int)sleepMin.Value)
-            {
-                sleepMax.Value = sleepMin.Value;
-            }
-            GetSelectedAcc().Settings.Time.MaxSleep = (int)sleepMax.Value;
+            var val = (int) sleepMax.Value;
+            if (val < (int) sleepMin.Value) sleepMax.Value = sleepMin.Value;
+            GetSelectedAcc().Settings.Time.MaxSleep = (int) sleepMax.Value;
         }
 
         private void reopenChrome_CheckedChanged(object sender, EventArgs e)
@@ -284,6 +276,7 @@ namespace TravBotSharp.Views
             GetSelectedAcc().TaskTimer?.Start();
             UpdateBotRunning();
         }
+
         public void UpdateBotRunning(string running = null)
         {
             if (string.IsNullOrEmpty(running)) running = GetSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
@@ -297,7 +290,7 @@ namespace TravBotSharp.Views
 
         private void watchAdsUpDown_ValueChanged(object sender, EventArgs e)
         {
-            GetSelectedAcc().Settings.WatchAdAbove = (int)watchAdsUpDown.Value;
+            GetSelectedAcc().Settings.WatchAdAbove = (int) watchAdsUpDown.Value;
         }
 
         private void extendProtection_CheckedChanged(object sender, EventArgs e)
@@ -305,12 +298,19 @@ namespace TravBotSharp.Views
             GetSelectedAcc().Settings.ExtendProtection = extendProtection.Checked;
         }
 
-        private void button8_Click(object sender, EventArgs e) => MoveBonusPrio(false); // Move bonus prio down
-        private void button7_Click(object sender, EventArgs e) => MoveBonusPrio(true); // Move bonus prio up
+        private void button8_Click(object sender, EventArgs e)
+        {
+            MoveBonusPrio(false); // Move bonus prio down
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            MoveBonusPrio(true); // Move bonus prio up
+        }
 
         private void MoveBonusPrio(bool up)
         {
-            if ((bonusSelected == 0 && up) || (bonusSelected == 3 && !up)) return;
+            if (bonusSelected == 0 && up || bonusSelected == 3 && !up) return;
 
             var acc = GetSelectedAcc();
             var curVal = acc.Settings.BonusPriority[bonusSelected];
@@ -320,11 +320,12 @@ namespace TravBotSharp.Views
             bonusSelected += nextIndex;
             UpdaterBonusPrio(acc);
         }
+
         private void UpdaterBonusPrio(Account acc)
         {
-            if (acc.Settings.BonusPriority == null) acc.Settings.BonusPriority = new byte[4] { 0, 1, 2, 3 };
+            if (acc.Settings.BonusPriority == null) acc.Settings.BonusPriority = new byte[4] {0, 1, 2, 3};
             priorityList.Items.Clear();
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
                 var item = new ListViewItem();
                 item.Text = allyBonus[acc.Settings.BonusPriority[i]];
@@ -342,28 +343,37 @@ namespace TravBotSharp.Views
 
         private void donateAbove_ValueChanged(object sender, EventArgs e)
         {
-            GetSelectedAcc().Settings.DonateAbove = (int)donateAbove.Value;
+            GetSelectedAcc().Settings.DonateAbove = (int) donateAbove.Value;
         }
 
         private void donateExcessOf_ValueChanged(object sender, EventArgs e)
         {
-            GetSelectedAcc().Settings.DonateExcessOf = (int)donateExcessOf.Value;
+            GetSelectedAcc().Settings.DonateExcessOf = (int) donateExcessOf.Value;
         }
 
         private void button9_Click(object sender, EventArgs e) // Change account access
         {
-            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new ChangeAccess() {
+            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new ChangeAccess
+            {
                 ExecuteAt = DateTime.Now,
                 WaitSecMin = 0,
                 WaitSecMax = 1
             });
         }
 
-        private void button11_Click(object sender, EventArgs e) => MoveResPrio(true);
-        private void button10_Click(object sender, EventArgs e) => MoveResPrio(false);
+        private void button11_Click(object sender, EventArgs e)
+        {
+            MoveResPrio(true);
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            MoveResPrio(false);
+        }
+
         private void MoveResPrio(bool up)
         {
-            if ((resPrioSel == 0 && up) || (resPrioSel == 2 && !up)) return;
+            if (resPrioSel == 0 && up || resPrioSel == 2 && !up) return;
 
             var acc = GetSelectedAcc();
             var curVal = acc.Settings.ResSpendingPriority[resPrioSel];
@@ -383,14 +393,16 @@ namespace TravBotSharp.Views
 
         private void UpdaterResPrio(Account acc)
         {
-            if (acc.Settings.ResSpendingPriority == null) acc.Settings.ResSpendingPriority = new ResSpendTypeEnum[3] {
-                ResSpendTypeEnum.Celebrations,
-                ResSpendTypeEnum.Building,
-                ResSpendTypeEnum.Troops
-            };
+            if (acc.Settings.ResSpendingPriority == null)
+                acc.Settings.ResSpendingPriority = new ResSpendTypeEnum[3]
+                {
+                    ResSpendTypeEnum.Celebrations,
+                    ResSpendTypeEnum.Building,
+                    ResSpendTypeEnum.Troops
+                };
 
             resPrioView.Items.Clear();
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 var item = new ListViewItem();
                 item.Text = acc.Settings.ResSpendingPriority[i].ToString();

@@ -12,8 +12,7 @@ namespace TravBotSharp.Files.Models.AccModels
     public class TaskTimer : IDisposable
     {
         private readonly Account acc;
-        private Timer Timer { get; set; }
-        public bool? IsBotRunning() => Timer.Enabled;
+
         public TaskTimer(Account account)
         {
             acc = account;
@@ -21,19 +20,36 @@ namespace TravBotSharp.Files.Models.AccModels
             Timer.Elapsed += TimerElapsed;
             Start();
         }
+
+        private Timer Timer { get; }
+
+        public void Dispose()
+        {
+            Timer.Dispose();
+        }
+
+        public bool? IsBotRunning()
+        {
+            return Timer.Enabled;
+        }
+
         public void Start()
         {
             Timer.Start();
             Timer.Enabled = true;
             Timer.AutoReset = true;
         }
+
         public void Stop()
         {
             Timer.Stop();
             Timer.Enabled = false;
         }
 
-        private void TimerElapsed(Object source, ElapsedEventArgs e) => NewTick();
+        private void TimerElapsed(object source, ElapsedEventArgs e)
+        {
+            NewTick();
+        }
 
         private async void NewTick()
         {
@@ -51,7 +67,7 @@ namespace TravBotSharp.Files.Models.AccModels
                     return;
                 }
 
-                BotTask firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
+                var firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
                 if (firstTask == null) firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.Medium);
                 if (firstTask == null) firstTask = tasks.FirstOrDefault();
 
@@ -62,13 +78,12 @@ namespace TravBotSharp.Files.Models.AccModels
                 {
                     var active = acc.Villages.FirstOrDefault(x => x.Active);
                     if (active != null && active != firstTask.Vill)
-                    {
                         await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
-                    }
                 }
+
                 await TaskExecutor.Execute(acc, firstTask);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 acc?.Wb?.Log($"Error in TaskTimer! {e.Message}\n{e.StackTrace}");
             }
@@ -82,14 +97,14 @@ namespace TravBotSharp.Files.Models.AccModels
             if (updateVill != null)
             {
                 // Update the village
-                task = new UpdateDorf1 { Vill = updateVill };
+                task = new UpdateDorf1 {Vill = updateVill};
             }
             else if (acc.Settings.AutoCloseDriver &&
-                TimeSpan.FromMinutes(5) < TimeHelper.NextPrioTask(acc, TaskPriority.Medium))
+                     TimeSpan.FromMinutes(5) < TimeHelper.NextPrioTask(acc, TaskPriority.Medium))
             {
                 // Auto close chrome and reopen when there is a high/normal prio BotTask
                 task = new ReopenDriver();
-                ((ReopenDriver)task).LowestPrio = TaskPriority.Medium;
+                ((ReopenDriver) task).LowestPrio = TaskPriority.Medium;
             }
             else if (acc.Settings.AutoRandomTasks)
             {
@@ -102,12 +117,6 @@ namespace TravBotSharp.Files.Models.AccModels
                 task.Priority = TaskPriority.Low;
                 TaskExecutor.AddTask(acc, task);
             }
-
-        }
-
-        public void Dispose()
-        {
-            this.Timer.Dispose();
         }
     }
 }

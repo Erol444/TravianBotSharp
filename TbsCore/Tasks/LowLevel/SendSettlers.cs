@@ -3,7 +3,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
@@ -19,7 +18,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
             {
                 // TODO: this shouldn't be here?
-                this.Vill.Expansion.ExpansionAvailable = true;
+                Vill.Expansion.ExpansionAvailable = true;
                 return TaskRes.Executed;
             }
 
@@ -27,23 +26,23 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 if (acc.NewVillages.AutoFindVillages) // Find new village to settle
                 {
-                    TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
+                    TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle
                     {
                         Vill = AccountHelper.GetMainVillage(acc),
                         ExecuteAt = DateTime.MinValue.AddHours(10)
                     });
-                    this.NextExecute = DateTime.MinValue.AddHours(11);
+                    NextExecute = DateTime.MinValue.AddHours(11);
                 }
 
                 return TaskRes.Executed;
             }
 
             var newVillage = acc.NewVillages.Locations.FirstOrDefault();
-            
-            //acc.NewVillage.NewVillages.Remove(coords); //remove it after settling and changing the vill name??
-            string kid = MapHelper.KidFromCoordinates(newVillage.Coordinates, acc).ToString();
 
-            string url = $"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2";
+            //acc.NewVillage.NewVillages.Remove(coords); //remove it after settling and changing the vill name??
+            var kid = MapHelper.KidFromCoordinates(newVillage.Coordinates, acc).ToString();
+
+            var url = $"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2";
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.T4_4:
@@ -54,14 +53,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     // https://tx3.travian.com/build.php?id=39&tt=2&mapid=123&s=1&gid=16
                     url += $"&mapid={kid}&s=1&gid=16";
                     break;
-            } 
+            }
+
             await acc.Wb.Navigate(url);
 
             //TODO: check if enough resources!!
-            if(!await DriverHelper.ClickById(acc, "btn_ok")) return TaskRes.Retry;
+            if (!await DriverHelper.ClickById(acc, "btn_ok")) return TaskRes.Retry;
 
             newVillage.SettlersSent = true;
-            this.Vill.Expansion.ExpansionAvailable = false;
+            Vill.Expansion.ExpansionAvailable = false;
 
             return TaskRes.Executed;
         }

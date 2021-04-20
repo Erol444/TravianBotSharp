@@ -1,7 +1,7 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
@@ -28,7 +28,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.WriteById(acc, "demolish", id);
             await DriverHelper.ClickById(acc, "btn_demolish");
 
-            this.NextExecute = NextDemolishTime(acc);
+            NextExecute = NextDemolishTime(acc);
 
             return TaskRes.Executed;
         }
@@ -63,11 +63,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 vill.Build.DemolishTasks.Remove(task);
                 return BuildingToDemolish(vill, htmlDoc);
             }
+
             return task.BuildingId;
         }
 
         /// <summary>
-        /// Checks demolish time.
+        ///     Checks demolish time.
         /// </summary>
         /// <param name="htmlDoc">The html of the page</param>
         /// <param name="acc">account</param>
@@ -75,9 +76,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var table = acc.Wb.Html.GetElementbyId("demolish");
             if (table == null) //No building is being demolished
-            {
                 return DateTime.Now;
-            }
             //Re-execute the demolish building task
             return DateTime.Now.Add(TimeParser.ParseTimer(table)).AddSeconds(2);
         }

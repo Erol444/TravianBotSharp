@@ -9,6 +9,7 @@ namespace TbsCore.Models.AccModels
         {
             FL = new List<FarmList>();
         }
+
         public int MinInterval { get; set; }
         public int MaxInterval { get; set; }
         public bool Enabled { get; set; }

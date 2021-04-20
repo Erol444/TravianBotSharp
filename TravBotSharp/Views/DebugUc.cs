@@ -14,20 +14,6 @@ namespace TravBotSharp.Views
             InitializeComponent();
         }
 
-        // For thread safety
-        public bool ControlInvokeRequired(Control c, Action a)
-        {
-            if (c.InvokeRequired) c.Invoke(new MethodInvoker(delegate { a(); }));
-            else return false;
-            return true;
-        }
-        public void NewLogHandler(object sender, EventArgs e)
-        {
-            var newLog = ((LogEventArgs)e).Log;
-            if (ControlInvokeRequired(this.main, () => NewLogHandler(sender, e))) return;
-            logTextBox.Text = newLog + "\n" + logTextBox.Text;
-        }
-
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -49,12 +35,26 @@ namespace TravBotSharp.Views
 
 
             //new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
-            if(acc.Wb != null)
-            {
-                foreach (var log in acc.Wb.Logs) logTextBox.AppendText(log + "\n");
-            }
+            if (acc.Wb != null)
+                foreach (var log in acc.Wb.Logs)
+                    logTextBox.AppendText(log + "\n");
 
-            this.Focus();
+            Focus();
+        }
+
+        // For thread safety
+        public bool ControlInvokeRequired(Control c, Action a)
+        {
+            if (c.InvokeRequired) c.Invoke(new MethodInvoker(delegate { a(); }));
+            else return false;
+            return true;
+        }
+
+        public void NewLogHandler(object sender, EventArgs e)
+        {
+            var newLog = ((LogEventArgs) e).Log;
+            if (ControlInvokeRequired(main, () => NewLogHandler(sender, e))) return;
+            logTextBox.Text = newLog + "\n" + logTextBox.Text;
         }
 
         private void DebugUc_Enter(object sender, EventArgs e)
@@ -62,11 +62,16 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             if (WbAvailable(acc)) acc.Wb.LogHandler += NewLogHandler;
         }
+
         private void DebugUc_Leave(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
             if (WbAvailable(acc)) acc.Wb.LogHandler -= NewLogHandler;
         }
-        private bool WbAvailable(Account acc) => acc?.Wb != null;
+
+        private bool WbAvailable(Account acc)
+        {
+            return acc?.Wb != null;
+        }
     }
 }

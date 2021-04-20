@@ -4,7 +4,7 @@ using TbsCore.Models.AccModels;
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     /// <summary>
-    /// Extend beginners protection
+    ///     Extend beginners protection
     /// </summary>
     public class ExtendProtection : BotTask
     {
@@ -12,7 +12,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/options/game?extendBeginnersProtection");
             return TaskRes.Executed;
-
         }
     }
 }

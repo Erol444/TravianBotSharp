@@ -23,6 +23,9 @@ namespace TbsCore.Models.MapModels
             return other.x == x && other.y == y;
         }
 
-        public override string ToString() => $"({x}|{y})";
+        public override string ToString()
+        {
+            return $"({x}|{y})";
+        }
     }
 }

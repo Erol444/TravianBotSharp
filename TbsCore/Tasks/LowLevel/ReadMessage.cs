@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 
-
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class ReadMessage : BotTask
@@ -15,14 +14,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             while (true)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/messages.php");
-                var msg = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("messageStatusUnread"));
+                var msg = acc.Wb.Html.DocumentNode.Descendants("img")
+                    .FirstOrDefault(x => x.HasClass("messageStatusUnread"));
                 if (msg != null)
                 {
                     var url = msg.ParentNode.GetAttributeValue("href", "").Replace("amp;", "");
                     await acc.Wb.Navigate(acc.AccInfo.ServerUrl + "/" + url);
                     await Task.Delay(AccountHelper.Delay() * 5);
                 }
-                else return TaskRes.Executed;
+                else
+                {
+                    return TaskRes.Executed;
+                }
             }
         }
     }

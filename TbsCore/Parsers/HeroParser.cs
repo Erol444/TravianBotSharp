@@ -1,7 +1,8 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using HtmlAgilityPack;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
 using TravBotSharp.Files.Helpers;
@@ -10,20 +11,35 @@ namespace TravBotSharp.Files.Parsers
 {
     public static class HeroParser
     {
-        private static readonly string[] domId = new string[] {
+        private static readonly string[] domId =
+        {
             "attributepower",
             "attributeoffBonus",
             "attributedefBonus",
             "attributeproductionPoints"
         };
 
+        private static readonly Dictionary<Classificator.HeroItemCategory, string> HeroTypeIds =
+            new Dictionary<Classificator.HeroItemCategory, string>
+            {
+                {Classificator.HeroItemCategory.Helmet, "helmet"},
+                {Classificator.HeroItemCategory.Left, "leftHand"},
+                {Classificator.HeroItemCategory.Weapon, "rightHand"},
+                {Classificator.HeroItemCategory.Armor, "body"},
+                {Classificator.HeroItemCategory.Horse, "horse"},
+                {Classificator.HeroItemCategory.Boots, "shoes"},
+                {Classificator.HeroItemCategory.Others, "bag"}
+            };
+
         public static bool AttributesHidden(HtmlDocument htmlDoc)
         {
-            var attributes = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroPropertiesContent"));
+            var attributes = htmlDoc.DocumentNode.Descendants("div")
+                .FirstOrDefault(x => x.HasClass("heroPropertiesContent"));
             if (attributes?.GetClasses()?.FirstOrDefault(x => x == "hide") == null) return false;
-            else return true;
+            return true;
         }
-        public static HeroInfo GetHeroInfo(HtmlAgilityPack.HtmlDocument htmlDoc)
+
+        public static HeroInfo GetHeroInfo(HtmlDocument htmlDoc)
         {
             var content = htmlDoc.GetElementbyId("content");
             var health = content.Descendants("tr")
@@ -33,22 +49,20 @@ namespace TravBotSharp.Files.Parsers
                 .InnerText;
 
             var experience = content.Descendants("tr")
-                 .FirstOrDefault(x => x.HasClass("experience"))
-                 .Descendants("span")
-                 .FirstOrDefault(x => x.HasClass("value"))
-                 .InnerText;
+                .FirstOrDefault(x => x.HasClass("experience"))
+                .Descendants("span")
+                .FirstOrDefault(x => x.HasClass("value"))
+                .InnerText;
 
-            string[] heroPoints = new string[4];
-            for (int i = 0; i < 4; i++)
-            {
+            var heroPoints = new string[4];
+            for (var i = 0; i < 4; i++)
                 heroPoints[i] = htmlDoc.GetElementbyId(domId[i])
                     .ChildNodes
                     .FirstOrDefault(x => x.HasClass("points"))
                     .InnerText
                     .Replace("%", "");
-            }
 
-            var availablePoints = System.Net.WebUtility.HtmlDecode(htmlDoc.GetElementbyId("availablePoints").InnerText);
+            var availablePoints = WebUtility.HtmlDecode(htmlDoc.GetElementbyId("availablePoints").InnerText);
 
             var heroLevel = htmlDoc.DocumentNode.Descendants()
                 .FirstOrDefault(x => x.HasClass("titleInHeader"))
@@ -68,31 +82,30 @@ namespace TravBotSharp.Files.Parsers
             );
             byte resSelectedByte = 0;
             if (resRadioChecked != null)
-            {
-                resSelectedByte = (byte)Parser.RemoveNonNumeric(resRadioChecked.GetAttributeValue("value", "0"));
-            }
+                resSelectedByte = (byte) Parser.RemoveNonNumeric(resRadioChecked.GetAttributeValue("value", "0"));
 
             var heroInfo = new HeroInfo();
-            heroInfo.Health = (int)Parser.ParseNum(health.Replace("%", ""));
-            heroInfo.Experience = (int)Parser.RemoveNonNumeric(experience);
-            heroInfo.AvaliblePoints = (int)Parser.ParseNum(availablePoints.Split('/').LastOrDefault());
+            heroInfo.Health = (int) Parser.ParseNum(health.Replace("%", ""));
+            heroInfo.Experience = (int) Parser.RemoveNonNumeric(experience);
+            heroInfo.AvaliblePoints = (int) Parser.ParseNum(availablePoints.Split('/').LastOrDefault());
 
             if (heroInfo.AvaliblePoints == 0)
             {
-                heroInfo.FightingStrengthPoints = (int)Parser.ParseNum(heroPoints[0]);
-                heroInfo.OffBonusPoints = (int)Parser.ParseNum(heroPoints[1]);
-                heroInfo.DeffBonusPoints = (int)Parser.ParseNum(heroPoints[2]);
-                heroInfo.ResourcesPoints = (int)Parser.ParseNum(heroPoints[3]);
+                heroInfo.FightingStrengthPoints = (int) Parser.ParseNum(heroPoints[0]);
+                heroInfo.OffBonusPoints = (int) Parser.ParseNum(heroPoints[1]);
+                heroInfo.DeffBonusPoints = (int) Parser.ParseNum(heroPoints[2]);
+                heroInfo.ResourcesPoints = (int) Parser.ParseNum(heroPoints[3]);
             }
 
-            heroInfo.Level = (int)Parser.RemoveNonNumeric(heroLevel);
+            heroInfo.Level = (int) Parser.RemoveNonNumeric(heroLevel);
             heroInfo.SelectedResource = resSelectedByte;
-            heroInfo.HeroProduction = (int)Parser.RemoveNonNumeric(production);
+            heroInfo.HeroProduction = (int) Parser.RemoveNonNumeric(production);
 
             return heroInfo;
         }
+
         /// <summary>
-        /// Parses when the hero arrival will be (parsed from /hero.php)
+        ///     Parses when the hero arrival will be (parsed from /hero.php)
         /// </summary>
         /// <param name="html">Html</param>
         /// <returns>TimeSpan after how much time hero arrival will happen</returns>
@@ -103,24 +116,27 @@ namespace TravBotSharp.Files.Parsers
 
             return TimeParser.ParseTimer(statusMsg);
         }
-        public static int GetAdventureNum(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+
+        public static int GetAdventureNum(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    var adv44 = htmlDoc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("adventureWhite"));
+                    var adv44 = htmlDoc.DocumentNode.Descendants("button")
+                        .FirstOrDefault(x => x.HasClass("adventureWhite"));
                     var bubble = adv44.Descendants().FirstOrDefault(x => x.HasClass("speechBubbleContent"));
                     if (bubble == null) return 0; //No bubble, no adventures
-                    return (int)Parser.RemoveNonNumeric(bubble.InnerText);
+                    return (int) Parser.RemoveNonNumeric(bubble.InnerText);
                 case Classificator.ServerVersionEnum.T4_5:
                     var adv45 = htmlDoc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("adventure"));
                     var num = adv45.ChildNodes.FirstOrDefault(x => x.HasClass("content") && x.Name == "div");
                     if (num == null) return 0;
-                    return (int)Parser.RemoveNonNumeric(num.InnerText);
+                    return (int) Parser.RemoveNonNumeric(num.InnerText);
                 default: return 0;
             }
         }
-        public static bool LeveledUp(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+
+        public static bool LeveledUp(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
             {
@@ -133,14 +149,18 @@ namespace TravBotSharp.Files.Parsers
                         .Descendants("i")
                         .Any(x => x.HasClass("levelUp") && x.HasClass("show"));
             }
+
             return false;
         }
-        public static Hero.StatusEnum HeroStatus(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+
+        public static Hero.StatusEnum HeroStatus(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    var HeroStatus = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage")).ChildNodes.FirstOrDefault(x => x.Name == "img").GetAttributeValue("class", "");
+                    var HeroStatus = htmlDoc.DocumentNode.Descendants("div")
+                        .FirstOrDefault(x => x.HasClass("heroStatusMessage")).ChildNodes
+                        .FirstOrDefault(x => x.Name == "img").GetAttributeValue("class", "");
                     switch (HeroStatus)
                     {
                         case "heroStatus101Regenerate":
@@ -154,7 +174,8 @@ namespace TravBotSharp.Files.Parsers
                         default: return Hero.StatusEnum.Unknown;
                     }
                 case Classificator.ServerVersionEnum.T4_5:
-                    var heroStatus5 = htmlDoc.DocumentNode.Descendants("div").First(x => x.HasClass("heroStatus")).Descendants().FirstOrDefault(x => x.Name == "svg");
+                    var heroStatus5 = htmlDoc.DocumentNode.Descendants("div").First(x => x.HasClass("heroStatus"))
+                        .Descendants().FirstOrDefault(x => x.Name == "svg");
                     if (heroStatus5 == null) return Hero.StatusEnum.Unknown;
                     var str = heroStatus5.GetClasses().FirstOrDefault();
                     if (str == null) return Hero.StatusEnum.Unknown;
@@ -171,20 +192,24 @@ namespace TravBotSharp.Files.Parsers
                         case "heroReinforcing":
                             return Hero.StatusEnum.Reinforcing;
                         default: return Hero.StatusEnum.Unknown;
-                            //TODO ADD FOR DEAD, REGENERATING
+                        //TODO ADD FOR DEAD, REGENERATING
                     }
-
             }
+
             return Hero.StatusEnum.Unknown;
         }
-        public static int GetHeroHealth(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+
+        public static int GetHeroHealth(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    var health = htmlDoc.GetElementbyId("sidebarBoxHero").Descendants("div").FirstOrDefault(x => x.HasClass("bar")).Attributes.FirstOrDefault(x => x.Name == "style").Value.Split(':')[1].Replace("%", "");
+                    var health =
+                        htmlDoc.GetElementbyId("sidebarBoxHero").Descendants("div")
+                            .FirstOrDefault(x => x.HasClass("bar")).Attributes.FirstOrDefault(x => x.Name == "style")
+                            .Value.Split(':')[1].Replace("%", "");
                     health = health.Split('.')[0];
-                    return (int)Parser.RemoveNonNumeric(health);
+                    return (int) Parser.RemoveNonNumeric(health);
                 case Classificator.ServerVersionEnum.T4_5:
                     var path = htmlDoc.GetElementbyId("healthMask").Descendants("path").FirstOrDefault();
                     if (path == null) return 0;
@@ -193,13 +218,14 @@ namespace TravBotSharp.Files.Parsers
                     var yy = double.Parse(commands[commands.Length - 1]);
 
                     var rad = Math.Atan2(yy - 55, xx - 55);
-                    return (int)Math.Round(-56.173 * rad + 96.077);
+                    return (int) Math.Round(-56.173 * rad + 96.077);
             }
+
             return 0;
         }
 
         /// <summary>
-        /// Parses the her home village href
+        ///     Parses the her home village href
         /// </summary>
         /// <param name="htmlDoc">Html</param>
         /// <returns>Hero's home village href id</returns>
@@ -215,7 +241,7 @@ namespace TravBotSharp.Files.Parsers
         public static int GetAvailablePoints(HtmlDocument htmlDoc)
         {
             var span = htmlDoc.GetElementbyId("availablePoints");
-            var points = (int)Parser.RemoveNonNumeric(span.InnerText);
+            var points = (int) Parser.RemoveNonNumeric(span.InnerText);
             return points;
         }
 
@@ -226,7 +252,7 @@ namespace TravBotSharp.Files.Parsers
 
         public static List<HeroItem> GetHeroItems(HtmlDocument html)
         {
-            List<HeroItem> heroItems = new List<HeroItem>();
+            var heroItems = new List<HeroItem>();
             var inventory = html.GetElementbyId("itemsToSale");
 
             foreach (var itemSlot in inventory.ChildNodes)
@@ -234,7 +260,7 @@ namespace TravBotSharp.Files.Parsers
                 var item = itemSlot.ChildNodes.FirstOrDefault(x => x.Id.StartsWith("item_"));
                 if (item == null) continue;
 
-                (var heroItemEnum, int amount) = ParseItemNode(item);
+                var (heroItemEnum, amount) = ParseItemNode(item);
                 if (heroItemEnum == null) continue;
 
                 var heroItem = new HeroItem
@@ -245,25 +271,17 @@ namespace TravBotSharp.Files.Parsers
 
                 heroItems.Add(heroItem);
             }
+
             return heroItems;
         }
 
-        private static readonly Dictionary<Classificator.HeroItemCategory, string> HeroTypeIds = new Dictionary<Classificator.HeroItemCategory, string>()
-        {
-            { Classificator.HeroItemCategory.Helmet, "helmet" },
-            { Classificator.HeroItemCategory.Left, "leftHand" },
-            { Classificator.HeroItemCategory.Weapon, "rightHand" },
-            { Classificator.HeroItemCategory.Armor, "body" },
-            { Classificator.HeroItemCategory.Horse, "horse" },
-            { Classificator.HeroItemCategory.Boots, "shoes" },
-            { Classificator.HeroItemCategory.Others, "bag" }
-        };
         /// <summary>
-        /// Parses what items is hero currently equipt with
+        ///     Parses what items is hero currently equipt with
         /// </summary>
         /// <param name="html">Html</param>
         /// <returns>Equipt items</returns>
-        public static Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum> GetHeroEquipment(HtmlDocument html)
+        public static Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum> GetHeroEquipment(
+            HtmlDocument html)
         {
             var ret = new Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum>();
 
@@ -272,12 +290,13 @@ namespace TravBotSharp.Files.Parsers
                 var item = html.GetElementbyId(pair.Value).ChildNodes.FirstOrDefault(x => x.HasClass("item"));
                 if (item == null) continue;
 
-                (Classificator.HeroItemEnum? heroItemEnum, int amount) = ParseItemNode(item);
+                var (heroItemEnum, amount) = ParseItemNode(item);
                 if (heroItemEnum == null) continue;
 
                 var itemEnum = heroItemEnum ?? Classificator.HeroItemEnum.Others_None_0;
                 ret.Add(pair.Key, itemEnum);
             }
+
             return ret;
         }
 
@@ -286,13 +305,13 @@ namespace TravBotSharp.Files.Parsers
             var itemClass = node.GetClasses().FirstOrDefault(x => x.Contains("_item_"));
             if (itemClass == null) return (null, 0);
 
-            var itemEnum = (Classificator.HeroItemEnum)Parser.RemoveNonNumeric(itemClass.Split('_').LastOrDefault());
+            var itemEnum = (Classificator.HeroItemEnum) Parser.RemoveNonNumeric(itemClass.Split('_').LastOrDefault());
 
             // Get amount
             var amount = node.ChildNodes.FirstOrDefault(x => x.HasClass("amount"));
             if (amount == null) return (itemEnum, 0);
 
-            var amountNum = (int)Parser.RemoveNonNumeric(amount.InnerText);
+            var amountNum = (int) Parser.RemoveNonNumeric(amount.InnerText);
 
             return (itemEnum, amountNum);
         }

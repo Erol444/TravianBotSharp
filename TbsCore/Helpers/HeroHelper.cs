@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;
@@ -15,7 +14,7 @@ namespace TravBotSharp.Files.Helpers
     public static class HeroHelper
     {
         /// <summary>
-        /// Calculates if there is any adventure in the range of the home village.
+        ///     Calculates if there is any adventure in the range of the home village.
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>Whether there are adventures in range</returns>
@@ -30,29 +29,29 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Gets the hero home village
+        ///     Gets the hero home village
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>Hero home village</returns>
-        public static Village GetHeroHomeVillage(Account acc) =>
-            acc.Villages.FirstOrDefault(x => x.Id == acc.Hero.HomeVillageId);
+        public static Village GetHeroHomeVillage(Account acc)
+        {
+            return acc.Villages.FirstOrDefault(x => x.Id == acc.Hero.HomeVillageId);
+        }
 
         /// <summary>
-        /// Auto equip hero if there is better equipment available
+        ///     Auto equip hero if there is better equipment available
         /// </summary>
         /// <param name="acc">Account</param>
         public static void AutoEquipHero(Account acc)
         {
-            foreach (Classificator.HeroItemCategory category
-                in (Classificator.HeroItemCategory[])Enum.GetValues(typeof(Classificator.HeroItemCategory)))
+            foreach (var category
+                in (HeroItemCategory[]) Enum.GetValues(typeof(HeroItemCategory)))
             {
-                if (category == Classificator.HeroItemCategory.Others) continue; // Don't equip into hero bag
-                int currentTier = 0;
+                if (category == HeroItemCategory.Others) continue; // Don't equip into hero bag
+                var currentTier = 0;
                 if (acc.Hero.Equipt.TryGetValue(category, out var item))
-                {
                     // Hero already has an equipt item for this category
                     currentTier = GetHeroItemTier(item);
-                }
 
                 var equipWith = acc.Hero.Items
                     .Where(x => GetHeroItemCategory(x.Item) == category)
@@ -62,58 +61,58 @@ namespace TravBotSharp.Files.Helpers
                 if (equipWith != null &&
                     GetHeroItemTier(equipWith.Item) > currentTier &&
                     acc.Hero.Status == Hero.StatusEnum.Home)
-                {
-                    TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip()
+                    TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip
                     {
                         ExecuteAt = DateTime.Now,
-                        Items = new List<(Classificator.HeroItemEnum, int)>()
+                        Items = new List<(HeroItemEnum, int)>
                         {
                             (equipWith.Item, 0)
                         }
                     });
-                }
             }
         }
 
         /// <summary>
-        /// Will parse HeroItemEnum into category, name and tier
+        ///     Will parse HeroItemEnum into category, name and tier
         /// </summary>
         /// <param name="item">Hero item enum</param>
         /// <returns>Hero item (category, name, tier)</returns>
-        public static (Classificator.HeroItemCategory, string, int) ParseHeroItem(Classificator.HeroItemEnum item)
+        public static (HeroItemCategory, string, int) ParseHeroItem(HeroItemEnum item)
         {
             var attr = item.ToString().Split('_');
 
-            Enum.TryParse(attr[0], out Classificator.HeroItemCategory category);
-            string name = attr[1];
-            int tier = int.Parse(attr[2]);
+            Enum.TryParse(attr[0], out HeroItemCategory category);
+            var name = attr[1];
+            var tier = int.Parse(attr[2]);
 
             return (category, name, tier);
         }
 
         /// <summary>
-        /// Gets the tier of the hero item
+        ///     Gets the tier of the hero item
         /// </summary>
         /// <param name="item">HeroItem</param>
         /// <returns>Tier</returns>
-        public static int GetHeroItemTier(Classificator.HeroItemEnum item)
+        public static int GetHeroItemTier(HeroItemEnum item)
         {
             var (_, _, itemTier) = ParseHeroItem(item);
             return itemTier;
         }
-        public static string GetHeroItemName(Classificator.HeroItemEnum item)
+
+        public static string GetHeroItemName(HeroItemEnum item)
         {
             var (_, name, _) = ParseHeroItem(item);
             return name;
         }
-        public static Classificator.HeroItemCategory GetHeroItemCategory(Classificator.HeroItemEnum item)
+
+        public static HeroItemCategory GetHeroItemCategory(HeroItemEnum item)
         {
             var (category, _, _) = ParseHeroItem(item);
             return category;
         }
 
         /// <summary>
-        /// Will parse all the useful data from the hero page (/hero.php)
+        ///     Will parse all the useful data from the hero page (/hero.php)
         /// </summary>
         /// <param name="acc">Account</param>
         public static void ParseHeroPage(Account acc)
@@ -125,10 +124,7 @@ namespace TravBotSharp.Files.Helpers
 
             UpdateHeroVillage(acc);
 
-            if (acc.Hero.Settings.AutoEquip)
-            {
-                HeroHelper.AutoEquipHero(acc);
-            }
+            if (acc.Hero.Settings.AutoEquip) AutoEquipHero(acc);
         }
 
         public static void UpdateHeroVillage(Account acc)
@@ -138,10 +134,10 @@ namespace TravBotSharp.Files.Helpers
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case ServerVersionEnum.T4_4:
                     acc.Hero.HomeVillageId = hrefId ?? 0;
                     return;
-                case Classificator.ServerVersionEnum.T4_5:
+                case ServerVersionEnum.T4_5:
                     // Convert from coordinates id -> coordinates -> villageId
                     var coordinates = MapHelper.CoordinatesFromKid(hrefId ?? 0, acc);
                     var vill = acc.Villages.FirstOrDefault(x => x.Coordinates.Equals(coordinates));
@@ -156,20 +152,20 @@ namespace TravBotSharp.Files.Helpers
             var heroItems = acc.Hero.Items;
             return new long[]
             {
-                heroItems.FirstOrDefault(x => x.Item == Classificator.HeroItemEnum.Others_Wood_0)?.Count ?? 0,
-                heroItems.FirstOrDefault(x => x.Item == Classificator.HeroItemEnum.Others_Clay_0)?.Count ?? 0,
-                heroItems.FirstOrDefault(x => x.Item == Classificator.HeroItemEnum.Others_Iron_0)?.Count ?? 0,
-                heroItems.FirstOrDefault(x => x.Item == Classificator.HeroItemEnum.Others_Crop_0)?.Count ?? 0
+                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Others_Wood_0)?.Count ?? 0,
+                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Others_Clay_0)?.Count ?? 0,
+                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Others_Iron_0)?.Count ?? 0,
+                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Others_Crop_0)?.Count ?? 0
             };
         }
 
         /// <summary>
-        /// Checks if bot should first switch hero helmets
+        ///     Checks if bot should first switch hero helmets
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="troop">Troop to train</param>
         /// <returns>Whether to switch helmets first</returns>
-        public static bool SwitchHelmet(Account acc, Village trainVill, Classificator.BuildingEnum building, TrainTroops task)
+        public static bool SwitchHelmet(Account acc, Village trainVill, BuildingEnum building, TrainTroops task)
         {
             if (!acc.Hero.Settings.AutoSwitchHelmets) return false;
 
@@ -177,13 +173,13 @@ namespace TravBotSharp.Files.Helpers
             // In TTWars, helmets have acc-wide effect
             // TODO: for T4.5, add auto-move hero feature (for helmet effect purposes)
             if (GetHeroHomeVillage(acc) != trainVill &&
-                acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_4) return false;
+                acc.AccInfo.ServerVersion != ServerVersionEnum.T4_4) return false;
 
-            string type = "";
-            if (building == Classificator.BuildingEnum.Barracks ||
-                building == Classificator.BuildingEnum.GreatBarracks) type = "Infantry";
-            if (building == Classificator.BuildingEnum.Stable ||
-                building == Classificator.BuildingEnum.GreatStable) type = "Cavalry";
+            var type = "";
+            if (building == BuildingEnum.Barracks ||
+                building == BuildingEnum.GreatBarracks) type = "Infantry";
+            if (building == BuildingEnum.Stable ||
+                building == BuildingEnum.GreatStable) type = "Cavalry";
 
             // No helmet helps us for training in workshop
             if (string.IsNullOrEmpty(type)) return false;
@@ -196,17 +192,17 @@ namespace TravBotSharp.Files.Helpers
 
             var (equipCategory, equipName, equipTier) = ParseHeroItem(equipWith.Item);
 
-            if (acc.Hero.Equipt.TryGetValue(Classificator.HeroItemCategory.Helmet, out var equiped))
+            if (acc.Hero.Equipt.TryGetValue(HeroItemCategory.Helmet, out var equiped))
             {
                 var (category, name, tier) = ParseHeroItem(equiped);
                 if (name == type &&
                     equipTier <= tier) return false; // We already have the correct helmet
             }
 
-            TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip()
+            TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip
             {
                 ExecuteAt = acc.Hero.Status == Hero.StatusEnum.Home ? DateTime.Now : acc.Hero.HeroArrival,
-                Items = new List<(Classificator.HeroItemEnum, int)>()
+                Items = new List<(HeroItemEnum, int)>
                 {
                     (equipWith.Item, 0)
                 },

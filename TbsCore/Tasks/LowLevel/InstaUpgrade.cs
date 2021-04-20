@@ -8,7 +8,7 @@ using TravBotSharp.Files.Helpers;
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     /// <summary>
-    /// Instantly upgrade currently building
+    ///     Instantly upgrade currently building
     /// </summary>
     public class InstaUpgrade : BotTask
     {
@@ -20,21 +20,20 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 .Descendants("div")
                 .FirstOrDefault(x => x.HasClass("finishNow"));
             var button = finishClass.Descendants("button").FirstOrDefault();
-            await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, $"document.getElementById('{button.GetAttributeValue("id", "")}').click()");
+            await DriverHelper.ExecuteScript(acc,
+                $"document.getElementById('{button.GetAttributeValue("id", "")}').click()");
 
             var dialog = acc.Wb.Html.GetElementbyId("finishNowDialog");
             var useButton = dialog.Descendants("button").FirstOrDefault();
-            await DriverHelper.ExecuteScript(acc, $"document.getElementById('{useButton.GetAttributeValue("id", "")}').click()");
+            await DriverHelper.ExecuteScript(acc,
+                $"document.getElementById('{useButton.GetAttributeValue("id", "")}').click()");
 
             // Execute next build task right away
             var task = acc.Tasks.FirstOrDefault(x =>
                 x.GetType() == typeof(UpgradeBuilding) &&
-                x.Vill == this.Vill
+                x.Vill == Vill
             );
-            if (task != null)
-            {
-                task.ExecuteAt = DateTime.Now;
-            }
+            if (task != null) task.ExecuteAt = DateTime.Now;
 
             await TaskExecutor.PageLoaded(acc);
 

@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
+using Newtonsoft.Json;
 using TbsCore.Models.AccModels;
 
 namespace TbsCore.Models.Database
@@ -11,7 +11,7 @@ namespace TbsCore.Models.Database
 
         public Account Deserialize()
         {
-            return JsonConvert.DeserializeObject<Account>(this.JsonData);
+            return JsonConvert.DeserializeObject<Account>(JsonData);
         }
     }
 }

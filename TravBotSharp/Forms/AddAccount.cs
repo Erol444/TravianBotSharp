@@ -9,30 +9,32 @@ namespace TravBotSharp
 {
     public partial class AddAccount : Form
     {
-        public Account Acc { get; set; }
         public AddAccount(Account acc = null)
         {
             InitializeComponent();
             if (acc == null)
             {
-                this.Acc = new Account();
-                this.Acc.Init();
+                Acc = new Account();
+                Acc.Init();
             }
-            else this.Acc = acc;
+            else
+            {
+                Acc = acc;
+            }
         }
+
+        public Account Acc { get; set; }
+
         public void UpdateWindow(bool showStatus = false)
         {
             textBox4.Text = Acc.AccInfo.ServerUrl;
             textBox1.Text = Acc.AccInfo.Nickname;
 
             accessListView.Items.Clear();
-            for (int i = 0; i < Acc.Access.AllAccess.Count; i++)
+            for (var i = 0; i < Acc.Access.AllAccess.Count; i++)
             {
                 var access = Acc.Access.AllAccess[i];
-                if (i == 0)
-                {
-                    UpdateAccessView(access);
-                }
+                if (i == 0) UpdateAccessView(access);
 
                 var item = new ListViewItem();
                 item.SubItems[0].Text = access.Password;
@@ -43,6 +45,7 @@ namespace TravBotSharp
 
                 accessListView.Items.Add(item);
             }
+
             AuthCheckbox();
 
             // Save button enabled
@@ -62,7 +65,7 @@ namespace TravBotSharp
         }
 
         /// <summary>
-        /// Gets the current selected access by the user
+        ///     Gets the current selected access by the user
         /// </summary>
         /// <returns>Access object</returns>
         private Access GetCurrentAccess()
@@ -70,14 +73,10 @@ namespace TravBotSharp
             var sel = 0;
             var indicies = accessListView.SelectedIndices;
             if (indicies.Count > 0)
-            {
-                if (indicies[0] < this.Acc.Access.AllAccess.Count)
-                {
+                if (indicies[0] < Acc.Access.AllAccess.Count)
                     sel = indicies[0];
-                }
-            }
 
-            return this.Acc.Access.AllAccess[sel];
+            return Acc.Access.AllAccess[sel];
         }
 
         private void button3_Click(object sender, EventArgs e) // Update access
@@ -91,13 +90,14 @@ namespace TravBotSharp
             access.ProxyUsername = input.ProxyUsername;
             UpdateWindow();
         }
+
         private AccessRaw GetAccessInput()
         {
-            AccessRaw accessRaw = new AccessRaw
+            var accessRaw = new AccessRaw
             {
                 Password = textBox2.Text,
                 Proxy = textBox3.Text.Trim(),
-                ProxyPort = (int)numericUpDown1.Value,
+                ProxyPort = (int) numericUpDown1.Value,
                 ProxyUsername = proxyUsername.Text.Trim(),
                 ProxyPassword = proxyPassword.Text.Trim()
             };
@@ -117,19 +117,20 @@ namespace TravBotSharp
                 var str = textBox4.Text.Split('/');
                 textBox4.Text = str[0];
             }
+
             Acc.AccInfo.ServerUrl = "https://" + textBox4.Text;
         }
 
         /// <summary>
-        /// When a user selects an access from the list view
+        ///     When a user selects an access from the list view
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void accessListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateAccessView(GetCurrentAccess());
-
         }
+
         private void UpdateAccessView(Access access)
         {
             textBox2.Text = access.Password;
@@ -146,8 +147,8 @@ namespace TravBotSharp
 
         private void button4_Click(object sender, EventArgs e)
         {
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -163,6 +164,7 @@ namespace TravBotSharp
                 proxyUsername.Text = "";
                 proxyPassword.Text = "";
             }
+
             proxyUsername.ReadOnly = !check;
             proxyPassword.ReadOnly = !check;
         }
@@ -174,9 +176,11 @@ namespace TravBotSharp
                 await ProxyHelper.TestProxies(Acc.Access.AllAccess);
                 try
                 {
-                    this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));
+                    Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));
                 }
-                catch { }
+                catch
+                {
+                }
             }).Start();
         }
     }

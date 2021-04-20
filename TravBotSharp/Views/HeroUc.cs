@@ -14,6 +14,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -43,10 +44,7 @@ namespace TravBotSharp.Views
             minInterval.Value = acc.Hero.Settings.MinUpdate;
 
             SupplyResVillageComboBox.Items.Clear();
-            foreach (var vill in acc.Villages)
-            {
-                SupplyResVillageComboBox.Items.Add(vill.Name);
-            }
+            foreach (var vill in acc.Villages) SupplyResVillageComboBox.Items.Add(vill.Name);
             if (SupplyResVillageComboBox.Items.Count > 0)
             {
                 SupplyResVillageComboBox.SelectedIndex = 0;
@@ -57,7 +55,6 @@ namespace TravBotSharp.Views
 
             heroItemsList.Items.Clear();
             if (acc.Hero.Items.Count > 0)
-            {
                 foreach (var item in acc.Hero.Items)
                 {
                     var viewItem = new ListViewItem();
@@ -71,13 +68,10 @@ namespace TravBotSharp.Views
 
                     heroItemsList.Items.Add(viewItem);
                 }
-            }
 
             equiptList.Items.Clear();
             if (acc.Hero.Equipt == null)
-            {
-                acc.Hero.Equipt = new System.Collections.Generic.Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum>();
-            }
+                acc.Hero.Equipt = new Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum>();
             foreach (var pair in acc.Hero.Equipt)
             {
                 var viewItem = new ListViewItem();
@@ -92,7 +86,7 @@ namespace TravBotSharp.Views
             }
 
             // Update hero info
-            string heroInfoStr = $"Health: {acc.Hero.HeroInfo.Health}\n";
+            var heroInfoStr = $"Health: {acc.Hero.HeroInfo.Health}\n";
             heroInfoStr += $"Hero Status: {acc.Hero.Status}\n";
             heroInfoStr += $"Hero home village: {HeroHelper.GetHeroHomeVillage(acc)?.Name ?? "UNKNOWN"}\n";
             heroInfoStr += $"Hero Arrival: {acc.Hero.HeroArrival}\n";
@@ -108,9 +102,7 @@ namespace TravBotSharp.Views
             //Adventures
             var advStr = new List<string>();
             foreach (var adv in acc.Hero.Adventures)
-            {
-                advStr.Add(adv.Coordinates.ToString() + " - " + adv.Difficulty.ToString() + " adventure");
-            }
+                advStr.Add(adv.Coordinates + " - " + adv.Difficulty + " adventure");
             adventures.Text = string.Join("\n", advStr);
         }
 
@@ -126,7 +118,7 @@ namespace TravBotSharp.Views
 
         private void minHeroHealthUpDown_ValueChanged(object sender, EventArgs e)
         {
-            GetSelectedAcc().Hero.Settings.MinHealth = (int)minHeroHealthUpDown.Value;
+            GetSelectedAcc().Hero.Settings.MinHealth = (int) minHeroHealthUpDown.Value;
         }
 
         private void strength_ValueChanged(object sender, EventArgs e)
@@ -148,34 +140,43 @@ namespace TravBotSharp.Views
         {
             LimitHeroPoints();
         }
+
         private int HeroPointsUSer()
         {
-            int str = (int)strength.Value;
-            int off = (int)offBonus.Value;
-            int deff = (int)deffBonus.Value;
-            int res = (int)resources.Value;
+            var str = (int) strength.Value;
+            var off = (int) offBonus.Value;
+            var deff = (int) deffBonus.Value;
+            var res = (int) resources.Value;
             return str + off + deff + res;
         }
+
         private void LimitHeroPoints()
         {
-            int lockPoints = HeroPointsUSer();
+            var lockPoints = HeroPointsUSer();
             strength.Maximum = strength.Value + 4 - lockPoints;
             offBonus.Maximum = offBonus.Value + 4 - lockPoints;
             deffBonus.Maximum = deffBonus.Value + 4 - lockPoints;
             resources.Maximum = resources.Value + 4 - lockPoints;
             var acc = GetSelectedAcc();
-            var vals = new byte[] { (byte)strength.Value, (byte)offBonus.Value, (byte)deffBonus.Value, (byte)resources.Value };
+            var vals = new[]
+                {(byte) strength.Value, (byte) offBonus.Value, (byte) deffBonus.Value, (byte) resources.Value};
             acc.Hero.Settings.Upgrades = vals;
         }
 
-        private void autoSetHeroPoints_CheckedChanged(object sender, EventArgs e) =>
+        private void autoSetHeroPoints_CheckedChanged(object sender, EventArgs e)
+        {
             GetSelectedAcc().Hero.Settings.AutoSetPoints = autoSetHeroPoints.Checked;
+        }
 
-        private void maxDistanceUpDown_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedAcc().Hero.Settings.MaxDistance = (int)maxDistanceUpDown.Value;
+        private void maxDistanceUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Hero.Settings.MaxDistance = (int) maxDistanceUpDown.Value;
+        }
 
-        private void autoReviveHero_CheckedChanged(object sender, EventArgs e) =>
+        private void autoReviveHero_CheckedChanged(object sender, EventArgs e)
+        {
             GetSelectedAcc().Hero.Settings.AutoReviveHero = autoReviveHero.Checked;
+        }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e)
         {
@@ -185,8 +186,10 @@ namespace TravBotSharp.Views
             SupplyResVillageSelected.Text = "Selected: " + vill.Name;
         }
 
-        private void refreshInfo_CheckedChanged(object sender, EventArgs e) =>
+        private void refreshInfo_CheckedChanged(object sender, EventArgs e)
+        {
             GetSelectedAcc().Hero.Settings.AutoRefreshInfo = refreshInfo.Checked;
+        }
 
         private void autoEquip_CheckedChanged(object sender, EventArgs e)
         {
@@ -196,7 +199,7 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        /// If you want to use Auto-use res or Auto-Equip hero, you need to auto-refresh hero info
+        ///     If you want to use Auto-use res or Auto-Equip hero, you need to auto-refresh hero info
         /// </summary>
         /// <param name="acc"></param>
         private void TurnOnAutoRefresh(Account acc)
@@ -207,26 +210,32 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e)
         {
-            TaskExecutor.AddTask(GetSelectedAcc(), new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+            TaskExecutor.AddTask(GetSelectedAcc(), new HeroUpdateInfo {ExecuteAt = DateTime.Now});
         }
 
         private void button2_Click(object sender, EventArgs e) // Update adventures
         {
             var acc = GetSelectedAcc();
-            TaskExecutor.AddTask(acc, new StartAdventure()
+            TaskExecutor.AddTask(acc, new StartAdventure
             {
                 ExecuteAt = DateTime.Now,
                 UpdateOnly = true
             });
         }
 
-        private void helmetSwitcher_CheckedChanged(object sender, EventArgs e) =>
+        private void helmetSwitcher_CheckedChanged(object sender, EventArgs e)
+        {
             GetSelectedAcc().Hero.Settings.AutoSwitchHelmets = helmetSwitcher.Checked;
+        }
 
-        private void minInterval_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedAcc().Hero.Settings.MinUpdate = (int)minInterval.Value;
+        private void minInterval_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Hero.Settings.MinUpdate = (int) minInterval.Value;
+        }
 
-        private void maxInterval_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedAcc().Hero.Settings.MaxUpdate = (int)maxInterval.Value;
+        private void maxInterval_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Hero.Settings.MaxUpdate = (int) maxInterval.Value;
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿namespace TbsCore.Models.TroopsModels
 {
     /// <summary>
-    /// For u1-u9 inside the attack
+    ///     For u1-u9 inside the attack
     /// </summary>
     public class TroopsRaw
     {

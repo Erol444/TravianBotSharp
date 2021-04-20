@@ -1,6 +1,6 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Linq;
+using HtmlAgilityPack;
 
 namespace TravBotSharp.Files.Parsers
 {
@@ -10,9 +10,9 @@ namespace TravBotSharp.Files.Parsers
         {
             var duration = node.Descendants()
                 .FirstOrDefault(x => x.InnerText.Count(c => c == ':') == 2 &&
-                                    (x.HasClass("duration") ||
-                                     x.HasClass("clocks") ||
-                                     x.HasClass("value")));
+                                     (x.HasClass("duration") ||
+                                      x.HasClass("clocks") ||
+                                      x.HasClass("value")));
 
             return ParseDuration(duration.InnerText);
         }
@@ -20,23 +20,24 @@ namespace TravBotSharp.Files.Parsers
         public static TimeSpan ParseDuration(string str)
         {
             //00:00:02 (+332 ms), TTWars, milliseconds matter
-            int ms = 0;
+            var ms = 0;
             if (str.Contains("(+"))
             {
                 var parts = str.Split('(');
-                ms = (int)Parser.RemoveNonNumeric(parts[1]);
+                ms = (int) Parser.RemoveNonNumeric(parts[1]);
                 str = parts[0];
             }
+
             // h:m:s
             var arr = str.Split(':');
-            var h = (int)Parser.RemoveNonNumeric(arr[0]);
-            var m = (int)Parser.RemoveNonNumeric(arr[1]);
-            var s = (int)Parser.RemoveNonNumeric(arr[2]);
+            var h = (int) Parser.RemoveNonNumeric(arr[0]);
+            var m = (int) Parser.RemoveNonNumeric(arr[1]);
+            var s = (int) Parser.RemoveNonNumeric(arr[2]);
             return new TimeSpan(0, h, m, s, ms);
         }
 
         /// <summary>
-        /// Parses timer. Will search for descendants that have class name "timer"
+        ///     Parses timer. Will search for descendants that have class name "timer"
         /// </summary>
         /// <param name="node">Parent node</param>
         /// <returns>TimeSpan</returns>
@@ -44,7 +45,7 @@ namespace TravBotSharp.Files.Parsers
         {
             var timer = node.Descendants().FirstOrDefault(x => x.HasClass("timer"));
             if (timer == null) return TimeSpan.Zero;
-            int sec = int.Parse(timer.GetAttributeValue("value", "0"));
+            var sec = int.Parse(timer.GetAttributeValue("value", "0"));
             if (sec < 0) sec = 0;
             return TimeSpan.FromSeconds(sec);
         }
@@ -54,12 +55,12 @@ namespace TravBotSharp.Files.Parsers
             var serverTime = html.GetElementbyId("servertime");
             var timer = serverTime.Descendants("span").FirstOrDefault(x => x.HasClass("timer"));
 
-            var dur = TimeParser.ParseDuration(timer.InnerText);
+            var dur = ParseDuration(timer.InnerText);
             return DateTime.Today.Add(dur);
         }
 
         /// <summary>
-        /// Gets the TimeSpan when the current celebration will end
+        ///     Gets the TimeSpan when the current celebration will end
         /// </summary>
         /// <param name="html">Html</param>
         /// <returns>When celebration will end</returns>
@@ -72,10 +73,10 @@ namespace TravBotSharp.Files.Parsers
                 var content = html.GetElementbyId("content");
                 underProgress = content.Descendants().FirstOrDefault(x => x.HasClass("under_progress"));
             }
-            
+
             if (underProgress == null) return DateTime.MinValue; // No celebration is under progress
 
-            return DateTime.Now + TimeParser.ParseTimer(underProgress);
+            return DateTime.Now + ParseTimer(underProgress);
         }
     }
 }

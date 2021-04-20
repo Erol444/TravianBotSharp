@@ -11,8 +11,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class UpdateTroops : BotTask
     {
         /// <summary>
-        /// When new village is found by the bot, it should firstly check barracks, then  stable and then workshop,
-        /// to see which troops are researched
+        ///     When new village is found by the bot, it should firstly check barracks, then  stable and then workshop,
+        ///     to see which troops are researched
         /// </summary>
         public override async Task<TaskRes> Execute(Account acc)
         {
@@ -37,12 +37,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            for (int i = 0; i < 3; i++)
+            for (var i = 0; i < 3; i++)
             {
                 //var building = GetBuilding(i);
                 //await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}");
                 // TODO: parse content
             }
+
             return TaskRes.Executed;
         }
 

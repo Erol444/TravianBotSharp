@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
@@ -13,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var building = Vill.Build.Buildings
-                .FirstOrDefault(x => 
+                .FirstOrDefault(x =>
                     x.Type == Classificator.BuildingEnum.Residence ||
                     x.Type == Classificator.BuildingEnum.Palace ||
                     x.Type == Classificator.BuildingEnum.CommandCenter
@@ -23,7 +24,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
 
             var settler = TroopsData.TribeSettler(acc.AccInfo.Tribe);
-            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settler));
+            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img")
+                .FirstOrDefault(x => x.HasClass("u" + (int) settler));
 
             if (troopNode == null)
             {
@@ -37,10 +39,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var maxNum = Parser.RemoveNonNumeric(troopNode.ChildNodes.First(x => x.Name == "a").InnerText);
             var available = TroopsParser.ParseAvailable(troopNode);
 
-            var costNode = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
+            var costNode = acc.Wb.Html.DocumentNode.Descendants("div")
+                .FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var cost = ResourceParser.GetResourceCost(costNode);
 
-            if(!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
+            if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
             {
                 ResourcesHelper.NotEnoughRes(acc, Vill, cost, this);
                 return TaskRes.Executed;
@@ -49,8 +52,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             acc.Wb.Driver.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
             await Task.Delay(AccountHelper.Delay());
             // Click Train button
-            await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, "document.getElementById('s1').click()");
-            Vill.Troops.Settlers = (int)available + (int)maxNum;
+            await DriverHelper.ExecuteScript(acc, "document.getElementById('s1').click()");
+            Vill.Troops.Settlers = (int) available + (int) maxNum;
 
             var training = TroopsHelper.TrainingDuration(acc.Wb.Html);
             if (training < DateTime.Now) training = DateTime.Now;
@@ -58,15 +61,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (Vill.Troops.Settlers < 3)
             {
                 //In 1 minute, do the same task (to get total of 3 settlers)
-                this.NextExecute = training.AddSeconds(3);
+                NextExecute = training.AddSeconds(3);
             }
             else
             {
-                if (acc.NewVillages.AutoSettleNewVillages)
-                {
-                    SendSettlersTask(acc);
-                }
+                if (acc.NewVillages.AutoSettleNewVillages) SendSettlersTask(acc);
             }
+
             return TaskRes.Executed;
         }
 
@@ -78,12 +79,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             acc.Wb.Log($"Bot will (try to) send settlers in {TimeHelper.InSeconds(training)} sec");
 
-            TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers()
+            TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers
             {
                 ExecuteAt = training,
-                Vill = this.Vill,
+                Vill = Vill,
                 // For high speed servers, you want to train settlers asap
-                Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
+                Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium
             });
         }
     }

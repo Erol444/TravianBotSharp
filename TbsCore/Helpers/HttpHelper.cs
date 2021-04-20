@@ -1,6 +1,7 @@
-﻿using RestSharp;
-using System;
+﻿using System;
 using System.Net;
+using HtmlAgilityPack;
+using RestSharp;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 
@@ -14,40 +15,39 @@ namespace TravBotSharp.Files.Helpers
 
             var cookieContainer = new CookieContainer();
             var cookiesStr = "";
-            foreach (var cookie in cookies)
-            {
-                cookiesStr += $"{cookie.Key}={cookie.Value},";
-            }
+            foreach (var cookie in cookies) cookiesStr += $"{cookie.Key}={cookie.Value},";
             cookiesStr = cookiesStr.Remove(cookiesStr.Length - 1);
 
-            cookieContainer.SetCookies(new System.Uri(acc.AccInfo.ServerUrl), cookiesStr);
+            cookieContainer.SetCookies(new Uri(acc.AccInfo.ServerUrl), cookiesStr);
             return cookieContainer;
         }
 
         public static string SendPostReq(Account acc, RestRequest req)
         {
-            acc.Wb.RestClient.CookieContainer = HttpHelper.GetCookies(acc);
+            acc.Wb.RestClient.CookieContainer = GetCookies(acc);
 
             var response = acc.Wb.RestClient.Execute(req);
-            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception("SendGetReq failed!\n" + response.Content);
 
             return response.Content;
         }
 
-        public static HtmlAgilityPack.HtmlDocument SendGetReq(Account acc, string url)
+        public static HtmlDocument SendGetReq(Account acc, string url)
         {
-            acc.Wb.RestClient.CookieContainer = HttpHelper.GetCookies(acc);
+            acc.Wb.RestClient.CookieContainer = GetCookies(acc);
 
             var req = new RestRequest
             {
                 Resource = url,
-                Method = Method.GET,
+                Method = Method.GET
             };
 
             var response = acc.Wb.RestClient.Execute(req);
-            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!" + response.StatusCode);
+            if (response.StatusCode != HttpStatusCode.OK)
+                throw new Exception("SendGetReq failed!" + response.StatusCode);
 
-            var htmlDoc = new HtmlAgilityPack.HtmlDocument();
+            var htmlDoc = new HtmlDocument();
             htmlDoc.LoadHtml(response.Content);
 
             return htmlDoc;

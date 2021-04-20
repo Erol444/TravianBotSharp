@@ -10,8 +10,8 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            Random rnd = new Random();
-            int totalSec = 0;
+            var rnd = new Random();
+            var totalSec = 0;
 
             foreach (var fl in acc.Farming.FL)
             {
@@ -25,7 +25,8 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
 
                 if (fl.Enabled)
                 {
-                    TaskExecutor.AddTask(acc, new SendFarmlist() { ExecuteAt = DateTime.Now.AddSeconds(totalSec), FL = fl });
+                    TaskExecutor.AddTask(acc,
+                        new SendFarmlist {ExecuteAt = DateTime.Now.AddSeconds(totalSec), FL = fl});
                     switch (acc.AccInfo.ServerVersion)
                     {
                         case Classificator.ServerVersionEnum.T4_4:
@@ -42,11 +43,11 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    TaskExecutor.AddTask(acc, new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(totalSec) });
+                    TaskExecutor.AddTask(acc, new SendFLs {ExecuteAt = DateTime.Now.AddSeconds(totalSec)});
                     break;
                 case Classificator.ServerVersionEnum.T4_5:
                     var nextSend = rnd.Next(acc.Farming.MinInterval, acc.Farming.MaxInterval);
-                    TaskExecutor.AddTask(acc, new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(nextSend) });
+                    TaskExecutor.AddTask(acc, new SendFLs {ExecuteAt = DateTime.Now.AddSeconds(nextSend)});
                     break;
             }
 

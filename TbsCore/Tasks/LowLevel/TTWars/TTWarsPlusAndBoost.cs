@@ -12,10 +12,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             var leftBar = acc.Wb.Html.GetElementbyId("sidebarBeforeContent");
             var button = leftBar.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
-            if (button == null)
-            {
-                return TaskRes.Executed;
-            }
+            if (button == null) return TaskRes.Executed;
             var buttonid = button.GetAttributeValue("id", "");
             acc.Wb.Driver.ExecuteScript($"document.getElementById('{buttonid}').click()"); //boost production
 

@@ -15,22 +15,23 @@ namespace TravBotSharp.Files.Helpers
     public static class BuildingHelper
     {
         /// <summary>
-        /// Adds the building task to the village list of building tasks. Restarts BotTask UpgradeBuilding if needed.
+        ///     Adds the building task to the village list of building tasks. Restarts BotTask UpgradeBuilding if needed.
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="vill">Village</param>
         /// <param name="task">BuildingTask to add</param>
         /// <param name="bottom">Whether to insert the BuildingTask on the bottom of the list</param>
         /// <returns>Whether the method completed successfully</returns>
-        public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true, bool restart = true)
+        public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true,
+            bool restart = true)
         {
             if (vill == null) return false;
             if (task.BuildingId == null ||
-                vill.Build.Buildings.Any(x => x.Id == task.BuildingId && x.Type != task.Building && x.Type != BuildingEnum.Site))
-            {
+                vill.Build.Buildings.Any(x =>
+                    x.Id == task.BuildingId && x.Type != task.Building && x.Type != BuildingEnum.Site))
                 //Check if bot has any space to build new buildings, otherwise return
-                if (!FindBuildingId(vill, task)) return false;
-            }
+                if (!FindBuildingId(vill, task))
+                    return false;
             if (bottom) vill.Build.Tasks.Add(task);
             else vill.Build.Tasks.Insert(0, task);
 
@@ -39,7 +40,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Finds appropriate building space/site for the building
+        ///     Finds appropriate building space/site for the building
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="task">Building task</param>
@@ -50,7 +51,7 @@ namespace TravBotSharp.Files.Helpers
             if (task.TaskType == BuildingType.AutoUpgradeResFields) return true;
 
             var existingBuilding = vill.Build.Buildings
-                    .FirstOrDefault(x => x.Type == task.Building);
+                .FirstOrDefault(x => x.Type == task.Building);
 
             // Only special buildings (warehouse, cranny, granary etc.) can have multiple 
             // buildings of it's type and use ConstructNew option
@@ -63,7 +64,7 @@ namespace TravBotSharp.Files.Helpers
             }
 
             var ExistingBuildingTask = vill.Build.Tasks
-                    .FirstOrDefault(x => x.Building == task.Building && x.BuildingId != null);
+                .FirstOrDefault(x => x.Building == task.Building && x.BuildingId != null);
 
             if (ExistingBuildingTask != null && !task.ConstructNew)
             {
@@ -77,33 +78,32 @@ namespace TravBotSharp.Files.Helpers
                 .ToList();
 
             foreach (var FreeSite in FreeSites)
-            {
                 if (!vill.Build.Tasks.Any(x => x.BuildingId == FreeSite.Id))
                 {
                     // Site is free and there's no building task that reserves it.
                     task.BuildingId = FreeSite.Id;
                     return true;
                 }
-            }
+
             return false;
         }
 
         public static List<string> SetPrereqCombo(Account acc, Village vill)
         {
             var ret = new List<string>();
-            for (int i = 5; i <= 45; i++) // Go through each building
+            for (var i = 5; i <= 45; i++) // Go through each building
             {
-                var building = (BuildingEnum)i;
+                var building = (BuildingEnum) i;
 
                 // Don't show these buildings:
                 if (building == BuildingEnum.GreatWarehouse ||
                     building == BuildingEnum.GreatGranary
-                    ) continue;
+                ) continue;
 
                 if (vill.Build.Buildings.Any(x => x.Type == building)) continue;
                 if (vill.Build.Tasks.Any(x => x.Building == building)) continue;
 
-                (var reqTribe, var prerequisites) = BuildingsData.GetBuildingPrerequisites((BuildingEnum)i);
+                var (reqTribe, prerequisites) = BuildingsData.GetBuildingPrerequisites((BuildingEnum) i);
 
                 if (reqTribe != TribeEnum.Any && reqTribe != acc.AccInfo.Tribe) continue;
 
@@ -121,16 +121,16 @@ namespace TravBotSharp.Files.Helpers
             acc.Tasks.RemoveAll(x =>
                 x.Vill == vill &&
                 x.GetType() == typeof(UpgradeBuilding)
-                );
+            );
 
             if (vill.Build.Tasks.Count == 0) return; //No build tasks
 
             var (_, nextExecution) = UpgradeBuildingHelper.NextBuildingTask(acc, vill);
 
-            TaskExecutor.AddTask(acc, new UpgradeBuilding()
+            TaskExecutor.AddTask(acc, new UpgradeBuilding
             {
                 Vill = vill,
-                ExecuteAt = nextExecution,
+                ExecuteAt = nextExecution
             });
         }
 
@@ -141,15 +141,17 @@ namespace TravBotSharp.Files.Helpers
 
             TaskExecutor.AddTaskIfNotExistInVillage(acc,
                 vill,
-                new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) }
-                );
+                new DemolishBuilding {Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10)}
+            );
         }
 
-        public static bool BuildingRequirementsAreMet(BuildingEnum building, Village vill, TribeEnum tribe) //check if user can construct this building
+        public static bool
+            BuildingRequirementsAreMet(BuildingEnum building, Village vill,
+                TribeEnum tribe) //check if user can construct this building
         {
-            bool exists = (vill.Build.Buildings.FirstOrDefault(x => x.Type == building) != null); //there is already a building of this type in the vill
+            var exists = vill.Build.Buildings.FirstOrDefault(x => x.Type == building) !=
+                         null; //there is already a building of this type in the vill
             if (exists)
-            {
                 //check cranny/warehouse/grannary/trapper/GG/GW
                 switch (building)
                 {
@@ -161,17 +163,15 @@ namespace TravBotSharp.Files.Helpers
                     case BuildingEnum.Cranny: return BuildingIsOnLevel(BuildingEnum.Cranny, 10, vill);
                     default: return false;
                 }
-            }
 
             //check for prerequisites for this building
-            (var ReqTribe, var Prerequisites) = BuildingsData.GetBuildingPrerequisites(building);
+            var (ReqTribe, Prerequisites) = BuildingsData.GetBuildingPrerequisites(building);
             if (ReqTribe != TribeEnum.Any && ReqTribe != tribe) return false;
             //if we either already have this building OR is on our build task list, requirements are met.
             foreach (var prerequisite in Prerequisites)
-            {
                 if (!vill.Build.Buildings.Any(x => x.Level >= prerequisite.Level && x.Type == prerequisite.Building)
-                    && !vill.Build.Tasks.Any(x => x.Level >= prerequisite.Level && x.Building == prerequisite.Building)) return false;
-            }
+                    && !vill.Build.Tasks.Any(x => x.Level >= prerequisite.Level && x.Building == prerequisite.Building))
+                    return false;
             return true;
         }
 
@@ -179,11 +179,12 @@ namespace TravBotSharp.Files.Helpers
         {
             //if there already is a building on specific level or there is a task for this building
             // TODO: change FristOrDefault to Any
-            return (vill.Build.Buildings.FirstOrDefault(x => x.Level == lvl && x.Type == building) != null || vill.Build.Tasks.FirstOrDefault(x => x.Level == lvl && x.Building == building) != null);
+            return vill.Build.Buildings.FirstOrDefault(x => x.Level == lvl && x.Type == building) != null ||
+                   vill.Build.Tasks.FirstOrDefault(x => x.Level == lvl && x.Building == building) != null;
         }
 
         /// <summary>
-        /// Remove all finished "currently building"
+        ///     Remove all finished "currently building"
         /// </summary>
         /// <param name="vill"></param>
         /// <returns>Whether there were some tasks removed</returns>
@@ -196,19 +197,20 @@ namespace TravBotSharp.Files.Helpers
 
             if (tasksDone.Count == 0) return false;
 
-            foreach(var taskDone in tasksDone)
+            foreach (var taskDone in tasksDone)
             {
                 var building = vill.Build.Buildings.First(x => x.Id == taskDone.Location);
                 if (building.Type != taskDone.Building) continue;
 
-                if(building.Level < taskDone.Level) building.Level = taskDone.Level;
+                if (building.Level < taskDone.Level) building.Level = taskDone.Level;
                 vill.Build.CurrentlyBuilding.Remove(taskDone);
             }
+
             return true;
         }
 
         /// <summary>
-        /// Used by building task to get the url for navigation
+        ///     Used by building task to get the url for navigation
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="task">BotTask</param>
@@ -222,6 +224,7 @@ namespace TravBotSharp.Files.Helpers
                 case BuildingType.AutoUpgradeResFields:
                     return (GetUrlAutoResFields(acc, vill, task), false);
             }
+
             return (null, true);
         }
 
@@ -237,25 +240,23 @@ namespace TravBotSharp.Files.Helpers
                     {
                         if (vill.Build.Buildings.Any(x => x.Type == task.Building) &&
                             vill.Build.Buildings.FirstOrDefault(x => x.Type == task.Building).Level >= task.Level)
-                        {
                             //if ((this.Building == Type.Residence) && (this.Level == 10 || this.Level == 20)) TrainSettlers(vill, acc, 0);
                             return true;
-                        }
                         return false; //this building doest exist yet!
                     }
-                    if (building.Level >= task.Level || (building.Level + 1 == task.Level && building.UnderConstruction))
-                    {
+
+                    if (building.Level >= task.Level || building.Level + 1 == task.Level && building.UnderConstruction)
                         //if (this.Building == Type.Residence) TrainSettlers(vill, acc, 30);
                         return true;
-                    }
                     return false;
 
                 case BuildingType.AutoUpgradeResFields:
-                    if (vill.Build.Buildings[0].Type == BuildingEnum.Site) return false; //for new villages that are not checked yet
+                    if (vill.Build.Buildings[0].Type == BuildingEnum.Site)
+                        return false; //for new villages that are not checked yet
                     switch (task.ResourceType)
                     {
                         case ResTypeEnum.AllResources:
-                            return (CheckOnlyCrop(vill, task) && CheckExcludeCrop(vill, task));
+                            return CheckOnlyCrop(vill, task) && CheckExcludeCrop(vill, task);
                         case ResTypeEnum.ExcludeCrop:
                             return CheckExcludeCrop(vill, task);
                         case ResTypeEnum.OnlyCrop:
@@ -264,12 +265,15 @@ namespace TravBotSharp.Files.Helpers
                             return true;
                     }
             }
+
             return false;
         }
+
         private static (string, bool) GetUrlGeneralTask(Village vill, BuildingTask task)
         {
             // Check if there is already a different building in this spot
-            if (task.BuildingId == null || vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId).Type != task.Building)
+            if (task.BuildingId == null ||
+                vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId).Type != task.Building)
             {
                 var targetBuilding = vill.Build.Buildings.FirstOrDefault(x => x.Type == task.Building);
                 // Re-select the buildingId
@@ -279,34 +283,37 @@ namespace TravBotSharp.Files.Helpers
                 }
                 else // there's already a building in this spot, construct a building elsewhere
                 {
-                    if (!BuildingHelper.FindBuildingId(vill, task))
-                    {
-                        return (null, false);
-                    }
+                    if (!FindBuildingId(vill, task)) return (null, false);
                 }
             }
 
             var url = task.BuildingId.ToString();
 
-            bool constructNew = false;
+            var constructNew = false;
             // If there is no building in that space currently, construct a new building
             if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Site && x.Id == task.BuildingId))
             {
-                url += "&category=" + (int)BuildingsData.GetBuildingsCategory(task.Building);
+                url += "&category=" + (int) BuildingsData.GetBuildingsCategory(task.Building);
                 constructNew = true;
             }
+
             return (url, constructNew);
         }
+
         public static string GetUrlAutoResFields(Account acc, Village vill, BuildingTask task)
         {
             List<Building> buildings; // Potential buildings to be upgraded next
             switch (task.ResourceType)
             {
                 case ResTypeEnum.AllResources:
-                    buildings = vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Woodcutter || x.Type == BuildingEnum.ClayPit || x.Type == BuildingEnum.IronMine || x.Type == BuildingEnum.Cropland).ToList();
+                    buildings = vill.Build.Buildings.Where(x =>
+                        x.Type == BuildingEnum.Woodcutter || x.Type == BuildingEnum.ClayPit ||
+                        x.Type == BuildingEnum.IronMine || x.Type == BuildingEnum.Cropland).ToList();
                     break;
                 case ResTypeEnum.ExcludeCrop:
-                    buildings = vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Woodcutter || x.Type == BuildingEnum.ClayPit || x.Type == BuildingEnum.IronMine).ToList();
+                    buildings = vill.Build.Buildings.Where(x =>
+                        x.Type == BuildingEnum.Woodcutter || x.Type == BuildingEnum.ClayPit ||
+                        x.Type == BuildingEnum.IronMine).ToList();
                     break;
                 case ResTypeEnum.OnlyCrop:
                     buildings = vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Cropland).ToList();
@@ -314,11 +321,12 @@ namespace TravBotSharp.Files.Helpers
                 default:
                     return null;
             }
-            buildings = buildings.Where(x => x.Level < task.Level).ToList(); // Only select res fields that are below desired level
+
+            buildings = buildings.Where(x => x.Level < task.Level)
+                .ToList(); // Only select res fields that are below desired level
             foreach (var b in buildings.ToList())
-            {
-                if (b.Level == task.Level - 1 && b.UnderConstruction) buildings.Remove(b); // It's already being upgraded to selected level
-            }
+                if (b.Level == task.Level - 1 && b.UnderConstruction)
+                    buildings.Remove(b); // It's already being upgraded to selected level
 
             // Filter resource fields by type
             //buildings = buildings.Where(x => x.Type == task.Building).ToList();
@@ -336,11 +344,13 @@ namespace TravBotSharp.Files.Helpers
                     buildingToUpgrade = GetLowestRes(acc, vill, buildings);
                     break;
             }
+
             if (buildingToUpgrade == null)
             {
                 vill.Build.Tasks.Remove(task);
                 return null;
             }
+
             task.BuildingId = buildingToUpgrade.Id;
             task.Building = buildingToUpgrade.Type;
 
@@ -348,14 +358,15 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Upgrades specified building for exactly one level. Will upgrade the lowest level building.
+        ///     Upgrades specified building for exactly one level. Will upgrade the lowest level building.
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="vill">Village</param>
         /// <param name="building">Building to be upgraded by one</param>
         /// <param name="bottom">Whether to insert the building task on the bottom of the build list</param>
         /// <returns>Whether the method executed successfully</returns>
-        internal static bool UpgradeBuildingForOneLvl(Account acc, Village vill, BuildingEnum building, bool bottom = true)
+        internal static bool UpgradeBuildingForOneLvl(Account acc, Village vill, BuildingEnum building,
+            bool bottom = true)
         {
             // We already have a build task
             if (!bottom && vill.Build.Tasks.FirstOrDefault()?.Building == building) return true;
@@ -368,16 +379,14 @@ namespace TravBotSharp.Files.Helpers
 
             // We don't have this building in the village yet
             if (upgrade == null)
-            {
-                return AddBuildingTask(acc, vill, new BuildingTask()
+                return AddBuildingTask(acc, vill, new BuildingTask
                 {
                     TaskType = BuildingType.General,
                     Building = building,
-                    Level = 1,
+                    Level = 1
                 }, bottom);
-            }
 
-            var currentLvl = (int)upgrade.Level;
+            var currentLvl = (int) upgrade.Level;
 
             RemoveFinishedCB(vill);
             currentLvl += vill.Build.CurrentlyBuilding.Count(x => x.Building == building);
@@ -387,40 +396,38 @@ namespace TravBotSharp.Files.Helpers
                 // Building is on max level, construct new building if possible
                 if (!BuildingsData.CanHaveMultipleBuildings(building)) return false;
 
-                return AddBuildingTask(acc, vill, new BuildingTask()
+                return AddBuildingTask(acc, vill, new BuildingTask
                 {
                     TaskType = BuildingType.General,
                     Building = building,
-                    Level = 1,
+                    Level = 1
                 }, bottom);
             }
-            else // Upgrade the defined building
+
+            return AddBuildingTask(acc, vill, new BuildingTask
             {
-                return AddBuildingTask(acc, vill, new BuildingTask()
-                {
-                    TaskType = BuildingType.General,
-                    Building = building,
-                    Level = currentLvl + 1,
-                    BuildingId = upgrade.Id
-                }, bottom);
-            }
+                TaskType = BuildingType.General,
+                Building = building,
+                Level = currentLvl + 1,
+                BuildingId = upgrade.Id
+            }, bottom);
         }
 
 
-
         /// <summary>
-        /// Adds all building prerequisites for this building if they do not exist yet. 
-        /// After this you should call RemoveDuplicates().
+        ///     Adds all building prerequisites for this building if they do not exist yet.
+        ///     After this you should call RemoveDuplicates().
         /// </summary>
         /// <param name="acc"></param>
         /// <param name="vill"></param>
         /// <param name="building"></param>
         /// <returns>Whether we have all prerequisite buildings</returns>
-        public static bool AddBuildingPrerequisites(Account acc, Village vill, BuildingEnum building, bool bottom = true)
+        public static bool AddBuildingPrerequisites(Account acc, Village vill, BuildingEnum building,
+            bool bottom = true)
         {
             RemoveFinishedCB(vill);
 
-            (var tribe, var prereqs) = BuildingsData.GetBuildingPrerequisites(building);
+            var (tribe, prereqs) = BuildingsData.GetBuildingPrerequisites(building);
             if (acc.AccInfo.Tribe != tribe && tribe != TribeEnum.Any) return false;
             if (prereqs.Count == 0) return true;
             var ret = true;
@@ -429,17 +436,17 @@ namespace TravBotSharp.Files.Helpers
                 var prereqBuilding = vill.Build.Buildings.Where(x => x.Type == prereq.Building);
 
                 // Prerequired building already exists and is on on/above/being upgraded on desired level
-                if (prereqBuilding.Any(x => 
-                        prereq.Level <= x.Level + (x.UnderConstruction ? 1 : 0))
-                    ) continue;
+                if (prereqBuilding.Any(x =>
+                    prereq.Level <= x.Level + (x.UnderConstruction ? 1 : 0))
+                ) continue;
 
                 if (bottom && vill.Build.Tasks.Any(x => prereq.Building == x.Building &&
-                                              prereq.Level <= x.Level)) continue;
+                                                        prereq.Level <= x.Level)) continue;
 
                 // If there is no required building, build it's prerequisites first
                 if (!prereqBuilding.Any()) AddBuildingPrerequisites(acc, vill, prereq.Building);
 
-                AddBuildingTask(acc, vill, new BuildingTask()
+                AddBuildingTask(acc, vill, new BuildingTask
                 {
                     Building = prereq.Building,
                     Level = prereq.Level,
@@ -447,25 +454,29 @@ namespace TravBotSharp.Files.Helpers
                 }, bottom);
                 ret = false;
             }
+
             return ret;
         }
 
         public static bool IsResourceField(BuildingEnum building)
         {
-            int buildingInt = (int)building;
+            var buildingInt = (int) building;
             // If id between 1 and 4, it's resource field
             return buildingInt < 5 && buildingInt > 0;
         }
 
         /// <summary>
-        /// Removes all complete building tasks
+        ///     Removes all complete building tasks
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="acc">Account</param>
-        public static void RemoveCompletedTasks(Village vill, Account acc) =>
+        public static void RemoveCompletedTasks(Village vill, Account acc)
+        {
             vill.Build.Tasks.RemoveAll(task => IsTaskCompleted(vill, acc, task));
+        }
 
         #region Functions for auto-building resource fields
+
         public static Building FindLowestLevelBuilding(List<Building> buildings)
         {
             // TODO: test after implementation
@@ -474,9 +485,9 @@ namespace TravBotSharp.Files.Helpers
             //        .FirstOrDefault();
 
             if (buildings.Count == 0) return null;
-            int lowestLvl = 100;
-            Building lowestBuilding = new Building();
-            for (int i = 0; i < buildings.Count; i++)
+            var lowestLvl = 100;
+            var lowestBuilding = new Building();
+            for (var i = 0; i < buildings.Count; i++)
             {
                 var buildingLevel = buildings[i].Level;
                 if (buildings[i].UnderConstruction) buildingLevel++;
@@ -486,104 +497,126 @@ namespace TravBotSharp.Files.Helpers
                     lowestBuilding = buildings[i];
                 }
             }
+
             return lowestBuilding;
         }
+
         private static Building GetLowestProduction(List<Building> buildings, Village vill)
         {
             //get distinct field types
             var distinct = buildings.Select(x => x.Type).Distinct().ToList();
-            long lowestProd = long.MaxValue;
-            BuildingEnum toUpgrade = BuildingEnum.Cropland;
+            var lowestProd = long.MaxValue;
+            var toUpgrade = BuildingEnum.Cropland;
 
             foreach (var distinctType in distinct)
             {
-                if (distinctType == BuildingEnum.Woodcutter && vill.Res.Production.Wood < lowestProd) { lowestProd = vill.Res.Production.Wood; toUpgrade = BuildingEnum.Woodcutter; }
-                if (distinctType == BuildingEnum.ClayPit && vill.Res.Production.Clay < lowestProd) { lowestProd = vill.Res.Production.Clay; toUpgrade = BuildingEnum.ClayPit; }
-                if (distinctType == BuildingEnum.IronMine && vill.Res.Production.Iron < lowestProd) { lowestProd = vill.Res.Production.Iron; toUpgrade = BuildingEnum.IronMine; }
-                if (distinctType == BuildingEnum.Cropland && vill.Res.Production.Crop < lowestProd) { lowestProd = vill.Res.Production.Crop; toUpgrade = BuildingEnum.Cropland; }
+                if (distinctType == BuildingEnum.Woodcutter && vill.Res.Production.Wood < lowestProd)
+                {
+                    lowestProd = vill.Res.Production.Wood;
+                    toUpgrade = BuildingEnum.Woodcutter;
+                }
+
+                if (distinctType == BuildingEnum.ClayPit && vill.Res.Production.Clay < lowestProd)
+                {
+                    lowestProd = vill.Res.Production.Clay;
+                    toUpgrade = BuildingEnum.ClayPit;
+                }
+
+                if (distinctType == BuildingEnum.IronMine && vill.Res.Production.Iron < lowestProd)
+                {
+                    lowestProd = vill.Res.Production.Iron;
+                    toUpgrade = BuildingEnum.IronMine;
+                }
+
+                if (distinctType == BuildingEnum.Cropland && vill.Res.Production.Crop < lowestProd)
+                {
+                    lowestProd = vill.Res.Production.Crop;
+                    toUpgrade = BuildingEnum.Cropland;
+                }
             }
+
             return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }
+
         private static Building GetLowestRes(Account acc, Village vill, List<Building> buildings)
         {
             //get distinct field types
             var distinct = buildings.Select(x => x.Type).Distinct().ToList();
-            long lowestRes = long.MaxValue;
-            BuildingEnum toUpgrade = BuildingEnum.Cropland;
+            var lowestRes = long.MaxValue;
+            var toUpgrade = BuildingEnum.Cropland;
 
-            var heroRes = vill.Settings.UseHeroRes ?
-                HeroHelper.GetHeroResources(acc) :
-                new long[] { 0, 0, 0, 0 };
+            var heroRes = vill.Settings.UseHeroRes ? HeroHelper.GetHeroResources(acc) : new long[] {0, 0, 0, 0};
 
             var resSum = ResourcesHelper.SumArr(vill.Res.Stored.Resources.ToArray(), heroRes);
 
             foreach (var distinctType in distinct)
-            {
                 if (distinctType == BuildingEnum.Woodcutter &&
-                    resSum[0] < lowestRes) 
-                { 
+                    resSum[0] < lowestRes)
+                {
                     lowestRes = resSum[0];
-                    toUpgrade = BuildingEnum.Woodcutter; 
+                    toUpgrade = BuildingEnum.Woodcutter;
                 }
                 else if (distinctType == BuildingEnum.ClayPit &&
-                    resSum[1] < lowestRes) 
+                         resSum[1] < lowestRes)
                 {
                     lowestRes = resSum[1];
-                    toUpgrade = BuildingEnum.ClayPit; 
+                    toUpgrade = BuildingEnum.ClayPit;
                 }
                 else if (distinctType == BuildingEnum.IronMine &&
-                    resSum[2] < lowestRes) 
-                { 
+                         resSum[2] < lowestRes)
+                {
                     lowestRes = resSum[2];
-                    toUpgrade = BuildingEnum.IronMine; 
+                    toUpgrade = BuildingEnum.IronMine;
                 }
                 else if (distinctType == BuildingEnum.Cropland &&
-                    resSum[3] < lowestRes) 
-                { 
+                         resSum[3] < lowestRes)
+                {
                     lowestRes = resSum[3];
-                    toUpgrade = BuildingEnum.Cropland; 
+                    toUpgrade = BuildingEnum.Cropland;
                 }
-            }
-          return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
+
+            return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }
+
         private static bool CheckExcludeCrop(Village vill, BuildingTask task)
         {
             foreach (var res in vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Woodcutter))
-            {
                 if (res.Level < task.Level)
                 {
-                    if (res.Level == task.Level - 1 && res.UnderConstruction) continue; //if on level below + is being upgraded to that lvl
+                    if (res.Level == task.Level - 1 && res.UnderConstruction)
+                        continue; //if on level below + is being upgraded to that lvl
                     return false;
                 }
-            }
+
             foreach (var res in vill.Build.Buildings.Where(x => x.Type == BuildingEnum.ClayPit))
-            {
                 if (res.Level < task.Level)
                 {
-                    if (res.Level == task.Level - 1 && res.UnderConstruction) continue; //if on level below + is being upgraded to that lvl
+                    if (res.Level == task.Level - 1 && res.UnderConstruction)
+                        continue; //if on level below + is being upgraded to that lvl
                     return false;
                 }
-            }
+
             foreach (var res in vill.Build.Buildings.Where(x => x.Type == BuildingEnum.IronMine))
-            {
                 if (res.Level < task.Level)
                 {
-                    if (res.Level == task.Level - 1 && res.UnderConstruction) continue; //if on level below + is being upgraded to that lvl
+                    if (res.Level == task.Level - 1 && res.UnderConstruction)
+                        continue; //if on level below + is being upgraded to that lvl
                     return false;
                 }
-            }
+
             return true;
         }
+
         private static bool CheckOnlyCrop(Village vill, BuildingTask task)
         {
             foreach (var res in vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Cropland))
-            {
                 if (res.Level < task.Level)
                 {
-                    if (res.Level == task.Level - 1 && res.UnderConstruction) continue; //if on elevel below + is being upgraded to that lvl
+                    if (res.Level == task.Level - 1 && res.UnderConstruction)
+                        continue; //if on elevel below + is being upgraded to that lvl
                     return false;
                 }
-            }
+
             return true;
         }
 

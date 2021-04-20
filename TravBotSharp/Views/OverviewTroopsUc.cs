@@ -13,12 +13,14 @@ namespace TravBotSharp.Views
 {
     public partial class OverviewTroopsUc : TbsBaseUc, ITbsUc
     {
-        TableModel tableModelMain = new TableModel();
-        TableModel tableModelGlobal = new TableModel();
+        private readonly TableModel tableModelGlobal = new TableModel();
+        private readonly TableModel tableModelMain = new TableModel();
+
         public OverviewTroopsUc()
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -79,10 +81,12 @@ namespace TravBotSharp.Views
             //r1.Cells.Add(new Cell("", false)); // Big celebrations
             //tableModelGlobal.Rows.Add(r);
         }
+
         #region Initialize table columns
+
         private void InitTable()
         {
-            ColumnModel columnModel = new ColumnModel();
+            var columnModel = new ColumnModel();
 
             // set the Table's ColumModel and TableModel
             table1.ColumnModel = columnModel;
@@ -91,7 +95,7 @@ namespace TravBotSharp.Views
             table1.TableModel = tableModelMain;
 
             //VillageId
-            TextColumn villId = new TextColumn
+            var villId = new TextColumn
             {
                 Editable = false,
                 Text = "Id",
@@ -100,7 +104,7 @@ namespace TravBotSharp.Views
             };
             columnModel.Columns.Add(villId);
             //Village name
-            TextColumn vill = new TextColumn
+            var vill = new TextColumn
             {
                 Editable = true,
                 Text = "Village",
@@ -110,14 +114,14 @@ namespace TravBotSharp.Views
             columnModel.Columns.Add(vill);
 
             //Village barracks trainign
-            ComboBoxColumn barracks = new ComboBoxColumn
+            var barracks = new ComboBoxColumn
             {
                 Text = "Barracks",
                 ToolTipText = "Troops to train in Barracks",
                 Width = 100
             };
 
-            ComboBoxCellEditor barracksEditor = new ComboBoxCellEditor
+            var barracksEditor = new ComboBoxCellEditor
             {
                 DropDownStyle = DropDownStyle.DropDownList
             };
@@ -127,7 +131,7 @@ namespace TravBotSharp.Views
             columnModel.Columns.Add(barracks);
 
             //great barracks training
-            CheckBoxColumn GB = new CheckBoxColumn
+            var GB = new CheckBoxColumn
             {
                 Text = "GB",
                 ToolTipText = "Train troops in Great Barracks",
@@ -136,14 +140,14 @@ namespace TravBotSharp.Views
             columnModel.Columns.Add(GB);
 
             //stable
-            ComboBoxColumn stable = new ComboBoxColumn
+            var stable = new ComboBoxColumn
             {
                 Text = "Stable",
                 ToolTipText = "Troops to train in Stable",
                 Width = 100
             };
 
-            ComboBoxCellEditor stableEditor = new ComboBoxCellEditor
+            var stableEditor = new ComboBoxCellEditor
             {
                 DropDownStyle = DropDownStyle.DropDownList
             };
@@ -152,7 +156,7 @@ namespace TravBotSharp.Views
 
             columnModel.Columns.Add(stable);
             //great stable
-            CheckBoxColumn GS = new CheckBoxColumn
+            var GS = new CheckBoxColumn
             {
                 Text = "GS",
                 ToolTipText = "Train troops in Great Stable",
@@ -160,14 +164,14 @@ namespace TravBotSharp.Views
             };
             columnModel.Columns.Add(GS);
             //workshop
-            ComboBoxColumn workshop = new ComboBoxColumn
+            var workshop = new ComboBoxColumn
             {
                 Text = "Workshop",
                 ToolTipText = "Troops to train in Workshop",
                 Width = 100
             };
 
-            ComboBoxCellEditor workshopEditor = new ComboBoxCellEditor
+            var workshopEditor = new ComboBoxCellEditor
             {
                 DropDownStyle = DropDownStyle.DropDownList
             };
@@ -184,10 +188,12 @@ namespace TravBotSharp.Views
                 Width = 100
             });
         }
+
         #endregion
+
         private string[] GetPossibleTroops(Classificator.BuildingEnum building)
         {
-            List<string> ret = new List<string>();
+            var ret = new List<string>();
             ret.Add("None");
             var acc = GetSelectedAcc();
             if (acc.Villages.Count == 0) return ret.ToArray(); //Acc has now been initialised
@@ -201,20 +207,22 @@ namespace TravBotSharp.Views
                 tribes.Add(Classificator.TribeEnum.Romans);
                 tribes.Add(Classificator.TribeEnum.Teutons);
             }
-            else tribes.Add(acc.AccInfo.Tribe ?? Classificator.TribeEnum.Any);
+            else
+            {
+                tribes.Add(acc.AccInfo.Tribe ?? Classificator.TribeEnum.Any);
+            }
 
             foreach (var tribe in tribes)
             {
-                int troopsEnum = ((int)tribe - 1) * 10;
+                var troopsEnum = ((int) tribe - 1) * 10;
                 for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
                 {
-                    Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
+                    var troop = (Classificator.TroopsEnum) i;
                     if (TroopsHelper.GetTroopBuilding(troop, false) == building)
-                    {
                         ret.Add(VillageHelper.EnumStrToString(troop.ToString()));
-                    }
                 }
             }
+
             return ret.ToArray();
         }
 
@@ -224,20 +232,17 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             //change vill names list
             var changeVillNames = new List<(int, string)>();
-            for (int i = 0; i < tableModelMain.Rows.Count; i++)
+            for (var i = 0; i < tableModelMain.Rows.Count; i++)
             {
                 var cells = tableModelMain.Rows[i].Cells;
-                int column = 0;
+                var column = 0;
                 //Village id
-                var id = Int32.Parse(cells[column].Text);
+                var id = int.Parse(cells[column].Text);
                 var vill = acc.Villages.First(x => x.Id == id);
 
                 //check if name is different. if it is, change the name
                 var name = cells[++column].Text;
-                if (name != vill.Name)
-                {
-                    changeVillNames.Add((id, name));
-                }
+                if (name != vill.Name) changeVillNames.Add((id, name));
                 column++;
                 UpdateBarracks(acc, vill, cells, column);
                 column++;
@@ -252,60 +257,64 @@ namespace TravBotSharp.Views
                 vill.Settings.AutoImprove = cells[column].Checked;
 
                 // Reset training
-                if (!TroopsHelper.EverythingFilled(acc, vill) && acc.Tasks != null) TroopsHelper.ReStartTroopTraining(acc, vill);
+                if (!TroopsHelper.EverythingFilled(acc, vill) && acc.Tasks != null)
+                    TroopsHelper.ReStartTroopTraining(acc, vill);
             }
+
             //Change name of village/s
             if (0 < changeVillNames.Count && acc.Tasks != null)
-            {
                 TaskExecutor.AddTaskIfNotExists(acc,
-                        new ChangeVillageName()
-                        {
-                            ExecuteAt = DateTime.Now,
-                            ChangeList = changeVillNames
-                        });
-            }
+                    new ChangeVillageName
+                    {
+                        ExecuteAt = DateTime.Now,
+                        ChangeList = changeVillNames
+                    });
         }
 
         private void UpdateBarracks(Account acc, Village vill, CellCollection cells, int column)
         {
             var text = cells[column].Text;
-            var troop = (Classificator.TroopsEnum)Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
+            var troop = (Classificator.TroopsEnum) Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
             if (troop == vill.Settings.BarracksTrain) return; //no difference
             vill.Settings.BarracksTrain = troop;
 
             if (acc.Wb == null) return;
             TroopsHelper.ReStartResearchAndImprovement(acc, vill);
         }
+
         private void UpdateStable(Account acc, Village vill, CellCollection cells, int column)
         {
             var text = cells[column].Text;
-            var troop = (Classificator.TroopsEnum)Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
+            var troop = (Classificator.TroopsEnum) Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
             if (troop == vill.Settings.StableTrain) return; //no difference
             vill.Settings.StableTrain = troop;
 
             if (acc.Wb == null) return;
             TroopsHelper.ReStartResearchAndImprovement(acc, vill);
         }
+
         private void UpdateWorkshop(Account acc, Village vill, CellCollection cells, int column)
         {
             var text = cells[column].Text;
-            var troop = (Classificator.TroopsEnum)Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
+            var troop = (Classificator.TroopsEnum) Enum.Parse(typeof(Classificator.TroopsEnum), text.Replace(" ", ""));
             if (troop == vill.Settings.WorkshopTrain) return; //no difference
             vill.Settings.WorkshopTrain = troop;
 
             if (acc.Wb == null) return;
             TroopsHelper.ReStartResearchAndImprovement(acc, vill);
         }
+
         private void UpdateGB(Account acc, Village vill, CellCollection cells, int column)
         {
-            bool enabled = cells[column].Checked;
+            var enabled = cells[column].Checked;
             if (vill.Settings.GreatBarracksTrain == enabled) return; //no difference
 
             vill.Settings.GreatBarracksTrain = enabled;
         }
+
         private void UpdateGS(Account acc, Village vill, CellCollection cells, int column)
         {
-            bool enabled = cells[column].Checked;
+            var enabled = cells[column].Checked;
             if (vill.Settings.GreatStableTrain == enabled) return; //no difference
 
             vill.Settings.GreatStableTrain = enabled;
@@ -313,18 +322,14 @@ namespace TravBotSharp.Views
 
         private void button2_Click(object sender, EventArgs e)
         {
-            List<CellChanges> selectedCells = new List<CellChanges>();
-            for (int i = 0; i < tableModelMain.Rows.Count; i++)
-            {
-                for (int y = 0; y < tableModelMain.Rows[i].SelectedItems.Count(); y++)
+            var selectedCells = new List<CellChanges>();
+            for (var i = 0; i < tableModelMain.Rows.Count; i++)
+            for (var y = 0; y < tableModelMain.Rows[i].SelectedItems.Count(); y++)
+                selectedCells.Add(new CellChanges
                 {
-                    selectedCells.Add(new CellChanges()
-                    {
-                        Cell = tableModelMain.Rows[i].SelectedItems[y],
-                        Num = tableModelMain.Rows[i].SelectedIndicies[y]
-                    });
-                }
-            }
+                    Cell = tableModelMain.Rows[i].SelectedItems[y],
+                    Num = tableModelMain.Rows[i].SelectedIndicies[y]
+                });
 
             foreach (var selectedCell in selectedCells)
             {
@@ -333,37 +338,36 @@ namespace TravBotSharp.Views
                 selectedCell.Cell.Checked = global.Checked;
             }
         }
-        private class CellChanges
-        {
-            public Cell Cell { get; set; }
-            public int Num { get; set; }
-        }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
 
-            string location = IoHelperForms.PromptUserForBuidTasksLocation();
+            var location = IoHelperForms.PromptUserForBuidTasksLocation();
             if (location == null) return;
 
-            for (int i = 0; i < tableModelMain.Rows.Count; i++)
-            {
+            for (var i = 0; i < tableModelMain.Rows.Count; i++)
                 if (tableModelMain.Rows[i].SelectedItems.Count() > 0)
                 {
                     var cells = tableModelMain.Rows[i].Cells;
                     //Village id
-                    var id = Int32.Parse(cells[0].Text);
+                    var id = int.Parse(cells[0].Text);
                     var vill = acc.Villages.First(x => x.Id == id);
 
                     IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
                 }
-            }
         }
 
         private void NYS_CheckedChanged(object sender, EventArgs e)
         {
             if (!NYS.Checked) return;
             UpdateUc();
+        }
+
+        private class CellChanges
+        {
+            public Cell Cell { get; set; }
+            public int Num { get; set; }
         }
     }
 }

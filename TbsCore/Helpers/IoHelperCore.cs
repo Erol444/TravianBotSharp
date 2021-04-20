@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using TbsCore.Database;
 using TbsCore.Helpers;
 using TbsCore.Models.Access;
@@ -21,25 +21,36 @@ namespace TravBotSharp.Files.Helpers
         public static string AccountsPath => Path.Combine(TbsPath, "accounts.txt");
         public static string CachePath => Path.Combine(TbsPath, "cache");
         public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
+
         public static string TbsPath =>
             Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TravBotSharp");
-        public static bool SQLiteExists() => File.Exists(SqlitePath);
-        public static bool AccountsTxtExists() => File.Exists(AccountsPath);
-        public static string GetCacheDir(string username, string server, Access access)
-        {
-            return Path.Combine(IoHelperCore.CachePath, GetCacheFolder(username, server, access.Proxy));
-        }
+
         /// <summary>
-        /// Gets set by WinForms on startup, so TbsCore can alert user (sound+popup)
+        ///     Gets set by WinForms on startup, so TbsCore can alert user (sound+popup)
         /// </summary>
         public static Func<string, bool> AlertUser { get; set; }
 
+        public static bool SQLiteExists()
+        {
+            return File.Exists(SqlitePath);
+        }
+
+        public static bool AccountsTxtExists()
+        {
+            return File.Exists(AccountsPath);
+        }
+
+        public static string GetCacheDir(string username, string server, Access access)
+        {
+            return Path.Combine(CachePath, GetCacheFolder(username, server, access.Proxy));
+        }
+
         public static void AddBuildTasksFromFile(Account acc, Village vill, string location)
         {
-            List<BuildingTask> tasks = new List<BuildingTask>();
+            var tasks = new List<BuildingTask>();
             try
             {
-                using (StreamReader sr = new StreamReader(location))
+                using (var sr = new StreamReader(location))
                 {
                     // If .trbc file, decode into List<BuildTask>
                     if (Path.GetExtension(location).Equals(".TRBC", StringComparison.CurrentCultureIgnoreCase))
@@ -47,15 +58,18 @@ namespace TravBotSharp.Files.Helpers
                         var trbc = JsonConvert.DeserializeObject<TbRoot>(sr.ReadToEnd());
                         tasks = DecodeTrbc(trbc);
                     }
-                    else tasks = JsonConvert.DeserializeObject<List<BuildingTask>>(sr.ReadToEnd());
+                    else
+                    {
+                        tasks = JsonConvert.DeserializeObject<List<BuildingTask>>(sr.ReadToEnd());
+                    }
                 }
             }
-            catch (Exception) { return; } // User canceled
-
-            foreach (var task in tasks)
+            catch (Exception)
             {
-                BuildingHelper.AddBuildingTask(acc, vill, task);
-            }
+                return;
+            } // User canceled
+
+            foreach (var task in tasks) BuildingHelper.AddBuildingTask(acc, vill, task);
             BuildingHelper.RemoveCompletedTasks(vill, acc);
         }
 
@@ -69,7 +83,7 @@ namespace TravBotSharp.Files.Helpers
                 {
                     Level = cmd.level
                 };
-                if (cmd.bid > 0) task.BuildingId = (byte)cmd.bid;
+                if (cmd.bid > 0) task.BuildingId = (byte) cmd.bid;
 
                 switch (cmd.cmdType)
                 {
@@ -90,14 +104,16 @@ namespace TravBotSharp.Files.Helpers
                         break;
                     default: // Normal build?
                         task.TaskType = Classificator.BuildingType.General;
-                        task.Building = (Classificator.BuildingEnum)cmd.gid;
+                        task.Building = (Classificator.BuildingEnum) cmd.gid;
                         break;
                 }
 
                 tasks.Add(task);
             }
+
             return tasks;
         }
+
         private static ResTypeEnum GetTrBuilderResType(int gid)
         {
             switch (gid)
@@ -106,16 +122,17 @@ namespace TravBotSharp.Files.Helpers
                 case 61: return ResTypeEnum.ExcludeCrop;
                 case 62: return ResTypeEnum.OnlyCrop;
             }
+
             return ResTypeEnum.AllResources;
         }
 
         /// <summary>
-        /// Removes the cache folders that were created by Selenium driver, since they take a lot of space (70MB+)
+        ///     Removes the cache folders that were created by Selenium driver, since they take a lot of space (70MB+)
         /// </summary>
         /// <param name="acc">Account</param>
         public static void RemoveCache(Account acc)
         {
-            var userFolder = IoHelperCore.GetCacheFolder(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl, "");
+            var userFolder = GetCacheFolder(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl, "");
 
             var removeFolders = Directory
                 .GetDirectories(CachePath + "\\")
@@ -124,14 +141,11 @@ namespace TravBotSharp.Files.Helpers
 
             if (removeFolders == null) return;
 
-            for (int i = 0; i < removeFolders.Count(); i++)
-            {
-                Directory.Delete(removeFolders[i], true);
-            }
+            for (var i = 0; i < removeFolders.Count(); i++) Directory.Delete(removeFolders[i], true);
         }
 
         /// <summary>
-        /// Removes the protocol (http/https) text from the url
+        ///     Removes the protocol (http/https) text from the url
         /// </summary>
         /// <param name="url">Url</param>
         /// <returns>Shortened url</returns>
@@ -141,8 +155,8 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Read accounts from the accounts.txt file
-        /// TODO: remove in future version
+        ///     Read accounts from the accounts.txt file
+        ///     TODO: remove in future version
         /// </summary>
         /// <returns>Accounts saved in the file</returns>
         public static List<Account> ReadAccounts()
@@ -151,12 +165,13 @@ namespace TravBotSharp.Files.Helpers
             try
             {
                 // Open the text file using a stream reader.
-                System.IO.Directory.CreateDirectory(IoHelperCore.TbsPath);
+                Directory.CreateDirectory(TbsPath);
 
-                using (StreamReader sr = new StreamReader(IoHelperCore.AccountsPath))
+                using (var sr = new StreamReader(AccountsPath))
                 {
                     accounts = JsonConvert.DeserializeObject<List<Account>>(sr.ReadToEnd());
                 }
+
                 if (accounts == null) accounts = new List<Account>();
 
                 accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
@@ -165,11 +180,12 @@ namespace TravBotSharp.Files.Helpers
             {
                 Console.WriteLine(", Exception thrown: " + e.Message);
             }
+
             return accounts;
         }
 
         /// <summary>
-        /// Cache folder selenium will use for this account
+        ///     Cache folder selenium will use for this account
         /// </summary>
         /// <param name="username">Username</param>
         /// <param name="server">Server url</param>
@@ -177,11 +193,11 @@ namespace TravBotSharp.Files.Helpers
         /// <returns></returns>
         internal static string GetCacheFolder(string username, string server, string proxy)
         {
-            return $"{username}_{IoHelperCore.UrlRemoveHttp(server)}_{proxy}";
+            return $"{username}_{UrlRemoveHttp(server)}_{proxy}";
         }
 
         /// <summary>
-        /// Saves accounts into the SQLite DB
+        ///     Saves accounts into the SQLite DB
         /// </summary>
         /// <param name="accounts"></param>
         public static void SaveAccounts(List<Account> accounts, bool logout)
@@ -194,7 +210,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Login into account and initialize everything
+        ///     Login into account and initialize everything
         /// </summary>
         /// <param name="acc">Account</param>
         public static async Task LoginAccount(Account acc)
@@ -212,8 +228,9 @@ namespace TravBotSharp.Files.Helpers
                 AccountHelper.StartAccountTasks(acc);
             }
         }
+
         /// <summary>
-        /// Logout from the account. Closes web driver.
+        ///     Logout from the account. Closes web driver.
         /// </summary>
         /// <param name="acc"></param>
         public static void Logout(Account acc)
@@ -223,11 +240,13 @@ namespace TravBotSharp.Files.Helpers
                 acc.TaskTimer.Dispose();
                 acc.TaskTimer = default;
             }
+
             if (acc.Wb != null)
             {
                 acc.Wb.Dispose();
                 acc.Wb = default;
             }
+
             acc.Tasks = default; //TODO: somehow save tasks, JSON cant parse/stringify abstract classes :(
         }
     }

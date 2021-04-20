@@ -20,24 +20,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
                 return TaskRes.Executed;
 
-            if (this.Resources == null)
-            {
-                this.Resources = Vill.Res.Stored.Resources;
-            }
+            if (Resources == null) Resources = Vill.Res.Stored.Resources;
             // Check if we have enough resources in main village
-            var resToSend = MarketHelper.SendResCapToStorage(acc, this.Resources);
+            var resToSend = MarketHelper.SendResCapToStorage(acc, Resources);
 
-            var targetVillage = acc.Villages.FirstOrDefault(x => x.Coordinates == this.Coordinates);
+            var targetVillage = acc.Villages.FirstOrDefault(x => x.Coordinates == Coordinates);
 
             var duration = await MarketHelper.MarketSendResource(acc, resToSend, targetVillage, this);
 
             var targetVill = acc.Villages.FirstOrDefault(x => x.Coordinates == Coordinates);
             targetVill.Market.Settings.Configuration.TransitArrival = DateTime.Now.Add(duration);
 
-            if (this.Configuration != null && duration != null)
-            {
-                this.Configuration.TransitArrival = DateTime.Now.Add(duration);
-            }
+            if (Configuration != null && duration != null) Configuration.TransitArrival = DateTime.Now.Add(duration);
             // When you send resources there actually isn't a page load
             return TaskRes.Executed;
         }

@@ -1,22 +1,19 @@
 ﻿using System;
-using System.Windows.Forms;
 using System.Drawing;
-
-using TravBotSharp.Interfaces;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
-
-using TbsCore.Models.VillageModels;
+using System.Windows.Forms;
 using TbsCore.Models.SendTroopsModels;
-using TbsCore.Models.MapModels;
-using TbsCore.Models.AccModels;
+using TbsCore.Models.VillageModels;
+using TravBotSharp.Files.Helpers;
+using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Forms;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
     public partial class FarmingNonGoldUc : BaseVillageUc, ITbsUc
     {
+        private int currentFarmList_index;
+
         public FarmingNonGoldUc()
         {
             InitializeComponent();
@@ -24,8 +21,6 @@ namespace TravBotSharp.Views
             troopsSelectorUc1.TroopsEditable = false;
             troopsSelectorUc1.HeroEditable = false;
         }
-
-        private int currentFarmList_index;
 
         public void UpdateUc()
         {
@@ -36,9 +31,7 @@ namespace TravBotSharp.Views
 
             comboBox_NameList.Items.Clear();
             for (var i = 0; i < vill.FarmingNonGold.ListFarm.Count; i++)
-            {
                 comboBox_NameList.Items.Add(vill.FarmingNonGold.ListFarm[i].Name);
-            }
             if (vill.FarmingNonGold.ListFarm.Count > 0)
             {
                 comboBox_NameList.SelectedIndex = 0;
@@ -53,7 +46,7 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        /// Updates FarmList ListView
+        ///     Updates FarmList ListView
         /// </summary>
         /// <param name="index">FarmList index</param>
         private void UpdateFarmList(int index)
@@ -65,15 +58,18 @@ namespace TravBotSharp.Views
 
             farmingList.Items.Clear();
             for (var i = 0; i < targets.Count; i++)
-            {
-                try { AddFarmToViewList(targets[i]); }
-                catch { }
-            }
+                try
+                {
+                    AddFarmToViewList(targets[i]);
+                }
+                catch
+                {
+                }
         }
 
         private void AddFarmToViewList(Farm farm)
         {
-            ListViewItem item = new ListViewItem();
+            var item = new ListViewItem();
             item.SubItems[0].Text = (farmingList.Items.Count + 1).ToString();
             item.SubItems.Add(farm.Coords.x.ToString());
             item.SubItems.Add(farm.Coords.y.ToString());
@@ -84,12 +80,12 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        /// Create new FarmList
+        ///     Create new FarmList
         /// </summary>
-        private void button1_Click(object sender, System.EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             var addName = new AddNewFarmListNameForm();
-            DialogResult dr = addName.ShowDialog(this);
+            var dr = addName.ShowDialog(this);
             if (dr == DialogResult.Cancel)
             {
                 addName.Close();
@@ -112,16 +108,13 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        /// Add
+        ///     Add
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button2_Click(object sender, System.EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
-            if (comboBox_NameList.Text == "")
-            {
-                return;
-            }
+            if (comboBox_NameList.Text == "") return;
 
             var vill = GetSelectedVillage();
             if (vill == null) return;
@@ -138,16 +131,13 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        /// Update
+        ///     Update
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button4_Click(object sender, System.EventArgs e)
+        private void button4_Click(object sender, EventArgs e)
         {
-            if (comboBox_NameList.Text == "")
-            {
-                return;
-            }
+            if (comboBox_NameList.Text == "") return;
 
             var vill = GetSelectedVillage();
             if (vill == null) return;
@@ -165,22 +155,24 @@ namespace TravBotSharp.Views
             }
         }
 
-        private FarmList GetSelectedFl() =>
-            GetSelectedVillage().FarmingNonGold.ListFarm[currentFarmList_index];
-        private Farm GetSelectedFarm() =>
-            GetSelectedFl().Targets[farmingList.FocusedItem.Index];
+        private FarmList GetSelectedFl()
+        {
+            return GetSelectedVillage().FarmingNonGold.ListFarm[currentFarmList_index];
+        }
+
+        private Farm GetSelectedFarm()
+        {
+            return GetSelectedFl().Targets[farmingList.FocusedItem.Index];
+        }
 
         /// <summary>
-        /// Delete
+        ///     Delete
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button3_Click(object sender, System.EventArgs e)
+        private void button3_Click(object sender, EventArgs e)
         {
-            if (comboBox_NameList.Text == "")
-            {
-                return;
-            }
+            if (comboBox_NameList.Text == "") return;
 
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
@@ -193,11 +185,11 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        /// Clear
+        ///     Clear
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button5_Click(object sender, System.EventArgs e)
+        private void button5_Click(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
@@ -209,11 +201,11 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        /// Attack
+        ///     Attack
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void button7_Click(object sender, System.EventArgs e)
+        private void button7_Click(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
@@ -222,11 +214,11 @@ namespace TravBotSharp.Views
             SendTroops taskSendTroops;
             foreach (var f in GetSelectedFl().Targets)
             {
-                taskSendTroops = new SendTroops()
+                taskSendTroops = new SendTroops
                 {
                     ExecuteAt = DateTime.Now,
                     Vill = vill,
-                    TroopsMovement = new TroopsSendModel()
+                    TroopsMovement = new TroopsSendModel
                     {
                         TargetCoordinates = f.Coords,
                         Troops = f.Troops,
@@ -238,20 +230,20 @@ namespace TravBotSharp.Views
             }
         }
 
-        private void comboBox_NameList_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void comboBox_NameList_SelectedIndexChanged(object sender, EventArgs e)
         {
             currentFarmList_index = comboBox_NameList.SelectedIndex;
 
             UpdateFarmList(currentFarmList_index);
         }
 
-        private void farmingList_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void farmingList_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateFarmTroops();
         }
 
         /// <summary>
-        /// Updates TroopsSelectorUc that displays the troop count of the selected farm
+        ///     Updates TroopsSelectorUc that displays the troop count of the selected farm
         /// </summary>
         private void UpdateFarmTroops()
         {
@@ -264,16 +256,13 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        /// more farm
+        ///     more farm
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void button6_Click(object sender, EventArgs e)
         {
-            if (comboBox_NameList.Text == "")
-            {
-                return;
-            }
+            if (comboBox_NameList.Text == "") return;
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
             if (vill == null) return;
@@ -286,11 +275,12 @@ namespace TravBotSharp.Views
             }
 
             var fl = GetSelectedFl();
-            if(fl == null)
+            if (fl == null)
             {
                 MessageUser("No FL selected!");
                 return;
             }
+
             var label = $"Inactive farm finder for the (Non-Goldclub) Farm List {fl.Name}";
             using (var form = new InactiveFinder(acc, label))
             {
@@ -304,7 +294,10 @@ namespace TravBotSharp.Views
                 }
             }
         }
-        private void MessageUser(string message) =>
+
+        private void MessageUser(string message)
+        {
             MessageBox.Show(message, "Error", MessageBoxButtons.OK);
+        }
     }
 }

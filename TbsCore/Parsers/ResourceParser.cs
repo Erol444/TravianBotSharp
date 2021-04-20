@@ -1,7 +1,8 @@
-﻿using HtmlAgilityPack;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using HtmlAgilityPack;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
@@ -12,7 +13,7 @@ namespace TravBotSharp.Files.Parsers
     {
         private static long ParseHtml(string text)
         {
-            string decoded = System.Net.WebUtility.HtmlDecode(text);
+            var decoded = WebUtility.HtmlDecode(text);
             return Parser.RemoveNonNumeric(decoded);
         }
 
@@ -21,41 +22,49 @@ namespace TravBotSharp.Files.Parsers
             switch (version)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    var fields = htmlDoc.GetElementbyId("village_map").Descendants("div").Where(x => !x.HasClass("labelLayer")).ToList();
-                    List<Building> resFields = new List<Building>();
-                    for (int i = 0; i < 18; i++)
+                    var fields = htmlDoc.GetElementbyId("village_map").Descendants("div")
+                        .Where(x => !x.HasClass("labelLayer")).ToList();
+                    var resFields = new List<Building>();
+                    for (var i = 0; i < 18; i++)
                     {
                         var vals = fields.ElementAt(i).GetAttributeValue("class", "").Split(' ');
                         var building = new Building();
 
                         var aid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("aid")).Replace("aid", ""));
-                        var lvl = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("level") && x != "level").Replace("level", ""));
+                        var lvl = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("level") && x != "level")
+                            .Replace("level", ""));
                         var gid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("gid")).Replace("gid", ""));
                         var uc = vals.Contains("underConstruction");
 
                         building.Init(aid, lvl, gid, uc);
                         resFields.Add(building);
                     }
+
                     return resFields;
                 case Classificator.ServerVersionEnum.T4_5:
-                    var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.HasClass("level")).ToList();
-                    List<Building> resFields5 = new List<Building>();
+                    var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes
+                        .Where(x => x.HasClass("level")).ToList();
+                    var resFields5 = new List<Building>();
                     foreach (var field in fields5)
                     {
                         var vals = field.GetClasses(); //.GetAttributeValue("class", "").Split(' ');
                         //fields5.ElementAt(1).GetClasses().
                         var building = new Building();
 
-                        var aid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("buildingSlot")).Replace("buildingSlot", ""));
-                        var lvl = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("level") && x != "level").Replace("level", ""));
+                        var aid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("buildingSlot"))
+                            .Replace("buildingSlot", ""));
+                        var lvl = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("level") && x != "level")
+                            .Replace("level", ""));
                         var gid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("gid")).Replace("gid", ""));
                         var uc = vals.Contains("underConstruction");
 
                         building.Init(aid, lvl, gid, uc);
                         resFields5.Add(building);
                     }
+
                     return resFields5;
             }
+
             return null;
         }
 
@@ -73,17 +82,14 @@ namespace TravBotSharp.Files.Parsers
         }
 
         /// <summary>
-        /// TODO: finish
+        ///     TODO: finish
         /// </summary>
         /// <param name="node"></param>
         /// <returns></returns>
         public static Resources ParseResourcesMerchants(HtmlNode node)
         {
             var imgs = node.Descendants("img").ToList();
-            Resources res = new Resources()
-            {
-                //Wood = imgs.First(x => x.HasClass("r1"));
-            };
+            var res = new Resources();
             /*
                          <tr class="res">
                 <th>Resources</th>

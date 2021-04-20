@@ -9,18 +9,20 @@ using TravBotSharp.Files.TravianData;
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     /// <summary>
-    /// Sends resources from main village to target village so it can fill up the troops to above X hours
-    /// Will try to fill troops to to 50% above selected hours in advance
-    /// So if we want to keep barracks filled for 4h in advance, on this task we will send enough res to fill for up to
-    /// 6 hours in advance.
+    ///     Sends resources from main village to target village so it can fill up the troops to above X hours
+    ///     Will try to fill troops to to 50% above selected hours in advance
+    ///     So if we want to keep barracks filled for 4h in advance, on this task we will send enough res to fill for up to
+    ///     6 hours in advance.
     /// </summary>
     public class SendResFillTroops : BotTask
     {
         /// <summary>
-        /// Village to send resources to
+        ///     Village to send resources to
         /// </summary>
         public Village TargetVill { get; set; }
+
         public TrainTroops TrainTask { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
@@ -42,12 +44,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (maxTroopsToTrain < trainNum) trainNum = maxTroopsToTrain;
 
             //calculate how many resources we need to train trainNum of troops
-            long[] neededRes = troopCost.Select(x => x * trainNum).ToArray();
+            var neededRes = troopCost.Select(x => x * trainNum).ToArray();
 
             //if we have already enough resources in the target village, no need to send anything
             if (ResourcesHelper.IsEnoughRes(targetVillStoredRes, neededRes))
             {
-                this.TrainTask.ExecuteAt = DateTime.Now;
+                TrainTask.ExecuteAt = DateTime.Now;
                 TaskExecutor.ReorderTaskList(acc);
                 return TaskRes.Executed;
             }
@@ -60,12 +62,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var transitTimespan = await MarketHelper.MarketSendResource(acc, sendRes, TargetVill, this);
 
             //train the troops in the target village after we send the needed
-            this.TrainTask.ExecuteAt = DateTime.Now.Add(transitTimespan).AddSeconds(5);
+            TrainTask.ExecuteAt = DateTime.Now.Add(transitTimespan).AddSeconds(5);
             TaskExecutor.ReorderTaskList(acc);
 
             //TODO: Update marketplace sending
             return TaskRes.Executed;
-
         }
     }
 }

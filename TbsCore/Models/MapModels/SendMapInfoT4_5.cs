@@ -9,6 +9,7 @@ namespace TbsCore.Models.MapModels
             public List<Datum> data { get; set; }
             public int zoomLevel { get; set; }
         }
+
         public class Position
         {
             public int x0 { get; set; }

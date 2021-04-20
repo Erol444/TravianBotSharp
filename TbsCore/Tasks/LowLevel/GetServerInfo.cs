@@ -12,11 +12,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // Get Map size
             var size = DriverHelper.GetJsObj<long>(acc, "window.TravianDefaults.Map.Size.top");
-            acc.AccInfo.MapSize = (int)size;
+            acc.AccInfo.MapSize = (int) size;
 
             // Get server speed
             var speed = DriverHelper.GetJsObj<long>(acc, "Travian.Game.speed");
-            acc.AccInfo.ServerSpeed = (int)speed;
+            acc.AccInfo.ServerSpeed = (int) speed;
 
             return TaskRes.Executed;
         }

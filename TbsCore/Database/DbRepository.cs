@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.Database;
 using TravBotSharp.Files.Helpers;
@@ -24,6 +24,7 @@ namespace TbsCore.Database
                 {
                     Console.WriteLine("Exception thrown: " + e.Message);
                 }
+
                 return new List<Account>();
             }
         }
@@ -35,13 +36,9 @@ namespace TbsCore.Database
                 var saved = FindDbAccount(acc, context);
 
                 if (saved == null)
-                {
                     context.DbAccount.Add(ConvertAcc(acc));
-                }
                 else
-                {
                     saved.JsonData = JsonConvert.SerializeObject(acc);
-                }
 
                 context.SaveChanges();
             }
@@ -63,26 +60,28 @@ namespace TbsCore.Database
                 var accs = IoHelperCore.ReadAccounts();
                 var dbAccs = new List<DbAccount>(accs.Count);
 
-                foreach (var acc in accs)
-                {
-                    dbAccs.Add(ConvertAcc(acc));
-                }
+                foreach (var acc in accs) dbAccs.Add(ConvertAcc(acc));
 
                 context.DbAccount.AddRange(dbAccs);
                 context.SaveChanges();
             }
         }
 
-        private static DbAccount FindDbAccount(Account acc, TbsContext context) =>
-            context.DbAccount.FirstOrDefault(x => x.Username == acc.AccInfo.Nickname && x.Server == acc.AccInfo.ServerUrl);
+        private static DbAccount FindDbAccount(Account acc, TbsContext context)
+        {
+            return context.DbAccount.FirstOrDefault(x =>
+                x.Username == acc.AccInfo.Nickname && x.Server == acc.AccInfo.ServerUrl);
+        }
 
-        private static DbAccount ConvertAcc(Account acc) =>
-            new DbAccount
+        private static DbAccount ConvertAcc(Account acc)
+        {
+            return new DbAccount
             {
                 Username = acc.AccInfo.Nickname,
                 Server = acc.AccInfo.ServerUrl,
                 JsonData = JsonConvert.SerializeObject(acc)
             };
+        }
     }
 
     //public class RawAcc

@@ -13,12 +13,14 @@ namespace TravBotSharp.Views
 {
     public partial class OverviewUc : TbsBaseUc, ITbsUc
     {
-        TableModel tableModelMain = new TableModel();
-        TableModel tableModelGlobal = new TableModel();
+        private readonly TableModel tableModelGlobal = new TableModel();
+        private readonly TableModel tableModelMain = new TableModel();
+
         public OverviewUc()
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -81,10 +83,12 @@ namespace TravBotSharp.Views
             //r1.Cells.Add(new Cell("", false)); // Big celebrations
             //tableModelGlobal.Rows.Add(r);
         }
+
         #region Initialize table columns
+
         private void InitTable()
         {
-            ColumnModel columnModel = new ColumnModel();
+            var columnModel = new ColumnModel();
 
             // set the Table's ColumModel and TableModel
             table1.ColumnModel = columnModel;
@@ -93,7 +97,7 @@ namespace TravBotSharp.Views
             table1.TableModel = tableModelMain;
 
             //VillageId
-            TextColumn villId = new TextColumn
+            var villId = new TextColumn
             {
                 Editable = false,
                 Text = "Id",
@@ -102,7 +106,7 @@ namespace TravBotSharp.Views
             };
             columnModel.Columns.Add(villId);
             //Village name
-            TextColumn vill = new TextColumn
+            var vill = new TextColumn
             {
                 Editable = true,
                 Text = "Village",
@@ -112,24 +116,24 @@ namespace TravBotSharp.Views
             columnModel.Columns.Add(vill);
 
             //Village type
-            ComboBoxColumn typeColumn = new ComboBoxColumn
+            var typeColumn = new ComboBoxColumn
             {
                 Text = "Type",
                 ToolTipText = "Type of the village",
                 Width = 70
             };
 
-            ComboBoxCellEditor typeEditor = new ComboBoxCellEditor
+            var typeEditor = new ComboBoxCellEditor
             {
                 DropDownStyle = DropDownStyle.DropDownList
             };
-            typeEditor.Items.AddRange(new string[] { "Farm", "Support", "Deff", "Off" });
+            typeEditor.Items.AddRange(new[] {"Farm", "Support", "Deff", "Off"});
             typeColumn.Editor = typeEditor;
 
             columnModel.Columns.Add(typeColumn);
 
             //get resources for building
-            CheckBoxColumn GetRes = new CheckBoxColumn
+            var GetRes = new CheckBoxColumn
             {
                 Text = "Get Res",
                 Width = 60,
@@ -144,11 +148,11 @@ namespace TravBotSharp.Views
                 ToolTipText = "Select where to send resources when too many"
             });
 
-            ComboBoxCellEditor celebrationsEditor = new ComboBoxCellEditor
+            var celebrationsEditor = new ComboBoxCellEditor
             {
                 DropDownStyle = DropDownStyle.DropDownList
             };
-            celebrationsEditor.Items.AddRange(new string[] { "None", "Small", "Big" });
+            celebrationsEditor.Items.AddRange(new[] {"None", "Small", "Big"});
 
             columnModel.Columns.Add(new ComboBoxColumn
             {
@@ -171,11 +175,11 @@ namespace TravBotSharp.Views
                 ToolTipText = "Use hero resources"
             });
             // Donate resources to ally bonus
-            ComboBoxCellEditor donationEditor = new ComboBoxCellEditor
+            var donationEditor = new ComboBoxCellEditor
             {
                 DropDownStyle = DropDownStyle.DropDownList
             };
-            donationEditor.Items.AddRange(new string[] { "None", "ExcludeCrop", "OnlyCrop" });
+            donationEditor.Items.AddRange(new[] {"None", "ExcludeCrop", "OnlyCrop"});
 
             columnModel.Columns.Add(new ComboBoxColumn
             {
@@ -184,8 +188,8 @@ namespace TravBotSharp.Views
                 ToolTipText = "Donate resources to the ally bonuses",
                 Editor = donationEditor
             });
-
         }
+
         #endregion
 
         //Save button
@@ -194,20 +198,17 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             //change vill names list
             var changeVillNames = new List<(int, string)>();
-            for (int i = 0; i < tableModelMain.Rows.Count; i++)
+            for (var i = 0; i < tableModelMain.Rows.Count; i++)
             {
                 var cells = tableModelMain.Rows[i].Cells;
-                int column = 0;
+                var column = 0;
                 //Village id
-                var id = Int32.Parse(cells[column].Text);
+                var id = int.Parse(cells[column].Text);
                 var vill = acc.Villages.First(x => x.Id == id);
 
                 //check if name is different. if it is, change the name
                 var name = cells[++column].Text;
-                if (name != vill.Name)
-                {
-                    changeVillNames.Add((id, name));
-                }
+                if (name != vill.Name) changeVillNames.Add((id, name));
                 column++;
                 UpdateVillageType(vill, cells, column);
                 column++;
@@ -215,32 +216,32 @@ namespace TravBotSharp.Views
                 column++;
                 vill.Settings.SendRes = cells[column].Checked;
                 column++;
-                vill.Expansion.Celebrations = (CelebrationEnum)Enum.Parse(typeof(CelebrationEnum), cells[column].Text);
+                vill.Expansion.Celebrations = (CelebrationEnum) Enum.Parse(typeof(CelebrationEnum), cells[column].Text);
                 column++;
                 vill.Settings.AutoExpandStorage = cells[column].Checked;
                 column++;
                 vill.Settings.UseHeroRes = cells[column].Checked;
                 column++;
-                vill.Settings.Donate = (DonateEnum)Enum.Parse(typeof(DonateEnum), cells[column].Text);
+                vill.Settings.Donate = (DonateEnum) Enum.Parse(typeof(DonateEnum), cells[column].Text);
 
-                if (vill.Expansion.Celebrations != CelebrationEnum.None && acc.Tasks != null) AccountHelper.ReStartCelebration(acc, vill);
+                if (vill.Expansion.Celebrations != CelebrationEnum.None && acc.Tasks != null)
+                    AccountHelper.ReStartCelebration(acc, vill);
             }
+
             //Change name of village/s
             if (0 < changeVillNames.Count && acc.Tasks != null)
-            {
                 TaskExecutor.AddTaskIfNotExists(acc,
-                        new ChangeVillageName()
-                        {
-                            ExecuteAt = DateTime.Now,
-                            ChangeList = changeVillNames
-                        });
-            }
+                    new ChangeVillageName
+                    {
+                        ExecuteAt = DateTime.Now,
+                        ChangeList = changeVillNames
+                    });
         }
 
         private void UpdateVillageType(Village vill, CellCollection cells, int column)
         {
             var acc = GetSelectedAcc();
-            var type = (VillType)Enum.Parse(typeof(VillType), cells[column].Text);
+            var type = (VillType) Enum.Parse(typeof(VillType), cells[column].Text);
             if (type == vill.Settings.Type) return;
             vill.Settings.Type = type;
 
@@ -265,18 +266,14 @@ namespace TravBotSharp.Views
 
         private void button2_Click(object sender, EventArgs e)
         {
-            List<CellChanges> selectedCells = new List<CellChanges>();
-            for (int i = 0; i < tableModelMain.Rows.Count; i++)
-            {
-                for (int y = 0; y < tableModelMain.Rows[i].SelectedItems.Count(); y++)
+            var selectedCells = new List<CellChanges>();
+            for (var i = 0; i < tableModelMain.Rows.Count; i++)
+            for (var y = 0; y < tableModelMain.Rows[i].SelectedItems.Count(); y++)
+                selectedCells.Add(new CellChanges
                 {
-                    selectedCells.Add(new CellChanges()
-                    {
-                        Cell = tableModelMain.Rows[i].SelectedItems[y],
-                        Num = tableModelMain.Rows[i].SelectedIndicies[y]
-                    });
-                }
-            }
+                    Cell = tableModelMain.Rows[i].SelectedItems[y],
+                    Num = tableModelMain.Rows[i].SelectedIndicies[y]
+                });
 
             foreach (var selectedCell in selectedCells)
             {
@@ -285,32 +282,30 @@ namespace TravBotSharp.Views
                 selectedCell.Cell.Checked = global.Checked;
             }
         }
-        private class CellChanges
-        {
-            public Cell Cell { get; set; }
-            public int Num { get; set; }
-        }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
 
-            string location = IoHelperForms.PromptUserForBuidTasksLocation();
+            var location = IoHelperForms.PromptUserForBuidTasksLocation();
             if (location == null) return;
 
-            for (int i = 0; i < tableModelMain.Rows.Count; i++)
-            {
+            for (var i = 0; i < tableModelMain.Rows.Count; i++)
                 if (tableModelMain.Rows[i].SelectedItems.Count() > 0)
                 {
                     var cells = tableModelMain.Rows[i].Cells;
                     //Village id
-                    var id = Int32.Parse(cells[0].Text);
+                    var id = int.Parse(cells[0].Text);
                     var vill = acc.Villages.First(x => x.Id == id);
 
                     IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
                 }
-            }
+        }
 
+        private class CellChanges
+        {
+            public Cell Cell { get; set; }
+            public int Num { get; set; }
         }
     }
 }

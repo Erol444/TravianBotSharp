@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -13,9 +12,8 @@ namespace TravBotSharp.Views
 {
     public partial class VillagesUc : TbsBaseUc, ITbsUc
     {
-        private int villSelected = 0;
-
-        private ITbsUc[] Ucs;
+        private readonly ITbsUc[] Ucs;
+        private int villSelected;
 
         public VillagesUc()
         {
@@ -29,7 +27,7 @@ namespace TravBotSharp.Views
                 troopsUc1,
                 attackUc1,
                 farmingNonGoldUc1,
-                infoUc1,
+                infoUc1
             };
 
             // Initialize all the views
@@ -37,7 +35,10 @@ namespace TravBotSharp.Views
         }
 
         // To satisfy Interface
-        public void UpdateUc() => UpdateUc(true);
+        public void UpdateUc()
+        {
+            UpdateUc(true);
+        }
 
         private void UpdateUc(bool updateVillList = true)
         {
@@ -49,7 +50,7 @@ namespace TravBotSharp.Views
             if (updateVillList)
             {
                 VillagesListView.Items.Clear();
-                for (int i = 0; i < acc.Villages.Count; i++) // Update villages list
+                for (var i = 0; i < acc.Villages.Count; i++) // Update villages list
                 {
                     var item = new ListViewItem();
                     item.SubItems[0].Text = acc.Villages[i].Name;
@@ -75,10 +76,12 @@ namespace TravBotSharp.Views
                 main.RefreshAccView();
                 return null;
             }
+
             return acc.Villages.ElementAtOrDefault(villSelected);
         }
 
-        private void VillagesListView_SelectedIndexChanged(object sender, EventArgs e) //update building tab if its selected
+        private void
+            VillagesListView_SelectedIndexChanged(object sender, EventArgs e) //update building tab if its selected
         {
             var indicies = VillagesListView.SelectedIndices;
             if (indicies.Count > 0)
@@ -107,7 +110,7 @@ namespace TravBotSharp.Views
 
         private void RefreshVillage(Account acc, Village vill) // Refresh village
         {
-            TaskExecutor.AddTask(acc, new UpdateVillage()
+            TaskExecutor.AddTask(acc, new UpdateVillage
             {
                 ExecuteAt = DateTime.Now.AddHours(-1),
                 Vill = vill,

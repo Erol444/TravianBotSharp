@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.IO;
+﻿using System.IO;
+using Microsoft.EntityFrameworkCore;
 using TbsCore.Models.Database;
 using TravBotSharp.Files.Helpers;
 
@@ -12,13 +12,16 @@ namespace TbsCore.Database
             if (!Directory.Exists(IoHelperCore.TbsPath)) Directory.CreateDirectory(IoHelperCore.TbsPath);
             Database.EnsureCreated();
         }
-        public TbsContext(DbContextOptions<TbsContext> options) : base(options) { }
+
+        public TbsContext(DbContextOptions<TbsContext> options) : base(options)
+        {
+        }
 
         public DbSet<DbAccount> DbAccount { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite($"Data Source={@IoHelperCore.SqlitePath}");
+            optionsBuilder.UseSqlite($"Data Source={IoHelperCore.SqlitePath}");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

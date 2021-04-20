@@ -11,18 +11,18 @@ using TbsCore.Database;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
+using Timer = System.Timers.Timer;
 
 namespace TravBotSharp
 {
     public partial class ControlPanel : Form
     {
-        private List<Account> accounts = new List<Account>();
-        private int accSelected = 0;
-        private System.Timers.Timer saveAccountsTimer;
+        private readonly Timer saveAccountsTimer;
 
-        private ITbsUc[] Ucs;
+        private readonly ITbsUc[] Ucs;
+        private List<Account> accounts = new List<Account>();
+        private int accSelected;
 
         public ControlPanel()
         {
@@ -43,13 +43,13 @@ namespace TravBotSharp
                 newVillagesUc1,
                 deffendingUc1,
                 questsUc1,
-                debugUc1,
+                debugUc1
             };
 
             // Initialize all the views
             foreach (var uc in Ucs) uc.Init(this);
 
-            saveAccountsTimer = new System.Timers.Timer(1000 * 60 * 30); // Every 30 min
+            saveAccountsTimer = new Timer(1000 * 60 * 30); // Every 30 min
             saveAccountsTimer.Elapsed += SaveAccounts_TimerElapsed;
             saveAccountsTimer.Start();
             saveAccountsTimer.Enabled = true;
@@ -59,7 +59,10 @@ namespace TravBotSharp
             IoHelperCore.AlertUser = IoHelperForms.AlertUser;
         }
 
-        private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);
+        private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            IoHelperCore.SaveAccounts(accounts, false);
+        }
 
         private void LoadAccounts()
         {
@@ -102,12 +105,12 @@ namespace TravBotSharp
         }
 
         /// <summary>
-        /// Refreshes the account view. Account currently selected will be colored in blue.
+        ///     Refreshes the account view. Account currently selected will be colored in blue.
         /// </summary>
         public void RefreshAccView()
         {
             accListView.Items.Clear();
-            for (int i = 0; i < accounts.Count; i++)
+            for (var i = 0; i < accounts.Count; i++)
             {
                 var access = accounts[i].Access.GetCurrentAccess();
                 InsertAccIntoListView(accounts[i].AccInfo.Nickname,
@@ -139,10 +142,10 @@ namespace TravBotSharp
             }
 
             // Alert user that account has no access defined
-            string message = "Account you are trying to login has no access' defined. Please edit the account.";
-            string caption = "Error in account";
-            MessageBoxButtons buttons = MessageBoxButtons.OK;
-            DialogResult result = MessageBox.Show(message, caption, buttons);
+            var message = "Account you are trying to login has no access' defined. Please edit the account.";
+            var caption = "Error in account";
+            var buttons = MessageBoxButtons.OK;
+            var result = MessageBox.Show(message, caption, buttons);
         }
 
         private void button3_Click(object sender, EventArgs e) // Remove an account
@@ -164,20 +167,14 @@ namespace TravBotSharp
         private void accListView_SelectedIndexChanged(object sender, EventArgs e) // Different acc selected
         {
             var indicies = accListView.SelectedIndices;
-            if (indicies.Count > 0)
-            {
-                accSelected = indicies[0];
-            }
+            if (indicies.Count > 0) accSelected = indicies[0];
             var acc = GetSelectedAcc();
             // If account has no Wb object, it's not logged in at the moment
             button2.Enabled = acc != null && acc.Wb == null;
 
             UpdateFrontEnd();
 
-            foreach (ListViewItem item in accListView.Items)
-            {
-                item.SubItems[0].ForeColor = Color.FromName("Black");
-            }
+            foreach (ListViewItem item in accListView.Items) item.SubItems[0].ForeColor = Color.FromName("Black");
             accListView.Items[accSelected].SubItems[0].ForeColor = Color.FromName("DodgerBlue");
         }
 
@@ -194,7 +191,6 @@ namespace TravBotSharp
         {
             var acc = GetSelectedAcc();
             if (acc != null)
-            {
                 using (var form = new AddAccount(acc))
                 {
                     form.UpdateWindow();
@@ -205,7 +201,6 @@ namespace TravBotSharp
                         // TODO: log
                     }
                 }
-            }
         }
 
         public Account GetSelectedAcc()
@@ -248,10 +243,7 @@ namespace TravBotSharp
         {
             new Thread(() =>
             {
-                foreach (var acc in accounts)
-                {
-                    IoHelperCore.Logout(acc);
-                }
+                foreach (var acc in accounts) IoHelperCore.Logout(acc);
             }).Start();
             generalUc1.UpdateBotRunning("false");
         }

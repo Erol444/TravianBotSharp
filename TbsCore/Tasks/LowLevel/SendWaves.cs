@@ -1,12 +1,12 @@
-﻿using RestSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
+using RestSharp;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
-using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Parsers;
 
@@ -14,12 +14,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 {
     public class SendWaves : BotTask
     {
-        public List<SendWaveModel> SendWaveModels { get; set; }
+        private readonly string[] hiddenFields = {"timestamp", "timestamp_checksum", "b", "currentDid", "mpvt_token"};
+        private DateTime lastArriveAt;
 
         // Time difference between server and computer time
         private TimeSpan timeDifference;
-        private DateTime lastArriveAt;
-        private string[] hiddenFields = new string[] { "timestamp", "timestamp_checksum", "b", "currentDid", "mpvt_token" };
+        public List<SendWaveModel> SendWaveModels { get; set; }
 
         public override async Task<TaskRes> Execute(Account acc)
         {
@@ -29,14 +29,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wavesReady = new List<WaveReadyModel>();
 
             // Get request time for getting more accurate attacks
-            Ping ping = new Ping();
-            PingReply reply = ping.Send(IoHelperCore.UrlRemoveHttp(acc.AccInfo.ServerUrl));
-            var reqTripMs = (int)(reply.RoundtripTime / 2);
+            var ping = new Ping();
+            var reply = ping.Send(IoHelperCore.UrlRemoveHttp(acc.AccInfo.ServerUrl));
+            var reqTripMs = (int) (reply.RoundtripTime / 2);
 
-            Random rnd = new Random();
+            var rnd = new Random();
 
             // Prepare the waves
-            for (int i = 0; i < SendWaveModels.Count; i++)
+            for (var i = 0; i < SendWaveModels.Count; i++)
             {
                 await Task.Delay(rnd.Next(800, 1000));
                 acc.Wb.Log($"Preparing {i + 1}. wave...");
@@ -49,43 +49,40 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 var req = new RestRequest
                 {
                     Resource = "/build.php?tt=2&id=39",
-                    Method = Method.POST,
+                    Method = Method.POST
                 };
 
                 req.AddParameter("dname", "");
                 req.AddParameter("x", SendWaveModels[i].TargetCoordinates.x.ToString());
                 req.AddParameter("y", SendWaveModels[i].TargetCoordinates.y.ToString());
-                req.AddParameter("c", ((int)SendWaveModels[i].MovementType).ToString());
+                req.AddParameter("c", ((int) SendWaveModels[i].MovementType).ToString());
                 req.AddParameter("s1", "ok");
 
                 foreach (var hidden in hiddenFields)
                 {
-                    var value = build.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "") == hidden);
+                    var value = build.Descendants("input")
+                        .FirstOrDefault(x => x.GetAttributeValue("name", "") == hidden);
                     if (value == null) continue;
                     req.AddParameter(hidden, value.GetAttributeValue("value", ""));
                 }
 
                 // Get available troops
-                int[] troopsAtHome = TroopsMovementParser.GetTroopsInRallyPoint(htmlDoc1);
+                var troopsAtHome = TroopsMovementParser.GetTroopsInRallyPoint(htmlDoc1);
 
                 // Send fake attack dirty hack
                 if (SendWaveModels[i].FakeAttack)
-                {
-                    for (int j = 0; j < 10; j++)
-                    {
+                    for (var j = 0; j < 10; j++)
                         if (troopsAtHome[j] > 19)
                         {
                             SendWaveModels[i].Troops[j] = 19;
                             troopsAtHome[j] -= 19;
                             break;
                         }
-                    }
-                }
 
-                for (int j = 0; j < SendWaveModels[i].Troops.Length; j++)
+                for (var j = 0; j < SendWaveModels[i].Troops.Length; j++)
                 {
                     // If negative value, send all available units
-                    if(SendWaveModels[i].Troops[j] < 0)
+                    if (SendWaveModels[i].Troops[j] < 0)
                     {
                         SendWaveModels[i].Troops[j] = troopsAtHome[j];
                         troopsAtHome[j] = 0;
@@ -100,13 +97,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                             req.AddParameter($"troops[0][t{j + 1}]", TroopCount(SendWaveModels[i].Troops[j]));
                             break;
                     }
-
                 }
+
                 await Task.Delay(rnd.Next(800, 1000));
 
                 var ret = HttpHelper.SendPostReq(acc, req);
 
-                var htmlDoc2 = new HtmlAgilityPack.HtmlDocument();
+                var htmlDoc2 = new HtmlDocument();
                 htmlDoc2.LoadHtml(ret);
 
                 // Get time it takes for troops to the target, for later usage
@@ -126,9 +123,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     if (DateTime.Now.AddMinutes(1) < executeTime)
                     {
                         // Restart this task at the correct time
-                        
+
                         acc.Wb.Log($"Bot will send waves in {TimeHelper.InSeconds(executeTime)} seconds");
-                        this.NextExecute = executeTime;
+                        NextExecute = executeTime;
                         return TaskRes.Executed;
                     }
                 }
@@ -137,7 +134,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 var req2 = new RestRequest
                 {
                     Resource = "/build.php?tt=2&id=39",
-                    Method = Method.POST,
+                    Method = Method.POST
                 };
 
                 req2.AddParameter("s1", "ok");
@@ -153,7 +150,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 }
 
                 // Add catapult targets
-                string cataCount = "0";
+                var cataCount = "0";
                 switch (acc.AccInfo.ServerVersion)
                 {
                     case Classificator.ServerVersionEnum.T4_4:
@@ -163,7 +160,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "troops[0][t8]").Value.ToString();
                         // If T4.5, we need to get value "a" as well - From Confirm button
                         var button = htmlDoc2.GetElementbyId("btn_ok");
-                        string a = button.GetAttributeValue("value", "");
+                        var a = button.GetAttributeValue("value", "");
                         req2.AddParameter("a", a);
                         break;
                 }
@@ -187,18 +184,19 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // Calculate how much you need to wait so waves arrive at the correct time!
             var targetArrival = SendWaveModels.FirstOrDefault(x => x.Arrival != DateTime.MinValue).Arrival;
-            TimeSpan waitForTarget = (targetArrival - lastArriveAt);
+            var waitForTarget = targetArrival - lastArriveAt;
             if (waitForTarget > TimeSpan.Zero)
             {
-                var waitForTargetSec = (int)waitForTarget.TotalSeconds - 1; // -1 to compensate
+                var waitForTargetSec = (int) waitForTarget.TotalSeconds - 1; // -1 to compensate
                 var waitForTargetTimeSpan = new TimeSpan(0, 0, waitForTargetSec);
                 wait = wait.Add(waitForTargetTimeSpan);
             }
+
             await Task.Delay(wait);
 
             // Send the waves
             DateTime lastSent = default;
-            for (int i = 0; i < wavesReady.Count; i++)
+            for (var i = 0; i < wavesReady.Count; i++)
             {
                 lastSent = DateTime.Now;
                 acc.Wb.Log($"{DateTime.Now.Second}.{DateTime.Now.Millisecond}] Sending wave {i + 1}");
@@ -208,13 +206,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 var delay = SendWaveModels[i].DelayMs;
 
                 // Negate the time it took to send the request
-                delay -= (int)(DateTime.Now - lastSent).TotalMilliseconds;
+                delay -= (int) (DateTime.Now - lastSent).TotalMilliseconds;
                 Console.WriteLine("New Delay " + delay);
 
                 //var delay10Percent = (int)delay / 100;
                 //await Task.Delay(rnd.Next(delay - delay10Percent, delay + delay10Percent));
                 if (0 < delay) await Task.Delay(delay);
             }
+
             acc.Wb.Log($"Successfully sent {wavesReady.Count} waves!");
 
             await Task.Delay(AccountHelper.Delay() * 2);
@@ -232,10 +231,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private DateTime CorrectExecuteTime(TimeSpan troopTime)
         {
             var sec = 10; // Base value
-            sec += 2 * this.SendWaveModels.Count(); // + 4 sec for each wave
+            sec += 2 * SendWaveModels.Count(); // + 4 sec for each wave
             var targetArrival = SendWaveModels.FirstOrDefault(x => x.Arrival != DateTime.MinValue).Arrival;
 
-            DateTime executeAt = targetArrival.Add(timeDifference);
+            var executeAt = targetArrival.Add(timeDifference);
             executeAt = executeAt.Subtract(troopTime);
             executeAt = executeAt.AddSeconds(-sec);
             return executeAt;

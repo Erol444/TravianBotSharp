@@ -34,33 +34,33 @@ namespace TbsCore.Models.VillageModels
         #region General info
 
         /// <summary>
-        /// Id of the village
+        ///     Id of the village
         /// </summary>
         public int Id { get; set; }
 
         /// <summary>
-        /// Name of the village
+        ///     Name of the village
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Is village under attack. Plus account usage
-        /// TODO: move to vill.Deffing.UnderAttack
+        ///     Is village under attack. Plus account usage
+        ///     TODO: move to vill.Deffing.UnderAttack
         /// </summary>
         public bool UnderAttack { get; set; }
 
         /// <summary>
-        /// Coordinates of the village
+        ///     Coordinates of the village
         /// </summary>
         public Coordinates Coordinates { get; set; }
 
         /// <summary>
-        /// Is village currently selected
+        ///     Is village currently selected
         /// </summary>
         public bool Active { get; set; }
 
         /// <summary>
-        /// Loyalty of the village, TODO implement
+        ///     Loyalty of the village, TODO implement
         /// </summary>
         public int Loyalty { get; set; }
 
@@ -69,64 +69,66 @@ namespace TbsCore.Models.VillageModels
         #region Specific areas
 
         /// <summary>
-        /// Current resources, production, capacity etc.
+        ///     Current resources, production, capacity etc.
         /// </summary>
         public VillRes Res { get; set; }
 
         /// <summary>
-        /// Buildings, building tasks etc.
+        ///     Buildings, building tasks etc.
         /// </summary>
         public VillBuilding Build { get; set; }
 
         /// <summary>
-        /// Market settings, NPC settings etc.
+        ///     Market settings, NPC settings etc.
         /// </summary>
         public VillMarket Market { get; set; }
 
         /// <summary>
-        /// Current troops, training settings etc.
+        ///     Current troops, training settings etc.
         /// </summary>
         public VillTroops Troops { get; set; }
 
         /// <summary>
-        /// General village settings, for Overview tab
+        ///     General village settings, for Overview tab
         /// </summary>
         public VillSettings Settings { get; set; }
 
         /// <summary>
-        /// For deffending settings, Deffing tab
+        ///     For deffending settings, Deffing tab
         /// </summary>
         public VillDeffing Deffing { get; set; }
 
         /// <summary>
-        /// Troops moving to/from the village
+        ///     Troops moving to/from the village
         /// </summary>
         public VillTroopMovements TroopMovements { get; set; }
 
         /// <summary>
-        /// For village expansion (new village - settlers), culture points
+        ///     For village expansion (new village - settlers), culture points
         /// </summary>
         public VillExpansion Expansion { get; set; }
 
         /// <summary>
-        /// Timings for the village
+        ///     Timings for the village
         /// </summary>
         public VillTiming Timings { get; set; }
 
         /// <summary>
-        /// Farm list for non gold
+        ///     Farm list for non gold
         /// </summary>
         public FarmingNonGold FarmingNonGold { get; set; }
+
         /// <summary>
-        /// For NewYearSpecial servers where account's villages can be of different tribe
+        ///     For NewYearSpecial servers where account's villages can be of different tribe
         /// </summary>
         public Classificator.TribeEnum NysTribe { get; internal set; }
 
         /// <summary>
-        /// Tasks that weren't finished due to the lack of resources
+        ///     Tasks that weren't finished due to the lack of resources
         /// </summary>
         [JsonIgnore]
         public List<VillUnfinishedTask> UnfinishedTasks { get; set; }
+
         #endregion
     }
 }

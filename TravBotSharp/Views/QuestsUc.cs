@@ -10,6 +10,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -18,10 +19,7 @@ namespace TravBotSharp.Views
             claimBeginner.Checked = acc.Quests.ClaimBeginnerQuests;
 
             claimVill.Items.Clear();
-            foreach (var vill in acc.Villages)
-            {
-                claimVill.Items.Add(vill.Name);
-            }
+            foreach (var vill in acc.Villages) claimVill.Items.Add(vill.Name);
             if (claimVill.Items.Count > 0)
             {
                 claimVill.SelectedIndex = 0;

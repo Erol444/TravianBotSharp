@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TravBotSharp.Files.Helpers;
+using RandomUserAgent;
 
 namespace TbsCore.Models.Access
 {
@@ -10,7 +10,11 @@ namespace TbsCore.Models.Access
     {
         public List<Access> AllAccess { get; set; }
         public int CurrentAccess { get; set; }
-        public Access GetCurrentAccess() => AllAccess.ElementAtOrDefault(CurrentAccess);
+
+        public Access GetCurrentAccess()
+        {
+            return AllAccess.ElementAtOrDefault(CurrentAccess);
+        }
 
         public void Init()
         {
@@ -34,9 +38,10 @@ namespace TbsCore.Models.Access
         {
             AllAccess.Add(access);
         }
+
         public void AddNewAccess(AccessRaw raw)
         {
-            var access = new Access()
+            var access = new Access
             {
                 Password = raw.Password,
                 Proxy = raw.Proxy,
@@ -44,7 +49,7 @@ namespace TbsCore.Models.Access
                 ProxyUsername = raw.ProxyUsername,
                 ProxyPassword = raw.ProxyPassword,
                 IsSittering = false,
-                UserAgent = RandomUserAgent.RandomUa.RandomUserAgent,
+                UserAgent = RandomUa.RandomUserAgent,
                 LastUsed = DateTime.MinValue
             };
 

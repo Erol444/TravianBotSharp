@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.Settings;
@@ -13,24 +12,24 @@ using TravBotSharp.Files.Tasks.LowLevel;
 namespace TbsCore.Helpers
 {
     /// <summary>
-    /// Helper for spending resources when village lacks them
+    ///     Helper for spending resources when village lacks them
     /// </summary>
     public static class ResSpendingHelper
     {
-        private static readonly Dictionary<Type, ResSpendTypeEnum> taskType = new Dictionary<Type, ResSpendTypeEnum>()
+        private static readonly Dictionary<Type, ResSpendTypeEnum> taskType = new Dictionary<Type, ResSpendTypeEnum>
         {
-            { typeof(UpgradeBuilding), ResSpendTypeEnum.Building },
+            {typeof(UpgradeBuilding), ResSpendTypeEnum.Building},
 
-            { typeof(Celebration), ResSpendTypeEnum.Celebrations },
+            {typeof(Celebration), ResSpendTypeEnum.Celebrations},
 
-            { typeof(ResearchTroop), ResSpendTypeEnum.Troops },
-            { typeof(TrainSettlers), ResSpendTypeEnum.Troops },
-            { typeof(ImproveTroop), ResSpendTypeEnum.Troops },
+            {typeof(ResearchTroop), ResSpendTypeEnum.Troops},
+            {typeof(TrainSettlers), ResSpendTypeEnum.Troops},
+            {typeof(ImproveTroop), ResSpendTypeEnum.Troops}
         };
 
         /// <summary>
-        /// Called when updating village. If there are unfinished tasks and we have enough resources, add the unfinished
-        /// task on account's TaskList (to be executed)
+        ///     Called when updating village. If there are unfinished tasks and we have enough resources, add the unfinished
+        ///     task on account's TaskList (to be executed)
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="vill">Village</param>
@@ -56,8 +55,8 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Called when there's not enough resources to finish the task. Task will get saved into unfinished task list
-        /// and will be finished later (when we have enough resources).
+        ///     Called when there's not enough resources to finish the task. Task will get saved into unfinished task list
+        ///     and will be finished later (when we have enough resources).
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="task">Unfinished task</param>
@@ -72,13 +71,13 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Sort Unfinished Tasks based on resource spending priority
+        ///     Sort Unfinished Tasks based on resource spending priority
         /// </summary>
         /// <param name="acc">Account</param>
         /// <param name="task1">task1</param>
         /// <param name="task2">task2</param>
         /// <returns>Greater / Equal / Less than</returns>
-        private static int SortUnfinishedTasks(Account acc, VillUnfinishedTask task1, VillUnfinishedTask task2) 
+        private static int SortUnfinishedTasks(Account acc, VillUnfinishedTask task1, VillUnfinishedTask task2)
         {
             // If returned -1, task1 is less than task2
             // If returned 1, task1 is greater than task2
@@ -86,16 +85,15 @@ namespace TbsCore.Helpers
             if (!taskType.TryGetValue(task1.Task.GetType(), out var type1)) return 1;
             if (!taskType.TryGetValue(task2.Task.GetType(), out var type2)) return -1;
 
-            foreach(var spendType in acc.Settings.ResSpendingPriority)
+            foreach (var spendType in acc.Settings.ResSpendingPriority)
             {
                 if (spendType == type1 && spendType == type2)
-                {
                     // If both have same priority, do the cheaper one first
                     return task1.ResNeeded.Sum() < task2.ResNeeded.Sum() ? -1 : 1;
-                }
                 if (spendType == type1) return -1;
                 if (spendType == type2) return 1;
             }
+
             return 0;
         }
     }

@@ -1,9 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using TbsCore.Models.AccModels;
+using Newtonsoft.Json;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Helpers;
@@ -16,14 +15,17 @@ namespace TravBotSharp.Views
 {
     public partial class BuildUc : BaseVillageUc, ITbsUc
     {
-        Building selectedBuilding;
+        private int oldSelected;
+        private Building selectedBuilding;
+
         public BuildUc()
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
-            Account acc = GetSelectedAcc();
+            var acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
 
             RefreshBuildingsList(vill);
@@ -35,7 +37,9 @@ namespace TravBotSharp.Views
             {
                 var item = new ListViewItem();
                 //building
-                item.SubItems[0].Text = "Demolish " + VillageHelper.BuildingTypeToString(vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId).Type);
+                item.SubItems[0].Text = "Demolish " +
+                                        VillageHelper.BuildingTypeToString(vill.Build.Buildings
+                                            .FirstOrDefault(x => x.Id == task.BuildingId).Type);
 
                 item.SubItems.Add(task.Level.ToString()); //lvl
                 item.SubItems.Add(task.BuildingId.ToString()); //buildingId
@@ -49,9 +53,12 @@ namespace TravBotSharp.Views
                 var item = new ListViewItem();
                 item.SubItems[0].Text = building.Building.ToString();
                 item.SubItems.Add(building.Level.ToString()); //lvl
-                item.SubItems.Add(building.Duration == DateTime.MinValue ? "/" : building.Duration.ToString()); //execute at
+                item.SubItems.Add(building.Duration == DateTime.MinValue
+                    ? "/"
+                    : building.Duration.ToString()); //execute at
                 currentlyBuildinglistView.Items.Add(item);
             }
+
             autoBuildResType.SelectedIndex = 0;
             autoBuildResStrat.SelectedIndex = 0;
             autoBuildResLevel.Value = 10;
@@ -73,15 +80,13 @@ namespace TravBotSharp.Views
         {
             buildListView.Items.Clear();
 
-            for (int i = 0; i < vill.Build.Tasks.Count; i++)
+            for (var i = 0; i < vill.Build.Tasks.Count; i++)
             {
                 var task = vill.Build.Tasks[i];
                 var item = new ListViewItem();
                 //building
                 if (task.TaskType == BuildingType.AutoUpgradeResFields)
-                {
                     item.SubItems[0].Text = AutoBuildResFieldsStr(task);
-                }
                 else item.SubItems[0].Text = VillageHelper.BuildingTypeToString(task.Building);
 
                 item.ForeColor = Color.FromName(oldSelected == i ? "DodgerBlue" : "Black");
@@ -114,6 +119,7 @@ namespace TravBotSharp.Views
                     str += "Only crop";
                     break;
             }
+
             str += "-";
             switch (task.BuildingStrategy)
             {
@@ -127,6 +133,7 @@ namespace TravBotSharp.Views
                     str += "Based on storage";
                     break;
             }
+
             return str;
         }
 
@@ -135,26 +142,28 @@ namespace TravBotSharp.Views
             //update buildings list view
             buildingsList.Items.Clear();
             //19, 38);
-            for (int i = 0; i <= 39; i++)
+            for (var i = 0; i <= 39; i++)
             {
                 var building = vill.Build.Buildings[i];
                 var item = new ListViewItem();
                 var id = building.Id;
 
-                item.SubItems[0].Text = id.ToString();//id
-                string buildingName = VillageHelper.BuildingTypeToString(building.Type);
+                item.SubItems[0].Text = id.ToString(); //id
+                var buildingName = VillageHelper.BuildingTypeToString(building.Type);
                 //if there is a task for upgrading/construction the building on this site
-                string upgradeLvl = "";
+                var upgradeLvl = "";
 
                 var upgradeBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == id);
                 if (upgradeBuilding != null)
                 {
                     upgradeLvl = " -> " + upgradeBuilding.Level;
-                    if (buildingName == "Site") buildingName = VillageHelper.BuildingTypeToString(upgradeBuilding.Building);
+                    if (buildingName == "Site")
+                        buildingName = VillageHelper.BuildingTypeToString(upgradeBuilding.Building);
                 }
+
                 item.SubItems.Add(buildingName); //building
 
-                item.SubItems.Add(building.Level.ToString() + upgradeLvl); //level
+                item.SubItems.Add(building.Level + upgradeLvl); //level
                 //set color
                 switch (building.Type)
                 {
@@ -171,24 +180,24 @@ namespace TravBotSharp.Views
                         item.ForeColor = Color.Yellow;
                         break;
                     case BuildingEnum.Site:
-                        item.ForeColor = (buildingName == "Site" ? Color.White : Color.LightBlue);
+                        item.ForeColor = buildingName == "Site" ? Color.White : Color.LightBlue;
                         break;
                     default:
                         item.ForeColor = Color.GreenYellow;
                         break;
                 }
+
                 buildingsList.Items.Add(item);
             }
         }
 
-        private int oldSelected = 0;
         private BuildingTask GetSelectedBuildingTask()
         {
             var vill = GetSelectedVillage();
             var tasks = vill.Build.Tasks;
             if (tasks.Count == 0) return null;
 
-            return (oldSelected >= 0 && oldSelected < tasks.Count) ? tasks[oldSelected] : tasks[0];
+            return oldSelected >= 0 && oldSelected < tasks.Count ? tasks[oldSelected] : tasks[0];
         }
 
         private void buildButton_Click(object sender, EventArgs e) //build button
@@ -206,7 +215,7 @@ namespace TravBotSharp.Views
                 var task = new BuildingTask
                 {
                     TaskType = BuildingType.General,
-                    Level = (int)buildLevelUpDown.Value,
+                    Level = (int) buildLevelUpDown.Value,
                     BuildingId = selectedBuilding.Id
                 };
 
@@ -236,16 +245,18 @@ namespace TravBotSharp.Views
             }
             else if (demolishRadioButton.Checked)
             {
-                DemolishTask dt = new DemolishTask
+                var dt = new DemolishTask
                 {
                     Building = selectedBuilding.Type,
                     BuildingId = selectedBuilding.Id,
-                    Level = (int)buildLevelUpDown.Value
+                    Level = (int) buildLevelUpDown.Value
                 };
                 vill.Build.DemolishTasks.Add(dt);
                 //TODO: ReStartDemolish
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { ExecuteAt = DateTime.Now, Vill = vill });
+                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill,
+                    new DemolishBuilding {ExecuteAt = DateTime.Now, Vill = vill});
             }
+
             UpdateUc();
         }
 
@@ -322,9 +333,9 @@ namespace TravBotSharp.Views
             var task = new BuildingTask
             {
                 TaskType = BuildingType.AutoUpgradeResFields,
-                Level = (int)autoBuildResLevel.Value,
-                ResourceType = (ResTypeEnum)autoBuildResType.SelectedIndex,
-                BuildingStrategy = (BuildingStrategyEnum)autoBuildResStrat.SelectedIndex
+                Level = (int) autoBuildResLevel.Value,
+                ResourceType = (ResTypeEnum) autoBuildResType.SelectedIndex,
+                BuildingStrategy = (BuildingStrategyEnum) autoBuildResStrat.SelectedIndex
             };
             BuildingHelper.AddBuildingTask(acc, vill, task);
             UpdateUc();
@@ -359,7 +370,7 @@ namespace TravBotSharp.Views
 
         private void button9_Click(object sender, EventArgs e) //export build tasks button
         {
-            DialogResult dialog = MessageBox.Show("Do you want to save building locations?",
+            var dialog = MessageBox.Show("Do you want to save building locations?",
                 "Exporting build tasks",
                 MessageBoxButtons.YesNoCancel);
             if (dialog == DialogResult.Cancel) return;
@@ -377,14 +388,16 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
 
-            string location = IoHelperForms.PromptUserForBuidTasksLocation();
+            var location = IoHelperForms.PromptUserForBuidTasksLocation();
             if (location == null) return;
             IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
             UpdateUc();
         }
 
-        private void AutoBuildBonusBuildings_CheckedChanged(object sender, EventArgs e) =>
+        private void AutoBuildBonusBuildings_CheckedChanged(object sender, EventArgs e)
+        {
             GetSelectedVillage().Build.AutoBuildResourceBonusBuildings = AutoBuildBonusBuildings.Checked;
+        }
 
         private void buildingsList_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -419,18 +432,16 @@ namespace TravBotSharp.Views
                 }
 
                 buildTypeComboBox.Enabled = true;
-                for (int i = 5; i <= 45; i++)
-                {
-                    if (BuildingHelper.BuildingRequirementsAreMet((BuildingEnum)i, vill, acc.AccInfo.Tribe ?? TribeEnum.Natars))
-                    {
-                        buildTypeComboBox.Items.Add(((BuildingEnum)i).ToString());
-                    }
-                }
+                for (var i = 5; i <= 45; i++)
+                    if (BuildingHelper.BuildingRequirementsAreMet((BuildingEnum) i, vill,
+                        acc.AccInfo.Tribe ?? TribeEnum.Natars))
+                        buildTypeComboBox.Items.Add(((BuildingEnum) i).ToString());
             }
             else // Building already there
             {
                 buildTypeComboBox.Items.Add(selectedBuilding.Type.ToString());
             }
+
             if (buildTypeComboBox.Items.Count > 0) buildTypeComboBox.SelectedIndex = 0;
         }
 
@@ -447,10 +458,7 @@ namespace TravBotSharp.Views
         private void buildListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             var indicies = buildListView.SelectedIndices;
-            if (indicies.Count > 0)
-            {
-                oldSelected = indicies[0];
-            }
+            if (indicies.Count > 0) oldSelected = indicies[0];
             UpdateBuildTasks(GetSelectedVillage());
         }
 
@@ -464,7 +472,7 @@ namespace TravBotSharp.Views
         private void instaUpgradeUpDown_ValueChanged(object sender, EventArgs e)
         {
             var vill = GetSelectedVillage();
-            vill.Build.InstaBuildHours = (int)instaUpgradeUpDown.Value;
+            vill.Build.InstaBuildHours = (int) instaUpgradeUpDown.Value;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -474,7 +482,7 @@ namespace TravBotSharp.Views
             Enum.TryParse(prereqCombo.SelectedItem.ToString(), out BuildingEnum building);
             BuildingHelper.AddBuildingPrerequisites(acc, vill, building);
 
-            BuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
+            BuildingHelper.AddBuildingTask(acc, vill, new BuildingTask
             {
                 Building = building,
                 Level = 1,

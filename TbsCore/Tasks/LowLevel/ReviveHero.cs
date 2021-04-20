@@ -19,17 +19,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 acc.Wb.Log("No revive button!");
                 return TaskRes.Executed;
             }
+
             if (reviveButton.HasClass("green"))
             {
                 wb.ExecuteScript("document.getElementById('heroRegeneration').click()"); //revive hero
                 return TaskRes.Executed;
             }
-            else
-            {
-                //no resources?
-                this.NextExecute = DateTime.Now.AddMinutes(10);
-                return TaskRes.Executed;
-            }
+
+            //no resources?
+            NextExecute = DateTime.Now.AddMinutes(10);
+            return TaskRes.Executed;
         }
     }
 }

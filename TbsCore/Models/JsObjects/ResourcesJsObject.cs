@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TbsCore.Models.ResourceModels;
+﻿using TbsCore.Models.ResourceModels;
 
 namespace TbsCore.Models.JsObjects
 {
@@ -22,12 +19,12 @@ namespace TbsCore.Models.JsObjects
 
         public Resources GetResources()
         {
-            return new Resources()
+            return new Resources
             {
-                Wood = this.l1,
-                Clay = this.l2,
-                Iron = this.l3,
-                Crop = this.l4,
+                Wood = l1,
+                Clay = l2,
+                Iron = l3,
+                Crop = l4
             };
         }
     }
@@ -41,12 +38,12 @@ namespace TbsCore.Models.JsObjects
 
         public Resources GetResources()
         {
-            return new Resources()
+            return new Resources
             {
-                Wood = this.l1,
-                Clay = this.l2,
-                Iron = this.l3,
-                Crop = this.l4,
+                Wood = l1,
+                Clay = l2,
+                Iron = l3,
+                Crop = l4
             };
         }
     }

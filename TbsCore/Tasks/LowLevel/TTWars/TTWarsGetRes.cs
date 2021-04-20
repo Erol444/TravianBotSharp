@@ -14,11 +14,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
 
-            Random rnd = new Random();
-            int sec = rnd.Next(370, 380);
-            TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc) });
-            TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero, Vill = Vill });
-            TaskExecutor.AddTask(acc, new TrainTroops()
+            var rnd = new Random();
+            var sec = rnd.Next(370, 380);
+            TaskExecutor.AddTask(acc,
+                new TTWarsGetRes {ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc)});
+            TaskExecutor.AddTask(acc,
+                new TrainExchangeRes
+                {
+                    ExecuteAt = DateTime.Now.AddSeconds(sec + 5),
+                    troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero, Vill = Vill
+                });
+            TaskExecutor.AddTask(acc, new TrainTroops
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec + 9),
                 Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
@@ -30,7 +36,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var script = "window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});";
             await DriverHelper.ExecuteScript(acc, script);
 
-            script = "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#2').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');";
+            script =
+                "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#2').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');";
             await DriverHelper.ExecuteScript(acc, script);
 
 
@@ -39,9 +46,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var buy = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyResources6"));
             if (buy == null)
             {
-                acc.Wb.Log("Can't find the button with class buyResources6. Are you sure you are on vip/unl TTWars server?");
+                acc.Wb.Log(
+                    "Can't find the button with class buyResources6. Are you sure you are on vip/unl TTWars server?");
                 return TaskRes.Executed;
             }
+
             var buyId = buy.GetAttributeValue("id", "");
             wb.ExecuteScript($"document.getElementById('{buyId}').click()");
             return TaskRes.Executed;

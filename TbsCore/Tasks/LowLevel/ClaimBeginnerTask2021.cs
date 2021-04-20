@@ -25,7 +25,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await ClaimRewards(acc);
             }
 
-                TaskExecutor.AddTask(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+            TaskExecutor.AddTask(acc, new HeroUpdateInfo {ExecuteAt = DateTime.Now});
 
             return TaskRes.Executed;
         }
@@ -36,8 +36,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             do
             {
                 await DriverHelper.ClickByClassName(acc, "collect", false);
-            }
-            while (acc.Wb.Html.DocumentNode.Descendants("button").Any(x => x.HasClass("collect")));
+            } while (acc.Wb.Html.DocumentNode.Descendants("button").Any(x => x.HasClass("collect")));
         }
     }
 }

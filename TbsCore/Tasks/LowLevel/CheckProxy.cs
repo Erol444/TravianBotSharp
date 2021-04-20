@@ -6,8 +6,8 @@ using TravBotSharp.Files.Helpers;
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     /// <summary>
-    /// TODO: replace selenium navigation with RestSharp client!
-    /// ProxyHelper.TestProxy(acc);
+    ///     TODO: replace selenium navigation with RestSharp client!
+    ///     ProxyHelper.TestProxy(acc);
     /// </summary>
     public class CheckProxy : BotTask
     {
@@ -31,19 +31,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     await changeAccess.Execute(acc);
                     return TaskRes.Executed;
                 }
-                else
-                {
-                    acc.Wb.Log($"There's only one access to this account! Will retry same proxy after 1 min...");
-                    await Task.Delay(AccountHelper.Delay() * 15);
-                    this.NextExecute = DateTime.MinValue.AddMinutes(1);
-                }
+
+                acc.Wb.Log("There's only one access to this account! Will retry same proxy after 1 min...");
+                await Task.Delay(AccountHelper.Delay() * 15);
+                NextExecute = DateTime.MinValue.AddMinutes(1);
             }
             else
             {
                 // Proxy OK
-                acc.Wb.Log($"Proxy OK!");
+                acc.Wb.Log("Proxy OK!");
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
+
             return TaskRes.Executed;
         }
     }

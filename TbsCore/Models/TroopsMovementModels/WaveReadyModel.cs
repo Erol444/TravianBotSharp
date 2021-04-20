@@ -1,16 +1,17 @@
-﻿using RestSharp;
-using System;
+﻿using System;
+using RestSharp;
 
 namespace TbsCore.Models.SendTroopsModels
 {
     public class WaveReadyModel
     {
         /// <summary>
-        /// Content of the wave request
+        ///     Content of the wave request
         /// </summary>
         public RestRequest Request { get; set; }
+
         /// <summary>
-        /// Time it takes for troops to arrive at the destination
+        ///     Time it takes for troops to arrive at the destination
         /// </summary>
         public TimeSpan MovementTime { get; set; }
     }
