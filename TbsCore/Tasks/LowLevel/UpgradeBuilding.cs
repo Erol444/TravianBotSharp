@@ -188,7 +188,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (building.UnderConstruction)
             {
                 // Check currently building
-                var cb = Vill.Build.CurrentlyBuilding.OrderByDescending(x=>x.Level).FirstOrDefault(x => x.Location == building.Id);
+                var cb = Vill.Build.CurrentlyBuilding.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
                 if (cb != null && lvl < cb.Level) lvl = cb.Level;
             }
 
@@ -263,8 +263,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Check if residence is getting upgraded to level 10 => train settlers
             var cbResidence = Vill.Build
                 .CurrentlyBuilding
-                .FirstOrDefault(x => x.Building == BuildingEnum.Residence && x.Level == 10);
-
+                .FirstOrDefault(x => (x.Building == BuildingEnum.Residence ||
+                                      x.Building == BuildingEnum.Palace ||
+                                      x.Building == BuildingEnum.CommandCenter) &&
+                                      x.Level == 10);
             if (cbResidence != null &&
                 acc.NewVillages.AutoSettleNewVillages &&
                 Vill.Troops.Settlers == 0)
@@ -282,7 +284,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Check if the task is completed
             var taskCb = Vill.Build
                 .CurrentlyBuilding
-                .OrderByDescending(x=>x.Level)
+                .OrderByDescending(x => x.Level)
                 .FirstOrDefault(x => x.Location == this.Task.BuildingId);
             if (this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
         }

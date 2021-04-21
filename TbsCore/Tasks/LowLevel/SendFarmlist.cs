@@ -38,8 +38,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 {
                     ExecuteAt = DateTime.Now.AddSeconds(2),
                     Troop = Vill.Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
-                    Vill = this.Vill,
-                    HighSpeedServer = true
+                    Vill = this.Vill
                 });
             }
 

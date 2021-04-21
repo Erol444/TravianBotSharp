@@ -15,7 +15,7 @@ using TravBotSharp.Files.Tasks.SecondLevel;
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
     /// <summary>
-    /// Old train troops task, only here because of high speed TTWars servers.
+    ///
     /// </summary>
     public class TrainTroops : BotTask
     {
@@ -37,7 +37,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// <summary>
         /// If we play on UNL/VIP, don't repeat this cycle; this tasks gets called every time after FL/buying res
         /// </summary>
-        public bool HighSpeedServer { get; set; }
+        public bool Repeat { get; set; } = false;
 
         private BuildingEnum building;
 
@@ -52,13 +52,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (!await VillageHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
 
+            var currentlyTrainings = UpdateCurrentlyTraining(acc.Wb.Html, acc);
+
             if (this.UpdateOnly || this.Troop == TroopsEnum.None)
             {
                 return TaskRes.Executed;
             }
 
             // check current training before calc to train
-            var currentlyTrainings = UpdateCurrentlyTraining(acc.Wb.Html, acc);
             if (currentlyTrainings.Count > 0)
             {
                 var finishTraining = currentlyTrainings.Last().FinishTraining;
@@ -131,38 +132,40 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         Great = Great
                     });
                 }
-                else
-                {
-                    if (currentlyTrainings.Count > 0)
-                    {
-                        NextExecute = currentlyTrainings.Last().FinishTraining.AddHours(-acc.Settings.FillFor);
-                    }
-                    else
-                    {
-                        NextExecute = DateTime.Now.AddHours(acc.Settings.FillFor);
-                    }
-                }
                 return TaskRes.Executed;
             }
+
             // train our troops
-            acc.Wb.Driver.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
-            await Task.Delay(AccountHelper.Delay());
-            await DriverHelper.ExecuteScript(acc, "document.getElementsByName('s1')[0].click()");
-
-            await Task.Delay(AccountHelper.Delay());
-
-            currentlyTrainings = UpdateCurrentlyTraining(acc.Wb.Html, acc);
+            if (maxNum > 0)
+            {
+                acc.Wb.Driver.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
+                await Task.Delay(AccountHelper.Delay());
+                await DriverHelper.ExecuteScript(acc, "document.getElementsByName('s1')[0].click()");
+                await Task.Delay(AccountHelper.Delay() * 3);
+                acc.Wb.UpdateHtml();
+                currentlyTrainings = UpdateCurrentlyTraining(acc.Wb.Html, acc);
+            }
+            var ran = new Random();
 
             // make sefl update by getting last FinishTraining minus half acc.Settings.FillFor
-            if (!HighSpeedServer)
+            if (Repeat)
             {
                 if (currentlyTrainings.Count > 0)
                 {
-                    NextExecute = currentlyTrainings.Last().FinishTraining.AddHours(-acc.Settings.FillFor);
+                    var TimeShoulTrainNext = currentlyTrainings.Last().FinishTraining.AddHours(-acc.Settings.FillFor);
+                    // TimeShouldTrain is later than now
+                    if (DateTime.Compare(TimeShoulTrainNext, DateTime.Now) > 0)
+                    {
+                        NextExecute = TimeShoulTrainNext.AddMinutes(-(ran.Next(1, 5)));
+                    }
+                    else
+                    {
+                        NextExecute = DateTime.Now.AddMinutes(ran.Next(30, 60));
+                    }
                 }
                 else
                 {
-                    NextExecute = DateTime.Now;
+                    NextExecute = DateTime.Now.AddMinutes(ran.Next(30, 60));
                 }
             }
 

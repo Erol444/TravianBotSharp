@@ -83,7 +83,6 @@ namespace TravBotSharp.Views
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec + 11),
                 Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
-                HighSpeedServer = true
             });
             TaskExecutor.AddTask(acc, new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec + 33) });
         }

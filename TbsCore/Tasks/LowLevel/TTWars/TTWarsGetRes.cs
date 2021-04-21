@@ -22,17 +22,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec + 9),
                 Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
-                Vill = Vill,
-                HighSpeedServer = true
+                Vill = Vill
             });
-
 
             var script = "window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});";
             await DriverHelper.ExecuteScript(acc, script);
 
             script = "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#2').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');";
             await DriverHelper.ExecuteScript(acc, script);
-
 
             //gold prosButton buyResources6
             //gold prosButton buyAnimal5

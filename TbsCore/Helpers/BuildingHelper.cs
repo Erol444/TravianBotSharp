@@ -25,8 +25,27 @@ namespace TravBotSharp.Files.Helpers
         public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true, bool restart = true)
         {
             if (vill == null) return false;
-            if (task.BuildingId == null ||
-                vill.Build.Buildings.Any(x => x.Id == task.BuildingId && x.Type != task.Building && x.Type != BuildingEnum.Site))
+
+            //check wall
+            if (IsWall(task.Building))
+            {
+                var wall = BuildingsData.GetTribesWall(acc.AccInfo.Tribe);
+                // check type
+                if (task.Building != wall) task.Building = wall;
+                // check position
+                if (task.BuildingId != 40) task.BuildingId = 40;
+            }
+            // check rally point
+            else if (task.Building == BuildingEnum.Site)
+            {
+                // check position
+                if (task.BuildingId != 39) task.BuildingId = 39;
+            }
+            // other building
+            else if (task.BuildingId == null ||
+                     vill.Build.Buildings.Any(x => x.Id == task.BuildingId &&
+                                                   x.Type != task.Building &&
+                                                   x.Type != BuildingEnum.Site))
             {
                 //Check if bot has any space to build new buildings, otherwise return
                 if (!FindBuildingId(vill, task)) return false;
@@ -48,6 +67,18 @@ namespace TravBotSharp.Files.Helpers
                     if (building.Id != task.BuildingId && building.Level != 20)
                     {
                         task.BuildingId = building.Id;
+                    }
+                }
+            }
+            else if (!IsResourceField(task.Building))
+            {
+                var buildings = vill.Build.Buildings.Where(x => x.Type == task.Building);
+                if (buildings.Count() > 0)
+                {
+                    var id = buildings.First().Id;
+                    if (id != task.BuildingId)
+                    {
+                        task.BuildingId = id;
                     }
                 }
             }
@@ -487,6 +518,27 @@ namespace TravBotSharp.Files.Helpers
             int buildingInt = (int)building;
             // If id between 1 and 4, it's resource field
             return buildingInt < 5 && buildingInt > 0;
+        }
+
+        public static bool IsWall(BuildingEnum building)
+        {
+            switch (building)
+            {
+                // Teutons
+                case BuildingEnum.EarthWall:
+                // Romans
+                case BuildingEnum.CityWall:
+                // Gauls
+                case BuildingEnum.Palisade:
+                // Egyptians
+                case BuildingEnum.StoneWall:
+                // Huns
+                case BuildingEnum.MakeshiftWall:
+                    return true;
+
+                default:
+                    return false;
+            }
         }
 
         /// <summary>
