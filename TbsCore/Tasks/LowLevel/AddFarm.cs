@@ -30,7 +30,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             for (int i = 0; i < Farm.Troops.Length; i++)
             {
                 if (Farm.Troops[i] == 0) continue;
-                await DriverHelper.TextById(acc, $"t{i + 1}", Farm.Troops[i]);
+                await DriverHelper.WriteById(acc, $"t{i + 1}", Farm.Troops[i]);
             }
 
             await Task.Delay(AccountHelper.Delay());

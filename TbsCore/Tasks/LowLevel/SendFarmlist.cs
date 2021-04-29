@@ -14,11 +14,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class SendFarmlist : BotTask
     {
         public FarmList FL { get; set; }
-
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=99");
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
             var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
@@ -38,7 +37,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 {
                     ExecuteAt = DateTime.Now.AddSeconds(2),
                     Troop = Vill.Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
-                    Vill = this.Vill
+                    Vill = this.Vill,
+                    HighSpeedServer = true
                 });
             }
 
@@ -53,6 +53,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             foreach (var farm in flNode.Descendants("tr").Where(x => x.HasClass("slotRow")))
             {
+
                 //iReport2 = yellow swords, iReport3 = red swords, iReport1 = successful raid
                 var img = farm.ChildNodes.FirstOrDefault(x => x.HasClass("lastRaid"))?.Descendants("img");
 
@@ -77,7 +78,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     var sendFlScript = $"document.getElementById('{flNode.Id}').childNodes[1].submit()";
                     wb.ExecuteScript(sendFlScript);
                     break;
-
                 case ServerVersionEnum.T4_5:
                     var startRaid = flNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
                     acc.Wb.Driver.FindElementById(startRaid.Id).Click();

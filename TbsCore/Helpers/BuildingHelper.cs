@@ -269,7 +269,6 @@ namespace TravBotSharp.Files.Helpers
             {
                 case BuildingType.General:
                     return GetUrlGeneralTask(vill, task);
-
                 case BuildingType.AutoUpgradeResFields:
                     return (GetUrlAutoResFields(acc, vill, task), false);
             }

@@ -98,19 +98,8 @@ namespace TravBotSharp.Files.Helpers
             var mainVill = AccountHelper.GetMainVillage(acc);
             if (mainVill == vill) return enoughRes;
 
-            // Just send res from main to this village
-            // if res arrive first or enough res from production, ignore them =))
-            // because when res is come, it will check task again
-            if (vill.Settings.GetRes)
-            {
-                TaskExecutor.AddTask(acc, new SendResources()
-                {
-                    ExecuteAt = DateTime.Now.AddSeconds(3),
-                    Vill = mainVill,
-                    TargetVill = vill,
-                    Resources = requiredRes,
-                });
-            }
+            DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
+            if (resTransit < enoughRes) enoughRes = resTransit;
 
             if (enoughRes < DateTime.Now) return DateTime.Now;
 
