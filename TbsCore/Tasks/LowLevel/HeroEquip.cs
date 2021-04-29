@@ -58,7 +58,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // No amount specified, meaning we have already equipt the item
                 if (amount == 0) return Done(acc);
 
-                await DriverHelper.TextById(acc, "amount", amount);
+                await DriverHelper.WriteById(acc, "amount", amount);
 
                 await DriverHelper.ClickByClassName(acc, "ok");
             }

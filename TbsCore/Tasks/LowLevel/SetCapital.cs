@@ -31,7 +31,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 case Helpers.Classificator.ServerVersionEnum.T4_5:
                     throw new System.Exception("Setting capital isn't supported in T4.5 yet!");
-                    break;
             }
             return TaskRes.Executed;
         }

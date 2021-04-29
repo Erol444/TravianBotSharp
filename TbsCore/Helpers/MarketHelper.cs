@@ -100,11 +100,8 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="resources">Target resources</param>
         /// <param name="coordinates">Target coordinates</param>
         /// <returns>Time it will take for transit to complete</returns>
-        public static async Task<TimeSpan?> MarketSendResource(Account acc, Resources resources, Village targetVillage, BotTask botTask)
-        {
-            var res = resources.ToArray();
-            return await MarketSendResource(acc, res, targetVillage, botTask);
-        }
+        public static async Task<TimeSpan> MarketSendResource(Account acc, Resources resources, Village targetVillage, BotTask botTask) =>
+            await MarketSendResource(acc, resources.ToArray(), targetVillage, botTask);
 
         /// <summary>
         /// Used by BotTasks to insert resources/coordinates into the page.
