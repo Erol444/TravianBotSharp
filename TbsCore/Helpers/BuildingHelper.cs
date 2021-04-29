@@ -25,12 +25,64 @@ namespace TravBotSharp.Files.Helpers
         public static bool AddBuildingTask(Account acc, Village vill, BuildingTask task, bool bottom = true, bool restart = true)
         {
             if (vill == null) return false;
-            if (task.BuildingId == null ||
-                vill.Build.Buildings.Any(x => x.Id == task.BuildingId && x.Type != task.Building && x.Type != BuildingEnum.Site))
+
+            //check wall
+            if (IsWall(task.Building))
+            {
+                var wall = BuildingsData.GetTribesWall(acc.AccInfo.Tribe);
+                // check type
+                if (task.Building != wall) task.Building = wall;
+                // check position
+                if (task.BuildingId != 40) task.BuildingId = 40;
+            }
+            // check rally point
+            else if (task.Building == BuildingEnum.Site)
+            {
+                // check position
+                if (task.BuildingId != 39) task.BuildingId = 39;
+            }
+            // other building
+            else if (task.BuildingId == null ||
+                     vill.Build.Buildings.Any(x => x.Id == task.BuildingId &&
+                                                   x.Type != task.Building &&
+                                                   x.Type != BuildingEnum.Site))
             {
                 //Check if bot has any space to build new buildings, otherwise return
                 if (!FindBuildingId(vill, task)) return false;
             }
+
+            // checking multiple building
+            // you need at least one at level 20 before building other
+            if (BuildingsData.CanHaveMultipleBuildings(task.Building))
+            {
+                var buildings = vill.Build.Buildings.Where(x => x.Type == task.Building);
+
+                // Only have one building in village
+                // if have 2 or more or none , don't need to check anymore
+                if (buildings.Count() == 1)
+                {
+                    var building = buildings.First();
+
+                    // building is not the same with the one we add and that building isn't at level 20
+                    if (building.Id != task.BuildingId && building.Level != 20)
+                    {
+                        task.BuildingId = building.Id;
+                    }
+                }
+            }
+            else if (!IsResourceField(task.Building))
+            {
+                var buildings = vill.Build.Buildings.Where(x => x.Type == task.Building);
+                if (buildings.Count() > 0)
+                {
+                    var id = buildings.First().Id;
+                    if (id != task.BuildingId)
+                    {
+                        task.BuildingId = id;
+                    }
+                }
+            }
+
             if (bottom) vill.Build.Tasks.Add(task);
             else vill.Build.Tasks.Insert(0, task);
 
@@ -52,7 +104,7 @@ namespace TravBotSharp.Files.Helpers
             var existingBuilding = vill.Build.Buildings
                     .FirstOrDefault(x => x.Type == task.Building);
 
-            // Only special buildings (warehouse, cranny, granary etc.) can have multiple 
+            // Only special buildings (warehouse, cranny, granary etc.) can have multiple
             // buildings of it's type and use ConstructNew option
             if (!BuildingsData.CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
 
@@ -113,7 +165,6 @@ namespace TravBotSharp.Files.Helpers
             return ret;
         }
 
-
         public static void ReStartBuilding(Account acc, Village vill)
         {
             RemoveCompletedTasks(vill, acc);
@@ -133,7 +184,6 @@ namespace TravBotSharp.Files.Helpers
                 ExecuteAt = nextExecution,
             });
         }
-
 
         public static void ReStartDemolishing(Account acc, Village vill)
         {
@@ -196,12 +246,12 @@ namespace TravBotSharp.Files.Helpers
 
             if (tasksDone.Count == 0) return false;
 
-            foreach(var taskDone in tasksDone)
+            foreach (var taskDone in tasksDone)
             {
                 var building = vill.Build.Buildings.First(x => x.Id == taskDone.Location);
                 if (building.Type != taskDone.Building) continue;
 
-                if(building.Level < taskDone.Level) building.Level = taskDone.Level;
+                if (building.Level < taskDone.Level) building.Level = taskDone.Level;
                 vill.Build.CurrentlyBuilding.Remove(taskDone);
             }
             return true;
@@ -232,23 +282,27 @@ namespace TravBotSharp.Files.Helpers
             switch (task.TaskType)
             {
                 case BuildingType.General:
-
                     if (building == null)
                     {
                         if (vill.Build.Buildings.Any(x => x.Type == task.Building) &&
-                            vill.Build.Buildings.FirstOrDefault(x => x.Type == task.Building).Level >= task.Level)
+                            vill.Build.Buildings.First(x => x.Type == task.Building).Level >= task.Level)
                         {
                             //if ((this.Building == Type.Residence) && (this.Level == 10 || this.Level == 20)) TrainSettlers(vill, acc, 0);
                             return true;
                         }
-                        return false; //this building doest exist yet!
+                        return false; // This building doest exist yet!
                     }
-                    if (building.Level >= task.Level || (building.Level + 1 == task.Level && building.UnderConstruction))
-                    {
-                        //if (this.Building == Type.Residence) TrainSettlers(vill, acc, 30);
-                        return true;
-                    }
-                    return false;
+
+                    // Building is on / above desired level, task is completed
+                    if (task.Level <= building.Level) return true;
+
+                    // If the building is being upgraded to the desired level, task is complete
+                    var cb = vill.Build
+                        .CurrentlyBuilding
+                        .OrderByDescending(x => x.Level)
+                        .FirstOrDefault(x => x.Location == task.BuildingId);
+                    if (cb != null && task.Level <= cb.Level) return true;
+                    break;
 
                 case BuildingType.AutoUpgradeResFields:
                     if (vill.Build.Buildings[0].Type == BuildingEnum.Site) return false; //for new villages that are not checked yet
@@ -256,16 +310,20 @@ namespace TravBotSharp.Files.Helpers
                     {
                         case ResTypeEnum.AllResources:
                             return (CheckOnlyCrop(vill, task) && CheckExcludeCrop(vill, task));
+
                         case ResTypeEnum.ExcludeCrop:
                             return CheckExcludeCrop(vill, task);
+
                         case ResTypeEnum.OnlyCrop:
                             return CheckOnlyCrop(vill, task);
+
                         default:
                             return true;
                     }
             }
             return false;
         }
+
         private static (string, bool) GetUrlGeneralTask(Village vill, BuildingTask task)
         {
             // Check if there is already a different building in this spot
@@ -297,6 +355,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return (url, constructNew);
         }
+
         public static string GetUrlAutoResFields(Account acc, Village vill, BuildingTask task)
         {
             List<Building> buildings; // Potential buildings to be upgraded next
@@ -305,12 +364,15 @@ namespace TravBotSharp.Files.Helpers
                 case ResTypeEnum.AllResources:
                     buildings = vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Woodcutter || x.Type == BuildingEnum.ClayPit || x.Type == BuildingEnum.IronMine || x.Type == BuildingEnum.Cropland).ToList();
                     break;
+
                 case ResTypeEnum.ExcludeCrop:
                     buildings = vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Woodcutter || x.Type == BuildingEnum.ClayPit || x.Type == BuildingEnum.IronMine).ToList();
                     break;
+
                 case ResTypeEnum.OnlyCrop:
                     buildings = vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Cropland).ToList();
                     break;
+
                 default:
                     return null;
             }
@@ -329,9 +391,11 @@ namespace TravBotSharp.Files.Helpers
                 case BuildingStrategyEnum.BasedOnLevel:
                     buildingToUpgrade = FindLowestLevelBuilding(buildings);
                     break;
+
                 case BuildingStrategyEnum.BasedOnProduction:
                     buildingToUpgrade = GetLowestProduction(buildings, vill);
                     break;
+
                 case BuildingStrategyEnum.BasedOnRes:
                     buildingToUpgrade = GetLowestRes(acc, vill, buildings);
                     break;
@@ -406,10 +470,8 @@ namespace TravBotSharp.Files.Helpers
             }
         }
 
-
-
         /// <summary>
-        /// Adds all building prerequisites for this building if they do not exist yet. 
+        /// Adds all building prerequisites for this building if they do not exist yet.
         /// After this you should call RemoveDuplicates().
         /// </summary>
         /// <param name="acc"></param>
@@ -429,7 +491,7 @@ namespace TravBotSharp.Files.Helpers
                 var prereqBuilding = vill.Build.Buildings.Where(x => x.Type == prereq.Building);
 
                 // Prerequired building already exists and is on on/above/being upgraded on desired level
-                if (prereqBuilding.Any(x => 
+                if (prereqBuilding.Any(x =>
                         prereq.Level <= x.Level + (x.UnderConstruction ? 1 : 0))
                     ) continue;
 
@@ -457,6 +519,27 @@ namespace TravBotSharp.Files.Helpers
             return buildingInt < 5 && buildingInt > 0;
         }
 
+        public static bool IsWall(BuildingEnum building)
+        {
+            switch (building)
+            {
+                // Teutons
+                case BuildingEnum.EarthWall:
+                // Romans
+                case BuildingEnum.CityWall:
+                // Gauls
+                case BuildingEnum.Palisade:
+                // Egyptians
+                case BuildingEnum.StoneWall:
+                // Huns
+                case BuildingEnum.MakeshiftWall:
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
+
         /// <summary>
         /// Removes all complete building tasks
         /// </summary>
@@ -465,7 +548,18 @@ namespace TravBotSharp.Files.Helpers
         public static void RemoveCompletedTasks(Village vill, Account acc) =>
             vill.Build.Tasks.RemoveAll(task => IsTaskCompleted(vill, acc, task));
 
+        /// <summary>
+        /// When you already build one warehouse to lv 1, you want import template but its warehouse in another poistion
+        /// This will fix it to current
+        /// </summary>
+        /// <param name="vill"></param>
+        /// <param name="acc"></param>
+        public static void FixPositionBuilding(Village vill, Account acc)
+        {
+        }
+
         #region Functions for auto-building resource fields
+
         public static Building FindLowestLevelBuilding(List<Building> buildings)
         {
             // TODO: test after implementation
@@ -488,6 +582,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return lowestBuilding;
         }
+
         private static Building GetLowestProduction(List<Building> buildings, Village vill)
         {
             //get distinct field types
@@ -504,6 +599,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }
+
         private static Building GetLowestRes(Account acc, Village vill, List<Building> buildings)
         {
             //get distinct field types
@@ -520,32 +616,33 @@ namespace TravBotSharp.Files.Helpers
             foreach (var distinctType in distinct)
             {
                 if (distinctType == BuildingEnum.Woodcutter &&
-                    resSum[0] < lowestRes) 
-                { 
+                    resSum[0] < lowestRes)
+                {
                     lowestRes = resSum[0];
-                    toUpgrade = BuildingEnum.Woodcutter; 
+                    toUpgrade = BuildingEnum.Woodcutter;
                 }
                 else if (distinctType == BuildingEnum.ClayPit &&
-                    resSum[1] < lowestRes) 
+                    resSum[1] < lowestRes)
                 {
                     lowestRes = resSum[1];
-                    toUpgrade = BuildingEnum.ClayPit; 
+                    toUpgrade = BuildingEnum.ClayPit;
                 }
                 else if (distinctType == BuildingEnum.IronMine &&
-                    resSum[2] < lowestRes) 
-                { 
+                    resSum[2] < lowestRes)
+                {
                     lowestRes = resSum[2];
-                    toUpgrade = BuildingEnum.IronMine; 
+                    toUpgrade = BuildingEnum.IronMine;
                 }
                 else if (distinctType == BuildingEnum.Cropland &&
-                    resSum[3] < lowestRes) 
-                { 
+                    resSum[3] < lowestRes)
+                {
                     lowestRes = resSum[3];
-                    toUpgrade = BuildingEnum.Cropland; 
+                    toUpgrade = BuildingEnum.Cropland;
                 }
             }
-          return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
+            return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }
+
         private static bool CheckExcludeCrop(Village vill, BuildingTask task)
         {
             foreach (var res in vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Woodcutter))
@@ -574,6 +671,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return true;
         }
+
         private static bool CheckOnlyCrop(Village vill, BuildingTask task)
         {
             foreach (var res in vill.Build.Buildings.Where(x => x.Type == BuildingEnum.Cropland))
@@ -587,6 +685,6 @@ namespace TravBotSharp.Files.Helpers
             return true;
         }
 
-        #endregion
+        #endregion Functions for auto-building resource fields
     }
 }

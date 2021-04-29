@@ -16,11 +16,13 @@ namespace TravBotSharp.Views
 {
     public partial class BuildUc : BaseVillageUc, ITbsUc
     {
-        Building selectedBuilding;
+        private Building selectedBuilding;
+
         public BuildUc()
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             Account acc = GetSelectedAcc();
@@ -61,7 +63,7 @@ namespace TravBotSharp.Views
 
             buildRadioButton.Checked = true;
             instaUpgradeUpDown.Enabled = vill.Build.InstaBuild;
-            instaUpgradeUpDown.Value = vill.Build.InstaBuildHours;
+            instaUpgradeUpDown.Value = vill.Build.InstaBuildMinutes;
 
             var prereqComboList = BuildingHelper.SetPrereqCombo(acc, vill);
             prereqCombo.Items.Clear();
@@ -107,9 +109,11 @@ namespace TravBotSharp.Views
                 case ResTypeEnum.AllResources:
                     str += "All fields";
                     break;
+
                 case ResTypeEnum.ExcludeCrop:
                     str += "Exclude crop";
                     break;
+
                 case ResTypeEnum.OnlyCrop:
                     str += "Only crop";
                     break;
@@ -120,9 +124,11 @@ namespace TravBotSharp.Views
                 case BuildingStrategyEnum.BasedOnLevel:
                     str += "Based on level";
                     break;
+
                 case BuildingStrategyEnum.BasedOnProduction:
                     str += "Based on production";
                     break;
+
                 case BuildingStrategyEnum.BasedOnRes:
                     str += "Based on storage";
                     break;
@@ -161,18 +167,23 @@ namespace TravBotSharp.Views
                     case BuildingEnum.Woodcutter:
                         item.ForeColor = Color.LightGreen;
                         break;
+
                     case BuildingEnum.ClayPit:
                         item.ForeColor = Color.Orange;
                         break;
+
                     case BuildingEnum.IronMine:
                         item.ForeColor = Color.Gray;
                         break;
+
                     case BuildingEnum.Cropland:
                         item.ForeColor = Color.Yellow;
                         break;
+
                     case BuildingEnum.Site:
                         item.ForeColor = (buildingName == "Site" ? Color.White : Color.LightBlue);
                         break;
+
                     default:
                         item.ForeColor = Color.GreenYellow;
                         break;
@@ -182,6 +193,7 @@ namespace TravBotSharp.Views
         }
 
         private int oldSelected = 0;
+
         private BuildingTask GetSelectedBuildingTask()
         {
             var vill = GetSelectedVillage();
@@ -464,7 +476,7 @@ namespace TravBotSharp.Views
         private void instaUpgradeUpDown_ValueChanged(object sender, EventArgs e)
         {
             var vill = GetSelectedVillage();
-            vill.Build.InstaBuildHours = (int)instaUpgradeUpDown.Value;
+            vill.Build.InstaBuildMinutes = (int)instaUpgradeUpDown.Value;
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -482,6 +494,23 @@ namespace TravBotSharp.Views
             });
 
             UpdateUc();
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+
+            TaskExecutor.AddTask(acc, new UpdateDorf1()
+            {
+                Vill = vill,
+                NextExecute = DateTime.Now
+            });
+            TaskExecutor.AddTask(acc, new UpdateDorf2()
+            {
+                Vill = vill,
+                NextExecute = DateTime.Now
+            });
         }
     }
 }

@@ -25,9 +25,9 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="acc"></param>
         public static async Task PageLoaded(Account acc)
         {
-            if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc)) //Check if a captcha/ban/end of server
+            if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
-                acc.Wb.Log("Captcha/WW/Ban found! Stopping bot for this account!");
+                acc.Wb.Log("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
                 acc.TaskTimer.Stop();
                 return;
             }
@@ -39,14 +39,15 @@ namespace TravBotSharp.Files.Helpers
             if (CheckContextualHelp(acc) &&
                 acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5)
             {
-                AddTaskIfNotExists(acc, new EditPreferences() {
+                AddTaskIfNotExists(acc, new EditPreferences()
+                {
                     ExecuteAt = DateTime.Now.AddHours(-1),
+                    TroopsPerPage = 99,
                     ContextualHelp = true
                 });
             }
 
-            if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc))
-                await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('questButtonSkipTutorial')[0].click();");
+            if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc)) await DriverHelper.ClickByClassName(acc, "questButtonSkipTutorial");
 
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
@@ -92,6 +93,7 @@ namespace TravBotSharp.Files.Helpers
                         task.RetryCounter++;
                         if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
                         break;
+
                     default:
                         task.RetryCounter = 0;
                         if (task.NextTask != null)
@@ -118,10 +120,19 @@ namespace TravBotSharp.Files.Helpers
                 task.NextExecute = null;
                 ReorderTaskList(acc);
                 task.Stage = TaskStage.Start;
+                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}"));
                 return;
             }
             // Remove the task from the task list
             acc.Tasks.Remove(task);
+            if (task.RetryCounter >= 3)
+            {
+                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is already re-executed 3 times. Ignore it"));
+            }
+            else
+            {
+                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is done."));
+            }
         }
 
         /// <summary>
@@ -140,11 +151,10 @@ namespace TravBotSharp.Files.Helpers
                 }
                 catch (Exception e)
                 {
-                    acc.Wb.Log($"Error in {i + 1}. PreTask", e);
+                    if (acc.Wb != null) acc.Wb.Log($"Error executing pre-task {PostLoadHelper.namePostTask[i]}!", e);
                 }
             }
         }
-
 
         public static void UpdateDorf2Info(Account acc)
         {
@@ -188,7 +198,7 @@ namespace TravBotSharp.Files.Helpers
             var dorf1Movements = TroopsMovementParser.ParseDorf1Movements(acc.Wb.Html);
 
             // Check attacks if there are incoming attacks and alerts aren't disabled and task isn't already on task list
-            if (dorf1Movements.Any(x=>x.Type == Classificator.MovementTypeDorf1.IncomingAttack) &&
+            if (dorf1Movements.Any(x => x.Type == Classificator.MovementTypeDorf1.IncomingAttack) &&
                 vill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
             {
                 AddTaskIfNotExistInVillage(acc, vill, new CheckAttacks()
@@ -208,6 +218,7 @@ namespace TravBotSharp.Files.Helpers
                 building.UnderConstruction = field.UnderConstruction;
             }
         }
+
         private static void UpdateCurrentlyBuilding(Account acc, Village vill)
         {
             vill.Build.CurrentlyBuilding.Clear();
@@ -232,6 +243,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         #region Game checks
+
         private static bool IsWWMsg(Account acc)
         {
             var wwImg = acc.Wb.Html.DocumentNode
@@ -252,6 +264,11 @@ namespace TravBotSharp.Files.Helpers
         /// Checks if account is banned (T4.5)
         /// </summary>
         private static bool IsBanMsg(Account acc) => acc.Wb.Html.GetElementbyId("punishmentMsgButtons") != null;
+
+        /// <summary>
+        /// Checks whether there is an ongoing maintanance
+        /// </summary>
+        private static bool IsMaintanance(Account acc) => acc.Wb.Html.DocumentNode.Descendants("img").Any(x => x.HasClass("fatalErrorImage"));
 
         /// <summary>
         /// Checks if there are cookies to be accepted
@@ -277,12 +294,14 @@ namespace TravBotSharp.Files.Helpers
             }
             return false;
         }
+
         private static bool IsSysMsg(Account acc)
         { //End of server/gold promotions/arts
             var msg = acc.Wb.Html.GetElementbyId("sysmsg");
             return msg != null;
         }
-        #endregion
+
+        #endregion Game checks
 
         public static void AddTask(Account acc, BotTask task)
         {
@@ -290,6 +309,7 @@ namespace TravBotSharp.Files.Helpers
             acc.Tasks.Add(task);
             ReorderTaskList(acc);
         }
+
         public static void AddTask(Account acc, List<BotTask> tasks)
         {
             foreach (var task in tasks)
@@ -298,15 +318,18 @@ namespace TravBotSharp.Files.Helpers
             }
             ReorderTaskList(acc);
         }
+
         public static void ReorderTaskList(Account acc)
         {
             acc.Tasks = acc.Tasks.OrderBy(x => x.ExecuteAt).ToList();
         }
+
         public static void AddTaskIfNotExists(Account acc, BotTask task)
         {
             if (!acc.Tasks.Any(x => x.GetType() == task.GetType()))
                 AddTask(acc, task);
         }
+
         public static void AddTaskIfNotExistInVillage(Account acc, Village vill, BotTask task)
         {
             if (!TaskExistsInVillage(acc, vill, task.GetType()))
@@ -314,6 +337,7 @@ namespace TravBotSharp.Files.Helpers
                 AddTask(acc, task);
             }
         }
+
         public static bool TaskExistsInVillage(Account acc, Village vill, Type taskType) =>
             acc.Tasks.Any(x => x.GetType() == taskType && x.Vill == vill);
 
@@ -333,6 +357,7 @@ namespace TravBotSharp.Files.Helpers
                 x != thisTask
             );
         }
+
         /// <summary>
         /// Removes all pending BotTasks of specific type except for the task calling it
         /// </summary>
@@ -340,6 +365,7 @@ namespace TravBotSharp.Files.Helpers
         /// <param name="thisTask">Task not to remove</param>
         public static void RemoveSameTasks(Account acc, BotTask thisTask) =>
             RemoveSameTasks(acc, thisTask.GetType(), thisTask);
+
         public static void RemoveSameTasks(Account acc, Type type, BotTask thisTask)
         {
             acc.Tasks.RemoveAll(x =>
@@ -347,6 +373,5 @@ namespace TravBotSharp.Files.Helpers
                 x != thisTask
             );
         }
-
     }
 }

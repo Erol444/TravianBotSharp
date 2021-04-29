@@ -21,9 +21,9 @@ namespace TbsCore.Models.VillageModels
         /// </summary>
         public bool InstaBuild { get; set; }
         /// <summary>
-        /// If currently building is above specified hours, insta build
+        /// If currently building is above specified minuets, insta build (with gold)
         /// </summary>
-        public int InstaBuildHours { get; set; }
+        public int InstaBuildMinutes { get; set; }
         public List<BuildingCurrently> CurrentlyBuilding { get; set; }
         public List<DemolishTask> DemolishTasks { get; set; }
         public List<BuildingTask> Tasks { get; set; }

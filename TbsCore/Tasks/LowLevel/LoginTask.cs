@@ -36,7 +36,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 acc.Wb.Log("Password is incorrect!");
                 acc.TaskTimer.Stop();
             }
-            else await TaskExecutor.PageLoaded(acc);
+            else
+            {
+                await TaskExecutor.PageLoaded(acc);
+                // check sitter account
+                var auction = acc.Wb.Html.DocumentNode.SelectSingleNode("//a[contains(@class,'auction')]");
+
+                acc.Access.GetCurrentAccess().IsSittering = (auction != null && auction.HasClass("disable"));
+            }
 
             return TaskRes.Executed;
         }

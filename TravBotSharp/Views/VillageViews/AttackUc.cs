@@ -70,9 +70,10 @@ namespace TravBotSharp.Views
             for (int i = 0; i < numOfWaves; i++)
             {
                 var attk = new SendWaveModel();
-                attk.Troops = SendAllTroops();
+                attk.Troops = new int[11];
                 if (i == 0)
                 {
+                    attk.Troops = SendAllTroops();
                     attk.Arrival = firstWave;
                     attk.Troops[10] = hero.Checked ? 1 : 0;
                 }
@@ -97,7 +98,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             for (int i = 0; i < 10; i++)
             {
-                if (TroopsData.IsTroopOffensive(acc, i) || TroopsData.IsTroopRam(i))
+                if (TroopsData.IsTroopOffensive(acc, i) || i == 6 /* Rams */)
                 {
                     ret[i] = -1;
                 }

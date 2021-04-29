@@ -18,13 +18,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         // Time difference between server and computer time
         private TimeSpan timeDifference;
+
         private DateTime lastArriveAt;
         private string[] hiddenFields = new string[] { "timestamp", "timestamp_checksum", "b", "currentDid", "mpvt_token" };
 
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=2&id=39");
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2");
 
             var wavesReady = new List<WaveReadyModel>();
 
@@ -85,7 +86,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 for (int j = 0; j < SendWaveModels[i].Troops.Length; j++)
                 {
                     // If negative value, send all available units
-                    if(SendWaveModels[i].Troops[j] < 0)
+                    if (SendWaveModels[i].Troops[j] < 0)
                     {
                         SendWaveModels[i].Troops[j] = troopsAtHome[j];
                         troopsAtHome[j] = 0;
@@ -96,11 +97,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         case Classificator.ServerVersionEnum.T4_4:
                             req.AddParameter($"t{j + 1}", TroopCount(SendWaveModels[i].Troops[j]));
                             break;
+
                         case Classificator.ServerVersionEnum.T4_5:
                             req.AddParameter($"troops[0][t{j + 1}]", TroopCount(SendWaveModels[i].Troops[j]));
                             break;
                     }
-
                 }
                 await Task.Delay(rnd.Next(800, 1000));
 
@@ -126,7 +127,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     if (DateTime.Now.AddMinutes(1) < executeTime)
                     {
                         // Restart this task at the correct time
-                        
+
                         acc.Wb.Log($"Bot will send waves in {TimeHelper.InSeconds(executeTime)} seconds");
                         this.NextExecute = executeTime;
                         return TaskRes.Executed;
@@ -159,6 +160,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     case Classificator.ServerVersionEnum.T4_4:
                         cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "t8").Value.ToString();
                         break;
+
                     case Classificator.ServerVersionEnum.T4_5:
                         cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "troops[0][t8]").Value.ToString();
                         // If T4.5, we need to get value "a" as well - From Confirm button

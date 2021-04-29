@@ -58,6 +58,11 @@ namespace TravBotSharp.Views
         /// <param name="index">FarmList index</param>
         private void UpdateFarmList(int index)
         {
+            if (index == -1)
+            {
+                farmingList.Items.Clear();
+                return;
+            }
             var vill = GetSelectedVillage();
             if (vill == null) return;
 
@@ -125,7 +130,11 @@ namespace TravBotSharp.Views
 
             var vill = GetSelectedVillage();
             if (vill == null) return;
-
+            if (GetSelectedAcc().AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_4 && vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
+            {
+                MessageBox.Show("Activities cannot be done by humans - RET (Rule Enforcement team)", "Limited at 15 farm per list");
+                return;
+            }
             using (var form = new AddFarmNonGold(GetSelectedAcc().AccInfo.Tribe))
             {
                 var result = form.ShowDialog();
@@ -167,6 +176,7 @@ namespace TravBotSharp.Views
 
         private FarmList GetSelectedFl() =>
             GetSelectedVillage().FarmingNonGold.ListFarm[currentFarmList_index];
+
         private Farm GetSelectedFarm() =>
             GetSelectedFl().Targets[farmingList.FocusedItem.Index];
 
@@ -219,17 +229,17 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage(acc);
             if (vill == null) return;
 
-            SendTroops taskSendTroops;
-            foreach (var f in GetSelectedFl().Targets)
+            var fl = GetSelectedFl();
+            for (int i = 0; i < fl.Targets.Count; i++)
             {
-                taskSendTroops = new SendTroops()
+                var taskSendTroops = new SendTroops()
                 {
-                    ExecuteAt = DateTime.Now,
+                    ExecuteAt = DateTime.Now.AddMilliseconds(i * 15 * AccountHelper.Delay()),
                     Vill = vill,
                     TroopsMovement = new TroopsSendModel()
                     {
-                        TargetCoordinates = f.Coords,
-                        Troops = f.Troops,
+                        TargetCoordinates = fl.Targets[i].Coords,
+                        Troops = fl.Targets[i].Troops,
                         MovementType = Classificator.MovementType.Raid
                     }
                 };
@@ -286,11 +296,18 @@ namespace TravBotSharp.Views
             }
 
             var fl = GetSelectedFl();
-            if(fl == null)
+            if (fl == null)
             {
                 MessageUser("No FL selected!");
                 return;
             }
+
+            if (vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
+            {
+                MessageBox.Show("Activities cannot be done by humans - RET (Rule Enforcement team)", "Limited at 15 farm per list");
+                return;
+            }
+
             var label = $"Inactive farm finder for the (Non-Goldclub) Farm List {fl.Name}";
             using (var form = new InactiveFinder(acc, label))
             {
@@ -298,13 +315,43 @@ namespace TravBotSharp.Views
                 if (result == DialogResult.OK)
                 {
                     vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.AddRange(form.InactiveFarms);
+                    if (vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
+                    {
+                        vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.RemoveRange(15, vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count - 15);
+                    }
 
                     UpdateFarmList(currentFarmList_index);
                     UpdateFarmTroops();
                 }
             }
         }
+
         private void MessageUser(string message) =>
             MessageBox.Show(message, "Error", MessageBoxButtons.OK);
+
+        /// <summary>
+        /// Delete farm list
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button8_Click(object sender, EventArgs e)
+        {
+            // delete
+            GetSelectedVillage(GetSelectedAcc()).FarmingNonGold.ListFarm.RemoveAt(currentFarmList_index);
+            comboBox_NameList.Items.RemoveAt(currentFarmList_index);
+
+            // update
+            if (comboBox_NameList.Items.Count > 0)
+            {
+                currentFarmList_index = 0;
+                comboBox_NameList.SelectedIndex = currentFarmList_index;
+            }
+            else
+            {
+                currentFarmList_index = -1;
+                comboBox_NameList.Text = "";
+            }
+            UpdateFarmList(currentFarmList_index);
+        }
     }
 }
