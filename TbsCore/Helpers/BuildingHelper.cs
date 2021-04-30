@@ -326,8 +326,10 @@ namespace TravBotSharp.Files.Helpers
 
         private static (string, bool) GetUrlGeneralTask(Village vill, BuildingTask task)
         {
-            // Check if there is already a different building in this spot
-            if (task.BuildingId == null || vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId).Type != task.Building)
+            // Check if there is already a different building in this spot (not Site)
+            if (task.BuildingId == null || 
+                (vill.Build.Buildings.First(x => x.Id == task.BuildingId).Type != task.Building &&
+                vill.Build.Buildings.First(x => x.Id == task.BuildingId).Type != BuildingEnum.Site))
             {
                 var targetBuilding = vill.Build.Buildings.FirstOrDefault(x => x.Type == task.Building);
                 // Re-select the buildingId
