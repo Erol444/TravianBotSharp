@@ -65,9 +65,7 @@ namespace TravBotSharp.Files.Helpers
                 if (highestLvl != null &&
                     highestLvl.Level != BuildingsData.MaxBuildingLevel(acc, task.Building))
                 {
-                    // Upgrade the current highest level to max
                     task.BuildingId = highestLvl.Id;
-                    task.Level = BuildingsData.MaxBuildingLevel(acc, task.Building);
                 }
             }
             else if (!IsResourceField(task.Building))
