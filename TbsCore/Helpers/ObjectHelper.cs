@@ -18,6 +18,7 @@ namespace TbsCore.Helpers
         /// <param name="obj">Object</param>
         public static void FixAccObj(Account acc, object obj)
         {
+            if (obj == null) return;
             try
             {
                 PropertyInfo[] properties = obj.GetType().GetProperties();
@@ -60,7 +61,7 @@ namespace TbsCore.Helpers
             }
             catch (Exception e)
             {
-                acc.Wb.Log($"Error in ${typeof(ObjectHelper)}", e);
+                Console.WriteLine($"Error in ${typeof(ObjectHelper)}", e);
             }
         }
 
