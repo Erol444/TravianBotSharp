@@ -103,16 +103,16 @@ namespace TravBotSharp.Files.Helpers
         /// Enters a specific building.
         /// </summary>
         /// <param name="acc">Account</param>
-        /// <param name="vill">Village</param>
         /// <param name="building">Building to enter</param>
         /// <param name="query">Additional query (to specify tab)</param>
         /// <param name="dorf">Whether we want to first navigate to dorf (less suspicious)</param>
+        /// <param name="update">Whether we want to force update the current page</param>
         /// <returns>Whether it was successful</returns>
-        public static async Task<bool> EnterBuilding(Account acc, Village vill, Building building, string query = "", bool dorf = true)
+        public static async Task<bool> EnterBuilding(Account acc, Building building, string query = "", bool dorf = true, bool update = false)
         {
             // If we are already at the desired building (if gid is correct)
             Uri currentUri = new Uri(acc.Wb.CurrentUrl);
-            if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString())
+            if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString() && !update)
             {
                 acc.Wb.UpdateHtml();
                 return true;
@@ -132,7 +132,7 @@ namespace TravBotSharp.Files.Helpers
             return true;
         }
 
-        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, string query = "", bool dorf = true)
+        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, string query = "", bool dorf = true, bool update = false)
         {
             var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == buildingEnum);
 
@@ -141,7 +141,7 @@ namespace TravBotSharp.Files.Helpers
                 acc.Wb.Log($"Tried to enter {buildingEnum} but couldn't find it in village {vill.Name}!");
                 return false;
             }
-            return await EnterBuilding(acc, vill, building, query, dorf);
+            return await EnterBuilding(acc, building, query, dorf, update);
         }
 
         /// <summary>

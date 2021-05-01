@@ -332,6 +332,7 @@ namespace TravBotSharp.Files.Helpers
 
         public static void AddTaskIfNotExistInVillage(Account acc, Village vill, BotTask task)
         {
+            if (acc.Tasks == null) return;
             if (!TaskExistsInVillage(acc, vill, task.GetType()))
             {
                 AddTask(acc, task);

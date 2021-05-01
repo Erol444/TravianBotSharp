@@ -256,7 +256,7 @@ namespace TravBotSharp.Views
                 };
                 vill.Build.DemolishTasks.Add(dt);
                 //TODO: ReStartDemolish
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { ExecuteAt = DateTime.Now, Vill = vill });
+                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { Vill = vill });
             }
             UpdateUc();
         }

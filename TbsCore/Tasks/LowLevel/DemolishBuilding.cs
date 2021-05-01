@@ -14,9 +14,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.MainBuilding))
+            // First navigate to dorf2 and then to the main building, to make sure the currently demolish list is refreshed
+            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.MainBuilding, update: true))
                 return TaskRes.Executed;
 
             if (Vill.Build.DemolishTasks.Count == 0) return TaskRes.Executed; //No more demolish tasks
@@ -28,7 +27,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.WriteById(acc, "demolish", id);
             await DriverHelper.ClickById(acc, "btn_demolish");
 
-            this.NextExecute = (await NextDemolishTime(acc)).AddSeconds(20);
+            this.NextExecute = TimeHelper.RanDelay(acc, await NextDemolishTime(acc));
 
             return TaskRes.Executed;
         }
@@ -69,10 +68,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// <summary>
         /// Checks demolish time.
         /// </summary>
-        /// <param name="htmlDoc">The html of the page</param>
         /// <param name="acc">account</param>
         public async Task<DateTime> NextDemolishTime(Account acc)
         {
+            // Is this needed?
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.MainBuilding))
                 return DateTime.Now;
 
