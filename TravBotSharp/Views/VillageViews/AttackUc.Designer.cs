@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            TbsCore.Models.MapModels.Coordinates coordinates2 = new TbsCore.Models.MapModels.Coordinates();
+            TbsCore.Models.MapModels.Coordinates coordinates1 = new TbsCore.Models.MapModels.Coordinates();
             this.confirmNewVill = new System.Windows.Forms.Button();
             this.WavesCount = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -52,8 +52,9 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.label7 = new System.Windows.Forms.Label();
-            this.coordinatesUc1 = new TravBotSharp.UserControls.CoordinatesUc();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.label16 = new System.Windows.Forms.Label();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label15 = new System.Windows.Forms.Label();
             this.oasisMinTroops = new System.Windows.Forms.NumericUpDown();
@@ -69,10 +70,12 @@
             this.oasisDelay = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.oasisEnabled = new System.Windows.Forms.CheckBox();
+            this.coordinatesUc1 = new TravBotSharp.UserControls.CoordinatesUc();
             ((System.ComponentModel.ISupportInitialize)(this.WavesCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wavesPerSec)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.catasPerWave)).BeginInit();
             this.panel1.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.oasisMinTroops)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.oasisPower)).BeginInit();
@@ -82,7 +85,7 @@
             // 
             // confirmNewVill
             // 
-            this.confirmNewVill.Location = new System.Drawing.Point(61, 235);
+            this.confirmNewVill.Location = new System.Drawing.Point(61, 264);
             this.confirmNewVill.Margin = new System.Windows.Forms.Padding(4);
             this.confirmNewVill.Name = "confirmNewVill";
             this.confirmNewVill.Size = new System.Drawing.Size(95, 27);
@@ -93,7 +96,7 @@
             // 
             // WavesCount
             // 
-            this.WavesCount.Location = new System.Drawing.Point(175, 31);
+            this.WavesCount.Location = new System.Drawing.Point(52, 44);
             this.WavesCount.Margin = new System.Windows.Forms.Padding(4);
             this.WavesCount.Maximum = new decimal(new int[] {
             30,
@@ -118,7 +121,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(283, 36);
+            this.label1.Location = new System.Drawing.Point(154, 49);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(51, 16);
@@ -127,18 +130,18 @@
             // 
             // dateTimePicker1
             // 
-            this.dateTimePicker1.Location = new System.Drawing.Point(120, 135);
+            this.dateTimePicker1.Location = new System.Drawing.Point(46, 28);
             this.dateTimePicker1.Margin = new System.Windows.Forms.Padding(4);
             this.dateTimePicker1.MaxDate = new System.DateTime(2048, 12, 31, 0, 0, 0, 0);
             this.dateTimePicker1.MinDate = new System.DateTime(2020, 1, 1, 0, 0, 0, 0);
             this.dateTimePicker1.Name = "dateTimePicker1";
-            this.dateTimePicker1.Size = new System.Drawing.Size(119, 22);
+            this.dateTimePicker1.Size = new System.Drawing.Size(142, 22);
             this.dateTimePicker1.TabIndex = 150;
             this.dateTimePicker1.Value = new System.DateTime(2020, 5, 10, 0, 0, 0, 0);
             // 
             // wavesPerSec
             // 
-            this.wavesPerSec.Location = new System.Drawing.Point(175, 64);
+            this.wavesPerSec.Location = new System.Drawing.Point(52, 77);
             this.wavesPerSec.Margin = new System.Windows.Forms.Padding(4);
             this.wavesPerSec.Maximum = new decimal(new int[] {
             50,
@@ -163,7 +166,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(283, 64);
+            this.label2.Location = new System.Drawing.Point(154, 77);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(79, 16);
@@ -173,18 +176,18 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(55, 139);
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(5, 7);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(57, 16);
+            this.label3.Size = new System.Drawing.Size(66, 16);
             this.label3.TabIndex = 153;
             this.label3.Text = "Arrive at";
             // 
             // sendNow
             // 
             this.sendNow.AutoSize = true;
-            this.sendNow.Location = new System.Drawing.Point(247, 136);
+            this.sendNow.Location = new System.Drawing.Point(106, 6);
             this.sendNow.Margin = new System.Windows.Forms.Padding(4);
             this.sendNow.Name = "sendNow";
             this.sendNow.Size = new System.Drawing.Size(86, 20);
@@ -195,7 +198,7 @@
             // 
             // catasPerWave
             // 
-            this.catasPerWave.Location = new System.Drawing.Point(175, 94);
+            this.catasPerWave.Location = new System.Drawing.Point(52, 107);
             this.catasPerWave.Margin = new System.Windows.Forms.Padding(4);
             this.catasPerWave.Maximum = new decimal(new int[] {
             5000,
@@ -220,7 +223,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(283, 94);
+            this.label4.Location = new System.Drawing.Point(154, 107);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(104, 16);
@@ -230,7 +233,7 @@
             // hero
             // 
             this.hero.AutoSize = true;
-            this.hero.Location = new System.Drawing.Point(109, 207);
+            this.hero.Location = new System.Drawing.Point(109, 236);
             this.hero.Margin = new System.Windows.Forms.Padding(4);
             this.hero.Name = "hero";
             this.hero.Size = new System.Drawing.Size(149, 20);
@@ -240,16 +243,16 @@
             // 
             // richTextBox1
             // 
-            this.richTextBox1.Location = new System.Drawing.Point(390, 36);
+            this.richTextBox1.Location = new System.Drawing.Point(384, 46);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(270, 263);
+            this.richTextBox1.Size = new System.Drawing.Size(276, 274);
             this.richTextBox1.TabIndex = 158;
             this.richTextBox1.Text = "";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(457, 4);
+            this.button1.Location = new System.Drawing.Point(457, 17);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(112, 28);
@@ -260,7 +263,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(175, 234);
+            this.button2.Location = new System.Drawing.Point(175, 263);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 28);
@@ -273,7 +276,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(86, 162);
+            this.label5.Location = new System.Drawing.Point(7, 54);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(143, 12);
@@ -284,7 +287,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(78, 177);
+            this.label6.Location = new System.Drawing.Point(5, 69);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(155, 12);
@@ -301,7 +304,7 @@
             this.columnHeader5});
             this.currentlyBuildinglistView.FullRowSelect = true;
             this.currentlyBuildinglistView.HideSelection = false;
-            this.currentlyBuildinglistView.Location = new System.Drawing.Point(4, 303);
+            this.currentlyBuildinglistView.Location = new System.Drawing.Point(4, 320);
             this.currentlyBuildinglistView.Margin = new System.Windows.Forms.Padding(4);
             this.currentlyBuildinglistView.MultiSelect = false;
             this.currentlyBuildinglistView.Name = "currentlyBuildinglistView";
@@ -339,51 +342,60 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(7, 280);
+            this.label7.Location = new System.Drawing.Point(7, 297);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(149, 20);
             this.label7.TabIndex = 164;
             this.label7.Text = "Send wave tasks:";
             // 
-            // coordinatesUc1
-            // 
-            this.coordinatesUc1.BackColor = System.Drawing.SystemColors.ControlDark;
-            coordinates2.x = 0;
-            coordinates2.y = 0;
-            this.coordinatesUc1.Coords = coordinates2;
-            this.coordinatesUc1.Location = new System.Drawing.Point(15, 31);
-            this.coordinatesUc1.Margin = new System.Windows.Forms.Padding(5);
-            this.coordinatesUc1.Name = "coordinatesUc1";
-            this.coordinatesUc1.Size = new System.Drawing.Size(151, 69);
-            this.coordinatesUc1.TabIndex = 165;
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.panel1.Controls.Add(this.coordinatesUc1);
+            this.panel1.Controls.Add(this.panel3);
+            this.panel1.Controls.Add(this.label16);
             this.panel1.Controls.Add(this.richTextBox1);
             this.panel1.Controls.Add(this.button1);
-            this.panel1.Controls.Add(this.coordinatesUc1);
             this.panel1.Controls.Add(this.label7);
             this.panel1.Controls.Add(this.currentlyBuildinglistView);
-            this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.WavesCount);
             this.panel1.Controls.Add(this.button2);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.hero);
             this.panel1.Controls.Add(this.wavesPerSec);
-            this.panel1.Controls.Add(this.sendNow);
             this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.catasPerWave);
-            this.panel1.Controls.Add(this.dateTimePicker1);
             this.panel1.Controls.Add(this.confirmNewVill);
             this.panel1.Location = new System.Drawing.Point(3, 3);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(664, 513);
+            this.panel1.Size = new System.Drawing.Size(664, 533);
             this.panel1.TabIndex = 167;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.label3);
+            this.panel3.Controls.Add(this.dateTimePicker1);
+            this.panel3.Controls.Add(this.sendNow);
+            this.panel3.Controls.Add(this.label5);
+            this.panel3.Controls.Add(this.label6);
+            this.panel3.Location = new System.Drawing.Point(175, 137);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(208, 91);
+            this.panel3.TabIndex = 170;
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(171, 12);
+            this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(133, 24);
+            this.label16.TabIndex = 169;
+            this.label16.Text = "Wave builder";
             // 
             // panel2
             // 
@@ -593,6 +605,18 @@
             this.oasisEnabled.UseVisualStyleBackColor = true;
             this.oasisEnabled.CheckedChanged += new System.EventHandler(this.oasisEnabled_CheckedChanged);
             // 
+            // coordinatesUc1
+            // 
+            this.coordinatesUc1.BackColor = System.Drawing.SystemColors.ControlDark;
+            coordinates1.x = 0;
+            coordinates1.y = 0;
+            this.coordinatesUc1.Coords = coordinates1;
+            this.coordinatesUc1.Location = new System.Drawing.Point(11, 149);
+            this.coordinatesUc1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.coordinatesUc1.Name = "coordinatesUc1";
+            this.coordinatesUc1.Size = new System.Drawing.Size(151, 69);
+            this.coordinatesUc1.TabIndex = 171;
+            // 
             // AttackUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -607,6 +631,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.catasPerWave)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.oasisMinTroops)).EndInit();
@@ -641,7 +667,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ColumnHeader columnHeader5;
-        private UserControls.CoordinatesUc coordinatesUc1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.NumericUpDown oasisDelay;
@@ -658,5 +683,8 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.NumericUpDown oasisMinTroops;
+        private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Panel panel3;
+        private UserControls.CoordinatesUc coordinatesUc1;
     }
 }

@@ -25,6 +25,25 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 .Where(x => DateTime.Now.AddHours(-Vill.FarmingNonGold.OasisFarmingDelay) < x.Item2)
                 .ToList();
 
+            // If we don't send to nearest oasis first, check if we have enough troops.
+            // This will save a lot of time / requests.
+            base.TroopsMovement = new TroopsSendModel();
+            if (Vill.FarmingNonGold.OasisFarmingType != OasisFarmingType.NearestFirst) 
+            {
+                var troopsInVill = new int[11];
+                base.TroopsMovement.Troops = new int[11];
+                base.SetCoordsInUrl = false;
+                base.TroopsCallback = (Account _, int[] troops) =>
+                {
+                    troopsInVill = troops;
+                    return false; // Don't continue with the SendTroops
+                };
+                await base.Execute(acc);
+                var enoughTroops = TroopsCountRecieved(acc, troopsInVill);
+                // If we don't have enough troops in the village, retry later
+                if (!enoughTroops) return Retry();
+            }
+
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
 
             // Get map tiles around the current village
@@ -97,24 +116,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             acc.Wb.Log($"Bot will attack oasis {attackCoords}");
 
             base.SetCoordsInUrl = true; // Since we are searching oasis from the map
-            base.TroopsMovement = new TroopsSendModel()
-            {
-                TargetCoordinates = attackCoords,
-                MovementType = Classificator.MovementType.Raid,
-                // Bot will configure amount of troops to be sent when it parses
-                // the amount of troops available at home
-                Troops = new int[11],
-            };
+            base.TroopsMovement.TargetCoordinates = attackCoords;
+            base.TroopsMovement.MovementType = Classificator.MovementType.Raid;
+            // Bot will configure amount of troops to be sent when it parses
+            // the amount of troops available at home
+            base.TroopsMovement.Troops = new int[11];
             base.TroopsCallback = TroopsCountRecieved;
+
             var response = await base.Execute(acc);
 
             // If we didn't have enough troops to send the attack. Will retry in 10-30 min
-            if(response == TaskRes.Retry)
-            {
-                Random ran = new Random();
-                this.NextExecute = DateTime.Now.AddMinutes(ran.Next(10, 30));
-                return TaskRes.Retry;
-            }
+            if (response == TaskRes.Retry) return Retry();
 
             acc.Farming.OasisFarmed.Add((attackCoords, DateTime.Now));
 
@@ -215,6 +227,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 totalRes += animals[i] * (upkeep * 200);
             }
             return totalRes;
+        }
+
+        /// <summary>
+        /// If we don't have enough troops, retry in 10-30 minutes
+        /// </summary>
+        /// <returns></returns>
+        private BotTask.TaskRes Retry()
+        {
+            Random ran = new Random();
+            this.NextExecute = DateTime.Now.AddMinutes(ran.Next(10, 30));
+            return TaskRes.Retry;
         }
     }
 }
