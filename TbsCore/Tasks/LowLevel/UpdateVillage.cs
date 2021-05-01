@@ -16,8 +16,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public bool ImportTasks { get; set; }
         public override async Task<TaskRes> Execute(Account acc)
         {
-            TaskExecutor.RemoveSameTasksForVillage(acc, Vill, typeof(UpdateDorf1), this);
-            TaskExecutor.RemoveSameTasksForVillage(acc, Vill, typeof(UpdateDorf2), this);
+            TaskExecutor.RemoveTaskTypes(acc, typeof(UpdateDorf1), Vill, this);
+            TaskExecutor.RemoveTaskTypes(acc, typeof(UpdateDorf2), Vill, this);
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php"); // Update dorf1
             await Task.Delay(AccountHelper.Delay());

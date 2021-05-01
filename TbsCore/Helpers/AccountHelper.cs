@@ -96,6 +96,10 @@ namespace TravBotSharp.Files.Helpers
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
                 VillageHelper.SetNextRefresh(acc, vill);
+                if (vill.FarmingNonGold.OasisFarmingEnabled) 
+                { 
+                    TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new AttackOasis() { Vill = vill });
+                }
 
                 // Remove in later updates!
                 if (vill.Settings.RefreshMin == 0) vill.Settings.RefreshMin = 30;

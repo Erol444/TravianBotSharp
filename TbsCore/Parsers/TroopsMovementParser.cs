@@ -92,13 +92,19 @@ namespace TravBotSharp.Files.Parsers
             return spans.Count();
         }
 
-        public static TimeSpan GetTimeOfMovement(HtmlDocument html)
+        /// <summary>
+        /// How long will it take for the troops to reach the destination
+        /// </summary>
+        public static TimeSpan GetMovementDuration(HtmlDocument html)
         {
             var content = html.GetElementbyId("content");
             var div = content.Descendants("div").FirstOrDefault(x => x.HasClass("in"));
             return TimeParser.ParseDuration(div.InnerText);
         }
 
+        /// <summary>
+        /// When will the troops reach the destination
+        /// </summary>
         public static DateTime GetArrivalTime(HtmlDocument html)
         {
             var content = html.GetElementbyId("content");

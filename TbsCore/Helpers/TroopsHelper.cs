@@ -366,5 +366,20 @@ namespace TravBotSharp.Files.Helpers
                     .ForEach(x => vill.Troops.Researched.Add(x));
             }
         }
+
+        /// <summary>
+        /// Calculates total upkeep of the troops int[]
+        /// </summary>
+        public static long GetTroopsUpkeep(Account acc, int[] troops)
+        {
+            if (troops.Length < 10) throw new Exception("Troops length not not enough!");
+            long upkeep = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                var troop = TroopsHelper.TroopFromInt(acc, i);
+                upkeep += troops[i] * TroopSpeed.GetTroopUpkeep(troop);
+            }
+            return upkeep;
+        } 
     }
 }

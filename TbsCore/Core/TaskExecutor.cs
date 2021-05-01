@@ -342,20 +342,25 @@ namespace TravBotSharp.Files.Helpers
             acc.Tasks.Any(x => x.GetType() == taskType && x.Vill == vill);
 
         /// <summary>
-        /// Removes all pending BotTasks of specific type for specific village except for the task calling it
-        /// Called by UpdateDorf1/2 since they are called a lot.
+        /// Removes all pending BotTasks of specific type. You can specify only the village where it will
+        /// remove the selected tasks and optionally not remove the 'thisTask'
         /// </summary>
-        /// <param name="acc"></param>
-        /// <param name="vill"></param>
-        /// <param name="type"></param>
-        /// <param name="thisTask"></param>
-        public static void RemoveSameTasksForVillage(Account acc, Village vill, Type type, BotTask thisTask)
+        public static void RemoveTaskTypes(Account acc, Type type, Village vill = null, BotTask thisTask = null)
         {
-            acc.Tasks.RemoveAll(x =>
-                x.Vill == vill &&
-                x.GetType() == type &&
-                x != thisTask
-            );
+            var removeTasks = acc.Tasks.Where(x => x.GetType() == type);
+            
+            if (vill == null) // Only remove tasks for a specific village
+            {
+                removeTasks = removeTasks.Where(x => x.Vill == vill);
+            }
+            if (thisTask == null) // Don't remove this task
+            {
+                removeTasks = removeTasks.Where(x => x != thisTask);
+            }
+
+            // Remove all 'removeTasks' from the account task list
+            removeTasks.ToList().ForEach(x => acc.Tasks.Remove(x));
+            
         }
 
         /// <summary>

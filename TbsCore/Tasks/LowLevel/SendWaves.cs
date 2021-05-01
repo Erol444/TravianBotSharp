@@ -111,7 +111,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 htmlDoc2.LoadHtml(ret);
 
                 // Get time it takes for troops to the target, for later usage
-                var timespan = TroopsMovementParser.GetTimeOfMovement(htmlDoc2);
+                var timespan = TroopsMovementParser.GetMovementDuration(htmlDoc2);
                 lastArriveAt = TroopsMovementParser.GetArrivalTime(htmlDoc2);
 
                 if (timeDifference == TimeSpan.Zero)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
+using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
@@ -26,6 +27,16 @@ namespace TravBotSharp.Views
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage();
+
+            // Oasis farming controls
+            oasisEnabled.Checked = vill.FarmingNonGold.OasisFarmingEnabled;
+            oasisStrategy.SelectedIndex = (int)vill.FarmingNonGold.OasisFarmingType;
+            if (vill.FarmingNonGold.OasisFarmingDelay == 0) vill.FarmingNonGold.OasisFarmingDelay = 5;
+            oasisDelay.Value = vill.FarmingNonGold.OasisFarmingDelay;
+            oasisDistance.Value = vill.FarmingNonGold.OasisMaxDistance;
+            oasisPower.Value = vill.FarmingNonGold.MaxDeffPower;
+            oasisMinTroops.Value = vill.FarmingNonGold.MinTroops;
 
             richTextBox1.Text = "";
             foreach (var sendWave in sendWaves)
@@ -174,5 +185,38 @@ namespace TravBotSharp.Views
             else if (attk.Troops.Any(x => x < 0)) return "Real attack";
             else return "Catas";
         }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            TaskExecutor.AddTask(GetSelectedAcc(), new AttackOasis());
+        }
+
+        #region Oasis farming callbacks
+        private void oasisEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            vill.FarmingNonGold.OasisFarmingEnabled = oasisEnabled.Checked;
+
+            if (oasisEnabled.Checked)
+            {
+                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new AttackOasis() { Vill = vill });
+            }
+            else // Remove all AttackOasis tasks for this village
+            {
+                TaskExecutor.RemoveTaskTypes(acc, typeof(AttackOasis), vill);
+            }
+        }
+        private void oasisStrategy_SelectedIndexChanged(object sender, EventArgs e) =>
+            GetSelectedVillage().FarmingNonGold.OasisFarmingType = (OasisFarmingType)oasisStrategy.SelectedIndex;
+        private void oasisDelay_ValueChanged(object sender, EventArgs e) =>
+            GetSelectedVillage().FarmingNonGold.OasisFarmingDelay = (int)oasisDelay.Value;
+        private void oasisDistance_ValueChanged(object sender, EventArgs e) =>
+            GetSelectedVillage().FarmingNonGold.OasisMaxDistance = (int)oasisDistance.Value;
+        private void oasisPower_ValueChanged(object sender, EventArgs e) =>
+            GetSelectedVillage().FarmingNonGold.MaxDeffPower = (int)oasisPower.Value;
+        private void oasisMinTroops_ValueChanged(object sender, EventArgs e) =>
+            GetSelectedVillage().FarmingNonGold.MinTroops = (int)oasisMinTroops.Value;
+        #endregion Oasis farming callbacks
     }
 }
