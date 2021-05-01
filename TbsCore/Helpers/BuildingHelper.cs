@@ -53,19 +53,22 @@ namespace TravBotSharp.Files.Helpers
 
             // checking multiple building
             // you need at least one at level 20 before building other
-            if (task.ConstructNew && BuildingsData.CanHaveMultipleBuildings(task.Building))
+            if (BuildingsData.CanHaveMultipleBuildings(task.Building))
             {
-                // Highest level building
-                var highestLvl = vill.Build
-                    .Buildings
-                    .Where(x => x.Type == task.Building)
-                    .OrderByDescending(x => x.Level)
-                    .FirstOrDefault();
-
-                if (highestLvl != null &&
-                    highestLvl.Level != BuildingsData.MaxBuildingLevel(acc, task.Building))
+                if(task.ConstructNew)
                 {
-                    task.BuildingId = highestLvl.Id;
+                    // Highest level building
+                    var highestLvl = vill.Build
+                        .Buildings
+                        .Where(x => x.Type == task.Building)
+                        .OrderByDescending(x => x.Level)
+                        .FirstOrDefault();
+
+                    if (highestLvl != null &&
+                        highestLvl.Level != BuildingsData.MaxBuildingLevel(acc, task.Building))
+                    {
+                        task.BuildingId = highestLvl.Id;
+                    }
                 }
             }
             else if (!IsResourceField(task.Building))
