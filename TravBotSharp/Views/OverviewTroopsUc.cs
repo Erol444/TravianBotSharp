@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
+using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
@@ -209,7 +210,7 @@ namespace TravBotSharp.Views
                 for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
                 {
                     Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
-                    if (TroopsHelper.GetTroopBuilding(troop, false) == building)
+                    if (TroopsData.GetTroopBuilding(troop, false) == building)
                     {
                         ret.Add(VillageHelper.EnumStrToString(troop.ToString()));
                     }

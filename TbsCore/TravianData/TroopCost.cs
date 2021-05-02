@@ -3,6 +3,7 @@ using System.Linq;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
+using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.TravianData
@@ -80,7 +81,7 @@ namespace TravBotSharp.Files.TravianData
         //You would probably have to take into account ally training bonus, artifacts, helmets, horse fountain...
         public static TimeSpan GetTrainingTime(Account acc, Village vill, Classificator.TroopsEnum troop, bool great)
         {
-            var buildingType = TroopsHelper.GetTroopBuilding(troop, great);
+            var buildingType = TroopsData.GetTroopBuilding(troop, great);
             var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == buildingType);
             var troopId = (int)troop;
             if (troopId > 40) troopId -= 20; //since we don't have values for nature/natars

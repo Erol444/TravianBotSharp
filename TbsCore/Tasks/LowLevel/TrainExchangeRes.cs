@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
+using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
@@ -16,7 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var wb = acc.Wb.Driver;
             if (Vill == null) Vill = AccountHelper.GetMainVillage(acc);
 
-            var building = TroopsHelper.GetTroopBuilding(troop, Great);
+            var building = TroopsData.GetTroopBuilding(troop, Great);
             if (!await VillageHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
 

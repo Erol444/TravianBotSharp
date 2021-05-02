@@ -16,66 +16,13 @@ namespace TravBotSharp.Files.Helpers
 {
     public static class TroopsHelper
     {
-        public static BuildingEnum GetTroopBuilding(TroopsEnum t, bool great)
+        internal static TroopsEnum TroopFromInt(Account acc, int num) =>
+            TroopFromInt(acc.AccInfo.Tribe ?? TribeEnum.Any, num);
+        internal static TroopsEnum TroopFromInt(TribeEnum tribe, int num) =>
+            (TroopsEnum)TroopIntFromInt(tribe, num);
+        internal static int TroopIntFromInt(TribeEnum tribe, int num)
         {
-            switch (t)
-            {
-                case TroopsEnum.Legionnaire:
-                case TroopsEnum.Praetorian:
-                case TroopsEnum.Imperian:
-                case TroopsEnum.Clubswinger:
-                case TroopsEnum.Spearman:
-                case TroopsEnum.Axeman:
-                case TroopsEnum.Scout:
-                case TroopsEnum.Phalanx:
-                case TroopsEnum.Swordsman:
-                case TroopsEnum.SlaveMilitia:
-                case TroopsEnum.AshWarden:
-                case TroopsEnum.KhopeshWarrior:
-                case TroopsEnum.Mercenary:
-                case TroopsEnum.Bowman:
-                    if (great) return BuildingEnum.GreatBarracks;
-                    return BuildingEnum.Barracks;
-
-                case TroopsEnum.EquitesLegati:
-                case TroopsEnum.EquitesImperatoris:
-                case TroopsEnum.EquitesCaesaris:
-                case TroopsEnum.Paladin:
-                case TroopsEnum.TeutonicKnight:
-                case TroopsEnum.Pathfinder:
-                case TroopsEnum.TheutatesThunder:
-                case TroopsEnum.Druidrider:
-                case TroopsEnum.Haeduan:
-                case TroopsEnum.SopduExplorer:
-                case TroopsEnum.AnhurGuard:
-                case TroopsEnum.ReshephChariot:
-                case TroopsEnum.Spotter:
-                case TroopsEnum.SteppeRider:
-                case TroopsEnum.Marksman:
-                case TroopsEnum.Marauder:
-                    if (great) return BuildingEnum.GreatStable;
-                    return BuildingEnum.Stable;
-
-                case TroopsEnum.RomanRam:
-                case TroopsEnum.RomanCatapult:
-                case TroopsEnum.TeutonCatapult:
-                case TroopsEnum.TeutonRam:
-                case TroopsEnum.GaulRam:
-                case TroopsEnum.GaulCatapult:
-                case TroopsEnum.EgyptianCatapult:
-                case TroopsEnum.EgyptianRam:
-                case TroopsEnum.HunCatapult:
-                case TroopsEnum.HunRam:
-                    return BuildingEnum.Workshop;
-
-                default:
-                    return BuildingEnum.Site; //idk, should have error handling
-            }
-        }
-
-        internal static TroopsEnum TroopFromInt(Account acc, int num)
-        {
-            return (TroopsEnum)(num + 1 + (((int)acc.AccInfo.Tribe - 1) * 10));
+            return num + 1 + (((int)tribe - 1) * 10);
         }
 
         /// <summary>
@@ -93,7 +40,7 @@ namespace TravBotSharp.Files.Helpers
 
             //how many troops we want to train
             // Take into account how many troop are already training
-            var trainBuilding = TroopsHelper.GetTroopBuilding(troop, great);
+            var trainBuilding = TroopsData.GetTroopBuilding(troop, great);
             var trainingTime = TroopsHelper.GetTrainingTimeForBuilding(trainBuilding, vill);
 
             var currentlyTrainingHours = (trainingTime - DateTime.Now).TotalHours;

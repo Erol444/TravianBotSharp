@@ -9,10 +9,10 @@ using Xunit;
 
 namespace TbsCoreTest
 {
-    public class ResSpendingTest
+    public class CombatSimulationTest
     {
         [Fact]
-        public void Test()
+        internal void Test()
         {
             var factory = new ResSpendingFactory();
             var acc = factory.CreateAccount();

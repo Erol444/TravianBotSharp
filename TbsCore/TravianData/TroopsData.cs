@@ -189,6 +189,72 @@ namespace TbsCore.TravianData
             }
         }
 
+        /// <summary>
+        /// Is the troop infantry
+        /// </summary>
+        public static bool IsInfantry(TroopsEnum troop)
+        {
+            var building = GetTroopBuilding(troop, false);
+            return building != BuildingEnum.Stable;
+        }
+
+        public static BuildingEnum GetTroopBuilding(TroopsEnum troop, bool great)
+        {
+            switch (troop)
+            {
+                case TroopsEnum.Legionnaire:
+                case TroopsEnum.Praetorian:
+                case TroopsEnum.Imperian:
+                case TroopsEnum.Clubswinger:
+                case TroopsEnum.Spearman:
+                case TroopsEnum.Axeman:
+                case TroopsEnum.Scout:
+                case TroopsEnum.Phalanx:
+                case TroopsEnum.Swordsman:
+                case TroopsEnum.SlaveMilitia:
+                case TroopsEnum.AshWarden:
+                case TroopsEnum.KhopeshWarrior:
+                case TroopsEnum.Mercenary:
+                case TroopsEnum.Bowman:
+                    if (great) return BuildingEnum.GreatBarracks;
+                    return BuildingEnum.Barracks;
+
+                case TroopsEnum.EquitesLegati:
+                case TroopsEnum.EquitesImperatoris:
+                case TroopsEnum.EquitesCaesaris:
+                case TroopsEnum.Paladin:
+                case TroopsEnum.TeutonicKnight:
+                case TroopsEnum.Pathfinder:
+                case TroopsEnum.TheutatesThunder:
+                case TroopsEnum.Druidrider:
+                case TroopsEnum.Haeduan:
+                case TroopsEnum.SopduExplorer:
+                case TroopsEnum.AnhurGuard:
+                case TroopsEnum.ReshephChariot:
+                case TroopsEnum.Spotter:
+                case TroopsEnum.SteppeRider:
+                case TroopsEnum.Marksman:
+                case TroopsEnum.Marauder:
+                    if (great) return BuildingEnum.GreatStable;
+                    return BuildingEnum.Stable;
+
+                case TroopsEnum.RomanRam:
+                case TroopsEnum.RomanCatapult:
+                case TroopsEnum.TeutonCatapult:
+                case TroopsEnum.TeutonRam:
+                case TroopsEnum.GaulRam:
+                case TroopsEnum.GaulCatapult:
+                case TroopsEnum.EgyptianCatapult:
+                case TroopsEnum.EgyptianRam:
+                case TroopsEnum.HunCatapult:
+                case TroopsEnum.HunRam:
+                    return BuildingEnum.Workshop;
+
+                default:
+                    return BuildingEnum.Site; //idk, should have error handling
+            }
+        }
+
         public static TroopsEnum TribeFirstTroop(TribeEnum? tribe)
         {
             switch (tribe)
@@ -271,6 +337,18 @@ namespace TbsCore.TravianData
         public static bool IsTroopRam(TroopsEnum troop) => IsTroopRam((int)troop);
         public static bool IsTroopRam(int troopInt) => (troopInt % 10) == 7;
 
+
+        public static (int, int) GetTroopDeff(TroopsEnum troop) =>
+            GetTroopDeff((int)troop);
+        public static (int, int) GetTroopDeff(int troop) =>
+            (TroopValues[troop, 1], TroopValues[troop, 2]);
+
+
+        public static int GetTroopOff(TroopsEnum troop) =>
+            GetTroopOff((int)troop);
+        public static int GetTroopOff(int troop) =>
+            TroopValues[troop, 0];
+
         /// <summary>
         /// Troops data: [offense, defense against infantry, defense against cavalry, speed, upkeep, training time, capacity, research time]
         /// </summary>
@@ -305,7 +383,7 @@ namespace TbsCore.TravianData
             { 0,  20, 10, 17, 2,  1700, 0,   6900 },
             { 90, 25, 40, 19, 2,  3100, 75,  11100 },
             { 45, 115,55, 16, 2,  3200, 35,  11400 },
-            { 140,50, 165,13, 3,  3900, 65,  13500 },
+            { 140,60, 165,13, 3,  3900, 65,  13500 },
             { 50, 30, 105,4 , 3,  5000, 0,   16800 },
             { 70, 45, 10, 3 , 6,  9000, 0,   28800 },
             { 40, 50, 50, 5 , 4, 90700, 0,   24475 },

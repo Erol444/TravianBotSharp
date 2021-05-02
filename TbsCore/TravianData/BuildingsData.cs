@@ -38,6 +38,30 @@ namespace TravBotSharp.Files.TravianData
         public static bool CanHaveMultipleBuildings(BuildingEnum building) =>
             multipleBuildingsAllowes.Any(x => x == building);
 
+
+        private static readonly float[,] WallData = new float[,] {
+            { 1.030F, 10}, // City wall
+            { 1.020F, 6}, // Earth wall
+            { 1.025F, 8}, // Palisade
+            { 0.0F, 0}, // {Nature}
+            { 0.0F, 0}, // {Natars}
+            { 1.025F, 8}, // Stone wall
+            { 1.015F, 6}, // Makeshift wall
+        };
+
+        /// <summary>
+        /// Gets wall deffensive bonus and basic deffensive power. Used by the combat simulator.
+        /// </summary>
+        public static (double, int) GetWallBonus(TribeEnum tribe, int wallLevel)
+        {
+            var tribeIndex = (int)tribe + 1;
+
+            var bonus = Math.Pow(WallData[tribeIndex, 0], wallLevel);
+            var basicDeff = (int)WallData[tribeIndex, 1] * wallLevel;
+
+            return (bonus, basicDeff);
+        }
+
         /// <summary>
         /// Gets the highest level a building can be on
         /// </summary>
