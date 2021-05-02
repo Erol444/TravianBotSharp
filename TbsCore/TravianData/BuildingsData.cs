@@ -43,8 +43,8 @@ namespace TravBotSharp.Files.TravianData
             { 1.030F, 10}, // City wall
             { 1.020F, 6}, // Earth wall
             { 1.025F, 8}, // Palisade
-            { 0.0F, 0}, // {Nature}
-            { 0.0F, 0}, // {Natars}
+            { 1.0F, 0}, // {Nature}
+            { 1.0F, 0}, // {Natars}
             { 1.025F, 8}, // Stone wall
             { 1.015F, 6}, // Makeshift wall
         };
@@ -54,7 +54,7 @@ namespace TravBotSharp.Files.TravianData
         /// </summary>
         public static (double, int) GetWallBonus(TribeEnum tribe, int wallLevel)
         {
-            var tribeIndex = (int)tribe + 1;
+            var tribeIndex = (int)tribe - 1;
 
             var bonus = Math.Pow(WallData[tribeIndex, 0], wallLevel);
             var basicDeff = (int)WallData[tribeIndex, 1] * wallLevel;

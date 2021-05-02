@@ -18,11 +18,22 @@ namespace TbsCore.TravianData
         {
             var offense = GetRealOffense(attacker);
             var deffense = GetRealDeffense(attacker, deffender);
+            
+            // Take into the account wall bonus / deffense
+            var (wallBonus, wallDeff) = BuildingsData.GetWallBonus(deffender.DeffTribe, deffender.WallLevel);
+            
+            // Take into the account morale (pop) bonus
+            var subDeffense = (int)Math.Round(deffense * wallBonus, MidpointRounding.AwayFromZero);
+            subDeffense += 10 + wallDeff;
+            var popBonus = GetPopBonus(attacker, deffender, offense, subDeffense);
+
+            var totalBonus = wallBonus * popBonus;
+            deffense = (int)Math.Round(deffense * totalBonus, MidpointRounding.AwayFromZero);
+
             // Basic village defense
             deffense += 10;
-            var (wallBonus, wallDeff) = BuildingsData.GetWallBonus(deffender.DeffTribe, deffender.WallLevel);
             deffense += wallDeff;
-            deffense = (int)Math.Round(deffense * wallBonus, MidpointRounding.AwayFromZero);
+            // TODO: add palace deff
 
             double ratio = (float)offense / deffense;
             bool attackerWon = true;
@@ -50,6 +61,43 @@ namespace TbsCore.TravianData
             return (1 - raidRatio, raidRatio);
         }
 
+        /// <summary>
+        /// Get Morale/Population bonus
+        /// </summary>
+        private static double GetPopBonus(CombatAttacker attacker, CombatDeffender deffender, double off, double deff)
+        {
+            if (deffender.DeffTribe == Classificator.TribeEnum.Nature) 
+            {
+                // Note: Nature, the 'account' for unoccupied oases, has its own population (500).
+                deffender.Population = 500;
+            }
+
+            if (attacker.Population < deffender.Population) return 1.0F;
+            
+            // So we don't divide by 0
+            if (deffender.Population == 0) return 1.5F;
+            if (attacker.Population == 0) return 1.0F;
+
+            double bonus;
+            if (deff < off)
+            {
+                // M^0.2, where M is attacker's population / defender's population
+                bonus = Math.Pow((attacker.Population / (double)deffender.Population), 0.2F);
+            }
+            else
+            {
+                // If the attacker has fewer points than defender:
+                // M ^{ 0.2·(offense points / defense points)}
+                double exp = 0.2F * (off / (double)deff);
+                bonus = Math.Pow((attacker.Population / (double)deffender.Population), exp);
+            }
+
+            // Moralebonus never goes higher than +50%
+            if (1.5F < bonus) bonus = 1.5;
+
+            return bonus;
+        }
+
         // For raids, the formula changes a bit, losses will be: 100% · x / (100% + x)
         private static double RaidRatio(double ratio) =>
             ratio / (1 + ratio);
@@ -74,19 +122,19 @@ namespace TbsCore.TravianData
         /// <summary>
         /// Gets the "real" (normalized) deffensive power of the deffender. Used by the combat simulator.
         /// </summary>
-        public static int GetRealDeffense(CombatAttacker attacker, CombatDeffender deffender)
+        public static double GetRealDeffense(CombatAttacker attacker, CombatDeffender deffender)
         {
             var offense = GetArmyOffense(attacker.Army);
             var deffense = GetArmyDeffense(deffender.Armies);            
 
             return GetRealDeffense(offense, deffense);
         }
-        public static int GetRealDeffense((int, int) offense, (int, int) deffense)
+        public static int GetRealDeffense((double, double) offense, (double, double) deffense)
         {
             var (offInf, offCav) = offense;
             var (deffInf, deffCav) = deffense;
 
-            float ratio = offInf / (float)(offCav + offInf);
+            double ratio = offInf / (offCav + offInf);
 
             var normalizedInf = (float)deffInf * ratio;
             var normalizedCav = (float)deffCav * (1 - ratio);
@@ -97,18 +145,17 @@ namespace TbsCore.TravianData
         /// <summary>
         /// Offensive power is just sum of (inf + cav)
         /// </summary>
-        public static int GetRealOffense(CombatAttacker attacker) =>
+        public static double GetRealOffense(CombatAttacker attacker) =>
             GetRealOffense(attacker.Army);
-        public static int GetRealOffense(CombatBase army)
+        public static double GetRealOffense(CombatBase army)
         {
             var (inf, cav) = GetArmyOffense(army);
             return inf + cav;
         }
 
-
-        private static (int, int) GetArmyOffense(CombatBase army)
+        private static (double, double) GetArmyOffense(CombatBase army)
         {
-            int inf = 0, cav = 0;
+            double inf = 0, cav = 0;
             for (int i = 0; i < 10; i++)
             {
                 if (army.Troops[i] == 0) continue;
@@ -121,9 +168,9 @@ namespace TbsCore.TravianData
             return (inf, cav);
         }
 
-        private static (int, int) GetArmyDeffense(List<CombatBase> armies)
+        private static (double, double) GetArmyDeffense(List<CombatBase> armies)
         {
-            int inf = 0, cav = 0;
+            double inf = 0, cav = 0;
             foreach(var army in armies)
             {
                 var (infDeff, cavDeff) = GetArmyDeffense(army);
@@ -133,9 +180,9 @@ namespace TbsCore.TravianData
             return (inf, cav);
         }
 
-        private static (int, int) GetArmyDeffense(CombatBase army)
+        private static (double, double) GetArmyDeffense(CombatBase army)
         {
-            int inf = 0, cav = 0;
+            double inf = 0, cav = 0;
             for (int i = 0; i < 10; i++)
             {
                 if (army.Troops[i] == 0) continue;

@@ -344,10 +344,24 @@ namespace TbsCore.TravianData
             (TroopValues[troop, 1], TroopValues[troop, 2]);
 
 
-        public static int GetTroopOff(TroopsEnum troop) =>
-            GetTroopOff((int)troop);
-        public static int GetTroopOff(int troop) =>
-            TroopValues[troop, 0];
+        public static double GetTroopOff(TroopsEnum troop, int level = 1) =>
+            GetTroopOff((int)troop, level);
+        public static double GetTroopOff(int troop, int level = 1)
+        {
+            var upkeep = TroopValues[troop, 4];
+            var baseOff = TroopValues[troop, 0];
+            return ImprovedStat(baseOff, level, upkeep);
+        }
+
+        private static double ImprovedStat(int baseVal, int level, int upkeepBase)
+        {
+            if (level < 2) return baseVal;
+            // https://github.com/kirilloid/travian/blob/master/src/model/t4/combat/army.ts
+            // BASE_VALUE + (BASE_VALUE + 300 · UPKEEP / 7) · (1.007^LEVEL – 1) + UPKEEP · 0.0021
+            double upkeep = (double)upkeepBase / 1.007F;
+            return baseVal + (baseVal + 300.0F * (double)upkeep / 7.0F) * (Math.Pow(1.007F, level) - 1) + upkeep * 0.0021F;
+        }
+
 
         /// <summary>
         /// Troops data: [offense, defense against infantry, defense against cavalry, speed, upkeep, training time, capacity, research time]

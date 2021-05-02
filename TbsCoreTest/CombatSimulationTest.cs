@@ -6,6 +6,7 @@ using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TbsCoreTest.Factories;
+using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
 using Xunit;
 
@@ -32,7 +33,7 @@ namespace TbsCoreTest
 
             // Attacker 1
             //Assert.Equal((43.4, 100.0), Norm(CombatSimulator.GetCasualties(attackers[0], deffenders[2], raid: false)));
-            Assert.Equal((99.7, 0.3), Norm(CombatSimulator.GetCasualties(attackers[0], deffenders[2], raid: true)));
+            Assert.Equal((99.8, 0.2), Norm(CombatSimulator.GetCasualties(attackers[0], deffenders[2], raid: true)));
 
             //Assert.Equal((100.0, 1.3), Norm(CombatSimulator.GetCasualties(attackers[0], deffenders[1], raid: false)));
             //Assert.Equal((98.8, 1.2), Norm(CombatSimulator.GetCasualties(attackers[0], deffenders[1], raid: true)));
@@ -41,12 +42,12 @@ namespace TbsCoreTest
             //Assert.Equal((99.5, 0.5), Norm(CombatSimulator.GetCasualties(attackers[0], deffenders[2], raid: true)));
 
             // Attacker 2
-            //Assert.Equal((100.0, 84.1), Norm(CombatSimulator.GetCasualties(attackers[1], deffenders[2], raid: false)));
-            //Assert.Equal((68.3, 31.7), Norm(CombatSimulator.GetCasualties(attackers[1], deffenders[2], raid: true)));
+            //Assert.Equal((100.0, 44.6), Norm(CombatSimulator.GetCasualties(attackers[1], deffenders[2], raid: false)));
+            Assert.Equal((71.9, 28.1), Norm(CombatSimulator.GetCasualties(attackers[1], deffenders[2], raid: true)));
 
             // Attacker 3
             //Assert.Equal((33.3, 100.0), Norm(CombatSimulator.GetCasualties(attackers[2], deffenders[2], raid: false)));
-            Assert.Equal((38.4, 61.6), Norm(CombatSimulator.GetCasualties(attackers[2], deffenders[2], raid: true)));
+            Assert.Equal((47.6, 52.4), Norm(CombatSimulator.GetCasualties(attackers[2], deffenders[2], raid: true)));
         }
 
         // Normalize the ratio
@@ -57,7 +58,7 @@ namespace TbsCoreTest
             return (ratio1, ratio2);
         }
 
-        [Fact]
+        //[Fact]
         public void TestRealDeff()
         {
             var factory = new CombatFactory();
@@ -75,5 +76,15 @@ namespace TbsCoreTest
             Assert.Equal(131875, CombatSimulator.GetRealDeffense(attackers[2], deffenders[1]));
             Assert.Equal(294281, CombatSimulator.GetRealDeffense(attackers[2], deffenders[2]));
         }
+
+        [Fact]
+        public void TestImprovedOff()
+        {
+            Assert.Equal(40.00, Rnd(TroopsData.GetTroopOff(Classificator.TroopsEnum.Clubswinger, 1)));
+            Assert.Equal(44.74, Rnd(TroopsData.GetTroopOff(Classificator.TroopsEnum.Clubswinger, 8)));
+            Assert.Equal(50.40, Rnd(TroopsData.GetTroopOff(Classificator.TroopsEnum.Clubswinger, 17)));
+            Assert.Equal(52.36, Rnd(TroopsData.GetTroopOff(Classificator.TroopsEnum.Clubswinger, 20)));
+        }
+        private double Rnd(double val) => Math.Round(val, 2, MidpointRounding.AwayFromZero);
     }
 }

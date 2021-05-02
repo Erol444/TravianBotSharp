@@ -9,6 +9,7 @@ namespace TbsCore.Models.CombatModels
     {
         public Classificator.TribeEnum Tribe { get; set; }
         public int[] Troops { get; set; }
+        public int[] Improvements { get; set; }
         public CombatHero Hero { get; set; }
     }
 }
