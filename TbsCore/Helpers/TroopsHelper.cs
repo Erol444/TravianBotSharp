@@ -323,8 +323,8 @@ namespace TravBotSharp.Files.Helpers
             long upkeep = 0;
             for (int i = 0; i < 10; i++)
             {
-                var troop = TroopsHelper.TroopFromInt(acc, i);
-                upkeep += troops[i] * TroopSpeed.GetTroopUpkeep(troop);
+                var troop = TroopFromInt(acc, i);
+                upkeep += troops[i] * TroopsData.GetTroopUpkeep(troop);
             }
             return upkeep;
         } 

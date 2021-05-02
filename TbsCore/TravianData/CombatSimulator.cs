@@ -4,6 +4,7 @@ using System.Linq;
 using TbsCore.Models.CombatModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.TravianData;
+using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TbsCore.TravianData
 {
@@ -73,7 +74,7 @@ namespace TbsCore.TravianData
         /// </summary>
         private static double GetPopBonus(CombatAttacker attacker, CombatDeffender deffender, double off, double deff)
         {
-            if (deffender.DeffTribe == Classificator.TribeEnum.Nature) 
+            if (deffender.DeffTribe == TribeEnum.Nature) 
             {
                 // Note: Nature, the 'account' for unoccupied oases, has its own population (500).
                 deffender.Population = 500;
@@ -157,7 +158,7 @@ namespace TbsCore.TravianData
         public static double GetRealOffense(CombatBase army)
         {
             var (inf, cav) = GetArmyOffense(army);
-            return inf + cav;
+            return (inf + cav);
         }
 
         private static (double, double) GetArmyDeffense(List<CombatBase> armies)
@@ -178,9 +179,12 @@ namespace TbsCore.TravianData
             {
                 if (army.Troops[i] == 0) continue;
                 var troop = TroopsHelper.TroopFromInt(army.Tribe, i);
+                
                 var lvl = army.Improvements == null ? 1 : army.Improvements[i];
                 var off = TroopsData.GetTroopOff(troop, lvl);
-
+                
+                if (troop == troopBoost) off += boost;
+                
                 if (TroopsData.IsInfantry(troop)) inf += off * army.Troops[i];
                 else cav += off * army.Troops[i];
             }
@@ -189,6 +193,8 @@ namespace TbsCore.TravianData
 
         private static (double, double) GetArmyDeffense(CombatBase army)
         {
+            var (troopBoost, boost) = GetWeaponBoost(army.Hero);
+
             double inf = 0, cav = 0;
             for (int i = 0; i < 10; i++)
             {
@@ -196,10 +202,63 @@ namespace TbsCore.TravianData
                 var troop = TroopsHelper.TroopFromInt(army.Tribe, i);
                 var lvl = army.Improvements == null ? 1 : army.Improvements[i];
                 var (deffInf, deffCav) = TroopsData.GetTroopDeff(troop, lvl);
+
+                if(troop == troopBoost)
+                {
+                    inf += boost;
+                    cav += boost;
+                }
+
                 inf += deffInf * army.Troops[i];
                 cav += deffCav * army.Troops[i];
             }
             return (inf, cav);
+        }
+
+        private static (TroopsEnum, int) GetWeaponBoost(CombatHero hero)
+        {
+            if (hero == null) return (TroopsEnum.None, 0);
+            if (hero.Items.TryGetValue(HeroItemCategory.Weapon, out var weapon))
+            {
+                return HeroHelper.ParseWeapon(weapon);
+            }
+            return (TroopsEnum.None, 0);
+        }
+
+        /// <summary>
+        /// Gets hero bonus, power and whether it's on the horse
+        /// </summary>
+        /// <returns>(bonus, power)</returns>
+        private static (double, int, bool) GetHeroBoost(CombatBase army, bool attack)
+        {
+            var hero = army.Hero;
+            if (hero == null || hero.Info == null || hero.Items == null) return (1.0, 0, false);
+
+            int power = 100; // Base hero power
+            if (hero.Items.TryGetValue(HeroItemCategory.Weapon, out var weapon))
+            {
+                var (_, _, tier) = HeroHelper.ParseHeroItem(weapon);
+                power += tier * 500;
+            }
+            if (hero.Items.TryGetValue(HeroItemCategory.Armor, out var armor))
+            {
+                var (_, name, tier) = HeroHelper.ParseHeroItem(armor);
+                power += HeroHelper.GetArmorBaseStrength(name) * tier;
+            }
+            if (hero.Items.TryGetValue(HeroItemCategory.Left, out var left))
+            {
+                var (_, name, tier) = HeroHelper.ParseHeroItem(left);
+                if (name == "Shield") power += tier * 500;
+            }
+            var levelMultiplier = army.Tribe == TribeEnum.Romans ? 100 : 80;
+            power += levelMultiplier * hero.Info.FightingStrengthPoints;
+
+            double bonus = 0.2F * (attack ? hero.Info.OffBonusPoints : hero.Info.DeffBonusPoints);
+            bonus += 1.0F;
+
+            bool horse = hero.Items.TryGetValue(HeroItemCategory.Horse, out _);
+
+            return (bonus, power, horse);
         }
         #endregion Private methods
     }

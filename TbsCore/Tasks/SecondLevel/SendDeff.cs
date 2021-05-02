@@ -51,7 +51,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 var troop = TroopsHelper.TroopFromInt(acc, i);
                 if (!TroopsData.IsTroopDefensive(troop) || troopsAtHome[i] == 0) continue;
 
-                var upkeep = TroopSpeed.GetTroopUpkeep(troop);
+                var upkeep = TroopsData.GetTroopUpkeep(troop);
                 int sendAmount = troopsAtHome[i];
 
                 int toSend = this.DeffAmount.Amount / upkeep;

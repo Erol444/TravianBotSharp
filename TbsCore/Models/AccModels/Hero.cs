@@ -35,10 +35,12 @@ namespace TbsCore.Models.AccModels
         public int HomeVillageId { get; set; }
         public HeroInfo HeroInfo { get; set; }
         public HeroSettings Settings { get; set; }
+        
         /// <summary>
         /// Hero items in the inventory
         /// </summary>
         public List<HeroItem> Items { get; set; }
+        
         /// <summary>
         /// Items currently equipt
         /// </summary>

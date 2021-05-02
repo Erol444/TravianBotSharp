@@ -1,7 +1,20 @@
-﻿namespace TbsCore.Models.CombatModels
+﻿using System.Collections.Generic;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.TroopsModels;
+using TravBotSharp.Files.Helpers;
+
+namespace TbsCore.Models.CombatModels
 {
     public class CombatHero
     {
-        // TODO: add hero left hand item, hero off / deff bonus, natar horn
+        /// <summary>
+        /// Hero power, offensive / deffensive bonus
+        /// </summary>
+        public HeroInfo Info { get; set; }
+        
+        /// <summary>
+        /// Hero items (natar horn, shield, right hand items)
+        /// </summary>
+        public Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum> Items { get; set; }
     }
 }

@@ -26,5 +26,10 @@ namespace TbsCore.Models.CombatModels
         /// Which tribe is the deffender. Wall bonus depends on the tribe
         /// </summary>
         public Classificator.TribeEnum DeffTribe { get; set; }
+
+        /// <summary>
+        /// Ally metalurgy percentage (2% => 2, 4% => 4)
+        /// </summary>
+        public int Metalurgy { get; set; }
     }
 }

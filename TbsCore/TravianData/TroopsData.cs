@@ -342,19 +342,20 @@ namespace TbsCore.TravianData
             GetTroopDeff((int)troop, level);
         public static (double, double) GetTroopDeff(int troop, int level = 1)
         {
-            var upkeep = TroopValues[troop, 4];
+            var upkeep = GetTroopUpkeep(troop);
             var inf = TroopValues[troop, 1];
             var cav = TroopValues[troop, 2];
             return (ImprovedStat(inf, level, upkeep), ImprovedStat(cav, level, upkeep));
         }
-            
 
+        public static int GetTroopUpkeep(TroopsEnum troop) => GetTroopUpkeep((int)troop);
+        public static int GetTroopUpkeep(int troop) => TroopValues[troop, 4];
 
         public static double GetTroopOff(TroopsEnum troop, int level = 1) =>
             GetTroopOff((int)troop, level);
         public static double GetTroopOff(int troop, int level = 1)
         {
-            var upkeep = TroopValues[troop, 4];
+            var upkeep = GetTroopUpkeep(troop);
             var baseOff = TroopValues[troop, 0];
             return ImprovedStat(baseOff, level, upkeep);
         }
