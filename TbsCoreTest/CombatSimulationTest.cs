@@ -43,11 +43,11 @@ namespace TbsCoreTest
 
             // Attacker 2
             //Assert.Equal((100.0, 44.6), Norm(CombatSimulator.GetCasualties(attackers[1], deffenders[2], raid: false)));
-            Assert.Equal((71.9, 28.1), Norm(CombatSimulator.GetCasualties(attackers[1], deffenders[2], raid: true)));
+            Assert.Equal((72.8, 27.2), Norm(CombatSimulator.GetCasualties(attackers[1], deffenders[2], raid: true)));
 
             // Attacker 3
-            //Assert.Equal((33.3, 100.0), Norm(CombatSimulator.GetCasualties(attackers[2], deffenders[2], raid: false)));
-            Assert.Equal((47.6, 52.4), Norm(CombatSimulator.GetCasualties(attackers[2], deffenders[2], raid: true)));
+            //Assert.Equal((50.5, 100.0), Norm(CombatSimulator.GetCasualties(attackers[2], deffenders[2], raid: false)));
+            Assert.Equal((48.6, 51.4), Norm(CombatSimulator.GetCasualties(attackers[2], deffenders[2], raid: true)));
         }
 
         // Normalize the ratio
@@ -56,25 +56,6 @@ namespace TbsCoreTest
             var ratio1 = Math.Round(ratio.Item1 * 100, 1, MidpointRounding.AwayFromZero);
             var ratio2 = Math.Round(ratio.Item2 * 100, 1, MidpointRounding.AwayFromZero);
             return (ratio1, ratio2);
-        }
-
-        //[Fact]
-        public void TestRealDeff()
-        {
-            var factory = new CombatFactory();
-            var (deffenders, attackers) = factory.GetBoth();
-
-            Assert.Equal(4000, CombatSimulator.GetRealDeffense(attackers[0], deffenders[0]));
-            Assert.Equal(137500, CombatSimulator.GetRealDeffense(attackers[0], deffenders[1]));
-            Assert.Equal(289500, CombatSimulator.GetRealDeffense(attackers[0], deffenders[2]));
-
-            Assert.Equal(4598, CombatSimulator.GetRealDeffense(attackers[1], deffenders[0]));
-            Assert.Equal(131523, CombatSimulator.GetRealDeffense(attackers[1], deffenders[1]));
-            Assert.Equal(294580, CombatSimulator.GetRealDeffense(attackers[1], deffenders[2]));
-
-            Assert.Equal(4563, CombatSimulator.GetRealDeffense(attackers[2], deffenders[0]));
-            Assert.Equal(131875, CombatSimulator.GetRealDeffense(attackers[2], deffenders[1]));
-            Assert.Equal(294281, CombatSimulator.GetRealDeffense(attackers[2], deffenders[2]));
         }
 
         [Fact]

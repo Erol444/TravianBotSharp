@@ -338,10 +338,16 @@ namespace TbsCore.TravianData
         public static bool IsTroopRam(int troopInt) => (troopInt % 10) == 7;
 
 
-        public static (int, int) GetTroopDeff(TroopsEnum troop) =>
-            GetTroopDeff((int)troop);
-        public static (int, int) GetTroopDeff(int troop) =>
-            (TroopValues[troop, 1], TroopValues[troop, 2]);
+        public static (double, double) GetTroopDeff(TroopsEnum troop, int level = 1) =>
+            GetTroopDeff((int)troop, level);
+        public static (double, double) GetTroopDeff(int troop, int level = 1)
+        {
+            var upkeep = TroopValues[troop, 4];
+            var inf = TroopValues[troop, 1];
+            var cav = TroopValues[troop, 2];
+            return (ImprovedStat(inf, level, upkeep), ImprovedStat(cav, level, upkeep));
+        }
+            
 
 
         public static double GetTroopOff(TroopsEnum troop, int level = 1) =>

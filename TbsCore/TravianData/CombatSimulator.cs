@@ -7,7 +7,13 @@ using TravBotSharp.Files.TravianData;
 
 namespace TbsCore.TravianData
 {
-    // https://wbb.forum.travian.com/index.php?thread/75248-combat-system-formulas/
+    /// <summary>
+    /// Source:
+    /// https://wbb.forum.travian.com/index.php?thread/75248-combat-system-formulas/ 
+    /// https://github.com/kirilloid/travian/tree/master/src/model/base/combat
+    /// TODO: take into the account destroying wall with rams, hero bonus, metalurgy,
+    /// hero items, palace deff
+    /// </summary>
     public static class CombatSimulator
     {
         /// <summary>
@@ -61,6 +67,7 @@ namespace TbsCore.TravianData
             return (1 - raidRatio, raidRatio);
         }
 
+        #region Private methods
         /// <summary>
         /// Get Morale/Population bonus
         /// </summary>
@@ -122,7 +129,7 @@ namespace TbsCore.TravianData
         /// <summary>
         /// Gets the "real" (normalized) deffensive power of the deffender. Used by the combat simulator.
         /// </summary>
-        public static double GetRealDeffense(CombatAttacker attacker, CombatDeffender deffender)
+        private static double GetRealDeffense(CombatAttacker attacker, CombatDeffender deffender)
         {
             var offense = GetArmyOffense(attacker.Army);
             var deffense = GetArmyDeffense(deffender.Armies);            
@@ -153,21 +160,6 @@ namespace TbsCore.TravianData
             return inf + cav;
         }
 
-        private static (double, double) GetArmyOffense(CombatBase army)
-        {
-            double inf = 0, cav = 0;
-            for (int i = 0; i < 10; i++)
-            {
-                if (army.Troops[i] == 0) continue;
-                var troop = TroopsHelper.TroopFromInt(army.Tribe, i);
-                var off = TroopsData.GetTroopOff(troop);
-
-                if (TroopsData.IsInfantry(troop)) inf += off * army.Troops[i];
-                else cav += off * army.Troops[i];
-            }
-            return (inf, cav);
-        }
-
         private static (double, double) GetArmyDeffense(List<CombatBase> armies)
         {
             double inf = 0, cav = 0;
@@ -179,6 +171,21 @@ namespace TbsCore.TravianData
             }
             return (inf, cav);
         }
+        private static (double, double) GetArmyOffense(CombatBase army)
+        {
+            double inf = 0, cav = 0;
+            for (int i = 0; i < 10; i++)
+            {
+                if (army.Troops[i] == 0) continue;
+                var troop = TroopsHelper.TroopFromInt(army.Tribe, i);
+                var lvl = army.Improvements == null ? 1 : army.Improvements[i];
+                var off = TroopsData.GetTroopOff(troop, lvl);
+
+                if (TroopsData.IsInfantry(troop)) inf += off * army.Troops[i];
+                else cav += off * army.Troops[i];
+            }
+            return (inf, cav);
+        }
 
         private static (double, double) GetArmyDeffense(CombatBase army)
         {
@@ -187,11 +194,13 @@ namespace TbsCore.TravianData
             {
                 if (army.Troops[i] == 0) continue;
                 var troop = TroopsHelper.TroopFromInt(army.Tribe, i);
-                var (deffInf, deffCav) = TroopsData.GetTroopDeff(troop);
+                var lvl = army.Improvements == null ? 1 : army.Improvements[i];
+                var (deffInf, deffCav) = TroopsData.GetTroopDeff(troop, lvl);
                 inf += deffInf * army.Troops[i];
                 cav += deffCav * army.Troops[i];
             }
             return (inf, cav);
         }
+        #endregion Private methods
     }
 }

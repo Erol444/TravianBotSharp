@@ -48,7 +48,7 @@ namespace TbsCoreTest.Factories
         }
 
         /// <summary>
-        /// 2000 phalanx, 500 druids
+        /// 2000 phalanx (17), 500 druids (10)
         /// Deffender: 1000 Population, gauls, wall level 10
         /// </summary>
         public CombatDeffender CreateDeffender2()
@@ -60,6 +60,7 @@ namespace TbsCoreTest.Factories
                     new CombatBase
                     {
                         Troops = new int[10] { 2000, 0, 0, 0, 500, 0, 0, 0, 0, 0 },
+                        Improvements = new int[10] { 17, 0, 0, 0, 10, 0, 0, 0, 0, 0 },
                         Tribe = Classificator.TribeEnum.Gauls
                     }
                 },
@@ -70,7 +71,7 @@ namespace TbsCoreTest.Factories
         }
 
         /// <summary>
-        /// 2000 phalanx, 500 druids, 200 heudans, 1000 legionnaires, 1000 praetorian, 500 EC
+        /// 2000 phalanx (20), 500 druids (15), 200 heudans, 1000 legionnaires (18), 1000 praetorian (19), 500 EC
         /// Deffender: 450 Population, romans, wall level 15
         /// </summary>
         public CombatDeffender CreateDeffender3()
@@ -82,11 +83,13 @@ namespace TbsCoreTest.Factories
                     new CombatBase
                     {
                         Troops = new int[10] { 2000, 0, 0, 0, 500, 200, 0, 0, 0, 0 },
+                        Improvements = new int[10] { 20, 0, 0, 0, 15, 0, 0, 0, 0, 0 },
                         Tribe = Classificator.TribeEnum.Gauls
                     },
                     new CombatBase
                     {
                         Troops = new int[10] { 1000, 1000, 0, 0, 0, 500, 0, 0, 0, 0 },
+                        Improvements = new int[10] { 18, 19, 0, 0, 0, 0, 0, 0, 0, 0 },
                         Tribe = Classificator.TribeEnum.Romans
                     }
                 },
@@ -115,7 +118,7 @@ namespace TbsCoreTest.Factories
         }
 
         /// <summary>
-        /// 1500 imperians, 1300 EI. 1000 population
+        /// 1500 imperians (15), 1300 EI (10). 1000 population
         /// </summary>
         public CombatAttacker CreateAttacker2()
         {
@@ -123,7 +126,8 @@ namespace TbsCoreTest.Factories
             {
                 Army = new CombatBase
                 {
-                    Troops = new int[10] { 0, 0, 1500, 0, 1300, 0, 0, 0, 0, 0 }, 
+                    Troops = new int[10] { 0, 0, 1500, 0, 1300, 0, 0, 0, 0, 0 },
+                    Improvements = new int[10] { 0, 0, 15, 0, 10, 0, 0, 0, 0, 0 },
                     Tribe = Classificator.TribeEnum.Romans
                 },
                 Population = 1000
@@ -131,7 +135,7 @@ namespace TbsCoreTest.Factories
         }
 
         /// <summary>
-        /// 1000 legionnaires, 3000 imperians, 1500 EI, 1000 EC, 500 rams. 1700 population
+        /// 1000 legionnaires (6), 3000 imperians (15), 1500 EI (10), 1000 EC (11), 500 rams (19). 1700 population
         /// </summary>
         public CombatAttacker CreateAttacker3()
         {
@@ -140,6 +144,7 @@ namespace TbsCoreTest.Factories
                 Army = new CombatBase
                 {
                     Troops = new int[10] { 1000, 0, 3000, 0, 1500, 1000, 500, 0, 0, 0 },
+                    Improvements = new int[10] { 6, 0, 15, 0, 10, 11, 19, 0, 0, 0 },
                     Tribe = Classificator.TribeEnum.Romans
                 },
                 Population = 1700
