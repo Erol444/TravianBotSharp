@@ -108,13 +108,9 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             acc.Farming.Enabled = false;
-            //remove all SendFarmlist tasks
-            var flTasks = acc.Tasks.Where(x => x.GetType() == typeof(SendFLs) || x.GetType() == typeof(SendFarmlist)).ToList();
-            while (flTasks.Count > 0)
-            {
-                acc.Tasks.Remove(flTasks[0]);
-                flTasks.RemoveAt(0);
-            }
+            //remove all SendFarmlist / SendFLs tasks
+            TaskExecutor.RemoveTaskTypes(acc, typeof(SendFLs));
+            TaskExecutor.RemoveTaskTypes(acc, typeof(SendFarmlist));
         }
 
         private void flInterval_ValueChanged(object sender, EventArgs e)

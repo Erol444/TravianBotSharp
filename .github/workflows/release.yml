@@ -1,0 +1,75 @@
+name: CI - Master
+
+on:
+  push:
+    tags:
+      - '*'
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: setup-msbuild
+        uses: microsoft/setup-msbuild@v1
+
+      - uses: actions/checkout@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+      
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+        
+      - name: Get cache
+        uses: actions/cache@v2
+        with:
+          path: |
+              packages
+              TbsCore/obj/project.assets.json
+              TbsCore/TbsCore.csproj.nuget.g.targets
+              TbsCore/TbsCore.csproj.nuget.g.props.              
+          key: ${{ runner.os }}-nuget3-${{ hashFiles('TbsCore/packages.lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-nuget3-
+              
+      - name: Restore Packages
+        run: |
+          nuget restore TbsCore/TbsCore.csproj -PackagesDirectory packages
+          nuget restore TravBotSharp/TbsWinForms.csproj -PackagesDirectory packages
+       
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        
+      - name: Build Bot
+        run: |
+          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true /p:BUILD_NUMBER=${{steps.tag.outputs.tag}}.0 
+      
+      - name: Archive Release
+        uses: papeloto/action-zip@v1
+        with:
+            files: TravBotSharp\bin\Release
+            recursive: true
+            dest: TBS-${{steps.tag.outputs.tag}}.zip
+            
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          name: TBS-${{steps.tag.outputs.tag}}
+          body: Read changelog at https://discord.gg/swJgV6aGVA
+          artifacts: TBS-${{steps.tag.outputs.tag}}.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+  Discord:
+    runs-on: ubuntu-latest
+    needs: build
+    steps: 
+      - name: Send to discord server
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_BOT }}
+          nodetail: true
+          title: New prelease
+          description: |
+              @all
+              Version `TBS-${{needs.build.outputs.version}}`
+              Check #changelog
+              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.build.outputs.version}}) to download!

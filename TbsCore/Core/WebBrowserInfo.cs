@@ -60,7 +60,7 @@ namespace TravBotSharp.Files.Models.AccModels
         public async Task InitSelenium(Account acc, bool newAccess = true)
         {
             this.acc = acc;
-            Access access = newAccess ? await acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
+            Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
@@ -78,8 +78,11 @@ namespace TravBotSharp.Files.Models.AccModels
             else await this.Navigate(acc.AccInfo.ServerUrl);
         }
 
-        private void InitHttpClient(Access a) =>
-            this.RestClient = HttpHelper.InitRestClient(a, this.acc.AccInfo.ServerUrl);
+        private void InitHttpClient(Access a)
+        {
+            RestClient = new RestClient();
+            HttpHelper.InitRestClient(a, RestClient);
+        }
 
         private void SetupChromeDriver(Access access, string username, string server)
         {

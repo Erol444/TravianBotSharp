@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
 using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
+using TravBotSharp.Forms;
 
 namespace TravBotSharp.Views
 {
@@ -24,7 +27,6 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             if (acc == null) return;
-
 
             SupplyResVillageComboBox.Items.Clear();
             foreach (var vill in acc.Villages)
@@ -71,7 +73,6 @@ namespace TravBotSharp.Views
             SupplyResVillageSelected.Text = "Selected: " + vill.Name;
         }
 
-
         private void button21_Click(object sender, EventArgs e) //start UNL server tasks
         {
             var acc = GetSelectedAcc();
@@ -82,7 +83,6 @@ namespace TravBotSharp.Views
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec + 11),
                 Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
-                HighSpeedServer = true
             });
             TaskExecutor.AddTask(acc, new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec + 33) });
         }
@@ -151,11 +151,9 @@ namespace TravBotSharp.Views
 
             if (location == null) return;
 
-
             foreach (var vill in acc.Villages)
             {
                 IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
-
             }
         }
 
@@ -208,6 +206,7 @@ namespace TravBotSharp.Views
         {
             GetSelectedAcc().Settings.FillFor = (int)FillForUpDown.Value;
         }
+
         private void autoReadIGMs_CheckedChanged(object sender, EventArgs e)
         {
             GetSelectedAcc().Settings.AutoReadIgms = autoReadIGMs.Checked;
@@ -284,6 +283,7 @@ namespace TravBotSharp.Views
             GetSelectedAcc().TaskTimer?.Start();
             UpdateBotRunning();
         }
+
         public void UpdateBotRunning(string running = null)
         {
             if (string.IsNullOrEmpty(running)) running = GetSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
@@ -306,6 +306,7 @@ namespace TravBotSharp.Views
         }
 
         private void button8_Click(object sender, EventArgs e) => MoveBonusPrio(false); // Move bonus prio down
+
         private void button7_Click(object sender, EventArgs e) => MoveBonusPrio(true); // Move bonus prio up
 
         private void MoveBonusPrio(bool up)
@@ -320,6 +321,7 @@ namespace TravBotSharp.Views
             bonusSelected += nextIndex;
             UpdaterBonusPrio(acc);
         }
+
         private void UpdaterBonusPrio(Account acc)
         {
             if (acc.Settings.BonusPriority == null) acc.Settings.BonusPriority = new byte[4] { 0, 1, 2, 3 };
@@ -352,7 +354,8 @@ namespace TravBotSharp.Views
 
         private void button9_Click(object sender, EventArgs e) // Change account access
         {
-            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new ChangeAccess() {
+            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new ChangeAccess()
+            {
                 ExecuteAt = DateTime.Now,
                 WaitSecMin = 0,
                 WaitSecMax = 1
@@ -360,7 +363,9 @@ namespace TravBotSharp.Views
         }
 
         private void button11_Click(object sender, EventArgs e) => MoveResPrio(true);
+
         private void button10_Click(object sender, EventArgs e) => MoveResPrio(false);
+
         private void MoveResPrio(bool up)
         {
             if ((resPrioSel == 0 && up) || (resPrioSel == 2 && !up)) return;
@@ -379,6 +384,33 @@ namespace TravBotSharp.Views
             resPrioSel = resPrioView.SelectedItems[0].Index;
             if (resPrioSel < 0 || 2 < resPrioSel) resPrioSel = 0;
             UpdaterResPrio(GetSelectedAcc());
+        }
+
+        /// <summary>
+        /// Check new version
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void button12_Click(object sender, EventArgs e)
+        {
+            new Thread(async () =>
+            {
+                var result = await Task.WhenAll(GithubHelper.CheckGitHubLatestVersion(), GithubHelper.CheckGitHublatestBuild());
+                var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                currentVersion = new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build);
+                var isNewAvailable = result[0] != null && (currentVersion.CompareTo(result[0]) < 0);
+
+                using (var form = new NewRelease())
+                {
+                    form.IsNewVersion = isNewAvailable;
+
+                    form.CurrentVersion = currentVersion;
+                    form.LatestVersion = result[0] ?? currentVersion;
+                    form.LatestBuild = result[1] ?? currentVersion;
+
+                    _ = form.ShowDialog();
+                }
+            }).Start();
         }
 
         private void UpdaterResPrio(Account acc)

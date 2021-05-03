@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TbsCore.Extensions;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Interfaces;
+using TravBotSharp.Files.Tasks.LowLevel;
 
 namespace TravBotSharp.Views
 {
@@ -12,6 +13,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var vill = GetSelectedVillage();
@@ -24,7 +26,7 @@ namespace TravBotSharp.Views
             infoText += $"-- Vill capacity\nWarehouse:{vill.Res.Capacity.WarehouseCapacity}, Granary: {vill.Res.Capacity.GranaryCapacity}\n";
 
             infoText += "-- Village's unfinished tasks (due to low res)\n";
-            if(vill.UnfinishedTasks != null)
+            if (vill.UnfinishedTasks != null)
             {
                 foreach (var tasks in vill.UnfinishedTasks)
                 {
@@ -32,17 +34,35 @@ namespace TravBotSharp.Views
                 }
             }
 
-            infoText += "-- Village next update\n";
-            infoText += vill.Timings.NextVillRefresh + "\n";
-
             villageInfo.Text = infoText;
         }
 
         private void minInterval_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Settings.RefreshMin = (int)minInterval.Value;
 
-
         private void maxInterval_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Settings.RefreshMax = (int)maxInterval.Value;
+
+        private void TrainSettlers_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new TrainSettlers()
+            {
+                ExecuteAt = DateTime.Now.AddHours(-2),
+                Vill = vill
+            });
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            var vill = GetSelectedVillage(acc);
+            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new SendSettlers()
+            {
+                ExecuteAt = DateTime.Now.AddHours(-2),
+                Vill = vill
+            });
+        }
     }
 }

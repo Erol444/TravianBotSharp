@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using TbsCore.Models.MapModels;
 using TbsCore.Models.TroopsModels;
 
 namespace TbsCore.Models.AccModels
@@ -8,6 +10,7 @@ namespace TbsCore.Models.AccModels
         public Farming()
         {
             FL = new List<FarmList>();
+            OasisFarmed = new List<(Coordinates, DateTime)>();
         }
         public int MinInterval { get; set; }
         public int MaxInterval { get; set; }
@@ -19,5 +22,10 @@ namespace TbsCore.Models.AccModels
         public List<FarmList> FL { get; set; }
         //add if attack even with loses...
         //multiple FL support!
+
+        /// <summary>
+        /// When was the oasis last attacked
+        /// </summary>
+        public List<(Coordinates, DateTime)> OasisFarmed { get; set; }
     }
 }

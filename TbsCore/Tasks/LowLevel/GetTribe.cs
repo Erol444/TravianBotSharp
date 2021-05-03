@@ -30,7 +30,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39");
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=0");
 
             List<int> idsChecked = new List<int>(acc.Villages.Count);
 

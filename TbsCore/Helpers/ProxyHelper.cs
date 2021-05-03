@@ -2,6 +2,7 @@
 using RestSharp;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
@@ -93,28 +94,28 @@ chrome.webRequest.onAuthRequired.addListener(
 
         public static async Task TestProxies(List<Access> access)
         {
-            List<Task> tasks = new List<Task>(access.Count);
-            access.ForEach(a =>
+            var tasks = new List<Task<bool>>();
+            var restClient = new RestClient("https://api.ipify.org/");
+
+            foreach (var a in access)
             {
-                tasks.Add(Task.Run(() =>
-                {
-                    var restClient = HttpHelper.InitRestClient(a, "https://api.ipify.org/");
-                    a.Ok = ProxyHelper.TestProxy(restClient, a.Proxy);
-                }));
-            });
+                HttpHelper.InitRestClient(a, restClient);
+                tasks.Add(ProxyHelper.TestProxy(restClient, a.Proxy));
+            }
             await Task.WhenAll(tasks);
+            for (int i = 0; i < access.Count; i++)
+            {
+                access[i].Ok = tasks[i].Result;
+            }
         }
 
-        public static bool TestProxy(Account acc) =>
-            TestProxy(acc.Wb.RestClient, acc.Access.GetCurrentAccess().Proxy);
+        /*public static async Task<bool> TestProxy(Account acc) =>
+            await TestProxy(acc.Wb.RestClient, acc.Access.GetCurrentAccess().Proxy);
+        */
 
-        public static bool TestProxy(RestClient client, string proxyIp)
+        public static async Task<bool> TestProxy(RestClient client, string proxyIp)
         {
-            var baseUrl = client.BaseUrl;
-
-            client.BaseUrl = new Uri("https://api.ipify.org/");
-
-            var response = client.Execute(new RestRequest
+            var response = await client.ExecuteAsync(new RestRequest
             {
                 Resource = "",
                 Method = Method.GET,
@@ -124,8 +125,6 @@ chrome.webRequest.onAuthRequired.addListener(
             doc.LoadHtml(response.Content);
 
             var ip = doc.DocumentNode.InnerText;
-
-            client.BaseUrl = baseUrl;
             return ip == proxyIp;
         }
     }

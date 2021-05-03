@@ -47,10 +47,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     case ServerVersionEnum.T4_5:
                         script += $"items.querySelector('div[class$=\"_{(int)item}\"]').click();";
                         break;
+
                     case ServerVersionEnum.T4_4:
                         script += $"items.querySelector('div[class$=\"_{(int)item} \"]').click();";
                         break;
-
                 }
 
                 await DriverHelper.ExecuteScript(acc, script);
@@ -58,18 +58,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // No amount specified, meaning we have already equipt the item
                 if (amount == 0) return Done(acc);
 
-                try
-                {
-                    script = $"document.getElementById('amount').value = {amount};";
-                    acc.Wb.Driver.ExecuteScript(script);
-                }
-                catch (Exception e)
-                {
-                    // When using book / artwork / bucket, you don't specify amount, but you have to confirm usage
-                }
+                await DriverHelper.WriteById(acc, "amount", amount);
 
-                script = "document.querySelector('div[class=\"buttons\"]>button').click();";
-                await DriverHelper.ExecuteScript(acc, script);
+                await DriverHelper.ClickByClassName(acc, "ok");
             }
 
             return Done(acc);

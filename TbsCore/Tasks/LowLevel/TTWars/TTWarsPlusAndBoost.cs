@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
+using TravBotSharp.Files.Helpers;
 
 namespace TravBotSharp.Files.Tasks.LowLevel
 {
@@ -17,6 +18,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
             var buttonid = button.GetAttributeValue("id", "");
+            await Task.Delay(AccountHelper.Delay() / 3);
+
             acc.Wb.Driver.ExecuteScript($"document.getElementById('{buttonid}').click()"); //boost production
 
             return TaskRes.Executed;

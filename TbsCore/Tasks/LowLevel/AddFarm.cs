@@ -13,11 +13,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public int FarmListId { get; set; }
         public Farm Farm { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=99");
 
             // Show "Add raid" popup
             await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.addSlot({this.FarmListId},'','','rallyPoint');");
@@ -40,6 +41,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 case Classificator.ServerVersionEnum.T4_4:
                     wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
                     break;
+
                 case Classificator.ServerVersionEnum.T4_5:
                     await DriverHelper.ClickById(acc, "save");
                     break;

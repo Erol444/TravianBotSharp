@@ -7,7 +7,7 @@ namespace TbsCore.Models.TroopsModels
     public class VillTroops
     {
         //TODO add my troops in other villages, with village coords  etc
-        //TODO: troops count, troops researched, market stuff
+        //TODO: troops count, market stuff
 
         public void Init()
         {
@@ -16,7 +16,6 @@ namespace TbsCore.Models.TroopsModels
             CurrentlyTraining = new CurrentlyTraining();
             CurrentlyTraining.Init();
             Researched = new HashSet<Classificator.TroopsEnum>();
-
             Levels = new List<TroopLevel>();
             ToResearch = new HashSet<Classificator.TroopsEnum>();
             ToImprove = new HashSet<Classificator.TroopsEnum>();

@@ -34,7 +34,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (urlId == null)
             {
                 //no space for this building
-                Vill.Build.Tasks.Remove(this.Task);
+                RemoveCurrentTask();
                 this.Task = null;
                 return await Execute(acc);
             }
@@ -54,18 +54,22 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var url = $"{acc.AccInfo.ServerUrl}/build.php?id={urlId}";
 
             // Fast building for TTWars
-            if (acc.AccInfo.ServerUrl.Contains("ttwars") &&
-                !constructNew &&
-                await TTWarsTryFastUpgrade(acc, url))
-            {
-                return TaskRes.Executed;
-            }
+            //if (acc.AccInfo.ServerUrl.Contains("ttwars") &&
+            //    !constructNew &&
+            //    await TTWarsTryFastUpgrade(acc, url))
+            //{
+            //    return TaskRes.Executed;
+            //}
 
             // Navigate to the dorf in which the building is, so bot is less suspicious
             string dorfUrl = $"/dorf{((Task.BuildingId ?? default) < 19 ? 1 : 2)}.php"; // "dorf1" / "dorf2"
             if (!acc.Wb.CurrentUrl.Contains(dorfUrl))
             {
                 await acc.Wb.Navigate(acc.AccInfo.ServerUrl + dorfUrl);
+            }
+            else
+            {
+                acc.Wb.UpdateHtml();
             }
 
             // Append correct tab
@@ -76,9 +80,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     case BuildingEnum.RallyPoint:
                         url += "&tt=0";
                         break;
+
                     case BuildingEnum.Marketplace:
                         url += "&t=0";
                         break;
+
                     case BuildingEnum.Residence:
                     case BuildingEnum.Palace:
                     case BuildingEnum.CommandCenter:
@@ -126,7 +132,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 // Add prerequisite buildings in order to construct this building.
                 AddBuildingPrerequisites(acc, Vill, Task.Building, false);
-                
+
                 // Next execute after the last building finishes
                 this.NextExecute = Vill.Build.CurrentlyBuilding.LastOrDefault()?.Duration;
 
@@ -137,8 +143,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             await DriverHelper.ClickById(acc, button.Id);
 
             this.Task.ConstructNew = false;
-
-            CheckIfTaskFinished(1);
 
             acc.Wb.Log($"Started construction of {this.Task.Building} in {this.Vill?.Name}");
 
@@ -180,7 +184,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Basic task already on/above desired level, don't upgrade further
             var building = Vill.Build.Buildings.FirstOrDefault(x => x.Id == this.Task.BuildingId);
             lvl = building.Level;
-            if (building.UnderConstruction) lvl++;
+            // Check if building is under construction
+            if (building.UnderConstruction)
+            {
+                // Check currently building
+                var cb = Vill.Build.CurrentlyBuilding.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
+                if (cb != null && lvl < cb.Level) lvl = cb.Level;
+            }
+
             if (Task.Level <= lvl)
             {
                 acc.Wb.Log($"{this.Task.Building} is on level {lvl}, on/above desired {Task.Level}. Removing it from queue.");
@@ -225,7 +236,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 RemoveCurrentTask();
                 return TaskRes.Executed;
             }
-            
+
+            acc.Wb.Log($"Started upgrading {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
+
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
                buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
                !await TryFastUpgrade(acc)) // +25% speed upgrade
@@ -233,23 +246,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
             }
 
-            lvl++;
-            CheckIfTaskFinished(lvl);
+            acc.Wb.Log($"Upgraded {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
 
-            acc.Wb.Log($"Started upgrading {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
             await PostTaskCheckDorf(acc);
 
             return TaskRes.Executed;
-        }
-
-        /// <summary>
-        /// This method is called after successful upgrade/construction
-        /// Check if the selected task was just finished
-        /// </summary>
-        /// <param name="lvl">Level of the building</param>
-        private void CheckIfTaskFinished(int lvl)
-        {
-            if (this.Task.Level <= lvl && this.Task.TaskType == BuildingType.General) RemoveCurrentTask();
         }
 
         private void RemoveCurrentTask() => this.Vill.Build.Tasks.Remove(this.Task);
@@ -262,8 +263,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // Check if residence is getting upgraded to level 10 => train settlers
             var cbResidence = Vill.Build
                 .CurrentlyBuilding
-                .FirstOrDefault(x => x.Building == BuildingEnum.Residence && x.Level == 10);
-
+                .FirstOrDefault(x => (x.Building == BuildingEnum.Residence ||
+                                      x.Building == BuildingEnum.Palace ||
+                                      x.Building == BuildingEnum.CommandCenter) &&
+                                      x.Level == 10);
             if (cbResidence != null &&
                 acc.NewVillages.AutoSettleNewVillages &&
                 Vill.Troops.Settlers == 0)
@@ -277,6 +280,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
                     });
             }
+
+            // Check if the task is completed
+            var taskCb = Vill.Build
+                .CurrentlyBuilding
+                .OrderByDescending(x => x.Level)
+                .FirstOrDefault(x => x.Location == this.Task.BuildingId);
+            if (this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
         }
 
         /// <summary>
@@ -287,20 +297,39 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         private async Task<bool> TryFastUpgrade(Account acc)
         {
             if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
+            await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
 
-            // Accept ads
-            if (await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen", false))
+            // Confirm
+            acc.Wb.UpdateHtml();
+            if (acc.Wb.Html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']") != null)
             {
+                await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen");
+                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
+
                 await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
+                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
             }
 
             // Has to be a legit "click"
             acc.Wb.Driver.FindElementById("videoFeature").Click();
 
+            // wait for finish watching ads
             var timeout = DateTime.Now.AddSeconds(100);
             do
             {
-                await System.Threading.Tasks.Task.Delay(1000);
+                await System.Threading.Tasks.Task.Delay(3000);
+
+                //skip ads from Travian Games
+                //they use ifarme to emebed ads video to their game
+                acc.Wb.UpdateHtml();
+                if (acc.Wb.Html.GetElementbyId("videoArea") != null)
+                {
+                    acc.Wb.Driver.SwitchTo().Frame(acc.Wb.Driver.FindElementById("videoArea"));
+                    // trick to skip
+                    await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration - 1;", false, false);
+                    //back to first page
+                    acc.Wb.Driver.SwitchTo().DefaultContent();
+                }
                 if (timeout < DateTime.Now) return false;
             }
             while (acc.Wb.Driver.Url.Contains("build.php"));
@@ -310,8 +339,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
             {
                 await DriverHelper.ClickById(acc, "dontShowThisAgain");
+                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
                 await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
             }
+
             return true;
         }
 
@@ -328,8 +359,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 lvl < Task.Level)
             {
                 await acc.Wb.Navigate(url + "&fastUP=1");
-
-                CheckIfTaskFinished(++lvl);
 
                 acc.Wb.Log($"Started (fast) upgrading {building.Type} to level {lvl} in {this.Vill?.Name}");
 
@@ -381,7 +410,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (ResourcesHelper.IsEnoughRes(Vill.Res.Stored.Resources.ToArray(), cost)) return true;
 
             ResourcesHelper.NotEnoughRes(acc, Vill, cost, this, this.Task);
-            
+
             return false;
         }
 
@@ -409,7 +438,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 var bonusBuilding = CheckBonusBuildings(vill);
                 if (bonusBuilding == BuildingEnum.Site) return;
-                
+
                 var bonusTask = new BuildingTask()
                 {
                     TaskType = BuildingType.General,
@@ -438,11 +467,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             return BuildingEnum.Site;
         }
 
-        private bool BonusHelper(Village vill, BuildingEnum field, BuildingEnum bonus, int fieldLvl) // vill does not have bonus building on 5, create or upgrade it
+        /// <summary>
+        /// Helper method for checking whether the bot should add the bonus building to the build list
+        /// </summary>
+        private bool BonusHelper(Village vill, BuildingEnum field, BuildingEnum bonus, int fieldLvl)
         {
-            //res field is high enoguh, bonus building is not on 5, there is still space left to build, there isn't already a bonus building buildtask
-            return (!vill.Build.Buildings.Any(x => x.Type == bonus && x.Level >= 5) &&
-                vill.Build.Buildings.Any(x => x.Type == field && x.Level >= fieldLvl) &&
+            // If the bonus building is currently being upgraded to level 5, don't try to re-add it
+            if (vill.Build.CurrentlyBuilding.Any(x => x.Building == bonus && x.Level == 5)) return false;
+
+            // Bonus building is not on 5, res field is high enough, there is still space left to build, there isn't already a bonus building buildtask
+            return (!vill.Build.Buildings.Any(x => x.Type == bonus && 5 <= x.Level) &&
+                vill.Build.Buildings.Any(x => x.Type == field && fieldLvl <= x.Level) &&
                 vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Site) &&
                 !vill.Build.Tasks.Any(x => x.Building == bonus));
         }
