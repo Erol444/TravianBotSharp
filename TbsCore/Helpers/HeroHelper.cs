@@ -107,12 +107,22 @@ namespace TravBotSharp.Files.Helpers
             return (TroopsEnum.None, 0);
         }
 
-        public static int GetArmorBaseStrength(string name)
+        public static int GetArmorStrength(string name)
         {
             switch (name)
             {
                 case "Breastplate": return 500;
                 case "Segmented": return 250;
+                default: return 0;
+            }
+        }
+
+        public static int GetArmorDmgReduce(string name, int tier)
+        {
+            switch (name)
+            {
+                case "Scale": return 2 + 2 * tier;
+                case "Segmented": return 2 + tier;
                 default: return 0;
             }
         }

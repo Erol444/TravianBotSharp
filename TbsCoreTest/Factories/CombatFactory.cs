@@ -37,13 +37,13 @@ namespace TbsCoreTest.Factories
         {
             return new CombatDeffender
             {
-                Armies = new List<CombatBase>
+                Armies = new List<CombatArmy>
                 {
-                    new CombatBase
+                    new CombatArmy
                     {
                         Troops = new int[10] { 100, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                         Tribe = TribeEnum.Gauls,
-                        Hero = CreateDeffHero()
+                        //Hero = CreateDeffHero()
                     }
                 },
                 DeffTribe = TribeEnum.Gauls,
@@ -61,14 +61,14 @@ namespace TbsCoreTest.Factories
         {
             return new CombatDeffender
             {
-                Armies = new List<CombatBase>
+                Armies = new List<CombatArmy>
                 {
-                    new CombatBase
+                    new CombatArmy
                     {
                         Troops = new int[10] { 2000, 0, 0, 0, 500, 0, 0, 0, 0, 0 },
                         Improvements = new int[10] { 17, 0, 0, 0, 10, 0, 0, 0, 0, 0 },
                         Tribe = TribeEnum.Gauls,
-                        Hero = CreateDeffHero()
+                        //Hero = CreateDeffHero()
                     }
                 },
                 DeffTribe = TribeEnum.Gauls,
@@ -86,16 +86,16 @@ namespace TbsCoreTest.Factories
         {
             return new CombatDeffender
             {
-                Armies = new List<CombatBase>
+                Armies = new List<CombatArmy>
                 {
-                    new CombatBase
+                    new CombatArmy
                     {
                         Troops = new int[10] { 2000, 0, 0, 0, 500, 200, 0, 0, 0, 0 },
                         Improvements = new int[10] { 20, 0, 0, 0, 15, 0, 0, 0, 0, 0 },
                         Tribe = TribeEnum.Gauls,
-                        Hero = CreateDeffHero()
+                        //Hero = CreateDeffHero()
                     },
-                    new CombatBase
+                    new CombatArmy
                     {
                         Troops = new int[10] { 1000, 1000, 0, 0, 0, 500, 0, 0, 0, 0 },
                         Improvements = new int[10] { 18, 19, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -154,11 +154,11 @@ namespace TbsCoreTest.Factories
         {
             return new CombatAttacker
             {
-                Army = new CombatBase
+                Army = new CombatArmy
                 {
                     Troops = new int[10] { 0, 0, 100, 0, 0, 0, 0, 0, 0, 0 }, // 100 imperians
                     Tribe = TribeEnum.Romans,
-                    Hero = CreateHero1()
+                    //Hero = CreateHero1()
                 },
                 Population = 1000
             };
@@ -172,12 +172,12 @@ namespace TbsCoreTest.Factories
         {
             return new CombatAttacker
             {
-                Army = new CombatBase
+                Army = new CombatArmy
                 {
                     Troops = new int[10] { 0, 0, 1500, 0, 1300, 0, 0, 0, 0, 0 },
                     Improvements = new int[10] { 0, 0, 15, 0, 10, 0, 0, 0, 0, 0 },
                     Tribe = TribeEnum.Romans,
-                    Hero = CreateHero2()
+                    //Hero = CreateHero2()
                 },
                 Population = 1000
             };
@@ -191,12 +191,12 @@ namespace TbsCoreTest.Factories
         {
             return new CombatAttacker
             {
-                Army = new CombatBase
+                Army = new CombatArmy
                 {
                     Troops = new int[10] { 1000, 0, 3000, 0, 1500, 1000, 500, 0, 0, 0 },
                     Improvements = new int[10] { 6, 0, 15, 0, 10, 11, 19, 0, 0, 0 },
                     Tribe = TribeEnum.Romans,
-                    Hero = CreateHero2()
+                    //Hero = CreateHero2()
                 },
                 Population = 1700
             };

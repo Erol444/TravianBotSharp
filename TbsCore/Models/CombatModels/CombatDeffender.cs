@@ -10,7 +10,7 @@ namespace TbsCore.Models.CombatModels
         /// <summary>
         /// List of (Troops, hero, tribe), since deffender can have armies from multiple accounts / villages
         /// </summary>
-        public List<CombatBase> Armies { get; set; }
+        public List<CombatArmy> Armies { get; set; }
         
         /// <summary>
         /// Population of the deffender, morale bonus depends on it
@@ -21,6 +21,11 @@ namespace TbsCore.Models.CombatModels
         /// Level of the wall inside the village
         /// </summary>
         public int WallLevel { get; set; }
+
+        /// <summary>
+        /// Level of Palace / Residence
+        /// </summary>
+        public int PalaceLevel { get; set; }
         
         /// <summary>
         /// Which tribe is the deffender. Wall bonus depends on the tribe
@@ -31,5 +36,16 @@ namespace TbsCore.Models.CombatModels
         /// Ally metalurgy percentage (2% => 2, 4% => 4)
         /// </summary>
         public int Metalurgy { get; set; }
+
+        public CombatPoints GetDeffense()
+        {
+            CombatPoints ret = new CombatPoints();
+            foreach (var army in Armies)
+            {
+                ret.Add(army.GetDeffense());
+            }
+            return ret;
+        }
+
     }
 }

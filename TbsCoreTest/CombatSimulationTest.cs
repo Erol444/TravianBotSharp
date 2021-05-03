@@ -43,6 +43,7 @@ namespace TbsCoreTest
 
             // Attacker 2
             //Assert.Equal((100.0, 44.6), Norm(CombatSimulator.GetCasualties(attackers[1], deffenders[2], raid: false)));
+            // Without the hero
             Assert.Equal((72.8, 27.2), Norm(CombatSimulator.GetCasualties(attackers[1], deffenders[2], raid: true)));
 
             // Attacker 3

@@ -9,7 +9,7 @@ namespace TbsCore.Models.CombatModels
         /// <summary>
         /// Troops, hero, tribe
         /// </summary>
-        public CombatBase Army { get; set; }
+        public CombatArmy Army { get; set; }
         
         /// <summary>
         /// Population of the attacker, morale bonus depends on it
@@ -20,5 +20,8 @@ namespace TbsCore.Models.CombatModels
         /// Ally metalurgy percentage (2% => 2, 4% => 4)
         /// </summary>
         public int Metalurgy { get; set; }
+
+
+        // TODO: add catapult targets, add brewery support
     }
 }
