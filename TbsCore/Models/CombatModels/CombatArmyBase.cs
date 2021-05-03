@@ -14,6 +14,11 @@ namespace TbsCore.Models.CombatModels
         public int[] Improvements { get; set; }
         public CombatHero Hero { get; set; }
 
+        /// <summary>
+        /// For testing purposes only
+        /// </summary>
+        public bool IgnoreImprovements { get; set; }
+
 
         public void ApplyLosses(double losses)
         {
@@ -32,7 +37,7 @@ namespace TbsCore.Models.CombatModels
                 if (Troops[i] == 0) continue;
                 var troop = TroopsHelper.TroopFromInt(Tribe, i);
 
-                var lvl = Improvements == null ? 1 : Improvements[i];
+                var lvl = Improvements == null || IgnoreImprovements ? 1 : Improvements[i];
                 var off = TroopsData.GetTroopOff(troop, lvl);
 
                 if (TroopsData.IsInfantry(troop)) inf += off * Troops[i];
@@ -48,7 +53,7 @@ namespace TbsCore.Models.CombatModels
             {
                 if (Troops[i] == 0) continue;
                 var troop = TroopsHelper.TroopFromInt(Tribe, i);
-                var lvl = Improvements == null ? 1 : Improvements[i];
+                var lvl = Improvements == null || IgnoreImprovements ? 1 : Improvements[i];
                 var (deffInf, deffCav) = TroopsData.GetTroopDeff(troop, lvl);
 
                 inf += deffInf * Troops[i];

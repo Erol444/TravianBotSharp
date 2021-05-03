@@ -12,30 +12,26 @@ namespace TbsCore.Models.CombatModels
         public long i { get; set; }
         public long c { get; set; }
 
-        public static CombatPoints zero()
+        public static CombatPoints Zero()
         {
             return new CombatPoints(0, 0);
         }
-        public static CombatPoints off(long value, bool isInfantry)
+        public static CombatPoints Off(long value, bool isInfantry)
         {
             return isInfantry
                 ? new CombatPoints(value, 0)
                 : new CombatPoints(0, value);
         }
-        public static CombatPoints both(int value)
+        public static CombatPoints Both(int value)
         {
             return new CombatPoints(value, value);
         }
 
         // operation methods
-        public static CombatPoints add(CombatPoints a, CombatPoints b)
+        public static CombatPoints Sum(CombatPoints[] arr)
         {
-            return a.Add(b);
-        }
-        public static CombatPoints sum(CombatPoints[] ps)
-        {
-            var total = CombatPoints.zero();
-            foreach(var cp in ps)
+            var total = CombatPoints.Zero();
+            foreach(var cp in arr)
             {
                 total.i += cp.i;
                 total.c += cp.c;
@@ -44,11 +40,6 @@ namespace TbsCore.Models.CombatModels
         }
 
         // instance methods
-        public CombatPoints()
-        {
-            this.i = 0;
-            this.c = 0;
-        }
         public CombatPoints(long inf, long cav)
         {
             this.i = inf;
@@ -60,17 +51,15 @@ namespace TbsCore.Models.CombatModels
             this.c = (long)Math.Round(cav, MidpointRounding.AwayFromZero);
         }
 
-
-        public CombatPoints Add(CombatPoints that) {
+        public void Add(CombatPoints that) {
             this.i += that.i;
             this.c += that.c;
-            return new CombatPoints(this.i + that.i, this.c + that.c);
         }
         public CombatPoints Mul(double m) {
             return new CombatPoints(this.i * m, this.c * m);
         }
-        public CombatPoints Mask(CombatPoints mask) {
-            return new CombatPoints(0 < mask.i ? this.i : 0, 0 < mask.c ? this.c : 0);
-        }
+        //public CombatPoints Mask(CombatPoints mask) {
+        //    return new CombatPoints(0 < mask.i ? this.i : 0, 0 < mask.c ? this.c : 0);
+        //}
     }
 }

@@ -28,9 +28,9 @@ namespace TbsCore.Models.CombatModels
             var heroOff = Hero.GetOff();
             
             var (troop, boost) = Hero.GetWeaponBoost();
-            var weaponBoost = CombatPoints.both(base.Troops[(int)troop % 10] * boost);
+            var weaponBoost = CombatPoints.Both(base.Troops[(int)troop % 10] * boost);
 
-            return CombatPoints.sum(new CombatPoints[]{
+            return CombatPoints.Sum(new CombatPoints[]{
                 unitsOff, heroOff, weaponBoost
                 }).Mul(Hero.GetOffBonus());
         }
@@ -43,9 +43,9 @@ namespace TbsCore.Models.CombatModels
             var heroDeff = Hero.GetDeff();
 
             var (troop, boost) = Hero.GetWeaponBoost();
-            var weaponBoost = CombatPoints.both(base.Troops[(int)troop % 10] * boost);
+            var weaponBoost = CombatPoints.Both(base.Troops[(int)troop % 10] * boost);
 
-            return CombatPoints.sum(new CombatPoints[]{
+            return CombatPoints.Sum(new CombatPoints[]{
                 unitsDeff, heroDeff, weaponBoost
                 }).Mul(Hero.GetDeffBonus());
         }

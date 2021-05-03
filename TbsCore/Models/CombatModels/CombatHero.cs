@@ -24,7 +24,7 @@ namespace TbsCore.Models.CombatModels
         public Dictionary<HeroItemCategory, HeroItemEnum> Items { get; set; }
 
 
-        public CombatPoints GetOff() => CombatPoints.off(GetTotalStrength(), HasHorse());
+        public CombatPoints GetOff() => CombatPoints.Off(GetTotalStrength(), !HasHorse());
         public CombatPoints GetDeff()
         {
             var str = GetTotalStrength();
@@ -39,10 +39,9 @@ namespace TbsCore.Models.CombatModels
         private int GetTotalStrength() => GetStrength() + GetItemsStrength();
         private int GetStrength()
         {
-            if (Info == null) return 0;
             int power = 100; // Base hero power
             var levelMultiplier = Tribe == TribeEnum.Romans ? 100 : 80;
-            power += levelMultiplier * Info.FightingStrengthPoints;
+            power += levelMultiplier * Info?.FightingStrengthPoints ?? 0;
             return power;
         }
 

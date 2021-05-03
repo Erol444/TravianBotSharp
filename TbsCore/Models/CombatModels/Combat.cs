@@ -19,7 +19,6 @@ namespace TbsCore.Models.CombatModels
 
         public (double, double) Raid()
         {
-            CalculateBaseState();
             CalculateTotalPoints();
             var ratio = CalculateRatio();
             // Calc losses
@@ -28,7 +27,6 @@ namespace TbsCore.Models.CombatModels
 
         public (double, double) Normal()
         {
-            CalculateBaseState();
             CalculateTotalPoints();
             // CalculateRams()
             var ratio = CalculateRatio();
@@ -43,9 +41,9 @@ namespace TbsCore.Models.CombatModels
         private double CalculateRatio() => Math.Pow(CalculateBaseRatio(), GetImmensityFactor());
 
         /// <summary>
-        /// Get Morale/Population bonus
+        /// Get Morale/Population bonus. Public for testing purposes
         /// </summary>
-        private double GetMoraleBonus(long off, long deff)
+        public double GetMoraleBonus(double ptsRatio = 1)
         {
             if (Deffender.DeffTribe == TribeEnum.Nature)
             {
@@ -59,25 +57,8 @@ namespace TbsCore.Models.CombatModels
             if (Deffender.Population == 0) return 1.5F;
             if (Attacker.Population == 0) return 1.0F;
 
-            double bonus;
-
-            if (deff < off)
-            {
-                // M^0.2, where M is attacker's population / defender's population
-                bonus = Math.Pow((Attacker.Population / (double)Deffender.Population), 0.2F);
-            }
-            else
-            {
-                // If the attacker has fewer points than defender:
-                // M ^{ 0.2·(offense points / defense points)}
-                double exp = 0.2F * (off / (double)deff);
-                bonus = Math.Pow((Attacker.Population / (double)Deffender.Population), exp);
-            }
-
-            // Moralebonus never goes higher than +50%
-            if (1.5F < bonus) bonus = 1.5;
-
-            return bonus;
+            double popRatio = Attacker.Population / (double)Math.Max(Deffender.Population, 3);
+            return Math.Max(0.667, Math.Pow(popRatio, -0.2F * Math.Min(ptsRatio, 1)));
         }
 
         private double GetWallBonus() // getDefBonus
@@ -103,14 +84,14 @@ namespace TbsCore.Models.CombatModels
             return wallDeff + baseVillDeff + (int)palaceDeff;
         }
 
-        private (long, long) CalculateBaseState() // calcBasePoints
+        /// <summary>
+        /// Public for testing purposes
+        /// </summary>
+        public (long, long) CalculateBaseState() // calcBasePoints
         {
             var offPts = this.Attacker.Army.GetOffense();
-            Console.WriteLine($"off = ${offPts.i}/${offPts.c}");
             var defPts = Deffender.GetDeffense();
-            Console.WriteLine($"off = ${defPts.i}/${defPts.c}");
             var (off, def) = GetAducedDef(offPts, defPts);
-            Console.WriteLine($"adduced = ${off}/${def}");
             baseState = ( off, def );
             return baseState;
         }
@@ -119,7 +100,7 @@ namespace TbsCore.Models.CombatModels
         {
             var (baseOff, baseDeff) = CalculateBaseState();
             var finalDef = RoundLong((baseDeff + GetVillDeff()) * GetWallBonus());
-            var morale = GetMoraleBonus(baseOff, finalDef);
+            var morale = GetMoraleBonus(baseOff / finalDef);
             var finalOff = RoundLong(baseOff * morale);
             finalState = (finalOff, finalDef);
             return finalState;

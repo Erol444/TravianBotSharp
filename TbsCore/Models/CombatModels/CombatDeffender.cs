@@ -39,7 +39,7 @@ namespace TbsCore.Models.CombatModels
 
         public CombatPoints GetDeffense()
         {
-            CombatPoints ret = new CombatPoints();
+            CombatPoints ret = CombatPoints.Zero();
             foreach (var army in Armies)
             {
                 ret.Add(army.GetDeffense());
