@@ -91,12 +91,54 @@ namespace TravBotSharp.Files.Helpers
                     if (root.response.error) throw new Exception("Unable to get T4.4 map position data!\n" + root.response.error);
                     return root.response.data.tiles.Select(x => x.GetMapTile()).ToList();
 
-                case Classificator.ServerVersionEnum.T4_5:
+                //case Classificator.ServerVersionEnum.T4_5:
+                //{
+                //    var bearerToken = DriverHelper.GetBearerToken(acc);
+
+                //    var reqMapInfo = new RestSharp.RestRequest
+                //    {
+                //        Resource = "/api/v1/ajax/mapInfo",
+                //        Method = Method.POST,
+                //        RequestFormat = DataFormat.Json
+                //    };
+                //    reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
+                //    reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
+                //    reqMapInfo.AddJsonBody(GenerateMapInfo(coords));
+
+                //    var mapInfoRes = HttpHelper.SendPostReq(acc, reqMapInfo);
+
+                //    var mapPosition = new SendMapPositionT4_5.Root()
+                //    {
+                //        data = new SendMapPositionT4_5.Data()
+                //        {
+                //            x = coords.x,
+                //            y = coords.y,
+                //            zoomLevel = 3,
+                //            ignorePositions = new List<object>()
+                //        }
+                //    };
+
+                //    var reqMapPosition = new RestSharp.RestRequest
+                //    {
+                //        Resource = "/api/v1/ajax/mapPositionData",
+                //        Method = Method.POST,
+                //        RequestFormat = DataFormat.Json
+                //    };
+                //    reqMapPosition.AddHeader("authorization", $"Bearer {bearerToken}");
+                //    reqMapPosition.AddHeader("content-type", "application/json; charset=UTF-8");
+                //    reqMapPosition.AddJsonBody(mapPosition);
+
+                //    var mapPositionRes = HttpHelper.SendPostReq(acc, reqMapPosition);
+                //    var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
+                //    return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
+                //}
+                default:
+                {
                     var bearerToken = DriverHelper.GetBearerToken(acc);
 
                     var reqMapInfo = new RestSharp.RestRequest
                     {
-                        Resource = "/api/v1/ajax/mapInfo",
+                        Resource = "/api/v1/map/info",
                         Method = Method.POST,
                         RequestFormat = DataFormat.Json
                     };
@@ -119,7 +161,7 @@ namespace TravBotSharp.Files.Helpers
 
                     var reqMapPosition = new RestSharp.RestRequest
                     {
-                        Resource = "/api/v1/ajax/mapPositionData",
+                        Resource = "/api/v1/map/position",
                         Method = Method.POST,
                         RequestFormat = DataFormat.Json
                     };
@@ -130,6 +172,7 @@ namespace TravBotSharp.Files.Helpers
                     var mapPositionRes = HttpHelper.SendPostReq(acc, reqMapPosition);
                     var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
                     return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
+                }
             }
             return null;
         }
