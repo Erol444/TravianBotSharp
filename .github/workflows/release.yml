@@ -67,9 +67,9 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_BOT }}
           nodetail: true
-          title: New prelease
+          title: New release
           description: |
-              @all
-              Version `TBS-${{needs.build.outputs.version}}`
+              @everyone
+              Version `TBS-${{steps.tag.outputs.tag}}`
               Check #changelog
-              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.build.outputs.version}}) to download!
+              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{steps.tag.outputs.tag}}) to download!

@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -214,8 +215,17 @@ namespace TravBotSharp.Files.Models.AccModels
                     Driver.Quit(); // Also disposes
                     Driver = default;
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    // broswer closed because user or crash ??
+                    if (e.Message.Contains("chrome not reachable"))
+                    {
+                        Driver.Quit(); // Also disposes
+                        Driver = default;
+                    }
+                }
             }
+
             chromeService.Dispose();
         }
     }
