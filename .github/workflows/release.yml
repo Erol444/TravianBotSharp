@@ -1,12 +1,53 @@
 name: CI - Master
 
 on:
-  push:
-    tags:
-      - '*'
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+  
 jobs:
+  version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.semvers.outputs.minor }}
+      changelog: ${{ steps.Changelog.outputs.changelog }}
+    steps:
+      - uses: actions/checkout@v2
+      
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          one_of: release
+          repo_token: ${{ secrets.GITHUB_TOKEN }} 
+      
+      - run: git fetch --prune --unshallow --tags
+
+      - name: 'Get latest tag'
+        id: latesttag
+        uses: pozetroninc/github-action-get-latest-release@master        
+        with:
+          repository: ${{ github.repository }}
+        
+      - name: 'Get next version'
+        id: semvers
+        uses: "WyriHaximus/github-action-next-semvers@v1"
+        with:
+          version: ${{ steps.latesttag.outputs.release }}
+            
+      - name: 'Create changelog'
+        id: Changelog
+        run: |
+          git branch --show-current
+          last=$(git log --merges --grep='develop' --first-parent master --pretty=format:"%h" | sed -n '2p')
+          changelog=$(git log --no-merges --pretty=format:'- %s' $last..HEAD)
+          changelog="${changelog//'%'/'%25'}"
+          changelog="${changelog//$'\n'/'%0A'}"
+          changelog="${changelog//$'\r'/'%0D'}"
+          echo "$changelog"
+          echo "::set-output name=changelog::$changelog"
   build:
     runs-on: windows-latest
+    needs: version
     steps:
       - name: setup-msbuild
         uses: microsoft/setup-msbuild@v1
@@ -35,41 +76,68 @@ jobs:
         run: |
           nuget restore TbsCore/TbsCore.csproj -PackagesDirectory packages
           nuget restore TravBotSharp/TbsWinForms.csproj -PackagesDirectory packages
-       
-      - name: Get tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        
+
       - name: Build Bot
         run: |
-          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true /p:BUILD_NUMBER=${{steps.tag.outputs.tag}}.0 
+          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true /p:BUILD_NUMBER=${{needs.version.outputs.version}}.0
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: TBS-release
+          path: TravBotSharp\bin\Release
+          if-no-files-found: error
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [build, version]
+    steps:    
+        
+      - name: Download artifact
+        uses: actions/download-artifact@master
+        with:
+          name: TBS-release
+          path: TravBotSharp/bin/Release
       
       - name: Archive Release
         uses: papeloto/action-zip@v1
         with:
-            files: TravBotSharp\bin\Release
-            recursive: true
-            dest: TBS-${{steps.tag.outputs.tag}}.zip
+            files: TravBotSharp/bin/Release
+            dest: TBS-${{needs.version.outputs.version}}.zip
             
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          name: TBS-${{steps.tag.outputs.tag}}
-          body: Read changelog at https://discord.gg/swJgV6aGVA
-          artifacts: TBS-${{steps.tag.outputs.tag}}.zip
+          name: TBS-${{needs.version.outputs.version}}
+          tag: ${{needs.version.outputs.version}}
+          commit: master
+          body: |
+            **Changelog**: 
+            ${{needs.version.outputs.changelog}}
+          artifacts: TBS-${{needs.version.outputs.version}}.zip
           token: ${{ secrets.GITHUB_TOKEN }}
   Discord:
     runs-on: ubuntu-latest
-    needs: build
-    steps: 
+    needs: [release, version]
+    steps:
+      - run: |
+          curl --header "Content-Type: application/json" --data "{\"content\": \"@everyone\"}" "${{ secrets.DISCORD_BOT }}"
       - name: Send to discord server
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_BOT }}
-          nodetail: true
-          title: New prelease
+          title: New release
+          nodetail: retrue
           description: |
-              @all
-              Version `TBS-${{needs.build.outputs.version}}`
-              Check #changelog
-              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.build.outputs.version}}) to download!
+              Version `TBS-${{needs.version.outputs.version}}`
+              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{steps.tag.outputs.tag}}) to download!
+              **Changelog**:
+              ${{needs.version.outputs.changelog}}
+  Clear:
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      - name: Delete artifact
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: TBS-release
