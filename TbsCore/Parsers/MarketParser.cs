@@ -21,9 +21,21 @@ namespace TravBotSharp.Files.Parsers
         }
 
         /// <summary>
-        /// Parses the ongoing resource transits in the market.
+        /// Get soonest time own merchant arrive (ignore fact they go away or go back village)
         /// </summary>
         /// <param name="htmlDoc">Html</param>
+        public static DateTime GetSoonestMerchant(HtmlAgilityPack.HtmlDocument htmlDoc)
+        {
+            // i know id is incoming, but trust me =))
+            var divOwnMerchants = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("incomingMerchants"));
+
+            var table = divOwnMerchants.Descendants("table").FirstOrDefault();
+
+            var soonest = DateTime.Now.Add(TimeParser.ParseTimer(table));
+
+            return soonest;
+        }
+
         public static List<MerchantsUnderWay> ParseTransits(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             var formulat = htmlDoc.GetElementbyId("merchantsOnTheWay");

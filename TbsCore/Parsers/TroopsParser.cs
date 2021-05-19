@@ -178,5 +178,30 @@ namespace TravBotSharp.Files.Parsers
             if (info == null) return 0;
             return Parser.RemoveNonNumeric(info.InnerText);
         }
+
+        /// <summary>
+        /// Parses HTML tile details and gets number of animals in the oasis
+        /// </summary>
+        public static int[] GetOasisAnimals(HtmlDocument html)
+        {
+            var ret = new int[10];
+            var details = html.GetElementbyId("map_details");
+            var troopInfo = details.Descendants("table").FirstOrDefault(X => X.Id == "troop_info");
+
+            var units = troopInfo.Descendants("img").Where(x => x.HasClass("unit"));
+            foreach (var unit in units)
+            {
+                var unitType = unit.GetClasses().First(x => x != "unit").Replace("u", "");
+                var index = (int)Parser.RemoveNonNumeric(unitType) - 31;
+
+                var node = unit;
+                while (node.Name != "tr") node = node.ParentNode;
+
+                var numOfTroops = node.ChildNodes.First(x => x.HasClass("val")).InnerText;
+
+                ret[index] = (int)Parser.RemoveNonNumeric(numOfTroops);
+            }
+            return ret;
+        }
     }
 }

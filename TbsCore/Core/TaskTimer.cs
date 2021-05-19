@@ -77,14 +77,8 @@ namespace TravBotSharp.Files.Models.AccModels
         private void NoTasks(Account acc)
         {
             BotTask task = null;
-            var updateVill = acc.Villages.FirstOrDefault(x => x.Timings.NextVillRefresh < DateTime.Now);
 
-            if (updateVill != null)
-            {
-                // Update the village
-                task = new UpdateDorf1 { Vill = updateVill };
-            }
-            else if (acc.Settings.AutoCloseDriver &&
+            if (acc.Settings.AutoCloseDriver &&
                 TimeSpan.FromMinutes(5) < TimeHelper.NextPrioTask(acc, TaskPriority.Medium))
             {
                 // Auto close chrome and reopen when there is a high/normal prio BotTask

@@ -17,7 +17,33 @@ namespace TbsCore.Helpers
     /// </summary>
     internal class PostLoadHelper
     {
+        public static readonly List<string> namePostTask = new List<string>()
+        {
+            "Update info",
+            "Get culture point",
+            "Village expansion",
+            "Claim Newbie quest",
+            "Claim Daily quest",
+            "Update gold/silver",
+            "Update Travian Plus account",
+            "Check messages",
+            "Update JS resources",
+            "Check unfinished tasks",
+            "Donate to ally bonus",
+            "Increase next village refresh time",
+            "NPC",
+            "TTwars plus and boost",
+            "Insta upgrade",
+            "Update adventures",
+            "Update status of hero",
+            "Update health of hero",
+            "Update info of hero",
+            "Build more storage",
+            "Extend protection",
+        };
+
         /// <summary>
+
         /// Gets tasks that should be executed after loading a page
         /// </summary>
         /// <param name="acc">Account</param>
@@ -30,6 +56,10 @@ namespace TbsCore.Helpers
 
             //Web browser not initialized
             if (!UpdateAccountObject.UpdateVillages(html, acc)) return new List<Action>();
+
+            //Didnt check version yet
+            if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0) return new List<Action>();
+
             var vill = acc.Villages.FirstOrDefault(x => x.Active);
 
             return new List<Action>() {
@@ -133,10 +163,10 @@ namespace TbsCore.Helpers
                 },
                 // 10: Check if there are unfinished tasks
                 () => ResSpendingHelper.CheckUnfinishedTasks(acc, vill),
-                // 11: Donate to ally bonus'
+                // 11: Donate to ally bonus
                 () => DonateToAlly(acc, vill),
                 // 12: increase next village refresh time
-                () => vill.Timings.NextVillRefresh = DateTime.Now.AddMinutes(ran.Next(vill.Settings.RefreshMin,vill.Settings.RefreshMax)),
+                () => VillageHelper.SetNextRefresh(acc, vill),
                 // 13: NPC:
                 () =>
                 {
@@ -169,7 +199,7 @@ namespace TbsCore.Helpers
                         acc.AccInfo.Gold >= 2 &&
                         vill.Build.CurrentlyBuilding.Count >= (acc.AccInfo.PlusAccount ? 2 : 1) &&
                         vill.Build.CurrentlyBuilding.LastOrDefault().Duration
-                            >= DateTime.Now.AddHours(vill.Build.InstaBuildHours))
+                            >= DateTime.Now.AddMinutes(vill.Build.InstaBuildMinutes))
                     {
                         TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new InstaUpgrade()
                         {
@@ -221,7 +251,7 @@ namespace TbsCore.Helpers
                         TaskExecutor.AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
                     }
                 },
-                // 20: buildmore storage
+                // 20: build more storage
                 () => AutoExpandStorage(acc, vill),
                 // 21: Extend protection
                 () => {

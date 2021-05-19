@@ -26,17 +26,27 @@ namespace TravBotSharp.Files.Parsers
         public static HeroInfo GetHeroInfo(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             var content = htmlDoc.GetElementbyId("content");
-            var health = content.Descendants("tr")
-                .FirstOrDefault(x => x.HasClass("health"))
-                .Descendants("span")
-                .FirstOrDefault(x => x.HasClass("value"))
-                .InnerText;
+            var heroInfo = new HeroInfo();
 
-            var experience = content.Descendants("tr")
-                 .FirstOrDefault(x => x.HasClass("experience"))
-                 .Descendants("span")
-                 .FirstOrDefault(x => x.HasClass("value"))
-                 .InnerText;
+            var dead = IsHeroDead(htmlDoc);
+            // If hero is dead you can't parse health/experience
+            if(!dead)
+            {
+                var health = content.Descendants("tr")
+                    .FirstOrDefault(x => x.HasClass("health"))
+                    .Descendants("span")
+                    .FirstOrDefault(x => x.HasClass("value"))
+                    .InnerText;
+
+                var experience = content.Descendants("tr")
+                     .FirstOrDefault(x => x.HasClass("experience"))
+                     .Descendants("span")
+                     .FirstOrDefault(x => x.HasClass("value"))
+                     .InnerText;
+                
+                heroInfo.Health = (int)Parser.ParseNum(health.Replace("%", ""));
+                heroInfo.Experience = (int)Parser.RemoveNonNumeric(experience);
+            }
 
             string[] heroPoints = new string[4];
             for (int i = 0; i < 4; i++)
@@ -49,18 +59,28 @@ namespace TravBotSharp.Files.Parsers
             }
 
             var availablePoints = System.Net.WebUtility.HtmlDecode(htmlDoc.GetElementbyId("availablePoints").InnerText);
+            heroInfo.AvaliblePoints = (int)Parser.ParseNum(availablePoints.Split('/').LastOrDefault());
+            if (heroInfo.AvaliblePoints == 0)
+            {
+                heroInfo.FightingStrengthPoints = (int)Parser.ParseNum(heroPoints[0]);
+                heroInfo.OffBonusPoints = (int)Parser.ParseNum(heroPoints[1]);
+                heroInfo.DeffBonusPoints = (int)Parser.ParseNum(heroPoints[2]);
+                heroInfo.ResourcesPoints = (int)Parser.ParseNum(heroPoints[3]);
+            }
 
             var heroLevel = htmlDoc.DocumentNode.Descendants()
                 .FirstOrDefault(x => x.HasClass("titleInHeader"))
                 .InnerText
                 .Split('-')
                 .Last();
+            heroInfo.Level = (int)Parser.RemoveNonNumeric(heroLevel);
 
             var production = htmlDoc.DocumentNode.Descendants()
                 .FirstOrDefault(x => x.HasClass("production"))
                 .Descendants("span")
                 .FirstOrDefault(x => x.HasClass("value"))
                 .InnerText;
+            heroInfo.HeroProduction = (int)Parser.RemoveNonNumeric(production);
 
             var resRadioChecked = htmlDoc.DocumentNode.Descendants("input").FirstOrDefault(x =>
                 x.HasClass("radio") &&
@@ -71,26 +91,23 @@ namespace TravBotSharp.Files.Parsers
             {
                 resSelectedByte = (byte)Parser.RemoveNonNumeric(resRadioChecked.GetAttributeValue("value", "0"));
             }
-
-            var heroInfo = new HeroInfo();
-            heroInfo.Health = (int)Parser.ParseNum(health.Replace("%", ""));
-            heroInfo.Experience = (int)Parser.RemoveNonNumeric(experience);
-            heroInfo.AvaliblePoints = (int)Parser.ParseNum(availablePoints.Split('/').LastOrDefault());
-
-            if (heroInfo.AvaliblePoints == 0)
-            {
-                heroInfo.FightingStrengthPoints = (int)Parser.ParseNum(heroPoints[0]);
-                heroInfo.OffBonusPoints = (int)Parser.ParseNum(heroPoints[1]);
-                heroInfo.DeffBonusPoints = (int)Parser.ParseNum(heroPoints[2]);
-                heroInfo.ResourcesPoints = (int)Parser.ParseNum(heroPoints[3]);
-            }
-
-            heroInfo.Level = (int)Parser.RemoveNonNumeric(heroLevel);
             heroInfo.SelectedResource = resSelectedByte;
-            heroInfo.HeroProduction = (int)Parser.RemoveNonNumeric(production);
 
             return heroInfo;
         }
+
+        /// <summary>
+        /// Checks if hero is dead
+        /// </summary>
+        public static bool IsHeroDead(HtmlDocument html)
+        {
+            var status = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
+            if (status == null) return false;
+            var img = status.Descendants("img").FirstOrDefault(x => x.HasClass("heroStatus101"));
+            if (img == null) return false;
+            return true;
+        }
+
         /// <summary>
         /// Parses when the hero arrival will be (parsed from /hero.php)
         /// </summary>

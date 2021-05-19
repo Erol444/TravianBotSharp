@@ -8,7 +8,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            TaskExecutor.RemoveSameTasksForVillage(acc, Vill, this.GetType(), this);
+            TaskExecutor.RemoveTaskTypes(acc, this.GetType(), Vill, this);
 
             if (!acc.Wb.CurrentUrl.Contains("/dorf2.php")) // Don't re-navigate
             {

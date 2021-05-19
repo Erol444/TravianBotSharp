@@ -325,7 +325,7 @@
         public enum ServerVersionEnum
         {
             T4_4,
-            T4_5
+            T4_5,
         }
 
         public enum MovementType

@@ -69,17 +69,21 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // There are no attacks on the village
             if (attacks.Count == 0 || Vill.Deffing.AlertType == AlertTypeEnum.Disabled) return TaskRes.Executed;
 
-            // Duplicate the list
-            var newAttacks = attacks.ToList();
-
             // In case it was null
             if (Vill.TroopMovements.IncomingAttacks == null) Vill.TroopMovements.IncomingAttacks = new List<TroopsMovementRallyPoint>();
 
-            int sameAttacks = 0;
-            foreach (var oldAttack in Vill.TroopMovements.IncomingAttacks)
+            for (var i = 0; i < Vill.TroopMovements.IncomingAttacks.Count; i++)
             {
+                var oldAttack = Vill.TroopMovements.IncomingAttacks[i];
+                // Attack already happen
+                if (DateTime.Compare(DateTime.Now, oldAttack.Arrival) > 0)
+                {
+                    Vill.TroopMovements.IncomingAttacks.RemoveAt(i);
+                    continue;
+                }
+
                 // Remove all attacks that were discovered previously
-                sameAttacks += attacks.RemoveAll(x => x.Equals(oldAttack));
+                attacks.RemoveAll(x => x.Equals(oldAttack));
             }
 
             // Alert user if new attacks were found
@@ -96,17 +100,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         alertStr += $"Raid from {newAttack.SourceCoordinates} at {newAttack.Arrival}\n";
                     }
                 }
-                else alertStr += $"Normal attack from {newAttack.SourceCoordinates} at {newAttack.Arrival}\n";
+                else alertStr += $"Normal attack from {newAttack.SourceCoordinates} at {newAttack.Arrival} (server time)\n";
             }
 
-            if (!String.IsNullOrEmpty(alertStr) ||
-                sameAttacks != Vill.TroopMovements.IncomingAttacks.Count)
+            if (!String.IsNullOrEmpty(alertStr))
             {
-                // Popup + sound
-                new Thread(() =>
-                    IoHelperCore.AlertUser?.Invoke($"Village {Vill.Name} is under {attacks.Count} new attacks!\n{alertStr}")
-                ).Start();
-
                 //send to discord webhook
                 if (acc.Settings.DiscordWebhook)
                 {
@@ -114,9 +112,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                        DiscordHelper.SendMessage(acc, $"Village {Vill.Name} is under {attacks.Count} new attacks!\n{alertStr}")
                         ).Start();
                 }
+                else
+                {
+                    // Popup + sound
+                    new Thread(() =>
+                        IoHelperCore.AlertUser?.Invoke($"Village {Vill.Name} is under {attacks.Count} new attacks!\n{alertStr}")
+                    ).Start();
+                }
             }
 
-            Vill.TroopMovements.IncomingAttacks = newAttacks;
+            Vill.TroopMovements.IncomingAttacks.AddRange(attacks);
             // Next check for new attacks should be in:
             // - 1x speed = 20 min
             // - 3x speed = 6:40 min

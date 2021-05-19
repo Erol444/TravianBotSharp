@@ -47,10 +47,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     case ServerVersionEnum.T4_5:
                         script += $"items.querySelector('div[class$=\"_{(int)item}\"]').click();";
                         break;
+
                     case ServerVersionEnum.T4_4:
                         script += $"items.querySelector('div[class$=\"_{(int)item} \"]').click();";
                         break;
-
                 }
 
                 await DriverHelper.ExecuteScript(acc, script);

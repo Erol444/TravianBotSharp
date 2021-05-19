@@ -1,4 +1,5 @@
 ﻿using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -60,7 +61,7 @@ namespace TravBotSharp.Files.Models.AccModels
         public async Task InitSelenium(Account acc, bool newAccess = true)
         {
             this.acc = acc;
-            Access access = newAccess ? await acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
+            Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
@@ -214,8 +215,17 @@ namespace TravBotSharp.Files.Models.AccModels
                     Driver.Quit(); // Also disposes
                     Driver = default;
                 }
-                catch { }
+                catch (Exception e)
+                {
+                    // broswer closed because user or crash ??
+                    if (e.Message.Contains("chrome not reachable"))
+                    {
+                        Driver.Quit(); // Also disposes
+                        Driver = default;
+                    }
+                }
             }
+
             chromeService.Dispose();
         }
     }

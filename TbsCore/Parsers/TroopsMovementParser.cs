@@ -1,5 +1,4 @@
-﻿
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +23,8 @@ namespace TravBotSharp.Files.Parsers
             var attacks = html.DocumentNode.Descendants("table").Where(x => x.HasClass("troop_details"));
             if (attacks == null) return ret;
 
+            var now = TimeParser.GetServerTime(html);
+
             foreach (var attackNode in attacks)
             {
                 var attack = new TroopsMovementRallyPoint();
@@ -35,7 +36,8 @@ namespace TravBotSharp.Files.Parsers
                 attack.Troops = ParseIncomingTroops(attackNode);
 
                 var infos = attackNode.Descendants("tbody").FirstOrDefault(x => x.HasClass("infos"));
-                attack.Arrival = DateTime.Now.Add(TimeParser.ParseTimer(infos));
+
+                attack.Arrival = now.Add(TimeParser.ParseTimer(infos));
 
                 var sourceId = MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("role")));
                 attack.SourceCoordinates = MapHelper.CoordinatesFromKid(sourceId, acc);
@@ -90,13 +92,19 @@ namespace TravBotSharp.Files.Parsers
             return spans.Count();
         }
 
-        public static TimeSpan GetTimeOfMovement(HtmlDocument html)
+        /// <summary>
+        /// How long will it take for the troops to reach the destination
+        /// </summary>
+        public static TimeSpan GetMovementDuration(HtmlDocument html)
         {
             var content = html.GetElementbyId("content");
             var div = content.Descendants("div").FirstOrDefault(x => x.HasClass("in"));
             return TimeParser.ParseDuration(div.InnerText);
         }
 
+        /// <summary>
+        /// When will the troops reach the destination
+        /// </summary>
         public static DateTime GetArrivalTime(HtmlDocument html)
         {
             var content = html.GetElementbyId("content");
@@ -138,7 +146,7 @@ namespace TravBotSharp.Files.Parsers
             var movements = html.GetElementbyId("movements");
             if (movements == null) return ret;
 
-            foreach(var movement in movements.Descendants("tr"))
+            foreach (var movement in movements.Descendants("tr"))
             {
                 var img = movement.Descendants("img").FirstOrDefault();
                 if (img == null) continue; // Not a movement row
@@ -184,6 +192,5 @@ namespace TravBotSharp.Files.Parsers
             if (Enum.TryParse(className, out MovementTypeRallyPoint type)) return type;
             return MovementTypeRallyPoint.atHome;
         }
-
     }
 }

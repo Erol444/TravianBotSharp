@@ -24,7 +24,6 @@ namespace TbsCore.Models.SendTroopsModels
         /// </summary>
         public Coordinates SourceCoordinates { get; set; }
 
-
         public bool Equals(TroopsMovementRallyPoint other)
         {
             if (other == null || this.Troops.Length != other.Troops.Length) return false;
@@ -34,10 +33,11 @@ namespace TbsCore.Models.SendTroopsModels
                 if (this.Troops[i] != other.Troops[i]) return false;
             }
 
-            return (this.Arrival == other.Arrival &&
-                this.SourceCoordinates.Equals(other.SourceCoordinates) &&
-                this.TargetCoordinates.Equals(other.TargetCoordinates) &&
-                this.MovementType == other.MovementType);
+            if (this.Arrival.CompareTo(other.Arrival) != 0) return false;
+            if (!this.SourceCoordinates.Equals(other.SourceCoordinates)) return false;
+            if (!this.TargetCoordinates.Equals(other.TargetCoordinates)) return false;
+            if (this.MovementType != other.MovementType) return false;
+            return true;
         }
     }
 }

@@ -46,14 +46,14 @@ namespace TravBotSharp.Files.Helpers
         }
 
         /// <summary>
-        /// Returns a random delay (click delay, ~0.5-1sec).
+        /// Returns a random delay (click delay, ~0.5-1.6sec).
         /// </summary>
         /// <returns>Random delay in milliseconds</returns>
         public static int Delay()
         {
             //Return random delay
             Random rnd = new Random();
-            return rnd.Next(500, 900);
+            return rnd.Next(500, 1600);
         }
 
         public static void StartAccountTasks(Account acc)
@@ -95,6 +95,11 @@ namespace TravBotSharp.Files.Helpers
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
+                VillageHelper.SetNextRefresh(acc, vill);
+                if (vill.FarmingNonGold.OasisFarmingEnabled) 
+                { 
+                    TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new AttackOasis() { Vill = vill });
+                }
 
                 // Remove in later updates!
                 if (vill.Settings.RefreshMin == 0) vill.Settings.RefreshMin = 30;

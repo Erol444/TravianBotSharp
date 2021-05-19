@@ -144,6 +144,9 @@ namespace TravBotSharp.Files.Helpers
 
         internal static int InSeconds(DateTime time) => (int)(time - DateTime.Now).TotalSeconds;
 
+        /// <summary>
+        /// Adds a random delay based on when the task is finished. Percentage based delay.
+        /// </summary>
         public static DateTime RanDelay(Account acc, DateTime finish, int maxPercentageDelay = 10)
         {
             if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_4) return finish.AddSeconds(3);

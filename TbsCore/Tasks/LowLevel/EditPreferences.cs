@@ -11,6 +11,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// Disable contextual help
         /// </summary>
         public bool? ContextualHelp { get; set; }
+
         /// <summary>
         /// Troop movements per page in rally point
         /// </summary>
@@ -18,14 +19,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            VersionHelper.Navigate(acc, "/options.php", "/options");
+            await VersionHelper.Navigate(acc, "/options.php", "/options");
 
-            if(ContextualHelp != null)
+            if (ContextualHelp != null)
                 await DriverHelper.CheckById(acc, "v13", ContextualHelp ?? true);
 
             if (TroopsPerPage != null)
                 await DriverHelper.WriteById(acc, "troopMovementsPerPage", TroopsPerPage ?? 10);
-
 
             var acceptButton = acc.Wb.Html.DocumentNode
                 .Descendants("div")

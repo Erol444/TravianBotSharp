@@ -5,6 +5,7 @@ using System.Web;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TravBotSharp.Files.Parsers;
+using TravBotSharp.Files.Tasks.LowLevel;
 using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TravBotSharp.Files.Helpers
@@ -46,6 +47,7 @@ namespace TravBotSharp.Files.Helpers
             if (vill == null) return 0;
             return vill.Id;
         }
+
         public static string VillageType(Village vill)
         {
             string type = "";
@@ -56,6 +58,7 @@ namespace TravBotSharp.Files.Helpers
             if (type == "11115") type = "15c";
             return type;
         }
+
         public static string BuildingTypeToString(Classificator.BuildingEnum building) => EnumStrToString(building.ToString());
 
         public static string EnumStrToString(string str)
@@ -72,6 +75,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return str;
         }
+
         public static Village VillageFromId(Account acc, int id)
         {
             return acc.Villages.FirstOrDefault(x => x.Id == id);
@@ -99,16 +103,20 @@ namespace TravBotSharp.Files.Helpers
         /// Enters a specific building.
         /// </summary>
         /// <param name="acc">Account</param>
-        /// <param name="vill">Village</param>
         /// <param name="building">Building to enter</param>
         /// <param name="query">Additional query (to specify tab)</param>
         /// <param name="dorf">Whether we want to first navigate to dorf (less suspicious)</param>
+        /// <param name="update">Whether we want to force update the current page</param>
         /// <returns>Whether it was successful</returns>
-        public static async Task<bool> EnterBuilding(Account acc, Village vill, Building building, string query = "", bool dorf = true)
+        public static async Task<bool> EnterBuilding(Account acc, Building building, string query = "", bool dorf = true, bool update = false)
         {
             // If we are already at the desired building (if gid is correct)
             Uri currentUri = new Uri(acc.Wb.CurrentUrl);
-            if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString()) return true;
+            if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString() && !update)
+            {
+                acc.Wb.UpdateHtml();
+                return true;
+            }
 
             // If we want to navigate to dorf first
             if (dorf)
@@ -124,7 +132,7 @@ namespace TravBotSharp.Files.Helpers
             return true;
         }
 
-        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, string query = "", bool dorf = true)
+        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, string query = "", bool dorf = true, bool update = false)
         {
             var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == buildingEnum);
 
@@ -133,7 +141,43 @@ namespace TravBotSharp.Files.Helpers
                 acc.Wb.Log($"Tried to enter {buildingEnum} but couldn't find it in village {vill.Name}!");
                 return false;
             }
-            return await EnterBuilding(acc, vill, building, query, dorf);
+            return await EnterBuilding(acc, building, query, dorf, update);
+        }
+
+        /// <summary>
+        /// Finds BotTask that refreshes the village (dorf1) and re-schedules it a random time between
+        /// user specified. If time argument is specified, next village refresh will be executed as specified.
+        /// </summary>
+        public static void SetNextRefresh(Account acc, Village vill, DateTime? time = null)
+        {
+            // In case user sets refresh to 0/1 min
+            if (vill.Settings.RefreshMin < 2) vill.Settings.RefreshMin = 30;
+            if (vill.Settings.RefreshMax < 2) vill.Settings.RefreshMin = 60;
+
+            var ran = new Random();
+            if (time == null) time = DateTime.Now.AddMinutes(ran.Next(vill.Settings.RefreshMin, vill.Settings.RefreshMax));
+
+            var task = acc.Tasks.FirstOrDefault(x => x.Vill == vill && x.GetType() == typeof(UpdateDorf1));
+
+            if (task == null)
+            {
+                TaskExecutor.AddTask(acc, new UpdateDorf1
+                {
+                    Vill = vill,
+                    ExecuteAt = time ?? default,
+                    Priority = Tasks.BotTask.TaskPriority.Low
+                });
+                return;
+            }
+
+            task.ExecuteAt = time ?? default;
+            TaskExecutor.ReorderTaskList(acc);
+        }
+
+        public static DateTime GetNextRefresh(Account acc, Village vill)
+        {
+            var task = acc.Tasks.FirstOrDefault(x => x.Vill == vill && x.GetType() == typeof(UpdateDorf1));
+            return task.NextExecute ?? DateTime.MaxValue;
         }
     }
 }

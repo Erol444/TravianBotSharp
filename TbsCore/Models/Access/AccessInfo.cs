@@ -10,6 +10,7 @@ namespace TbsCore.Models.Access
     {
         public List<Access> AllAccess { get; set; }
         public int CurrentAccess { get; set; }
+
         public Access GetCurrentAccess() => AllAccess.ElementAtOrDefault(CurrentAccess);
 
         public void Init()
@@ -17,7 +18,7 @@ namespace TbsCore.Models.Access
             AllAccess = new List<Access>();
         }
 
-        public async Task<Access> GetNewAccess()
+        public Access GetNewAccess()
         {
             //await AccountHelper.CheckProxies(AllAccess);
             CurrentAccess++;
@@ -34,6 +35,7 @@ namespace TbsCore.Models.Access
         {
             AllAccess.Add(access);
         }
+
         public void AddNewAccess(AccessRaw raw)
         {
             var access = new Access()

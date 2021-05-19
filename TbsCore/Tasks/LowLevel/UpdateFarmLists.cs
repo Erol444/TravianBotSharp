@@ -12,7 +12,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=99");
 
             var foundFLs = FarmlistParser.ParseFL(acc.Wb.Html, acc.AccInfo.ServerVersion);
             if (foundFLs == null)

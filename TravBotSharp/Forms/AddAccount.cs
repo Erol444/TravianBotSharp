@@ -170,18 +170,17 @@ namespace TravBotSharp
             proxyPassword.ReadOnly = !check;
         }
 
-        private async void button5_Click(object sender, EventArgs e) // Checks proxies
+        private void button5_Click(object sender, EventArgs e) // Checks proxies
         {
-            button5.Enabled = false;
-            button5.Text = "Waiting ...";
-            await ProxyHelper.TestProxies(Acc.Access.AllAccess);
-            try
+            new Thread(async () =>
             {
-                this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));
-            }
-            catch { }
-            button5.Text = "Check proxies";
-            button5.Enabled = true;
+                await ProxyHelper.TestProxies(Acc.Access.AllAccess);
+                try
+                {
+                    this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));
+                }
+                catch { }
+            }).Start();
         }
     }
 }

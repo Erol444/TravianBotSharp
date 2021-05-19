@@ -24,7 +24,6 @@ namespace TbsCore.Models.VillageModels
             Market.Init();
             Deffing = new VillDeffing();
             Expansion = new VillExpansion();
-            Timings = new VillTiming();
             FarmingNonGold = new FarmingNonGold();
             FarmingNonGold.Init();
             TroopMovements = new VillTroopMovements();
@@ -107,11 +106,6 @@ namespace TbsCore.Models.VillageModels
         /// For village expansion (new village - settlers), culture points
         /// </summary>
         public VillExpansion Expansion { get; set; }
-
-        /// <summary>
-        /// Timings for the village
-        /// </summary>
-        public VillTiming Timings { get; set; }
 
         /// <summary>
         /// Farm list for non gold
