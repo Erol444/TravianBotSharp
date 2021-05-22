@@ -9,10 +9,19 @@ namespace TbsCore.Models.Logging
         public event EventHandler<UpdateLogEventArgs> LogUpdated;
 
         private IDictionary<string, LinkedList<string>> _logs = new Dictionary<string, LinkedList<string>>();
+        private readonly object _syncRoot = new object();
 
         public string GetLog(string username)
         {
-            return _logs.ContainsKey(username) ? string.Join("", _logs[username]) : "";
+            if (_logs.ContainsKey(username))
+            {
+                lock (_syncRoot)
+                {
+                    var log = string.Join("", _logs[username]);
+                    return log;
+                }
+            }
+            return "";
         }
 
         public string GetLastLog(string username)
@@ -27,18 +36,24 @@ namespace TbsCore.Models.Logging
         /// <param name="message"></param>
         public void Add(string username, string message)
         {
-            _logs[username].AddFirst(message);
-            // keeps 200 message
-            while (_logs[username].Count > 200)
+            lock (_syncRoot)
             {
-                _logs[username].RemoveLast();
+                _logs[username].AddFirst(message);
+                // keeps 200 message
+                while (_logs[username].Count > 200)
+                {
+                    _logs[username].RemoveLast();
+                }
             }
             OnUpdateLog(username);
         }
 
         public void AddUsername(string username)
         {
-            _logs.Add(username, new LinkedList<string>());
+            if (!_logs.ContainsKey(username))
+            {
+                _logs.Add(username, new LinkedList<string>());
+            }
         }
 
         protected void OnUpdateLog(string username)

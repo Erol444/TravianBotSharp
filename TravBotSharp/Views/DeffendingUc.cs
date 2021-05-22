@@ -16,8 +16,8 @@ namespace TravBotSharp.Views
 {
     public partial class DeffendingUc : TbsBaseUc, ITbsUc
     {
-        TableModel tableModelMain = new TableModel();
-        TableModel tableModelGlobal = new TableModel();
+        private TableModel tableModelMain = new TableModel();
+        private TableModel tableModelGlobal = new TableModel();
 
         public DeffendingUc()
         {
@@ -54,7 +54,9 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell("", true)); //Alert only on hero
             tableModelGlobal.Rows.Add(r);
         }
+
         #region Initialize table columns
+
         private void InitTables()
         {
             ColumnModel columnModel = new ColumnModel();
@@ -110,7 +112,8 @@ namespace TravBotSharp.Views
 
             table1.TableModel = tableModelMain;
         }
-        #endregion
+
+        #endregion Initialize table columns
 
         //Save button
         private void button1_Click(object sender, EventArgs e)
@@ -170,6 +173,7 @@ namespace TravBotSharp.Views
                 selectedCell.Cell.Checked = global.Checked;
             }
         }
+
         private class CellChanges
         {
             public Cell Cell { get; set; }
@@ -183,7 +187,7 @@ namespace TravBotSharp.Views
             var deffCount = (int)maxDeff.Value;
             if (deffCount == 0) deffCount = int.MaxValue;
             var amount = new SendDeffAmount() { Amount = deffCount };
-            
+
             SendDeff node = new SendDeff();
             foreach (var vill in acc.Villages)
             {
@@ -218,7 +222,7 @@ namespace TravBotSharp.Views
                 {
                     attk.Arrival = DateTime.Now.AddHours(-1).AddMinutes(2);
                     attk.Arrival = attk.Arrival.AddSeconds(60 - attk.Arrival.Second);
-                    acc.Wb.Log($"Arrive at {attk.Arrival}");
+                    acc.Logger.Information($"Arrive at {attk.Arrival}");
                 }
                 else attk.DelayMs = 1000;
 
@@ -229,7 +233,6 @@ namespace TravBotSharp.Views
                 waves.Add(attk);
             }
 
-            
             var waveTask = new SendWaves()
             {
                 ExecuteAt = DateTime.Now,

@@ -136,7 +136,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // Next execute after the last building finishes
                 this.NextExecute = Vill.Build.CurrentlyBuilding.LastOrDefault()?.Duration;
 
-                acc.Wb.Log($"Wanted to construct {this.Task.Building} but prerequired buildings are missing");
+                acc.Logger.Warning($"Wanted to construct {this.Task.Building} but prerequired buildings are missing");
                 return TaskRes.Executed;
             }
 
@@ -144,7 +144,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             this.Task.ConstructNew = false;
 
-            acc.Wb.Log($"Started construction of {this.Task.Building} in {this.Vill?.Name}");
+            acc.Logger.Warning($"Started construction of {this.Task.Building} in {this.Vill?.Name}");
 
             await PostTaskCheckDorf(acc);
 
@@ -162,7 +162,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (buildingEnum == BuildingEnum.Site || lvl == -1)
             {
-                acc.Wb.Log($"Can't upgrade building {this.Task.Building} in village {this.Vill.Name}. Will be removed from the queue.");
+                acc.Logger.Warning($"Can't upgrade building {this.Task.Building} in village {this.Vill.Name}. Will be removed from the queue.");
                 RemoveCurrentTask();
                 return TaskRes.Executed;
             }
@@ -170,13 +170,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // If there is already a different building in this spot, find a new id to construct it.
             if (buildingEnum != Task.Building)
             {
-                acc.Wb.Log($"We wanted to upgrade {Task.Building}, but there's already {buildingEnum} on this id ({Task.BuildingId}).");
+                acc.Logger.Warning($"We wanted to upgrade {Task.Building}, but there's already {buildingEnum} on this id ({Task.BuildingId}).");
                 if (!BuildingHelper.FindBuildingId(Vill, this.Task))
                 {
-                    acc.Wb.Log($"Found another Id to build {Task.Building}, new id: {Task.BuildingId}");
+                    acc.Logger.Warning($"Found another Id to build {Task.Building}, new id: {Task.BuildingId}");
                     return TaskRes.Retry;
                 }
-                acc.Wb.Log($"Failed to find another Id to build {Task.Building}! No space in village. Building task will be removed");
+                acc.Logger.Warning($"Failed to find another Id to build {Task.Building}! No space in village. Building task will be removed");
                 RemoveCurrentTask();
                 return TaskRes.Executed;
             }
@@ -194,7 +194,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (Task.Level <= lvl)
             {
-                acc.Wb.Log($"{this.Task.Building} is on level {lvl}, on/above desired {Task.Level}. Removing it from queue.");
+                acc.Logger.Warning($"{this.Task.Building} is on level {lvl}, on/above desired {Task.Level}. Removing it from queue.");
                 RemoveCurrentTask();
                 RemoveCompletedTasks(this.Vill, acc);
                 return TaskRes.Executed;
@@ -204,12 +204,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var buttons = container?.Descendants("button");
             if (buttons == null)
             {
-                acc.Wb.Log($"We wanted to upgrade {Task.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}");
+                acc.Logger.Warning($"We wanted to upgrade {Task.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}");
                 return TaskRes.Retry;
             }
 
             var errorMessage = acc.Wb.Html.GetElementbyId("build")
                 .Descendants("div")
+
                 .FirstOrDefault(x => x.HasClass("upgradeBuilding"))?
                 .Descendants("div")?
                 .FirstOrDefault(x => x.HasClass("errorMessage"));
@@ -217,14 +218,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (upgradeButton == null)
             {
-                acc.Wb.Log($"We wanted to upgrade {Task.Building}, but no 'upgrade' button was found!");
+                acc.Logger.Warning($"We wanted to upgrade {Task.Building}, but no 'upgrade' button was found!");
                 return TaskRes.Retry;
             }
 
             // Not enough resources?
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
             {
-                acc.Wb.Log($"We wanted to upgrade {Task.Building}, but there was an error message:\n{errorMessage.InnerText}");
+                acc.Logger.Warning($"We wanted to upgrade {Task.Building}, but there was an error message:\n{errorMessage.InnerText}");
                 return TaskRes.Retry;
             }
 
@@ -232,12 +233,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (IsTaskCompleted(Vill, acc, this.Task))
             {
-                acc.Wb.Log($"Building {this.Task.Building} in village {this.Vill.Name} is already on desired level. Will be removed from the queue.");
+                acc.Logger.Warning($"Building {this.Task.Building} in village {this.Vill.Name} is already on desired level. Will be removed from the queue.");
                 RemoveCurrentTask();
                 return TaskRes.Executed;
             }
 
-            acc.Wb.Log($"Started upgrading {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
+            acc.Logger.Information($"Started upgrading {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
 
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
                buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
@@ -246,7 +247,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
             }
 
-            acc.Wb.Log($"Upgraded {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
+            acc.Logger.Information($"Upgraded {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
 
             await PostTaskCheckDorf(acc);
 
@@ -360,7 +361,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 await acc.Wb.Navigate(url + "&fastUP=1");
 
-                acc.Wb.Log($"Started (fast) upgrading {building.Type} to level {lvl} in {this.Vill?.Name}");
+                acc.Logger.Information($"Started (fast) upgrading {building.Type} to level {lvl} in {this.Vill?.Name}");
 
                 await PostTaskCheckDorf(acc);
 

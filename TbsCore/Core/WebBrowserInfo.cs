@@ -16,15 +16,6 @@ namespace TravBotSharp.Files.Models.AccModels
 {
     public class WebBrowserInfo : IDisposable
     {
-        // Average log length is 70 chars. 20 overhead + 70 * 2 (each char => 2 bytes)
-        // Average memory consumption for logs will thus be: 160 * maxLogCnt => ~500kB
-        private const int maxLogCnt = 1000;
-
-        public WebBrowserInfo()
-        {
-            Logs = new CircularBuffer<string>(maxLogCnt);
-        }
-
         public ChromeDriver Driver { get; set; }
 
         private ChromeDriverService chromeService;
@@ -36,27 +27,6 @@ namespace TravBotSharp.Files.Models.AccModels
         /// Http client, configured with proxy
         /// </summary>
         public RestClient RestClient { get; set; }
-
-        // Account Logs
-        public CircularBuffer<string> Logs { get; set; }
-
-        public event EventHandler LogHandler;
-
-        public void Log(string message, Exception e) =>
-                    Log(message + $"\n---------------------------\n{e}\n---------------------------\n");
-
-        public void Log(string msg)
-        {
-            msg = DateTime.Now.ToString("HH:mm:ss") + ": " + msg;
-            Logs.PushFront(msg);
-
-            LogHandler?.Invoke(typeof(WebBrowserInfo), new LogEventArgs() { Log = msg });
-        }
-
-        public class LogEventArgs : EventArgs
-        {
-            public string Log { get; set; }
-        }
 
         public async Task InitSelenium(Account acc, bool newAccess = true)
         {
@@ -150,7 +120,7 @@ namespace TravBotSharp.Files.Models.AccModels
             }
             catch (Exception e)
             {
-                Log($"Error opening chrome driver! Is it already opened?", e);
+                acc.Logger.Error(e, $"Error opening chrome driver! Is it already opened?");
             }
         }
 
@@ -181,8 +151,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
                 catch (Exception e)
                 {
-                    if (acc.Wb == null) return;
-                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened", e);
+                    acc.Logger.Error(e, $"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened");
                     repeat = true;
                     if (5 <= ++repeatCnt && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {

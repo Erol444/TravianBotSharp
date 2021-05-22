@@ -16,6 +16,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public SendDeffAmount DeffAmount { get; set; }
         public Coordinates TargetVillage { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             // Can't send deff to home village or to 0/0
@@ -72,7 +73,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             this.DeffAmount.Amount -= upkeepSent;
-            acc.Wb.Log($"Bot will send {upkeepSent} deff (in upkeep) from {this.Vill.Name} to {this.TargetVillage}. Still needed {this.DeffAmount.Amount} deff");
+            if (this.DeffAmount.Amount > 0)
+            {
+                acc.Logger.Warning($"Bot will send {upkeepSent} deff (in upkeep) from {this.Vill.Name} to {this.TargetVillage}. Still needed {this.DeffAmount.Amount} deff");
+            }
+            else
+            {
+                acc.Logger.Information($"Bot will send {upkeepSent} deff (in upkeep) from {this.Vill.Name} to {this.TargetVillage}.");
+            }
 
             return true;
         }

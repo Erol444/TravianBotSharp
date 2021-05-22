@@ -138,7 +138,7 @@ namespace TravBotSharp.Files.Helpers
 
             if (building == null)
             {
-                acc.Wb.Log($"Tried to enter {buildingEnum} but couldn't find it in village {vill.Name}!");
+                acc.Logger.Warning($"Tried to enter {buildingEnum} but couldn't find it in village {vill.Name}!");
                 return false;
             }
             return await EnterBuilding(acc, building, query, dorf, update);

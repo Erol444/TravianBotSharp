@@ -13,7 +13,9 @@ namespace TravBotSharp.Files.Models.AccModels
     {
         private readonly Account acc;
         private Timer Timer { get; set; }
+
         public bool? IsBotRunning() => Timer.Enabled;
+
         public TaskTimer(Account account)
         {
             acc = account;
@@ -21,12 +23,14 @@ namespace TravBotSharp.Files.Models.AccModels
             Timer.Elapsed += TimerElapsed;
             Start();
         }
+
         public void Start()
         {
             Timer.Start();
             Timer.Enabled = true;
             Timer.AutoReset = true;
         }
+
         public void Stop()
         {
             Timer.Stop();
@@ -68,9 +72,9 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
                 await TaskExecutor.Execute(acc, firstTask);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
-                acc?.Wb?.Log($"Error in TaskTimer! {e.Message}\n{e.StackTrace}");
+                acc?.Logger.Error(e, $"Error in TaskTimer!");
             }
         }
 
@@ -96,7 +100,6 @@ namespace TravBotSharp.Files.Models.AccModels
                 task.Priority = TaskPriority.Low;
                 TaskExecutor.AddTask(acc, task);
             }
-
         }
 
         public void Dispose()

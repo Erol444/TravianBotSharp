@@ -23,7 +23,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
             if (levels == null)
             {
-                acc.Wb.Log("There was an error at getting Smithy troop levels");
+                acc.Logger.Warning("There was an error at getting Smithy troop levels");
                 return TaskRes.Executed;
             }
             Vill.Troops.Levels = levels;
@@ -61,7 +61,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var button = troopNode.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
             if (button == null)
             {
-                acc.Wb.Log($"Could not find Upgrade button to improve {troop}");
+                acc.Logger.Warning($"Could not find Upgrade button to improve {troop}");
                 this.NextExecute = DateTime.Now.AddMinutes(1);
                 return TaskRes.Retry;
             }

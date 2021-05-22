@@ -27,7 +27,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (troopNode == null)
             {
-                acc.Wb.Log("No new settler can be trained, probably because 3 settlers are already (being) trained");
+                acc.Logger.Warning("No new settler can be trained, probably because 3 settlers are already (being) trained");
                 SendSettlersTask(acc);
                 return TaskRes.Executed;
             }
@@ -61,11 +61,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                                 });
                             }
 
-                            acc.Wb.Log("Have enoung settlers");
+                            acc.Logger.Warning("Have enoung settlers");
                         }
                         else
                         {
-                            acc.Wb.Log("Don't have enough expansion slot or settlers are training.");
+                            acc.Logger.Warning("Don't have enough expansion slot or settlers are training.");
                         }
                         return TaskRes.Executed;
                     }
@@ -114,7 +114,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (training < DateTime.Now) training = DateTime.Now;
             training = training.AddSeconds(5);
 
-            acc.Wb.Log($"Bot will (try to) send settlers in {TimeHelper.InSeconds(training)} sec");
+            acc.Logger.Information($"Bot will (try to) send settlers in {TimeHelper.InSeconds(training)} sec");
 
             TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers()
             {

@@ -60,11 +60,11 @@ namespace TravBotSharp.Files.Helpers
                 return DateTime.Now;
             }
 
-            acc.Wb.Log($"Not enough resources for the task {task.GetName()}! Needed {requiredRes}. Bot will try finish the task later");
+            acc.Logger.Warning($"Not enough resources for the task {task.GetName()}! Needed {requiredRes}. Bot will try finish the task later");
 
             if (IsStorageTooLow(acc, vill, requiredRes))
             {
-                acc.Wb.Log($"Storage is too low.");
+                acc.Logger.Warning($"Storage is too low.");
                 ResSpendingHelper.AddUnfinishedTask(vill, task, requiredRes);
                 return null;
             }

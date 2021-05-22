@@ -98,12 +98,14 @@ namespace TravBotSharp.Files.Helpers
                         x.Priority == TaskPriority.High
                     );
                     break;
+
                 case TaskPriority.Medium:
                     firstTask = acc.Tasks.FirstOrDefault(x =>
                         x.Priority == TaskPriority.High ||
                         x.Priority == TaskPriority.Medium
                     );
                     break;
+
                 case TaskPriority.Low:
                     firstTask = acc.Tasks.FirstOrDefault();
                     break;
@@ -126,7 +128,7 @@ namespace TravBotSharp.Files.Helpers
                 var log = $"Chrome will reopen in {(int)nextTask.TotalMinutes} min";
                 if (log != previousLog)
                 {
-                    acc.Wb.Log(log);
+                    acc.Logger.Information(log);
                     previousLog = log;
                 }
 

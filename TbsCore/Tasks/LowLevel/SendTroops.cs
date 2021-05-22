@@ -12,19 +12,19 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class SendTroops : BotTask
     {
         public TroopsSendModel TroopsMovement { get; set; }
-        
+
         /// <summary>
         /// Other tasks (like SendDeff) can extend this task and configure amount of troops to
         /// send when getting amount of troops at home. If false is returned, bot won't proceed the attack
         /// </summary>
         public Func<Account, int[], bool> TroopsCallback { get; set; }
-        
+
         /// <summary>
         /// When the troops will arrive to the destination, is set after the bot sends the troops.
         /// Used by other BotTasks that extend this task (like OasisFarming)
         /// </summary>
         public TimeSpan Arrival { get; private set; }
-        
+
         /// <summary>
         /// Whether we want to embed coordinates into the url. This saves ~1 sec and it used when searching from the map / send troops clicked
         /// </summary>
@@ -33,7 +33,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var url = $"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2";
-            if (SetCoordsInUrl)  url += "&z=" + MapHelper.KidFromCoordinates(TroopsMovement.TargetCoordinates, acc);
+            if (SetCoordsInUrl) url += "&z=" + MapHelper.KidFromCoordinates(TroopsMovement.TargetCoordinates, acc);
 
             await acc.Wb.Navigate(url);
 
@@ -89,7 +89,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             //Click on "Send" button
             await DriverHelper.ClickById(acc, "btn_ok");
-            acc.Wb.Log($"Bot sent troops from village {Vill.Name} to {this.TroopsMovement.TargetCoordinates}");
+            acc.Logger.Information($"Bot sent troops from village {Vill.Name} to {this.TroopsMovement.TargetCoordinates}");
 
             return TaskRes.Executed;
         }

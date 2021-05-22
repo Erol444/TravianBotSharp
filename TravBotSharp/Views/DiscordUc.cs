@@ -82,7 +82,7 @@ namespace TravBotSharp.Views
             }
             catch (System.Exception error)
             {
-                acc.Wb.Log(error.ToString());
+                acc.Logger.Error(error, "Discord Webhook Error");
             }
         }
     }
