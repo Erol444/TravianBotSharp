@@ -20,7 +20,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             // Clear global oasis list that were attacked 100 hours + ago
             acc.Farming.OasisFarmed.RemoveAll(x => x.Item2 < DateTime.Now.AddHours(-100));
-            
+
             var previouslyFarmed = acc.Farming.OasisFarmed
                 .Where(x => DateTime.Now.AddHours(-Vill.FarmingNonGold.OasisFarmingDelay) < x.Item2)
                 .ToList();
@@ -28,7 +28,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // If we don't send to nearest oasis first, check if we have enough troops.
             // This will save a lot of time / requests.
             base.TroopsMovement = new TroopsSendModel();
-            if (Vill.FarmingNonGold.OasisFarmingType != OasisFarmingType.NearestFirst) 
+            if (Vill.FarmingNonGold.OasisFarmingType != OasisFarmingType.NearestFirst)
             {
                 var troopsInVill = new int[11];
                 base.TroopsMovement.Troops = new int[11];
@@ -59,7 +59,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 !previouslyFarmed.Any(x => x.Item1.Equals(o)) // Oasis wasn't recently attacked
                 ).ToList();
 
-            acc.Wb.Log($"Found {oasisCoordsOrdered.Count} oasis, {oasisFiltered.Count} are in range and weren't recently attacked");
+            acc.Logger.Information($"Found {oasisCoordsOrdered.Count} oasis, {oasisFiltered.Count} are in range and weren't recently attacked");
 
             // (Coordinates, number of animals)
             var list = new List<(Coordinates, int[])>();
@@ -67,9 +67,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             for (int i = 0; i < oasisFiltered.Count; i++)
             {
                 var oasis = oasisFiltered[i];
-                
+
                 await Task.Delay(AccountHelper.Delay() * 3);
-                acc.Wb.Log($"[{i + 1}/{oasisFiltered.Count}] Searching for oasis to attack, checking {oasis}");
+                acc.Logger.Information($"[{i + 1}/{oasisFiltered.Count}] Searching for oasis to attack, checking {oasis}");
                 var animals = MapHelper.GetOasisAnimals(acc, oasis);
 
                 // Check if oasis deff power is above threshold
@@ -80,18 +80,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 list.Add((oasis, animals));
 
                 // If we want to first attack nearest oasis first, don't search for other oasis
-                if (Vill.FarmingNonGold.OasisFarmingType == OasisFarmingType.NearestFirst) break; 
+                if (Vill.FarmingNonGold.OasisFarmingType == OasisFarmingType.NearestFirst) break;
             }
 
             if (list.Count == 0)
             {
                 if (0 < previouslyFarmed.Count)
                 {
-                    acc.Wb.Log("No oasis that matched criteria was found! Change your criteria and try again");
+                    acc.Logger.Warning("No oasis that matched criteria was found! Change your criteria and try again");
                     return TaskRes.Executed;
                 }
                 this.NextExecute = previouslyFarmed.First().Item2;
-                acc.Wb.Log($"No oasis that matched criteria was found! Will retry at {this.NextExecute}");
+                acc.Logger.Warning($"No oasis that matched criteria was found! Will retry at {this.NextExecute}");
                 return TaskRes.Retry;
             }
 
@@ -100,12 +100,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 case OasisFarmingType.NearestFirst:
                     // We only have 1 oasis, since we broke out of foreach loop
                     break;
+
                 case OasisFarmingType.MaxResFirst:
                     list = list.OrderByDescending(x => GetOasisResources(x.Item2)).ToList();
                     break;
+
                 case OasisFarmingType.LeastPowerFirst:
                     list = list.OrderBy(x => GetOasisDeffPower(x.Item2)).ToList();
                     break;
+
                 case OasisFarmingType.MaxResProfitFirst:
                     // Not yet implemented, implement combat simulator from:
                     // https://github.com/kirilloid/travian/tree/master/src/model/t4/combat
@@ -113,7 +116,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             var attackCoords = list.First().Item1;
-            acc.Wb.Log($"Bot will attack oasis {attackCoords}");
+            acc.Logger.Information($"Bot will attack oasis {attackCoords}");
 
             base.SetCoordsInUrl = true; // Since we are searching oasis from the map
             base.TroopsMovement.TargetCoordinates = attackCoords;
@@ -156,14 +159,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 base.TroopsMovement.Troops[10] = 1;
             }
 
-            // Check if we have enough offensive troops to send 
+            // Check if we have enough offensive troops to send
             var upkeep = TroopsHelper.GetTroopsUpkeep(acc, base.TroopsMovement.Troops);
             if (upkeep < this.Vill.FarmingNonGold.MinTroops)
             {
-                var log = $"Village {Vill.Name} does not have enough offensive troops to attack the oasis!";
+                var log = $"Village {Vill.Name} does not have enough offensive troops to attack the oasis! ";
                 log += $"Required {this.Vill.FarmingNonGold.MinTroops}, but only {upkeep} (crop consumption) ";
                 log += "of off was in the village. Bot won't send the attack.";
-                acc.Wb.Log(log);
+                acc.Logger.Information(log);
                 return false;
             }
             return true;
@@ -180,8 +183,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 {
                     case Classificator.ServerVersionEnum.T4_4:
                         // Occupied "{k.fo}", unoccupied "{k.bt}"
-                        if(tile.Title == "{k.bt}") ret.Add(tile.Coordinates);
+                        if (tile.Title == "{k.bt}") ret.Add(tile.Coordinates);
                         break;
+
                     case Classificator.ServerVersionEnum.T4_5:
                         // Occupied "{k.bt}", unoccupied "{k.fo}"
                         if (tile.Title == "{k.fo}") ret.Add(tile.Coordinates);

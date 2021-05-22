@@ -25,7 +25,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));
             if (troopNode == null)
             {
-                acc.Wb.Log($"Researching {troop} was not possible! Bot assumes you already have it researched");
+                acc.Logger.Warning($"Researching {troop} was not possible! Bot assumes you already have it researched");
                 Vill.Troops.Researched.Add(troop);
                 return TaskRes.Retry;
             }
@@ -46,13 +46,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             await DriverHelper.ClickById(acc, button.Id);
-            
+
             var executeNext = DateTime.Now.Add(dur).AddMilliseconds(10 * AccountHelper.Delay());
             if (Vill.Settings.AutoImprove)
             {
-                TaskExecutor.AddTask(acc,new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) });
+                TaskExecutor.AddTask(acc, new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) });
             }
-            
+
             RepeatTask(Vill, troop, executeNext);
 
             return TaskRes.Executed;

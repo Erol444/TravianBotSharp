@@ -17,7 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (acc.AccInfo.CulturePoints.MaxVillages <= acc.AccInfo.CulturePoints.VillageCount)
             {
                 // TODO: this shouldn't be here?
-                acc.Wb.Log("Don't have enough culture points");
+                acc.Logger.Warning("Don't have enough culture points");
                 this.Vill.Expansion.ExpansionAvailable = true;
                 return TaskRes.Executed;
             }

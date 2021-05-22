@@ -14,6 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     public class SendFarmlist : BotTask
     {
         public FarmList FL { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
@@ -53,7 +54,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             foreach (var farm in flNode.Descendants("tr").Where(x => x.HasClass("slotRow")))
             {
-
                 //iReport2 = yellow swords, iReport3 = red swords, iReport1 = successful raid
                 var img = farm.ChildNodes.FirstOrDefault(x => x.HasClass("lastRaid"))?.Descendants("img");
 
@@ -78,13 +78,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     var sendFlScript = $"document.getElementById('{flNode.Id}').childNodes[1].submit()";
                     wb.ExecuteScript(sendFlScript);
                     break;
+
                 case ServerVersionEnum.T4_5:
                     var startRaid = flNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
                     acc.Wb.Driver.FindElementById(startRaid.Id).Click();
                     break;
             }
 
-            acc.Wb.Log($"FarmList '{this.FL.Name}' was sent");
+            acc.Logger.Information($"FarmList '{this.FL.Name}' was sent");
             return TaskRes.Executed;
         }
 

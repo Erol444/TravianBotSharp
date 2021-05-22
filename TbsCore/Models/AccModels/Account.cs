@@ -1,11 +1,15 @@
 ﻿using Newtonsoft.Json;
+using System.IO;
 using System.Collections.Generic;
 using Discord.Webhook;
 using TbsCore.Models.Access;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
+using TbsCore.Models.Logging;
 using TravBotSharp.Files.Models.AccModels;
 using TravBotSharp.Files.Tasks;
+
+using Serilog;
 
 namespace TbsCore.Models.AccModels
 {
@@ -18,17 +22,24 @@ namespace TbsCore.Models.AccModels
         {
             Hero = new Hero();
             Hero.init();
+
             Tasks = new List<BotTask>();
             Villages = new List<Village>();
+
             Access = new AccessInfo();
             Access.Init();
+
             AccInfo = new AccInfo();
             AccInfo.Init();
+
             Quests = new QuestsSettings();
             Quests.Init();
+
             Settings = new GeneralSettings();
             Settings.Init();
+
             Farming = new Farming();
+
             NewVillages = new NewVillageSettings();
             NewVillages.Init();
         }
@@ -53,5 +64,8 @@ namespace TbsCore.Models.AccModels
 
         [JsonIgnore]
         public DiscordWebhookClient WebhookClient { get; set; }
+
+        [JsonIgnore]
+        public Logger Logger;
     }
 }

@@ -25,7 +25,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     {
                         // Sitter. Can't change the name of the village. TODO: check if sitter before
                         // creating the task.
-                        acc.Wb.Log("Sitter cannot change the name of the village");
+                        acc.Logger.Warning("Sitter cannot change the name of the village");
                         return TaskRes.Executed;
                     }
 
@@ -51,7 +51,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     {
                         // Sitter. Can't change the name of the village. TODO: check if sitter before
                         // creating the task.
-                        acc.Wb.Log("Sitter cannot change the name of the village");
+                        acc.Logger.Warning("Sitter cannot change the name of the village");
                         return TaskRes.Executed;
                     }
 

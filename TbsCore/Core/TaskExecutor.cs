@@ -27,7 +27,7 @@ namespace TravBotSharp.Files.Helpers
         {
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
-                acc.Wb.Log("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
+                acc.Logger.Warning("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
                 acc.TaskTimer.Stop();
                 return;
             }
@@ -85,7 +85,7 @@ namespace TravBotSharp.Files.Helpers
 
             try
             {
-                acc.Wb.Log($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
+                acc.Logger.Information($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
 
                 switch (await task.Execute(acc))
                 {
@@ -108,7 +108,7 @@ namespace TravBotSharp.Files.Helpers
             }
             catch (Exception e)
             {
-                if (acc.Wb != null) acc.Wb.Log($"Error executing task {task.GetName()}! Vill {task.Vill?.Name}", e);
+                acc.Logger.Error(e, $"Error executing task {task.GetName()}! Vill {task.Vill?.Name}");
                 task.RetryCounter++;
                 if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
             }
@@ -120,18 +120,18 @@ namespace TravBotSharp.Files.Helpers
                 task.NextExecute = null;
                 ReorderTaskList(acc);
                 task.Stage = TaskStage.Start;
-                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}"));
+                acc.Logger.Warning($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}"));
                 return;
             }
             // Remove the task from the task list
             acc.Tasks.Remove(task);
             if (task.RetryCounter >= 3)
             {
-                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is already re-executed 3 times. Ignore it"));
+                acc.Logger.Warning($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is already re-executed 3 times. Ignore it"));
             }
             else
             {
-                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is done."));
+                acc.Logger.Information($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is done."));
             }
         }
 
@@ -151,7 +151,7 @@ namespace TravBotSharp.Files.Helpers
                 }
                 catch (Exception e)
                 {
-                    if (acc.Wb != null) acc.Wb.Log($"Error executing pre-task {PostLoadHelper.namePostTask[i]}!", e);
+                    acc.Logger.Error(e, $"Error executing pre-task {PostLoadHelper.namePostTask[i]}!");
                 }
             }
         }
@@ -349,7 +349,7 @@ namespace TravBotSharp.Files.Helpers
         public static void RemoveTaskTypes(Account acc, Type type, Village vill = null, BotTask thisTask = null)
         {
             var removeTasks = acc.Tasks.Where(x => x.GetType() == type);
-            
+
             if (vill == null) // Only remove tasks for a specific village
             {
                 removeTasks = removeTasks.Where(x => x.Vill == vill);
@@ -361,7 +361,6 @@ namespace TravBotSharp.Files.Helpers
 
             // Remove all 'removeTasks' from the account task list
             removeTasks.ToList().ForEach(x => acc.Tasks.Remove(x));
-            
         }
 
         /// <summary>

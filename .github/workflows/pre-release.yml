@@ -3,6 +3,8 @@ name: CI-develop
 on:
   push:
     branches: [ develop ]
+  workflow_dispatch:
+  
 jobs:
   version:
     runs-on: ubuntu-latest

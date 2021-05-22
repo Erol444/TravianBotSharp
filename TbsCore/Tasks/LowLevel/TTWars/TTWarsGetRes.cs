@@ -26,20 +26,18 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 HighSpeedServer = true
             });
 
-
             var script = "window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});";
             await DriverHelper.ExecuteScript(acc, script);
 
             script = "$$('.paymentWizardMenu').addClass('hide');$$('.buyGoldInfoStep').removeClass('active');$$('.buyGoldInfoStep#2').addClass('active');$$('.paymentWizardMenu#buyResources').removeClass('hide');";
             await DriverHelper.ExecuteScript(acc, script);
 
-
             //gold prosButton buyResources6
             //gold prosButton buyAnimal5
             var buy = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyResources6"));
             if (buy == null)
             {
-                acc.Wb.Log("Can't find the button with class buyResources6. Are you sure you are on vip/unl TTWars server?");
+                acc.Logger.Warning("Can't find the button with class buyResources6. Are you sure you are on vip/unl TTWars server?");
                 return TaskRes.Executed;
             }
             var buyId = buy.GetAttributeValue("id", "");
