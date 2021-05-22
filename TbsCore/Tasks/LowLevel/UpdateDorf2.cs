@@ -1,8 +1,8 @@
 ﻿using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class UpdateDorf2 : BotTask
     {
@@ -14,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
             }
-            
+
             return TaskRes.Executed;
         }
     }

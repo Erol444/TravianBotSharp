@@ -1,5 +1,4 @@
 ﻿using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -7,12 +6,9 @@ using System.IO;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
-using TbsCore.Models.Access;
-using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Tasks.LowLevel;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class WebBrowserInfo : IDisposable
     {
@@ -31,7 +27,7 @@ namespace TravBotSharp.Files.Models.AccModels
         public async Task InitSelenium(Account acc, bool newAccess = true)
         {
             this.acc = acc;
-            Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
+            Access.Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
@@ -49,13 +45,13 @@ namespace TravBotSharp.Files.Models.AccModels
             else await this.Navigate(acc.AccInfo.ServerUrl);
         }
 
-        private void InitHttpClient(Access a)
+        private void InitHttpClient(Access.Access a)
         {
             RestClient = new RestClient();
             HttpHelper.InitRestClient(a, RestClient);
         }
 
-        private void SetupChromeDriver(Access access, string username, string server)
+        private void SetupChromeDriver(Access.Access access, string username, string server)
         {
             ChromeOptions options = new ChromeOptions();
 

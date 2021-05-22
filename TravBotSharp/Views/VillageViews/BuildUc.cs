@@ -6,11 +6,11 @@ using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
-using static TravBotSharp.Files.Helpers.Classificator;
+using static TbsCore.Helpers.Classificator;
 
 namespace TravBotSharp.Views
 {

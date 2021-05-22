@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks.LowLevel;
 
-namespace TravBotSharp.Files.Tasks.SecondLevel
+namespace TbsCore.Tasks.SecondLevel
 {
     public class SendFLs : BotTask
     {

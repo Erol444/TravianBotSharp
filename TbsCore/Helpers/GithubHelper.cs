@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Octokit;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public class GithubHelper
     {

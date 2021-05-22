@@ -6,8 +6,8 @@ using TbsCore.Models.Access;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TbsCore.Models.Logging;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Tasks;
+using TbsCore.Models.AccModels;
+using TbsCore.Tasks;
 
 using Serilog;
 

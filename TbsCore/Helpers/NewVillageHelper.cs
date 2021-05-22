@@ -1,6 +1,6 @@
 ﻿using TbsCore.Models.AccModels;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class NewVillageHelper
     {

@@ -2,8 +2,8 @@
 using System.Windows.Forms;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -14,6 +14,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();

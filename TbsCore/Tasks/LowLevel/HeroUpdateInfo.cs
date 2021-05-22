@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class HeroUpdateInfo : BotTask
     {
@@ -18,7 +18,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
                 var ran = new Random();
-                
+
                 this.NextExecute = DateTime.Now.AddMinutes(
                     ran.Next(acc.Hero.Settings.MinUpdate, acc.Hero.Settings.MaxUpdate)
                     );

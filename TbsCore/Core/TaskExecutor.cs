@@ -8,12 +8,12 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.JsObjects;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
-using static TravBotSharp.Files.Tasks.BotTask;
+using TbsCore.Parsers;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
+using static TbsCore.Tasks.BotTask;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class TaskExecutor
     {

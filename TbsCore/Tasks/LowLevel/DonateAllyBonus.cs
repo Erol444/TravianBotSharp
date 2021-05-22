@@ -3,7 +3,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class DonateAllyBonus : BotTask
     {
@@ -16,6 +16,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             "bonusSmithyPower",
             "bonusMerchantCapacity"
         };
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/alliance/bonuses");

@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class BotTaskTemplate : BotTask
     {

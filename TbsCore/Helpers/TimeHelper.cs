@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
-using static TravBotSharp.Files.Tasks.BotTask;
+using static TbsCore.Tasks.BotTask;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class TimeHelper
     {

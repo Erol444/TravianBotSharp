@@ -6,11 +6,11 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks.LowLevel;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Parsers;
+using TbsCore.Tasks.LowLevel;
+using static TbsCore.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class HeroHelper
     {
@@ -101,11 +101,13 @@ namespace TravBotSharp.Files.Helpers
             var (_, _, itemTier) = ParseHeroItem(item);
             return itemTier;
         }
+
         public static string GetHeroItemName(Classificator.HeroItemEnum item)
         {
             var (_, name, _) = ParseHeroItem(item);
             return name;
         }
+
         public static Classificator.HeroItemCategory GetHeroItemCategory(Classificator.HeroItemEnum item)
         {
             var (category, _, _) = ParseHeroItem(item);
@@ -141,6 +143,7 @@ namespace TravBotSharp.Files.Helpers
                 case Classificator.ServerVersionEnum.T4_4:
                     acc.Hero.HomeVillageId = hrefId ?? 0;
                     return;
+
                 case Classificator.ServerVersionEnum.T4_5:
                     // Convert from coordinates id -> coordinates -> villageId
                     var coordinates = MapHelper.CoordinatesFromKid(hrefId ?? 0, acc);

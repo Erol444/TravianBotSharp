@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.TravianData;
+using TbsCore.Helpers;
+using TbsCore.TravianData;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     /// <summary>
     /// Sends resources from main village to target village so it can fill up the troops to above X hours
@@ -20,7 +20,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// Village to send resources to
         /// </summary>
         public Village TargetVill { get; set; }
+
         public TrainTroops TrainTask { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
@@ -65,7 +67,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             //TODO: Update marketplace sending
             return TaskRes.Executed;
-
         }
     }
 }

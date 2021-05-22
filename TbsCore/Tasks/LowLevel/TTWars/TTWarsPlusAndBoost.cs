@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     //since "extend automatically" doesn't work on TTWars, this task will automatically prolong plus account / +25% resource boost
     public class TTWarsPlusAndBoost : BotTask

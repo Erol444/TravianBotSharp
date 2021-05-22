@@ -6,13 +6,13 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.TravianData;
-using static TravBotSharp.Files.Helpers.BuildingHelper;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Parsers;
+using TbsCore.TravianData;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+using static TbsCore.Helpers.BuildingHelper;
+using static TbsCore.Helpers.Classificator;
+
+namespace TbsCore.Tasks.LowLevel
 {
     public class UpgradeBuilding : BotTask
     {

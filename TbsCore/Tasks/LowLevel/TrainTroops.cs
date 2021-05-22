@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+using static TbsCore.Helpers.Classificator;
+
+namespace TbsCore.Tasks.LowLevel
 {
     /// <summary>
     /// Old train troops task, only here because of high speed TTWars servers.

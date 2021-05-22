@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -11,6 +11,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();

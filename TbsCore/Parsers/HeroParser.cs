@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class HeroParser
     {
@@ -23,6 +23,7 @@ namespace TravBotSharp.Files.Parsers
             if (attributes?.GetClasses()?.FirstOrDefault(x => x == "hide") == null) return false;
             else return true;
         }
+
         public static HeroInfo GetHeroInfo(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             var content = htmlDoc.GetElementbyId("content");
@@ -30,7 +31,7 @@ namespace TravBotSharp.Files.Parsers
 
             var dead = IsHeroDead(htmlDoc);
             // If hero is dead you can't parse health/experience
-            if(!dead)
+            if (!dead)
             {
                 var health = content.Descendants("tr")
                     .FirstOrDefault(x => x.HasClass("health"))
@@ -43,7 +44,7 @@ namespace TravBotSharp.Files.Parsers
                      .Descendants("span")
                      .FirstOrDefault(x => x.HasClass("value"))
                      .InnerText;
-                
+
                 heroInfo.Health = (int)Parser.ParseNum(health.Replace("%", ""));
                 heroInfo.Experience = (int)Parser.RemoveNonNumeric(experience);
             }
@@ -120,6 +121,7 @@ namespace TravBotSharp.Files.Parsers
 
             return TimeParser.ParseTimer(statusMsg);
         }
+
         public static int GetAdventureNum(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
@@ -129,14 +131,17 @@ namespace TravBotSharp.Files.Parsers
                     var bubble = adv44.Descendants().FirstOrDefault(x => x.HasClass("speechBubbleContent"));
                     if (bubble == null) return 0; //No bubble, no adventures
                     return (int)Parser.RemoveNonNumeric(bubble.InnerText);
+
                 case Classificator.ServerVersionEnum.T4_5:
                     var adv45 = htmlDoc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("adventure"));
                     var num = adv45.ChildNodes.FirstOrDefault(x => x.HasClass("content") && x.Name == "div");
                     if (num == null) return 0;
                     return (int)Parser.RemoveNonNumeric(num.InnerText);
+
                 default: return 0;
             }
         }
+
         public static bool LeveledUp(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
@@ -145,6 +150,7 @@ namespace TravBotSharp.Files.Parsers
                     return htmlDoc.DocumentNode
                         .Descendants("div")
                         .Any(x => x.HasClass("levelUp"));
+
                 case Classificator.ServerVersionEnum.T4_5:
                     return htmlDoc.DocumentNode
                         .Descendants("i")
@@ -152,6 +158,7 @@ namespace TravBotSharp.Files.Parsers
             }
             return false;
         }
+
         public static Hero.StatusEnum HeroStatus(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
@@ -162,12 +169,16 @@ namespace TravBotSharp.Files.Parsers
                     {
                         case "heroStatus101Regenerate":
                             return Hero.StatusEnum.Regenerating;
+
                         case "heroStatus101":
                             return Hero.StatusEnum.Dead;
+
                         case "heroStatus100":
                             return Hero.StatusEnum.Home;
+
                         case "heroStatus50":
                             return Hero.StatusEnum.Away;
+
                         default: return Hero.StatusEnum.Unknown;
                     }
                 case Classificator.ServerVersionEnum.T4_5:
@@ -179,21 +190,26 @@ namespace TravBotSharp.Files.Parsers
                     {
                         case "heroRunning":
                             return Hero.StatusEnum.Away;
+
                         case "heroHome":
                             return Hero.StatusEnum.Home;
+
                         case "heroDead":
                             return Hero.StatusEnum.Dead;
+
                         case "heroReviving":
                             return Hero.StatusEnum.Regenerating;
+
                         case "heroReinforcing":
                             return Hero.StatusEnum.Reinforcing;
+
                         default: return Hero.StatusEnum.Unknown;
                             //TODO ADD FOR DEAD, REGENERATING
                     }
-
             }
             return Hero.StatusEnum.Unknown;
         }
+
         public static int GetHeroHealth(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
@@ -202,6 +218,7 @@ namespace TravBotSharp.Files.Parsers
                     var health = htmlDoc.GetElementbyId("sidebarBoxHero").Descendants("div").FirstOrDefault(x => x.HasClass("bar")).Attributes.FirstOrDefault(x => x.Name == "style").Value.Split(':')[1].Replace("%", "");
                     health = health.Split('.')[0];
                     return (int)Parser.RemoveNonNumeric(health);
+
                 case Classificator.ServerVersionEnum.T4_5:
                     var path = htmlDoc.GetElementbyId("healthMask").Descendants("path").FirstOrDefault();
                     if (path == null) return 0;
@@ -275,6 +292,7 @@ namespace TravBotSharp.Files.Parsers
             { Classificator.HeroItemCategory.Boots, "shoes" },
             { Classificator.HeroItemCategory.Others, "bag" }
         };
+
         /// <summary>
         /// Parses what items is hero currently equipt with
         /// </summary>

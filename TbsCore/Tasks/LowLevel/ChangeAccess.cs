@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     /// <summary>
     /// This task changes access (and restarts selenium driver) for the account and sets the next access change, if there are multiple access'.
@@ -12,6 +12,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
     {
         public int? WaitSecMin { get; set; }
         public int? WaitSecMax { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             acc.Wb.Dispose();

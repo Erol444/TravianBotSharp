@@ -12,8 +12,8 @@ using TbsCore.Models;
 using TbsCore.Models.VillageModels;
 using TbsCore.Models.AccModels;
 
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Helpers.InactiveFinder;
+using TbsCore.Parsers;
+using TbsCore.Helpers.InactiveFinder;
 
 namespace TravBotSharp.Forms
 {

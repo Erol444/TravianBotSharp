@@ -1,5 +1,5 @@
 ﻿using System;
-using static TravBotSharp.Files.Helpers.Classificator;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Models.VillageModels
 {

@@ -3,16 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks.LowLevel;
-using TravBotSharp.Files.TravianData;
-using static TravBotSharp.Files.Helpers.BuildingHelper;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Parsers;
+using TbsCore.Tasks.LowLevel;
 
-namespace TravBotSharp.Files.Helpers
+using static TbsCore.Helpers.BuildingHelper;
+using static TbsCore.Helpers.Classificator;
+
+namespace TbsCore.Helpers
 {
     public static class TroopsHelper
     {
@@ -380,6 +379,6 @@ namespace TravBotSharp.Files.Helpers
                 upkeep += troops[i] * TroopSpeed.GetTroopUpkeep(troop);
             }
             return upkeep;
-        } 
+        }
     }
 }

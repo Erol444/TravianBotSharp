@@ -3,8 +3,8 @@ using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Helpers;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Helpers
 {
@@ -43,7 +43,7 @@ namespace TbsCore.Helpers
                 task = isResField ? GetFirstInfrastructureTask(vill) : GetFirstResTask(vill);
 
                 if (task != null) return (task, now);
-                
+
                 if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuild--;
             }
 

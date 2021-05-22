@@ -5,10 +5,10 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.SideBarModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Parsers;
+using TbsCore.Tasks.LowLevel;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class UpdateAccountObject
     {
@@ -49,6 +49,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return true;
         }
+
         /// <summary>
         /// Initializes a new village model and creates the task to update the village
         /// </summary>

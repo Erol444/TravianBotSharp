@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -14,6 +14,7 @@ namespace TravBotSharp.Views
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -148,6 +149,7 @@ namespace TravBotSharp.Views
         {
             LimitHeroPoints();
         }
+
         private int HeroPointsUSer()
         {
             int str = (int)strength.Value;
@@ -156,6 +158,7 @@ namespace TravBotSharp.Views
             int res = (int)resources.Value;
             return str + off + deff + res;
         }
+
         private void LimitHeroPoints()
         {
             int lockPoints = HeroPointsUSer();

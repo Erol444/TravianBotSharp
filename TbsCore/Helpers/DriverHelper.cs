@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TbsCore.Helpers
 {

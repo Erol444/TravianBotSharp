@@ -5,9 +5,9 @@ using System.Windows.Forms;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.VillageModels;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
 using XPTable.Models;
@@ -196,7 +196,7 @@ namespace TravBotSharp.Views
                     Vill = vill,
                     DeffAmount = amount,
                     TargetVillage = sendDeffCoords.Coords,
-                    Priority = Files.Tasks.BotTask.TaskPriority.High,
+                    Priority = TbsCore.Tasks.BotTask.TaskPriority.High,
                     NextTask = node,
                 };
                 node = sendDeff;
@@ -238,7 +238,7 @@ namespace TravBotSharp.Views
                 ExecuteAt = DateTime.Now,
                 Vill = AccountHelper.GetMainVillage(acc),
                 SendWaveModels = waves.ToList(),
-                Priority = Files.Tasks.BotTask.TaskPriority.High
+                Priority = TbsCore.Tasks.BotTask.TaskPriority.High
             };
             TaskExecutor.AddTask(acc, waveTask);
         }

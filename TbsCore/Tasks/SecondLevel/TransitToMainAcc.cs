@@ -2,9 +2,9 @@
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     /// <summary>
     /// Used on TTWars to constantly send resources to your main account

@@ -7,15 +7,16 @@ using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
     public partial class AttackUc : BaseVillageUc, ITbsUc
     {
-        List<List<SendWaveModel>> sendWaves = new List<List<SendWaveModel>>();
+        private List<List<SendWaveModel>> sendWaves = new List<List<SendWaveModel>>();
+
         public AttackUc()
         {
             InitializeComponent();
@@ -100,7 +101,7 @@ namespace TravBotSharp.Views
         }
 
         /// <summary>
-        ///  Populate the troops array with negative values - which means bot will send 
+        ///  Populate the troops array with negative values - which means bot will send
         ///  all available units of that type
         /// </summary>
         private int[] SendAllTroops()
@@ -132,7 +133,7 @@ namespace TravBotSharp.Views
                     ExecuteAt = DateTime.Now.AddHours(-100), // Execute now, on we will create a correct ExecuteAt later
                     Vill = GetSelectedVillage(),
                     SendWaveModels = wave.ToList(),
-                    Priority = Files.Tasks.BotTask.TaskPriority.High
+                    Priority = TbsCore.Tasks.BotTask.TaskPriority.High
                 };
                 TaskExecutor.AddTask(GetSelectedAcc(), waveTask);
             }
@@ -179,6 +180,7 @@ namespace TravBotSharp.Views
             //}
             return DateTime.Today.Add(timeOfDay);
         }
+
         private string GetWaveType(SendWaveModel attk)
         {
             if (attk.FakeAttack) return "Fake attack";
@@ -192,6 +194,7 @@ namespace TravBotSharp.Views
         }
 
         #region Oasis farming callbacks
+
         private void oasisEnabled_CheckedChanged(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
@@ -207,16 +210,22 @@ namespace TravBotSharp.Views
                 TaskExecutor.RemoveTaskTypes(acc, typeof(AttackOasis), vill);
             }
         }
+
         private void oasisStrategy_SelectedIndexChanged(object sender, EventArgs e) =>
             GetSelectedVillage().FarmingNonGold.OasisFarmingType = (OasisFarmingType)oasisStrategy.SelectedIndex;
+
         private void oasisDelay_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().FarmingNonGold.OasisFarmingDelay = (int)oasisDelay.Value;
+
         private void oasisDistance_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().FarmingNonGold.OasisMaxDistance = (int)oasisDistance.Value;
+
         private void oasisPower_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().FarmingNonGold.MaxDeffPower = (int)oasisPower.Value;
+
         private void oasisMinTroops_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().FarmingNonGold.MinTroops = (int)oasisMinTroops.Value;
+
         #endregion Oasis farming callbacks
     }
 }

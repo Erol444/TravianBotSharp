@@ -7,13 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TravBotSharp.Forms
 {
     public partial class TroopsDisplayUc : UserControl
     {
-        PictureBox[] pictureBoxes;
+        private PictureBox[] pictureBoxes;
+
         public TroopsDisplayUc()
         {
             InitializeComponent();
@@ -33,6 +34,7 @@ namespace TravBotSharp.Forms
                 pictureBox11,
             };
         }
+
         public void Init(Classificator.TribeEnum tribe)
         {
             // Nature by default
@@ -43,9 +45,11 @@ namespace TravBotSharp.Forms
                 case Classificator.TribeEnum.Romans:
                     tribeGif = FormsResources.Romans;
                     break;
+
                 case Classificator.TribeEnum.Teutons:
                     tribeGif = FormsResources.Teutons;
                     break;
+
                 case Classificator.TribeEnum.Gauls:
                     tribeGif = FormsResources.Gauls;
                     break;
@@ -55,9 +59,11 @@ namespace TravBotSharp.Forms
                 case Classificator.TribeEnum.Natars:
                     tribeGif = FormsResources.Natars;
                     break;
+
                 case Classificator.TribeEnum.Egyptians:
                     tribeGif = FormsResources.Egyptians;
                     break;
+
                 case Classificator.TribeEnum.Huns:
                     tribeGif = FormsResources.Huns;
                     break;

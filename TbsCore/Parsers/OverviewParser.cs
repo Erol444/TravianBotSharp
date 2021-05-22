@@ -3,9 +3,9 @@ using System;
 using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     /// <summary>
     /// To parse village overviews (if player has plus account).

@@ -1,5 +1,5 @@
 ﻿using TbsCore.Models.SideBarModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TbsCore.Models.AccModels
 {

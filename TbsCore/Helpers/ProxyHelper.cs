@@ -8,7 +8,7 @@ using System.IO.Compression;
 using System.Threading.Tasks;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TbsCore.Helpers
 {

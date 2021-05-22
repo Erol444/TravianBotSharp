@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Timers;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
-using static TravBotSharp.Files.Tasks.BotTask;
+using TbsCore.Helpers;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
+using static TbsCore.Tasks.BotTask;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class TaskTimer : IDisposable
     {

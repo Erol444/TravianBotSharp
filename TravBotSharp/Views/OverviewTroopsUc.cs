@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
 using XPTable.Models;
@@ -13,12 +13,14 @@ namespace TravBotSharp.Views
 {
     public partial class OverviewTroopsUc : TbsBaseUc, ITbsUc
     {
-        TableModel tableModelMain = new TableModel();
-        TableModel tableModelGlobal = new TableModel();
+        private TableModel tableModelMain = new TableModel();
+        private TableModel tableModelGlobal = new TableModel();
+
         public OverviewTroopsUc()
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -49,7 +51,6 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = acc.Villages.FirstOrDefault();
 
-
             tableModelGlobal.Rows.Clear();
             // Change multiple row
             var r = new Row();
@@ -79,7 +80,9 @@ namespace TravBotSharp.Views
             //r1.Cells.Add(new Cell("", false)); // Big celebrations
             //tableModelGlobal.Rows.Add(r);
         }
+
         #region Initialize table columns
+
         private void InitTable()
         {
             ColumnModel columnModel = new ColumnModel();
@@ -184,7 +187,9 @@ namespace TravBotSharp.Views
                 Width = 100
             });
         }
-        #endregion
+
+        #endregion Initialize table columns
+
         private string[] GetPossibleTroops(Classificator.BuildingEnum building)
         {
             List<string> ret = new List<string>();
@@ -276,6 +281,7 @@ namespace TravBotSharp.Views
             if (acc.Wb == null) return;
             TroopsHelper.ReStartResearchAndImprovement(acc, vill);
         }
+
         private void UpdateStable(Account acc, Village vill, CellCollection cells, int column)
         {
             var text = cells[column].Text;
@@ -286,6 +292,7 @@ namespace TravBotSharp.Views
             if (acc.Wb == null) return;
             TroopsHelper.ReStartResearchAndImprovement(acc, vill);
         }
+
         private void UpdateWorkshop(Account acc, Village vill, CellCollection cells, int column)
         {
             var text = cells[column].Text;
@@ -296,6 +303,7 @@ namespace TravBotSharp.Views
             if (acc.Wb == null) return;
             TroopsHelper.ReStartResearchAndImprovement(acc, vill);
         }
+
         private void UpdateGB(Account acc, Village vill, CellCollection cells, int column)
         {
             bool enabled = cells[column].Checked;
@@ -303,6 +311,7 @@ namespace TravBotSharp.Views
 
             vill.Settings.GreatBarracksTrain = enabled;
         }
+
         private void UpdateGS(Account acc, Village vill, CellCollection cells, int column)
         {
             bool enabled = cells[column].Checked;
@@ -333,6 +342,7 @@ namespace TravBotSharp.Views
                 selectedCell.Cell.Checked = global.Checked;
             }
         }
+
         private class CellChanges
         {
             public Cell Cell { get; set; }

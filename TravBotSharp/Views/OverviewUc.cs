@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
 using XPTable.Models;
@@ -13,12 +13,14 @@ namespace TravBotSharp.Views
 {
     public partial class OverviewUc : TbsBaseUc, ITbsUc
     {
-        TableModel tableModelMain = new TableModel();
-        TableModel tableModelGlobal = new TableModel();
+        private TableModel tableModelMain = new TableModel();
+        private TableModel tableModelGlobal = new TableModel();
+
         public OverviewUc()
         {
             InitializeComponent();
         }
+
         public void UpdateUc()
         {
             var acc = GetSelectedAcc();
@@ -50,7 +52,6 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = acc.Villages.FirstOrDefault();
 
-
             tableModelGlobal.Rows.Clear();
             // Change multiple row
             var r = new Row();
@@ -81,7 +82,9 @@ namespace TravBotSharp.Views
             //r1.Cells.Add(new Cell("", false)); // Big celebrations
             //tableModelGlobal.Rows.Add(r);
         }
+
         #region Initialize table columns
+
         private void InitTable()
         {
             ColumnModel columnModel = new ColumnModel();
@@ -184,9 +187,9 @@ namespace TravBotSharp.Views
                 ToolTipText = "Donate resources to the ally bonuses",
                 Editor = donationEditor
             });
-
         }
-        #endregion
+
+        #endregion Initialize table columns
 
         //Save button
         private void button1_Click(object sender, EventArgs e)
@@ -251,12 +254,15 @@ namespace TravBotSharp.Views
                 case VillType.Farm:
                     DefaultConfigurations.FarmVillagePlan(acc, vill);
                     return;
+
                 case VillType.Support:
                     DefaultConfigurations.SupplyVillagePlan(acc, vill);
                     return;
+
                 case VillType.Deff:
                     DefaultConfigurations.DeffVillagePlan(acc, vill);
                     return;
+
                 case VillType.Off:
                     DefaultConfigurations.OffVillagePlan(acc, vill);
                     return;
@@ -285,6 +291,7 @@ namespace TravBotSharp.Views
                 selectedCell.Cell.Checked = global.Checked;
             }
         }
+
         private class CellChanges
         {
             public Cell Cell { get; set; }
@@ -310,7 +317,6 @@ namespace TravBotSharp.Views
                     IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
                 }
             }
-
         }
     }
 }

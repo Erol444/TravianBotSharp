@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Interfaces;
-using static TravBotSharp.Files.Models.AccModels.WebBrowserInfo;
+using static TbsCore.Models.AccModels.WebBrowserInfo;
 using TbsCore.Models.Logging;
 
 namespace TravBotSharp.Views

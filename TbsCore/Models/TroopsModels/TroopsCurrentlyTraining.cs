@@ -1,5 +1,5 @@
 ﻿using System;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TbsCore.Models.TroopsModels
 {

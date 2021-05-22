@@ -2,10 +2,10 @@
 using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Tasks.LowLevel;
-using TravBotSharp.Files.Tasks.SecondLevel;
+using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.SecondLevel;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class AccountHelper
     {
@@ -96,8 +96,8 @@ namespace TravBotSharp.Files.Helpers
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
                 VillageHelper.SetNextRefresh(acc, vill);
-                if (vill.FarmingNonGold.OasisFarmingEnabled) 
-                { 
+                if (vill.FarmingNonGold.OasisFarmingEnabled)
+                {
                     TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new AttackOasis() { Vill = vill });
                 }
 
