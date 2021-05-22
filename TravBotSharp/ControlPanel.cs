@@ -14,6 +14,7 @@ using TbsCore.Models.AccModels;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
+using TravBotSharp.Views;
 
 namespace TravBotSharp
 {
@@ -60,6 +61,8 @@ namespace TravBotSharp
             IoHelperCore.AlertUser = IoHelperForms.AlertUser;
 
             checkNewVersion();
+            TbsCore.Models.Logging.SerilogSingleton.Init();
+            this.debugUc1.InitLog(TbsCore.Models.Logging.SerilogSingleton.LogOutput);
         }
 
         private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);

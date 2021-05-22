@@ -4,32 +4,23 @@ using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Interfaces;
 using static TravBotSharp.Files.Models.AccModels.WebBrowserInfo;
+using TbsCore.Models.Logging;
 
 namespace TravBotSharp.Views
 {
     public partial class DebugUc : TbsBaseUc, ITbsUc
     {
+        public LogOutput Log;
+
         public DebugUc()
         {
             InitializeComponent();
         }
 
-        // For thread safety
-        public bool ControlInvokeRequired(Control c, Action a)
+        public void InitLog(LogOutput log)
         {
-            if (c.InvokeRequired) c.Invoke(new MethodInvoker(delegate { a(); }));
-            else return false;
-            return true;
-        }
-
-        public void NewLogHandler(object sender, EventArgs e)
-        {
-            var newLog = ((LogEventArgs)e).Log;
-            if (ControlInvokeRequired(this.main, () => NewLogHandler(sender, e))) return;
-            logTextBox.Text = newLog + "\n" + logTextBox.Text;
-
-            // Update task table when debug log got update
-            UpdateTaskTable(GetSelectedAcc());
+            Log = log;
+            Log.LogUpdated += LogUpdate;
         }
 
         public void UpdateUc()
@@ -38,30 +29,32 @@ namespace TravBotSharp.Views
 
             taskListView.Items.Clear();
             logTextBox.Clear();
-            UpdateTaskTable(acc);
-
-            //new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
-            if (acc.Wb != null)
-            {
-                foreach (var log in acc.Wb.Logs) logTextBox.AppendText(log + "\n");
-            }
-
+            GetLogData();
             this.Focus();
         }
 
-        private void DebugUc_Enter(object sender, EventArgs e)
+        private void LogUpdate(object sender, TbsCore.Models.Logging.UpdateLogEventArgs e)
         {
-            var acc = GetSelectedAcc();
-            if (WbAvailable(acc)) acc.Wb.LogHandler += NewLogHandler;
+            // only update current account
+            if (e.Username == GetSelectedAcc().AccInfo.Nickname)
+            {
+                UpdateLogData();
+            }
         }
 
-        private void DebugUc_Leave(object sender, EventArgs e)
+        public void GetLogData()
         {
             var acc = GetSelectedAcc();
-            if (WbAvailable(acc)) acc.Wb.LogHandler -= NewLogHandler;
+            UpdateTaskTable(acc);
+            logTextBox.Text = Log.GetLog(acc.AccInfo.Nickname);
         }
 
-        private bool WbAvailable(Account acc) => acc?.Wb != null;
+        public void UpdateLogData()
+        {
+            var acc = GetSelectedAcc();
+            UpdateTaskTable(acc);
+            logTextBox.Text = $"{Log.GetLog(acc.AccInfo.Nickname)}\n{logTextBox.Text}";
+        }
 
         private void UpdateTaskTable(Account acc)
         {

@@ -133,8 +133,6 @@
             this.Controls.Add(this.taskListView);
             this.Name = "DebugUc";
             this.Size = new System.Drawing.Size(939, 629);
-            this.Enter += new System.EventHandler(this.DebugUc_Enter);
-            this.Leave += new System.EventHandler(this.DebugUc_Leave);
             this.ResumeLayout(false);
             this.PerformLayout();
 

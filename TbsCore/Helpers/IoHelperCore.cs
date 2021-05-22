@@ -218,6 +218,7 @@ namespace TravBotSharp.Files.Helpers
                 acc.Wb = new WebBrowserInfo();
                 await acc.Wb.InitSelenium(acc);
                 acc.TaskTimer = new TaskTimer(acc);
+                acc.Logger.Init(acc.AccInfo.Nickname);
 
                 AccountHelper.StartAccountTasks(acc);
             }

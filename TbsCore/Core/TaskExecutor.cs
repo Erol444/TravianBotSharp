@@ -86,6 +86,7 @@ namespace TravBotSharp.Files.Helpers
             try
             {
                 acc.Wb.Log($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
+                acc.Logger.Information($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
 
                 switch (await task.Execute(acc))
                 {
@@ -349,7 +350,7 @@ namespace TravBotSharp.Files.Helpers
         public static void RemoveTaskTypes(Account acc, Type type, Village vill = null, BotTask thisTask = null)
         {
             var removeTasks = acc.Tasks.Where(x => x.GetType() == type);
-            
+
             if (vill == null) // Only remove tasks for a specific village
             {
                 removeTasks = removeTasks.Where(x => x.Vill == vill);
@@ -361,7 +362,6 @@ namespace TravBotSharp.Files.Helpers
 
             // Remove all 'removeTasks' from the account task list
             removeTasks.ToList().ForEach(x => acc.Tasks.Remove(x));
-            
         }
 
         /// <summary>

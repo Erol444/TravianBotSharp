@@ -82,15 +82,6 @@
         "resolved": "2.10.0",
         "contentHash": "+QX0hmf37a0/OZLxM3wL7V6/ADvC1XihXN4Kq/p6d8lCPfgkRdiuhbWlMaFjR9Av0dy5F0+MBeDmDdRZN/YwQA=="
       },
-      "Serilog.Sinks.Async": {
-        "type": "Direct",
-        "requested": "[1.4.0, )",
-        "resolved": "1.4.0",
-        "contentHash": "OZDmB/qs/uXO9oLyLIY4h85b0sCoJnFmPqI3P79jLumViEKq2su7h70Vqs1cdqEftl2oWuBgkkS54fOK4PjP0w==",
-        "dependencies": {
-          "Serilog": "2.8.0"
-        }
-      },
       "Serilog.Sinks.File": {
         "type": "Direct",
         "requested": "[4.1.0, )",
@@ -101,6 +92,25 @@
           "System.IO.FileSystem": "4.0.1",
           "System.Text.Encoding.Extensions": "4.0.11",
           "System.Threading.Timer": "4.0.1"
+        }
+      },
+      "Serilog.Sinks.Map": {
+        "type": "Direct",
+        "requested": "[1.0.2, )",
+        "resolved": "1.0.2",
+        "contentHash": "JbPBAeD5hxUQw8TZg3FlOnqVsSu1269nvqFm5DQ7hc+AmsB+hItl+zMSDphMbPJXjL8KdpMRSWNkGi7zTKRmCA==",
+        "dependencies": {
+          "Serilog": "2.8.0"
+        }
+      },
+      "Serilog.Sinks.TextWriter": {
+        "type": "Direct",
+        "requested": "[2.1.0, )",
+        "resolved": "2.1.0",
+        "contentHash": "rgDZVwl68RqOFogKO27RbYLlwCQehjUQv4gimLT/Fd7dYV7XRVtWTp73BJphjWgVq4DP8trv1ta9Ork5H8oDXw==",
+        "dependencies": {
+          "Serilog": "2.0.0",
+          "System.IO": "4.1.0"
         }
       },
       "Discord.Net.Core": {
