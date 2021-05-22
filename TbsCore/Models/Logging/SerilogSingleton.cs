@@ -13,7 +13,7 @@ namespace TbsCore.Models.Logging
               .WriteTo.Map("Username", "Other", (name, wt) => wt.File($"./logs/log-{name}-.txt",
                                                                         rollingInterval: RollingInterval.Day,
                                                                         encoding: Encoding.Unicode,
-                                                                        outputTemplate: "{Timestamp:HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
+                                                                        outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
               .WriteTo.TbsSink(LogOutput)
               .CreateLogger();
         }

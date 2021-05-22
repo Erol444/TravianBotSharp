@@ -12,14 +12,19 @@ namespace TbsCore.Models.Logging
 
         public string GetLog(string username)
         {
-            return string.Join("\n", _logs[username]);
+            return _logs.ContainsKey(username) ? string.Join("", _logs[username]) : "";
         }
 
         public string GetLastLog(string username)
         {
-            return _logs[username].First.Value;
+            return _logs.ContainsKey(username) ? _logs[username].First.Value : "";
         }
 
+        /// <summary>
+        /// lock before use because as i read Dictionary is not theard safe
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="message"></param>
         public void Add(string username, string message)
         {
             _logs[username].AddFirst(message);
@@ -29,6 +34,11 @@ namespace TbsCore.Models.Logging
                 _logs[username].RemoveLast();
             }
             OnUpdateLog(username);
+        }
+
+        public void AddUsername(string username)
+        {
+            _logs.Add(username, new LinkedList<string>());
         }
 
         protected void OnUpdateLog(string username)

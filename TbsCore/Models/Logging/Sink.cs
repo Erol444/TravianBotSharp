@@ -34,7 +34,9 @@ namespace TbsCore.Models.Logging
                 _textFormatter.Format(logEvent, stringWriter);
                 LogEventPropertyValue username;
                 logEvent.Properties.TryGetValue("Username", out username);
-                _logs.Add(username.ToString(), stringWriter.ToString());
+                // toString problem, it turn {"username"} to \"username\"
+                // replace here to solve that
+                _logs.Add(username.ToString().Replace("\"", ""), stringWriter.ToString());
             }
         }
     }
@@ -44,7 +46,7 @@ namespace Serilog
 {
     public static class TBSLogExtensions
     {
-        private const string DefaultOutputTemplate = "{Timestamp:HH:mm:ss.fff zzz} [{Level}] {Message}{NewLine}{Exception}";
+        private const string DefaultOutputTemplate = "{Timestamp:HH:mm:ss} [{Level}] {Message}{NewLine}{Exception}";
 
         public static LoggerConfiguration TbsSink(
                   this LoggerSinkConfiguration loggerConfiguration,

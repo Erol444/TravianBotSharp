@@ -44,16 +44,32 @@ namespace TravBotSharp.Views
 
         public void GetLogData()
         {
+            if (logTextBox.InvokeRequired)
+            {
+                logTextBox.BeginInvoke(new Action(delegate
+                {
+                    GetLogData();
+                }));
+                return;
+            }
+
             var acc = GetSelectedAcc();
-            UpdateTaskTable(acc);
             logTextBox.Text = Log.GetLog(acc.AccInfo.Nickname);
         }
 
         public void UpdateLogData()
         {
+            if (logTextBox.InvokeRequired)
+            {
+                logTextBox.BeginInvoke(new Action(delegate
+                {
+                    GetLogData();
+                }));
+                return;
+            }
+
             var acc = GetSelectedAcc();
-            UpdateTaskTable(acc);
-            logTextBox.Text = $"{Log.GetLog(acc.AccInfo.Nickname)}\n{logTextBox.Text}";
+            logTextBox.Text = $"{Log.GetLog(acc.AccInfo.Nickname)}{logTextBox.Text}";
         }
 
         private void UpdateTaskTable(Account acc)

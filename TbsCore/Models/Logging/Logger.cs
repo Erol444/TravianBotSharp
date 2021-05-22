@@ -5,9 +5,9 @@ namespace TbsCore.Models.Logging
 {
     public class Logger
     {
-        private ILogger _logger;
+        private readonly ILogger _logger;
 
-        public void Init(string username)
+        public Logger(string username)
         {
             _logger = Log.ForContext("Username", username);
         }

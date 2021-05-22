@@ -8,6 +8,7 @@ using Discord.Webhook;
 using TbsCore.Database;
 using TbsCore.Helpers;
 using TbsCore.Models.Access;
+using TbsCore.Models.Logging;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
@@ -211,6 +212,8 @@ namespace TravBotSharp.Files.Helpers
         {
             if (acc.Wb == null)
             {
+                acc.Logger = new Logger(acc.AccInfo.Nickname);
+                SerilogSingleton.LogOutput.AddUsername(acc.AccInfo.Nickname);
                 // Create new lists of tasks
                 acc.Tasks = new List<BotTask>();
                 acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
@@ -218,7 +221,6 @@ namespace TravBotSharp.Files.Helpers
                 acc.Wb = new WebBrowserInfo();
                 await acc.Wb.InitSelenium(acc);
                 acc.TaskTimer = new TaskTimer(acc);
-                acc.Logger.Init(acc.AccInfo.Nickname);
 
                 AccountHelper.StartAccountTasks(acc);
             }
