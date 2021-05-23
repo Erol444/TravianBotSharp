@@ -33,7 +33,7 @@ namespace TbsCore.Tasks.LowLevel
 
             if (acc.Farming.TrainTroopsAfterFL) // For TTWars servers
             {
-                TaskExecutor.AddTask(acc, new TrainTroops()
+                acc.Tasks.Add(new TrainTroops()
                 {
                     ExecuteAt = DateTime.Now.AddSeconds(2),
                     Troop = Vill.Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,

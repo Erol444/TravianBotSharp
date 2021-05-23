@@ -26,7 +26,7 @@ namespace TbsCore.Tasks.SecondLevel
 
                 if (fl.Enabled)
                 {
-                    TaskExecutor.AddTask(acc, new SendFarmlist() { ExecuteAt = DateTime.Now.AddSeconds(totalSec), FL = fl });
+                    acc.Tasks.Add(new SendFarmlist() { ExecuteAt = DateTime.Now.AddSeconds(totalSec), FL = fl });
                     switch (acc.AccInfo.ServerVersion)
                     {
                         case Classificator.ServerVersionEnum.T4_4:
@@ -44,12 +44,12 @@ namespace TbsCore.Tasks.SecondLevel
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    TaskExecutor.AddTask(acc, new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(totalSec) });
+                    acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(totalSec) });
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:
                     var nextSend = rnd.Next(acc.Farming.MinInterval, acc.Farming.MaxInterval);
-                    TaskExecutor.AddTask(acc, new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(nextSend) });
+                    acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(nextSend) });
                     break;
             }
 

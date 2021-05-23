@@ -8,7 +8,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            TaskExecutor.RemoveTaskTypes(acc, this.GetType(), Vill, this);
+            acc.Tasks.Remove(this.GetType(), Vill, thisTask: this);
 
             if (!acc.Wb.CurrentUrl.Contains("/dorf2.php")) // Don't re-navigate
             {

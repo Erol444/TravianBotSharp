@@ -116,10 +116,8 @@ namespace TbsCore.Helpers
         public static void ReStartTroopTraining(Account acc, Village vill)
         {
             //remove training tasks
-            acc.Tasks?.RemoveAll(x =>
-                x.Vill == vill &&
-                x.GetType() == typeof(TrainTroops)
-                );
+            acc.Tasks.Remove(typeof(TrainTroops), vill);
+
             //start training tasks
             if (vill.Settings.BarracksTrain != TroopsEnum.None && !vill.Troops.ToResearch.Any(x => x == vill.Settings.BarracksTrain))
             {
@@ -128,7 +126,7 @@ namespace TbsCore.Helpers
                 {
                     barracksTrain = vill.Troops.CurrentlyTraining.Barracks.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                 }
-                TaskExecutor.AddTask(acc, new TrainTroops()
+                acc.Tasks.Add(new TrainTroops()
                 {
                     ExecuteAt = barracksTrain,
                     Great = false,
@@ -142,7 +140,7 @@ namespace TbsCore.Helpers
                     {
                         gbTrain = vill.Troops.CurrentlyTraining.GB.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                     }
-                    TaskExecutor.AddTask(acc, new TrainTroops()
+                    acc.Tasks.Add(new TrainTroops()
                     {
                         ExecuteAt = gbTrain,
                         Great = true,
@@ -159,7 +157,7 @@ namespace TbsCore.Helpers
                 {
                     stableTrain = vill.Troops.CurrentlyTraining.Stable.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                 }
-                TaskExecutor.AddTask(acc, new TrainTroops()
+                acc.Tasks.Add(new TrainTroops()
                 {
                     ExecuteAt = stableTrain,
                     Great = false,
@@ -173,7 +171,7 @@ namespace TbsCore.Helpers
                     {
                         gsTrain = vill.Troops.CurrentlyTraining.GS.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                     }
-                    TaskExecutor.AddTask(acc, new TrainTroops()
+                    acc.Tasks.Add(new TrainTroops()
                     {
                         ExecuteAt = gsTrain,
                         Great = true,
@@ -190,7 +188,7 @@ namespace TbsCore.Helpers
                 {
                     wsTrain = vill.Troops.CurrentlyTraining.Workshop.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                 }
-                TaskExecutor.AddTask(acc, new TrainTroops()
+                acc.Tasks.Add(new TrainTroops()
                 {
                     ExecuteAt = wsTrain,
                     Vill = vill,
@@ -260,7 +258,7 @@ namespace TbsCore.Helpers
                         vill.Troops.ToImprove.Add(troop);
                         //We have all buildings needed to research the troop. Do it.
                         var researchTask = new ResearchTroop() { Vill = vill, ExecuteAt = DateTime.Now };
-                        TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, researchTask);
+                        acc.Tasks.Add(researchTask, true, vill);
                     }
                     continue;
                 }
@@ -274,7 +272,7 @@ namespace TbsCore.Helpers
                         vill.Troops.ToImprove.Add(troop);
                         if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Smithy))
                         {
-                            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new ImproveTroop() { Vill = vill, ExecuteAt = DateTime.Now });
+                            acc.Tasks.Add(new ImproveTroop() { Vill = vill, ExecuteAt = DateTime.Now }, true, vill);
                         }
                     }
                     else vill.Troops.ToImprove.Remove(troop);

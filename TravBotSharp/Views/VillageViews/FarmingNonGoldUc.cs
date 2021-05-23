@@ -244,7 +244,7 @@ namespace TravBotSharp.Views
                     }
                 };
 
-                TaskExecutor.AddTask(acc, taskSendTroops);
+                acc.Tasks.Add(taskSendTroops);
             }
         }
 

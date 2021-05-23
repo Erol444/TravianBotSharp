@@ -23,7 +23,7 @@ namespace TbsCore.Models.AccModels
             Hero = new Hero();
             Hero.init();
 
-            Tasks = new List<BotTask>();
+            Tasks = new TaskList();
             Villages = new List<Village>();
 
             Access = new AccessInfo();
@@ -57,7 +57,7 @@ namespace TbsCore.Models.AccModels
         public WebBrowserInfo Wb { get; set; }
 
         [JsonIgnore]
-        public List<BotTask> Tasks { get; set; }
+        public TaskList Tasks;
 
         [JsonIgnore]
         public TaskTimer TaskTimer { get; set; }

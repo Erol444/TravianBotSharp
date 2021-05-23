@@ -211,10 +211,11 @@ namespace TbsCore.Helpers
         {
             if (acc.Wb == null)
             {
-                acc.Logger = new Logger(acc.AccInfo.Nickname);
                 SerilogSingleton.LogOutput.AddUsername(acc.AccInfo.Nickname);
-                // Create new lists of tasks
-                acc.Tasks = new List<BotTask>();
+
+                acc.Logger = new Logger(acc.AccInfo.Nickname);
+
+                acc.Tasks = new TaskList();
                 acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
 
                 acc.Wb = new WebBrowserInfo();

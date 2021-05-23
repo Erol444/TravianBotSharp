@@ -122,7 +122,7 @@ namespace TravBotSharp.Views
 
         private void button4_Click(object sender, EventArgs e)
         {
-            TaskExecutor.AddTask(GetSelectedAcc(), new FindVillageToSettle() { ExecuteAt = DateTime.Now });
+            GetSelectedAcc().Tasks.Add(new FindVillageToSettle() { ExecuteAt = DateTime.Now });
         }
     }
 }

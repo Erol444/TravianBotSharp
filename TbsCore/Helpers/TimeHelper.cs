@@ -87,30 +87,9 @@ namespace TbsCore.Helpers
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TimeSpan</returns>
-        public static TimeSpan NextPrioTask(Account acc, Tasks.BotTask.TaskPriority prio)
+        public static TimeSpan NextPrioTask(Account acc, TaskPriority prio)
         {
-            Tasks.BotTask firstTask = null;
-
-            switch (prio)
-            {
-                case TaskPriority.High:
-                    firstTask = acc.Tasks.FirstOrDefault(x =>
-                        x.Priority == TaskPriority.High
-                    );
-                    break;
-
-                case TaskPriority.Medium:
-                    firstTask = acc.Tasks.FirstOrDefault(x =>
-                        x.Priority == TaskPriority.High ||
-                        x.Priority == TaskPriority.Medium
-                    );
-                    break;
-
-                case TaskPriority.Low:
-                    firstTask = acc.Tasks.FirstOrDefault();
-                    break;
-            }
-
+            Tasks.BotTask firstTask = acc.Tasks.FindTaskBasedPriority(prio);
             if (firstTask == null) return TimeSpan.MaxValue;
 
             return (firstTask.ExecuteAt - DateTime.Now);

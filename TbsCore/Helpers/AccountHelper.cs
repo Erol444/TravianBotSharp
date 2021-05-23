@@ -61,34 +61,34 @@ namespace TbsCore.Helpers
             // Get the server info (on first running the account)
             if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) });
+                acc.Tasks.Add(new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) });
             }
 
             if (acc.AccInfo.Tribe == null)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new GetTribe() { ExecuteAt = DateTime.MinValue.AddHours(3) });
+                acc.Tasks.Add(new GetTribe() { ExecuteAt = DateTime.MinValue.AddHours(3) }, true);
             }
 
             //FL
-            if (acc.Farming.Enabled) TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
+            if (acc.Farming.Enabled) acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now }, true);
 
             // Bot sleep
-            TaskExecutor.AddTaskIfNotExists(acc, new Sleep()
+            acc.Tasks.Add(new Sleep()
             {
                 ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc),
                 AutoSleep = true
-            });
+            }, true);
 
             // Access change
             var nextAccessChange = TimeHelper.GetNextProxyChange(acc);
             if (nextAccessChange != TimeSpan.MaxValue)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new ChangeAccess() { ExecuteAt = DateTime.Now + nextAccessChange });
+                acc.Tasks.Add(new ChangeAccess() { ExecuteAt = DateTime.Now + nextAccessChange }, true);
             }
             //research / improve / train troops
             foreach (var vill in acc.Villages)
             {
-                //if (vill.Troops.Researched.Count == 0) TaskExecutor.AddTask(acc, new UpdateTroops() { ExecuteAt = DateTime.Now, vill = vill });
+                //if (vill.Troops.Researched.Count == 0) acc.Tasks.Add( new UpdateTroops() { ExecuteAt = DateTime.Now, vill = vill });
                 TroopsHelper.ReStartResearchAndImprovement(acc, vill);
                 TroopsHelper.ReStartTroopTraining(acc, vill);
                 BuildingHelper.ReStartBuilding(acc, vill);
@@ -98,7 +98,7 @@ namespace TbsCore.Helpers
                 VillageHelper.SetNextRefresh(acc, vill);
                 if (vill.FarmingNonGold.OasisFarmingEnabled)
                 {
-                    TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new AttackOasis() { Vill = vill });
+                    acc.Tasks.Add(new AttackOasis() { Vill = vill }, true, vill);
                 }
 
                 // Remove in later updates!
@@ -113,7 +113,7 @@ namespace TbsCore.Helpers
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
                 Random ran = new Random();
-                TaskExecutor.AddTask(acc, new HeroUpdateInfo()
+                acc.Tasks.Add(new HeroUpdateInfo()
                 {
                     ExecuteAt = DateTime.Now.AddMinutes(ran.Next(40, 80)),
                     Priority = Tasks.BotTask.TaskPriority.Low
@@ -126,11 +126,11 @@ namespace TbsCore.Helpers
             // If we don't want auto-celebrations, return
             if (vill.Expansion.Celebrations == CelebrationEnum.None) return;
 
-            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new Celebration()
+            acc.Tasks.Add(new Celebration()
             {
                 ExecuteAt = vill.Expansion.CelebrationEnd.AddSeconds(7),
                 Vill = vill
-            });
+            }, true, vill);
         }
     }
 }

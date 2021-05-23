@@ -154,7 +154,7 @@ namespace TbsCore.Tasks.LowLevel
                 // Check If all troops are filled in this vill before sending resources back to main village
                 if (TroopsHelper.EverythingFilled(acc, Vill))
                 {
-                    TaskExecutor.AddTask(acc, new SendResToMain() { Vill = this.Vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
+                    acc.Tasks.Add(new SendResToMain() { Vill = this.Vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
                 }
             }
 
@@ -173,14 +173,14 @@ namespace TbsCore.Tasks.LowLevel
                 }
                 else
                 {
-                    TaskExecutor.AddTask(acc, new UpdateDorf1()
+                    acc.Tasks.Add(new UpdateDorf1()
                     {
                         ExecuteAt = nextCycle,
                         Vill = this.Vill
                     });
                 }
 
-                TaskExecutor.AddTask(acc, new SendResFillTroops()
+                acc.Tasks.Add(new SendResFillTroops()
                 {
                     ExecuteAt = nextCycle.AddMilliseconds(1),
                     Vill = mainVill,
@@ -188,7 +188,7 @@ namespace TbsCore.Tasks.LowLevel
                     TrainTask = this
                 });
                 this.NextExecute = nextCycle.AddMinutes(30); //will get overwritten in sendResFillTroops
-                TaskExecutor.ReorderTaskList(acc);
+                acc.Tasks.ReOrder();
             }
             else
             {

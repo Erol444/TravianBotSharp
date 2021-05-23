@@ -50,7 +50,7 @@ namespace TbsCore.Tasks.LowLevel
             var executeNext = DateTime.Now.Add(dur).AddMilliseconds(10 * AccountHelper.Delay());
             if (Vill.Settings.AutoImprove)
             {
-                TaskExecutor.AddTask(acc, new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) });
+                acc.Tasks.Add(new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) });
             }
 
             RepeatTask(Vill, troop, executeNext);

@@ -47,22 +47,22 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
-            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new TrainSettlers()
+            acc.Tasks.Add(new TrainSettlers()
             {
                 ExecuteAt = DateTime.Now.AddHours(-2),
                 Vill = vill
-            });
+            }, true, vill);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
-            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new SendSettlers()
+            acc.Tasks.Add(new SendSettlers()
             {
                 ExecuteAt = DateTime.Now.AddHours(-2),
                 Vill = vill
-            });
+            }, true, vill);
         }
     }
 }

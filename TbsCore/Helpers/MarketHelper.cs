@@ -31,12 +31,11 @@ namespace TbsCore.Helpers
             if (!vill.Market.Settings.Configuration.Enabled) return DateTime.MaxValue;
 
             // There already is a sendResources BotTask for this village
-            var transitTask = (SendResources)acc.Tasks.FirstOrDefault(x =>
-                x.GetType() == typeof(SendResources) &&
-                ((SendResources)x).Coordinates == vill.Coordinates
-            );
+            var transitTask = (SendResources)acc.Tasks.FindTasks(typeof(SendResources)).FirstOrDefault(x => ((SendResources)x).Coordinates == vill.Coordinates);
+
             //vill.Market.Settings.Configuration.
             if (transitTask != null) return transitTask.Configuration.TransitArrival;
+
             //Less than 5min ago we already sent resources. Just to catch bugs.
             //if(vill.Market.)
 
@@ -81,7 +80,7 @@ namespace TbsCore.Helpers
                 Resources = sendRes
             };
 
-            TaskExecutor.AddTask(acc, sendResTask);
+            acc.Tasks.Add(sendResTask);
 
             //AddMinutes(1) since bot has to wait for the SendResources task and then
             //go to the marketplace and send resources
@@ -347,15 +346,15 @@ namespace TbsCore.Helpers
 
         public static void ReStartSendingToMain(Account acc, Village vill)
         {
-            acc.Tasks.RemoveAll(x => x.GetType() == typeof(SendResToMain) && x.Vill == vill);
+            acc.Tasks.Remove(typeof(SendResToMain), vill);
 
             if (vill.Settings.Type == VillType.Support && vill.Settings.SendRes)
             {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new SendResToMain()
+                acc.Tasks.Add(new SendResToMain()
                 {
                     ExecuteAt = DateTime.Now,
                     Vill = vill
-                });
+                }, true, vill);
             }
         }
     }

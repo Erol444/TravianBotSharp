@@ -17,18 +17,18 @@ namespace TbsCore.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var wb = acc.Wb.Driver;
-            TaskExecutor.AddTaskIfNotExists(acc, new TransitToMainAcc
+            acc.Tasks.Add(new TransitToMainAcc
             {
                 coords = this.coords,
                 delay = this.delay,
                 ExecuteAt = DateTime.Now.AddSeconds(delay),
                 Vill = this.Vill
-            });
+            }, true);
 
             await Task.Delay(AccountHelper.Delay());
 
             //Resources res = new Resources() { Wood = 50000000, Clay = 50000000, Iron = 50000000, Crop = 50000000 };
-            TaskExecutor.AddTask(acc, new SendResources() { ExecuteAt = DateTime.Now, Coordinates = coords, Vill = this.Vill });
+            acc.Tasks.Add(new SendResources() { ExecuteAt = DateTime.Now, Coordinates = coords, Vill = this.Vill });
 
             return TaskRes.Executed;
         }

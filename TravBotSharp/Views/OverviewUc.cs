@@ -231,12 +231,12 @@ namespace TravBotSharp.Views
             //Change name of village/s
             if (0 < changeVillNames.Count && acc.Tasks != null)
             {
-                TaskExecutor.AddTaskIfNotExists(acc,
+                acc.Tasks.Add(
                         new ChangeVillageName()
                         {
                             ExecuteAt = DateTime.Now,
                             ChangeList = changeVillNames
-                        });
+                        }, true);
             }
         }
 

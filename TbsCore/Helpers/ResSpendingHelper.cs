@@ -50,7 +50,7 @@ namespace TbsCore.Helpers
             task.Task.Stage = BotTask.TaskStage.Start;
             task.Task.ExecuteAt = DateTime.Now.AddHours(-1);
 
-            TaskExecutor.AddTask(acc, task.Task);
+            acc.Tasks.Add(task.Task);
             vill.UnfinishedTasks.Remove(task);
             return true;
         }

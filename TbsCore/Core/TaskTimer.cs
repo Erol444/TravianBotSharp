@@ -46,9 +46,9 @@ namespace TbsCore.Models.AccModels
                 if (acc.Tasks.Count == 0) return; //No tasks
 
                 // Another task is already in progress. wait
-                if (acc.Tasks.Any(x => x.Stage != TaskStage.Start)) return;
+                if (acc.Tasks.IsTaskExcuting()) return;
 
-                var tasks = acc.Tasks.Where(x => x.ExecuteAt <= DateTime.Now).ToList();
+                var tasks = acc.Tasks.GetTasksReady();
                 if (tasks.Count == 0)
                 {
                     NoTasks(acc);
@@ -98,7 +98,7 @@ namespace TbsCore.Models.AccModels
             {
                 task.ExecuteAt = DateTime.Now;
                 task.Priority = TaskPriority.Low;
-                TaskExecutor.AddTask(acc, task);
+                acc.Tasks.Add(task);
             }
         }
 

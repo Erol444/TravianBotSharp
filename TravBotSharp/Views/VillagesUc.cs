@@ -107,7 +107,7 @@ namespace TravBotSharp.Views
 
         private void RefreshVillage(Account acc, Village vill) // Refresh village
         {
-            TaskExecutor.AddTask(acc, new UpdateVillage()
+            acc.Tasks.Add(new UpdateVillage()
             {
                 ExecuteAt = DateTime.Now.AddHours(-1),
                 Vill = vill,

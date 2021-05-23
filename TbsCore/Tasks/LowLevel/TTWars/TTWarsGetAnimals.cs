@@ -15,7 +15,7 @@ namespace TbsCore.Tasks.LowLevel
 
             Random rnd = new Random();
             int sec = rnd.Next(725, 740);
-            TaskExecutor.AddTask(acc, new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc) });
+            acc.Tasks.Add(new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc) });
 
             //Open payment wizard on tab Plus features (where you can buy stuff with gold)
             var script = "window.fireEvent('startPaymentWizard', {data:{activeTab: 'paymentFeatures'}});";

@@ -23,7 +23,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);
                 // We have updated all villages at the same time. No need to continue.
-                acc.Tasks.RemoveAll(x => x.GetType() == typeof(UpdateTroops));
+                acc.Tasks.Remove(typeof(UpdateTroops));
                 return TaskRes.Executed;
             }
 

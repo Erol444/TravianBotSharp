@@ -77,14 +77,14 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             int sec = 1;
-            TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec) });
-            TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
-            TaskExecutor.AddTask(acc, new TrainTroops()
+            acc.Tasks.Add(new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec) });
+            acc.Tasks.Add(new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
+            acc.Tasks.Add(new TrainTroops()
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec + 11),
                 Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,
             });
-            TaskExecutor.AddTask(acc, new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec + 33) });
+            acc.Tasks.Add(new TTWarsGetAnimals() { ExecuteAt = DateTime.Now.AddSeconds(sec + 33) });
         }
 
         private void checkBox4_CheckedChanged(object sender, EventArgs e) //auto +25% and plus acc activator
@@ -180,11 +180,11 @@ namespace TravBotSharp.Views
             numericUpDown5.Value = 0;
             if (expandTimes != 0)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new TTWarsExpandStorage() { ExecuteAt = DateTime.Now, Times = expandTimes });
+                acc.Tasks.Add(new TTWarsExpandStorage() { ExecuteAt = DateTime.Now, Times = expandTimes }, true);
             }
             else if (seconds != 0)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new TTWarsExpandStorage() { ExecuteAt = DateTime.Now, Seconds = seconds });
+                acc.Tasks.Add(new TTWarsExpandStorage() { ExecuteAt = DateTime.Now, Seconds = seconds }, true);
             }
         }
 
@@ -192,9 +192,9 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             int sec = 1;
-            TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec) });
-            TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
-            TaskExecutor.AddTask(acc, new TrainTroops() { ExecuteAt = DateTime.Now.AddSeconds(sec + 11), Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
+            acc.Tasks.Add(new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec) });
+            acc.Tasks.Add(new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
+            acc.Tasks.Add(new TrainTroops() { ExecuteAt = DateTime.Now.AddSeconds(sec + 11), Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero });
         }
 
         private void fillInAdvanceUpDown_ValueChanged(object sender, EventArgs e)
@@ -354,12 +354,12 @@ namespace TravBotSharp.Views
 
         private void button9_Click(object sender, EventArgs e) // Change account access
         {
-            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new ChangeAccess()
+            GetSelectedAcc().Tasks.Add(new ChangeAccess()
             {
                 ExecuteAt = DateTime.Now,
                 WaitSecMin = 0,
                 WaitSecMax = 1
-            });
+            }, true);
         }
 
         private void button11_Click(object sender, EventArgs e) => MoveResPrio(true);

@@ -157,11 +157,11 @@ namespace TbsCore.Helpers
             var ran = new Random();
             if (time == null) time = DateTime.Now.AddMinutes(ran.Next(vill.Settings.RefreshMin, vill.Settings.RefreshMax));
 
-            var task = acc.Tasks.FirstOrDefault(x => x.Vill == vill && x.GetType() == typeof(UpdateDorf1));
+            var task = acc.Tasks.FindTask(typeof(UpdateDorf1), vill);
 
             if (task == null)
             {
-                TaskExecutor.AddTask(acc, new UpdateDorf1
+                acc.Tasks.Add(new UpdateDorf1
                 {
                     Vill = vill,
                     ExecuteAt = time ?? default,
@@ -171,12 +171,12 @@ namespace TbsCore.Helpers
             }
 
             task.ExecuteAt = time ?? default;
-            TaskExecutor.ReorderTaskList(acc);
+            acc.Tasks.ReOrder();
         }
 
         public static DateTime GetNextRefresh(Account acc, Village vill)
         {
-            var task = acc.Tasks.FirstOrDefault(x => x.Vill == vill && x.GetType() == typeof(UpdateDorf1));
+            var task = acc.Tasks.FindTask(typeof(UpdateDorf1), vill);
             return task.NextExecute ?? DateTime.MaxValue;
         }
     }

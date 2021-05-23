@@ -137,11 +137,11 @@ namespace TravBotSharp.Views
             //Change name of village/s
             if (changeVillNames.Count > 0)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new ChangeVillageName()
+                acc.Tasks.Add(new ChangeVillageName()
                 {
                     ExecuteAt = DateTime.Now,
                     ChangeList = changeVillNames
-                });
+                }, true);
             }
         }
 
@@ -203,13 +203,14 @@ namespace TravBotSharp.Views
             }
 
             node.ExecuteAt = DateTime.MinValue;
-            TaskExecutor.AddTaskIfNotExists(acc, node);
+            acc.Tasks.Add(node, true);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Not yet implemented");
             return;
+            /*
             var acc = GetSelectedAcc();
             var coords = new Coordinates(-52, -59);
 
@@ -240,7 +241,8 @@ namespace TravBotSharp.Views
                 SendWaveModels = waves.ToList(),
                 Priority = TbsCore.Tasks.BotTask.TaskPriority.High
             };
-            TaskExecutor.AddTask(acc, waveTask);
+            acc.Tasks.Add(waveTask);
+            */
         }
     }
 }

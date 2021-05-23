@@ -170,16 +170,13 @@ namespace TbsCore.Helpers
         {
             RemoveCompletedTasks(vill, acc);
             //remove ongoing building task for this village
-            acc.Tasks.RemoveAll(x =>
-                x.Vill == vill &&
-                x.GetType() == typeof(UpgradeBuilding)
-                );
+            acc.Tasks.Remove(typeof(UpgradeBuilding), vill);
 
             if (vill.Build.Tasks.Count == 0) return; //No build tasks
 
             var (_, nextExecution) = UpgradeBuildingHelper.NextBuildingTask(acc, vill);
 
-            TaskExecutor.AddTask(acc, new UpgradeBuilding()
+            acc.Tasks.Add(new UpgradeBuilding()
             {
                 Vill = vill,
                 ExecuteAt = nextExecution,
@@ -190,10 +187,7 @@ namespace TbsCore.Helpers
         {
             if (vill.Build.DemolishTasks.Count <= 0) return;
 
-            TaskExecutor.AddTaskIfNotExistInVillage(acc,
-                vill,
-                new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) }
-                );
+            acc.Tasks.Add(new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) }, true, vill);
         }
 
         public static bool BuildingRequirementsAreMet(BuildingEnum building, Village vill, TribeEnum tribe) //check if user can construct this building

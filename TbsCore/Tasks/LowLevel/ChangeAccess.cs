@@ -27,7 +27,7 @@ namespace TbsCore.Tasks.LowLevel
             await acc.Wb.InitSelenium(acc);
 
             // Remove all other ChangeAccess tasks
-            TaskExecutor.RemoveSameTasks(acc, this);
+            acc.Tasks.Remove(typeof(ChangeAccess), thisTask: this);
 
             var nextProxyChange = TimeHelper.GetNextProxyChange(acc);
             if (nextProxyChange != TimeSpan.MaxValue)

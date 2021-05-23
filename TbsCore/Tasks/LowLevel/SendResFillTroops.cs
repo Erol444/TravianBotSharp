@@ -50,7 +50,7 @@ namespace TbsCore.Tasks.LowLevel
             if (ResourcesHelper.IsEnoughRes(targetVillStoredRes, neededRes))
             {
                 this.TrainTask.ExecuteAt = DateTime.Now;
-                TaskExecutor.ReorderTaskList(acc);
+                acc.Tasks.ReOrder();
                 return TaskRes.Executed;
             }
 
@@ -63,7 +63,7 @@ namespace TbsCore.Tasks.LowLevel
 
             //train the troops in the target village after we send the needed
             this.TrainTask.ExecuteAt = DateTime.Now.Add(transitTimespan).AddSeconds(5);
-            TaskExecutor.ReorderTaskList(acc);
+            acc.Tasks.ReOrder();
 
             //TODO: Update marketplace sending
             return TaskRes.Executed;

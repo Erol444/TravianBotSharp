@@ -47,7 +47,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 //Execute next upgrade task after currently building
                 this.NextExecute = Vill.Build.CurrentlyBuilding.First().Duration.AddSeconds(3);
-                TaskExecutor.ReorderTaskList(acc);
+                acc.Tasks.ReOrder();
                 return TaskRes.Executed;
             }
 
@@ -272,14 +272,14 @@ namespace TbsCore.Tasks.LowLevel
                 acc.NewVillages.AutoSettleNewVillages &&
                 Vill.Troops.Settlers == 0)
             {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, Vill,
+                acc.Tasks.Add(
                     new TrainSettlers()
                     {
                         ExecuteAt = cbResidence.Duration.AddSeconds(5),
                         Vill = Vill,
                         // For high speed servers, you want to train settlers asap
                         Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
-                    });
+                    }, true, Vill);
             }
 
             // Check if the task is completed

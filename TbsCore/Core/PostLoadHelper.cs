@@ -78,7 +78,7 @@ namespace TbsCore.Helpers
                         villExpansionReady != null)
                     {
                         villExpansionReady.Expansion.ExpansionAvailable = false;
-                        TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady });
+                        acc.Tasks.Add( new SendSettlers() { ExecuteAt = DateTime.Now, Vill = villExpansionReady }, true);
                     }
                 },
                 // 4: claim Beginner Quests:
@@ -90,7 +90,7 @@ namespace TbsCore.Helpers
                         acc.Wb.Html.GetElementbyId("mentorTaskList") == null &&
                         acc.Quests.ClaimBeginnerQuests)
                     {
-                        TaskExecutor.AddTaskIfNotExists(acc, new ClaimBeginnerTask2021() { ExecuteAt = DateTime.Now});
+                        acc.Tasks.Add(new ClaimBeginnerTask2021() { ExecuteAt = DateTime.Now}, true);
                         return;
                     }
 
@@ -100,12 +100,12 @@ namespace TbsCore.Helpers
                         acc.Quests.ClaimBeginnerQuests
                         )
                     {
-                        TaskExecutor.AddTaskIfNotExists(acc, new ClaimBeginnerTask()
+                        acc.Tasks.Add( new ClaimBeginnerTask()
                         {
                             ExecuteAt = DateTime.Now,
                             QuestToClaim = claimQuest,
                             Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim)
-                        });
+                        }, true);
                     }
                 },
                 // 5: claim Daily Quest:
@@ -115,11 +115,11 @@ namespace TbsCore.Helpers
                     RightBarParser.CheckDailyQuest(html) &&
                     acc.Quests.ClaimDailyQuests)
                     {
-                        TaskExecutor.AddTaskIfNotExists(acc, new ClaimDailyTask()
+                        acc.Tasks.Add( new ClaimDailyTask()
                         {
                             ExecuteAt = DateTime.Now,
                             Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim)
-                        });
+                        }, true);
                     }
                 },
                 // 6: Parse gold/silver
@@ -139,11 +139,11 @@ namespace TbsCore.Helpers
                         && !acc.Wb.CurrentUrl.Contains("messages.php")
                         && acc.Settings.AutoReadIgms)
                     {
-                        TaskExecutor.AddTaskIfNotExists(acc, new ReadMessage()
+                        acc.Tasks.Add(new ReadMessage()
                         {
                             ExecuteAt = DateTime.Now.AddSeconds(ran.Next(10, 600)), // Read msg in next 10-600 seconds
                             Priority = TaskPriority.Low
-                        });
+                        }, true);
                     }
                 },
                 // 9: JS resources
@@ -176,18 +176,18 @@ namespace TbsCore.Helpers
                         vill.Market.Npc.Enabled &&
                         (vill.Market.Npc.NpcIfOverflow || !MarketHelper.NpcWillOverflow(vill)))
                     {  //npc crop!
-                        TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new NPC()
+                        acc.Tasks.Add(new NPC()
                         {
                             ExecuteAt = DateTime.MinValue,
                             Vill = vill
-                        });
+                        }, true, vill);
                     }
                 },
                 // 14: TTwars plus and boost
                 () => {
                     if (acc.Settings.AutoActivateProductionBoost && CheckProductionBoost(acc))
                     {
-                        TaskExecutor.AddTask(acc, new TTWarsPlusAndBoost() {
+                        acc.Tasks.Add( new TTWarsPlusAndBoost() {
                             ExecuteAt = DateTime.Now.AddSeconds(1)
                         });
                     }
@@ -201,11 +201,11 @@ namespace TbsCore.Helpers
                         vill.Build.CurrentlyBuilding.LastOrDefault().Duration
                             >= DateTime.Now.AddMinutes(vill.Build.InstaBuildMinutes))
                     {
-                        TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new InstaUpgrade()
+                        acc.Tasks.Add(  new InstaUpgrade()
                         {
                             Vill = vill,
                             ExecuteAt = DateTime.Now.AddHours(-1)
-                        });
+                        }, true, vill);
                     }
                 },
                 // 16: Adventure num
@@ -226,29 +226,29 @@ namespace TbsCore.Helpers
                     // Update adventures
                     if(homeVill == null)
                     {
-                        TaskExecutor.AddTask(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+                        acc.Tasks.Add( new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
                     }
                     else if (heroReady &&
                         (homeVill.Build.Buildings.Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level)) &&
                         (acc.Hero.AdventureNum != acc.Hero.Adventures.Count() || HeroHelper.AdventureInRange(acc)))
                     {
                         // Update adventures
-                        TaskExecutor.AddTaskIfNotExists(acc, new StartAdventure() { ExecuteAt = DateTime.Now.AddSeconds(10) });
+                        acc.Tasks.Add(  new StartAdventure() { ExecuteAt = DateTime.Now.AddSeconds(10) }, true);
                     }
                     if (acc.Hero.AdventureNum == 0 && acc.Hero.Settings.BuyAdventures) //for UNL servers, buy adventures
                     {
-                        TaskExecutor.AddTaskIfNotExists(acc, new TTWarsBuyAdventure() { ExecuteAt = DateTime.Now.AddSeconds(5) });
+                        acc.Tasks.Add(  new TTWarsBuyAdventure() { ExecuteAt = DateTime.Now.AddSeconds(5) }, true);
                     }
                     if (acc.Hero.Status == Hero.StatusEnum.Dead && acc.Hero.Settings.AutoReviveHero) //if hero is dead, revive him
                     {
-                        TaskExecutor.AddTaskIfNotExists(acc, new ReviveHero() {
+                        acc.Tasks.Add(  new ReviveHero() {
                             ExecuteAt = DateTime.Now.AddSeconds(5),
                             Vill = AccountHelper.GetHeroReviveVillage(acc)
-                        });
+                        }, true);
                     }
                     if (HeroParser.LeveledUp(html, acc.AccInfo.ServerVersion) && acc.Hero.Settings.AutoSetPoints)
                     {
-                        TaskExecutor.AddTaskIfNotExists(acc, new HeroSetPoints() { ExecuteAt = DateTime.Now });
+                        acc.Tasks.Add(  new HeroSetPoints() { ExecuteAt = DateTime.Now }, true);
                     }
                 },
                 // 20: build more storage
@@ -259,7 +259,7 @@ namespace TbsCore.Helpers
                     acc.Wb.Html.GetElementbyId("sidebarBoxInfobox").Descendants("button").Any(x=>x.GetAttributeValue("value", "") == "Extend"))
                     {
                         // infoType_25 ?
-                        TaskExecutor.AddTaskIfNotExists(acc, new ExtendProtection() { ExecuteAt = DateTime.Now });
+                        acc.Tasks.Add(  new ExtendProtection() { ExecuteAt = DateTime.Now }, true);
                     }
                 }
             };

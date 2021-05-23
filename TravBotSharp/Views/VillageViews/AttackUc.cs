@@ -53,7 +53,7 @@ namespace TravBotSharp.Views
 
             currentlyBuildinglistView.Items.Clear();
             if (acc.Tasks == null) return;
-            var sendWaveTasks = acc.Tasks.Where(x => x.GetType() == typeof(SendWaves));
+            var sendWaveTasks = acc.Tasks.FindTasks(typeof(SendWaves));
             if (sendWaveTasks == null) return;
             foreach (var sendWaveTask in sendWaveTasks)
             {
@@ -135,7 +135,7 @@ namespace TravBotSharp.Views
                     SendWaveModels = wave.ToList(),
                     Priority = TbsCore.Tasks.BotTask.TaskPriority.High
                 };
-                TaskExecutor.AddTask(GetSelectedAcc(), waveTask);
+                GetSelectedAcc().Tasks.Add(waveTask);
             }
             sendWaves.Clear();
             UpdateUc();
@@ -190,7 +190,7 @@ namespace TravBotSharp.Views
 
         private void button3_Click(object sender, EventArgs e)
         {
-            TaskExecutor.AddTask(GetSelectedAcc(), new AttackOasis());
+            GetSelectedAcc().Tasks.Add(new AttackOasis());
         }
 
         #region Oasis farming callbacks
@@ -203,11 +203,11 @@ namespace TravBotSharp.Views
 
             if (oasisEnabled.Checked)
             {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new AttackOasis() { Vill = vill });
+                acc.Tasks.Add(new AttackOasis() { Vill = vill }, true, vill);
             }
             else // Remove all AttackOasis tasks for this village
             {
-                TaskExecutor.RemoveTaskTypes(acc, typeof(AttackOasis), vill);
+                acc.Tasks.Remove(typeof(AttackOasis), vill);
             }
         }
 

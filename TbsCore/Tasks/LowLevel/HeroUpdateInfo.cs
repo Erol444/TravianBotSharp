@@ -13,8 +13,6 @@ namespace TbsCore.Tasks.LowLevel
 
             HeroHelper.ParseHeroPage(acc);
 
-            TaskExecutor.RemoveSameTasks(acc, typeof(HeroUpdateInfo), this);
-
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
                 var ran = new Random();
@@ -22,8 +20,8 @@ namespace TbsCore.Tasks.LowLevel
                 this.NextExecute = DateTime.Now.AddMinutes(
                     ran.Next(acc.Hero.Settings.MinUpdate, acc.Hero.Settings.MaxUpdate)
                     );
-                TaskExecutor.RemoveSameTasks(acc, this);
             }
+            acc.Tasks.Remove(typeof(HeroUpdateInfo), thisTask: this);
 
             return TaskRes.Executed;
         }

@@ -39,7 +39,7 @@ namespace TbsCore.Tasks.SecondLevel
                         y = (int)Parser.RemoveNonNumeric(xy[1].Split('=')[1])
                     };
 
-                    TaskExecutor.AddTask(acc, new AddFarm()
+                    acc.Tasks.Add(new AddFarm()
                     {
                         ExecuteAt = DateTime.Now.AddMilliseconds(addedFarms),
                         Farm = new TbsCore.Models.VillageModels.Farm()

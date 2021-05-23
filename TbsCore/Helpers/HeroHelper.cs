@@ -63,14 +63,14 @@ namespace TbsCore.Helpers
                     GetHeroItemTier(equipWith.Item) > currentTier &&
                     acc.Hero.Status == Hero.StatusEnum.Home)
                 {
-                    TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip()
+                    acc.Tasks.Add(new HeroEquip()
                     {
                         ExecuteAt = DateTime.Now,
                         Items = new List<(Classificator.HeroItemEnum, int)>()
                         {
                             (equipWith.Item, 0)
                         }
-                    });
+                    }, true);
                 }
             }
         }
@@ -206,7 +206,7 @@ namespace TbsCore.Helpers
                     equipTier <= tier) return false; // We already have the correct helmet
             }
 
-            TaskExecutor.AddTaskIfNotExists(acc, new HeroEquip()
+            acc.Tasks.Add(new HeroEquip()
             {
                 ExecuteAt = acc.Hero.Status == Hero.StatusEnum.Home ? DateTime.Now : acc.Hero.HeroArrival,
                 Items = new List<(Classificator.HeroItemEnum, int)>()
@@ -214,7 +214,7 @@ namespace TbsCore.Helpers
                     (equipWith.Item, 0)
                 },
                 NextTask = task
-            });
+            }, true);
             return true;
         }
 

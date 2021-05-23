@@ -209,7 +209,7 @@ namespace TbsCore.Helpers
                 Vill = vill
             };
 
-            TaskExecutor.AddTask(acc, heroEquip);
+            acc.Tasks.Add(heroEquip);
 
             // A BuildTask needed the resources. If it was auto-build res fields task, make a new
             // general building task - so resources actually get used for intended building upgrade

@@ -28,7 +28,7 @@ namespace TbsCore.Tasks.LowLevel
             // increase number of attacks per page in preferences, then repeat CheckAttacks
             if (3 <= pageCnt && attacks.Count < 50)
             {
-                TaskExecutor.AddTask(acc, new EditPreferences()
+                acc.Tasks.Add(new EditPreferences()
                 {
                     TroopsPerPage = 99, // Max
                     ExecuteAt = DateTime.MinValue.AddHours(1),

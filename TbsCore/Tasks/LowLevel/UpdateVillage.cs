@@ -16,8 +16,8 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            TaskExecutor.RemoveTaskTypes(acc, typeof(UpdateDorf1), Vill, this);
-            TaskExecutor.RemoveTaskTypes(acc, typeof(UpdateDorf2), Vill, this);
+            acc.Tasks.Remove(typeof(UpdateDorf1), Vill, thisTask: this);
+            acc.Tasks.Remove(typeof(UpdateDorf2), Vill, thisTask: this);
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php"); // Update dorf1
             await Task.Delay(AccountHelper.Delay());
@@ -58,7 +58,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);
                 // We have updated all villages at the same time. No need to continue.
-                acc.Tasks.RemoveAll(x => x.GetType() == typeof(UpdateTroops));
+                acc.Tasks.Remove(typeof(UpdateTroops));
                 return;
             }
 

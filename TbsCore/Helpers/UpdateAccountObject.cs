@@ -35,7 +35,7 @@ namespace TbsCore.Helpers
                     foundVill.UnderAttack &&
                     oldVill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
                 {
-                    TaskExecutor.AddTaskIfNotExistInVillage(acc, oldVill, new CheckAttacks() { Vill = oldVill, Priority = Tasks.BotTask.TaskPriority.High });
+                    acc.Tasks.Add(new CheckAttacks() { Vill = oldVill, Priority = Tasks.BotTask.TaskPriority.High }, true, oldVill);
                 }
 
                 oldVill.UnderAttack = foundVill.UnderAttack;
@@ -70,12 +70,12 @@ namespace TbsCore.Helpers
             acc.Villages.Add(vill);
 
             // Update the village
-            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateVillage()
+            acc.Tasks.Add(new UpdateVillage()
             {
                 ExecuteAt = DateTime.Now.AddHours(-2),
                 Vill = vill,
                 ImportTasks = true
-            });
+            }, true, vill);
 
             DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);
 
@@ -108,12 +108,12 @@ namespace TbsCore.Helpers
                     newVillageFromList.Name = NewVillageHelper.GenerateName(acc);
                 }
                 acc.NewVillages.Locations.Remove(newVillageFromList);
-                TaskExecutor.AddTaskIfNotExists(acc,
+                acc.Tasks.Add(
                     new ChangeVillageName()
                     {
                         ExecuteAt = DateTime.Now,
                         ChangeList = new List<(int, string)> { (vill.Id, newVillageFromList.Name) }
-                    });
+                    }, true);
             }
         }
     }

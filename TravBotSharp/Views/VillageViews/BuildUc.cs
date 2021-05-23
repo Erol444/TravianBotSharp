@@ -256,7 +256,7 @@ namespace TravBotSharp.Views
                 };
                 vill.Build.DemolishTasks.Add(dt);
                 //TODO: ReStartDemolish
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { Vill = vill });
+                acc.Tasks.Add(new DemolishBuilding() { Vill = vill }, true, vill);
             }
             UpdateUc();
         }
@@ -501,12 +501,12 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
 
-            TaskExecutor.AddTask(acc, new UpdateDorf1()
+            acc.Tasks.Add(new UpdateDorf1()
             {
                 Vill = vill,
                 NextExecute = DateTime.Now
             });
-            TaskExecutor.AddTask(acc, new UpdateDorf2()
+            acc.Tasks.Add(new UpdateDorf2()
             {
                 Vill = vill,
                 NextExecute = DateTime.Now
