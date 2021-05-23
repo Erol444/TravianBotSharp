@@ -1,24 +1,26 @@
-name: CI-develop
+name: PreRelease
 
 on:
-  push:
-    branches: [ develop ]
+  pull_request:
+    types: [closed]
   workflow_dispatch:
-  
+    
 jobs:
   version:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.semvers.outputs.patch }}
+      changelog: ${{ steps.Changelog.outputs.changelog }}
     steps:
       - uses: actions/checkout@v2
       
-      - run: git fetch --prune --unshallow --tags
+      - run: git fetch --prune --unshallow --tags                                           
       
       - uses: docker://agilepathway/pull-request-label-checker:latest
         with:
           one_of: pre-release
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}       
 
       - name: 'Get Previous tag'
         id: previoustag
@@ -28,7 +30,8 @@ jobs:
         id: semvers
         uses: "WyriHaximus/github-action-next-semvers@v1"
         with:
-          version: ${{ steps.previoustag.outputs.tag }}
+          version: ${{ steps.previoustag.outputs.tag }}  
+            
       - name: 'Create changelog'
         id: Changelog
         run: |
@@ -38,7 +41,8 @@ jobs:
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"
           echo "$changelog"
-          echo "::set-output name=changelog::$changelog"                         
+          echo "::set-output name=changelog::$changelog"
+
   build:
     runs-on: windows-latest
     needs: version
@@ -53,7 +57,7 @@ jobs:
       
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
-       
+
       - name: Get cache
         uses: actions/cache@v2
         with:
@@ -65,11 +69,12 @@ jobs:
           key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
           restore-keys: |
               ${{ runner.os }}-nuget-
+
       - name: Restore Packages
         run: |
           nuget restore TbsCore/TbsCore.csproj -PackagesDirectory packages
           nuget restore TravBotSharp/TbsWinForms.csproj -PackagesDirectory packages
-        
+
       - name: Build Bot
         run: |
           msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true /p:BUILD_NUMBER=${{needs.version.outputs.version}}.0
@@ -80,6 +85,7 @@ jobs:
           name: TBS-prerelease
           path: TravBotSharp\bin\Release
           if-no-files-found: error
+
   prerelease:
     runs-on: ubuntu-latest
     needs: [build, version]
@@ -96,7 +102,7 @@ jobs:
         with:
             files: TravBotSharp/bin/Release
             dest: TBS-${{needs.version.outputs.version}}.zip
-          
+      
       - name: Create pre release
         uses: ncipollo/release-action@v1
         with:
@@ -107,8 +113,9 @@ jobs:
           body: |
             **Changelog**: 
             ${{needs.version.outputs.changelog}}
+            
           artifacts: TBS-${{needs.version.outputs.version}}.zip
-          token: ${{ secrets.GITHUB_TOKEN }} 
+          token: ${{ secrets.GITHUB_TOKEN }}
   Discord:
     runs-on: ubuntu-latest
     needs: [prerelease, version]
@@ -117,15 +124,14 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_PRE_BOT }}
-          nodetail: true
           title: New pre-release
+          nodetail: true          
           description: |
-              **Version**: `TBS-${{needs.version.outputs.version}}`
+              Version `TBS-${{needs.version.outputs.version}}`
               Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
+              
               **Changelog**:
               ${{needs.version.outputs.changelog}}
-              
-              
   Clear:
     runs-on: ubuntu-latest
     needs: prerelease
@@ -134,6 +140,3 @@ jobs:
         uses: geekyeggo/delete-artifact@v1
         with:
           name: TBS-prerelease
-            
-      
-      
