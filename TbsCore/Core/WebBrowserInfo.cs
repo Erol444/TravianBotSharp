@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.Helpers.Extension;
 
 namespace TbsCore.Models.AccModels
 {
@@ -66,7 +67,10 @@ namespace TbsCore.Models.AccModels
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    var extensionPath = ProxyHelper.CreateExtension(username, server, access);
+                    var extensionPath = ProxyAuthentication.CreateExtension(username, server, access);
+                    options.AddExtension(extensionPath);
+                    // add WebRTC Leak
+                    extensionPath = DisableWebRTCLeak.CreateExtension(username, server, access);
                     options.AddExtension(extensionPath);
                 }
 
@@ -100,6 +104,7 @@ namespace TbsCore.Models.AccModels
             // Hide command prompt
             chromeService = ChromeDriverService.CreateDefaultService();
             chromeService.HideCommandPromptWindow = true;
+
             try
             {
                 if (acc.Settings.OpenMinimized)
