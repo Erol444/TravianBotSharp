@@ -1,7 +1,7 @@
 ﻿using System;
 using TbsCore.Models.MapModels;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Helpers;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Models.SendTroopsModels
 {
@@ -24,6 +24,7 @@ namespace TbsCore.Models.SendTroopsModels
         /// Catapult targets 1 and 2
         /// </summary>
         public BuildingEnum Target1 { get; set; }
+
         public BuildingEnum Target2 { get; set; }
 
         /// <summary>

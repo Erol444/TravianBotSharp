@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Helpers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class TrainSettlers : BotTask
     {
@@ -52,13 +52,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         {
                             if (acc.NewVillages.AutoSettleNewVillages)
                             {
-                                TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers()
+                                acc.Tasks.Add(new SendSettlers()
                                 {
                                     ExecuteAt = DateTime.Now.AddHours(-3),
                                     Vill = this.Vill,
                                     // For high speed servers, you want to train settlers asap
                                     Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
-                                });
+                                }, true);
                             }
 
                             acc.Logger.Warning("Have enoung settlers");
@@ -116,13 +116,13 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             acc.Logger.Information($"Bot will (try to) send settlers in {TimeHelper.InSeconds(training)} sec");
 
-            TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers()
+            acc.Tasks.Add(new SendSettlers()
             {
                 ExecuteAt = training,
                 Vill = this.Vill,
                 // For high speed servers, you want to train settlers asap
                 Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
-            });
+            }, true);
         }
     }
 }

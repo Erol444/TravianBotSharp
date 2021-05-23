@@ -11,7 +11,7 @@ using System.Windows.Forms;
 using TbsCore.Database;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+
 using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
 using TravBotSharp.Views;
@@ -139,7 +139,12 @@ namespace TravBotSharp
             var acc = GetSelectedAcc();
             if (0 < acc.Access.AllAccess.Count)
             {
-                new Thread(() => _ = IoHelperCore.LoginAccount(acc)).Start();
+                new Thread(async () =>
+                {
+                    await IoHelperCore.LoginAccount(acc);
+                    acc.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
+                    debugUc1.UpdateTaskTable();
+                }).Start();
                 generalUc1.UpdateBotRunning("true");
                 return;
             }
@@ -169,6 +174,9 @@ namespace TravBotSharp
 
         private void accListView_SelectedIndexChanged(object sender, EventArgs e) // Different acc selected
         {
+            // remove event task update on previous account
+            if (GetSelectedAcc().Tasks != null) GetSelectedAcc().Tasks.OnUpdateTask = null;
+
             var indicies = accListView.SelectedIndices;
             if (indicies.Count > 0)
             {
@@ -185,6 +193,12 @@ namespace TravBotSharp
                 item.SubItems[0].ForeColor = Color.FromName("Black");
             }
             accListView.Items[accSelected].SubItems[0].ForeColor = Color.FromName("DodgerBlue");
+
+            if (acc.Tasks != null)
+            {
+                acc.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
+                debugUc1.UpdateTaskTable();
+            }
         }
 
         private void UpdateFrontEnd()

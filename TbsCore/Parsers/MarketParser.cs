@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.ResourceModels;
-using TravBotSharp.Files.Models.ResourceModels;
-using TravBotSharp.Files.TravianData;
 
-namespace TravBotSharp.Files.Parsers
+using TbsCore.TravianData;
+
+namespace TbsCore.Parsers
 {
     public static class MarketParser
     {

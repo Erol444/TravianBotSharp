@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class UpdateDorf1 : BotTask
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            TaskExecutor.RemoveTaskTypes(acc, this.GetType(), Vill, this);
+            acc.Tasks.Remove(this.GetType(), Vill, thisTask: this);
 
             if (!acc.Wb.CurrentUrl.Contains("/dorf1.php")) // Don't re-navigate
             {
@@ -20,11 +20,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             Random ran = new Random();
             if (ran.Next(1, 100) > 40)
             {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, Vill, new UpdateDorf2()
+                acc.Tasks.Add(new UpdateDorf2()
                 {
                     ExecuteAt = DateTime.Now.AddMinutes(1),
                     Vill = Vill
-                });
+                }, true, Vill);
             }
 
             return TaskRes.Executed;

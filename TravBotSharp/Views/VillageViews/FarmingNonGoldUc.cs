@@ -3,9 +3,9 @@ using System.Windows.Forms;
 using System.Drawing;
 
 using TravBotSharp.Interfaces;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
 
 using TbsCore.Models.VillageModels;
 using TbsCore.Models.SendTroopsModels;
@@ -244,7 +244,7 @@ namespace TravBotSharp.Views
                     }
                 };
 
-                TaskExecutor.AddTask(acc, taskSendTroops);
+                acc.Tasks.Add(taskSendTroops);
             }
         }
 

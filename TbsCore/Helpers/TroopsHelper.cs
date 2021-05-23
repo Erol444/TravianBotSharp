@@ -3,16 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks.LowLevel;
-using TravBotSharp.Files.TravianData;
-using static TravBotSharp.Files.Helpers.BuildingHelper;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Parsers;
+using TbsCore.Tasks.LowLevel;
 
-namespace TravBotSharp.Files.Helpers
+using static TbsCore.Helpers.BuildingHelper;
+using static TbsCore.Helpers.Classificator;
+
+namespace TbsCore.Helpers
 {
     public static class TroopsHelper
     {
@@ -117,10 +116,8 @@ namespace TravBotSharp.Files.Helpers
         public static void ReStartTroopTraining(Account acc, Village vill)
         {
             //remove training tasks
-            acc.Tasks?.RemoveAll(x =>
-                x.Vill == vill &&
-                x.GetType() == typeof(TrainTroops)
-                );
+            acc.Tasks.Remove(typeof(TrainTroops), vill);
+
             //start training tasks
             if (vill.Settings.BarracksTrain != TroopsEnum.None && !vill.Troops.ToResearch.Any(x => x == vill.Settings.BarracksTrain))
             {
@@ -129,7 +126,7 @@ namespace TravBotSharp.Files.Helpers
                 {
                     barracksTrain = vill.Troops.CurrentlyTraining.Barracks.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                 }
-                TaskExecutor.AddTask(acc, new TrainTroops()
+                acc.Tasks.Add(new TrainTroops()
                 {
                     ExecuteAt = barracksTrain,
                     Great = false,
@@ -143,7 +140,7 @@ namespace TravBotSharp.Files.Helpers
                     {
                         gbTrain = vill.Troops.CurrentlyTraining.GB.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                     }
-                    TaskExecutor.AddTask(acc, new TrainTroops()
+                    acc.Tasks.Add(new TrainTroops()
                     {
                         ExecuteAt = gbTrain,
                         Great = true,
@@ -160,7 +157,7 @@ namespace TravBotSharp.Files.Helpers
                 {
                     stableTrain = vill.Troops.CurrentlyTraining.Stable.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                 }
-                TaskExecutor.AddTask(acc, new TrainTroops()
+                acc.Tasks.Add(new TrainTroops()
                 {
                     ExecuteAt = stableTrain,
                     Great = false,
@@ -174,7 +171,7 @@ namespace TravBotSharp.Files.Helpers
                     {
                         gsTrain = vill.Troops.CurrentlyTraining.GS.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                     }
-                    TaskExecutor.AddTask(acc, new TrainTroops()
+                    acc.Tasks.Add(new TrainTroops()
                     {
                         ExecuteAt = gsTrain,
                         Great = true,
@@ -191,7 +188,7 @@ namespace TravBotSharp.Files.Helpers
                 {
                     wsTrain = vill.Troops.CurrentlyTraining.Workshop.Last().FinishTraining.AddHours(-acc.Settings.FillInAdvance);
                 }
-                TaskExecutor.AddTask(acc, new TrainTroops()
+                acc.Tasks.Add(new TrainTroops()
                 {
                     ExecuteAt = wsTrain,
                     Vill = vill,
@@ -261,7 +258,7 @@ namespace TravBotSharp.Files.Helpers
                         vill.Troops.ToImprove.Add(troop);
                         //We have all buildings needed to research the troop. Do it.
                         var researchTask = new ResearchTroop() { Vill = vill, ExecuteAt = DateTime.Now };
-                        TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, researchTask);
+                        acc.Tasks.Add(researchTask, true, vill);
                     }
                     continue;
                 }
@@ -275,7 +272,7 @@ namespace TravBotSharp.Files.Helpers
                         vill.Troops.ToImprove.Add(troop);
                         if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Smithy))
                         {
-                            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new ImproveTroop() { Vill = vill, ExecuteAt = DateTime.Now });
+                            acc.Tasks.Add(new ImproveTroop() { Vill = vill, ExecuteAt = DateTime.Now }, true, vill);
                         }
                     }
                     else vill.Troops.ToImprove.Remove(troop);
@@ -380,6 +377,6 @@ namespace TravBotSharp.Files.Helpers
                 upkeep += troops[i] * TroopSpeed.GetTroopUpkeep(troop);
             }
             return upkeep;
-        } 
+        }
     }
 }

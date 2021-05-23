@@ -56,7 +56,7 @@ namespace TbsCore.Models.Logging
             }
         }
 
-        protected void OnUpdateLog(string username)
+        private void OnUpdateLog(string username)
         {
             LogUpdated?.Invoke(this, new UpdateLogEventArgs(username));
         }

@@ -6,8 +6,8 @@ using System.Text;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Helpers;
+using TbsCore.Parsers;
 
 namespace TbsCore.Parsers
 {
@@ -21,9 +21,9 @@ namespace TbsCore.Parsers
         {
             var tableBody = html.GetElementbyId("villages").ChildNodes.FindFirst("tbody");
 
-            foreach(var th in tableBody.Descendants("tr"))
+            foreach (var th in tableBody.Descendants("tr"))
             {
-                var kid = MapParser.GetKarteHref(th.Descendants("td").First(x=>x.HasClass("name")));
+                var kid = MapParser.GetKarteHref(th.Descendants("td").First(x => x.HasClass("name")));
                 if (kid == null) continue;
                 var coords = MapHelper.CoordinatesFromKid(kid ?? 0, acc);
 
@@ -35,7 +35,7 @@ namespace TbsCore.Parsers
                     .First();
 
                 var tribe = (Classificator.TribeEnum)Parser.RemoveNonNumeric(tribeClass);
-             
+
                 vill.NysTribe = tribe;
             }
         }

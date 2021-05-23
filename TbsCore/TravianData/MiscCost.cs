@@ -1,6 +1,5 @@
 ﻿using TbsCore.Helpers;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.TravianData
 {

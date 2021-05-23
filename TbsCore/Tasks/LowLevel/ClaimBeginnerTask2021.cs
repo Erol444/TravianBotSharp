@@ -3,9 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class ClaimBeginnerTask2021 : BotTask
     {
@@ -25,7 +24,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await ClaimRewards(acc);
             }
 
-                TaskExecutor.AddTask(acc, new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+            acc.Tasks.Add(new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
 
             return TaskRes.Executed;
         }

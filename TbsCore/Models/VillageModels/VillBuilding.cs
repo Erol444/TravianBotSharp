@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.TravianData;
+using TbsCore.Helpers;
+using TbsCore.TravianData;
 
 namespace TbsCore.Models.VillageModels
 {
@@ -15,20 +15,23 @@ namespace TbsCore.Models.VillageModels
             CurrentlyBuilding = new List<BuildingCurrently>();
             DemolishTasks = new List<DemolishTask>();
         }
+
         public Building[] Buildings { get; set; }
+
         /// <summary>
         /// Whether or not we want to use insta build (2 gold) in this village
         /// </summary>
         public bool InstaBuild { get; set; }
+
         /// <summary>
         /// If currently building is above specified minuets, insta build (with gold)
         /// </summary>
         public int InstaBuildMinutes { get; set; }
+
         public List<BuildingCurrently> CurrentlyBuilding { get; set; }
         public List<DemolishTask> DemolishTasks { get; set; }
         public List<BuildingTask> Tasks { get; set; }
         public bool AutoBuildResourceBonusBuildings { get; set; }
-
 
         private Building[] InitializeArray(int length, Account acc)
         {

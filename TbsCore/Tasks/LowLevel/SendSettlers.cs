@@ -3,11 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class SendSettlers : BotTask
     {
@@ -26,12 +24,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 if (acc.NewVillages.AutoFindVillages) // Find new village to settle
                 {
-                    TaskExecutor.AddTaskIfNotExists(acc, new FindVillageToSettle()
+                    acc.Tasks.Add(new FindVillageToSettle()
                     {
                         Vill = AccountHelper.GetMainVillage(acc),
                         ExecuteAt = DateTime.MinValue.AddHours(10),
                         Priority = TaskPriority.High
-                    });
+                    }, true);
                     this.NextExecute = DateTime.MinValue.AddHours(11);
                 }
 

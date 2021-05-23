@@ -8,9 +8,9 @@ using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class AttackOasis : SendTroops
     {

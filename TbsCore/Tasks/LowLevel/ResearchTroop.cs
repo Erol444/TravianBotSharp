@@ -5,11 +5,11 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+using static TbsCore.Helpers.Classificator;
+
+namespace TbsCore.Tasks.LowLevel
 {
     public class ResearchTroop : BotTask
     {
@@ -50,7 +50,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var executeNext = DateTime.Now.Add(dur).AddMilliseconds(10 * AccountHelper.Delay());
             if (Vill.Settings.AutoImprove)
             {
-                TaskExecutor.AddTask(acc, new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) });
+                acc.Tasks.Add(new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) });
             }
 
             RepeatTask(Vill, troop, executeNext);

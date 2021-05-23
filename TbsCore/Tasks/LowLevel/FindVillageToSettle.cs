@@ -1,17 +1,13 @@
-﻿using Newtonsoft.Json;
-using RestSharp;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class FindVillageToSettle : BotTask
     {
@@ -22,7 +18,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var mainVill = AccountHelper.GetMainVillage(acc);
 
             var mapTiles = MapHelper.GetMapTiles(acc, mainVill.Coordinates);
-            
+
             Coordinates closesCoords = GetClosestCoordinates(acc, mapTiles);
             if (closesCoords == null) return TaskRes.Retry;
 
@@ -61,7 +57,5 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
             return closesCoords;
         }
-
-        
     }
 }

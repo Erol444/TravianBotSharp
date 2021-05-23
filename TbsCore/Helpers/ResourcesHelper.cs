@@ -7,11 +7,11 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
+using static TbsCore.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class ResourcesHelper
     {
@@ -209,7 +209,7 @@ namespace TravBotSharp.Files.Helpers
                 Vill = vill
             };
 
-            TaskExecutor.AddTask(acc, heroEquip);
+            acc.Tasks.Add(heroEquip);
 
             // A BuildTask needed the resources. If it was auto-build res fields task, make a new
             // general building task - so resources actually get used for intended building upgrade

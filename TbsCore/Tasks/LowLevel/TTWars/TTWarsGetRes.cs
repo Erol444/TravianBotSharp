@@ -3,9 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class TTWarsGetRes : BotTask
     {
@@ -16,9 +15,9 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             Random rnd = new Random();
             int sec = rnd.Next(370, 380);
-            TaskExecutor.AddTask(acc, new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc) });
-            TaskExecutor.AddTask(acc, new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero, Vill = Vill });
-            TaskExecutor.AddTask(acc, new TrainTroops()
+            acc.Tasks.Add(new TTWarsGetRes() { ExecuteAt = DateTime.Now.AddSeconds(sec), Vill = AccountHelper.GetMainVillage(acc) });
+            acc.Tasks.Add(new TrainExchangeRes() { ExecuteAt = DateTime.Now.AddSeconds(sec + 5), troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero, Vill = Vill });
+            acc.Tasks.Add(new TrainTroops()
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec + 9),
                 Troop = acc.Villages[0].Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,

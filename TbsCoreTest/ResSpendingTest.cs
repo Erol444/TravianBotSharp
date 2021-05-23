@@ -4,7 +4,7 @@ using TbsCore.Models.ResourceModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TbsCoreTest.Factories;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Tasks.LowLevel;
 using Xunit;
 
 namespace TbsCoreTest

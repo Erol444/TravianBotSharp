@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using TbsCore.Models.MapModels;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class MapParser
     {

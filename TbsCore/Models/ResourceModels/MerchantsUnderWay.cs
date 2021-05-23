@@ -1,5 +1,5 @@
 ﻿using System;
-using TravBotSharp.Files.Models.ResourceModels;
+using TbsCore.Models.ResourceModels;
 
 namespace TbsCore.Models.ResourceModels
 {
@@ -13,7 +13,7 @@ namespace TbsCore.Models.ResourceModels
     }
 }
 
-namespace TravBotSharp.Files.Models.ResourceModels
+namespace TbsCore.Models.ResourceModels
 {
     public enum TransitType
     {

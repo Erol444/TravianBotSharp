@@ -3,7 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Interfaces;
-using static TravBotSharp.Files.Models.AccModels.WebBrowserInfo;
+using static TbsCore.Models.AccModels.WebBrowserInfo;
 using TbsCore.Models.Logging;
 
 namespace TravBotSharp.Views
@@ -25,15 +25,13 @@ namespace TravBotSharp.Views
 
         public void UpdateUc()
         {
-            var acc = GetSelectedAcc();
-
-            taskListView.Items.Clear();
+            UpdateTaskTable();
             logTextBox.Clear();
             GetLogData();
             this.Focus();
         }
 
-        private void LogUpdate(object sender, TbsCore.Models.Logging.UpdateLogEventArgs e)
+        private void LogUpdate(object sender, UpdateLogEventArgs e)
         {
             // only update current account
             if (e.Username == GetSelectedAcc().AccInfo.Nickname)
@@ -63,7 +61,7 @@ namespace TravBotSharp.Views
             {
                 logTextBox.BeginInvoke(new Action(delegate
                 {
-                    GetLogData();
+                    UpdateLogData();
                 }));
                 return;
             }
@@ -72,19 +70,31 @@ namespace TravBotSharp.Views
             logTextBox.Text = $"{Log.GetLog(acc.AccInfo.Nickname)}{logTextBox.Text}";
         }
 
-        private void UpdateTaskTable(Account acc)
+        public void UpdateTaskTable()
         {
-            if (acc.Tasks == null) return;
-            taskListView.Items.Clear();
-            foreach (var task in acc.Tasks.ToList())
+            if (taskListView.InvokeRequired)
             {
-                var item = new ListViewItem();
-                item.SubItems[0].Text = task.ToString().Split('.').Last(); // Task name
-                item.SubItems.Add(task.Vill?.Name ?? "/"); // Village name
-                item.SubItems.Add(task.Priority.ToString());
-                item.SubItems.Add(task.Stage.ToString());
-                item.SubItems.Add(task.ExecuteAt.ToString());
-                taskListView.Items.Add(item);
+                taskListView.BeginInvoke(new Action(delegate
+                {
+                    UpdateTaskTable();
+                }));
+                return;
+            }
+
+            taskListView.Items.Clear();
+            var acc = GetSelectedAcc();
+            if (acc.Tasks != null)
+            {
+                foreach (var task in GetSelectedAcc().Tasks.ToList())
+                {
+                    var item = new ListViewItem();
+                    item.SubItems[0].Text = task.ToString().Split('.').Last(); // Task name
+                    item.SubItems.Add(task.Vill?.Name ?? "/"); // Village name
+                    item.SubItems.Add(task.Priority.ToString());
+                    item.SubItems.Add(task.Stage.ToString());
+                    item.SubItems.Add(task.ExecuteAt.ToString());
+                    taskListView.Items.Add(item);
+                }
             }
         }
     }

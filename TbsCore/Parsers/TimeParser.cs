@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class TimeParser
     {
@@ -72,7 +72,7 @@ namespace TravBotSharp.Files.Parsers
                 var content = html.GetElementbyId("content");
                 underProgress = content.Descendants().FirstOrDefault(x => x.HasClass("under_progress"));
             }
-            
+
             if (underProgress == null) return DateTime.MinValue; // No celebration is under progress
 
             return DateTime.Now + TimeParser.ParseTimer(underProgress);

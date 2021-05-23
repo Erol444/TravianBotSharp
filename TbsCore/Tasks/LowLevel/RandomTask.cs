@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     /// <summary>
     /// Just a random navigation event - to make bot less suspicious to Travian.
@@ -56,6 +56,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 case Helpers.Classificator.ServerVersionEnum.T4_4:
                     Urls = UrlT4_4;
                     break;
+
                 case Helpers.Classificator.ServerVersionEnum.T4_5:
                     Urls = UrlT4_5;
                     break;

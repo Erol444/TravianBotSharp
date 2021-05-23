@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 
-namespace TravBotSharp.Files.Tasks
+namespace TbsCore.Tasks
 {
     public abstract class BotTask
     {
@@ -26,6 +26,7 @@ namespace TravBotSharp.Files.Tasks
         /// When we want to re-execute a continuous task (build/demolish building, improve unit etc.)
         /// </summary>
         public DateTime? NextExecute { get; set; }
+
         /// <summary>
         /// BotTask to be executed right after this one. Used only is specific cases.
         /// </summary>
@@ -56,28 +57,32 @@ namespace TravBotSharp.Files.Tasks
             Executed,
             Retry
         }
+
         public enum TaskStage
         {
             Start,
             Executing,
         }
+
         /// <summary>
         /// Priority of the task
         /// </summary>
         public enum TaskPriority
         {
             /// <summary>
-            /// For normal tasks, not urgent. For example building, adventures, 
+            /// For normal tasks, not urgent. For example building, adventures,
             /// sending resources etc. Selected by default.
             /// </summary>
             Medium = 0,
+
             /// <summary>
             /// For tasks that can wait few hours. For example updating hero items,
             /// account info, TOP10, dorf1 (for attacks) etc.
             /// </summary>
             Low,
+
             /// <summary>
-            /// Time-critical tasks, for example sending catapult waves, sending 
+            /// Time-critical tasks, for example sending catapult waves, sending
             /// deff troops - tasks that require to-second precision.
             /// </summary>
             High

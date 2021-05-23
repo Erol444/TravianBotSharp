@@ -1,4 +1,4 @@
-﻿using TravBotSharp.Files.Tasks;
+﻿using TbsCore.Tasks;
 
 namespace TbsCore.Extensions
 {
@@ -14,6 +14,5 @@ namespace TbsCore.Extensions
             if (type.Length == 0) return null;
             return type[type.Length - 1];
         }
-
     }
 }

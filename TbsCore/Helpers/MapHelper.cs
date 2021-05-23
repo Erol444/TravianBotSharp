@@ -10,9 +10,9 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class MapHelper
     {
@@ -27,7 +27,6 @@ namespace TravBotSharp.Files.Helpers
         public static int KidFromCoordinates(Coordinates coords, Account acc)
         {
             return 1 + ((acc.AccInfo.MapSize - coords.y) * (acc.AccInfo.MapSize * 2 + 1)) + acc.AccInfo.MapSize + coords.x;
-
         }
 
         public static Coordinates CoordinatesFromKid(int? kid, Account acc)
@@ -133,46 +132,46 @@ namespace TravBotSharp.Files.Helpers
                 //    return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
                 //}
                 default:
-                {
-                    var bearerToken = DriverHelper.GetBearerToken(acc);
-
-                    var reqMapInfo = new RestSharp.RestRequest
                     {
-                        Resource = "/api/v1/map/info",
-                        Method = Method.POST,
-                        RequestFormat = DataFormat.Json
-                    };
-                    reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
-                    reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
-                    reqMapInfo.AddJsonBody(GenerateMapInfo(coords));
+                        var bearerToken = DriverHelper.GetBearerToken(acc);
 
-                    var mapInfoRes = HttpHelper.SendPostReq(acc, reqMapInfo);
-
-                    var mapPosition = new SendMapPositionT4_5.Root()
-                    {
-                        data = new SendMapPositionT4_5.Data()
+                        var reqMapInfo = new RestSharp.RestRequest
                         {
-                            x = coords.x,
-                            y = coords.y,
-                            zoomLevel = 3,
-                            ignorePositions = new List<object>()
-                        }
-                    };
+                            Resource = "/api/v1/map/info",
+                            Method = Method.POST,
+                            RequestFormat = DataFormat.Json
+                        };
+                        reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
+                        reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
+                        reqMapInfo.AddJsonBody(GenerateMapInfo(coords));
 
-                    var reqMapPosition = new RestSharp.RestRequest
-                    {
-                        Resource = "/api/v1/map/position",
-                        Method = Method.POST,
-                        RequestFormat = DataFormat.Json
-                    };
-                    reqMapPosition.AddHeader("authorization", $"Bearer {bearerToken}");
-                    reqMapPosition.AddHeader("content-type", "application/json; charset=UTF-8");
-                    reqMapPosition.AddJsonBody(mapPosition);
+                        var mapInfoRes = HttpHelper.SendPostReq(acc, reqMapInfo);
 
-                    var mapPositionRes = HttpHelper.SendPostReq(acc, reqMapPosition);
-                    var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
-                    return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
-                }
+                        var mapPosition = new SendMapPositionT4_5.Root()
+                        {
+                            data = new SendMapPositionT4_5.Data()
+                            {
+                                x = coords.x,
+                                y = coords.y,
+                                zoomLevel = 3,
+                                ignorePositions = new List<object>()
+                            }
+                        };
+
+                        var reqMapPosition = new RestSharp.RestRequest
+                        {
+                            Resource = "/api/v1/map/position",
+                            Method = Method.POST,
+                            RequestFormat = DataFormat.Json
+                        };
+                        reqMapPosition.AddHeader("authorization", $"Bearer {bearerToken}");
+                        reqMapPosition.AddHeader("content-type", "application/json; charset=UTF-8");
+                        reqMapPosition.AddJsonBody(mapPosition);
+
+                        var mapPositionRes = HttpHelper.SendPostReq(acc, reqMapPosition);
+                        var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
+                        return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
+                    }
             }
             return null;
         }
@@ -234,6 +233,7 @@ namespace TravBotSharp.Files.Helpers
         }
 
         #region Private helpers
+
         private static SendMapInfoT4_5.Root GenerateMapInfo(Coordinates coords)
         {
             int startX = coords.x - (coords.x % 100);
@@ -260,6 +260,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return ret;
         }
-        #endregion
+
+        #endregion Private helpers
     }
 }

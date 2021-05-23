@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.TroopsModels;
-using static TravBotSharp.Files.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+using static TbsCore.Helpers.Classificator;
+
+namespace TbsCore.Tasks.LowLevel
 {
     public class SendFarmlist : BotTask
     {
@@ -34,7 +33,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (acc.Farming.TrainTroopsAfterFL) // For TTWars servers
             {
-                TaskExecutor.AddTask(acc, new TrainTroops()
+                acc.Tasks.Add(new TrainTroops()
                 {
                     ExecuteAt = DateTime.Now.AddSeconds(2),
                     Troop = Vill.Troops.TroopToTrain ?? Classificator.TroopsEnum.Hero,

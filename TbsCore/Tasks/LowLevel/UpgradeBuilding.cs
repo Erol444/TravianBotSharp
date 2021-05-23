@@ -6,13 +6,13 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.TravianData;
-using static TravBotSharp.Files.Helpers.BuildingHelper;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Parsers;
+using TbsCore.TravianData;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+using static TbsCore.Helpers.BuildingHelper;
+using static TbsCore.Helpers.Classificator;
+
+namespace TbsCore.Tasks.LowLevel
 {
     public class UpgradeBuilding : BotTask
     {
@@ -47,7 +47,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 //Execute next upgrade task after currently building
                 this.NextExecute = Vill.Build.CurrentlyBuilding.First().Duration.AddSeconds(3);
-                TaskExecutor.ReorderTaskList(acc);
+                acc.Tasks.ReOrder();
                 return TaskRes.Executed;
             }
 
@@ -272,14 +272,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 acc.NewVillages.AutoSettleNewVillages &&
                 Vill.Troops.Settlers == 0)
             {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, Vill,
+                acc.Tasks.Add(
                     new TrainSettlers()
                     {
                         ExecuteAt = cbResidence.Duration.AddSeconds(5),
                         Vill = Vill,
                         // For high speed servers, you want to train settlers asap
                         Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
-                    });
+                    }, true, Vill);
             }
 
             // Check if the task is completed
