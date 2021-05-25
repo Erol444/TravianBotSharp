@@ -43,7 +43,7 @@ namespace TbsCore.Models.AccModels
                 var checkproxy = new CheckProxy();
                 await checkproxy.Execute(acc);
             }
-            else await this.Navigate(acc.AccInfo.ServerUrl);
+            else await this.Navigate($"{acc.AccInfo.ServerUrl}/login.php");
         }
 
         private void InitHttpClient(Access.Access a)

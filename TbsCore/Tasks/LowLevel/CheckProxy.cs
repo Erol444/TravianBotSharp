@@ -42,7 +42,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 // Proxy OK
                 acc.Logger.Information($"Proxy OK!");
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/login.php");
             }
             return TaskRes.Executed;
         }
