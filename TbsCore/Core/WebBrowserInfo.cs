@@ -64,13 +64,14 @@ namespace TbsCore.Models.AccModels
 
             if (!string.IsNullOrEmpty(access.Proxy))
             {
+                // add WebRTC Leak
+                var extensionPath = DisableWebRTCLeak.CreateExtension(username, server, access);
+                options.AddExtension(extensionPath);
+
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    var extensionPath = ProxyAuthentication.CreateExtension(username, server, access);
-                    options.AddExtension(extensionPath);
-                    // add WebRTC Leak
-                    extensionPath = DisableWebRTCLeak.CreateExtension(username, server, access);
+                    extensionPath = ProxyAuthentication.CreateExtension(username, server, access);
                     options.AddExtension(extensionPath);
                 }
 
@@ -91,7 +92,7 @@ namespace TbsCore.Models.AccModels
             options.AddArguments("--mute-audio");
 
             // Make browser headless to preserve memory resources
-            if (acc.Settings.HeadlessMode) options.AddArguments("headless");
+            // if (acc.Settings.HeadlessMode) options.AddArguments("headless");
 
             // Do not download images in order to preserve memory resources / proxy traffic
             if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
