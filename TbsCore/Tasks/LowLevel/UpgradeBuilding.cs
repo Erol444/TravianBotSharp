@@ -312,7 +312,12 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // Has to be a legit "click"
-            acc.Wb.Driver.FindElementById("videoFeature").Click();
+            OpenQA.Selenium.IWebElement element = acc.Wb.FindElementById("videoFeature");
+            if (element == null)
+            {
+                return false;
+            }
+            element.Click();
 
             // wait for finish watching ads
             var timeout = DateTime.Now.AddSeconds(100);
@@ -323,17 +328,29 @@ namespace TbsCore.Tasks.LowLevel
                 //skip ads from Travian Games
                 //they use ifarme to emebed ads video to their game
                 acc.Wb.UpdateHtml();
+
                 if (acc.Wb.Html.GetElementbyId("videoArea") != null)
                 {
-                    acc.Wb.Driver.SwitchTo().Frame(acc.Wb.Driver.FindElementById("videoArea"));
+                    var SwitchTo = acc.Wb.SwitchTo();
+                    if (SwitchTo == null)
+                    {
+                        return false;
+                    }
+                    acc.Wb.SwitchTo().Frame(acc.Wb.FindElementById("videoArea"));
+
                     // trick to skip
                     await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration - 1;", false, false);
                     //back to first page
-                    acc.Wb.Driver.SwitchTo().DefaultContent();
+                    SwitchTo = acc.Wb.SwitchTo();
+                    if (SwitchTo == null)
+                    {
+                        return false;
+                    }
+                    acc.Wb.SwitchTo().DefaultContent();
                 }
                 if (timeout < DateTime.Now) return false;
             }
-            while (acc.Wb.Driver.Url.Contains("build.php"));
+            while (acc.Wb.CurrentUrl.Contains("build.php"));
 
             // Don't show again
             acc.Wb.UpdateHtml();

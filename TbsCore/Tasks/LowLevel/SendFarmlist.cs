@@ -16,7 +16,6 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
 
             var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
@@ -75,12 +74,17 @@ namespace TbsCore.Tasks.LowLevel
             {
                 case ServerVersionEnum.T4_4:
                     var sendFlScript = $"document.getElementById('{flNode.Id}').childNodes[1].submit()";
-                    wb.ExecuteScript(sendFlScript);
+                    acc.Wb.ExecuteScript(sendFlScript);
                     break;
 
                 case ServerVersionEnum.T4_5:
                     var startRaid = flNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
-                    acc.Wb.Driver.FindElementById(startRaid.Id).Click();
+                    OpenQA.Selenium.IWebElement element = acc.Wb.FindElementById(startRaid.Id);
+                    if (element == null)
+                    {
+                        return TaskRes.Executed;
+                    }
+                    element.Click();
                     break;
             }
 
@@ -93,6 +97,7 @@ namespace TbsCore.Tasks.LowLevel
             switch (version)
             {
                 case ServerVersionEnum.T4_4: return htmlDoc.GetElementbyId("list" + this.FL.Id);
+
                 case ServerVersionEnum.T4_5: return htmlDoc.GetElementbyId("raidList" + this.FL.Id);
                 default: return null;
             }

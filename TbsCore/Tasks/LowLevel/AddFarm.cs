@@ -12,8 +12,6 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=99");
 
             // Show "Add raid" popup
@@ -35,7 +33,7 @@ namespace TbsCore.Tasks.LowLevel
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.T4_4:
-                    wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
+                    acc.Wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:

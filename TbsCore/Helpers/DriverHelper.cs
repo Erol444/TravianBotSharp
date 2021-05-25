@@ -20,7 +20,7 @@ namespace TbsCore.Helpers
         {
             try
             {
-                acc.Wb.Driver.ExecuteScript(script);
+                if (!acc.Wb.ExecuteScript(script)) return false;
                 if (update)
                 {
                     await Task.Delay(AccountHelper.Delay());
@@ -48,8 +48,7 @@ namespace TbsCore.Helpers
         {
             try
             {
-                IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
-                return (T)js.ExecuteScript($"return {obj};");
+                return acc.Wb.GetJsObj<T>(obj);
             }
             catch (Exception e)
             {
@@ -61,10 +60,17 @@ namespace TbsCore.Helpers
         /// <summary>
         /// Get bearer token for Travian T4.5
         /// </summary>
-        public static string GetBearerToken(Account acc)
+        public static string GetBearerToken(Account acc, bool log = true)
         {
-            IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
-            return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+            try
+            {
+                return acc.Wb.GetBearerToken();
+            }
+            catch (Exception e)
+            {
+                if (log) acc.Logger.Error(e, "Error getting BearerToken!");
+                return default;
+            }
         }
 
         /// <summary>

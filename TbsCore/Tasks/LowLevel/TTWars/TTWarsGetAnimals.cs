@@ -10,7 +10,6 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
 
             Random rnd = new Random();
@@ -29,7 +28,7 @@ namespace TbsCore.Tasks.LowLevel
             //var buy = acc.Wb.Html.DocumentNode.SelectNodes("//*[text()[contains(., '3000')]]")[0];
             //while (buy.Name != "button") buy = buy.ParentNode;
             //var buyId = buy.GetAttributeValue("id", "");
-            wb.ExecuteScript($"document.getElementById('{buy.Id}').click()");
+            acc.Wb.ExecuteScript($"document.getElementById('{buy.Id}').click()");
 
             //Clicking on buy button DOES NOT trigger a page reloag. We have to do it manually.
             return TaskRes.Executed;

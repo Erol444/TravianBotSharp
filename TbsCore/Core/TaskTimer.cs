@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Timers;
-using TbsCore.Models.AccModels;
+
+using OpenQA.Selenium;
+
 using TbsCore.Helpers;
 using TbsCore.Tasks;
 using TbsCore.Tasks.LowLevel;
@@ -71,6 +73,32 @@ namespace TbsCore.Models.AccModels
                     }
                 }
                 await TaskExecutor.Execute(acc, firstTask);
+            }
+            catch (NoSuchWindowException)
+            {
+                // tab already closed
+                // logout and login again
+
+                // new thread because this object will be diposed
+                var task = new ReopenDriver
+                {
+                    LowestPrio = TaskPriority.Low,
+                    ExecuteAt = DateTime.MinValue,
+                    Priority = TaskPriority.High
+                };
+
+                acc.Tasks.Add(task);
+            }
+            catch (WebDriverException)
+            {
+                var task = new ReopenDriver
+                {
+                    LowestPrio = TaskPriority.Medium,
+                    ExecuteAt = DateTime.MinValue,
+                    Priority = TaskPriority.High
+                };
+
+                acc.Tasks.Add(task);
             }
             catch (Exception e)
             {

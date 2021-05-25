@@ -13,7 +13,6 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             var building = Vill.Build.Buildings.FirstOrDefault(x => x.Level > 0 && (x.Type == Classificator.BuildingEnum.Warehouse || x.Type == Classificator.BuildingEnum.Granary));
             if (building != null) await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}");
 
@@ -25,7 +24,7 @@ namespace TbsCore.Tasks.LowLevel
                 acc.Logger.Warning("No such button, are you sure you are on TTWars vip/unl?");
                 return TaskRes.Executed;
             }
-            wb.ExecuteScript($"document.getElementById('{button.Id}').click()"); //exapand the storage button
+            acc.Wb.ExecuteScript($"document.getElementById('{button.Id}').click()"); //exapand the storage button
 
             if (this.Times > 1)
             {

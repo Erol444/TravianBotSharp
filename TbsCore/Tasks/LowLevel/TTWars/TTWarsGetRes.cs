@@ -10,7 +10,6 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
 
             Random rnd = new Random();
@@ -40,7 +39,7 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
             var buyId = buy.GetAttributeValue("id", "");
-            wb.ExecuteScript($"document.getElementById('{buyId}').click()");
+            acc.Wb.ExecuteScript($"document.getElementById('{buyId}').click()");
             return TaskRes.Executed;
         }
     }

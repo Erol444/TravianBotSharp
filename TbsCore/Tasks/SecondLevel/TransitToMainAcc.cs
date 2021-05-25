@@ -16,7 +16,6 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             acc.Tasks.Add(new TransitToMainAcc
             {
                 coords = this.coords,

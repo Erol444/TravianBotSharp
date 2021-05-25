@@ -12,7 +12,6 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=0"))
                 return TaskRes.Executed;
 

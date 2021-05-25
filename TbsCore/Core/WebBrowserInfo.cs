@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Chrome;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -8,15 +9,24 @@ using TbsCore.Helpers;
 using TbsCore.Models;
 using TbsCore.Tasks.LowLevel;
 using TbsCore.Helpers.Extension;
+using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Models.AccModels
 {
     public class WebBrowserInfo : IDisposable
     {
-        public ChromeDriver Driver { get; set; }
+        private ChromeDriver Driver { get; set; }
 
         private ChromeDriverService chromeService;
-        public string CurrentUrl => this.Driver.Url;
+
+        public string CurrentUrl
+        {
+            get
+            {
+                return this.Driver.Url;
+            }
+        }
+
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
 
@@ -137,9 +147,9 @@ namespace TbsCore.Models.AccModels
             return cookiesDir;
         }
 
-        public async Task Navigate(string url)
+        public async Task<bool> Navigate(string url)
         {
-            if (string.IsNullOrEmpty(url)) return;
+            if (string.IsNullOrEmpty(url)) return false;
 
             int repeatCnt = 0;
             bool repeat;
@@ -150,6 +160,16 @@ namespace TbsCore.Models.AccModels
                     // Will throw exception after timeout
                     this.Driver.Navigate().GoToUrl(url);
                     repeat = false;
+                }
+                catch (WebDriverException)
+                {
+                    var task = new ReopenDriver();
+                    task.LowestPrio = TaskPriority.Medium;
+                    task.ExecuteAt = DateTime.Now;
+                    task.Priority = TaskPriority.High;
+
+                    acc.Tasks.Add(task);
+                    return false;
                 }
                 catch (Exception e)
                 {
@@ -171,10 +191,127 @@ namespace TbsCore.Models.AccModels
             await Task.Delay(AccountHelper.Delay());
 
             UpdateHtml();
+
             await TaskExecutor.PageLoaded(acc);
+            return true;
         }
 
-        public void UpdateHtml() => Html.LoadHtml(Driver.PageSource);
+        public bool UpdateHtml()
+        {
+            try
+            {
+                Html.LoadHtml(Driver.PageSource);
+                return true;
+            }
+            catch (WebDriverException)
+            {
+                var task = new ReopenDriver
+                {
+                    ReopenAt = DateTime.MinValue,
+                    ExecuteAt = DateTime.MinValue,
+                    Priority = TaskPriority.High
+                };
+
+                acc.Tasks.Add(task);
+                return false;
+            }
+        }
+
+        public bool ExecuteScript(string script)
+        {
+            try
+            {
+                Driver.ExecuteScript(script);
+                return true;
+            }
+            catch (WebDriverException)
+            {
+                var task = new ReopenDriver
+                {
+                    ReopenAt = DateTime.MinValue,
+                    ExecuteAt = DateTime.MinValue,
+                    Priority = TaskPriority.High
+                };
+
+                acc.Tasks.Add(task);
+                return false;
+            }
+        }
+
+        public T GetJsObj<T>(string obj)
+        {
+            IJavaScriptExecutor js = acc.Wb.Driver;
+            return (T)js.ExecuteScript($"return {obj};");
+        }
+
+        /// <summary>
+        /// Get bearer token for Travian T4.5
+        /// </summary>
+        public string GetBearerToken()
+        {
+            IJavaScriptExecutor js = acc.Wb.Driver;
+            return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+        }
+
+        public IWebElement FindElementById(string element)
+        {
+            try
+            {
+                return Driver.FindElementById(element);
+            }
+            catch (WebDriverException)
+            {
+                var task = new ReopenDriver
+                {
+                    ReopenAt = DateTime.MinValue,
+                    ExecuteAt = DateTime.MinValue,
+                    Priority = TaskPriority.High
+                };
+
+                acc.Tasks.Add(task);
+                return null;
+            }
+        }
+
+        public IWebElement FindElementByXPath(string xPath)
+        {
+            try
+            {
+                return Driver.FindElementByXPath(xPath);
+            }
+            catch (WebDriverException)
+            {
+                var task = new ReopenDriver
+                {
+                    ReopenAt = DateTime.MinValue,
+                    ExecuteAt = DateTime.MinValue,
+                    Priority = TaskPriority.High
+                };
+
+                acc.Tasks.Add(task);
+                return null;
+            }
+        }
+
+        public ITargetLocator SwitchTo()
+        {
+            try
+            {
+                return Driver.SwitchTo();
+            }
+            catch (WebDriverException)
+            {
+                var task = new ReopenDriver
+                {
+                    ReopenAt = DateTime.MinValue,
+                    ExecuteAt = DateTime.MinValue,
+                    Priority = TaskPriority.High
+                };
+
+                acc.Tasks.Add(task);
+                return null;
+            }
+        }
 
         public void Dispose()
         {
@@ -186,14 +323,13 @@ namespace TbsCore.Models.AccModels
                     Driver.Quit(); // Also disposes
                     Driver = default;
                 }
-                catch (Exception e)
+                catch (WebDriverException)
                 {
-                    // broswer closed because user or crash ??
-                    if (e.Message.Contains("chrome not reachable"))
-                    {
-                        Driver.Quit(); // Also disposes
-                        Driver = default;
-                    }
+                    Driver.Quit();
+                    Driver = default;
+                }
+                catch (Exception)
+                {
                 }
             }
 
