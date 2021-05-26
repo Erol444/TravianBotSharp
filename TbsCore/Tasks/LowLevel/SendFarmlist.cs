@@ -79,12 +79,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 case ServerVersionEnum.T4_5:
                     var startRaid = flNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
-                    OpenQA.Selenium.IWebElement element = acc.Wb.FindElementById(startRaid.Id);
-                    if (element == null)
-                    {
-                        return TaskRes.Executed;
-                    }
-                    element.Click();
+                    acc.Wb.FindElementById(startRaid.Id).Click();
                     break;
             }
 

@@ -3,7 +3,6 @@ using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
-using TbsCore.Helpers;
 
 namespace TbsCore.Helpers
 {
@@ -20,13 +19,17 @@ namespace TbsCore.Helpers
         {
             try
             {
-                if (!acc.Wb.ExecuteScript(script)) return false;
+                acc.Wb.ExecuteScript(script);
                 if (update)
                 {
                     await Task.Delay(AccountHelper.Delay());
                     acc.Wb.UpdateHtml();
                 }
                 return true;
+            }
+            catch (NoChromeException e)
+            {
+                throw e;
             }
             catch (Exception e)
             {
@@ -50,6 +53,10 @@ namespace TbsCore.Helpers
             {
                 return acc.Wb.GetJsObj<T>(obj);
             }
+            catch (NoChromeException e)
+            {
+                throw e;
+            }
             catch (Exception e)
             {
                 if (log) acc.Logger.Error(e, $"Error getting JS object '{obj}'!");
@@ -65,6 +72,10 @@ namespace TbsCore.Helpers
             try
             {
                 return acc.Wb.GetBearerToken();
+            }
+            catch (NoChromeException e)
+            {
+                throw e;
             }
             catch (Exception e)
             {

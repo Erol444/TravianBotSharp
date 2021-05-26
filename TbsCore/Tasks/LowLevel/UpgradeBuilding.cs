@@ -312,12 +312,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // Has to be a legit "click"
-            OpenQA.Selenium.IWebElement element = acc.Wb.FindElementById("videoFeature");
-            if (element == null)
-            {
-                return false;
-            }
-            element.Click();
+            acc.Wb.FindElementById("videoFeature").Click();
 
             // wait for finish watching ads
             var timeout = DateTime.Now.AddSeconds(100);
@@ -331,21 +326,12 @@ namespace TbsCore.Tasks.LowLevel
 
                 if (acc.Wb.Html.GetElementbyId("videoArea") != null)
                 {
-                    var SwitchTo = acc.Wb.SwitchTo();
-                    if (SwitchTo == null)
-                    {
-                        return false;
-                    }
                     acc.Wb.SwitchTo().Frame(acc.Wb.FindElementById("videoArea"));
 
                     // trick to skip
                     await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration - 1;", false, false);
                     //back to first page
-                    SwitchTo = acc.Wb.SwitchTo();
-                    if (SwitchTo == null)
-                    {
-                        return false;
-                    }
+
                     acc.Wb.SwitchTo().DefaultContent();
                 }
                 if (timeout < DateTime.Now) return false;

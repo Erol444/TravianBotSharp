@@ -23,6 +23,8 @@ namespace TbsCore.Models.AccModels
         {
             get
             {
+                if (IsBrowserClosed()) throw new NoChromeException();
+
                 return this.Driver.Url;
             }
         }
@@ -147,29 +149,21 @@ namespace TbsCore.Models.AccModels
             return cookiesDir;
         }
 
-        public async Task<bool> Navigate(string url)
+        public async Task Navigate(string url)
         {
-            if (string.IsNullOrEmpty(url)) return false;
+            if (string.IsNullOrEmpty(url)) return;
 
             int repeatCnt = 0;
             bool repeat;
             do
             {
+                if (IsBrowserClosed()) throw new NoChromeException();
+
                 try
                 {
                     // Will throw exception after timeout
                     this.Driver.Navigate().GoToUrl(url);
                     repeat = false;
-                }
-                catch (WebDriverException)
-                {
-                    var task = new ReopenDriver();
-                    task.LowestPrio = TaskPriority.Medium;
-                    task.ExecuteAt = DateTime.Now;
-                    task.Priority = TaskPriority.High;
-
-                    acc.Tasks.Add(task);
-                    return false;
                 }
                 catch (Exception e)
                 {
@@ -193,53 +187,34 @@ namespace TbsCore.Models.AccModels
             UpdateHtml();
 
             await TaskExecutor.PageLoaded(acc);
-            return true;
         }
 
-        public bool UpdateHtml()
+        public void UpdateHtml()
         {
-            try
-            {
-                Html.LoadHtml(Driver.PageSource);
-                return true;
-            }
-            catch (WebDriverException)
-            {
-                var task = new ReopenDriver
-                {
-                    ReopenAt = DateTime.MinValue,
-                    ExecuteAt = DateTime.MinValue,
-                    Priority = TaskPriority.High
-                };
+            if (IsBrowserClosed()) throw new NoChromeException();
 
-                acc.Tasks.Add(task);
-                return false;
-            }
+            Html.LoadHtml(Driver.PageSource);
         }
 
-        public bool ExecuteScript(string script)
+        public void ExecuteScript(string script)
         {
-            try
-            {
-                Driver.ExecuteScript(script);
-                return true;
-            }
-            catch (WebDriverException)
-            {
-                var task = new ReopenDriver
-                {
-                    ReopenAt = DateTime.MinValue,
-                    ExecuteAt = DateTime.MinValue,
-                    Priority = TaskPriority.High
-                };
+            if (IsBrowserClosed()) throw new NoChromeException();
 
-                acc.Tasks.Add(task);
-                return false;
-            }
+            Driver.ExecuteScript(script);
         }
 
+        /// <summary>
+        /// Gets JS object from the game. Query examples:
+        /// window.TravianDefaults.Map.Size.top
+        /// resources.maxStorage
+        /// Travian.Game.speed
+        /// </summary>
+        /// <param name="obj">JS object</param>
+        /// <returns>Long for number, bool for boolean, string otherwise</returns>
         public T GetJsObj<T>(string obj)
         {
+            if (IsBrowserClosed()) throw new NoChromeException();
+
             IJavaScriptExecutor js = acc.Wb.Driver;
             return (T)js.ExecuteScript($"return {obj};");
         }
@@ -249,68 +224,46 @@ namespace TbsCore.Models.AccModels
         /// </summary>
         public string GetBearerToken()
         {
+            if (IsBrowserClosed()) throw new NoChromeException();
+
             IJavaScriptExecutor js = acc.Wb.Driver;
             return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
         }
 
         public IWebElement FindElementById(string element)
         {
-            try
-            {
-                return Driver.FindElementById(element);
-            }
-            catch (WebDriverException)
-            {
-                var task = new ReopenDriver
-                {
-                    ReopenAt = DateTime.MinValue,
-                    ExecuteAt = DateTime.MinValue,
-                    Priority = TaskPriority.High
-                };
+            if (IsBrowserClosed()) throw new NoChromeException();
 
-                acc.Tasks.Add(task);
-                return null;
-            }
+            return Driver.FindElementById(element);
         }
 
         public IWebElement FindElementByXPath(string xPath)
         {
-            try
-            {
-                return Driver.FindElementByXPath(xPath);
-            }
-            catch (WebDriverException)
-            {
-                var task = new ReopenDriver
-                {
-                    ReopenAt = DateTime.MinValue,
-                    ExecuteAt = DateTime.MinValue,
-                    Priority = TaskPriority.High
-                };
+            if (IsBrowserClosed()) throw new NoChromeException();
 
-                acc.Tasks.Add(task);
-                return null;
-            }
+            return Driver.FindElementByXPath(xPath);
         }
 
         public ITargetLocator SwitchTo()
         {
+            if (IsBrowserClosed()) throw new NoChromeException();
+
+            return Driver.SwitchTo();
+        }
+
+        public bool IsBrowserClosed()
+        {
             try
             {
-                return Driver.SwitchTo();
+                // we test with title of our chrome tab
+                _ = Driver.Title;
             }
             catch (WebDriverException)
             {
-                var task = new ReopenDriver
-                {
-                    ReopenAt = DateTime.MinValue,
-                    ExecuteAt = DateTime.MinValue,
-                    Priority = TaskPriority.High
-                };
-
-                acc.Tasks.Add(task);
-                return null;
+                return true;
             }
+
+            return false;
         }
 
         public void Dispose()
@@ -335,5 +288,12 @@ namespace TbsCore.Models.AccModels
 
             chromeService.Dispose();
         }
+    }
+
+    // just for catching
+    // if this is anti-pattern or bad desgin
+    // tell me, i'm still learning ._.
+    public class NoChromeException : Exception
+    {
     }
 }

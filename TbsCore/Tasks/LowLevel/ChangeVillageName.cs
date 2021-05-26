@@ -52,7 +52,6 @@ namespace TbsCore.Tasks.LowLevel
                     }
 
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/profile/edit");
-                    OpenQA.Selenium.IWebElement element;
                     foreach (var change in ChangeList)
                     {
                         //seem like they want we typing instead of setting value (= =)
@@ -62,18 +61,11 @@ namespace TbsCore.Tasks.LowLevel
                         //empty value of textbox
                         acc.Wb.ExecuteScript(script);
                         //insert new name into the textbox
-                        element = acc.Wb.FindElementByXPath($"//input[@name='dname[{change.Item1}]=']");
-                        if (element == null) return TaskRes.Executed;
-                        element.SendKeys(change.Item2);
+                        acc.Wb.FindElementByXPath($"//input[@name='dname[{change.Item1}]=']").SendKeys(change.Item2);
                     }
 
                     await Task.Delay(AccountHelper.Delay());
-                    element = acc.Wb.FindElementById("btn_ok");
-                    if (element == null)
-                    {
-                        return TaskRes.Executed;
-                    }
-                    element.Click();  //click save button
+                    acc.Wb.FindElementById("btn_ok").Click();  //click save button
 
                     return TaskRes.Executed;
             }
