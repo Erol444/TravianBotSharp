@@ -287,7 +287,7 @@ namespace TbsCore.Tasks.LowLevel
                 .CurrentlyBuilding
                 .OrderByDescending(x => x.Level)
                 .FirstOrDefault(x => x.Location == this.Task.BuildingId);
-            if (this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
+            if (taskCb != null && this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
         }
 
         /// <summary>
