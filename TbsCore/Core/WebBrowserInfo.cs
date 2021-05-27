@@ -23,7 +23,7 @@ namespace TbsCore.Models.AccModels
         {
             get
             {
-                if (IsBrowserClosed()) throw new NoChromeException();
+                CheckChromeOpen();
 
                 return this.Driver.Url;
             }
@@ -55,7 +55,7 @@ namespace TbsCore.Models.AccModels
                 var checkproxy = new CheckProxy();
                 await checkproxy.Execute(acc);
             }
-            else await this.Navigate($"{acc.AccInfo.ServerUrl}/login.php");
+            else await this.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
         }
 
         private void InitHttpClient(Access.Access a)
@@ -157,7 +157,7 @@ namespace TbsCore.Models.AccModels
             bool repeat;
             do
             {
-                if (IsBrowserClosed()) throw new NoChromeException();
+                CheckChromeOpen();
 
                 try
                 {
@@ -191,14 +191,14 @@ namespace TbsCore.Models.AccModels
 
         public void UpdateHtml()
         {
-            if (IsBrowserClosed()) throw new NoChromeException();
+            CheckChromeOpen();
 
             Html.LoadHtml(Driver.PageSource);
         }
 
         public void ExecuteScript(string script)
         {
-            if (IsBrowserClosed()) throw new NoChromeException();
+            CheckChromeOpen();
 
             Driver.ExecuteScript(script);
         }
@@ -213,8 +213,6 @@ namespace TbsCore.Models.AccModels
         /// <returns>Long for number, bool for boolean, string otherwise</returns>
         public T GetJsObj<T>(string obj)
         {
-            if (IsBrowserClosed()) throw new NoChromeException();
-
             IJavaScriptExecutor js = acc.Wb.Driver;
             return (T)js.ExecuteScript($"return {obj};");
         }
@@ -224,7 +222,7 @@ namespace TbsCore.Models.AccModels
         /// </summary>
         public string GetBearerToken()
         {
-            if (IsBrowserClosed()) throw new NoChromeException();
+            CheckChromeOpen();
 
             IJavaScriptExecutor js = acc.Wb.Driver;
             return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
@@ -232,38 +230,31 @@ namespace TbsCore.Models.AccModels
 
         public IWebElement FindElementById(string element)
         {
-            if (IsBrowserClosed()) throw new NoChromeException();
+            CheckChromeOpen();
 
             return Driver.FindElementById(element);
         }
 
         public IWebElement FindElementByXPath(string xPath)
         {
-            if (IsBrowserClosed()) throw new NoChromeException();
+            CheckChromeOpen();
 
             return Driver.FindElementByXPath(xPath);
         }
 
         public ITargetLocator SwitchTo()
         {
-            if (IsBrowserClosed()) throw new NoChromeException();
+            CheckChromeOpen();
 
             return Driver.SwitchTo();
         }
 
-        public bool IsBrowserClosed()
+        /// <summary>
+        /// Throw WebDriverException when Chrome closed or not responding
+        /// </summary>
+        public void CheckChromeOpen()
         {
-            try
-            {
-                // we test with title of our chrome tab
-                _ = Driver.Title;
-            }
-            catch (WebDriverException)
-            {
-                return true;
-            }
-
-            return false;
+            _ = Driver.Title;
         }
 
         public void Dispose()
@@ -288,12 +279,5 @@ namespace TbsCore.Models.AccModels
 
             chromeService.Dispose();
         }
-    }
-
-    // just for catching
-    // if this is anti-pattern or bad desgin
-    // tell me, i'm still learning ._.
-    public class NoChromeException : Exception
-    {
     }
 }

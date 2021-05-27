@@ -102,7 +102,7 @@ namespace TbsCore.Helpers
                         break;
                 }
             }
-            catch (NoChromeException)
+            catch (OpenQA.Selenium.WebDriverException)
             {
                 acc.Logger.Warning($"Chrome has problem while executing task {task.GetName()}! Vill {task.Vill?.Name}. Try reopen Chrome");
 

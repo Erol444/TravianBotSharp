@@ -27,7 +27,7 @@ namespace TbsCore.Helpers
                 }
                 return true;
             }
-            catch (NoChromeException e)
+            catch (WebDriverException e)
             {
                 throw e;
             }
@@ -53,7 +53,7 @@ namespace TbsCore.Helpers
             {
                 return acc.Wb.GetJsObj<T>(obj);
             }
-            catch (NoChromeException e)
+            catch (WebDriverException e)
             {
                 throw e;
             }
@@ -73,7 +73,7 @@ namespace TbsCore.Helpers
             {
                 return acc.Wb.GetBearerToken();
             }
-            catch (NoChromeException e)
+            catch (WebDriverException e)
             {
                 throw e;
             }

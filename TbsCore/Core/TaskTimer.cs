@@ -21,7 +21,7 @@ namespace TbsCore.Models.AccModels
         public TaskTimer(Account account)
         {
             acc = account;
-            Timer = new Timer(1000);
+            Timer = new Timer(500);
             Timer.Elapsed += TimerElapsed;
             Start();
         }
@@ -71,7 +71,7 @@ namespace TbsCore.Models.AccModels
                     {
                         await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
                     }
-                    catch (NoChromeException)
+                    catch (WebDriverException)
                     {
                         acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
 
