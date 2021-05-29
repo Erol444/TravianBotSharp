@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using OpenQA.Selenium;
+
 using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
@@ -102,7 +105,7 @@ namespace TbsCore.Helpers
                         break;
                 }
             }
-            catch (OpenQA.Selenium.WebDriverException)
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
             {
                 acc.Logger.Warning($"Chrome has problem while executing task {task.GetName()}! Vill {task.Vill?.Name}. Try reopen Chrome");
 

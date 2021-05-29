@@ -27,7 +27,7 @@ namespace TbsCore.Helpers
                 }
                 return true;
             }
-            catch (WebDriverException e)
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
             {
                 throw e;
             }
@@ -53,7 +53,7 @@ namespace TbsCore.Helpers
             {
                 return acc.Wb.GetJsObj<T>(obj);
             }
-            catch (WebDriverException e)
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
             {
                 throw e;
             }
@@ -73,7 +73,7 @@ namespace TbsCore.Helpers
             {
                 return acc.Wb.GetBearerToken();
             }
-            catch (WebDriverException e)
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
             {
                 throw e;
             }

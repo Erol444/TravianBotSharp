@@ -71,7 +71,7 @@ namespace TbsCore.Models.AccModels
                     {
                         await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
                     }
-                    catch (WebDriverException)
+                    catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
                     {
                         acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
 
