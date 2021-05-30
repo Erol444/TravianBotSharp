@@ -13,7 +13,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             await VersionHelper.Navigate(acc, "/hero.php?t=4&action=sell", "/hero/auction?action=sell");
 
-            acc.Wb.Driver.ExecuteScript($"document.getElementsByClassName(\"green ok dialogButtonOk\")[0].click()");
+            acc.Wb.ExecuteScript($"document.getElementsByClassName(\"green ok dialogButtonOk\")[0].click()");
 
             return TaskRes.Executed;
         }

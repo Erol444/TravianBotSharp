@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Chrome;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -8,15 +9,26 @@ using TbsCore.Helpers;
 using TbsCore.Models;
 using TbsCore.Tasks.LowLevel;
 using TbsCore.Helpers.Extension;
+using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Models.AccModels
 {
     public class WebBrowserInfo : IDisposable
     {
-        public ChromeDriver Driver { get; set; }
+        private ChromeDriver Driver { get; set; }
 
         private ChromeDriverService chromeService;
-        public string CurrentUrl => this.Driver.Url;
+
+        public string CurrentUrl
+        {
+            get
+            {
+                CheckChromeOpen();
+
+                return this.Driver.Url;
+            }
+        }
+
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
 
@@ -43,7 +55,7 @@ namespace TbsCore.Models.AccModels
                 var checkproxy = new CheckProxy();
                 await checkproxy.Execute(acc);
             }
-            else await this.Navigate(acc.AccInfo.ServerUrl);
+            else await this.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
         }
 
         private void InitHttpClient(Access.Access a)
@@ -64,13 +76,14 @@ namespace TbsCore.Models.AccModels
 
             if (!string.IsNullOrEmpty(access.Proxy))
             {
+                // add WebRTC Leak
+                var extensionPath = DisableWebRTCLeak.CreateExtension(username, server, access);
+                options.AddExtension(extensionPath);
+
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    var extensionPath = ProxyAuthentication.CreateExtension(username, server, access);
-                    options.AddExtension(extensionPath);
-                    // add WebRTC Leak
-                    extensionPath = DisableWebRTCLeak.CreateExtension(username, server, access);
+                    extensionPath = ProxyAuthentication.CreateExtension(username, server, access);
                     options.AddExtension(extensionPath);
                 }
 
@@ -91,7 +104,7 @@ namespace TbsCore.Models.AccModels
             options.AddArguments("--mute-audio");
 
             // Make browser headless to preserve memory resources
-            if (acc.Settings.HeadlessMode) options.AddArguments("headless");
+            // if (acc.Settings.HeadlessMode) options.AddArguments("headless");
 
             // Do not download images in order to preserve memory resources / proxy traffic
             if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
@@ -144,6 +157,8 @@ namespace TbsCore.Models.AccModels
             bool repeat;
             do
             {
+                CheckChromeOpen();
+
                 try
                 {
                     // Will throw exception after timeout
@@ -170,10 +185,77 @@ namespace TbsCore.Models.AccModels
             await Task.Delay(AccountHelper.Delay());
 
             UpdateHtml();
+
             await TaskExecutor.PageLoaded(acc);
         }
 
-        public void UpdateHtml() => Html.LoadHtml(Driver.PageSource);
+        public void UpdateHtml()
+        {
+            CheckChromeOpen();
+
+            Html.LoadHtml(Driver.PageSource);
+        }
+
+        public void ExecuteScript(string script)
+        {
+            CheckChromeOpen();
+
+            Driver.ExecuteScript(script);
+        }
+
+        /// <summary>
+        /// Gets JS object from the game. Query examples:
+        /// window.TravianDefaults.Map.Size.top
+        /// resources.maxStorage
+        /// Travian.Game.speed
+        /// </summary>
+        /// <param name="obj">JS object</param>
+        /// <returns>Long for number, bool for boolean, string otherwise</returns>
+        public T GetJsObj<T>(string obj)
+        {
+            IJavaScriptExecutor js = acc.Wb.Driver;
+            return (T)js.ExecuteScript($"return {obj};");
+        }
+
+        /// <summary>
+        /// Get bearer token for Travian T4.5
+        /// </summary>
+        public string GetBearerToken()
+        {
+            CheckChromeOpen();
+
+            IJavaScriptExecutor js = acc.Wb.Driver;
+            return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+        }
+
+        public IWebElement FindElementById(string element)
+        {
+            CheckChromeOpen();
+
+            return Driver.FindElementById(element);
+        }
+
+        public IWebElement FindElementByXPath(string xPath)
+        {
+            CheckChromeOpen();
+
+            return Driver.FindElementByXPath(xPath);
+        }
+
+        public ITargetLocator SwitchTo()
+        {
+            CheckChromeOpen();
+
+            return Driver.SwitchTo();
+        }
+
+        /// <summary>
+        /// Throw WebDriverException when Chrome closed or not responding
+        /// </summary>
+        public void CheckChromeOpen()
+        {
+            _ = Driver.Title;
+        }
 
         public void Dispose()
         {
@@ -185,14 +267,13 @@ namespace TbsCore.Models.AccModels
                     Driver.Quit(); // Also disposes
                     Driver = default;
                 }
-                catch (Exception e)
+                catch (WebDriverException)
                 {
-                    // broswer closed because user or crash ??
-                    if (e.Message.Contains("chrome not reachable"))
-                    {
-                        Driver.Quit(); // Also disposes
-                        Driver = default;
-                    }
+                    Driver.Quit();
+                    Driver = default;
+                }
+                catch (Exception)
+                {
                 }
             }
 

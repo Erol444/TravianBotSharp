@@ -10,7 +10,6 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             var leftBar = acc.Wb.Html.GetElementbyId("sidebarBeforeContent");
             var button = leftBar.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
             if (button == null)
@@ -20,7 +19,7 @@ namespace TbsCore.Tasks.LowLevel
             var buttonid = button.GetAttributeValue("id", "");
             await Task.Delay(AccountHelper.Delay() / 3);
 
-            acc.Wb.Driver.ExecuteScript($"document.getElementById('{buttonid}').click()"); //boost production
+            acc.Wb.ExecuteScript($"document.getElementById('{buttonid}').click()"); //boost production
 
             return TaskRes.Executed;
         }

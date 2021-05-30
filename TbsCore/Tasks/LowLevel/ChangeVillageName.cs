@@ -12,8 +12,6 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
             switch (acc.AccInfo.ServerVersion)
             {
                 case ServerVersionEnum.T4_4:
@@ -30,12 +28,12 @@ namespace TbsCore.Tasks.LowLevel
                     foreach (var change in ChangeList)
                     {
                         var script = $"document.getElementsByName('dname[{change.Item1}]=')[0].value='{change.Item2}'";
-                        wb.ExecuteScript(script); //insert new name into the textbox
+                        acc.Wb.ExecuteScript(script); //insert new name into the textbox
                     }
 
                     await Task.Delay(AccountHelper.Delay());
 
-                    wb.ExecuteScript("document.getElementById('PlayerProfileEditor').submit()"); //click save button
+                    acc.Wb.ExecuteScript("document.getElementById('PlayerProfileEditor').submit()"); //click save button
 
                     return TaskRes.Executed;
 
@@ -54,7 +52,6 @@ namespace TbsCore.Tasks.LowLevel
                     }
 
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/profile/edit");
-
                     foreach (var change in ChangeList)
                     {
                         //seem like they want we typing instead of setting value (= =)
@@ -62,14 +59,13 @@ namespace TbsCore.Tasks.LowLevel
 
                         var script = $"document.getElementsByName('dname[{change.Item1}]=')[0].value=''";
                         //empty value of textbox
-                        wb.ExecuteScript(script);
+                        acc.Wb.ExecuteScript(script);
                         //insert new name into the textbox
-                        wb.FindElementByXPath($"//input[@name='dname[{change.Item1}]=']").SendKeys(change.Item2);
+                        acc.Wb.FindElementByXPath($"//input[@name='dname[{change.Item1}]=']").SendKeys(change.Item2);
                     }
 
                     await Task.Delay(AccountHelper.Delay());
-
-                    wb.FindElementById("btn_ok").Click();  //click save button
+                    acc.Wb.FindElementById("btn_ok").Click();  //click save button
 
                     return TaskRes.Executed;
             }

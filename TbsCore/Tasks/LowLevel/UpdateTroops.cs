@@ -15,7 +15,6 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             // If we have Plus account, just check that.
             if (acc.AccInfo.PlusAccount)
             {

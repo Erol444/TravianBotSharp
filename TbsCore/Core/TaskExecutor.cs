@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
+using OpenQA.Selenium;
+
 using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
@@ -54,6 +57,7 @@ namespace TbsCore.Helpers
                 acc.Tasks.Add(new LoginTask() { ExecuteAt = DateTime.MinValue });
                 return;
             }
+
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?ok");
@@ -76,17 +80,12 @@ namespace TbsCore.Helpers
             // Before every execution, wait a random delay
             await Task.Delay(AccountHelper.Delay());
 
-            if (acc.Wb?.CurrentUrl == null && task.GetType() != typeof(CheckProxy))
-            {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
-            }
-
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
+
+            acc.Logger.Information($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
 
             try
             {
-                acc.Logger.Information($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
-
                 switch (await task.Execute(acc))
                 {
                     case TaskRes.Retry:
@@ -105,6 +104,21 @@ namespace TbsCore.Helpers
                         }
                         break;
                 }
+            }
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+            {
+                acc.Logger.Warning($"Chrome has problem while executing task {task.GetName()}! Vill {task.Vill?.Name}. Try reopen Chrome");
+
+                acc.Tasks.Add(new ReopenDriver()
+                {
+                    ExecuteAt = DateTime.MinValue,
+                    Priority = TaskPriority.High,
+                    ReopenAt = DateTime.MinValue
+                });
+
+                //try exccute task after we reopen chrome 1 mintues
+
+                if (task.NextExecute == null) task.NextExecute = DateTime.MinValue.AddMinutes(1); // make sure current task is excuted after reopen driver
             }
             catch (Exception e)
             {

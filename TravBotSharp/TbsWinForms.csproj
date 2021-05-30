@@ -732,15 +732,15 @@
     <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.2.0.2\build\net461\SQLitePCLRaw.lib.e_sqlite3.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.e_sqlite3.2.0.2\build\net461\SQLitePCLRaw.lib.e_sqlite3.targets'))" />
     <Error Condition="!Exists('..\packages\Fody.6.3.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.3.0\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\Costura.Fody.5.0.2\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.5.0.2\build\Costura.Fody.props'))" />
-    <Error Condition="!Exists('..\packages\Selenium.WebDriver.ChromeDriver.89.0.4389.2300\build\Selenium.WebDriver.ChromeDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.WebDriver.ChromeDriver.89.0.4389.2300\build\Selenium.WebDriver.ChromeDriver.targets'))" />
     <Error Condition="!Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets'))" />
     <CallTarget Targets="AssemblyInfo" />
+    <Error Condition="!Exists('..\packages\Selenium.WebDriver.ChromeDriver.90.0.4430.2400\build\Selenium.WebDriver.ChromeDriver.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Selenium.WebDriver.ChromeDriver.90.0.4430.2400\build\Selenium.WebDriver.ChromeDriver.targets'))" />
   </Target>
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.2.0.2\build\net461\SQLitePCLRaw.lib.e_sqlite3.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.2.0.2\build\net461\SQLitePCLRaw.lib.e_sqlite3.targets')" />
   <Import Project="..\packages\Fody.6.3.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.3.0\build\Fody.targets')" />
-  <Import Project="..\packages\Selenium.WebDriver.ChromeDriver.89.0.4389.2300\build\Selenium.WebDriver.ChromeDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.ChromeDriver.89.0.4389.2300\build\Selenium.WebDriver.ChromeDriver.targets')" />
   <Import Project="..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets" Condition="Exists('..\packages\MSBuildTasks.1.5.0.235\build\MSBuildTasks.targets')" />
   <Target Name="AssemblyInfo">
     <AssemblyInfo CodeLanguage="CS" OutputFile="Properties\AssemblyInfo.cs" AssemblyVersion="$(BUILD_NUMBER)" AssemblyFileVersion="$(BUILD_NUMBER)" />
   </Target>
+  <Import Project="..\packages\Selenium.WebDriver.ChromeDriver.90.0.4430.2400\build\Selenium.WebDriver.ChromeDriver.targets" Condition="Exists('..\packages\Selenium.WebDriver.ChromeDriver.90.0.4430.2400\build\Selenium.WebDriver.ChromeDriver.targets')" />
 </Project>
