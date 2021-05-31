@@ -3,11 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Parsers;
 using HtmlAgilityPack;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class NPC : BotTask
     {
@@ -35,7 +34,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 if (timeout < DateTime.Now)
                 {
-                    acc.Wb.Log($"NPC in village {Vill.Name} is time out. Retry after 3 mins");
+                    acc.Logger.Warning($"NPC in village {Vill.Name} is time out. Retry after 3 mins");
                     this.NextExecute = DateTime.Now.AddMinutes(3);
                     return TaskRes.Executed;
                 }
@@ -47,7 +46,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (!Vill.Market.Npc.NpcIfOverflow && MarketHelper.NpcWillOverflow(Vill, targetRes))
             {
-                acc.Wb.Log($"NPC in village {Vill.Name} will be overflow. Stop NPC");
+                acc.Logger.Warning($"NPC in village {Vill.Name} will be overflow. Stop NPC");
                 return TaskRes.Executed;
             }
             for (int i = 0; i < 4; i++)

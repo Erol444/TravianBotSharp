@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Helpers;
+using static TbsCore.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class AdventureParser
     {
@@ -14,6 +14,7 @@ namespace TravBotSharp.Files.Parsers
             string count = adventureButton.Descendants().Where(x => x.Attributes.Any(a => a.Value == "speechBubbleContent")).FirstOrDefault().InnerText;
             return (int)Parser.ParseNum(count);
         }
+
         public static List<Adventure> GetAdventures(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             List<Adventure> adventuresList = new List<Adventure>();
@@ -32,6 +33,7 @@ namespace TravBotSharp.Files.Parsers
                         difficulty = adv.Descendants("img").FirstOrDefault().GetAttributeValue("alt", "") == "Normal" ?
                             DifficultyEnum.Normal : DifficultyEnum.Difficult;
                         break;
+
                     case ServerVersionEnum.T4_5:
                         difficulty = adv.Descendants("img").FirstOrDefault().GetAttributeValue("class", "") == "adventureDifficulty1" ?
                             DifficultyEnum.Normal : DifficultyEnum.Difficult;
@@ -55,6 +57,7 @@ namespace TravBotSharp.Files.Parsers
                             Ref = href
                         });
                         break;
+
                     case Classificator.ServerVersionEnum.T4_5:
                         var elementId = adv.Descendants("td").FirstOrDefault(x => x.HasClass("goTo")).Id;
                         adventuresList.Add(new Adventure()

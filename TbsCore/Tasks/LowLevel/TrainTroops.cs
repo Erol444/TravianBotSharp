@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+using static TbsCore.Helpers.Classificator;
+
+namespace TbsCore.Tasks.LowLevel
 {
     /// <summary>
     /// Old train troops task, only here because of high speed TTWars servers.
@@ -20,14 +20,17 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// Great barracks/stable?
         /// </summary>
         public bool Great { get; set; }
+
         /// <summary>
         /// Which troop we want to train
         /// </summary>
         public TroopsEnum Troop { get; set; }
+
         /// <summary>
         /// If true, will just check CurrentlyTraining and Researched.
         /// </summary>
         public bool UpdateOnly { get; set; }
+
         /// <summary>
         /// If we play on UNL/VIP, don't repeat this cycle; this tasks gets called every time after FL/buying res
         /// </summary>
@@ -39,7 +42,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             building = TroopsHelper.GetTroopBuilding(Troop, Great);
 
-            // Switch hero helmet. If hero will be switched, this TrainTroops task 
+            // Switch hero helmet. If hero will be switched, this TrainTroops task
             // will be executed right after the hero helmet switch
             if (HeroHelper.SwitchHelmet(acc, this.Vill, building, this)) return TaskRes.Executed;
 
@@ -57,7 +60,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (troopNode == null)
             {
-                acc.Wb.Log($"Bot tried to train {Troop} in {Vill.Name}, but couldn't find it in {building}! Are you sure you have {Troop} researched?");
+                acc.Logger.Warning($"Bot tried to train {Troop} in {Vill.Name}, but couldn't find it in {building}! Are you sure you have {Troop} researched?");
                 return TaskRes.Executed;
             }
             while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
@@ -72,6 +75,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         .FirstOrDefault(x => x.Name == "a")?.InnerText ?? "0"
                         );
                     break;
+
                 case ServerVersionEnum.T4_5:
                     maxNum = Parser.RemoveNonNumeric(
                             troopNode.ChildNodes
@@ -107,6 +111,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             return TaskRes.Executed;
         }
+
         public void UpdateCurrentlyTraining(HtmlDocument htmlDoc, Account acc)
         {
             var ct = TroopsParser.GetTroopsCurrentlyTraining(htmlDoc);
@@ -115,20 +120,25 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 case Classificator.BuildingEnum.Barracks:
                     Vill.Troops.CurrentlyTraining.Barracks = ct;
                     break;
+
                 case Classificator.BuildingEnum.Stable:
                     Vill.Troops.CurrentlyTraining.Stable = ct;
                     break;
+
                 case Classificator.BuildingEnum.GreatBarracks:
                     Vill.Troops.CurrentlyTraining.GB = ct;
                     break;
+
                 case Classificator.BuildingEnum.GreatStable:
                     Vill.Troops.CurrentlyTraining.GS = ct;
                     break;
+
                 case Classificator.BuildingEnum.Workshop:
                     Vill.Troops.CurrentlyTraining.Workshop = ct;
                     break;
             }
         }
+
         /// <summary>
         /// Repeats sending resources and training troops. Needs to fill up training above X hours.
         /// </summary>
@@ -144,7 +154,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 // Check If all troops are filled in this vill before sending resources back to main village
                 if (TroopsHelper.EverythingFilled(acc, Vill))
                 {
-                    TaskExecutor.AddTask(acc, new SendResToMain() { Vill = this.Vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
+                    acc.Tasks.Add(new SendResToMain() { Vill = this.Vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
                 }
             }
 
@@ -163,14 +173,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 }
                 else
                 {
-                    TaskExecutor.AddTask(acc, new UpdateDorf1()
+                    acc.Tasks.Add(new UpdateDorf1()
                     {
                         ExecuteAt = nextCycle,
                         Vill = this.Vill
                     });
                 }
 
-                TaskExecutor.AddTask(acc, new SendResFillTroops()
+                acc.Tasks.Add(new SendResFillTroops()
                 {
                     ExecuteAt = nextCycle.AddMilliseconds(1),
                     Vill = mainVill,
@@ -178,7 +188,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     TrainTask = this
                 });
                 this.NextExecute = nextCycle.AddMinutes(30); //will get overwritten in sendResFillTroops
-                TaskExecutor.ReorderTaskList(acc);
+                acc.Tasks.ReOrder();
             }
             else
             {

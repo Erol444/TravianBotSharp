@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class TTWarsBuyAdventure : BotTask
     {
@@ -14,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var button = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("buyAdventure"));
             if (button == null)
             {
-                acc.Wb.Log("No button 'Buy' button found, perhaps you are not on vip ttwars server?");
+                acc.Logger.Warning("No button 'Buy' button found, perhaps you are not on vip ttwars server?");
                 return TaskRes.Executed;
             }
             wb.ExecuteScript($"document.getElementById('{button.Id}').click()"); //Excgabge resources button

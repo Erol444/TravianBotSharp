@@ -4,14 +4,13 @@ using System.Linq;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
 
-namespace TravBotSharp.Files.TravianData
+using static TbsCore.Helpers.Classificator;
+
+namespace TbsCore.TravianData
 {
     public static class BuildingsData
     {
-
         /// <summary>
         /// Get the building cost for specific level
         /// </summary>
@@ -73,14 +72,19 @@ namespace TravBotSharp.Files.TravianData
             {
                 case TribeEnum.Teutons:
                     return BuildingEnum.EarthWall;
+
                 case TribeEnum.Romans:
                     return BuildingEnum.CityWall;
+
                 case TribeEnum.Gauls:
                     return BuildingEnum.Palisade;
+
                 case TribeEnum.Egyptians:
                     return BuildingEnum.StoneWall;
+
                 case TribeEnum.Huns:
                     return BuildingEnum.MakeshiftWall;
+
                 default:
                     return BuildingEnum.Site;
             }
@@ -154,6 +158,7 @@ namespace TravBotSharp.Files.TravianData
                 case BuildingEnum.IronFoundry:
                 case BuildingEnum.Bakery:
                     return BuildingCategoryEnum.Resources;
+
                 case BuildingEnum.RallyPoint:
                 case BuildingEnum.EarthWall:
                 case BuildingEnum.CityWall:
@@ -170,6 +175,7 @@ namespace TravBotSharp.Files.TravianData
                 case BuildingEnum.Workshop:
                 case BuildingEnum.TournamentSquare:
                     return BuildingCategoryEnum.Military;
+
                 default:
                     return BuildingCategoryEnum.Infrastructure;
             }
@@ -186,151 +192,193 @@ namespace TravBotSharp.Files.TravianData
                 case BuildingEnum.IronMine:
                 case BuildingEnum.Cropland:
                     break;
+
                 case BuildingEnum.Sawmill:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Woodcutter, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
                     break;
+
                 case BuildingEnum.Brickyard:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.ClayPit, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
                     break;
+
                 case BuildingEnum.IronFoundry:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.IronMine, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
                     break;
+
                 case BuildingEnum.GrainMill:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Cropland, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
                     break;
+
                 case BuildingEnum.Bakery:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Cropland, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.GrainMill, Level = 5 });
                     break;
+
                 case BuildingEnum.Warehouse:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 1 });
                     break;
+
                 case BuildingEnum.Granary:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 1 });
                     break;
+
                 case BuildingEnum.Blacksmith:
                     //DOESN'T EXIST ANYMORE
                     tribe = TribeEnum.Nature; //Just a dirty hack, since user can't be Nature, he can't build Blacksmith
                     break;
+
                 case BuildingEnum.Smithy:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 1 });
                     break;
+
                 case BuildingEnum.TournamentSquare:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 15 });
                     break;
+
                 case BuildingEnum.MainBuilding:
                     break;
+
                 case BuildingEnum.RallyPoint:
                     break;
+
                 case BuildingEnum.Marketplace:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Warehouse, Level = 1 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Granary, Level = 1 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
                     break;
+
                 case BuildingEnum.Embassy:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 1 });
                     break;
+
                 case BuildingEnum.Barracks:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 1 });
                     break;
+
                 case BuildingEnum.Stable:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Smithy, Level = 3 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     break;
+
                 case BuildingEnum.Workshop:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
                     break;
+
                 case BuildingEnum.Academy:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Barracks, Level = 3 });
                     break;
+
                 case BuildingEnum.Cranny:
                     break;
+
                 case BuildingEnum.TownHall:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 10 });
                     break;
+
                 case BuildingEnum.Residence:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 }); //no palace!
                     break;
+
                 case BuildingEnum.Palace:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 }); //no residence!
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Embassy, Level = 1 });
                     break;
+
                 case BuildingEnum.Treasury:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 10 });
                     break;
+
                 case BuildingEnum.TradeOffice:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Marketplace, Level = 20 });
                     break;
+
                 case BuildingEnum.GreatBarracks:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Barracks, Level = 20 }); //not capital!
                     break;
+
                 case BuildingEnum.GreatStable:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 20 }); //not capital
                     break;
+
                 case BuildingEnum.CityWall:
                     tribe = TribeEnum.Romans;
                     break;
+
                 case BuildingEnum.EarthWall:
                     tribe = TribeEnum.Teutons;
                     break;
+
                 case BuildingEnum.Palisade:
                     tribe = TribeEnum.Gauls;
                     break;
+
                 case BuildingEnum.StonemasonsLodge:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 }); //capital
                     break;
+
                 case BuildingEnum.Brewery:
                     tribe = TribeEnum.Teutons;
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Granary, Level = 20 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 10 });
                     break;
+
                 case BuildingEnum.Trapper:
                     tribe = TribeEnum.Gauls;
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 1 });
                     break;
+
                 case BuildingEnum.HerosMansion:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 3 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 1 });
                     break;
+
                 case BuildingEnum.GreatWarehouse:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 10 }); //art/ww vill
                     break;
+
                 case BuildingEnum.GreatGranary:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 10 }); //art/ww vill
                     break;
+
                 case BuildingEnum.WW: //ww vill
                     tribe = TribeEnum.Nature; //Just a dirty hack, since user can't be Nature, bot can't construct WW.
                     break;
+
                 case BuildingEnum.HorseDrinkingTrough:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 20 });
                     tribe = TribeEnum.Romans;
                     break;
+
                 case BuildingEnum.StoneWall:
                     tribe = TribeEnum.Egyptians;
                     break;
+
                 case BuildingEnum.MakeshiftWall:
                     tribe = TribeEnum.Huns;
                     break;
+
                 case BuildingEnum.CommandCenter: //no res/palace
                     tribe = TribeEnum.Huns;
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
                     break;
+
                 case BuildingEnum.Waterworks:
                     tribe = TribeEnum.Egyptians;
                     ret.Add(new Prerequisite() { Building = BuildingEnum.HerosMansion, Level = 10 });
                     break;
+
                 default: break;
             }
             return (tribe, ret);

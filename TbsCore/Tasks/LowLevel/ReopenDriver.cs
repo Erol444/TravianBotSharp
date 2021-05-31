@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     /// <summary>
     /// Task will close and reopen driver then the next Normal/High priority task has to be executed
@@ -14,6 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// Lowest task priority that will cause the bot to wake up
         /// </summary>
         public TaskPriority LowestPrio { get; set; }
+
         /// <summary>
         /// Reopen the chrome at specific time
         /// </summary>

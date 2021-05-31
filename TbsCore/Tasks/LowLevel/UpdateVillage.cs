@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class UpdateVillage : BotTask
     {
@@ -14,10 +13,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// If village is new, we want to import the building tasks to the village
         /// </summary>
         public bool ImportTasks { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
-            TaskExecutor.RemoveTaskTypes(acc, typeof(UpdateDorf1), Vill, this);
-            TaskExecutor.RemoveTaskTypes(acc, typeof(UpdateDorf2), Vill, this);
+            acc.Tasks.Remove(typeof(UpdateDorf1), Vill, thisTask: this);
+            acc.Tasks.Remove(typeof(UpdateDorf2), Vill, thisTask: this);
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php"); // Update dorf1
             await Task.Delay(AccountHelper.Delay());
@@ -55,10 +55,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             {
                 // From overview we get all researched troops and their levels
                 await VersionHelper.Navigate(acc, "/dorf3.php?s=5&su=2", "/village/statistics/troops?su=2");
-                
+
                 OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);
                 // We have updated all villages at the same time. No need to continue.
-                acc.Tasks.RemoveAll(x => x.GetType() == typeof(UpdateTroops));
+                acc.Tasks.Remove(typeof(UpdateTroops));
                 return;
             }
 
@@ -72,6 +72,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return;
             }
         }
+
         private readonly Classificator.BuildingEnum[] trainingBuildings = new Classificator.BuildingEnum[] {
             Classificator.BuildingEnum.Barracks,
             Classificator.BuildingEnum.Stable,
@@ -95,15 +96,19 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     case Classificator.BuildingEnum.Barracks:
                         Vill.Troops.CurrentlyTraining.Barracks = ct;
                         break;
+
                     case Classificator.BuildingEnum.Stable:
                         Vill.Troops.CurrentlyTraining.Stable = ct;
                         break;
+
                     case Classificator.BuildingEnum.GreatBarracks:
                         Vill.Troops.CurrentlyTraining.GB = ct;
                         break;
+
                     case Classificator.BuildingEnum.GreatStable:
                         Vill.Troops.CurrentlyTraining.GS = ct;
                         break;
+
                     case Classificator.BuildingEnum.Workshop:
                         Vill.Troops.CurrentlyTraining.Workshop = ct;
                         break;
@@ -112,6 +117,5 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 await Task.Delay(AccountHelper.Delay());
             }
         }
-
     }
 }

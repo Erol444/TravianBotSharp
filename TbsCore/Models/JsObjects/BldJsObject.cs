@@ -4,7 +4,7 @@ using System.Text;
 using System.Globalization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TbsCore.Models.JsObjects
 {

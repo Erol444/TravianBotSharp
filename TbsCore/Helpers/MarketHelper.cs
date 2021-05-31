@@ -1,25 +1,23 @@
-﻿
-
-using HtmlAgilityPack;
+﻿using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Models.ResourceModels;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
 
-namespace TravBotSharp.Files.Helpers
+using TbsCore.Parsers;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
+
+namespace TbsCore.Helpers
 {
     public static class MarketHelper
     {
         private static readonly int[] MerchantSpeed = { 0, 16, 12, 24, 0, 0, 16, 20 };
+
         public static int GetMerchantsSpeed(Classificator.TribeEnum tribe) => MerchantSpeed[(int)tribe];
 
         /// <summary>
@@ -33,12 +31,11 @@ namespace TravBotSharp.Files.Helpers
             if (!vill.Market.Settings.Configuration.Enabled) return DateTime.MaxValue;
 
             // There already is a sendResources BotTask for this village
-            var transitTask = (SendResources)acc.Tasks.FirstOrDefault(x =>
-                x.GetType() == typeof(SendResources) &&
-                ((SendResources)x).Coordinates == vill.Coordinates
-            );
+            var transitTask = (SendResources)acc.Tasks.FindTasks(typeof(SendResources)).FirstOrDefault(x => ((SendResources)x).Coordinates == vill.Coordinates);
+
             //vill.Market.Settings.Configuration.
             if (transitTask != null) return transitTask.Configuration.TransitArrival;
+
             //Less than 5min ago we already sent resources. Just to catch bugs.
             //if(vill.Market.)
 
@@ -83,8 +80,7 @@ namespace TravBotSharp.Files.Helpers
                 Resources = sendRes
             };
 
-
-            TaskExecutor.AddTask(acc, sendResTask);
+            acc.Tasks.Add(sendResTask);
 
             //AddMinutes(1) since bot has to wait for the SendResources task and then
             //go to the marketplace and send resources
@@ -160,7 +156,6 @@ namespace TravBotSharp.Files.Helpers
                     var remainder = sendRes[i] % (long)Math.Pow(10, digits - 2);
                     sendRes[i] -= remainder;
                     await DriverHelper.WriteById(acc, "r" + (i + 1), sendRes[i]);
-
                 }
                 await Task.Delay(AccountHelper.Delay() / 5);
             }
@@ -178,7 +173,7 @@ namespace TravBotSharp.Files.Helpers
 
             var durNode = acc.Wb.Html.GetElementbyId("target_validate");
 
-            if(durNode == null && acc.Wb.Html.GetElementbyId("prepareError") != null)
+            if (durNode == null && acc.Wb.Html.GetElementbyId("prepareError") != null)
             {
                 // Error "Abuse! You have not enough resources." is displayed.
             }
@@ -211,6 +206,7 @@ namespace TravBotSharp.Files.Helpers
         {
             return CalculateTransitTime(acc, targetVillage, AccountHelper.GetMainVillage(acc));
         }
+
         private static TimeSpan CalculateTransitTime(Account acc, Village vill1, Village vill2)
         {
             var mainVill = AccountHelper.GetMainVillage(acc);
@@ -277,7 +273,6 @@ namespace TravBotSharp.Files.Helpers
             return ret;
         }
 
-
         /// <summary>
         /// Calculates how many resources should be sent to the main village based on configurable limit
         /// </summary>
@@ -332,6 +327,7 @@ namespace TravBotSharp.Files.Helpers
                                 );
                         }
                         break;
+
                     case TransitType.Returning:
                         time = transit.Arrival;
                         if (transit.RepeatTimes > 1)
@@ -350,15 +346,15 @@ namespace TravBotSharp.Files.Helpers
 
         public static void ReStartSendingToMain(Account acc, Village vill)
         {
-            acc.Tasks.RemoveAll(x => x.GetType() == typeof(SendResToMain) && x.Vill == vill);
+            acc.Tasks.Remove(typeof(SendResToMain), vill);
 
             if (vill.Settings.Type == VillType.Support && vill.Settings.SendRes)
             {
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new SendResToMain()
+                acc.Tasks.Add(new SendResToMain()
                 {
                     ExecuteAt = DateTime.Now,
                     Vill = vill
-                });
+                }, true, vill);
             }
         }
     }

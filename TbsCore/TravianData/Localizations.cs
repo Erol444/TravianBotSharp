@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Net;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Models.ResourceModels;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Models.ResourceModels;
+using static TbsCore.Helpers.Classificator;
 
-namespace TravBotSharp.Files.TravianData
+namespace TbsCore.TravianData
 {
     /// <summary>
     /// Class for dealing with localization. TODO: add new languages, save language into the acc/access model

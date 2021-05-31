@@ -1,5 +1,4 @@
 ﻿using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -7,24 +6,13 @@ using System.IO;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
-using TbsCore.Models.Access;
-using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Tasks.LowLevel;
+using TbsCore.Helpers.Extension;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class WebBrowserInfo : IDisposable
     {
-        // Average log length is 70 chars. 20 overhead + 70 * 2 (each char => 2 bytes)
-        // Average memory consumption for logs will thus be: 160 * maxLogCnt => ~500kB
-        private const int maxLogCnt = 1000;
-
-        public WebBrowserInfo()
-        {
-            Logs = new CircularBuffer<string>(maxLogCnt);
-        }
-
         public ChromeDriver Driver { get; set; }
 
         private ChromeDriverService chromeService;
@@ -37,31 +25,10 @@ namespace TravBotSharp.Files.Models.AccModels
         /// </summary>
         public RestClient RestClient { get; set; }
 
-        // Account Logs
-        public CircularBuffer<string> Logs { get; set; }
-
-        public event EventHandler LogHandler;
-
-        public void Log(string message, Exception e) =>
-                    Log(message + $"\n---------------------------\n{e}\n---------------------------\n");
-
-        public void Log(string msg)
-        {
-            msg = DateTime.Now.ToString("HH:mm:ss") + ": " + msg;
-            Logs.PushFront(msg);
-
-            LogHandler?.Invoke(typeof(WebBrowserInfo), new LogEventArgs() { Log = msg });
-        }
-
-        public class LogEventArgs : EventArgs
-        {
-            public string Log { get; set; }
-        }
-
         public async Task InitSelenium(Account acc, bool newAccess = true)
         {
             this.acc = acc;
-            Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
+            Access.Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
@@ -79,13 +46,13 @@ namespace TravBotSharp.Files.Models.AccModels
             else await this.Navigate(acc.AccInfo.ServerUrl);
         }
 
-        private void InitHttpClient(Access a)
+        private void InitHttpClient(Access.Access a)
         {
             RestClient = new RestClient();
             HttpHelper.InitRestClient(a, RestClient);
         }
 
-        private void SetupChromeDriver(Access access, string username, string server)
+        private void SetupChromeDriver(Access.Access access, string username, string server)
         {
             ChromeOptions options = new ChromeOptions();
 
@@ -100,7 +67,10 @@ namespace TravBotSharp.Files.Models.AccModels
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    var extensionPath = ProxyHelper.CreateExtension(username, server, access);
+                    var extensionPath = ProxyAuthentication.CreateExtension(username, server, access);
+                    options.AddExtension(extensionPath);
+                    // add WebRTC Leak
+                    extensionPath = DisableWebRTCLeak.CreateExtension(username, server, access);
                     options.AddExtension(extensionPath);
                 }
 
@@ -134,6 +104,7 @@ namespace TravBotSharp.Files.Models.AccModels
             // Hide command prompt
             chromeService = ChromeDriverService.CreateDefaultService();
             chromeService.HideCommandPromptWindow = true;
+
             try
             {
                 if (acc.Settings.OpenMinimized)
@@ -150,7 +121,7 @@ namespace TravBotSharp.Files.Models.AccModels
             }
             catch (Exception e)
             {
-                Log($"Error opening chrome driver! Is it already opened?", e);
+                acc.Logger.Error(e, $"Error opening chrome driver! Is it already opened?");
             }
         }
 
@@ -181,8 +152,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
                 catch (Exception e)
                 {
-                    if (acc.Wb == null) return;
-                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened", e);
+                    acc.Logger.Error(e, $"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened");
                     repeat = true;
                     if (5 <= ++repeatCnt && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {

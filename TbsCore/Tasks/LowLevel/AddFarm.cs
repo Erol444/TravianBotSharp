@@ -1,13 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.MapModels;
-using TbsCore.Models.TroopsModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class AddFarm : BotTask
     {

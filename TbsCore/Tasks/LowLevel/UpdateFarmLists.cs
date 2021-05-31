@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Helpers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class UpdateFarmLists : BotTask
     {
@@ -17,7 +17,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var foundFLs = FarmlistParser.ParseFL(acc.Wb.Html, acc.AccInfo.ServerVersion);
             if (foundFLs == null)
             {
-                acc.Wb.Log("No FL, do you have rally point in this village?");
+                acc.Logger.Warning("No FL, do you have rally point in this village?");
                 this.Vill = AccountHelper.GetMainVillage(acc);
                 this.NextExecute = DateTime.Now.AddSeconds(10);
                 return TaskRes.Executed;

@@ -5,10 +5,10 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.SideBarModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Parsers;
+using TbsCore.Tasks.LowLevel;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class UpdateAccountObject
     {
@@ -35,7 +35,7 @@ namespace TravBotSharp.Files.Helpers
                     foundVill.UnderAttack &&
                     oldVill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
                 {
-                    TaskExecutor.AddTaskIfNotExistInVillage(acc, oldVill, new CheckAttacks() { Vill = oldVill, Priority = Tasks.BotTask.TaskPriority.High });
+                    acc.Tasks.Add(new CheckAttacks() { Vill = oldVill, Priority = Tasks.BotTask.TaskPriority.High }, true, oldVill);
                 }
 
                 oldVill.UnderAttack = foundVill.UnderAttack;
@@ -49,6 +49,7 @@ namespace TravBotSharp.Files.Helpers
             }
             return true;
         }
+
         /// <summary>
         /// Initializes a new village model and creates the task to update the village
         /// </summary>
@@ -69,12 +70,12 @@ namespace TravBotSharp.Files.Helpers
             acc.Villages.Add(vill);
 
             // Update the village
-            TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new UpdateVillage()
+            acc.Tasks.Add(new UpdateVillage()
             {
                 ExecuteAt = DateTime.Now.AddHours(-2),
                 Vill = vill,
                 ImportTasks = true
-            });
+            }, true, vill);
 
             DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);
 
@@ -107,12 +108,12 @@ namespace TravBotSharp.Files.Helpers
                     newVillageFromList.Name = NewVillageHelper.GenerateName(acc);
                 }
                 acc.NewVillages.Locations.Remove(newVillageFromList);
-                TaskExecutor.AddTaskIfNotExists(acc,
+                acc.Tasks.Add(
                     new ChangeVillageName()
                     {
                         ExecuteAt = DateTime.Now,
                         ChangeList = new List<(int, string)> { (vill.Id, newVillageFromList.Name) }
-                    });
+                    }, true);
             }
         }
     }

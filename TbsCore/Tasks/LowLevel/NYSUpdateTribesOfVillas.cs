@@ -2,7 +2,7 @@
 using TbsCore.Models.AccModels;
 using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class NYSUpdateTribesOfVillas : BotTask
     {

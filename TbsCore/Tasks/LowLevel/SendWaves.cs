@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Helpers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class SendWaves : BotTask
     {
@@ -40,7 +40,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             for (int i = 0; i < SendWaveModels.Count; i++)
             {
                 await Task.Delay(rnd.Next(800, 1000));
-                acc.Wb.Log($"Preparing {i + 1}. wave...");
+                acc.Logger.Information($"Preparing {i + 1}. wave...");
 
                 // TODO: eliminate the need of this first request, will send a second on each wave
                 var htmlDoc1 = HttpHelper.SendGetReq(acc, "/build.php?tt=2&id=39");
@@ -127,8 +127,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     if (DateTime.Now.AddMinutes(1) < executeTime)
                     {
                         // Restart this task at the correct time
-
-                        acc.Wb.Log($"Bot will send waves in {TimeHelper.InSeconds(executeTime)} seconds");
+                        acc.Logger.Information($"Bot will send waves in {TimeHelper.InSeconds(executeTime)} seconds");
                         this.NextExecute = executeTime;
                         return TaskRes.Executed;
                     }
@@ -203,7 +202,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             for (int i = 0; i < wavesReady.Count; i++)
             {
                 lastSent = DateTime.Now;
-                acc.Wb.Log($"{DateTime.Now.Second}.{DateTime.Now.Millisecond}] Sending wave {i + 1}");
+                acc.Logger.Information($"{DateTime.Now.Second}.{DateTime.Now.Millisecond}] Sending wave {i + 1}");
                 _ = HttpHelper.SendPostReq(acc, wavesReady[i].Request);
 
                 // Wait +- 10% selected delay
@@ -217,7 +216,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 //await Task.Delay(rnd.Next(delay - delay10Percent, delay + delay10Percent));
                 if (0 < delay) await Task.Delay(delay);
             }
-            acc.Wb.Log($"Successfully sent {wavesReady.Count} waves!");
+            acc.Logger.Information($"Successfully sent {wavesReady.Count} waves!");
 
             await Task.Delay(AccountHelper.Delay() * 2);
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=2&subfilters=4");

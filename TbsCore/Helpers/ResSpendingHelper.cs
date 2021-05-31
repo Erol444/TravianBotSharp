@@ -6,9 +6,9 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
 
 namespace TbsCore.Helpers
 {
@@ -50,7 +50,7 @@ namespace TbsCore.Helpers
             task.Task.Stage = BotTask.TaskStage.Start;
             task.Task.ExecuteAt = DateTime.Now.AddHours(-1);
 
-            TaskExecutor.AddTask(acc, task.Task);
+            acc.Tasks.Add(task.Task);
             vill.UnfinishedTasks.Remove(task);
             return true;
         }
@@ -78,7 +78,7 @@ namespace TbsCore.Helpers
         /// <param name="task1">task1</param>
         /// <param name="task2">task2</param>
         /// <returns>Greater / Equal / Less than</returns>
-        private static int SortUnfinishedTasks(Account acc, VillUnfinishedTask task1, VillUnfinishedTask task2) 
+        private static int SortUnfinishedTasks(Account acc, VillUnfinishedTask task1, VillUnfinishedTask task2)
         {
             // If returned -1, task1 is less than task2
             // If returned 1, task1 is greater than task2
@@ -86,7 +86,7 @@ namespace TbsCore.Helpers
             if (!taskType.TryGetValue(task1.Task.GetType(), out var type1)) return 1;
             if (!taskType.TryGetValue(task2.Task.GetType(), out var type2)) return -1;
 
-            foreach(var spendType in acc.Settings.ResSpendingPriority)
+            foreach (var spendType in acc.Settings.ResSpendingPriority)
             {
                 if (spendType == type1 && spendType == type2)
                 {

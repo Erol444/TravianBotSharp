@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SideBarModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.SideBarModels;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class RightBarParser
     {
         public static CulturePoints GetCulturePoints(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
-
             var slot = htmlDoc.GetElementbyId("sidebarBoxVillagelist");
             if (slot == null) return null;
             var expensionSlotInfo = slot.Descendants("div").FirstOrDefault(x => x.HasClass("expansionSlotInfo"));
@@ -23,6 +21,7 @@ namespace TravBotSharp.Files.Parsers
                 case Classificator.ServerVersionEnum.T4_4:
                     nums = expensionSlotInfo.Descendants("div").FirstOrDefault(x => x.HasClass("boxTitleAdditional")).InnerText.Split('/');
                     break;
+
                 case Classificator.ServerVersionEnum.T4_5:
                     nums = expensionSlotInfo.Descendants("span").FirstOrDefault(x => x.HasClass("slots")).InnerText.Split('/');
                     break;
@@ -36,7 +35,6 @@ namespace TravBotSharp.Files.Parsers
                 VillageCount = (int)Parser.ParseNum(nums[0]),
                 NewVillagePercentage = (int)Parser.ParseNum(percentage)
             };
-
         }
 
         public static List<VillageChecked> GetVillages(HtmlAgilityPack.HtmlDocument htmlDoc)
@@ -82,8 +80,8 @@ namespace TravBotSharp.Files.Parsers
             }
             catch (Exception e) { Console.WriteLine("error " + e.Message); }
             return ret;
-
         }
+
         public static bool HasPlusAccount(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
@@ -96,6 +94,7 @@ namespace TravBotSharp.Files.Parsers
                     var on = buttons.FirstOrDefault(x => x.HasClass("barracksWhite"));
                     if (on != null) return true;
                     break;
+
                 case Classificator.ServerVersionEnum.T4_5:
                     var market = htmlDoc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("market") && x.HasClass("round"));
                     if (market == null) return false;
@@ -152,14 +151,17 @@ namespace TravBotSharp.Files.Parsers
                             case "battle":
                                 quest.category = Category.Battle;
                                 break;
+
                             case "economy":
                                 quest.category = Category.Economy;
                                 break;
+
                             case "world":
                                 quest.category = Category.World;
                                 break;
                         }
                         break;
+
                     case Classificator.ServerVersionEnum.T4_4:
                         if (node.Descendants("img").FirstOrDefault(x => x.HasClass("finished")) != null) quest.finished = true;
                         var node1 = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
@@ -170,9 +172,11 @@ namespace TravBotSharp.Files.Parsers
                             case "battle":
                                 quest.category = Category.Battle;
                                 break;
+
                             case "economy":
                                 quest.category = Category.Economy;
                                 break;
+
                             case "world":
                                 quest.category = Category.World;
                                 break;
@@ -183,6 +187,7 @@ namespace TravBotSharp.Files.Parsers
             }
             return QuestList;
         }
+
         public static List<long> GetGoldAndSilver(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             //first gold, then silver
@@ -193,14 +198,15 @@ namespace TravBotSharp.Files.Parsers
                     ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("gold")).ChildNodes.FirstOrDefault(x => x.Name == "span").InnerText));
                     ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("silver")).ChildNodes.FirstOrDefault(x => x.Name == "span").InnerText));
                     break;
+
                 case Classificator.ServerVersionEnum.T4_5:
                     ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("ajaxReplaceableGoldAmount")).InnerText));
                     ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("ajaxReplaceableSilverAmount")).InnerText));
                     break;
-
             }
             return ret;
         }
+
         public static long GetFreeCrop(HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             return Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("stockBarFreeCrop").InnerHtml);

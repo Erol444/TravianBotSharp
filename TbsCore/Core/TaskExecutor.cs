@@ -8,12 +8,12 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.JsObjects;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
-using static TravBotSharp.Files.Tasks.BotTask;
+using TbsCore.Parsers;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
+using static TbsCore.Tasks.BotTask;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class TaskExecutor
     {
@@ -27,7 +27,7 @@ namespace TravBotSharp.Files.Helpers
         {
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
-                acc.Wb.Log("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
+                acc.Logger.Warning("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
                 acc.TaskTimer.Stop();
                 return;
             }
@@ -39,19 +39,19 @@ namespace TravBotSharp.Files.Helpers
             if (CheckContextualHelp(acc) &&
                 acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5)
             {
-                AddTaskIfNotExists(acc, new EditPreferences()
+                acc.Tasks.Add(new EditPreferences()
                 {
                     ExecuteAt = DateTime.Now.AddHours(-1),
                     TroopsPerPage = 99,
                     ContextualHelp = true
-                });
+                }, true);
             }
 
             if (acc.AccInfo.Tribe == null && CheckSkipTutorial(acc)) await DriverHelper.ClickByClassName(acc, "questButtonSkipTutorial");
 
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
-                AddTask(acc, new LoginTask() { ExecuteAt = DateTime.MinValue });
+                acc.Tasks.Add(new LoginTask() { ExecuteAt = DateTime.MinValue });
                 return;
             }
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
@@ -85,7 +85,7 @@ namespace TravBotSharp.Files.Helpers
 
             try
             {
-                acc.Wb.Log($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
+                acc.Logger.Information($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
 
                 switch (await task.Execute(acc))
                 {
@@ -100,7 +100,7 @@ namespace TravBotSharp.Files.Helpers
                         {
                             task.NextTask.ExecuteAt = DateTime.MinValue.AddHours(5);
                             task.NextTask.Stage = TaskStage.Start;
-                            TaskExecutor.AddTask(acc, task.NextTask);
+                            acc.Tasks.Add(task.NextTask);
                             task.NextTask = null;
                         }
                         break;
@@ -108,7 +108,7 @@ namespace TravBotSharp.Files.Helpers
             }
             catch (Exception e)
             {
-                if (acc.Wb != null) acc.Wb.Log($"Error executing task {task.GetName()}! Vill {task.Vill?.Name}", e);
+                acc.Logger.Error(e, $"Error executing task {task.GetName()}! Vill {task.Vill?.Name}");
                 task.RetryCounter++;
                 if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
             }
@@ -118,20 +118,21 @@ namespace TravBotSharp.Files.Helpers
             {
                 task.ExecuteAt = task.NextExecute ?? default;
                 task.NextExecute = null;
-                ReorderTaskList(acc);
+                acc.Tasks.ReOrder();
+
                 task.Stage = TaskStage.Start;
-                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}"));
+                acc.Logger.Warning($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}"));
                 return;
             }
             // Remove the task from the task list
             acc.Tasks.Remove(task);
             if (task.RetryCounter >= 3)
             {
-                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is already re-executed 3 times. Ignore it"));
+                acc.Logger.Warning($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is already re-executed 3 times. Ignore it"));
             }
             else
             {
-                acc.Wb.Log($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is done."));
+                acc.Logger.Information($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is done."));
             }
         }
 
@@ -151,7 +152,7 @@ namespace TravBotSharp.Files.Helpers
                 }
                 catch (Exception e)
                 {
-                    if (acc.Wb != null) acc.Wb.Log($"Error executing pre-task {PostLoadHelper.namePostTask[i]}!", e);
+                    acc.Logger.Error(e, $"Error executing pre-task {PostLoadHelper.namePostTask[i]}!");
                 }
             }
         }
@@ -162,12 +163,8 @@ namespace TravBotSharp.Files.Helpers
             var vill = acc.Villages.FirstOrDefault(x => x.Active);
             if (vill == null) return;
 
-            //remove any further UpdateDorf1 BotTasks for this village (if below 5min)
-            acc.Tasks.RemoveAll(x =>
-                x.GetType() == typeof(UpdateDorf2) &&
-                x.Vill == vill &&
-                x.ExecuteAt < DateTime.Now.AddMinutes(5)
-            );
+            //remove any further UpdateDorf2 BotTasks for this village (if below 5min)
+            acc.Tasks.Remove(typeof(UpdateDorf2), vill, 5);
 
             UpdateCurrentlyBuilding(acc, vill);
 
@@ -187,11 +184,7 @@ namespace TravBotSharp.Files.Helpers
             if (vill == null) return;
 
             //remove any further UpdateDorf1 BotTasks for this village (if below 5min)
-            acc.Tasks.RemoveAll(x =>
-                x.GetType() == typeof(UpdateDorf1) &&
-                x.Vill == vill &&
-                x.ExecuteAt < DateTime.Now.AddMinutes(5)
-            );
+            acc.Tasks.Remove(typeof(UpdateDorf1), vill, 5);
 
             UpdateCurrentlyBuilding(acc, vill);
 
@@ -201,11 +194,11 @@ namespace TravBotSharp.Files.Helpers
             if (dorf1Movements.Any(x => x.Type == Classificator.MovementTypeDorf1.IncomingAttack) &&
                 vill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
             {
-                AddTaskIfNotExistInVillage(acc, vill, new CheckAttacks()
+                acc.Tasks.Add(new CheckAttacks()
                 {
                     ExecuteAt = DateTime.Now,
                     Priority = TaskPriority.High
-                });
+                }, true, vill);
             }
             vill.TroopMovements.Dorf1Movements = dorf1Movements;
 
@@ -302,82 +295,5 @@ namespace TravBotSharp.Files.Helpers
         }
 
         #endregion Game checks
-
-        public static void AddTask(Account acc, BotTask task)
-        {
-            if (task.ExecuteAt == null) task.ExecuteAt = DateTime.Now;
-            acc.Tasks.Add(task);
-            ReorderTaskList(acc);
-        }
-
-        public static void AddTask(Account acc, List<BotTask> tasks)
-        {
-            foreach (var task in tasks)
-            {
-                acc.Tasks.Add(task);
-            }
-            ReorderTaskList(acc);
-        }
-
-        public static void ReorderTaskList(Account acc)
-        {
-            acc.Tasks = acc.Tasks.OrderBy(x => x.ExecuteAt).ToList();
-        }
-
-        public static void AddTaskIfNotExists(Account acc, BotTask task)
-        {
-            if (!acc.Tasks.Any(x => x.GetType() == task.GetType()))
-                AddTask(acc, task);
-        }
-
-        public static void AddTaskIfNotExistInVillage(Account acc, Village vill, BotTask task)
-        {
-            if (acc.Tasks == null) return;
-            if (!TaskExistsInVillage(acc, vill, task.GetType()))
-            {
-                AddTask(acc, task);
-            }
-        }
-
-        public static bool TaskExistsInVillage(Account acc, Village vill, Type taskType) =>
-            acc.Tasks.Any(x => x.GetType() == taskType && x.Vill == vill);
-
-        /// <summary>
-        /// Removes all pending BotTasks of specific type. You can specify only the village where it will
-        /// remove the selected tasks and optionally not remove the 'thisTask'
-        /// </summary>
-        public static void RemoveTaskTypes(Account acc, Type type, Village vill = null, BotTask thisTask = null)
-        {
-            var removeTasks = acc.Tasks.Where(x => x.GetType() == type);
-            
-            if (vill == null) // Only remove tasks for a specific village
-            {
-                removeTasks = removeTasks.Where(x => x.Vill == vill);
-            }
-            if (thisTask == null) // Don't remove this task
-            {
-                removeTasks = removeTasks.Where(x => x != thisTask);
-            }
-
-            // Remove all 'removeTasks' from the account task list
-            removeTasks.ToList().ForEach(x => acc.Tasks.Remove(x));
-            
-        }
-
-        /// <summary>
-        /// Removes all pending BotTasks of specific type except for the task calling it
-        /// </summary>
-        /// <param name="acc">Account</param>
-        /// <param name="thisTask">Task not to remove</param>
-        public static void RemoveSameTasks(Account acc, BotTask thisTask) =>
-            RemoveSameTasks(acc, thisTask.GetType(), thisTask);
-
-        public static void RemoveSameTasks(Account acc, Type type, BotTask thisTask)
-        {
-            acc.Tasks.RemoveAll(x =>
-                x.GetType() == type &&
-                x != thisTask
-            );
-        }
     }
 }

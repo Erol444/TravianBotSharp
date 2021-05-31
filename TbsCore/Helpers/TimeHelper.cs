@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
-using static TravBotSharp.Files.Tasks.BotTask;
+using static TbsCore.Tasks.BotTask;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class TimeHelper
     {
@@ -87,28 +87,9 @@ namespace TravBotSharp.Files.Helpers
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TimeSpan</returns>
-        public static TimeSpan NextPrioTask(Account acc, Tasks.BotTask.TaskPriority prio)
+        public static TimeSpan NextPrioTask(Account acc, TaskPriority prio)
         {
-            Tasks.BotTask firstTask = null;
-
-            switch (prio)
-            {
-                case TaskPriority.High:
-                    firstTask = acc.Tasks.FirstOrDefault(x =>
-                        x.Priority == TaskPriority.High
-                    );
-                    break;
-                case TaskPriority.Medium:
-                    firstTask = acc.Tasks.FirstOrDefault(x =>
-                        x.Priority == TaskPriority.High ||
-                        x.Priority == TaskPriority.Medium
-                    );
-                    break;
-                case TaskPriority.Low:
-                    firstTask = acc.Tasks.FirstOrDefault();
-                    break;
-            }
-
+            Tasks.BotTask firstTask = acc.Tasks.FindTaskBasedPriority(prio);
             if (firstTask == null) return TimeSpan.MaxValue;
 
             return (firstTask.ExecuteAt - DateTime.Now);
@@ -126,7 +107,7 @@ namespace TravBotSharp.Files.Helpers
                 var log = $"Chrome will reopen in {(int)nextTask.TotalMinutes} min";
                 if (log != previousLog)
                 {
-                    acc.Wb.Log(log);
+                    acc.Logger.Information(log);
                     previousLog = log;
                 }
 

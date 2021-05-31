@@ -1,4 +1,4 @@
-﻿namespace TravBotSharp.Files.Helpers
+﻿namespace TbsCore.Helpers
 {
     public static class Classificator
     {
@@ -82,8 +82,10 @@
             Helmet_Infantry_1,
             Helmet_Infantry_2,
             Helmet_Infantry_3,
+
             // Roman weapons
             Weapon_Legionnaire_1, // =16
+
             Weapon_Legionnaire_2,
             Weapon_Legionnaire_3,
             Weapon_Praetorian_1,
@@ -98,8 +100,10 @@
             Weapon_EquitesCaesaris_1,
             Weapon_EquitesCaesaris_2,
             Weapon_EquitesCaesaris_3,
+
             // Gaul weapons
             Weapon_Phalanx_1, // =31
+
             Weapon_Phalanx_2,
             Weapon_Phalanx_3,
             Weapon_Swordsman_1,
@@ -114,8 +118,10 @@
             Weapon_Haeduan_1,
             Weapon_Haeduan_2,
             Weapon_Haeduan_3,
+
             // Teuton weapons
             Weapon_Clubswinger_1, // =46
+
             Weapon_Clubswinger_2,
             Weapon_Clubswinger_3,
             Weapon_Spearman_1,
@@ -130,8 +136,10 @@
             Weapon_TeutonicKnight_1,
             Weapon_TeutonicKnight_2,
             Weapon_TeutonicKnight_3,
+
             // Left-hand items
             Left_Map_1, // =61
+
             Left_Map_2,
             Left_Map_3,
             Left_Pennant_1,
@@ -152,8 +160,10 @@
             Left_Horn_1,
             Left_Horn_2,
             Left_Horn_3,
+
             // Armors
             Armor_Regeneration_1, // =82
+
             Armor_Regeneration_2,
             Armor_Regeneration_3,
             Armor_Scale_1,
@@ -165,8 +175,10 @@
             Armor_Segmented_1,
             Armor_Segmented_2,
             Armor_Segmented_3,
+
             // Boots
             Boots_Regeneration_1, // =94
+
             Boots_Regeneration_2,
             Boots_Regeneration_3,
             Boots_Mercenery_1,
@@ -175,12 +187,16 @@
             Boots_Spurs_1,
             Boots_Spurs_2,
             Boots_Spurs_3,
+
             // Horses
             Horse_Horse_1, // =103
+
             Horse_Horse_2,
             Horse_Horse_3,
+
             // Others
             Others_Ointment_0, // =106
+
             Others_Scroll_0,
             Others_Bucket_0,
             Others_Tablets_0,
@@ -189,8 +205,10 @@
             Others_SmallBandage_0,
             Others_BigBandage_0,
             Others_Cage_0,
+
             // Egyptian weapons
             Weapon_SlaveMilitia_1, // =115
+
             Weapon_SlaveMilitia_2,
             Weapon_SlaveMilitia_3,
             Weapon_AshWarden_1,
@@ -205,8 +223,10 @@
             Weapon_ReshephChariot_1,
             Weapon_ReshephChariot_2,
             Weapon_ReshephChariot_3,
+
             // Hun weapons
             Weapon_Mercenary_1, // =130
+
             Weapon_Mercenary_2,
             Weapon_Mercenary_3,
             Weapon_Bowman_1,
@@ -221,8 +241,10 @@
             Weapon_Marauder_1,
             Weapon_Marauder_2,
             Weapon_Marauder_3,
+
             // Resources (Since T4.5)
             Others_Wood_0, // =145
+
             Others_Clay_0,
             Others_Iron_0,
             Others_Crop_0 // =148
@@ -231,8 +253,10 @@
         public enum TroopsEnum
         {
             None,
+
             //Romans//,
             Legionnaire,
+
             Praetorian,
             Imperian,
             EquitesLegati,
@@ -242,8 +266,10 @@
             RomanCatapult,
             RomanChief,
             RomanSettler,
+
             //Teutons//,
             Clubswinger,
+
             Spearman,
             Axeman,
             Scout,
@@ -253,8 +279,10 @@
             TeutonCatapult,
             TeutonChief,
             TeutonSettler,
+
             //Gauls//,
             Phalanx,
+
             Swordsman,
             Pathfinder,
             TheutatesThunder,
@@ -264,8 +292,10 @@
             GaulCatapult,
             GaulChief,
             GaulSettler,
+
             //Nature//,
             Rat,
+
             Spider,
             Snake,
             Bat,
@@ -275,8 +305,10 @@
             Crocodile,
             Tiger,
             Elephant,
+
             //Natars//,
             Pikeman,
+
             ThornedWarrior,
             Guardsman,
             BirdsOfPrey,
@@ -286,8 +318,10 @@
             Ballista,
             NatarianEmperor,
             Settler,
+
             //Egyptians//,
             SlaveMilitia,
+
             AshWarden,
             KhopeshWarrior,
             SopduExplorer,
@@ -297,8 +331,10 @@
             EgyptianCatapult,
             EgyptianChief,
             EgyptianSettler,
+
             //Huns//,
             Mercenary,
+
             Bowman,
             Spotter,
             SteppeRider,
@@ -308,9 +344,11 @@
             HunCatapult,
             HunChief,
             HunSettler,
+
             //Hero
             Hero
         }
+
         public enum TribeEnum
         {
             Any = 0,
@@ -322,6 +360,7 @@
             Egyptians, //6
             Huns, //7
         }
+
         public enum ServerVersionEnum
         {
             T4_4,
@@ -344,42 +383,52 @@
             /// Getting troops back
             /// </summary>
             inReturn,
+
             /// <summary>
             /// Getting raid attack
             /// </summary>
             inRaid,
+
             /// <summary>
             /// Getting normal attack
             /// </summary>
             inAttack,
+
             /// <summary>
             /// Getting troops (reinforcement) from some other village
             /// </summary>
             inSupply,
+
             /// <summary>
             /// Sending out raid attack
             /// </summary>
             outRaid,
+
             /// <summary>
             /// Sending out normal attack
             /// </summary>
             outAttack,
+
             /// <summary>
             /// Getting troops back
             /// </summary>
             outSupply,
+
             /// <summary>
             /// Sending out scouts
             /// </summary>
             outSpy,
+
             /// <summary>
             /// Sending hero on adventure
             /// </summary>
             outHero,
+
             /// <summary>
             /// Settling new village
             /// </summary>
             outSettler,
+
             /// <summary>
             /// If table has no class name besides 'troop_details', troops are at home
             /// </summary>
@@ -395,36 +444,42 @@
             /// Red swords picture
             /// </summary>
             IncomingAttack,
+
             /// <summary>
             /// Yellow swords picture
             /// </summary>
             OutgoingAttack,
+
             /// <summary>
             /// Purple swords picture
             /// </summary>
             IncomingAttackOasis,
+
             /// <summary>
             /// Green shield picture
             /// </summary>
             IncomingReinforcement,
+
             /// <summary>
             /// Yellow shield picture
             /// </summary>
             OutgoingReinforcement,
+
             /// <summary>
             /// Purple shield picture
             /// </summary>
             IncomingReinforcementOasis,
+
             /// <summary>
             /// Blue map picture
             /// </summary>
             HeroAdventure,
+
             /// <summary>
             /// Blue hat picture
             /// </summary>
             Settlers,
         }
-
 
         public enum VillTypeEnum
         {
@@ -450,6 +505,7 @@
             Normal = 1,
             Difficult = 2
         }
+
         public enum BuildingCategoryEnum
         {
             Infrastructure = 1,

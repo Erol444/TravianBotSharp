@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class ReviveHero : BotTask
     {
@@ -16,7 +16,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var reviveButton = acc.Wb.Html.GetElementbyId("heroRegeneration");
             if (reviveButton == null)
             {
-                acc.Wb.Log("No revive button!");
+                acc.Logger.Warning("No revive button found!");
                 return TaskRes.Executed;
             }
             if (reviveButton.HasClass("green"))

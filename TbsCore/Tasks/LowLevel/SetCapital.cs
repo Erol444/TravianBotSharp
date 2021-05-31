@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class SetCapital : BotTask
     {
@@ -11,16 +11,16 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         {
             var palace = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Helpers.Classificator.BuildingEnum.Palace);
 
-            if(palace == null)
+            if (palace == null)
             {
                 // TODO: Check for residence, if it exists demolish it and build palace
-                acc.Wb.Log("Palace was not found in the village!");
+                acc.Logger.Information("Palace was not found in the village!");
                 return TaskRes.Executed;
             }
 
             // Go into palace
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={palace.Id}");
-            
+
             switch (acc.AccInfo.ServerVersion)
             {
                 case Helpers.Classificator.ServerVersionEnum.T4_4:
@@ -30,7 +30,8 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                     break;
 
                 case Helpers.Classificator.ServerVersionEnum.T4_5:
-                    throw new System.Exception("Setting capital isn't supported in T4.5 yet!");
+                    acc.Logger.Warning("Setting capital isn't supported in T4.5 yet!");
+                    break;
             }
             return TaskRes.Executed;
         }

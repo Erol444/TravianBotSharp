@@ -8,7 +8,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class HttpHelper
     {

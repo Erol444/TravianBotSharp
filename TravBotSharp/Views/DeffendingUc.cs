@@ -5,9 +5,9 @@ using System.Windows.Forms;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.VillageModels;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
 using XPTable.Models;
@@ -16,8 +16,8 @@ namespace TravBotSharp.Views
 {
     public partial class DeffendingUc : TbsBaseUc, ITbsUc
     {
-        TableModel tableModelMain = new TableModel();
-        TableModel tableModelGlobal = new TableModel();
+        private TableModel tableModelMain = new TableModel();
+        private TableModel tableModelGlobal = new TableModel();
 
         public DeffendingUc()
         {
@@ -54,7 +54,9 @@ namespace TravBotSharp.Views
             r.Cells.Add(new Cell("", true)); //Alert only on hero
             tableModelGlobal.Rows.Add(r);
         }
+
         #region Initialize table columns
+
         private void InitTables()
         {
             ColumnModel columnModel = new ColumnModel();
@@ -110,7 +112,8 @@ namespace TravBotSharp.Views
 
             table1.TableModel = tableModelMain;
         }
-        #endregion
+
+        #endregion Initialize table columns
 
         //Save button
         private void button1_Click(object sender, EventArgs e)
@@ -134,11 +137,11 @@ namespace TravBotSharp.Views
             //Change name of village/s
             if (changeVillNames.Count > 0)
             {
-                TaskExecutor.AddTaskIfNotExists(acc, new ChangeVillageName()
+                acc.Tasks.Add(new ChangeVillageName()
                 {
                     ExecuteAt = DateTime.Now,
                     ChangeList = changeVillNames
-                });
+                }, true);
             }
         }
 
@@ -170,6 +173,7 @@ namespace TravBotSharp.Views
                 selectedCell.Cell.Checked = global.Checked;
             }
         }
+
         private class CellChanges
         {
             public Cell Cell { get; set; }
@@ -183,7 +187,7 @@ namespace TravBotSharp.Views
             var deffCount = (int)maxDeff.Value;
             if (deffCount == 0) deffCount = int.MaxValue;
             var amount = new SendDeffAmount() { Amount = deffCount };
-            
+
             SendDeff node = new SendDeff();
             foreach (var vill in acc.Villages)
             {
@@ -192,20 +196,21 @@ namespace TravBotSharp.Views
                     Vill = vill,
                     DeffAmount = amount,
                     TargetVillage = sendDeffCoords.Coords,
-                    Priority = Files.Tasks.BotTask.TaskPriority.High,
+                    Priority = TbsCore.Tasks.BotTask.TaskPriority.High,
                     NextTask = node,
                 };
                 node = sendDeff;
             }
 
             node.ExecuteAt = DateTime.MinValue;
-            TaskExecutor.AddTaskIfNotExists(acc, node);
+            acc.Tasks.Add(node, true);
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Not yet implemented");
             return;
+            /*
             var acc = GetSelectedAcc();
             var coords = new Coordinates(-52, -59);
 
@@ -218,7 +223,7 @@ namespace TravBotSharp.Views
                 {
                     attk.Arrival = DateTime.Now.AddHours(-1).AddMinutes(2);
                     attk.Arrival = attk.Arrival.AddSeconds(60 - attk.Arrival.Second);
-                    acc.Wb.Log($"Arrive at {attk.Arrival}");
+                    acc.Logger.Information($"Arrive at {attk.Arrival}");
                 }
                 else attk.DelayMs = 1000;
 
@@ -229,15 +234,15 @@ namespace TravBotSharp.Views
                 waves.Add(attk);
             }
 
-            
             var waveTask = new SendWaves()
             {
                 ExecuteAt = DateTime.Now,
                 Vill = AccountHelper.GetMainVillage(acc),
                 SendWaveModels = waves.ToList(),
-                Priority = Files.Tasks.BotTask.TaskPriority.High
+                Priority = TbsCore.Tasks.BotTask.TaskPriority.High
             };
-            TaskExecutor.AddTask(acc, waveTask);
+            acc.Tasks.Add(waveTask);
+            */
         }
     }
 }

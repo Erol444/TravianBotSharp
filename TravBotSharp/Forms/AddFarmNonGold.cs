@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TravBotSharp.Forms
 {

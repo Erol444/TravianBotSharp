@@ -2,18 +2,20 @@
 using System.Linq;
 using System.Timers;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
-using static TravBotSharp.Files.Tasks.BotTask;
+using TbsCore.Helpers;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
+using static TbsCore.Tasks.BotTask;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class TaskTimer : IDisposable
     {
         private readonly Account acc;
         private Timer Timer { get; set; }
+
         public bool? IsBotRunning() => Timer.Enabled;
+
         public TaskTimer(Account account)
         {
             acc = account;
@@ -21,12 +23,14 @@ namespace TravBotSharp.Files.Models.AccModels
             Timer.Elapsed += TimerElapsed;
             Start();
         }
+
         public void Start()
         {
             Timer.Start();
             Timer.Enabled = true;
             Timer.AutoReset = true;
         }
+
         public void Stop()
         {
             Timer.Stop();
@@ -42,9 +46,9 @@ namespace TravBotSharp.Files.Models.AccModels
                 if (acc.Tasks.Count == 0) return; //No tasks
 
                 // Another task is already in progress. wait
-                if (acc.Tasks.Any(x => x.Stage != TaskStage.Start)) return;
+                if (acc.Tasks.IsTaskExcuting()) return;
 
-                var tasks = acc.Tasks.Where(x => x.ExecuteAt <= DateTime.Now).ToList();
+                var tasks = acc.Tasks.GetTasksReady();
                 if (tasks.Count == 0)
                 {
                     NoTasks(acc);
@@ -68,9 +72,9 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
                 await TaskExecutor.Execute(acc, firstTask);
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
-                acc?.Wb?.Log($"Error in TaskTimer! {e.Message}\n{e.StackTrace}");
+                acc?.Logger.Error(e, $"Error in TaskTimer!");
             }
         }
 
@@ -94,9 +98,8 @@ namespace TravBotSharp.Files.Models.AccModels
             {
                 task.ExecuteAt = DateTime.Now;
                 task.Priority = TaskPriority.Low;
-                TaskExecutor.AddTask(acc, task);
+                acc.Tasks.Add(task);
             }
-
         }
 
         public void Dispose()

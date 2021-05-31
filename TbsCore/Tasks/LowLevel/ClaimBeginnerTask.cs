@@ -3,13 +3,13 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SideBarModels;
-using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class ClaimBeginnerTask : BotTask
     {
         public Quest QuestToClaim { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             var script = $"document.getElementById('mentorTaskList').querySelector('[data-questid=\"{this.QuestToClaim.Id}\"]').click();";

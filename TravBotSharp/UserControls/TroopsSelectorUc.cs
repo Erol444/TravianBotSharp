@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TravBotSharp.Forms
 {
@@ -35,6 +35,7 @@ namespace TravBotSharp.Forms
                 }
             }
         }
+
         public bool Hero
         {
             get { return checkBox1.Checked; }
@@ -45,6 +46,7 @@ namespace TravBotSharp.Forms
         {
             set { checkBox1.Enabled = value; }
         }
+
         public bool TroopsEditable
         {
             set
@@ -54,6 +56,7 @@ namespace TravBotSharp.Forms
         }
 
         private NumericUpDown[] numerics;
+
         public TroopsSelectorUc()
         {
             InitializeComponent();
@@ -77,6 +80,7 @@ namespace TravBotSharp.Forms
         {
             troopsDisplayUc1.Init(tribe ?? Classificator.TribeEnum.Nature);
         }
+
         public void Init(Classificator.TribeEnum tribe)
         {
             troopsDisplayUc1.Init(tribe);

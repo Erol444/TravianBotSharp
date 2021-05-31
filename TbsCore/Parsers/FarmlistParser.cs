@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.TroopsModels;
-using static TravBotSharp.Files.Helpers.Classificator;
+using static TbsCore.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class FarmlistParser
     {
