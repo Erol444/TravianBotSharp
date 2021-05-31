@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 using Serilog;
 
 namespace TbsCore.Models.Logging
@@ -16,6 +17,13 @@ namespace TbsCore.Models.Logging
                                                                         outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
               .WriteTo.TbsSink(LogOutput)
               .CreateLogger();
+        }
+
+        public static IServiceCollection Init(this IServiceCollection services)
+        {
+            Init();
+
+            return services.AddSingleton(Log.Logger);
         }
     }
 }

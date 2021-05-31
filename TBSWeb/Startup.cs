@@ -1,17 +1,21 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
+using Microsoft.AspNetCore.SignalR;
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using VueCliMiddleware;
 
+using Serilog;
+
+using TbsCore.Models.Logging;
+
+using TbsWeb;
+using TbsWeb.Controllers;
 using TbsWeb.Singleton;
 
 namespace TBSWeb
@@ -30,13 +34,25 @@ namespace TBSWeb
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(AccountManager.Instance);
+            SerilogSingleton.Init(services);
+
             services.AddControllers();
             services.AddControllers().AddNewtonsoftJson();
+
+            services.AddSignalR();
 
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp";
             });
+
+            SerilogSingleton.LogOutput.LogUpdated += async (sender, e) =>
+            {
+                var index = AccountManager.Instance.Accounts.FindIndex((acc) => acc.AccInfo.Nickname == e.Username);
+
+                await DebugController._logHubContext.Clients.All.SendAsync("LogUpdate", index, e.Message);
+            }
+;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +70,8 @@ namespace TBSWeb
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<LogHub>("/realtime/log");
+                endpoints.MapHub<TaskHub>("/realtime/task");
             });
 
             app.UseSpa(spa =>
@@ -69,6 +87,17 @@ namespace TBSWeb
                 }
             });
 
+            app.Use(async (context, next) =>
+            {
+                DebugController._logHubContext = context.RequestServices.GetRequiredService<IHubContext<LogHub>>();
+                DebugController._taskHubContext = context.RequestServices.GetRequiredService<IHubContext<TaskHub>>();
+
+                if (next != null)
+                {
+                    await next.Invoke();
+                }
+            });
+
             lifetime.ApplicationStopping.Register(OnShutdown, true);
 
             lifetime.ApplicationStopped.Register(() =>
@@ -81,6 +110,9 @@ namespace TBSWeb
         {
             AccountManager.Instance.SaveAccounts();
             Console.WriteLine("*** Account saved ***");
+
+            Log.CloseAndFlush();
+            Console.WriteLine("*** Logger closed and flushed ***");
         }
     }
 }

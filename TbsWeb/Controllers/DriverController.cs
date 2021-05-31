@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
+
 using System.Linq;
 using System.Threading.Tasks;
 
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 using TbsWeb.Singleton;
 
 namespace TbsWeb.Controllers
@@ -26,6 +25,14 @@ namespace TbsWeb.Controllers
             if (acc.Access.AllAccess.Count > 0)
             {
                 await IoHelperCore.LoginAccount(acc);
+
+                acc.Tasks.OnUpdateTask = async () =>
+                {
+                    var index = AccountManager.Instance.Accounts.FindIndex((_acc) => _acc.AccInfo.Nickname == acc.AccInfo.Nickname);
+                    var tasks = DebugController.GetTasks(index);
+                    await DebugController._taskHubContext.Clients.All.SendAsync("TaskUpdate", index, tasks);
+                };
+
                 return Ok();
             }
 

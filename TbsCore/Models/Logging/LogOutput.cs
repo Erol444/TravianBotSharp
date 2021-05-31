@@ -45,7 +45,7 @@ namespace TbsCore.Models.Logging
                     _logs[username].RemoveLast();
                 }
             }
-            OnUpdateLog(username);
+            OnUpdateLog(username, message);
         }
 
         public void AddUsername(string username)
@@ -56,19 +56,21 @@ namespace TbsCore.Models.Logging
             }
         }
 
-        private void OnUpdateLog(string username)
+        private void OnUpdateLog(string username, string message)
         {
-            LogUpdated?.Invoke(this, new UpdateLogEventArgs(username));
+            LogUpdated?.Invoke(this, new UpdateLogEventArgs(username, message));
         }
     }
 
     public class UpdateLogEventArgs : EventArgs
     {
         public string Username { get; set; }
+        public string Message { get; set; }
 
-        public UpdateLogEventArgs(string username)
+        public UpdateLogEventArgs(string username, string message)
         {
             Username = username;
+            Message = message;
         }
     }
 }
