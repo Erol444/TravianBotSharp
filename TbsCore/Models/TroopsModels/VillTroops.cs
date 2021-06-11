@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TbsCore.Models.TroopsModels
 {
@@ -29,10 +29,12 @@ namespace TbsCore.Models.TroopsModels
         /// Currently training troops in village
         /// </summary>
         public CurrentlyTraining CurrentlyTraining { get; set; }
+
         /// <summary>
         /// Troop smithy level. Based on this you can also get researched troops
         /// </summary>
         public List<TroopLevel> Levels { get; set; }
+
         /// <summary>
         /// Already researched troops. First troop type (eg. legionair/clubswinger/phalax...) should
         /// be added when adding new village.
@@ -49,6 +51,7 @@ namespace TbsCore.Models.TroopsModels
         /// TODO: make this changeable
         /// </summary>
         public HashSet<Classificator.TroopsEnum> ToImprove { get; set; }
+
         //public List<TroopsRaw> TroopsInVillage { get; set; } //Got from dorf1 parse
         //public List<TroopsRaw> MyTroops { get; set; } //got from rally point parse
     }

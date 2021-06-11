@@ -2,7 +2,7 @@
 using Discord.Webhook;
 using TbsCore.Models.AccModels;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class DiscordHelper
     {

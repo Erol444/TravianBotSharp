@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium.Chrome;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -6,28 +7,28 @@ using System.IO;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
-using TbsCore.Models.Access;
-using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Tasks.LowLevel;
+using TbsCore.Helpers.Extension;
+using static TbsCore.Tasks.BotTask;
 
-namespace TravBotSharp.Files.Models.AccModels
+namespace TbsCore.Models.AccModels
 {
     public class WebBrowserInfo : IDisposable
     {
-        // Average log length is 70 chars. 20 overhead + 70 * 2 (each char => 2 bytes)
-        // Average memory consumption for logs will thus be: 160 * maxLogCnt => ~500kB
-        private const int maxLogCnt = 1000;
-
-        public WebBrowserInfo()
-        {
-            Logs = new CircularBuffer<string>(maxLogCnt);
-        }
-
-        public ChromeDriver Driver { get; set; }
+        private ChromeDriver Driver { get; set; }
 
         private ChromeDriverService chromeService;
-        public string CurrentUrl => this.Driver.Url;
+
+        public string CurrentUrl
+        {
+            get
+            {
+                CheckChromeOpen();
+
+                return this.Driver.Url;
+            }
+        }
+
         private Account acc;
         public HtmlAgilityPack.HtmlDocument Html { get; set; }
 
@@ -36,31 +37,10 @@ namespace TravBotSharp.Files.Models.AccModels
         /// </summary>
         public RestClient RestClient { get; set; }
 
-        // Account Logs
-        public CircularBuffer<string> Logs { get; set; }
-
-        public event EventHandler LogHandler;
-
-        public void Log(string message, Exception e) =>
-                    Log(message + $"\n---------------------------\n{e}\n---------------------------\n");
-
-        public void Log(string msg)
-        {
-            msg = DateTime.Now.ToString("HH:mm:ss") + ": " + msg;
-            Logs.PushFront(msg);
-
-            LogHandler?.Invoke(typeof(WebBrowserInfo), new LogEventArgs() { Log = msg });
-        }
-
-        public class LogEventArgs : EventArgs
-        {
-            public string Log { get; set; }
-        }
-
         public async Task InitSelenium(Account acc, bool newAccess = true)
         {
             this.acc = acc;
-            Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
+            Access.Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
@@ -75,16 +55,16 @@ namespace TravBotSharp.Files.Models.AccModels
                 var checkproxy = new CheckProxy();
                 await checkproxy.Execute(acc);
             }
-            else await this.Navigate(acc.AccInfo.ServerUrl);
+            else await this.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
         }
 
-        private void InitHttpClient(Access a)
+        private void InitHttpClient(Access.Access a)
         {
             RestClient = new RestClient();
             HttpHelper.InitRestClient(a, RestClient);
         }
 
-        private void SetupChromeDriver(Access access, string username, string server)
+        private void SetupChromeDriver(Access.Access access, string username, string server)
         {
             ChromeOptions options = new ChromeOptions();
 
@@ -96,10 +76,14 @@ namespace TravBotSharp.Files.Models.AccModels
 
             if (!string.IsNullOrEmpty(access.Proxy))
             {
+                // add WebRTC Leak
+                var extensionPath = DisableWebRTCLeak.CreateExtension(username, server, access);
+                options.AddExtension(extensionPath);
+
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    var extensionPath = ProxyHelper.CreateExtension(username, server, access);
+                    extensionPath = ProxyAuthentication.CreateExtension(username, server, access);
                     options.AddExtension(extensionPath);
                 }
 
@@ -120,7 +104,7 @@ namespace TravBotSharp.Files.Models.AccModels
             options.AddArguments("--mute-audio");
 
             // Make browser headless to preserve memory resources
-            if (acc.Settings.HeadlessMode) options.AddArguments("headless");
+            // if (acc.Settings.HeadlessMode) options.AddArguments("headless");
 
             // Do not download images in order to preserve memory resources / proxy traffic
             if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
@@ -133,6 +117,7 @@ namespace TravBotSharp.Files.Models.AccModels
             // Hide command prompt
             chromeService = ChromeDriverService.CreateDefaultService();
             chromeService.HideCommandPromptWindow = true;
+
             try
             {
                 if (acc.Settings.OpenMinimized)
@@ -149,7 +134,7 @@ namespace TravBotSharp.Files.Models.AccModels
             }
             catch (Exception e)
             {
-                Log($"Error opening chrome driver! Is it already opened?", e);
+                acc.Logger.Error(e, $"Error opening chrome driver! Is it already opened?");
             }
         }
 
@@ -172,6 +157,8 @@ namespace TravBotSharp.Files.Models.AccModels
             bool repeat;
             do
             {
+                CheckChromeOpen();
+
                 try
                 {
                     // Will throw exception after timeout
@@ -180,8 +167,7 @@ namespace TravBotSharp.Files.Models.AccModels
                 }
                 catch (Exception e)
                 {
-                    if (acc.Wb == null) return;
-                    acc.Wb.Log($"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened", e);
+                    acc.Logger.Error(e, $"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened");
                     repeat = true;
                     if (5 <= ++repeatCnt && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
                     {
@@ -199,10 +185,77 @@ namespace TravBotSharp.Files.Models.AccModels
             await Task.Delay(AccountHelper.Delay());
 
             UpdateHtml();
+
             await TaskExecutor.PageLoaded(acc);
         }
 
-        public void UpdateHtml() => Html.LoadHtml(Driver.PageSource);
+        public void UpdateHtml()
+        {
+            CheckChromeOpen();
+
+            Html.LoadHtml(Driver.PageSource);
+        }
+
+        public void ExecuteScript(string script)
+        {
+            CheckChromeOpen();
+
+            Driver.ExecuteScript(script);
+        }
+
+        /// <summary>
+        /// Gets JS object from the game. Query examples:
+        /// window.TravianDefaults.Map.Size.top
+        /// resources.maxStorage
+        /// Travian.Game.speed
+        /// </summary>
+        /// <param name="obj">JS object</param>
+        /// <returns>Long for number, bool for boolean, string otherwise</returns>
+        public T GetJsObj<T>(string obj)
+        {
+            IJavaScriptExecutor js = acc.Wb.Driver;
+            return (T)js.ExecuteScript($"return {obj};");
+        }
+
+        /// <summary>
+        /// Get bearer token for Travian T4.5
+        /// </summary>
+        public string GetBearerToken()
+        {
+            CheckChromeOpen();
+
+            IJavaScriptExecutor js = acc.Wb.Driver;
+            return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+        }
+
+        public IWebElement FindElementById(string element)
+        {
+            CheckChromeOpen();
+
+            return Driver.FindElementById(element);
+        }
+
+        public IWebElement FindElementByXPath(string xPath)
+        {
+            CheckChromeOpen();
+
+            return Driver.FindElementByXPath(xPath);
+        }
+
+        public ITargetLocator SwitchTo()
+        {
+            CheckChromeOpen();
+
+            return Driver.SwitchTo();
+        }
+
+        /// <summary>
+        /// Throw WebDriverException when Chrome closed or not responding
+        /// </summary>
+        public void CheckChromeOpen()
+        {
+            _ = Driver.Title;
+        }
 
         public void Dispose()
         {
@@ -214,8 +267,16 @@ namespace TravBotSharp.Files.Models.AccModels
                     Driver.Quit(); // Also disposes
                     Driver = default;
                 }
-                catch { }
+                catch (WebDriverException)
+                {
+                    Driver.Quit();
+                    Driver = default;
+                }
+                catch (Exception)
+                {
+                }
             }
+
             chromeService.Dispose();
         }
     }

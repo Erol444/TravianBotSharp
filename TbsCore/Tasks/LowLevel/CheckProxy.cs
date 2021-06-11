@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     /// <summary>
     /// TODO: replace selenium navigation with RestSharp client!
@@ -14,7 +14,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             var currentProxy = acc.Access.GetCurrentAccess().Proxy;
-            acc.Wb.Log("Checking proxy " + currentProxy);
+            acc.Logger.Information("Checking proxy " + currentProxy);
 
             await acc.Wb.Navigate("https://api.ipify.org/");
             var ip = acc.Wb.Html.DocumentNode.InnerText;
@@ -23,7 +23,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 ip.Trim() != currentProxy.Trim())
             {
                 // Proxy error!
-                acc.Wb.Log($"Proxy {currentProxy} doesn't work! Trying different proxy");
+                acc.Logger.Warning($"Proxy {currentProxy} doesn't work! Trying different proxy");
                 if (acc.Access.AllAccess.Count > 1)
                 {
                     // Try another access.
@@ -33,7 +33,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 }
                 else
                 {
-                    acc.Wb.Log($"There's only one access to this account! Will retry same proxy after 1 min...");
+                    acc.Logger.Warning($"There's only one access to this account! Will retry same proxy after 1 min...");
                     await Task.Delay(AccountHelper.Delay() * 15);
                     this.NextExecute = DateTime.MinValue.AddMinutes(1);
                 }
@@ -41,7 +41,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             else
             {
                 // Proxy OK
-                acc.Wb.Log($"Proxy OK!");
+                acc.Logger.Information($"Proxy OK!");
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
             return TaskRes.Executed;

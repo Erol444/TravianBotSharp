@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class HeroSetPoints : BotTask
     {
@@ -16,7 +16,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             await HeroHelper.NavigateToHeroAttributes(acc);
 
             HeroHelper.ParseHeroPage(acc);
@@ -44,12 +43,12 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 for (int j = 0; j < (int)amount; j++)
                 {
                     // Execute the script (set point) to add 1 point
-                    wb.ExecuteScript(script);
+                    acc.Wb.ExecuteScript(script);
                 }
                 await Task.Delay(AccountHelper.Delay());
             }
 
-            wb.ExecuteScript("document.getElementById('saveHeroAttributes').click();");
+            acc.Wb.ExecuteScript("document.getElementById('saveHeroAttributes').click();");
             return TaskRes.Executed;
         }
     }

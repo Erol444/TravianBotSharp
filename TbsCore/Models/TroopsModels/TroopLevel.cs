@@ -1,6 +1,6 @@
 ﻿using System;
 using TbsCore.Models.ResourceModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TbsCore.Models.TroopsModels
 {
@@ -12,6 +12,7 @@ namespace TbsCore.Models.TroopsModels
         public Classificator.TroopsEnum Troop { get; set; }
         public int Level { get; set; }
         public Resources UpgradeCost { get; set; }
+
         /// <summary>
         /// Time it would take for this troop to upgrade in smithy
         /// </summary>

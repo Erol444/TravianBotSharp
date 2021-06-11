@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TravBotSharp.Forms
 {

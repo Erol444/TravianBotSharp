@@ -14,6 +14,7 @@ namespace TravBotSharp.Forms
     {
         private int[] troops;
         private bool hero;
+
         public int[] Troops
         {
             get
@@ -26,6 +27,7 @@ namespace TravBotSharp.Forms
                 troopsSelectorUc1.Troops = troops;
             }
         }
+
         public bool Hero
         {
             get
@@ -38,7 +40,8 @@ namespace TravBotSharp.Forms
                 troopsSelectorUc1.Hero = hero;
             }
         }
-        public TroopsSelector(Files.Helpers.Classificator.TribeEnum tribeEnum)
+
+        public TroopsSelector(TbsCore.Helpers.Classificator.TribeEnum tribeEnum)
         {
             InitializeComponent();
 

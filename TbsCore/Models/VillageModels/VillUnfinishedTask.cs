@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TbsCore.Models.ResourceModels;
-using TravBotSharp.Files.Tasks;
+using TbsCore.Tasks;
 
 namespace TbsCore.Models.VillageModels
 {
@@ -15,6 +15,7 @@ namespace TbsCore.Models.VillageModels
         /// Resources needed for the task
         /// </summary>
         public Resources ResNeeded { get; set; }
+
         /// <summary>
         /// The task
         /// </summary>

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class HeroUpdateInfo : BotTask
     {
@@ -13,17 +13,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             HeroHelper.ParseHeroPage(acc);
 
-            TaskExecutor.RemoveSameTasks(acc, typeof(HeroUpdateInfo), this);
-
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
                 var ran = new Random();
-                
+
                 this.NextExecute = DateTime.Now.AddMinutes(
                     ran.Next(acc.Hero.Settings.MinUpdate, acc.Hero.Settings.MaxUpdate)
                     );
-                TaskExecutor.RemoveSameTasks(acc, this);
             }
+            acc.Tasks.Remove(typeof(HeroUpdateInfo), thisTask: this);
 
             return TaskRes.Executed;
         }

@@ -1,17 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class ReadMessage : BotTask
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
             while (true)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/messages.php");

@@ -1,5 +1,5 @@
 ﻿using System;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TbsCore.Models.VillageModels
 {
@@ -13,15 +13,19 @@ namespace TbsCore.Models.VillageModels
             UnderConstruction = uc;
             return this;
         }
+
         /// <summary>
         /// Type of the building
         /// </summary>
         public Classificator.BuildingEnum Type { get; set; }
+
         public byte Level { get; set; }
+
         /// <summary>
         /// Location of the building
         /// </summary>
         public byte Id { get; set; }
+
         /// <summary>
         /// Whether the building is currently being upgraded
         /// </summary>

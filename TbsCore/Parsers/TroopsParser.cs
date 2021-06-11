@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.TroopsModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class TroopsParser
     {
@@ -113,7 +113,7 @@ namespace TravBotSharp.Files.Parsers
                                 .FirstOrDefault(x => x.HasClass("showCosts") || x.HasClass("resourceWrapper")));
                     troop.TimeCost = TimeParser.ParseDuration(research); //TODO!
                 }
-                
+
                 list.Add(troop);
             }
             return list;

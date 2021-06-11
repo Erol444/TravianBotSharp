@@ -5,20 +5,20 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.TroopsModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Parsers;
+using TbsCore.Tasks.LowLevel;
 
-namespace TravBotSharp.Files.Tasks.SecondLevel
+namespace TbsCore.Tasks.SecondLevel
 {
     public class TTWarsAddNatarsToFL : BotTask
     {
         public int MinPop { get; set; }
         public int MaxPop { get; set; }
         public FarmList FL { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?uid=1");
 
             var vills = acc.Wb.Html.GetElementbyId("villages").Descendants("tr");
@@ -38,7 +38,7 @@ namespace TravBotSharp.Files.Tasks.SecondLevel
                         y = (int)Parser.RemoveNonNumeric(xy[1].Split('=')[1])
                     };
 
-                    TaskExecutor.AddTask(acc, new AddFarm()
+                    acc.Tasks.Add(new AddFarm()
                     {
                         ExecuteAt = DateTime.Now.AddMilliseconds(addedFarms),
                         Farm = new TbsCore.Models.VillageModels.Farm()

@@ -5,11 +5,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.VillageModels;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Helpers;
+using TbsCore.Models.VillageModels;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class CheckAttacks : BotTask
     {
@@ -28,7 +28,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             // increase number of attacks per page in preferences, then repeat CheckAttacks
             if (3 <= pageCnt && attacks.Count < 50)
             {
-                TaskExecutor.AddTask(acc, new EditPreferences()
+                acc.Tasks.Add(new EditPreferences()
                 {
                     TroopsPerPage = 99, // Max
                     ExecuteAt = DateTime.MinValue.AddHours(1),

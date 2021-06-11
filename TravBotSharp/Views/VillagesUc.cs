@@ -5,8 +5,8 @@ using System.Linq;
 using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -107,7 +107,7 @@ namespace TravBotSharp.Views
 
         private void RefreshVillage(Account acc, Village vill) // Refresh village
         {
-            TaskExecutor.AddTask(acc, new UpdateVillage()
+            acc.Tasks.Add(new UpdateVillage()
             {
                 ExecuteAt = DateTime.Now.AddHours(-1),
                 Vill = vill,

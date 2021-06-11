@@ -1,4 +1,4 @@
-﻿using TravBotSharp.Files.Models.SideBarModels;
+﻿using TbsCore.Models.SideBarModels;
 
 namespace TbsCore.Models.SideBarModels
 {
@@ -8,10 +8,12 @@ namespace TbsCore.Models.SideBarModels
         /// Category of the quest
         /// </summary>
         public Category category { get; set; }
+
         /// <summary>
         /// Is the quest already finished
         /// </summary>
         public bool finished { get; set; }
+
         /// <summary>
         /// Id of the quest
         /// </summary>
@@ -19,7 +21,7 @@ namespace TbsCore.Models.SideBarModels
     }
 }
 
-namespace TravBotSharp.Files.Models.SideBarModels
+namespace TbsCore.Models.SideBarModels
 {
     public enum Category
     {

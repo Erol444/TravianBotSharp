@@ -4,7 +4,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.TroopsModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TbsCore.Models.VillageModels
 {
@@ -111,6 +111,7 @@ namespace TbsCore.Models.VillageModels
         /// Farm list for non gold
         /// </summary>
         public FarmingNonGold FarmingNonGold { get; set; }
+
         /// <summary>
         /// For NewYearSpecial servers where account's villages can be of different tribe
         /// </summary>
@@ -121,6 +122,7 @@ namespace TbsCore.Models.VillageModels
         /// </summary>
         [JsonIgnore]
         public List<VillUnfinishedTask> UnfinishedTasks { get; set; }
-        #endregion
+
+        #endregion Specific areas
     }
 }

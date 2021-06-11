@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class ResourceParser
     {
@@ -37,6 +37,7 @@ namespace TravBotSharp.Files.Parsers
                         resFields.Add(building);
                     }
                     return resFields;
+
                 case Classificator.ServerVersionEnum.T4_5:
                     var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.HasClass("level")).ToList();
                     List<Building> resFields5 = new List<Building>();

@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class TrainExchangeRes : BotTask
     {
@@ -13,7 +12,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             if (Vill == null) Vill = AccountHelper.GetMainVillage(acc);
 
             var building = TroopsHelper.GetTroopBuilding(troop, Great);
@@ -32,10 +30,10 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             var distribute = acc.Wb.Html.DocumentNode.SelectNodes("//*[text()[contains(., 'Distribute remaining resources.')]]")[0];
             while (distribute.Name != "button") distribute = distribute.ParentNode;
             string distributeid = distribute.GetAttributeValue("id", "");
-            wb.ExecuteScript($"document.getElementById('{distributeid}').click()"); //Distribute resources button
+            acc.Wb.ExecuteScript($"document.getElementById('{distributeid}').click()"); //Distribute resources button
 
             await Task.Delay(AccountHelper.Delay());
-            wb.ExecuteScript($"document.getElementById('npc_market_button').click()"); //Exchange resources button
+            acc.Wb.ExecuteScript($"document.getElementById('npc_market_button').click()"); //Exchange resources button
 
             return TaskRes.Executed;
         }

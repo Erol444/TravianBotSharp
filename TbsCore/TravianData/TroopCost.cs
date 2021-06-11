@@ -3,9 +3,8 @@ using System.Linq;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
 
-namespace TravBotSharp.Files.TravianData
+namespace TbsCore.TravianData
 {
     public static class TroopCost
     {
@@ -62,7 +61,9 @@ namespace TravBotSharp.Files.TravianData
             { 37200, 27600, 25200, 27600 },
             { 6100, 4600, 4800, 5400 }
         };
+
         public static readonly int[] TrainTime = new int[] {/*Troop=None*/ 0, 1600, 1760, 1920, 1360, 2640, 3520, 4600, 9000, 90700, 26900, 720, 1120, 1200, 1120, 2400, 2960, 4200, 9000, 70500, 31000, 1040, 1440, 1360, 2480, 2560, 3120, 5000, 9000, 90700, 22700, 530, 1320, 1440, 1360, 2560, 3240, 4800, 9000, 90700, 24800, 810, 1120, 1360, 2400, 2480, 2990, 4400, 9000, 90700, 28950 };
+
         public static int[] GetResourceCost(Classificator.TroopsEnum troop, bool great)
         {
             var troopId = (int)troop;
@@ -77,6 +78,7 @@ namespace TravBotSharp.Files.TravianData
             }
             return res;
         }
+
         //You would probably have to take into account ally training bonus, artifacts, helmets, horse fountain...
         public static TimeSpan GetTrainingTime(Account acc, Village vill, Classificator.TroopsEnum troop, bool great)
         {

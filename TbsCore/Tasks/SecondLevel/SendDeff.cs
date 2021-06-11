@@ -1,21 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
-using TravBotSharp.Files.TravianData;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class SendDeff : SendTroops
     {
         public SendDeffAmount DeffAmount { get; set; }
         public Coordinates TargetVillage { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             // Can't send deff to home village or to 0/0
@@ -72,7 +68,14 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             }
 
             this.DeffAmount.Amount -= upkeepSent;
-            acc.Wb.Log($"Bot will send {upkeepSent} deff (in upkeep) from {this.Vill.Name} to {this.TargetVillage}. Still needed {this.DeffAmount.Amount} deff");
+            if (this.DeffAmount.Amount > 0)
+            {
+                acc.Logger.Warning($"Bot will send {upkeepSent} deff (in upkeep) from {this.Vill.Name} to {this.TargetVillage}. Still needed {this.DeffAmount.Amount} deff");
+            }
+            else
+            {
+                acc.Logger.Information($"Bot will send {upkeepSent} deff (in upkeep) from {this.Vill.Name} to {this.TargetVillage}.");
+            }
 
             return true;
         }

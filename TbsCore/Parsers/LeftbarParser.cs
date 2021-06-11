@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class LeftBarParser
     {

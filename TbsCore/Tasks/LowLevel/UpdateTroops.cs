@@ -3,10 +3,9 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class UpdateTroops : BotTask
     {
@@ -16,7 +15,6 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// </summary>
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             // If we have Plus account, just check that.
             if (acc.AccInfo.PlusAccount)
             {
@@ -24,7 +22,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
                 OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);
                 // We have updated all villages at the same time. No need to continue.
-                acc.Tasks.RemoveAll(x => x.GetType() == typeof(UpdateTroops));
+                acc.Tasks.Remove(typeof(UpdateTroops));
                 return TaskRes.Executed;
             }
 

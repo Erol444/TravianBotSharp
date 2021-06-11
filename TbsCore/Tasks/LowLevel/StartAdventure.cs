@@ -3,10 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class StartAdventure : BotTask
     {
@@ -14,12 +13,11 @@ namespace TravBotSharp.Files.Tasks.LowLevel
         /// In case we want to only update adventures
         /// </summary>
         public bool UpdateOnly { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
             await VersionHelper.Navigate(acc, "/hero.php?t=3", "/hero/adventures");
-            
+
             acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
             HeroHelper.UpdateHeroVillage(acc);
@@ -51,7 +49,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         this.NextExecute = DateTime.Now.AddMinutes(10);
                         return TaskRes.Executed;
                     }
-                    wb.ExecuteScript("document.getElementById('start').click()");
+                    acc.Wb.ExecuteScript("document.getElementById('start').click()");
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class IoHelperForms
     {
@@ -37,11 +37,11 @@ namespace TravBotSharp.Files.Helpers
                 }
             }
             return null;
-
         }
+
         public static bool AlertUser(string msg)
         {
-            var alert = new AlertForm(msg);
+            var alert = new TravBotSharp.AlertForm(msg);
             alert.ShowDialog();
             return true;
         }

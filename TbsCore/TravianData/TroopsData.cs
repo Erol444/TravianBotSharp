@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Helpers;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.TravianData
 {
@@ -26,30 +26,37 @@ namespace TbsCore.TravianData
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 1 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Smithy, Level = 1 });
                     return ret;
+
                 case TroopsEnum.Imperian:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Smithy, Level = 1 });
                     return ret;
+
                 case TroopsEnum.EquitesLegati:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 1 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     return ret;
+
                 case TroopsEnum.EquitesImperatoris:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     return ret;
+
                 case TroopsEnum.EquitesCaesaris:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 10 });
                     return ret;
+
                 case TroopsEnum.RomanRam:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 1 });
                     return ret;
+
                 case TroopsEnum.RomanCatapult:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 15 });
                     return ret;
+
                 case TroopsEnum.RomanChief:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 20 });
@@ -58,30 +65,37 @@ namespace TbsCore.TravianData
                 case TroopsEnum.Spearman:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 1 });
                     return ret;
+
                 case TroopsEnum.Axeman:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 3 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Smithy, Level = 1 });
                     return ret;
+
                 case TroopsEnum.Scout:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 1 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.MainBuilding, Level = 5 });
                     return ret;
+
                 case TroopsEnum.Paladin:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 3 });
                     return ret;
+
                 case TroopsEnum.TeutonicKnight:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 15 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 10 });
                     return ret;
+
                 case TroopsEnum.TeutonRam:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 1 });
                     return ret;
+
                 case TroopsEnum.TeutonCatapult:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 15 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 10 });
                     return ret;
+
                 case TroopsEnum.TeutonChief:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 20 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 5 });
@@ -91,30 +105,37 @@ namespace TbsCore.TravianData
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 1 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Smithy, Level = 1 });
                     return ret;
+
                 case TroopsEnum.Pathfinder:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 1 });
                     return ret;
+
                 case TroopsEnum.TheutatesThunder:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 3 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     return ret;
+
                 case TroopsEnum.Druidrider:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 5 });
                     return ret;
+
                 case TroopsEnum.Haeduan:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 15 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 10 });
                     return ret;
+
                 case TroopsEnum.GaulRam:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 1 });
                     return ret;
+
                 case TroopsEnum.GaulCatapult:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 15 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 10 });
                     return ret;
+
                 case TroopsEnum.GaulChief:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 20 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 10 });
@@ -124,30 +145,37 @@ namespace TbsCore.TravianData
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Barracks, Level = 1 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Smithy, Level = 1 });
                     return ret;
+
                 case TroopsEnum.KhopeshWarrior:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Smithy, Level = 1 });
                     return ret;
+
                 case TroopsEnum.SopduExplorer:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 1 });
                     return ret;
+
                 case TroopsEnum.AnhurGuard:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 5 });
                     return ret;
+
                 case TroopsEnum.ReshephChariot:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 10 });
                     return ret;
+
                 case TroopsEnum.EgyptianRam:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 5 });
                     return ret;
+
                 case TroopsEnum.EgyptianCatapult:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 15 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 10 });
                     return ret;
+
                 case TroopsEnum.EgyptianChief:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 20 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 10 });
@@ -157,34 +185,42 @@ namespace TbsCore.TravianData
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 3 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Smithy, Level = 1 });
                     return ret;
+
                 case TroopsEnum.Spotter:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 1 });
                     return ret;
+
                 case TroopsEnum.SteppeRider:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 3 });
                     return ret;
+
                 case TroopsEnum.Marksman:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 5 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 5 });
                     return ret;
+
                 case TroopsEnum.Marauder:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 15 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Stable, Level = 10 });
                     return ret;
+
                 case TroopsEnum.HunRam:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 10 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 1 });
                     return ret;
+
                 case TroopsEnum.HunCatapult:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 15 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Workshop, Level = 10 });
                     return ret;
+
                 case TroopsEnum.HunChief:
                     ret.Add(new Prerequisite() { Building = BuildingEnum.Academy, Level = 20 });
                     ret.Add(new Prerequisite() { Building = BuildingEnum.RallyPoint, Level = 10 });
                     return ret;
+
                 default: return ret;
             }
         }
@@ -235,6 +271,7 @@ namespace TbsCore.TravianData
                 case TroopsEnum.Mercenary:
                 case TroopsEnum.Marksman:
                     return true;
+
                 default:
                     return false;
             }
@@ -242,6 +279,7 @@ namespace TbsCore.TravianData
 
         public static bool IsTroopOffensive(Account acc, int i) =>
             IsTroopOffensive(TroopsHelper.TroopFromInt(acc, i));
+
         public static bool IsTroopOffensive(TroopsEnum troop)
         {
             switch (troop)
@@ -263,12 +301,14 @@ namespace TbsCore.TravianData
                 case TroopsEnum.KhopeshWarrior:
                 case TroopsEnum.ReshephChariot:
                     return true;
+
                 default:
                     return false;
             }
-        }  
+        }
 
         public static bool IsTroopRam(TroopsEnum troop) => IsTroopRam((int)troop);
+
         public static bool IsTroopRam(int troopInt) => (troopInt % 10) == 7;
 
         /// <summary>

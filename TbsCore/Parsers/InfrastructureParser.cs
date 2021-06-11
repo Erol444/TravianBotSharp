@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.TravianData;
+using TbsCore.Helpers;
+using TbsCore.TravianData;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class InfrastructureParser
     {
@@ -15,7 +15,7 @@ namespace TravBotSharp.Files.Parsers
             List<Building> buildings = new List<Building>();
             var villMap = htmlDoc.GetElementbyId("village_map");
             if (villMap == null) return buildings;
-            
+
             var fields = villMap.ChildNodes.Where(x => x.Name == "div").ToList();
 
             for (byte i = 0; i < fields.Count; i++)
@@ -80,6 +80,7 @@ namespace TravBotSharp.Files.Parsers
                 {
                     case Classificator.ServerVersionEnum.T4_4:
                         return TimeParser.ParseDuration(duration.InnerText);
+
                     case Classificator.ServerVersionEnum.T4_5:
                         var dur = duration.Descendants("span").FirstOrDefault(x => x.HasClass("value"));
                         if (dur != null)

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class MsgParser
     {
@@ -15,6 +15,7 @@ namespace TravBotSharp.Files.Parsers
                     if (container == null) return 0;
                     var msgCount = container.Descendants("div").FirstOrDefault(x => x.HasClass("speechBubbleContent")).InnerHtml;
                     return (int)Parser.RemoveNonNumeric(msgCount);
+
                 case Classificator.ServerVersionEnum.T4_5:
                     var msgs5 = htmlDoc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("messages"));
                     if (msgs5 == null) return 0;
@@ -23,7 +24,6 @@ namespace TravBotSharp.Files.Parsers
                     return (int)Parser.RemoveNonNumeric(indicator.InnerHtml);
             }
             return 0;
-
         }
     }
 }

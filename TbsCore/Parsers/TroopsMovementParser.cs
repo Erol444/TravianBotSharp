@@ -6,10 +6,10 @@ using System.Net;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsMovementModels;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Helpers;
+using static TbsCore.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Parsers
+namespace TbsCore.Parsers
 {
     public static class TroopsMovementParser
     {

@@ -3,10 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Helpers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
     public class TrainSettlers : BotTask
     {
@@ -27,7 +27,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
 
             if (troopNode == null)
             {
-                acc.Wb.Log("No new settler can be trained, probably because 3 settlers are already (being) trained");
+                acc.Logger.Warning("No new settler can be trained, probably because 3 settlers are already (being) trained");
                 SendSettlersTask(acc);
                 return TaskRes.Executed;
             }
@@ -52,20 +52,20 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                         {
                             if (acc.NewVillages.AutoSettleNewVillages)
                             {
-                                TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers()
+                                acc.Tasks.Add(new SendSettlers()
                                 {
                                     ExecuteAt = DateTime.Now.AddHours(-3),
                                     Vill = this.Vill,
                                     // For high speed servers, you want to train settlers asap
                                     Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
-                                });
+                                }, true);
                             }
 
-                            acc.Wb.Log("Have enoung settlers");
+                            acc.Logger.Warning("Have enoung settlers");
                         }
                         else
                         {
-                            acc.Wb.Log("Don't have enough expansion slot or settlers are training.");
+                            acc.Logger.Warning("Don't have enough expansion slot or settlers are training.");
                         }
                         return TaskRes.Executed;
                     }
@@ -85,7 +85,7 @@ namespace TravBotSharp.Files.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            acc.Wb.Driver.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
+            acc.Wb.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
             await Task.Delay(AccountHelper.Delay());
 
             // Click Train button
@@ -114,15 +114,15 @@ namespace TravBotSharp.Files.Tasks.LowLevel
             if (training < DateTime.Now) training = DateTime.Now;
             training = training.AddSeconds(5);
 
-            acc.Wb.Log($"Bot will (try to) send settlers in {TimeHelper.InSeconds(training)} sec");
+            acc.Logger.Information($"Bot will (try to) send settlers in {TimeHelper.InSeconds(training)} sec");
 
-            TaskExecutor.AddTaskIfNotExists(acc, new SendSettlers()
+            acc.Tasks.Add(new SendSettlers()
             {
                 ExecuteAt = training,
                 Vill = this.Vill,
                 // For high speed servers, you want to train settlers asap
                 Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
-            });
+            }, true);
         }
     }
 }

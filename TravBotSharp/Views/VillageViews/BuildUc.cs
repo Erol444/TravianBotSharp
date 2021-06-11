@@ -6,11 +6,11 @@ using System.Windows.Forms;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
+using TbsCore.Helpers;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
-using static TravBotSharp.Files.Helpers.Classificator;
+using static TbsCore.Helpers.Classificator;
 
 namespace TravBotSharp.Views
 {
@@ -256,7 +256,7 @@ namespace TravBotSharp.Views
                 };
                 vill.Build.DemolishTasks.Add(dt);
                 //TODO: ReStartDemolish
-                TaskExecutor.AddTaskIfNotExistInVillage(acc, vill, new DemolishBuilding() { Vill = vill });
+                acc.Tasks.Add(new DemolishBuilding() { Vill = vill }, true, vill);
             }
             UpdateUc();
         }
@@ -501,12 +501,12 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
 
-            TaskExecutor.AddTask(acc, new UpdateDorf1()
+            acc.Tasks.Add(new UpdateDorf1()
             {
                 Vill = vill,
                 NextExecute = DateTime.Now
             });
-            TaskExecutor.AddTask(acc, new UpdateDorf2()
+            acc.Tasks.Add(new UpdateDorf2()
             {
                 Vill = vill,
                 NextExecute = DateTime.Now

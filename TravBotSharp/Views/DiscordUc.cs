@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
 using System.Drawing;
 using TravBotSharp.Interfaces;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
 namespace TravBotSharp.Views
 {
@@ -82,7 +82,7 @@ namespace TravBotSharp.Views
             }
             catch (System.Exception error)
             {
-                acc.Wb.Log(error.ToString());
+                acc.Logger.Error(error, "Discord Webhook Error");
             }
         }
     }

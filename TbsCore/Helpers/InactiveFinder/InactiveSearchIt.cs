@@ -9,9 +9,9 @@ using RestSharp;
 using TbsCore.Models;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
-using TravBotSharp.Files.Parsers;
+using TbsCore.Parsers;
 
-namespace TravBotSharp.Files.Helpers.InactiveFinder
+namespace TbsCore.Helpers.InactiveFinder
 {
     public class InactiveSearchIt
     {

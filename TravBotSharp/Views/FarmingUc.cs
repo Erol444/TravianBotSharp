@@ -3,10 +3,10 @@ using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 using TbsCore.Models.TroopsModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Models.TroopsModels;
-using TravBotSharp.Files.Tasks.LowLevel;
-using TravBotSharp.Files.Tasks.SecondLevel;
+using TbsCore.Helpers;
+
+using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.SecondLevel;
 using TravBotSharp.Interfaces;
 using TravBotSharp.Forms;
 
@@ -43,7 +43,7 @@ namespace TravBotSharp.Views
             acc.Farming.MinInterval = (int)minFarmInterval.Value;
             acc.Farming.MaxInterval = (int)maxFarmInterval.Value;
             acc.Farming.Enabled = true;
-            TaskExecutor.AddTaskIfNotExists(acc, new SendFLs() { ExecuteAt = DateTime.Now });
+            acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now }, true);
         }
 
         private void trainTroopsAfterFLcheckbox_CheckedChanged(object sender, EventArgs e)
@@ -53,7 +53,7 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e) //refresh FLs
         {
-            TaskExecutor.AddTaskIfNotExists(GetSelectedAcc(), new UpdateFarmLists() { ExecuteAt = DateTime.Now });
+            GetSelectedAcc().Tasks.Add(new UpdateFarmLists() { ExecuteAt = DateTime.Now }, true);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace TravBotSharp.Views
                 MaxPop = (int)maxPopNatar.Value,
                 MinPop = (int)minPopNatar.Value
             };
-            TaskExecutor.AddTask(acc, task);
+            acc.Tasks.Add(task);
         }
 
         private void StopFarm_Click(object sender, EventArgs e) // Stop farming
@@ -109,8 +109,8 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             acc.Farming.Enabled = false;
             //remove all SendFarmlist / SendFLs tasks
-            TaskExecutor.RemoveTaskTypes(acc, typeof(SendFLs));
-            TaskExecutor.RemoveTaskTypes(acc, typeof(SendFarmlist));
+            acc.Tasks.Remove(typeof(SendFLs));
+            acc.Tasks.Remove(typeof(SendFarmlist));
         }
 
         private void flInterval_ValueChanged(object sender, EventArgs e)
@@ -149,7 +149,7 @@ namespace TravBotSharp.Views
                 {
                     foreach (var item in form.InactiveFarms)
                     {
-                        TaskExecutor.AddTask(acc, new AddFarm()
+                        acc.Tasks.Add(new AddFarm()
                         {
                             Farm = item,
                             FarmListId = fl.Id,

@@ -5,12 +5,12 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Tasks;
-using TravBotSharp.Files.Tasks.LowLevel;
-using TravBotSharp.Files.TravianData;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
+using TbsCore.TravianData;
+using static TbsCore.Helpers.Classificator;
 
-namespace TravBotSharp.Files.Helpers
+namespace TbsCore.Helpers
 {
     public static class BuildingHelper
     {
@@ -55,7 +55,7 @@ namespace TravBotSharp.Files.Helpers
             // you need at least one at level 20 before building other
             if (BuildingsData.CanHaveMultipleBuildings(task.Building))
             {
-                if(task.ConstructNew)
+                if (task.ConstructNew)
                 {
                     // Highest level building
                     var highestLvl = vill.Build
@@ -170,16 +170,13 @@ namespace TravBotSharp.Files.Helpers
         {
             RemoveCompletedTasks(vill, acc);
             //remove ongoing building task for this village
-            acc.Tasks.RemoveAll(x =>
-                x.Vill == vill &&
-                x.GetType() == typeof(UpgradeBuilding)
-                );
+            acc.Tasks.Remove(typeof(UpgradeBuilding), vill);
 
             if (vill.Build.Tasks.Count == 0) return; //No build tasks
 
             var (_, nextExecution) = UpgradeBuildingHelper.NextBuildingTask(acc, vill);
 
-            TaskExecutor.AddTask(acc, new UpgradeBuilding()
+            acc.Tasks.Add(new UpgradeBuilding()
             {
                 Vill = vill,
                 ExecuteAt = nextExecution,
@@ -190,10 +187,7 @@ namespace TravBotSharp.Files.Helpers
         {
             if (vill.Build.DemolishTasks.Count <= 0) return;
 
-            TaskExecutor.AddTaskIfNotExistInVillage(acc,
-                vill,
-                new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) }
-                );
+            acc.Tasks.Add(new DemolishBuilding() { Vill = vill, ExecuteAt = DateTime.Now.AddSeconds(10) }, true, vill);
         }
 
         public static bool BuildingRequirementsAreMet(BuildingEnum building, Village vill, TribeEnum tribe) //check if user can construct this building
@@ -270,6 +264,7 @@ namespace TravBotSharp.Files.Helpers
             {
                 case BuildingType.General:
                     return GetUrlGeneralTask(vill, task);
+
                 case BuildingType.AutoUpgradeResFields:
                     return (GetUrlAutoResFields(acc, vill, task), false);
             }
@@ -328,7 +323,7 @@ namespace TravBotSharp.Files.Helpers
         private static (string, bool) GetUrlGeneralTask(Village vill, BuildingTask task)
         {
             // Check if there is already a different building in this spot (not Site)
-            if (task.BuildingId == null || 
+            if (task.BuildingId == null ||
                 (vill.Build.Buildings.First(x => x.Id == task.BuildingId).Type != task.Building &&
                 vill.Build.Buildings.First(x => x.Id == task.BuildingId).Type != BuildingEnum.Site))
             {

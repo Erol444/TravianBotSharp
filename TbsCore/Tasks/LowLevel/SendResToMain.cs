@@ -2,11 +2,10 @@
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
-using TravBotSharp.Files.Helpers;
+using TbsCore.Helpers;
 
-namespace TravBotSharp.Files.Tasks.LowLevel
+namespace TbsCore.Tasks.LowLevel
 {
-
     /// <summary>
     /// Send all resources (except 30k crop(TODO: SELECTABLE)) above 20% (todo: selectable) to main village.
     /// If we have auto celebration selected, leave res for that (calculate based on production)
