@@ -26,7 +26,6 @@ namespace TravBotSharp.Views
         public void UpdateUc()
         {
             UpdateTaskTable();
-            logTextBox.Clear();
             GetLogData();
             this.Focus();
         }
@@ -50,7 +49,7 @@ namespace TravBotSharp.Views
                 }));
                 return;
             }
-
+            logTextBox.Clear();
             var acc = GetSelectedAcc();
             logTextBox.Text = Log.GetLog(acc.AccInfo.Nickname);
         }
@@ -65,7 +64,6 @@ namespace TravBotSharp.Views
                 }));
                 return;
             }
-
             var acc = GetSelectedAcc();
             logTextBox.Text = $"{Log.GetLog(acc.AccInfo.Nickname)}{logTextBox.Text}";
         }
