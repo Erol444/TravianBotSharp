@@ -19,7 +19,6 @@ namespace TbsCore.Tasks.SecondLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?uid=1");
 
             var vills = acc.Wb.Html.GetElementbyId("villages").Descendants("tr");

@@ -9,7 +9,6 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
             await HeroHelper.NavigateToHeroAttributes(acc);
 
             //heroRegeneration
@@ -21,7 +20,7 @@ namespace TbsCore.Tasks.LowLevel
             }
             if (reviveButton.HasClass("green"))
             {
-                wb.ExecuteScript("document.getElementById('heroRegeneration').click()"); //revive hero
+                acc.Wb.ExecuteScript("document.getElementById('heroRegeneration').click()"); //revive hero
                 return TaskRes.Executed;
             }
             else

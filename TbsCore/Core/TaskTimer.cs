@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Timers;
-using TbsCore.Models.AccModels;
+
+using OpenQA.Selenium;
+
 using TbsCore.Helpers;
 using TbsCore.Tasks;
 using TbsCore.Tasks.LowLevel;
@@ -41,41 +43,51 @@ namespace TbsCore.Models.AccModels
 
         private async void NewTick()
         {
-            try
+            if (acc.Tasks.Count == 0) return; //No tasks
+
+            // Another task is already in progress. wait
+            if (acc.Tasks.IsTaskExcuting()) return;
+
+            var tasks = acc.Tasks.GetTasksReady();
+            if (tasks.Count == 0)
             {
-                if (acc.Tasks.Count == 0) return; //No tasks
+                NoTasks(acc);
+                return;
+            }
 
-                // Another task is already in progress. wait
-                if (acc.Tasks.IsTaskExcuting()) return;
+            BotTask firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
+            if (firstTask == null) firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.Medium);
+            if (firstTask == null) firstTask = tasks.FirstOrDefault();
 
-                var tasks = acc.Tasks.GetTasksReady();
-                if (tasks.Count == 0)
+            firstTask.Stage = TaskStage.Executing;
+
+            //If correct village is selected, otherwise change village
+            if (firstTask.Vill != null)
+            {
+                var active = acc.Villages.FirstOrDefault(x => x.Active);
+                if (active != null && active != firstTask.Vill)
                 {
-                    NoTasks(acc);
-                    return;
-                }
-
-                BotTask firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
-                if (firstTask == null) firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.Medium);
-                if (firstTask == null) firstTask = tasks.FirstOrDefault();
-
-                firstTask.Stage = TaskStage.Executing;
-
-                //If correct village is selected, otherwise change village
-                if (firstTask.Vill != null)
-                {
-                    var active = acc.Villages.FirstOrDefault(x => x.Active);
-                    if (active != null && active != firstTask.Vill)
+                    try
                     {
                         await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
                     }
+                    catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+                    {
+                        acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
+
+                        acc.Tasks.Add(new ReopenDriver()
+                        {
+                            ExecuteAt = DateTime.MinValue,
+                            Priority = TaskPriority.High,
+                            ReopenAt = DateTime.MinValue
+                        });
+
+                        firstTask.Stage = TaskStage.Start;
+                        return;
+                    }
                 }
-                await TaskExecutor.Execute(acc, firstTask);
             }
-            catch (Exception e)
-            {
-                acc?.Logger.Error(e, $"Error in TaskTimer!");
-            }
+            await TaskExecutor.Execute(acc, firstTask);
         }
 
         private void NoTasks(Account acc)

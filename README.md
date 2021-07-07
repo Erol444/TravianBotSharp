@@ -13,7 +13,7 @@ TBS can change proxy by itself. This means you are far less likely to be banned 
 TBS can find appropriate valleys to settle around your capital village. Or you can input coordinates in advance and it will automatically settle one valley after another.
 #### - Auto-Fill troops and send resources to/from capital
 TBS will automatically send resources from capital village to off/deff villages, train troops there and send the remaining resources back. This is a perfect feature for any deff account.
-#### - Attack/Fake at specific time with multiple waves
+#### - Attack/Fake at specific time with multiple waves and oasis farming for T4.6
 Dream-come-true for any offensive player.
 ![alt text](./pics/attack.png)
 #### - Building

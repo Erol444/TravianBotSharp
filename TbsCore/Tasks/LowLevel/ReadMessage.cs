@@ -9,8 +9,6 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var wb = acc.Wb.Driver;
-
             while (true)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/messages.php");

@@ -145,7 +145,6 @@ namespace TbsCore.Helpers
                 sendRes = resFloat.Select(x => (long)Math.Floor(x)).ToArray();
             }
 
-            var wb = acc.Wb.Driver;
             for (int i = 0; i < 4; i++)
             {
                 // To avoid exception devide by zero
@@ -166,7 +165,7 @@ namespace TbsCore.Helpers
             //Select x2/x3
             if (times != 1)
             {
-                wb.ExecuteScript($"document.getElementById('x2').value='{times}'");
+                acc.Wb.ExecuteScript($"document.getElementById('x2').value='{times}'");
                 await Task.Delay(AccountHelper.Delay() / 5);
             }
             await DriverHelper.ClickById(acc, "enabledButton");

@@ -3,7 +3,6 @@ using System;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
-using TbsCore.Helpers;
 
 namespace TbsCore.Helpers
 {
@@ -20,13 +19,17 @@ namespace TbsCore.Helpers
         {
             try
             {
-                acc.Wb.Driver.ExecuteScript(script);
+                acc.Wb.ExecuteScript(script);
                 if (update)
                 {
                     await Task.Delay(AccountHelper.Delay());
                     acc.Wb.UpdateHtml();
                 }
                 return true;
+            }
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+            {
+                throw e;
             }
             catch (Exception e)
             {
@@ -48,8 +51,11 @@ namespace TbsCore.Helpers
         {
             try
             {
-                IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
-                return (T)js.ExecuteScript($"return {obj};");
+                return acc.Wb.GetJsObj<T>(obj);
+            }
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+            {
+                throw e;
             }
             catch (Exception e)
             {
@@ -61,10 +67,21 @@ namespace TbsCore.Helpers
         /// <summary>
         /// Get bearer token for Travian T4.5
         /// </summary>
-        public static string GetBearerToken(Account acc)
+        public static string GetBearerToken(Account acc, bool log = true)
         {
-            IJavaScriptExecutor js = acc.Wb.Driver as IJavaScriptExecutor;
-            return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+            try
+            {
+                return acc.Wb.GetBearerToken();
+            }
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+            {
+                throw e;
+            }
+            catch (Exception e)
+            {
+                if (log) acc.Logger.Error(e, "Error getting BearerToken!");
+                return default;
+            }
         }
 
         /// <summary>

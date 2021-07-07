@@ -173,7 +173,6 @@ namespace TbsCore.Helpers
                         return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
                     }
             }
-            return null;
         }
 
         /// <summary>

@@ -1,10 +1,10 @@
-name: Release
+name: CI - Master
 
 on:
   pull_request:
     types: [closed]
   workflow_dispatch:
-
+  
 jobs:
   version:
     if: github.event.pull_request.merged == true
@@ -45,7 +45,6 @@ jobs:
           changelog="${changelog//$'\r'/'%0D'}"
           echo "$changelog"
           echo "::set-output name=changelog::$changelog"
-
   build:
     runs-on: windows-latest
     needs: version
@@ -60,7 +59,7 @@ jobs:
       
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
-
+        
       - name: Get cache
         uses: actions/cache@v2
         with:
@@ -72,6 +71,7 @@ jobs:
           key: ${{ runner.os }}-nuget3-${{ hashFiles('TbsCore/packages.lock.json') }}
           restore-keys: |
               ${{ runner.os }}-nuget3-
+              
       - name: Restore Packages
         run: |
           nuget restore TbsCore/TbsCore.csproj -PackagesDirectory packages
@@ -99,10 +99,10 @@ jobs:
           name: TBS-release
           path: TravBotSharp/bin/Release
       
-      - name: Archive release
+      - name: Archive Release
         uses: papeloto/action-zip@v1
         with:
-            files: TravBotSharp/bin/Release                           
+            files: TravBotSharp/bin/Release
             dest: TBS-${{needs.version.outputs.version}}.zip
             
       - name: Create release
@@ -116,11 +116,10 @@ jobs:
             ${{needs.version.outputs.changelog}}
           artifacts: TBS-${{needs.version.outputs.version}}.zip
           token: ${{ secrets.GITHUB_TOKEN }}
-
   Discord:
     runs-on: ubuntu-latest
     needs: [release, version]
-    steps: 
+    steps:
       - run: |
           curl --header "Content-Type: application/json" --data "{\"content\": \"@everyone\"}" "${{ secrets.DISCORD_BOT }}"
       - name: Send to discord server
@@ -128,11 +127,10 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_BOT }}
           title: New release
-          nodetail: true          
+          nodetail: retrue
           description: |
               Version `TBS-${{needs.version.outputs.version}}`
-              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
-              
+              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{steps.tag.outputs.tag}}) to download!
               **Changelog**:
               ${{needs.version.outputs.changelog}}
   Clear:

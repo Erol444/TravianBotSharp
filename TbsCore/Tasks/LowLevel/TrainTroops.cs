@@ -100,7 +100,7 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            acc.Wb.Driver.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
+            acc.Wb.ExecuteScript($"document.getElementsByName('{inputName}')[0].value='{maxNum}'");
 
             await Task.Delay(100);
 
