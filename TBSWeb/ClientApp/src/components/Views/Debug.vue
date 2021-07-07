@@ -39,6 +39,7 @@
     import { isLogin, sleep } from '@/utilities';
     import { current, getTasks } from '@/controller/AccountController';
     import { EventBus } from '@/EventBus';
+    import { signalR } from '@aspnet/signalr';
 
     export default {
         name: 'ViewDebug',
@@ -47,8 +48,9 @@
             return {
                 waiting: false,
                 login: false,
-                logger: '11:23:15: Chrome will reopen in 60 min',
+                logging: '',
                 tasks: [],
+                connection: null,
             };
         },
         created: async function () {
@@ -61,6 +63,21 @@
                 await this.checkLogin(index);
             });
             EventBus.$on('driver_logout', this.checkLogin);
+
+            this.connection = new signalR.HubConnectionBuilder()
+                .withUrl('/realtime/log')
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+            this.connection.start().catch(function (err) {
+                return console.error(err.toSting());
+            });
+        },
+        mounted: function () {
+            const thisVue = this;
+            thisVue.connection.start();
+            thisVue.connection.on('LogUpdate', function (index, message) {
+                thisVue.logging += message;
+            });
         },
         methods: {
             checkLogin: async function (index) {

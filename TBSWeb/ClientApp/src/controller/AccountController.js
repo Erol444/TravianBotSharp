@@ -52,7 +52,7 @@ export async function deleteAccount (index) {
 export async function getTasks (index) {
     try {
         console.log(index);
-        const { data } = await axios.get(`/accounts/${index}/tasks`);
+        const { data } = await axios.get(`/debug/tasks/${index}`);
         console.log(data);
         return data;
     } catch (e) {

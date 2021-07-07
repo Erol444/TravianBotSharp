@@ -87,17 +87,6 @@ namespace TBSWeb
                 }
             });
 
-            app.Use(async (context, next) =>
-            {
-                DebugController._logHubContext = context.RequestServices.GetRequiredService<IHubContext<LogHub>>();
-                DebugController._taskHubContext = context.RequestServices.GetRequiredService<IHubContext<TaskHub>>();
-
-                if (next != null)
-                {
-                    await next.Invoke();
-                }
-            });
-
             lifetime.ApplicationStopping.Register(OnShutdown, true);
 
             lifetime.ApplicationStopped.Register(() =>

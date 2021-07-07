@@ -1,11 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+
+using TbsWeb;
+using TbsWeb.Controllers;
 
 namespace TBSWeb
 {
@@ -13,7 +11,11 @@ namespace TBSWeb
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            DebugController._logHubContext = (IHubContext<LogHub>)host.Services.GetService(typeof(IHubContext<LogHub>));
+            DebugController._taskHubContext = (IHubContext<TaskHub>)host.Services.GetService(typeof(IHubContext<TaskHub>));
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

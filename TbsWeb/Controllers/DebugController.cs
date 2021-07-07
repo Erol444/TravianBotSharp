@@ -29,6 +29,14 @@ namespace TbsWeb.Controllers
             return SerilogSingleton.LogOutput.GetLog(AccountManager.Instance.Accounts[index].AccInfo.Nickname);
         }
 
+        [HttpGet("task/{index:int}")]
+        public ActionResult<List<TaskInfo>> GetTasksData(int index)
+        {
+            var tasks = GetTasks(index);
+            if (tasks == null) return NotFound();
+            return tasks;
+        }
+
         static public List<TaskInfo> GetTasks(int index)
         {
             if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
