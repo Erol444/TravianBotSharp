@@ -17,7 +17,7 @@ namespace TbsCore.Tasks.LowLevel
                 {
                     var url = msg.ParentNode.GetAttributeValue("href", "").Replace("amp;", "");
                     await acc.Wb.Navigate(acc.AccInfo.ServerUrl + "/" + url);
-                    await Task.Delay(AccountHelper.Delay() * 5);
+                    await Task.Delay(AccountHelper.Delay(acc) * 5);
                 }
                 else return TaskRes.Executed;
             }

@@ -192,7 +192,7 @@ namespace TbsCore.Tasks.LowLevel
             }
             else
             {
-                var subtractMillis = AccountHelper.Delay() * 50; //~30sec
+                var subtractMillis = AccountHelper.Delay(acc) * 50; //~30sec
                 var later = DateTime.Now.AddMinutes(10);
                 // Don't training again sooner than after 10min
                 if (later > trainingEnds) trainingEnds = later;

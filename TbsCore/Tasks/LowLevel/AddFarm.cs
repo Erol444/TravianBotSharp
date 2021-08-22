@@ -27,7 +27,7 @@ namespace TbsCore.Tasks.LowLevel
                 await DriverHelper.WriteById(acc, $"t{i + 1}", Farm.Troops[i]);
             }
 
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
 
             // Click "save"
             switch (acc.AccInfo.ServerVersion)

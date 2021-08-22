@@ -70,7 +70,7 @@ namespace TbsCore.Tasks.LowLevel
             // If we have plus account and there is currently no other troop to improve, go ahead and improve the unit again
             this.NextExecute = (currentlyImproving.Count() == 0 && maxImproving == 2) ?
                 DateTime.MinValue :
-                DateTime.Now.Add(cost.TimeCost).AddMilliseconds(5 * AccountHelper.Delay());
+                DateTime.Now.Add(cost.TimeCost).AddMilliseconds(5 * AccountHelper.Delay(acc));
             return TaskRes.Executed;
         }
 

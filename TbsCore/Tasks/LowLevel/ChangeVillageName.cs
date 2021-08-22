@@ -31,7 +31,7 @@ namespace TbsCore.Tasks.LowLevel
                         acc.Wb.ExecuteScript(script); //insert new name into the textbox
                     }
 
-                    await Task.Delay(AccountHelper.Delay());
+                    await Task.Delay(AccountHelper.Delay(acc));
 
                     acc.Wb.ExecuteScript("document.getElementById('PlayerProfileEditor').submit()"); //click save button
 
@@ -64,7 +64,7 @@ namespace TbsCore.Tasks.LowLevel
                         acc.Wb.FindElementByXPath($"//input[@name='dname[{change.Item1}]=']").SendKeys(change.Item2);
                     }
 
-                    await Task.Delay(AccountHelper.Delay());
+                    await Task.Delay(AccountHelper.Delay(acc));
                     acc.Wb.FindElementById("btn_ok").Click();  //click save button
 
                     return TaskRes.Executed;

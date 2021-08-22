@@ -49,11 +49,11 @@ namespace TbsCore.Helpers
         /// Returns a random delay (click delay, ~0.5-1.6sec).
         /// </summary>
         /// <returns>Random delay in milliseconds</returns>
-        public static int Delay()
+        public static int Delay(Account acc)
         {
             //Return random delay
             Random rnd = new Random();
-            return rnd.Next(500, 1600);
+            return acc.Settings.DelayClicking + rnd.Next(-500, 500);
         }
 
         public static void StartAccountTasks(Account acc)

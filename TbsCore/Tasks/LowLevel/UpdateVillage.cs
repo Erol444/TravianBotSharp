@@ -20,7 +20,7 @@ namespace TbsCore.Tasks.LowLevel
             acc.Tasks.Remove(typeof(UpdateDorf2), Vill, thisTask: this);
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php"); // Update dorf1
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2
 
             // On new village import the building tasks
@@ -32,7 +32,7 @@ namespace TbsCore.Tasks.LowLevel
             await UpdateTroopsResearchedAndLevels(acc);
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
             await UpdateTroopsTraining(acc);
 
             var firstTroop = TroopsData.TribeFirstTroop(acc.AccInfo.Tribe);
@@ -114,7 +114,7 @@ namespace TbsCore.Tasks.LowLevel
                         break;
                 }
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
-                await Task.Delay(AccountHelper.Delay());
+                await Task.Delay(AccountHelper.Delay(acc));
             }
         }
     }
