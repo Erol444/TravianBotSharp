@@ -86,7 +86,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             acc.Wb.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
 
             // Click Train button
             await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, "document.getElementById('s1').click()");

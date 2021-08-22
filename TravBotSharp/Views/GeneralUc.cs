@@ -63,6 +63,8 @@ namespace TravBotSharp.Views
             UpdateBotRunning();
             UpdaterBonusPrio(acc);
             UpdaterResPrio(acc);
+
+            clickDelayUpDown.Value = acc.Settings.DelayClicking;
         }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages
@@ -411,6 +413,11 @@ namespace TravBotSharp.Views
                     _ = form.ShowDialog();
                 }
             }).Start();
+        }
+
+        private void clickDelayUpDown_ValueChanged(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Settings.DelayClicking = (int)clickDelayUpDown.Value;
         }
 
         private void UpdaterResPrio(Account acc)

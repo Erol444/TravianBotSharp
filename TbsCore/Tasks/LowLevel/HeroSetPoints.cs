@@ -45,7 +45,7 @@ namespace TbsCore.Tasks.LowLevel
                     // Execute the script (set point) to add 1 point
                     acc.Wb.ExecuteScript(script);
                 }
-                await Task.Delay(AccountHelper.Delay());
+                await Task.Delay(AccountHelper.Delay(acc));
             }
 
             acc.Wb.ExecuteScript("document.getElementById('saveHeroAttributes').click();");

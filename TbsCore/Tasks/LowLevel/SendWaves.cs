@@ -217,7 +217,7 @@ namespace TbsCore.Tasks.LowLevel
             }
             acc.Logger.Information($"Successfully sent {wavesReady.Count} waves!");
 
-            await Task.Delay(AccountHelper.Delay() * 2);
+            await Task.Delay(AccountHelper.Delay(acc) * 2);
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=2&subfilters=4");
             //Todo: check waves?
             return TaskRes.Executed;

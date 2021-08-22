@@ -258,7 +258,7 @@ namespace TbsCore.Tasks.LowLevel
 
         private async Task PostTaskCheckDorf(Account acc)
         {
-            await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
+            await System.Threading.Tasks.Task.Delay(AccountHelper.Delay(acc));
             await TaskExecutor.PageLoaded(acc);
 
             // Check if residence is getting upgraded to level 10 => train settlers
@@ -298,17 +298,17 @@ namespace TbsCore.Tasks.LowLevel
         private async Task<bool> TryFastUpgrade(Account acc)
         {
             if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
-            await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
+            await System.Threading.Tasks.Task.Delay(AccountHelper.Delay(acc));
 
             // Confirm
             acc.Wb.UpdateHtml();
             if (acc.Wb.Html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']") != null)
             {
                 await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen");
-                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
+                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay(acc));
 
                 await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
-                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
+                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay(acc));
             }
 
             // Has to be a legit "click"
@@ -343,7 +343,7 @@ namespace TbsCore.Tasks.LowLevel
             if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
             {
                 await DriverHelper.ClickById(acc, "dontShowThisAgain");
-                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay());
+                await System.Threading.Tasks.Task.Delay(AccountHelper.Delay(acc));
                 await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
             }
 

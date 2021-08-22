@@ -11,15 +11,15 @@ namespace TbsCore.Tasks.LowLevel
         {
             // Troops task
             TroopsHelper.ReStartTroopTraining(acc, Vill);
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
             TroopsHelper.ReStartResearchAndImprovement(acc, Vill);
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
 
             // Building task
             BuildingHelper.ReStartBuilding(acc, Vill);
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
             BuildingHelper.ReStartDemolishing(acc, Vill);
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
 
             // Celebration task
             AccountHelper.ReStartCelebration(acc, Vill);

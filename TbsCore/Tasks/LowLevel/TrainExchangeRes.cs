@@ -32,7 +32,7 @@ namespace TbsCore.Tasks.LowLevel
             string distributeid = distribute.GetAttributeValue("id", "");
             acc.Wb.ExecuteScript($"document.getElementById('{distributeid}').click()"); //Distribute resources button
 
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
             acc.Wb.ExecuteScript($"document.getElementById('npc_market_button').click()"); //Exchange resources button
 
             return TaskRes.Executed;

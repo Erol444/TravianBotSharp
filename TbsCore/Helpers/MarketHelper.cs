@@ -156,7 +156,7 @@ namespace TbsCore.Helpers
                     sendRes[i] -= remainder;
                     await DriverHelper.WriteById(acc, "r" + (i + 1), sendRes[i]);
                 }
-                await Task.Delay(AccountHelper.Delay() / 5);
+                await Task.Delay(AccountHelper.Delay(acc) / 5);
             }
 
             // Input coordinates
@@ -166,7 +166,7 @@ namespace TbsCore.Helpers
             if (times != 1)
             {
                 acc.Wb.ExecuteScript($"document.getElementById('x2').value='{times}'");
-                await Task.Delay(AccountHelper.Delay() / 5);
+                await Task.Delay(AccountHelper.Delay(acc) / 5);
             }
             await DriverHelper.ClickById(acc, "enabledButton");
 

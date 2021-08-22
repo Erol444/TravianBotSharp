@@ -234,7 +234,7 @@ namespace TravBotSharp.Views
             {
                 var taskSendTroops = new SendTroops()
                 {
-                    ExecuteAt = DateTime.Now.AddMilliseconds(i * 15 * AccountHelper.Delay()),
+                    ExecuteAt = DateTime.Now.AddMilliseconds(i * 15 * AccountHelper.Delay(acc)),
                     Vill = vill,
                     TroopsMovement = new TroopsSendModel()
                     {

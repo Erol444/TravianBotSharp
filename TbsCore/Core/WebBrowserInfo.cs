@@ -175,14 +175,14 @@ namespace TbsCore.Models.AccModels
                         repeatCnt = 0;
                         var changeAccess = new ChangeAccess();
                         await changeAccess.Execute(acc);
-                        await Task.Delay(AccountHelper.Delay() * 5);
+                        await Task.Delay(AccountHelper.Delay(acc) * 5);
                     }
-                    await Task.Delay(AccountHelper.Delay());
+                    await Task.Delay(AccountHelper.Delay(acc));
                 }
             }
             while (repeat);
 
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
 
             UpdateHtml();
 

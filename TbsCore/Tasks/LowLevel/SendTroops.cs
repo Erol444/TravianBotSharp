@@ -68,7 +68,7 @@ namespace TbsCore.Tasks.LowLevel
             //Click on "Send" button
             await DriverHelper.ClickById(acc, "btn_ok");
 
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
 
             // Select catapult targets
             if (this.TroopsMovement.Target1 != Classificator.BuildingEnum.Site)

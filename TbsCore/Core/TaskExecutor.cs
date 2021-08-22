@@ -61,7 +61,7 @@ namespace TbsCore.Helpers
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
             {
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?ok");
-                await Task.Delay(AccountHelper.Delay());
+                await Task.Delay(AccountHelper.Delay(acc));
             }
 
             //TODO: limit this for performance reasons?
@@ -78,7 +78,7 @@ namespace TbsCore.Helpers
         public static async Task Execute(Account acc, BotTask task)
         {
             // Before every execution, wait a random delay
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
 
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
 

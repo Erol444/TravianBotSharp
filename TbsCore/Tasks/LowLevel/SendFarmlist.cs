@@ -68,7 +68,7 @@ namespace TbsCore.Tasks.LowLevel
                 await DriverHelper.CheckById(acc, checkbox.Id, true, update: false);
             }
 
-            await Task.Delay(AccountHelper.Delay() * 2);
+            await Task.Delay(AccountHelper.Delay(acc) * 2);
 
             switch (acc.AccInfo.ServerVersion)
             {

@@ -10,7 +10,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             if (!TaskExecutor.IsLoginScreen(acc))
             {
-                await Task.Delay(AccountHelper.Delay() * 2);
+                await Task.Delay(AccountHelper.Delay(acc) * 2);
                 return TaskRes.Executed;
             }
 

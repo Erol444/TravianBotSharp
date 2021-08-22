@@ -22,7 +22,7 @@ namespace TbsCore.Helpers
                 acc.Wb.ExecuteScript(script);
                 if (update)
                 {
-                    await Task.Delay(AccountHelper.Delay());
+                    await Task.Delay(AccountHelper.Delay(acc));
                     acc.Wb.UpdateHtml();
                 }
                 return true;
