@@ -85,10 +85,5 @@ namespace TbsCore.Models.AccModels
         /// Discord webhook url
         /// </summary>
         public string WebhookUrl { get; set; }
-
-        /// <summary>
-        /// How long should bot click between 2 click ( bot will +- 500ms for random )
-        /// </summary>
-        public int DelayClicking { get; set; }
     }
 }

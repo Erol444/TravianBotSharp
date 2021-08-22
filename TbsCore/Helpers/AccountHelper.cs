@@ -53,7 +53,7 @@ namespace TbsCore.Helpers
         {
             //Return random delay
             Random rnd = new Random();
-            return acc.AccInfo.DelayClicking + rnd.Next(-500, 500);
+            return acc.Settings.DelayClicking + rnd.Next(-500, 500);
         }
 
         public static void StartAccountTasks(Account acc)

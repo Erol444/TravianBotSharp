@@ -26,6 +26,7 @@ namespace TbsCore.Models.Settings
             DonateAbove = 95;
             DonateExcessOf = 65;
             DiscordWebhook = false;
+            DelayClicking = 3000;
         }
 
         public bool AutoActivateProductionBoost { get; set; }
@@ -131,6 +132,11 @@ namespace TbsCore.Models.Settings
         /// Announce every bot online
         /// </summary>
         public bool DiscordOnlineAnnouncement { get; set; }
+
+        /// <summary>
+        /// How long should bot click between 2 click ( bot will +- 500ms for random )
+        /// </summary>
+        public int DelayClicking { get; set; }
     }
 
     /// <summary>
