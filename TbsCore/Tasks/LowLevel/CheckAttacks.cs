@@ -44,7 +44,7 @@ namespace TbsCore.Tasks.LowLevel
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=1&subfilters=1&page={++page}");
                 var pageAttacks = TroopsMovementParser.ParseTroopsOverview(acc, acc.Wb.Html);
                 attacks.AddRange(pageAttacks);
-                await Task.Delay(AccountHelper.Delay());
+                await Task.Delay(AccountHelper.Delay(acc));
             }
             while (!acc.Wb.Html // While the next page img isn't disabled
                 .GetElementbyId("build")

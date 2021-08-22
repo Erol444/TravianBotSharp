@@ -14,7 +14,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             var script = $"document.getElementById('mentorTaskList').querySelector('[data-questid=\"{this.QuestToClaim.Id}\"]').click();";
             await DriverHelper.ExecuteScript(acc, script);
-            await Task.Delay(AccountHelper.Delay() * 2);
+            await Task.Delay(AccountHelper.Delay(acc) * 2);
 
             string buttonId = "";
             switch (acc.AccInfo.ServerVersion)

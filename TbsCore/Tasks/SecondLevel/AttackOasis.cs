@@ -68,7 +68,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 var oasis = oasisFiltered[i];
 
-                await Task.Delay(AccountHelper.Delay() * 3);
+                await Task.Delay(AccountHelper.Delay(acc) * 3);
                 acc.Logger.Information($"[{i + 1}/{oasisFiltered.Count}] Searching for oasis to attack, checking {oasis}");
                 var animals = MapHelper.GetOasisAnimals(acc, oasis);
 

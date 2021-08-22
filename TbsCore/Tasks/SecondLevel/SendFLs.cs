@@ -12,7 +12,7 @@ namespace TbsCore.Tasks.SecondLevel
         {
             Random rnd = new Random();
             int totalSec = 0;
-            await Task.Delay(AccountHelper.Delay() / 3);
+            await Task.Delay(AccountHelper.Delay(acc) / 3);
 
             foreach (var fl in acc.Farming.FL)
             {

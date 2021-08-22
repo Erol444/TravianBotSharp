@@ -31,7 +31,7 @@ namespace TbsCore.Tasks.LowLevel
 
         private async Task ClaimRewards(Account acc)
         {
-            await Task.Delay(AccountHelper.Delay());
+            await Task.Delay(AccountHelper.Delay(acc));
             do
             {
                 await DriverHelper.ClickByClassName(acc, "collect", false);

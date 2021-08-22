@@ -34,7 +34,7 @@ namespace TbsCore.Tasks.LowLevel
                 else
                 {
                     acc.Logger.Warning($"There's only one access to this account! Will retry same proxy after 1 min...");
-                    await Task.Delay(AccountHelper.Delay() * 15);
+                    await Task.Delay(AccountHelper.Delay(acc) * 15);
                     this.NextExecute = DateTime.MinValue.AddMinutes(1);
                 }
             }

@@ -17,7 +17,7 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
             var buttonid = button.GetAttributeValue("id", "");
-            await Task.Delay(AccountHelper.Delay() / 3);
+            await Task.Delay(AccountHelper.Delay(acc) / 3);
 
             acc.Wb.ExecuteScript($"document.getElementById('{buttonid}').click()"); //boost production
 

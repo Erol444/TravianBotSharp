@@ -47,7 +47,7 @@ namespace TbsCore.Tasks.LowLevel
 
             await DriverHelper.ClickById(acc, button.Id);
 
-            var executeNext = DateTime.Now.Add(dur).AddMilliseconds(10 * AccountHelper.Delay());
+            var executeNext = DateTime.Now.Add(dur).AddMilliseconds(10 * AccountHelper.Delay(acc));
             if (Vill.Settings.AutoImprove)
             {
                 acc.Tasks.Add(new ImproveTroop() { Vill = this.Vill, ExecuteAt = DateTime.Now.Add(dur) });
