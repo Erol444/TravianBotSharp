@@ -13,7 +13,18 @@ namespace TbsCore.Parsers
         public static List<Building> GetBuildings(Account acc, HtmlAgilityPack.HtmlDocument htmlDoc)
         {
             List<Building> buildings = new List<Building>();
-            var villMap = htmlDoc.GetElementbyId("villageContent");
+            HtmlAgilityPack.HtmlNode villMap = null;
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_5:
+                    villMap = htmlDoc.GetElementbyId("villageContent");
+                    break;
+
+                case Classificator.ServerVersionEnum.T4_4:
+                    villMap = htmlDoc.GetElementbyId("village_map");
+                    break;
+            }
+
             if (villMap == null) return buildings;
 
             var fields = villMap.ChildNodes.Where(x => x.Name == "div").ToList();
