@@ -121,6 +121,10 @@
             this.panel11 = new System.Windows.Forms.Panel();
             this.panel12 = new System.Windows.Forms.Panel();
             this.button12 = new System.Windows.Forms.Button();
+            this.panel13 = new System.Windows.Forms.Panel();
+            this.clickDelayUpDown = new System.Windows.Forms.NumericUpDown();
+            this.label38 = new System.Windows.Forms.Label();
+            this.label40 = new System.Windows.Forms.Label();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -144,6 +148,8 @@
             this.panel10.SuspendLayout();
             this.panel11.SuspendLayout();
             this.panel12.SuspendLayout();
+            this.panel13.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.clickDelayUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // panel4
@@ -1179,10 +1185,54 @@
             this.button12.UseVisualStyleBackColor = false;
             this.button12.Click += new System.EventHandler(this.button12_Click);
             // 
+            // panel13
+            // 
+            this.panel13.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel13.Controls.Add(this.clickDelayUpDown);
+            this.panel13.Controls.Add(this.label38);
+            this.panel13.Controls.Add(this.label40);
+            this.panel13.Location = new System.Drawing.Point(735, 193);
+            this.panel13.Name = "panel13";
+            this.panel13.Size = new System.Drawing.Size(174, 62);
+            this.panel13.TabIndex = 178;
+            // 
+            // clickDelayUpDown
+            // 
+            this.clickDelayUpDown.Location = new System.Drawing.Point(25, 34);
+            this.clickDelayUpDown.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.clickDelayUpDown.Name = "clickDelayUpDown";
+            this.clickDelayUpDown.Size = new System.Drawing.Size(67, 20);
+            this.clickDelayUpDown.TabIndex = 158;
+            this.clickDelayUpDown.ValueChanged += new System.EventHandler(this.clickDelayUpDown_ValueChanged);
+            // 
+            // label38
+            // 
+            this.label38.AutoSize = true;
+            this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label38.Location = new System.Drawing.Point(10, 14);
+            this.label38.Name = "label38";
+            this.label38.Size = new System.Drawing.Size(85, 16);
+            this.label38.TabIndex = 152;
+            this.label38.Text = "Click delay";
+            // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(98, 37);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(67, 13);
+            this.label40.TabIndex = 159;
+            this.label40.Text = "milisecond(s)";
+            // 
             // GeneralUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel13);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.panel12);
             this.Controls.Add(this.panel11);
@@ -1233,6 +1283,9 @@
             this.panel11.PerformLayout();
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
+            this.panel13.ResumeLayout(false);
+            this.panel13.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.clickDelayUpDown)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1331,5 +1384,9 @@
         private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.Panel panel12;
         private System.Windows.Forms.Button button12;
+        private System.Windows.Forms.Panel panel13;
+        private System.Windows.Forms.NumericUpDown clickDelayUpDown;
+        private System.Windows.Forms.Label label38;
+        private System.Windows.Forms.Label label40;
     }
 }
