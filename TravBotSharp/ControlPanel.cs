@@ -258,7 +258,7 @@ namespace TravBotSharp
                     if (acc.TaskTimer?.IsBotRunning() ?? false) continue;
 
                     _ = IoHelperCore.LoginAccount(acc);
-                    await Task.Delay(ran.Next(500, 5000));
+                    await Task.Delay(acc.Settings.DelayClicking + ran.Next(-500, 500));
                 }
             }).Start();
             generalUc1.UpdateBotRunning("true");
