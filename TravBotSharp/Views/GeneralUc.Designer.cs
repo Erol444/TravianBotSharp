@@ -1200,6 +1200,11 @@
             // 
             this.clickDelayUpDown.Location = new System.Drawing.Point(25, 34);
             this.clickDelayUpDown.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.clickDelayUpDown.Minimum = new decimal(new int[] {
             1000,
             0,
             0,
@@ -1207,6 +1212,11 @@
             this.clickDelayUpDown.Name = "clickDelayUpDown";
             this.clickDelayUpDown.Size = new System.Drawing.Size(67, 20);
             this.clickDelayUpDown.TabIndex = 158;
+            this.clickDelayUpDown.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
             this.clickDelayUpDown.ValueChanged += new System.EventHandler(this.clickDelayUpDown_ValueChanged);
             // 
             // label38

@@ -64,7 +64,7 @@ namespace TravBotSharp.Views
             UpdaterBonusPrio(acc);
             UpdaterResPrio(acc);
 
-            clickDelayUpDown.Value = acc.Settings.DelayClicking;
+            clickDelayUpDown.Value = acc.Settings.DelayClicking > 0 ? acc.Settings.DelayClicking : 3000;
         }
 
         private void SupplyResourcesButton_Click(object sender, EventArgs e) //select village to supply res to new villages
