@@ -114,6 +114,7 @@
             this.accTabController.SelectedIndex = 0;
             this.accTabController.Size = new System.Drawing.Size(971, 661);
             this.accTabController.TabIndex = 3;
+            this.accTabController.SelectedIndexChanged += new System.EventHandler(this.debugUc1.tabControl1_SelectedIndexChanged);
             this.accTabController.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabGeneral
