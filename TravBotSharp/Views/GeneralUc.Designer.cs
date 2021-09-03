@@ -122,12 +122,12 @@
             this.panel12 = new System.Windows.Forms.Panel();
             this.button12 = new System.Windows.Forms.Button();
             this.panel13 = new System.Windows.Forms.Panel();
+            this.label40 = new System.Windows.Forms.Label();
+            this.label39 = new System.Windows.Forms.Label();
+            this.label37 = new System.Windows.Forms.Label();
+            this.clickDelayMax = new System.Windows.Forms.NumericUpDown();
             this.clickDelayMin = new System.Windows.Forms.NumericUpDown();
             this.label38 = new System.Windows.Forms.Label();
-            this.clickDelayMax = new System.Windows.Forms.NumericUpDown();
-            this.label37 = new System.Windows.Forms.Label();
-            this.label39 = new System.Windows.Forms.Label();
-            this.label40 = new System.Windows.Forms.Label();
             this.panel4.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -152,8 +152,8 @@
             this.panel11.SuspendLayout();
             this.panel12.SuspendLayout();
             this.panel13.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.clickDelayMin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.clickDelayMax)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clickDelayMin)).BeginInit();
             this.SuspendLayout();
             // 
             // panel4
@@ -1203,6 +1203,57 @@
             this.panel13.Size = new System.Drawing.Size(292, 62);
             this.panel13.TabIndex = 178;
             // 
+            // label40
+            // 
+            this.label40.AutoSize = true;
+            this.label40.Location = new System.Drawing.Point(127, 38);
+            this.label40.Name = "label40";
+            this.label40.Size = new System.Drawing.Size(27, 13);
+            this.label40.TabIndex = 179;
+            this.label40.Text = "Max";
+            // 
+            // label39
+            // 
+            this.label39.AutoSize = true;
+            this.label39.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label39.Location = new System.Drawing.Point(107, 38);
+            this.label39.Name = "label39";
+            this.label39.Size = new System.Drawing.Size(18, 20);
+            this.label39.TabIndex = 179;
+            this.label39.Text = "~";
+            // 
+            // label37
+            // 
+            this.label37.AutoSize = true;
+            this.label37.Location = new System.Drawing.Point(3, 38);
+            this.label37.Name = "label37";
+            this.label37.Size = new System.Drawing.Size(24, 13);
+            this.label37.TabIndex = 179;
+            this.label37.Text = "Min";
+            // 
+            // clickDelayMax
+            // 
+            this.clickDelayMax.Location = new System.Drawing.Point(160, 34);
+            this.clickDelayMax.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.clickDelayMax.Minimum = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            this.clickDelayMax.Name = "clickDelayMax";
+            this.clickDelayMax.Size = new System.Drawing.Size(67, 20);
+            this.clickDelayMax.TabIndex = 159;
+            this.clickDelayMax.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.clickDelayMax.ValueChanged += new System.EventHandler(this.clickDelayMax_ValueChanged);
+            // 
             // clickDelayMin
             // 
             this.clickDelayMin.Location = new System.Drawing.Point(33, 34);
@@ -1212,7 +1263,7 @@
             0,
             0});
             this.clickDelayMin.Minimum = new decimal(new int[] {
-            1000,
+            1,
             0,
             0,
             0});
@@ -1235,57 +1286,6 @@
             this.label38.Size = new System.Drawing.Size(198, 16);
             this.label38.TabIndex = 152;
             this.label38.Text = "Click delay [in miliseconds]";
-            // 
-            // clickDelayMax
-            // 
-            this.clickDelayMax.Location = new System.Drawing.Point(160, 34);
-            this.clickDelayMax.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.clickDelayMax.Minimum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.clickDelayMax.Name = "clickDelayMax";
-            this.clickDelayMax.Size = new System.Drawing.Size(67, 20);
-            this.clickDelayMax.TabIndex = 159;
-            this.clickDelayMax.Value = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.clickDelayMax.ValueChanged += new System.EventHandler(this.clickDelayMax_ValueChanged);
-            // 
-            // label37
-            // 
-            this.label37.AutoSize = true;
-            this.label37.Location = new System.Drawing.Point(3, 38);
-            this.label37.Name = "label37";
-            this.label37.Size = new System.Drawing.Size(24, 13);
-            this.label37.TabIndex = 179;
-            this.label37.Text = "Min";
-            // 
-            // label39
-            // 
-            this.label39.AutoSize = true;
-            this.label39.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label39.Location = new System.Drawing.Point(107, 38);
-            this.label39.Name = "label39";
-            this.label39.Size = new System.Drawing.Size(18, 20);
-            this.label39.TabIndex = 179;
-            this.label39.Text = "~";
-            // 
-            // label40
-            // 
-            this.label40.AutoSize = true;
-            this.label40.Location = new System.Drawing.Point(127, 38);
-            this.label40.Name = "label40";
-            this.label40.Size = new System.Drawing.Size(27, 13);
-            this.label40.TabIndex = 179;
-            this.label40.Text = "Max";
             // 
             // GeneralUc
             // 
@@ -1344,8 +1344,8 @@
             this.panel12.PerformLayout();
             this.panel13.ResumeLayout(false);
             this.panel13.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.clickDelayMin)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.clickDelayMax)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.clickDelayMin)).EndInit();
             this.ResumeLayout(false);
 
         }

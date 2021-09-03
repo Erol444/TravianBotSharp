@@ -4,6 +4,7 @@ using System.Linq;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SideBarModels;
 using TbsCore.Helpers;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Parsers
 {
@@ -37,48 +38,71 @@ namespace TbsCore.Parsers
             };
         }
 
-        public static List<VillageChecked> GetVillages(HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static List<VillageChecked> GetVillages(HtmlAgilityPack.HtmlDocument htmlDoc, ServerVersionEnum serverVersion)
         {
             List<VillageChecked> ret = new List<VillageChecked>();
 
-            try
+            var villsNode = htmlDoc.GetElementbyId("sidebarBoxVillagelist");
+            if (villsNode == null) return ret;
+            List<HtmlAgilityPack.HtmlNode> vills = null;
+            switch (serverVersion)
             {
-                var villsNode = htmlDoc.GetElementbyId("sidebarBoxVillagelist");
-                if (villsNode == null) return ret;
-
-                var vills = villsNode.Descendants("li").ToList();
-                foreach (var node in vills)
-                {
-                    bool underAttack = false, active = false;
-
-                    if (node.HasClass("attack"))
-                        underAttack = true;
-                    if (node.HasClass("active"))
-                        active = true;
-
-                    var href = System.Net.WebUtility.HtmlDecode(node.ChildNodes.First(x => x.Name == "a").GetAttributeValue("href", ""));
-
-                    var villId = Convert.ToInt32(href.Split('=')[1].Split('&')[0]);
-
-                    var villName = node.Descendants().FirstOrDefault(x => x.HasClass("name")).InnerText;
-                    var coords = new Coordinates()
+                case ServerVersionEnum.T4_4:
                     {
-                        x = (int)Parser.ParseNum(node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateX")).InnerText.Replace("(", "")),
-                        y = (int)Parser.ParseNum(node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateY")).InnerText.Replace(")", ""))
-                    };
-
-                    ret.Add(new VillageChecked()
+                        vills = villsNode.Descendants("li").ToList();
+                        break;
+                    }
+                case ServerVersionEnum.T4_5:
                     {
-                        Id = villId,
-                        UnderAttack = underAttack,
-                        Name = villName,
-                        Coordinates = coords,
-                        Active = active,
-                        Href = href,
-                    });
-                }
+                        vills = villsNode.Descendants("div").Where(x => x.HasClass("listEntry")).ToList();
+                        break;
+                    }
             }
-            catch (Exception e) { Console.WriteLine("error " + e.Message); }
+
+            if (vills == null) return ret;
+
+            foreach (var node in vills)
+            {
+                bool underAttack = false, active = false;
+
+                if (node.HasClass("attack"))
+                    underAttack = true;
+                if (node.HasClass("active"))
+                    active = true;
+
+                var href = System.Net.WebUtility.HtmlDecode(node.ChildNodes.FirstOrDefault(x => x.Name == "a").GetAttributeValue("href", ""));
+                var villId = Convert.ToInt32(href.Split('=')[1].Split('&')[0]);
+                var villName = node.Descendants("a").FirstOrDefault().InnerText.Replace(" ", "").Replace("\r\n", "");
+
+                var x_node = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateX"));
+                int x_coord = 0;
+                if (x_node != null)
+                {
+                    x_coord = (int)Parser.ParseNum(x_node.InnerText.Replace("(", ""));
+                }
+                var y_node = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateY"));
+                int y_coord = 0;
+                if (y_node != null)
+                {
+                    y_coord = (int)Parser.ParseNum(y_node.InnerText.Replace(")", ""));
+                }
+                var coords = new Coordinates()
+                {
+                    x = x_coord,
+                    y = y_coord,
+                };
+
+                ret.Add(new VillageChecked()
+                {
+                    Id = villId,
+                    UnderAttack = underAttack,
+                    Name = villName,
+                    Coordinates = coords,
+                    Active = active,
+                    Href = href,
+                });
+            }
+
             return ret;
         }
 
