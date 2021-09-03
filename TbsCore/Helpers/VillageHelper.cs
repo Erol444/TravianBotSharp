@@ -86,7 +86,7 @@ namespace TbsCore.Helpers
             // Parse village list again and find correct href
             Uri uri = new Uri(acc.Wb.CurrentUrl);
 
-            var vills = RightBarParser.GetVillages(acc.Wb.Html);
+            var vills = RightBarParser.GetVillages(acc.Wb.Html, acc.AccInfo.ServerVersion);
             var href = vills.FirstOrDefault(x => x.Id == id)?.Href;
 
             if (string.IsNullOrEmpty(href)) // Login screen, server messages etc.
