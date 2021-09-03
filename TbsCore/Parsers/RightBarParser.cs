@@ -70,15 +70,26 @@ namespace TbsCore.Parsers
                 if (node.HasClass("active"))
                     active = true;
 
-                var href = System.Net.WebUtility.HtmlDecode(node.ChildNodes.First(x => x.Name == "a").GetAttributeValue("href", ""));
-
+                var href = System.Net.WebUtility.HtmlDecode(node.ChildNodes.FirstOrDefault(x => x.Name == "a").GetAttributeValue("href", ""));
                 var villId = Convert.ToInt32(href.Split('=')[1].Split('&')[0]);
+                var villName = node.Descendants("a").FirstOrDefault().InnerText.Replace(" ", "").Replace("\r\n", "");
 
-                var villName = node.Descendants().FirstOrDefault(x => x.HasClass("name")).InnerText;
+                var x_node = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateX"));
+                int x_coord = 0;
+                if (x_node != null)
+                {
+                    x_coord = (int)Parser.ParseNum(x_node.InnerText.Replace("(", ""));
+                }
+                var y_node = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateY"));
+                int y_coord = 0;
+                if (y_node != null)
+                {
+                    y_coord = (int)Parser.ParseNum(y_node.InnerText.Replace(")", ""));
+                }
                 var coords = new Coordinates()
                 {
-                    x = (int)Parser.ParseNum(node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateX")).InnerText.Replace("(", "")),
-                    y = (int)Parser.ParseNum(node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateY")).InnerText.Replace(")", ""))
+                    x = x_coord,
+                    y = y_coord,
                 };
 
                 ret.Add(new VillageChecked()
