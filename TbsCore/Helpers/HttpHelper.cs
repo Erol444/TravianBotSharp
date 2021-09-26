@@ -62,7 +62,7 @@ namespace TbsCore.Helpers
         public static void InitRestClient(Access access, RestClient client)
         {
             client.Timeout = 5000;
-            client.UserAgent = access.UserAgent;
+            //client.UserAgent = access.UserAgent;
 
             // Set proxy
             if (!string.IsNullOrEmpty(access.Proxy))
