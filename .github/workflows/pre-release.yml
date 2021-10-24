@@ -36,7 +36,7 @@ jobs:
         id: Changelog
         run: |
           git branch --show-current
-          changelog=$(git log --no-merges --pretty=format:'- %s' ${{ steps.previoustag.outputs.tag }}..HEAD)
+          changelog=$(git log --no-merges --pretty=format:'- %s' ${{ steps.previoustag.outputs.tag }}..HEAD --reverse)
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"

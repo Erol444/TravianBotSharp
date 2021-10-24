@@ -11,10 +11,12 @@ namespace TravBotSharp.Views
     public partial class DebugUc : TbsBaseUc, ITbsUc
     {
         public LogOutput Log;
+        public bool active;
 
         public DebugUc()
         {
             InitializeComponent();
+            active = false;
         }
 
         public void InitLog(LogOutput log)
@@ -25,13 +27,20 @@ namespace TravBotSharp.Views
 
         public void UpdateUc()
         {
+            active = true;
             UpdateTaskTable();
             GetLogData();
             this.Focus();
         }
 
+        public void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            active = false;
+        }
+
         private void LogUpdate(object sender, UpdateLogEventArgs e)
         {
+            if (!active) return;
             // only update current account
             if (e.Username == GetSelectedAcc().AccInfo.Nickname)
             {
@@ -41,6 +50,8 @@ namespace TravBotSharp.Views
 
         public void GetLogData()
         {
+            if (!active) return;
+
             if (logTextBox.InvokeRequired)
             {
                 logTextBox.BeginInvoke(new Action(delegate
@@ -56,6 +67,7 @@ namespace TravBotSharp.Views
 
         public void UpdateLogData()
         {
+            if (!active) return;
             if (logTextBox.InvokeRequired)
             {
                 logTextBox.BeginInvoke(new Action(delegate
@@ -65,11 +77,12 @@ namespace TravBotSharp.Views
                 return;
             }
             var acc = GetSelectedAcc();
-            logTextBox.Text = $"{Log.GetLog(acc.AccInfo.Nickname)}{logTextBox.Text}";
+            logTextBox.Text = $"{Log.GetLastLog(acc.AccInfo.Nickname)}{logTextBox.Text}";
         }
 
         public void UpdateTaskTable()
         {
+            if (!active) return;
             if (taskListView.InvokeRequired)
             {
                 taskListView.BeginInvoke(new Action(delegate
