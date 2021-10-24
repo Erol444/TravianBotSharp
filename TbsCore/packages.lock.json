@@ -72,9 +72,9 @@
       },
       "Selenium.WebDriver.ChromeDriver": {
         "type": "Direct",
-        "requested": "[93.0.4577.1500, )",
-        "resolved": "93.0.4577.1500",
-        "contentHash": "Jmu4HRq6NTdPbBtXlMUlmB9HIyB03MEcZWSJNSxGykNY10cOhAE5LpIm3hHF+/rw+dgaZPxU8SLkd85xtsS7/A=="
+        "requested": "[95.0.4638.1700, )",
+        "resolved": "95.0.4638.1700",
+        "contentHash": "RuziiapHW2Yhw77AuvWmACzPOjjw7QdoSh9rhXxB+brO5ihsJE4V3xVY7tYX1VxKJOjRjB6ITAzmavlA1StkGw=="
       },
       "Serilog": {
         "type": "Direct",
