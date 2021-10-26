@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
+using TbsCore.TravianData;
 
 namespace TbsCore.Tasks.LowLevel
 {
@@ -14,7 +15,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             if (Vill == null) Vill = AccountHelper.GetMainVillage(acc);
 
-            var building = TroopsHelper.GetTroopBuilding(troop, Great);
+            var building = TroopsData.GetTroopBuilding(troop, Great);
             if (!await VillageHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
 

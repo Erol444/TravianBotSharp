@@ -51,15 +51,15 @@ namespace TbsCore.Helpers
         public static string VillageType(Village vill)
         {
             string type = "";
-            type += vill.Build.Buildings.Count(x => x.Type == Classificator.BuildingEnum.Woodcutter).ToString();
-            type += vill.Build.Buildings.Count(x => x.Type == Classificator.BuildingEnum.ClayPit).ToString();
-            type += vill.Build.Buildings.Count(x => x.Type == Classificator.BuildingEnum.IronMine).ToString();
-            type += vill.Build.Buildings.Count(x => x.Type == Classificator.BuildingEnum.Cropland).ToString();
+            type += vill.Build.Buildings.Count(x => x.Type == BuildingEnum.Woodcutter).ToString();
+            type += vill.Build.Buildings.Count(x => x.Type == BuildingEnum.ClayPit).ToString();
+            type += vill.Build.Buildings.Count(x => x.Type == BuildingEnum.IronMine).ToString();
+            type += vill.Build.Buildings.Count(x => x.Type == BuildingEnum.Cropland).ToString();
             if (type == "11115") type = "15c";
             return type;
         }
 
-        public static string BuildingTypeToString(Classificator.BuildingEnum building) => EnumStrToString(building.ToString());
+        public static string BuildingTypeToString(BuildingEnum building) => EnumStrToString(building.ToString());
 
         public static string EnumStrToString(string str)
         {

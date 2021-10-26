@@ -11,7 +11,7 @@ using TbsCore.Tasks.LowLevel;
 
 namespace TbsCore.Tasks.SecondLevel
 {
-    public class TTWarsAddNatarsToFL : BotTask
+    public class TTWarsAddNatarsToFL : CheckProfile
     {
         public int MinPop { get; set; }
         public int MaxPop { get; set; }
@@ -19,32 +19,21 @@ namespace TbsCore.Tasks.SecondLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?uid=1");
+            base.UserId = 1;
+            await base.Execute(acc);
 
-            var vills = acc.Wb.Html.GetElementbyId("villages").Descendants("tr");
             int addedFarms = 0;
-            foreach (var vill in vills)
+            foreach (var vill in base.Profile.Villages)
             {
-                var name = vill.ChildNodes.First(x => x.HasClass("name")).InnerText;
-                var pop = (int)Parser.RemoveNonNumeric(vill.Descendants().First(x => x.HasClass("inhabitants")).InnerHtml);
-                if (MinPop < pop && pop < MaxPop)
+                if (MinPop < vill.Population && vill.Population < MaxPop)
                 {
-                    var href = vill.Descendants("a").First(x => x.GetAttributeValue("href", "").StartsWith("karte.php?x=")).GetAttributeValue("href", "").Split('?')[1];
-                    var xy = href.Split('&');
-
-                    Coordinates coords = new Coordinates
-                    {
-                        x = (int)Parser.RemoveNonNumeric(xy[0].Split('=')[1]),
-                        y = (int)Parser.RemoveNonNumeric(xy[1].Split('=')[1])
-                    };
-
                     acc.Tasks.Add(new AddFarm()
                     {
                         ExecuteAt = DateTime.Now.AddMilliseconds(addedFarms),
-                        Farm = new TbsCore.Models.VillageModels.Farm()
+                        Farm = new Models.VillageModels.Farm()
                         {
                             Troops = new int[] { 100 },
-                            Coords = coords,
+                            Coords = vill.Coordinates,
                         },
                         FarmListId = this.FL.Id,
                     });

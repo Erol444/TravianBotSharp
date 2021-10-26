@@ -54,12 +54,12 @@ namespace TbsCore.Tasks.LowLevel
             var url = $"{acc.AccInfo.ServerUrl}/build.php?id={urlId}";
 
             // Fast building for TTWars
-            //if (acc.AccInfo.ServerUrl.Contains("ttwars") &&
-            //    !constructNew &&
-            //    await TTWarsTryFastUpgrade(acc, url))
-            //{
-            //    return TaskRes.Executed;
-            //}
+            if (acc.AccInfo.ServerUrl.Contains("ttwars") &&
+                !constructNew &&
+                await TTWarsTryFastUpgrade(acc, url))
+            {
+                return TaskRes.Executed;
+            }
 
             // Navigate to the dorf in which the building is, so bot is less suspicious
             string dorfUrl = $"/dorf{((Task.BuildingId ?? default) < 19 ? 1 : 2)}.php"; // "dorf1" / "dorf2"

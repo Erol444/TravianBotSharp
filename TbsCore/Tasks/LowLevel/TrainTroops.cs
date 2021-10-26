@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
-using TbsCore.Parsers;
+using TbsCore.TravianData;
+using TravBotSharp.Files.Helpers;
 
 using static TbsCore.Helpers.Classificator;
 
@@ -40,7 +41,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            building = TroopsHelper.GetTroopBuilding(Troop, Great);
+            building = TroopsData.GetTroopBuilding(Troop, Great);
 
             // Switch hero helmet. If hero will be switched, this TrainTroops task
             // will be executed right after the hero helmet switch

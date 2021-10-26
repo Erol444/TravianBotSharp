@@ -518,5 +518,32 @@
             General,
             AutoUpgradeResFields
         }
+
+        public enum ReportType
+        {
+            TruceReport, // iReport0
+            AttackNoLosses, // iReport1 - Won as attacker without losses, Green sword
+            AttackSomeLosses, // iReport2 - Won as attacker with losses
+            AttackAllLosses, // iReport3 - Lost as attacker with losses
+            DeffendNoLosses, // iReport4
+            DeffendSomeLosses, // iReport5
+            DeffendAllLosses, // iReport6
+            DeffendNoDeff, // iReport7
+            Reinforcement, // iReport8 - Reinforcement
+            Unknown9, // 9
+            Unknown10, // 9
+            WoodDelivery, // iReport11 - Wood Delivery
+            ClayDelivery, // iReport12 - Clay Delivery
+            IronDelivery, // iReport13 - Iron Delivery
+            CropDelivery, // iReport14 - Crop Delivery
+            ScoutNoLosses, // iReport15 - Won scouting as attacker
+            ScoutSomeLosses, // iReport16 - Won scouting as attacker but defender found out
+            ScoutAllLosses, // iReport17 - Lost scouting as attacker
+            ScoutingDeffended, // iReport18
+            ScoutingPartlyDeffended, // iReport19
+            AnimalsCaught, // iReport20
+            AdventureReport, // iReport21
+            NewVillage, // iReport22 - Settlers founded a new village
+        }
     }
 }
