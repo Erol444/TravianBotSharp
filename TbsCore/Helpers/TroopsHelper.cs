@@ -36,7 +36,7 @@ namespace TravBotSharp.Files.Helpers
         internal static long TroopsToFill(Account acc, Village vill, TroopsEnum troop, bool great)
         {
             var troopCost = TroopCost.GetResourceCost(troop, great);
-            var trainTime = TroopCost.GetTrainingTime(acc, vill, troop, great);
+            var trainTime = TroopsData.GetTrainingTime(acc, vill, troop, great);
 
             //how many troops we want to train
             // Take into account how many troop are already training
@@ -50,10 +50,18 @@ namespace TravBotSharp.Files.Helpers
             return (long)Math.Ceiling(fillForHours / trainTime.TotalHours);
         }
 
-        public static DateTime TrainingDuration(HtmlAgilityPack.HtmlDocument html)
+        public static DateTime TrainingDuration(HtmlDocument html)
         {
             var training = TroopsParser.GetTroopsCurrentlyTraining(html);
             return (training.Count == 0 ? DateTime.MinValue : training.Last().FinishTraining);
+        }
+
+        public static List<TroopsEnum> AvailableTroops(TribeEnum tribe)
+        {
+            var ret = new List<TroopsEnum>();
+            int troopsEnum = ((int)tribe - 1) * 10;
+            for (var i = troopsEnum + 1; i < troopsEnum + 11; i++) ret.Add((TroopsEnum)i);
+            return ret;
         }
 
         /// <summary>

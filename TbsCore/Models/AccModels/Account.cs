@@ -4,8 +4,12 @@ using Discord.Webhook;
 using TbsCore.Models.Access;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
-using TravBotSharp.Files.Models.AccModels;
-using TravBotSharp.Files.Tasks;
+using TbsCore.Models.Logging;
+using TbsCore.Models.AccModels;
+using TbsCore.Tasks;
+
+using Serilog;
+using TbsCore.Models.World;
 
 namespace TbsCore.Models.AccModels
 {
@@ -31,6 +35,9 @@ namespace TbsCore.Models.AccModels
             Farming = new Farming();
             NewVillages = new NewVillageSettings();
             NewVillages.Init();
+
+            Server = new AccServerData();
+            Server.Init();
         }
 
         public AccInfo AccInfo { get; set; }
@@ -41,6 +48,7 @@ namespace TbsCore.Models.AccModels
         public QuestsSettings Quests { get; set; }
         public NewVillageSettings NewVillages { get; set; }
         public GeneralSettings Settings { get; set; }
+        public AccServerData Server { get; set; }
 
         [JsonIgnore]
         public WebBrowserInfo Wb { get; set; }

@@ -10,6 +10,7 @@ using TbsCore.TravianData;
 using TravBotSharp.Files.Helpers;
 using TravBotSharp.Files.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
+using TbsCore.Tasks.SecondLevel;
 
 namespace TravBotSharp.Views
 {
@@ -218,5 +219,16 @@ namespace TravBotSharp.Views
         private void oasisMinTroops_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().FarmingNonGold.MinTroops = (int)oasisMinTroops.Value;
         #endregion Oasis farming callbacks
+
+
+        // Scout player
+        private void button3_Click_1(object sender, EventArgs e)
+        {
+            GetSelectedAcc().Tasks.Add(new ScoutPlayer()
+            {
+                UserId = (int)playerId.Value,
+                Vill = GetSelectedVillage()
+            });
+        }
     }
 }

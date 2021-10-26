@@ -84,10 +84,4 @@ namespace TbsCore.Database
                 JsonData = JsonConvert.SerializeObject(acc)
             };
     }
-
-    //public class RawAcc
-    //{
-    //    public string Username { get; set; }
-    //    public string Server { get; set; }
-    //}
 }

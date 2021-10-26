@@ -23,7 +23,7 @@ namespace TravBotSharp.Files.Parsers
             {
                 if (string.IsNullOrEmpty(adv.Id)) continue;
                 var sec = (int)TimeParser.ParseDuration(adv.Descendants("td").FirstOrDefault(x => x.HasClass("moveTime")).InnerText).TotalSeconds;
-                var coordinates = MapParser.GetCoordinates(adv.Descendants("td").FirstOrDefault(x => x.HasClass("coords")).InnerText);
+                var coordinates = MapParser.GetCoordinates(adv);
 
                 DifficultyEnum difficulty = DifficultyEnum.Normal;
                 switch (version)

@@ -7,6 +7,9 @@ namespace TravBotSharp.Files.Parsers
 {
     public static class MapParser
     {
+        public static Coordinates GetCoordinates(HtmlNode node) =>
+            GetCoordinates(node.Descendants("td").FirstOrDefault(x => x.HasClass("coords")).InnerText);
+
         public static Coordinates GetCoordinates(string str)
         {
             var coords = str.Replace("(", "").Replace(")", "").Trim().Split('|');

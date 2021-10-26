@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
+using TbsCore.Helpers;
+using static TbsCore.Helpers.Classificator;
+using TbsCore.Models.VillageModels;
+using System.Linq;
 using TravBotSharp.Files.Helpers;
 using static TravBotSharp.Files.Helpers.Classificator;
 
@@ -281,6 +285,19 @@ namespace TbsCore.TravianData
             }
         }
 
+        public static TroopsEnum TribeScout(TribeEnum? tribe)
+        {
+            switch (tribe)
+            {
+                case TribeEnum.Romans: return TroopsEnum.EquitesLegati;
+                case TribeEnum.Teutons: return TroopsEnum.Scout;
+                case TribeEnum.Gauls: return TroopsEnum.Pathfinder;
+                case TribeEnum.Egyptians: return TroopsEnum.SopduExplorer;
+                case TribeEnum.Huns: return TroopsEnum.Spotter;
+                default: return TroopsEnum.None;
+            }
+        }
+
         public static bool IsTroopDefensive(Account acc, int i) =>
             IsTroopDefensive(TroopsHelper.TroopFromInt(acc, i));
 
@@ -337,6 +354,36 @@ namespace TbsCore.TravianData
         public static bool IsTroopRam(TroopsEnum troop) => IsTroopRam((int)troop);
         public static bool IsTroopRam(int troopInt) => (troopInt % 10) == 7;
 
+        public static int TroopOffense(TroopsEnum troop) =>
+            TroopValues.GetRow((int)troop)[0];
+        public static int TroopDeffenseInfrantry(TroopsEnum troop) =>
+            TroopValues.GetRow((int)troop)[1];
+        public static int TroopDeffenseCavalry(TroopsEnum troop) =>
+            TroopValues.GetRow((int)troop)[2];
+        public static int TroopSpeed(TroopsEnum troop) =>
+            TroopValues.GetRow((int)troop)[3];
+        public static int TroopUpkeep(TroopsEnum troop) =>
+            TroopValues.GetRow((int)troop)[4];
+        public static int TroopTrainingTime(TroopsEnum troop) =>
+            TroopValues.GetRow((int)troop)[5];
+        public static int TroopCapacity(TroopsEnum troop) =>
+            TroopValues.GetRow((int)troop)[6];
+        public static int TroopResearchTime(TroopsEnum troop) =>
+            TroopValues.GetRow((int)troop)[7];
+
+        //You would probably have to take into account ally training bonus, artifacts, helmets, horse fountain...
+        public static TimeSpan GetTrainingTime(Account acc, Village vill, TroopsEnum troop, bool great)
+        {
+            var buildingType = TroopsHelper.GetTroopBuilding(troop, great);
+            var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == buildingType);
+            var troopId = (int)troop;
+            var baseTime = TroopTrainingTime(troop);
+            var sec = Math.Pow(0.9, building.Level - 1) * baseTime;
+            var millis = sec % 1;
+            var baseTimespan = new TimeSpan(0, 0, 0, (int)sec, (int)millis * 1000);
+            return new TimeSpan(baseTimespan.Ticks / acc.AccInfo.ServerSpeed);
+        }
+
 
         public static (double, double) GetTroopDeff(TroopsEnum troop, int level = 1) =>
             GetTroopDeff((int)troop, level);
@@ -377,34 +424,34 @@ namespace TbsCore.TravianData
         {
             {  0, 0, 0, 0, 0, 0, 0, 0 }, // None
             // Romans
-            {40, 35, 50, 6 , 1,  2000, 50,  7800 },
-            {30, 65, 35, 5 , 1,  2200, 20,  8400 },
-            {70, 40, 25, 7 , 1,  2400, 50,  9000 },
-            { 0,  20, 10, 16, 2,  1700, 0,   6900 },
-            { 120,65, 50, 14, 3,  3300, 100, 11700 },
-            { 180,80, 105,10, 4,  4400, 70,  15000 },
+            {40, 35, 50, 6 , 1,  1600, 50,  7800 },
+            {30, 65, 35, 5 , 1,  1760, 20,  8400 },
+            {70, 40, 25, 7 , 1,  1920, 50,  9000 },
+            { 0,  20, 10, 16, 2,  1360, 0,   6900 },
+            { 120,65, 50, 14, 3,  2640, 100, 11700 },
+            { 180,80, 105,10, 4,  3520, 70,  15000 },
             { 60, 30, 75, 4 , 3,  4600, 0,   15600 },
             { 75, 60, 10, 3 , 6,  9000, 0,   28800 },
             { 50, 40, 30, 4 , 5, 90700, 0,   24475 },
             { 0,  80, 80, 5 , 1, 26900, 3000,0 },
             // Teutons
-            { 40, 20, 5,  7 , 1,   900, 60,  4500 },
-            { 10, 35, 60, 7 , 1,  1400, 40,  6000 },
-            { 60, 30, 30, 6 , 1,  1500, 50,  6300 },
-            { 0,  10, 5,  9 , 1,  1400, 0,   6000 },
-            { 55, 100,40, 10, 2,  3000, 110, 10800 },
-            { 150,50, 75, 9 , 3,  3700, 80,  12900 },
+            { 40, 20, 5,  7 , 1,   720, 60,  4500 },
+            { 10, 35, 60, 7 , 1,  1120, 40,  6000 },
+            { 60, 30, 30, 6 , 1,  1200, 50,  6300 },
+            { 0,  10, 5,  9 , 1,  1120, 0,   6000 },
+            { 55, 100,40, 10, 2,  2400, 110, 10800 },
+            { 150,50, 75, 9 , 3,  2960, 80,  12900 },
             { 65, 30, 80, 4 , 3,  4200, 0,   14400 },
             { 50, 60, 10, 3 , 6,  9000, 0,   28800 },
             { 40, 60, 40, 4 , 4, 70500, 0,   19425 },
             { 10, 80, 80, 5 , 1, 31000, 3000,0 },
             // Gauls
-            { 15, 40, 50, 7 , 1,  1300, 35,  5700 },
-            { 65, 35, 20, 6 , 1,  1800, 45,  7200 },
-            { 0,  20, 10, 17, 2,  1700, 0,   6900 },
-            { 90, 25, 40, 19, 2,  3100, 75,  11100 },
-            { 45, 115,55, 16, 2,  3200, 35,  11400 },
-            { 140,60, 165,13, 3,  3900, 65,  13500 },
+            { 15, 40, 50, 7 , 1,  1040, 35,  4920  },
+            { 65, 35, 20, 6 , 1,  1440, 45,  6120  },
+            { 0,  20, 10, 17, 2,  1360, 0,   5880  },
+            { 90, 25, 40, 19, 2,  2480, 75,  9240  },
+            { 45, 115,55, 16, 2,  2560, 35,  9480  },
+            { 140,60, 165,13, 3,  3120, 65,  11160 },
             { 50, 30, 105,4 , 3,  5000, 0,   16800 },
             { 70, 45, 10, 3 , 6,  9000, 0,   28800 },
             { 40, 50, 50, 5 , 4, 90700, 0,   24475 },

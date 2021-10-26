@@ -35,6 +35,16 @@ namespace TravBotSharp.Views
                 FlCombo.SelectedIndex = 0;
                 UpdateFlInfo();
             }
+
+            var filtered = acc.Server.FarmScoutReport
+                .Where(x => x.Value.Resources.Sum() > 40000)
+                .OrderBy(x => MapHelper.CalculateDistance(acc, x.Key, AccountHelper.GetMainVillage(acc).Coordinates));
+            var str = "";
+            foreach(var rep in filtered)
+            {
+                str += $"{rep.Key} > SUM {rep.Value.Resources.Sum()}\n";
+            }
+            this.scouted.Text = str;
         }
 
         private void StartFarm_Click(object sender, EventArgs e)//start farming
