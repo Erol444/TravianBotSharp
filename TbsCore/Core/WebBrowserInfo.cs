@@ -100,6 +100,14 @@ namespace TbsCore.Models.AccModels
             //options.AddArguments("--aggressive-cache-discard");
             //options.AddArguments("--arc-disable-gms-core-cache");
 
+            // So websites (Travian) can't detect the bot
+            options.AddExcludedArgument("enable-automation");
+            options.AddAdditionalCapability("useAutomationExtension", false);
+            options.AddArgument("--disable-blink-features=AutomationControlled");
+            options.AddArgument("--disable-features=UserAgentClientHint");
+            options.AddArguments("--disable-logging");
+            options.AddArguments("--disable-infobars");
+
             // Mute audio because of the Ads
             options.AddArguments("--mute-audio");
 
