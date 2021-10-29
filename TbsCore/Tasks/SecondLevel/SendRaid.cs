@@ -3,6 +3,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
+using TbsCore.Models.TroopsModels;
 using TbsCore.TravianData;
 
 namespace TbsCore.Tasks.LowLevel
@@ -33,7 +34,7 @@ namespace TbsCore.Tasks.LowLevel
             return TaskRes.Executed;
         }
 
-        public bool TroopsCountRecieved(Account acc, int[] troopsAtHome)
+        public bool TroopsCountRecieved(Account acc, TroopsBase troops)
         {
             // Send 10% more troops than available resources
             this.ResourcesAvailable = (long)(this.ResourcesAvailable * 1.1);
@@ -43,9 +44,9 @@ namespace TbsCore.Tasks.LowLevel
             for (int i = 0; i < 10; i++)
             {
                 var troop = TroopsHelper.TroopFromInt(acc, i);
-                if (!TroopsData.IsTroopDefensive(troop) || troopsAtHome[i] == 0) continue;
+                if (TroopsData.IsTroopDefensive(troop) || troops.Troops[i] == 0) continue;
 
-                int sendAmount = troopsAtHome[i];
+                int sendAmount = troops.Troops[i];
                 if (sendAmount < 500) continue; // TODO: configurable
 
                 var troopCap = TroopsData.TroopCapacity(troop);

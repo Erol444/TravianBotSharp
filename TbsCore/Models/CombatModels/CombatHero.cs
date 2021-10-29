@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Models.CombatModels
 {

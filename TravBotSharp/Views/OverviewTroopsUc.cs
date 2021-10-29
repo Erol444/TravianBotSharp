@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.Helpers;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.TravianData;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
 using XPTable.Models;

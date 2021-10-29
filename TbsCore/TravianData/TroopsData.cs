@@ -7,8 +7,6 @@ using TbsCore.Helpers;
 using static TbsCore.Helpers.Classificator;
 using TbsCore.Models.VillageModels;
 using System.Linq;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TbsCore.TravianData
 {
@@ -334,9 +332,6 @@ namespace TbsCore.TravianData
             }
         }
 
-        public static bool IsTroopDefensive(Account acc, int i) =>
-            IsTroopDefensive(TroopsHelper.TroopFromInt(acc, i));
-
         public static bool IsTroopDefensive(TroopsEnum troop)
         {
             switch (troop)
@@ -431,7 +426,7 @@ namespace TbsCore.TravianData
         //You would probably have to take into account ally training bonus, artifacts, helmets, horse fountain...
         public static TimeSpan GetTrainingTime(Account acc, Village vill, TroopsEnum troop, bool great)
         {
-            var buildingType = TroopsHelper.GetTroopBuilding(troop, great);
+            var buildingType = TroopsData.GetTroopBuilding(troop, great);
             var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == buildingType);
             var troopId = (int)troop;
             var baseTime = TroopTrainingTime(troop);

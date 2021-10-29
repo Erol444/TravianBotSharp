@@ -25,7 +25,7 @@ namespace TbsCore.Parsers
             {
                 var kid = MapParser.GetKarteHref(th.Descendants("td").First(x => x.HasClass("name")));
                 if (kid == null) continue;
-                var coords = MapHelper.CoordinatesFromKid(kid ?? 0, acc);
+                var coords = new Coordinates(acc, kid ?? 0);
 
                 var vill = acc.Villages.First(v => v.Coordinates.Equals(coords));
 

@@ -7,8 +7,6 @@ using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TbsCoreTest.Factories;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.Tasks.LowLevel;
 using Xunit;
 
 namespace TbsCoreTest

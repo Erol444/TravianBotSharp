@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TravBotSharp.Files.TravianData;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.TravianData;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Models.CombatModels
 {

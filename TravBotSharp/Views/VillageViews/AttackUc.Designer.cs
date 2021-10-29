@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            TbsCore.Models.MapModels.Coordinates coordinates1 = new TbsCore.Models.MapModels.Coordinates();
+            TbsCore.Models.MapModels.Coordinates coordinates3 = new TbsCore.Models.MapModels.Coordinates();
             this.confirmNewVill = new System.Windows.Forms.Button();
             this.WavesCount = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
@@ -72,10 +72,10 @@
             this.label8 = new System.Windows.Forms.Label();
             this.oasisEnabled = new System.Windows.Forms.CheckBox();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.button3 = new System.Windows.Forms.Button();
             this.label23 = new System.Windows.Forms.Label();
             this.playerId = new System.Windows.Forms.NumericUpDown();
             this.label24 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.WavesCount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.wavesPerSec)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.catasPerWave)).BeginInit();
@@ -358,7 +358,7 @@
             this.panel1.Controls.Add(this.catasPerWave);
             this.panel1.Controls.Add(this.confirmNewVill);
             this.panel1.Location = new System.Drawing.Point(2, 2);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(498, 433);
             this.panel1.TabIndex = 167;
@@ -366,9 +366,9 @@
             // coordinatesUc1
             // 
             this.coordinatesUc1.BackColor = System.Drawing.SystemColors.ControlDark;
-            coordinates1.x = 0;
-            coordinates1.y = 0;
-            this.coordinatesUc1.Coords = coordinates1;
+            coordinates3.x = 0;
+            coordinates3.y = 0;
+            this.coordinatesUc1.Coords = coordinates3;
             this.coordinatesUc1.Location = new System.Drawing.Point(8, 121);
             this.coordinatesUc1.Name = "coordinatesUc1";
             this.coordinatesUc1.Size = new System.Drawing.Size(113, 56);
@@ -383,7 +383,7 @@
             this.panel3.Controls.Add(this.label5);
             this.panel3.Controls.Add(this.label6);
             this.panel3.Location = new System.Drawing.Point(131, 111);
-            this.panel3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel3.Margin = new System.Windows.Forms.Padding(2);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(156, 74);
             this.panel3.TabIndex = 170;
@@ -416,7 +416,7 @@
             this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.oasisEnabled);
             this.panel2.Location = new System.Drawing.Point(505, 2);
-            this.panel2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.panel2.Margin = new System.Windows.Forms.Padding(2);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(226, 260);
             this.panel2.TabIndex = 168;
@@ -606,6 +606,16 @@
             this.panel4.Size = new System.Drawing.Size(226, 118);
             this.panel4.TabIndex = 169;
             // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(160, 41);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(50, 23);
+            this.button3.TabIndex = 171;
+            this.button3.Text = "OK";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            // 
             // label23
             // 
             this.label23.AutoSize = true;
@@ -647,16 +657,6 @@
             this.label24.Size = new System.Drawing.Size(126, 24);
             this.label24.TabIndex = 168;
             this.label24.Text = "Scout player";
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(160, 41);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(50, 23);
-            this.button3.TabIndex = 171;
-            this.button3.Text = "OK";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
             // 
             // AttackUc
             // 

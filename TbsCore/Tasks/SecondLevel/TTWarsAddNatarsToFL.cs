@@ -13,8 +13,8 @@ namespace TbsCore.Tasks.SecondLevel
 {
     public class TTWarsAddNatarsToFL : CheckProfile
     {
-        public int MinPop { get; set; }
-        public int MaxPop { get; set; }
+        public int MinPop { get; set; } = 1;
+        public int MaxPop { get; set; } = 9999;
         public FarmList FL { get; set; }
 
         public override async Task<TaskRes> Execute(Account acc)
@@ -23,13 +23,20 @@ namespace TbsCore.Tasks.SecondLevel
             await base.Execute(acc);
 
             int addedFarms = 0;
+            base.Profile.Villages = base.Profile.Villages
+                .OrderBy(x => x.Coordinates.CalculateDistance(acc, this.Vill.Coordinates))
+                //.Where(vill => !acc.Farming.FL.Any(x => x.Farms.Any(farm => farm.Coordinates.Equals(vill.Coordinates))))
+                .ToList();
             foreach (var vill in base.Profile.Villages)
             {
+                // If this farm already exists on some FL
+                if (acc.Farming.FL.Any(x => x.Farms.Any(farm => farm.Coordinates.Equals(vill.Coordinates)))) continue;
+
                 if (MinPop < vill.Population && vill.Population < MaxPop)
                 {
                     acc.Tasks.Add(new AddFarm()
                     {
-                        ExecuteAt = DateTime.Now.AddMilliseconds(addedFarms),
+                        ExecuteAt = DateTime.Now.AddHours(-1),
                         Farm = new Models.VillageModels.Farm()
                         {
                             Troops = new int[] { 100 },

@@ -36,11 +36,12 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/{report.Id}");
+            //MapParser.GetKarteHref
 
             var scoutReport = AttackParser.ParseAttack(acc.Wb.Html);
 
             // Save report to acc server data
-            acc.Server.FarmScoutReport.Add(this.Coordinates, scoutReport);
+            acc.Server.FarmScoutReport.Add(scoutReport);
 
             if (this.MinResRaid < scoutReport.GetRaidableRes().Sum())
             {
@@ -49,7 +50,8 @@ namespace TbsCore.Tasks.LowLevel
                 {
                     ExecuteAt = DateTime.Now,
                     TargetVillage = this.Coordinates,
-                    ResourcesAvailable = scoutReport.GetRaidableRes().Sum()
+                    ResourcesAvailable = scoutReport.GetRaidableRes().Sum(),
+                    Vill = this.Vill
                 });
             }
 

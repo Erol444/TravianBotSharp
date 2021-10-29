@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.MapModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.TravianData;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Helpers
@@ -25,7 +27,7 @@ namespace TbsCore.Helpers
             if (heroHome == null) return false;
 
             return acc.Hero.Adventures.Any(x =>
-                MapHelper.CalculateDistance(acc, x.Coordinates, heroHome.Coordinates) <= acc.Hero.Settings.MaxDistance
+                heroHome.Coordinates.CalculateDistance(acc, x.Coordinates) <= acc.Hero.Settings.MaxDistance
             );
         }
 
@@ -184,7 +186,7 @@ namespace TbsCore.Helpers
                     return;
                 case ServerVersionEnum.T4_5:
                     // Convert from coordinates id -> coordinates -> villageId
-                    var coordinates = MapHelper.CoordinatesFromKid(hrefId ?? 0, acc);
+                    var coordinates = new Coordinates(acc, hrefId ?? 0);
                     var vill = acc.Villages.FirstOrDefault(x => x.Coordinates.Equals(coordinates));
                     if (vill == null) return;
                     acc.Hero.HomeVillageId = vill.Id;

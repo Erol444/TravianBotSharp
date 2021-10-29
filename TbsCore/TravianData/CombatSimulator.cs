@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.CombatModels;
-using TravBotSharp.Files.Helpers;
-using TravBotSharp.Files.TravianData;
-using static TravBotSharp.Files.Helpers.Classificator;
 
 namespace TbsCore.TravianData
 {

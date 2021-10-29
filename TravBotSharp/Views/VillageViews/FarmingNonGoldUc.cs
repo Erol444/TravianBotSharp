@@ -12,6 +12,9 @@ using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.AccModels;
 using TravBotSharp.Forms;
+using System.Collections.Generic;
+using System.Linq;
+using TbsCore.Tasks.SecondLevel;
 
 namespace TravBotSharp.Views
 {
@@ -174,11 +177,32 @@ namespace TravBotSharp.Views
             }
         }
 
-        private FarmList GetSelectedFl() =>
-            GetSelectedVillage().FarmingNonGold.ListFarm[currentFarmList_index];
+        private FarmList GetSelectedFl()
+        {
+            try
+            {
+                return GetSelectedVillage().FarmingNonGold.ListFarm[currentFarmList_index];
+            }
+            catch(Exception e)
+            {
+                GetSelectedAcc().Logger.Error(e, "Error in GetSelectedFl!");
+                return new FarmList(); // null?
+            }
+        }
 
-        private Farm GetSelectedFarm() =>
-            GetSelectedFl().Targets[farmingList.FocusedItem.Index];
+        private Farm GetSelectedFarm()
+        {
+            try
+            {
+                return GetSelectedFl().Targets[farmingList.FocusedItem.Index];
+            }
+            catch (Exception e)
+            {
+                GetSelectedAcc().Logger.Error(e, "Error in GetSelectedFarm!");
+                return new Farm(); // null?
+            }
+        }
+            
 
         /// <summary>
         /// Delete
@@ -234,14 +258,15 @@ namespace TravBotSharp.Views
             {
                 var taskSendTroops = new SendTroops()
                 {
-                    ExecuteAt = DateTime.Now.AddMilliseconds(i * 15 * AccountHelper.Delay(acc)),
+                    ExecuteAt = DateTime.Now.AddMilliseconds(i * AccountHelper.Delay(acc) * (acc.AccInfo.ServerUrl.Contains("ttwars") ? 0 : 15)),
                     Vill = vill,
                     TroopsMovement = new TroopsSendModel()
                     {
                         TargetCoordinates = fl.Targets[i].Coords,
                         Troops = fl.Targets[i].Troops,
                         MovementType = Classificator.MovementType.Raid
-                    }
+                    },
+                    SetCoordsInUrl = true
                 };
 
                 acc.Tasks.Add(taskSendTroops);
@@ -352,6 +377,38 @@ namespace TravBotSharp.Views
                 comboBox_NameList.Text = "";
             }
             UpdateFarmList(currentFarmList_index);
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+
+            var coords = new List<Coordinates>();
+            acc.Server.FarmScoutReport
+                .Select(x => x.Deffender.VillageId)
+                .Distinct()
+                .ToList()
+                .ForEach(x => coords.Add(new Coordinates(acc, x)));
+
+            for (int i = 0; i < coords.Count; i++)
+            {
+                var troops = new int[10];
+                if (i < coords.Count / 2) troops[2] = 100;
+                else troops[4] = 50;
+                GetSelectedFl().Targets.Add(new Farm(troops, coords[i]));
+            }
+        }
+
+        private void button10_Click(object sender, EventArgs e) // Add Natars to FL
+        {
+            GetSelectedAcc().Tasks.Add(new TTWarsAddNatarsToNonGoldFL
+            {
+                FL = GetSelectedFl(),
+                Vill = GetSelectedVillage(),
+                ExecuteAt = DateTime.Now,
+                MaxPop = (int)maxPopNatar.Value,
+                MinPop = (int)minPopNatar.Value
+            });
         }
     }
 }

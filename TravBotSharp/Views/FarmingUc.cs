@@ -9,6 +9,7 @@ using TbsCore.Tasks.LowLevel;
 using TbsCore.Tasks.SecondLevel;
 using TravBotSharp.Interfaces;
 using TravBotSharp.Forms;
+using TbsCore.Models.MapModels;
 
 namespace TravBotSharp.Views
 {
@@ -37,12 +38,12 @@ namespace TravBotSharp.Views
             }
 
             var filtered = acc.Server.FarmScoutReport
-                .Where(x => x.Value.Resources.Sum() > 40000)
-                .OrderBy(x => MapHelper.CalculateDistance(acc, x.Key, AccountHelper.GetMainVillage(acc).Coordinates));
+                .Where(x => x.GetRaidableRes().Sum() > 40000)
+                .OrderBy(x => AccountHelper.GetMainVillage(acc).Coordinates.CalculateDistance(acc, new Coordinates(acc, x.Deffender.VillageId)));
             var str = "";
             foreach(var rep in filtered)
             {
-                str += $"{rep.Key} > SUM {rep.Value.Resources.Sum()}\n";
+                str += $"{new Coordinates(acc, rep.Deffender.VillageId)} - {rep.Deffender.VillageName} > SUM {rep.GetRaidableRes().Sum()}\n";
             }
             this.scouted.Text = str;
         }
@@ -53,7 +54,7 @@ namespace TravBotSharp.Views
             acc.Farming.MinInterval = (int)minFarmInterval.Value;
             acc.Farming.MaxInterval = (int)maxFarmInterval.Value;
             acc.Farming.Enabled = true;
-            acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now }, true);
+            acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now.AddHours(-2) }, true);
         }
 
         private void trainTroopsAfterFLcheckbox_CheckedChanged(object sender, EventArgs e)
@@ -63,7 +64,7 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e) //refresh FLs
         {
-            GetSelectedAcc().Tasks.Add(new UpdateFarmLists() { ExecuteAt = DateTime.Now }, true);
+            GetSelectedAcc().Tasks.Add(new UpdateFarmLists() { ExecuteAt = DateTime.Now.AddHours(-1) }, true);
         }
 
         /// <summary>
@@ -107,7 +108,7 @@ namespace TravBotSharp.Views
             var task = new TTWarsAddNatarsToFL
             {
                 FL = GetSelectedFL(),
-                ExecuteAt = DateTime.Now,
+                ExecuteAt = DateTime.Now.AddHours(-1),
                 MaxPop = (int)maxPopNatar.Value,
                 MinPop = (int)minPopNatar.Value
             };

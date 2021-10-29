@@ -78,8 +78,6 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
-            this.npc = new System.Windows.Forms.Button();
-            this.panel1 = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.FillLimitCrop)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FillLimitIron)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.FillLimitClay)).BeginInit();
@@ -96,7 +94,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ironSend)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.claySend)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.woodSend)).BeginInit();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // transitResEnabled
@@ -223,7 +220,7 @@
             // 
             this.FillLimitCrop.Location = new System.Drawing.Point(163, 145);
             this.FillLimitCrop.Maximum = new decimal(new int[] {
-            1000000,
+            10000000,
             0,
             0,
             0});
@@ -236,7 +233,7 @@
             // 
             this.FillLimitIron.Location = new System.Drawing.Point(163, 119);
             this.FillLimitIron.Maximum = new decimal(new int[] {
-            1000000,
+            10000000,
             0,
             0,
             0});
@@ -249,7 +246,7 @@
             // 
             this.FillLimitClay.Location = new System.Drawing.Point(163, 93);
             this.FillLimitClay.Maximum = new decimal(new int[] {
-            1000000,
+            10000000,
             0,
             0,
             0});
@@ -262,7 +259,7 @@
             // 
             this.FillLimitWood.Location = new System.Drawing.Point(163, 67);
             this.FillLimitWood.Maximum = new decimal(new int[] {
-            1000000,
+            10000000,
             0,
             0,
             0});
@@ -347,7 +344,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(79, 13);
+            this.label1.Location = new System.Drawing.Point(247, 255);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(72, 31);
             this.label1.TabIndex = 53;
@@ -356,10 +353,10 @@
             // npcEnabled
             // 
             this.npcEnabled.AutoSize = true;
-            this.npcEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.npcEnabled.Location = new System.Drawing.Point(157, 20);
+            this.npcEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.npcEnabled.Location = new System.Drawing.Point(325, 266);
             this.npcEnabled.Name = "npcEnabled";
-            this.npcEnabled.Size = new System.Drawing.Size(87, 24);
+            this.npcEnabled.Size = new System.Drawing.Size(78, 20);
             this.npcEnabled.TabIndex = 54;
             this.npcEnabled.Text = "Enabled";
             this.npcEnabled.UseVisualStyleBackColor = true;
@@ -367,7 +364,7 @@
             // 
             // numericUpDown1
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(11, 152);
+            this.numericUpDown1.Location = new System.Drawing.Point(234, 390);
             this.numericUpDown1.Name = "numericUpDown1";
             this.numericUpDown1.Size = new System.Drawing.Size(82, 20);
             this.numericUpDown1.TabIndex = 58;
@@ -375,7 +372,7 @@
             // 
             // numericUpDown2
             // 
-            this.numericUpDown2.Location = new System.Drawing.Point(11, 126);
+            this.numericUpDown2.Location = new System.Drawing.Point(234, 364);
             this.numericUpDown2.Name = "numericUpDown2";
             this.numericUpDown2.Size = new System.Drawing.Size(82, 20);
             this.numericUpDown2.TabIndex = 57;
@@ -383,7 +380,7 @@
             // 
             // numericUpDown3
             // 
-            this.numericUpDown3.Location = new System.Drawing.Point(11, 98);
+            this.numericUpDown3.Location = new System.Drawing.Point(234, 336);
             this.numericUpDown3.Name = "numericUpDown3";
             this.numericUpDown3.Size = new System.Drawing.Size(82, 20);
             this.numericUpDown3.TabIndex = 56;
@@ -391,7 +388,7 @@
             // 
             // numericUpDown4
             // 
-            this.numericUpDown4.Location = new System.Drawing.Point(11, 74);
+            this.numericUpDown4.Location = new System.Drawing.Point(234, 312);
             this.numericUpDown4.Name = "numericUpDown4";
             this.numericUpDown4.Size = new System.Drawing.Size(82, 20);
             this.numericUpDown4.TabIndex = 55;
@@ -401,7 +398,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(99, 156);
+            this.label2.Location = new System.Drawing.Point(322, 394);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(37, 16);
             this.label2.TabIndex = 62;
@@ -411,7 +408,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(99, 104);
+            this.label3.Location = new System.Drawing.Point(322, 342);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(35, 16);
             this.label3.TabIndex = 61;
@@ -421,7 +418,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(99, 130);
+            this.label4.Location = new System.Drawing.Point(322, 368);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(30, 16);
             this.label4.TabIndex = 60;
@@ -431,7 +428,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(99, 78);
+            this.label5.Location = new System.Drawing.Point(322, 316);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(45, 16);
             this.label5.TabIndex = 59;
@@ -441,7 +438,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(8, 55);
+            this.label6.Location = new System.Drawing.Point(231, 293);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(136, 16);
             this.label6.TabIndex = 63;
@@ -451,7 +448,7 @@
             // 
             this.overflowProtection.AutoSize = true;
             this.overflowProtection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.overflowProtection.Location = new System.Drawing.Point(167, 54);
+            this.overflowProtection.Location = new System.Drawing.Point(253, 419);
             this.overflowProtection.Name = "overflowProtection";
             this.overflowProtection.Size = new System.Drawing.Size(150, 20);
             this.overflowProtection.TabIndex = 64;
@@ -462,7 +459,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(158, 80);
+            this.label7.Location = new System.Drawing.Point(231, 442);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(159, 13);
             this.label7.TabIndex = 65;
@@ -471,7 +468,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(158, 93);
+            this.label8.Location = new System.Drawing.Point(231, 455);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(176, 13);
             this.label8.TabIndex = 66;
@@ -589,45 +586,10 @@
             this.label16.TabIndex = 79;
             this.label16.Text = "If values are above 100, limit by resources not %";
             // 
-            // npc
-            // 
-            this.npc.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.npc.Location = new System.Drawing.Point(161, 123);
-            this.npc.Name = "npc";
-            this.npc.Size = new System.Drawing.Size(87, 23);
-            this.npc.TabIndex = 80;
-            this.npc.Text = "NPC now";
-            this.npc.UseVisualStyleBackColor = true;
-            this.npc.Click += new System.EventHandler(this.npc_Click);
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel1.Controls.Add(this.npc);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.npcEnabled);
-            this.panel1.Controls.Add(this.numericUpDown4);
-            this.panel1.Controls.Add(this.numericUpDown3);
-            this.panel1.Controls.Add(this.numericUpDown2);
-            this.panel1.Controls.Add(this.numericUpDown1);
-            this.panel1.Controls.Add(this.label5);
-            this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.overflowProtection);
-            this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.label8);
-            this.panel1.Location = new System.Drawing.Point(186, 254);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(344, 179);
-            this.panel1.TabIndex = 81;
-            // 
             // MarketUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.label10);
@@ -640,6 +602,20 @@
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label9);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.overflowProtection);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.numericUpDown2);
+            this.Controls.Add(this.numericUpDown3);
+            this.Controls.Add(this.numericUpDown4);
+            this.Controls.Add(this.npcEnabled);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.transitResEnabled);
             this.Controls.Add(this.TransitArrival);
             this.Controls.Add(this.LastTransit);
@@ -682,8 +658,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.ironSend)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.claySend)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.woodSend)).EndInit();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -740,7 +714,5 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label16;
-        private System.Windows.Forms.Button npc;
-        private System.Windows.Forms.Panel panel1;
     }
 }

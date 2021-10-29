@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TbsCore.Helpers;
+using TbsCore.Models.TroopsModels;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Models.CombatModels
 {
-    public class CombatArmyBase
+    public class CombatArmyBase : TroopsBase
     {
-        public Classificator.TribeEnum Tribe { get; set; }
-        public int[] Troops { get; set; }
         public int[] Improvements { get; set; }
         public CombatHero Hero { get; set; }
 

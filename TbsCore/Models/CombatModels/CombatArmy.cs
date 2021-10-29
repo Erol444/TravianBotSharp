@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
 
 namespace TbsCore.Models.CombatModels
 {

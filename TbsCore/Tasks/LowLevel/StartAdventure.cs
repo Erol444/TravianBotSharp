@@ -26,7 +26,7 @@ namespace TbsCore.Tasks.LowLevel
 
             var adventures = acc.Hero.Adventures
                 .Where(x =>
-                    MapHelper.CalculateDistance(acc, x.Coordinates, HeroHelper.GetHeroHomeVillage(acc).Coordinates) <= acc.Hero.Settings.MaxDistance
+                    x.Coordinates.CalculateDistance(acc, HeroHelper.GetHeroHomeVillage(acc).Coordinates) <= acc.Hero.Settings.MaxDistance
                 )
                 .ToList();
 

@@ -15,7 +15,7 @@ namespace TbsCore.Tasks.SecondLevel
     public class ScoutPlayer : CheckProfile
     {
         public int MinPop { get; set; } = 100;
-        public int MaxPop { get; set; } = 9999;
+        public int MaxPop { get; set; } = 300;
         public int ScoutNum { get; set; } = 1;
 
         public override async Task<TaskRes> Execute(Account acc)
@@ -28,25 +28,26 @@ namespace TbsCore.Tasks.SecondLevel
                 {
                     // If Natars && capital, don't send scouts (you can't)
                     if ((base.UserId == 1 && vill.Capital)) continue;
-                    
-                    //var sendTask = new SendTroops()
-                    //{
-                    //    TroopsMovement = new Models.SendTroopsModels.TroopsSendModel()
-                    //    {
-                    //        ScoutType = Models.SendTroopsModels.ScoutEnum.Resources,
-                    //        MovementType = Classificator.MovementType.Raid,
-                    //        TargetCoordinates = vill.Coordinates,
-                    //        Troops = GenerateScoutTroops(acc),
-                    //    },
-                    //    Vill = this.Vill,
-                    //    SetCoordsInUrl = true,
-                    //};
-                    //await sendTask.Execute(acc);
+
+                    var sendTask = new SendTroops()
+                    {
+                        TroopsMovement = new Models.SendTroopsModels.TroopsSendModel()
+                        {
+                            ScoutType = Models.SendTroopsModels.ScoutEnum.Resources,
+                            MovementType = Classificator.MovementType.Raid,
+                            TargetCoordinates = vill.Coordinates,
+                            Troops = GenerateScoutTroops(acc),
+                        },
+                        Vill = this.Vill,
+                        SetCoordsInUrl = true,
+                    };
+                    await sendTask.Execute(acc);
 
                     acc.Tasks.Add(new ReadFarmScoutReport()
                     {
                         Coordinates = vill.Coordinates,
-                        ExecuteAt = DateTime.Now //.Add(sendTask.Arrival)
+                        ExecuteAt = DateTime.Now.Add(sendTask.Arrival),
+                        Vill = this.Vill
                     });
                 }
             }

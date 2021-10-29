@@ -61,8 +61,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
-            this.label14 = new System.Windows.Forms.Label();
             this.scouted = new System.Windows.Forms.RichTextBox();
+            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.maxFarmInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minFarmInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minPopNatar)).BeginInit();
@@ -433,16 +433,6 @@
             this.panel3.Size = new System.Drawing.Size(448, 199);
             this.panel3.TabIndex = 141;
             // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(20, 2);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(170, 25);
-            this.label14.TabIndex = 120;
-            this.label14.Text = "Scouted villages";
-            // 
             // scouted
             // 
             this.scouted.Location = new System.Drawing.Point(206, 2);
@@ -452,6 +442,16 @@
             this.scouted.Size = new System.Drawing.Size(240, 195);
             this.scouted.TabIndex = 156;
             this.scouted.Text = "";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(20, 2);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(170, 25);
+            this.label14.TabIndex = 120;
+            this.label14.Text = "Scouted villages";
             // 
             // FarmingUc
             // 

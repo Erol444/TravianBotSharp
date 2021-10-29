@@ -8,6 +8,8 @@ using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsMovementModels;
 using TbsCore.Helpers;
 using static TbsCore.Helpers.Classificator;
+using TbsCore.Models.TroopsModels;
+using TbsCore.Models.MapModels;
 
 namespace TbsCore.Parsers
 {
@@ -40,10 +42,10 @@ namespace TbsCore.Parsers
                 attack.Arrival = now.Add(TimeParser.ParseTimer(infos));
 
                 var sourceId = MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("role")));
-                attack.SourceCoordinates = MapHelper.CoordinatesFromKid(sourceId, acc);
+                attack.SourceCoordinates = new Coordinates(acc, sourceId ?? 0);
 
                 var targetId = MapParser.GetKarteHref(attackNode.Descendants("td").First(x => x.HasClass("troopHeadline")));
-                attack.TargetCoordinates = MapHelper.CoordinatesFromKid(targetId, acc);
+                attack.TargetCoordinates = new Coordinates(acc, targetId ?? 0);
 
                 var unitImg = attackNode.Descendants("img").First(x => x.HasClass("unit"));
                 var unitInt = Parser.RemoveNonNumeric(unitImg.GetClasses().First(x => x != "unit"));

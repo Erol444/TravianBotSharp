@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,7 @@ namespace TbsCore.Parsers
             var ret = new List<VillageReport>();
 
             var reports = html.GetElementbyId("troop_info").Descendants("tr");
-            foreach(var report in reports)
+            foreach (var report in reports)
             {
 
                 string reportType = report.Descendants("img")
@@ -42,7 +43,13 @@ namespace TbsCore.Parsers
 
             // TODO parse: type of attack, attacker (nickname, id), Attacker Village (id, coords, name), Deffender (nickname, id), Deffending village (id, coords, name)
             // Attacker troops, killed, tribe, additional information (ram&cata report)
+
             // Deffender List<troops, tribe, killed>
+            var attacker = content.Descendants("div").First(x => x.HasClass("attacker"));
+            var deffender = content.Descendants("div").First(x => x.HasClass("defender"));
+            
+            report.Deffender = ParseHeader(deffender);
+            report.Attacker = ParseHeader(attacker);
 
             var infos = content.Descendants("table").Where(x => x.HasClass("additionalInformation")).ToList();
             foreach (var info in infos)
@@ -54,6 +61,19 @@ namespace TbsCore.Parsers
                 if (cranny != null) report.CrannySize = (int)Parser.RemoveNonNumeric(cranny.ParentNode.InnerText);
             }
             return report;
+        }
+
+        private static CombatParticipant ParseHeader(HtmlNode header)
+        {
+            var headline = header.Descendants("div").First(x => x.HasClass("troopHeadline")).ChildNodes.First(x=>x.Name == "div");
+            var ahref = headline.ChildNodes.Where(x=>x.Name == "a").ToArray();
+            var ret = new CombatParticipant();
+
+            ret.Username = ahref[0].InnerText;
+            ret.UserId = (int)Parser.RemoveNonNumeric(ahref[0].GetAttributeValue("href", ""));
+            ret.VillageName = ahref[1].InnerText;
+            ret.VillageId = MapParser.GetKarteHref(headline) ?? 0;
+            return ret;
         }
 
         private static Resources ParseBountyRes(HtmlAgilityPack.HtmlNode node)

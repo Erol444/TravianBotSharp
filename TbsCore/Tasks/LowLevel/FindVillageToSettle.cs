@@ -48,7 +48,7 @@ namespace TbsCore.Tasks.LowLevel
                     if (!acc.NewVillages.Types.Any(x => x == type)) continue;
                 }
 
-                var distance = MapHelper.CalculateDistance(acc, mainVill.Coordinates, tile.Coordinates);
+                var distance = mainVill.Coordinates.CalculateDistance(acc, tile.Coordinates);
                 if (distance < closest)
                 {
                     closest = distance;

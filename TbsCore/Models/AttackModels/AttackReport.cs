@@ -2,18 +2,32 @@
 using System.Collections.Generic;
 using System.Text;
 using TbsCore.Helpers;
+using TbsCore.Models.MapModels;
 using TbsCore.Models.ResourceModels;
+using TbsCore.Models.TroopsModels;
 
 namespace TbsCore.Models.AttackModels
 {
     /// <summary>
-    /// Report of an attack
+    /// Report of an attack TODO: combine with CombatModels, DRY
     /// </summary>
     public class AttackReport
     {
-        // TODO: Attacker (nickname, id), Attacker Village (id, coords, name), Deffender (nickname, id), Deffending village (id, coords, name)
-        // Attacker troops, killed, tribe, additional information (bounty / scouting report / ram&cata report)
-        // Deffender List<troops, tribe, killed>
+        public AttackReport(bool init = false)
+        {
+            if (init)
+            {
+                Deffender = new CombatParticipant();
+                Attacker = new CombatParticipant();
+                AttackerArmy = new CombatTribeParticipant();
+                DeffenderArmy = new List<CombatTribeParticipant>();
+            }
+        }
+        public CombatParticipant Deffender { get; set; }
+        public CombatParticipant Attacker { get; set; }
+
+        public CombatTribeParticipant AttackerArmy { get; set; }
+        public List<CombatTribeParticipant> DeffenderArmy { get; set; }
 
         /// <summary>
         /// Resources raided / scouted
@@ -45,5 +59,17 @@ namespace TbsCore.Models.AttackModels
             }
             return ResourcesHelper.ArrayToResources(res);
         }
+    }
+
+    public class CombatParticipant
+    {
+        public string Username { get; set; }
+        public int UserId { get; set; }
+        public string VillageName { get; set; }
+        public int VillageId { get; set; }
+    }
+    public class CombatTribeParticipant : TroopsBase
+    {
+        public int[] Casualties { get; set; }
     }
 }

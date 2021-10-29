@@ -42,7 +42,7 @@ namespace TbsCore.Tasks.LowLevel
             var newVillage = acc.NewVillages.Locations.FirstOrDefault();
 
             //acc.NewVillage.NewVillages.Remove(coords); //remove it after settling and changing the vill name??
-            string kid = MapHelper.KidFromCoordinates(newVillage.Coordinates, acc).ToString();
+            string kid = newVillage.Coordinates.GetKid(acc).ToString();
 
             string url = $"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2";
             switch (acc.AccInfo.ServerVersion)

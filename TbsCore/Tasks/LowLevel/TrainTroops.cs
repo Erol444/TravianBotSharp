@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
+using TbsCore.Parsers;
 using TbsCore.TravianData;
-using TravBotSharp.Files.Helpers;
 
 using static TbsCore.Helpers.Classificator;
 
@@ -153,7 +153,7 @@ namespace TbsCore.Tasks.LowLevel
             if (Vill.Settings.SendRes && 0 < MarketHelper.GetResToMainVillage(this.Vill).Sum())
             {
                 // Check If all troops are filled in this vill before sending resources back to main village
-                if (TroopsHelper.EverythingFilled(acc, Vill))
+                if (TroopsHelper.EverythingFilled(acc, Vill) && AccountHelper.GetMainVillage(acc) != this.Vill)
                 {
                     acc.Tasks.Add(new SendResToMain() { Vill = this.Vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
                 }
