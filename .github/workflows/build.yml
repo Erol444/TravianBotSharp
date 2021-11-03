@@ -1,0 +1,71 @@
+name: BuildFlow
+
+on:
+  pull_request:
+    branches-ignore: [master]
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: setup-msbuild
+        uses: microsoft/setup-msbuild@v1     
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.5
+      
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v2
+
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+        
+      - name: Get cache
+        uses: actions/cache@v2
+        with:
+          path: |
+              packages
+              TbsCore/obj/project.assets.json
+              TbsCore/TbsCore.csproj.nuget.g.targets
+              TbsCore/TbsCore.csproj.nuget.g.props.              
+          key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-nuget-
+              
+      - name: Restore Packages
+        run: |
+          nuget restore TbsCore/TbsCore.csproj -PackagesDirectory packages
+          nuget restore TravBotSharp/TbsWinForms.csproj -PackagesDirectory packages
+
+      - name: Build Bot
+        run: |
+          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true /p:BUILD_NUMBER=30.4.1975.0
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: TBS-Build
+          path: TravBotSharp\bin\Release
+          if-no-files-found: error
+
+      - name: Comment on PR when success
+        uses: actions/github-script@v5
+        if: |
+          github.event_name == 'pull_request' && success()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
+            github.rest.issues.createComment({ issue_number, owner, repo, body: 'Congratulation this commit was built successfully. Due to some reason, I cannot link result here .-.' });
+      
+      - name: Comment on PR when fail
+        uses: actions/github-script@v5
+        if: |
+          github.event_name == 'pull_request' && failure()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
+            github.rest.issues.createComment({ issue_number, owner, repo, body: 'There is error while building this commit' });
