@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: TBS-Build
-          path: TravBotSharp\bin\Release
+          path: TravBotSharp\adsadadbin\Release
           if-no-files-found: error
 
       - name: Comment on PR when success
