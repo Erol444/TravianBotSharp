@@ -1,8 +1,8 @@
-name: PreRelease
+name: PreReleaseFlow
 
 on:
   pull_request:
-    types: [closed]
+    types: closed
   workflow_dispatch:
     
 jobs:
@@ -13,14 +13,16 @@ jobs:
       version: ${{ steps.semvers.outputs.patch }}
       changelog: ${{ steps.Changelog.outputs.changelog }}
     steps:
-      - uses: actions/checkout@v2
-      
-      - run: git fetch --prune --unshallow --tags                                           
-      
       - uses: docker://agilepathway/pull-request-label-checker:latest
         with:
           one_of: pre-release
-          repo_token: ${{ secrets.GITHUB_TOKEN }}       
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v2      
+      
+      - name: 'Update tag'
+        run: git fetch --prune --unshallow --tags
 
       - name: 'Get Previous tag'
         id: previoustag
@@ -35,12 +37,10 @@ jobs:
       - name: 'Create changelog'
         id: Changelog
         run: |
-          git branch --show-current
           changelog=$(git log --no-merges --pretty=format:'- %s' ${{ steps.previoustag.outputs.tag }}..HEAD --reverse)
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"
-          echo "$changelog"
           echo "::set-output name=changelog::$changelog"
 
   build:
@@ -113,7 +113,7 @@ jobs:
           body: |
             **Changelog**: 
             ${{needs.version.outputs.changelog}}
-            
+      
           artifacts: TBS-${{needs.version.outputs.version}}.zip
           token: ${{ secrets.GITHUB_TOKEN }}
   Discord:
