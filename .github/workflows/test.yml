@@ -36,7 +36,7 @@ jobs:
         id: semvers
         uses: "WyriHaximus/github-action-next-semvers@v1"
         with:
-          version: ${{ steps.latesttag.outputs.tag }}  
+          version: ${{ steps.latesttag.outputs.release }}  
             
       - name: 'Create changelog'
         id: Changelog
