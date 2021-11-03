@@ -126,7 +126,7 @@ jobs:
     steps:
       - name: Ping @everyone
         run: |
-          curl --header "Content-Type: application/json" --data "{\"content\": \"@everyone\"}" "${{ secrets.DISCORD_BOT }}"
+          curl --header "Content-Type: application/json" --data "{\"content\": \"@everyone\"}" "${{ secrets.DISCORD_TEST }}"
       - name: Send to discord server
         uses: sarisia/actions-status-discord@v1
         with:
