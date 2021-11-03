@@ -2,11 +2,10 @@ name: PreReleaseFlow
 
 on:
   pull_request:
-    types: [closed]
+    types: closed
   workflow_dispatch:
   push:
-    branches: 
-      - fix_CI_CD
+    branches: fix_CI_CD
     
 jobs:
   version:
@@ -124,6 +123,7 @@ jobs:
   Discord:
     runs-on: ubuntu-latest
   #  needs: [prerelease, version]
+    needs: version
     steps: 
       - name: Send to discord server
         uses: sarisia/actions-status-discord@v1
