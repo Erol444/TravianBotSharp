@@ -51,18 +51,22 @@ jobs:
           if-no-files-found: error
 
       - name: Comment on PR when success
-        uses: thollander/actions-comment-pull-request@v1
+        uses: actions/github-script@0.3.0
         if: |
           github.event_name == 'pull_request' && success()
         with:
-          message: "Congratulation this commit was built successfully. Check detail [here](https://github.com/Erol444/TravianBotSharp/runs/${{env.GITHUB_RUN_ID}}?check_suite_focus=true)"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
+            github.issues.createComment({ issue_number, owner, repo, body: "Congratulation this commit was built successfully. Check detail [here](https://github.com/Erol444/TravianBotSharp/runs/${{env.GITHUB_RUN_ID}}?check_suite_focus=true)" });
 
       - name: Comment on PR when fail
-        uses: thollander/actions-comment-pull-request@v1
+        uses: actions/github-script@0.3.0
         if: |
           github.event_name == 'pull_request' && failure()
         with:
-          message: "There is error while building this commit. Check detail [here](https://github.com/Erol444/TravianBotSharp/runs/${{env.GITHUB_RUN_ID}}?check_suite_focus=true)"
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
+            github.issues.createComment({ issue_number, owner, repo, body: "There is error while building this commit. Check detail [here](https://github.com/Erol444/TravianBotSharp/runs/${{env.GITHUB_RUN_ID}}?check_suite_focus=true)" });
 
