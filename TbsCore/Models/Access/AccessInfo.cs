@@ -46,7 +46,6 @@ namespace TbsCore.Models.Access
                 ProxyUsername = raw.ProxyUsername,
                 ProxyPassword = raw.ProxyPassword,
                 IsSittering = false,
-                UserAgent = RandomUserAgent.RandomUa.RandomUserAgent,
                 LastUsed = DateTime.MinValue
             };
 

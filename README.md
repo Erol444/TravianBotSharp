@@ -1,5 +1,4 @@
 # TravianBotSharp (TBS)
-### [DOWNLOAD COMPILED BOT HERE](https://drive.google.com/drive/folders/1db_wPZeg5w7BQs5ROa29x2LGDxCzoXIj?usp=sharing)
 
 <a href="https://discord.gg/mBa4f2K"><img src="https://discordapp.com/api/guilds/740829801446637601/widget.png?style=banner2" width="30%"></a>
 

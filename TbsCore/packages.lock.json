@@ -49,17 +49,11 @@
         "resolved": "0.50.0",
         "contentHash": "J5vqespSvjxIAAtjG1Tc6ghBqyfRgDJtKnk/ifi4N0hD/f3JbPwyEDRT+Eelu/bS4C4M6mu5gt1WJqar+fByzg=="
       },
-      "RandomUserAgent": {
-        "type": "Direct",
-        "requested": "[1.1.2, )",
-        "resolved": "1.1.2",
-        "contentHash": "jj0nKiIZaApcvj6tUv5RJn0rAznpz19ncN1SP0mqZhWf+m2DEcfqTTCT2ZKOXJ7HXNprlH7X18gTkhFFu16S+Q=="
-      },
       "RestSharp": {
         "type": "Direct",
-        "requested": "[106.11.7, )",
-        "resolved": "106.11.7",
-        "contentHash": "NzndH096CTulvq+ihr7u1mBJ29oukdi9A8bypQJk+kaHxbRzTTrtgsEEQAb04ptTUZmQa7cgo7uF5z7NuEPX1Q=="
+        "requested": "[106.13.0, )",
+        "resolved": "106.13.0",
+        "contentHash": "vwUdmmtC5vtePeNfBWnFcixBF2KjUeVv3ss4ZFzCIkOf7NB7W/9qX8JNZD9DOrz2yGk4AJW8k9znwgPZhnoiNg=="
       },
       "Selenium.WebDriver": {
         "type": "Direct",

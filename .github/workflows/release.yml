@@ -1,8 +1,9 @@
-name: CI - Master
+name: ReleaseFlow
 
 on:
   pull_request:
-    types: [closed]
+    branches: master
+    types: closed
   workflow_dispatch:
   
 jobs:
@@ -13,14 +14,16 @@ jobs:
       version: ${{ steps.semvers.outputs.minor }}
       changelog: ${{ steps.Changelog.outputs.changelog }}
     steps:
-      - uses: actions/checkout@v2
-      
       - uses: docker://agilepathway/pull-request-label-checker:latest
         with:
           one_of: release
-          repo_token: ${{ secrets.GITHUB_TOKEN }} 
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
       
-      - run: git fetch --prune --unshallow --tags
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v2    
+
+      - name: 'Update tag'
+        run: git fetch --prune --unshallow --tags
 
       - name: 'Get latest tag'
         id: latesttag
@@ -37,26 +40,25 @@ jobs:
       - name: 'Create changelog'
         id: Changelog
         run: |
-          git branch --show-current
           last=$(git log --merges --grep='develop' --first-parent master --pretty=format:"%h" | sed -n '2p')
           changelog=$(git log --no-merges --pretty=format:'- %s' $last..HEAD --reverse)
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"
-          echo "$changelog"
           echo "::set-output name=changelog::$changelog"
   build:
     runs-on: windows-latest
     needs: version
     steps:
       - name: setup-msbuild
-        uses: microsoft/setup-msbuild@v1
-
-      - uses: actions/checkout@v2
+        uses: microsoft/setup-msbuild@v1     
 
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v1.0.5
       
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v2
+
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
         
@@ -68,9 +70,9 @@ jobs:
               TbsCore/obj/project.assets.json
               TbsCore/TbsCore.csproj.nuget.g.targets
               TbsCore/TbsCore.csproj.nuget.g.props.              
-          key: ${{ runner.os }}-nuget3-${{ hashFiles('TbsCore/packages.lock.json') }}
+          key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
           restore-keys: |
-              ${{ runner.os }}-nuget3-
+              ${{ runner.os }}-nuget-
               
       - name: Restore Packages
         run: |
@@ -120,17 +122,19 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release, version]
     steps:
-      - run: |
+      - name: Ping @everyone
+        run: |
           curl --header "Content-Type: application/json" --data "{\"content\": \"@everyone\"}" "${{ secrets.DISCORD_BOT }}"
       - name: Send to discord server
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_BOT }}
           title: New release
-          nodetail: retrue
+          nodetail: true
           description: |
               Version `TBS-${{needs.version.outputs.version}}`
               Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
+              
               **Changelog**:
               ${{needs.version.outputs.changelog}}
   Clear:
