@@ -58,7 +58,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-            github.rest.issues.createComment({ issue_number, owner, repo, body: 'Congratulation this commit was built successfully. Due to some reason, I cannot link result here .-.' });
+            github.rest.issues.createComment({ issue_number, owner, repo, body: 'Congratulation this commit was built successfully. Check detail here ${{GITHUB_RUN_ID}}' });
       
       - name: Comment on PR when fail
         uses: actions/github-script@v5
@@ -68,4 +68,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-            github.rest.issues.createComment({ issue_number, owner, repo, body: 'There is error while building this commit' });
+            github.rest.issues.createComment({ issue_number, owner, repo, body: 'There is error while building this commit. Check detail here ${{GITHUB_RUN_ID}}' });
