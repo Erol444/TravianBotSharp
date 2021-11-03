@@ -39,12 +39,10 @@ jobs:
       - name: 'Create changelog'
         id: Changelog
         run: |
-          git branch --show-current
           changelog=$(git log --no-merges --pretty=format:'- %s' ${{ steps.previoustag.outputs.tag }}..HEAD --reverse)
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"
-          echo "$changelog"
           echo "::set-output name=changelog::$changelog"
 
   build:
@@ -83,12 +81,12 @@ jobs:
         run: |
           msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true /p:BUILD_NUMBER=${{needs.version.outputs.version}}.0
 
-      #- name: Upload a Build Artifact
-      #  uses: actions/upload-artifact@v2
-      #  with:
-      #    name: TBS-prerelease
-      #    path: TravBotSharp\bin\Release
-      #    if-no-files-found: error
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: TBS-prerelease
+          path: TravBotSharp\bin\Release
+          if-no-files-found: error
 
   #prerelease:
   #  runs-on: ubuntu-latest
