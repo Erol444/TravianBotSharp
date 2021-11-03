@@ -58,7 +58,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-            github.issues.createComment({ issue_number, owner, repo, body: "Congratulation this commit was built successfully. Check detail [here](https://github.com/Erol444/TravianBotSharp/runs/${{env.GITHUB_RUN_ID}}?check_suite_focus=true)" });
+            github.issues.createComment({ issue_number, owner, repo, body: "Congratulation this commit was built successfully. Check detail [here](https://github.com/Erol444/TravianBotSharp/runs/${{github.run_id}}?check_suite_focus=true)" });
 
       - name: Comment on PR when fail
         uses: actions/github-script@0.3.0
@@ -68,5 +68,5 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-            github.issues.createComment({ issue_number, owner, repo, body: "There is error while building this commit. Check detail [here](https://github.com/Erol444/TravianBotSharp/runs/${{env.GITHUB_RUN_ID}}?check_suite_focus=true)" });
+            github.issues.createComment({ issue_number, owner, repo, body: "There is error while building this commit. Check detail [here](https://github.com/Erol444/TravianBotSharp/runs/${{github.run_id}}?check_suite_focus=true)" });
 
