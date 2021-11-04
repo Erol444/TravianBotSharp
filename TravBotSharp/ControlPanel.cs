@@ -40,6 +40,7 @@ namespace TravBotSharp
                 villagesUc1,
                 overviewUc1,
                 overviewTroopsUc1,
+                overviewMarketUc1,
                 farmingUc1,
                 newVillagesUc1,
                 deffendingUc1,

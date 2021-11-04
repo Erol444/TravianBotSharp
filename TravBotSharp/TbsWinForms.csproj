@@ -474,6 +474,12 @@
     <Compile Include="Forms\AddFarmlistNonGold.Designer.cs">
       <DependentUpon>AddFarmlistNonGold.cs</DependentUpon>
     </Compile>
+    <Compile Include="Views\OverviewMarketUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\OverviewMarketUc.Designer.cs">
+      <DependentUpon>OverviewMarketUc.cs</DependentUpon>
+    </Compile>
     <Compile Include="Views\VillageViews\BuildUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -614,6 +620,9 @@
     <EmbeddedResource Include="Views\DiscordUc.resx">
       <DependentUpon>DiscordUc.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Views\OverviewMarketUc.resx">
+      <DependentUpon>OverviewMarketUc.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Views\OverviewTroopsUc.resx">
       <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
     </EmbeddedResource>
@@ -667,6 +676,7 @@
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
+    <None Include="Properties\DataSources\TravBotSharp.Views.OverviewMarketUc.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
