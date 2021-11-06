@@ -77,8 +77,6 @@ namespace TbsCore.Helpers
                 ImportTasks = true
             }, true, vill);
 
-            DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);
-
             // Copy default settings to the new village. TODO: use automapper for this.
             //var defaultSettings = acc.NewVillages.DefaultSettings;
             //vill.Settings = new VillSettings()

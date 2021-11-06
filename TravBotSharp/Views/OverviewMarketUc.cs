@@ -1,10 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 using TbsCore.Models.AccModels;
 using TravBotSharp.Interfaces;
+using TravBotSharp.Forms;
 using XPTable.Models;
+using XPTable.Events;
 
 namespace TravBotSharp.Views
 {
@@ -29,6 +31,9 @@ namespace TravBotSharp.Views
                 tableModels[i] = new TableModel();
                 columnModels[i] = new ColumnModel();
             }
+
+            table1.CellButtonClicked += cellButton_Click;
+            table1.CellPropertyChanged += cell_PropertyChanged;
         }
 
         public void UpdateUc()
@@ -38,6 +43,7 @@ namespace TravBotSharp.Views
 
             table1.ColumnModel = columnModels[(int)currentType];
             table1.ColumnModel.Columns.Clear();
+
             table1.TableModel = tableModels[(int)currentType];
             table1.TableModel.Rows.Clear();
 
@@ -48,7 +54,10 @@ namespace TravBotSharp.Views
                     foreach (var vill in acc.Villages)
                     {
                         var r = new Row();
-                        r.Cells.Add(new Cell(vill.Id.ToString())); //vill id
+                        r.Cells.Add(new Cell(vill.Id)
+                        {
+                            Tag = currentType
+                        }); //vill id
                         r.Cells.Add(new Cell(vill.Name)); //vill name
 
                         r.Cells.Add(new Cell("", vill.Market.Npc.Enabled)); //Auto NPC
@@ -56,7 +65,7 @@ namespace TravBotSharp.Views
                         r.Cells.Add(new Cell(vill.Market.Npc.ResourcesRatio.Clay)); //Clay ratio
                         r.Cells.Add(new Cell(vill.Market.Npc.ResourcesRatio.Iron)); //Iron ratio
                         r.Cells.Add(new Cell(vill.Market.Npc.ResourcesRatio.Crop)); //Crop ratio
-                        r.Cells.Add(new Cell("", vill.Market.Npc.NpcIfOverflow)); // Overflow ignore
+                        r.Cells.Add(new Cell("", vill.Market.Npc.NpcIfOverflow)); // Ignore Overflow
                         table1.TableModel.Rows.Add(r);
                     }
                     break;
@@ -66,15 +75,21 @@ namespace TravBotSharp.Views
                     foreach (var vill in acc.Villages)
                     {
                         var r = new Row();
-                        r.Cells.Add(new Cell(vill.Id.ToString())); //vill id
+                        r.Cells.Add(new Cell(vill.Id)
+                        {
+                            Tag = currentType
+                        }); //vill id
                         r.Cells.Add(new Cell(vill.Name)); //vill name
 
-                        r.Cells.Add(new Cell("", false));
-                        r.Cells.Add(new Cell(1000));
-                        r.Cells.Add(new Cell(80));
-                        r.Cells.Add(new Cell("", true));
-                        r.Cells.Add(new Cell(1000));
-                        r.Cells.Add(new Cell(80));
+                        r.Cells.Add(new Cell("", vill.Market.AutoMarket.SendToMain.Enabled)); //send to main
+                        r.Cells.Add(new Cell("Resource")); // amount
+                        r.Cells.Add(new Cell("Condition")); // condition
+                        r.Cells.Add(new Cell("", vill.Market.AutoMarket.SendToNeed.Enabled)); // send to need
+                        r.Cells.Add(new Cell("Resource")); // amount
+                        r.Cells.Add(new Cell("Condition")); // condition
+                        r.Cells.Add(new Cell("", vill.Market.AutoMarket.NeedWhenBuild));
+                        r.Cells.Add(new Cell("", vill.Market.AutoMarket.NeedWhenTrain));
+                        r.Cells.Add(new Cell("", vill.Market.AutoMarket.NeedWhenOther));
                         table1.TableModel.Rows.Add(r);
                     }
                     break;
@@ -88,7 +103,7 @@ namespace TravBotSharp.Views
             var columnmodel = table1.ColumnModel;
 
             //VillageId
-            TextColumn villId = new TextColumn
+            NumberColumn villId = new NumberColumn
             {
                 Editable = false,
                 Text = "Id",
@@ -112,7 +127,7 @@ namespace TravBotSharp.Views
             {
                 Text = "NPC",
                 Width = 40,
-                ToolTipText = "Auto NPC Crop to other resource"
+                ToolTipText = "Auto NPC Crop to other resource",
             };
             columnmodel.Columns.Add(autoNPC);
 
@@ -120,32 +135,40 @@ namespace TravBotSharp.Views
             {
                 Text = "Wood",
                 Width = 50,
-                ToolTipText = "Wood ratio"
+                ToolTipText = "Wood ratio",
+                Maximum = long.MaxValue
             };
+
             columnmodel.Columns.Add(woodRatio);
 
             NumberColumn clayRatio = new NumberColumn
             {
                 Text = "Clay",
                 Width = 50,
-                ToolTipText = "Clay ratio"
+                ToolTipText = "Clay ratio",
+                Maximum = long.MaxValue
             };
+
             columnmodel.Columns.Add(clayRatio);
 
             NumberColumn ironRatio = new NumberColumn
             {
                 Text = "Iron",
                 Width = 50,
-                ToolTipText = "Iron ratio"
+                ToolTipText = "Iron ratio",
+                Maximum = long.MaxValue
             };
+
             columnmodel.Columns.Add(ironRatio);
 
             NumberColumn cropRatio = new NumberColumn
             {
                 Text = "Crop",
                 Width = 50,
-                ToolTipText = "Crop ratio"
+                ToolTipText = "Crop ratio",
+                Maximum = long.MaxValue
             };
+
             columnmodel.Columns.Add(cropRatio);
 
             CheckBoxColumn overflow = new CheckBoxColumn
@@ -154,6 +177,7 @@ namespace TravBotSharp.Views
                 Width = 110,
                 ToolTipText = "NPC even if overflow"
             };
+
             columnmodel.Columns.Add(overflow);
         }
 
@@ -161,7 +185,7 @@ namespace TravBotSharp.Views
         {
             var columnmodel = table1.ColumnModel;
             //VillageId
-            TextColumn villId = new TextColumn
+            NumberColumn villId = new NumberColumn
             {
                 Editable = false,
                 Text = "Id",
@@ -190,20 +214,18 @@ namespace TravBotSharp.Views
             columnmodel.Columns.Add(sendToMain);
 
             //Send to main amount
-            NumberColumn sendToMainAmount = new NumberColumn
+            ButtonColumn sendToMainAmount = new ButtonColumn
             {
                 Text = "resources",
                 Width = 70,
-                ToolTipText = "number if below 100, otherwise percent of storage"
             };
             columnmodel.Columns.Add(sendToMainAmount);
 
             //Send to main condition
-            NumberColumn sendToMainCondition = new NumberColumn
+            ButtonColumn sendToMainCondition = new ButtonColumn
             {
                 Text = "when above",
                 Width = 90,
-                ToolTipText = "Auto send to main when any resource above this number if below 100, otherwise percent of storage"
             };
             columnmodel.Columns.Add(sendToMainCondition);
 
@@ -216,92 +238,192 @@ namespace TravBotSharp.Views
             };
             columnmodel.Columns.Add(sendToNeed);
 
-            //Send to main amount
-            NumberColumn sendToNeedAmount = new NumberColumn
+            //Send to need amount
+            ButtonColumn sendToNeedAmount = new ButtonColumn
             {
                 Text = "resources",
                 Width = 70,
-                ToolTipText = "number if below 100, otherwise percent of storage"
             };
             columnmodel.Columns.Add(sendToNeedAmount);
 
-            //Send to main condition
-            NumberColumn sendToNeedCondition = new NumberColumn
+            //Send to need condition
+            ButtonColumn sendToNeedCondition = new ButtonColumn
             {
                 Text = "when above",
                 Width = 90,
-                ToolTipText = "Auto send to main when any resource above this number if below 100, otherwise percent of storage"
             };
             columnmodel.Columns.Add(sendToNeedCondition);
+
+            //Need when build building
+            CheckBoxColumn needWhenBuild = new CheckBoxColumn
+            {
+                Text = "Building",
+                Width = 70,
+            };
+            columnmodel.Columns.Add(needWhenBuild);
+
+            //Need when train troop
+            CheckBoxColumn needWhenTrain = new CheckBoxColumn
+            {
+                Text = "Training",
+                Width = 70,
+            };
+            columnmodel.Columns.Add(needWhenTrain);
+
+            //Need when other
+            CheckBoxColumn needWhenOther = new CheckBoxColumn
+            {
+                Text = "Other",
+                Width = 70,
+            };
+            columnmodel.Columns.Add(needWhenOther);
         }
 
         #endregion Initialize column model
-
-        #region Save function
-
-        private void saveNPC(Account acc)
-        {
-            var tablemodel = table1.TableModel;
-            for (int i = 0; i < tablemodel.Rows.Count; i++)
-            {
-                var cells = tablemodel.Rows[i].Cells;
-                int column = 0;
-                //Village id
-                var id = int.Parse(cells[column].Text);
-                var vill = acc.Villages.First(x => x.Id == id);
-
-                //name
-                column++;
-
-                //Auto NPC check
-                column++;
-                vill.Market.Npc.Enabled = cells[column].Checked;
-
-                //Wood ratio
-                column++;
-                vill.Market.Npc.ResourcesRatio.Wood = (long)cells[column].Data;
-
-                //Clay ratio
-                column++;
-                vill.Market.Npc.ResourcesRatio.Clay = (long)cells[column].Data;
-
-                //Iron ratio
-                column++;
-                vill.Market.Npc.ResourcesRatio.Iron = (long)cells[column].Data;
-
-                //Crop ratio
-                column++;
-                vill.Market.Npc.ResourcesRatio.Crop = (long)cells[column].Data;
-
-                //Overflow ignore
-                column++;
-                vill.Market.Npc.NpcIfOverflow = cells[column].Checked;
-            }
-        }
-
-        #endregion Save function
-
-        //Save button
-        private void button1_Click(object sender, EventArgs e)
-        {
-            var acc = GetSelectedAcc();
-
-            switch (currentType)
-            {
-                case TypeModel.NPC:
-                    saveNPC(acc);
-                    break;
-
-                case TypeModel.AUTOMARKET:
-
-                    break;
-            }
-        }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             currentType = (TypeModel)comboBox1.SelectedIndex;
             UpdateUc();
+        }
+
+        private void cellButton_Click(object sender, CellButtonEventArgs e)
+        {
+            var row = table1.TableModel.Rows[e.Row];
+            var firstCell = row.Cells[0];
+            var idVillage = firstCell.Data as int?;
+            var acc = GetSelectedAcc();
+            var vill = acc.Villages.FirstOrDefault(x => x.Id == idVillage);
+            var type = firstCell.Tag as TypeModel?;
+
+            switch (type)
+            {
+                case TypeModel.NPC:
+                    break;
+
+                case TypeModel.AUTOMARKET:
+                    switch (e.Column)
+                    {
+                        case 3:
+                            using (var form = new ResourceSelector(vill.Market.AutoMarket.SendToMain.Amount))
+                            {
+                                var result = form.ShowDialog();
+                                if (result == DialogResult.OK)
+                                {
+                                    vill.Market.AutoMarket.SendToMain.Amount = form.Resources;
+                                }
+                            }
+                            break;
+
+                        case 4:
+                            using (var form = new ResourceSelector(vill.Market.AutoMarket.SendToMain.Condition))
+                            {
+                                var result = form.ShowDialog();
+                                if (result == DialogResult.OK)
+                                {
+                                    vill.Market.AutoMarket.SendToMain.Condition = form.Resources;
+                                }
+                            }
+                            break;
+
+                        case 6:
+                            using (var form = new ResourceSelector(vill.Market.AutoMarket.SendToNeed.Amount))
+                            {
+                                var result = form.ShowDialog();
+                                if (result == DialogResult.OK)
+                                {
+                                    vill.Market.AutoMarket.SendToNeed.Amount = form.Resources;
+                                }
+                            }
+                            break;
+
+                        case 7:
+                            using (var form = new ResourceSelector(vill.Market.AutoMarket.SendToNeed.Condition))
+                            {
+                                var result = form.ShowDialog();
+                                if (result == DialogResult.OK)
+                                {
+                                    vill.Market.AutoMarket.SendToNeed.Condition = form.Resources;
+                                }
+                            }
+                            break;
+                    }
+
+                    break;
+
+                default:
+                    break;
+            }
+        }
+
+        private void cell_PropertyChanged(object sender, CellEventArgs e)
+        {
+            var row = table1.TableModel.Rows[e.Row];
+            var firstCell = row.Cells[0];
+            var idVillage = firstCell.Data as int?;
+            var acc = GetSelectedAcc();
+            var vill = acc.Villages.FirstOrDefault(x => x.Id == idVillage);
+            var type = firstCell.Tag as TypeModel?;
+
+            switch (type)
+            {
+                case TypeModel.NPC:
+                    switch (e.Column)
+                    {
+                        case 2:
+                            vill.Market.Npc.Enabled = e.Cell.Checked;
+                            break;
+
+                        case 3:
+                            vill.Market.Npc.ResourcesRatio.Wood = Convert.ToInt64(e.Cell.Data);
+                            break;
+
+                        case 4:
+                            vill.Market.Npc.ResourcesRatio.Clay = Convert.ToInt64(e.Cell.Data);
+                            break;
+
+                        case 5:
+                            vill.Market.Npc.ResourcesRatio.Iron = Convert.ToInt64(e.Cell.Data);
+                            break;
+
+                        case 6:
+                            vill.Market.Npc.ResourcesRatio.Crop = Convert.ToInt64(e.Cell.Data);
+                            break;
+
+                        case 7:
+                            vill.Market.Npc.NpcIfOverflow = e.Cell.Checked;
+                            break;
+                    }
+                    break;
+
+                case TypeModel.AUTOMARKET:
+                    switch (e.Column)
+                    {
+                        case 2:
+                            vill.Market.AutoMarket.SendToMain.Enabled = e.Cell.Checked;
+                            break;
+
+                        case 5:
+                            vill.Market.AutoMarket.SendToNeed.Enabled = e.Cell.Checked;
+                            break;
+
+                        case 8:
+                            vill.Market.AutoMarket.NeedWhenBuild = e.Cell.Checked;
+                            break;
+
+                        case 9:
+                            vill.Market.AutoMarket.NeedWhenTrain = e.Cell.Checked;
+                            break;
+
+                        case 10:
+                            vill.Market.AutoMarket.NeedWhenOther = e.Cell.Checked;
+                            break;
+                    }
+                    break;
+
+                default:
+                    break;
+            }
         }
     }
 }

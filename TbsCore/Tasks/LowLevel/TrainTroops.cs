@@ -149,14 +149,14 @@ namespace TbsCore.Tasks.LowLevel
             var trainingEnds = TroopsHelper.GetTrainingTimeForBuilding(building, Vill);
 
             // If sendRes is activated and there are some resources left to send
-            if (Vill.Settings.SendRes && 0 < MarketHelper.GetResToMainVillage(this.Vill).Sum())
-            {
-                // Check If all troops are filled in this vill before sending resources back to main village
-                if (TroopsHelper.EverythingFilled(acc, Vill))
-                {
-                    acc.Tasks.Add(new SendResToMain() { Vill = this.Vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
-                }
-            }
+            //if (Vill.Settings.SendRes && 0 < MarketHelper.GetResToMainVillage(this.Vill).Sum())
+            //{
+            //    // Check If all troops are filled in this vill before sending resources back to main village
+            //    if (TroopsHelper.EverythingFilled(acc, Vill))
+            //    {
+            //        acc.Tasks.Add(new SendResToMain() { Vill = this.Vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
+            //    }
+            //}
 
             var mainVill = AccountHelper.GetMainVillage(acc);
             if (Vill.Settings.GetRes && mainVill != this.Vill)

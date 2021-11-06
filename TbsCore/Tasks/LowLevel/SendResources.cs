@@ -32,11 +32,11 @@ namespace TbsCore.Tasks.LowLevel
             var duration = await MarketHelper.MarketSendResource(acc, resToSend, targetVillage, this);
 
             var targetVill = acc.Villages.FirstOrDefault(x => x.Coordinates == Coordinates);
-            targetVill.Market.Settings.Configuration.TransitArrival = DateTime.Now.Add(duration);
+            //targetVill.Market.AutoMarket.Configuration.TransitArrival = DateTime.Now.Add(duration);
 
             if (this.Configuration != null && duration != null)
             {
-                this.Configuration.TransitArrival = DateTime.Now.Add(duration);
+                //this.Configuration.TransitArrival = DateTime.Now.Add(duration);
             }
             // When you send resources there actually isn't a page load
             return TaskRes.Executed;

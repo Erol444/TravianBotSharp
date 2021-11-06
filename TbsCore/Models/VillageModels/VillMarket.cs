@@ -9,29 +9,37 @@ namespace TbsCore.Models.VillageModels
     {
         public void Init()
         {
-            Settings = new MarketSettings();
-            Settings.Init();
+            AutoMarket = new AutoMarketSettings();
+            AutoMarket.Init();
             Npc = new NpcSettings();
             Npc.Init();
+            TradeRoute = new TradeRouteSettings();
             OngoingMerchants = new List<MerchantsUnderWay>();
         }
 
         /// <summary>
-        /// Market settings
+        /// For auto market settings
         /// </summary>
-        public MarketSettings Settings { get; set; }
+        public AutoMarketSettings AutoMarket { get; set; }
+
         /// <summary>
         /// For NPC settings
         /// </summary>
         public NpcSettings Npc { get; set; }
+
+        /// <summary>
+        /// For trade route
+        /// </summary>
+        public TradeRouteSettings TradeRoute { get; set; }
+
         /// <summary>
         /// List of all ongoing resource transits
         /// </summary>
         public List<MerchantsUnderWay> OngoingMerchants { get; set; }
+
         /// <summary>
         /// Last transit of resources to this village
         /// </summary>
         public DateTime LastTransit { get; set; }
-
     }
 }

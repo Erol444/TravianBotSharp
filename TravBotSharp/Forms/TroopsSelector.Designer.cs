@@ -40,7 +40,17 @@ namespace TravBotSharp.Forms
             this.troopsSelectorUc1.Name = "troopsSelectorUc1";
             this.troopsSelectorUc1.Size = new System.Drawing.Size(139, 264);
             this.troopsSelectorUc1.TabIndex = 0;
-            this.troopsSelectorUc1.Troops = null;
+            this.troopsSelectorUc1.Troops = new int[] {
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0};
             // 
             // button1
             // 

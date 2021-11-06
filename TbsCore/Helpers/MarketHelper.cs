@@ -20,74 +20,43 @@ namespace TbsCore.Helpers
 
         public static int GetMerchantsSpeed(Classificator.TribeEnum tribe) => MerchantSpeed[(int)tribe];
 
-        /// <summary>
-        /// Will send resources from main village to the target village
-        /// </summary>
-        /// <param name="vill">(target) Village to get the resources</param>
-        /// <returns>Returns DateTime when approximately will resources get transited to target village </returns>
-        public static DateTime TransitResourcesFromMain(Account acc, Village vill)
+        #region Trade route
+
+        public static void AddTradeRoute(Village vill, TradeRoute trade)
         {
-            // Transit resources for this village is disabled.
-            if (!vill.Market.Settings.Configuration.Enabled) return DateTime.MaxValue;
-
-            // There already is a sendResources BotTask for this village
-            var transitTask = (SendResources)acc.Tasks.FindTasks(typeof(SendResources)).FirstOrDefault(x => ((SendResources)x).Coordinates == vill.Coordinates);
-
-            //vill.Market.Settings.Configuration.
-            if (transitTask != null) return transitTask.Configuration.TransitArrival;
-
-            //Less than 5min ago we already sent resources. Just to catch bugs.
-            //if(vill.Market.)
-
-            // Merchants are on their way
-            if (vill.Market.Settings.Configuration.TransitArrival > DateTime.Now) return vill.Market.Settings.Configuration.TransitArrival;
-
-            //send resources
-            var sendRes = new Resources();
-            var conf = vill.Market.Settings.Configuration;
-            var currentRes = vill.Res.Stored.Resources;
-            var cap = vill.Res.Capacity;
-
-            var woodNeeded = (long)(cap.WarehouseCapacity * conf.TargetLimit.Wood / 100.0);
-            sendRes.Wood = (woodNeeded > conf.FillLimit.Wood ? conf.FillLimit.Wood : woodNeeded) - currentRes.Wood;
-            sendRes.Wood = (sendRes.Wood < 0 ? 0 : sendRes.Wood);
-
-            var clayNeeded = (long)(cap.WarehouseCapacity * conf.TargetLimit.Clay / 100.0);
-            sendRes.Clay = (clayNeeded > conf.FillLimit.Clay ? conf.FillLimit.Clay : clayNeeded) - currentRes.Clay;
-            sendRes.Clay = (sendRes.Clay < 0 ? 0 : sendRes.Clay);
-
-            var ironNeeded = (long)(cap.WarehouseCapacity * conf.TargetLimit.Iron / 100.0);
-            sendRes.Iron = (ironNeeded > conf.FillLimit.Iron ? conf.FillLimit.Iron : ironNeeded) - currentRes.Iron;
-            sendRes.Iron = (sendRes.Iron < 0 ? 0 : sendRes.Iron);
-
-            var cropNeeded = (long)(cap.GranaryCapacity * conf.TargetLimit.Crop / 100.0);
-            sendRes.Crop = (cropNeeded > conf.FillLimit.Crop ? conf.FillLimit.Crop : cropNeeded) - currentRes.Crop;
-            sendRes.Crop = (sendRes.Crop < 0 ? 0 : sendRes.Crop);
-
-            if (ResourcesHelper.IsZeroResources(sendRes)) //we have enough res :)
-                return DateTime.MinValue;
-
-            // Send resources to a village only once per 5 minutes
-            TimeSpan transitAfter = vill.Market.LastTransit.AddMinutes(5) - DateTime.Now;
-            if (transitAfter < TimeSpan.Zero) transitAfter = TimeSpan.Zero;
-
-            var sendResTask = new SendResources
-            {
-                Configuration = conf,
-                Coordinates = vill.Coordinates,
-                ExecuteAt = DateTime.Now + transitAfter,
-                Vill = AccountHelper.GetMainVillage(acc),
-                Resources = sendRes
-            };
-
-            acc.Tasks.Add(sendResTask);
-
-            //AddMinutes(1) since bot has to wait for the SendResources task and then
-            //go to the marketplace and send resources
-            //TransitArrival will get updated to more specific time
-
-            return DateTime.Now.Add(transitAfter + CalculateTransitTimeMainVillage(acc, vill)).AddMinutes(1);
+            vill.Market.TradeRoute.TradeRoutes.Add(trade);
         }
+
+        public static void UpdateTradeRoute(Village vill, TradeRoute trade, int index)
+        {
+            if (index < 0) return;
+            if (index >= vill.Market.TradeRoute.TradeRoutes.Count) return;
+            vill.Market.TradeRoute.TradeRoutes[index] = trade;
+        }
+
+        public static void RemoveTradeRoute(Village vill, int index)
+        {
+            if (index < 0) return;
+            if (index >= vill.Market.TradeRoute.TradeRoutes.Count) return;
+            vill.Market.TradeRoute.TradeRoutes.RemoveAt(index);
+
+            if (vill.Market.TradeRoute.Next >= vill.Market.TradeRoute.TradeRoutes.Count)
+            {
+                vill.Market.TradeRoute.Next = 0;
+            }
+        }
+
+        public static void UpdateNextTradeRoute(Village vill)
+        {
+            vill.Market.TradeRoute.Next++;
+
+            if (vill.Market.TradeRoute.Next >= vill.Market.TradeRoute.TradeRoutes.Count)
+            {
+                vill.Market.TradeRoute.Next = 0;
+            }
+        }
+
+        #endregion Trade route
 
         /// <summary>
         /// Used by BotTasks to insert resources/coordinates into the page.
@@ -268,31 +237,6 @@ namespace TbsCore.Helpers
             for (int i = 0; i < 4; i++)
             {
                 ret[i] = stored[i] < resSend[i] ? stored[i] : resSend[i];
-            }
-            return ret;
-        }
-
-        /// <summary>
-        /// Calculates how many resources should be sent to the main village based on configurable limit
-        /// </summary>
-        /// <param name="vill">Village</param>
-        /// <returns>Resources to be sent</returns>
-        public static long[] GetResToMainVillage(Village vill)
-        {
-            var ret = new long[4];
-            var res = vill.Res.Stored.Resources.ToArray();
-            var limit = vill.Market.Settings.Configuration.SendResLimit.ToArray();
-            for (int i = 0; i < 4; i++)
-            {
-                // % into resource mode
-                if (limit[i] < 100)
-                {
-                    var capacity = i == 3 ? vill.Res.Capacity.GranaryCapacity : vill.Res.Capacity.WarehouseCapacity;
-                    limit[i] = (long)(limit[i] / 100.0 * capacity);
-                }
-
-                ret[i] = res[i] - limit[i];
-                if (ret[i] < 0) ret[i] = 0;
             }
             return ret;
         }

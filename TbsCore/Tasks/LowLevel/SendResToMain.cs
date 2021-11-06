@@ -26,9 +26,9 @@ namespace TbsCore.Tasks.LowLevel
 
             var mainVill = AccountHelper.GetMainVillage(acc);
 
-            var res = MarketHelper.GetResToMainVillage(Vill);
+            //var res = MarketHelper.GetResToMainVillage(Vill);
 
-            var ret = await MarketHelper.MarketSendResource(acc, res, mainVill, this);
+            //var ret = await MarketHelper.MarketSendResource(acc, null, mainVill, this);
             return TaskRes.Executed;
         }
     }

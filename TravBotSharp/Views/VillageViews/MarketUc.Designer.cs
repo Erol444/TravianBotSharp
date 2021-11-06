@@ -37,6 +37,10 @@
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.label1 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
             this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -59,7 +63,7 @@
             this.MerchantInfo = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.label20 = new System.Windows.Forms.Label();
-            this.farmingList = new System.Windows.Forms.ListView();
+            this.routeTradeList = new System.Windows.Forms.ListView();
             this.transitIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.transitLocationHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.transitWoodHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -71,13 +75,13 @@
             this.transitActiveHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.panel2 = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.label6 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).BeginInit();
@@ -85,7 +89,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).BeginInit();
             this.panel5.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.SuspendLayout();
             // 
             // panel1
@@ -167,6 +171,9 @@
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.label6);
+            this.panel3.Controls.Add(this.label5);
+            this.panel3.Controls.Add(this.numericUpDown2);
             this.panel3.Controls.Add(this.checkBox1);
             this.panel3.Controls.Add(this.label4);
             this.panel3.Controls.Add(this.numericUpDown1);
@@ -180,6 +187,45 @@
             this.panel3.Size = new System.Drawing.Size(212, 322);
             this.panel3.TabIndex = 191;
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(18, 92);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(56, 17);
+            this.checkBox1.TabIndex = 201;
+            this.checkBox1.Text = "Active";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(144, 39);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(36, 16);
+            this.label4.TabIndex = 200;
+            this.label4.Text = "mins";
+            // 
+            // numericUpDown1
+            // 
+            this.numericUpDown1.Location = new System.Drawing.Point(97, 38);
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDown1.TabIndex = 195;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(13, 39);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(85, 16);
+            this.label3.TabIndex = 196;
+            this.label3.Text = "Repeat after ";
+            // 
             // button5
             // 
             this.button5.BackColor = System.Drawing.SystemColors.ScrollBar;
@@ -190,6 +236,7 @@
             this.button5.TabIndex = 198;
             this.button5.Text = "Delete";
             this.button5.UseVisualStyleBackColor = false;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
             // button4
             // 
@@ -201,6 +248,7 @@
             this.button4.TabIndex = 197;
             this.button4.Text = "Edit";
             this.button4.UseVisualStyleBackColor = false;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // button3
             // 
@@ -212,6 +260,7 @@
             this.button3.TabIndex = 196;
             this.button3.Text = "Add";
             this.button3.UseVisualStyleBackColor = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // label11
             // 
@@ -413,10 +462,10 @@
             this.label20.TabIndex = 190;
             this.label20.Text = "Current village resource";
             // 
-            // farmingList
+            // routeTradeList
             // 
-            this.farmingList.BackColor = System.Drawing.SystemColors.MenuText;
-            this.farmingList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.routeTradeList.BackColor = System.Drawing.SystemColors.MenuText;
+            this.routeTradeList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.transitIdHeader,
             this.transitLocationHeader,
             this.transitWoodHeader,
@@ -426,16 +475,17 @@
             this.transitTimeHeader,
             this.transitLastHeader,
             this.transitActiveHeader});
-            this.farmingList.FullRowSelect = true;
-            this.farmingList.GridLines = true;
-            this.farmingList.HideSelection = false;
-            this.farmingList.Location = new System.Drawing.Point(3, 168);
-            this.farmingList.MultiSelect = false;
-            this.farmingList.Name = "farmingList";
-            this.farmingList.Size = new System.Drawing.Size(442, 232);
-            this.farmingList.TabIndex = 192;
-            this.farmingList.UseCompatibleStateImageBehavior = false;
-            this.farmingList.View = System.Windows.Forms.View.Details;
+            this.routeTradeList.FullRowSelect = true;
+            this.routeTradeList.GridLines = true;
+            this.routeTradeList.HideSelection = false;
+            this.routeTradeList.Location = new System.Drawing.Point(3, 168);
+            this.routeTradeList.MultiSelect = false;
+            this.routeTradeList.Name = "routeTradeList";
+            this.routeTradeList.Size = new System.Drawing.Size(442, 232);
+            this.routeTradeList.TabIndex = 192;
+            this.routeTradeList.UseCompatibleStateImageBehavior = false;
+            this.routeTradeList.View = System.Windows.Forms.View.Details;
+            this.routeTradeList.SelectedIndexChanged += new System.EventHandler(this.routeTradeList_SelectedIndexChanged);
             // 
             // transitIdHeader
             // 
@@ -507,44 +557,32 @@
             this.label2.TabIndex = 190;
             this.label2.Text = "Next transit";
             // 
-            // numericUpDown1
+            // label5
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(97, 38);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(45, 20);
-            this.numericUpDown1.TabIndex = 195;
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(144, 65);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(36, 16);
+            this.label5.TabIndex = 203;
+            this.label5.Text = "mins";
             // 
-            // label3
+            // numericUpDown2
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(13, 39);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(85, 16);
-            this.label3.TabIndex = 196;
-            this.label3.Text = "Repeat after ";
+            this.numericUpDown2.Location = new System.Drawing.Point(97, 64);
+            this.numericUpDown2.Name = "numericUpDown2";
+            this.numericUpDown2.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDown2.TabIndex = 202;
             // 
-            // label4
+            // label6
             // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(148, 39);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(36, 16);
-            this.label4.TabIndex = 200;
-            this.label4.Text = "mins";
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(16, 63);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(56, 17);
-            this.checkBox1.TabIndex = 201;
-            this.checkBox1.Text = "Active";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(83, 65);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(15, 16);
+            this.label6.TabIndex = 204;
+            this.label6.Text = "±";
             // 
             // MarketUc
             // 
@@ -552,11 +590,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.farmingList);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.routeTradeList);
             this.Name = "MarketUc";
             this.Size = new System.Drawing.Size(669, 477);
             this.panel1.ResumeLayout(false);
@@ -565,6 +603,7 @@
             this.groupBox1.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).EndInit();
@@ -575,7 +614,7 @@
             this.panel5.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -608,7 +647,7 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Button button7;
-        private System.Windows.Forms.ListView farmingList;
+        private System.Windows.Forms.ListView routeTradeList;
         private System.Windows.Forms.ColumnHeader transitIdHeader;
         private System.Windows.Forms.ColumnHeader transitLocationHeader;
         private System.Windows.Forms.ColumnHeader transitWoodHeader;
@@ -627,5 +666,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericUpDown2;
     }
 }

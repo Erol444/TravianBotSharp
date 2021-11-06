@@ -98,8 +98,8 @@ namespace TbsCore.Helpers
             var mainVill = AccountHelper.GetMainVillage(acc);
             if (mainVill == vill) return enoughRes;
 
-            DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
-            if (resTransit < enoughRes) enoughRes = resTransit;
+            //DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
+            //if (resTransit < enoughRes) enoughRes = resTransit;
 
             if (enoughRes < DateTime.Now) return DateTime.Now;
 

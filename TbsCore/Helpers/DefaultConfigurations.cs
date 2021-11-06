@@ -64,24 +64,5 @@ namespace TbsCore.Helpers
             BuildingHelper.AddBuildingTask(acc, vill, new BuildingTask() { TaskType = BuildingType.General, Building = BuildingEnum.RallyPoint, Level = 15 });
             BuildingHelper.AddBuildingTask(acc, vill, new BuildingTask() { TaskType = BuildingType.General, Building = BuildingEnum.TournamentSquare, Level = 1 });
         }
-
-        public static void SetDefaultTransitConfiguration(Account acc, Village vill)
-        {
-            var res = vill.Market.Settings.Configuration;
-            var transit = new Resources();
-            var limit = new Resources();
-            transit.Wood = 90; //%
-            transit.Clay = 90;
-            transit.Iron = 90;
-            transit.Crop = 90;
-            limit.Wood = 20000;
-            limit.Clay = 20000;
-            limit.Iron = 20000;
-            limit.Crop = 15000;
-            res.Enabled = true;
-            res.BalanceType = Tasks.ResourcesConfiguration.BalanceType.RecieveFrom;
-            res.FillLimit = limit;
-            res.TargetLimit = transit;
-        }
     }
 }
