@@ -130,16 +130,11 @@ namespace TravBotSharp.Views
                 coord = coordinatesUc1.Coords;
             }
             GetSelectedAcc().Tasks.Add(
-                new SendResources
-                {
-                    ExecuteAt = DateTime.Now.AddHours(-10),
-                    Vill = GetSelectedVillage(),
-                    Resources = _res,
-                    Coordinates = coord,
-                    RunTimes = 1,
-                },
-                true,
-                GetSelectedVillage());
+                new SendResource(
+                    GetSelectedVillage(),
+                    _res,
+                    coord,
+                    DateTime.Now.AddHours(-10)));
         }
 
         private void button7_Click(object sender, EventArgs e)

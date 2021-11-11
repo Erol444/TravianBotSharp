@@ -46,7 +46,7 @@ namespace TbsCore.Helpers
             }
         }
 
-        public static void UpdateNextTradeRoute(Village vill)
+        public static int UpdateNextTradeRoute(Village vill)
         {
             vill.Market.TradeRoute.Next++;
 
@@ -54,9 +54,41 @@ namespace TbsCore.Helpers
             {
                 vill.Market.TradeRoute.Next = 0;
             }
+            return vill.Market.TradeRoute.Next;
         }
 
         #endregion Trade route
+
+        #region Send resource
+
+        public static Resources GetResource(Village vill, Resources resources) =>
+              new Resources
+              {
+                  Wood = resources.Wood > 100 ? resources.Wood : vill.Res.Stored.Resources.Wood * resources.Wood / 100,
+                  Clay = resources.Clay > 100 ? resources.Clay : vill.Res.Stored.Resources.Clay * resources.Clay / 100,
+                  Iron = resources.Iron > 100 ? resources.Iron : vill.Res.Stored.Resources.Iron * resources.Iron / 100,
+                  Crop = resources.Crop > 100 ? resources.Crop : vill.Res.Stored.Resources.Crop * resources.Crop / 100,
+              };
+
+        public static Resources Round(Resources resources)
+        {
+            var res = resources.ToArray();
+            for (int i = 0; i < 4; i++)
+            {
+                // To avoid exception devide by zero
+                if (50 <= res[i])
+                {
+                    //round the number to about -1%, for rounder numbers
+                    var digits = Math.Ceiling(Math.Log10(res[i]));
+                    var remainder = res[i] % (long)Math.Pow(10, digits - 2);
+                    res[i] -= remainder;
+                }
+            }
+
+            return ResourcesHelper.ArrayToResources(res);
+        }
+
+        #endregion Send resource
 
         /// <summary>
         /// Used by BotTasks to insert resources/coordinates into the page.
@@ -157,7 +189,7 @@ namespace TbsCore.Helpers
             return TimeSpan.FromTicks(duration.Ticks * (times * 2 - 1));
         }
 
-        private static (long, int) ParseMerchantsInfo(HtmlDocument html)
+        public static (long, int) ParseMerchantsInfo(HtmlDocument html)
         {
             var merchantsCapacity = Parser.RemoveNonNumeric(html.GetElementbyId("merchantCapacityValue").InnerText);
             int merchantsNum = (int)Parser.RemoveNonNumeric(html.DocumentNode.Descendants("span").First(x => x.HasClass("merchantsAvailable")).InnerText);

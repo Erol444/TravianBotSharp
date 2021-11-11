@@ -2,6 +2,9 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
+
+using HtmlAgilityPack;
+
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
@@ -106,13 +109,12 @@ namespace TbsCore.Helpers
         /// <param name="building">Building to enter</param>
         /// <param name="query">Additional query (to specify tab)</param>
         /// <param name="dorf">Whether we want to first navigate to dorf (less suspicious)</param>
-        /// <param name="update">Whether we want to force update the current page</param>
         /// <returns>Whether it was successful</returns>
-        public static async Task<bool> EnterBuilding(Account acc, Building building, string query = "", bool dorf = true, bool update = false)
+        private static async Task<bool> EnterBuilding(Account acc, Building building, string query = "", bool dorf = true)
         {
             // If we are already at the desired building (if gid is correct)
             Uri currentUri = new Uri(acc.Wb.CurrentUrl);
-            if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString() && !update)
+            if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString())
             {
                 acc.Wb.UpdateHtml();
                 return true;
@@ -129,10 +131,11 @@ namespace TbsCore.Helpers
             }
 
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}{query}");
+
             return true;
         }
 
-        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, string query = "", bool dorf = true, bool update = false)
+        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, string query = "", bool dorf = true)
         {
             var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == buildingEnum);
 
@@ -141,7 +144,11 @@ namespace TbsCore.Helpers
                 acc.Logger.Warning($"Tried to enter {buildingEnum} but couldn't find it in village {vill.Name}!");
                 return false;
             }
-            return await EnterBuilding(acc, building, query, dorf, update);
+
+            await EnterBuilding(acc, building, query, dorf);
+            UpdateInfoPage(vill, building, acc.Wb.Html);
+
+            return true;
         }
 
         /// <summary>
@@ -178,6 +185,71 @@ namespace TbsCore.Helpers
         {
             var task = acc.Tasks.FindTask(typeof(UpdateDorf1), vill);
             return task.NextExecute ?? DateTime.MaxValue;
+        }
+
+        public static void UpdateInfoPage(Village vill, Building building, HtmlDocument html)
+        {
+            switch (building.Type)
+            {
+                case BuildingEnum.Marketplace:
+                    {
+                        vill.Market.MerchantInfo.Number = building.Level;
+                        (vill.Market.MerchantInfo.Capacity, vill.Market.MerchantInfo.Free) = MarketHelper.ParseMerchantsInfo(html);
+                        break;
+                    }
+                case BuildingEnum.TownHall:
+                    {
+                        vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(html);
+                        break;
+                    }
+                case BuildingEnum.Smithy:
+                    {
+                        var levels = TroopsParser.GetTroopLevels(html);
+
+                        foreach (var troop in vill.Troops.Levels)
+                        {
+                            if (troop != null)
+                            {
+                                var level = levels.FirstOrDefault(x => x.Troop == troop.Troop);
+
+                                vill.Troops.Levels.Remove(troop);
+                                vill.Troops.Levels.Add(level);
+                            }
+                        }
+
+                        break;
+                    }
+                case BuildingEnum.Barracks:
+                    {
+                        TroopsHelper.UpdateTroopsResearched(vill, html);
+                        vill.Troops.CurrentlyTraining.Barracks = TroopsParser.GetTroopsCurrentlyTraining(html);
+                        break;
+                    }
+                case BuildingEnum.GreatBarracks:
+                    {
+                        TroopsHelper.UpdateTroopsResearched(vill, html);
+                        vill.Troops.CurrentlyTraining.GB = TroopsParser.GetTroopsCurrentlyTraining(html);
+                        break;
+                    }
+                case BuildingEnum.Stable:
+                    {
+                        TroopsHelper.UpdateTroopsResearched(vill, html);
+                        vill.Troops.CurrentlyTraining.Stable = TroopsParser.GetTroopsCurrentlyTraining(html);
+                        break;
+                    }
+                case BuildingEnum.GreatStable:
+                    {
+                        TroopsHelper.UpdateTroopsResearched(vill, html);
+                        vill.Troops.CurrentlyTraining.GS = TroopsParser.GetTroopsCurrentlyTraining(html);
+                        break;
+                    }
+                case BuildingEnum.Workshop:
+                    {
+                        TroopsHelper.UpdateTroopsResearched(vill, html);
+                        vill.Troops.CurrentlyTraining.Workshop = TroopsParser.GetTroopsCurrentlyTraining(html);
+                        break;
+                    }
+            }
         }
     }
 }

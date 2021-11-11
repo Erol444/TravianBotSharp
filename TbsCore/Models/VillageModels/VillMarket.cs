@@ -14,6 +14,7 @@ namespace TbsCore.Models.VillageModels
             Npc = new NpcSettings();
             Npc.Init();
             TradeRoute = new TradeRouteSettings();
+            MerchantInfo = new Merchant();
             OngoingMerchants = new List<MerchantsUnderWay>();
         }
 
@@ -38,8 +39,36 @@ namespace TbsCore.Models.VillageModels
         public List<MerchantsUnderWay> OngoingMerchants { get; set; }
 
         /// <summary>
+        /// Merchant village's info
+        /// </summary>
+        public Merchant MerchantInfo { get; set; }
+
+        /// <summary>
         /// Last transit of resources to this village
         /// </summary>
         public DateTime LastTransit { get; set; }
+    }
+
+    public class Merchant
+    {
+        /// <summary>
+        /// Maximum merchant village has
+        /// </summary>
+        public int Number { get; set; }
+
+        /// <summary>
+        /// Current merchant in village
+        /// </summary>
+        public int Free { get; set; }
+
+        /// <summary>
+        /// Capacity of merchant
+        /// </summary>
+        public long Capacity { get; set; }
+
+        /// <summary>
+        /// Last update info time
+        /// </summary>
+        public DateTime LastUpdate { get; set; }
     }
 }

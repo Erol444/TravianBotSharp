@@ -90,6 +90,7 @@ namespace TbsCore.Helpers
         internal static async Task WriteCoordinates(Account acc, Coordinates coordinates)
         {
             await WriteById(acc, "xCoordInput", coordinates.x);
+            await Task.Delay(AccountHelper.Delay(acc));
             await WriteById(acc, "yCoordInput", coordinates.y);
         }
 
@@ -132,22 +133,38 @@ namespace TbsCore.Helpers
         private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true, bool update = true) =>
             await ExecuteScript(acc, $"document.{query.val}{action.val}", log, update);
 
-        public class QueryById : Query { public QueryById(string str) => base.val = $"getElementById('{str}')"; }
+        public class QueryById : Query
 
-        public class QueryByName : Query { public QueryByName(string str) => base.val = $"getElementsByName('{str}')[0]"; }
+        { public QueryById(string str) => base.val = $"getElementById('{str}')"; }
 
-        public class QueryByClassName : Query { public QueryByClassName(string str) => base.val = $"getElementsByClassName('{str}')[0]"; }
+        public class QueryByName : Query
 
-        public class ActionWrite : Action { public ActionWrite(object str) => base.val = $".value='{str}';"; }
+        { public QueryByName(string str) => base.val = $"getElementsByName('{str}')[0]"; }
 
-        public class ActionClick : Action { public ActionClick() => base.val = ".click();"; }
+        public class QueryByClassName : Query
 
-        public class ActionCheck : Action { public ActionCheck(bool check) => base.val = $".checked={(check ? "true" : "false")};"; }
+        { public QueryByClassName(string str) => base.val = $"getElementsByClassName('{str}')[0]"; }
 
-        public class ActionSelectIndex : Action { public ActionSelectIndex(int index) => base.val = $".selectedIndex = {index};"; }
+        public class ActionWrite : Action
 
-        public abstract class Action { public string val; }
+        { public ActionWrite(object str) => base.val = $".value='{str}';"; }
 
-        public abstract class Query { public string val; }
+        public class ActionClick : Action
+
+        { public ActionClick() => base.val = ".click();"; }
+
+        public class ActionCheck : Action
+
+        { public ActionCheck(bool check) => base.val = $".checked={(check ? "true" : "false")};"; }
+
+        public class ActionSelectIndex : Action
+
+        { public ActionSelectIndex(int index) => base.val = $".selectedIndex = {index};"; }
+
+        public abstract class Action
+        { public string val; }
+
+        public abstract class Query
+        { public string val; }
     }
 }
