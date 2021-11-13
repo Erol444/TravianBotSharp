@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks;
 using static TbsCore.Tasks.BotTask;
+using Newtonsoft.Json;
+using System.IO;
 
 namespace TbsCore.Models.AccModels
 {
@@ -14,7 +16,7 @@ namespace TbsCore.Models.AccModels
         private readonly List<BotTask> _tasks;
         public TaskUpdated OnUpdateTask;
 
-        public TaskList()
+        public TaskList(Account acc)
         {
             _tasks = new List<BotTask>();
         }
@@ -150,6 +152,31 @@ namespace TbsCore.Models.AccModels
         public List<BotTask> ToList()
         {
             return _tasks.ToList();
+        }
+
+        public void SaveToFile(string urlFile)
+        {
+            var listTask = new string[_tasks.Count];
+            for (var i = 0; i < _tasks.Count; i++)
+            {
+                listTask[i] = $"{_tasks[i].GetType()}_{JsonConvert.SerializeObject(_tasks[i], Formatting.None)}";
+            }
+
+            File.WriteAllLines(urlFile, listTask);
+        }
+
+        public void LoadFromFile(string urlFile)
+        {
+            if (!File.Exists(urlFile)) return;
+            var listTask = File.ReadAllLines(urlFile);
+            for (var i = 0; i < listTask.Length; i++)
+            {
+                var str = listTask[i].Split(new[] { '_' }, 2);
+                var type = Type.GetType(str[0]);
+                var obj = JsonConvert.DeserializeObject(str[1], type);
+
+                Add((BotTask)obj);
+            }
         }
     }
 }

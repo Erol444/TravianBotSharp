@@ -226,17 +226,42 @@ namespace TravBotSharp.Views
                 column++;
                 vill.Settings.Donate = (DonateEnum)Enum.Parse(typeof(DonateEnum), cells[column].Text);
 
-                if (vill.Expansion.Celebrations != CelebrationEnum.None && acc.Tasks != null) AccountHelper.ReStartCelebration(acc, vill);
-            }
-            //Change name of village/s
-            if (0 < changeVillNames.Count && acc.Tasks != null)
-            {
-                acc.Tasks.Add(
-                        new ChangeVillageName()
-                        {
-                            ExecuteAt = DateTime.Now,
-                            ChangeList = changeVillNames
-                        }, true);
+                var celeb = (CelebrationEnum)Enum.Parse(typeof(CelebrationEnum), cells[column].Text);
+                if (vill.Expansion.Celebrations != celeb)
+                {
+                    vill.Expansion.Celebrations = celeb;
+                    switch (celeb)
+                    {
+                        case CelebrationEnum.None:
+                            {
+                                acc.Tasks?.Remove(typeof(Celebration), vill);
+                                break;
+                            }
+                        default:
+                            {
+                                var task = acc.Tasks?.FindTask(typeof(Celebration), vill);
+                                if (task == null)
+                                {
+                                    acc.Tasks?.Add(new Celebration()
+                                    {
+                                        ExecuteAt = DateTime.Now,
+                                        Vill = vill,
+                                    }, true, vill);
+                                }
+                                break;
+                            }
+                    }
+                }
+                //Change name of village/s
+                if (0 < changeVillNames.Count && acc.Tasks != null)
+                {
+                    acc.Tasks.Add(
+                            new ChangeVillageName()
+                            {
+                                ExecuteAt = DateTime.Now,
+                                ChangeList = changeVillNames
+                            }, true);
+                }
             }
         }
 

@@ -4,10 +4,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Discord.Webhook;
 using TbsCore.Database;
 using TbsCore.Models.Access;
-using TbsCore.Models.Logging;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
 using TbsCore.Models.VillageModels;
@@ -21,6 +19,7 @@ namespace TbsCore.Helpers
     {
         public static string AccountsPath => Path.Combine(TbsPath, "accounts.txt");
         public static string CachePath => Path.Combine(TbsPath, "cache");
+        public static string TaskPath => Path.Combine(TbsPath, "task");
         public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
 
         public static string TbsPath =>
@@ -32,7 +31,13 @@ namespace TbsCore.Helpers
 
         public static string GetCacheDir(string username, string server, Access access)
         {
-            return Path.Combine(IoHelperCore.CachePath, GetCacheFolder(username, server, access.Proxy));
+            return Path.Combine(CachePath, GetCacheFolder(username, server, access.Proxy));
+        }
+
+        public static string GetTaskFileUrl(string username, string server)
+        {
+            Directory.CreateDirectory(TaskPath);
+            return Path.Combine(TaskPath, GetTaskFile(username, server));
         }
 
         /// <summary>
@@ -140,6 +145,15 @@ namespace TbsCore.Helpers
             }
         }
 
+        public static void RemoveTask(Account acc)
+        {
+            var userFile = IoHelperCore.GetTaskFileUrl(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
+
+            if (!File.Exists(userFile)) return;
+
+            File.Delete(userFile);
+        }
+
         /// <summary>
         /// Removes the protocol (http/https) text from the url
         /// </summary>
@@ -167,7 +181,7 @@ namespace TbsCore.Helpers
                 {
                     accounts = JsonConvert.DeserializeObject<List<Account>>(sr.ReadToEnd());
                 }
-                if (accounts == null) accounts = new List<Account>();
+                accounts = accounts ?? new List<Account>();
 
                 accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
             }
@@ -185,21 +199,40 @@ namespace TbsCore.Helpers
         /// <param name="server">Server url</param>
         /// <param name="proxy">Proxy ip</param>
         /// <returns></returns>
-        internal static string GetCacheFolder(string username, string server, string proxy)
+        public static string GetCacheFolder(string username, string server, string proxy)
         {
-            return $"{username}_{IoHelperCore.UrlRemoveHttp(server)}_{proxy}";
+            return $"{username}_{UrlRemoveHttp(server)}_{proxy}";
+        }
+
+        public static string GetTaskFile(string username, string server)
+        {
+            return $"{username}_{UrlRemoveHttp(server)}.json";
         }
 
         /// <summary>
         /// Saves accounts into the SQLite DB
         /// </summary>
         /// <param name="accounts"></param>
-        public static void SaveAccounts(List<Account> accounts, bool logout)
+        public static async Task SaveAccounts(List<Account> accounts, bool logout)
         {
+            if (logout)
+            {
+                var list = new List<Task>();
+                foreach (var acc in accounts)
+                {
+                    if (acc.IsLogged)
+                    {
+                        var logoutAwait = Logout(acc);
+                        list.Add(logoutAwait);
+                    }
+                }
+
+                await Task.WhenAll(list);
+            }
             foreach (var acc in accounts)
             {
-                if (logout) Logout(acc);
                 DbRepository.SaveAccount(acc);
+                acc.Tasks.SaveToFile(GetTaskFileUrl(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl));
             }
         }
 
@@ -209,38 +242,43 @@ namespace TbsCore.Helpers
         /// <param name="acc">Account</param>
         public static async Task LoginAccount(Account acc)
         {
+            if (acc.IsLogged) return;
+
             if (acc.Wb == null)
             {
-                SerilogSingleton.LogOutput.AddUsername(acc.AccInfo.Nickname);
-
-                acc.Logger = new Logger(acc.AccInfo.Nickname);
-
-                acc.Tasks = new TaskList();
-                acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
-
                 acc.Wb = new WebBrowserInfo();
                 await acc.Wb.InitSelenium(acc);
                 acc.TaskTimer = new TaskTimer(acc);
-
-                AccountHelper.StartAccountTasks(acc);
             }
 
             if (acc.Settings.DiscordWebhook && !string.IsNullOrEmpty(acc.AccInfo.WebhookUrl))
             {
-                acc.WebhookClient = new DiscordWebhookClient(acc.AccInfo.WebhookUrl);
                 if (acc.Settings.DiscordOnlineAnnouncement)
                 {
                     DiscordHelper.SendMessage(acc, "TravianBotSharp is online now");
                 }
             }
+
+            AccountHelper.StartAccountTasks(acc);
+
+            acc.IsLogged = true;
         }
 
         /// <summary>
         /// Logout from the account. Closes web driver.
         /// </summary>
         /// <param name="acc"></param>
-        public static void Logout(Account acc)
+        public static async Task Logout(Account acc)
         {
+            if (!acc.IsLogged) return;
+            acc.IsLogged = false;
+            while (acc.Tasks?.IsTaskExcuting() ?? true)
+            {
+                await Task.Delay(1000);
+                acc.Logger.Information("Waiting current task complete ...");
+            }
+            acc.Logger.Information("Logged out.");
+
             if (acc.TaskTimer != null)
             {
                 acc.TaskTimer.Dispose();
@@ -251,7 +289,7 @@ namespace TbsCore.Helpers
                 acc.Wb.Dispose();
                 acc.Wb = default;
             }
-            acc.Tasks = default; //TODO: somehow save tasks, JSON cant parse/stringify abstract classes :(
+            acc.Tasks = default;
         }
     }
 }

@@ -397,6 +397,12 @@
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomClass\ListViewColumnSorter.cs" />
+    <Compile Include="Forms\Close.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Close.Designer.cs">
+      <DependentUpon>Close.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\InactiveFinder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -599,6 +605,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Close.resx">
+      <DependentUpon>Close.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\InactiveFinder.resx">
       <DependentUpon>InactiveFinder.cs</DependentUpon>

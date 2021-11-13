@@ -23,7 +23,7 @@ namespace TbsCore.Models.AccModels
             Hero = new Hero();
             Hero.init();
 
-            Tasks = new TaskList();
+            Tasks = new TaskList(this);
             Villages = new List<Village>();
 
             Access = new AccessInfo();
@@ -67,5 +67,8 @@ namespace TbsCore.Models.AccModels
 
         [JsonIgnore]
         public Logger Logger;
+
+        [JsonIgnore]
+        public bool IsLogged;
     }
 }
