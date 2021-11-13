@@ -209,6 +209,8 @@ namespace TravBotSharp.Views
             var vill = GetSelectedVillage(GetSelectedAcc());
             AddTradeRoute(vill, route);
             UpdateTradeRouteView(vill);
+
+            GetSelectedAcc().Tasks.Add(new SendRoute(vill, DateTime.Now));
         }
 
         private void button4_Click(object sender, EventArgs e)

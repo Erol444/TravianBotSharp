@@ -28,7 +28,18 @@ namespace TbsCore.Tasks.SecondLevel
             Resources = route.Resource;
             await base.Execute(acc);
             if (Duration != null)
-                MarketHelper.UpdateNextTradeRoute(Vill);
+            {
+                route.Last = DateTime.Now;
+                index = MarketHelper.UpdateNextTradeRoute(Vill);
+                route = Vill.Market.TradeRoute.TradeRoutes[index];
+                while (!route.Active)
+                {
+                    index = MarketHelper.UpdateNextTradeRoute(Vill);
+                    route = Vill.Market.TradeRoute.TradeRoutes[index];
+                }
+                var ran = new Random();
+                NextExecute = DateTime.Now.AddMinutes(route.Time + ran.Next(-route.TimeDelay, route.TimeDelay));
+            }
 
             return TaskRes.Executed;
         }
