@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Linq;
-
 using HtmlAgilityPack;
-
 using TbsCore.Helpers;
 using TbsCore.Parsers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Tasks.LowLevel
 {
-    public class SendResource : UpdateMarket
+    public class SendResource : Update
     {
         /// <summary>
         /// How much resources will bot send
@@ -33,7 +32,7 @@ namespace TbsCore.Tasks.LowLevel
 
         //public int RunTimes { get; set; } //once / twice / 3 times
 
-        public SendResource(Village vill, Resources resources, Coordinates coordinates, DateTime executeAt, TaskPriority priority = TaskPriority.Medium) : base(vill, executeAt, priority)
+        public SendResource(Village vill, Resources resources, Coordinates coordinates, DateTime executeAt, TaskPriority priority = TaskPriority.Medium) : base(vill, executeAt, BuildingEnum.Marketplace, priority)
         {
             Resources = resources;
             Coordinates = coordinates;

@@ -19,11 +19,12 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         protected bool IsInBuilding = false;
 
-        public Update(Village vill, DateTime executeAt, TaskPriority priority = TaskPriority.Medium)
+        public Update(Village vill, DateTime executeAt, BuildingEnum buildingType, TaskPriority priority = TaskPriority.Medium)
         {
             Vill = vill;
             ExecuteAt = executeAt;
             Priority = priority;
+            BuildingType = buildingType;
         }
 
         public override async Task<TaskRes> Execute(Account acc)
