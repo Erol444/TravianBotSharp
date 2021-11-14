@@ -71,6 +71,7 @@ namespace TravBotSharp.Views
         private void UpdateTradeRouteView(Village vill)
         {
             var traderoute = vill.Market.TradeRoute;
+            if (traderoute == null) return;
             var vills = GetSelectedAcc().Villages;
 
             routeTradeList.Items.Clear();

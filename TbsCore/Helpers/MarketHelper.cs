@@ -24,6 +24,10 @@ namespace TbsCore.Helpers
 
         public static void AddTradeRoute(Village vill, TradeRoute trade)
         {
+            if (vill.Market.TradeRoute.TradeRoutes == null)
+            {
+                vill.Market.TradeRoute.TradeRoutes = new List<TradeRoute>();
+            }
             vill.Market.TradeRoute.TradeRoutes.Add(trade);
         }
 
