@@ -10,7 +10,15 @@ namespace TbsCore.Tasks
         /// <summary>
         /// If of the village to execute the task. If null, don't change village before executing the task
         /// </summary>
-        public Village Vill { get; set; }
+        protected Village _vill;
+
+        public Village Vill
+        {
+            get
+            {
+                return _vill;
+            }
+        }
 
         /// <summary>
         /// Stage in which task is currently in.
@@ -33,14 +41,6 @@ namespace TbsCore.Tasks
         public BotTask NextTask { get; set; }
 
         /// <summary>
-        /// After each execution, if return bool is true, there has to be a new browser load event. Bot will wait for that event.
-        /// If there is no browser load event (just parsing some data eg. GetMapSize, return false and browser will navigate to dorf1/2.
-        /// </summary>
-        /// <param name="acc">Account</param>
-        /// <returns>TaskRes</returns>
-        public abstract Task<TaskRes> Execute(Account acc);
-
-        /// <summary>
         /// Counts how many times we retried executing the task. After 3rd try, stop retrying. Something is clearly wrong
         /// Used in TaskExecutor and TaskTimer
         /// </summary>
@@ -51,6 +51,27 @@ namespace TbsCore.Tasks
         /// Tasks like attacking and deffending (waves) have highest priority and should as such be executed first
         /// </summary>
         public TaskPriority Priority { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="vill"></param>
+        /// <param name="executeAt"></param>
+        /// <param name="priority"></param>
+        public BotTask(Village vill = null, DateTime executeAt = default, TaskPriority priority = TaskPriority.Medium)
+        {
+            _vill = vill;
+            ExecuteAt = executeAt;
+            Priority = priority;
+        }
+
+        /// <summary>
+        /// After each execution, if return bool is true, there has to be a new browser load event. Bot will wait for that event.
+        /// If there is no browser load event (just parsing some data eg. GetMapSize, return false and browser will navigate to dorf1/2.
+        /// </summary>
+        /// <param name="acc">Account</param>
+        /// <returns>TaskRes</returns>
+        public abstract Task<TaskRes> Execute(Account acc);
 
         public enum TaskRes
         {
