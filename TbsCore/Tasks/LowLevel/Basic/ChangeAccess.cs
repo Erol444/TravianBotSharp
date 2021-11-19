@@ -10,26 +10,24 @@ namespace TbsCore.Tasks.LowLevel
     /// </summary>
     public class ChangeAccess : BotTask
     {
-        private int WaitSecMin;
-        private int WaitSecMax;
-
-        public ChangeAccess(int min = 30, int max = 600, DateTime executeAt = default) : base(null, executeAt, TaskPriority.High)
-        {
-            WaitSecMin = min;
-            WaitSecMax = max;
-        }
+        public int? WaitSecMin { get; set; }
+        public int? WaitSecMax { get; set; }
 
         public override async Task<TaskRes> Execute(Account acc)
         {
             acc.Wb.Dispose();
 
+            //TODO: make this configurable (wait time between switches)
             var rand = new Random();
-            var sleepSec = rand.Next(WaitSecMin, WaitSecMax);
+            int sleepSec = rand.Next(WaitSecMin ?? 30, WaitSecMax ?? 600);
             var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
 
             await TimeHelper.SleepUntilPrioTask(acc, TaskPriority.High, sleepEnd);
 
             await acc.Wb.InitSelenium(acc);
+
+            // Remove all other ChangeAccess tasks
+            acc.Tasks.Remove(typeof(ChangeAccess), thisTask: this);
 
             var nextProxyChange = TimeHelper.GetNextProxyChange(acc);
             if (nextProxyChange != TimeSpan.MaxValue)
