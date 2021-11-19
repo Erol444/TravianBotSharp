@@ -60,7 +60,7 @@ namespace TbsCore.Helpers
 
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
             {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?ok");
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?ok=1");
                 await Task.Delay(AccountHelper.Delay(acc));
             }
 

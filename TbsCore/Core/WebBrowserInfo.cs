@@ -15,7 +15,7 @@ namespace TbsCore.Models.AccModels
 {
     public class WebBrowserInfo : IDisposable
     {
-        private ChromeDriver Driver { get; set; }
+        public ChromeDriver Driver { get; private set; }
 
         private ChromeDriverService chromeService;
 
