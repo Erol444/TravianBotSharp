@@ -501,15 +501,12 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
 
-            acc.Tasks.Add(new UpdateDorf1()
+            acc.Tasks.Add(new UpdateVillage()
             {
                 Vill = vill,
-                NextExecute = DateTime.Now
-            });
-            acc.Tasks.Add(new UpdateDorf2()
-            {
-                Vill = vill,
-                NextExecute = DateTime.Now
+                NextExecute = DateTime.Now,
+                NewVillage = false,
+                Dorf2 = true,
             });
         }
     }

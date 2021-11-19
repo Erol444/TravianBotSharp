@@ -96,48 +96,41 @@ namespace TbsCore.Helpers
                 var min = vill.Settings.RefreshMin * 60;
                 var max = vill.Settings.RefreshMax * 60;
                 int timeUpdate;
-                var task = acc.Tasks?.FindTask(typeof(UpdateDorf1), vill);
-                if (task == null)
+
+                timeUpdate = rand.Next(min, max);
+                acc.Tasks.Add(new UpdateVillage()
                 {
-                    timeUpdate = rand.Next(min, max);
-                    acc.Tasks.Add(new UpdateDorf1()
-                    {
-                        ExecuteAt = DateTime.Now.AddSeconds(timeUpdate),
-                        Vill = vill,
-                    }, true, vill);
-                }
+                    ExecuteAt = DateTime.Now.AddSeconds(timeUpdate),
+                    Vill = vill,
+                    NewVillage = false
+                }, true, vill);
+
                 // this is for task delay, i will add this in next time ~ VINAGHOST
                 min = 0;
                 max = 3;
                 // building
-                task = acc.Tasks?.FindTask(typeof(UpgradeBuilding), vill);
-                if (task == null)
-                {
-                    if (vill.Build.Tasks.Count > 0)
-                    {
-                        timeUpdate = rand.Next(min, max);
 
-                        acc.Tasks.Add(new UpgradeBuilding()
-                        {
-                            ExecuteAt = DateTime.Now.AddMilliseconds(timeUpdate),
-                            Vill = vill,
-                        }, true, vill);
-                    }
+                if (vill.Build.Tasks.Count > 0)
+                {
+                    timeUpdate = rand.Next(min, max);
+
+                    acc.Tasks.Add(new UpgradeBuilding()
+                    {
+                        ExecuteAt = DateTime.Now.AddMilliseconds(timeUpdate),
+                        Vill = vill,
+                    }, true, vill);
                 }
 
                 // demolish
-                task = acc.Tasks?.FindTask(typeof(DemolishBuilding), vill);
-                if (task == null)
+
+                if (vill.Build.DemolishTasks.Count > 0)
                 {
-                    if (vill.Build.DemolishTasks.Count > 0)
+                    timeUpdate = rand.Next(min, max);
+                    acc.Tasks.Add(new DemolishBuilding()
                     {
-                        timeUpdate = rand.Next(min, max);
-                        acc.Tasks.Add(new DemolishBuilding()
-                        {
-                            ExecuteAt = DateTime.Now.AddMilliseconds(timeUpdate),
-                            Vill = vill,
-                        }, true, vill);
-                    }
+                        ExecuteAt = DateTime.Now.AddMilliseconds(timeUpdate),
+                        Vill = vill,
+                    }, true, vill);
                 }
 
                 TroopsHelper.ReStartResearchAndImprovement(acc, vill);

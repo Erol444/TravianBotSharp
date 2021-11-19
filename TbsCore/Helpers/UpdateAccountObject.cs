@@ -76,7 +76,7 @@ namespace TbsCore.Helpers
             {
                 ExecuteAt = DateTime.Now.AddHours(-2),
                 Vill = vill,
-                ImportTasks = true
+                NewVillage = true
             }, true, vill);
 
             // Change village name

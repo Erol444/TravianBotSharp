@@ -177,9 +177,6 @@ namespace TbsCore.Helpers
             var vill = acc.Villages.FirstOrDefault(x => x.Active);
             if (vill == null) return;
 
-            //remove any further UpdateDorf2 BotTasks for this village (if below 5min)
-            acc.Tasks.Remove(typeof(UpdateDorf2), vill, 5);
-
             UpdateCurrentlyBuilding(acc, vill);
 
             var buildings = InfrastructureParser.GetBuildings(acc, acc.Wb.Html);
@@ -196,9 +193,6 @@ namespace TbsCore.Helpers
         {
             var vill = acc.Villages.FirstOrDefault(x => x.Active);
             if (vill == null) return;
-
-            //remove any further UpdateDorf1 BotTasks for this village (if below 5min)
-            acc.Tasks.Remove(typeof(UpdateDorf1), vill, 5);
 
             UpdateCurrentlyBuilding(acc, vill);
 

@@ -17,12 +17,8 @@ namespace TbsCore.Tasks.LowLevel
     /// </summary>
     public class UpdateVillage : BotTask
     {
-        private bool NewVillage;
-
-        public UpdateVillage(Village vill, DateTime executeAt, bool newVill = false, TaskPriority priority = TaskPriority.Medium) : base(vill, executeAt, priority)
-        {
-            NewVillage = newVill;
-        }
+        public bool NewVillage { get; set; }
+        public bool Dorf2 { get; set; }
 
         public override async Task<TaskRes> Execute(Account acc)
         {
@@ -33,6 +29,7 @@ namespace TbsCore.Tasks.LowLevel
             else
             {
                 await UpdateOldVillage(acc);
+                VillageHelper.SetNextRefresh(acc, Vill);
             }
             return TaskRes.Executed;
         }
@@ -49,9 +46,18 @@ namespace TbsCore.Tasks.LowLevel
             }
             else
             {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php"); // Update dorf1
-                await Task.Delay(AccountHelper.Delay(acc));
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2
+                if ((new Random()).Next(1, 100) > 50)
+                {
+                    await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php"); // Update dorf1
+                    await Task.Delay(AccountHelper.Delay(acc));
+                    await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2
+                }
+                else
+                {
+                    await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2
+                    await Task.Delay(AccountHelper.Delay(acc));
+                    await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php"); // Update dorf1
+                }
             }
 
             var firstTroop = TroopsData.TribeFirstTroop(acc.AccInfo.Tribe);
@@ -71,8 +77,8 @@ namespace TbsCore.Tasks.LowLevel
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
             }
 
-            // 60% to check update dorf2
-            if (!dorf2 && (new Random()).Next(1, 100) > 40) // 41 -> 100 : 60 values
+            // if Dorf2 = true just update it, otherwise 60% to check update dorf2
+            if (Dorf2 || (!dorf2 && (new Random()).Next(1, 100) > 40)) // 41 -> 100 : 60 values
             {
                 await Task.Delay(AccountHelper.Delay(acc));
                 await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2

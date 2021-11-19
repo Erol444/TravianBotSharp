@@ -173,10 +173,11 @@ namespace TbsCore.Tasks.LowLevel
                 }
                 else
                 {
-                    acc.Tasks.Add(new UpdateDorf1()
+                    acc.Tasks.Add(new UpdateVillage()
                     {
                         ExecuteAt = nextCycle,
-                        Vill = this.Vill
+                        Vill = this.Vill,
+                        NewVillage = false,
                     });
                 }
 
