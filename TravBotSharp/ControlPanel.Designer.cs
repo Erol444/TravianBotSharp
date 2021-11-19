@@ -40,6 +40,7 @@
             this.overviewUc1 = new TravBotSharp.Views.OverviewUc();
             this.troopsTab = new System.Windows.Forms.TabPage();
             this.overviewTroopsUc1 = new TravBotSharp.Views.OverviewTroopsUc();
+            this.marketsTab = new System.Windows.Forms.TabPage();
             this.FarmingTab = new System.Windows.Forms.TabPage();
             this.farmingUc1 = new TravBotSharp.Views.FarmingUc();
             this.newVillagesTab = new System.Windows.Forms.TabPage();
@@ -49,6 +50,7 @@
             this.questsTab = new System.Windows.Forms.TabPage();
             this.questsUc1 = new TravBotSharp.Views.QuestsUc();
             this.discordTab = new System.Windows.Forms.TabPage();
+            this.discordUc1 = new TravBotSharp.Views.DiscordUc();
             this.debugTab = new System.Windows.Forms.TabPage();
             this.debugUc1 = new TravBotSharp.Views.DebugUc();
             this.button2 = new System.Windows.Forms.Button();
@@ -65,13 +67,14 @@
             this.button4 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.discordUc1 = new TravBotSharp.Views.DiscordUc();
+            this.overviewMarketUc1 = new TravBotSharp.Views.OverviewMarketUc();
             this.accTabController.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
             this.tabVillages.SuspendLayout();
             this.tabOverview.SuspendLayout();
             this.troopsTab.SuspendLayout();
+            this.marketsTab.SuspendLayout();
             this.FarmingTab.SuspendLayout();
             this.newVillagesTab.SuspendLayout();
             this.deffendingTab.SuspendLayout();
@@ -102,6 +105,7 @@
             this.accTabController.Controls.Add(this.tabVillages);
             this.accTabController.Controls.Add(this.tabOverview);
             this.accTabController.Controls.Add(this.troopsTab);
+            this.accTabController.Controls.Add(this.marketsTab);
             this.accTabController.Controls.Add(this.FarmingTab);
             this.accTabController.Controls.Add(this.newVillagesTab);
             this.accTabController.Controls.Add(this.deffendingTab);
@@ -114,7 +118,6 @@
             this.accTabController.SelectedIndex = 0;
             this.accTabController.Size = new System.Drawing.Size(971, 661);
             this.accTabController.TabIndex = 3;
-            this.accTabController.SelectedIndexChanged += new System.EventHandler(this.debugUc1.tabControl1_SelectedIndexChanged);
             this.accTabController.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabGeneral
@@ -215,6 +218,16 @@
             this.overviewTroopsUc1.Size = new System.Drawing.Size(957, 629);
             this.overviewTroopsUc1.TabIndex = 0;
             // 
+            // marketsTab
+            // 
+            this.marketsTab.Controls.Add(this.overviewMarketUc1);
+            this.marketsTab.Location = new System.Drawing.Point(4, 22);
+            this.marketsTab.Name = "marketsTab";
+            this.marketsTab.Size = new System.Drawing.Size(963, 635);
+            this.marketsTab.TabIndex = 12;
+            this.marketsTab.Text = "Markets";
+            this.marketsTab.UseVisualStyleBackColor = true;
+            // 
             // FarmingTab
             // 
             this.FarmingTab.Controls.Add(this.farmingUc1);
@@ -305,6 +318,14 @@
             this.discordTab.TabIndex = 11;
             this.discordTab.Text = "Discord";
             this.discordTab.UseVisualStyleBackColor = true;
+            // 
+            // discordUc1
+            // 
+            this.discordUc1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.discordUc1.Location = new System.Drawing.Point(2, 2);
+            this.discordUc1.Name = "discordUc1";
+            this.discordUc1.Size = new System.Drawing.Size(950, 536);
+            this.discordUc1.TabIndex = 0;
             // 
             // debugTab
             // 
@@ -467,12 +488,12 @@
             this.panel5.Size = new System.Drawing.Size(971, 661);
             this.panel5.TabIndex = 12;
             // 
-            // discordUc1
+            // overviewMarketUc1
             // 
-            this.discordUc1.Location = new System.Drawing.Point(2, 2);
-            this.discordUc1.Name = "discordUc1";
-            this.discordUc1.Size = new System.Drawing.Size(950, 536);
-            this.discordUc1.TabIndex = 0;
+            this.overviewMarketUc1.Location = new System.Drawing.Point(3, 3);
+            this.overviewMarketUc1.Name = "overviewMarketUc1";
+            this.overviewMarketUc1.Size = new System.Drawing.Size(957, 629);
+            this.overviewMarketUc1.TabIndex = 0;
             // 
             // ControlPanel
             // 
@@ -490,6 +511,7 @@
             this.tabVillages.ResumeLayout(false);
             this.tabOverview.ResumeLayout(false);
             this.troopsTab.ResumeLayout(false);
+            this.marketsTab.ResumeLayout(false);
             this.FarmingTab.ResumeLayout(false);
             this.newVillagesTab.ResumeLayout(false);
             this.deffendingTab.ResumeLayout(false);
@@ -544,5 +566,7 @@
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.TabPage discordTab;
         private Views.DiscordUc discordUc1;
+        private System.Windows.Forms.TabPage marketsTab;
+        private Views.OverviewMarketUc overviewMarketUc1;
     }
 }

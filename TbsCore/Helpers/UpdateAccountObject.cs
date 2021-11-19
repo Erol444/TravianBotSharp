@@ -21,6 +21,7 @@ namespace TbsCore.Helpers
             {
                 var oldVill = acc.Villages[i];
                 var foundVill = foundVills.Where(x => x.Id == oldVill.Id).FirstOrDefault();
+
                 //Village was not found -> destroyed/chiefed
                 if (foundVill == null)
                 {
@@ -28,12 +29,13 @@ namespace TbsCore.Helpers
                     i--;
                     continue;
                 }
+
                 oldVill.Name = foundVill.Name;
                 oldVill.Active = foundVill.Active;
 
                 if (oldVill.UnderAttack != foundVill.UnderAttack &&
                     foundVill.UnderAttack &&
-                    oldVill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
+                    oldVill.Deffing.AlertType != AlertTypeEnum.Disabled)
                 {
                     acc.Tasks.Add(new CheckAttacks() { Vill = oldVill, Priority = Tasks.BotTask.TaskPriority.High }, true, oldVill);
                 }
@@ -74,46 +76,39 @@ namespace TbsCore.Helpers
             {
                 ExecuteAt = DateTime.Now.AddHours(-2),
                 Vill = vill,
-                ImportTasks = true
+                NewVillage = true
             }, true, vill);
-
-            DefaultConfigurations.SetDefaultTransitConfiguration(acc, vill);
-
-            // Copy default settings to the new village. TODO: use automapper for this.
-            //var defaultSettings = acc.NewVillages.DefaultSettings;
-            //vill.Settings = new VillSettings()
-            //{
-            //    Type = defaultSettings.Type,
-            //    BarracksTrain = defaultSettings.BarracksTrain,
-            //    StableTrain = defaultSettings.StableTrain,
-            //    WorkshopTrain = defaultSettings.WorkshopTrain,
-            //    GreatBarracksTrain = defaultSettings.GreatBarracksTrain,
-            //    GreatStableTrain = defaultSettings.GreatStableTrain,
-            //    SendRes = defaultSettings.SendRes,
-            //    GetRes = defaultSettings.GetRes,
-            //};
 
             // Change village name
             var newVillageFromList = acc.NewVillages.Locations
                 .FirstOrDefault(x =>
-                    x.SettlersSent &&
                     x.Coordinates.x == vill.Coordinates.x &&
                     x.Coordinates.y == vill.Coordinates.y
                     );
 
             if (newVillageFromList != null)
             {
-                if (string.IsNullOrEmpty(newVillageFromList.Name))
+                // set name
+                if (string.IsNullOrWhiteSpace(newVillageFromList.Name))
                 {
                     newVillageFromList.Name = NewVillageHelper.GenerateName(acc);
                 }
+                // remove from list new village
                 acc.NewVillages.Locations.Remove(newVillageFromList);
+
+                // change village name
                 acc.Tasks.Add(
                     new ChangeVillageName()
                     {
                         ExecuteAt = DateTime.Now,
                         ChangeList = new List<(int, string)> { (vill.Id, newVillageFromList.Name) }
                     }, true);
+
+                // load building task
+                if (!string.IsNullOrWhiteSpace(acc.NewVillages.BuildingTasksLocationNewVillage))
+                {
+                    IoHelperCore.AddBuildTasksFromFile(acc, vill, acc.NewVillages.BuildingTasksLocationNewVillage);
+                }
             }
         }
     }

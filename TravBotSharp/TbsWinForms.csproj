@@ -397,6 +397,12 @@
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomClass\ListViewColumnSorter.cs" />
+    <Compile Include="Forms\Close.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Close.Designer.cs">
+      <DependentUpon>Close.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\InactiveFinder.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -419,6 +425,24 @@
     </Compile>
     <Compile Include="Forms\NewRelease.Designer.cs">
       <DependentUpon>NewRelease.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ResourceSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ResourceSelector.Designer.cs">
+      <DependentUpon>ResourceSelector.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ResourceDisplayUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ResourceDisplayUc.Designer.cs">
+      <DependentUpon>ResourceDisplayUc.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\ResourceSelectorUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\ResourceSelectorUc.Designer.cs">
+      <DependentUpon>ResourceSelectorUc.cs</DependentUpon>
     </Compile>
     <Compile Include="UserControls\TroopsDisplayUc.cs">
       <SubType>UserControl</SubType>
@@ -473,6 +497,12 @@
     </Compile>
     <Compile Include="Forms\AddFarmlistNonGold.Designer.cs">
       <DependentUpon>AddFarmlistNonGold.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\OverviewMarketUc.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Views\OverviewMarketUc.Designer.cs">
+      <DependentUpon>OverviewMarketUc.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\VillageViews\BuildUc.cs">
       <SubType>UserControl</SubType>
@@ -576,6 +606,9 @@
     <EmbeddedResource Include="Forms\AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Close.resx">
+      <DependentUpon>Close.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\InactiveFinder.resx">
       <DependentUpon>InactiveFinder.cs</DependentUpon>
     </EmbeddedResource>
@@ -588,6 +621,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NewRelease.resx">
       <DependentUpon>NewRelease.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ResourceSelector.resx">
+      <DependentUpon>ResourceSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ResourceDisplayUc.resx">
+      <DependentUpon>ResourceDisplayUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\ResourceSelectorUc.resx">
+      <DependentUpon>ResourceSelectorUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\TroopsDisplayUc.resx">
       <DependentUpon>TroopsDisplayUc.cs</DependentUpon>
@@ -613,6 +655,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\DiscordUc.resx">
       <DependentUpon>DiscordUc.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\OverviewMarketUc.resx">
+      <DependentUpon>OverviewMarketUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\OverviewTroopsUc.resx">
       <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
@@ -667,6 +712,7 @@
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
+    <None Include="Properties\DataSources\TravBotSharp.Views.OverviewMarketUc.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -719,6 +765,7 @@
     <Content Include="Resources\Egyptians.gif" />
     <Content Include="Resources\Huns.gif" />
     <Content Include="Resources\Natars.gif" />
+    <Content Include="Resources\resource.gif" />
     <Content Include="Resources\Specials.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

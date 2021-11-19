@@ -98,8 +98,8 @@ namespace TbsCore.Helpers
             var mainVill = AccountHelper.GetMainVillage(acc);
             if (mainVill == vill) return enoughRes;
 
-            DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
-            if (resTransit < enoughRes) enoughRes = resTransit;
+            //DateTime resTransit = MarketHelper.TransitResourcesFromMain(acc, vill);
+            //if (resTransit < enoughRes) enoughRes = resTransit;
 
             if (enoughRes < DateTime.Now) return DateTime.Now;
 
@@ -304,6 +304,23 @@ namespace TbsCore.Helpers
             return neededRes;
         }
 
+        #region Resource compare
+
+        public static bool IsEnough(Village vill, Resources resources)
+        {
+            var resInVill = vill.Res.Stored.Resources.ToArray();
+            var res = resources.ToArray();
+            for (var i = 0; i < 4; i++)
+            {
+                if (resInVill[i] < res[i]) return false;
+            }
+            return true;
+        }
+
+        #endregion Resource compare
+
+        #region Resources class supporter
+
         private static long[] SubtractResources(long[] subtractFrom, long[] subtract, bool capToZero)
         {
             var ret = new long[4];
@@ -327,7 +344,7 @@ namespace TbsCore.Helpers
             return res + (100 - remainder);
         }
 
-        internal static long[] SumArr(long[] arr1, long[] arr2)
+        public static long[] SumArr(long[] arr1, long[] arr2)
         {
             var ret = new long[4];
             for (int i = 0; i < 4; i++)
@@ -336,5 +353,7 @@ namespace TbsCore.Helpers
             }
             return ret;
         }
+
+        #endregion Resources class supporter
     }
 }

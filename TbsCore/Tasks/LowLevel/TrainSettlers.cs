@@ -19,7 +19,7 @@ namespace TbsCore.Tasks.LowLevel
                     x.Type == Classificator.BuildingEnum.CommandCenter
                 );
 
-            if (!await VillageHelper.EnterBuilding(acc, building, "&s=1"))
+            if (!await VillageHelper.EnterBuilding(acc, Vill, building.Type, "&s=1"))
                 return TaskRes.Executed;
 
             var settler = TroopsData.TribeSettler(acc.AccInfo.Tribe);

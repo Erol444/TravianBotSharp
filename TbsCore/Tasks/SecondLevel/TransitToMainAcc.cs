@@ -27,7 +27,7 @@ namespace TbsCore.Tasks.LowLevel
             await Task.Delay(AccountHelper.Delay(acc));
 
             //Resources res = new Resources() { Wood = 50000000, Clay = 50000000, Iron = 50000000, Crop = 50000000 };
-            acc.Tasks.Add(new SendResources() { ExecuteAt = DateTime.Now, Coordinates = coords, Vill = this.Vill });
+            //acc.Tasks.Add(new SendResource() { ExecuteAt = DateTime.Now, Coordinates = coords, Vill = this.Vill });
 
             return TaskRes.Executed;
         }

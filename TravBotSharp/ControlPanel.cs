@@ -24,6 +24,7 @@ namespace TravBotSharp
         private int accSelected = 0;
         private System.Timers.Timer saveAccountsTimer;
         private ITbsUc[] Ucs;
+        private bool IsClose = false;
 
         public ControlPanel()
         {
@@ -40,6 +41,7 @@ namespace TravBotSharp
                 villagesUc1,
                 overviewUc1,
                 overviewTroopsUc1,
+                overviewMarketUc1,
                 farmingUc1,
                 newVillagesUc1,
                 deffendingUc1,
@@ -78,7 +80,11 @@ namespace TravBotSharp
 
             accounts = DbRepository.GetAccounts();
 
-            accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
+            accounts.ForEach(x =>
+            {
+                ObjectHelper.FixAccObj(x, x);
+                AccountHelper.Loaded(x);
+            });
 
             RefreshAccView();
         }
@@ -97,14 +103,27 @@ namespace TravBotSharp
                         string.IsNullOrEmpty(acc.AccInfo.ServerUrl)) return;
 
                     accounts.Add(acc);
+                    AccountHelper.Loaded(acc);
+
                     RefreshAccView();
                 }
             }
         }
 
-        private void ControlPanel_FormClosing(object sender, FormClosingEventArgs e)
+        private async void ControlPanel_FormClosing(object sender, FormClosingEventArgs e)
         {
-            IoHelperCore.SaveAccounts(accounts, true);
+            if (!IsClose)
+            {
+                var f = (Form)sender;
+                e.Cancel = true;
+                f.Enabled = false;
+                var closeForm = new Close();
+                closeForm.Show(this);
+                await IoHelperCore.SaveAccounts(accounts, true);
+                IsClose = true;
+                closeForm.Close();
+                f.Close();
+            }
         }
 
         /// <summary>

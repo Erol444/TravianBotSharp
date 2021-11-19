@@ -1,6 +1,9 @@
-﻿using System;
+﻿using Discord.Webhook;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.Logging;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks.LowLevel;
 using TbsCore.Tasks.SecondLevel;
@@ -61,76 +64,122 @@ namespace TbsCore.Helpers
             // Get the server info (on first running the account)
             if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0)
             {
-                acc.Tasks.Add(new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) });
+                acc.Tasks.Add(new GetServerInfo()
+                {
+                    ExecuteAt = DateTime.MinValue.AddHours(2)
+                }, true);
             }
 
             if (acc.AccInfo.Tribe == null)
             {
-                acc.Tasks.Add(new GetTribe() { ExecuteAt = DateTime.MinValue.AddHours(3) }, true);
+                acc.Tasks.Add(new GetTribe()
+                {
+                    ExecuteAt = DateTime.MinValue.AddHours(3)
+                }, true);
             }
-
-            //FL
-            if (acc.Farming.Enabled) acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now }, true);
-
-            // Bot sleep
-            acc.Tasks.Add(new Sleep()
-            {
-                ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc),
-                AutoSleep = true
-            }, true);
 
             // Access change
             var nextAccessChange = TimeHelper.GetNextProxyChange(acc);
             if (nextAccessChange != TimeSpan.MaxValue)
             {
-                acc.Tasks.Add(new ChangeAccess() { ExecuteAt = DateTime.Now + nextAccessChange }, true);
-            }
-            //research / improve / train troops
-            foreach (var vill in acc.Villages)
-            {
-                //if (vill.Troops.Researched.Count == 0) acc.Tasks.Add( new UpdateTroops() { ExecuteAt = DateTime.Now, vill = vill });
-                TroopsHelper.ReStartResearchAndImprovement(acc, vill);
-                TroopsHelper.ReStartTroopTraining(acc, vill);
-                BuildingHelper.ReStartBuilding(acc, vill);
-                BuildingHelper.ReStartDemolishing(acc, vill);
-                MarketHelper.ReStartSendingToMain(acc, vill);
-                ReStartCelebration(acc, vill);
-                VillageHelper.SetNextRefresh(acc, vill);
-                if (vill.FarmingNonGold.OasisFarmingEnabled)
+                acc.Tasks.Add(new ChangeAccess()
                 {
-                    acc.Tasks.Add(new AttackOasis() { Vill = vill }, true, vill);
+                    ExecuteAt = DateTime.Now + nextAccessChange
+                }, true);
+            }
+
+            var rand = new Random();
+            var vills = acc.Villages.OrderBy((item) => rand.Next());
+            foreach (var vill in vills)
+            {
+                // update info
+                var min = vill.Settings.RefreshMin * 60;
+                var max = vill.Settings.RefreshMax * 60;
+                int timeUpdate;
+
+                timeUpdate = rand.Next(min, max);
+                acc.Tasks.Add(new UpdateVillage()
+                {
+                    ExecuteAt = DateTime.Now.AddSeconds(timeUpdate),
+                    Vill = vill,
+                    NewVillage = false
+                }, true, vill);
+
+                // this is for task delay, i will add this in next time ~ VINAGHOST
+                min = 0;
+                max = 3;
+                // building
+
+                if (vill.Build.Tasks.Count > 0)
+                {
+                    timeUpdate = rand.Next(min, max);
+
+                    acc.Tasks.Add(new UpgradeBuilding()
+                    {
+                        ExecuteAt = DateTime.Now.AddMilliseconds(timeUpdate),
+                        Vill = vill,
+                    }, true, vill);
                 }
 
-                // Remove in later updates!
-                if (vill.Settings.RefreshMin == 0) vill.Settings.RefreshMin = 30;
-                if (vill.Settings.RefreshMax == 0) vill.Settings.RefreshMax = 60;
-            }
-            // Remove in later updates!
-            if (acc.Hero.Settings.MinUpdate == 0) acc.Hero.Settings.MinUpdate = 40;
-            if (acc.Hero.Settings.MaxUpdate == 0) acc.Hero.Settings.MaxUpdate = 80;
+                // demolish
 
-            // Hero update info
-            if (acc.Hero.Settings.AutoRefreshInfo)
-            {
-                Random ran = new Random();
-                acc.Tasks.Add(new HeroUpdateInfo()
+                if (vill.Build.DemolishTasks.Count > 0)
                 {
-                    ExecuteAt = DateTime.Now.AddMinutes(ran.Next(40, 80)),
-                    Priority = Tasks.BotTask.TaskPriority.Low
-                });
+                    timeUpdate = rand.Next(min, max);
+                    acc.Tasks.Add(new DemolishBuilding()
+                    {
+                        ExecuteAt = DateTime.Now.AddMilliseconds(timeUpdate),
+                        Vill = vill,
+                    }, true, vill);
+                }
+
+                TroopsHelper.ReStartResearchAndImprovement(acc, vill);
+                TroopsHelper.ReStartTroopTraining(acc, vill);
             }
         }
 
-        public static void ReStartCelebration(Account acc, Village vill)
+        public static void Loaded(Account acc)
         {
-            // If we don't want auto-celebrations, return
-            if (vill.Expansion.Celebrations == CelebrationEnum.None) return;
-
-            acc.Tasks.Add(new Celebration()
+            if (acc.Settings.DiscordWebhook && !string.IsNullOrEmpty(acc.AccInfo.WebhookUrl))
             {
-                ExecuteAt = vill.Expansion.CelebrationEnd.AddSeconds(7),
-                Vill = vill
-            }, true, vill);
+                acc.WebhookClient = new DiscordWebhookClient(acc.AccInfo.WebhookUrl);
+            }
+
+            SerilogSingleton.LogOutput.AddUsername(acc.AccInfo.Nickname);
+            acc.Logger = new Logger(acc.AccInfo.Nickname);
+            acc.Tasks = new TaskList(acc);
+            acc.Tasks.LoadFromFile(IoHelperCore.GetTaskFileUrl(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl));
+            var sleepTask = acc.Tasks?.FindTask(typeof(Sleep));
+            if (sleepTask != null)
+            {
+                sleepTask.ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc);
+            }
+            else
+            {
+                acc.Tasks.Add(new Sleep()
+                {
+                    AutoSleep = true,
+                    ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc),
+                }, true);
+            }
+
+            var rand = new Random();
+            var min = 0;
+            var max = 3;
+            foreach (var task in acc.Tasks.ToList())
+            {
+                if (task.GetType() == typeof(Sleep)) continue;
+                //reset Vill, obj Vill we save is different with current Vill object account hold
+                task.Vill = acc.Villages.FirstOrDefault(x => x.Id == task.Vill?.Id);
+                //reset time execute
+                if (task.ExecuteAt < DateTime.Now)
+                {
+                    var timeUpdate = rand.Next(min, max);
+                    task.ExecuteAt = DateTime.Now.AddMilliseconds(timeUpdate);
+                }
+            }
+
+            acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
         }
     }
 }

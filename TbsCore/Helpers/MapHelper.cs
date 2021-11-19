@@ -63,6 +63,21 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
+        ///
+        /// </summary>
+        /// <param name="other"></param>
+        /// <param name="root"></param>
+        /// <returns> 0 = same distance  1 = this farther than other -1 = other farther than this</returns>
+        public static int Compare(Account acc, Coordinates root, Coordinates a, Coordinates b)
+        {
+            var distanceA = CalculateDistance(acc, root, a);
+            var distanceB = CalculateDistance(acc, root, b);
+            if (distanceA - distanceB < 0.1) return 0;
+            if (distanceA < distanceB) return -1;
+            return 1;
+        }
+
+        /// <summary>
         /// Send raw HTTP request to the server and request the map tiles around the coords. This mimics browser on the map page.
         /// </summary>
         public static List<MapTile> GetMapTiles(Account acc, Coordinates coords)

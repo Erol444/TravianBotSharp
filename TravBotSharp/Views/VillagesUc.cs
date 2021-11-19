@@ -111,7 +111,7 @@ namespace TravBotSharp.Views
             {
                 ExecuteAt = DateTime.Now.AddHours(-1),
                 Vill = vill,
-                ImportTasks = false
+                NewVillage = false
             });
         }
     }

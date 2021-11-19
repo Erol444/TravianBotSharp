@@ -28,742 +28,656 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.transitResEnabled = new System.Windows.Forms.CheckBox();
-            this.TransitArrival = new System.Windows.Forms.Label();
-            this.LastTransit = new System.Windows.Forms.Label();
-            this.label30 = new System.Windows.Forms.Label();
-            this.label29 = new System.Windows.Forms.Label();
-            this.label25 = new System.Windows.Forms.Label();
-            this.label26 = new System.Windows.Forms.Label();
-            this.label27 = new System.Windows.Forms.Label();
-            this.label28 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.label23 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.FillLimitCrop = new System.Windows.Forms.NumericUpDown();
-            this.FillLimitIron = new System.Windows.Forms.NumericUpDown();
-            this.FillLimitClay = new System.Windows.Forms.NumericUpDown();
-            this.FillLimitWood = new System.Windows.Forms.NumericUpDown();
-            this.TargetLimitCrop = new System.Windows.Forms.NumericUpDown();
-            this.TargetLimitIron = new System.Windows.Forms.NumericUpDown();
-            this.TargetLimitClay = new System.Windows.Forms.NumericUpDown();
-            this.TargetLimitWood = new System.Windows.Forms.NumericUpDown();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label19 = new System.Windows.Forms.Label();
-            this.label18 = new System.Windows.Forms.Label();
+            TbsCore.Models.MapModels.Coordinates coordinates1 = new TbsCore.Models.MapModels.Coordinates();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.VillageComboBox = new System.Windows.Forms.ComboBox();
+            this.coordinatesUc1 = new TravBotSharp.UserControls.CoordinatesUc();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.label1 = new System.Windows.Forms.Label();
-            this.npcEnabled = new System.Windows.Forms.CheckBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.label6 = new System.Windows.Forms.Label();
-            this.overflowProtection = new System.Windows.Forms.CheckBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.label3 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.label11 = new System.Windows.Forms.Label();
-            this.cropSend = new System.Windows.Forms.NumericUpDown();
-            this.ironSend = new System.Windows.Forms.NumericUpDown();
-            this.claySend = new System.Windows.Forms.NumericUpDown();
-            this.woodSend = new System.Windows.Forms.NumericUpDown();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label13 = new System.Windows.Forms.Label();
-            this.label14 = new System.Windows.Forms.Label();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.label19 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.numericUpDown6 = new System.Windows.Forms.NumericUpDown();
             this.label16 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.FillLimitCrop)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FillLimitIron)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FillLimitClay)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FillLimitWood)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TargetLimitCrop)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TargetLimitIron)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TargetLimitClay)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TargetLimitWood)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.label18 = new System.Windows.Forms.Label();
+            this.numericUpDown7 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDown9 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDown8 = new System.Windows.Forms.NumericUpDown();
+            this.label17 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.button7 = new System.Windows.Forms.Button();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.MerchantInfo = new System.Windows.Forms.Label();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label20 = new System.Windows.Forms.Label();
+            this.routeTradeList = new System.Windows.Forms.ListView();
+            this.transitIdHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.transitLocationHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.transitWoodHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.transitClayHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.transitIronHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.transitCropHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.transitTimeHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.transitLastHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.transitActiveHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.panel1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cropSend)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ironSend)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.claySend)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.woodSend)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown9)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).BeginInit();
+            this.panel5.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
-            // transitResEnabled
+            // panel1
             // 
-            this.transitResEnabled.AutoSize = true;
-            this.transitResEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.transitResEnabled.Location = new System.Drawing.Point(312, 15);
-            this.transitResEnabled.Margin = new System.Windows.Forms.Padding(4);
-            this.transitResEnabled.Name = "transitResEnabled";
-            this.transitResEnabled.Size = new System.Drawing.Size(78, 20);
-            this.transitResEnabled.TabIndex = 51;
-            this.transitResEnabled.Text = "Enabled";
-            this.transitResEnabled.UseVisualStyleBackColor = true;
-            this.transitResEnabled.CheckedChanged += new System.EventHandler(this.transitResEnabled_CheckedChanged);
+            this.panel1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel1.Controls.Add(this.groupBox1);
+            this.panel1.Controls.Add(this.label1);
+            this.panel1.Location = new System.Drawing.Point(3, 3);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(224, 159);
+            this.panel1.TabIndex = 187;
             // 
-            // TransitArrival
+            // groupBox1
             // 
-            this.TransitArrival.AutoSize = true;
-            this.TransitArrival.Location = new System.Drawing.Point(159, 302);
-            this.TransitArrival.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.TransitArrival.Name = "TransitArrival";
-            this.TransitArrival.Size = new System.Drawing.Size(11, 16);
-            this.TransitArrival.TabIndex = 50;
-            this.TransitArrival.Text = " ";
+            this.groupBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.groupBox1.Controls.Add(this.VillageComboBox);
+            this.groupBox1.Controls.Add(this.coordinatesUc1);
+            this.groupBox1.Controls.Add(this.radioButton2);
+            this.groupBox1.Controls.Add(this.radioButton1);
+            this.groupBox1.Location = new System.Drawing.Point(12, 27);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(206, 126);
+            this.groupBox1.TabIndex = 189;
+            this.groupBox1.TabStop = false;
             // 
-            // LastTransit
+            // VillageComboBox
             // 
-            this.LastTransit.AutoSize = true;
-            this.LastTransit.Location = new System.Drawing.Point(136, 262);
-            this.LastTransit.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.LastTransit.Name = "LastTransit";
-            this.LastTransit.Size = new System.Drawing.Size(11, 16);
-            this.LastTransit.TabIndex = 49;
-            this.LastTransit.Text = " ";
+            this.VillageComboBox.FormattingEnabled = true;
+            this.VillageComboBox.Location = new System.Drawing.Point(68, 10);
+            this.VillageComboBox.Name = "VillageComboBox";
+            this.VillageComboBox.Size = new System.Drawing.Size(130, 21);
+            this.VillageComboBox.TabIndex = 190;
             // 
-            // label30
+            // coordinatesUc1
             // 
-            this.label30.AutoSize = true;
-            this.label30.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label30.Location = new System.Drawing.Point(11, 295);
-            this.label30.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(102, 20);
-            this.label30.TabIndex = 48;
-            this.label30.Text = "Transit arrival";
+            this.coordinatesUc1.BackColor = System.Drawing.SystemColors.ControlDark;
+            coordinates1.x = 0;
+            coordinates1.y = 0;
+            this.coordinatesUc1.Coords = coordinates1;
+            this.coordinatesUc1.Location = new System.Drawing.Point(65, 62);
+            this.coordinatesUc1.Name = "coordinatesUc1";
+            this.coordinatesUc1.Size = new System.Drawing.Size(133, 56);
+            this.coordinatesUc1.TabIndex = 190;
             // 
-            // label29
+            // radioButton2
             // 
-            this.label29.AutoSize = true;
-            this.label29.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label29.Location = new System.Drawing.Point(11, 256);
-            this.label29.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label29.Name = "label29";
-            this.label29.Size = new System.Drawing.Size(88, 20);
-            this.label29.TabIndex = 47;
-            this.label29.Text = "Last transit";
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(6, 65);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(53, 17);
+            this.radioButton2.TabIndex = 188;
+            this.radioButton2.Text = "Coord";
+            this.radioButton2.UseVisualStyleBackColor = true;
+            this.radioButton2.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
-            // label25
+            // radioButton1
             // 
-            this.label25.AutoSize = true;
-            this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label25.Location = new System.Drawing.Point(356, 181);
-            this.label25.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(37, 16);
-            this.label25.TabIndex = 46;
-            this.label25.Text = "Crop";
-            // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label26.Location = new System.Drawing.Point(356, 117);
-            this.label26.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(35, 16);
-            this.label26.TabIndex = 45;
-            this.label26.Text = "Clay";
-            // 
-            // label27
-            // 
-            this.label27.AutoSize = true;
-            this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label27.Location = new System.Drawing.Point(359, 149);
-            this.label27.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(30, 16);
-            this.label27.TabIndex = 44;
-            this.label27.Text = "Iron";
-            // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label28.Location = new System.Drawing.Point(356, 85);
-            this.label28.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(45, 16);
-            this.label28.TabIndex = 43;
-            this.label28.Text = "Wood";
-            // 
-            // label24
-            // 
-            this.label24.AutoSize = true;
-            this.label24.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label24.Location = new System.Drawing.Point(133, 181);
-            this.label24.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(52, 16);
-            this.label24.TabIndex = 42;
-            this.label24.Text = "% Crop";
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label23.Location = new System.Drawing.Point(212, 54);
-            this.label23.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(59, 20);
-            this.label23.TabIndex = 41;
-            this.label23.Text = "Fill limit";
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label22.Location = new System.Drawing.Point(15, 57);
-            this.label22.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(86, 20);
-            this.label22.TabIndex = 40;
-            this.label22.Text = "Target limit";
-            // 
-            // FillLimitCrop
-            // 
-            this.FillLimitCrop.Location = new System.Drawing.Point(217, 178);
-            this.FillLimitCrop.Margin = new System.Windows.Forms.Padding(4);
-            this.FillLimitCrop.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.FillLimitCrop.Name = "FillLimitCrop";
-            this.FillLimitCrop.Size = new System.Drawing.Size(131, 22);
-            this.FillLimitCrop.TabIndex = 39;
-            this.FillLimitCrop.ValueChanged += new System.EventHandler(this.FillLimitCrop_ValueChanged);
-            // 
-            // FillLimitIron
-            // 
-            this.FillLimitIron.Location = new System.Drawing.Point(217, 146);
-            this.FillLimitIron.Margin = new System.Windows.Forms.Padding(4);
-            this.FillLimitIron.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.FillLimitIron.Name = "FillLimitIron";
-            this.FillLimitIron.Size = new System.Drawing.Size(131, 22);
-            this.FillLimitIron.TabIndex = 38;
-            this.FillLimitIron.ValueChanged += new System.EventHandler(this.FillLimitIron_ValueChanged);
-            // 
-            // FillLimitClay
-            // 
-            this.FillLimitClay.Location = new System.Drawing.Point(217, 114);
-            this.FillLimitClay.Margin = new System.Windows.Forms.Padding(4);
-            this.FillLimitClay.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.FillLimitClay.Name = "FillLimitClay";
-            this.FillLimitClay.Size = new System.Drawing.Size(131, 22);
-            this.FillLimitClay.TabIndex = 37;
-            this.FillLimitClay.ValueChanged += new System.EventHandler(this.FillLimitClay_ValueChanged);
-            // 
-            // FillLimitWood
-            // 
-            this.FillLimitWood.Location = new System.Drawing.Point(217, 82);
-            this.FillLimitWood.Margin = new System.Windows.Forms.Padding(4);
-            this.FillLimitWood.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.FillLimitWood.Name = "FillLimitWood";
-            this.FillLimitWood.Size = new System.Drawing.Size(131, 22);
-            this.FillLimitWood.TabIndex = 36;
-            this.FillLimitWood.ValueChanged += new System.EventHandler(this.FillLimitWood_ValueChanged);
-            // 
-            // TargetLimitCrop
-            // 
-            this.TargetLimitCrop.Location = new System.Drawing.Point(20, 181);
-            this.TargetLimitCrop.Margin = new System.Windows.Forms.Padding(4);
-            this.TargetLimitCrop.Name = "TargetLimitCrop";
-            this.TargetLimitCrop.Size = new System.Drawing.Size(109, 22);
-            this.TargetLimitCrop.TabIndex = 35;
-            this.TargetLimitCrop.ValueChanged += new System.EventHandler(this.TargetLimitCrop_ValueChanged);
-            // 
-            // TargetLimitIron
-            // 
-            this.TargetLimitIron.Location = new System.Drawing.Point(20, 149);
-            this.TargetLimitIron.Margin = new System.Windows.Forms.Padding(4);
-            this.TargetLimitIron.Name = "TargetLimitIron";
-            this.TargetLimitIron.Size = new System.Drawing.Size(109, 22);
-            this.TargetLimitIron.TabIndex = 34;
-            this.TargetLimitIron.ValueChanged += new System.EventHandler(this.TargetLimitIron_ValueChanged);
-            // 
-            // TargetLimitClay
-            // 
-            this.TargetLimitClay.Location = new System.Drawing.Point(20, 117);
-            this.TargetLimitClay.Margin = new System.Windows.Forms.Padding(4);
-            this.TargetLimitClay.Name = "TargetLimitClay";
-            this.TargetLimitClay.Size = new System.Drawing.Size(109, 22);
-            this.TargetLimitClay.TabIndex = 33;
-            this.TargetLimitClay.ValueChanged += new System.EventHandler(this.TargetLimitClay_ValueChanged);
-            // 
-            // TargetLimitWood
-            // 
-            this.TargetLimitWood.Location = new System.Drawing.Point(20, 85);
-            this.TargetLimitWood.Margin = new System.Windows.Forms.Padding(4);
-            this.TargetLimitWood.Name = "TargetLimitWood";
-            this.TargetLimitWood.Size = new System.Drawing.Size(109, 22);
-            this.TargetLimitWood.TabIndex = 32;
-            this.TargetLimitWood.ValueChanged += new System.EventHandler(this.TargetLimitWood_ValueChanged);
-            // 
-            // label21
-            // 
-            this.label21.AutoSize = true;
-            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label21.Location = new System.Drawing.Point(133, 117);
-            this.label21.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(50, 16);
-            this.label21.TabIndex = 31;
-            this.label21.Text = "% Clay";
-            // 
-            // label20
-            // 
-            this.label20.AutoSize = true;
-            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label20.Location = new System.Drawing.Point(133, 149);
-            this.label20.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(45, 16);
-            this.label20.TabIndex = 30;
-            this.label20.Text = "% Iron";
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.Location = new System.Drawing.Point(133, 85);
-            this.label19.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(60, 16);
-            this.label19.TabIndex = 29;
-            this.label19.Text = "% Wood";
-            // 
-            // label18
-            // 
-            this.label18.AutoSize = true;
-            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label18.Location = new System.Drawing.Point(15, 15);
-            this.label18.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(215, 20);
-            this.label18.TabIndex = 28;
-            this.label18.Text = "Send resources to this village";
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = true;
+            this.radioButton1.Location = new System.Drawing.Point(6, 12);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(56, 17);
+            this.radioButton1.TabIndex = 187;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "Village";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            this.radioButton1.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(329, 314);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(9, 8);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(72, 31);
-            this.label1.TabIndex = 53;
-            this.label1.Text = "NPC";
+            this.label1.Size = new System.Drawing.Size(105, 16);
+            this.label1.TabIndex = 186;
+            this.label1.Text = "Target village";
             // 
-            // npcEnabled
+            // panel3
             // 
-            this.npcEnabled.AutoSize = true;
-            this.npcEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.npcEnabled.Location = new System.Drawing.Point(433, 327);
-            this.npcEnabled.Margin = new System.Windows.Forms.Padding(4);
-            this.npcEnabled.Name = "npcEnabled";
-            this.npcEnabled.Size = new System.Drawing.Size(78, 20);
-            this.npcEnabled.TabIndex = 54;
-            this.npcEnabled.Text = "Enabled";
-            this.npcEnabled.UseVisualStyleBackColor = true;
-            this.npcEnabled.CheckedChanged += new System.EventHandler(this.npcEnabled_CheckedChanged);
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.Location = new System.Drawing.Point(312, 480);
-            this.numericUpDown1.Margin = new System.Windows.Forms.Padding(4);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(109, 22);
-            this.numericUpDown1.TabIndex = 58;
-            this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
-            // 
-            // numericUpDown2
-            // 
-            this.numericUpDown2.Location = new System.Drawing.Point(312, 448);
-            this.numericUpDown2.Margin = new System.Windows.Forms.Padding(4);
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(109, 22);
-            this.numericUpDown2.TabIndex = 57;
-            this.numericUpDown2.ValueChanged += new System.EventHandler(this.numericUpDown2_ValueChanged);
-            // 
-            // numericUpDown3
-            // 
-            this.numericUpDown3.Location = new System.Drawing.Point(312, 414);
-            this.numericUpDown3.Margin = new System.Windows.Forms.Padding(4);
-            this.numericUpDown3.Name = "numericUpDown3";
-            this.numericUpDown3.Size = new System.Drawing.Size(109, 22);
-            this.numericUpDown3.TabIndex = 56;
-            this.numericUpDown3.ValueChanged += new System.EventHandler(this.numericUpDown3_ValueChanged);
-            // 
-            // numericUpDown4
-            // 
-            this.numericUpDown4.Location = new System.Drawing.Point(312, 384);
-            this.numericUpDown4.Margin = new System.Windows.Forms.Padding(4);
-            this.numericUpDown4.Name = "numericUpDown4";
-            this.numericUpDown4.Size = new System.Drawing.Size(109, 22);
-            this.numericUpDown4.TabIndex = 55;
-            this.numericUpDown4.ValueChanged += new System.EventHandler(this.numericUpDown4_ValueChanged);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(429, 485);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(37, 16);
-            this.label2.TabIndex = 62;
-            this.label2.Text = "Crop";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(429, 421);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(35, 16);
-            this.label3.TabIndex = 61;
-            this.label3.Text = "Clay";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(429, 453);
-            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(30, 16);
-            this.label4.TabIndex = 60;
-            this.label4.Text = "Iron";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(429, 389);
-            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(45, 16);
-            this.label5.TabIndex = 59;
-            this.label5.Text = "Wood";
+            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.label6);
+            this.panel3.Controls.Add(this.label5);
+            this.panel3.Controls.Add(this.numericUpDown2);
+            this.panel3.Controls.Add(this.checkBox1);
+            this.panel3.Controls.Add(this.label4);
+            this.panel3.Controls.Add(this.numericUpDown1);
+            this.panel3.Controls.Add(this.label3);
+            this.panel3.Controls.Add(this.button5);
+            this.panel3.Controls.Add(this.button4);
+            this.panel3.Controls.Add(this.button3);
+            this.panel3.Controls.Add(this.label11);
+            this.panel3.Location = new System.Drawing.Point(451, 3);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(212, 322);
+            this.panel3.TabIndex = 191;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(308, 361);
-            this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label6.Location = new System.Drawing.Point(83, 65);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(136, 16);
-            this.label6.TabIndex = 63;
-            this.label6.Text = "Target resource ratio:";
+            this.label6.Size = new System.Drawing.Size(15, 16);
+            this.label6.TabIndex = 204;
+            this.label6.Text = "±";
             // 
-            // overflowProtection
+            // label5
             // 
-            this.overflowProtection.AutoSize = true;
-            this.overflowProtection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.overflowProtection.Location = new System.Drawing.Point(337, 516);
-            this.overflowProtection.Margin = new System.Windows.Forms.Padding(4);
-            this.overflowProtection.Name = "overflowProtection";
-            this.overflowProtection.Size = new System.Drawing.Size(150, 20);
-            this.overflowProtection.TabIndex = 64;
-            this.overflowProtection.Text = "NPC even if overflow";
-            this.overflowProtection.UseVisualStyleBackColor = true;
-            this.overflowProtection.CheckedChanged += new System.EventHandler(this.overflowProtection_CheckedChanged);
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(144, 65);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(36, 16);
+            this.label5.TabIndex = 203;
+            this.label5.Text = "mins";
             // 
-            // label7
+            // numericUpDown2
             // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(308, 544);
-            this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(191, 16);
-            this.label7.TabIndex = 65;
-            this.label7.Text = "If checked, bot will NPC even if ";
+            this.numericUpDown2.Location = new System.Drawing.Point(97, 64);
+            this.numericUpDown2.Name = "numericUpDown2";
+            this.numericUpDown2.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDown2.TabIndex = 202;
             // 
-            // label8
+            // checkBox1
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(308, 560);
-            this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(222, 16);
-            this.label8.TabIndex = 66;
-            this.label8.Text = "some resource will get filled to 100%";
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Checked = true;
+            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox1.Location = new System.Drawing.Point(18, 92);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(56, 17);
+            this.checkBox1.TabIndex = 201;
+            this.checkBox1.Text = "Active";
+            this.checkBox1.UseVisualStyleBackColor = true;
             // 
-            // label9
+            // label4
             // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(543, 16);
-            this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(224, 20);
-            this.label9.TabIndex = 67;
-            this.label9.Text = "Send resources to main village";
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(144, 39);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(36, 16);
+            this.label4.TabIndex = 200;
+            this.label4.Text = "mins";
             // 
-            // label10
+            // numericUpDown1
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(685, 178);
-            this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(52, 16);
-            this.label10.TabIndex = 76;
-            this.label10.Text = "% Crop";
+            this.numericUpDown1.Location = new System.Drawing.Point(97, 38);
+            this.numericUpDown1.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown1.Name = "numericUpDown1";
+            this.numericUpDown1.Size = new System.Drawing.Size(45, 20);
+            this.numericUpDown1.TabIndex = 195;
+            this.numericUpDown1.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(13, 39);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(85, 16);
+            this.label3.TabIndex = 196;
+            this.label3.Text = "Repeat after ";
+            // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(143, 276);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(64, 43);
+            this.button5.TabIndex = 198;
+            this.button5.Text = "Delete";
+            this.button5.UseVisualStyleBackColor = false;
+            this.button5.Click += new System.EventHandler(this.button5_Click);
+            // 
+            // button4
+            // 
+            this.button4.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button4.Location = new System.Drawing.Point(73, 276);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(64, 43);
+            this.button4.TabIndex = 197;
+            this.button4.Text = "Edit";
+            this.button4.UseVisualStyleBackColor = false;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button3.Location = new System.Drawing.Point(3, 276);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(64, 43);
+            this.button3.TabIndex = 196;
+            this.button3.Text = "Add";
+            this.button3.UseVisualStyleBackColor = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(567, 54);
-            this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(15, 9);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(105, 15);
-            this.label11.TabIndex = 75;
-            this.label11.Text = "Resources above:";
+            this.label11.Size = new System.Drawing.Size(92, 16);
+            this.label11.TabIndex = 190;
+            this.label11.Text = "Transit list ?";
             // 
-            // cropSend
+            // panel4
             // 
-            this.cropSend.Location = new System.Drawing.Point(572, 178);
-            this.cropSend.Margin = new System.Windows.Forms.Padding(4);
-            this.cropSend.Name = "cropSend";
-            this.cropSend.Size = new System.Drawing.Size(109, 22);
-            this.cropSend.TabIndex = 74;
-            this.cropSend.ValueChanged += new System.EventHandler(this.cropSend_ValueChanged);
+            this.panel4.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel4.Controls.Add(this.label19);
+            this.panel4.Controls.Add(this.label15);
+            this.panel4.Controls.Add(this.label14);
+            this.panel4.Controls.Add(this.numericUpDown6);
+            this.panel4.Controls.Add(this.label16);
+            this.panel4.Controls.Add(this.label18);
+            this.panel4.Controls.Add(this.numericUpDown7);
+            this.panel4.Controls.Add(this.numericUpDown9);
+            this.panel4.Controls.Add(this.numericUpDown8);
+            this.panel4.Controls.Add(this.label17);
+            this.panel4.Location = new System.Drawing.Point(233, 3);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(147, 159);
+            this.panel4.TabIndex = 191;
             // 
-            // ironSend
+            // label19
             // 
-            this.ironSend.Location = new System.Drawing.Point(572, 146);
-            this.ironSend.Margin = new System.Windows.Forms.Padding(4);
-            this.ironSend.Name = "ironSend";
-            this.ironSend.Size = new System.Drawing.Size(109, 22);
-            this.ironSend.TabIndex = 73;
-            this.ironSend.ValueChanged += new System.EventHandler(this.ironSend_ValueChanged);
-            // 
-            // claySend
-            // 
-            this.claySend.Location = new System.Drawing.Point(572, 114);
-            this.claySend.Margin = new System.Windows.Forms.Padding(4);
-            this.claySend.Name = "claySend";
-            this.claySend.Size = new System.Drawing.Size(109, 22);
-            this.claySend.TabIndex = 72;
-            this.claySend.ValueChanged += new System.EventHandler(this.claySend_ValueChanged);
-            // 
-            // woodSend
-            // 
-            this.woodSend.Location = new System.Drawing.Point(572, 82);
-            this.woodSend.Margin = new System.Windows.Forms.Padding(4);
-            this.woodSend.Name = "woodSend";
-            this.woodSend.Size = new System.Drawing.Size(109, 22);
-            this.woodSend.TabIndex = 71;
-            this.woodSend.ValueChanged += new System.EventHandler(this.woodSend_ValueChanged);
-            // 
-            // label12
-            // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(685, 114);
-            this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(50, 16);
-            this.label12.TabIndex = 70;
-            this.label12.Text = "% Clay";
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(685, 146);
-            this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(45, 16);
-            this.label13.TabIndex = 69;
-            this.label13.Text = "% Iron";
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(685, 82);
-            this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(60, 16);
-            this.label14.TabIndex = 68;
-            this.label14.Text = "% Wood";
+            this.label19.AutoSize = true;
+            this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label19.Location = new System.Drawing.Point(15, 137);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(122, 16);
+            this.label19.TabIndex = 187;
+            this.label19.Text = "need 0 merchant(s)";
             // 
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(568, 213);
-            this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(13, 88);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(175, 15);
-            this.label15.TabIndex = 78;
-            this.label15.Text = "Will get sent to the main village";
+            this.label15.Size = new System.Drawing.Size(30, 16);
+            this.label15.TabIndex = 192;
+            this.label15.Text = "Iron";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(13, 8);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(75, 16);
+            this.label14.TabIndex = 190;
+            this.label14.Text = "Resource";
+            // 
+            // numericUpDown6
+            // 
+            this.numericUpDown6.Location = new System.Drawing.Point(59, 112);
+            this.numericUpDown6.Maximum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDown6.Name = "numericUpDown6";
+            this.numericUpDown6.Size = new System.Drawing.Size(78, 20);
+            this.numericUpDown6.TabIndex = 190;
+            this.numericUpDown6.ValueChanged += new System.EventHandler(this.numericUpDown6_ValueChanged);
             // 
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.Location = new System.Drawing.Point(568, 236);
-            this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label16.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(13, 114);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(203, 12);
-            this.label16.TabIndex = 79;
-            this.label16.Text = "If values are above 100, limit by resources not %";
+            this.label16.Size = new System.Drawing.Size(37, 16);
+            this.label16.TabIndex = 194;
+            this.label16.Text = "Crop";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label18.Location = new System.Drawing.Point(13, 63);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(35, 16);
+            this.label18.TabIndex = 193;
+            this.label18.Text = "Clay";
+            // 
+            // numericUpDown7
+            // 
+            this.numericUpDown7.Location = new System.Drawing.Point(59, 86);
+            this.numericUpDown7.Name = "numericUpDown7";
+            this.numericUpDown7.Size = new System.Drawing.Size(78, 20);
+            this.numericUpDown7.TabIndex = 189;
+            this.numericUpDown7.ValueChanged += new System.EventHandler(this.numericUpDown7_ValueChanged);
+            // 
+            // numericUpDown9
+            // 
+            this.numericUpDown9.Location = new System.Drawing.Point(59, 37);
+            this.numericUpDown9.Name = "numericUpDown9";
+            this.numericUpDown9.Size = new System.Drawing.Size(78, 20);
+            this.numericUpDown9.TabIndex = 187;
+            this.numericUpDown9.ValueChanged += new System.EventHandler(this.numericUpDown9_ValueChanged);
+            // 
+            // numericUpDown8
+            // 
+            this.numericUpDown8.Location = new System.Drawing.Point(59, 61);
+            this.numericUpDown8.Name = "numericUpDown8";
+            this.numericUpDown8.Size = new System.Drawing.Size(78, 20);
+            this.numericUpDown8.TabIndex = 188;
+            this.numericUpDown8.ValueChanged += new System.EventHandler(this.numericUpDown8_ValueChanged);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(13, 37);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(45, 16);
+            this.label17.TabIndex = 191;
+            this.label17.Text = "Wood";
+            // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(380, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(70, 159);
+            this.button1.TabIndex = 195;
+            this.button1.Text = "SEND NOW";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // panel5
+            // 
+            this.panel5.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel5.Controls.Add(this.button7);
+            this.panel5.Controls.Add(this.richTextBox1);
+            this.panel5.Controls.Add(this.MerchantInfo);
+            this.panel5.Controls.Add(this.button2);
+            this.panel5.Controls.Add(this.label20);
+            this.panel5.Location = new System.Drawing.Point(3, 406);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(663, 68);
+            this.panel5.TabIndex = 191;
+            // 
+            // button7
+            // 
+            this.button7.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.button7.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button7.Location = new System.Drawing.Point(107, 31);
+            this.button7.Name = "button7";
+            this.button7.Size = new System.Drawing.Size(76, 27);
+            this.button7.TabIndex = 200;
+            this.button7.Text = "NPC";
+            this.button7.UseVisualStyleBackColor = false;
+            this.button7.Click += new System.EventHandler(this.button7_Click);
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(212, 10);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(448, 26);
+            this.richTextBox1.TabIndex = 199;
+            this.richTextBox1.Text = "";
+            // 
+            // MerchantInfo
+            // 
+            this.MerchantInfo.AutoSize = true;
+            this.MerchantInfo.Location = new System.Drawing.Point(211, 39);
+            this.MerchantInfo.Name = "MerchantInfo";
+            this.MerchantInfo.Size = new System.Drawing.Size(120, 13);
+            this.MerchantInfo.TabIndex = 198;
+            this.MerchantInfo.Text = "Merchant: 20/20 (1337)";
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.SystemColors.ScrollBar;
+            this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button2.Location = new System.Drawing.Point(18, 31);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(76, 27);
+            this.button2.TabIndex = 196;
+            this.button2.Text = "Refresh ";
+            this.button2.UseVisualStyleBackColor = false;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label20.Location = new System.Drawing.Point(15, 12);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(173, 16);
+            this.label20.TabIndex = 190;
+            this.label20.Text = "Current village resource";
+            // 
+            // routeTradeList
+            // 
+            this.routeTradeList.BackColor = System.Drawing.SystemColors.MenuText;
+            this.routeTradeList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.transitIdHeader,
+            this.transitLocationHeader,
+            this.transitWoodHeader,
+            this.transitClayHeader,
+            this.transitIronHeader,
+            this.transitCropHeader,
+            this.transitTimeHeader,
+            this.transitLastHeader,
+            this.transitActiveHeader});
+            this.routeTradeList.FullRowSelect = true;
+            this.routeTradeList.GridLines = true;
+            this.routeTradeList.HideSelection = false;
+            this.routeTradeList.Location = new System.Drawing.Point(3, 168);
+            this.routeTradeList.MultiSelect = false;
+            this.routeTradeList.Name = "routeTradeList";
+            this.routeTradeList.Size = new System.Drawing.Size(442, 232);
+            this.routeTradeList.TabIndex = 192;
+            this.routeTradeList.UseCompatibleStateImageBehavior = false;
+            this.routeTradeList.View = System.Windows.Forms.View.Details;
+            this.routeTradeList.SelectedIndexChanged += new System.EventHandler(this.routeTradeList_SelectedIndexChanged);
+            // 
+            // transitIdHeader
+            // 
+            this.transitIdHeader.Text = "Id";
+            this.transitIdHeader.Width = 25;
+            // 
+            // transitLocationHeader
+            // 
+            this.transitLocationHeader.Text = "Location";
+            this.transitLocationHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // transitWoodHeader
+            // 
+            this.transitWoodHeader.Text = "Wood";
+            this.transitWoodHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.transitWoodHeader.Width = 45;
+            // 
+            // transitClayHeader
+            // 
+            this.transitClayHeader.Text = "Clay";
+            this.transitClayHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.transitClayHeader.Width = 45;
+            // 
+            // transitIronHeader
+            // 
+            this.transitIronHeader.Text = "Iron";
+            this.transitIronHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.transitIronHeader.Width = 45;
+            // 
+            // transitCropHeader
+            // 
+            this.transitCropHeader.Text = "Crop";
+            this.transitCropHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.transitCropHeader.Width = 45;
+            // 
+            // transitTimeHeader
+            // 
+            this.transitTimeHeader.Text = "Time";
+            this.transitTimeHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // transitLastHeader
+            // 
+            this.transitLastHeader.Text = "LastTransit";
+            this.transitLastHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.transitLastHeader.Width = 70;
+            // 
+            // transitActiveHeader
+            // 
+            this.transitActiveHeader.Text = "Active";
+            this.transitActiveHeader.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.transitActiveHeader.Width = 42;
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Location = new System.Drawing.Point(451, 331);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(215, 69);
+            this.panel2.TabIndex = 198;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(15, 9);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(85, 16);
+            this.label2.TabIndex = 190;
+            this.label2.Text = "Next transit";
             // 
             // MarketUc
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.label15);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.label11);
-            this.Controls.Add(this.cropSend);
-            this.Controls.Add(this.ironSend);
-            this.Controls.Add(this.claySend);
-            this.Controls.Add(this.woodSend);
-            this.Controls.Add(this.label12);
-            this.Controls.Add(this.label13);
-            this.Controls.Add(this.label14);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.label8);
-            this.Controls.Add(this.label7);
-            this.Controls.Add(this.overflowProtection);
-            this.Controls.Add(this.label6);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.numericUpDown1);
-            this.Controls.Add(this.numericUpDown2);
-            this.Controls.Add(this.numericUpDown3);
-            this.Controls.Add(this.numericUpDown4);
-            this.Controls.Add(this.npcEnabled);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.transitResEnabled);
-            this.Controls.Add(this.TransitArrival);
-            this.Controls.Add(this.LastTransit);
-            this.Controls.Add(this.label30);
-            this.Controls.Add(this.label29);
-            this.Controls.Add(this.label25);
-            this.Controls.Add(this.label26);
-            this.Controls.Add(this.label27);
-            this.Controls.Add(this.label28);
-            this.Controls.Add(this.label24);
-            this.Controls.Add(this.label23);
-            this.Controls.Add(this.label22);
-            this.Controls.Add(this.FillLimitCrop);
-            this.Controls.Add(this.FillLimitIron);
-            this.Controls.Add(this.FillLimitClay);
-            this.Controls.Add(this.FillLimitWood);
-            this.Controls.Add(this.TargetLimitCrop);
-            this.Controls.Add(this.TargetLimitIron);
-            this.Controls.Add(this.TargetLimitClay);
-            this.Controls.Add(this.TargetLimitWood);
-            this.Controls.Add(this.label21);
-            this.Controls.Add(this.label20);
-            this.Controls.Add(this.label19);
-            this.Controls.Add(this.label18);
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Controls.Add(this.panel2);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.panel5);
+            this.Controls.Add(this.panel4);
+            this.Controls.Add(this.panel3);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.routeTradeList);
             this.Name = "MarketUc";
-            this.Size = new System.Drawing.Size(901, 587);
-            ((System.ComponentModel.ISupportInitialize)(this.FillLimitCrop)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FillLimitIron)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FillLimitClay)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.FillLimitWood)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TargetLimitCrop)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TargetLimitIron)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TargetLimitClay)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.TargetLimitWood)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.Size = new System.Drawing.Size(669, 477);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.cropSend)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ironSend)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.claySend)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.woodSend)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown7)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown9)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown8)).EndInit();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.CheckBox transitResEnabled;
-        private System.Windows.Forms.Label TransitArrival;
-        private System.Windows.Forms.Label LastTransit;
-        private System.Windows.Forms.Label label30;
-        private System.Windows.Forms.Label label29;
-        private System.Windows.Forms.Label label25;
-        private System.Windows.Forms.Label label26;
-        private System.Windows.Forms.Label label27;
-        private System.Windows.Forms.Label label28;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label label23;
-        private System.Windows.Forms.Label label22;
-        private System.Windows.Forms.NumericUpDown FillLimitCrop;
-        private System.Windows.Forms.NumericUpDown FillLimitIron;
-        private System.Windows.Forms.NumericUpDown FillLimitClay;
-        private System.Windows.Forms.NumericUpDown FillLimitWood;
-        private System.Windows.Forms.NumericUpDown TargetLimitCrop;
-        private System.Windows.Forms.NumericUpDown TargetLimitIron;
-        private System.Windows.Forms.NumericUpDown TargetLimitClay;
-        private System.Windows.Forms.NumericUpDown TargetLimitWood;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label20;
-        private System.Windows.Forms.Label label19;
-        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton radioButton2;
+        private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox npcEnabled;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
-        private System.Windows.Forms.NumericUpDown numericUpDown3;
-        private System.Windows.Forms.NumericUpDown numericUpDown4;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.CheckBox overflowProtection;
-        private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Label label8;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
+        private UserControls.CoordinatesUc coordinatesUc1;
+        private System.Windows.Forms.ComboBox VillageComboBox;
+        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.NumericUpDown cropSend;
-        private System.Windows.Forms.NumericUpDown ironSend;
-        private System.Windows.Forms.NumericUpDown claySend;
-        private System.Windows.Forms.NumericUpDown woodSend;
-        private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.NumericUpDown numericUpDown6;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.NumericUpDown numericUpDown7;
+        private System.Windows.Forms.NumericUpDown numericUpDown9;
+        private System.Windows.Forms.NumericUpDown numericUpDown8;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Panel panel5;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.Label MerchantInfo;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.ListView routeTradeList;
+        private System.Windows.Forms.ColumnHeader transitIdHeader;
+        private System.Windows.Forms.ColumnHeader transitLocationHeader;
+        private System.Windows.Forms.ColumnHeader transitWoodHeader;
+        private System.Windows.Forms.ColumnHeader transitClayHeader;
+        private System.Windows.Forms.ColumnHeader transitIronHeader;
+        private System.Windows.Forms.ColumnHeader transitCropHeader;
+        private System.Windows.Forms.ColumnHeader transitTimeHeader;
+        private System.Windows.Forms.ColumnHeader transitLastHeader;
+        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.ColumnHeader transitActiveHeader;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.NumericUpDown numericUpDown2;
     }
 }
