@@ -22,13 +22,14 @@ namespace TbsCore.Tasks.LowLevel
             await DriverHelper.ClickById(acc, npcButton.Id);
 
             //wait npc form show
-            var timeout = DateTime.Now.AddSeconds(100);
+            var timeout = DateTime.Now.AddSeconds(10);
 
             HtmlNode remainRes = null;
             do
             {
                 await Task.Delay(1000);
 
+                acc.Wb.UpdateHtml();
                 remainRes = acc.Wb.Html.GetElementbyId("remain");
 
                 if (timeout < DateTime.Now)
