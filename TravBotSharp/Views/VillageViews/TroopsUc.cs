@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TbsCore.Helpers;
+using TbsCore.Tasks.SecondLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -16,26 +17,11 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
-            if (acc.AccInfo.Tribe != null)
-            {
-                if (vill.Troops.TroopToTrain != null)
-                    labelTroopsToTrain.Text = $"Selected: {VillageHelper.EnumStrToString(vill.Troops.TroopToTrain.ToString() ?? "")}";
-                else labelTroopsToTrain.Text = "Selected:";
 
-                comboBoxTroopsToTrain.Items.Clear();
-                int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
-                for (var i = troopsEnum + 1; i < troopsEnum + 11; i++)
-                {
-                    Classificator.TroopsEnum troop = (Classificator.TroopsEnum)i;
-                    comboBoxTroopsToTrain.Items.Add(VillageHelper.EnumStrToString(troop.ToString()));
-                }
-                if (comboBoxTroopsToTrain.Items.Count > 0) comboBoxTroopsToTrain.SelectedIndex = 0;
-            }
-            else
-            {
-                labelTroopsToTrain.Text = "Selected:";
-                comboBoxTroopsToTrain.Items.Clear();
-            }
+            troopSelectorTrain.Init(acc.AccInfo.Tribe);
+            troopSelectorTrain.SelectedTroop = vill.Troops.TroopToTrain;
+
+            troopSelectorImprove.Init(acc.AccInfo.Tribe);
 
             // Village troops info
             string infoText = "-- Troops already researched:\n";
@@ -55,23 +41,29 @@ namespace TravBotSharp.Views
             infoText += string.Join(", ", vill.Troops.ToImprove) + "\n";
             infoText += $"-- Settlers already trained: {vill.Troops.Settlers}";
 
-            //List<string> ctStr = new List<string>();
-            //foreach(var ct in vill.Troops.CurrentlyTraining.)
-            //{
-            //    ctStr.Add(ct.)
-            //}
-
             troopsInfo.Text = infoText;
         }
 
         private void button10_Click(object sender, EventArgs e) //select troop to train
         {
+            GetSelectedVillage().Troops.TroopToTrain = troopSelectorTrain.SelectedTroop;
+        }
+
+        private void button1_Click(object sender, EventArgs e) // Add to improve
+        {
             var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage();
-            int troopsEnum = ((int)acc.AccInfo.Tribe - 1) * 10;
-            var troopSelected = troopsEnum + comboBoxTroopsToTrain.SelectedIndex + 1;
-            vill.Troops.TroopToTrain = (Classificator.TroopsEnum)troopSelected;
-            labelTroopsToTrain.Text = $"Selected: {VillageHelper.EnumStrToString(vill.Troops.TroopToTrain.ToString() ?? "")}";
+            var vill = GetSelectedVillage(acc);
+            vill.Troops.ToImprove.Add(troopSelectorImprove.SelectedTroop ?? Classificator.TroopsEnum.None);
+            TroopsHelper.ReStartResearchAndImprovement(acc, vill);
+            this.UpdateUc();
+        }
+
+        private void button2_Click(object sender, EventArgs e) // scouts
+        {
+            GetSelectedAcc().Tasks.Add(new SendReinforcementScouts {
+                Scouts = (int)scouts.Value,
+                Vill = GetSelectedVillage()
+            }, true);
         }
     }
 }

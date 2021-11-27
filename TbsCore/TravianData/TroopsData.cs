@@ -307,8 +307,25 @@ namespace TbsCore.TravianData
             }
         }
 
-        public static bool IsTroopRam(TroopsEnum troop) => IsTroopRam((int)troop);
+        public static bool IsTroopScout(Account acc, int i) =>
+           IsTroopScout(TroopsHelper.TroopFromInt(acc, i));
 
+        public static bool IsTroopScout(TroopsEnum troop)
+        {
+            switch (troop)
+            {
+                case TroopsEnum.EquitesLegati:
+                case TroopsEnum.Scout:
+                case TroopsEnum.Pathfinder:
+                case TroopsEnum.SopduExplorer:
+                case TroopsEnum.Spotter:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsTroopRam(TroopsEnum troop) => IsTroopRam((int)troop);
         public static bool IsTroopRam(int troopInt) => (troopInt % 10) == 7;
 
         /// <summary>

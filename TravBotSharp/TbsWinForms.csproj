@@ -435,6 +435,12 @@
     <Compile Include="Forms\TroopsSelector.Designer.cs">
       <DependentUpon>TroopsSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="UserControls\TroopSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UserControls\TroopSelector.Designer.cs">
+      <DependentUpon>TroopSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserControls\TroopsSelectorUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -597,6 +603,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\TroopsSelector.resx">
       <DependentUpon>TroopsSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserControls\TroopSelector.resx">
+      <DependentUpon>TroopSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UserControls\TroopsSelectorUc.resx">
       <DependentUpon>TroopsSelectorUc.cs</DependentUpon>

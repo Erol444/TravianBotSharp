@@ -278,6 +278,12 @@ namespace TbsCore.Helpers
                     else vill.Troops.ToImprove.Remove(troop);
                 }
             }
+
+            // Improve only
+            if(vill.Troops.ToImprove.Count != 0)
+            {
+                acc.Tasks.Add(new ImproveTroop() { Vill = vill }, true, vill);
+            }
         }
 
         public static DateTime GetTrainingTimeForBuilding(BuildingEnum building, Village vill)
