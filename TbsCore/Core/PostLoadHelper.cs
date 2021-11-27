@@ -179,7 +179,8 @@ namespace TbsCore.Helpers
                         acc.Tasks.Add(new NPC()
                         {
                             ExecuteAt = DateTime.MinValue,
-                            Vill = vill
+                            Vill = vill,
+                            Priority = TaskPriority.High
                         }, true, vill);
                     }
                 },

@@ -46,6 +46,8 @@ namespace TbsCore.Tasks.LowLevel
                 flNode.Descendants("div").Any(x => x.HasClass("expandCollapse") && x.HasClass("collapsed")))
             {
                 await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
+                await Task.Delay(500);
+                acc.Wb.UpdateHtml();
                 // Update flNode!
                 flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
             }

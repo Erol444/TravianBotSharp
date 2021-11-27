@@ -12,7 +12,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=0"))
+            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=0", update: true))
                 return TaskRes.Executed;
 
             var npcMerchant = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
