@@ -123,10 +123,11 @@ namespace TbsCore.Tasks.LowLevel
 
             Vill.TroopMovements.IncomingAttacks.AddRange(attacks);
             // Next check for new attacks should be in:
-            // - 1x speed = 20 min
-            // - 3x speed = 6:40 min
-            // - 5x speed = 4 min
-            this.NextExecute = DateTime.Now.AddMinutes(20 / acc.AccInfo.ServerSpeed);
+            // - 1x speed = 30 min
+            // - 3x speed = 10 min
+            // - 5x speed = 6 min
+            var nextCheckMin = 30 / acc.AccInfo.ServerSpeed;
+            this.NextExecute = DateTime.Now.AddMinutes(Math.Max(nextCheckMin, 2)); // For TTWars
 
             return TaskRes.Executed;
         }
