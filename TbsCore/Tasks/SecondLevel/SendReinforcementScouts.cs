@@ -32,7 +32,6 @@ namespace TbsCore.Tasks.SecondLevel
                 base.TroopsMovement.Troops = ScoutsOnly(acc);
                 base.TroopsMovement.MovementType = Classificator.MovementType.Reinforcement;
                 base.TroopsMovement.TargetCoordinates = vill.Coordinates;
-                base.SetCoordsInUrl = true;
                 base.TroopsCallback = (Account _, TroopsBase t) =>
                 {
                     for (int i = 0; i < t.Troops.Length; i++)

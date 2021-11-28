@@ -55,6 +55,7 @@ namespace TbsCore.Helpers
             var ran = new Random();
 
             //Web browser not initialized
+            // Update villages
             if (!UpdateAccountObject.UpdateVillages(html, acc)) return new List<Action>();
 
             //Didnt check version yet

@@ -34,7 +34,7 @@ namespace TbsCore.Tasks.LowLevel
             await Task.Delay(AccountHelper.Delay(acc));
             do
             {
-                await DriverHelper.ClickByClassName(acc, "collect", false);
+                await DriverHelper.ClickByClassName(acc, "collect", log: false);
             }
             while (acc.Wb.Html.DocumentNode.Descendants("button").Any(x => x.HasClass("collect")));
         }

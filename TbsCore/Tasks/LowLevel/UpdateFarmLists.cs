@@ -15,7 +15,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=99");
+            await NavigationHelper.ToRallyPoint(acc, this.Vill, NavigationHelper.RallyPointTab.Farmlist);
 
             var foundFLs = FarmlistParser.ParseFL(acc.Wb.Html, acc.AccInfo.ServerVersion);
             if (foundFLs == null)
@@ -45,7 +45,7 @@ namespace TbsCore.Tasks.LowLevel
             foreach (var farmlist in acc.Farming.FL)
             {
                 var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion, farmlist.Id);
-                if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
+                if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars ||
                         flNode.Descendants("div").Any(x => x.HasClass("expandCollapse") && x.HasClass("collapsed")))
                 {
                     await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({farmlist.Id});");
@@ -68,7 +68,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             switch (version)
             {
-                case ServerVersionEnum.T4_4: return htmlDoc.GetElementbyId("list" + id);
+                case ServerVersionEnum.TTwars: return htmlDoc.GetElementbyId("list" + id);
                 case ServerVersionEnum.T4_5: return htmlDoc.GetElementbyId("raidList" + id);
                 default: return null;
             }

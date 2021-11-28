@@ -169,7 +169,12 @@ namespace TbsCore.TravianData
             BuildingEnum.GreatWarehouse,
             BuildingEnum.GreatGranary,
             BuildingEnum.Trapper,
-            BuildingEnum.Cranny
+            BuildingEnum.Cranny,
+            // Resource fields
+            BuildingEnum.Woodcutter,
+            BuildingEnum.ClayPit,
+            BuildingEnum.IronMine,
+            BuildingEnum.Cropland,
         };
 
         public static BuildingCategoryEnum GetBuildingsCategory(BuildingEnum building)

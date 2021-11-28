@@ -266,7 +266,6 @@ namespace TravBotSharp.Views
                         Troops = fl.Targets[i].Troops,
                         MovementType = Classificator.MovementType.Raid
                     },
-                    SetCoordsInUrl = true
                 };
 
                 acc.Tasks.Add(taskSendTroops);

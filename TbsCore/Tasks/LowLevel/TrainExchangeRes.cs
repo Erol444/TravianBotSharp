@@ -16,7 +16,7 @@ namespace TbsCore.Tasks.LowLevel
             if (Vill == null) Vill = AccountHelper.GetMainVillage(acc);
 
             var building = TroopsData.GetTroopBuilding(troop, Great);
-            if (!await VillageHelper.EnterBuilding(acc, Vill, building))
+            if (!await NavigationHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
 
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)troop));

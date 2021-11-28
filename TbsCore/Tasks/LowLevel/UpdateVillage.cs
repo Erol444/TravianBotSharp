@@ -39,7 +39,7 @@ namespace TbsCore.Tasks.LowLevel
             Vill.Troops.TroopToTrain = firstTroop;
             Vill.Troops.Researched.Add(firstTroop);
 
-            if (await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
+            if (await NavigationHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
             {
                 // Village has town hall, parse celebration duration
                 Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
@@ -85,7 +85,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             foreach (var trainingBuilding in trainingBuildings)
             {
-                if (!await VillageHelper.EnterBuilding(acc, Vill, trainingBuilding)) continue;
+                if (!await NavigationHelper.EnterBuilding(acc, Vill, trainingBuilding)) continue;
 
                 // Mark troops that user can train in building as researched
                 TroopsHelper.UpdateTroopsResearched(Vill, acc.Wb.Html);

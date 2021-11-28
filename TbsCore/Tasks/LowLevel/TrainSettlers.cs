@@ -12,14 +12,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var building = Vill.Build.Buildings
-                .FirstOrDefault(x =>
-                    x.Type == Classificator.BuildingEnum.Residence ||
-                    x.Type == Classificator.BuildingEnum.Palace ||
-                    x.Type == Classificator.BuildingEnum.CommandCenter
-                );
-
-            if (!await VillageHelper.EnterBuilding(acc, building, "&s=1"))
+            if (!await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Train))
                 return TaskRes.Executed;
 
             var settler = TroopsData.TribeSettler(acc.AccInfo.Tribe);

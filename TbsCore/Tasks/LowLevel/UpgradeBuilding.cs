@@ -297,7 +297,7 @@ namespace TbsCore.Tasks.LowLevel
         /// <returns>Whether bot watched the ad</returns>
         private async Task<bool> TryFastUpgrade(Account acc)
         {
-            if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
+            if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", log: false)) return false;
             await System.Threading.Tasks.Task.Delay(AccountHelper.Delay(acc));
 
             // Confirm

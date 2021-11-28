@@ -29,6 +29,9 @@ namespace TbsCore.Helpers
             return indicator;
         }
 
+        internal static Village ActiveVill(Account acc) =>
+            acc.Villages.FirstOrDefault(x => x.Active);
+
         /// <summary>
         /// Generates a character for the resource indicator - for one resource
         /// </summary>
@@ -52,15 +55,15 @@ namespace TbsCore.Helpers
         public static string VillageType(Village vill)
         {
             string type = "";
-            type += vill.Build.Buildings.Count(x => x.Type == BuildingEnum.Woodcutter).ToString();
-            type += vill.Build.Buildings.Count(x => x.Type == BuildingEnum.ClayPit).ToString();
-            type += vill.Build.Buildings.Count(x => x.Type == BuildingEnum.IronMine).ToString();
-            type += vill.Build.Buildings.Count(x => x.Type == BuildingEnum.Cropland).ToString();
+            type += vill.Build.Buildings.Count(x => x.Type == Classificator.BuildingEnum.Woodcutter).ToString();
+            type += vill.Build.Buildings.Count(x => x.Type == Classificator.BuildingEnum.ClayPit).ToString();
+            type += vill.Build.Buildings.Count(x => x.Type == Classificator.BuildingEnum.IronMine).ToString();
+            type += vill.Build.Buildings.Count(x => x.Type == Classificator.BuildingEnum.Cropland).ToString();
             if (type == "11115") type = "15c";
             return type;
         }
 
-        public static string BuildingTypeToString(BuildingEnum building) => EnumStrToString(building.ToString());
+        public static string BuildingTypeToString(Classificator.BuildingEnum building) => EnumStrToString(building.ToString());
 
         public static string EnumStrToString(string str)
         {
@@ -98,61 +101,6 @@ namespace TbsCore.Helpers
 
             if (href.Contains(acc.AccInfo.ServerUrl)) await acc.Wb.Navigate(href);
             else await acc.Wb.Navigate(uri.Scheme + "://" + uri.Host + uri.AbsolutePath + href);
-        }
-
-        /// <summary>
-        /// Enters a specific building.
-        /// </summary>
-        /// <param name="acc">Account</param>
-        /// <param name="building">Building to enter</param>
-        /// <param name="query">Additional query (to specify tab)</param>
-        /// <param name="dorf">Whether we want to first navigate to dorf (less suspicious)</param>
-        /// <param name="update">Whether we want to force update the current page</param>
-        /// <returns>Whether it was successful</returns>
-        public static async Task<bool> EnterBuilding(Account acc, Building building, string query = "", bool dorf = true, bool update = false)
-        {
-            // If multiple tabs, re-navigate to the building!
-            if (BuildingsData.HasMultipleTabs(building.Type)) update = true;
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case ServerVersionEnum.T4_5:
-                    await UrlHelper.BuildNavigate(acc, acc.Wb.Html, building.Id);
-                    break;
-                case ServerVersionEnum.TTwars:
-                    break;
-            }
-            // If we are already at the desired building (if gid is correct)
-            Uri currentUri = new Uri(acc.Wb.CurrentUrl);
-            if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString() && !update)
-            {
-                acc.Wb.UpdateHtml();
-                return true;
-            }
-
-            // If we want to navigate to dorf first
-            if (dorf)
-            {
-                string dorfUrl = $"/dorf{(building.Id < 19 ? 1 : 2)}.php";
-                if (!acc.Wb.CurrentUrl.Contains(dorfUrl))
-                {
-                    await acc.Wb.Navigate(acc.AccInfo.ServerUrl + dorfUrl);
-                }
-            }
-
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}{query}");
-            return true;
-        }
-
-        public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, string query = "", bool dorf = true, bool update = false)
-        {
-            var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == buildingEnum);
-
-            if (building == null)
-            {
-                acc.Logger.Warning($"Tried to enter {buildingEnum} but couldn't find it in village {vill.Name}!");
-                return false;
-            }
-            return await EnterBuilding(acc, building, query, dorf, update);
         }
 
         /// <summary>

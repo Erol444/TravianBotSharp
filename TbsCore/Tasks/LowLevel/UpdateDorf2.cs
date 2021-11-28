@@ -13,7 +13,7 @@ namespace TbsCore.Tasks.LowLevel
             if (!acc.Wb.CurrentUrl.Contains("/dorf2.php")) // Don't re-navigate
             {
                 //await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
-                await UrlHelper.MainNavigate(acc, acc.Wb.Html, UrlHelper.MainNavigationButton.Buildings);
+                await NavigationHelper.MainNavigate(acc, NavigationHelper.MainNavigationButton.Buildings);
             }
 
             return TaskRes.Executed;

@@ -47,7 +47,7 @@ namespace TbsCore.Tasks.LowLevel
             // will be executed right after the hero helmet switch
             if (HeroHelper.SwitchHelmet(acc, this.Vill, building, this)) return TaskRes.Executed;
 
-            if (!await VillageHelper.EnterBuilding(acc, Vill, building))
+            if (!await NavigationHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
 
             if (this.UpdateOnly || this.Troop == TroopsEnum.None)

@@ -87,11 +87,14 @@ namespace TbsCore.Helpers
 
         /// <summary>
         /// Write coordinates into the number inputs. Used when sending troops, resources etc.
+        /// If coordinates are already there (embedded in url), skip this task.
         /// </summary>
         internal static async Task WriteCoordinates(Account acc, Coordinates coordinates)
         {
-            await WriteById(acc, "xCoordInput", coordinates.x);
-            await WriteById(acc, "yCoordInput", coordinates.y);
+            if (string.IsNullOrEmpty(acc.Wb.Html.GetElementbyId("xCoordInput").GetAttributeValue("value", "")))
+                await WriteById(acc, "xCoordInput", coordinates.x);
+            if (string.IsNullOrEmpty(acc.Wb.Html.GetElementbyId("yCoordInput").GetAttributeValue("value", "")))
+                await WriteById(acc, "yCoordInput", coordinates.y);
         }
 
         #region By Id
@@ -110,32 +113,32 @@ namespace TbsCore.Helpers
 
         #region By Class Name
 
-        public static async Task<bool> ClickByClassName(Account acc, string query, bool log = true) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionClick(), log);
+        public static async Task<bool> ClickByClassName(Account acc, string query, int qindex = 0, bool log = true) =>
+            await ExecuteAction(acc, new QueryByClassName(query, qindex), new ActionClick(), log);
 
-        public static async Task<bool> WriteByClassName(Account acc, string query, object text, bool log = true) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionWrite(text), log);
+        public static async Task<bool> WriteByClassName(Account acc, string query, object text, int qindex = 0, bool log = true) =>
+            await ExecuteAction(acc, new QueryByClassName(query, qindex), new ActionWrite(text), log);
 
-        public static async Task<bool> CheckByClassName(Account acc, string query, bool check, bool log = true) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionCheck(check), log);
+        public static async Task<bool> CheckByClassName(Account acc, string query, bool check, int qindex = 0, bool log = true) =>
+            await ExecuteAction(acc, new QueryByClassName(query, qindex), new ActionCheck(check), log);
 
-        public static async Task<bool> SelectIndexByClassName(Account acc, string query, int index, bool log = true) =>
-            await ExecuteAction(acc, new QueryByClassName(query), new ActionSelectIndex(index), log);
+        public static async Task<bool> SelectIndexByClassName(Account acc, string query, int index, int qindex = 0, bool log = true) =>
+            await ExecuteAction(acc, new QueryByClassName(query, qindex), new ActionSelectIndex(index), log);
         #endregion
 
         #region By Name
 
-        public static async Task<bool> ClickByName(Account acc, string query, bool log = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionClick(), log);
+        public static async Task<bool> ClickByName(Account acc, string query, int qindex = 0, bool log = true) =>
+            await ExecuteAction(acc, new QueryByName(query, qindex), new ActionClick(), log);
 
-        public static async Task<bool> WriteByName(Account acc, string query, object text, bool log = true, bool update = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionWrite(text), log, update);
+        public static async Task<bool> WriteByName(Account acc, string query, object text, int qindex = 0,  bool log = true) =>
+            await ExecuteAction(acc, new QueryByName(query, qindex), new ActionWrite(text), log);
 
-        public static async Task<bool> CheckByName(Account acc, string query, bool check, bool log = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionCheck(check), log);
+        public static async Task<bool> CheckByName(Account acc, string query, bool check, int qindex = 0, bool log = true) =>
+            await ExecuteAction(acc, new QueryByName(query, qindex), new ActionCheck(check), log);
 
-        public static async Task<bool> SelectIndexByName(Account acc, string query, int index, bool log = true) =>
-            await ExecuteAction(acc, new QueryByName(query), new ActionSelectIndex(index), log);
+        public static async Task<bool> SelectIndexByName(Account acc, string query, int index, int qindex = 0, bool log = true) =>
+            await ExecuteAction(acc, new QueryByName(query, qindex), new ActionSelectIndex(index), log);
         #endregion
 
         #region By Attribute Value
@@ -159,10 +162,10 @@ namespace TbsCore.Helpers
         { public QueryById(string str) => base.val = $"getElementById('{str}')"; }
 
         public class QueryByName : Query
-        { public QueryByName(string str) => base.val = $"getElementsByName('{str}')[0]"; }
+        { public QueryByName(string str, int index = 0) => base.val = $"getElementsByName('{str}')[{index}]"; }
 
         public class QueryByClassName : Query
-        { public QueryByClassName(string str) => base.val = $"getElementsByClassName('{str}')[0]"; }
+        { public QueryByClassName(string str, int index = 0) => base.val = $"getElementsByClassName('{str}')[{index}]"; }
 
         public class QueryByAttributeVal : Query
         { public QueryByAttributeVal(string attribute, string value) => base.val = $"querySelectorAll('[{attribute}=\"{value}\"]')[0]"; }
