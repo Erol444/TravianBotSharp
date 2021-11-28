@@ -181,7 +181,7 @@ namespace TbsCore.Helpers
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     acc.Hero.HomeVillageId = hrefId ?? 0;
                     return;
                 case ServerVersionEnum.T4_5:
@@ -220,7 +220,7 @@ namespace TbsCore.Helpers
             // In TTWars, helmets have acc-wide effect
             // TODO: for T4.5, add auto-move hero feature (for helmet effect purposes)
             if (GetHeroHomeVillage(acc) != trainVill &&
-                acc.AccInfo.ServerVersion != ServerVersionEnum.T4_4) return false;
+                acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.TTwars) return false;
 
             string type = "";
             if (building == BuildingEnum.Barracks ||
@@ -256,13 +256,6 @@ namespace TbsCore.Helpers
                 NextTask = task
             }, true);
             return true;
-        }
-
-        internal static async Task NavigateToHeroAttributes(Account acc)
-        {
-            // Even if default tab is switched to other tab (not attributes), navigate
-            // to attributes tab
-            await VersionHelper.Navigate(acc, "/hero.php?t=1", "/hero/attributes");
         }
     }
 }

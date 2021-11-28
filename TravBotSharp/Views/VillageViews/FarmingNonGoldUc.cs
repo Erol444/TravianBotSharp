@@ -133,7 +133,7 @@ namespace TravBotSharp.Views
 
             var vill = GetSelectedVillage();
             if (vill == null) return;
-            if (GetSelectedAcc().AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_4 && vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
+            if (GetSelectedAcc().AccInfo.ServerVersion != Classificator.ServerVersionEnum.TTwars && vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
             {
                 MessageBox.Show("Activities cannot be done by humans - RET (Rule Enforcement team)", "Limited at 15 farm per list");
                 return;
@@ -266,7 +266,6 @@ namespace TravBotSharp.Views
                         Troops = fl.Targets[i].Troops,
                         MovementType = Classificator.MovementType.Raid
                     },
-                    SetCoordsInUrl = true
                 };
 
                 acc.Tasks.Add(taskSendTroops);

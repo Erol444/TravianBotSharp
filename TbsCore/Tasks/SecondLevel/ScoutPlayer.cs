@@ -39,7 +39,6 @@ namespace TbsCore.Tasks.SecondLevel
                             Troops = GenerateScoutTroops(acc),
                         },
                         Vill = this.Vill,
-                        SetCoordsInUrl = true,
                     };
                     await sendTask.Execute(acc);
 

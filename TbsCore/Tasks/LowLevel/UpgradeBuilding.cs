@@ -240,7 +240,7 @@ namespace TbsCore.Tasks.LowLevel
 
             acc.Logger.Information($"Started upgrading {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
 
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars ||
                buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
                !await TryFastUpgrade(acc)) // +25% speed upgrade
             {
@@ -297,7 +297,7 @@ namespace TbsCore.Tasks.LowLevel
         /// <returns>Whether bot watched the ad</returns>
         private async Task<bool> TryFastUpgrade(Account acc)
         {
-            if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
+            if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", log: false)) return false;
             await System.Threading.Tasks.Task.Delay(AccountHelper.Delay(acc));
 
             // Confirm

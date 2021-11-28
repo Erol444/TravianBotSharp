@@ -20,7 +20,7 @@ namespace TbsCore.Tasks.LowLevel
             var res = MarketHelper.GetResToMainVillage(Vill);
             if (res.Sum() <= 0) return TaskRes.Executed;
 
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
+            if (!await NavigationHelper.ToMarketplace(acc, Vill, NavigationHelper.MarketplaceTab.SendResources))
                 return TaskRes.Executed;
 
             if (this.Vill.Settings.Type == VillType.Support && this.Vill.Settings.SendRes)

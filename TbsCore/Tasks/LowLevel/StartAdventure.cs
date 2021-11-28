@@ -16,7 +16,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await VersionHelper.Navigate(acc, "/hero.php?t=3", "/hero/adventures");
+            await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Adventures);
 
             acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
@@ -39,7 +39,7 @@ namespace TbsCore.Tasks.LowLevel
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/{adventure.Ref}");
 
                     var startButton = acc.Wb.Html.GetElementbyId("start");
@@ -49,7 +49,7 @@ namespace TbsCore.Tasks.LowLevel
                         this.NextExecute = DateTime.Now.AddMinutes(10);
                         return TaskRes.Executed;
                     }
-                    acc.Wb.ExecuteScript("document.getElementById('start').click()");
+                    await DriverHelper.ClickById(acc, "start");
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:

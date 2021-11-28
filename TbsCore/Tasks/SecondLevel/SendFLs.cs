@@ -29,7 +29,7 @@ namespace TbsCore.Tasks.SecondLevel
                     acc.Tasks.Add(new SendFarmlist() { ExecuteAt = DateTime.Now.AddSeconds(totalSec), FL = fl, Priority = TaskPriority.High });
                     switch (acc.AccInfo.ServerVersion)
                     {
-                        case Classificator.ServerVersionEnum.T4_4:
+                        case Classificator.ServerVersionEnum.TTwars:
                             // For TTWars, you need 30sec delay between each FL send
                             totalSec += rnd.Next(acc.Farming.MinInterval, acc.Farming.MaxInterval);
                             break;
@@ -44,8 +44,8 @@ namespace TbsCore.Tasks.SecondLevel
             int nextExecuteSec = 100;
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
-                    nextExecuteSec = totalSec;
+                case Classificator.ServerVersionEnum.TTwars:
+                    acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(totalSec) });
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:

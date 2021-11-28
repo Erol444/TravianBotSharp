@@ -13,7 +13,7 @@ namespace TbsCoreTest
 {
     public class ResSpendingTest
     {
-        //[Fact]
+        [Fact]
         public void TestCasualtiesRatio()
         {
             var factory = new CombatFactory();

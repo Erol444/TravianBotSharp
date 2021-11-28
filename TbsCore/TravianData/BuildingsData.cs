@@ -73,7 +73,7 @@ namespace TbsCore.TravianData
                 case BuildingEnum.Brewery:
                     switch (acc.AccInfo.ServerVersion)
                     {
-                        case ServerVersionEnum.T4_4: return 10;
+                        case ServerVersionEnum.TTwars: return 10;
                         default: return 20;
                     }
 
@@ -169,7 +169,12 @@ namespace TbsCore.TravianData
             BuildingEnum.GreatWarehouse,
             BuildingEnum.GreatGranary,
             BuildingEnum.Trapper,
-            BuildingEnum.Cranny
+            BuildingEnum.Cranny,
+            // Resource fields
+            BuildingEnum.Woodcutter,
+            BuildingEnum.ClayPit,
+            BuildingEnum.IronMine,
+            BuildingEnum.Cropland,
         };
 
         public static BuildingCategoryEnum GetBuildingsCategory(BuildingEnum building)
@@ -407,6 +412,24 @@ namespace TbsCore.TravianData
             }
             return (tribe, ret);
         }
+
+        /// <summary>
+        /// Whether building has multiple tabs inside
+        /// </summary>
+        public static bool HasMultipleTabs(BuildingEnum building) =>
+            multipleTabsBuildings.Any(x => x == building);
+
+        /// <summary>
+        /// Buildings with multiple tabs inside
+        /// </summary>
+        private static BuildingEnum[] multipleTabsBuildings = new BuildingEnum[] {
+            BuildingEnum.RallyPoint,
+            BuildingEnum.CommandCenter,
+            BuildingEnum.Residence,
+            BuildingEnum.Palace,
+            BuildingEnum.Marketplace,
+            BuildingEnum.Treasury,
+        };
 
         /// <summary>
         /// Buildings that are always build in the same spot

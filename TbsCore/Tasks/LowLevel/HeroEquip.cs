@@ -14,8 +14,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await HeroHelper.NavigateToHeroAttributes(acc);
-
+            await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Attributes);
             HeroHelper.ParseHeroPage(acc);
 
             foreach (var use in Items)
@@ -48,7 +47,7 @@ namespace TbsCore.Tasks.LowLevel
                         script += $"items.querySelector('div[class$=\"_{(int)item}\"]').click();";
                         break;
 
-                    case ServerVersionEnum.T4_4:
+                    case ServerVersionEnum.TTwars:
                         script += $"items.querySelector('div[class$=\"_{(int)item} \"]').click();";
                         break;
                 }

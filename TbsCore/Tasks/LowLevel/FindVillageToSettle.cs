@@ -13,7 +13,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
+            await NavigationHelper.ToMap(acc);
 
             var mainVill = AccountHelper.GetMainVillage(acc);
 

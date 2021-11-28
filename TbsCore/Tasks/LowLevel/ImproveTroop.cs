@@ -16,7 +16,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             if (Vill == null) Vill = acc.Villages.First(x => x.Active);
 
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Smithy))
+            if (!await NavigationHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Smithy))
                 return TaskRes.Executed;
 
             var levels = TroopsParser.GetTroopLevels(acc.Wb.Html);

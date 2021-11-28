@@ -29,8 +29,7 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=0");
+            await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.Managenment);
 
             List<int> idsChecked = new List<int>(acc.Villages.Count);
 
@@ -44,7 +43,7 @@ namespace TbsCore.Tasks.LowLevel
                 await VillageHelper.SwitchVillage(acc, nextId);
             }
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2");
+            await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.SendTroops);
 
             var unitImg = acc.Wb.Html.DocumentNode.Descendants("img").First(x => x.HasClass("unit"));
             var unitInt = Parser.RemoveNonNumeric(unitImg.GetClasses().First(x => x != "unit"));

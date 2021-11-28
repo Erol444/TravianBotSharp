@@ -126,7 +126,7 @@ namespace TbsCore.Parsers
         {
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var adv44 = htmlDoc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("adventureWhite"));
                     var bubble = adv44.Descendants().FirstOrDefault(x => x.HasClass("speechBubbleContent"));
                     if (bubble == null) return 0; //No bubble, no adventures
@@ -146,7 +146,7 @@ namespace TbsCore.Parsers
         {
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     return htmlDoc.DocumentNode
                         .Descendants("div")
                         .Any(x => x.HasClass("levelUp"));
@@ -163,7 +163,7 @@ namespace TbsCore.Parsers
         {
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var HeroStatus = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage")).ChildNodes.FirstOrDefault(x => x.Name == "img").GetAttributeValue("class", "");
                     switch (HeroStatus)
                     {
@@ -214,7 +214,7 @@ namespace TbsCore.Parsers
         {
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var health = htmlDoc.GetElementbyId("sidebarBoxHero").Descendants("div").FirstOrDefault(x => x.HasClass("bar")).Attributes.FirstOrDefault(x => x.Name == "style").Value.Split(':')[1].Replace("%", "");
                     health = health.Split('.')[0];
                     return (int)Parser.RemoveNonNumeric(health);

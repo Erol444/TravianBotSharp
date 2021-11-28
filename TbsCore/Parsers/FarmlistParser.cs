@@ -15,7 +15,7 @@ namespace TbsCore.Parsers
 
             switch (version)
             {
-                case ServerVersionEnum.T4_4: return ParseT4_4(raidList);
+                case ServerVersionEnum.TTwars: return ParseT4_4(raidList);
                 case ServerVersionEnum.T4_5: return ParseT4_5(raidList);
                 default: return null;
             }

@@ -363,7 +363,7 @@
 
         public enum ServerVersionEnum
         {
-            T4_4,
+            TTwars,
             T4_5,
         }
 

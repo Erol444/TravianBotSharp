@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.AttackModels;
 using TbsCore.Parsers;
@@ -19,7 +20,15 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?uid={UserId}");
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.T4_5:
+                    await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/profile/{UserId}");
+                    break;
+                case Classificator.ServerVersionEnum.TTwars:
+                    await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?uid={UserId}");
+                    break;
+            }
 
             var vills = acc.Wb.Html.GetElementbyId("villages")
                 .ChildNodes

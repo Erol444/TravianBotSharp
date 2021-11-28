@@ -17,7 +17,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=5"))
+            if (!await NavigationHelper.ToMarketplace(acc, Vill, NavigationHelper.MarketplaceTab.SendResources))
                 return TaskRes.Executed;
 
             if (this.Resources == null)

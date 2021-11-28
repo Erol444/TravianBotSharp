@@ -33,7 +33,6 @@ namespace TbsCore.Tasks.LowLevel
             {
                 var troopsInVill = new TroopsBase();
                 base.TroopsMovement.Troops = new int[11];
-                base.SetCoordsInUrl = false;
                 base.TroopsCallback = (Account _, TroopsBase troops) =>
                 {
                     troopsInVill = troops;
@@ -120,7 +119,7 @@ namespace TbsCore.Tasks.LowLevel
             var attackCoords = list.First().Item1;
             acc.Logger.Information($"Bot will attack oasis {attackCoords}");
 
-            base.SetCoordsInUrl = true; // Since we are searching oasis from the map
+            //base.SetCoordsInUrl = true; // Since we are searching oasis from the map
             base.TroopsMovement.TargetCoordinates = attackCoords;
             base.TroopsMovement.MovementType = Classificator.MovementType.Raid;
             // Bot will configure amount of troops to be sent when it parses
@@ -183,7 +182,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 switch (acc.AccInfo.ServerVersion)
                 {
-                    case Classificator.ServerVersionEnum.T4_4:
+                    case Classificator.ServerVersionEnum.TTwars:
                         // Occupied "{k.fo}", unoccupied "{k.bt}"
                         if (tile.Title == "{k.bt}") ret.Add(tile.Coordinates);
                         break;

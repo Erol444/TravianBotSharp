@@ -12,7 +12,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Marketplace, "&t=0", update: true))
+            if (!await NavigationHelper.ToMarketplace(acc, Vill, NavigationHelper.MarketplaceTab.Managenment))
                 return TaskRes.Executed;
 
             var npcMerchant = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
@@ -54,7 +54,7 @@ namespace TbsCore.Tasks.LowLevel
                 //await acc.Wb.Driver.FindElementById($"m2[{i}]").Write(targetRes[i]);
                 switch (acc.AccInfo.ServerVersion)
                 {
-                    case Classificator.ServerVersionEnum.T4_4:
+                    case Classificator.ServerVersionEnum.TTwars:
                         await DriverHelper.ExecuteScript(acc, $"document.getElementById('m2[{i}]').value='{targetRes[i]}'");
                         break;
 

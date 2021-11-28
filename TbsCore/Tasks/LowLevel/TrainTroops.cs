@@ -47,7 +47,7 @@ namespace TbsCore.Tasks.LowLevel
             // will be executed right after the hero helmet switch
             if (HeroHelper.SwitchHelmet(acc, this.Vill, building, this)) return TaskRes.Executed;
 
-            if (!await VillageHelper.EnterBuilding(acc, Vill, building))
+            if (!await NavigationHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
 
             if (this.UpdateOnly || this.Troop == TroopsEnum.None)
@@ -70,7 +70,7 @@ namespace TbsCore.Tasks.LowLevel
             long maxNum = 0;
             switch (acc.AccInfo.ServerVersion)
             {
-                case ServerVersionEnum.T4_4:
+                case ServerVersionEnum.TTwars:
                     maxNum = Parser.RemoveNonNumeric(
                         troopNode.ChildNodes
                         .FirstOrDefault(x => x.Name == "a")?.InnerText ?? "0"
