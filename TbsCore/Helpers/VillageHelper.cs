@@ -6,6 +6,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.TravianData;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Helpers
@@ -110,6 +111,16 @@ namespace TbsCore.Helpers
         /// <returns>Whether it was successful</returns>
         public static async Task<bool> EnterBuilding(Account acc, Building building, string query = "", bool dorf = true, bool update = false)
         {
+            // If multiple tabs, re-navigate to the building!
+            if (BuildingsData.HasMultipleTabs(building.Type)) update = true;
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case ServerVersionEnum.T4_5:
+                    await UrlHelper.BuildNavigate(acc, acc.Wb.Html, building.Id);
+                    break;
+                case ServerVersionEnum.TTwars:
+                    break;
+            }
             // If we are already at the desired building (if gid is correct)
             Uri currentUri = new Uri(acc.Wb.CurrentUrl);
             if (HttpUtility.ParseQueryString(currentUri.Query).Get("gid") == ((int)building.Type).ToString() && !update)

@@ -12,14 +12,10 @@ namespace TbsCore.Helpers
     {
         public static async Task<bool> MainNavigate(Account acc, HtmlDocument html, MainNavigationButton button)
         {
-            var nav = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.Id.CompareTo("navigation") == 0);
+            var nav = html.GetElementbyId("navigation");
             if (nav == null) return false;
             var accessKey = (int)button;
-            var a = nav.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("accesskey", 8) == accessKey);
-            if (a == null) return false;
-
-            acc.Wb.FindElementByXPath($"//a[@accesskey={accessKey}]").Click();
-            await DriverHelper.WaitLoaded(acc);
+            await DriverHelper.ClickByAttributeValue(acc, "accesskey", accessKey.ToString());
             return true;
         }
 
@@ -27,34 +23,18 @@ namespace TbsCore.Helpers
         {
             if (index < 19) // dorf1
             {
-                var fields = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.Id.CompareTo("resourceFieldContainer") == 0);
-                if (fields == null) return false;
-                var field = fields.Descendants("a").FirstOrDefault(x => x.HasClass($"buildingSlot{index}"));
-                if (field == null) return false;
-
-                acc.Wb.FindElementByXPath($"//a[contains(concat(' ', @class, ' '), ' buildingSlot{index} ')]").Click();
-                await DriverHelper.WaitLoaded(acc);
-                return true;
+                if (!acc.Wb.CurrentUrl.Contains("dorf1.php") || acc.Wb.CurrentUrl.Contains("id="))
+                    await MainNavigate(acc, html, MainNavigationButton.Resources);
+                await DriverHelper.ClickByClassName(acc, $"buildingSlot{index}");
             }
             else // dorf2
             {
-                var fields = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.Id.CompareTo("villageContent") == 0);
-                if (fields == null) return false;
-                var field = fields.Descendants("div").FirstOrDefault(x => x.HasClass($"a{index}"));
-                if (field == null) return false;
-                var g = field.Descendants("g").FirstOrDefault();
-                if (g == null) // empty building
-                {
-                    acc.Wb.FindElementByXPath($"//div[contains(concat(' ', @class, ' '), ' a{index} ')]/*[name()='svg']/*").Click();
-                }
-                else // there is building
-                {
-                    acc.Wb.FindElementByXPath($"//div[contains(concat(' ', @class, ' '), ' a{index} ')]/a").Click();
-                }
-
-                await DriverHelper.WaitLoaded(acc);
-                return true;
+                if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
+                    await MainNavigate(acc, html, MainNavigationButton.Buildings);
+                await DriverHelper.ClickByClassName(acc, $"aid{index}");
             }
+            await DriverHelper.WaitLoaded(acc);
+            return true;
         }
 
         public static async Task<bool> RallyPointNavigate(Account acc, HtmlDocument html, RallyPointTab index)
