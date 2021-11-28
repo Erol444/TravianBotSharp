@@ -9,6 +9,7 @@ using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TbsCore.Helpers;
+using TbsCore.Models.TroopsModels;
 
 namespace TbsCore.Tasks.LowLevel
 {
@@ -30,10 +31,10 @@ namespace TbsCore.Tasks.LowLevel
             base.TroopsMovement = new TroopsSendModel();
             if (Vill.FarmingNonGold.OasisFarmingType != OasisFarmingType.NearestFirst)
             {
-                var troopsInVill = new int[11];
+                var troopsInVill = new TroopsBase();
                 base.TroopsMovement.Troops = new int[11];
                 base.SetCoordsInUrl = false;
-                base.TroopsCallback = (Account _, int[] troops) =>
+                base.TroopsCallback = (Account _, TroopsBase troops) =>
                 {
                     troopsInVill = troops;
                     return false; // Don't continue with the SendTroops
@@ -51,18 +52,18 @@ namespace TbsCore.Tasks.LowLevel
             // Get oasis coordinates
             var oasisCoords = GetUnoccupiedOasisCoordinates(acc, mapTiles);
             var oasisCoordsOrdered = oasisCoords
-                .OrderBy(oasis => MapHelper.CalculateDistance(acc, oasis, this.Vill.Coordinates))
+                .OrderBy(oasis => this.Vill.Coordinates.CalculateDistance(acc, oasis))
                 .ToList();
 
             var oasisFiltered = oasisCoordsOrdered.Where(o =>
-                MapHelper.CalculateDistance(acc, o, this.Vill.Coordinates) <= Vill.FarmingNonGold.OasisMaxDistance && // Oasis is in range
+                this.Vill.Coordinates.CalculateDistance(acc, o) <= Vill.FarmingNonGold.OasisMaxDistance && // Oasis is in range
                 !previouslyFarmed.Any(x => x.Item1.Equals(o)) // Oasis wasn't recently attacked
                 ).ToList();
 
             acc.Logger.Information($"Found {oasisCoordsOrdered.Count} oasis, {oasisFiltered.Count} are in range and weren't recently attacked");
 
             // (Coordinates, number of animals)
-            var list = new List<(Coordinates, int[])>();
+            var list = new List<(Coordinates, TroopsBase)>();
 
             for (int i = 0; i < oasisFiltered.Count; i++)
             {
@@ -75,8 +76,9 @@ namespace TbsCore.Tasks.LowLevel
                 // Check if oasis deff power is above threshold
                 // -1 will ignore deff power
                 if (Vill.FarmingNonGold.MaxDeffPower != -1 &&
-                    Vill.FarmingNonGold.MaxDeffPower < GetOasisDeffPower(animals)) continue;
+                    Vill.FarmingNonGold.MaxDeffPower < animals.TotalBaseDeff()) continue;
 
+                
                 list.Add((oasis, animals));
 
                 // If we want to first attack nearest oasis first, don't search for other oasis
@@ -102,11 +104,11 @@ namespace TbsCore.Tasks.LowLevel
                     break;
 
                 case OasisFarmingType.MaxResFirst:
-                    list = list.OrderByDescending(x => GetOasisResources(x.Item2)).ToList();
+                    list = list.OrderByDescending(x => GetOasisResources(x.Item2.Troops)).ToList();
                     break;
 
                 case OasisFarmingType.LeastPowerFirst:
-                    list = list.OrderBy(x => GetOasisDeffPower(x.Item2)).ToList();
+                    list = list.OrderBy(x => x.Item2.TotalBaseDeff()).ToList();
                     break;
 
                 case OasisFarmingType.MaxResProfitFirst:
@@ -144,17 +146,17 @@ namespace TbsCore.Tasks.LowLevel
             return TaskRes.Executed;
         }
 
-        public bool TroopsCountRecieved(Account acc, int[] troopsAtHome)
+        public bool TroopsCountRecieved(Account acc, TroopsBase troops)
         {
             // Attack with all offensive troops
             for (int i = 0; i < 10; i++)
             {
                 var troop = TroopsHelper.TroopFromInt(acc, i);
                 if (!TroopsData.IsTroopOffensive(troop)) continue;
-                base.TroopsMovement.Troops[i] = troopsAtHome[i];
+                base.TroopsMovement.Troops[i] = troops.Troops[i];
             }
             // Hero
-            if (troopsAtHome.Length == 11 && troopsAtHome[10] == 1)
+            if (troops.Troops.Length == 11 && troops.Troops[10] == 1)
             {
                 base.TroopsMovement.Troops[10] = 1;
             }
@@ -193,21 +195,6 @@ namespace TbsCore.Tasks.LowLevel
                 }
             }
             return ret;
-        }
-
-        /// <summary>
-        /// Gets total deffensive power of the oasis (infantry + cavalry)
-        /// </summary>
-        private long GetOasisDeffPower(int[] animals)
-        {
-            long totalDeff = 0;
-            for (int i = 0; i < 10; i++)
-            {
-                // defense against infantry + defense against cavalry
-                // 31 => start of Nature troops
-                totalDeff += animals[i] * (TroopsData.TroopValues[i + 31, 1] + TroopsData.TroopValues[i + 31, 2]);
-            }
-            return totalDeff;
         }
 
         /// <summary>

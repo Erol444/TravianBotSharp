@@ -60,6 +60,9 @@
             this.button3 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.scouted = new System.Windows.Forms.RichTextBox();
+            this.label14 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.maxFarmInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minFarmInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.minPopNatar)).BeginInit();
@@ -67,6 +70,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.flInterval)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
             // StopFarm
@@ -162,7 +166,7 @@
             // label31
             // 
             this.label31.AutoSize = true;
-            this.label31.Location = new System.Drawing.Point(29, 151);
+            this.label31.Location = new System.Drawing.Point(54, 128);
             this.label31.Name = "label31";
             this.label31.Size = new System.Drawing.Size(114, 13);
             this.label31.TabIndex = 117;
@@ -171,7 +175,7 @@
             // trainTroopsAfterFLcheckbox
             // 
             this.trainTroopsAfterFLcheckbox.AutoSize = true;
-            this.trainTroopsAfterFLcheckbox.Location = new System.Drawing.Point(32, 174);
+            this.trainTroopsAfterFLcheckbox.Location = new System.Drawing.Point(57, 151);
             this.trainTroopsAfterFLcheckbox.Name = "trainTroopsAfterFLcheckbox";
             this.trainTroopsAfterFLcheckbox.Size = new System.Drawing.Size(121, 17);
             this.trainTroopsAfterFLcheckbox.TabIndex = 115;
@@ -182,7 +186,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(32, 265);
+            this.button1.Location = new System.Drawing.Point(57, 189);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(111, 35);
             this.button1.TabIndex = 118;
@@ -269,7 +273,7 @@
             // 
             this.FlEnabled.AutoSize = true;
             this.FlEnabled.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FlEnabled.Location = new System.Drawing.Point(54, 154);
+            this.FlEnabled.Location = new System.Drawing.Point(54, 150);
             this.FlEnabled.Name = "FlEnabled";
             this.FlEnabled.Size = new System.Drawing.Size(136, 22);
             this.FlEnabled.TabIndex = 128;
@@ -341,7 +345,7 @@
             // 
             // flInterval
             // 
-            this.flInterval.Location = new System.Drawing.Point(61, 218);
+            this.flInterval.Location = new System.Drawing.Point(70, 207);
             this.flInterval.Maximum = new decimal(new int[] {
             3000,
             0,
@@ -356,7 +360,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(42, 199);
+            this.label8.Location = new System.Drawing.Point(51, 188);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(122, 16);
             this.label8.TabIndex = 136;
@@ -366,7 +370,7 @@
             // 
             this.label13.AutoSize = true;
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(16, 241);
+            this.label13.Location = new System.Drawing.Point(25, 230);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(206, 12);
             this.label13.TabIndex = 137;
@@ -414,15 +418,46 @@
             this.panel2.Controls.Add(this.FlEnabled);
             this.panel2.Controls.Add(this.label5);
             this.panel2.Controls.Add(this.FarmNum);
-            this.panel2.Location = new System.Drawing.Point(241, 29);
+            this.panel2.Location = new System.Drawing.Point(240, 16);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(474, 283);
+            this.panel2.Size = new System.Drawing.Size(448, 255);
             this.panel2.TabIndex = 140;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel3.Controls.Add(this.scouted);
+            this.panel3.Controls.Add(this.label14);
+            this.panel3.Location = new System.Drawing.Point(240, 277);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(448, 199);
+            this.panel3.TabIndex = 141;
+            // 
+            // scouted
+            // 
+            this.scouted.Location = new System.Drawing.Point(206, 2);
+            this.scouted.Margin = new System.Windows.Forms.Padding(2);
+            this.scouted.Name = "scouted";
+            this.scouted.ReadOnly = true;
+            this.scouted.Size = new System.Drawing.Size(240, 195);
+            this.scouted.TabIndex = 156;
+            this.scouted.Text = "";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(20, 2);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(170, 25);
+            this.label14.TabIndex = 120;
+            this.label14.Text = "Scouted villages";
             // 
             // FarmingUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label31);
@@ -436,7 +471,7 @@
             this.Controls.Add(this.minFarmInterval);
             this.Controls.Add(this.StartFarm);
             this.Name = "FarmingUc";
-            this.Size = new System.Drawing.Size(766, 334);
+            this.Size = new System.Drawing.Size(766, 479);
             ((System.ComponentModel.ISupportInitialize)(this.maxFarmInterval)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minFarmInterval)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.minPopNatar)).EndInit();
@@ -446,6 +481,8 @@
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -485,5 +522,8 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.RichTextBox scouted;
     }
 }

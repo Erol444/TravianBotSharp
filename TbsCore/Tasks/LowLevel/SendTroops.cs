@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
+using TbsCore.Models.TroopsModels;
 using TbsCore.Parsers;
 
 namespace TbsCore.Tasks.LowLevel
@@ -16,7 +17,7 @@ namespace TbsCore.Tasks.LowLevel
         /// Other tasks (like SendDeff) can extend this task and configure amount of troops to
         /// send when getting amount of troops at home. If false is returned, bot won't proceed the attack
         /// </summary>
-        public Func<Account, int[], bool> TroopsCallback { get; set; }
+        public Func<Account, TroopsBase, bool> TroopsCallback { get; set; }
 
         /// <summary>
         /// When the troops will arrive to the destination, is set after the bot sends the troops.
@@ -28,15 +29,21 @@ namespace TbsCore.Tasks.LowLevel
         /// Whether we want to embed coordinates into the url. This saves ~1 sec and it used when searching from the map / send troops clicked
         /// </summary>
         public bool SetCoordsInUrl { get; set; }
+        /// <summary>
+        /// In case we don't have specified troops at home, send partial attack (as many troops as we have at home)
+        /// If false, bot will skip this task.
+        /// </summary>
+        public bool SendPartialAttack { get; set; } = false;
 
         public override async Task<TaskRes> Execute(Account acc)
         {
             var url = $"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2";
-            if (SetCoordsInUrl) url += "&z=" + MapHelper.KidFromCoordinates(TroopsMovement.TargetCoordinates, acc);
+            if (SetCoordsInUrl) url += "&z=" + TroopsMovement.TargetCoordinates.GetKid(acc);
 
             await acc.Wb.Navigate(url);
 
-            var proceed = TroopsCallback?.Invoke(acc, TroopsMovementParser.GetTroopsInRallyPoint(acc.Wb.Html));
+            var troopsArr = TroopsMovementParser.GetTroopsInRallyPoint(acc.Wb.Html);
+            var proceed = TroopsCallback?.Invoke(acc, new TroopsBase(troopsArr, acc.AccInfo.Tribe));
             if (!(proceed ?? true)) return TaskRes.Retry;
 
             // No troops selected to be sent from this village
@@ -46,6 +53,19 @@ namespace TbsCore.Tasks.LowLevel
             for (int i = 0; i < TroopsMovement.Troops.Length; i++)
             {
                 if (TroopsMovement.Troops[i] == 0) continue;
+                if (troopsArr[i] < TroopsMovement.Troops[i])
+                {
+                    if (SendPartialAttack)
+                    {
+                        TroopsMovement.Troops[i] = troopsArr[i];
+                    }
+                    else
+                    {
+                        acc.Logger.Warning($"Vill {this.Vill} didn't have enough troops to send! Skipping task");
+                        return TaskRes.Executed;
+                    }
+                }
+
                 switch (acc.AccInfo.ServerVersion)
                 {
                     case Classificator.ServerVersionEnum.T4_4:

@@ -11,8 +11,6 @@ namespace TbsCore.Models.TroopsModels
 
         public void Init()
         {
-            //TroopsInVillage = new List<TroopsRaw>();
-            //MyTroops = new List<TroopsRaw>();
             CurrentlyTraining = new CurrentlyTraining();
             CurrentlyTraining.Init();
             Researched = new HashSet<Classificator.TroopsEnum>();
@@ -52,7 +50,5 @@ namespace TbsCore.Models.TroopsModels
         /// </summary>
         public HashSet<Classificator.TroopsEnum> ToImprove { get; set; }
 
-        //public List<TroopsRaw> TroopsInVillage { get; set; } //Got from dorf1 parse
-        //public List<TroopsRaw> MyTroops { get; set; } //got from rally point parse
     }
 }

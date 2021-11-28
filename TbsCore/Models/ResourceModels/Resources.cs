@@ -2,6 +2,15 @@
 {
     public class Resources
     {
+        public Resources() { }
+        public Resources(long[] res)
+        {
+            Wood = res[0];
+            Clay = res[1];
+            Iron = res[2];
+            Crop = res[3];
+        }
+
         public long Wood { get; set; }
         public long Clay { get; set; }
         public long Iron { get; set; }

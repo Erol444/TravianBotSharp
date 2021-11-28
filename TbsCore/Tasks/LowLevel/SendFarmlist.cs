@@ -1,11 +1,12 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
-
+using TbsCore.Parsers;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Tasks.LowLevel
@@ -52,10 +53,14 @@ namespace TbsCore.Tasks.LowLevel
                 flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
             }
 
+            var farms = new List<GoldClubFarm>();
             foreach (var farm in flNode.Descendants("tr").Where(x => x.HasClass("slotRow")))
             {
                 //iReport2 = yellow swords, iReport3 = red swords, iReport1 = successful raid
                 var img = farm.ChildNodes.FirstOrDefault(x => x.HasClass("lastRaid"))?.Descendants("img");
+
+                var coords = MapParser.GetPositionDetails(farm);
+                farms.Add(new GoldClubFarm(coords));
 
                 //there has to be an image (we already have a report) and wrong raid style to not check this farmlist:
                 if (img.Count() != 0 && ( //no image -> no recent attack
@@ -69,6 +74,7 @@ namespace TbsCore.Tasks.LowLevel
                 var checkbox = farm.Descendants("input").FirstOrDefault(x => x.HasClass("markSlot"));
                 await DriverHelper.CheckById(acc, checkbox.Id, true, update: false);
             }
+            this.FL.Farms = farms;
 
             await Task.Delay(AccountHelper.Delay(acc) * 2);
 
@@ -86,6 +92,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             acc.Logger.Information($"FarmList '{this.FL.Name}' was sent");
+            await Task.Delay(1000);
             return TaskRes.Executed;
         }
 

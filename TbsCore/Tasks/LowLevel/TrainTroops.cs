@@ -6,6 +6,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Parsers;
+using TbsCore.TravianData;
 
 using static TbsCore.Helpers.Classificator;
 
@@ -40,7 +41,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            building = TroopsHelper.GetTroopBuilding(Troop, Great);
+            building = TroopsData.GetTroopBuilding(Troop, Great);
 
             // Switch hero helmet. If hero will be switched, this TrainTroops task
             // will be executed right after the hero helmet switch
@@ -152,7 +153,7 @@ namespace TbsCore.Tasks.LowLevel
             if (Vill.Settings.SendRes && 0 < MarketHelper.GetResToMainVillage(this.Vill).Sum())
             {
                 // Check If all troops are filled in this vill before sending resources back to main village
-                if (TroopsHelper.EverythingFilled(acc, Vill))
+                if (TroopsHelper.EverythingFilled(acc, Vill) && AccountHelper.GetMainVillage(acc) != this.Vill)
                 {
                     acc.Tasks.Add(new SendResToMain() { Vill = this.Vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
                 }
