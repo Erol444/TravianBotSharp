@@ -93,7 +93,7 @@ namespace TbsCore.Tasks.LowLevel
 
                     switch (acc.AccInfo.ServerVersion)
                     {
-                        case Classificator.ServerVersionEnum.T4_4:
+                        case Classificator.ServerVersionEnum.TTwars:
                             req.AddParameter($"t{j + 1}", TroopCount(SendWaveModels[i].Troops[j]));
                             break;
 
@@ -155,7 +155,7 @@ namespace TbsCore.Tasks.LowLevel
                 string cataCount = "0";
                 switch (acc.AccInfo.ServerVersion)
                 {
-                    case Classificator.ServerVersionEnum.T4_4:
+                    case Classificator.ServerVersionEnum.TTwars:
                         cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "t8").Value.ToString();
                         break;
 

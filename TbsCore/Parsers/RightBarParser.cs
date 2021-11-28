@@ -19,7 +19,7 @@ namespace TbsCore.Parsers
             string[] nums = { "", "" };
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     nums = expensionSlotInfo.Descendants("div").FirstOrDefault(x => x.HasClass("boxTitleAdditional")).InnerText.Split('/');
                     break;
 
@@ -47,7 +47,7 @@ namespace TbsCore.Parsers
             List<HtmlAgilityPack.HtmlNode> vills = null;
             switch (serverVersion)
             {
-                case ServerVersionEnum.T4_4:
+                case ServerVersionEnum.TTwars:
                     {
                         vills = villsNode.Descendants("li").ToList();
                         break;
@@ -110,7 +110,7 @@ namespace TbsCore.Parsers
         {
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var buttons = htmlDoc.DocumentNode.Descendants("button");
                     var off = buttons.FirstOrDefault(x => x.HasClass("barracksBlack"));
                     if (off != null) return false;
@@ -186,7 +186,7 @@ namespace TbsCore.Parsers
                         }
                         break;
 
-                    case Classificator.ServerVersionEnum.T4_4:
+                    case Classificator.ServerVersionEnum.TTwars:
                         if (node.Descendants("img").FirstOrDefault(x => x.HasClass("finished")) != null) quest.finished = true;
                         var node1 = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
                         //quest.level = byte.Parse(.Split('_')[1]);
@@ -218,7 +218,7 @@ namespace TbsCore.Parsers
             List<long> ret = new List<long>();
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("gold")).ChildNodes.FirstOrDefault(x => x.Name == "span").InnerText));
                     ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("silver")).ChildNodes.FirstOrDefault(x => x.Name == "span").InnerText));
                     break;

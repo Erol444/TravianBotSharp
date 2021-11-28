@@ -39,7 +39,7 @@ namespace TbsCore.Tasks.LowLevel
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/{adventure.Ref}");
 
                     var startButton = acc.Wb.Html.GetElementbyId("start");

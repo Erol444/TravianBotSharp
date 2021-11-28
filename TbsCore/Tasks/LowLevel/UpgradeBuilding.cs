@@ -240,7 +240,7 @@ namespace TbsCore.Tasks.LowLevel
 
             acc.Logger.Information($"Started upgrading {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
 
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars ||
                buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
                !await TryFastUpgrade(acc)) // +25% speed upgrade
             {

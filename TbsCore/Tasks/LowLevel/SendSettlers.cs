@@ -47,7 +47,7 @@ namespace TbsCore.Tasks.LowLevel
             string url = $"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2";
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     // https://low4.ttwars.com/build.php?id=39&tt=2&kid=7274&a=6
                     url += $"&kid={kid}&a=6";
                     break;

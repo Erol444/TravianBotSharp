@@ -70,7 +70,7 @@ namespace TbsCore.Tasks.LowLevel
             long maxNum = 0;
             switch (acc.AccInfo.ServerVersion)
             {
-                case ServerVersionEnum.T4_4:
+                case ServerVersionEnum.TTwars:
                     maxNum = Parser.RemoveNonNumeric(
                         troopNode.ChildNodes
                         .FirstOrDefault(x => x.Name == "a")?.InnerText ?? "0"

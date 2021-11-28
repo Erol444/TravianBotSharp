@@ -20,7 +20,7 @@ namespace TbsCore.Parsers
         {
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var fields = htmlDoc.GetElementbyId("village_map").Descendants("div").Where(x => !x.HasClass("labelLayer")).ToList();
                     List<Building> resFields = new List<Building>();
                     for (int i = 0; i < 18; i++)

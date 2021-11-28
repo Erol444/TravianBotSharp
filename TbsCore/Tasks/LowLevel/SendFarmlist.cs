@@ -43,7 +43,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // If FL is collapsed, expand it
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars ||
                 flNode.Descendants("div").Any(x => x.HasClass("expandCollapse") && x.HasClass("collapsed")))
             {
                 await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
@@ -80,7 +80,7 @@ namespace TbsCore.Tasks.LowLevel
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case ServerVersionEnum.T4_4:
+                case ServerVersionEnum.TTwars:
                     var sendFlScript = $"document.getElementById('{flNode.Id}').childNodes[1].submit()";
                     acc.Wb.ExecuteScript(sendFlScript);
                     break;
@@ -100,7 +100,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             switch (version)
             {
-                case ServerVersionEnum.T4_4: return htmlDoc.GetElementbyId("list" + this.FL.Id);
+                case ServerVersionEnum.TTwars: return htmlDoc.GetElementbyId("list" + this.FL.Id);
 
                 case ServerVersionEnum.T4_5: return htmlDoc.GetElementbyId("raidList" + this.FL.Id);
                 default: return null;

@@ -20,7 +20,7 @@ namespace TbsCore.Parsers
                     villMap = htmlDoc.GetElementbyId("villageContent");
                     break;
 
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     villMap = htmlDoc.GetElementbyId("village_map");
                     break;
             }
@@ -89,7 +89,7 @@ namespace TbsCore.Parsers
             {
                 switch (version)
                 {
-                    case Classificator.ServerVersionEnum.T4_4:
+                    case Classificator.ServerVersionEnum.TTwars:
                         return TimeParser.ParseDuration(duration.InnerText);
 
                     case Classificator.ServerVersionEnum.T4_5:

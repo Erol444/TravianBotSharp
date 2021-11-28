@@ -14,7 +14,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             switch (acc.AccInfo.ServerVersion)
             {
-                case ServerVersionEnum.T4_4:
+                case ServerVersionEnum.TTwars:
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?s=2");
 
                     if (acc.Wb.Html.GetElementbyId("PlayerProfileEditor") == null)

@@ -183,7 +183,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 switch (acc.AccInfo.ServerVersion)
                 {
-                    case Classificator.ServerVersionEnum.T4_4:
+                    case Classificator.ServerVersionEnum.TTwars:
                         // Occupied "{k.fo}", unoccupied "{k.bt}"
                         if (tile.Title == "{k.bt}") ret.Add(tile.Coordinates);
                         break;

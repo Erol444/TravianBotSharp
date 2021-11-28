@@ -23,7 +23,7 @@ namespace TbsCore.Tasks.LowLevel
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case Helpers.Classificator.ServerVersionEnum.T4_4:
+                case Helpers.Classificator.ServerVersionEnum.TTwars:
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={palace.Id}&change_capital");
                     await DriverHelper.WriteByName(acc, "pw", acc.Access.GetCurrentAccess().Password);
                     await DriverHelper.ClickById(acc, "btn_ok");

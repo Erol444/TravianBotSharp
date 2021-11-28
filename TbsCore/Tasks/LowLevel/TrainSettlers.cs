@@ -40,7 +40,7 @@ namespace TbsCore.Tasks.LowLevel
             string innertext = "";
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     innertext = troopNode.ChildNodes.First(x => x.Name == "a").InnerText;
                     break;
 

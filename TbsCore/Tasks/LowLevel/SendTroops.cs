@@ -68,7 +68,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 switch (acc.AccInfo.ServerVersion)
                 {
-                    case Classificator.ServerVersionEnum.T4_4:
+                    case Classificator.ServerVersionEnum.TTwars:
                         await DriverHelper.WriteByName(acc, $"t{i + 1}", TroopsMovement.Troops[i]);
                         break;
 

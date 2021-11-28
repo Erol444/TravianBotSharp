@@ -30,7 +30,7 @@ namespace TbsCore.Helpers
         {
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var ajaxToken = DriverHelper.GetJsObj<string>(acc, "ajaxToken");
 
                     var req = new RestSharp.RestRequest
@@ -146,7 +146,7 @@ namespace TbsCore.Helpers
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var ajaxToken = DriverHelper.GetJsObj<string>(acc, "ajaxToken");
 
                     var req = new RestSharp.RestRequest

@@ -48,7 +48,7 @@ namespace TbsCore.Tasks.LowLevel
                         script += $"items.querySelector('div[class$=\"_{(int)item}\"]').click();";
                         break;
 
-                    case ServerVersionEnum.T4_4:
+                    case ServerVersionEnum.TTwars:
                         script += $"items.querySelector('div[class$=\"_{(int)item} \"]').click();";
                         break;
                 }

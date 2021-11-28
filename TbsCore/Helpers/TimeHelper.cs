@@ -130,7 +130,7 @@ namespace TbsCore.Helpers
         /// </summary>
         public static DateTime RanDelay(Account acc, DateTime finish, int maxPercentageDelay = 10)
         {
-            if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_4) return finish.AddSeconds(3);
+            if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.TTwars) return finish.AddSeconds(3);
 
             var ran = new Random();
 

@@ -32,7 +32,7 @@ namespace TbsCore.Tasks.LowLevel
             // Click "save"
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     acc.Wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
                     break;
 

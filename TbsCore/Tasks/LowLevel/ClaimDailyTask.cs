@@ -14,7 +14,7 @@ namespace TbsCore.Tasks.LowLevel
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var script = "var dialog = document.getElementById('dialogContent');";
                     script += "dialog.getElementsByClassName('active')[0].click();";
                     await DriverHelper.ExecuteScript(acc, script);
