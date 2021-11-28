@@ -10,6 +10,7 @@ using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TbsCore.Helpers;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.Models.TroopsModels;
 
 namespace TbsCore.Tasks.SecondLevel
 {
@@ -32,13 +33,13 @@ namespace TbsCore.Tasks.SecondLevel
                 base.TroopsMovement.MovementType = Classificator.MovementType.Reinforcement;
                 base.TroopsMovement.TargetCoordinates = vill.Coordinates;
                 base.SetCoordsInUrl = true;
-                base.TroopsCallback = (Account _, int[] troops) =>
+                base.TroopsCallback = (Account _, TroopsBase t) =>
                 {
-                    for (int i = 0; i < troops.Length; i++)
+                    for (int i = 0; i < t.Troops.Length; i++)
                     {
                         if (TroopsData.IsTroopScout(acc, i))
                         {
-                            if (this.Scouts <= troops[i]) return true;
+                            if (this.Scouts <= t.Troops[i]) return true;
                             stop = true;
                             return false;
                         }

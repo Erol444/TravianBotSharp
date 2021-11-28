@@ -149,9 +149,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(52, 197);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(90, 13);
+            this.label5.Size = new System.Drawing.Size(124, 13);
             this.label5.TabIndex = 38;
-            this.label5.Text = "to all your villages";
+            this.label5.Text = "scouts to all your villages";
             // 
             // TroopsUc
             // 
