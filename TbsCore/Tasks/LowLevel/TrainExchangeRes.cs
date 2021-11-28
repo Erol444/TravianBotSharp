@@ -24,17 +24,14 @@ namespace TbsCore.Tasks.LowLevel
 
             //finding the correct "Exchange resources" button
             var exchangeResButton = troopNode.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
-
-            string script = $"document.getElementById('{exchangeResButton.GetAttributeValue("id", "")}').click()";
-            await DriverHelper.ExecuteScript(acc, script);
+            await DriverHelper.ClickById(acc, exchangeResButton.Id);
 
             var distribute = acc.Wb.Html.DocumentNode.SelectNodes("//*[text()[contains(., 'Distribute remaining resources.')]]")[0];
             while (distribute.Name != "button") distribute = distribute.ParentNode;
-            string distributeid = distribute.GetAttributeValue("id", "");
-            acc.Wb.ExecuteScript($"document.getElementById('{distributeid}').click()"); //Distribute resources button
+            await DriverHelper.ClickById(acc, distribute.Id);
 
             await Task.Delay(AccountHelper.Delay(acc));
-            acc.Wb.ExecuteScript($"document.getElementById('npc_market_button').click()"); //Exchange resources button
+            await DriverHelper.ClickById(acc, "npc_market_button");
 
             return TaskRes.Executed;
         }

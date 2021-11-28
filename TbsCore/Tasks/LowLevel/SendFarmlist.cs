@@ -17,7 +17,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
+            await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.Farmlist);
 
             var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
 

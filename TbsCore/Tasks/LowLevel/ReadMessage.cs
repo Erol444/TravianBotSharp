@@ -11,7 +11,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             while (true)
             {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/messages.php");
+                await NavigationHelper.MainNavigate(acc, NavigationHelper.MainNavigationButton.Messages);
                 var msg = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("messageStatusUnread"));
                 if (msg != null)
                 {

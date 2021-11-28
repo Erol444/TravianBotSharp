@@ -24,7 +24,6 @@ namespace TbsCore.Models.AccModels
             get
             {
                 CheckChromeOpen();
-
                 return this.Driver.Url;
             }
         }
@@ -157,6 +156,11 @@ namespace TbsCore.Models.AccModels
             return cookiesDir;
         }
 
+        /// <summary>
+        /// Refresh page. Same as clicking F5
+        /// </summary>
+        public async Task Refresh() => await Navigate(this.CurrentUrl);
+
         public async Task Navigate(string url)
         {
             if (string.IsNullOrEmpty(url)) return;
@@ -191,23 +195,19 @@ namespace TbsCore.Models.AccModels
             while (repeat);
 
             await Task.Delay(AccountHelper.Delay(acc));
-
             UpdateHtml();
-
             await TaskExecutor.PageLoaded(acc);
         }
 
         public void UpdateHtml()
         {
             CheckChromeOpen();
-
             Html.LoadHtml(Driver.PageSource);
         }
 
         public void ExecuteScript(string script)
         {
             CheckChromeOpen();
-
             Driver.ExecuteScript(script);
         }
 
@@ -231,7 +231,6 @@ namespace TbsCore.Models.AccModels
         public string GetBearerToken()
         {
             CheckChromeOpen();
-
             IJavaScriptExecutor js = acc.Wb.Driver;
             return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
         }
@@ -239,21 +238,18 @@ namespace TbsCore.Models.AccModels
         public IWebElement FindElementById(string element)
         {
             CheckChromeOpen();
-
             return Driver.FindElementById(element);
         }
 
         public IWebElement FindElementByXPath(string xPath)
         {
             CheckChromeOpen();
-
             return Driver.FindElementByXPath(xPath);
         }
 
         public ITargetLocator SwitchTo()
         {
             CheckChromeOpen();
-
             return Driver.SwitchTo();
         }
 

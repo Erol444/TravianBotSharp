@@ -15,6 +15,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
+            //await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.Overview)
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=1&subfilters=1");
 
             var attacks = TroopsMovementParser.ParseTroopsOverview(acc, acc.Wb.Html);

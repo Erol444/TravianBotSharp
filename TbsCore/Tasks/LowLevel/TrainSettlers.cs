@@ -78,11 +78,11 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            acc.Wb.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
+            await DriverHelper.WriteByName(acc, "t10", maxNum);
             await Task.Delay(AccountHelper.Delay(acc));
 
             // Click Train button
-            await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, "document.getElementById('s1').click()");
+            await DriverHelper.ClickById(acc, "s1");
             Vill.Troops.Settlers += (int)maxNum;
 
             if (Vill.Troops.Settlers < 3)

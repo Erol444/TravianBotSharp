@@ -1,19 +1,20 @@
-﻿using HtmlAgilityPack;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Support.UI;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.TravianData;
+using TbsCore.Parsers;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Helpers
 {
     public static class NavigationHelper
     {
+        public static async Task<bool> ToDorf1(Account acc) => await MainNavigate(acc, MainNavigationButton.Resources);
+        public static async Task<bool> ToDorf2(Account acc) => await MainNavigate(acc, MainNavigationButton.Buildings);
+        public static async Task<bool> ToMap(Account acc) => await MainNavigate(acc, MainNavigationButton.Map);
+
         public static async Task<bool> MainNavigate(Account acc, MainNavigationButton button)
         {
             var nav = acc.Wb.Html.GetElementbyId("navigation");
@@ -27,11 +28,17 @@ namespace TbsCore.Helpers
         /// </summary>
         private static async Task ToBuildingId(Account acc, int index)
         {
-            // If we have just updated the village and we are already at the correct building, don't re-navigate.
-            // Just navigate to correct tab afterwards.
-            var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
-            if (acc.Wb.CurrentUrl.Contains($"build.php?id={index}") &&
-                lastUpdate < TimeSpan.FromSeconds(10)) return;
+            // If we are already at the correct building, don't re-enter it, just navigate to correct tab afterwards.
+            if (acc.Wb.CurrentUrl.Contains($"build.php?id={index}"))
+            {
+                // If we have just updated the village, don't re-navigate
+                var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
+                if(lastUpdate < TimeSpan.FromSeconds(10)) return;
+                
+                // If we haven't updated it recently (last 10sec), refresh
+                await acc.Wb.Refresh();
+                return;
+            }
 
             if (index < 19) // dorf1
             {
@@ -43,13 +50,11 @@ namespace TbsCore.Helpers
             {
                 if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
                     await MainNavigate(acc, MainNavigationButton.Buildings);
-                await DriverHelper.ClickByClassName(acc, $"aid{index}");
+                await DriverHelper.ClickByClassName(acc, $"aid{index}", qindex: 1);
             }
             await DriverHelper.WaitLoaded(acc);
         }
-
-        public static async Task BuildNavigate(Account acc, Building building) =>
-            await ToBuildingId(acc, building.Id);
+            
 
         /// <summary>
         /// TTWars convert tab into url query
@@ -100,14 +105,20 @@ namespace TbsCore.Helpers
             switch (acc.AccInfo.ServerVersion)
             {
                 case ServerVersionEnum.T4_5:
+                    // Enter building (if not already there)
                     await ToBuildingId(acc, building.Id);
+
                     if (tab != null) // Navigate to correct tab
-                        await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+                    { 
+                        var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
+                        // Navigate to correct tab if not already on it
+                        if (currentTab != tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+                    }
                     break;
                 case ServerVersionEnum.TTwars:
                     // Directly navigate to url
                     string url = $"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}";
-                    if (tab != null) url += "?" + TTWarsTabUrl(building.Type, tab ?? 0);
+                    if (tab != null) url += "&" + TTWarsTabUrl(building.Type, tab ?? 0);
                     if (coords != null) url += "&z=" + coords.GetKid(acc);
                     await acc.Wb.Navigate(url);
                     break;
@@ -146,6 +157,54 @@ namespace TbsCore.Helpers
             await EnterBuilding(acc, vill, BuildingEnum.RallyPoint, (int)tab, coords);
         public static async Task<bool> ToTreasury(Account acc, Village vill, TreasuryTab tab) =>
             await EnterBuilding(acc, vill, BuildingEnum.Treasury, (int)tab);
+
+
+        public static async Task<bool> ToHero(Account acc, HeroTab tab)
+        {
+            string query = "";
+            switch (tab)
+            {
+                case HeroTab.Appearance:
+                case HeroTab.Attributes:
+                    await DriverHelper.ClickById(acc, "heroImageButton");
+                    // Navigate to correct tab
+                    var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
+                    if (currentTab != (int)tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+                    return true;
+                case HeroTab.Adventures:
+                    query = "adventure";
+                    // .
+                    // ttwars: adventureWhite 
+                    break;
+                case HeroTab.Auctions:
+                    query = "auction";
+                    // auction 
+                    //ttwars auctionWhite
+                    break;
+            }
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars) query += "White";
+            return await DriverHelper.ClickByClassName(acc, query);
+        }
+
+        public static async Task<bool> ToOverview(Account acc, OverviewTab tab, TroopOverview subTab = TroopOverview.OwnTroops)
+        {
+            string query = "overview";
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars) query += "White";
+            await DriverHelper.ClickByClassName(acc, query);
+
+            var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
+            if (currentTab != (int)tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+
+            if (tab == OverviewTab.Troops && subTab != TroopOverview.OwnTroops)
+            {
+                await Task.Delay(AccountHelper.Delay(acc));
+                // Sub tabs are tabItems as well, just further down the html, so you can add +5 (for Village overview tabs)
+                // to get to subtabs
+                await DriverHelper.ClickByClassName(acc, "tabItem", (int)subTab + 5);
+            }
+            return true;
+        }
+        
 
 
         //public static async Task<bool> UpgradeBuilding(Account acc, HtmlDocument html, UpgradeButton type)
@@ -207,6 +266,28 @@ namespace TbsCore.Helpers
             ArtsInArea,
             SmallArts,
             BigArts,
+        }
+        public enum HeroTab
+        {
+            Attributes = 0,
+            Appearance,
+            Adventures,
+            Auctions,
+        }
+
+        public enum OverviewTab
+        {
+            Overview = 0,
+            Resources,
+            Warehouse,
+            CulturePoints,
+            Troops
+        }
+        public enum TroopOverview
+        {
+            OwnTroops = 0,
+            TroopsInVillage,
+            Smithy,
         }
     }
 }

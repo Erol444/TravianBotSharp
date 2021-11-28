@@ -36,7 +36,7 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
+            await NavigationHelper.ToMap(acc);
             await Task.Delay(AccountHelper.Delay(acc) * 3);
 
             var newVillage = acc.NewVillages.Locations.FirstOrDefault();

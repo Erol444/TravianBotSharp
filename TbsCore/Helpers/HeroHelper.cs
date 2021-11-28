@@ -257,12 +257,5 @@ namespace TbsCore.Helpers
             }, true);
             return true;
         }
-
-        internal static async Task NavigateToHeroAttributes(Account acc)
-        {
-            // Even if default tab is switched to other tab (not attributes), navigate
-            // to attributes tab
-            await VersionHelper.Navigate(acc, "/hero.php?t=1", "/hero/attributes");
-        }
     }
 }

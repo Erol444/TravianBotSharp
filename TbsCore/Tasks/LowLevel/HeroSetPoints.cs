@@ -16,7 +16,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await HeroHelper.NavigateToHeroAttributes(acc);
+            await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Attributes);
 
             HeroHelper.ParseHeroPage(acc);
 

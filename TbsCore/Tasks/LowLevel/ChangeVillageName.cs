@@ -27,8 +27,7 @@ namespace TbsCore.Tasks.LowLevel
 
                     foreach (var change in ChangeList)
                     {
-                        var script = $"document.getElementsByName('dname[{change.Item1}]=')[0].value='{change.Item2}'";
-                        acc.Wb.ExecuteScript(script); //insert new name into the textbox
+                        await DriverHelper.WriteByName(acc, $"dname[{change.Item1}]=", change.Item2);
                     }
 
                     await Task.Delay(AccountHelper.Delay(acc));
@@ -57,9 +56,8 @@ namespace TbsCore.Tasks.LowLevel
                         //seem like they want we typing instead of setting value (= =)
                         //if u only setting value by javascript the button still disable
 
-                        var script = $"document.getElementsByName('dname[{change.Item1}]=')[0].value=''";
-                        //empty value of textbox
-                        acc.Wb.ExecuteScript(script);
+                        // Empty text box
+                        await DriverHelper.WriteByName(acc, $"dname[{change.Item1}]=", "");
                         //insert new name into the textbox
                         acc.Wb.FindElementByXPath($"//input[@name='dname[{change.Item1}]=']").SendKeys(change.Item2);
                     }

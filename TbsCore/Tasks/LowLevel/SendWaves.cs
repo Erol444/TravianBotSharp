@@ -24,7 +24,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2");
+            await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.SendTroops);
 
             var wavesReady = new List<WaveReadyModel>();
 

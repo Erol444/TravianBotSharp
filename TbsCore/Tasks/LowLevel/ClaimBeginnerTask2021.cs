@@ -11,7 +11,7 @@ namespace TbsCore.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             // Claim village-wide rewards
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/tasks");
+            await DriverHelper.ClickById(acc, "questmasterButton");
             await ClaimRewards(acc);
 
             if (acc.Wb.Html

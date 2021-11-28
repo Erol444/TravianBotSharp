@@ -5,12 +5,13 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Helpers;
 using TbsCore.TravianData;
+using HtmlAgilityPack;
 
 namespace TbsCore.Parsers
 {
     public static class InfrastructureParser
     {
-        public static List<Building> GetBuildings(Account acc, HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static List<Building> GetBuildings(Account acc, HtmlDocument htmlDoc)
         {
             List<Building> buildings = new List<Building>();
             HtmlAgilityPack.HtmlNode villMap = null;
@@ -62,7 +63,7 @@ namespace TbsCore.Parsers
         /// <summary>
         /// Get currently building (upgrading/constructing) buildings from dorf1/dorf2
         /// </summary>
-        public static List<BuildingCurrently> CurrentlyBuilding(HtmlAgilityPack.HtmlDocument htmlDoc, Account acc)
+        public static List<BuildingCurrently> CurrentlyBuilding(HtmlDocument htmlDoc, Account acc)
         {
             var finishButton = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("finishNow"));
             if (finishButton == null) return null;
@@ -82,7 +83,7 @@ namespace TbsCore.Parsers
             return ret;
         }
 
-        public static TimeSpan GetBuildDuration(HtmlAgilityPack.HtmlNode node, Classificator.ServerVersionEnum version)
+        public static TimeSpan GetBuildDuration(HtmlNode node, Classificator.ServerVersionEnum version)
         {
             var duration = node.Descendants("div").FirstOrDefault(x => x.HasClass("duration"));
             if (duration != null)
@@ -104,7 +105,7 @@ namespace TbsCore.Parsers
             return new TimeSpan();
         }
 
-        public static (Classificator.BuildingEnum, int) UpgradeBuildingGetInfo(HtmlAgilityPack.HtmlNode node)
+        public static (Classificator.BuildingEnum, int) UpgradeBuildingGetInfo(HtmlNode node)
         {
             var classes = node.GetClasses().ToList();
 
@@ -125,6 +126,17 @@ namespace TbsCore.Parsers
             }
 
             return (building, level);
+        }
+
+        public static int CurrentlyActiveTab(HtmlDocument html)
+        {
+            // TODO: fix for ttwars (class="container active")
+            var tabs = html.DocumentNode.Descendants("a").Where(x => x.HasClass("tabItem")).ToList();
+            for (int i = 0; i < tabs.Count(); i++)
+            {
+                if (tabs[i].HasClass("active")) return i;
+            }
+            return -1;
         }
     }
 }
