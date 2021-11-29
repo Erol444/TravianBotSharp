@@ -202,7 +202,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 lastSent = DateTime.Now;
                 acc.Logger.Information($"{DateTime.Now.Second}.{DateTime.Now.Millisecond}] Sending wave {i + 1}");
-                _ = HttpHelper.SendPostReq(acc, wavesReady[i].Request);
+                _ = HttpHelper.SendPostReqAsync(acc, wavesReady[i].Request);
 
                 // Wait +- 10% selected delay
                 var delay = SendWaveModels[i].DelayMs;
