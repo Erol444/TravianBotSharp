@@ -87,20 +87,21 @@ namespace TbsCore.Helpers
 
         public static async Task SwitchVillage(Account acc, int id)
         {
-            // Parse village list again and find correct href
             Uri uri = new Uri(acc.Wb.CurrentUrl);
 
+            // Parse village list again and find correct href
             var vills = RightBarParser.GetVillages(acc.Wb.Html, acc.AccInfo.ServerVersion);
             var href = vills.FirstOrDefault(x => x.Id == id)?.Href;
-
             if (string.IsNullOrEmpty(href)) // Login screen, server messages etc.
             {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?newdid={id}");
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
                 return;
             }
 
-            if (href.Contains(acc.AccInfo.ServerUrl)) await acc.Wb.Navigate(href);
-            else await acc.Wb.Navigate(uri.Scheme + "://" + uri.Host + uri.AbsolutePath + href);
+            var val = $"?newdid={id}";
+            // The * after href is for query selector; it will select all elements that contain {val}
+            await DriverHelper.ClickByAttributeValue(acc, "href*", val);
+            await TaskExecutor.PageLoaded(acc);
         }
 
         /// <summary>
