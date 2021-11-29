@@ -30,7 +30,7 @@ namespace TbsCore.Tasks.LowLevel
 
             await UpdateTroopsResearchedAndLevels(acc);
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+            await NavigationHelper.ToDorf2(acc);
             await Task.Delay(AccountHelper.Delay(acc));
             await UpdateTroopsTraining(acc);
 

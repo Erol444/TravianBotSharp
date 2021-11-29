@@ -15,7 +15,7 @@ namespace TbsCore.Tasks.SecondLevel
     public class ScoutPlayer : CheckProfile
     {
         public int MinPop { get; set; } = 100;
-        public int MaxPop { get; set; } = 300;
+        public int MaxPop { get; set; } = 1000;
         public int ScoutNum { get; set; } = 1;
 
         public override async Task<TaskRes> Execute(Account acc)

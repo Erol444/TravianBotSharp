@@ -20,6 +20,7 @@ namespace TbsCore.Helpers
             var nav = acc.Wb.Html.GetElementbyId("navigation");
             if (nav == null) return false;
             await DriverHelper.ClickByAttributeValue(acc, "accesskey", ((int)button).ToString());
+            await TaskExecutor.PageLoaded(acc);
             return true;
         }
 
