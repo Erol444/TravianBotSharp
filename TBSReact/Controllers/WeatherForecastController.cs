@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace TBSReact.Controllers;
+namespace TbsReact.Controllers;
 
 [ApiController]
 [Route("[controller]")]

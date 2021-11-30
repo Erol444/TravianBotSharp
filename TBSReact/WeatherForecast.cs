@@ -1,4 +1,4 @@
-namespace TBSReact;
+namespace TbsReact;
 
 public class WeatherForecast
 {
