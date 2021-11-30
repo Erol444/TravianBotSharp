@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.CombatModels;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using TbsCore.Helpers;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCoreTest.Factories
 {
-    class CombatFactory
+    internal class CombatFactory
     {
         public (CombatDeffender[], CombatAttacker[]) GetBoth()
         {
@@ -28,6 +28,7 @@ namespace TbsCoreTest.Factories
         }
 
         #region Create deffenders
+
         /// <summary>
         /// 100 phalanx
         /// Deffender: 1000 Population, gauls, wall level 0
@@ -77,12 +78,12 @@ namespace TbsCoreTest.Factories
             };
         }
 
-    /// <summary>
-    /// Deff1: 2000 phalanx (20), 500 druids (15), 200 heudans, Hero: 50 strenght, 50 bonus, max phalanx, horse
-    /// Deff2: 1000 legionnaires (18), 1000 praetorian (19), 500 EC
-    /// Deffender: 450 Population, romans, wall level 15
-    /// </summary>
-    public CombatDeffender CreateDeffender3()
+        /// <summary>
+        /// Deff1: 2000 phalanx (20), 500 druids (15), 200 heudans, Hero: 50 strenght, 50 bonus, max phalanx, horse
+        /// Deff2: 1000 legionnaires (18), 1000 praetorian (19), 500 EC
+        /// Deffender: 450 Population, romans, wall level 15
+        /// </summary>
+        public CombatDeffender CreateDeffender3()
         {
             return new CombatDeffender
             {
@@ -107,9 +108,11 @@ namespace TbsCoreTest.Factories
                 Population = 450
             };
         }
+
         #endregion Create deffenders
 
         #region Create hero
+
         private CombatHero CreateHero1()
         {
             return new CombatHero
@@ -133,6 +136,7 @@ namespace TbsCoreTest.Factories
                 }
             };
         }
+
         private CombatHero CreateDeffHero()
         {
             return new CombatHero
@@ -144,9 +148,11 @@ namespace TbsCoreTest.Factories
                 }
             };
         }
+
         #endregion Create hero
 
         #region Create attackers
+
         /// <summary>
         /// 100 imperians. 1000 population, hero 100 strength
         /// </summary>
@@ -201,6 +207,7 @@ namespace TbsCoreTest.Factories
                 Population = 1700
             };
         }
+
         #endregion Create attackers
     }
 }
