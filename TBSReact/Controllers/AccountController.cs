@@ -1,17 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TbsReact.Models;
 using TbsReact.Singleton;
+using TbsReact.Extension;
+using System.Collections.Generic;
+using TbsCore.Database;
 
 namespace TbsReact.Controllers
 {
     [ApiController]
-    [Route("[accounts]")]
+    [Route("accounts")]
     public class AccountController : ControllerBase
     {
-        // GET: Account
+        [HttpGet]
         public ActionResult<List<Account>> GetAccounts()
         {
             var AccountInfoList = new List<Account>();
+
             for (int i = 0; i < AccountManager.Instance.Accounts.Count; i++)
             {
                 AccountInfoList.Add(AccountManager.GetAccount(i, AccountManager.Instance.Accounts[i]));
@@ -20,73 +24,75 @@ namespace TbsReact.Controllers
             return AccountInfoList;
         }
 
-        // GET: Account/Details/5
-        public ActionResult Details(int id)
+        [HttpGet("{index:int}")]
+        public ActionResult<Account> GetAccount(int index)
         {
-            return View();
+            if (index < 0 | index > AccountManager.Instance.Accounts.Count)
+            {
+                return NotFound();
+            }
+            return AccountManager.GetAccount(index, AccountManager.Instance.Accounts[index]);
         }
 
-        // GET: Account/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Account/Create
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult AddAccount([FromBody] Account data)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            if (string.IsNullOrEmpty(data.Name) ||
+                string.IsNullOrEmpty(data.ServerUrl)) return BadRequest();
+
+            var acc = data.GetAccount();
+            DbRepository.SaveAccount(acc);
+            AccountManager.Instance.Accounts.Add(acc);
+
+            return Ok();
         }
 
-        // GET: Account/Edit/5
-        public ActionResult Edit(int id)
+        [HttpPut("{index:int}")]
+        public ActionResult EditAccount(int index, [FromBody] Account data)
         {
-            return View();
+            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
+            {
+                return NotFound();
+            }
+
+            if (string.IsNullOrEmpty(data.Name) ||
+                string.IsNullOrEmpty(data.ServerUrl)) return BadRequest();
+
+            var acc = AccountManager.Instance.Accounts[index];
+
+            acc.AccInfo.Nickname = data.Name;
+            acc.AccInfo.ServerUrl = data.ServerUrl;
+
+            acc.Access.AllAccess.Clear();
+            foreach (var access in data.Accesses)
+            {
+                acc.Access.AddNewAccess(new TbsCore.Models.Access.Access
+                {
+                    Password = access.Password,
+                    Proxy = access.Proxy.Ip,
+                    ProxyPort = access.Proxy.Port,
+                    ProxyUsername = access.Proxy.Username,
+                    ProxyPassword = access.Proxy.Password,
+                });
+            }
+
+            DbRepository.SaveAccount(acc);
+
+            return Ok();
         }
 
-        // POST: Account/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpDelete("{index:int}")]
+        public ActionResult DeleteAccount(int index)
         {
-            try
+            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: Account/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
+            DbRepository.RemoveAccount(AccountManager.Instance.Accounts[index]);
+            AccountManager.Instance.Accounts.RemoveAt(index);
 
-        // POST: Account/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            return Ok();
         }
     }
 }

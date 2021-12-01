@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace TbsReact.Models
+﻿namespace TbsReact.Models
 {
     public class Account
     {
