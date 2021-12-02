@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using TbsReact.Singleton;
 
 namespace TbsReact
 {
@@ -20,6 +22,7 @@ namespace TbsReact
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton(AccountManager.Instance);
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
@@ -30,7 +33,7 @@ namespace TbsReact
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -65,6 +68,19 @@ namespace TbsReact
                     spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
                 }
             });
+
+            lifetime.ApplicationStopping.Register(OnShutdown, true);
+
+            lifetime.ApplicationStopped.Register(() =>
+            {
+                Console.WriteLine("*** Application is shut down ***");
+            }, true);
+        }
+
+        private void OnShutdown()
+        {
+            AccountManager.Instance.SaveAccounts();
+            Console.WriteLine("*** Account saved ***");
         }
     }
 }

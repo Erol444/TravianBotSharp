@@ -4,6 +4,7 @@ using TbsReact.Singleton;
 using TbsReact.Extension;
 using System.Collections.Generic;
 using TbsCore.Database;
+using System;
 
 namespace TbsReact.Controllers
 {
@@ -27,7 +28,7 @@ namespace TbsReact.Controllers
         [HttpGet("{index:int}")]
         public ActionResult<Account> GetAccount(int index)
         {
-            if (index < 0 | index > AccountManager.Instance.Accounts.Count)
+            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
             {
                 return NotFound();
             }
@@ -47,7 +48,7 @@ namespace TbsReact.Controllers
             return Ok();
         }
 
-        [HttpPut("{index:int}")]
+        [HttpPatch("{index:int}")]
         public ActionResult EditAccount(int index, [FromBody] Account data)
         {
             if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)

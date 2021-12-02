@@ -6,7 +6,6 @@ using TbsCore.Helpers;
 using TbsReact.Models;
 
 namespace TbsReact.Singleton
-
 {
     public sealed class AccountManager
     {
@@ -39,31 +38,10 @@ namespace TbsReact.Singleton
 
         public static Account GetAccount(int index, TbsCore.Models.AccModels.Account acc)
         {
-            var accesses = new List<Access>();
-
-            for (int i = 0; i < acc.Access.AllAccess.Count; i++)
-            {
-                var access = acc.Access.AllAccess[i];
-                accesses.Add(new Access
-                {
-                    Id = i,
-                    Password = access.Password,
-                    Proxy = new Proxy
-                    {
-                        Ip = access.Proxy,
-                        Port = access.ProxyPort,
-                        Username = access.ProxyUsername,
-                        Password = access.Password,
-                        OK = access.Ok
-                    }
-                });
-            }
             return new Account
             {
-                Id = index,
                 Name = acc.AccInfo.Nickname,
                 ServerUrl = acc.AccInfo.ServerUrl,
-                Accesses = accesses
             };
         }
 
