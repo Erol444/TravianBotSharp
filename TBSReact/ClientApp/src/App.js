@@ -3,7 +3,7 @@ import  Layout  from './components/Layout';
 import './custom.css'
 
 const App = () => {
-  const [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(-1);
   useEffect(() => {
     console.log(selected);
   }, [selected])

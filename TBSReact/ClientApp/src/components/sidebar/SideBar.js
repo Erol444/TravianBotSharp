@@ -35,8 +35,8 @@ const SideBar = ({ selected, setSelected }) => {
                     <ChevronLeftIcon />
                 </IconButton>
                 <AccountTable selected={selected} setSelected={setSelected} />
-                <AccountModal editMode={true}/>
-                <AccountModal editMode={false}/>
+                <AccountModal editMode={false} setAccID={setSelected}/>
+                <AccountModal editMode={true} accID={selected} setAccID={setSelected}/>
             </Drawer>
         </>
     )

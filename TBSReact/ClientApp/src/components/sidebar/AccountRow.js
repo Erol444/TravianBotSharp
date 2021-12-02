@@ -1,15 +1,19 @@
 import { TableCell, TableRow } from "@mui/material";
 
-const AccountRow = ({acc, handler, selected}) => {
+const AccountRow = ({ accounts, handler, selected }) => {
+    const rows = accounts.map(account => (
+        <TableRow
+            hover
+            onClick={() => handler(account)}
+            selected={account.id === selected}
+            key = {account.id}>
+            <TableCell>{account.name}</TableCell>
+            <TableCell>{account.serverUrl}</TableCell>
+        </TableRow>
+    ))
     return (
         <>
-            <TableRow
-                hover
-                onClick={() => handler(acc)}
-                selected = {acc.Id === selected}>
-                <TableCell>{acc.Username}</TableCell>
-                <TableCell>{acc.ServerUrl}</TableCell>
-            </TableRow>
+            {rows}
         </>
     )
 }

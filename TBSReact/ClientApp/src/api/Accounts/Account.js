@@ -26,6 +26,13 @@ const addAccount = async (data) => {
         console.log(e);
     }
 }
+const editAccount = async (index, data) => {
+    try {
+        await axios.patch(`/accounts/${index}`, data);
+    } catch (e) {
+        console.log(e);
+    }
+}
 
 const deleteAccount = async (index) => {
     try {
@@ -34,3 +41,5 @@ const deleteAccount = async (index) => {
         console.log(e);
     }
 }
+
+export {getAccounts, getAccount, addAccount, editAccount, deleteAccount};

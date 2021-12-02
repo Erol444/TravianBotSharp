@@ -19,10 +19,6 @@ namespace TbsReact.Singleton
             set { accounts = value; }
         }
 
-        static AccountManager()
-        {
-        }
-
         private AccountManager()
         {
             LoadAccounts();
@@ -34,15 +30,6 @@ namespace TbsReact.Singleton
             {
                 return instance;
             }
-        }
-
-        public static Account GetAccount(int index, TbsCore.Models.AccModels.Account acc)
-        {
-            return new Account
-            {
-                Name = acc.AccInfo.Nickname,
-                ServerUrl = acc.AccInfo.ServerUrl,
-            };
         }
 
         private void LoadAccounts()

@@ -1,10 +1,11 @@
-﻿using TbsReact.Models;
+﻿using System.Collections.Generic;
+using TbsReact.Models;
 
 namespace TbsReact.Extension
 {
     public static class AccountExtension
     {
-        public static TbsCore.Models.AccModels.Account GetAccount(this Account accout)
+        public static TbsCore.Models.AccModels.Account GetAccount(this Account accout, List<Access> accesses)
         {
             var acc = new TbsCore.Models.AccModels.Account();
             acc.Init();
@@ -12,7 +13,7 @@ namespace TbsReact.Extension
             acc.AccInfo.Nickname = accout.Name;
             acc.AccInfo.ServerUrl = accout.ServerUrl;
 
-            foreach (var access in accout.Accesses)
+            foreach (var access in accesses)
             {
                 acc.Access.AllAccess.Add(new TbsCore.Models.Access.Access
                 {

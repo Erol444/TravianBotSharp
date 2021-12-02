@@ -16,10 +16,9 @@ namespace TbsReact.Controllers
         public ActionResult<List<Account>> GetAccounts()
         {
             var AccountInfoList = new List<Account>();
-
-            for (int i = 0; i < AccountManager.Instance.Accounts.Count; i++)
+            for (int i = 0; i < AccountData.Accounts.Count; i++)
             {
-                AccountInfoList.Add(AccountManager.GetAccount(i, AccountManager.Instance.Accounts[i]));
+                AccountInfoList.Add(AccountData.Accounts[i]);
             }
 
             return AccountInfoList;
@@ -32,42 +31,52 @@ namespace TbsReact.Controllers
             {
                 return NotFound();
             }
-            return AccountManager.GetAccount(index, AccountManager.Instance.Accounts[index]);
+            return AccountData.GetAccount(index);
         }
 
         [HttpPost]
-        public ActionResult AddAccount([FromBody] Account data)
+        public ActionResult AddAccount([FromBody] NewAccount data)
         {
-            if (string.IsNullOrEmpty(data.Name) ||
-                string.IsNullOrEmpty(data.ServerUrl)) return BadRequest();
-
-            var acc = data.GetAccount();
+            var account = data.Account;
+            var accesses = data.Accesses;
+            if (string.IsNullOrEmpty(account.Name)
+                || string.IsNullOrEmpty(account.ServerUrl))
+            {
+                return BadRequest();
+            }
+            var acc = account.GetAccount(accesses);
             DbRepository.SaveAccount(acc);
             AccountManager.Instance.Accounts.Add(acc);
+            AccountData.AddAccount(account);
 
             return Ok();
         }
 
         [HttpPatch("{index:int}")]
-        public ActionResult EditAccount(int index, [FromBody] Account data)
+        public ActionResult EditAccount(int index, [FromBody] NewAccount data)
         {
             if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
             {
                 return NotFound();
             }
+            var account = data.Account;
+            var accesses = data.Accesses;
 
-            if (string.IsNullOrEmpty(data.Name) ||
-                string.IsNullOrEmpty(data.ServerUrl)) return BadRequest();
+            if (string.IsNullOrEmpty(account.Name) ||
+                string.IsNullOrEmpty(account.ServerUrl))
+            {
+                return BadRequest();
+            }
 
             var acc = AccountManager.Instance.Accounts[index];
 
-            acc.AccInfo.Nickname = data.Name;
-            acc.AccInfo.ServerUrl = data.ServerUrl;
+            acc.AccInfo.Nickname = account.Name;
+            acc.AccInfo.ServerUrl = account.ServerUrl;
 
             acc.Access.AllAccess.Clear();
-            foreach (var access in data.Accesses)
+            foreach (var access in accesses)
             {
-                acc.Access.AddNewAccess(new TbsCore.Models.Access.Access
+                acc.Access.AllAccess.Add(new TbsCore.Models.Access.Access
                 {
                     Password = access.Password,
                     Proxy = access.Proxy.Ip,
@@ -76,9 +85,7 @@ namespace TbsReact.Controllers
                     ProxyPassword = access.Proxy.Password,
                 });
             }
-
             DbRepository.SaveAccount(acc);
-
             return Ok();
         }
 
@@ -92,6 +99,7 @@ namespace TbsReact.Controllers
 
             DbRepository.RemoveAccount(AccountManager.Instance.Accounts[index]);
             AccountManager.Instance.Accounts.RemoveAt(index);
+            AccountData.DeleteAccount(index);
 
             return Ok();
         }
