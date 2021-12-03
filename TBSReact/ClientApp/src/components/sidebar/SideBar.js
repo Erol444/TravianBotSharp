@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Drawer, IconButton, Grid, Button } from "@mui/material"
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
@@ -7,11 +7,18 @@ import AccountTable from "./AccountTable"
 import AccountModal from "./Modal/AccountModal"
 
 import { deleteAccount } from "../../api/Accounts/Account";
-import { login, logout, getStatus } from "../../api/Accounts/Driver";
+import { login, logout, loginAll, logoutAll, getStatus } from "../../api/Accounts/Driver";
 
 const SideBar = ({ selected, setSelected }) => {
     const [open, setOpen] = useState(false);
     const [status, setStatus] = useState(false);
+
+    useEffect( ( ) => {
+        const updateStatus = async () => {
+            setStatus(await getStatus(selected))            
+        }
+        updateStatus();
+    }, [selected]) 
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -36,11 +43,14 @@ const SideBar = ({ selected, setSelected }) => {
         }
     }
 
-    const onLoginAll = () => {
-
+    const onLoginAll = async () => {
+        await loginAll();
+        setSelected(-1)
     }
 
-    const onLogoutAll = () => {
+    const onLogoutAll = async () => {
+        await logoutAll();
+        setSelected(-1)
 
     }
 

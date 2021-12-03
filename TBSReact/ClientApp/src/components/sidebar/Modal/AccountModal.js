@@ -102,7 +102,7 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
                 aria-describedby="modal-modal-description">
                 <Box sx={style}>
                     <Typography id="modal-modal-title" variant="h6" component="h2">
-                        {editMode === true ? "Add account" : "Edit account"}
+                        {editMode === false ? "Add account" : "Edit account"}
                     </Typography>
                     <br/>
                     <Grid container>

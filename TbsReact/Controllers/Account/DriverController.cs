@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsReact.Singleton;
@@ -7,10 +8,10 @@ using TbsReact.Singleton;
 namespace TbsReact.Controllers
 {
     [ApiController]
-    [Route("accounts/{index:int}")]
+    [Route("accounts")]
     public class DriverController : ControllerBase
     {
-        [HttpPost("login")]
+        [HttpPost("login/{index:int}")]
         public async Task<ActionResult> Login(int index)
         {
             var account = AccountData.GetAccount(index);
@@ -31,7 +32,7 @@ namespace TbsReact.Controllers
             return new BadRequestObjectResult("Account you are trying to login has no access defined. Please edit the account.");
         }
 
-        [HttpPost("logout")]
+        [HttpPost("logout/{index:int}")]
         public ActionResult Logout(int index)
         {
             var account = AccountData.GetAccount(index);
@@ -51,7 +52,40 @@ namespace TbsReact.Controllers
             return BadRequest();
         }
 
-        [HttpGet("status")]
+        [HttpPost("login")]
+        public ActionResult LoginAll()
+        {
+            new Thread(async () =>
+            {
+                var ran = new Random();
+                foreach (var acc in AccountManager.Accounts)
+                {
+                    // If account is already running, don't login
+                    if (acc.TaskTimer?.IsBotRunning() ?? false) continue;
+
+                    _ = IoHelperCore.LoginAccount(acc);
+                    await Task.Delay(AccountHelper.Delay(acc));
+                }
+            }).Start();
+
+            return Ok();
+        }
+
+        [HttpPost("logout")]
+        public ActionResult LogoutAll()
+        {
+            new Thread(() =>
+            {
+                foreach (var acc in AccountManager.Accounts)
+                {
+                    IoHelperCore.Logout(acc);
+                }
+            }).Start();
+
+            return Ok();
+        }
+
+        [HttpGet("status/{index:int}")]
         public ActionResult<bool> GetStatus(int index)
         {
             var account = AccountData.GetAccount(index);
