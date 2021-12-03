@@ -1,12 +1,17 @@
-import React from "react"
-import { Drawer, IconButton } from "@mui/material"
+import { useState } from "react"
+import { Drawer, IconButton, Grid, Button } from "@mui/material"
 import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 import AccountTable from "./AccountTable"
 import AccountModal from "./Modal/AccountModal"
+
+import { deleteAccount } from "../../api/Accounts/Account";
+import { login, logout, getStatus } from "../../api/Accounts/Driver";
+
 const SideBar = ({ selected, setSelected }) => {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [status, setStatus] = useState(false);
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -14,6 +19,30 @@ const SideBar = ({ selected, setSelected }) => {
     const handleDrawerClose = () => {
         setOpen(false);
     };
+ 
+    const onDelete = async () => {
+        await deleteAccount(selected);
+        setSelected(-1)
+    }
+
+    const onLog = async () => {
+        if (status === true) {
+            await logout(selected);
+            setStatus(await getStatus(selected))
+        }
+        else {
+            await login(selected);
+            setStatus(await getStatus(selected))
+        }
+    }
+
+    const onLoginAll = () => {
+
+    }
+
+    const onLogoutAll = () => {
+
+    }
 
 
     return (
@@ -35,8 +64,26 @@ const SideBar = ({ selected, setSelected }) => {
                     <ChevronLeftIcon />
                 </IconButton>
                 <AccountTable selected={selected} setSelected={setSelected} />
-                <AccountModal editMode={false} setAccID={setSelected}/>
-                <AccountModal editMode={true} accID={selected} setAccID={setSelected}/>
+                <Grid container style={{ "textAlign": "center" }}>
+                    <Grid item xs={12}>
+                        <AccountModal editMode={false} setAccID={setSelected} />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <AccountModal editMode={true} accID={selected} setAccID={setSelected} />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button onClick={onDelete}>Delete</Button>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button onClick={onLog}>{status === true ? "Logout" : "Login"}</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button onClick={onLoginAll}>Login all</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Button onClick={onLogoutAll}>Logout all</Button>
+                    </Grid>
+                </Grid>
             </Drawer>
         </>
     )

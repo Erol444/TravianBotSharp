@@ -11,13 +11,13 @@ namespace TbsReact.Singleton
 
         private AccountData()
         {
-            for (int i = 0; i < AccountManager.Instance.Accounts.Count; i++)
+            for (int i = 0; i < AccountManager.Accounts.Count; i++)
             {
                 _accounts.Add(new Account
                 {
                     Id = i,
-                    Name = AccountManager.Instance.Accounts[i].AccInfo.Nickname,
-                    ServerUrl = AccountManager.Instance.Accounts[i].AccInfo.ServerUrl,
+                    Name = AccountManager.Accounts[i].AccInfo.Nickname,
+                    ServerUrl = AccountManager.Accounts[i].AccInfo.ServerUrl,
                 });
             }
         }
@@ -26,8 +26,7 @@ namespace TbsReact.Singleton
 
         public static Account GetAccount(int index)
         {
-            if (index < 0 || index > Accounts.Count + 1) return null;
-            return Accounts[index];
+            return Accounts.FirstOrDefault(x => x.Id == index);
         }
 
         public static void AddAccount(Account account)
@@ -38,16 +37,16 @@ namespace TbsReact.Singleton
 
         public static bool EditAccount(int index, Account account)
         {
-            if (index < 0 || index > Accounts.Count + 1) return false;
-            if (account == null) return false;
+            var current = Accounts.FirstOrDefault(x => x.Id == index);
+            if (current == null) return false;
 
-            Accounts[index] = account;
+            current.Name = account.Name;
+            current.ServerUrl = account.ServerUrl;
             return true;
         }
 
         public static bool DeleteAccount(int index)
         {
-            if (index < 0 || index > Accounts.Count + 1) return false;
             return Accounts.Remove(Accounts.FirstOrDefault(x => x.Id == index));
         }
 

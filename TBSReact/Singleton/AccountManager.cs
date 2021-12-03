@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TbsCore.Database;
 using TbsCore.Helpers;
 
@@ -13,10 +14,9 @@ namespace TbsReact.Singleton
 
         private List<TbsCore.Models.AccModels.Account> accounts = new();
 
-        public List<TbsCore.Models.AccModels.Account> Accounts
+        public static List<TbsCore.Models.AccModels.Account> Accounts
         {
-            get { return accounts; }
-            set { accounts = value; }
+            get { return Instance.accounts; }
         }
 
         private AccountManager()
@@ -32,17 +32,14 @@ namespace TbsReact.Singleton
             }
         }
 
+        public static TbsCore.Models.AccModels.Account GetAccount(Account account)
+        {
+            return Accounts.FirstOrDefault(x => x.AccInfo.Nickname.Equals(account.Name) && x.AccInfo.ServerUrl.Equals(account.ServerUrl));
+        }
+
         private void LoadAccounts()
         {
-            // For migration purposes only! Remove after few versions
-            if (IoHelperCore.AccountsTxtExists() && !IoHelperCore.SQLiteExists())
-            {
-                DbRepository.SyncAccountsTxt();
-                File.Delete(IoHelperCore.AccountsPath);
-            }
-
             accounts = DbRepository.GetAccounts();
-
             accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
         }
 

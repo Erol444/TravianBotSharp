@@ -121,7 +121,7 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
                         <Grid item xs={2}>
                             Password
                         </Grid>
-                        <Grid itemx xs={10}>
+                        <Grid item xs={10}>
                             <Input type="password" value={password} onInput={e => setPassword(e.target.value)} />
                         </Grid>
                         <Grid item xs={2}>

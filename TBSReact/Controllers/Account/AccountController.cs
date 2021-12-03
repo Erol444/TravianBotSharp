@@ -27,11 +27,12 @@ namespace TbsReact.Controllers
         [HttpGet("{index:int}")]
         public ActionResult<Account> GetAccount(int index)
         {
-            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
+            var acc = AccountData.GetAccount(index);
+            if (acc == null)
             {
                 return NotFound();
             }
-            return AccountData.GetAccount(index);
+            return acc;
         }
 
         [HttpPost]
@@ -46,7 +47,7 @@ namespace TbsReact.Controllers
             }
             var acc = account.GetAccount(accesses);
             DbRepository.SaveAccount(acc);
-            AccountManager.Instance.Accounts.Add(acc);
+            AccountManager.Accounts.Add(acc);
             AccountData.AddAccount(account);
 
             return Ok();
@@ -55,10 +56,6 @@ namespace TbsReact.Controllers
         [HttpPatch("{index:int}")]
         public ActionResult EditAccount(int index, [FromBody] NewAccount data)
         {
-            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
-            {
-                return NotFound();
-            }
             var account = data.Account;
             var accesses = data.Accesses;
 
@@ -67,8 +64,15 @@ namespace TbsReact.Controllers
             {
                 return BadRequest();
             }
+            var accountOld = AccountData.GetAccount(index);
+            if (accountOld == null)
+            {
+                return NotFound();
+            }
 
-            var acc = AccountManager.Instance.Accounts[index];
+            var acc = AccountManager.GetAccount(accountOld);
+
+            AccountData.EditAccount(index, account);
 
             acc.AccInfo.Nickname = account.Name;
             acc.AccInfo.ServerUrl = account.ServerUrl;
@@ -92,13 +96,15 @@ namespace TbsReact.Controllers
         [HttpDelete("{index:int}")]
         public ActionResult DeleteAccount(int index)
         {
-            if (index < 0 || index > AccountManager.Instance.Accounts.Count - 1)
+            var account = AccountData.GetAccount(index);
+            if (account == null)
             {
                 return NotFound();
             }
+            var acc = AccountManager.GetAccount(account);
 
-            DbRepository.RemoveAccount(AccountManager.Instance.Accounts[index]);
-            AccountManager.Instance.Accounts.RemoveAt(index);
+            DbRepository.RemoveAccount(acc);
+            AccountManager.Accounts.Remove(acc);
             AccountData.DeleteAccount(index);
 
             return Ok();
