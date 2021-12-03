@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Modal, Button, Box, Typography, Input, Table, TableHead, TableCell } from '@mui/material';
+import { Modal, Button, Box, Typography, Input, Table, TableHead, TableCell, Grid } from '@mui/material';
 
 import { getAccount, addAccount } from '../../../api/Accounts/Account';
 import { getAccesses } from '../../../api/Accounts/Access';
@@ -14,9 +14,10 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    width:"80%"
 };
 
-const AccountModal = ({ editMode = false, accID = -1, setAccID}) => {
+const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
     const [selected, setSelected] = useState(-1);
     const [open, setOpen] = useState(false);
     const [accesses, setAccesses] = useState([]);
@@ -103,60 +104,51 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID}) => {
                     <Typography id="modal-modal-title" variant="h6" component="h2">
                         {editMode === true ? "Add account" : "Edit account"}
                     </Typography>
-                    <table>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    Username
-                                </td>
-                                <td>
-                                    <Input autoFocus={true} value={username} onInput={e => setUsername(e.target.value)} />
-                                </td>
-                                <td>
-                                    Server
-                                </td>
-                                <td>
-                                    <Input value={server} onInput={e => setServer(e.target.value)} />
-                                </td>
-                            </tr>
-                            <tr>
-                            </tr>
-                            <td>
-                                Password
-                            </td>
-                            <td>
-                                <Input type="password" value={password} onInput={e => setPassword(e.target.value)} />
-                            </td>
-                            <tr>
-                                <td>
-                                    Proxy IP
-                                </td>
-                                <td>
-                                    <Input value={proxyIP} onInput={e => setProxyIP(e.target.value)} />
-                                </td>
-                                <td>
-                                    Proxy username
-                                </td>
-                                <td>
-                                    <Input value={proxyUsername} onInput={e => setProxyUsername(e.target.value)} />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    Proxy Port
-                                </td>
-                                <td>
-                                    <Input type="number" value={proxyPort} onInput={e => setProxyPort(e.target.value)} />
-                                </td>
-                                <td>
-                                    Proxy password
-                                </td>
-                                <td>
-                                    <Input type="password" value={proxyPassword} onInput={e => setProxyPassword(e.target.value)} />
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <br/>
+                    <Grid container>
+                        <Grid item xs={2}>
+                            Username
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Input autoFocus={true} value={username} onInput={e => setUsername(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={2}>
+                            Server
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Input value={server} onInput={e => setServer(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={2}>
+                            Password
+                        </Grid>
+                        <Grid itemx xs={10}>
+                            <Input type="password" value={password} onInput={e => setPassword(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={2}>
+                            Proxy IP
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Input value={proxyIP} onInput={e => setProxyIP(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={2}>
+                            Proxy username
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Input value={proxyUsername} onInput={e => setProxyUsername(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={2}>
+                            Proxy Port
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Input type="number" value={proxyPort} onInput={e => setProxyPort(e.target.value)} />
+                        </Grid>
+                        <Grid item xs={2}>
+                            Proxy password
+                        </Grid>
+                        <Grid item xs={4}>
+                            <Input type="password" value={proxyPassword} onInput={e => setProxyPassword(e.target.value)} />
+                        </Grid>
+                    </Grid>
                     <table width="100%">
                         <td>
                             <Button onClick={onClickAdd}>Add</Button>
@@ -172,7 +164,7 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID}) => {
                         <TableHead>
                             <TableCell>Proxy</TableCell>
                             <TableCell>Proxy username</TableCell>
-                            <TableCell>OK</TableCell>
+                            <TableCell>Is working</TableCell>
                         </TableHead>
                         <AccessRow accesses={accesses} handler={onClickTable} selected={selected} />
                     </Table>
