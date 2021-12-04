@@ -14,10 +14,12 @@ const SideBar = ({ selected, setSelected }) => {
     const [status, setStatus] = useState(false);
 
     useEffect( ( ) => {
-        const updateStatus = async () => {
-            setStatus(await getStatus(selected))            
+        if ( selected !== -1) {
+            const updateStatus = async () => {
+                setStatus(await getStatus(selected))            
+            }
+            updateStatus();
         }
-        updateStatus();
     }, [selected]) 
     const handleDrawerOpen = () => {
         setOpen(true);
