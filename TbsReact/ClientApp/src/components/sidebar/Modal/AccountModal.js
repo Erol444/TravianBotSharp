@@ -26,8 +26,8 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
     const [username, setUsername] = useState("");
     const [server, setServer] = useState("");
     const [password, setPassword] = useState("");
-    const [proxyIP, setProxyIP] = useState(0);
-    const [proxyPort, setProxyPort] = useState("");
+    const [proxyIP, setProxyIP] = useState("");
+    const [proxyPort, setProxyPort] = useState(0);
     const [proxyUsername, setProxyUsername] = useState("");
     const [proxyPassword, setProxyPassword] = useState("");
 
