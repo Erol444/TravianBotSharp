@@ -19,9 +19,10 @@ const getAccount = async (index) => {
         console.log(e);
     }
 }
-const addAccount = async (data) => {
+const addAccount = async (acc) => {
     try {
-        await axios.post('/accounts', data);
+        const {data} = await axios.post('/accounts', acc);
+        return data;
     } catch (e) {
         console.log(e);
     }

@@ -13,7 +13,7 @@ namespace TbsReact.Controllers
     public class AccountController : ControllerBase
     {
         [HttpGet]
-        public ActionResult<List<Account>> GetAccounts()
+        public ActionResult GetAccounts()
         {
             var AccountInfoList = new List<Account>();
             for (int i = 0; i < AccountData.Accounts.Count; i++)
@@ -21,18 +21,18 @@ namespace TbsReact.Controllers
                 AccountInfoList.Add(AccountData.Accounts[i]);
             }
 
-            return AccountInfoList;
+            return Ok(AccountInfoList);
         }
 
         [HttpGet("{index:int}")]
-        public ActionResult<Account> GetAccount(int index)
+        public ActionResult GetAccount(int index)
         {
             var acc = AccountData.GetAccount(index);
             if (acc == null)
             {
                 return NotFound();
             }
-            return acc;
+            return Ok(acc);
         }
 
         [HttpPost]
@@ -48,9 +48,9 @@ namespace TbsReact.Controllers
             var acc = account.GetAccount(accesses);
             DbRepository.SaveAccount(acc);
             AccountManager.Accounts.Add(acc);
-            AccountData.AddAccount(account);
+            var result = AccountData.AddAccount(account);
 
-            return Ok();
+            return CreatedAtAction(nameof(GetAccount), new { id = result.Id }, result);
         }
 
         [HttpPatch("{index:int}")]

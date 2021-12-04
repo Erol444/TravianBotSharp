@@ -86,7 +86,8 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
 
     const onClickAddAccount = async () => {
         const data = { account: { name: username, serverUrl: server }, accesses: accesses };
-        await addAccount(data)
+        const result = await addAccount(data);
+        setAccID(result.id)
         handleClose();
     }
 

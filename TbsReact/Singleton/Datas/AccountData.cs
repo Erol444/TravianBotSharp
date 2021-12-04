@@ -29,10 +29,18 @@ namespace TbsReact.Singleton
             return Accounts.FirstOrDefault(x => x.Id == index);
         }
 
-        public static void AddAccount(Account account)
+        public static Account AddAccount(Account account)
         {
-            account.Id = Accounts.Last().Id + 1;
+            if (Accounts.Count > 0)
+            {
+                account.Id = Accounts.Last().Id + 1;
+            }
+            else
+            {
+                account.Id = 0;
+            }
             Accounts.Add(account);
+            return Accounts.Last();
         }
 
         public static bool EditAccount(int index, Account account)
