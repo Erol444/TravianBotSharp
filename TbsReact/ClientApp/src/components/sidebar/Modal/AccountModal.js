@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Modal, Button, Box, Typography, Input, Table, TableHead, TableCell, Grid } from '@mui/material';
+import { Modal, Button, Box, Typography, Input, Table, TableHead, TableRow, TableCell, TableBody, Grid } from '@mui/material';
 
 import { getAccount, addAccount } from '../../../api/Accounts/Account';
 import { getAccesses } from '../../../api/Accounts/Access';
@@ -14,7 +14,7 @@ const style = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
-    width:"80%"
+    width: "80%"
 };
 
 const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
@@ -66,7 +66,6 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
         }
     }
     const handleClose = () => {
-        console.log("Setaccid", setAccID)
         setAccID(-1)
         setOpen(false);
     }
@@ -88,7 +87,6 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
     const onClickAddAccount = async () => {
         const data = { account: { name: username, serverUrl: server }, accesses: accesses };
         await addAccount(data)
-        console.log(data);
         handleClose();
     }
 
@@ -104,7 +102,7 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
                     <Typography id="modal-modal-title" variant="h6" component="h2">
                         {editMode === false ? "Add account" : "Edit account"}
                     </Typography>
-                    <br/>
+                    <br />
                     <Grid container>
                         <Grid item xs={2}>
                             Username
@@ -149,33 +147,55 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
                             <Input type="password" value={proxyPassword} onInput={e => setProxyPassword(e.target.value)} />
                         </Grid>
                     </Grid>
-                    <table width="100%">
-                        <td>
-                            <Button onClick={onClickAdd}>Add</Button>
-                        </td>
-                        <td>
-                            <Button onClick={onClickEdit}>Edit</Button>
-                        </td>
-                        <td>
-                            <Button onClick={onClickDelete}>Delete</Button>
-                        </td>
-                    </table>
+                    <Table>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell>
+                                    <Button onClick={onClickAdd}>
+                                        Add
+                                    </Button>
+                                </TableCell>
+                                <TableCell>
+                                    <Button onClick={onClickEdit}>
+                                        Edit
+                                    </Button>
+                                </TableCell>
+                                <TableCell>
+                                    <Button onClick={onClickDelete}>
+                                        Delete
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
                     <Table>
                         <TableHead>
-                            <TableCell>Proxy</TableCell>
-                            <TableCell>Proxy username</TableCell>
-                            <TableCell>Is working</TableCell>
+                            <TableRow>
+                                <TableCell>Proxy</TableCell>
+                                <TableCell>Proxy username</TableCell>
+                                <TableCell>Is working</TableCell>
+                            </TableRow>
                         </TableHead>
-                        <AccessRow accesses={accesses} handler={onClickTable} selected={selected} />
+                        <TableBody>
+                            <AccessRow accesses={accesses} handler={onClickTable} selected={selected} />
+                        </TableBody>
                     </Table>
-                    <table width="100%">
-                        <td>
-                            <Button onClick={onClickAddAccount}>{editMode === true ? "Edit account" : "Add account"} </Button>
-                        </td>
-                        <td>
-                            <Button onClick={handleClose}>Close</Button>
-                        </td>
-                    </table>
+                    <Table>
+                        <TableBody>
+                            <TableRow>
+                                <TableCell>
+                                    <Button onClick={onClickAddAccount}>
+                                        {editMode === true ? "Edit account" : "Add account"}
+                                    </Button>
+                                </TableCell>
+                                <TableCell>
+                                    <Button onClick={handleClose}>
+                                        Close
+                                    </Button>
+                                </TableCell>
+                            </TableRow>
+                        </TableBody>
+                    </Table>
                 </Box>
             </Modal>
         </>
