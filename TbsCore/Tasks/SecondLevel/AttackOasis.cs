@@ -44,7 +44,7 @@ namespace TbsCore.Tasks.LowLevel
                 if (!enoughTroops) return Retry();
             }
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
+            await NavigationHelper.ToMap(acc);
 
             // Get map tiles around the current village
             var mapTiles = MapHelper.GetMapTiles(acc, Vill.Coordinates);

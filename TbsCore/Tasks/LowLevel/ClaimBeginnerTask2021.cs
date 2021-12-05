@@ -20,7 +20,7 @@ namespace TbsCore.Tasks.LowLevel
                 .Any(x => x.HasClass("newQuestSpeechBubble")) ?? false)
             {
                 // Claim account-wide rewards
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/tasks?t=2");
+                await DriverHelper.ClickByClassName(acc, "tabItem", 1);
                 await ClaimRewards(acc);
             }
 
