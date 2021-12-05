@@ -49,6 +49,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             acc.Wb.ExecuteScript("document.getElementById('saveHeroAttributes').click();");
+            //await Driver
             return TaskRes.Executed;
         }
     }

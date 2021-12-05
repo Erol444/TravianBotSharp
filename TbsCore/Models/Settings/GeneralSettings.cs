@@ -26,8 +26,8 @@ namespace TbsCore.Models.Settings
             DonateAbove = 95;
             DonateExcessOf = 65;
             DiscordWebhook = false;
-            DelayClickingMin = 2500;
-            DelayClickingMax = 3800;
+            DelayClickingMin = 1000;
+            DelayClickingMax = 2000;
         }
 
         public bool AutoActivateProductionBoost { get; set; }
