@@ -1,20 +1,28 @@
 import React from 'react';
-import {  Container, Navbar, NavbarBrand} from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { AppBar, Container, Toolbar, Typography } from '@mui/material'
 import './NavMenu.css';
 import SideBar from './sidebar/SideBar';
 
-const NavMenu = ({ selected, setSelected }) => {
 
+const NavMenu = ({ selected, setSelected }) => {
   return (
-    <header>
-      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
-        <Container>
-          <SideBar selected={selected} setSelected={setSelected}/>
-          <NavbarBrand tag={Link} to="/">TBSReact</NavbarBrand>          
+    <>
+      <AppBar position="static">
+        <Container maxWidth="xl">
+          <Toolbar >
+            <SideBar selected={selected} setSelected={setSelected} />
+            <Typography
+              variant="h6"
+              noWrap
+              component="div"
+              sx={{ mr: 2, display: { xs: 'none', md: 'flex' } }}
+            >
+              TbsReact
+            </Typography>
+          </Toolbar>
         </Container>
-      </Navbar>
-    </header>
+      </AppBar>
+    </>
   );
 }
 
