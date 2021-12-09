@@ -1,12 +1,17 @@
 import React from 'react';
 import NavMenu from './NavMenu';
-import Info from './Views/Info';
 
-const Layout = ({ selected, setSelected }) => {
+//debug view
+import Debug from './Views/Debug';
+import LogBoard from './Views/Debug/LogBoard'
+
+const Layout = ({ selected, setSelected, isConnect }) => {
   return (
     <>
       <NavMenu selected={selected} setSelected={setSelected} />
-      <Info/>
+      <Debug 
+        logBoard={<LogBoard selected={selected} isConnect={isConnect}/>}          
+        />
     </>
   );
 

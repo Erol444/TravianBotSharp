@@ -6,18 +6,21 @@ namespace TbsReact.Hubs
 {
     public class GroupHub : Hub
     {
-        public async Task AddGroup(string groupkey)
+        public async Task AddGroup(int index)
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupkey);
-            await Clients.Caller.SendAsync("Message", $"{Context.ConnectionId} is now on account {groupkey}");
-            AccountManager.ClientConnect(groupkey);
+            var acc = AccountData.GetAccount(index);
+            await Groups.AddToGroupAsync(Context.ConnectionId, acc.Name);
+            await Clients.Caller.SendAsync("message", $"{Context.ConnectionId} is now on account {acc.Name}");
+
+            AccountManager.ClientConnect(acc.Name);
         }
 
-        public async Task RemoveGroup(string groupkey)
+        public async Task RemoveGroup(int index)
         {
-            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupkey);
-            await Clients.Caller.SendAsync("Message", $"{Context.ConnectionId} didn't watch account {groupkey} anymore");
-            AccountManager.ClientDisconnect(groupkey);
+            var acc = AccountData.GetAccount(index);
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, acc.Name);
+            await Clients.Caller.SendAsync("message", $"{Context.ConnectionId} didn't watch account {acc.Name} anymore");
+            AccountManager.ClientDisconnect(acc.Name);
         }
     }
 }
