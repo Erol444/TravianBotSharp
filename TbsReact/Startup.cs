@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using TbsReact.Singleton;
+using TbsReact.Hubs;
 
 namespace TbsReact
 {
@@ -22,6 +23,12 @@ namespace TbsReact
         {
             services.AddSingleton(AccountManager.Instance);
             services.AddSingleton(AccountData.Instance);
+            services.AddSingleton(LogManager.Instance);
+            services.AddSignalR();
+
+            TbsCore.Models.Logging.SerilogSingleton.Init();
+            LogManager.SetLogOutput(TbsCore.Models.Logging.SerilogSingleton.LogOutput);
+
             services.AddControllersWithViews();
 
             // In production, the React files will be served from this directory
@@ -56,6 +63,8 @@ namespace TbsReact
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+
+                endpoints.MapHub<GroupHub>("/live");
             });
 
             app.UseSpa(spa =>
