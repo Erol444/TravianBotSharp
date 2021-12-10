@@ -56,6 +56,14 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
         }
     }, [accID])
 
+    useEffect(() => {
+        if (!server.includes("https://")) {
+            setServer((prev) => `https://${prev}`)
+        }
+
+    }, [server])
+
+
 
     const handleOpen = () => {
         if (editMode === true && accID === -1) {
