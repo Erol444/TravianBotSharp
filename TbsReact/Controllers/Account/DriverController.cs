@@ -24,8 +24,10 @@ namespace TbsReact.Controllers
 
             if (acc.Access.AllAccess.Count > 0)
             {
+                AccountManager.SendMessage(account.Name, "message", $"Account {account.Name} is logging");
                 await IoHelperCore.LoginAccount(acc);
                 AccountManager.SendMessage(account.Name, "message", $"Account {account.Name} logged in");
+
                 return Ok();
             }
 

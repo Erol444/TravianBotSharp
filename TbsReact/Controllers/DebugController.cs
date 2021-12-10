@@ -7,11 +7,11 @@ using System.Collections.Generic;
 namespace TbsReact.Controllers
 {
     [ApiController]
-    [Route("accounts/{indexAcc:int}/")]
+    [Route("accounts/{indexAcc:int}")]
     public class DebugController : ControllerBase
     {
         [HttpGet]
-        [Route("/log")]
+        [Route("log")]
         public ActionResult GetLog(int indexAcc)
         {
             var account = AccountData.GetAccount(indexAcc);
