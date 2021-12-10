@@ -30,8 +30,8 @@ const SideBar = ({ selected, setSelected }) => {
     };
  
     const onDelete = async () => {
-        await deleteAccount(selected);
         setSelected(-1)
+        await deleteAccount(selected);
     }
 
     const onLog = async () => {
