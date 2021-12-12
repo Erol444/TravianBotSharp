@@ -28,7 +28,7 @@ namespace TravBotSharp.Views
         public void UpdateUc()
         {
             active = true;
-            UpdateTaskTable();
+            UpdateTaskTable(GetSelectedAcc()?.AccInfo.Nickname ?? "");
             GetLogData();
             this.Focus();
         }
@@ -80,14 +80,14 @@ namespace TravBotSharp.Views
             logTextBox.Text = $"{Log.GetLastLog(acc.AccInfo.Nickname)}{logTextBox.Text}";
         }
 
-        public void UpdateTaskTable()
+        public void UpdateTaskTable(string username)
         {
             if (!active) return;
             if (taskListView.InvokeRequired)
             {
                 taskListView.BeginInvoke(new Action(delegate
                 {
-                    UpdateTaskTable();
+                    UpdateTaskTable(username);
                 }));
                 return;
             }

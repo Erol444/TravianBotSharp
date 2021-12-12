@@ -21,5 +21,22 @@ namespace TbsReact.Controllers
             }
             return Ok(LogManager.GetLogData(account.Name));
         }
+
+        [HttpGet]
+        [Route("task")]
+        public ActionResult GetTask(int indexAcc)
+        {
+            var account = AccountData.GetAccount(indexAcc);
+            if (account == null)
+            {
+                return NotFound();
+            }
+            var list = TaskManager.GetTaskList(account.Name);
+            if (list == null)
+            {
+                return Ok("null");
+            }
+            return Ok(list);
+        }
     }
 }

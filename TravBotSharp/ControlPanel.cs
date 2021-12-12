@@ -143,7 +143,7 @@ namespace TravBotSharp
                 {
                     await IoHelperCore.LoginAccount(acc);
                     acc.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
-                    debugUc1.UpdateTaskTable();
+                    debugUc1.UpdateTaskTable(acc.AccInfo.Nickname);
                 }).Start();
                 generalUc1.UpdateBotRunning("true");
                 return;
@@ -197,7 +197,7 @@ namespace TravBotSharp
             if (acc.Tasks != null)
             {
                 acc.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
-                debugUc1.UpdateTaskTable();
+                debugUc1.UpdateTaskTable(acc.AccInfo.Nickname);
             }
         }
 

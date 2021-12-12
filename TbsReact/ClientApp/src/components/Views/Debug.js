@@ -1,8 +1,17 @@
+import Grid from '@mui/material/Grid';
 
-const Debug = ({logBoard}) => {
+const Debug = ({ taskTable, logBoard }) => {
     return (
         <>
-            {logBoard}
+            <Grid container spacing={2}>
+                <Grid item xs={6}>
+                    {taskTable}
+                </Grid>
+                <Grid item xs={6}>
+                    {logBoard}
+                </Grid>
+            </Grid>
+
         </>
     )
 }

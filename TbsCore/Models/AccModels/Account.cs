@@ -24,12 +24,12 @@ namespace TbsCore.Models.AccModels
             Hero = new Hero();
             Hero.init();
 
-            Tasks = new TaskList();
             Villages = new List<Village>();
             Access = new AccessInfo();
             Access.Init();
             AccInfo = new AccInfo();
             AccInfo.Init();
+            Tasks = new TaskList(AccInfo.Nickname);
             Quests = new QuestsSettings();
             Quests.Init();
             Settings = new GeneralSettings();

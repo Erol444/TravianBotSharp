@@ -26,6 +26,7 @@ namespace TbsReact.Controllers
             {
                 AccountManager.SendMessage(account.Name, "message", $"Account {account.Name} is logging");
                 await IoHelperCore.LoginAccount(acc);
+                TaskManager.AddAccount(acc);
                 AccountManager.SendMessage(account.Name, "message", $"Account {account.Name} logged in");
 
                 return Ok();

@@ -9,14 +9,16 @@ namespace TbsCore.Models.AccModels
 {
     public class TaskList
     {
-        public delegate void TaskUpdated();
+        public delegate void TaskUpdated(string username);
 
         private readonly List<BotTask> _tasks;
+        private readonly string _username;
         public TaskUpdated OnUpdateTask;
 
-        public TaskList()
+        public TaskList(string username)
         {
             _tasks = new List<BotTask>();
+            _username = username;
         }
 
         public void Add(BotTask task, bool IfNotExists = false, Village vill = null)
@@ -116,13 +118,13 @@ namespace TbsCore.Models.AccModels
         public void Clear()
         {
             _tasks.Clear();
-            OnUpdateTask?.Invoke();
+            OnUpdateTask?.Invoke(_username);
         }
 
         public void ReOrder()
         {
             _tasks.Sort((a, b) => DateTime.Compare(a.ExecuteAt, b.ExecuteAt));
-            OnUpdateTask?.Invoke();
+            OnUpdateTask?.Invoke(_username);
         }
 
         public bool IsTaskExcuting()

@@ -215,7 +215,7 @@ namespace TbsCore.Helpers
 
                 acc.Logger = new Logger(acc.AccInfo.Nickname);
 
-                acc.Tasks = new TaskList();
+                acc.Tasks = new TaskList(acc.AccInfo.Nickname);
                 acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
 
                 acc.Wb = new WebBrowserInfo();

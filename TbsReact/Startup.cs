@@ -24,6 +24,7 @@ namespace TbsReact
             services.AddSingleton(AccountManager.Instance);
             services.AddSingleton(AccountData.Instance);
             services.AddSingleton(LogManager.Instance);
+            services.AddSingleton(TaskManager.Instance);
             services.AddSignalR();
 
             TbsCore.Models.Logging.SerilogSingleton.Init();
