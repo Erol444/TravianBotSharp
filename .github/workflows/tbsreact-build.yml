@@ -1,0 +1,31 @@
+name: BuildFlow
+
+on:
+  pull_request:
+    branches-ignore: [master]
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+jobs:
+   version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          one_of: release
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+   build:
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '5.x'
+      - name: Build dotnet
+        run: dotnet build --configuration Release
+      - name: Build dotnet
+        run: dotnet publish TbsReact/TbsReact.csproj /p:PublishProfile=TbsReact/Properties/PublishProfiles/Linux.pubxml
