@@ -85,5 +85,7 @@
       "last 1 safari version"
     ]
   },
-  "eslintIgnore": ["build/"]
+  "eslintIgnore": [
+    "build/"
+  ]
 }
