@@ -45,7 +45,7 @@ jobs:
           context: ./TbsReact
           file: ./TbsReact/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/TbsReact:test
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tbsreact:test
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
