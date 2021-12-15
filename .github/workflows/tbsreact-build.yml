@@ -15,5 +15,5 @@ jobs:
           dotnet-version: '5.x'
       - name: Build dotnet
         run: dotnet build --configuration Release
-      - name: Build dotnet
+      - name: Publish dotnet
         run: dotnet publish TbsReact/TbsReact.csproj /p:PublishProfile=TbsReact/Properties/PublishProfiles/Linux.pubxml
