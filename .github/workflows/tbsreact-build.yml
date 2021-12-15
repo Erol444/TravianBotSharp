@@ -14,6 +14,6 @@ jobs:
         with:
           dotnet-version: '5.x'
       - name: Build dotnet
-        run: dotnet build --configuration Release
+        run: dotnet build TravBotSharp/TbsWinForms.csproj --configuration Release
       - name: Publish dotnet
         run: dotnet publish TbsReact/TbsReact.csproj /p:PublishProfile=TbsReact/Properties/PublishProfiles/Linux.pubxml
