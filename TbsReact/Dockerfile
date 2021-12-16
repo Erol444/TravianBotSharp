@@ -18,7 +18,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 				wget \
 		&& rm -rf /var/lib/apt/lists/*
 		
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
 RUN apt-get update && apt-get install -y --no-install-recommends google-chrome-stable
 
 RUN mkdir -p /Xauthority && chown -R xuser:xusers /Xauthority
