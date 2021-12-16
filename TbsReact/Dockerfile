@@ -18,6 +18,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 				x11-xserver-utils \
 		&& rm -rf /var/lib/apt/lists/*
 
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN apt install ./google-chrome-stable_current_amd64.deb -y
+
 RUN mkdir -p /Xauthority && chown -R xuser:xusers /Xauthority
 VOLUME /Xauthority
 
