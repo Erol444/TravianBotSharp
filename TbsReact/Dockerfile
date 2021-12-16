@@ -19,6 +19,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 				gnupg \
 				gdebi-core \
 				ca-certificates \
+				fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 \
+				libatspi2.0-0 libcairo2 libcups2 libcurl3-gnutls libcurl3-nss libcurl4 libcurl3 \
+				libgbm1 libglib2.0-0 libgtk-3-0 libgtk-4-1 libnspr4 libnss3 libpango-1.0-0 \
+				libxkbcommon0 xdg-utils \				
 		&& rm -rf /var/lib/apt/lists/*
 
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --ca-directory=/etc/ssl/certs/
