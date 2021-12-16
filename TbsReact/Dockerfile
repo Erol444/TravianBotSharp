@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 				x11vnc \
 				x11-utils \
 				x11-xserver-utils \
+				wget \
 		&& rm -rf /var/lib/apt/lists/*
 
 RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
