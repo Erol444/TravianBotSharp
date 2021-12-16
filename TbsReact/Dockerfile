@@ -9,7 +9,6 @@ RUN addgroup --system xusers \
 			--ingroup xusers \
 			--quiet \
 			xuser
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add
 RUN apt-get update && apt-get install -y --no-install-recommends \
 				xvfb \
 				xauth \
@@ -17,9 +16,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 				x11-utils \
 				x11-xserver-utils \
 				wget \
-				google-chrome-stable \
 		&& rm -rf /var/lib/apt/lists/*
-
+		
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add
+RUN apt-get update && apt-get install -y --no-install-recommends google-chrome-stable
 
 RUN mkdir -p /Xauthority && chown -R xuser:xusers /Xauthority
 VOLUME /Xauthority
