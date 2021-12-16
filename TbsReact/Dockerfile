@@ -9,7 +9,9 @@ RUN addgroup --system xusers \
 			--ingroup xusers \
 			--quiet \
 			xuser
-
+			
+RUN apt-get update && apt-get install -y --no-install-recommends software-properties-common
+RUN apt-get update 
 RUN add-apt-repository universe			
 RUN apt-get update && apt-get install -y --no-install-recommends \
 				xvfb \
