@@ -18,9 +18,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 				wget \
 				gnupg \
 				gdebi-core \
+				ca-certificates \
 		&& rm -rf /var/lib/apt/lists/*
 
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --ca-directory=/etc/ssl/certs/
 RUN gdebi google-chrome-stable_current_amd64.deb -y
 
 RUN mkdir -p /Xauthority && chown -R xuser:xusers /Xauthority
