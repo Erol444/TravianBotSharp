@@ -10,10 +10,6 @@ RUN addgroup --system xusers \
 			--quiet \
 			xuser
 			
-RUN apt-get update && apt-get install -y --no-install-recommends software-properties-common
-RUN apt-get update 
-RUN add-apt-repository universe 
-RUN add-apt-repository multiverse  			
 RUN apt-get update && apt-get install -y --no-install-recommends \
 				xvfb \
 				xauth \
@@ -23,15 +19,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 				wget \
 				gnupg \
 				gdebi-core \
-				ca-certificates \
-				fonts-liberation libasound2 libatk-bridge2.0-0 libatk1.0-0 \
-				libatspi2.0-0 libcairo2 libcups2 libcurl3-gnutls libcurl3-nss libcurl4 libcurl3 \
-				libgbm1 libglib2.0-0 libgtk-3-0 libgtk-4-1 libnspr4 libnss3 libpango-1.0-0 \
-				libxkbcommon0 xdg-utils \				
+				ca-certificates \			
 		&& rm -rf /var/lib/apt/lists/*
 
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb --ca-directory=/etc/ssl/certs/
-RUN dpkg -i google-chrome-stable_current_amd64.deb
+RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub 
+RUN apt-key add linux_signing_key.pub
+
+RUN echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | sudo tee /etc/apt/sources.list.d/google-chrome.list
+RUN apt-get install google-chrome-stable -y --no-install-recommends
 
 RUN mkdir -p /Xauthority && chown -R xuser:xusers /Xauthority
 VOLUME /Xauthority

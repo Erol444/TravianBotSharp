@@ -28,7 +28,7 @@ xauth nlist :0 | sed -e 's/^..../ffff/' | xauth -f /Xauthority/xserver.xauth nme
 Xvfb :0 -auth ~/.Xauthority $DPI_OPTIONS -screen 0 $XFB_SCREEN >>~/xvfb.log 2>&1 &
 sleep 10
 
-google-chrome --disable-gpu --no-sandbox https://www.google.com.vn/
+google-chrome --disable-gpu --no-sandbox --disable-setuid-sandbox https://www.google.com.vn/
 
 # finally we can run the VNC-Server based on our just started X-Server
 x11vnc -forever -passwd $VNC_PASSWORD -display :0
