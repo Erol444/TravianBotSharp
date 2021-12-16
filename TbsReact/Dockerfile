@@ -17,11 +17,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 				x11-xserver-utils \
 				wget \
 				gnupg \
+				gdebi-core \
 		&& rm -rf /var/lib/apt/lists/*
-ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
-RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
-RUN apt-get update && apt-get install -y --no-install-recommends google-chrome-stable
-RUN APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=0
+
+RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+RUN gdebi google-chrome-stable_current_amd64.deb -y
 
 RUN mkdir -p /Xauthority && chown -R xuser:xusers /Xauthority
 VOLUME /Xauthority
