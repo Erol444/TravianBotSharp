@@ -27,7 +27,7 @@ ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE 1
 RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add
 
 RUN echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
-RUN apt-get install google-chrome-stable -y --no-install-recommends
+RUN apt-get update && apt-get install google-chrome-stable -y --no-install-recommends
 
 RUN mkdir -p /Xauthority && chown -R xuser:xusers /Xauthority
 VOLUME /Xauthority
