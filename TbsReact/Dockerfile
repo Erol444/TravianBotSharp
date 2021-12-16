@@ -12,7 +12,7 @@ RUN addgroup --system xusers \
 			
 RUN apt-get update && apt-get install -y --no-install-recommends software-properties-common
 RUN apt-get update 
-RUN add-apt-repository universe			
+RUN add-apt-repository universe multiverse  			
 RUN apt-get update && apt-get install -y --no-install-recommends \
 				xvfb \
 				xauth \
