@@ -9,6 +9,8 @@ RUN addgroup --system xusers \
 			--ingroup xusers \
 			--quiet \
 			xuser
+
+RUN add-apt-repository universe			
 RUN apt-get update && apt-get install -y --no-install-recommends \
 				xvfb \
 				xauth \
