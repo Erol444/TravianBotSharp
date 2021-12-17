@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Windows.Forms;
+using TbsCore.Tasks;
+using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -102,5 +105,20 @@ namespace TravBotSharp.Views
             GetSelectedVillage().Market.Settings.Configuration.FillLimit.Crop = (long)FillLimitCrop.Value;
         #endregion
 
+        private void npc_Click(object sender, EventArgs e)
+        {
+            DialogResult dialog = MessageBox.Show("Are you sure you want to NPC? NPC costs 3 gold.",
+                "NPC confirmation",
+                MessageBoxButtons.YesNoCancel);
+            if (dialog == DialogResult.Cancel) return;
+
+            var vill = GetSelectedVillage();
+            GetSelectedAcc().Tasks.Add(new NPC()
+            {
+                Vill = vill,
+                Priority = BotTask.TaskPriority.High
+
+            }, true, vill);
+        }
     }
 }

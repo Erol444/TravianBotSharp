@@ -19,9 +19,8 @@ namespace TbsCore.Tasks.LowLevel
             acc.Tasks.Remove(typeof(UpdateDorf1), Vill, thisTask: this);
             acc.Tasks.Remove(typeof(UpdateDorf2), Vill, thisTask: this);
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php"); // Update dorf1
-            await Task.Delay(AccountHelper.Delay(acc));
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php"); // Update dorf2
+            await NavigationHelper.ToDorf1(acc);
+            await NavigationHelper.ToDorf2(acc);
 
             // On new village import the building tasks
             if (ImportTasks && !string.IsNullOrEmpty(acc.NewVillages.BuildingTasksLocationNewVillage))
@@ -31,7 +30,7 @@ namespace TbsCore.Tasks.LowLevel
 
             await UpdateTroopsResearchedAndLevels(acc);
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+            await NavigationHelper.ToDorf2(acc);
             await Task.Delay(AccountHelper.Delay(acc));
             await UpdateTroopsTraining(acc);
 
@@ -39,7 +38,7 @@ namespace TbsCore.Tasks.LowLevel
             Vill.Troops.TroopToTrain = firstTroop;
             Vill.Troops.Researched.Add(firstTroop);
 
-            if (await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
+            if (await NavigationHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
             {
                 // Village has town hall, parse celebration duration
                 Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
@@ -54,7 +53,7 @@ namespace TbsCore.Tasks.LowLevel
             if (acc.AccInfo.PlusAccount)
             {
                 // From overview we get all researched troops and their levels
-                await VersionHelper.Navigate(acc, "/dorf3.php?s=5&su=2", "/village/statistics/troops?su=2");
+                await NavigationHelper.ToOverview(acc, NavigationHelper.OverviewTab.Troops, NavigationHelper.TroopOverview.Smithy);
 
                 OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);
                 // We have updated all villages at the same time. No need to continue.
@@ -62,11 +61,9 @@ namespace TbsCore.Tasks.LowLevel
                 return;
             }
 
-            var smithy = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Classificator.BuildingEnum.Smithy);
-            if (smithy != null)
+            // If smithy exists, we get all researched troops and their levels
+            if (await NavigationHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Smithy))
             {
-                // If smithy exists, we get all researched troops and their levels
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={smithy.Id}");
                 Vill.Troops.Levels = TroopsParser.GetTroopLevels(acc.Wb.Html);
                 TroopsHelper.UpdateResearchedTroops(Vill);
                 return;
@@ -85,7 +82,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             foreach (var trainingBuilding in trainingBuildings)
             {
-                if (!await VillageHelper.EnterBuilding(acc, Vill, trainingBuilding)) continue;
+                if (!await NavigationHelper.EnterBuilding(acc, Vill, trainingBuilding)) continue;
 
                 // Mark troops that user can train in building as researched
                 TroopsHelper.UpdateTroopsResearched(Vill, acc.Wb.Html);
@@ -113,7 +110,6 @@ namespace TbsCore.Tasks.LowLevel
                         Vill.Troops.CurrentlyTraining.Workshop = ct;
                         break;
                 }
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
                 await Task.Delay(AccountHelper.Delay(acc));
             }
         }

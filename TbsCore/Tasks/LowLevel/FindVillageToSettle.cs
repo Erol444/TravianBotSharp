@@ -13,7 +13,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
+            await NavigationHelper.ToMap(acc);
 
             var mainVill = AccountHelper.GetMainVillage(acc);
 
@@ -48,7 +48,7 @@ namespace TbsCore.Tasks.LowLevel
                     if (!acc.NewVillages.Types.Any(x => x == type)) continue;
                 }
 
-                var distance = MapHelper.CalculateDistance(acc, mainVill.Coordinates, tile.Coordinates);
+                var distance = mainVill.Coordinates.CalculateDistance(acc, tile.Coordinates);
                 if (distance < closest)
                 {
                     closest = distance;

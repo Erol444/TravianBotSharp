@@ -13,7 +13,7 @@ namespace TbsCore.Helpers
         {
             switch (acc.AccInfo.ServerVersion)
             {
-                case ServerVersionEnum.T4_4:
+                case ServerVersionEnum.TTwars:
                     await acc.Wb.Navigate(acc.AccInfo.ServerUrl + url4_4);
                     break;
 

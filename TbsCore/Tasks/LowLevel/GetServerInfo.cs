@@ -8,7 +8,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+            await NavigationHelper.ToDorf2(acc);
 
             // Get Map size
             var size = DriverHelper.GetJsObj<long>(acc, "window.TravianDefaults.Map.Size.top");
@@ -19,7 +19,7 @@ namespace TbsCore.Tasks.LowLevel
             acc.AccInfo.ServerSpeed = (int)speed;
 
             // Get server version
-            acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.T4_4);
+            acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.TTwars);
 
             return TaskRes.Executed;
         }

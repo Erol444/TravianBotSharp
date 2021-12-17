@@ -51,50 +51,15 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            var url = $"{acc.AccInfo.ServerUrl}/build.php?id={urlId}";
-
             // Fast building for TTWars
-            //if (acc.AccInfo.ServerUrl.Contains("ttwars") &&
-            //    !constructNew &&
-            //    await TTWarsTryFastUpgrade(acc, url))
-            //{
-            //    return TaskRes.Executed;
-            //}
-
-            // Navigate to the dorf in which the building is, so bot is less suspicious
-            string dorfUrl = $"/dorf{((Task.BuildingId ?? default) < 19 ? 1 : 2)}.php"; // "dorf1" / "dorf2"
-            if (!acc.Wb.CurrentUrl.Contains(dorfUrl))
+            if (acc.AccInfo.ServerUrl.Contains("ttwars") &&
+                !constructNew &&
+                await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={urlId}"))
             {
-                await acc.Wb.Navigate(acc.AccInfo.ServerUrl + dorfUrl);
-            }
-            else
-            {
-                acc.Wb.UpdateHtml();
+                return TaskRes.Executed;
             }
 
-            // Append correct tab
-            if (!constructNew)
-            {
-                switch (this.Task.Building)
-                {
-                    case BuildingEnum.RallyPoint:
-                        url += "&tt=0";
-                        break;
-
-                    case BuildingEnum.Marketplace:
-                        url += "&t=0";
-                        break;
-
-                    case BuildingEnum.Residence:
-                    case BuildingEnum.Palace:
-                    case BuildingEnum.CommandCenter:
-                    case BuildingEnum.Treasury:
-                        url += "&s=0";
-                        break;
-                }
-            }
-
-            await acc.Wb.Navigate(url);
+            await NavigationHelper.EnterBuilding(acc, Vill, (int)Task.BuildingId);
 
             var constructContract = acc.Wb.Html.GetElementbyId($"contract_building{(int)Task.Building}");
             var upgradeContract = acc.Wb.Html.GetElementbyId("build");
@@ -240,7 +205,7 @@ namespace TbsCore.Tasks.LowLevel
 
             acc.Logger.Information($"Started upgrading {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
 
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars ||
                buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
                !await TryFastUpgrade(acc)) // +25% speed upgrade
             {
@@ -297,7 +262,7 @@ namespace TbsCore.Tasks.LowLevel
         /// <returns>Whether bot watched the ad</returns>
         private async Task<bool> TryFastUpgrade(Account acc)
         {
-            if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", false)) return false;
+            if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", log: false)) return false;
             await System.Threading.Tasks.Task.Delay(AccountHelper.Delay(acc));
 
             // Confirm

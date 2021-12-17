@@ -15,66 +15,13 @@ namespace TbsCore.Helpers
 {
     public static class TroopsHelper
     {
-        public static BuildingEnum GetTroopBuilding(TroopsEnum t, bool great)
+        internal static TroopsEnum TroopFromInt(Account acc, int num) =>
+            TroopFromInt(acc.AccInfo.Tribe ?? TribeEnum.Any, num);
+        internal static TroopsEnum TroopFromInt(TribeEnum tribe, int num) =>
+            (TroopsEnum)TroopIntFromInt(tribe, num);
+        internal static int TroopIntFromInt(TribeEnum tribe, int num)
         {
-            switch (t)
-            {
-                case TroopsEnum.Legionnaire:
-                case TroopsEnum.Praetorian:
-                case TroopsEnum.Imperian:
-                case TroopsEnum.Clubswinger:
-                case TroopsEnum.Spearman:
-                case TroopsEnum.Axeman:
-                case TroopsEnum.Scout:
-                case TroopsEnum.Phalanx:
-                case TroopsEnum.Swordsman:
-                case TroopsEnum.SlaveMilitia:
-                case TroopsEnum.AshWarden:
-                case TroopsEnum.KhopeshWarrior:
-                case TroopsEnum.Mercenary:
-                case TroopsEnum.Bowman:
-                    if (great) return BuildingEnum.GreatBarracks;
-                    return BuildingEnum.Barracks;
-
-                case TroopsEnum.EquitesLegati:
-                case TroopsEnum.EquitesImperatoris:
-                case TroopsEnum.EquitesCaesaris:
-                case TroopsEnum.Paladin:
-                case TroopsEnum.TeutonicKnight:
-                case TroopsEnum.Pathfinder:
-                case TroopsEnum.TheutatesThunder:
-                case TroopsEnum.Druidrider:
-                case TroopsEnum.Haeduan:
-                case TroopsEnum.SopduExplorer:
-                case TroopsEnum.AnhurGuard:
-                case TroopsEnum.ReshephChariot:
-                case TroopsEnum.Spotter:
-                case TroopsEnum.SteppeRider:
-                case TroopsEnum.Marksman:
-                case TroopsEnum.Marauder:
-                    if (great) return BuildingEnum.GreatStable;
-                    return BuildingEnum.Stable;
-
-                case TroopsEnum.RomanRam:
-                case TroopsEnum.RomanCatapult:
-                case TroopsEnum.TeutonCatapult:
-                case TroopsEnum.TeutonRam:
-                case TroopsEnum.GaulRam:
-                case TroopsEnum.GaulCatapult:
-                case TroopsEnum.EgyptianCatapult:
-                case TroopsEnum.EgyptianRam:
-                case TroopsEnum.HunCatapult:
-                case TroopsEnum.HunRam:
-                    return BuildingEnum.Workshop;
-
-                default:
-                    return BuildingEnum.Site; //idk, should have error handling
-            }
-        }
-
-        internal static TroopsEnum TroopFromInt(Account acc, int num)
-        {
-            return (TroopsEnum)(num + 1 + (((int)acc.AccInfo.Tribe - 1) * 10));
+            return num + 1 + (((int)tribe - 1) * 10);
         }
 
         /// <summary>
@@ -88,11 +35,11 @@ namespace TbsCore.Helpers
         internal static long TroopsToFill(Account acc, Village vill, TroopsEnum troop, bool great)
         {
             var troopCost = TroopCost.GetResourceCost(troop, great);
-            var trainTime = TroopCost.GetTrainingTime(acc, vill, troop, great);
+            var trainTime = TroopsData.GetTrainingTime(acc, vill, troop, great);
 
             //how many troops we want to train
             // Take into account how many troop are already training
-            var trainBuilding = TroopsHelper.GetTroopBuilding(troop, great);
+            var trainBuilding = TroopsData.GetTroopBuilding(troop, great);
             var trainingTime = TroopsHelper.GetTrainingTimeForBuilding(trainBuilding, vill);
 
             var currentlyTrainingHours = (trainingTime - DateTime.Now).TotalHours;
@@ -102,10 +49,18 @@ namespace TbsCore.Helpers
             return (long)Math.Ceiling(fillForHours / trainTime.TotalHours);
         }
 
-        public static DateTime TrainingDuration(HtmlAgilityPack.HtmlDocument html)
+        public static DateTime TrainingDuration(HtmlDocument html)
         {
             var training = TroopsParser.GetTroopsCurrentlyTraining(html);
             return (training.Count == 0 ? DateTime.MinValue : training.Last().FinishTraining);
+        }
+
+        public static List<TroopsEnum> AvailableTroops(TribeEnum tribe)
+        {
+            var ret = new List<TroopsEnum>();
+            int troopsEnum = ((int)tribe - 1) * 10;
+            for (var i = troopsEnum + 1; i < troopsEnum + 11; i++) ret.Add((TroopsEnum)i);
+            return ret;
         }
 
         /// <summary>
@@ -278,6 +233,12 @@ namespace TbsCore.Helpers
                     else vill.Troops.ToImprove.Remove(troop);
                 }
             }
+
+            // Improve only
+            if(vill.Troops.ToImprove.Count != 0)
+            {
+                acc.Tasks.Add(new ImproveTroop() { Vill = vill }, true, vill);
+            }
         }
 
         public static DateTime GetTrainingTimeForBuilding(BuildingEnum building, Village vill)
@@ -373,8 +334,8 @@ namespace TbsCore.Helpers
             long upkeep = 0;
             for (int i = 0; i < 10; i++)
             {
-                var troop = TroopsHelper.TroopFromInt(acc, i);
-                upkeep += troops[i] * TroopSpeed.GetTroopUpkeep(troop);
+                var troop = TroopFromInt(acc, i);
+                upkeep += troops[i] * TroopsData.GetTroopUpkeep(troop);
             }
             return upkeep;
         }

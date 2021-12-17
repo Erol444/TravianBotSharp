@@ -243,8 +243,9 @@ namespace TbsCore.Helpers
 
             foreach (var taskDone in tasksDone)
             {
-                var building = vill.Build.Buildings.First(x => x.Id == taskDone.Location);
-                if (building.Type != taskDone.Building) continue;
+                var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == taskDone.Location);
+                if (building == null) building = vill.Build.Buildings.FirstOrDefault(x => x.Type == taskDone.Building);
+                if (building == null || building.Type != taskDone.Building) continue;
 
                 if (building.Level < taskDone.Level) building.Level = taskDone.Level;
                 vill.Build.CurrentlyBuilding.Remove(taskDone);

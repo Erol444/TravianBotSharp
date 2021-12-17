@@ -53,7 +53,7 @@ namespace TbsCore.Tasks.LowLevel
             string[] Urls = new string[0];
             switch (acc.AccInfo.ServerVersion)
             {
-                case Helpers.Classificator.ServerVersionEnum.T4_4:
+                case Helpers.Classificator.ServerVersionEnum.TTwars:
                     Urls = UrlT4_4;
                     break;
 

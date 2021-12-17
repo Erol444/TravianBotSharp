@@ -45,6 +45,18 @@ namespace TravBotSharp.Views
             this.button6 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
+            this.button9 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.button10 = new System.Windows.Forms.Button();
+            this.minPopNatar = new System.Windows.Forms.NumericUpDown();
+            this.maxPopNatar = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minPopNatar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maxPopNatar)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -212,8 +224,106 @@ namespace TravBotSharp.Views
             this.label3.TabIndex = 170;
             this.label3.Text = "USE AT YOUR OWN RISK";
             // 
+            // button9
+            // 
+            this.button9.Location = new System.Drawing.Point(18, 332);
+            this.button9.Name = "button9";
+            this.button9.Size = new System.Drawing.Size(75, 23);
+            this.button9.TabIndex = 174;
+            this.button9.Text = "Add to FL";
+            this.button9.UseVisualStyleBackColor = true;
+            this.button9.Click += new System.EventHandler(this.button9_Click);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(8, 315);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(90, 13);
+            this.label2.TabIndex = 175;
+            this.label2.Text = "Add from scouted";
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.SystemColors.Control;
+            this.panel1.Controls.Add(this.button10);
+            this.panel1.Controls.Add(this.minPopNatar);
+            this.panel1.Controls.Add(this.maxPopNatar);
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.label6);
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Location = new System.Drawing.Point(545, 57);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(165, 106);
+            this.panel1.TabIndex = 176;
+            // 
+            // button10
+            // 
+            this.button10.Location = new System.Drawing.Point(35, 76);
+            this.button10.Name = "button10";
+            this.button10.Size = new System.Drawing.Size(75, 23);
+            this.button10.TabIndex = 131;
+            this.button10.Text = "Add farms";
+            this.button10.UseVisualStyleBackColor = true;
+            this.button10.Click += new System.EventHandler(this.button10_Click);
+            // 
+            // minPopNatar
+            // 
+            this.minPopNatar.Location = new System.Drawing.Point(65, 25);
+            this.minPopNatar.Maximum = new decimal(new int[] {
+            3000,
+            0,
+            0,
+            0});
+            this.minPopNatar.Name = "minPopNatar";
+            this.minPopNatar.Size = new System.Drawing.Size(80, 20);
+            this.minPopNatar.TabIndex = 129;
+            // 
+            // maxPopNatar
+            // 
+            this.maxPopNatar.Location = new System.Drawing.Point(65, 50);
+            this.maxPopNatar.Maximum = new decimal(new int[] {
+            3000,
+            0,
+            0,
+            0});
+            this.maxPopNatar.Name = "maxPopNatar";
+            this.maxPopNatar.Size = new System.Drawing.Size(80, 20);
+            this.maxPopNatar.TabIndex = 130;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(3, 5);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(157, 15);
+            this.label4.TabIndex = 132;
+            this.label4.Text = "Add Natar villages to this FL";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(16, 27);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(45, 13);
+            this.label6.TabIndex = 133;
+            this.label6.Text = "Min pop";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(13, 52);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(48, 13);
+            this.label7.TabIndex = 134;
+            this.label7.Text = "Max pop";
+            // 
             // FarmingNonGoldUc
             // 
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.button9);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button6);
@@ -229,6 +339,10 @@ namespace TravBotSharp.Views
             this.Controls.Add(this.farmingList);
             this.Name = "FarmingNonGoldUc";
             this.Size = new System.Drawing.Size(790, 446);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.minPopNatar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.maxPopNatar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -251,5 +365,14 @@ namespace TravBotSharp.Views
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button button10;
+        private System.Windows.Forms.NumericUpDown minPopNatar;
+        private System.Windows.Forms.NumericUpDown maxPopNatar;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
     }
 }

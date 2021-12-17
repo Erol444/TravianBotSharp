@@ -10,6 +10,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Tasks;
 
 using Serilog;
+using TbsCore.Models.World;
 
 namespace TbsCore.Models.AccModels
 {
@@ -25,23 +26,20 @@ namespace TbsCore.Models.AccModels
 
             Tasks = new TaskList();
             Villages = new List<Village>();
-
             Access = new AccessInfo();
             Access.Init();
-
             AccInfo = new AccInfo();
             AccInfo.Init();
-
             Quests = new QuestsSettings();
             Quests.Init();
-
             Settings = new GeneralSettings();
             Settings.Init();
-
             Farming = new Farming();
-
             NewVillages = new NewVillageSettings();
             NewVillages.Init();
+
+            Server = new AccServerData();
+            Server.Init();
         }
 
         public AccInfo AccInfo { get; set; }
@@ -52,6 +50,7 @@ namespace TbsCore.Models.AccModels
         public QuestsSettings Quests { get; set; }
         public NewVillageSettings NewVillages { get; set; }
         public GeneralSettings Settings { get; set; }
+        public AccServerData Server { get; set; }
 
         [JsonIgnore]
         public WebBrowserInfo Wb { get; set; }

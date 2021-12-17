@@ -20,7 +20,7 @@ namespace TbsCore.Parsers
         {
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var fields = htmlDoc.GetElementbyId("village_map").Descendants("div").Where(x => !x.HasClass("labelLayer")).ToList();
                     List<Building> resFields = new List<Building>();
                     for (int i = 0; i < 18; i++)
@@ -80,25 +80,16 @@ namespace TbsCore.Parsers
         /// <returns></returns>
         public static Resources ParseResourcesMerchants(HtmlNode node)
         {
-            var imgs = node.Descendants("img").ToList();
+            var td = node.Descendants("tr").First(x => x.HasClass("res")).Descendants("td").First();
+            var text = td.InnerText;
+            var split = text.Split(' ');
             Resources res = new Resources()
             {
-                //Wood = imgs.First(x => x.HasClass("r1"));
+                Wood = Parser.RemoveNonNumeric(split[split.Length - 4]),
+                Clay = Parser.RemoveNonNumeric(split[split.Length - 3]),
+                Iron = Parser.RemoveNonNumeric(split[split.Length - 2]),
+                Crop = Parser.RemoveNonNumeric(split[split.Length - 1]),
             };
-            /*
-                         <tr class="res">
-                <th>Resources</th>
-                <td colspan="1">
-                    <span class="">
-                        <div class="repeat">‎‭‭2×‬‎</div>
-                        <img class="r1" src="img/x.gif" alt="Lumber"> 640000
-                        <img class="r2" src="img/x.gif" alt="Clay"> 920000
-                        <img class="r3" src="img/x.gif" alt="Iron"> 330000
-                        <img class="r4" src="img/x.gif" alt="Crop"> 0
-                    </span>
-                </td>
-            </tr>
-             */
             return res;
         }
     }

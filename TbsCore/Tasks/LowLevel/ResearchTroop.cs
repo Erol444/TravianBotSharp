@@ -16,7 +16,7 @@ namespace TbsCore.Tasks.LowLevel
         //If Troop == null, just update the troop levels
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Academy))
+            if (!await NavigationHelper.EnterBuilding(acc, Vill, BuildingEnum.Academy))
                 return TaskRes.Executed;
 
             var troop = Vill.Troops.ToResearch.FirstOrDefault();

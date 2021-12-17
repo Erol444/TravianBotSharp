@@ -13,7 +13,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
+            if (!await NavigationHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
                 return TaskRes.Executed;
 
             var celebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);

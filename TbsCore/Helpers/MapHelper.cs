@@ -11,6 +11,7 @@ using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TbsCore.Parsers;
+using TbsCore.Models.TroopsModels;
 
 namespace TbsCore.Helpers
 {
@@ -22,46 +23,6 @@ namespace TbsCore.Helpers
             //from cmd=mapPositionData json get villtypenum's and corresponding coordinates
         }
 
-        //Used in cmd=mapPositionData, gets the map JSON where
-
-        public static int KidFromCoordinates(Coordinates coords, Account acc)
-        {
-            return 1 + ((acc.AccInfo.MapSize - coords.y) * (acc.AccInfo.MapSize * 2 + 1)) + acc.AccInfo.MapSize + coords.x;
-        }
-
-        public static Coordinates CoordinatesFromKid(int? kid, Account acc)
-        {
-            if (kid == null) return null;
-            return CoordinatesFromKid(kid ?? 0, acc);
-        }
-
-        public static Coordinates CoordinatesFromKid(int kid, Account acc)
-        {
-            var size = acc.AccInfo.MapSize;
-            kid--;
-            var y = size - (kid / (size * 2 + 1));
-            var x = (kid % (size * 2 + 1)) - size;
-            return new Coordinates()
-            {
-                x = x,
-                y = y
-            };
-        }
-
-        /// <summary>
-        /// Calculate distance between two coordinates. This function takes into the account the map size.
-        /// </summary>
-        public static float CalculateDistance(Account acc, Coordinates coord1, Coordinates coord2)
-        {
-            var size = acc.AccInfo.MapSize;
-            var xDiff = Math.Abs(coord1.x - coord2.x);
-            var yDiff = Math.Abs(coord1.y - coord2.y);
-            if (xDiff > size) xDiff = 2 * size - xDiff;
-            if (yDiff > size) yDiff = 2 * size - yDiff;
-            var distance = Math.Sqrt(xDiff * xDiff + yDiff * yDiff); //Pitagoras theorem
-            return (float)distance;
-        }
-
         /// <summary>
         /// Send raw HTTP request to the server and request the map tiles around the coords. This mimics browser on the map page.
         /// </summary>
@@ -69,7 +30,7 @@ namespace TbsCore.Helpers
         {
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var ajaxToken = DriverHelper.GetJsObj<string>(acc, "ajaxToken");
 
                     var req = new RestSharp.RestRequest
@@ -178,14 +139,14 @@ namespace TbsCore.Helpers
         /// <summary>
         /// Sends HTTP request to the server and gets number of animals inside the oasis
         /// </summary>
-        public static int[] GetOasisAnimals(Account acc, Coordinates oasis)
+        public static TroopsBase GetOasisAnimals(Account acc, Coordinates oasis)
         {
             var htmlDoc = new HtmlAgilityPack.HtmlDocument();
             string html = "";
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var ajaxToken = DriverHelper.GetJsObj<string>(acc, "ajaxToken");
 
                     var req = new RestSharp.RestRequest

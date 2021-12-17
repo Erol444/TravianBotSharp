@@ -36,18 +36,18 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/karte.php");
+            await NavigationHelper.ToMap(acc);
             await Task.Delay(AccountHelper.Delay(acc) * 3);
 
             var newVillage = acc.NewVillages.Locations.FirstOrDefault();
 
             //acc.NewVillage.NewVillages.Remove(coords); //remove it after settling and changing the vill name??
-            string kid = MapHelper.KidFromCoordinates(newVillage.Coordinates, acc).ToString();
+            string kid = newVillage.Coordinates.GetKid(acc).ToString();
 
             string url = $"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2";
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     // https://low4.ttwars.com/build.php?id=39&tt=2&kid=7274&a=6
                     url += $"&kid={kid}&a=6";
                     break;

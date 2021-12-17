@@ -24,7 +24,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2");
+            await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.SendTroops);
 
             var wavesReady = new List<WaveReadyModel>();
 
@@ -93,7 +93,7 @@ namespace TbsCore.Tasks.LowLevel
 
                     switch (acc.AccInfo.ServerVersion)
                     {
-                        case Classificator.ServerVersionEnum.T4_4:
+                        case Classificator.ServerVersionEnum.TTwars:
                             req.AddParameter($"t{j + 1}", TroopCount(SendWaveModels[i].Troops[j]));
                             break;
 
@@ -155,7 +155,7 @@ namespace TbsCore.Tasks.LowLevel
                 string cataCount = "0";
                 switch (acc.AccInfo.ServerVersion)
                 {
-                    case Classificator.ServerVersionEnum.T4_4:
+                    case Classificator.ServerVersionEnum.TTwars:
                         cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "t8").Value.ToString();
                         break;
 
@@ -202,7 +202,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 lastSent = DateTime.Now;
                 acc.Logger.Information($"{DateTime.Now.Second}.{DateTime.Now.Millisecond}] Sending wave {i + 1}");
-                _ = HttpHelper.SendPostReq(acc, wavesReady[i].Request);
+                _ = HttpHelper.SendPostReqAsync(acc, wavesReady[i].Request);
 
                 // Wait +- 10% selected delay
                 var delay = SendWaveModels[i].DelayMs;

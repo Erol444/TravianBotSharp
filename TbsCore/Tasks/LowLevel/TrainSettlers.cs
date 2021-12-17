@@ -12,14 +12,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var building = Vill.Build.Buildings
-                .FirstOrDefault(x =>
-                    x.Type == Classificator.BuildingEnum.Residence ||
-                    x.Type == Classificator.BuildingEnum.Palace ||
-                    x.Type == Classificator.BuildingEnum.CommandCenter
-                );
-
-            if (!await VillageHelper.EnterBuilding(acc, building, "&s=1"))
+            if (!await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Train))
                 return TaskRes.Executed;
 
             var settler = TroopsData.TribeSettler(acc.AccInfo.Tribe);
@@ -40,7 +33,7 @@ namespace TbsCore.Tasks.LowLevel
             string innertext = "";
             switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     innertext = troopNode.ChildNodes.First(x => x.Name == "a").InnerText;
                     break;
 
@@ -85,11 +78,11 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            acc.Wb.ExecuteScript($"document.getElementsByName('t10')[0].value='{maxNum}'");
+            await DriverHelper.WriteByName(acc, "t10", maxNum);
             await Task.Delay(AccountHelper.Delay(acc));
 
             // Click Train button
-            await TbsCore.Helpers.DriverHelper.ExecuteScript(acc, "document.getElementById('s1').click()");
+            await DriverHelper.ClickById(acc, "s1");
             Vill.Troops.Settlers += (int)maxNum;
 
             if (Vill.Troops.Settlers < 3)

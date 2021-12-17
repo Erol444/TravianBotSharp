@@ -1,11 +1,12 @@
 ﻿using HtmlAgilityPack;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
-
+using TbsCore.Parsers;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Tasks.LowLevel
@@ -16,7 +17,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?tt=99&id=39");
+            await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.Farmlist);
 
             var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
 
@@ -42,18 +43,24 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // If FL is collapsed, expand it
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_4 ||
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars ||
                 flNode.Descendants("div").Any(x => x.HasClass("expandCollapse") && x.HasClass("collapsed")))
             {
                 await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
+                await Task.Delay(500);
+                acc.Wb.UpdateHtml();
                 // Update flNode!
                 flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
             }
 
+            var farms = new List<GoldClubFarm>();
             foreach (var farm in flNode.Descendants("tr").Where(x => x.HasClass("slotRow")))
             {
                 //iReport2 = yellow swords, iReport3 = red swords, iReport1 = successful raid
                 var img = farm.ChildNodes.FirstOrDefault(x => x.HasClass("lastRaid"))?.Descendants("img");
+
+                var coords = MapParser.GetPositionDetails(farm);
+                farms.Add(new GoldClubFarm(coords));
 
                 //there has to be an image (we already have a report) and wrong raid style to not check this farmlist:
                 if (img.Count() != 0 && ( //no image -> no recent attack
@@ -67,12 +74,13 @@ namespace TbsCore.Tasks.LowLevel
                 var checkbox = farm.Descendants("input").FirstOrDefault(x => x.HasClass("markSlot"));
                 await DriverHelper.CheckById(acc, checkbox.Id, true, update: false);
             }
+            this.FL.Farms = farms;
 
             await Task.Delay(AccountHelper.Delay(acc) * 2);
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case ServerVersionEnum.T4_4:
+                case ServerVersionEnum.TTwars:
                     var sendFlScript = $"document.getElementById('{flNode.Id}').childNodes[1].submit()";
                     acc.Wb.ExecuteScript(sendFlScript);
                     break;
@@ -84,6 +92,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             acc.Logger.Information($"FarmList '{this.FL.Name}' was sent");
+            await Task.Delay(1000);
             return TaskRes.Executed;
         }
 
@@ -91,7 +100,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             switch (version)
             {
-                case ServerVersionEnum.T4_4: return htmlDoc.GetElementbyId("list" + this.FL.Id);
+                case ServerVersionEnum.TTwars: return htmlDoc.GetElementbyId("list" + this.FL.Id);
 
                 case ServerVersionEnum.T4_5: return htmlDoc.GetElementbyId("raidList" + this.FL.Id);
                 default: return null;

@@ -18,6 +18,7 @@ namespace TbsCore.Tasks.LowLevel
             // If we have Plus account, just check that.
             if (acc.AccInfo.PlusAccount)
             {
+                await NavigationHelper.ToOverview(acc, NavigationHelper.OverviewTab.Overview);
                 await VersionHelper.Navigate(acc, "/dorf3.php?s=5&su=2", "/village/statistics/troops?su=2");
 
                 OverviewParser.UpdateTroopsLevels(acc.Wb.Html, ref acc);

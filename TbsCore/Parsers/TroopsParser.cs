@@ -182,9 +182,9 @@ namespace TbsCore.Parsers
         /// <summary>
         /// Parses HTML tile details and gets number of animals in the oasis
         /// </summary>
-        public static int[] GetOasisAnimals(HtmlDocument html)
+        public static TroopsBase GetOasisAnimals(HtmlDocument html)
         {
-            var ret = new int[10];
+            var arr = new int[10];
             var details = html.GetElementbyId("map_details");
             var troopInfo = details.Descendants("table").FirstOrDefault(X => X.Id == "troop_info");
 
@@ -199,9 +199,9 @@ namespace TbsCore.Parsers
 
                 var numOfTroops = node.ChildNodes.First(x => x.HasClass("val")).InnerText;
 
-                ret[index] = (int)Parser.RemoveNonNumeric(numOfTroops);
+                arr[index] = (int)Parser.RemoveNonNumeric(numOfTroops);
             }
-            return ret;
+            return new TroopsBase(arr, Classificator.TribeEnum.Nature);
         }
     }
 }

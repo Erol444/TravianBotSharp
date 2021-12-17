@@ -14,7 +14,7 @@ namespace TbsCore.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             // First navigate to dorf2 and then to the main building, to make sure the currently demolish list is refreshed
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.MainBuilding, update: true))
+            if (!await NavigationHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.MainBuilding))
                 return TaskRes.Executed;
 
             if (Vill.Build.DemolishTasks.Count == 0) return TaskRes.Executed; //No more demolish tasks
@@ -71,7 +71,7 @@ namespace TbsCore.Tasks.LowLevel
         public async Task<DateTime> NextDemolishTime(Account acc)
         {
             // Is this needed?
-            if (!await VillageHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.MainBuilding))
+            if (!await NavigationHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.MainBuilding))
                 return DateTime.Now;
 
             var table = acc.Wb.Html.GetElementbyId("demolish");

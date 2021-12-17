@@ -108,9 +108,7 @@ namespace TbsCore.Helpers
         /// <returns>Time it will take for transit to complete</returns>
         public static async Task<TimeSpan> MarketSendResource(Account acc, long[] resources, Village targetVillage, BotTask botTask)
         {
-            var times = 1;
-            if (acc.AccInfo.GoldClub ?? false) times = 3;
-            else if (acc.AccInfo.PlusAccount) times = 2;
+            var times = MarketParser.MaxMerchantTimes(acc.Wb.Html);
 
             // No resources to send
             if (resources.Sum() == 0) return TimeSpan.Zero;
@@ -168,15 +166,25 @@ namespace TbsCore.Helpers
                 acc.Wb.ExecuteScript($"document.getElementById('x2').value='{times}'");
                 await Task.Delay(AccountHelper.Delay(acc) / 5);
             }
-            await DriverHelper.ClickById(acc, "enabledButton");
 
-            var durNode = acc.Wb.Html.GetElementbyId("target_validate");
+            HtmlNode durNode;
+            int cnt = 0;
+            do
+            {
+                await DriverHelper.ClickById(acc, "enabledButton");
+                await Task.Delay(300);
+                durNode = acc.Wb.Html.GetElementbyId("target_validate");
+                if (10 < cnt++) throw new Exception("Send resources failed!");
+            }
+            while (durNode == null);
 
             if (durNode == null && acc.Wb.Html.GetElementbyId("prepareError") != null)
             {
                 // Error "Abuse! You have not enough resources." is displayed.
             }
             //get duration of transit
+            // Class destination when ok. 
+
             var dur = durNode.Descendants("td").ToList()[3].InnerText.Replace("\t", "").Replace("\n", "");
 
             // Will NOT trigger a page reload! Thus we should await some time before continuing.
@@ -211,7 +219,7 @@ namespace TbsCore.Helpers
             var mainVill = AccountHelper.GetMainVillage(acc);
             if (mainVill == null) acc.Villages.First();
 
-            var distance = MapHelper.CalculateDistance(acc, vill1.Coordinates, vill2.Coordinates);
+            var distance = vill1.Coordinates.CalculateDistance(acc, vill2.Coordinates);
             //Speed is per hour
             var speed = GetMerchantsSpeed(acc.AccInfo.Tribe ?? Classificator.TribeEnum.Any);
             speed *= acc.AccInfo.ServerSpeed;
@@ -277,7 +285,7 @@ namespace TbsCore.Helpers
         /// </summary>
         /// <param name="vill">Village</param>
         /// <returns>Resources to be sent</returns>
-        public static long[] GetResToMainVillage(Village vill)
+        public static Resources GetResToMainVillage(Village vill)
         {
             var ret = new long[4];
             var res = vill.Res.Stored.Resources.ToArray();
@@ -294,7 +302,7 @@ namespace TbsCore.Helpers
                 ret[i] = res[i] - limit[i];
                 if (ret[i] < 0) ret[i] = 0;
             }
-            return ret;
+            return new Resources(ret);
         }
 
         /// <summary>
@@ -347,7 +355,7 @@ namespace TbsCore.Helpers
         {
             acc.Tasks.Remove(typeof(SendResToMain), vill);
 
-            if (vill.Settings.Type == VillType.Support && vill.Settings.SendRes)
+            if (vill.Settings.Type == VillType.Support && vill.Settings.SendRes && AccountHelper.GetMainVillage(acc) != vill)
             {
                 acc.Tasks.Add(new SendResToMain()
                 {

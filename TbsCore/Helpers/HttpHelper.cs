@@ -1,6 +1,7 @@
 ﻿using RestSharp;
 using System;
 using System.Net;
+using System.Threading.Tasks;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 
@@ -24,10 +25,20 @@ namespace TbsCore.Helpers
             return cookieContainer;
         }
 
+        public static async Task<string> SendPostReqAsync(Account acc, RestRequest req)
+        {
+            acc.Wb.RestClient.BaseUrl = new Uri(acc.AccInfo.ServerUrl);
+            acc.Wb.RestClient.CookieContainer = GetCookies(acc);
+
+            var response = await acc.Wb.RestClient.ExecuteAsync(req);
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
+
+            return response.Content;
+        }
         public static string SendPostReq(Account acc, RestRequest req)
         {
             acc.Wb.RestClient.BaseUrl = new Uri(acc.AccInfo.ServerUrl);
-            acc.Wb.RestClient.CookieContainer = HttpHelper.GetCookies(acc);
+            acc.Wb.RestClient.CookieContainer = GetCookies(acc);
 
             var response = acc.Wb.RestClient.Execute(req);
             if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);

@@ -11,7 +11,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await VersionHelper.Navigate(acc, "/hero.php?t=4&action=sell", "/hero/auction?action=sell");
+            await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Auctions);
 
             acc.Wb.ExecuteScript($"document.getElementsByClassName(\"green ok dialogButtonOk\")[0].click()");
 

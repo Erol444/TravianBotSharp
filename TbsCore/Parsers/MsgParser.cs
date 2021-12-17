@@ -9,7 +9,7 @@ namespace TbsCore.Parsers
         {
             switch (version)
             {
-                case Classificator.ServerVersionEnum.T4_4:
+                case Classificator.ServerVersionEnum.TTwars:
                     var msgs = htmlDoc.GetElementbyId("n6");
                     var container = msgs.Descendants("div").FirstOrDefault(x => x.HasClass("speechBubbleContainer"));
                     if (container == null) return 0;

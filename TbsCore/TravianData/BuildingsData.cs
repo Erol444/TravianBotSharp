@@ -37,6 +37,30 @@ namespace TbsCore.TravianData
         public static bool CanHaveMultipleBuildings(BuildingEnum building) =>
             multipleBuildingsAllowes.Any(x => x == building);
 
+
+        private static readonly float[,] WallData = new float[,] {
+            { 1.030F, 10}, // City wall
+            { 1.020F, 6}, // Earth wall
+            { 1.025F, 8}, // Palisade
+            { 1.0F, 0}, // {Nature}
+            { 1.0F, 0}, // {Natars}
+            { 1.025F, 8}, // Stone wall
+            { 1.015F, 6}, // Makeshift wall
+        };
+
+        /// <summary>
+        /// Gets wall deffensive bonus and basic deffensive power. Used by the combat simulator.
+        /// </summary>
+        public static (double, int) GetWallBonus(TribeEnum tribe, int wallLevel)
+        {
+            var tribeIndex = (int)tribe - 1;
+
+            var bonus = Math.Pow(WallData[tribeIndex, 0], wallLevel);
+            var basicDeff = (int)WallData[tribeIndex, 1] * wallLevel;
+
+            return (bonus, basicDeff);
+        }
+
         /// <summary>
         /// Gets the highest level a building can be on
         /// </summary>
@@ -49,7 +73,7 @@ namespace TbsCore.TravianData
                 case BuildingEnum.Brewery:
                     switch (acc.AccInfo.ServerVersion)
                     {
-                        case ServerVersionEnum.T4_4: return 10;
+                        case ServerVersionEnum.TTwars: return 10;
                         default: return 20;
                     }
 
@@ -145,7 +169,12 @@ namespace TbsCore.TravianData
             BuildingEnum.GreatWarehouse,
             BuildingEnum.GreatGranary,
             BuildingEnum.Trapper,
-            BuildingEnum.Cranny
+            BuildingEnum.Cranny,
+            // Resource fields
+            BuildingEnum.Woodcutter,
+            BuildingEnum.ClayPit,
+            BuildingEnum.IronMine,
+            BuildingEnum.Cropland,
         };
 
         public static BuildingCategoryEnum GetBuildingsCategory(BuildingEnum building)
@@ -383,6 +412,24 @@ namespace TbsCore.TravianData
             }
             return (tribe, ret);
         }
+
+        /// <summary>
+        /// Whether building has multiple tabs inside
+        /// </summary>
+        public static bool HasMultipleTabs(BuildingEnum building) =>
+            multipleTabsBuildings.Any(x => x == building);
+
+        /// <summary>
+        /// Buildings with multiple tabs inside
+        /// </summary>
+        private static BuildingEnum[] multipleTabsBuildings = new BuildingEnum[] {
+            BuildingEnum.RallyPoint,
+            BuildingEnum.CommandCenter,
+            BuildingEnum.Residence,
+            BuildingEnum.Palace,
+            BuildingEnum.Marketplace,
+            BuildingEnum.Treasury,
+        };
 
         /// <summary>
         /// Buildings that are always build in the same spot

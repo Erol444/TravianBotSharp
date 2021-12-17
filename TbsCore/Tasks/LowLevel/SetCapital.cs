@@ -9,9 +9,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var palace = Vill.Build.Buildings.FirstOrDefault(x => x.Type == Helpers.Classificator.BuildingEnum.Palace);
-
-            if (palace == null)
+            if(!Vill.Build.Buildings.Any(x => x.Type == Classificator.BuildingEnum.Palace))
             {
                 // TODO: Check for residence, if it exists demolish it and build palace
                 acc.Logger.Information("Palace was not found in the village!");
@@ -19,17 +17,17 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // Go into palace
-            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={palace.Id}");
+            await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Managenment);
 
             switch (acc.AccInfo.ServerVersion)
             {
-                case Helpers.Classificator.ServerVersionEnum.T4_4:
-                    await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?id={palace.Id}&change_capital");
+                case Classificator.ServerVersionEnum.TTwars:
+                    await acc.Wb.Navigate(acc.Wb.CurrentUrl + "&change_capital");
                     await DriverHelper.WriteByName(acc, "pw", acc.Access.GetCurrentAccess().Password);
                     await DriverHelper.ClickById(acc, "btn_ok");
                     break;
 
-                case Helpers.Classificator.ServerVersionEnum.T4_5:
+                case Classificator.ServerVersionEnum.T4_5:
                     acc.Logger.Warning("Setting capital isn't supported in T4.5 yet!");
                     break;
             }

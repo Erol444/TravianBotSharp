@@ -20,10 +20,9 @@ namespace TbsCore.Helpers
                 var latest = await client.Repository.Release.GetLatest(username, repo);
                 if (latest != null) return new Version(latest.TagName);
             }
-            catch (Octokit.NotFoundException)
+            catch
             {
             }
-
             return null;
         }
 
@@ -35,10 +34,9 @@ namespace TbsCore.Helpers
                 var releases = await client.Repository.Release.GetAll(username, repo);
                 if (releases.Count > 0) return new Version(releases[0].TagName);
             }
-            catch (Octokit.NotFoundException)
+            catch
             {
             }
-
             return null;
         }
     }

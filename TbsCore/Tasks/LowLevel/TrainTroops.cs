@@ -6,6 +6,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Parsers;
+using TbsCore.TravianData;
 
 using static TbsCore.Helpers.Classificator;
 
@@ -40,13 +41,13 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            building = TroopsHelper.GetTroopBuilding(Troop, Great);
+            building = TroopsData.GetTroopBuilding(Troop, Great);
 
             // Switch hero helmet. If hero will be switched, this TrainTroops task
             // will be executed right after the hero helmet switch
             if (HeroHelper.SwitchHelmet(acc, this.Vill, building, this)) return TaskRes.Executed;
 
-            if (!await VillageHelper.EnterBuilding(acc, Vill, building))
+            if (!await NavigationHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;
 
             if (this.UpdateOnly || this.Troop == TroopsEnum.None)
@@ -69,7 +70,7 @@ namespace TbsCore.Tasks.LowLevel
             long maxNum = 0;
             switch (acc.AccInfo.ServerVersion)
             {
-                case ServerVersionEnum.T4_4:
+                case ServerVersionEnum.TTwars:
                     maxNum = Parser.RemoveNonNumeric(
                         troopNode.ChildNodes
                         .FirstOrDefault(x => x.Name == "a")?.InnerText ?? "0"
@@ -152,7 +153,7 @@ namespace TbsCore.Tasks.LowLevel
             if (Vill.Settings.SendRes && 0 < MarketHelper.GetResToMainVillage(this.Vill).Sum())
             {
                 // Check If all troops are filled in this vill before sending resources back to main village
-                if (TroopsHelper.EverythingFilled(acc, Vill))
+                if (TroopsHelper.EverythingFilled(acc, Vill) && AccountHelper.GetMainVillage(acc) != this.Vill)
                 {
                     acc.Tasks.Add(new SendResToMain() { Vill = this.Vill, ExecuteAt = DateTime.MinValue.AddHours(1) });
                 }

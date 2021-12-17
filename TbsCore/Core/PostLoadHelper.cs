@@ -55,6 +55,7 @@ namespace TbsCore.Helpers
             var ran = new Random();
 
             //Web browser not initialized
+            // Update villages
             if (!UpdateAccountObject.UpdateVillages(html, acc)) return new List<Action>();
 
             //Didnt check version yet
@@ -179,7 +180,8 @@ namespace TbsCore.Helpers
                         acc.Tasks.Add(new NPC()
                         {
                             ExecuteAt = DateTime.MinValue,
-                            Vill = vill
+                            Vill = vill,
+                            Priority = TaskPriority.High
                         }, true, vill);
                     }
                 },

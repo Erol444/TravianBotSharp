@@ -24,12 +24,12 @@ namespace TbsCore.Parsers
             {
                 if (string.IsNullOrEmpty(adv.Id)) continue;
                 var sec = (int)TimeParser.ParseDuration(adv.Descendants("td").FirstOrDefault(x => x.HasClass("moveTime")).InnerText).TotalSeconds;
-                var coordinates = MapParser.GetCoordinates(adv.Descendants("td").FirstOrDefault(x => x.HasClass("coords")).InnerText);
+                var coordinates = MapParser.GetCoordinates(adv);
 
                 DifficultyEnum difficulty = DifficultyEnum.Normal;
                 switch (version)
                 {
-                    case ServerVersionEnum.T4_4:
+                    case ServerVersionEnum.TTwars:
                         difficulty = adv.Descendants("img").FirstOrDefault().GetAttributeValue("alt", "") == "Normal" ?
                             DifficultyEnum.Normal : DifficultyEnum.Difficult;
                         break;
@@ -46,7 +46,7 @@ namespace TbsCore.Parsers
 
                 switch (version)
                 {
-                    case Classificator.ServerVersionEnum.T4_4:
+                    case Classificator.ServerVersionEnum.TTwars:
                         var href = adv.Descendants("a").FirstOrDefault(x => x.HasClass("gotoAdventure")).GetAttributeValue("href", "").Replace("amp;", "");
                         adventuresList.Add(new Adventure()
                         {
