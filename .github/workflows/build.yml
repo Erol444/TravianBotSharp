@@ -23,7 +23,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["TbsWinform"]'
       - run: echo "react:${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}"
-      - run: echo "winform:${{ contains( github.event.pull_request.labels.*.name, TbsWinform') }}"
+      - run: echo "winform:${{ contains( github.event.pull_request.labels.*.name, 'TbsWinform') }}"
 
   build-react:
     runs-on: ubuntu-latest    
