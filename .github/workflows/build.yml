@@ -4,31 +4,9 @@ on:
     branches-ignore: [master]
     types: [opened, reopened, synchronize, labeled]
 jobs:
-  check-labels:
-    runs-on: ubuntu-latest
-    outputs:
-      react: ${{ steps.react.outputs.result }}
-      winform: ${{ steps.winform.outputs.result }}
-    steps:
-      - name: Check TbsReact label
-        id: react
-        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          labels: '["TbsReact"]'
-      - name: Check TbsWinform label
-        id: winform
-        uses: shioyang/check-pr-labels-on-push-action@v1.0.3
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          labels: '["TbsWinform"]'
-      - run: echo "react:${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}"
-      - run: echo "winform:${{ contains( github.event.pull_request.labels.*.name, 'TbsWinform') }}"
-
   build-react:
     runs-on: ubuntu-latest    
-    needs: check-labels
-    if: ${{needs.check-labels.outputs.react == 'true'}}
+    if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') == 'true' }}
     steps:
       - name: 'Checkout repo' 
         uses: actions/checkout@v2
@@ -66,8 +44,7 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
   create-compose:
     runs-on: ubuntu-latest
-    needs: check-labels
-    if: ${{needs.check-labels.outputs.react == 'true'}}
+    if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') == 'true' }}
     steps:
       - name: Create folder
         run: mkdir TbsReact-build
@@ -87,8 +64,7 @@ jobs:
           if-no-files-found: error
   build-winform:
     runs-on: windows-latest
-    needs: check-labels
-    if: ${{needs.check-labels.outputs.winform == 'true'}}
+    if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsWinform') == 'true' }}
     steps:
       - name: setup-msbuild
         uses: microsoft/setup-msbuild@v1     
