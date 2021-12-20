@@ -5,8 +5,8 @@ on:
     branches-ignore: [master, linux_version]
     types: [opened, reopened, synchronize]
     paths: 
-        - 'TbsCore/**'
-        - 'TravBotSharp/**'
+        - '**/TbsCore/**'
+        - '**/TravBotSharp/**'
 
 jobs:
   build:

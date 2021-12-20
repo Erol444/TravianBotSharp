@@ -5,8 +5,8 @@ on:
     branches-ignore: [master]
     types: [opened, reopened, synchronize]
     paths: 
-        - 'TbsCore/**'
-        - 'TbsReact/**'
+        - '**/TbsCore/**'
+        - '**/TbsReact/**'
 
 jobs:
   build_react:
