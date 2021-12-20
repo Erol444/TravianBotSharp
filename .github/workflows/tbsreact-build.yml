@@ -4,9 +4,12 @@ on:
   pull_request:
     branches-ignore: [master]
     types: [opened, reopened, synchronize]
-    paths: 
-        - 'TbsCore/**'
-        - 'TbsReact/**'
+    paths: TbsCore/**
+  
+  pull_request:
+    branches-ignore: [master]
+    types: [opened, reopened, synchronize]
+    paths: TbsReact/**
 
 jobs:
   build:
@@ -61,7 +64,7 @@ jobs:
         run: mkdir TbsReact-build
       
       - name: Copy docker-compose.yml
-        run: cp /TbsReact/adocker-compose.yml /TbsReact-build
+        run: cp TbsReact/adocker-compose.yml /TbsReact-build
       
       - name: Create .env
         run: |
