@@ -24,8 +24,8 @@ EXPOSE 5900
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-#COPY bin/Debug/net5.0/linux-x64/publish/ App/
-COPY bin/Publish/Linux App
+COPY bin/Debug/net5.0/linux-x64/publish/ App/
+#COPY bin/Publish/Linux App
 WORKDIR /App
 
 EXPOSE 5000

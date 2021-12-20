@@ -1,7 +1,12 @@
 name: reactflow
 
 on:
-  push:
+  pull_request:
+    branches-ignore: [master]
+    types: [opened, reopened, synchronize]
+    paths: 
+        - 'TbsCore/**'
+        - 'TbsReact/**'
 
 jobs:
   build_react:
@@ -45,9 +50,34 @@ jobs:
           context: ./TbsReact
           file: ./TbsReact/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tbsreact:test
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tbsreact:build
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+  message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+      
+      - name: Comment on PR when success
+        uses: actions/github-script@0.3.0
+        if: |
+          github.event_name == 'pull_request' && success()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
+            github.issues.createComment({ issue_number, owner, repo, body: "Congratulation this commit was built successfully. Check detail [here](https://github.com/Erol444/TravianBotSharp/actions/runs/${{ github.run_id }}?check_suite_focus=true)" });
+
+      - name: Comment on PR when fail
+        uses: actions/github-script@0.3.0
+        if: |
+          github.event_name == 'pull_request' && failure()
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
+            github.issues.createComment({ issue_number, owner, repo, body: "There is error while building this commit. Check detail [here](https://github.com/Erol444/TravianBotSharp/actions/runs/${{ github.run_id }}?check_suite_focus=true)" });
