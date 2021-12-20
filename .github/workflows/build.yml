@@ -46,9 +46,10 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
     steps:
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v2        
       - name: Create folder
-        run: mkdir TbsReact-build
-      
+        run: mkdir TbsReact-build      
       - name: Copy docker-compose.yml
         run: cp TbsReact/docker-compose.yml TbsReact-build
       - name: Create .env
