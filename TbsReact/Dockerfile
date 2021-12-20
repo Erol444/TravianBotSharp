@@ -1,16 +1,6 @@
 FROM ubuntu:18.04
 
-RUN addgroup --system xusers \
-  && adduser \
-			--home /home/xuser \
-			--disabled-password \
-			--shell /bin/bash \
-			--gecos "user for running X Window stuff" \
-			--ingroup xusers \
-			--quiet \
-			xuser
-			
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
 				xvfb \
 				xauth \
 				x11vnc \
@@ -29,17 +19,17 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
 RUN echo 'deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main' | tee /etc/apt/sources.list.d/google-chrome.list
 RUN apt-get update && apt-get install google-chrome-stable -y --no-install-recommends
 
-RUN mkdir -p /.Xauthority && chown -R xuser:xusers /.Xauthority
-VOLUME /Xauthority
-
 ENV DISPLAY :0.0
 EXPOSE 5900
 COPY docker-entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
-		
-COPY bin/Debug/net5.0/linux-x64/publish/ App/
-WORKDIR App/
+
+#COPY bin/Debug/net5.0/linux-x64/publish/ App/
+COPY bin/Publish/Linux App
+WORKDIR /App
+
+EXPOSE 5000
+EXPOSE 5001
 
 # switch to user and start
-USER xuser
 ENTRYPOINT ["/entrypoint.sh"]
