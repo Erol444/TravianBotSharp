@@ -2,7 +2,7 @@ name: reactflow
 on:
   pull_request:
     branches-ignore: [master]
-    types: [opened, reopened, synchronize, labeled]
+    types: [opened, reopened, synchronize]
 jobs:
   check_labels:
     runs-on: ubuntu-latest
