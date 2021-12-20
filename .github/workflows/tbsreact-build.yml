@@ -4,7 +4,7 @@ on:
     branches-ignore: [master]
     types: [opened, reopened, synchronize]
 jobs:
-  check_labels:
+  check-labels:
     runs-on: ubuntu-latest
     outputs:
       react: ${{ steps.react.outputs.result }}
@@ -22,10 +22,10 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["TbsWinform"]'
-  build_react:
+  build-react:
     runs-on: ubuntu-latest    
-    needs: check_labels
-    if: ${{needs.check_labels.outputs.react}}
+    needs: check-labels
+    if: ${{needs.check-labels.outputs.react}}
     steps:
       - name: 'Checkout repo' 
         uses: actions/checkout@v2
@@ -63,8 +63,8 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
   create-compose:
     runs-on: ubuntu-latest
-    needs: check_labels
-    if: ${{needs.check_labels.outputs.react}}
+    needs: check-labels
+    if: ${{needs.check-labels.outputs.react}}
     steps:
       - name: Create folder
         run: mkdir TbsReact-build
@@ -84,7 +84,7 @@ jobs:
           if-no-files-found: error      
   message:
     runs-on: ubuntu-latest
-    needs: [build, create-compose]
+    needs: [build-react, create-compose]
     steps:      
       - name: Comment on PR when success
         uses: actions/github-script@0.3.0
