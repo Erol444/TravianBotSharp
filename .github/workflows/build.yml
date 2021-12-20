@@ -15,15 +15,15 @@ jobs:
         uses: shioyang/check-pr-labels-on-push-action@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          labels: '["ci-cd"]'
+          labels: '["TbsReact"]'
       - name: Check TbsWinform label
         id: winform
         uses: shioyang/check-pr-labels-on-push-action@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["TbsWinform"]'
-      - run: echo "react:${{ steps.react.outputs.result }}"
-      - run: echo "winform:${{ steps.winform.outputs.result }}"
+      - run: echo "react:${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}"
+      - run: echo "winform:${{ contains( github.event.pull_request.labels.*.name, TbsWinform') }}"
 
   build-react:
     runs-on: ubuntu-latest    
