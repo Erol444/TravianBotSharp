@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   tbs:
-    image: tbsreact:${TAG}
+    image: tbsreact:${TAG} 
     ports:
       - 5000:5000
       - 5001:5001
