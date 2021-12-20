@@ -2,7 +2,7 @@ name: build
 on:
   pull_request:
     branches-ignore: [master]
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, labeled]
 jobs:
   check-labels:
     runs-on: ubuntu-latest
