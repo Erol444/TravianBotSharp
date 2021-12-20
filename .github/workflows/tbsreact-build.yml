@@ -22,6 +22,9 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           labels: '["TbsWinform"]'
+      - run: echo "React ${{ steps.react.outputs.result }}"
+      - run: echo "winform ${{ steps.winform.outputs.result }}"
+
   build-react:
     runs-on: ubuntu-latest    
     needs: check-labels
@@ -70,7 +73,7 @@ jobs:
         run: mkdir TbsReact-build
       
       - name: Copy docker-compose.yml
-        run: cp TbsReact/adocker-compose.yml /TbsReact-build
+        run: cp TbsReact/docker-compose.yml TbsReact-build
       - name: Create .env
         run: |
           cd TbsReact-build
