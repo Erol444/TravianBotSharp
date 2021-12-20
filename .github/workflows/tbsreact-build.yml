@@ -28,7 +28,7 @@ jobs:
   build-react:
     runs-on: ubuntu-latest    
     needs: check-labels
-    if: ${{needs.check-labels.outputs.react}}
+    if: ${{needs.check-labels.outputs.react == 'true'}}
     steps:
       - name: 'Checkout repo' 
         uses: actions/checkout@v2
@@ -67,7 +67,7 @@ jobs:
   create-compose:
     runs-on: ubuntu-latest
     needs: check-labels
-    if: ${{needs.check-labels.outputs.react}}
+    if: ${{needs.check-labels.outputs.react == 'true'}}
     steps:
       - name: Create folder
         run: mkdir TbsReact-build
