@@ -2,9 +2,8 @@ name: BuildFlow
 
 on:
   pull_request:
-    branches-ignore: [master]
+    branches-ignore: [master, linux_version]
     types: [opened, reopened, synchronize]
-    paths: '['TbsCore', 'TravBotSharp']/**'
 
 jobs:
   build:
