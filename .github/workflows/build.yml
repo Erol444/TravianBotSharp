@@ -15,7 +15,7 @@ jobs:
         uses: shioyang/check-pr-labels-on-push-action@v1.0.3
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          labels: '["TbsReact"]'
+          labels: '["TbsReact", "ci-cd"]'
       - name: Check TbsWinform label
         id: winform
         uses: shioyang/check-pr-labels-on-push-action@v1.0.3
