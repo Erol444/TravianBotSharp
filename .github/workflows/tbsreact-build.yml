@@ -54,10 +54,32 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tbsreact:build
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
+  
+  create-compose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create folder
+        run: mkdir TbsReact-build
+      
+      - name: Copy docker-compose.yml
+        run: cp /TbsReact/adocker-compose.yml /TbsReact-build
+      
+      - name: Create .env
+        run: |
+          cd TbsReact-build
+          touch .env
+          echo "TAG=build"
+      
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: TbsReact-Build
+          path: /TbsReact-build
+          if-no-files-found: error      
 
   message:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, create-compose]
     steps:      
       - name: Comment on PR when success
         uses: actions/github-script@0.3.0
