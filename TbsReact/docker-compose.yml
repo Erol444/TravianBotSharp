@@ -13,10 +13,10 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=https://+:5001;http://+:5000
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=password
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=${HTTPS_PASS}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
 
-      - VNC_PASSWORD=123
+      - VNC_PASSWORD=${VNC_PASS}
       - XFB_SCREEN=1280x800x24
     volumes:
       - data:${HOME}/.config/TravBotSharp

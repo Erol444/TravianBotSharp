@@ -57,6 +57,8 @@ jobs:
           cd TbsReact-build
           touch .env
           echo "TAG=build" >> .env
+          echo "HTTPS_PASS=3004" >> .env
+          echo "VNC_PASS=1975" >> .env
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
