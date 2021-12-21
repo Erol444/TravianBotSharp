@@ -17,8 +17,8 @@ import Info from "./Views/Info";
 
 // debug view
 import Debug from "./Views/Debug";
-import LogBoard from "./Views/Debug/LogBoard";
-import TaskTable from "./Views/Debug/TaskTable";
+import LogBoard from "./Views/DebugChild/LogBoard";
+import TaskTable from "./Views/DebugChild/TaskTable";
 
 const Layout = ({ selected, setSelected, isConnect }) => {
   return (

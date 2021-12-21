@@ -27,9 +27,7 @@ I have worked on this bot for over 2 years, ~15k LoC. It has been since complete
 
 #### Prerequisites
 
-- Google Chrome
-- OpenSSH (for https certificate)
-- Xvfb (for running Chrome on GUI-less server)
+- Docker
 
 #### Installation
 

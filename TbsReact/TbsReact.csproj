@@ -7,7 +7,6 @@
     <IsPackable>false</IsPackable>
     <SpaRoot>ClientApp\</SpaRoot>
     <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-    <PublishSingleFile>true</PublishSingleFile>
     <OutputType>Exe</OutputType>
     <PublishChromeDriver>true</PublishChromeDriver>
     <UserSecretsId>2f4cf8f4-975c-481e-9f90-193010f82aca</UserSecretsId>
