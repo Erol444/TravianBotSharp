@@ -61,7 +61,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: TbsReact-Build
-          path: /TbsReact-build
+          path: TbsReact-build
           if-no-files-found: error
   build-winform:
     runs-on: windows-latest
