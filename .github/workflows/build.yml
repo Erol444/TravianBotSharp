@@ -12,7 +12,8 @@ jobs:
         uses: actions/checkout@v2
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
-        with: dotnet-version: '5.x'
+        with: 
+          dotnet-version: '5.x'
       - name: Build TbsCore
         run: dotnet build TbsCore/TbsCore.csproj --configuration Release
       - name: Publish TbsReact
