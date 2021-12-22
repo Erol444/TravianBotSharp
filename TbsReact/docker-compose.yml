@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   tbs:
-    image: tbsreact:${TAG} 
+    image: travbotsharp/tbsreact:${TAG} 
     ports:
       - ${WEB_PORT}:5000
       - ${VNC_PORT}:5009
