@@ -47,12 +47,12 @@ jobs:
     needs: build-react-linux
     if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
     steps:    
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v2
       - name: Create folder
         run: mkdir TbsReact-build      
       - name: Copy file
         run: |
-          pwd
-          ls
           cp TbsReact/docker-compose.yml TbsReact-build
           cp TbsReact/install_docker.sh TbsReact-build
           cp TbsReact/start_bot.sh TbsReact-build
@@ -92,7 +92,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: TbsReact-Windows-Build
-          path: TbsReact-build
+          path: TbsReact/bin/Debug/net5.0/win-x64/TbsReact-build/
           if-no-files-found: error
   build-winform:
     runs-on: windows-latest
