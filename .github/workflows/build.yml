@@ -44,9 +44,8 @@ jobs:
           cache-to: type=local,dest=/tmp/.buildx-cache
   create-linux-folder:
     runs-on: ubuntu-latest
-    needs: [build-react-linux]
+    needs: build-react-linux
     if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
-
     steps:    
       - name: Create folder
         run: mkdir TbsReact-build      
@@ -86,7 +85,7 @@ jobs:
       - name: Publish TbsReact
         run: dotnet publish TbsReact/TbsReact.csproj /p:PublishProfile=TbsReact/Properties/PublishProfiles/Windows.pubxml
       - name: Rename folder
-        run: mv bin/Debug/net5.0/windows-x64/publish/ bin/Debug/net5.0/linux-x64/TbsReact-build/
+        run: mv bin/Debug/net5.0/win-x64/publish/ bin/Debug/net5.0/win-x64/TbsReact-build/
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
