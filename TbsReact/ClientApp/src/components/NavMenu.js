@@ -11,7 +11,7 @@ import {
 import SideBar from "./sidebar/SideBar";
 import { Link } from "react-router-dom";
 const NavMenu = ({ selected, setSelected }) => {
-  const [value, setValue] = React.useState("/general");
+  const [value, setValue] = React.useState("/info");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);

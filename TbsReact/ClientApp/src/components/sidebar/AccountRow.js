@@ -18,7 +18,7 @@ const AccountRow = ({ accounts, handler, selected }) => {
 };
 
 AccountRow.propTypes = {
-  accounts: PropTypes.object.isRequired,
+  accounts: PropTypes.array.isRequired,
   handler: PropTypes.func.isRequired,
   selected: PropTypes.number.isRequired,
 };

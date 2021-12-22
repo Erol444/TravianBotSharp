@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import { TableCell, TableRow } from "@mui/material";
 
-const AccountRow = ({ accesses, handler, selected }) => {
+const AccessRow = ({ accesses, handler, selected }) => {
   const rows = accesses.map((access) => (
     <TableRow
       hover
@@ -20,10 +20,10 @@ const AccountRow = ({ accesses, handler, selected }) => {
   return <>{rows}</>;
 };
 
-AccountRow.propTypes = {
-  accesses: PropTypes.object.isRequired,
+AccessRow.propTypes = {
+  accesses: PropTypes.array.isRequired,
   handler: PropTypes.func.isRequired,
   selected: PropTypes.number.isRequired,
 };
 
-export default AccountRow;
+export default AccessRow;
