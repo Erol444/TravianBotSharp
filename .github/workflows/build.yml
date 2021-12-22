@@ -51,6 +51,8 @@ jobs:
         run: mkdir TbsReact-build      
       - name: Copy file
         run: |
+          pwd
+          ls
           cp TbsReact/docker-compose.yml TbsReact-build
           cp TbsReact/install_docker.sh TbsReact-build
           cp TbsReact/start_bot.sh TbsReact-build
@@ -85,7 +87,7 @@ jobs:
       - name: Publish TbsReact
         run: dotnet publish TbsReact/TbsReact.csproj /p:PublishProfile=TbsReact/Properties/PublishProfiles/Windows.pubxml
       - name: Rename folder
-        run: mv bin/Debug/net5.0/win-x64/publish/ bin/Debug/net5.0/win-x64/TbsReact-build/
+        run: mv TbsReact/bin/Debug/net5.0/win-x64/publish/ TbsReact/bin/Debug/net5.0/win-x64/TbsReact-build/
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
