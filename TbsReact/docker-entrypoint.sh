@@ -15,4 +15,6 @@ Xvfb :0 -screen 0 $XFB_SCREEN >>~/xvfb.log 2>&1 &
 sleep 10
 
 # finally we can run the VNC-Server based on our just started X-Server
-x11vnc -forever -passwd $VNC_PASSWORD -display :0
+x11vnc -forever -passwd $VNC_PASSWORD -display :0 &
+
+./TbsReact &
