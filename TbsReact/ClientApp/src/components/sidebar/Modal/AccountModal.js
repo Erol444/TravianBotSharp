@@ -272,7 +272,7 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
 };
 
 AccountModal.propTypes = {
-  accID: PropTypes.number.isRequired,
+  accID: PropTypes.number,
   editMode: PropTypes.bool.isRequired,
   setAccID: PropTypes.func.isRequired,
 };

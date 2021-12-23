@@ -4,7 +4,7 @@ on:
     branches-ignore: [master]
     types: [opened, reopened, synchronize, labeled]
 jobs:
-  build-react:
+  build-react-linux:
     runs-on: ubuntu-latest    
     if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
     steps:
@@ -42,28 +42,57 @@ jobs:
           tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tbsreact:build
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-  create-compose:
+  create-linux-folder:
     runs-on: ubuntu-latest
+    needs: build-react-linux
     if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
-    steps:
+    steps:    
       - name: 'Checkout repo' 
-        uses: actions/checkout@v2        
+        uses: actions/checkout@v2
       - name: Create folder
         run: mkdir TbsReact-build      
-      - name: Copy docker-compose.yml
-        run: cp TbsReact/docker-compose.yml TbsReact-build
+      - name: Copy file
+        run: |
+          cp TbsReact/docker-compose.yml TbsReact-build
+          cp TbsReact/install_docker.sh TbsReact-build
+          cp TbsReact/start_bot.sh TbsReact-build
       - name: Create .env
         run: |
           cd TbsReact-build
           touch .env
+          echo "# Don't change TAG variable if you don't know what you are doing" >> .env
           echo "TAG=build" >> .env
-          echo "HTTPS_PASS=3004" >> .env
+          echo "WEB_PORT=5000" >> .env
           echo "VNC_PASS=1975" >> .env
+          echo "VNC_PORT=5009" >> .env          
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: TbsReact-Build
+          name: TbsReact-Linux-Build
           path: TbsReact-build
+          if-no-files-found: error
+  build-react-window:
+    runs-on: ubuntu-latest    
+    if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
+    steps:
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with: 
+          dotnet-version: '5.x'
+      - name: Build TbsCore
+        run: dotnet build TbsCore/TbsCore.csproj --configuration Release
+      - name: Publish TbsReact
+        run: dotnet publish TbsReact/TbsReact.csproj /p:PublishProfile=TbsReact/Properties/PublishProfiles/Windows.pubxml
+      - name: Rename folder
+        run: mv TbsReact/bin/Debug/net5.0/win-x64/publish/ TbsReact/bin/Debug/net5.0/win-x64/TbsReact-build/
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: TbsReact-Windows-Build
+          path: TbsReact/bin/Debug/net5.0/win-x64/TbsReact-build/
           if-no-files-found: error
   build-winform:
     runs-on: windows-latest
@@ -103,7 +132,7 @@ jobs:
           if-no-files-found: error
   message:
     runs-on: ubuntu-latest
-    needs: [build-react, create-compose, build-winform]
+    needs: [create-linux-folder, build-react-window, build-winform]
     if: ${{ always() && (contains(needs.*.result, 'success') || (contains(needs.*.result, 'failure'))) }}
     steps:      
       - name: Comment on PR when success

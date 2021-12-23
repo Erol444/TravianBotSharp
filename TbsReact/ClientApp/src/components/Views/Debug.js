@@ -18,8 +18,8 @@ const Debug = ({ taskTable, logBoard }) => {
 };
 
 Debug.propTypes = {
-  logBoard: PropTypes.func.isRequired,
-  taskTable: PropTypes.func.isRequired,
+  logBoard: PropTypes.object.isRequired,
+  taskTable: PropTypes.object.isRequired,
 };
 
 export default Debug;

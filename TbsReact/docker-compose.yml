@@ -2,26 +2,22 @@ version: '3.4'
 
 services:
   tbs:
-    image: tbsreact:${TAG} 
+    image: travbotsharp/tbsreact:${TAG} 
     ports:
-      - 5000:5000
-      - 5001:5001
-      - 5009:5009
+      - ${WEB_PORT}:5000
+      - ${VNC_PORT}:5009
     build:
       context: .
       dockerfile: ./Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ASPNETCORE_URLS=https://+:5001;http://+:5000
-      - ASPNETCORE_Kestrel__Certificates__Default__Password=${HTTPS_PASS}
-      - ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx
+      - ASPNETCORE_URLS=http://+:5000
 
       - VNC_PASSWORD=${VNC_PASS}
       - XFB_SCREEN=1280x800x24
     volumes:
       - data:${HOME}/.config/TravBotSharp
       - logs:/App/logs
-      - ${HOME}/.aspnet/https:/https:ro
 volumes:
   data:
   logs:
