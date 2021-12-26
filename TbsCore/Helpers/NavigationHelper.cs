@@ -52,8 +52,28 @@ namespace TbsCore.Helpers
                 if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
                     await MainNavigate(acc, MainNavigationButton.Buildings);
 
-                string script = $"document.getElementsByClassName(\"aid{index}\")[0].children[0].click();";
-                if (index == 40) script = "window.location.href='/build.php?id=40&gid=31'"; // Wall
+                string script = @"
+                function clickFirst(node)
+                {
+                    if (node.hasAttribute('href') && node.getAttribute('href'))
+                    {
+                        node.click();
+                        return true;
+                    }
+                    if (node.hasAttribute('onclick') && node.getAttribute('onclick'))
+                    {";
+                script += "url = node.getAttribute('onclick').split(\"'\")[1];";
+                script += @"
+                        window.location.href = url
+                    return true;
+                    }
+                    // node doesn't contain href/onlick. Check child nodes
+                    for (child of node.children)
+                    {
+                        if (clickFirst(child)) return true;
+                    }
+                }";
+                script += $"node = document.querySelectorAll('[data-aid=\"{index}\"]')[0]; clickFirst(node);";
                 await DriverHelper.ExecuteScript(acc, script);
             }
             await DriverHelper.WaitLoaded(acc);
