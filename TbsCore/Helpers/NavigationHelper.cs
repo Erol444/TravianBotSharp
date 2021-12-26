@@ -51,8 +51,10 @@ namespace TbsCore.Helpers
             {
                 if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
                     await MainNavigate(acc, MainNavigationButton.Buildings);
-                
-                await DriverHelper.ExecuteScript(acc, $"document.getElementsByClassName(\"aid{index}\")[0].children[0].click();");
+
+                string script = $"document.getElementsByClassName(\"aid{index}\")[0].children[0].click();";
+                if (index == 40) script = "window.location.href='/build.php?id=40&gid=31'"; // Wall
+                await DriverHelper.ExecuteScript(acc, script);
             }
             await DriverHelper.WaitLoaded(acc);
         }
