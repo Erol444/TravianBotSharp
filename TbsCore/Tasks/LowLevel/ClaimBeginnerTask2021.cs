@@ -32,9 +32,11 @@ namespace TbsCore.Tasks.LowLevel
         private async Task ClaimRewards(Account acc)
         {
             await Task.Delay(AccountHelper.Delay(acc));
+            DateTime time = DateTime.Now;
             do
             {
                 await DriverHelper.ClickByClassName(acc, "collect", log: false);
+                if (TimeSpan.FromSeconds(30) < DateTime.Now - time) return;
             }
             while (acc.Wb.Html.DocumentNode.Descendants("button").Any(x => x.HasClass("collect")));
         }
