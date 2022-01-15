@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.CombatModels;
-using TravBotSharp.Files.Helpers;
-using static TravBotSharp.Files.Helpers.Classificator;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCoreTest.Factories
 {
