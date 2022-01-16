@@ -19,7 +19,7 @@ import Info from "./Views/Info";
 import Debug from "./Views/Debug";
 import LogBoard from "./Views/DebugChild/LogBoard";
 import TaskTable from "./Views/DebugChild/TaskTable";
-import General from "./Views/General";
+import Setting from "./Views/Setting";
 
 const Layout = ({ selected, setSelected, isConnect }) => {
 	return (
@@ -27,8 +27,8 @@ const Layout = ({ selected, setSelected, isConnect }) => {
 			<NavMenu selected={selected} setSelected={setSelected} />
 			<div style={{ margin: "1%" }}>
 				<Switch>
-					<Route path={"/general"}>
-						<General selected={selected} />
+					<Route path={"/setting"}>
+						<Setting selected={selected} />
 					</Route>
 					<Route path={"/debug"}>
 						<Debug

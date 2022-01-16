@@ -14,9 +14,9 @@ const LeftHeader = ({ selected, setSelected }) => {
 				{/* Im not sure how to change style now, that is why these tab has black instead of white color */}
 				<Tabs value={value} onChange={handleChange}>
 					<Tab
-						label="General"
-						value="/general"
-						to="/general"
+						label="Setting"
+						value="/setting"
+						to="/setting"
 						component={Link}
 					/>
 					<Tab

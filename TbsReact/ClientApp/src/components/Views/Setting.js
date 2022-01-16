@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import ChromeSettings from "./GeneralChild/ChromeSettings";
+import ChromeSettings from "./SettingChild/ChromeSettings";
 import { Grid } from "@mui/material";
 
 const General = ({ selected }) => {
