@@ -10,9 +10,8 @@ const LeftHeader = ({ selected, setSelected }) => {
 	};
 	return (
 		<>
-			<Box sx={{ display: "flex" }}>
-				{/* Im not sure how to change style now, that is why these tab has black instead of white color */}
-				<Tabs value={value} onChange={handleChange}>
+			<Box sx={{ flex: 1 }}>
+				<Tabs value={value} onChange={handleChange} textColor="inherit">
 					<Tab
 						label="Setting"
 						value="/setting"
