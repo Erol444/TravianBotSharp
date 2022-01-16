@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 import Layout from "./components/Layout";
 
 import { signalRConnection, initConnection } from "./realtime/connection";
 import { changeAccount } from "./realtime/account";
 import { usePrevious } from "./hooks/usePrevious";
 const App = () => {
+	toast.configure();
+
 	const [selected, setSelected] = useState(-1);
 	const [joined, setJoined] = useState(false);
 	const prev = usePrevious(selected);

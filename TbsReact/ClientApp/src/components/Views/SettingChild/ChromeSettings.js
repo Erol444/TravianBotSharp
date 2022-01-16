@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { toast } from "react-toastify";
 
 import { getChromeSetting, setChromeSetting } from "../../../api/Setting";
 
@@ -79,6 +80,9 @@ const ChromeSettings = ({ selected }) => {
 
 	const onSubmit = async (data) => {
 		await setChromeSetting(selected, data);
+		toast.success("Chrome settings saved !", {
+			position: toast.POSITION.TOP_RIGHT,
+		});
 	};
 
 	useEffect(() => {
