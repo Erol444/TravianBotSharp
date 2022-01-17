@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import {
 	Table,
 	TableBody,
@@ -8,23 +7,32 @@ import {
 	TableRow,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getAccounts } from "../../api/Accounts/Account";
 import AccountRow from "./AccountRow";
+import { getAccounts } from "../../api/Accounts/Account";
 
-const AccountTable = ({ selected, setSelected }) => {
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAccountByID } from "../../slices/account";
+
+const AccountTable = () => {
+	const account = useSelector((state) => state.account);
 	const [accounts, setAccounts] = useState([]);
+	const [selected, setSelected] = useState(account.id);
+	const dispatch = useDispatch();
+
 	const onClick = (acc) => {
 		setSelected(acc.id);
 	};
 
 	useEffect(() => {
-		const fetchAccount = async () => {
-			const data = await getAccounts();
-			setAccounts(data);
-		};
-		fetchAccount();
-	}, [selected]);
+		getAccounts().then((data) => setAccounts(data));
+		if (selected !== -1) {
+			dispatch(fetchAccountByID(selected));
+		}
+	}, [selected, dispatch]);
 
+	useEffect(() => {
+		console.log("Current account", account);
+	}, [account]);
 	return (
 		<>
 			<TableContainer>
@@ -46,11 +54,6 @@ const AccountTable = ({ selected, setSelected }) => {
 			</TableContainer>
 		</>
 	);
-};
-
-AccountTable.propTypes = {
-	selected: PropTypes.number.isRequired,
-	setSelected: PropTypes.func.isRequired,
 };
 
 export default AccountTable;

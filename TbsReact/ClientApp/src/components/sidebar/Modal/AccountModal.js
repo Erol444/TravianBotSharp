@@ -1,5 +1,8 @@
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { resetAccount, fetchAccountByID } from "../../../slices/account";
+
 import {
 	Modal,
 	Button,
@@ -30,10 +33,13 @@ const style = {
 	width: "80%",
 };
 
-const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
+const AccountModal = ({ editMode = false }) => {
 	const [selected, setSelected] = useState(-1);
 	const [open, setOpen] = useState(false);
 	const [accesses, setAccesses] = useState([]);
+
+	const dispatch = useDispatch();
+	const account = useSelector((state) => state.account);
 
 	// Form
 	const [username, setUsername] = useState("");
@@ -55,9 +61,12 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
 	}, [accesses, selected]);
 
 	useEffect(() => {
-		if (accID !== -1) {
+		if (account.id !== -1) {
 			const fetchAccount = async () => {
-				const getPromise = [getAccount(accID), getAccesses(accID)];
+				const getPromise = [
+					getAccount(account.id),
+					getAccesses(account.id),
+				];
 				const [{ name, serverUrl }, accesses] = await Promise.all(
 					getPromise
 				);
@@ -68,7 +77,7 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
 
 			fetchAccount();
 		}
-	}, [accID]);
+	}, [account.id]);
 
 	useEffect(() => {
 		if (!server.includes("https://")) {
@@ -77,14 +86,14 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
 	}, [server]);
 
 	const handleOpen = () => {
-		if (editMode === true && accID === -1) {
+		if (editMode === true && account.id === -1) {
 			alert("Cannot edit if you didn't choose account to edit");
 		} else {
 			setOpen(true);
 		}
 	};
 	const handleClose = () => {
-		setAccID(-1);
+		dispatch(resetAccount);
 		setOpen(false);
 	};
 	const onClickTable = (access) => {
@@ -132,8 +141,8 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
 			account: { name: username, serverUrl: server },
 			accesses: accesses,
 		};
-		const result = await addAccount(data);
-		setAccID(result.id);
+		const { id } = await addAccount(data);
+		dispatch(fetchAccountByID(id));
 		handleClose();
 	};
 
@@ -286,9 +295,7 @@ const AccountModal = ({ editMode = false, accID = -1, setAccID }) => {
 };
 
 AccountModal.propTypes = {
-	accID: PropTypes.number,
 	editMode: PropTypes.bool.isRequired,
-	setAccID: PropTypes.func.isRequired,
 };
 
 export default AccountModal;

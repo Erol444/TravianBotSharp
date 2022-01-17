@@ -1,8 +1,7 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import { Tabs, Tab, Box } from "@mui/material";
 import { Link } from "react-router-dom";
-const LeftHeader = ({ selected, setSelected }) => {
+const LeftHeader = () => {
 	const [value, setValue] = useState("/info");
 
 	const handleChange = (event, newValue) => {
@@ -34,11 +33,6 @@ const LeftHeader = ({ selected, setSelected }) => {
 			</Box>
 		</>
 	);
-};
-
-LeftHeader.propTypes = {
-	selected: PropTypes.number.isRequired,
-	setSelected: PropTypes.func.isRequired,
 };
 
 export default LeftHeader;

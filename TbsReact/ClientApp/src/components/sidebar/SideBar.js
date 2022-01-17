@@ -1,8 +1,10 @@
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { resetAccount } from "../../slices/account";
+
 import { Drawer, IconButton, Grid, Button } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import { Menu, ChevronLeft } from "@mui/icons-material";
 
 import AccountTable from "./AccountTable";
 import AccountModal from "./Modal/AccountModal";
@@ -16,18 +18,19 @@ import {
 	getStatus,
 } from "../../api/Accounts/Driver";
 
-const SideBar = ({ selected, setSelected }) => {
+const SideBar = () => {
 	const [open, setOpen] = useState(false);
 	const [status, setStatus] = useState(false);
 
+	const dispatch = useDispatch();
+	const account = useSelector((state) => state.account);
+
 	useEffect(() => {
-		if (selected !== -1) {
-			const updateStatus = async () => {
-				setStatus(await getStatus(selected));
-			};
-			updateStatus();
+		if (account.id !== -1) {
+			getStatus(account.id).then((status) => setStatus(status));
 		}
-	}, [selected]);
+	}, [account.id]);
+
 	const handleDrawerOpen = () => {
 		setOpen(true);
 	};
@@ -37,28 +40,28 @@ const SideBar = ({ selected, setSelected }) => {
 	};
 
 	const onDelete = async () => {
-		setSelected(-1);
-		await deleteAccount(selected);
+		dispatch(resetAccount);
+		await deleteAccount(account.id);
 	};
 
 	const onLog = async () => {
 		if (status === true) {
-			await logout(selected);
-			setStatus(await getStatus(selected));
+			await logout(account.id);
+			setStatus(await getStatus(account.id));
 		} else {
-			await login(selected);
-			setStatus(await getStatus(selected));
+			await login(account.id);
+			setStatus(await getStatus(account.id));
 		}
 	};
 
 	const onLoginAll = async () => {
 		await loginAll();
-		setSelected(-1);
+		dispatch(resetAccount);
 	};
 
 	const onLogoutAll = async () => {
 		await logoutAll();
-		setSelected(-1);
+		dispatch(resetAccount);
 	};
 
 	return (
@@ -70,23 +73,19 @@ const SideBar = ({ selected, setSelected }) => {
 				edge="start"
 				sx={{ mr: 2, ...(open && { display: "none" }) }}
 			>
-				<MenuIcon />
+				<Menu />
 			</IconButton>
 			<Drawer anchor="left" open={open}>
 				<IconButton onClick={handleDrawerClose}>
-					<ChevronLeftIcon />
+					<ChevronLeft />
 				</IconButton>
-				<AccountTable selected={selected} setSelected={setSelected} />
+				<AccountTable />
 				<Grid container style={{ textAlign: "center" }}>
 					<Grid item xs={12}>
-						<AccountModal editMode={false} setAccID={setSelected} />
+						<AccountModal editMode={false} />
 					</Grid>
 					<Grid item xs={6}>
-						<AccountModal
-							editMode={true}
-							accID={selected}
-							setAccID={setSelected}
-						/>
+						<AccountModal editMode={true} />
 					</Grid>
 					<Grid item xs={6}>
 						<Button onClick={onDelete}>Delete</Button>
@@ -108,8 +107,4 @@ const SideBar = ({ selected, setSelected }) => {
 	);
 };
 
-SideBar.propTypes = {
-	selected: PropTypes.number.isRequired,
-	setSelected: PropTypes.func.isRequired,
-};
 export default SideBar;
