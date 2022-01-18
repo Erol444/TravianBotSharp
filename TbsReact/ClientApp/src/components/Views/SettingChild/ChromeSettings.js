@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -17,6 +16,7 @@ import * as yup from "yup";
 import { toast } from "react-toastify";
 
 import { getChromeSetting, setChromeSetting } from "../../../api/Setting";
+import { useSelector } from "react-redux";
 
 const schema = yup
 	.object()
@@ -68,7 +68,7 @@ const style = {
 	width: "100%",
 	height: "100%",
 };
-const ChromeSettings = ({ selected }) => {
+const ChromeSettings = () => {
 	const {
 		register,
 		handleSubmit,
@@ -77,17 +77,17 @@ const ChromeSettings = ({ selected }) => {
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
-
+	const account = useSelector((state) => state.account.info.id);
 	const onSubmit = async (data) => {
-		await setChromeSetting(selected, data);
+		await setChromeSetting(account, data);
 		toast.success("Chrome settings saved !", {
 			position: toast.POSITION.TOP_RIGHT,
 		});
 	};
 
 	useEffect(() => {
-		if (selected !== -1) {
-			getChromeSetting(selected).then((data) => {
+		if (account !== -1) {
+			getChromeSetting(account).then((data) => {
 				const { workTime, sleepTime, disableImages, click, autoClose } =
 					data;
 				setValue("work_min", workTime.min);
@@ -100,7 +100,7 @@ const ChromeSettings = ({ selected }) => {
 				setValue("close_chrome", autoClose);
 			});
 		}
-	}, [selected, setValue]);
+	}, [account, setValue]);
 
 	return (
 		<>
@@ -255,7 +255,5 @@ const ChromeSettings = ({ selected }) => {
 		</>
 	);
 };
-ChromeSettings.propTypes = {
-	selected: PropTypes.number.isRequired,
-};
+
 export default ChromeSettings;

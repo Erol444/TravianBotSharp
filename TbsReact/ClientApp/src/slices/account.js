@@ -6,6 +6,7 @@ export const fetchAccountByID = createAsyncThunk(
 	"account/fetcInfohById",
 	async (id, thunkAPI) => {
 		const data = await getAccount(id);
+		console.log("i fetched");
 		return data;
 	}
 );
@@ -53,5 +54,5 @@ export const accountSlice = createSlice({
 	},
 });
 
-export const { setAccount, resetAccount } = accountSlice.actions;
+export const { setAccount, resetAccount, setStatus } = accountSlice.actions;
 export default accountSlice.reducer;

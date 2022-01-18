@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { Typography, TextareaAutosize } from "@mui/material";
 
 import { getLogData } from "../../../api/Debug";
 import { signalRConnection } from "../../../realtime/connection";
-const LogBoard = ({ selected, isConnect }) => {
+
+import { useSelector } from "react-redux";
+import { HubConnectionState } from "@microsoft/signalr/dist/esm/HubConnection";
+const LogBoard = () => {
 	const [value, setValue] = useState();
+	const account = useSelector((state) => state.account.info.id);
+	const signalr = useSelector((state) => state.signalr);
 
 	useEffect(() => {
-		if (isConnect === true) {
+		if (signalRConnection.State === HubConnectionState.Connected) {
 			signalRConnection.on("logger", (data) => {
 				setValue((prev) => `${data}${prev}`);
 			});
@@ -17,17 +21,13 @@ const LogBoard = ({ selected, isConnect }) => {
 				signalRConnection.off("logger");
 			};
 		}
-	}, [isConnect]);
+	}, [signalr]);
 
 	useEffect(() => {
-		if (selected !== -1) {
-			const getData = async () => {
-				const data = await getLogData(selected);
-				setValue(data);
-			};
-			getData();
+		if (account !== -1) {
+			getLogData(account).then((data) => setValue(data));
 		}
-	}, [selected]);
+	}, [account]);
 	return (
 		<>
 			<Typography variant="h6" noWrap>
@@ -43,9 +43,5 @@ const LogBoard = ({ selected, isConnect }) => {
 			/>
 		</>
 	);
-};
-LogBoard.propTypes = {
-	selected: PropTypes.number.isRequired,
-	isConnect: PropTypes.bool.isRequired,
 };
 export default LogBoard;

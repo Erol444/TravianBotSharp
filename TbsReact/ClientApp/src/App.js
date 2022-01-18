@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -7,49 +7,29 @@ import Layout from "./components/Layout";
 import { signalRConnection, initConnection } from "./realtime/connection";
 import { changeAccount } from "./realtime/account";
 import { usePrevious } from "./hooks/usePrevious";
+import { useDispatch, useSelector } from "react-redux";
+
+import { HubConnectionState } from "@microsoft/signalr/dist/esm/HubConnection";
+
 const App = () => {
 	toast.configure();
-
-	const [selected, setSelected] = useState(-1);
-	const [joined, setJoined] = useState(false);
-	const prev = usePrevious(selected);
-
-	// look complicated
-	// may change later when i "pro" React ._.
-	// - Vinaghost
+	const account = useSelector((state) => state.account.info.id);
+	const prev = usePrevious(account);
+	const dispatch = useDispatch();
 	useEffect(() => {
-		if (joined === false) {
-			const join = async () => {
-				try {
-					initConnection();
-					await signalRConnection.start();
-					setJoined(true);
-					signalRConnection.on("message", (data) => {
-						console.log(data);
-					});
-				} catch (e) {
-					console.log(e);
-				}
-			};
-
-			join();
-		}
-	}, [joined]);
+		initConnection();
+		signalRConnection.start().then(() => {
+			signalRConnection.on("message", (data) => console.log(data));
+		});
+	}, [dispatch]);
 
 	useEffect(() => {
-		if (joined === true) {
-			changeAccount(selected, prev);
+		if (signalRConnection.State === HubConnectionState.Connected) {
+			changeAccount(account, prev);
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [selected, joined]);
+	}, [account, prev]);
 
-	return (
-		<Layout
-			selected={selected}
-			setSelected={setSelected}
-			isConnect={joined}
-		></Layout>
-	);
+	return <Layout />;
 };
 
 export default App;

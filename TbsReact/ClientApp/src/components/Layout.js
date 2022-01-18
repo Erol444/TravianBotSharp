@@ -1,7 +1,4 @@
-import PropTypes from "prop-types";
 import React from "react";
-
-// header
 import NavMenu from "./NavMenu";
 
 // Router
@@ -17,34 +14,20 @@ import Info from "./Views/Info";
 
 // debug view
 import Debug from "./Views/Debug";
-import LogBoard from "./Views/DebugChild/LogBoard";
-import TaskTable from "./Views/DebugChild/TaskTable";
+
 import Setting from "./Views/Setting";
 
-const Layout = ({ selected, setSelected, isConnect }) => {
+const Layout = () => {
 	return (
 		<Router>
-			<NavMenu selected={selected} setSelected={setSelected} />
+			<NavMenu />
 			<div style={{ margin: "1%" }}>
 				<Switch>
 					<Route path={"/setting"}>
-						<Setting selected={selected} />
+						<Setting />
 					</Route>
 					<Route path={"/debug"}>
-						<Debug
-							taskTable={
-								<TaskTable
-									selected={selected}
-									isConnect={isConnect}
-								/>
-							}
-							logBoard={
-								<LogBoard
-									selected={selected}
-									isConnect={isConnect}
-								/>
-							}
-						/>
+						<Debug />
 					</Route>
 					<Route path={"/info"}>
 						<Info />
@@ -56,12 +39,6 @@ const Layout = ({ selected, setSelected, isConnect }) => {
 			</div>
 		</Router>
 	);
-};
-
-Layout.propTypes = {
-	isConnect: PropTypes.bool.isRequired,
-	selected: PropTypes.number.isRequired,
-	setSelected: PropTypes.func.isRequired,
 };
 
 export default Layout;
