@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAccountByID } from "../../slices/account";
 
 const AccountTable = () => {
-	const account = useSelector((state) => state.account);
+	const account = useSelector((state) => state.account.info);
 	const [accounts, setAccounts] = useState([]);
 	const [selected, setSelected] = useState(account.id);
 	const dispatch = useDispatch();
@@ -30,9 +30,6 @@ const AccountTable = () => {
 		}
 	}, [selected, dispatch]);
 
-	useEffect(() => {
-		console.log("Current account", account);
-	}, [account]);
 	return (
 		<>
 			<TableContainer>

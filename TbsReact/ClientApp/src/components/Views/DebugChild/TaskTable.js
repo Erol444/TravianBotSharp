@@ -28,7 +28,6 @@ const TaskTable = ({ selected, isConnect }) => {
 	useEffect(() => {
 		if (isConnect === true) {
 			signalRConnection.on("task", (message) => {
-				console.log("task message", message);
 				if (message === "waiting") {
 					setValue([
 						{
@@ -89,7 +88,6 @@ const TaskTable = ({ selected, isConnect }) => {
 				} else {
 					setValue(data);
 				}
-				console.log({ data });
 			};
 			getData();
 		}

@@ -23,7 +23,7 @@ const SideBar = () => {
 	const [status, setStatus] = useState(false);
 
 	const dispatch = useDispatch();
-	const account = useSelector((state) => state.account);
+	const account = useSelector((state) => state.account.info);
 
 	useEffect(() => {
 		if (account.id !== -1) {

@@ -39,7 +39,7 @@ const AccountModal = ({ editMode = false }) => {
 	const [accesses, setAccesses] = useState([]);
 
 	const dispatch = useDispatch();
-	const account = useSelector((state) => state.account);
+	const account = useSelector((state) => state.account.info);
 
 	// Form
 	const [username, setUsername] = useState("");
