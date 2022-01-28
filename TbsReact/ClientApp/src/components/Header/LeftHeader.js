@@ -18,6 +18,12 @@ const LeftHeader = () => {
 						component={Link}
 					/>
 					<Tab
+						label="Villages"
+						value="/villages"
+						to="/villages"
+						component={Link}
+					/>
+					<Tab
 						label="Debug"
 						value="/debug"
 						to="/debug"

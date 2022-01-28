@@ -1,8 +1,8 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 
-import LogBoard from "./DebugChild/LogBoard";
-import TaskTable from "./DebugChild/TaskTable";
+import LogBoard from "./LogBoard";
+import TaskTable from "./TaskTable";
 const Debug = () => {
 	return (
 		<>

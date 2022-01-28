@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 import { getChromeSetting, setChromeSetting } from "../../../api/Setting";
 import { useSelector } from "react-redux";
 
+import style from "../../../styles/box";
+
 const schema = yup
 	.object()
 	.shape({
@@ -60,14 +62,6 @@ const schema = yup
 	})
 	.required();
 
-const style = {
-	bgcolor: "background.paper",
-	border: "2px solid #000",
-	boxShadow: 24,
-	p: 4,
-	width: "100%",
-	height: "100%",
-};
 const ChromeSettings = () => {
 	const {
 		register,

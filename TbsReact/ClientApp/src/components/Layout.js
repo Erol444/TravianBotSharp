@@ -13,9 +13,11 @@ import {
 import Info from "./Views/Info";
 
 // debug view
-import Debug from "./Views/Debug";
+import Debug from "./Views/DebugView/Debug";
 
-import Setting from "./Views/Setting";
+import Setting from "./Views/SettingsView/Setting";
+
+import Villages from "./Views/VillagesView/Villages";
 
 const Layout = () => {
 	return (
@@ -31,6 +33,9 @@ const Layout = () => {
 					</Route>
 					<Route path={"/info"}>
 						<Info />
+					</Route>
+					<Route path={"/villages"}>
+						<Villages />
 					</Route>
 					<Route path="*">
 						<Redirect to="/info" />
