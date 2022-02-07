@@ -1,0 +1,230 @@
+{
+	"accounts": [
+		{
+			"id": "1",
+			"name": "Abcg",
+			"serverUrl": "abc.xyz"
+		},
+		{
+			"id": "2",
+			"name": "Abce",
+			"serverUrl": "abd.xyz"
+		},
+		{
+			"id": "3",
+			"name": "Abcf",
+			"serverUrl": "abe.xyz"
+		},
+		{
+			"id": "4",
+			"name": "Abcg",
+			"serverUrl": "abf.xyz"
+		}
+	],
+	"accesses": [
+		{
+			"id": "1",
+			"accesses": [
+				{
+					"id": "1",
+					"password": "abc",
+					"proxy": {
+						"ip": "1.1.1.1",
+						"port": "8080",
+						"username": "xyz",
+						"password": "efg",
+						"ok": "true"
+					}
+				},
+				{
+					"id": "2",
+					"password": "abc",
+					"proxy": {
+						"ip": "1.1.1.1",
+						"port": "8080",
+						"username": "xyz",
+						"password": "efg",
+						"ok": "true"
+					}
+				}
+			]
+		},
+		{
+			"id": "2",
+			"accesses": [
+				{
+					"id": "1",
+					"password": "abc",
+					"proxy": {
+						"ip": "1.1.1.1",
+						"port": "8080",
+						"username": "xyz",
+						"password": "efg",
+						"ok": "true"
+					}
+				},
+				{
+					"id": "2",
+					"password": "abc",
+					"proxy": {
+						"ip": "1.1.1.1",
+						"port": "8080",
+						"username": "xyz",
+						"password": "efg",
+						"ok": "true"
+					}
+				}
+			]
+		},
+		{
+			"id": "3",
+			"accesses": [
+				{
+					"id": "1",
+					"password": "abc",
+					"proxy": {
+						"ip": "1.1.1.1",
+						"port": "8080",
+						"username": "xyz",
+						"password": "efg",
+						"ok": "true"
+					}
+				},
+				{
+					"id": "2",
+					"password": "abc",
+					"proxy": {
+						"ip": "1.1.1.1",
+						"port": "8080",
+						"username": "xyz",
+						"password": "efg",
+						"ok": "true"
+					}
+				}
+			]
+		},
+		{
+			"id": "4",
+			"accesses": [
+				{
+					"id": "1",
+					"password": "abc",
+					"proxy": {
+						"ip": "1.1.1.1",
+						"port": "8080",
+						"username": "xyz",
+						"password": "efg",
+						"ok": "true"
+					}
+				},
+				{
+					"id": "2",
+					"password": "abc",
+					"proxy": {
+						"ip": "1.1.1.1",
+						"port": "8080",
+						"username": "xyz",
+						"password": "efg",
+						"ok": "true"
+					}
+				}
+			]
+		}
+	],
+	"status": [
+		{
+			"id": "1",
+			"status": "true"
+		},
+		{
+			"id": "2",
+			"status": "true"
+		},
+		{
+			"id": "3",
+			"status": "false"
+		},
+		{
+			"id": "4",
+			"status": "true"
+		}
+	],
+	"settings": [
+		{
+			"id": "1",
+			"chrome": {
+				"click": {
+					"min": "1",
+					"max": "2"
+				},
+				"workTime": {
+					"min": "1",
+					"max": "2"
+				},
+				"sleepTime": {
+					"min": "1",
+					"max": "2"
+				},
+				"disableImages": "true",
+				"autoClose": "true"
+			}
+		},
+		{
+			"id": "2",
+			"chrome": {
+				"click": {
+					"min": "1",
+					"max": "2"
+				},
+				"workTime": {
+					"min": "1",
+					"max": "2"
+				},
+				"sleepTime": {
+					"min": "1",
+					"max": "2"
+				},
+				"disableImages": "true",
+				"autoClose": "true"
+			}
+		},
+		{
+			"id": "3",
+			"chrome": {
+				"click": {
+					"min": "1",
+					"max": "2"
+				},
+				"workTime": {
+					"min": "1",
+					"max": "2"
+				},
+				"sleepTime": {
+					"min": "1",
+					"max": "2"
+				},
+				"disableImages": "true",
+				"autoClose": "true"
+			}
+		},
+		{
+			"id": "4",
+			"chrome": {
+				"click": {
+					"min": "1",
+					"max": "2"
+				},
+				"workTime": {
+					"min": "1",
+					"max": "2"
+				},
+				"sleepTime": {
+					"min": "1",
+					"max": "2"
+				},
+				"disableImages": "true",
+				"autoClose": "true"
+			}
+		}
+	]
+}
