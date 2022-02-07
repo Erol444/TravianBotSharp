@@ -18,9 +18,14 @@ const App = () => {
 	const dispatch = useDispatch();
 	useEffect(() => {
 		initConnection();
-		signalRConnection.start().then(() => {
-			signalRConnection.on("message", (data) => console.log(data));
-		});
+		signalRConnection
+			.start()
+			.then(() => {
+				signalRConnection.on("message", (data) => console.log(data));
+			})
+			.catch((err) => {
+				console.error(err);
+			});
 	}, [dispatch]);
 
 	useEffect(() => {

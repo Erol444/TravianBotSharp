@@ -2,7 +2,7 @@ import axios from "axios";
 
 const getLogData = async (index) => {
 	try {
-		const { data } = await axios.get(`/accounts/${index}/log`);
+		const { data } = await axios.get(`/log/${index}`);
 		return data;
 	} catch (e) {
 		console.log(e);
@@ -11,7 +11,7 @@ const getLogData = async (index) => {
 
 const getTaskList = async (index) => {
 	try {
-		const { data } = await axios.get(`/accounts/${index}/task`);
+		const { data } = await axios.get(`/task/${index}`);
 		return data;
 	} catch (e) {
 		if (e.response.status === 404) {

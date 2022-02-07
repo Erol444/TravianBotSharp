@@ -2,7 +2,7 @@ import axios from "axios";
 
 const getChromeSetting = async (index) => {
 	try {
-		const { data } = await axios.get(`/accounts/${index}/settings/chrome`);
+		const { data } = await axios.get(`/settings/chrome/${index}`);
 		return data;
 	} catch (e) {
 		console.log(e);

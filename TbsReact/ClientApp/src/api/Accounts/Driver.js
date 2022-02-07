@@ -42,7 +42,7 @@ const logoutAll = async () => {
 
 const getStatus = async (index) => {
 	try {
-		const { data } = await axios.get(`/accounts/status/${index}`);
+		const { data } = await axios.get(`/status/${index}`);
 		return data;
 	} catch (e) {
 		console.log(e);
