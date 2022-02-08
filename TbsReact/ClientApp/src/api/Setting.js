@@ -2,7 +2,7 @@ import axios from "axios";
 
 const getChromeSetting = async (index) => {
 	try {
-		const { data } = await axios.get(`/settings/chrome/${index}`);
+		const { data } = await axios.get(`/settings_chrome/${index}`);
 		return data;
 	} catch (e) {
 		console.log(e);
@@ -25,7 +25,7 @@ const setChromeSetting = async (index, data) => {
 				max: data.sleep_max,
 			},
 		};
-		await axios.patch(`/accounts/${index}/settings/chrome`, patchData);
+		await axios.patch(`/settings_chrome/${index}/`, patchData);
 	} catch (e) {
 		console.log(e);
 	}

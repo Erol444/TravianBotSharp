@@ -149,44 +149,40 @@
 			"status": "true"
 		}
 	],
-	"settings": [
+	"settings_chrome": [
 		{
 			"id": "1",
-			"chrome": {
-				"click": {
-					"min": "1",
-					"max": "2"
-				},
-				"workTime": {
-					"min": "1",
-					"max": "2"
-				},
-				"sleepTime": {
-					"min": "1",
-					"max": "2"
-				},
-				"disableImages": "true",
-				"autoClose": "true"
-			}
+			"click": {
+				"min": "1",
+				"max": "2"
+			},
+			"workTime": {
+				"min": "1",
+				"max": "2"
+			},
+			"sleepTime": {
+				"min": "1",
+				"max": "2"
+			},
+			"disableImages": "true",
+			"autoClose": "true"
 		},
 		{
 			"id": "2",
-			"chrome": {
-				"click": {
-					"min": "1",
-					"max": "2"
-				},
-				"workTime": {
-					"min": "1",
-					"max": "2"
-				},
-				"sleepTime": {
-					"min": "1",
-					"max": "2"
-				},
-				"disableImages": "true",
-				"autoClose": "true"
-			}
+			"click": {
+				"min": 1,
+				"max": 2
+			},
+			"workTime": {
+				"min": 1,
+				"max": 5
+			},
+			"sleepTime": {
+				"min": 1,
+				"max": 2
+			},
+			"disableImages": "true",
+			"autoClose": "true"
 		},
 		{
 			"id": "3",
@@ -209,22 +205,292 @@
 		},
 		{
 			"id": "4",
-			"chrome": {
-				"click": {
-					"min": "1",
-					"max": "2"
+			"click": {
+				"min": "1",
+				"max": "2"
+			},
+			"workTime": {
+				"min": "1",
+				"max": "2"
+			},
+			"sleepTime": {
+				"min": "1",
+				"max": "2"
+			},
+			"disableImages": "true",
+			"autoClose": "true"
+		}
+	],
+	"villages": [
+		{
+			"id": "1",
+			"villages": [
+				{
+					"id": "112",
+					"name": "1",
+					"coords": {
+						"x": "1",
+						"y": "1"
+					}
 				},
-				"workTime": {
-					"min": "1",
-					"max": "2"
+				{
+					"id": "113",
+					"name": "2",
+					"coords": {
+						"x": "2",
+						"y": "-1"
+					}
+				}
+			]
+		},
+		{
+			"id": "2",
+			"villages": [
+				{
+					"id": "114",
+					"name": "1",
+					"coords": {
+						"x": "1",
+						"y": "1"
+					}
 				},
-				"sleepTime": {
-					"min": "1",
-					"max": "2"
+				{
+					"id": "115",
+					"name": "2",
+					"coords": {
+						"x": "2",
+						"y": "-5"
+					}
+				}
+			]
+		},
+		{
+			"id": "3",
+			"villages": [
+				{
+					"id": "116",
+					"name": "1",
+					"coords": {
+						"x": "1",
+						"y": "1"
+					}
 				},
-				"disableImages": "true",
-				"autoClose": "true"
+				{
+					"id": "117",
+					"name": "2",
+					"coords": {
+						"x": "2",
+						"y": "-1"
+					}
+				}
+			]
+		},
+		{
+			"id": "4",
+			"villages": [
+				{
+					"id": "118",
+					"name": "1",
+					"coords": {
+						"x": "1",
+						"y": "1"
+					}
+				},
+				{
+					"id": "119",
+					"name": "2",
+					"coords": {
+						"x": "2",
+						"y": "-1"
+					}
+				}
+			]
+		}
+	],
+	"village": [
+		{
+			"id": "113",
+			"name": "1",
+			"coords": {
+				"x": "1",
+				"y": "1"
 			}
+		},
+		{
+			"id": "114",
+			"name": "2",
+			"coords": {
+				"x": "1",
+				"y": "1"
+			}
+		},
+		{
+			"id": "115",
+			"name": "3",
+			"coords": {
+				"x": "1",
+				"y": "1"
+			}
+		},
+		{
+			"id": "116",
+			"name": "4",
+			"coords": {
+				"x": "1",
+				"y": "1"
+			}
+		},
+		{
+			"id": "117",
+			"name": "5",
+			"coords": {
+				"x": "1",
+				"y": "1"
+			}
+		},
+		{
+			"id": "118",
+			"name": "6",
+			"coords": {
+				"x": "1",
+				"y": "1"
+			}
+		},
+		{
+			"id": "119",
+			"name": "7",
+			"coords": {
+				"x": "1",
+				"y": "1"
+			}
+		}
+	],
+	"log": [
+		{
+			"id": "1",
+			"log": [
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd"
+			]
+		},
+		{
+			"id": "2",
+			"log": [
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd"
+			]
+		},
+		{
+			"id": "3",
+			"log": [
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd"
+			]
+		},
+		{
+			"id": "4",
+			"log": [
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd",
+				"a: dasdasd"
+			]
+		}
+	],
+	"task": [
+		{
+			"id": "1",
+			"task": [
+				{
+					"id": 0,
+					"name": "login",
+					"villName": "_MyVill",
+					"priority": "Medium",
+					"stage": "Waiting",
+					"executeAt": "11:22 08/02/2022"
+				},
+				{
+					"id": 0,
+					"name": "enter_vill",
+					"villName": "_MyVill",
+					"priority": "Medium",
+					"stage": "Waiting",
+					"executeAt": "11:22 08/02/2022"
+				}
+			]
+		},
+		{
+			"id": "2",
+			"task": [
+				{
+					"id": 0,
+					"name": "login",
+					"villName": "_MyVill",
+					"priority": "Medium",
+					"stage": "Waiting",
+					"executeAt": "11:22 08/02/2022"
+				},
+				{
+					"id": 0,
+					"name": "enter_vill",
+					"villName": "_MyVill",
+					"priority": "Medium",
+					"stage": "Waiting",
+					"executeAt": "11:22 08/02/2022"
+				}
+			]
+		},
+		{
+			"id": "3",
+			"task": [
+				{
+					"id": 0,
+					"name": "login",
+					"villName": "_MyVill",
+					"priority": "Medium",
+					"stage": "Waiting",
+					"executeAt": "11:22 08/02/2022"
+				},
+				{
+					"id": 0,
+					"name": "enter_vill",
+					"villName": "_MyVill",
+					"priority": "Medium",
+					"stage": "Waiting",
+					"executeAt": "11:22 08/02/2022"
+				}
+			]
+		},
+		{
+			"id": "4",
+			"task": [
+				{
+					"id": 0,
+					"name": "login",
+					"villName": "_MyVill",
+					"priority": "Medium",
+					"stage": "Waiting",
+					"executeAt": "11:22 08/02/2022"
+				},
+				{
+					"id": 0,
+					"name": "enter_vill",
+					"villName": "_MyVill",
+					"priority": "Medium",
+					"stage": "Waiting",
+					"executeAt": "11:22 08/02/2022"
+				}
+			]
 		}
 	]
 }
