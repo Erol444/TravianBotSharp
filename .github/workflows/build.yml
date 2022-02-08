@@ -5,83 +5,61 @@ on:
     types: [opened, reopened, synchronize, labeled]
 jobs:
   build-react-linux:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
     if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
     steps:
-      - name: 'Checkout repo' 
+      - name: "Checkout repo"
         uses: actions/checkout@v2
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
-        with: 
-          dotnet-version: '5.x'
+        with:
+          dotnet-version: "5.x"
       - name: Build TbsCore
         run: dotnet build TbsCore/TbsCore.csproj --configuration Release
       - name: Publish TbsReact
         run: dotnet publish TbsReact/TbsReact.csproj /p:PublishProfile=TbsReact/Properties/PublishProfiles/Linux.pubxml
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-TbsReact-Test
-          restore-keys: |
-            ${{ runner.os }}-buildx-TbsReact
-      - name: Login to Docker Hub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./TbsReact
-          file: ./TbsReact/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tbsreact:build
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-  create-linux-folder:
-    runs-on: ubuntu-latest
-    needs: build-react-linux
-    if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
-    steps:    
-      - name: 'Checkout repo' 
-        uses: actions/checkout@v2
-      - name: Create folder
-        run: mkdir TbsReact-build      
-      - name: Copy file
-        run: |
-          cp TbsReact/docker-compose.yml TbsReact-build
-          cp TbsReact/install_docker.sh TbsReact-build
-          cp TbsReact/start_bot.sh TbsReact-build
-      - name: Create .env
-        run: |
-          cd TbsReact-build
-          touch .env
-          echo "# Don't change TAG variable if you don't know what you are doing" >> .env
-          echo "TAG=build" >> .env
-          echo "WEB_PORT=5000" >> .env
-          echo "VNC_PASS=1975" >> .env
-          echo "VNC_PORT=5009" >> .env          
-
+      - name: Rename folder
+        run: mv TbsReact/bin/Debug/net5.0/linux-x64/publish/ TbsReact/bin/Debug/net5.0/linux-x64/TbsReact-build/
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
           name: TbsReact-Linux-Build
-          path: TbsReact-build
+          path: TbsReact/bin/Debug/net5.0/linux-x64/TbsReact-build/
           if-no-files-found: error
-  build-react-window:
-    runs-on: ubuntu-latest    
+
+  build-react-mac:
+    runs-on: ubuntu-latest
     if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
     steps:
-      - name: 'Checkout repo' 
+      - name: "Checkout repo"
         uses: actions/checkout@v2
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
-        with: 
-          dotnet-version: '5.x'
+        with:
+          dotnet-version: "5.x"
+      - name: Build TbsCore
+        run: dotnet build TbsCore/TbsCore.csproj --configuration Release
+      - name: Publish TbsReact
+        run: dotnet publish TbsReact/TbsReact.csproj /p:PublishProfile=TbsReact/Properties/PublishProfiles/Mac.pubxml
+      - name: Rename folder
+        run: mv TbsReact/bin/Debug/net5.0/osx-x64/publish/ TbsReact/bin/Debug/net5.0/osx-x64/TbsReact-build/
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: TbsReact-Mac-Build
+          path: TbsReact/bin/Debug/net5.0/osx-x64/TbsReact-build/
+          if-no-files-found: error
+
+  build-react-window:
+    runs-on: ubuntu-latest
+    if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsReact') }}
+    steps:
+      - name: "Checkout repo"
+        uses: actions/checkout@v2
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "5.x"
       - name: Build TbsCore
         run: dotnet build TbsCore/TbsCore.csproj --configuration Release
       - name: Publish TbsReact
@@ -99,10 +77,10 @@ jobs:
     if: ${{ contains( github.event.pull_request.labels.*.name, 'TbsWinform') }}
     steps:
       - name: setup-msbuild
-        uses: microsoft/setup-msbuild@v1     
+        uses: microsoft/setup-msbuild@v1
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v1.0.5
-      - name: 'Checkout repo' 
+      - name: "Checkout repo"
         uses: actions/checkout@v2
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
@@ -110,13 +88,13 @@ jobs:
         uses: actions/cache@v2
         with:
           path: |
-              packages
-              TbsCore/obj/project.assets.json
-              TbsCore/TbsCore.csproj.nuget.g.targets
-              TbsCore/TbsCore.csproj.nuget.g.props.              
+            packages
+            TbsCore/obj/project.assets.json
+            TbsCore/TbsCore.csproj.nuget.g.targets
+            TbsCore/TbsCore.csproj.nuget.g.props.
           key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
           restore-keys: |
-              ${{ runner.os }}-nuget-
+            ${{ runner.os }}-nuget-
       - name: Restore Packages
         run: |
           nuget restore TbsCore/TbsCore.csproj -PackagesDirectory packages
@@ -132,9 +110,10 @@ jobs:
           if-no-files-found: error
   message:
     runs-on: ubuntu-latest
-    needs: [create-linux-folder, build-react-window, build-winform]
+    needs:
+      [build-react-linux, build-react-mac, build-react-window, build-winform]
     if: ${{ always() && (contains(needs.*.result, 'success') || (contains(needs.*.result, 'failure'))) }}
-    steps:      
+    steps:
       - name: Comment on PR when success
         uses: actions/github-script@0.3.0
         if: |
