@@ -4,11 +4,11 @@ import { Box } from "@mui/material";
 
 import style from "../styles/box";
 
-const ContentBox = ({ name }) => {
+const ContentBox = ({ children, name }) => {
 	return (
 		<>
 			<Box sx={style}>
-				<h1>[WIP] this is placeholder</h1>
+				{children}
 
 				{name}
 			</Box>
@@ -17,7 +17,8 @@ const ContentBox = ({ name }) => {
 };
 
 ContentBox.propTypes = {
-	name: PropTypes.string.isRequired,
+	children: PropTypes.any,
+	name: PropTypes.string,
 };
 
 export default ContentBox;

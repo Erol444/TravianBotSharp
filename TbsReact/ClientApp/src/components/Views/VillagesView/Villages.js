@@ -5,7 +5,12 @@ import { Link, useRouteMatch, Switch, Route, Redirect } from "react-router-dom";
 
 import style from "../../../styles/box";
 import VillagesTable from "./VillagesTable";
-import ContentBox from "../../ContentBox";
+import Build from "./SubView/Build";
+import Market from "./SubView/Market";
+import Troops from "./SubView/Troops";
+import Attack from "./SubView/Attack";
+import Farming from "./SubView/Farming";
+import Info from "./SubView/Info";
 
 const Villages = () => {
 	const { path, url } = useRouteMatch();
@@ -76,22 +81,22 @@ const Villages = () => {
 									<Redirect to={`${path}/build`} />
 								</Route>
 								<Route path={`${path}/build`}>
-									<ContentBox name="build" />
+									<Build />
 								</Route>
 								<Route path={`${path}/market`}>
-									<ContentBox name="market" />
+									<Market />
 								</Route>
 								<Route path={`${path}/troops`}>
-									<ContentBox name="troops" />
+									<Troops />
 								</Route>
 								<Route path={`${path}/attack`}>
-									<ContentBox name="attack" />
+									<Attack />
 								</Route>
 								<Route path={`${path}/farming`}>
-									<ContentBox name="farming" />
+									<Farming />
 								</Route>
 								<Route path={`${path}/info`}>
-									<ContentBox name="info" />
+									<Info />
 								</Route>
 							</Switch>
 						</div>
