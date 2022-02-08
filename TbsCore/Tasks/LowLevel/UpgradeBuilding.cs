@@ -51,50 +51,15 @@ namespace TbsCore.Tasks.LowLevel
                 return TaskRes.Executed;
             }
 
-            var url = $"{acc.AccInfo.ServerUrl}/build.php?id={urlId}";
-
             // Fast building for TTWars
             if (acc.AccInfo.ServerUrl.Contains("ttwars") &&
                 !constructNew &&
-                await TTWarsTryFastUpgrade(acc, url))
+                await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={urlId}"))
             {
                 return TaskRes.Executed;
             }
 
-            // Navigate to the dorf in which the building is, so bot is less suspicious
-            string dorfUrl = $"/dorf{((Task.BuildingId ?? default) < 19 ? 1 : 2)}.php"; // "dorf1" / "dorf2"
-            if (!acc.Wb.CurrentUrl.Contains(dorfUrl))
-            {
-                await acc.Wb.Navigate(acc.AccInfo.ServerUrl + dorfUrl);
-            }
-            else
-            {
-                acc.Wb.UpdateHtml();
-            }
-
-            // Append correct tab
-            if (!constructNew)
-            {
-                switch (this.Task.Building)
-                {
-                    case BuildingEnum.RallyPoint:
-                        url += "&tt=0";
-                        break;
-
-                    case BuildingEnum.Marketplace:
-                        url += "&t=0";
-                        break;
-
-                    case BuildingEnum.Residence:
-                    case BuildingEnum.Palace:
-                    case BuildingEnum.CommandCenter:
-                    case BuildingEnum.Treasury:
-                        url += "&s=0";
-                        break;
-                }
-            }
-
-            await acc.Wb.Navigate(url);
+            await NavigationHelper.EnterBuilding(acc, Vill, (int)Task.BuildingId);
 
             var constructContract = acc.Wb.Html.GetElementbyId($"contract_building{(int)Task.Building}");
             var upgradeContract = acc.Wb.Html.GetElementbyId("build");

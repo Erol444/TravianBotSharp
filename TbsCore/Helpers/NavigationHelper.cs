@@ -20,6 +20,7 @@ namespace TbsCore.Helpers
             var nav = acc.Wb.Html.GetElementbyId("navigation");
             if (nav == null) return false;
             await DriverHelper.ClickByAttributeValue(acc, "accesskey", ((int)button).ToString());
+            await TaskExecutor.PageLoaded(acc);
             return true;
         }
 
@@ -50,7 +51,30 @@ namespace TbsCore.Helpers
             {
                 if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
                     await MainNavigate(acc, MainNavigationButton.Buildings);
-                await DriverHelper.ClickByClassName(acc, $"aid{index}", qindex: 1);
+
+                string script = @"
+                function clickFirst(node)
+                {
+                    if (node.hasAttribute('href') && node.getAttribute('href'))
+                    {
+                        node.click();
+                        return true;
+                    }
+                    if (node.hasAttribute('onclick') && node.getAttribute('onclick'))
+                    {";
+                script += "url = node.getAttribute('onclick').split(\"'\")[1];";
+                script += @"
+                        window.location.href = url
+                    return true;
+                    }
+                    // node doesn't contain href/onlick. Check child nodes
+                    for (child of node.children)
+                    {
+                        if (clickFirst(child)) return true;
+                    }
+                }";
+                script += $"node = document.querySelectorAll('[data-aid=\"{index}\"]')[0]; clickFirst(node);";
+                await DriverHelper.ExecuteScript(acc, script);
             }
             await DriverHelper.WaitLoaded(acc);
         }
@@ -92,6 +116,9 @@ namespace TbsCore.Helpers
                 default: return "";
             }
         }
+        
+        private static string[] tabMapping = new string[] { "0", "2", "3", "4", "5" };
+        private static string TTWarsOverviewMapping(OverviewTab tab) => tabMapping[(int)tab];
 
         /// <summary>
         /// Enters a specific building.
@@ -125,6 +152,8 @@ namespace TbsCore.Helpers
             }
             return true;
         }
+        public static async Task<bool> EnterBuilding(Account acc, Village vill, int buildingId, int? tab = null, Coordinates coords = null) =>
+            await EnterBuilding(acc, vill.Build.Buildings.First(x => x.Id == buildingId), tab, coords);
 
         public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, int? tab = null, Coordinates coords = null)
         {
@@ -188,8 +217,12 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> ToOverview(Account acc, OverviewTab tab, TroopOverview subTab = TroopOverview.OwnTroops)
         {
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars)
+            {
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf3.php?s={TTWarsOverviewMapping(tab)}&su={(int)subTab}");
+                return true;
+            }
             string query = "overview";
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars) query += "White";
             await DriverHelper.ClickByClassName(acc, query);
 
             var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);

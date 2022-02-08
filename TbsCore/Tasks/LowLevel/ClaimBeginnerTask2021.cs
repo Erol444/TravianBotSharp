@@ -20,7 +20,7 @@ namespace TbsCore.Tasks.LowLevel
                 .Any(x => x.HasClass("newQuestSpeechBubble")) ?? false)
             {
                 // Claim account-wide rewards
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/tasks?t=2");
+                await DriverHelper.ClickByClassName(acc, "tabItem", 1);
                 await ClaimRewards(acc);
             }
 
@@ -32,9 +32,11 @@ namespace TbsCore.Tasks.LowLevel
         private async Task ClaimRewards(Account acc)
         {
             await Task.Delay(AccountHelper.Delay(acc));
+            DateTime time = DateTime.Now;
             do
             {
                 await DriverHelper.ClickByClassName(acc, "collect", log: false);
+                if (TimeSpan.FromSeconds(30) < DateTime.Now - time) return;
             }
             while (acc.Wb.Html.DocumentNode.Descendants("button").Any(x => x.HasClass("collect")));
         }
