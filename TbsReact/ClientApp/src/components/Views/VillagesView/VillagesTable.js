@@ -8,27 +8,35 @@ import {
 	TableRow,
 	Box,
 } from "@mui/material";
-// import VillageRows from "./VillageRows";
-import { useDispatch /* , useSelector */ } from "react-redux";
+
+import { getVillages } from "../../../api/Village";
+
+import VillageRows from "./VillageRows";
+
+import { useDispatch, useSelector } from "react-redux";
+import { fetchVillageByID } from "../../../slices/village";
 
 import style from "../../../styles/box";
 
 const VillagesTable = () => {
-	// const account = useSelector((state) => state.account.info);
-	// const [villages, setVillages] = useState([]);
-	const [selected /*, setSelected */] = useState(-1);
+	const account = useSelector((state) => state.account.info);
+	const village = useSelector((state) => state.village.info);
+	const [villages, setVillages] = useState([]);
+	const [selected, setSelected] = useState(village.id);
 	const dispatch = useDispatch();
 
-	/* const onClick = (vill) => {
-        setSelected(vill.id);
-    }; */
+	const onClick = (vill) => {
+		setSelected(vill.id);
+	};
 
 	useEffect(() => {
-		// getAccounts().then((data) => setAccounts(data));
-		if (selected !== -1) {
-			// dispatch(fetchAccountByID(selected));
+		if (account.id !== -1) {
+			getVillages(account.id).then((data) => setVillages(data));
+			if (selected !== -1) {
+				dispatch(fetchVillageByID(selected));
+			}
 		}
-	}, [selected, dispatch]);
+	}, [selected, dispatch, account.id]);
 
 	return (
 		<>
@@ -42,11 +50,11 @@ const VillagesTable = () => {
 							</TableRow>
 						</TableHead>
 						<TableBody>
-							{/* <AccountRow
-                                villages={villages}
-                                handler={onClick}
-                                selected={selected}
-                            /> */}
+							<VillageRows
+								villages={villages}
+								handler={onClick}
+								selected={selected}
+							/>
 						</TableBody>
 					</Table>
 				</TableContainer>

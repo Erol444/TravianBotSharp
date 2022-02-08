@@ -6,7 +6,6 @@ export const fetchAccountByID = createAsyncThunk(
 	"account/fetcInfohById",
 	async (id, thunkAPI) => {
 		const data = await getAccount(id);
-		console.log("i fetched");
 		return data;
 	}
 );
