@@ -18,9 +18,21 @@ const LeftHeader = () => {
 						component={Link}
 					/>
 					<Tab
+						label="Hero"
+						value="/hero"
+						to="/hero"
+						component={Link}
+					/>
+					<Tab
 						label="Villages"
 						value="/villages"
 						to="/villages"
+						component={Link}
+					/>
+					<Tab
+						label="New villages"
+						value="/newvills"
+						to="/newvills"
 						component={Link}
 					/>
 					<Tab
