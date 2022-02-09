@@ -243,11 +243,11 @@ namespace TbsCore.Helpers
 
             foreach (var taskDone in tasksDone)
             {
-                var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == taskDone.Location);
-                if (building == null) building = vill.Build.Buildings.FirstOrDefault(x => x.Type == taskDone.Building);
-                if (building == null || building.Type != taskDone.Building) continue;
+                //var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == taskDone.Location);
+                //if (building == null) building = vill.Build.Buildings.FirstOrDefault(x => x.Type == taskDone.Building);
+                //if (building == null || building.Type != taskDone.Building) continue;
 
-                if (building.Level < taskDone.Level) building.Level = taskDone.Level;
+                //if (building.Level < taskDone.Level) building.Level = taskDone.Level;
                 vill.Build.CurrentlyBuilding.Remove(taskDone);
             }
             return true;
@@ -294,11 +294,11 @@ namespace TbsCore.Helpers
                     if (task.Level <= building.Level) return true;
 
                     // If the building is being upgraded to the desired level, task is complete
-                    var cb = vill.Build
-                        .CurrentlyBuilding
-                        .OrderByDescending(x => x.Level)
-                        .FirstOrDefault(x => x.Location == task.BuildingId);
-                    if (cb != null && task.Level <= cb.Level) return true;
+                    //var cb = vill.Build
+                    //    .CurrentlyBuilding
+                    //    .OrderByDescending(x => x.Level)
+                    //    .FirstOrDefault(x => x.Location == task.BuildingId);
+                    //if (cb != null && task.Level <= cb.Level) return true;
                     break;
 
                 case BuildingType.AutoUpgradeResFields:
@@ -440,10 +440,14 @@ namespace TbsCore.Helpers
                 }, bottom);
             }
 
+            // Current lvl in bot's data
             var currentLvl = (int)upgrade.Level;
 
             RemoveFinishedCB(vill);
-            currentLvl += vill.Build.CurrentlyBuilding.Count(x => x.Building == building);
+
+            // Current lvl in current building list
+            var currentBuilding = vill.Build.CurrentlyBuilding.FirstOrDefault(x => x.Building == building);
+            if (currentBuilding != null) currentLvl = currentBuilding.Level;
 
             if (BuildingsData.MaxBuildingLevel(acc, building) == currentLvl)
             {
