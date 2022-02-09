@@ -232,26 +232,26 @@ namespace TbsCore.Helpers
         /// </summary>
         /// <param name="vill"></param>
         /// <returns>Whether there were some tasks removed</returns>
-        public static bool RemoveFinishedCB(Village vill)
-        {
-            var tasksDone = vill.Build
-                .CurrentlyBuilding
-                .Where(x => x.Duration < DateTime.Now)
-                .ToList();
+        //public static bool RemoveFinishedCB(Village vill)
+        //{
+        //    var tasksDone = vill.Build
+        //        .CurrentlyBuilding
+        //        .Where(x => x.Duration < DateTime.Now)
+        //        .ToList();
 
-            if (tasksDone.Count == 0) return false;
+        //    if (tasksDone.Count == 0) return false;
 
-            foreach (var taskDone in tasksDone)
-            {
-                var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == taskDone.Location);
-                if (building == null) building = vill.Build.Buildings.FirstOrDefault(x => x.Type == taskDone.Building);
-                if (building == null || building.Type != taskDone.Building) continue;
+        //    foreach (var taskDone in tasksDone)
+        //    {
+        //        var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == taskDone.Location);
+        //        if (building == null) building = vill.Build.Buildings.FirstOrDefault(x => x.Type == taskDone.Building);
+        //        if (building == null || building.Type != taskDone.Building) continue;
 
-                if (building.Level < taskDone.Level) building.Level = taskDone.Level;
-                vill.Build.CurrentlyBuilding.Remove(taskDone);
-            }
-            return true;
-        }
+        //        if (building.Level < taskDone.Level) building.Level = taskDone.Level;
+        //        vill.Build.CurrentlyBuilding.Remove(taskDone);
+        //    }
+        //    return true;
+        //}
 
         /// <summary>
         /// Used by building task to get the url for navigation
@@ -294,11 +294,11 @@ namespace TbsCore.Helpers
                     if (task.Level <= building.Level) return true;
 
                     // If the building is being upgraded to the desired level, task is complete
-                    var cb = vill.Build
-                        .CurrentlyBuilding
-                        .OrderByDescending(x => x.Level)
-                        .FirstOrDefault(x => x.Location == task.BuildingId);
-                    if (cb != null && task.Level <= cb.Level) return true;
+                    //var cb = vill.Build
+                    //    .CurrentlyBuilding
+                    //    .OrderByDescending(x => x.Level)
+                    //    .FirstOrDefault(x => x.Location == task.BuildingId);
+                    //if (cb != null && task.Level <= cb.Level) return true;
                     break;
 
                 case BuildingType.AutoUpgradeResFields:
@@ -442,7 +442,7 @@ namespace TbsCore.Helpers
 
             var currentLvl = (int)upgrade.Level;
 
-            RemoveFinishedCB(vill);
+            // RemoveFinishedCB(vill);
             currentLvl += vill.Build.CurrentlyBuilding.Count(x => x.Building == building);
 
             if (BuildingsData.MaxBuildingLevel(acc, building) == currentLvl)
@@ -479,7 +479,7 @@ namespace TbsCore.Helpers
         /// <returns>Whether we have all prerequisite buildings</returns>
         public static bool AddBuildingPrerequisites(Account acc, Village vill, BuildingEnum building, bool bottom = true)
         {
-            RemoveFinishedCB(vill);
+            // RemoveFinishedCB(vill);
 
             (var tribe, var prereqs) = BuildingsData.GetBuildingPrerequisites(building);
             if (acc.AccInfo.Tribe != tribe && tribe != TribeEnum.Any) return false;

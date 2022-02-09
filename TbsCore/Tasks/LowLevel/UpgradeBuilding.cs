@@ -150,12 +150,12 @@ namespace TbsCore.Tasks.LowLevel
             var building = Vill.Build.Buildings.FirstOrDefault(x => x.Id == this.Task.BuildingId);
             lvl = building.Level;
             // Check if building is under construction
-            if (building.UnderConstruction)
-            {
-                // Check currently building
-                var cb = Vill.Build.CurrentlyBuilding.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
-                if (cb != null && lvl < cb.Level) lvl = cb.Level;
-            }
+            //if (building.UnderConstruction)
+            //{
+            //    // Check currently building
+            //    var cb = Vill.Build.CurrentlyBuilding.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
+            //    if (cb != null && lvl < cb.Level) lvl = cb.Level;
+            //}
 
             if (Task.Level <= lvl)
             {
@@ -248,11 +248,11 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // Check if the task is completed
-            var taskCb = Vill.Build
-                .CurrentlyBuilding
-                .OrderByDescending(x => x.Level)
-                .FirstOrDefault(x => x.Location == this.Task.BuildingId);
-            if (taskCb != null && this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
+            //var taskCb = Vill.Build
+            //    .CurrentlyBuilding
+            //    .OrderByDescending(x => x.Level)
+            //    .FirstOrDefault(x => x.Location == this.Task.BuildingId);
+            //if (taskCb != null && this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
         }
 
         /// <summary>
@@ -347,8 +347,6 @@ namespace TbsCore.Tasks.LowLevel
         /// <param name="acc">Account</param>
         public void ConfigNextExecute(Account acc, bool restart = true)
         {
-            RemoveFinishedCB(Vill);
-
             if (Vill.Build.AutoBuildResourceBonusBuildings) CheckResourceBonus(acc, Vill, restart);
 
             // Checks if we have enough FreeCrop (above 0)

@@ -82,7 +82,6 @@ namespace TbsCore.Parsers
                     Building = name,
                     Duration = DateTime.Now.Add(duration),
                     Level = (byte)Parser.RemoveNonNumeric(level),
-                    Location = -1,
                 });
             }
             return ret;
