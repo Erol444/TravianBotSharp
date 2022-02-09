@@ -347,6 +347,8 @@ namespace TbsCore.Tasks.LowLevel
         /// <param name="acc">Account</param>
         public void ConfigNextExecute(Account acc, bool restart = true)
         {
+            RemoveFinishedCB(Vill);
+
             if (Vill.Build.AutoBuildResourceBonusBuildings) CheckResourceBonus(acc, Vill, restart);
 
             // Checks if we have enough FreeCrop (above 0)
