@@ -508,9 +508,9 @@
 
         public enum BuildingCategoryEnum
         {
-            Infrastructure = 1,
-            Military = 2,
-            Resources = 3
+            Infrastructure = 0,
+            Military = 1,
+            Resources = 2,
         }
 
         public enum BuildingType

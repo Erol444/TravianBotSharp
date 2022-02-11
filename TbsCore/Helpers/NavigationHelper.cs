@@ -5,6 +5,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
+using TbsCore.TravianData;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Helpers
@@ -78,7 +79,14 @@ namespace TbsCore.Helpers
             }
             await DriverHelper.WaitLoaded(acc);
         }
-            
+
+        internal static async Task ToConstructionTab(Account acc, BuildingEnum building)
+        {
+            BuildingCategoryEnum tab = BuildingsData.GetBuildingsCategory(building);
+            if ((int)tab == 0) return;
+            await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+        }
+
 
         /// <summary>
         /// TTWars convert tab into url query
