@@ -50,7 +50,7 @@ namespace TbsCore.Helpers
             task = vill.Build.Tasks.First();
 
             //If this task is already complete, remove it and repeat the finding process
-            if (BuildingHelper.IsTaskCompleted(vill, acc, task))
+            if (BuildingHelper.IsTaskCompleted(vill, task))
             {
                 vill.Build.Tasks.Remove(task); //task has been completed
                 return NextBuildingTask(acc, vill);

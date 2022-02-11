@@ -60,6 +60,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             await NavigationHelper.EnterBuilding(acc, Vill, (int)Task.BuildingId);
+            await NavigationHelper.ToConstructionTab(acc, Task.Building);
 
             var constructContract = acc.Wb.Html.GetElementbyId($"contract_building{(int)Task.Building}");
             var upgradeContract = acc.Wb.Html.GetElementbyId("build");
@@ -161,7 +162,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 acc.Logger.Warning($"{this.Task.Building} is on level {lvl}, on/above desired {Task.Level}. Removing it from queue.");
                 RemoveCurrentTask();
-                RemoveCompletedTasks(this.Vill, acc);
+                RemoveCompletedTasks(this.Vill);
                 return TaskRes.Executed;
             }
 
@@ -196,7 +197,7 @@ namespace TbsCore.Tasks.LowLevel
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
 
-            if (IsTaskCompleted(Vill, acc, this.Task))
+            if (IsTaskCompleted(Vill, this.Task))
             {
                 acc.Logger.Warning($"Building {this.Task.Building} in village {this.Vill.Name} is already on desired level. Will be removed from the queue.");
                 RemoveCurrentTask();

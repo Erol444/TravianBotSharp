@@ -168,7 +168,7 @@ namespace TbsCore.Helpers
 
         public static void ReStartBuilding(Account acc, Village vill)
         {
-            RemoveCompletedTasks(vill, acc);
+            RemoveCompletedTasks(vill);
             //remove ongoing building task for this village
             acc.Tasks.Remove(typeof(UpgradeBuilding), vill);
 
@@ -198,12 +198,12 @@ namespace TbsCore.Helpers
                 //check cranny/warehouse/grannary/trapper/GG/GW
                 switch (building)
                 {
-                    case BuildingEnum.Warehouse: return BuildingIsOnLevel(BuildingEnum.Warehouse, 20, vill);
-                    case BuildingEnum.Granary: return BuildingIsOnLevel(BuildingEnum.Granary, 20, vill);
-                    case BuildingEnum.GreatWarehouse: return BuildingIsOnLevel(BuildingEnum.GreatWarehouse, 20, vill);
-                    case BuildingEnum.GreatGranary: return BuildingIsOnLevel(BuildingEnum.GreatGranary, 20, vill);
-                    case BuildingEnum.Trapper: return BuildingIsOnLevel(BuildingEnum.Trapper, 20, vill);
-                    case BuildingEnum.Cranny: return BuildingIsOnLevel(BuildingEnum.Cranny, 10, vill);
+                    case BuildingEnum.Warehouse: return BuildingAboveLevel(BuildingEnum.Warehouse, 20, vill);
+                    case BuildingEnum.Granary: return BuildingAboveLevel(BuildingEnum.Granary, 20, vill);
+                    case BuildingEnum.GreatWarehouse: return BuildingAboveLevel(BuildingEnum.GreatWarehouse, 20, vill);
+                    case BuildingEnum.GreatGranary: return BuildingAboveLevel(BuildingEnum.GreatGranary, 20, vill);
+                    case BuildingEnum.Trapper: return BuildingAboveLevel(BuildingEnum.Trapper, 20, vill);
+                    case BuildingEnum.Cranny: return BuildingAboveLevel(BuildingEnum.Cranny, 10, vill);
                     default: return false;
                 }
             }
@@ -220,11 +220,13 @@ namespace TbsCore.Helpers
             return true;
         }
 
-        private static bool BuildingIsOnLevel(BuildingEnum building, int lvl, Village vill)
+        /// <summary>
+        /// Whether there's a building above specific level or there's a task for this building
+        /// </summary>
+        public static bool BuildingAboveLevel(BuildingEnum building, int lvl, Village vill)
         {
-            //if there already is a building on specific level or there is a task for this building
-            // TODO: change FristOrDefault to Any
-            return (vill.Build.Buildings.FirstOrDefault(x => x.Level == lvl && x.Type == building) != null || vill.Build.Tasks.FirstOrDefault(x => x.Level == lvl && x.Building == building) != null);
+            return (vill.Build.Buildings.Any(x => x.Type == building && lvl <= x.Level) ||
+                    vill.Build.Tasks.Any(x => x.Building == building && lvl <= x.Level));
         }
 
         /// <summary>
@@ -254,7 +256,7 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Used by building task to get the url for navigation
+        /// Used by building task to get the url for navigation (for TTWars only)
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="task">BotTask</param>
@@ -272,7 +274,7 @@ namespace TbsCore.Helpers
             return (null, true);
         }
 
-        public static bool IsTaskCompleted(Village vill, Account acc, BuildingTask task)
+        public static bool IsTaskCompleted(Village vill, BuildingTask task)
         {
             if (vill == null) return true;
             var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId);
@@ -336,7 +338,7 @@ namespace TbsCore.Helpers
                 }
                 else // there's already a building in this spot, construct a building elsewhere
                 {
-                    if (!BuildingHelper.FindBuildingId(vill, task))
+                    if (!FindBuildingId(vill, task))
                     {
                         return (null, false);
                     }
@@ -548,62 +550,38 @@ namespace TbsCore.Helpers
         /// </summary>
         /// <param name="vill">Village</param>
         /// <param name="acc">Account</param>
-        public static void RemoveCompletedTasks(Village vill, Account acc) =>
-            vill.Build.Tasks.RemoveAll(task => IsTaskCompleted(vill, acc, task));
+        public static void RemoveCompletedTasks(Village vill) =>
+            vill.Build.Tasks.RemoveAll(task => IsTaskCompleted(vill, task));
 
-        /// <summary>
-        /// When you already build one warehouse to lv 1, you want import template but its warehouse in another poistion
-        /// This will fix it to current
-        /// </summary>
-        /// <param name="vill"></param>
-        /// <param name="acc"></param>
-        public static void FixPositionBuilding(Village vill, Account acc)
-        {
-        }
-
+        
         #region Functions for auto-building resource fields
 
         public static Building FindLowestLevelBuilding(List<Building> buildings)
         {
-            // TODO: test after implementation
-            //return buildings
-            //        .OrderBy(x => x.Level + (x.UnderConstruction ? 1 : 0))
-            //        .FirstOrDefault();
-
-            if (buildings.Count == 0) return null;
-            int lowestLvl = 100;
-            Building lowestBuilding = new Building();
-            for (int i = 0; i < buildings.Count; i++)
-            {
-                var buildingLevel = buildings[i].Level;
-                if (buildings[i].UnderConstruction) buildingLevel++;
-                if (lowestLvl > buildingLevel)
-                {
-                    lowestLvl = buildingLevel;
-                    lowestBuilding = buildings[i];
-                }
-            }
-            return lowestBuilding;
+            return buildings
+                .OrderBy(x => x.Level + (x.UnderConstruction ? 1 : 0))
+                .FirstOrDefault();
         }
 
-        private static Building GetLowestProduction(List<Building> buildings, Village vill)
+        public static Building GetLowestProduction(List<Building> buildings, Village vill)
         {
-            //get distinct field types
+            // Get distinct field types
             var distinct = buildings.Select(x => x.Type).Distinct().ToList();
-            long lowestProd = long.MaxValue;
-            BuildingEnum toUpgrade = BuildingEnum.Cropland;
 
-            foreach (var distinctType in distinct)
+            var prodArr = vill.Res.Production.ToArray();
+            var dict = new Dictionary<BuildingEnum, long>();
+            for(int i=0; i<4; i++)
             {
-                if (distinctType == BuildingEnum.Woodcutter && vill.Res.Production.Wood < lowestProd) { lowestProd = vill.Res.Production.Wood; toUpgrade = BuildingEnum.Woodcutter; }
-                if (distinctType == BuildingEnum.ClayPit && vill.Res.Production.Clay < lowestProd) { lowestProd = vill.Res.Production.Clay; toUpgrade = BuildingEnum.ClayPit; }
-                if (distinctType == BuildingEnum.IronMine && vill.Res.Production.Iron < lowestProd) { lowestProd = vill.Res.Production.Iron; toUpgrade = BuildingEnum.IronMine; }
-                if (distinctType == BuildingEnum.Cropland && vill.Res.Production.Crop < lowestProd) { lowestProd = vill.Res.Production.Crop; toUpgrade = BuildingEnum.Cropland; }
+                var resField = (BuildingEnum)i + 1;
+                if (!distinct.Any(x => x == resField)) continue;
+                dict.Add(resField, prodArr[i]);
             }
+
+            var toUpgrade = dict.First(x => x.Value == dict.Min(y => y.Value)).Key;
             return FindLowestLevelBuilding(buildings.Where(x => x.Type == toUpgrade).ToList());
         }
 
-        private static Building GetLowestRes(Account acc, Village vill, List<Building> buildings)
+        public static Building GetLowestRes(Account acc, Village vill, List<Building> buildings)
         {
             //get distinct field types
             var distinct = buildings.Select(x => x.Type).Distinct().ToList();

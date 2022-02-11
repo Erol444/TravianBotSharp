@@ -347,7 +347,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
             DefaultConfigurations.SupplyVillagePlan(acc, vill);
-            BuildingHelper.RemoveCompletedTasks(vill, acc);
+            BuildingHelper.RemoveCompletedTasks(vill);
             UpdateUc();
         }
 
@@ -356,7 +356,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
             DefaultConfigurations.OffVillagePlan(acc, vill);
-            BuildingHelper.RemoveCompletedTasks(vill, acc);
+            BuildingHelper.RemoveCompletedTasks(vill);
             UpdateUc();
         }
 
@@ -365,7 +365,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
             DefaultConfigurations.DeffVillagePlan(acc, vill);
-            BuildingHelper.RemoveCompletedTasks(vill, acc);
+            BuildingHelper.RemoveCompletedTasks(vill);
             UpdateUc();
         }
 

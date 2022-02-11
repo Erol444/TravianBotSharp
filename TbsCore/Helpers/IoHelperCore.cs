@@ -62,7 +62,7 @@ namespace TbsCore.Helpers
             {
                 BuildingHelper.AddBuildingTask(acc, vill, task);
             }
-            BuildingHelper.RemoveCompletedTasks(vill, acc);
+            BuildingHelper.RemoveCompletedTasks(vill);
         }
 
         private static List<BuildingTask> DecodeTrbc(TbRoot root)
