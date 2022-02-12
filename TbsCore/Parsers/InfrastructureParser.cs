@@ -73,9 +73,13 @@ namespace TbsCore.Parsers
             {
                 var duration = TimeParser.ParseTimer(row);
                 var level = row.Descendants("span").FirstOrDefault(x => x.HasClass("lvl")).InnerText;
+                var strName = row.Descendants("div").FirstOrDefault(x => x.HasClass("name")).ChildNodes[0].InnerText.Trim(new[] { '\t', '\n', '\r', ' ' });
+                strName = string.Join("", strName.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries));
+                Enum.TryParse(strName, out Classificator.BuildingEnum name);
 
                 ret.Add(new BuildingCurrently()
                 {
+                    Building = name,
                     Duration = DateTime.Now.Add(duration),
                     Level = (byte)Parser.RemoveNonNumeric(level),
                 });
