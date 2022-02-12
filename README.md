@@ -3,7 +3,7 @@
 <a href="https://discord.gg/mBa4f2K"><img src="https://discordapp.com/api/guilds/740829801446637601/widget.png?style=banner2" width="30%"></a>
 
 ### About
-I have worked on this bot for over 2 years, ~15k LoC. It has been since completely ported to the newest version of Travian T4.5. Bot is under active development (at least until summer 2021). Instructions are on the Discord channel. If you have any question/recommendation, feel free to contact me (on Discord).
+I have worked on this bot for over 3 years, ~15k LoC. It has been since completely ported to the newest version of Travian T4.5. Bot is under active development. Instructions are on the Discord channel. If you have any question/recommendation, feel free to contact me (on Discord).
 
 ## Features
 #### - Auto-Change proxy
