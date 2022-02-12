@@ -17,7 +17,7 @@ const NavMenu = () => {
 							component="div"
 							sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
 						>
-							TbsReact
+							TravianBotSharp
 						</Typography>
 						<LeftHeader />
 						<RightHeader />

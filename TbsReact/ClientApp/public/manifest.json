@@ -1,6 +1,6 @@
 {
-	"short_name": "TBSReact",
-	"name": "TBSReact",
+	"short_name": "TBS",
+	"name": "TravianBotSharp",
 	"icons": [
 		{
 			"src": "favicon.ico",
