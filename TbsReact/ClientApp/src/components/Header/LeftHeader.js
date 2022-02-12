@@ -30,6 +30,18 @@ const LeftHeader = () => {
 						component={Link}
 					/>
 					<Tab
+						label="Overview"
+						value="/overview"
+						to="/overview"
+						component={Link}
+					/>
+					<Tab
+						label="Farming"
+						value="/farming"
+						to="/farming"
+						component={Link}
+					/>
+					<Tab
 						label="New villages"
 						value="/newvills"
 						to="/newvills"
