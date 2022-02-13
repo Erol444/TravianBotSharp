@@ -4,7 +4,7 @@
 
 ## About
 
-I have worked on this bot for over 2 years, ~15k LoC. It has been since completely ported to the newest version of Travian T4.5. Bot is under active development (at least until summer 2021). Instructions are on the Discord channel. If you have any question/recommendation, feel free to contact me (on Discord).
+I have worked on this bot for over 3 years, ~15k LoC. It has been since completely ported to the newest version of Travian T4.5. Bot is under active development. Instructions are on the Discord channel. If you have any question/recommendation, feel free to contact me (on Discord).
 
 ---
 
