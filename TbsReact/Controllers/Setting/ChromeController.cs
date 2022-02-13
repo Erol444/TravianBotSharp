@@ -1,19 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using TbsCore.Helpers;
-using TbsReact.Models;
+using TbsReact.Models.Setting;
 using TbsReact.Singleton;
 
-namespace TbsReact.Controllers
+namespace TbsReact.Controllers.Setting
 {
     [ApiController]
-    [Route("accounts/{indexAcc:int}/settings/chrome")]
-    public class ChromeSettingController : ControllerBase
+    [Route("settings/chrome/{indexAcc:int}")]
+    public class ChromeController : ControllerBase
     {
         [HttpGet]
-        public ActionResult<ChromeSetting> GetSetting(int indexAcc)
+        public ActionResult<Chrome> GetSetting(int indexAcc)
         {
             var account = AccountData.GetAccount(indexAcc);
 
@@ -23,32 +19,32 @@ namespace TbsReact.Controllers
             }
             var acc = AccountManager.GetAccount(account);
 
-            var setting = new ChromeSetting
+            var setting = new Chrome
             {
-                SleepTime = new Delay
+                SleepTime = new Range
                 {
                     Min = acc.Settings.Time.MinSleep,
                     Max = acc.Settings.Time.MaxSleep,
                 },
-                WorkTime = new Delay
+                WorkTime = new Range
                 {
                     Min = acc.Settings.Time.MinWork,
                     Max = acc.Settings.Time.MaxWork,
                 },
-                Click = new Delay
+                Click = new Range
                 {
                     Min = acc.Settings.DelayClickingMin,
                     Max = acc.Settings.DelayClickingMax,
                 },
                 DisableImages = acc.Settings.DisableImages,
-                AutoClose = acc.Settings.AutoCloseDriver
+                AutoClose = acc.Settings.AutoCloseDriver,
             };
 
             return Ok(setting);
         }
 
-        [HttpPatch]
-        public ActionResult Logout(int indexAcc, [FromBody] ChromeSetting setting)
+        [HttpPut]
+        public ActionResult PutSetting(int indexAcc, [FromBody] Chrome setting)
         {
             var account = AccountData.GetAccount(indexAcc);
 
