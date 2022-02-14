@@ -9,14 +9,9 @@ import {
 	Redirect,
 } from "react-router-dom";
 
-// info view
-import Info from "./Views/Info";
-
-// debug view
+import InfoView from "./Views/InfoView/Info";
 import Debug from "./Views/DebugView/Debug";
-
 import Setting from "./Views/SettingsView/Setting";
-
 import Villages from "./Views/VillagesView/Villages";
 import Hero from "./Views/HeroView/Hero";
 import NewVillages from "./Views/NewVillageView/NewVilalge";
@@ -51,7 +46,7 @@ const Layout = () => {
 						<FarmingView />
 					</Route>
 					<Route path={"/info"}>
-						<Info />
+						<InfoView />
 					</Route>
 
 					<Route path="*">

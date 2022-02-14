@@ -1,6 +1,6 @@
 import React from "react";
 import { Grid, Typography } from "@mui/material";
-import ContentBox from "../ContentBox";
+import ContentBox from "../../ContentBox";
 
 const Info = () => {
 	return (
