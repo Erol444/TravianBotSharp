@@ -107,6 +107,9 @@ namespace TbsCore.Models.AccModels
             options.AddArguments("--disable-logging");
             options.AddArguments("--disable-infobars");
 
+            //options.AddAdditionalCapability("deviceOrientation", "landscape", true);
+            //options.AddAdditionalCapability("resolution", "1280x720", true);
+
             // Mute audio because of the Ads
             options.AddArguments("--mute-audio");
 

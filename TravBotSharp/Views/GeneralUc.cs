@@ -112,7 +112,7 @@ namespace TravBotSharp.Views
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.FarmVillagePlan(acc, vill);
-                BuildingHelper.RemoveCompletedTasks(vill, acc);
+                BuildingHelper.RemoveCompletedTasks(vill);
             }
         }
 
@@ -122,7 +122,7 @@ namespace TravBotSharp.Views
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.SupplyVillagePlan(acc, vill);
-                BuildingHelper.RemoveCompletedTasks(vill, acc);
+                BuildingHelper.RemoveCompletedTasks(vill);
             }
         }
 
@@ -132,7 +132,7 @@ namespace TravBotSharp.Views
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.DeffVillagePlan(acc, vill);
-                BuildingHelper.RemoveCompletedTasks(vill, acc);
+                BuildingHelper.RemoveCompletedTasks(vill);
             }
         }
 
@@ -142,7 +142,7 @@ namespace TravBotSharp.Views
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.OffVillagePlan(acc, vill);
-                BuildingHelper.RemoveCompletedTasks(vill, acc);
+                BuildingHelper.RemoveCompletedTasks(vill);
             }
         }
 

@@ -5,6 +5,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
+using TbsCore.TravianData;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Helpers
@@ -51,12 +52,41 @@ namespace TbsCore.Helpers
             {
                 if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
                     await MainNavigate(acc, MainNavigationButton.Buildings);
-                
-                await DriverHelper.ExecuteScript(acc, $"document.getElementsByClassName(\"aid{index}\")[0].children[0].click();");
+
+                string script = @"
+                function clickFirst(node)
+                {
+                    if (node.hasAttribute('href') && node.getAttribute('href'))
+                    {
+                        node.click();
+                        return true;
+                    }
+                    if (node.hasAttribute('onclick') && node.getAttribute('onclick'))
+                    {";
+                script += "url = node.getAttribute('onclick').split(\"'\")[1];";
+                script += @"
+                        window.location.href = url
+                    return true;
+                    }
+                    // node doesn't contain href/onlick. Check child nodes
+                    for (child of node.children)
+                    {
+                        if (clickFirst(child)) return true;
+                    }
+                }";
+                script += $"node = document.querySelectorAll('[data-aid=\"{index}\"]')[0]; clickFirst(node);";
+                await DriverHelper.ExecuteScript(acc, script);
             }
             await DriverHelper.WaitLoaded(acc);
         }
-            
+
+        internal static async Task ToConstructionTab(Account acc, BuildingEnum building)
+        {
+            BuildingCategoryEnum tab = BuildingsData.GetBuildingsCategory(building);
+            if ((int)tab == 0) return;
+            await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+        }
+
 
         /// <summary>
         /// TTWars convert tab into url query

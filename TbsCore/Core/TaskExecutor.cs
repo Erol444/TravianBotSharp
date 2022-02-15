@@ -232,19 +232,8 @@ namespace TbsCore.Helpers
             var cb = InfrastructureParser.CurrentlyBuilding(acc.Wb.Html, acc);
             if (cb == null) return; // Nothing is currently building
 
-            var bldJson = DriverHelper.GetJsObj<string>(acc, "JSON.stringify(bld);");
-            if (string.IsNullOrEmpty(bldJson)) return;
-            var bldJs = JsonConvert.DeserializeObject<List<Bld>>(bldJson);
-
-            // Combine data from two sources about currently building (JS object and HTML table)
-            // We get time duration and level from HTML
-            // and build location, level and building (type) from JSON
             for (int i = 0; i < cb.Count; i++)
             {
-                cb[i].Building = bldJs[i].Building;
-                cb[i].Location = bldJs[i].Location;
-                cb[i].Level = (byte)bldJs[i].Level;
-
                 vill.Build.CurrentlyBuilding.Add(cb[i]);
             }
         }

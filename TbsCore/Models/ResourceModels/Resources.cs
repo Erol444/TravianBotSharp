@@ -10,6 +10,13 @@
             Iron = res[2];
             Crop = res[3];
         }
+        public Resources(long wood, long clay, long iron, long crop)
+        {
+            Wood = wood;
+            Clay = clay;
+            Iron = iron;
+            Crop = crop;
+        }
 
         public long Wood { get; set; }
         public long Clay { get; set; }

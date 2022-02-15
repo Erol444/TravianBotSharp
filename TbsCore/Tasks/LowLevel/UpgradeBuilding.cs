@@ -60,6 +60,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             await NavigationHelper.EnterBuilding(acc, Vill, (int)Task.BuildingId);
+            await NavigationHelper.ToConstructionTab(acc, Task.Building);
 
             var constructContract = acc.Wb.Html.GetElementbyId($"contract_building{(int)Task.Building}");
             var upgradeContract = acc.Wb.Html.GetElementbyId("build");
@@ -150,18 +151,18 @@ namespace TbsCore.Tasks.LowLevel
             var building = Vill.Build.Buildings.FirstOrDefault(x => x.Id == this.Task.BuildingId);
             lvl = building.Level;
             // Check if building is under construction
-            if (building.UnderConstruction)
-            {
-                // Check currently building
-                var cb = Vill.Build.CurrentlyBuilding.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
-                if (cb != null && lvl < cb.Level) lvl = cb.Level;
-            }
+            //if (building.UnderConstruction)
+            //{
+            //    // Check currently building
+            //    var cb = Vill.Build.CurrentlyBuilding.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
+            //    if (cb != null && lvl < cb.Level) lvl = cb.Level;
+            //}
 
             if (Task.Level <= lvl)
             {
                 acc.Logger.Warning($"{this.Task.Building} is on level {lvl}, on/above desired {Task.Level}. Removing it from queue.");
                 RemoveCurrentTask();
-                RemoveCompletedTasks(this.Vill, acc);
+                RemoveCompletedTasks(this.Vill);
                 return TaskRes.Executed;
             }
 
@@ -196,7 +197,7 @@ namespace TbsCore.Tasks.LowLevel
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
 
-            if (IsTaskCompleted(Vill, acc, this.Task))
+            if (IsTaskCompleted(Vill, this.Task))
             {
                 acc.Logger.Warning($"Building {this.Task.Building} in village {this.Vill.Name} is already on desired level. Will be removed from the queue.");
                 RemoveCurrentTask();
@@ -248,11 +249,11 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // Check if the task is completed
-            var taskCb = Vill.Build
-                .CurrentlyBuilding
-                .OrderByDescending(x => x.Level)
-                .FirstOrDefault(x => x.Location == this.Task.BuildingId);
-            if (taskCb != null && this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
+            //var taskCb = Vill.Build
+            //    .CurrentlyBuilding
+            //    .OrderByDescending(x => x.Level)
+            //    .FirstOrDefault(x => x.Location == this.Task.BuildingId);
+            //if (taskCb != null && this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
         }
 
         /// <summary>
