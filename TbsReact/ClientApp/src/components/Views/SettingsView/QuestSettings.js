@@ -1,81 +1,70 @@
 import {
 	Button,
-	FormControl,
 	FormControlLabel,
-	FormHelperText,
 	Grid,
-	InputLabel,
-	MenuItem,
-	Select,
 	Switch,
 	Typography,
+	MenuItem,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 
 import ContentBox from "../../ContentBox";
+import MaterialSelect from "../../ref/MaterialSelect";
 
 const QuestSettings = () => {
-	const [value, setValue] = useState(false);
-	useEffect(() => {
-		console.log("value", value);
-	}, [value]);
+	const { register, control, handleSubmit } = useForm();
+	const onSubmit = (data) => console.log(data);
+
+	const options = [
+		{ value: "1", label: "1" },
+		{ value: "2", label: "2" },
+		{ value: "3", label: "3" },
+	];
 	return (
 		<>
 			<ContentBox>
-				<Grid container spacing={3}>
-					<Grid item xs={12}>
-						<Typography variant="h6">Quest Settings</Typography>
-					</Grid>
-					<Grid item xs={12}>
-						<Grid container spacing={3}>
-							<Grid item xs={12}>
-								<FormControlLabel
-									control={
-										<Switch
-											checked={value}
-											onChange={(event) => {
-												setValue(event.target.checked);
-											}}
-										/>
-									}
-									label="Daily quest claim"
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<FormControlLabel
-									control={
-										<Switch
-											checked={value}
-											onChange={(event) => {
-												setValue(event.target.checked);
-											}}
-										/>
-									}
-									label="Beginner quest claim"
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<FormControl>
-									<InputLabel>Village claim</InputLabel>
-
-									<Select label="Village claim">
-										<MenuItem value={10}>Ten</MenuItem>
-										<MenuItem value={20}>Twenty</MenuItem>
-										<MenuItem value={30}>Thirty</MenuItem>
-									</Select>
-									<FormHelperText>
-										Only for privated server
-									</FormHelperText>
-								</FormControl>
-							</Grid>
+				<Typography variant="h6">Quest Settings</Typography>
+				<form onSubmit={handleSubmit(onSubmit)}>
+					<Grid container spacing={3}>
+						<Grid item xs={12}>
+							<FormControlLabel
+								control={<Switch {...register("daily")} />}
+								label="Daily quest claim"
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<FormControlLabel
+								control={<Switch {...register("begginer")} />}
+								label="Beginner quest claim"
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<MaterialSelect
+								label="Village claim"
+								name="village"
+								control={control}
+								options={options}
+								defaultValue={10}
+								fullWidth
+							>
+								<MenuItem value={10}>Ten</MenuItem>
+								<MenuItem value={20}>Twenty</MenuItem>
+								<MenuItem value={30}>Thirty</MenuItem>
+							</MaterialSelect>
+						</Grid>
+						<Grid item xs={12}>
+							<Button
+								type="submit"
+								variant="contained"
+								value="submit"
+								color="success"
+							>
+								Save
+							</Button>
 						</Grid>
 					</Grid>
-					<Grid item xs={12}>
-						<Button variant="contained" color="success">
-							Save
-						</Button>
-					</Grid>
-				</Grid>
+				</form>
 			</ContentBox>
 		</>
 	);

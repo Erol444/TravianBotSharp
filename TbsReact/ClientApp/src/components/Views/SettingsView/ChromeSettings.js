@@ -1,15 +1,12 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
-	List,
-	ListItem,
-	ListItemText,
 	Grid,
 	Typography,
 	TextField,
 	Button,
 	Switch,
-	Box,
+	FormControlLabel,
 } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -18,7 +15,7 @@ import { toast } from "react-toastify";
 import { getChromeSetting, setChromeSetting } from "../../../api/Setting";
 import { useSelector } from "react-redux";
 
-import style from "../../../styles/box";
+import ContentBox from "../../ContentBox";
 
 const schema = yup
 	.object()
@@ -82,14 +79,9 @@ const ChromeSettings = () => {
 	useEffect(() => {
 		if (account !== -1) {
 			getChromeSetting(account).then((data) => {
-				const { workTime, sleepTime, disableImages, click, autoClose } =
-					data;
-				setValue("work_min", workTime.min);
-				setValue("work_max", workTime.max);
-				setValue("sleep_min", sleepTime.min);
-				setValue("sleep_max", sleepTime.max);
-				setValue("click_min", click.min);
-				setValue("click_max", click.max);
+				const { disableImages, click, autoClose } = data;
+				setValue("click.min", click.min);
+				setValue("click.max", click.max);
 				setValue("disable_image", disableImages);
 				setValue("close_chrome", autoClose);
 			});
@@ -98,154 +90,67 @@ const ChromeSettings = () => {
 
 	return (
 		<>
-			<Box sx={style}>
-				<Typography
-					variant="h6"
-					noWrap
-					component="div"
-					sx={{ mr: 2, display: { xs: "none", md: "flex" } }}
-				>
-					Chrome settings
-				</Typography>
+			<ContentBox>
+				<Typography variant="h6">Chrome Settings</Typography>
 				<form onSubmit={handleSubmit(onSubmit)}>
-					<Grid container spacing={1}>
+					<Grid container spacing={3}>
 						<Grid item xs={2}>
-							<Typography
-								variant="subtitle1"
-								noWrap
-								component="div"
-								sx={{
-									mr: 2,
-									display: { xs: "none", md: "flex" },
-								}}
-							>
-								Work time
+							<Typography variant="subtitle1">
+								Click delay:
 							</Typography>
 						</Grid>
 						<Grid item xs={5}>
 							<TextField
-								id="outlined-number"
+								fullWidth
 								label="Min"
+								variant="outlined"
 								type="number"
-								InputLabelProps={{
-									shrink: true,
-								}}
-								error={!!errors.work_min}
-								helperText={errors.work_min?.message}
-								{...register("work_min")}
+								error={!!errors.click?.min}
+								helperText={errors.click?.min?.message}
+								{...register("click.min")}
 							/>
 						</Grid>
 						<Grid item xs={5}>
 							<TextField
-								id="outlined-number"
+								fullWidth
 								label="Max"
+								variant="outlined"
 								type="number"
-								InputLabelProps={{
-									shrink: true,
-								}}
-								error={!!errors.work_max}
-								helperText={errors.work_max?.message}
-								{...register("work_max")}
+								error={!!errors.click?.max}
+								helperText={errors.click?.max?.message}
+								{...register("click.max")}
 							/>
 						</Grid>
-
-						<Grid item xs={2}>
-							<Typography
-								variant="subtitle1"
-								noWrap
-								component="div"
-								sx={{
-									mr: 2,
-									display: { xs: "none", md: "flex" },
-								}}
-							>
-								Sleep time
-							</Typography>
-						</Grid>
-						<Grid item xs={5}>
-							<TextField
-								id="outlined-number"
-								label="Min"
-								type="number"
-								InputLabelProps={{
-									shrink: true,
-								}}
-								error={!!errors.sleep_min}
-								helperText={errors.sleep_min?.message}
-								{...register("sleep_min")}
-							/>
-						</Grid>
-						<Grid item xs={5}>
-							<TextField
-								id="outlined-number"
-								label="Max"
-								type="number"
-								InputLabelProps={{
-									shrink: true,
-								}}
-								error={!!errors.sleep_max}
-								helperText={errors.sleep_max?.message}
-								{...register("sleep_max")}
-							/>
-						</Grid>
-
-						<Grid item xs={2}>
-							<Typography
-								variant="subtitle1"
-								noWrap
-								component="div"
-								sx={{
-									mr: 2,
-									display: { xs: "none", md: "flex" },
-								}}
-							>
-								Click delay
-							</Typography>
-						</Grid>
-						<Grid item xs={5}>
-							<TextField
-								id="outlined-number"
-								label="Min"
-								type="number"
-								InputLabelProps={{
-									shrink: true,
-								}}
-								error={!!errors.click_min}
-								helperText={errors.click_min?.message}
-								{...register("click_min")}
-							/>
-						</Grid>
-						<Grid item xs={5}>
-							<TextField
-								id="outlined-number"
-								label="Max"
-								type="number"
-								InputLabelProps={{
-									shrink: true,
-								}}
-								error={!!errors.click_max}
-								helperText={errors.click_max?.message}
-								{...register("click_max")}
-							/>
-						</Grid>
-						<Grid item xs={3}>
-							<List>
-								<ListItem>
-									<ListItemText primary="Disable image" />
+						<Grid item xs={12}>
+							<FormControlLabel
+								control={
 									<Switch {...register("disable_image")} />
-								</ListItem>
-								<ListItem>
-									<ListItemText primary="Close when no task in 5 mins" />
+								}
+								label="Disable images"
+							/>
+						</Grid>
+						<Grid item xs={12}>
+							<FormControlLabel
+								control={
 									<Switch {...register("close_chrome")} />
-								</ListItem>
-							</List>
+								}
+								label="Close if no task in 5 minutes"
+							/>
+						</Grid>
+
+						<Grid item xs={12}>
+							<Button
+								type="submit"
+								variant="contained"
+								value="submit"
+								color="success"
+							>
+								Save
+							</Button>
 						</Grid>
 					</Grid>
-					<Button type="submit" variant="contained" value="submit">
-						Save
-					</Button>
 				</form>
-			</Box>
+			</ContentBox>
 		</>
 	);
 };
