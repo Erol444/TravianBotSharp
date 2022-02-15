@@ -1,15 +1,19 @@
 import { Button, Grid, TextField, Typography } from "@mui/material";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import ContentBox from "../../ContentBox";
+import ActivitySchema from "../../../yup/Settings/ActivitySchema.js";
 
 const ActivitySettings = () => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm();
+	} = useForm({
+		resolver: yupResolver(ActivitySchema),
+	});
 	const onSubmit = (data) => console.log(data);
 	return (
 		<>

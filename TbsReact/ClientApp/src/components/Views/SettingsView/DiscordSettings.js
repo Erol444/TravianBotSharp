@@ -8,13 +8,51 @@ import {
 } from "@mui/material";
 import React from "react";
 import { useForm } from "react-hook-form";
-
+import { toast } from "react-toastify";
+import { checkUrlDiscordWebhook } from "../../../api/Discord";
 import ContentBox from "../../ContentBox";
 
 const DiscordSettings = () => {
-	const { register, handleSubmit, getValues } = useForm();
-	const onSubmit = (data) => console.log(data);
-	const onChecking = () => console.log(getValues("url"));
+	const {
+		register,
+		handleSubmit,
+		getValues,
+		formState: { errors },
+		setError,
+	} = useForm();
+
+	const onSubmit = async (data) => {
+		const isUrlValid = await checkUrl(getValues("url"), false);
+		if (!isUrlValid) return;
+		console.log(data);
+	};
+	const onChecking = async () => {
+		const url = getValues("url");
+		await checkUrl(url, true);
+	};
+
+	const checkUrl = async (url, show) => {
+		if (url === "") return;
+		const data = await checkUrlDiscordWebhook(url);
+		switch (data) {
+			case 200:
+				if (show) {
+					toast.success("Webhook url is valid", {
+						position: toast.POSITION.TOP_RIGHT,
+					});
+				}
+				return true;
+			case 401:
+			case 404:
+				toast.error("Webhook url is invaild", {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+				setError("url", { message: "Reinput webhook url" });
+
+				return false;
+		}
+	};
+
 	return (
 		<>
 			<ContentBox>
@@ -38,6 +76,8 @@ const DiscordSettings = () => {
 								fullWidth
 								label="URL webhook"
 								variant="outlined"
+								error={!!errors.url}
+								helperText={errors.url?.message}
 								{...register("url")}
 							/>
 						</Grid>
