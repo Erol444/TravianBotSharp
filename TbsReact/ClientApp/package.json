@@ -62,7 +62,6 @@
 		"eslint-plugin-react": "^7.27.1",
 		"eslint-plugin-react-hooks": "^4.3.0",
 		"husky": "^7.0.4",
-		"json-server": "^0.17.0",
 		"lint-staged": "^12.1.2",
 		"nan": "^2.14.2",
 		"redux-devtools-extension": "^2.13.9",
@@ -76,7 +75,6 @@
 		"eject": "react-scripts eject",
 		"lint": "eslint ./src && prettier --check ./src",
 		"lint-fix": "eslint --fix ./src && prettier --write ./src",
-		"server": "node src/server.js",
 		"prepare": "cd ../../ && husky install ./TbsReact/ClientApp/.husky"
 	},
 	"eslintConfig": {
@@ -98,6 +96,5 @@
 	},
 	"eslintIgnore": [
 		"build/"
-	],
-	"proxy": "http://localhost:3001/api"
+	]
 }

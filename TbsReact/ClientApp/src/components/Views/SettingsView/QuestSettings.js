@@ -1,26 +1,56 @@
-import {
-	Button,
-	FormControlLabel,
-	Grid,
-	Switch,
-	Typography,
-	MenuItem,
-} from "@mui/material";
-import React from "react";
+import { Button, Grid, Typography } from "@mui/material";
 import { useForm } from "react-hook-form";
 
 import ContentBox from "../../ContentBox";
-import MaterialSelect from "../../ref/MaterialSelect";
+import MUISelect from "../../ref/MUISelect";
+import MUISwitch from "../../ref/MUISwitch";
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import {
+	getSetting,
+	setSetting,
+	QUEST_SETTING,
+	getVillages,
+} from "../../../api/api";
+import { useSelector } from "react-redux";
 
 const QuestSettings = () => {
-	const { register, control, handleSubmit } = useForm();
-	const onSubmit = (data) => console.log(data);
+	const { control, handleSubmit, setValue } = useForm();
+	const account = useSelector((state) => state.account.info.id);
+	const [villages, setVillages] = useState([]);
 
-	const options = [
-		{ value: "1", label: "1" },
-		{ value: "2", label: "2" },
-		{ value: "3", label: "3" },
-	];
+	const onSubmit = (data) => {
+		setSetting(account, QUEST_SETTING, data).then((result) => {
+			if (result === true) {
+				toast.success("Quest settings saved!", {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			} else {
+				toast.warning("Quest settings not saved! Try again later", {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			}
+		});
+	};
+
+	useEffect(() => {
+		if (account !== -1) {
+			getSetting(account, QUEST_SETTING).then((data) => {
+				const { beginner, daily, villageId } = data;
+				setValue("beginner", beginner);
+				setValue("daily", daily);
+				console.log(data);
+				console.log("beginner: " + beginner);
+				console.log("daily: " + daily);
+
+				getVillages(account).then((data) => {
+					setVillages(data);
+					setValue("villageId", villageId);
+				});
+			});
+		}
+	}, [account, setValue]);
+
 	return (
 		<>
 			<ContentBox>
@@ -28,30 +58,27 @@ const QuestSettings = () => {
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Grid container spacing={3}>
 						<Grid item xs={12}>
-							<FormControlLabel
-								control={<Switch {...register("daily")} />}
+							<MUISwitch
+								name="daily"
+								control={control}
 								label="Daily quest claim"
 							/>
 						</Grid>
 						<Grid item xs={12}>
-							<FormControlLabel
-								control={<Switch {...register("begginer")} />}
+							<MUISwitch
+								name="beginner"
+								control={control}
 								label="Beginner quest claim"
 							/>
 						</Grid>
 						<Grid item xs={12}>
-							<MaterialSelect
+							<MUISelect
 								label="Village claim"
-								name="village"
+								name="villageId"
 								control={control}
-								options={options}
-								defaultValue={10}
+								options={villages}
 								fullWidth
-							>
-								<MenuItem value={10}>Ten</MenuItem>
-								<MenuItem value={20}>Twenty</MenuItem>
-								<MenuItem value={30}>Thirty</MenuItem>
-							</MaterialSelect>
+							/>
 						</Grid>
 						<Grid item xs={12}>
 							<Button

@@ -1,33 +1,21 @@
 import axios from "axios";
 
-const getChromeSetting = async (index) => {
+const getSetting = async (index, type) => {
 	try {
-		const { data } = await axios.get(`/settings_chrome/${index}`);
+		const { data } = await axios.get(`/settings/${type}/${index}`);
 		return data;
 	} catch (e) {
-		console.log(e);
+		return e.response.status;
 	}
 };
 
-const setChromeSetting = async (index, data) => {
+const setSetting = async (index, type, data) => {
 	try {
-		const patchData = {
-			click: {
-				min: data.click_min,
-				max: data.click_max,
-			},
-			workTime: {
-				min: data.work_min,
-				max: data.work_max,
-			},
-			sleepTime: {
-				min: data.sleep_min,
-				max: data.sleep_max,
-			},
-		};
-		await axios.patch(`/settings_chrome/${index}/`, patchData);
+		await axios.put(`/settings/${type}/${index}/`, data);
+		return true;
 	} catch (e) {
-		console.log(e);
+		return e.response.status;
 	}
 };
-export { getChromeSetting, setChromeSetting };
+
+export { getSetting, setSetting };

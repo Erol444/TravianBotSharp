@@ -1,21 +1,14 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import {
-	Grid,
-	Typography,
-	TextField,
-	Button,
-	Switch,
-	FormControlLabel,
-} from "@mui/material";
+import { Grid, Typography, TextField, Button } from "@mui/material";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
-
-import { getChromeSetting, setChromeSetting } from "../../../api/Setting";
+import { getSetting, setSetting, CHROME_SETTING } from "../../../api/api";
 import { useSelector } from "react-redux";
+import MUISwitch from "../../ref/MUISwitch";
 
 import ContentBox from "../../ContentBox";
-import ChromeSchema from "../../../yup/Settings/ChomreSchema.js";
+import ChromeSchema from "../../../yup/Settings/ChomreSchema";
 
 const ChromeSettings = () => {
 	const {
@@ -23,25 +16,33 @@ const ChromeSettings = () => {
 		handleSubmit,
 		formState: { errors },
 		setValue,
+		control,
 	} = useForm({
 		resolver: yupResolver(ChromeSchema),
 	});
 	const account = useSelector((state) => state.account.info.id);
-	const onSubmit = async (data) => {
-		await setChromeSetting(account, data);
-		toast.success("Chrome settings saved !", {
-			position: toast.POSITION.TOP_RIGHT,
+	const onSubmit = (data) => {
+		setSetting(account, CHROME_SETTING, data).then((result) => {
+			if (result === true) {
+				toast.success("Chrome settings saved!", {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			} else {
+				toast.warning("Chrome settings not saved! Try again later", {
+					position: toast.POSITION.TOP_RIGHT,
+				});
+			}
 		});
 	};
 
 	useEffect(() => {
 		if (account !== -1) {
-			getChromeSetting(account).then((data) => {
+			getSetting(account, CHROME_SETTING).then((data) => {
 				const { disableImages, click, autoClose } = data;
 				setValue("click.min", click.min);
 				setValue("click.max", click.max);
-				setValue("disable_image", disableImages);
-				setValue("close_chrome", autoClose);
+				setValue("disableImages", disableImages);
+				setValue("autoClose", autoClose);
 			});
 		}
 	}, [account, setValue]);
@@ -80,18 +81,16 @@ const ChromeSettings = () => {
 							/>
 						</Grid>
 						<Grid item xs={12}>
-							<FormControlLabel
-								control={
-									<Switch {...register("disable_image")} />
-								}
+							<MUISwitch
+								name="disableImages"
+								control={control}
 								label="Disable images"
 							/>
 						</Grid>
 						<Grid item xs={12}>
-							<FormControlLabel
-								control={
-									<Switch {...register("close_chrome")} />
-								}
+							<MUISwitch
+								name="autoClose"
+								control={control}
 								label="Close if no task in 5 minutes"
 							/>
 						</Grid>

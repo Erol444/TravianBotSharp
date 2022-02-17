@@ -20,26 +20,6 @@ const logout = async (index) => {
 	}
 };
 
-const loginAll = async () => {
-	try {
-		await axios.post(`/accounts/login`);
-		return true;
-	} catch (e) {
-		console.log(e);
-		return false;
-	}
-};
-
-const logoutAll = async () => {
-	try {
-		await axios.post(`/accounts/logout`);
-		return true;
-	} catch (e) {
-		console.log(e);
-		return false;
-	}
-};
-
 const getStatus = async (index) => {
 	try {
 		const { data } = await axios.get(`/status/${index}`);
@@ -50,4 +30,4 @@ const getStatus = async (index) => {
 	}
 };
 
-export { login, logout, loginAll, logoutAll, getStatus };
+export { login, logout, getStatus };

@@ -14,7 +14,6 @@ import { getVillages } from "../../../api/Village";
 import VillageRows from "./VillageRows";
 
 import { useDispatch, useSelector } from "react-redux";
-import { fetchVillageByID } from "../../../slices/village";
 
 import style from "../../../styles/box";
 
@@ -32,9 +31,6 @@ const VillagesTable = () => {
 	useEffect(() => {
 		if (account.id !== -1) {
 			getVillages(account.id).then((data) => setVillages(data));
-			if (selected !== -1) {
-				dispatch(fetchVillageByID(selected));
-			}
 		}
 	}, [selected, dispatch, account.id]);
 

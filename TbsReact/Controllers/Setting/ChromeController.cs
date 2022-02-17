@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TbsReact.Models;
 using TbsReact.Models.Setting;
 using TbsReact.Singleton;
 
@@ -21,16 +22,6 @@ namespace TbsReact.Controllers.Setting
 
             var setting = new Chrome
             {
-                SleepTime = new Range
-                {
-                    Min = acc.Settings.Time.MinSleep,
-                    Max = acc.Settings.Time.MaxSleep,
-                },
-                WorkTime = new Range
-                {
-                    Min = acc.Settings.Time.MinWork,
-                    Max = acc.Settings.Time.MaxWork,
-                },
                 Click = new Range
                 {
                     Min = acc.Settings.DelayClickingMin,
@@ -54,10 +45,6 @@ namespace TbsReact.Controllers.Setting
             }
             var acc = AccountManager.GetAccount(account);
 
-            acc.Settings.Time.MinSleep = setting.SleepTime.Min;
-            acc.Settings.Time.MaxSleep = setting.SleepTime.Max;
-            acc.Settings.Time.MinWork = setting.WorkTime.Min;
-            acc.Settings.Time.MaxWork = setting.WorkTime.Max;
             acc.Settings.DelayClickingMin = setting.Click.Min;
             acc.Settings.DelayClickingMax = setting.Click.Max;
             acc.Settings.DisableImages = setting.DisableImages;

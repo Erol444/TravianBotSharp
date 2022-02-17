@@ -1,4 +1,6 @@
-﻿namespace TbsReact.Models.Setting
+﻿using TbsReact.Models;
+
+namespace TbsReact.Models.Setting
 {
     public class Hero
     {

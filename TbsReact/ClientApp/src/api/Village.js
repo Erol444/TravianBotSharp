@@ -9,13 +9,4 @@ const getVillages = async (index) => {
 	}
 };
 
-const getVillageInfo = async (index) => {
-	try {
-		const { data } = await axios.get(`/village/${index}`);
-		return data;
-	} catch (e) {
-		console.log(e);
-	}
-};
-
-export { getVillages, getVillageInfo };
+export { getVillages };

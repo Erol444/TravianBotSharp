@@ -10,13 +10,7 @@ import AccountTable from "./AccountTable";
 import AccountModal from "./Modal/AccountModal";
 
 import { deleteAccount } from "../../api/Accounts/Account";
-import {
-	login,
-	logout,
-	loginAll,
-	logoutAll,
-	getStatus,
-} from "../../api/Accounts/Driver";
+import { login, logout, getStatus } from "../../api/Accounts/Driver";
 
 const SideBar = () => {
 	const [open, setOpen] = useState(false);
@@ -54,16 +48,6 @@ const SideBar = () => {
 		}
 	};
 
-	const onLoginAll = async () => {
-		await loginAll();
-		dispatch(resetAccount);
-	};
-
-	const onLogoutAll = async () => {
-		await logoutAll();
-		dispatch(resetAccount);
-	};
-
 	return (
 		<>
 			<IconButton
@@ -94,12 +78,6 @@ const SideBar = () => {
 						<Button onClick={onLog}>
 							{status === true ? "Logout" : "Login"}
 						</Button>
-					</Grid>
-					<Grid item xs={6}>
-						<Button onClick={onLoginAll}>Login all</Button>
-					</Grid>
-					<Grid item xs={6}>
-						<Button onClick={onLogoutAll}>Logout all</Button>
 					</Grid>
 				</Grid>
 			</Drawer>

@@ -2,10 +2,10 @@ import axios from "axios";
 
 const checkUrlDiscordWebhook = async (url) => {
 	try {
-		const { status } = await axios.get(url);
-		return status;
+		await axios.get(url);
+		return true;
 	} catch (err) {
-		return err.response.status;
+		return false;
 	}
 };
 

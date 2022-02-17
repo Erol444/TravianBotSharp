@@ -1,13 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-import { getVillageInfo } from "../api/Village";
-export const fetchVillageByID = createAsyncThunk(
-	"village/fetcInfohById",
-	async (id, thunkAPI) => {
-		const data = await getVillageInfo(id);
-		return data;
-	}
-);
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
 	info: {
@@ -31,11 +22,6 @@ export const villageSlice = createSlice({
 		resetVillage: (state, action) => {
 			return initialState;
 		},
-	},
-	extraReducers: (builder) => {
-		builder.addCase(fetchVillageByID.fulfilled, (state, action) => {
-			state.info = action.payload;
-		});
 	},
 });
 
