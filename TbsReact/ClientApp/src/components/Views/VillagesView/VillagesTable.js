@@ -1,27 +1,17 @@
 import React, { useEffect, useState } from "react";
-import {
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Box,
-} from "@mui/material";
-
 import { getVillages } from "../../../api/Village";
 
-import VillageRows from "./VillageRows";
-
 import { useDispatch, useSelector } from "react-redux";
-
-import style from "../../../styles/box";
+import MUITable from "../../ref/MUITable";
+import ContentBox from "../../ContentBox";
 
 const VillagesTable = () => {
 	const account = useSelector((state) => state.account.info);
 	const village = useSelector((state) => state.village.info);
-	const [villages, setVillages] = useState([]);
-	const [selected, setSelected] = useState(village.id);
+	const [villages, setVillages] = useState([
+		{ id: 0, name: "Loading ...", coords: { x: 0, y: 0 } },
+	]);
+	const [selected, setSelected] = useState(village.id || 0);
 	const dispatch = useDispatch();
 
 	const onClick = (vill) => {
@@ -34,27 +24,18 @@ const VillagesTable = () => {
 		}
 	}, [selected, dispatch, account.id]);
 
+	const header = ["Name", "Coords"];
+
 	return (
 		<>
-			<Box sx={style}>
-				<TableContainer>
-					<Table size="small">
-						<TableHead>
-							<TableRow>
-								<TableCell>Name</TableCell>
-								<TableCell>Coords</TableCell>
-							</TableRow>
-						</TableHead>
-						<TableBody>
-							<VillageRows
-								villages={villages}
-								handler={onClick}
-								selected={selected}
-							/>
-						</TableBody>
-					</Table>
-				</TableContainer>
-			</Box>
+			<ContentBox>
+				<MUITable
+					header={header}
+					data={villages}
+					handler={onClick}
+					selected={selected}
+				/>
+			</ContentBox>
 		</>
 	);
 };

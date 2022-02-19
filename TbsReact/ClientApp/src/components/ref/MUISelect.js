@@ -3,6 +3,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 import { Controller } from "react-hook-form";
 
 import PropTypes from "prop-types";
+import { nanoid } from "nanoid";
 
 // src for who wonder what is this
 // https://react-hook-form.com/advanced-usage#ControlledmixedwithUncontrolledComponents
@@ -20,7 +21,7 @@ const MUISelect = ({ name, label, control, options, ...props }) => {
 						{options.map((item) => {
 							return (
 								<MenuItem
-									key={item.id}
+									key={nanoid(10)}
 									value={JSON.stringify(item.id)}
 								>
 									{item.name}

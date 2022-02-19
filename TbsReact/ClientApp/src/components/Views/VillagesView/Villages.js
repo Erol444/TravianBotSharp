@@ -5,7 +5,7 @@ import { Link, useRouteMatch, Switch, Route, Redirect } from "react-router-dom";
 
 import style from "../../../styles/box";
 import VillagesTable from "./VillagesTable";
-import Build from "./SubView/Build";
+import Build from "./BuildView/Build";
 import Market from "./SubView/Market";
 import Troops from "./SubView/Troops";
 import Attack from "./SubView/Attack";
@@ -28,10 +28,10 @@ const Villages = () => {
 				justifyContent="flex-start"
 				alignItems="baseline"
 			>
-				<Grid item xs={2}>
+				<Grid item xs={3}>
 					<VillagesTable />
 				</Grid>
-				<Grid item xs={8}>
+				<Grid item xs={9}>
 					<Box sx={style}>
 						<Tabs
 							value={value}

@@ -39,9 +39,6 @@ const QuestSettings = () => {
 				const { beginner, daily, villageId } = data;
 				setValue("beginner", beginner);
 				setValue("daily", daily);
-				console.log(data);
-				console.log("beginner: " + beginner);
-				console.log("daily: " + daily);
 
 				getVillages(account).then((data) => {
 					setVillages(data);

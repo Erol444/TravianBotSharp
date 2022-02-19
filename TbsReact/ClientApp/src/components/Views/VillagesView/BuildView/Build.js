@@ -1,28 +1,35 @@
 import React from "react";
 import { Grid } from "@mui/material";
 import ContentBox from "../../../ContentBox";
+import VillageBuilding from "./VillageBuilding";
+import CurrentBuilding from "./CurrentBuilding";
+import QueueBuilding from "./QueueBuilding";
+import ButtonBuilding from "./ButtonBuilding";
+import OptionBuilding from "./OptionBuilding";
 
 const Build = () => {
 	return (
 		<ContentBox>
 			<Grid container spacing={2}>
 				<Grid item xs={4}>
-					<ContentBox name="village building list" />
+					<VillageBuilding />
 				</Grid>
 				<Grid item xs={8}>
 					<Grid container spacing={2}>
 						<Grid item xs={3}>
-							<ContentBox name="Button add building" />
+							<ContentBox>
+								<ButtonBuilding />
+								<br />
+								<br />
+								<OptionBuilding />
+							</ContentBox>
 						</Grid>
 						<Grid item xs={9}>
-							<ContentBox name="Current building" />
+							<CurrentBuilding />
 						</Grid>
 
 						<Grid item xs={12}>
-							<ContentBox name="Option" />
-						</Grid>
-						<Grid item xs={12}>
-							<ContentBox name="Building queue" />
+							<QueueBuilding />
 						</Grid>
 					</Grid>
 				</Grid>

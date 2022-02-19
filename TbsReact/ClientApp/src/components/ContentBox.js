@@ -2,12 +2,13 @@ import PropTypes from "prop-types";
 import React from "react";
 import { Box } from "@mui/material";
 
-import style from "../styles/box";
+import boxStyle from "../styles/box";
+import modalStyle from "../styles/modal";
 
-const ContentBox = ({ children, name }) => {
+const ContentBox = ({ children, name, modal }) => {
 	return (
 		<>
-			<Box sx={style}>
+			<Box sx={modal === true ? modalStyle : boxStyle}>
 				{children}
 
 				{name}
@@ -19,6 +20,7 @@ const ContentBox = ({ children, name }) => {
 ContentBox.propTypes = {
 	children: PropTypes.any,
 	name: PropTypes.string,
+	modal: PropTypes.bool,
 };
 
 export default ContentBox;
