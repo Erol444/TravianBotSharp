@@ -1,6 +1,7 @@
 ﻿using TbsCore.Tasks;
 using TbsReact.Models;
 using TbsReact.Models.Villages;
+using TbsReact.Models.Villages.Building;
 
 namespace TbsReact.Extension
 {
@@ -20,10 +21,11 @@ namespace TbsReact.Extension
             };
         }
 
-        public static Building GetInfo(this TbsCore.Models.VillageModels.Building building)
+        public static Building GetInfo(this TbsCore.Models.VillageModels.Building building, int index)
         {
             return new Building
             {
+                Index = index,
                 Name = building.Type.ToString(),
                 Location = building.Id,
                 Level = building.Level,
@@ -31,7 +33,7 @@ namespace TbsReact.Extension
             };
         }
 
-        public static TaskBuilding GetInfo(this TbsCore.Models.BuildingModels.BuildingTask task)
+        public static TaskBuilding GetInfo(this TbsCore.Models.BuildingModels.BuildingTask task, int index)
         {
             string Name;
             if (task.TaskType == TbsCore.Helpers.Classificator.BuildingType.AutoUpgradeResFields)
@@ -44,16 +46,18 @@ namespace TbsReact.Extension
             }
             return new TaskBuilding
             {
+                Index = index,
                 Name = Name,
                 Level = task.Level,
                 Location = task.BuildingId ?? -1,
             };
         }
 
-        public static CurrentBuilding GetInfo(this TbsCore.Models.VillageModels.BuildingCurrently building)
+        public static CurrentBuilding GetInfo(this TbsCore.Models.VillageModels.BuildingCurrently building, int index)
         {
             return new CurrentBuilding
             {
+                Index = index,
                 Name = building.Building.ToString(),
                 Level = building.Level,
                 CompleteTime = building.Duration,
