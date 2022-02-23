@@ -7,7 +7,7 @@ namespace TbsReact.Models.Villages.Building
 {
     public class CurrentBuilding
     {
-        public int Index { get; set; }
+        public int Id { get; set; }
 
         public string Name { get; set; }
         public int Level { get; set; }

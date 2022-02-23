@@ -10,7 +10,7 @@ import {
 import React from "react";
 import { nanoid } from "nanoid";
 
-const MUITable = ({ header, data, handler, selected }) => {
+const MUITable = ({ header, data, onClick, selected }) => {
 	return (
 		<>
 			<TableContainer>
@@ -31,14 +31,16 @@ const MUITable = ({ header, data, handler, selected }) => {
 								if (item[0] === "id") return;
 								cells.push(
 									<TableCell key={nanoid(10)}>
-										{JSON.stringify(item[1])}
+										{typeof item[1] === "string"
+											? item[1]
+											: JSON.stringify(item[1])}
 									</TableCell>
 								);
 							});
 							return (
 								<TableRow
 									hover
-									onClick={() => handler(row.id)}
+									onClick={() => onClick(row.id)}
 									selected={row.id === selected}
 									key={nanoid(10)}
 								>
@@ -55,9 +57,9 @@ const MUITable = ({ header, data, handler, selected }) => {
 
 MUITable.propTypes = {
 	data: PropTypes.array.isRequired,
-	handler: PropTypes.func.isRequired,
+	onClick: PropTypes.func,
 	header: PropTypes.array.isRequired,
-	selected: PropTypes.number.isRequired,
+	selected: PropTypes.number,
 };
 
 export default MUITable;

@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TbsReact.Models.Villages.Building
+namespace TbsReact.Models
 {
-    public class TaskBuilding
+    public class Entity
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public int Level { get; set; }
-        public int Location { get; set; }
     }
 }

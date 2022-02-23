@@ -26,7 +26,11 @@ const SortableRow = SortableElement(({ items, onRemove, selected }) => {
 	Object.entries(items).forEach((item) => {
 		if (item[0] === "id") return;
 		cells.push(
-			<TableCell key={nanoid(10)}>{JSON.stringify(item[1])}</TableCell>
+			<TableCell key={nanoid(10)}>
+				{typeof item[1] === "string"
+					? item[1]
+					: JSON.stringify(item[1])}
+			</TableCell>
 		);
 	});
 	cells.push(

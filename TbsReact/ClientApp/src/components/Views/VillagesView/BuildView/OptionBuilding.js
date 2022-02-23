@@ -1,7 +1,8 @@
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, Box } from "@mui/material";
 import React, { useState } from "react";
 
 import OptionBuildingModal from "./Modal/OptionBuildingModal";
+import modalStyle from "../../../../styles/modal";
 
 const OptionBuilding = () => {
 	const [open, setOpen] = useState(false);
@@ -20,7 +21,9 @@ const OptionBuilding = () => {
 				Option
 			</Button>
 			<Modal open={open} onClose={handleClose}>
-				<OptionBuildingModal />
+				<Box sx={modalStyle}>
+					<OptionBuildingModal />
+				</Box>
 			</Modal>
 		</>
 	);

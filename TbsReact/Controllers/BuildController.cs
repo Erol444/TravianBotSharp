@@ -9,6 +9,7 @@ using static TbsCore.Helpers.Classificator;
 using System;
 using TbsCore.Helpers;
 using TbsCore.Tasks;
+using TbsReact.Models;
 
 namespace TbsReact.Controllers
 {
@@ -259,6 +260,105 @@ namespace TbsReact.Controllers
                 result.Add(buildings[i].GetInfo(i));
             }
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Get buildings can build in normal
+        /// </summary>
+        /// <param name="indexAcc"></param>
+        /// <param name="indexVill"></param>
+        /// <param name="position"></param>
+        /// <returns></returns>
+        [HttpGet("buildings/normal/{position:int}")]
+        public ActionResult<NormalBuild> GetNormalBuildings(int indexAcc, int indexVill, int position)
+        {
+            var account = AccountData.GetAccount(indexAcc);
+            if (account == null)
+            {
+                return NotFound();
+            }
+            var acc = AccountManager.GetAccount(account);
+            var village = acc.Villages.FirstOrDefault(x => x.Id == indexVill);
+            if (village == null)
+            {
+                return NotFound();
+            }
+
+            if (position < 0 || position > village.Build.Buildings.Length) return null;
+
+            var result = new NormalBuild();
+            // Check if there is already a building planner for that id
+            var selectedBuilding = village.Build.Buildings[position];
+            var planedBuilding = village.Build.Tasks.LastOrDefault(x => x.BuildingId == position);
+
+            // level
+            if (selectedBuilding.Type != BuildingEnum.Site) result.Level = selectedBuilding.Level + 1;
+            else if (planedBuilding != null) result.Level = planedBuilding.Level + 1;
+            else result.Level = 1;
+
+            result.BuildList = new List<Entity>();
+            // build list
+            if (selectedBuilding.Type == BuildingEnum.Site)
+            {
+                if (planedBuilding != null)
+                {
+                    result.BuildList.Add(new Entity
+                    {
+                        Name = planedBuilding.Building.ToString(),
+                        Id = result.BuildList.Count
+                    });
+                    return result;
+                }
+
+                for (int i = 5; i <= 45; i++)
+                {
+                    if (BuildingHelper.BuildingRequirementsAreMet((BuildingEnum)i, village, acc.AccInfo.Tribe ?? TribeEnum.Natars))
+                    {
+                        result.BuildList.Add(new Entity
+                        {
+                            Name = ((BuildingEnum)i).ToString(),
+                            Id = result.BuildList.Count
+                        });
+                    }
+                }
+                return result;
+            }
+            else // Building already there
+            {
+                result.BuildList.Add(new Entity
+                {
+                    Name = selectedBuilding.Type.ToString(),
+                    Id = result.BuildList.Count
+                });
+                return result;
+            }
+        }
+
+        [HttpGet("buildings/prerequisites")]
+        public ActionResult<List<Entity>> GetPrerequisitesBuildings(int indexAcc, int indexVill)
+        {
+            var account = AccountData.GetAccount(indexAcc);
+            if (account == null)
+            {
+                return NotFound();
+            }
+            var acc = AccountManager.GetAccount(account);
+            var village = acc.Villages.FirstOrDefault(x => x.Id == indexVill);
+            if (village == null)
+            {
+                return NotFound();
+            }
+
+            var result = new List<Entity>();
+            var prereqComboList = BuildingHelper.SetPrereqCombo(acc, village);
+
+            prereqComboList.ForEach(x => result.Add(new Entity
+            {
+                Name = x,
+                Id = result.Count
+            }));
+
+            return result;
         }
 
         private static void Swap(List<BuildingTask> list, int indexA, int indexB)

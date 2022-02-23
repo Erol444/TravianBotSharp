@@ -25,7 +25,7 @@ namespace TbsReact.Extension
         {
             return new Building
             {
-                Index = index,
+                Id = index,
                 Name = building.Type.ToString(),
                 Location = building.Id,
                 Level = building.Level,
@@ -46,7 +46,7 @@ namespace TbsReact.Extension
             }
             return new TaskBuilding
             {
-                Index = index,
+                Id = index,
                 Name = Name,
                 Level = task.Level,
                 Location = task.BuildingId ?? -1,
@@ -57,7 +57,7 @@ namespace TbsReact.Extension
         {
             return new CurrentBuilding
             {
-                Index = index,
+                Id = index,
                 Name = building.Building.ToString(),
                 Level = building.Level,
                 CompleteTime = building.Duration,

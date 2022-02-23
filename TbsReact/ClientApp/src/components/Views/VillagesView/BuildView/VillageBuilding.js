@@ -1,15 +1,38 @@
 import { Typography } from "@mui/material";
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ContentBox from "../../../ContentBox";
 import MUITable from "../../../ref/MUITable";
+import { useSelector } from "react-redux";
+import { useVillage } from "../../../../hooks/useVillage";
 
+import { getBuildingList } from "../../../../api/api";
+import { BuildingContext } from "./Build";
 const VillageBuilding = () => {
-	const header = ["Building", "Level"];
-	const data = [{ id: 0, building: "Loading ...", level: 0 }];
-	const [selected, setSelected] = useState(0);
+	const header = ["Location", "Building", "Level"];
 
-	const onClick = (vill) => {
-		setSelected(vill.id);
+	const account = useSelector((state) => state.account.info);
+	const [villageId] = useVillage();
+	const [buildingId, setBuildingId] = useContext(BuildingContext);
+	const [data, setData] = useState([
+		{ id: 0, name: "Loading ...", level: 0 },
+		{ id: 1, name: "Loading ...", level: 0 },
+		{ id: 2, name: "Loading ...", level: 0 },
+		{ id: 3, name: "Loading ...", level: 0 },
+		{ id: 4, name: "Loading ...", level: 0 },
+	]);
+	useEffect(() => {
+		if (account.id !== -1 && villageId !== -1) {
+			getBuildingList(account.id, villageId).then((data) => {
+				const newData = data.map(
+					({ underConstruction, ...keepAttrs }) => keepAttrs
+				);
+				setData(newData);
+			});
+		}
+	}, [account.id, villageId]);
+
+	const onClick = (buildingId) => {
+		setBuildingId(buildingId);
 	};
 	return (
 		<>
@@ -18,8 +41,8 @@ const VillageBuilding = () => {
 				<MUITable
 					header={header}
 					data={data}
-					handler={onClick}
-					selected={selected}
+					onClick={onClick}
+					selected={buildingId}
 				/>
 			</ContentBox>
 		</>

@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 import ContentBox from "../../../ContentBox";
 import MUIDraggableTable from "../../../ref/MUIDraggableTable";
 import { arrayMoveImmutable } from "array-move";
+import { useSelector } from "react-redux";
+import { useVillage } from "../../../../hooks/useVillage";
+import { getQueueList, editQueue, deleteQueue } from "../../../../api/api";
 
 const QueueBuilding = () => {
 	const header = ["Building", "Level", "Location"];
@@ -15,20 +18,28 @@ const QueueBuilding = () => {
 	];
 
 	const [items, setItems] = useState(data);
+	const account = useSelector((state) => state.account.info);
+	const [villageId] = useVillage();
+	useEffect(() => {
+		if (account.id !== -1 && villageId !== -1) {
+			getQueueList(account.id, villageId).then((data) => {
+				setItems(data);
+			});
+		}
+	}, [account.id, villageId]);
 
 	const onRemove = (index) => {
 		setItems((items) => items.filter((item) => item.id !== index));
-		console.log("remove", index);
+		deleteQueue(account.id, villageId, index);
 	};
 
 	const onSortEnd = ({ oldIndex, newIndex }) => {
 		setItems(arrayMoveImmutable(items, oldIndex, newIndex));
-		console.log("sort", oldIndex, newIndex);
+		editQueue(account.id, villageId, {
+			indexOld: oldIndex,
+			indexNew: newIndex,
+		});
 	};
-
-	useEffect(() => {
-		console.log(items);
-	}, [items]);
 
 	return (
 		<>

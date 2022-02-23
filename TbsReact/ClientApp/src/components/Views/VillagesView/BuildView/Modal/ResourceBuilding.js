@@ -1,9 +1,13 @@
 import { Grid, TextField, Button, Typography } from "@mui/material";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 import ContentBox from "../../../../ContentBox";
 import MUISelect from "../../../../ref/MUISelect";
+
+import { addToQueue, RESOURCE } from "../../../../../api/api";
+import { useVillage } from "../../../../../hooks/useVillage";
 
 const ResourceBuilding = () => {
 	const {
@@ -11,26 +15,37 @@ const ResourceBuilding = () => {
 		control,
 		handleSubmit,
 		formState: { errors },
-	} = useForm();
+	} = useForm({
+		defaultValues: {
+			type: 0,
+			strategy: 0,
+			level: 1,
+		},
+	});
 
-	const onSubmit = (data) => {
-		console.log(data);
+	const account = useSelector((state) => state.account.info);
+	const [villageId] = useVillage();
+
+	const onSubmit = async (data) => {
+		await addToQueue(account.id, villageId, RESOURCE, data);
 	};
 
 	const type = [
-		{ id: 1, name: "All resource" },
-		{ id: 2, name: "Exclude crop" },
-		{ id: 3, name: "Only crop" },
+		{ id: 0, name: "All resource" },
+		{ id: 1, name: "Exclude crop" },
+		{ id: 2, name: "Only crop" },
 	];
 	const strategy = [
-		{ id: 1, name: "Based on resource" },
-		{ id: 2, name: "Based on level" },
-		{ id: 3, name: "Based on production" },
+		{ id: 0, name: "Based on resource" },
+		{ id: 1, name: "Based on level" },
+		{ id: 2, name: "Based on production" },
 	];
+
 	return (
 		<>
 			<ContentBox>
 				<Typography variant="h5">Resource auto build</Typography>
+				<br />
 				<form onSubmit={handleSubmit(onSubmit)}>
 					<Grid container spacing={3}>
 						<Grid item xs={12}>

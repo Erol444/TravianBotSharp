@@ -1,7 +1,8 @@
-import { Button, Modal } from "@mui/material";
+import { Button, Modal, Box } from "@mui/material";
 import React, { useState } from "react";
 
 import ButtonBuildingModal from "./Modal/ButtonBuildingModal";
+import modalStyle from "../../../../styles/modal";
 
 const ButtonBuilding = () => {
 	const [open, setOpen] = useState(false);
@@ -20,7 +21,9 @@ const ButtonBuilding = () => {
 				Add building
 			</Button>
 			<Modal open={open} onClose={handleClose}>
-				<ButtonBuildingModal />
+				<Box sx={modalStyle}>
+					<ButtonBuildingModal />
+				</Box>
 			</Modal>
 		</>
 	);

@@ -3,12 +3,11 @@ import React from "react";
 import { Box } from "@mui/material";
 
 import boxStyle from "../styles/box";
-import modalStyle from "../styles/modal";
 
-const ContentBox = ({ children, name, modal }) => {
+const ContentBox = ({ children, name }) => {
 	return (
 		<>
-			<Box sx={modal === true ? modalStyle : boxStyle}>
+			<Box sx={boxStyle}>
 				{children}
 
 				{name}
@@ -20,7 +19,6 @@ const ContentBox = ({ children, name, modal }) => {
 ContentBox.propTypes = {
 	children: PropTypes.any,
 	name: PropTypes.string,
-	modal: PropTypes.bool,
 };
 
 export default ContentBox;

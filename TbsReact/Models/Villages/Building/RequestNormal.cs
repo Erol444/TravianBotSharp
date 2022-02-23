@@ -9,7 +9,6 @@ namespace TbsReact.Models.Villages.Building
     {
         public string Building { get; set; }
         public int Level { get; set; }
-
         public int Location { get; set; }
     }
 }
