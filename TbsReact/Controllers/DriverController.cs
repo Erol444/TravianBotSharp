@@ -10,7 +10,7 @@ namespace TbsReact.Controllers
     [ApiController]
     public class DriverController : ControllerBase
     {
-        [HttpPost("login/{index:int}")]
+        [HttpPost("api/login/{index:int}")]
         public async Task<ActionResult> Login(int index)
         {
             var account = AccountData.GetAccount(index);

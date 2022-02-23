@@ -5,7 +5,7 @@ using TbsReact.Singleton;
 namespace TbsReact.Controllers.Setting
 {
     [ApiController]
-    [Route("settings/discordwebhook/{indexAcc:int}")]
+    [Route("api/ssettings/discordwebhook/{indexAcc:int}")]
     public class DiscordController : ControllerBase
     {
         [HttpGet]

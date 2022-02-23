@@ -6,7 +6,7 @@ using TbsReact.Singleton;
 namespace TbsReact.Controllers.Setting
 {
     [ApiController]
-    [Route("settings/chrome/{indexAcc:int}")]
+    [Route("api/settings/chrome/{indexAcc:int}")]
     public class ChromeController : ControllerBase
     {
         [HttpGet]

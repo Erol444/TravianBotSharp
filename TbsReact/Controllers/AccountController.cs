@@ -9,7 +9,7 @@ using System;
 namespace TbsReact.Controllers
 {
     [ApiController]
-    [Route("accounts")]
+    [Route("api/accounts")]
     public class AccountController : ControllerBase
     {
         [HttpGet]

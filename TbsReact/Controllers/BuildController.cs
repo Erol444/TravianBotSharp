@@ -14,7 +14,7 @@ using TbsReact.Models;
 namespace TbsReact.Controllers
 {
     [ApiController]
-    [Route("villages/{indexAcc:int}/build/{indexVill:int}")]
+    [Route("api/villages/{indexAcc:int}/build/{indexVill:int}")]
     public class BuildController : ControllerBase
     {
         [HttpGet("buildings")]

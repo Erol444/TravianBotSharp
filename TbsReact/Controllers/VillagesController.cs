@@ -7,7 +7,7 @@ using System.Collections.Generic;
 namespace TbsReact.Controllers
 {
     [ApiController]
-    [Route("villages/{indexAcc:int}")]
+    [Route("api/villages/{indexAcc:int}")]
     public class VillagesController : ControllerBase
     {
         [HttpGet]

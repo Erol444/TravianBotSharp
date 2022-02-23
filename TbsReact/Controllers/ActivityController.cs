@@ -6,7 +6,7 @@ namespace TbsReact.Controllers
     public class ActivityController : ControllerBase
     {
         [HttpGet]
-        [Route("task/{indexAcc:int}")]
+        [Route("api/task/{indexAcc:int}")]
         public ActionResult GetTask(int indexAcc)
         {
             var account = AccountData.GetAccount(indexAcc);

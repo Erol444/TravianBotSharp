@@ -1,14 +1,11 @@
-/** /settings/${type}/ **/
-export const CHROME_SETTING = "chrome";
-export const ACTIVITY_SETTING = "activity";
-export const DISCORD_WEBHOOK_SETTING = "discordwebhook";
-export const HERO_SETTING = "hero";
-export const QUEST_SETTING = "quest";
-
-/**	/ **/
-export const NORMAL = "normal";
-export const RESOURCE = "resource";
-export const PREREQUISITE = "prerequisites";
+export {
+	CHROME_SETTING,
+	ACTIVITY_SETTING,
+	DISCORD_WEBHOOK_SETTING,
+	HERO_SETTING,
+	QUEST_SETTING,
+} from "./constant";
+export { NORMAL, RESOURCE, PREREQUISITE } from "./constant";
 
 export { getVillages } from "./Village";
 export { getLogData, getTaskList } from "./Debug";

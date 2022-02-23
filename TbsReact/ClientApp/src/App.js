@@ -1,9 +1,11 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+import { setHeaderToken } from "./api/axios";
 
 import Layout from "./components/Layout";
-
+import TokenInput from "./components/TokenInput";
 import { signalRConnection, initConnection } from "./realtime/connection";
 import { changeAccount } from "./realtime/account";
 import { usePrevious } from "./hooks/usePrevious";
@@ -34,7 +36,21 @@ const App = () => {
 		}
 	}, [account, prev]);
 
-	return <Layout />;
+	const [token, setToken] = useState(axios.defaults.headers.common.token);
+
+	useEffect(() => {
+		setHeaderToken(token);
+	}, [token]);
+
+	return (
+		<>
+			{token === undefined ? (
+				<TokenInput setToken={setToken} />
+			) : (
+				<Layout />
+			)}
+		</>
+	);
 };
 
 export default App;

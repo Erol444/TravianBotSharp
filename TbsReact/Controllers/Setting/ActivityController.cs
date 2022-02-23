@@ -6,7 +6,7 @@ using TbsReact.Singleton;
 namespace TbsReact.Controllers.Setting
 {
     [ApiController]
-    [Route("settings/activity/{indexAcc:int}")]
+    [Route("api/settings/activity/{indexAcc:int}")]
     public class ActivityController : ControllerBase
     {
         [HttpGet]

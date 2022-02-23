@@ -5,7 +5,7 @@ using TbsReact.Singleton;
 namespace TbsReact.Controllers.Setting
 {
     [ApiController]
-    [Route("settings/quest/{indexAcc:int}")]
+    [Route("api/settings/quest/{indexAcc:int}")]
     public class QuestController : ControllerBase
     {
         [HttpGet]
