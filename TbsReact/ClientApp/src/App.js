@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
-import { setHeaderToken } from "./api/axios";
 
 import Layout from "./components/Layout";
 import TokenInput from "./components/TokenInput";
@@ -18,6 +16,7 @@ const App = () => {
 	const account = useSelector((state) => state.account.info.id);
 	const prev = usePrevious(account);
 	const dispatch = useDispatch();
+	const toastId = useRef(null);
 	useEffect(() => {
 		initConnection();
 		signalRConnection
@@ -36,20 +35,24 @@ const App = () => {
 		}
 	}, [account, prev]);
 
-	const [token, setToken] = useState(axios.defaults.headers.common.token);
+	const [token, setToken] = useState(false);
 
 	useEffect(() => {
-		setHeaderToken(token);
-	}, [token]);
+		if (account === -1 && token) {
+			toastId.current = toast.warning(
+				"Selecte account by clicking on left icon",
+				{ autoClose: false }
+			);
+		} else {
+			if (toastId.current !== null) {
+				toast.dismiss(toastId.current);
+				toastId.current = null;
+			}
+		}
+	}, [account, token]);
 
 	return (
-		<>
-			{token === undefined ? (
-				<TokenInput setToken={setToken} />
-			) : (
-				<Layout />
-			)}
-		</>
+		<>{token === false ? <TokenInput setToken={setToken} /> : <Layout />}</>
 	);
 };
 

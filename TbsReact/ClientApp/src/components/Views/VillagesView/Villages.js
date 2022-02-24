@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Grid, Tabs, Tab, Box } from "@mui/material";
-import { Link, useRouteMatch, Switch, Route, Redirect } from "react-router-dom";
+import {
+	Link,
+	useRouteMatch,
+	Switch,
+	Route,
+	Redirect,
+	useLocation,
+} from "react-router-dom";
 
 import style from "../../../styles/box";
 import VillagesTable from "./VillagesTable";
@@ -15,6 +22,7 @@ import Info from "./SubView/Info";
 import { VillageContext } from "../../../hooks/useVillage";
 
 const Villages = () => {
+	const location = useLocation();
 	const { path, url } = useRouteMatch();
 	const [value, setValue] = useState("/build");
 
@@ -24,6 +32,11 @@ const Villages = () => {
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
+
+	useEffect(() => {
+		const path = location.pathname.split("/")[2];
+		setValue(`/${path}`);
+	}, [location]);
 
 	return (
 		<>

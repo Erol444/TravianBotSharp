@@ -1,17 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, Tab } from "@mui/material";
-import { Link, useRouteMatch, Switch, Route, Redirect } from "react-router-dom";
+import {
+	Link,
+	useRouteMatch,
+	Switch,
+	Route,
+	Redirect,
+	useLocation,
+} from "react-router-dom";
 import NormalBuilding from "./NormalBuilding";
 import PrerequisiteBuilding from "./PrerequisiteBuilding";
 import ResourceBuilding from "./ResourceBuilding";
 
 const ButtonBuildingModal = () => {
+	const location = useLocation();
 	const { path, url } = useRouteMatch();
 	const [value, setValue] = useState("/normal");
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
+
+	useEffect(() => {
+		const path = location.pathname.split("/")[3];
+		console.log(path);
+		setValue(`/${path}`);
+	}, [location]);
 	return (
 		<>
 			<Tabs value={value} onChange={handleChange} textColor="inherit">

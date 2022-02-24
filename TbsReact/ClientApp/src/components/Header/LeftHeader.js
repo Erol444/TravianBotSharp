@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Tabs, Tab, Box } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 const LeftHeader = () => {
+	const location = useLocation();
 	const [value, setValue] = useState("/info");
 
 	const handleChange = (event, newValue) => {
 		setValue(newValue);
 	};
+
+	useEffect(() => {
+		const path = location.pathname.split("/")[1];
+		setValue(`/${path || "info"}`);
+	}, [location]);
 	return (
 		<>
 			<Box sx={{ flex: 1 }}>
