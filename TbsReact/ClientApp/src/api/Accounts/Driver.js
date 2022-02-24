@@ -2,7 +2,7 @@ import axios from "axios";
 
 const login = async (index) => {
 	try {
-		await axios.post(`/accounts/login/${index}`);
+		await axios.post(`/login/${index}`);
 		return true;
 	} catch (e) {
 		console.log(e);
@@ -12,7 +12,7 @@ const login = async (index) => {
 
 const logout = async (index) => {
 	try {
-		await axios.post(`/accounts/logout/${index}`);
+		await axios.post(`/logout/${index}`);
 		return true;
 	} catch (e) {
 		console.log(e);

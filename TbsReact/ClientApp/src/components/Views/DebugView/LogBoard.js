@@ -7,7 +7,7 @@ import { signalRConnection } from "../../../realtime/connection";
 import { useSelector } from "react-redux";
 import { HubConnectionState } from "@microsoft/signalr/dist/esm/HubConnection";
 const LogBoard = () => {
-	const [value, setValue] = useState([]);
+	const [value, setValue] = useState("Loading ...");
 	const account = useSelector((state) => state.account.info.id);
 	const signalr = useSelector((state) => state.signalr);
 
@@ -25,7 +25,9 @@ const LogBoard = () => {
 
 	useEffect(() => {
 		if (account !== -1) {
-			getLogData(account).then((data) => setValue(data));
+			getLogData(account).then((data) => {
+				setValue(data);
+			});
 		}
 	}, [account]);
 	return (
@@ -37,9 +39,8 @@ const LogBoard = () => {
 				style={{ width: "100%" }}
 				maxRows={20}
 				minRows={20}
-				value={value.join("\n")}
+				value={value}
 				readOnly={true}
-				defaultValue="Nothing here"
 			/>
 		</>
 	);

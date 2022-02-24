@@ -2,7 +2,7 @@ import axios from "axios";
 
 const getLogData = async (index) => {
 	try {
-		const { data } = await axios.get(`/log/${index}`);
+		const { data } = await axios.get(`/logger/${index}`);
 		return data;
 	} catch (e) {
 		console.log(e);
