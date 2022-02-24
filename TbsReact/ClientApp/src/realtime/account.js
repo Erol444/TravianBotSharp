@@ -1,6 +1,4 @@
-import { signalRConnection } from "./connection";
-
-const changeAccount = (index, oldIndex) => {
+const changeAccount = (signalRConnection, index, oldIndex) => {
 	if (index !== -1) {
 		signalRConnection.invoke("AddGroup", index);
 	}

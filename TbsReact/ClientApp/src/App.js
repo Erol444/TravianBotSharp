@@ -4,36 +4,51 @@ import "react-toastify/dist/ReactToastify.css";
 
 import Layout from "./components/Layout";
 import TokenInput from "./components/TokenInput";
-import { signalRConnection, initConnection } from "./realtime/connection";
 import { changeAccount } from "./realtime/account";
 import { usePrevious } from "./hooks/usePrevious";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import { HubConnectionState } from "@microsoft/signalr/dist/esm/HubConnection";
+import { HubConnectionBuilder } from "@microsoft/signalr";
+import { SignalRContext } from "./hooks/useSignalR";
 
 const App = () => {
 	toast.configure();
 	const account = useSelector((state) => state.account.info.id);
 	const prev = usePrevious(account);
-	const dispatch = useDispatch();
 	const toastId = useRef(null);
-	useEffect(() => {
-		initConnection();
-		signalRConnection
-			.start()
-			.then(() => {
-				signalRConnection.on("message", (data) => console.log(data));
-			})
-			.catch((err) => {
-				console.error(err);
-			});
-	}, [dispatch]);
+
+	const [connection, setConnection] = useState(null);
 
 	useEffect(() => {
-		if (signalRConnection.State === HubConnectionState.Connected) {
-			changeAccount(account, prev);
+		const connect = new HubConnectionBuilder()
+			.withUrl("/live")
+			.withAutomaticReconnect()
+			.build();
+		setConnection(connect);
+	}, [setConnection]);
+
+	useEffect(() => {
+		if (
+			connection &&
+			connection.state === HubConnectionState.Disconnected
+		) {
+			connection
+				.start()
+				.then(() => {
+					connection.on("message", (message) => {
+						console.log(message);
+					});
+				})
+				.catch((error) => console.log(error));
 		}
-	}, [account, prev]);
+	}, [connection]);
+
+	useEffect(() => {
+		if (connection && connection.state === HubConnectionState.Connected) {
+			changeAccount(connection, account, prev);
+		}
+	}, [connection, account, prev]);
 
 	const [token, setToken] = useState(false);
 
@@ -52,7 +67,15 @@ const App = () => {
 	}, [account, token]);
 
 	return (
-		<>{token === false ? <TokenInput setToken={setToken} /> : <Layout />}</>
+		<>
+			<SignalRContext.Provider value={connection}>
+				{token === false ? (
+					<TokenInput setToken={setToken} />
+				) : (
+					<Layout />
+				)}
+			</SignalRContext.Provider>
+		</>
 	);
 };
 

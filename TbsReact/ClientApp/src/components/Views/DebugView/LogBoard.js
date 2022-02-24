@@ -2,18 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Typography, TextareaAutosize } from "@mui/material";
 
 import { getLogData } from "../../../api/Debug";
-import { signalRConnection } from "../../../realtime/connection";
 
 import { useSelector } from "react-redux";
 import { HubConnectionState } from "@microsoft/signalr/dist/esm/HubConnection";
+import { useSignalR } from "../../../hooks/useSignalR";
+
 const LogBoard = () => {
 	const [value, setValue] = useState("Loading ...");
 	const account = useSelector((state) => state.account.info.id);
-	const signalr = useSelector((state) => state.signalr);
-
+	const signalRConnection = useSignalR();
 	useEffect(() => {
 		if (signalRConnection.State === HubConnectionState.Connected) {
 			signalRConnection.on("logger", (data) => {
+				console.log(data);
 				setValue((prev) => `${data}\n${prev}`);
 			});
 
@@ -21,12 +22,16 @@ const LogBoard = () => {
 				signalRConnection.off("logger");
 			};
 		}
-	}, [signalr]);
+	}, [signalRConnection]);
 
 	useEffect(() => {
 		if (account !== -1) {
 			getLogData(account).then((data) => {
-				setValue(data);
+				if (data.length > 0) {
+					setValue(data);
+				} else {
+					setValue("No Logs");
+				}
 			});
 		}
 	}, [account]);

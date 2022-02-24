@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 
 import { getTaskList } from "../../../api/Debug";
-import { signalRConnection } from "../../../realtime/connection";
 import { DataGrid } from "@mui/x-data-grid";
 import { Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import { HubConnectionState } from "@microsoft/signalr/dist/esm/HubConnection";
+import { useSignalR } from "../../../hooks/useSignalR";
 
 const TaskTable = () => {
 	const [value, setValue] = useState([
@@ -27,10 +27,11 @@ const TaskTable = () => {
 	];
 
 	const account = useSelector((state) => state.account.info.id);
-	const signalr = useSelector((state) => state.signalr);
+	const signalRConnection = useSignalR();
 	useEffect(() => {
 		if (signalRConnection.State === HubConnectionState.Connected) {
 			signalRConnection.on("task", (message) => {
+				console.log(message);
 				switch (message) {
 					case "waiting":
 						setValue([
@@ -72,7 +73,7 @@ const TaskTable = () => {
 				signalRConnection.off("task");
 			};
 		}
-	}, [account, signalr]);
+	}, [account, signalRConnection]);
 
 	useEffect(() => {
 		if (account !== -1) {

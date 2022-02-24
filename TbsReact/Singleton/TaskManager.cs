@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TbsReact.Models;
 
@@ -52,11 +53,8 @@ namespace TbsReact.Singleton
         public static void AddAccount(TbsCore.Models.AccModels.Account account)
         {
             account.Tasks.OnUpdateTask = UpdateTaskTable;
-            if (account.Tasks.Count < 1)
-            {
-                if (!AccountManager.CheckGroup(account.AccInfo.Nickname)) return;
-                AccountManager.SendMessage(account.AccInfo.Nickname, "task", "waiting");
-            }
+            if (!AccountManager.CheckGroup(account.AccInfo.Nickname)) return;
+            AccountManager.SendMessage(account.AccInfo.Nickname, "task", "waiting");
         }
 
         public static List<Task> GetTaskList(string username)

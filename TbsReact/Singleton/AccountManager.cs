@@ -72,8 +72,11 @@ namespace TbsReact.Singleton
 
         public static bool CheckGroup(string key)
         {
-            instance.group.TryGetValue(key, out int value);
-            return (value > 0);
+            if (instance.group.TryGetValue(key, out int value))
+            {
+                return (value > 0);
+            }
+            return false;
         }
 
         public static async void SendMessage(string groupkey, string type, string message)
