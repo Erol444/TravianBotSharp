@@ -8,9 +8,10 @@ using TbsReact.Singleton;
 namespace TbsReact.Controllers
 {
     [ApiController]
+    [Route("api")]
     public class DriverController : ControllerBase
     {
-        [HttpPost("api/login/{index:int}")]
+        [HttpPost("login/{index:int}")]
         public async Task<ActionResult> Login(int index)
         {
             var account = AccountData.GetAccount(index);

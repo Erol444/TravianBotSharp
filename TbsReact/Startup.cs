@@ -73,6 +73,13 @@ namespace TbsReact
                     {
                         if (token[0].Contains(_token))
                         {
+                            if (context.Request.Path.Value.Contains("/api/checkToken"))
+                            {
+                                context.Response.StatusCode = 200;
+                                await context.Response.WriteAsync("OK");
+
+                                return;
+                            }
                             await next();
                             return;
                         }

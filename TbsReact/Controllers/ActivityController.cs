@@ -3,10 +3,11 @@ using TbsReact.Singleton;
 
 namespace TbsReact.Controllers
 {
+    [Route("api")]
     public class ActivityController : ControllerBase
     {
         [HttpGet]
-        [Route("api/task/{indexAcc:int}")]
+        [Route("task/{indexAcc:int}")]
         public ActionResult GetTask(int indexAcc)
         {
             var account = AccountData.GetAccount(indexAcc);
