@@ -332,8 +332,9 @@ namespace TbsCore.Tasks.LowLevel
 
                 acc.Logger.Information($"Started (fast) upgrading {building.Type} to level {lvl} in {this.Vill?.Name}");
 
-                await PostTaskCheckDorf(acc);
-
+                var build = acc.Wb.Html.GetElementbyId("build");
+                if(build != null) RemoveCurrentTask(); // Already on max lvl
+                else await PostTaskCheckDorf(acc);
                 ConfigNextExecute(acc);
                 return true;
             }
