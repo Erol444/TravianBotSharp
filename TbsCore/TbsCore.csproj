@@ -23,10 +23,8 @@
     <PackageReference Include="RestSharp" Version="106.13.0" />
     <PackageReference Include="Selenium.WebDriver" Version="3.141.0" />
     <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="98.0.4758.8000" />
-    <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="4.1.0" />
     <PackageReference Include="Serilog.Sinks.Map" Version="1.0.2" />
-    <PackageReference Include="Serilog.Sinks.TextWriter" Version="2.1.0" />
   </ItemGroup>
 
 </Project>

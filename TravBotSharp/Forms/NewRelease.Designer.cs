@@ -121,8 +121,8 @@ namespace TravBotSharp.Forms
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(460, 20);
             this.textBox5.TabIndex = 8;
-            this.textBox5.Text = "*Latest version is stabe (we hope) while latest build is unstable and may be for " +
-    "tester only.";
+            this.textBox5.Text = "*Latest version is stable (we hope) while latest build is unstable and may be for" +
+    " tester only.";
             // 
             // NewRelease
             // 

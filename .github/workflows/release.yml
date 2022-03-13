@@ -47,7 +47,7 @@ jobs:
           changelog="${changelog//$'\r'/'%0D'}"
           echo "::set-output name=changelog::$changelog"
   build:
-    runs-on: windows-latest
+    runs-on: windows-2019
     needs: version
     steps:
       - name: setup-msbuild

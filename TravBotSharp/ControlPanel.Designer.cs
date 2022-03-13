@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlPanel));
             this.button1 = new System.Windows.Forms.Button();
             this.accTabController = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
@@ -49,6 +50,7 @@
             this.questsTab = new System.Windows.Forms.TabPage();
             this.questsUc1 = new TravBotSharp.Views.QuestsUc();
             this.discordTab = new System.Windows.Forms.TabPage();
+            this.discordUc1 = new TravBotSharp.Views.DiscordUc();
             this.debugTab = new System.Windows.Forms.TabPage();
             this.debugUc1 = new TravBotSharp.Views.DebugUc();
             this.button2 = new System.Windows.Forms.Button();
@@ -65,7 +67,6 @@
             this.button4 = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
-            this.discordUc1 = new TravBotSharp.Views.DiscordUc();
             this.accTabController.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
@@ -114,7 +115,6 @@
             this.accTabController.SelectedIndex = 0;
             this.accTabController.Size = new System.Drawing.Size(971, 661);
             this.accTabController.TabIndex = 3;
-            this.accTabController.SelectedIndexChanged += new System.EventHandler(this.debugUc1.tabControl1_SelectedIndexChanged);
             this.accTabController.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabGeneral
@@ -306,6 +306,14 @@
             this.discordTab.Text = "Discord";
             this.discordTab.UseVisualStyleBackColor = true;
             // 
+            // discordUc1
+            // 
+            this.discordUc1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.discordUc1.Location = new System.Drawing.Point(2, 2);
+            this.discordUc1.Name = "discordUc1";
+            this.discordUc1.Size = new System.Drawing.Size(950, 536);
+            this.discordUc1.TabIndex = 0;
+            // 
             // debugTab
             // 
             this.debugTab.Controls.Add(this.debugUc1);
@@ -467,13 +475,6 @@
             this.panel5.Size = new System.Drawing.Size(971, 661);
             this.panel5.TabIndex = 12;
             // 
-            // discordUc1
-            // 
-            this.discordUc1.Location = new System.Drawing.Point(2, 2);
-            this.discordUc1.Name = "discordUc1";
-            this.discordUc1.Size = new System.Drawing.Size(950, 536);
-            this.discordUc1.TabIndex = 0;
-            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -481,8 +482,9 @@
             this.ClientSize = new System.Drawing.Size(1171, 661);
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ControlPanel";
-            this.Text = "Control Panel";
+            this.Text = "TravianBotSharp";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlPanel_FormClosing);
             this.accTabController.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
