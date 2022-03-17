@@ -49,6 +49,15 @@
         "resolved": "0.50.0",
         "contentHash": "J5vqespSvjxIAAtjG1Tc6ghBqyfRgDJtKnk/ifi4N0hD/f3JbPwyEDRT+Eelu/bS4C4M6mu5gt1WJqar+fByzg=="
       },
+      "OpenQA.Selenium.Chrome.ChromeDriverExtensions": {
+        "type": "Direct",
+        "requested": "[1.2.0, )",
+        "resolved": "1.2.0",
+        "contentHash": "z5/MAdjFlHcECXN4sxS356Hul5iJD1vHznAwINo9YR3j+PXVU2PjgmkLEB6zvRLxzouL8qfNBioSWkxfvlsbMg==",
+        "dependencies": {
+          "Selenium.WebDriver": "3.141.0"
+        }
+      },
       "RestSharp": {
         "type": "Direct",
         "requested": "[106.13.0, )",
@@ -63,12 +72,6 @@
         "dependencies": {
           "Newtonsoft.Json": "10.0.3"
         }
-      },
-      "Selenium.WebDriver.ChromeDriver": {
-        "type": "Direct",
-        "requested": "[98.0.4758.8000, )",
-        "resolved": "98.0.4758.8000",
-        "contentHash": "p3kenltviCY7VSJy61V0fhjJYx6ePxYlU6AfhKRU9QdlSn5pSFzXFr6tWKqlF7qVX/R+WAaW5L+g+a0qhnOqBw=="
       },
       "Serilog.Sinks.File": {
         "type": "Direct",

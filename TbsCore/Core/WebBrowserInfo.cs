@@ -8,8 +8,9 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models;
 using TbsCore.Tasks.LowLevel;
-using TbsCore.Helpers.Extension;
+using TbsCore.Helpers.ChromeExtension;
 using static TbsCore.Tasks.BotTask;
+using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
 
 namespace TbsCore.Models.AccModels
 {
@@ -75,19 +76,18 @@ namespace TbsCore.Models.AccModels
 
             if (!string.IsNullOrEmpty(access.Proxy))
             {
-                // add WebRTC Leak
-                var extensionPath = DisableWebRTCLeak.CreateExtension(username, server, access);
-                options.AddExtension(extensionPath);
+                options.AddExtension(DisableWebRTCLeak.GetPath());
+                options.AddExtensions(FingerPrintDefender.GetPath());
 
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    extensionPath = ProxyAuthentication.CreateExtension(username, server, access);
-                    options.AddExtension(extensionPath);
+                    options.AddHttpProxy(access.Proxy, access.ProxyPort, access.ProxyUsername, access.ProxyPassword);
                 }
-
-                options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
-                options.AddArgument("ignore-certificate-errors"); // --ignore-certificate-errors ?
+                else
+                {
+                    options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
+                }
             }
 
             //options.AddArgument($"--user-agent={access.UserAgent}");
