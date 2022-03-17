@@ -10,7 +10,7 @@ using TbsCore.Models;
 using TbsCore.Tasks.LowLevel;
 using TbsCore.Helpers.ChromeExtension;
 using static TbsCore.Tasks.BotTask;
-using TbsCore.Helpers.Extension;
+using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
 
 namespace TbsCore.Models.AccModels
 {
@@ -82,11 +82,12 @@ namespace TbsCore.Models.AccModels
                 if (!string.IsNullOrEmpty(access.ProxyUsername))
                 {
                     // Add proxy authentication
-                    options.AddExtension(ProxyAuthentication.CreateExtension(username, server, access));
+                    options.AddHttpProxy(access.Proxy, access.ProxyPort, access.ProxyUsername, access.ProxyPassword);
                 }
-
-                options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
-                options.AddArgument("ignore-certificate-errors"); // --ignore-certificate-errors ?
+                else
+                {
+                    options.AddArgument($"--proxy-server={access.Proxy}:{access.ProxyPort}");
+                }
             }
 
             //options.AddArgument($"--user-agent={access.UserAgent}");
