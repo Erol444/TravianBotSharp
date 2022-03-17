@@ -69,13 +69,6 @@ namespace TravBotSharp
 
         private void LoadAccounts()
         {
-            // For migration purposes only! Remove after few versions
-            if (IoHelperCore.AccountsTxtExists() && !IoHelperCore.SQLiteExists())
-            {
-                DbRepository.SyncAccountsTxt();
-                File.Delete(IoHelperCore.AccountsPath);
-            }
-
             accounts = DbRepository.GetAccounts();
 
             accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));

@@ -56,23 +56,6 @@ namespace TbsCore.Database
             }
         }
 
-        public static void SyncAccountsTxt()
-        {
-            using (var context = new TbsContext())
-            {
-                var accs = IoHelperCore.ReadAccounts();
-                var dbAccs = new List<DbAccount>(accs.Count);
-
-                foreach (var acc in accs)
-                {
-                    dbAccs.Add(ConvertAcc(acc));
-                }
-
-                context.DbAccount.AddRange(dbAccs);
-                context.SaveChanges();
-            }
-        }
-
         private static DbAccount FindDbAccount(Account acc, TbsContext context) =>
             context.DbAccount.FirstOrDefault(x => x.Username == acc.AccInfo.Nickname && x.Server == acc.AccInfo.ServerUrl);
 
