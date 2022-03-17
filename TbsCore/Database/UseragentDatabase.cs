@@ -61,7 +61,7 @@ namespace TbsCore.Database
 
         public void Load()
         {
-            if (IoHelperCore.UserAgentExists())
+            if (!IoHelperCore.UserAgentExists())
             {
                 Update();
                 return;
