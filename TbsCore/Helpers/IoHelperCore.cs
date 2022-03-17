@@ -19,16 +19,14 @@ namespace TbsCore.Helpers
 {
     public static class IoHelperCore
     {
-        public static string AccountsPath => Path.Combine(TbsPath, "accounts.txt");
-        public static string CachePath => Path.Combine(TbsPath, "cache");
+        public static string TbsPath => Path.Combine(AppContext.BaseDirectory, "Data");
+        public static string CachePath => Path.Combine(TbsPath, "Cache");
         public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
-
-        public static string TbsPath =>
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TravBotSharp");
+        public static string UseragentPath => Path.Combine(TbsPath, "useragent.json");
 
         public static bool SQLiteExists() => File.Exists(SqlitePath);
 
-        public static bool AccountsTxtExists() => File.Exists(AccountsPath);
+        public static bool UserAgentExists() => File.Exists(UseragentPath);
 
         public static string GetCacheDir(string username, string server, Access access)
         {
@@ -125,7 +123,7 @@ namespace TbsCore.Helpers
         /// <param name="acc">Account</param>
         public static void RemoveCache(Account acc)
         {
-            var userFolder = IoHelperCore.GetCacheFolder(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl, "");
+            var userFolder = GetCacheFolder(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl, "");
 
             var removeFolders = Directory
                 .GetDirectories(CachePath + "\\")
@@ -151,34 +149,6 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Read accounts from the accounts.txt file
-        /// TODO: remove in future version
-        /// </summary>
-        /// <returns>Accounts saved in the file</returns>
-        public static List<Account> ReadAccounts()
-        {
-            var accounts = new List<Account>();
-            try
-            {
-                // Open the text file using a stream reader.
-                System.IO.Directory.CreateDirectory(IoHelperCore.TbsPath);
-
-                using (StreamReader sr = new StreamReader(IoHelperCore.AccountsPath))
-                {
-                    accounts = JsonConvert.DeserializeObject<List<Account>>(sr.ReadToEnd());
-                }
-                if (accounts == null) accounts = new List<Account>();
-
-                accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine(", Exception thrown: " + e.Message);
-            }
-            return accounts;
-        }
-
-        /// <summary>
         /// Cache folder selenium will use for this account
         /// </summary>
         /// <param name="username">Username</param>
@@ -187,7 +157,7 @@ namespace TbsCore.Helpers
         /// <returns></returns>
         internal static string GetCacheFolder(string username, string server, string proxy)
         {
-            return $"{username}_{IoHelperCore.UrlRemoveHttp(server)}_{proxy}";
+            return $"{username}_{UrlRemoveHttp(server)}_{proxy}";
         }
 
         /// <summary>
