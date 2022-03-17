@@ -63,6 +63,7 @@ namespace TravBotSharp
             checkNewVersion();
             TbsCore.Models.Logging.SerilogSingleton.Init();
             this.debugUc1.InitLog(TbsCore.Models.Logging.SerilogSingleton.LogOutput);
+            UseragentDatabase.Instance.Load();
         }
 
         private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);
