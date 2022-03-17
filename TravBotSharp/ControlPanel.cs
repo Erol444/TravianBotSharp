@@ -63,19 +63,13 @@ namespace TravBotSharp
             checkNewVersion();
             TbsCore.Models.Logging.SerilogSingleton.Init();
             this.debugUc1.InitLog(TbsCore.Models.Logging.SerilogSingleton.LogOutput);
+            UseragentDatabase.Instance.Load();
         }
 
         private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);
 
         private void LoadAccounts()
         {
-            // For migration purposes only! Remove after few versions
-            if (IoHelperCore.AccountsTxtExists() && !IoHelperCore.SQLiteExists())
-            {
-                DbRepository.SyncAccountsTxt();
-                File.Delete(IoHelperCore.AccountsPath);
-            }
-
             accounts = DbRepository.GetAccounts();
 
             accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));

@@ -67,13 +67,6 @@ namespace TbsCore.Models.AccModels
         private void SetupChromeDriver(Access.Access access, string username, string server)
         {
             ChromeOptions options = new ChromeOptions();
-
-            // Turn on logging preferences for buildings localization (string).
-            //var loggingPreferences = new OpenQA.Selenium.Chromium.ChromiumPerformanceLoggingPreferences();
-            //loggingPreferences.IsCollectingNetworkEvents = true;
-            //options.PerformanceLoggingPreferences = loggingPreferences;
-            //options.SetLoggingPreference("performance", LogLevel.All);
-
             if (!string.IsNullOrEmpty(access.Proxy))
             {
                 options.AddExtension(DisableWebRTCLeak.GetPath());
@@ -90,14 +83,7 @@ namespace TbsCore.Models.AccModels
                 }
             }
 
-            //options.AddArgument($"--user-agent={access.UserAgent}");
-
-            //options.AddArguments("--disable-logging");
-            //options.AddArguments("--disable-metrics");
-            //options.AddArguments("--disable-dev-tools");
-            //options.AddArguments("--disable-gpu-shader-disk-cache");
-            //options.AddArguments("--aggressive-cache-discard");
-            //options.AddArguments("--arc-disable-gms-core-cache");
+            options.AddArgument($"--user-agent={access.Useragent}");
 
             // So websites (Travian) can't detect the bot
             options.AddExcludedArgument("enable-automation");
