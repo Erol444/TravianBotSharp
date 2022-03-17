@@ -27,4 +27,25 @@
     <PackageReference Include="Serilog.Sinks.Map" Version="1.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Assets\ChromeExtension\audiocontext-fingerprint.crx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\ChromeExtension\canvas-fingerprint-defend.crx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\ChromeExtension\DisableWebRTCLeak.crx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\ChromeExtension\font-fingerprint-defender.crx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\ChromeExtension\spoof-timezone.crx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\ChromeExtension\webgl-fingerprint-defende.crx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
