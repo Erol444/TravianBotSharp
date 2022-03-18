@@ -96,7 +96,7 @@ namespace TbsCore.Database
                     {
                         foreach (var proxy in account.Access.AllAccess)
                         {
-                            if (proxy.UseragentHash.Equals(userAgentHash))
+                            if (proxy.UseragentHash?.Equals(userAgentHash) ?? false)
                             {
                                 duplicate = true;
                                 break; // proxy loop
