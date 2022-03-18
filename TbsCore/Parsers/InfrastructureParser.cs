@@ -63,7 +63,7 @@ namespace TbsCore.Parsers
         /// <summary>
         /// Get currently building (upgrading/constructing) buildings from dorf1/dorf2
         /// </summary>
-        public static List<BuildingCurrently> CurrentlyBuilding(HtmlDocument htmlDoc, Account acc)
+        public static List<BuildingCurrently> CurrentlyBuilding(HtmlDocument htmlDoc)
         {
             var finishButton = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("finishNow"));
             if (finishButton == null) return null;

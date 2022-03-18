@@ -245,11 +245,11 @@ namespace TbsCore.Helpers
 
             foreach (var taskDone in tasksDone)
             {
-                //var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == taskDone.Location);
-                //if (building == null) building = vill.Build.Buildings.FirstOrDefault(x => x.Type == taskDone.Building);
-                //if (building == null || building.Type != taskDone.Building) continue;
+                var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == taskDone.Location);
+                if (building == null) building = vill.Build.Buildings.FirstOrDefault(x => x.Type == taskDone.Building);
+                if (building == null || building.Type != taskDone.Building) continue;
 
-                //if (building.Level < taskDone.Level) building.Level = taskDone.Level;
+                if (building.Level < taskDone.Level) building.Level = taskDone.Level;
                 vill.Build.CurrentlyBuilding.Remove(taskDone);
             }
             return true;
@@ -296,11 +296,11 @@ namespace TbsCore.Helpers
                     if (task.Level <= building.Level) return true;
 
                     // If the building is being upgraded to the desired level, task is complete
-                    //var cb = vill.Build
-                    //    .CurrentlyBuilding
-                    //    .OrderByDescending(x => x.Level)
-                    //    .FirstOrDefault(x => x.Location == task.BuildingId);
-                    //if (cb != null && task.Level <= cb.Level) return true;
+                    var cb = vill.Build
+                        .CurrentlyBuilding
+                        .OrderByDescending(x => x.Level)
+                        .FirstOrDefault(x => x.Location == task.BuildingId);
+                    if (cb != null && task.Level <= cb.Level) return true;
                     break;
 
                 case BuildingType.AutoUpgradeResFields:
@@ -553,7 +553,6 @@ namespace TbsCore.Helpers
         public static void RemoveCompletedTasks(Village vill) =>
             vill.Build.Tasks.RemoveAll(task => IsTaskCompleted(vill, task));
 
-        
         #region Functions for auto-building resource fields
 
         public static Building FindLowestLevelBuilding(List<Building> buildings)
@@ -570,7 +569,7 @@ namespace TbsCore.Helpers
 
             var prodArr = vill.Res.Production.ToArray();
             var dict = new Dictionary<BuildingEnum, long>();
-            for(int i=0; i<4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 var resField = (BuildingEnum)i + 1;
                 if (!distinct.Any(x => x == resField)) continue;

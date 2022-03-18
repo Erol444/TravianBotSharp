@@ -180,8 +180,6 @@ namespace TbsCore.Helpers
             //remove any further UpdateDorf2 BotTasks for this village (if below 5min)
             acc.Tasks.Remove(typeof(UpdateDorf2), vill, 5);
 
-            UpdateCurrentlyBuilding(acc, vill);
-
             var buildings = InfrastructureParser.GetBuildings(acc, acc.Wb.Html);
             foreach (var field in buildings)
             {
@@ -190,6 +188,8 @@ namespace TbsCore.Helpers
                 building.Type = field.Type;
                 building.UnderConstruction = field.UnderConstruction;
             }
+
+            UpdateCurrentlyBuilding(acc, vill);
         }
 
         public static void UpdateDorf1Info(Account acc)
@@ -199,8 +199,6 @@ namespace TbsCore.Helpers
 
             //remove any further UpdateDorf1 BotTasks for this village (if below 5min)
             acc.Tasks.Remove(typeof(UpdateDorf1), vill, 5);
-
-            UpdateCurrentlyBuilding(acc, vill);
 
             var dorf1Movements = TroopsMovementParser.ParseDorf1Movements(acc.Wb.Html);
 
@@ -224,16 +222,20 @@ namespace TbsCore.Helpers
                 building.Type = field.Type;
                 building.UnderConstruction = field.UnderConstruction;
             }
+
+            UpdateCurrentlyBuilding(acc, vill);
         }
 
         private static void UpdateCurrentlyBuilding(Account acc, Village vill)
         {
             vill.Build.CurrentlyBuilding.Clear();
-            var cb = InfrastructureParser.CurrentlyBuilding(acc.Wb.Html, acc);
+            var cb = InfrastructureParser.CurrentlyBuilding(acc.Wb.Html);
             if (cb == null) return; // Nothing is currently building
 
             for (int i = 0; i < cb.Count; i++)
             {
+                var build = vill.Build.Buildings.FirstOrDefault(x => x.Type == cb[i].Building && x.Level - cb[i].Level < 3);
+                cb[i].Location = build.Id;
                 vill.Build.CurrentlyBuilding.Add(cb[i]);
             }
         }
