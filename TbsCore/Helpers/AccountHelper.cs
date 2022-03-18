@@ -61,7 +61,7 @@ namespace TbsCore.Helpers
             // Get the server info (on first running the account)
             if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0)
             {
-                acc.Tasks.Add(new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) });
+                acc.Tasks.Add(new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) }, true);
             }
 
             if (acc.AccInfo.Tribe == null)
@@ -117,7 +117,7 @@ namespace TbsCore.Helpers
                 {
                     ExecuteAt = DateTime.Now.AddMinutes(ran.Next(40, 80)),
                     Priority = Tasks.BotTask.TaskPriority.Low
-                });
+                }, true);
             }
         }
 

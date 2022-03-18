@@ -106,7 +106,7 @@ namespace TbsCore.Models.AccModels
             if (acc.Settings.DisableImages) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
 
             // Add browser caching
-            var dir = IoHelperCore.GetCacheDir(username, server, access);
+            var dir = IoHelperCore.UserCachePath(username, server, access.Proxy);
             Directory.CreateDirectory(dir);
             options.AddArguments("user-data-dir=" + dir);
 

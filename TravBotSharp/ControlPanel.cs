@@ -72,7 +72,12 @@ namespace TravBotSharp
         {
             accounts = DbRepository.GetAccounts();
 
-            accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
+            accounts.ForEach(x =>
+            {
+                ObjectHelper.FixAccObj(x, x);
+                x.Tasks = new TaskList(x);
+                x.Tasks.Load();
+            });
 
             RefreshAccView();
         }
