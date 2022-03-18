@@ -111,7 +111,10 @@ namespace TbsCore.Tasks.LowLevel
             this.Task.ConstructNew = false;
 
             acc.Logger.Warning($"Started construction of {this.Task.Building} in {this.Vill?.Name}");
-
+            if (Task.Level == 1)
+            {
+                RemoveCurrentTask();
+            }
             await PostTaskCheckDorf(acc);
 
             return TaskRes.Executed;
@@ -214,7 +217,10 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             acc.Logger.Information($"Upgraded {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
-
+            if (Task.Level == lvl)
+            {
+                RemoveCurrentTask();
+            }
             await PostTaskCheckDorf(acc);
 
             return TaskRes.Executed;
@@ -333,7 +339,7 @@ namespace TbsCore.Tasks.LowLevel
                 acc.Logger.Information($"Started (fast) upgrading {building.Type} to level {lvl} in {this.Vill?.Name}");
 
                 var build = acc.Wb.Html.GetElementbyId("build");
-                if(build != null) RemoveCurrentTask(); // Already on max lvl
+                if (build != null) RemoveCurrentTask(); // Already on max lvl
                 else await PostTaskCheckDorf(acc);
                 ConfigNextExecute(acc);
                 return true;
