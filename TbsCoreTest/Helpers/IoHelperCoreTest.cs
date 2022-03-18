@@ -33,3 +33,4 @@ namespace TbsCoreTest.Helpers
             Assert.Equal(@$"{IoHelperCore.TbsPath}\{server}\{username}\Cache\default", IoHelperCore.UserCachePath(username, server, ""));
         }
     }
+}
