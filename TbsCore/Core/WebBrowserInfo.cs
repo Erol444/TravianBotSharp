@@ -126,7 +126,7 @@ namespace TbsCore.Models.AccModels
                 else this.Driver = new ChromeDriver(chromeService, options);
 
                 // Set timeout
-                this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(60);
+                this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromMinutes(5);
             }
             catch (Exception e)
             {
