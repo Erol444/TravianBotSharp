@@ -23,7 +23,7 @@ namespace TbsCore.Helpers.Extension
         /// <returns>Path of the chrome extension</returns>
         public static string CreateExtension(string username, string server, Access access)
         {
-            var cacheDir = IoHelperCore.GetCacheDir(username, server, access);
+            var cacheDir = IoHelperCore.UserCachePath(username, server, access.Proxy);
             var dir = Path.Combine(cacheDir, "DisableWebRTCLeak");
             Directory.CreateDirectory(dir);
 

@@ -150,6 +150,8 @@ namespace TravBotSharp
         private void button4_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+            IoHelperCore.CreateUserData(Acc.AccInfo.Nickname, Acc.AccInfo.ServerUrl);
+
             this.Close();
         }
 

@@ -20,20 +20,25 @@ namespace TbsCore.Helpers
     public static class IoHelperCore
     {
         public static string TbsPath => Path.Combine(AppContext.BaseDirectory, "Data");
-        public static string CachePath => Path.Combine(TbsPath, "Cache");
         public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
         public static string UseragentPath => Path.Combine(TbsPath, "useragent.json");
+
+        public static string UserDataPath(string username, string server) => Path.Combine(TbsPath, server, username);
+
+        public static string UserCachePath(string username, string server) => Path.Combine(UserDataPath(username, server), "Cache");
+
+        public static string UserCachePath(string username, string server, string host) => Path.Combine(UserCachePath(username, server), "Cache", string.IsNullOrWhiteSpace(host) ? "default" : host);
 
         public static bool SQLiteExists() => File.Exists(SqlitePath);
 
         public static bool UserAgentExists() => File.Exists(UseragentPath);
 
-        public static string GetCacheDir(string username, string server, Access access)
-        {
-            return Path.Combine(IoHelperCore.CachePath, GetCacheFolder(username, server, access.Proxy));
-        }
+        public static bool UserDataExists(string username, string server) => Directory.Exists(UserDataPath(username, server));
+
+        public static void CreateUserData(string username, string server) => Directory.CreateDirectory(UserDataPath(username, server));
 
         /// <summary>
+
         /// Gets set by WinForms on startup, so TbsCore can alert user (sound+popup)
         /// </summary>
         public static Func<string, bool> AlertUser { get; set; }
@@ -123,14 +128,10 @@ namespace TbsCore.Helpers
         /// <param name="acc">Account</param>
         public static void RemoveCache(Account acc)
         {
-            var userFolder = GetCacheFolder(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl, "");
+            var userCacheFolder = UserCachePath(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
+            if (!UserDataExists(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl)) return;
 
-            var removeFolders = Directory
-                .GetDirectories(CachePath + "\\")
-                .Where(x => x.Replace(CachePath + "\\", "").StartsWith(userFolder))
-                .ToArray();
-
-            if (removeFolders == null) return;
+            var removeFolders = Directory.GetDirectories(userCacheFolder);
 
             for (int i = 0; i < removeFolders.Count(); i++)
             {
@@ -146,18 +147,6 @@ namespace TbsCore.Helpers
         public static string UrlRemoveHttp(string url)
         {
             return url.Replace("https://", "").Replace("http://", "");
-        }
-
-        /// <summary>
-        /// Cache folder selenium will use for this account
-        /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="server">Server url</param>
-        /// <param name="proxy">Proxy ip</param>
-        /// <returns></returns>
-        internal static string GetCacheFolder(string username, string server, string proxy)
-        {
-            return $"{username}_{UrlRemoveHttp(server)}_{proxy}";
         }
 
         /// <summary>
