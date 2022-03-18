@@ -25,13 +25,17 @@ namespace TbsCore.Helpers
 
         public static string UserDataPath(string username, string server) => Path.Combine(TbsPath, server, username);
 
+        public static string UserTaskPath(string username, string server) => Path.Combine(UserDataPath(username, server), "tasks.json");
+
         public static string UserCachePath(string username, string server) => Path.Combine(UserDataPath(username, server), "Cache");
 
-        public static string UserCachePath(string username, string server, string host) => Path.Combine(UserCachePath(username, server), "Cache", string.IsNullOrWhiteSpace(host) ? "default" : host);
+        public static string UserCachePath(string username, string server, string host) => Path.Combine(UserCachePath(username, server), string.IsNullOrWhiteSpace(host) ? "default" : host);
 
         public static bool SQLiteExists() => File.Exists(SqlitePath);
 
         public static bool UserAgentExists() => File.Exists(UseragentPath);
+
+        public static bool UserTaskExists(string username, string server) => File.Exists(UserTaskPath(username, server));
 
         public static bool UserDataExists(string username, string server) => Directory.Exists(UserDataPath(username, server));
 
@@ -158,6 +162,7 @@ namespace TbsCore.Helpers
             foreach (var acc in accounts)
             {
                 if (logout) Logout(acc);
+                acc.Tasks.Save();
                 DbRepository.SaveAccount(acc);
             }
         }
@@ -174,7 +179,6 @@ namespace TbsCore.Helpers
 
                 acc.Logger = new Logger(acc.AccInfo.Nickname);
 
-                acc.Tasks = new TaskList();
                 acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
 
                 acc.Wb = new WebBrowserInfo();
@@ -210,7 +214,6 @@ namespace TbsCore.Helpers
                 acc.Wb.Dispose();
                 acc.Wb = default;
             }
-            acc.Tasks = default; //TODO: somehow save tasks, JSON cant parse/stringify abstract classes :(
         }
     }
 }

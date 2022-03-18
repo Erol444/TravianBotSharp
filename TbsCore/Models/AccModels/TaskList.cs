@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks;
 using static TbsCore.Tasks.BotTask;
+using Newtonsoft.Json;
+using System.IO;
+using TbsCore.Helpers;
 
 namespace TbsCore.Models.AccModels
 {
@@ -12,11 +15,13 @@ namespace TbsCore.Models.AccModels
         public delegate void TaskUpdated();
 
         private readonly List<BotTask> _tasks;
+        private readonly Account _account;
         public TaskUpdated OnUpdateTask;
 
-        public TaskList()
+        public TaskList(Account account)
         {
             _tasks = new List<BotTask>();
+            _account = account;
         }
 
         public void Add(BotTask task, bool IfNotExists = false, Village vill = null)
@@ -151,5 +156,40 @@ namespace TbsCore.Models.AccModels
         {
             return _tasks.ToList();
         }
+
+        public void Save()
+        {
+            var list = new List<TaskFileModel>();
+            foreach (var task in _tasks)
+            {
+                list.Add(new TaskFileModel()
+                {
+                    Type = task.GetType().ToString(),
+                    Content = JsonConvert.SerializeObject(task),
+                });
+            }
+
+            File.WriteAllText(IoHelperCore.UserTaskPath(_account.AccInfo.Nickname, _account.AccInfo.ServerUrl), JsonConvert.SerializeObject(list));
+        }
+
+        public void Load()
+        {
+            if (!IoHelperCore.UserTaskExists(_account.AccInfo.Nickname, _account.AccInfo.ServerUrl))
+                return;
+            var str = File.ReadAllText(IoHelperCore.UserTaskPath(_account.AccInfo.Nickname, _account.AccInfo.ServerUrl));
+            var list = JsonConvert.DeserializeObject<List<TaskFileModel>>(str);
+            foreach (var task in list)
+            {
+                var type = Type.GetType(task.Type);
+                var botTask = JsonConvert.DeserializeObject(task.Content, type) as BotTask;
+                _tasks.Add(botTask);
+            }
+        }
+    }
+
+    public class TaskFileModel
+    {
+        public string Type { get; set; }
+        public string Content { get; set; }
     }
 }
