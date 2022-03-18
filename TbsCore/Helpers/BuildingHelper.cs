@@ -180,7 +180,7 @@ namespace TbsCore.Helpers
             {
                 Vill = vill,
                 ExecuteAt = nextExecution,
-            });
+            }, true);
         }
 
         public static void ReStartDemolishing(Account acc, Village vill)
