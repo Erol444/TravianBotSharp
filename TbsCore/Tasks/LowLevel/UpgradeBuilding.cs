@@ -217,7 +217,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             acc.Logger.Information($"Upgraded {this.Task.Building} to level {lvl} in {this.Vill?.Name}");
-            if (Task.Level == lvl)
+            if (Task.Level == lvl + 1)
             {
                 RemoveCurrentTask();
             }
