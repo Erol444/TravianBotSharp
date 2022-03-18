@@ -255,11 +255,11 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // Check if the task is completed
-            //var taskCb = Vill.Build
-            //    .CurrentlyBuilding
-            //    .OrderByDescending(x => x.Level)
-            //    .FirstOrDefault(x => x.Location == this.Task.BuildingId);
-            //if (taskCb != null && this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
+            var taskCb = Vill.Build
+                .CurrentlyBuilding
+                .OrderByDescending(x => x.Level)
+                .FirstOrDefault(x => x.Location == this.Task.BuildingId);
+            if (taskCb != null && this.Task.TaskType == BuildingType.General && this.Task.Level <= taskCb.Level) RemoveCurrentTask();
         }
 
         /// <summary>
