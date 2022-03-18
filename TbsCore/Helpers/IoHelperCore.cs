@@ -23,7 +23,7 @@ namespace TbsCore.Helpers
         public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
         public static string UseragentPath => Path.Combine(TbsPath, "useragent.json");
 
-        public static string UserDataPath(string username, string server) => Path.Combine(TbsPath, server, username);
+        public static string UserDataPath(string username, string server) => Path.Combine(TbsPath, server, UrlRemoveHttp(username));
 
         public static string UserTaskPath(string username, string server) => Path.Combine(UserDataPath(username, server), "tasks.json");
 
