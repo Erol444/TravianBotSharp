@@ -228,7 +228,7 @@ namespace TbsCore.Helpers
                     // Update adventures
                     if(homeVill == null)
                     {
-                        acc.Tasks.Add( new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+                        acc.Tasks.Add( new HeroUpdateInfo() { ExecuteAt = DateTime.Now }, true);
                     }
                     else if (heroReady &&
                         (homeVill.Build.Buildings.Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level)) &&
