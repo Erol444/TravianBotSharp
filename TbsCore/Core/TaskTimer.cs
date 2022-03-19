@@ -11,10 +11,10 @@ using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Models.AccModels
 {
-    public class TaskTimer : IDisposable
+    public sealed class TaskTimer : IDisposable
     {
         private readonly Account acc;
-        private Timer Timer { get; set; }
+        private readonly Timer Timer;
 
         public bool? IsBotRunning() => Timer.Enabled;
 
@@ -29,14 +29,11 @@ namespace TbsCore.Models.AccModels
         public void Start()
         {
             Timer.Start();
-            Timer.Enabled = true;
-            Timer.AutoReset = true;
         }
 
         public void Stop()
         {
             Timer.Stop();
-            Timer.Enabled = false;
         }
 
         private void TimerElapsed(Object source, ElapsedEventArgs e) => NewTick();
@@ -116,7 +113,7 @@ namespace TbsCore.Models.AccModels
 
         public void Dispose()
         {
-            this.Timer.Dispose();
+            Timer.Dispose();
         }
     }
 }
