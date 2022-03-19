@@ -173,7 +173,7 @@ namespace TbsCore.Helpers
 
                     var reqMapInfo = new RestSharp.RestRequest
                     {
-                        Resource = "/api/v1/ajax/viewTileDetails",
+                        Resource = "/api/v1/map/tile-details",
                         Method = Method.POST,
                         RequestFormat = DataFormat.Json
                     };
