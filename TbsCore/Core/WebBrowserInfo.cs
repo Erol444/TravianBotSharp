@@ -235,7 +235,7 @@ namespace TbsCore.Models.AccModels
         {
             CheckChromeOpen();
             IJavaScriptExecutor js = acc.Wb.Driver;
-            return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
+            return (string)js.ExecuteScript("return Travian.abrogatedReanimatingAftereffects");
         }
 
         public IWebElement FindElementById(string element)
