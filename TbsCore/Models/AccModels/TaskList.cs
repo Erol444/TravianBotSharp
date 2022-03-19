@@ -184,6 +184,12 @@ namespace TbsCore.Models.AccModels
                 var type = Type.GetType(task.Type);
                 var botTask = JsonConvert.DeserializeObject(task.Content, type) as BotTask;
                 if (botTask.Stage == TaskStage.Executing) botTask.Stage = TaskStage.Start;
+                if (botTask.Vill != null)
+                {
+                    var vill = _account.Villages.FirstOrDefault(x => x.Id == botTask?.Vill.Id);
+                    if (vill != null) continue;
+                    botTask.Vill = vill;
+                }
                 _tasks.Add(botTask);
             }
         }
