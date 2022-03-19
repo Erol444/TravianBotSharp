@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -87,21 +88,13 @@ namespace TbsCore.Helpers
 
         public static async Task SwitchVillage(Account acc, int id)
         {
-            Uri uri = new Uri(acc.Wb.CurrentUrl);
+            var node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
+            if (node is null) return;
 
-            // Parse village list again and find correct href
-            var vills = RightBarParser.GetVillages(acc.Wb.Html, acc.AccInfo.ServerVersion);
-            var href = vills.FirstOrDefault(x => x.Id == id)?.Href;
-            if (string.IsNullOrEmpty(href)) // Login screen, server messages etc.
-            {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
-                return;
-            }
-
-            var val = $"?newdid={id}";
-            // The * after href is for query selector; it will select all elements that contain {val}
-            await DriverHelper.ClickByAttributeValue(acc, "href*", val);
-            await TaskExecutor.PageLoaded(acc);
+            var element = acc.Wb.Driver.FindElement(By.XPath($"//div[@data-did='{id}']/a"));
+            element.Click();
+            //dorf1.php?newdid=25270&
+            await DriverHelper.WaitPageChange(acc, $"{id}");
         }
 
         /// <summary>

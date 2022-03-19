@@ -183,9 +183,7 @@ namespace TbsCore.Models.AccModels
             }
             while (repeat);
 
-            await Task.Delay(AccountHelper.Delay(acc));
-            UpdateHtml();
-            await TaskExecutor.PageLoaded(acc);
+            await DriverHelper.WaitPageLoaded(acc);
         }
 
         public void UpdateHtml()
