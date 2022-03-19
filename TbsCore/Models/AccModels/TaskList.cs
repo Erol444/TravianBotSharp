@@ -162,6 +162,7 @@ namespace TbsCore.Models.AccModels
             var list = new List<TaskFileModel>();
             foreach (var task in _tasks)
             {
+                if (task.Stage == TaskStage.Executing) task.Stage = TaskStage.Start;
                 list.Add(new TaskFileModel()
                 {
                     Type = task.GetType().ToString(),
@@ -182,6 +183,7 @@ namespace TbsCore.Models.AccModels
             {
                 var type = Type.GetType(task.Type);
                 var botTask = JsonConvert.DeserializeObject(task.Content, type) as BotTask;
+                if (botTask.Stage == TaskStage.Executing) botTask.Stage = TaskStage.Start;
                 _tasks.Add(botTask);
             }
         }
