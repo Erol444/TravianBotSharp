@@ -20,17 +20,33 @@ namespace TbsBrowser
     {
         private ChromeDriver Driver;
         private readonly ChromeDriverService chromeService;
-        private readonly Proxy Proxy;
+        private readonly List<Proxy> Proxies;
+        private int selected = 0;
+        private const string username = "vinaghost";
+        private const string password = "0938682566";
 
         public MainForm()
         {
             InitializeComponent();
             Useragent.Instance.Load();
 
-            Proxy = new();
+            Proxies = new();
             chromeService = ChromeDriverService.CreateDefaultService();
             chromeService.HideCommandPromptWindow = true;
             button2.Enabled = false;
+        }
+
+        private void UpdateListView()
+        {
+            listView1.Items.Clear();
+            foreach (var proxy in Proxies)
+            {
+                var item = new ListViewItem();
+                item.SubItems[0].Text = proxy.Host;
+                item.SubItems.Add(proxy.Port.ToString());
+                item.SubItems.Add(proxy.Check ? "✔" : "❌");
+                listView1.Items.Add(item);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -41,7 +57,7 @@ namespace TbsBrowser
             options.AddExtension(DisableWebRTCLeak.GetPath());
             options.AddExtensions(FingerPrintDefender.GetPath());
 
-            options.AddHttpProxy(Proxy.Host, Proxy.Port, Proxy.Username, Proxy.Password);
+            options.AddHttpProxy(Proxies[selected].Host, Proxies[selected].Port, username, password);
 
             options.AddExcludedArgument("enable-automation");
             options.AddAdditionalOption("useAutomationExtension", false);
@@ -65,33 +81,71 @@ namespace TbsBrowser
             catch { }
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            Proxy.Init(textBox1.Text);
-            richTextBox1.Text = $"{Proxy.Host} {Proxy.Port} {Proxy.Username} {Proxy.Password}";
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             button2.Enabled = false;
-            Driver.Close();
+            try
+            {
+                Driver.Close();
+            }
+            catch { }
             button1.Enabled = true;
         }
 
         private async void button3_Click(object sender, EventArgs e)
         {
             button3.Enabled = false;
-            var client = new RestClient("https://api.ipify.org/");
-            ICredentials credentials = new NetworkCredential(Proxy.Username, Proxy.Password);
-            client.Proxy = new WebProxy($"{Proxy.Host}:{Proxy.Port}", false, null, credentials);
-            client.Timeout = 5000;
-            var response = await client.ExecuteAsync(new RestRequest()
-            {
-                Method = Method.GET,
-            });
+            richTextBox1.Enabled = false;
+            List<Task> tasks = new();
+            ICredentials credentials = new NetworkCredential(username, password);
 
-            richTextBox2.Text = response.Content.Equals(Proxy.Host) ? $"SUCCESS {response.Content}" : "FAIL";
+            foreach (var proxy in Proxies)
+            {
+                tasks.Add(Task.Run(async () =>
+                {
+                    var client = new RestClient("https://api.ipify.org/")
+                    {
+                        Proxy = new WebProxy($"{proxy.Host}:{proxy.Port}", false, null, credentials),
+                        Timeout = 5000
+                    };
+                    var response = await client.ExecuteAsync(new RestRequest()
+                    {
+                        Method = Method.GET,
+                    });
+
+                    proxy.Check = response.Content.Equals(proxy.Host);
+                }));
+            }
+
+            await Task.WhenAll(tasks);
+            UpdateListView();
             button3.Enabled = true;
+            richTextBox1.Enabled = true;
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            var strArr = richTextBox1.Text.Split('\n');
+            label3.Text = $"Loaded {strArr.Length}";
+            Proxies.Clear();
+            foreach (var str in strArr)
+            {
+                var proxy = Proxy.Init(str.Trim());
+                if (proxy is not null)
+                {
+                    Proxies.Add(proxy);
+                }
+            }
+            UpdateListView();
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listView1.SelectedIndices.Count < 1) return;
+            selected = listView1.SelectedIndices[0];
+            var proxy = Proxies[selected];
+            var check = proxy.Check ? "✔" : "❌";
+            textBox1.Text = $"{proxy.Host} {proxy.Port} {check}";
         }
     }
 }

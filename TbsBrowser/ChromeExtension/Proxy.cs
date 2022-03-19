@@ -10,17 +10,18 @@ namespace TbsBrowser.ChromeExtension
     {
         public string Host { get; set; }
         public int Port { get; set; }
-        public string Username { get; set; }
-        public string Password { get; set; }
 
-        public void Init(string str)
+        public bool Check { get; set; }
+
+        public static Proxy Init(string str)
         {
+            var proxy = new Proxy();
             var strArr = str.Split(' ');
-            if (strArr.Length != 4) return;
-            Host = strArr[0];
-            Port = int.Parse(strArr[1]);
-            Username = strArr[2];
-            Password = strArr[3];
+            if (strArr.Length != 2) return null;
+            proxy.Host = strArr[0];
+            proxy.Port = int.Parse(strArr[1]);
+            proxy.Check = false;
+            return proxy;
         }
     }
 }
