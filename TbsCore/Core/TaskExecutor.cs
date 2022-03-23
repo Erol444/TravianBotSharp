@@ -124,7 +124,7 @@ namespace TbsCore.Helpers
             {
                 acc.Logger.Error(e, $"Error executing task {task.GetName()}! Vill {task.Vill?.Name}");
                 task.RetryCounter++;
-                if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
+                if (task.NextExecute == null) task.NextExecute = DateTime.Now;
             }
 
             //We want to re-execute the same task later

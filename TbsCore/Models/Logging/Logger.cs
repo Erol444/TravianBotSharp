@@ -1,7 +1,10 @@
 ﻿using System;
 using Serilog;
+using TbsCore.Extensions;
+using TbsCore.Tasks;
 
 namespace TbsCore.Models.Logging
+
 {
     public class Logger
     {
@@ -12,19 +15,40 @@ namespace TbsCore.Models.Logging
             _logger = Log.ForContext("Username", username);
         }
 
-        public void Information(string message)
+        public void Information(string message, BotTask obj = null)
         {
-            _logger.Information(message);
+            if (obj != null)
+            {
+                _logger.Information($"[{obj.GetName()}] {message}");
+            }
+            else
+            {
+                _logger.Information(message);
+            }
         }
 
-        public void Warning(string message)
+        public void Warning(string message, BotTask obj = null)
         {
-            _logger.Warning(message);
+            if (obj != null)
+            {
+                _logger.Warning($"[{obj.GetName()}] {message}");
+            }
+            else
+            {
+                _logger.Warning(message);
+            }
         }
 
-        public void Error(Exception error, string message)
+        public void Error(Exception error, string message, BotTask obj = null)
         {
-            _logger.Error(error, message);
+            if (obj != null)
+            {
+                _logger.Error(error, $"[{obj.GetName()}] {message}");
+            }
+            else
+            {
+                _logger.Error(error, message);
+            }
         }
     }
 }

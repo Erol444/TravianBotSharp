@@ -16,7 +16,7 @@ namespace TbsCore.Tasks.LowLevel
             await Task.Delay(AccountHelper.Delay(acc));
 
             // Building task
-            BuildingHelper.ReStartBuilding(acc, Vill);
+            UpgradeBuildingHelper.ReStartBuilding(acc, Vill);
             await Task.Delay(AccountHelper.Delay(acc));
             BuildingHelper.ReStartDemolishing(acc, Vill);
             await Task.Delay(AccountHelper.Delay(acc));

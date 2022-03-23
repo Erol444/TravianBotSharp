@@ -7,6 +7,7 @@ using static TbsCore.Tasks.BotTask;
 using Newtonsoft.Json;
 using System.IO;
 using TbsCore.Helpers;
+using TbsCore.Tasks.LowLevel;
 
 namespace TbsCore.Models.AccModels
 {
@@ -182,6 +183,10 @@ namespace TbsCore.Models.AccModels
             foreach (var task in list)
             {
                 var type = Type.GetType(task.Type);
+                if (type == typeof(Sleep))
+                {
+                    continue;
+                }
                 var botTask = JsonConvert.DeserializeObject(task.Content, type) as BotTask;
                 if (botTask.Stage == TaskStage.Executing) botTask.Stage = TaskStage.Start;
                 if (botTask.Vill != null)

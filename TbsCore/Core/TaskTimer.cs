@@ -21,7 +21,7 @@ namespace TbsCore.Models.AccModels
         public TaskTimer(Account account)
         {
             acc = account;
-            Timer = new Timer(500);
+            Timer = new Timer(1000);
             Timer.Elapsed += TimerElapsed;
             Start();
         }

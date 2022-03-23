@@ -113,7 +113,7 @@ namespace TbsCore.Helpers
         /// <param name="vill">Village</param>
         /// <param name="res">Required resources</param>
         /// <returns>Whether storage is too low</returns>
-        private static bool IsStorageTooLow(Account acc, Village vill, Resources res)
+        public static bool IsStorageTooLow(Account acc, Village vill, Resources res)
         {
             bool upgradeWarehouse =
                 res.Wood > vill.Res.Capacity.WarehouseCapacity ||
@@ -157,7 +157,7 @@ namespace TbsCore.Helpers
             {
                 task.Level = current.Level + 1;
             }
-            BuildingHelper.AddBuildingTask(acc, vill, task, false);
+            UpgradeBuildingHelper.AddBuildingTask(acc, vill, task, false);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace TbsCore.Helpers
         /// <param name="neededRes">Needed resources</param>
         /// <param name="heroRes">Hero resources</param
         /// <param name="task">Potential BuildingTask that requires the resources</param>
-        private static HeroEquip UseHeroResources(Account acc, Village vill, ref long[] neededRes, long[] heroRes, BuildingTask task = null)
+        public static HeroEquip UseHeroResources(Account acc, Village vill, ref long[] neededRes, long[] heroRes, BuildingTask task = null)
         {
             var useRes = new List<(Classificator.HeroItemEnum, int)>();
 
@@ -208,24 +208,6 @@ namespace TbsCore.Helpers
                 ExecuteAt = DateTime.Now.AddHours(-2), // -2 since sendRes is -1
                 Vill = vill
             };
-
-            acc.Tasks.Add(heroEquip);
-
-            // A BuildTask needed the resources. If it was auto-build res fields task, make a new
-            // general building task - so resources actually get used for intended building upgrade
-            if (task != null && task.TaskType == Classificator.BuildingType.AutoUpgradeResFields)
-            {
-                var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId);
-                var lvl = building.Level;
-                if (building.UnderConstruction) lvl++;
-                BuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
-                {
-                    TaskType = Classificator.BuildingType.General,
-                    Building = task.Building,
-                    BuildingId = task.BuildingId,
-                    Level = ++lvl
-                }, false);
-            }
 
             return heroEquip;
         }
@@ -304,7 +286,7 @@ namespace TbsCore.Helpers
             return neededRes;
         }
 
-        private static long[] SubtractResources(long[] subtractFrom, long[] subtract, bool capToZero)
+        public static long[] SubtractResources(long[] subtractFrom, long[] subtract, bool capToZero)
         {
             var ret = new long[4];
 

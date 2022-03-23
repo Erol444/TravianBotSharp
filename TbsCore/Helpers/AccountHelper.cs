@@ -91,7 +91,7 @@ namespace TbsCore.Helpers
                 //if (vill.Troops.Researched.Count == 0) acc.Tasks.Add( new UpdateTroops() { ExecuteAt = DateTime.Now, vill = vill });
                 TroopsHelper.ReStartResearchAndImprovement(acc, vill);
                 TroopsHelper.ReStartTroopTraining(acc, vill);
-                BuildingHelper.ReStartBuilding(acc, vill);
+                UpgradeBuildingHelper.ReStartBuilding(acc, vill);
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
