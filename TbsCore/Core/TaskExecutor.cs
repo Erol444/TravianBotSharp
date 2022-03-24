@@ -82,49 +82,25 @@ namespace TbsCore.Helpers
 
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
 
-            acc.Logger.Information($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
+            acc.Logger.Information($"Executing task {task.GetName()} in village {task.Vill.Name}");
 
-            try
+            switch (await task.Execute(acc))
             {
-                switch (await task.Execute(acc))
-                {
-                    case TaskRes.Retry:
-                        task.RetryCounter++;
-                        if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
-                        break;
+                case TaskRes.Retry:
+                    task.RetryCounter++;
+                    if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
+                    break;
 
-                    default:
-                        task.RetryCounter = 0;
-                        if (task.NextTask != null)
-                        {
-                            task.NextTask.ExecuteAt = DateTime.MinValue.AddHours(5);
-                            task.NextTask.Stage = TaskStage.Start;
-                            acc.Tasks.Add(task.NextTask);
-                            task.NextTask = null;
-                        }
-                        break;
-                }
-            }
-            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
-            {
-                acc.Logger.Warning($"Chrome has problem while executing task {task.GetName()}! Vill {task.Vill?.Name}. Try reopen Chrome");
-
-                acc.Tasks.Add(new ReopenDriver()
-                {
-                    ExecuteAt = DateTime.MinValue,
-                    Priority = TaskPriority.High,
-                    ReopenAt = DateTime.MinValue
-                });
-
-                //try exccute task after we reopen chrome 1 mintues
-
-                if (task.NextExecute == null) task.NextExecute = DateTime.MinValue.AddMinutes(1); // make sure current task is excuted after reopen driver
-            }
-            catch (Exception e)
-            {
-                acc.Logger.Error(e, $"Error executing task {task.GetName()}! Vill {task.Vill?.Name}");
-                task.RetryCounter++;
-                if (task.NextExecute == null) task.NextExecute = DateTime.Now;
+                default:
+                    task.RetryCounter = 0;
+                    if (task.NextTask != null)
+                    {
+                        task.NextTask.ExecuteAt = DateTime.MinValue.AddHours(5);
+                        task.NextTask.Stage = TaskStage.Start;
+                        acc.Tasks.Add(task.NextTask);
+                        task.NextTask = null;
+                    }
+                    break;
             }
 
             //We want to re-execute the same task later
@@ -135,18 +111,18 @@ namespace TbsCore.Helpers
                 acc.Tasks.ReOrder();
 
                 task.Stage = TaskStage.Start;
-                acc.Logger.Warning($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}"));
+                acc.Logger.Warning($"Task {task.GetName()} in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}");
                 return;
             }
             // Remove the task from the task list
             acc.Tasks.Remove(task);
             if (task.RetryCounter >= 3)
             {
-                acc.Logger.Warning($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is already re-executed 3 times. Ignore it"));
+                acc.Logger.Warning($"Task {task.GetName()} in village {task.Vill.Name} is already re-executed 3 times. Ignore it");
             }
             else
             {
-                acc.Logger.Information($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is done."));
+                acc.Logger.Information($"Task {task.GetName()} in village {task.Vill.Name} is done.");
             }
         }
 

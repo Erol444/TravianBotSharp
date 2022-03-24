@@ -21,7 +21,7 @@ namespace TbsCore.Models.AccModels
         public TaskTimer(Account account)
         {
             acc = account;
-            Timer = new Timer(1000);
+            Timer = new Timer(500);
             Timer.Elapsed += TimerElapsed;
             Start();
         }
@@ -36,7 +36,7 @@ namespace TbsCore.Models.AccModels
             Timer.Stop();
         }
 
-        private void TimerElapsed(Object source, ElapsedEventArgs e) => NewTick();
+        private void TimerElapsed(object source, ElapsedEventArgs e) => NewTick();
 
         private async void NewTick()
         {
@@ -64,24 +64,7 @@ namespace TbsCore.Models.AccModels
                 var active = acc.Villages.FirstOrDefault(x => x.Active);
                 if (active != null && active != firstTask.Vill)
                 {
-                    try
-                    {
-                        await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
-                    }
-                    catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
-                    {
-                        acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
-
-                        acc.Tasks.Add(new ReopenDriver()
-                        {
-                            ExecuteAt = DateTime.MinValue,
-                            Priority = TaskPriority.High,
-                            ReopenAt = DateTime.MinValue
-                        });
-
-                        firstTask.Stage = TaskStage.Start;
-                        return;
-                    }
+                    await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
                 }
             }
             await TaskExecutor.Execute(acc, firstTask);
