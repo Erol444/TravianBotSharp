@@ -42,14 +42,14 @@ namespace TbsCore.Tasks.LowLevel
                 acc.Logger.Information($"Preparing {i + 1}. wave...");
 
                 // TODO: eliminate the need of this first request, will send a second on each wave
-                var htmlDoc1 = HttpHelper.SendGetReq(acc, "/build.php?tt=2&id=39");
+                var htmlDoc1 = await HttpHelper.SendGetReqAsync(acc, "/build.php?tt=2&id=39");
 
                 var build = htmlDoc1.GetElementbyId("build");
 
                 var req = new RestRequest
                 {
                     Resource = "/build.php?tt=2&id=39",
-                    Method = Method.POST,
+                    Method = Method.Post,
                 };
 
                 req.AddParameter("dname", "");
@@ -104,7 +104,7 @@ namespace TbsCore.Tasks.LowLevel
                 }
                 await Task.Delay(rnd.Next(800, 1000));
 
-                var ret = HttpHelper.SendPostReq(acc, req);
+                var ret = await HttpHelper.SendPostReqAsync(acc, req);
 
                 var htmlDoc2 = new HtmlAgilityPack.HtmlDocument();
                 htmlDoc2.LoadHtml(ret);
@@ -136,7 +136,7 @@ namespace TbsCore.Tasks.LowLevel
                 var req2 = new RestRequest
                 {
                     Resource = "/build.php?tt=2&id=39",
-                    Method = Method.POST,
+                    Method = Method.Post,
                 };
 
                 req2.AddParameter("s1", "ok");

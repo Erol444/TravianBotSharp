@@ -25,6 +25,7 @@ namespace TbsCore.Models.AccModels
             Hero.init();
 
             Tasks = new TaskList(this);
+            TaskTimer = new TaskTimer(this);
             Villages = new List<Village>();
             Access = new AccessInfo();
             Access.Init();

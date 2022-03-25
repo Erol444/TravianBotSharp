@@ -175,12 +175,6 @@
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomClass\ListViewColumnSorter.cs" />
-    <Compile Include="Forms\InactiveFinder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\InactiveFinder.Designer.cs">
-      <DependentUpon>InactiveFinder.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -359,9 +353,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\InactiveFinder.resx">
-      <DependentUpon>InactiveFinder.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -615,7 +606,7 @@
       <Version>1.1.2</Version>
     </PackageReference>
     <PackageReference Include="RestSharp">
-      <Version>106.13.0</Version>
+      <Version>107.3.0</Version>
     </PackageReference>
     <PackageReference Include="Selenium.WebDriver">
       <Version>3.141.0</Version>

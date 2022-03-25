@@ -19,98 +19,105 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var nextTask = UpgradeBuildingHelper.NextBuildingTask(acc, Vill);
-
-            if (nextTask == null)
+            // todo: remove recursive and use loop instead
+            do
             {
-                if (Vill.Build.Tasks.Count == 0)
+                var nextTask = UpgradeBuildingHelper.NextBuildingTask(acc, Vill);
+
+                if (nextTask == null)
                 {
-                    acc.Logger.Information("Building queue empty.", this);
+                    if (Vill.Build.Tasks.Count == 0)
+                    {
+                        acc.Logger.Information("Building queue empty.", this);
+                        return TaskRes.Executed;
+                    }
+
+                    var firstComplete = Vill.Build.CurrentlyBuilding.FirstOrDefault();
+                    NextExecute = TimeHelper.RanDelay(acc, firstComplete.Duration);
+                    acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete.", this);
                     return TaskRes.Executed;
                 }
 
-                UpgradeBuildingHelper.RemoveFinishedCB(Vill);
+                _buildingTask = nextTask;
 
-                var firstComplete = Vill.Build.CurrentlyBuilding.OrderBy(x => x.Duration).FirstOrDefault();
-                NextExecute = TimeHelper.RanDelay(acc, firstComplete.Duration);
-                acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete.", this);
-                return TaskRes.Executed;
-            }
+                if (!EnoughFreeCrop(acc))
+                {
+                    acc.Logger.Warning($"Don't have enough Free Crop for {_buildingTask.Building} - level {_buildingTask.Level}. Will upgrade Cropland instead.", this);
+                    continue;
+                }
 
-            _buildingTask = nextTask;
+                // check place to construct or upgrade
+                switch (_buildingTask.TaskType)
+                {
+                    case BuildingType.General:
+                        if (!UpgradeBuildingHelper.CheckGeneralTaskBuildPlace(Vill, _buildingTask))
+                        {
+                            acc.Logger.Warning($"Don't have slot to construct {_buildingTask.Building}. Will skip this and move on next one", this);
+                            RemoveCurrentTask();
+                            _buildingTask = null;
+                            continue;
+                        }
+                        break;
 
-            if (!EnoughFreeCrop(acc))
-            {
-                acc.Logger.Warning($"Don't have enough Free Crop for {_buildingTask.Building} - level {_buildingTask.Level}. Will upgrade Cropland instead.", this);
-                return await Execute(acc);
-            }
+                    case BuildingType.AutoUpgradeResFields:
+                        {
+                            UpgradeBuildingHelper.AddResFields(acc, Vill, _buildingTask);
+                            continue;
+                        }
+                }
 
-            // check place to construct or upgrade
-            switch (_buildingTask.TaskType)
-            {
-                case BuildingType.General:
-                    if (!UpgradeBuildingHelper.CheckGeneralTaskBuildPlace(Vill, _buildingTask))
-                    {
-                        acc.Logger.Warning($"Don't have slot to construct {_buildingTask.Building}. Will skip this and move on next one", this);
-                        RemoveCurrentTask();
-                        _buildingTask = null;
-                        return await Execute(acc);
-                    }
-                    break;
+                // Fast building for TTWars
+                if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars &&
+                    !_buildingTask.ConstructNew)
+                {
+                    var fastUpgrade = await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={_buildingTask.BuildingId}");
+                    if (fastUpgrade) continue;
+                }
 
-                case BuildingType.AutoUpgradeResFields:
-                    UpgradeBuildingHelper.AddResFields(acc, Vill, _buildingTask);
-                    return await Execute(acc);
-            }
+                await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
+                await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
 
-            // Fast building for TTWars
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars &&
-                !_buildingTask.ConstructNew &&
-                await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={_buildingTask.BuildingId}"))
+                // find button to contruct/upgrade
+                bool construct;
+                var contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
 
-            {
-                return await Execute(acc);
-            }
-
-            await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
-            await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
-
-            // find button to contruct/upgrade
-            bool construct;
-            var contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
-
-            if (contractNode != null)
-            {
-                construct = true;
-            }
-            else
-            {
-                contractNode = acc.Wb.Html.GetElementbyId("build");
                 if (contractNode != null)
                 {
-                    construct = false;
+                    construct = true;
                 }
                 else
                 {
-                    acc.Logger.Warning($"Cannot find button to build {_buildingTask.Building} - Level {_buildingTask.Level}!", this);
-                    return TaskRes.Retry;
+                    contractNode = acc.Wb.Html.GetElementbyId("build");
+                    if (contractNode != null)
+                    {
+                        construct = false;
+                    }
+                    else
+                    {
+                        acc.Logger.Warning($"Cannot find button to build {_buildingTask.Building} - Level {_buildingTask.Level}!", this);
+                        return TaskRes.Retry;
+                    }
                 }
-            }
 
-            // check enough res
-            var cost = ResourceParser.ParseResourcesNeed(contractNode);
-            if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
-            {
-                if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
+                // check enough res
+                var cost = ResourceParser.ParseResourcesNeed(contractNode);
+                if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
                 {
-                    acc.Logger.Warning($"Storage is too low to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will build storage first", this);
-                    return await Execute(acc);
-                }
-                var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
+                    if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
+                    {
+                        acc.Logger.Warning($"Storage is too low to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will build storage first", this);
+                        return await Execute(acc);
+                    }
+                    var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
 
-                if (Vill.Settings.UseHeroRes &&
-                acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
-                {
+                    if (!Vill.Settings.UseHeroRes ||
+                    acc.AccInfo.ServerVersion != ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
+                    {
+                        acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will try finish the task later", this);
+                        DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
+                        NextExecute = TimeHelper.RanDelay(acc, enoughRes);
+                        return TaskRes.Executed;
+                    }
                     var heroRes = HeroHelper.GetHeroResources(acc);
 
                     if (ResourcesHelper.IsEnoughRes(heroRes, stillNeededRes))
@@ -121,26 +128,46 @@ namespace TbsCore.Tasks.LowLevel
 
                         var heroEquipTask = ResourcesHelper.UseHeroResources(acc, Vill, ref stillNeededRes, heroRes, _buildingTask);
                         await heroEquipTask.Execute(acc);
-                        return await Execute(acc);
+
+                        await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
+                        await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
+
+                        contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
+
+                        if (contractNode != null)
+                        {
+                            construct = true;
+                        }
+                        else
+                        {
+                            contractNode = acc.Wb.Html.GetElementbyId("build");
+                            if (contractNode != null)
+                            {
+                                construct = false;
+                            }
+                            else
+                            {
+                                acc.Logger.Warning($"Cannot find button to build {_buildingTask.Building} - Level {_buildingTask.Level}!", this);
+                                return TaskRes.Retry;
+                            }
+                        }
                     }
                 }
 
-                acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will try finish the task later", this);
-                DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
-                NextExecute = TimeHelper.RanDelay(acc, enoughRes);
-                return TaskRes.Executed;
-            }
+                bool result;
+                if (construct)
+                {
+                    result = await Construct(acc, contractNode);
+                }
+                else
+                {
+                    result = await Upgrade(acc, contractNode);
+                }
 
-            if (construct)
-            {
-                await Construct(acc, contractNode);
+                if (!result) return TaskRes.Retry;
+                await PostTaskCheckDorf(acc);
             }
-            else
-            {
-                await Upgrade(acc, contractNode);
-            }
-
-            return await Execute(acc);
+            while (true);
         }
 
         /// <summary>
@@ -148,7 +175,7 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TaskResult</returnss>
-        private async Task<TaskRes> Construct(Account acc, HtmlNode node)
+        private async Task<bool> Construct(Account acc, HtmlNode node)
         {
             var button = node.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
 
@@ -159,7 +186,7 @@ namespace TbsCore.Tasks.LowLevel
                 UpgradeBuildingHelper.AddBuildingPrerequisites(acc, Vill, _buildingTask.Building, false);
 
                 acc.Logger.Warning($"Wanted to construct {_buildingTask.Building} but prerequired buildings are missing.", this);
-                return await Execute(acc);
+                return true;
             }
 
             await DriverHelper.ClickById(acc, button.Id);
@@ -171,9 +198,8 @@ namespace TbsCore.Tasks.LowLevel
             {
                 RemoveCurrentTask();
             }
-            await PostTaskCheckDorf(acc);
 
-            return await Execute(acc);
+            return true;
         }
 
         /// <summary>
@@ -181,7 +207,7 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TaskResult</returns>
-        private async Task<TaskRes> Upgrade(Account acc, HtmlNode node)
+        private async Task<bool> Upgrade(Account acc, HtmlNode node)
         {
             (var buildingEnum, var lvl) = InfrastructureParser.UpgradeBuildingGetInfo(node);
 
@@ -189,7 +215,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 acc.Logger.Warning($"Can't upgrade building {_buildingTask.Building} in village {Vill.Name}. Will be removed from the queue.");
                 RemoveCurrentTask();
-                return await Execute(acc);
+                return true;
             }
 
             // Basic task already on/above desired level, don't upgrade further
@@ -208,7 +234,7 @@ namespace TbsCore.Tasks.LowLevel
             if (buttons == null)
             {
                 acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}");
-                return TaskRes.Retry;
+                return false;
             }
 
             var errorMessage = acc.Wb.Html.GetElementbyId("build")
@@ -222,23 +248,27 @@ namespace TbsCore.Tasks.LowLevel
             if (upgradeButton == null)
             {
                 acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found!");
-                return TaskRes.Retry;
+                return false;
             }
 
             // Not enough resources?
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
             {
                 acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}");
-                return TaskRes.Retry;
+                return false;
             }
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
 
             acc.Logger.Information($"Started upgrading {_buildingTask.Building} to level {lvl} in {Vill.Name}");
 
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars ||
-               buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove ||
-               !await TryFastUpgrade(acc)) // +25% speed upgrade
+            var watchAd = false;
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 || buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove)
+            {
+                watchAd = await TryFastUpgrade(acc);
+            }
+
+            if (!watchAd)
             {
                 await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
             }
@@ -248,17 +278,15 @@ namespace TbsCore.Tasks.LowLevel
             {
                 RemoveCurrentTask();
             }
-            await PostTaskCheckDorf(acc);
 
-            return await Execute(acc);
+            return true;
         }
 
         private void RemoveCurrentTask() => Vill.Build.Tasks.Remove(this._buildingTask);
 
         private async Task PostTaskCheckDorf(Account acc)
         {
-            await Task.Delay(AccountHelper.Delay(acc));
-            await TaskExecutor.PageLoaded(acc);
+            await DriverHelper.WaitPageChange(acc, "dorf");
 
             // Check if residence is getting upgraded to level 10 => train settlers
             var cbResidence = Vill.Build
@@ -297,7 +325,7 @@ namespace TbsCore.Tasks.LowLevel
         private async Task<bool> TryFastUpgrade(Account acc)
         {
             if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", log: false)) return false;
-            await System.Threading.Tasks.Task.Delay(AccountHelper.Delay(acc));
+            await Task.Delay(AccountHelper.Delay(acc));
 
             // Confirm
             acc.Wb.UpdateHtml();
@@ -338,11 +366,13 @@ namespace TbsCore.Tasks.LowLevel
             while (acc.Wb.CurrentUrl.Contains("build.php"));
 
             // Don't show again
+            await Task.Delay(1000);
             acc.Wb.UpdateHtml();
+
             if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
             {
                 await DriverHelper.ClickById(acc, "dontShowThisAgain");
-                await Task.Delay(AccountHelper.Delay(acc));
+                await Task.Delay(800);
                 await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
             }
 

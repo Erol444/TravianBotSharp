@@ -186,7 +186,7 @@ namespace TravBotSharp
         {
             new Thread(async () =>
             {
-                await ProxyHelper.TestProxies(Acc.Access.AllAccess);
+                await ProxyHelper.TestProxies(Acc);
                 try
                 {
                     this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));

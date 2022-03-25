@@ -170,7 +170,7 @@ namespace TbsCore.Helpers
         /// <param name="task">Potential BuildingTask that requires the resources</param>
         public static HeroEquip UseHeroResources(Account acc, Village vill, ref long[] neededRes, long[] heroRes, BuildingTask task = null)
         {
-            var useRes = new List<(Classificator.HeroItemEnum, int)>();
+            var useRes = new List<(HeroItemEnum, int)>();
 
             for (int i = 0; i < 4; i++)
             {

@@ -1,15 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using OpenQA.Selenium;
-
 using TbsCore.Extensions;
-using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.JsObjects;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks;
@@ -81,14 +75,45 @@ namespace TbsCore.Helpers
             await Task.Delay(AccountHelper.Delay(acc));
 
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
+            acc.Logger.Information($"Executing task {task.GetName()} in village {task.Vill?.Name}");
+            TaskRes taskRes = TaskRes.Executed;
+            do
+            {
+                try
+                {
+                    taskRes = await task.Execute(acc);
+                    break;
+                }
+                catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+                {
+                    acc.Logger.Warning($"Chrome has problem while executing task {task.GetName()}! Vill {task.Vill?.Name}. Try reopen Chrome");
 
-            acc.Logger.Information($"Executing task {task.GetName()} in village {task.Vill.Name}");
+                    acc.Wb.Close();
+                    await acc.Wb.Init(acc);
+                }
+                catch (Exception e)
+                {
+                    acc.Logger.Error(e, $"Error executing task {task.GetName()}! Vill {task.Vill?.Name}");
+                    task.RetryCounter++;
+                    if (task.NextExecute == null)
+                    {
+                        task.NextExecute = DateTime.Now.AddMinutes(3);
+                        acc.Tasks.ReOrder();
+                    }
+                    break;
+                }
+            }
+            while (true);
 
-            switch (await task.Execute(acc))
+            switch (taskRes)
             {
                 case TaskRes.Retry:
                     task.RetryCounter++;
-                    if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
+                    if (task.NextExecute == null)
+                    {
+                        task.NextExecute = DateTime.Now.AddMinutes(3);
+                        acc.Tasks.ReOrder();
+                    }
                     break;
 
                 default:
@@ -111,18 +136,18 @@ namespace TbsCore.Helpers
                 acc.Tasks.ReOrder();
 
                 task.Stage = TaskStage.Start;
-                acc.Logger.Warning($"Task {task.GetName()} in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}");
+                acc.Logger.Warning($"Task {task.GetName()} in village {task.Vill?.Name} will be re-executed at {task.ExecuteAt}");
                 return;
             }
             // Remove the task from the task list
             acc.Tasks.Remove(task);
             if (task.RetryCounter >= 3)
             {
-                acc.Logger.Warning($"Task {task.GetName()} in village {task.Vill.Name} is already re-executed 3 times. Ignore it");
+                acc.Logger.Warning($"Task {task.GetName()} in village {task.Vill?.Name} is already re-executed 3 times. Ignore it");
             }
             else
             {
-                acc.Logger.Information($"Task {task.GetName()} in village {task.Vill.Name} is done.");
+                acc.Logger.Information($"Task {task.GetName()} in village {task.Vill?.Name} is done.");
             }
         }
 

@@ -41,7 +41,7 @@ namespace TravBotSharp.Views
                 .Where(x => x.GetRaidableRes().Sum() > 40000)
                 .OrderBy(x => AccountHelper.GetMainVillage(acc).Coordinates.CalculateDistance(acc, new Coordinates(acc, x.Deffender.VillageId)));
             var str = "";
-            foreach(var rep in filtered)
+            foreach (var rep in filtered)
             {
                 str += $"{new Coordinates(acc, rep.Deffender.VillageId)} - {rep.Deffender.VillageName} > SUM {rep.GetRaidableRes().Sum()}\n";
             }
@@ -127,47 +127,6 @@ namespace TravBotSharp.Views
         private void flInterval_ValueChanged(object sender, EventArgs e)
         {
             GetSelectedFL().Interval = (int)flInterval.Value;
-        }
-
-        /// <summary>
-        /// more farm open
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button3_Click(object sender, EventArgs e)
-        {
-            var acc = GetSelectedAcc();
-
-            // This feature is not available for TTWars
-            if (acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_5)
-            {
-                MessageUser("This feature is only available for normal travian servers.");
-                return;
-            }
-
-            var fl = GetSelectedFL();
-            if (fl == null)
-            {
-                MessageUser("No FarmList selected!");
-                return;
-            }
-
-            var label = $"Inactive farm finder for the (Goldclub) Farm List {fl.Name}";
-            using (var form = new InactiveFinder(acc, label))
-            {
-                var result = form.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    foreach (var item in form.InactiveFarms)
-                    {
-                        acc.Tasks.Add(new AddFarm()
-                        {
-                            Farm = item,
-                            FarmListId = fl.Id,
-                        });
-                    };
-                }
-            }
         }
 
         private void MessageUser(string message) =>

@@ -12,6 +12,16 @@ namespace TbsCore.Helpers
 {
     public static class NavigationHelper
     {
+        private static readonly string[] urlMaianNavigation = new string[]{
+            "dummy",
+            "dorf1",
+            "dorf2",
+            "karte",
+            "statistics",
+            "report",
+            "messages",
+        };
+
         public static async Task<bool> ToDorf1(Account acc) => await MainNavigate(acc, MainNavigationButton.Resources);
 
         public static async Task<bool> ToDorf2(Account acc) => await MainNavigate(acc, MainNavigationButton.Buildings);
@@ -22,8 +32,12 @@ namespace TbsCore.Helpers
         {
             var nav = acc.Wb.Html.GetElementbyId("navigation");
             if (nav == null) return false;
+            var buttonInt = (int)button;
             await DriverHelper.ClickByAttributeValue(acc, "accesskey", ((int)button).ToString());
-            await TaskExecutor.PageLoaded(acc);
+            if (buttonInt > urlMaianNavigation.Length)
+            {
+                await DriverHelper.WaitPageChange(acc, urlMaianNavigation[(int)button]);
+            }
             return true;
         }
 
@@ -87,6 +101,7 @@ namespace TbsCore.Helpers
             BuildingCategoryEnum tab = BuildingsData.GetBuildingsCategory(building);
             if ((int)tab == 0) return;
             await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+            await DriverHelper.WaitPageLoaded(acc);
         }
 
         /// <summary>

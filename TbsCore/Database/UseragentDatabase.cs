@@ -1,7 +1,7 @@
-﻿using System;
+﻿using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -12,11 +12,12 @@ namespace TbsCore.Database
 {
     public class UseragentDatabase
     {
-        private static readonly HttpClient client = new HttpClient();
+        private static RestClient client;
         private static readonly Random rnd = new Random();
 
         private UseragentDatabase()
         {
+            client = RestClientDatabase.Instance.GetLocalClient;
         }
 
         private static UseragentDatabase instance = null;
@@ -40,9 +41,10 @@ namespace TbsCore.Database
 
         private void Update()
         {
-            var task = client.GetStringAsync(_userAgentUrl);
+            var reqest = new RestRequest(_userAgentUrl);
+            var task = client.GetAsync(reqest);
             task.Wait();
-            string responseBody = task.Result;
+            string responseBody = task.Result.Content;
             _userAgentList = JsonSerializer.Deserialize<List<string>>(responseBody);
 
             _dateTime = DateTime.Now.AddMonths(1); // need update after 1 month, thought so

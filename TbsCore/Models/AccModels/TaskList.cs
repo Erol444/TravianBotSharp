@@ -64,7 +64,8 @@ namespace TbsCore.Models.AccModels
 
         public List<BotTask> GetTasksReady()
         {
-            var tasks = _tasks.Where(x => x.ExecuteAt <= DateTime.Now).ToList();
+            var current = DateTime.Now;
+            var tasks = _tasks.Where(x => x.ExecuteAt <= current).ToList();
             return tasks;
         }
 

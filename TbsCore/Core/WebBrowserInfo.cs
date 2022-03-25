@@ -11,6 +11,8 @@ using TbsCore.Tasks.LowLevel;
 using TbsCore.Helpers.ChromeExtension;
 using static TbsCore.Tasks.BotTask;
 using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
+using System.Collections.ObjectModel;
+using TbsCore.Database;
 
 namespace TbsCore.Models.AccModels
 {
@@ -18,50 +20,34 @@ namespace TbsCore.Models.AccModels
     {
         public ChromeDriver Driver { get; private set; }
 
-        private ChromeDriverService chromeService;
-
-        public string CurrentUrl
-        {
-            get
-            {
-                CheckChromeOpen();
-                return this.Driver.Url;
-            }
-        }
+        private readonly ChromeDriverService chromeService;
 
         private Account acc;
-        public HtmlAgilityPack.HtmlDocument Html { get; set; }
+        public HtmlAgilityPack.HtmlDocument Html { get; private set; }
 
-        /// <summary>
-        /// Http client, configured with proxy
-        /// </summary>
-        public RestClient RestClient { get; set; }
+        public WebBrowserInfo()
+        {
+            // Hide command prompt
+            chromeService = ChromeDriverService.CreateDefaultService();
+            chromeService.HideCommandPromptWindow = true;
+            Html = new HtmlAgilityPack.HtmlDocument();
+        }
 
-        public async Task InitSelenium(Account acc, bool newAccess = true)
+        public string CurrentUrl { get => Driver?.Url; }
+
+        public async Task Init(Account acc, bool newAccess = true)
         {
             this.acc = acc;
             Access.Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
 
-            if (this.Html == null)
-            {
-                this.Html = new HtmlAgilityPack.HtmlDocument();
-            }
-
-            InitHttpClient(access);
             if (!string.IsNullOrEmpty(access.Proxy))
             {
-                var checkproxy = new CheckProxy();
-                await checkproxy.Execute(acc);
+                await CheckProxy(acc);
             }
-            else await this.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
-        }
 
-        private void InitHttpClient(Access.Access a)
-        {
-            RestClient = new RestClient();
-            HttpHelper.InitRestClient(a, RestClient);
+            await Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
         }
 
         private void SetupChromeDriver(Access.Access access, string username, string server)
@@ -110,10 +96,6 @@ namespace TbsCore.Models.AccModels
             Directory.CreateDirectory(dir);
             options.AddArguments("user-data-dir=" + dir);
 
-            // Hide command prompt
-            chromeService = ChromeDriverService.CreateDefaultService();
-            chromeService.HideCommandPromptWindow = true;
-
             try
             {
                 if (acc.Settings.OpenMinimized)
@@ -134,15 +116,9 @@ namespace TbsCore.Models.AccModels
             }
         }
 
-        internal Dictionary<string, string> GetCookies()
+        public ReadOnlyCollection<Cookie> GetCookies()
         {
-            var cookies = Driver.Manage().Cookies.AllCookies;
-            var cookiesDir = new Dictionary<string, string>();
-            for (int i = 0; i < cookies.Count; i++)
-            {
-                cookiesDir.Add(cookies[i].Name, cookies[i].Value);
-            }
-            return cookiesDir;
+            return Driver.Manage().Cookies.AllCookies;
         }
 
         /// <summary>
@@ -163,7 +139,7 @@ namespace TbsCore.Models.AccModels
                 try
                 {
                     // Will throw exception after timeout
-                    this.Driver.Navigate().GoToUrl(url);
+                    Driver.Navigate().GoToUrl(url);
                     repeat = false;
                 }
                 catch (Exception e)
@@ -241,33 +217,63 @@ namespace TbsCore.Models.AccModels
         }
 
         /// <summary>
-        /// Throw WebDriverException when Chrome closed or not responding
+        /// catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
         /// </summary>
         public void CheckChromeOpen()
         {
             _ = Driver.Title;
         }
 
-        public void Dispose()
+        public async Task<bool> CheckProxy(Account acc)
         {
-            while (Driver != default)
+            do
             {
-                try
+                var currentAccess = acc.Access.GetCurrentAccess();
+                var currentProxy = currentAccess.Proxy;
+                acc.Logger.Information("Checking proxy " + currentProxy);
+
+                var client = RestClientDatabase.Instance.GetRestClientIP(acc, currentAccess);
+                var result = await ProxyHelper.TestProxy(client, currentProxy);
+                currentAccess.Ok = result;
+                if (!result)
                 {
-                    Driver.Close();
-                    Driver.Quit(); // Also disposes
-                    Driver = default;
+                    // Proxy error!
+                    acc.Logger.Warning($"Proxy {currentProxy} doesn't work! Trying different proxy");
+                    if (acc.Access.AllAccess.Count > 1)
+                    {
+                        acc.Access.ChangeAccess();
+                    }
+                    else
+                    {
+                        acc.Logger.Warning($"There's only one access to this account! Please check your proxy status");
+                        return false;
+                    }
                 }
-                catch (WebDriverException)
+                else
                 {
-                    Driver.Quit();
-                    Driver = default;
-                }
-                catch (Exception)
-                {
+                    acc.Logger.Information($"Proxy OK!");
+                    return true;
                 }
             }
+            while (true);
+        }
 
+        public void Close()
+        {
+            if (Driver != null)
+            {
+                var tabs = Driver.WindowHandles;
+                foreach (var tab in tabs)
+                {
+                    Driver.SwitchTo().Window(tab);
+                    Driver.Close();
+                }
+                Driver.Dispose();
+            }
+        }
+
+        public void Dispose()
+        {
             chromeService.Dispose();
         }
     }

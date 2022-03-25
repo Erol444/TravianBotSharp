@@ -88,13 +88,24 @@ namespace TbsCore.Helpers
 
         public static async Task SwitchVillage(Account acc, int id)
         {
-            var node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
-            if (node is null) return;
+            try
+            {
+                var node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
+                if (node is null) return;
 
-            var element = acc.Wb.Driver.FindElement(By.XPath($"//div[@data-did='{id}']/a"));
-            element.Click();
-            //dorf1.php?newdid=25270&
-            await DriverHelper.WaitPageChange(acc, $"{id}");
+                var element = acc.Wb.Driver.FindElement(By.XPath($"//div[@data-did='{id}']/a"));
+                element.Click();
+                //dorf1.php?newdid=25270&
+                await DriverHelper.WaitPageChange(acc, $"{id}");
+            }
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+            {
+                acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
+
+                acc.Wb.Close();
+                await acc.Wb.Init(acc);
+                return;
+            }
         }
 
         /// <summary>

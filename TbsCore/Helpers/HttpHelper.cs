@@ -2,6 +2,7 @@
 using System;
 using System.Net;
 using System.Threading.Tasks;
+using TbsCore.Database;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
 
@@ -9,83 +10,32 @@ namespace TbsCore.Helpers
 {
     public static class HttpHelper
     {
-        public static CookieContainer GetCookies(Account acc)
-        {
-            var cookies = acc.Wb.GetCookies();
-
-            var cookieContainer = new CookieContainer();
-            var cookiesStr = "";
-            foreach (var cookie in cookies)
-            {
-                cookiesStr += $"{cookie.Key}={cookie.Value},";
-            }
-            cookiesStr = cookiesStr.Remove(cookiesStr.Length - 1);
-
-            cookieContainer.SetCookies(new System.Uri(acc.AccInfo.ServerUrl), cookiesStr);
-            return cookieContainer;
-        }
-
         public static async Task<string> SendPostReqAsync(Account acc, RestRequest req)
         {
-            acc.Wb.RestClient.BaseUrl = new Uri(acc.AccInfo.ServerUrl);
-            acc.Wb.RestClient.CookieContainer = GetCookies(acc);
-
-            var response = await acc.Wb.RestClient.ExecuteAsync(req);
-            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
-
-            return response.Content;
-        }
-        public static string SendPostReq(Account acc, RestRequest req)
-        {
-            acc.Wb.RestClient.BaseUrl = new Uri(acc.AccInfo.ServerUrl);
-            acc.Wb.RestClient.CookieContainer = GetCookies(acc);
-
-            var response = acc.Wb.RestClient.Execute(req);
-            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!\n" + response.Content);
+            var client = RestClientDatabase.Instance.GetRestClientTravian(acc, acc.Access.GetCurrentAccess());
+            var response = await client.ExecuteAsync(req);
+            if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendPostRequest failed!\n" + response.Content);
 
             return response.Content;
         }
 
-        public static HtmlAgilityPack.HtmlDocument SendGetReq(Account acc, string url)
+        public static async Task<HtmlAgilityPack.HtmlDocument> SendGetReqAsync(Account acc, string url)
         {
-            acc.Wb.RestClient.BaseUrl = new Uri(acc.AccInfo.ServerUrl);
-            acc.Wb.RestClient.CookieContainer = HttpHelper.GetCookies(acc);
+            var client = RestClientDatabase.Instance.GetRestClientTravian(acc, acc.Access.GetCurrentAccess());
 
             var req = new RestRequest
             {
                 Resource = url,
-                Method = Method.GET,
+                Method = Method.Get,
             };
 
-            var response = acc.Wb.RestClient.Execute(req);
+            var response = await client.ExecuteAsync(req);
             if (response.StatusCode != HttpStatusCode.OK) throw new Exception("SendGetReq failed!" + response.StatusCode);
 
             var htmlDoc = new HtmlAgilityPack.HtmlDocument();
             htmlDoc.LoadHtml(response.Content);
 
             return htmlDoc;
-        }
-
-        public static void InitRestClient(Access access, RestClient client)
-        {
-            client.Timeout = 5000;
-            //client.UserAgent = access.UserAgent;
-
-            // Set proxy
-            if (!string.IsNullOrEmpty(access.Proxy))
-            {
-                if (!string.IsNullOrEmpty(access.ProxyUsername)) // Proxy auth
-                {
-                    ICredentials credentials = new NetworkCredential(access.ProxyUsername, access.ProxyPassword);
-                    client.Proxy = new WebProxy($"{access.Proxy}:{access.ProxyPort}", false, null, credentials);
-                }
-                else // Without proxy auth
-                {
-                    client.Proxy = new WebProxy(access.Proxy, access.ProxyPort);
-                }
-            }
-
-            client.AddDefaultHeader("Accept", "*/*");
         }
     }
 }

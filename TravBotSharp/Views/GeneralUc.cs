@@ -283,13 +283,13 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e)
         {
-            GetSelectedAcc().TaskTimer?.Start();
+            GetSelectedAcc().TaskTimer.Start();
             UpdateBotRunning();
         }
 
         public void UpdateBotRunning(string running = null)
         {
-            if (string.IsNullOrEmpty(running)) running = GetSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
+            if (string.IsNullOrEmpty(running)) running = GetSelectedAcc().TaskTimer.IsBotRunning.ToString();
             botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
         }
 

@@ -216,5 +216,12 @@ namespace TbsCore.Helpers
             wait.Until(driver => driver.Url.Contains(part));
             await WaitPageLoaded(acc, delay);
         }
+
+        public static async Task ReopenChrome(Account acc)
+        {
+            acc.Wb.Close();
+
+            await acc.Wb.Init(acc, false);
+        }
     }
 }

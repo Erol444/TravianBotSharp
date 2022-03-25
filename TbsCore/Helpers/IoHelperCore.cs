@@ -182,10 +182,9 @@ namespace TbsCore.Helpers
                 acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
 
                 acc.Wb = new WebBrowserInfo();
-                await acc.Wb.InitSelenium(acc);
-                acc.TaskTimer = new TaskTimer(acc);
-
+                await acc.Wb.Init(acc);
                 AccountHelper.StartAccountTasks(acc);
+                acc.TaskTimer.Start();
             }
 
             if (acc.Settings.DiscordWebhook && !string.IsNullOrEmpty(acc.AccInfo.WebhookUrl))

@@ -76,7 +76,9 @@ namespace TravBotSharp
             {
                 ObjectHelper.FixAccObj(x, x);
                 x.Tasks = new TaskList(x);
-                x.Tasks.Load();
+                x.TaskTimer = new TaskTimer(x);
+
+                // x.Tasks.Load();
             });
 
             RefreshAccView();
@@ -254,7 +256,7 @@ namespace TravBotSharp
                 foreach (var acc in accounts)
                 {
                     // If account is already running, don't login
-                    if (acc.TaskTimer?.IsBotRunning() ?? false) continue;
+                    if (acc.TaskTimer.IsBotRunning) continue;
 
                     _ = IoHelperCore.LoginAccount(acc);
                     await Task.Delay(AccountHelper.Delay(acc));

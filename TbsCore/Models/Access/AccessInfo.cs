@@ -31,6 +31,12 @@ namespace TbsCore.Models.Access
             return access;
         }
 
+        public void ChangeAccess()
+        {
+            CurrentAccess++;
+            if (CurrentAccess >= AllAccess.Count) CurrentAccess = 0;
+        }
+
         public void AddNewAccess(Access access)
         {
             AllAccess.Add(access);

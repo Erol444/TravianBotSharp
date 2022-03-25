@@ -20,6 +20,7 @@ namespace TbsCore.Helpers
         public static BuildingTask NextBuildingTask(Account acc, Village vill)
         {
             if (vill.Build.Tasks.Count == 0) return null;
+            RemoveFinishedCB(vill);
 
             var totalBuild = vill.Build.CurrentlyBuilding.Count;
             if (totalBuild > 0)
@@ -163,6 +164,7 @@ namespace TbsCore.Helpers
             {
                 var task = vill.Build.Tasks.FirstOrDefault(x =>
                 x.TaskType == BuildingType.AutoUpgradeResFields || BuildingHelper.IsResourceField(x.Building));
+                if (task == null) return null;
                 if (!IsValidTask(acc, vill, task)) continue;
 
                 return task;
@@ -175,6 +177,7 @@ namespace TbsCore.Helpers
             do
             {
                 var task = vill.Build.Tasks.FirstOrDefault(x => x.TaskType == BuildingType.General && !BuildingHelper.IsResourceField(x.Building));
+                if (task == null) return null;
                 if (!IsValidTask(acc, vill, task)) continue;
 
                 return task;
@@ -187,6 +190,7 @@ namespace TbsCore.Helpers
             do
             {
                 var task = vill.Build.Tasks.FirstOrDefault();
+                if (task == null) return null;
                 if (!IsValidTask(acc, vill, task)) continue;
                 return task;
             } while (vill.Build.Tasks.Count > 0);
@@ -383,7 +387,7 @@ namespace TbsCore.Helpers
             if (bottom) vill.Build.Tasks.Add(task);
             else vill.Build.Tasks.Insert(0, task);
 
-            if (acc.Wb != null && restart) ReStartBuilding(acc, vill);
+            if (restart) ReStartBuilding(acc, vill);
             return true;
         }
 
