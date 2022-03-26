@@ -38,7 +38,7 @@ jobs:
       - name: 'Create changelog'
         id: Changelog
         run: |
-          changelog=$(git log --no-merges --pretty=format:'- %s' ${{ steps.previoustag.outputs.tag }}..HEAD --reverse)
+          changelog="$({github.event.pull_request.body})"
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"

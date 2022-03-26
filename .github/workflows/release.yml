@@ -40,8 +40,7 @@ jobs:
       - name: 'Create changelog'
         id: Changelog
         run: |
-          last=$(git log --merges --grep='develop' --first-parent master --pretty=format:"%h" | sed -n '2p')
-          changelog=$(git log --no-merges --pretty=format:'- %s' $last..HEAD --reverse)
+          changelog="$({github.event.pull_request.body})"
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"
