@@ -236,6 +236,7 @@ namespace TbsCore.Helpers
             for (int i = 0; i < cb.Count; i++)
             {
                 var build = vill.Build.Buildings.FirstOrDefault(x => x.Type == cb[i].Building && x.Level - cb[i].Level < 3);
+                if (build == null) continue;
                 cb[i].Location = build.Id;
                 vill.Build.CurrentlyBuilding.Add(cb[i]);
             }
