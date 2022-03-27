@@ -15,7 +15,7 @@ namespace TbsCore.Helpers
 
             foreach (var a in accesses)
             {
-                var client = RestClientDatabase.Instance.GetRestClientIP(acc, a);
+                var client = RestClientDatabase.Instance.GetRestClientIP(a);
                 tasks.Add(TestProxy(client, a.Proxy));
             }
             await Task.WhenAll(tasks);

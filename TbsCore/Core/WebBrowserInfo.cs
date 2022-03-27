@@ -232,7 +232,7 @@ namespace TbsCore.Models.AccModels
                 var currentProxy = currentAccess.Proxy;
                 acc.Logger.Information("Checking proxy " + currentProxy);
 
-                var client = RestClientDatabase.Instance.GetRestClientIP(acc, currentAccess);
+                var client = RestClientDatabase.Instance.GetRestClientIP(currentAccess);
                 var result = await ProxyHelper.TestProxy(client, currentProxy);
                 currentAccess.Ok = result;
                 if (!result)

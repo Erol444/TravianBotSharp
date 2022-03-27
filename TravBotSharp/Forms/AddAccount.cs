@@ -56,7 +56,8 @@ namespace TravBotSharp
 
         private void button2_Click(object sender, EventArgs e) // Add a new access
         {
-            Acc.Access.AddNewAccess(GetAccessInput());
+            var access = GetAccessInput();
+            Acc.Access.AddNewAccess(access);
             UpdateWindow();
         }
 

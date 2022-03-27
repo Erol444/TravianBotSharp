@@ -51,8 +51,11 @@ namespace TbsCore.Models.Access
                 ProxyPort = raw.ProxyPort,
                 ProxyUsername = raw.ProxyUsername,
                 ProxyPassword = raw.ProxyPassword,
+                Useragent = raw.Useragent,
+                UseragentHash = raw.UseragentHash,
                 IsSittering = false,
-                LastUsed = DateTime.MinValue
+                LastUsed = DateTime.MinValue,
+                Ok = false,
             };
 
             AllAccess.Add(access);

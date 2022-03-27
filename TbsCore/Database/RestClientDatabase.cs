@@ -72,7 +72,7 @@ namespace TbsCore.Database
         /// <param name="acc">Account</param>
         /// <param name="access">Access</param>
         /// <returns>RestClient is set, has baseUrl is "https://api.ipify.org" </returns>
-        public RestClient GetRestClientIP(Account acc, Access access)
+        public RestClient GetRestClientIP(Access access)
         {
             if (database.TryGetValue($"{access.UseragentHash}_", out RestClient value))
             {
@@ -86,9 +86,7 @@ namespace TbsCore.Database
                 UserAgent = access.Useragent,
                 Proxy = GetWebProxy(access),
             };
-
             var client = new RestClient(clientOptions);
-
             database.Add($"{access.UseragentHash}_", client);
             return client;
         }
