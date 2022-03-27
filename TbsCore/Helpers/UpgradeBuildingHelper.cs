@@ -393,29 +393,20 @@ namespace TbsCore.Helpers
 
         public static void ReStartBuilding(Account acc, Village vill)
         {
-            RemoveCompletedTasks(vill);
-            acc.Tasks.Remove(typeof(UpgradeBuilding), vill);
-
-            if (vill.Build.Tasks.Count == 0) return; //No build tasks
-
             RemoveFinishedCB(vill);
-            if (vill.Build.CurrentlyBuilding.Count > 0)
-            {
-                var firstComplete = vill.Build.CurrentlyBuilding[0];
-                acc.Tasks.Add(new UpgradeBuilding()
-                {
-                    Vill = vill,
-                    ExecuteAt = TimeHelper.RanDelay(acc, firstComplete.Duration),
-                }, true);
-            }
-            else
+            RemoveCompletedTasks(vill);
+            var upgradeBuildingTask = acc.Tasks.FindTask(typeof(UpgradeBuilding), vill);
+            if (upgradeBuildingTask == null)
             {
                 acc.Tasks.Add(new UpgradeBuilding()
                 {
                     Vill = vill,
                     ExecuteAt = DateTime.Now,
-                }, true);
+                }, true, vill);
             }
+
+            upgradeBuildingTask.ExecuteAt = DateTime.Now;
+            acc.Tasks.ReOrder();
         }
 
         /// <summary>
