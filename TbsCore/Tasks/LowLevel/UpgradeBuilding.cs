@@ -263,7 +263,7 @@ namespace TbsCore.Tasks.LowLevel
             acc.Logger.Information($"Started upgrading {_buildingTask.Building} to level {lvl} in {Vill.Name}");
 
             var watchAd = false;
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 || buildDuration.TotalMinutes <= acc.Settings.WatchAdAbove)
+            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
             {
                 watchAd = await TryFastUpgrade(acc);
             }

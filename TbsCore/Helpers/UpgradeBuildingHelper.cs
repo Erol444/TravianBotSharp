@@ -403,6 +403,7 @@ namespace TbsCore.Helpers
                     Vill = vill,
                     ExecuteAt = DateTime.Now,
                 }, true, vill);
+                return;
             }
 
             upgradeBuildingTask.ExecuteAt = DateTime.Now;
