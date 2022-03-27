@@ -128,29 +128,7 @@ namespace TbsCore.Tasks.LowLevel
 
                         var heroEquipTask = ResourcesHelper.UseHeroResources(acc, Vill, ref stillNeededRes, heroRes, _buildingTask);
                         await heroEquipTask.Execute(acc);
-
-                        await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
-                        await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
-
-                        contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
-
-                        if (contractNode != null)
-                        {
-                            construct = true;
-                        }
-                        else
-                        {
-                            contractNode = acc.Wb.Html.GetElementbyId("build");
-                            if (contractNode != null)
-                            {
-                                construct = false;
-                            }
-                            else
-                            {
-                                acc.Logger.Warning($"Cannot find button to build {_buildingTask.Building} - Level {_buildingTask.Level}!", this);
-                                return TaskRes.Retry;
-                            }
-                        }
+                        continue;
                     }
                 }
 
