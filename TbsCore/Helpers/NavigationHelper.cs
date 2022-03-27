@@ -34,7 +34,7 @@ namespace TbsCore.Helpers
             if (nav == null) return false;
             var buttonInt = (int)button;
             await DriverHelper.ClickByAttributeValue(acc, "accesskey", ((int)button).ToString());
-            if (buttonInt > urlMaianNavigation.Length)
+            if (buttonInt < urlMaianNavigation.Length)
             {
                 await DriverHelper.WaitPageChange(acc, urlMaianNavigation[(int)button]);
             }
