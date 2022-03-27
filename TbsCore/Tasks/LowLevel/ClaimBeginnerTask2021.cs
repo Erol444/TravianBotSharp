@@ -31,11 +31,14 @@ namespace TbsCore.Tasks.LowLevel
 
         private async Task ClaimRewards(Account acc)
         {
+            int count = 0;
             do
             {
                 await DriverHelper.ClickByClassName(acc, "collect", log: false);
                 await Task.Delay(AccountHelper.Delay(acc));
                 acc.Wb.UpdateHtml();
+                count++;
+                if (count > 50) break; // infinite loop ( i dont think there is over 50 quest waiting bot )
             }
             while (acc.Wb.Html.DocumentNode.Descendants("button").Any(x => x.HasClass("collect")));
         }
