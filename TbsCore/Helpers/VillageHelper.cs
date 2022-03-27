@@ -88,24 +88,32 @@ namespace TbsCore.Helpers
 
         public static async Task SwitchVillage(Account acc, int id)
         {
-            try
+            do
             {
-                var node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
-                if (node is null) return;
+                try
+                {
+                    acc.Wb.UpdateHtml();
+                    var node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
+                    if (node is null) return;
 
-                var element = acc.Wb.Driver.FindElement(By.XPath($"//div[@data-did='{id}']/a"));
-                element.Click();
-                //dorf1.php?newdid=25270&
-                await DriverHelper.WaitPageChange(acc, $"{id}");
-            }
-            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
-            {
-                acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
+                    var element = acc.Wb.Driver.FindElement(By.XPath($"//div[@data-did='{id}']/a"));
+                    element.Click();
+                    //dorf1.php?newdid=25270&
+                    await DriverHelper.WaitPageChange(acc, $"{id}", 0.2);
+                    return;
+                }
+                catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+                {
+                    acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
 
-                acc.Wb.Close();
-                await acc.Wb.Init(acc);
-                return;
-            }
+                    acc.Wb.Close();
+                    await acc.Wb.Init(acc);
+                }
+                catch // when waitpagechange timeout
+                {
+                    acc.Logger.Warning($"Cannot switch to village's id: {id}. Try again");
+                }
+            } while (true);
         }
 
         /// <summary>

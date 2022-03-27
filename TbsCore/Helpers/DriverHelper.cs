@@ -202,7 +202,7 @@ namespace TbsCore.Helpers
         public abstract class Query
         { public string val; }
 
-        public static async Task WaitPageLoaded(Account acc, int delay = 1)
+        public static async Task WaitPageLoaded(Account acc, double delay = 1)
         {
             var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(delay));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
@@ -210,7 +210,7 @@ namespace TbsCore.Helpers
             await TaskExecutor.PageLoaded(acc);
         }
 
-        public static async Task WaitPageChange(Account acc, string part, int delay = 1)
+        public static async Task WaitPageChange(Account acc, string part, double delay = 1)
         {
             var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(delay));
             wait.Until(driver => driver.Url.Contains(part));
