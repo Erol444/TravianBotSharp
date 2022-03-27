@@ -75,7 +75,10 @@ namespace TbsCore.Tasks.LowLevel
                 }
 
                 await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
-                await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
+                if (_buildingTask.ConstructNew)
+                {
+                    await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
+                }
 
                 // find button to contruct/upgrade
                 bool construct;
