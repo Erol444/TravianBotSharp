@@ -161,7 +161,13 @@ namespace TbsCore.Helpers
         {
             foreach (var acc in accounts)
             {
-                if (logout) Logout(acc);
+                if (logout)
+                {
+                    Logout(acc);
+                    acc.Wb?.Dispose();
+                    acc.TaskTimer?.Dispose();
+                    acc.WebhookClient?.Dispose();
+                }
                 acc.Tasks.Save();
                 DbRepository.SaveAccount(acc);
             }
@@ -175,12 +181,6 @@ namespace TbsCore.Helpers
         {
             if (acc.Wb == null)
             {
-                SerilogSingleton.LogOutput.AddUsername(acc.AccInfo.Nickname);
-
-                acc.Logger = new Logger(acc.AccInfo.Nickname);
-
-                acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
-
                 acc.Wb = new WebBrowserInfo();
                 var opened = await acc.Wb.Init(acc);
                 if (!opened)
@@ -209,16 +209,8 @@ namespace TbsCore.Helpers
         /// <param name="acc"></param>
         public static void Logout(Account acc)
         {
-            if (acc.TaskTimer != null)
-            {
-                acc.TaskTimer.Dispose();
-                acc.TaskTimer = default;
-            }
-            if (acc.Wb != null)
-            {
-                acc.Wb.Dispose();
-                acc.Wb = default;
-            }
+            acc.TaskTimer.Stop();
+            acc.Wb?.Close();
         }
     }
 }

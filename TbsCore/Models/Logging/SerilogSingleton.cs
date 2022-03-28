@@ -3,10 +3,8 @@ using Serilog;
 
 namespace TbsCore.Models.Logging
 {
-    public static class SerilogSingleton
+    public class SerilogSingleton
     {
-        public static LogOutput LogOutput = new LogOutput();
-
         public static void Init()
         {
             Log.Logger = new LoggerConfiguration()
@@ -14,8 +12,13 @@ namespace TbsCore.Models.Logging
                                                                         rollingInterval: RollingInterval.Day,
                                                                         encoding: Encoding.Unicode,
                                                                         outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
-              .WriteTo.TbsSink(LogOutput)
+              .WriteTo.TbsSink()
               .CreateLogger();
+        }
+
+        public static void Close()
+        {
+            Log.CloseAndFlush();
         }
     }
 }

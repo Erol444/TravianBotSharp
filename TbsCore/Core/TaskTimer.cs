@@ -10,6 +10,7 @@ namespace TbsCore.Models.AccModels
 {
     public sealed class TaskTimer : IDisposable
     {
+        private readonly Random _random;
         private readonly Account _acc;
         private readonly Timer _mainTimer;
 
@@ -49,6 +50,7 @@ namespace TbsCore.Models.AccModels
             _acc = Account;
             _mainTimer = new Timer(500);
             _subTimer = new Timer(500);
+            _random = new Random();
             _mainTimer.Elapsed += MainTimerElapsed;
             _subTimer.Elapsed += SubTimerElapsed;
         }
@@ -132,25 +134,32 @@ namespace TbsCore.Models.AccModels
 
         private void NoTasks(Account _acc)
         {
-            BotTask task = null;
-
-            if (_acc.Settings.AutoCloseDriver &&
-                TimeSpan.FromMinutes(5) < TimeHelper.NextPrioTask(_acc, TaskPriority.Medium))
+            if (_acc.Settings.AutoCloseDriver)
             {
-                // Auto close chrome and reopen when there is a high/normal prio BotTask
-                task = new ReopenDriver();
-                ((ReopenDriver)task).LowestPrio = TaskPriority.Medium;
+                var nextTask = _acc.Tasks.ToList().FirstOrDefault();
+                var delay = TimeSpan.FromMinutes(5);
+                if (nextTask == null || nextTask.ExecuteAt - DateTime.Now > delay)
+                {
+                    _acc.Tasks.Add(new ReopenDriver()
+                    {
+                        ExecuteAt = DateTime.Now,
+                    });
+                    return;
+                }
             }
-            else if (_acc.Settings.AutoRandomTasks)
-            {
-                task = new RandomTask();
-            }
 
-            if (task != null)
+            if (_acc.Settings.AutoRandomTasks)
             {
-                task.ExecuteAt = DateTime.Now;
-                task.Priority = TaskPriority.Low;
-                _acc.Tasks.Add(task);
+                var nextTask = _acc.Tasks.ToList().FirstOrDefault();
+                var delay = TimeSpan.FromMinutes(20);
+                if (nextTask == null || nextTask.ExecuteAt - DateTime.Now > delay)
+                {
+                    _acc.Tasks.Add(new RandomTask()
+                    {
+                        ExecuteAt = DateTime.Now.AddSeconds(_random.Next(60, 600)),
+                    });
+                    return;
+                }
             }
         }
 

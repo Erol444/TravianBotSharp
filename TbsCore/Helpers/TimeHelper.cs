@@ -102,7 +102,7 @@ namespace TbsCore.Helpers
             do
             {
                 await Task.Delay(1000);
-                nextTask = TimeHelper.NextPrioTask(acc, lowestPrio);
+                nextTask = NextPrioTask(acc, lowestPrio);
 
                 var log = $"Chrome will reopen in {(int)nextTask.TotalMinutes} min";
                 if (log != previousLog)

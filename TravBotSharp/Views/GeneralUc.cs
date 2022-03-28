@@ -289,7 +289,7 @@ namespace TravBotSharp.Views
 
         public void UpdateBotRunning(string running = null)
         {
-            if (string.IsNullOrEmpty(running)) running = GetSelectedAcc().TaskTimer.IsBotRunning.ToString();
+            if (string.IsNullOrEmpty(running)) running = GetSelectedAcc().TaskTimer?.IsBotRunning.ToString();
             botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
         }
 
@@ -357,12 +357,20 @@ namespace TravBotSharp.Views
 
         private void button9_Click(object sender, EventArgs e) // Change account access
         {
-            GetSelectedAcc().Tasks.Add(new ChangeAccess()
+            var acc = GetSelectedAcc();
+            var task = acc.Tasks.FindTask(typeof(ChangeAccess));
+            if (task == null)
             {
-                ExecuteAt = DateTime.Now,
-                WaitSecMin = 0,
-                WaitSecMax = 1
-            }, true);
+                acc.Tasks.Add(new ChangeAccess()
+                {
+                    ExecuteAt = DateTime.Now,
+                });
+            }
+            else
+            {
+                task.ExecuteAt = DateTime.Now;
+                acc.Tasks.ReOrder();
+            }
         }
 
         private void button11_Click(object sender, EventArgs e) => MoveResPrio(true);

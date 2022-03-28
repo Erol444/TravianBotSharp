@@ -76,7 +76,6 @@ namespace TbsCore.Helpers
             acc.Tasks.Add(new Sleep()
             {
                 ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc),
-                AutoSleep = true
             }, true);
 
             // Access change

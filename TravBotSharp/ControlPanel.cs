@@ -15,6 +15,8 @@ using TbsCore.Models.AccModels;
 using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
 using TravBotSharp.Views;
+using TbsCore.Models.Logging;
+using TbsCore.Models.VillageModels;
 
 namespace TravBotSharp
 {
@@ -29,6 +31,8 @@ namespace TravBotSharp
         {
             InitializeComponent();
             //read list of accounts!
+            SerilogSingleton.Init();
+
             LoadAccounts();
             accListView.Select();
 
@@ -53,16 +57,14 @@ namespace TravBotSharp
 
             saveAccountsTimer = new System.Timers.Timer(1000 * 60 * 30); // Every 30 min
             saveAccountsTimer.Elapsed += SaveAccounts_TimerElapsed;
-            saveAccountsTimer.Start();
-            saveAccountsTimer.Enabled = true;
             saveAccountsTimer.AutoReset = true;
+            saveAccountsTimer.Start();
 
             // So TbsCore can access forms and alert user
             IoHelperCore.AlertUser = IoHelperForms.AlertUser;
 
             checkNewVersion();
-            TbsCore.Models.Logging.SerilogSingleton.Init();
-            this.debugUc1.InitLog(TbsCore.Models.Logging.SerilogSingleton.LogOutput);
+            this.debugUc1.InitLog(LogOutput.Instance);
             UseragentDatabase.Instance.Load();
         }
 
@@ -79,6 +81,11 @@ namespace TravBotSharp
                 x.TaskTimer = new TaskTimer(x);
                 // we will check again before we login
                 x.Access.AllAccess.ForEach(a => a.Ok = true);
+
+                LogOutput.Instance.AddUsername(x.AccInfo.Nickname);
+                x.Logger = new Logger(x.AccInfo.Nickname);
+
+                x.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
                 // x.Tasks.Load();
             });
 
@@ -98,6 +105,10 @@ namespace TravBotSharp
                     if (string.IsNullOrEmpty(acc.AccInfo.Nickname) ||
                         string.IsNullOrEmpty(acc.AccInfo.ServerUrl)) return;
 
+                    LogOutput.Instance.AddUsername(acc.AccInfo.Nickname);
+                    acc.Logger = new Logger(acc.AccInfo.Nickname);
+
+                    acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
                     accounts.Add(acc);
                     RefreshAccView();
                 }
@@ -107,6 +118,7 @@ namespace TravBotSharp
         private void ControlPanel_FormClosing(object sender, FormClosingEventArgs e)
         {
             IoHelperCore.SaveAccounts(accounts, true);
+            SerilogSingleton.Close();
         }
 
         /// <summary>

@@ -10,29 +10,43 @@ namespace TbsCore.Tasks.LowLevel
     /// </summary>
     public class ChangeAccess : BotTask
     {
-        public int? WaitSecMin { get; set; }
-        public int? WaitSecMax { get; set; }
+        private readonly Random rand = new Random();
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            acc.Wb.Dispose();
+            // may add setting for these
+            // how "lag" for duals login to your account (in minutes)
+            var min = 10 * 60; // 10 mins
+            var max = 30 * 60; // 30 mins
+            int nextTime = rand.Next(min, max);
+            var completeChange = DateTime.Now.AddSeconds(nextTime);
 
-            //TODO: make this configurable (wait time between switches)
-            var rand = new Random();
-            int sleepSec = rand.Next(WaitSecMin ?? 30, WaitSecMax ?? 600);
-            var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
+            acc.Logger.Information($"New proxy will be change at {completeChange}");
+            acc.Wb.Close();
 
-            await TimeHelper.SleepUntilPrioTask(acc, TaskPriority.High, sleepEnd);
-
+            string previousLog = "";
+            do
+            {
+                await Task.Delay(1000);
+                var delay = completeChange - DateTime.Now;
+                int minutes = (int)delay.TotalMinutes;
+                if (minutes <= 0) break;
+                var log = $"Chrome will reopen in {minutes} mins";
+                if (log != previousLog)
+                {
+                    acc.Logger.Information(log);
+                    previousLog = log;
+                }
+            }
+            while (true);
+            // Use the different access
             await acc.Wb.Init(acc);
-
-            // Remove all other ChangeAccess tasks
-            acc.Tasks.Remove(typeof(ChangeAccess), thisTask: this);
 
             var nextProxyChange = TimeHelper.GetNextProxyChange(acc);
             if (nextProxyChange != TimeSpan.MaxValue)
             {
-                this.NextExecute = DateTime.Now + nextProxyChange;
+                Vill = null;
+                NextExecute = DateTime.Now + nextProxyChange;
             }
 
             return TaskRes.Executed;
