@@ -38,7 +38,7 @@ jobs:
       - name: 'Create changelog'
         id: Changelog
         run: |
-          changelog="$({github.event.pull_request.body})"
+          changelog="${{github.event.pull_request.body}}"
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"

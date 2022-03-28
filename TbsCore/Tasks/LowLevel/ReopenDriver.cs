@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
+using System.Linq;
 
 namespace TbsCore.Tasks.LowLevel
 {
@@ -10,22 +11,26 @@ namespace TbsCore.Tasks.LowLevel
     /// </summary>
     public class ReopenDriver : BotTask
     {
-        /// <summary>
-        /// Lowest task priority that will cause the bot to wake up
-        /// </summary>
-        public TaskPriority LowestPrio { get; set; }
-
-        /// <summary>
-        /// Reopen the chrome at specific time
-        /// </summary>
-        public DateTime? ReopenAt { get; set; }
-
         public override async Task<TaskRes> Execute(Account acc)
         {
-            acc.Wb.Dispose();
+            acc.Wb.Close();
 
-            await TimeHelper.SleepUntilPrioTask(acc, LowestPrio, ReopenAt);
-
+            string previousLog = "";
+            do
+            {
+                await Task.Delay(1000);
+                var nextTask = acc.Tasks.ToList().FirstOrDefault();
+                var delay = nextTask.ExecuteAt - DateTime.Now;
+                int minutes = (int)delay.TotalMinutes;
+                if (minutes <= 5) break;
+                var log = $"Chrome will reopen in {minutes - 5} mins";
+                if (log != previousLog)
+                {
+                    acc.Logger.Information(log);
+                    previousLog = log;
+                }
+            }
+            while (true);
             // Use the same access
             await acc.Wb.Init(acc, false);
 

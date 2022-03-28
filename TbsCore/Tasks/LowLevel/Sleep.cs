@@ -5,34 +5,38 @@ using TbsCore.Helpers;
 
 namespace TbsCore.Tasks.LowLevel
 {
-    public class Sleep : ReopenDriver
+    public class Sleep : BotTask
     {
-        public bool AutoSleep { get; set; }
-        public int MinSleepSec { get; set; }
-        public int MaxSleepSec { get; set; }
+        private readonly Random rand = new Random();
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if (AutoSleep)
-            {
-                MinSleepSec = acc.Settings.Time.MinSleep * 60;
-                MaxSleepSec = acc.Settings.Time.MaxSleep * 60;
-            }
-            var rand = new Random();
-            int sleepSec = rand.Next(MinSleepSec, MaxSleepSec);
+            var min = acc.Settings.Time.MinSleep * 60;
+            var max = acc.Settings.Time.MaxSleep * 60;
+            int sleepSec = rand.Next(min, max);
             var sleepEnd = DateTime.Now.AddSeconds(sleepSec);
 
             acc.Logger.Information($"Sleep will end at {sleepEnd}");
+            acc.Wb.Close();
 
-            base.LowestPrio = TaskPriority.High;
-            base.ReopenAt = sleepEnd;
-
-            await base.Execute(acc);
-
-            if (AutoSleep)
+            string previousLog = "";
+            do
             {
-                this.NextExecute = DateTime.Now + TimeHelper.GetWorkTime(acc);
+                await Task.Delay(1000);
+                var delay = sleepEnd - DateTime.Now;
+                int minutes = (int)delay.TotalMinutes;
+                if (minutes <= 0) break;
+                var log = $"Chrome will reopen in {minutes} mins";
+                if (log != previousLog)
+                {
+                    acc.Logger.Information(log);
+                    previousLog = log;
+                }
             }
+            while (true);
+            // Use the same access
+            await acc.Wb.Init(acc, false);
+            NextExecute = DateTime.Now + TimeHelper.GetWorkTime(acc);
 
             return TaskRes.Executed;
         }

@@ -288,6 +288,7 @@ namespace TbsCore.Models.AccModels
 
         public void Dispose()
         {
+            Close();
             chromeService.Dispose();
         }
     }
