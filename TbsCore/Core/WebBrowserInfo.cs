@@ -35,19 +35,21 @@ namespace TbsCore.Models.AccModels
 
         public string CurrentUrl { get => Driver?.Url; }
 
-        public async Task Init(Account acc, bool newAccess = true)
+        public async Task<bool> Init(Account acc, bool newAccess = true)
         {
             this.acc = acc;
             Access.Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
-            SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
-
             if (!string.IsNullOrEmpty(access.Proxy))
             {
-                await CheckProxy(acc);
+                var checkResult = await CheckProxy(acc);
+                if (!checkResult) return false;
             }
 
+            SetupChromeDriver(access, acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
+
             await Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
+            return true;
         }
 
         private void SetupChromeDriver(Access.Access access, string username, string server)
@@ -229,6 +231,18 @@ namespace TbsCore.Models.AccModels
             do
             {
                 var currentAccess = acc.Access.GetCurrentAccess();
+                if (string.IsNullOrEmpty(currentAccess.Proxy))
+                {
+                    return true;
+                }
+
+                if (!currentAccess.Ok)
+                {
+                    acc.Logger.Warning($"All proxies in your account is unusable! Please check your proxy status.");
+
+                    return false;
+                }
+
                 var currentProxy = currentAccess.Proxy;
                 acc.Logger.Information("Checking proxy " + currentProxy);
 

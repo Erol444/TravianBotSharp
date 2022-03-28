@@ -31,8 +31,15 @@ namespace TbsCore.Helpers
             {
                 Method = Method.Get,
             };
-            var response = await client.ExecuteAsync(request);
-            return response.Content.Equals(proxyIp);
+            try
+            {
+                var response = await client.ExecuteAsync(request);
+                return response.Content.Equals(proxyIp);
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

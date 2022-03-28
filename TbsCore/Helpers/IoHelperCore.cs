@@ -171,7 +171,7 @@ namespace TbsCore.Helpers
         /// Login into account and initialize everything
         /// </summary>
         /// <param name="acc">Account</param>
-        public static async Task LoginAccount(Account acc)
+        public static async Task<bool> LoginAccount(Account acc)
         {
             if (acc.Wb == null)
             {
@@ -182,7 +182,12 @@ namespace TbsCore.Helpers
                 acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
 
                 acc.Wb = new WebBrowserInfo();
-                await acc.Wb.Init(acc);
+                var opened = await acc.Wb.Init(acc);
+                if (!opened)
+                {
+                    acc.Logger.Warning("Cannot open browser. Check warning below");
+                    return false;
+                }
                 AccountHelper.StartAccountTasks(acc);
                 acc.TaskTimer.Start();
             }
@@ -195,6 +200,7 @@ namespace TbsCore.Helpers
                     DiscordHelper.SendMessage(acc, "TravianBotSharp is online now");
                 }
             }
+            return true;
         }
 
         /// <summary>
