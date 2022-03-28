@@ -112,7 +112,7 @@ namespace TravBotSharp.Views
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.FarmVillagePlan(acc, vill);
-                BuildingHelper.RemoveCompletedTasks(vill);
+                UpgradeBuildingHelper.RemoveCompletedTasks(vill);
             }
         }
 
@@ -122,7 +122,7 @@ namespace TravBotSharp.Views
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.SupplyVillagePlan(acc, vill);
-                BuildingHelper.RemoveCompletedTasks(vill);
+                UpgradeBuildingHelper.RemoveCompletedTasks(vill);
             }
         }
 
@@ -132,7 +132,7 @@ namespace TravBotSharp.Views
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.DeffVillagePlan(acc, vill);
-                BuildingHelper.RemoveCompletedTasks(vill);
+                UpgradeBuildingHelper.RemoveCompletedTasks(vill);
             }
         }
 
@@ -142,7 +142,7 @@ namespace TravBotSharp.Views
             foreach (var vill in acc.Villages)
             {
                 DefaultConfigurations.OffVillagePlan(acc, vill);
-                BuildingHelper.RemoveCompletedTasks(vill);
+                UpgradeBuildingHelper.RemoveCompletedTasks(vill);
             }
         }
 
@@ -283,13 +283,13 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e)
         {
-            GetSelectedAcc().TaskTimer?.Start();
+            GetSelectedAcc().TaskTimer.Start();
             UpdateBotRunning();
         }
 
         public void UpdateBotRunning(string running = null)
         {
-            if (string.IsNullOrEmpty(running)) running = GetSelectedAcc()?.TaskTimer?.IsBotRunning()?.ToString();
+            if (string.IsNullOrEmpty(running)) running = GetSelectedAcc().TaskTimer.IsBotRunning.ToString();
             botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
         }
 

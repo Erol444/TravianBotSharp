@@ -17,8 +17,10 @@ namespace TbsCore.Helpers
     {
         internal static TroopsEnum TroopFromInt(Account acc, int num) =>
             TroopFromInt(acc.AccInfo.Tribe ?? TribeEnum.Any, num);
+
         internal static TroopsEnum TroopFromInt(TribeEnum tribe, int num) =>
             (TroopsEnum)TroopIntFromInt(tribe, num);
+
         internal static int TroopIntFromInt(TribeEnum tribe, int num)
         {
             return num + 1 + (((int)tribe - 1) * 10);
@@ -235,7 +237,7 @@ namespace TbsCore.Helpers
             }
 
             // Improve only
-            if(vill.Troops.ToImprove.Count != 0)
+            if (vill.Troops.ToImprove.Count != 0)
             {
                 acc.Tasks.Add(new ImproveTroop() { Vill = vill }, true, vill);
             }
@@ -284,7 +286,7 @@ namespace TbsCore.Helpers
                 if (!vill.Build.Buildings.Any(x => x.Level >= prerequisite.Level && x.Type == prerequisite.Building))
                 {
                     ret = false;
-                    AddBuildingPrerequisites(acc, vill, prerequisite.Building);
+                    UpgradeBuildingHelper.AddBuildingPrerequisites(acc, vill, prerequisite.Building);
                 }
             }
             return ret;

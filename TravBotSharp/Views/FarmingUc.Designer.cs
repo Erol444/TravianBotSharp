@@ -57,7 +57,6 @@
             this.flInterval = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.button3 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
@@ -376,17 +375,6 @@
             this.label13.TabIndex = 137;
             this.label13.Text = "If above 1, this FL will not get send every interval";
             // 
-            // button3
-            // 
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button3.Location = new System.Drawing.Point(290, 52);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(108, 33);
-            this.button3.TabIndex = 138;
-            this.button3.Text = "Inactive finder";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.Control;
@@ -405,7 +393,6 @@
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
             this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.button3);
             this.panel2.Controls.Add(this.panel1);
             this.panel2.Controls.Add(this.FlCombo);
             this.panel2.Controls.Add(this.label2);
@@ -519,7 +506,6 @@
         private System.Windows.Forms.NumericUpDown flInterval;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label13;
-        private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;

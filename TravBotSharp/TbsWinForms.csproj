@@ -175,12 +175,6 @@
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="CustomClass\ListViewColumnSorter.cs" />
-    <Compile Include="Forms\InactiveFinder.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\InactiveFinder.Designer.cs">
-      <DependentUpon>InactiveFinder.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -360,9 +354,6 @@
     <EmbeddedResource Include="Forms\AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\InactiveFinder.resx">
-      <DependentUpon>InactiveFinder.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormsResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>FormsResources.Designer.cs</LastGenOutput>
@@ -465,9 +456,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.7.2">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.7.2 %28x86 and x64%29</ProductName>
@@ -530,9 +518,6 @@
     </PackageReference>
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.11.23</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces">
-      <Version>1.1.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Bcl.HashCode">
       <Version>1.1.0</Version>
@@ -621,7 +606,7 @@
       <Version>1.1.2</Version>
     </PackageReference>
     <PackageReference Include="RestSharp">
-      <Version>106.13.0</Version>
+      <Version>107.3.0</Version>
     </PackageReference>
     <PackageReference Include="Selenium.WebDriver">
       <Version>3.141.0</Version>
@@ -753,7 +738,7 @@
       <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
-      <Version>4.7.1</Version>
+      <Version>6.0.0</Version>
     </PackageReference>
     <PackageReference Include="System.Runtime.Extensions">
       <Version>4.3.0</Version>
@@ -787,6 +772,9 @@
     </PackageReference>
     <PackageReference Include="System.Text.Encoding.Extensions">
       <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>6.0.2</Version>
     </PackageReference>
     <PackageReference Include="System.Text.RegularExpressions">
       <Version>4.3.1</Version>

@@ -31,6 +31,12 @@ namespace TbsCore.Models.Access
             return access;
         }
 
+        public void ChangeAccess()
+        {
+            CurrentAccess++;
+            if (CurrentAccess >= AllAccess.Count) CurrentAccess = 0;
+        }
+
         public void AddNewAccess(Access access)
         {
             AllAccess.Add(access);
@@ -45,8 +51,11 @@ namespace TbsCore.Models.Access
                 ProxyPort = raw.ProxyPort,
                 ProxyUsername = raw.ProxyUsername,
                 ProxyPassword = raw.ProxyPassword,
+                Useragent = raw.Useragent,
+                UseragentHash = raw.UseragentHash,
                 IsSittering = false,
-                LastUsed = DateTime.MinValue
+                LastUsed = DateTime.MinValue,
+                Ok = false,
             };
 
             AllAccess.Add(access);

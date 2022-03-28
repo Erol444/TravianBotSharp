@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -87,21 +88,29 @@ namespace TbsCore.Helpers
 
         public static async Task SwitchVillage(Account acc, int id)
         {
-            Uri uri = new Uri(acc.Wb.CurrentUrl);
-
-            // Parse village list again and find correct href
-            var vills = RightBarParser.GetVillages(acc.Wb.Html, acc.AccInfo.ServerVersion);
-            var href = vills.FirstOrDefault(x => x.Id == id)?.Href;
-            if (string.IsNullOrEmpty(href)) // Login screen, server messages etc.
+            try
             {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
+                acc.Wb.UpdateHtml();
+                var node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
+                if (node is null) return;
+
+                var element = acc.Wb.Driver.FindElement(By.XPath($"//div[@data-did='{id}']/a"));
+                element.Click();
+                //dorf1.php?newdid=25270&
+                await DriverHelper.WaitPageChange(acc, $"{id}", 0.2);
                 return;
             }
+            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+            {
+                acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
 
-            var val = $"?newdid={id}";
-            // The * after href is for query selector; it will select all elements that contain {val}
-            await DriverHelper.ClickByAttributeValue(acc, "href*", val);
-            await TaskExecutor.PageLoaded(acc);
+                acc.Wb.Close();
+                await acc.Wb.Init(acc);
+            }
+            catch // when waitpagechange timeout
+            {
+                await DriverHelper.WaitPageLoaded(acc);
+            }
         }
 
         /// <summary>

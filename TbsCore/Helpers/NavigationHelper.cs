@@ -12,16 +12,32 @@ namespace TbsCore.Helpers
 {
     public static class NavigationHelper
     {
+        private static readonly string[] urlMaianNavigation = new string[]{
+            "dummy",
+            "dorf1",
+            "dorf2",
+            "karte",
+            "statistics",
+            "report",
+            "messages",
+        };
+
         public static async Task<bool> ToDorf1(Account acc) => await MainNavigate(acc, MainNavigationButton.Resources);
+
         public static async Task<bool> ToDorf2(Account acc) => await MainNavigate(acc, MainNavigationButton.Buildings);
+
         public static async Task<bool> ToMap(Account acc) => await MainNavigate(acc, MainNavigationButton.Map);
 
         public static async Task<bool> MainNavigate(Account acc, MainNavigationButton button)
         {
             var nav = acc.Wb.Html.GetElementbyId("navigation");
             if (nav == null) return false;
+            var buttonInt = (int)button;
             await DriverHelper.ClickByAttributeValue(acc, "accesskey", ((int)button).ToString());
-            await TaskExecutor.PageLoaded(acc);
+            if (buttonInt < urlMaianNavigation.Length)
+            {
+                await DriverHelper.WaitPageChange(acc, urlMaianNavigation[(int)button]);
+            }
             return true;
         }
 
@@ -35,8 +51,8 @@ namespace TbsCore.Helpers
             {
                 // If we have just updated the village, don't re-navigate
                 var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
-                if(lastUpdate < TimeSpan.FromSeconds(10)) return;
-                
+                if (lastUpdate < TimeSpan.FromSeconds(10)) return;
+
                 // If we haven't updated it recently (last 10sec), refresh
                 await acc.Wb.Refresh();
                 return;
@@ -77,7 +93,7 @@ namespace TbsCore.Helpers
                 script += $"node = document.querySelectorAll('[data-aid=\"{index}\"]')[0]; clickFirst(node);";
                 await DriverHelper.ExecuteScript(acc, script);
             }
-            await DriverHelper.WaitLoaded(acc);
+            await DriverHelper.WaitPageLoaded(acc);
         }
 
         internal static async Task ToConstructionTab(Account acc, BuildingEnum building)
@@ -85,8 +101,8 @@ namespace TbsCore.Helpers
             BuildingCategoryEnum tab = BuildingsData.GetBuildingsCategory(building);
             if ((int)tab == 0) return;
             await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+            await DriverHelper.WaitPageLoaded(acc);
         }
-
 
         /// <summary>
         /// TTWars convert tab into url query
@@ -102,8 +118,9 @@ namespace TbsCore.Helpers
                 case BuildingEnum.Marketplace:
                     // t=
                     // 0, 5, 1, 2
-                    indexMapping = new string[] { "0", "5", "1", "2"};
+                    indexMapping = new string[] { "0", "5", "1", "2" };
                     return $"t={indexMapping[tab]}";
+
                 case BuildingEnum.Residence:
                 case BuildingEnum.Palace:
                 case BuildingEnum.CommandCenter:
@@ -111,21 +128,25 @@ namespace TbsCore.Helpers
                     // 0, 1, 2, 3, 4
                     indexMapping = new string[] { "0", "1", "2", "3", "4" };
                     return $"s={indexMapping[tab]}";
+
                 case BuildingEnum.RallyPoint:
                     // tt=
                     // 0, 1, 2, 3, 99
                     indexMapping = new string[] { "0", "1", "2", "3", "99" };
                     return $"tt={indexMapping[tab]}";
+
                 case BuildingEnum.Treasury:
                     // s=
                     // 0, 5, 1, 2
                     indexMapping = new string[] { "0", "5", "1", "2" };
                     return $"s={indexMapping[tab]}";
+
                 default: return "";
             }
         }
-        
+
         private static string[] tabMapping = new string[] { "0", "2", "3", "4", "5" };
+
         private static string TTWarsOverviewMapping(OverviewTab tab) => tabMapping[(int)tab];
 
         /// <summary>
@@ -144,12 +165,13 @@ namespace TbsCore.Helpers
                     await ToBuildingId(acc, building.Id);
 
                     if (tab != null) // Navigate to correct tab
-                    { 
+                    {
                         var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
                         // Navigate to correct tab if not already on it
                         if (currentTab != tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
                     }
                     break;
+
                 case ServerVersionEnum.TTwars:
                     // Directly navigate to url
                     string url = $"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}";
@@ -160,6 +182,7 @@ namespace TbsCore.Helpers
             }
             return true;
         }
+
         public static async Task<bool> EnterBuilding(Account acc, Village vill, int buildingId, int? tab = null, Coordinates coords = null) =>
             await EnterBuilding(acc, vill.Build.Buildings.First(x => x.Id == buildingId), tab, coords);
 
@@ -190,11 +213,12 @@ namespace TbsCore.Helpers
                 );
             return await EnterBuilding(acc, building, (int)tab);
         }
+
         public static async Task<bool> ToRallyPoint(Account acc, Village vill, RallyPointTab tab, Coordinates coords = null) =>
             await EnterBuilding(acc, vill, BuildingEnum.RallyPoint, (int)tab, coords);
+
         public static async Task<bool> ToTreasury(Account acc, Village vill, TreasuryTab tab) =>
             await EnterBuilding(acc, vill, BuildingEnum.Treasury, (int)tab);
-
 
         public static async Task<bool> ToHero(Account acc, HeroTab tab)
         {
@@ -208,14 +232,16 @@ namespace TbsCore.Helpers
                     var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
                     if (currentTab != (int)tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
                     return true;
+
                 case HeroTab.Adventures:
                     query = "adventure";
                     // .
-                    // ttwars: adventureWhite 
+                    // ttwars: adventureWhite
                     break;
+
                 case HeroTab.Auctions:
                     query = "auction";
-                    // auction 
+                    // auction
                     //ttwars auctionWhite
                     break;
             }
@@ -245,8 +271,6 @@ namespace TbsCore.Helpers
             }
             return true;
         }
-        
-
 
         //public static async Task<bool> UpgradeBuilding(Account acc, HtmlDocument html, UpgradeButton type)
         //{
@@ -308,6 +332,7 @@ namespace TbsCore.Helpers
             SmallArts,
             BigArts,
         }
+
         public enum HeroTab
         {
             Attributes = 0,
@@ -324,6 +349,7 @@ namespace TbsCore.Helpers
             CulturePoints,
             Troops
         }
+
         public enum TroopOverview
         {
             OwnTroops = 0,

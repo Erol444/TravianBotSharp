@@ -27,7 +27,7 @@ namespace TbsCore.Tasks.LowLevel
             await TimeHelper.SleepUntilPrioTask(acc, LowestPrio, ReopenAt);
 
             // Use the same access
-            await acc.Wb.InitSelenium(acc, false);
+            await acc.Wb.Init(acc, false);
 
             return TaskRes.Executed;
         }

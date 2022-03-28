@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using TbsCore.Database;
 using TbsCore.Helpers;
 using TbsCore.Models.Access;
 using TbsCore.Models.AccModels;
@@ -53,7 +56,8 @@ namespace TravBotSharp
 
         private void button2_Click(object sender, EventArgs e) // Add a new access
         {
-            Acc.Access.AddNewAccess(GetAccessInput());
+            var access = GetAccessInput();
+            Acc.Access.AddNewAccess(access);
             UpdateWindow();
         }
 
@@ -96,15 +100,22 @@ namespace TravBotSharp
 
         private AccessRaw GetAccessInput()
         {
-            AccessRaw accessRaw = new AccessRaw
+            var useragent = UseragentDatabase.Instance.GetUserAgent();
+            using (var hash = SHA256.Create())
             {
-                Password = textBox2.Text,
-                Proxy = textBox3.Text.Trim(),
-                ProxyPort = (int)numericUpDown1.Value,
-                ProxyUsername = proxyUsername.Text.Trim(),
-                ProxyPassword = proxyPassword.Text.Trim()
-            };
-            return accessRaw;
+                var byteArray = hash.ComputeHash(Encoding.UTF8.GetBytes(useragent));
+                AccessRaw accessRaw = new AccessRaw
+                {
+                    Password = textBox2.Text,
+                    Proxy = textBox3.Text.Trim(),
+                    ProxyPort = (int)numericUpDown1.Value,
+                    ProxyUsername = proxyUsername.Text.Trim(),
+                    ProxyPassword = proxyPassword.Text.Trim(),
+                    Useragent = useragent,
+                    UseragentHash = BitConverter.ToString(byteArray).ToLower(),
+                };
+                return accessRaw;
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -150,6 +161,8 @@ namespace TravBotSharp
         private void button4_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.OK;
+            IoHelperCore.CreateUserData(Acc.AccInfo.Nickname, IoHelperCore.UrlRemoveHttp(Acc.AccInfo.ServerUrl));
+
             this.Close();
         }
 
@@ -174,7 +187,7 @@ namespace TravBotSharp
         {
             new Thread(async () =>
             {
-                await ProxyHelper.TestProxies(Acc.Access.AllAccess);
+                await ProxyHelper.TestProxies(Acc);
                 try
                 {
                     this.Invoke(new MethodInvoker(delegate { UpdateWindow(true); }));

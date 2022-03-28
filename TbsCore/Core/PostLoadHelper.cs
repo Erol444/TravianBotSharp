@@ -228,7 +228,7 @@ namespace TbsCore.Helpers
                     // Update adventures
                     if(homeVill == null)
                     {
-                        acc.Tasks.Add( new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+                        acc.Tasks.Add( new HeroUpdateInfo() { ExecuteAt = DateTime.Now }, true);
                     }
                     else if (heroReady &&
                         (homeVill.Build.Buildings.Any(x => x.Type == Classificator.BuildingEnum.RallyPoint && 0 < x.Level)) &&
@@ -289,12 +289,12 @@ namespace TbsCore.Helpers
                 warehouse_delta <= vill.Res.Stored.Resources.Clay ||
                 warehouse_delta <= vill.Res.Stored.Resources.Iron)
             {
-                BuildingHelper.UpgradeBuildingForOneLvl(acc, vill, Classificator.BuildingEnum.Warehouse, false);
+                UpgradeBuildingHelper.UpgradeBuildingForOneLvl(acc, vill, Classificator.BuildingEnum.Warehouse, false);
                 return;
             }
 
             if (granary_delta <= vill.Res.Stored.Resources.Crop)
-                BuildingHelper.UpgradeBuildingForOneLvl(acc, vill, Classificator.BuildingEnum.Granary, false);
+                UpgradeBuildingHelper.UpgradeBuildingForOneLvl(acc, vill, Classificator.BuildingEnum.Granary, false);
         }
 
         private static void DonateToAlly(Account acc, Village vill)

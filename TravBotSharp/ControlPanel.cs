@@ -63,22 +63,24 @@ namespace TravBotSharp
             checkNewVersion();
             TbsCore.Models.Logging.SerilogSingleton.Init();
             this.debugUc1.InitLog(TbsCore.Models.Logging.SerilogSingleton.LogOutput);
+            UseragentDatabase.Instance.Load();
         }
 
         private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);
 
         private void LoadAccounts()
         {
-            // For migration purposes only! Remove after few versions
-            if (IoHelperCore.AccountsTxtExists() && !IoHelperCore.SQLiteExists())
-            {
-                DbRepository.SyncAccountsTxt();
-                File.Delete(IoHelperCore.AccountsPath);
-            }
-
             accounts = DbRepository.GetAccounts();
 
-            accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
+            accounts.ForEach(x =>
+            {
+                ObjectHelper.FixAccObj(x, x);
+                x.Tasks = new TaskList(x);
+                x.TaskTimer = new TaskTimer(x);
+                // we will check again before we login
+                x.Access.AllAccess.ForEach(a => a.Ok = true);
+                // x.Tasks.Load();
+            });
 
             RefreshAccView();
         }
@@ -134,19 +136,31 @@ namespace TravBotSharp
             accListView.Items.Add(item);
         }
 
-        private void button2_Click(object sender, EventArgs e) //login button
+        private async void button2_Click(object sender, EventArgs e) //login button
         {
             var acc = GetSelectedAcc();
             if (0 < acc.Access.AllAccess.Count)
             {
-                new Thread(async () =>
+                var task = await Task.Run(async () =>
                 {
-                    await IoHelperCore.LoginAccount(acc);
+                    var success = await IoHelperCore.LoginAccount(acc);
+                    if (!success) return false;
                     acc.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
                     debugUc1.UpdateTaskTable();
-                }).Start();
-                generalUc1.UpdateBotRunning("true");
-                return;
+
+                    return true;
+                });
+
+                if (task)
+                {
+                    generalUc1.UpdateBotRunning("true");
+                    return;
+                }
+                else
+                {
+                    _ = MessageBox.Show("Check debug log to more info", "Error in account", MessageBoxButtons.OK);
+                    return;
+                }
             }
 
             // Alert user that account has no access defined
@@ -184,7 +198,7 @@ namespace TravBotSharp
             }
             var acc = GetSelectedAcc();
             // If account has no Wb object, it's not logged in at the moment
-            button2.Enabled = acc != null && acc.Wb == null;
+            button2.Enabled = !(acc?.TaskTimer?.IsBotRunning ?? false);
 
             UpdateFrontEnd();
 
@@ -255,7 +269,7 @@ namespace TravBotSharp
                 foreach (var acc in accounts)
                 {
                     // If account is already running, don't login
-                    if (acc.TaskTimer?.IsBotRunning() ?? false) continue;
+                    if (acc.TaskTimer.IsBotRunning) continue;
 
                     _ = IoHelperCore.LoginAccount(acc);
                     await Task.Delay(AccountHelper.Delay(acc));

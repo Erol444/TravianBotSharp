@@ -24,19 +24,21 @@ namespace TbsCore.Tasks.LowLevel
                 await ClaimRewards(acc);
             }
 
-            acc.Tasks.Add(new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+            acc.Tasks.Add(new HeroUpdateInfo() { ExecuteAt = DateTime.Now }, true);
 
             return TaskRes.Executed;
         }
 
         private async Task ClaimRewards(Account acc)
         {
-            await Task.Delay(AccountHelper.Delay(acc));
-            DateTime time = DateTime.Now;
+            int count = 0;
             do
             {
                 await DriverHelper.ClickByClassName(acc, "collect", log: false);
-                if (TimeSpan.FromSeconds(30) < DateTime.Now - time) return;
+                await Task.Delay(AccountHelper.Delay(acc));
+                acc.Wb.UpdateHtml();
+                count++;
+                if (count > 50) break; // infinite loop ( i dont think there is over 50 quest waiting bot )
             }
             while (acc.Wb.Html.DocumentNode.Descendants("button").Any(x => x.HasClass("collect")));
         }

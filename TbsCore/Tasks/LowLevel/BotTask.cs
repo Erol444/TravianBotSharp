@@ -70,16 +70,16 @@ namespace TbsCore.Tasks
         public enum TaskPriority
         {
             /// <summary>
-            /// For normal tasks, not urgent. For example building, adventures,
-            /// sending resources etc. Selected by default.
-            /// </summary>
-            Medium = 0,
-
-            /// <summary>
             /// For tasks that can wait few hours. For example updating hero items,
             /// account info, TOP10, dorf1 (for attacks) etc.
             /// </summary>
             Low,
+
+            /// <summary>
+            /// For normal tasks, not urgent. For example building, adventures,
+            /// sending resources etc. Selected by default.
+            /// </summary>
+            Medium,
 
             /// <summary>
             /// Time-critical tasks, for example sending catapult waves, sending

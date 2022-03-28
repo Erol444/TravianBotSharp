@@ -1,48 +1,45 @@
-﻿using HtmlAgilityPack;
-using RestSharp;
-using System;
+﻿using RestSharp;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TbsCore.Models.Access;
+using TbsCore.Database;
+using TbsCore.Models.AccModels;
 
 namespace TbsCore.Helpers
 {
     public static class ProxyHelper
     {
-        public static async Task TestProxies(List<Access> access)
+        public static async Task TestProxies(Account acc)
         {
+            var accesses = acc.Access.AllAccess;
             var tasks = new List<Task<bool>>();
-            var restClient = new RestClient("https://api.ipify.org/");
 
-            foreach (var a in access)
+            foreach (var a in accesses)
             {
-                HttpHelper.InitRestClient(a, restClient);
-                tasks.Add(ProxyHelper.TestProxy(restClient, a.Proxy));
+                var client = RestClientDatabase.Instance.GetRestClientIP(a);
+                tasks.Add(TestProxy(client, a.Proxy));
             }
             await Task.WhenAll(tasks);
-            for (int i = 0; i < access.Count; i++)
+            for (int i = 0; i < accesses.Count; i++)
             {
-                access[i].Ok = tasks[i].Result;
+                accesses[i].Ok = tasks[i].Result;
             }
         }
 
-        /*public static async Task<bool> TestProxy(Account acc) =>
-            await TestProxy(acc.Wb.RestClient, acc.Access.GetCurrentAccess().Proxy);
-        */
-
         public static async Task<bool> TestProxy(RestClient client, string proxyIp)
         {
-            var response = await client.ExecuteAsync(new RestRequest
+            var request = new RestRequest
             {
-                Resource = "",
-                Method = Method.GET,
-            });
-
-            HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(response.Content);
-
-            var ip = doc.DocumentNode.InnerText;
-            return ip == proxyIp;
+                Method = Method.Get,
+            };
+            try
+            {
+                var response = await client.ExecuteAsync(request);
+                return response.Content.Equals(proxyIp);
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -183,7 +183,7 @@ namespace TravBotSharp.Views
             {
                 return GetSelectedVillage().FarmingNonGold.ListFarm[currentFarmList_index];
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 GetSelectedAcc().Logger.Error(e, "Error in GetSelectedFl!");
                 return new FarmList(); // null?
@@ -202,7 +202,6 @@ namespace TravBotSharp.Views
                 return new Farm(); // null?
             }
         }
-            
 
         /// <summary>
         /// Delete
@@ -295,59 +294,6 @@ namespace TravBotSharp.Views
             if (farmingList.FocusedItem == null) return;
 
             troopsSelectorUc1.Troops = GetSelectedFarm().Troops;
-        }
-
-        /// <summary>
-        /// more farm
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void button6_Click(object sender, EventArgs e)
-        {
-            if (comboBox_NameList.Text == "")
-            {
-                return;
-            }
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage(acc);
-            if (vill == null) return;
-
-            // This feature is not available for TTWars
-            if (acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.T4_5)
-            {
-                MessageUser("This feature is only available for normal travian servers.");
-                return;
-            }
-
-            var fl = GetSelectedFl();
-            if (fl == null)
-            {
-                MessageUser("No FL selected!");
-                return;
-            }
-
-            if (vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
-            {
-                MessageBox.Show("Activities cannot be done by humans - RET (Rule Enforcement team)", "Limited at 15 farm per list");
-                return;
-            }
-
-            var label = $"Inactive farm finder for the (Non-Goldclub) Farm List {fl.Name}";
-            using (var form = new InactiveFinder(acc, label))
-            {
-                var result = form.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.AddRange(form.InactiveFarms);
-                    if (vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
-                    {
-                        vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.RemoveRange(15, vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count - 15);
-                    }
-
-                    UpdateFarmList(currentFarmList_index);
-                    UpdateFarmTroops();
-                }
-            }
         }
 
         private void MessageUser(string message) =>

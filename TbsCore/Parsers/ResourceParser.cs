@@ -92,5 +92,11 @@ namespace TbsCore.Parsers
             };
             return res;
         }
+
+        public static Resources ParseResourcesNeed(HtmlNode node)
+        {
+            var resWrapper = node.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
+            return GetResourceCost(resWrapper);
+        }
     }
 }

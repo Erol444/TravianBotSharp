@@ -61,7 +61,7 @@ namespace TbsCore.Helpers
             // Get the server info (on first running the account)
             if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0)
             {
-                acc.Tasks.Add(new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) });
+                acc.Tasks.Add(new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) }, true);
             }
 
             if (acc.AccInfo.Tribe == null)
@@ -91,7 +91,7 @@ namespace TbsCore.Helpers
                 //if (vill.Troops.Researched.Count == 0) acc.Tasks.Add( new UpdateTroops() { ExecuteAt = DateTime.Now, vill = vill });
                 TroopsHelper.ReStartResearchAndImprovement(acc, vill);
                 TroopsHelper.ReStartTroopTraining(acc, vill);
-                BuildingHelper.ReStartBuilding(acc, vill);
+                UpgradeBuildingHelper.ReStartBuilding(acc, vill);
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
@@ -117,7 +117,7 @@ namespace TbsCore.Helpers
                 {
                     ExecuteAt = DateTime.Now.AddMinutes(ran.Next(40, 80)),
                     Priority = Tasks.BotTask.TaskPriority.Low
-                });
+                }, true);
             }
         }
 

@@ -47,7 +47,7 @@ namespace TbsCore.Tasks.LowLevel
             await NavigationHelper.ToMap(acc);
 
             // Get map tiles around the current village
-            var mapTiles = MapHelper.GetMapTiles(acc, Vill.Coordinates);
+            var mapTiles = await MapHelper.GetMapTiles(acc, Vill.Coordinates);
             // Get oasis coordinates
             var oasisCoords = GetUnoccupiedOasisCoordinates(acc, mapTiles);
             var oasisCoordsOrdered = oasisCoords
@@ -70,14 +70,13 @@ namespace TbsCore.Tasks.LowLevel
 
                 await Task.Delay(AccountHelper.Delay(acc) * 3);
                 acc.Logger.Information($"[{i + 1}/{oasisFiltered.Count}] Searching for oasis to attack, checking {oasis}");
-                var animals = MapHelper.GetOasisAnimals(acc, oasis);
+                var animals = await MapHelper.GetOasisAnimals(acc, oasis);
 
                 // Check if oasis deff power is above threshold
                 // -1 will ignore deff power
                 if (Vill.FarmingNonGold.MaxDeffPower != -1 &&
                     Vill.FarmingNonGold.MaxDeffPower < animals.TotalBaseDeff()) continue;
 
-                
                 list.Add((oasis, animals));
 
                 // If we want to first attack nearest oasis first, don't search for other oasis

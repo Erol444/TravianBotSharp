@@ -24,7 +24,7 @@ namespace TbsCore.Tasks.LowLevel
 
             await TimeHelper.SleepUntilPrioTask(acc, TaskPriority.High, sleepEnd);
 
-            await acc.Wb.InitSelenium(acc);
+            await acc.Wb.Init(acc);
 
             // Remove all other ChangeAccess tasks
             acc.Tasks.Remove(typeof(ChangeAccess), thisTask: this);
