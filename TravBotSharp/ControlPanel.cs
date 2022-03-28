@@ -154,6 +154,7 @@ namespace TravBotSharp
                 if (task)
                 {
                     generalUc1.UpdateBotRunning("true");
+                    return;
                 }
                 else
                 {
