@@ -11,6 +11,7 @@ namespace TbsCore.Models.Logging
         }
 
         private static LogOutput instance = null;
+        private readonly object objLock = new object();
 
         public static LogOutput Instance
         {
@@ -32,8 +33,11 @@ namespace TbsCore.Models.Logging
         {
             if (_logs.ContainsKey(username))
             {
-                var log = string.Join("", _logs[username]);
-                return log;
+                lock (objLock)
+                {
+                    var log = string.Join("", _logs[username]);
+                    return log;
+                }
             }
             return "";
         }
