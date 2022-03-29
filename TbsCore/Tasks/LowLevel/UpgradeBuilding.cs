@@ -19,7 +19,6 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            // todo: remove recursive and use loop instead
             do
             {
                 var nextTask = UpgradeBuildingHelper.NextBuildingTask(acc, Vill);
@@ -34,7 +33,7 @@ namespace TbsCore.Tasks.LowLevel
 
                     var firstComplete = Vill.Build.CurrentlyBuilding.FirstOrDefault();
                     NextExecute = TimeHelper.RanDelay(acc, firstComplete.Duration);
-                    acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete.", this);
+                    acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete. ({NextExecute})", this);
                     return TaskRes.Executed;
                 }
 
@@ -135,17 +134,15 @@ namespace TbsCore.Tasks.LowLevel
                     }
                 }
 
-                bool result;
                 if (construct)
                 {
-                    result = await Construct(acc, contractNode);
+                    await Construct(acc, contractNode);
                 }
                 else
                 {
-                    result = await Upgrade(acc, contractNode);
+                    await Upgrade(acc, contractNode);
                 }
 
-                if (!result) return TaskRes.Retry;
                 await PostTaskCheckDorf(acc);
             }
             while (true);
@@ -156,18 +153,14 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TaskResult</returnss>
-        private async Task<bool> Construct(Account acc, HtmlNode node)
+        private async Task Construct(Account acc, HtmlNode node)
         {
             var button = node.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
 
             // Check for prerequisites
             if (button == null)
             {
-                // Add prerequisite buildings in order to construct this building.
-                UpgradeBuildingHelper.AddBuildingPrerequisites(acc, Vill, _buildingTask.Building, false);
-
-                acc.Logger.Warning($"Wanted to construct {_buildingTask.Building} but prerequired buildings are missing.", this);
-                return true;
+                return;
             }
 
             await DriverHelper.ClickById(acc, button.Id);
@@ -180,7 +173,7 @@ namespace TbsCore.Tasks.LowLevel
                 RemoveCurrentTask();
             }
 
-            return true;
+            return;
         }
 
         /// <summary>
@@ -188,7 +181,7 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TaskResult</returns>
-        private async Task<bool> Upgrade(Account acc, HtmlNode node)
+        private async Task Upgrade(Account acc, HtmlNode node)
         {
             (var buildingEnum, var lvl) = InfrastructureParser.UpgradeBuildingGetInfo(node);
 
@@ -196,7 +189,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 acc.Logger.Warning($"Can't upgrade building {_buildingTask.Building} in village {Vill.Name}. Will be removed from the queue.");
                 RemoveCurrentTask();
-                return true;
+                return;
             }
 
             // Basic task already on/above desired level, don't upgrade further
@@ -215,12 +208,11 @@ namespace TbsCore.Tasks.LowLevel
             if (buttons == null)
             {
                 acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}");
-                return false;
+                return;
             }
 
             var errorMessage = acc.Wb.Html.GetElementbyId("build")
                 .Descendants("div")
-
                 .FirstOrDefault(x => x.HasClass("upgradeBuilding"))?
                 .Descendants("div")?
                 .FirstOrDefault(x => x.HasClass("errorMessage"));
@@ -229,19 +221,19 @@ namespace TbsCore.Tasks.LowLevel
             if (upgradeButton == null)
             {
                 acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found!");
-                return false;
+                return;
             }
 
             // Not enough resources?
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
             {
                 acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}");
-                return false;
+                return;
             }
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
 
-            acc.Logger.Information($"Started upgrading {_buildingTask.Building} to level {lvl} in {Vill.Name}");
+            acc.Logger.Information($"Started upgrading {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}");
 
             var watchAd = false;
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
@@ -254,13 +246,11 @@ namespace TbsCore.Tasks.LowLevel
                 await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
             }
 
-            acc.Logger.Information($"Upgraded {_buildingTask.Building} to level {lvl} in {Vill.Name}");
+            acc.Logger.Information($"Upgraded {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}");
             if (_buildingTask.Level == lvl + 1)
             {
                 RemoveCurrentTask();
             }
-
-            return true;
         }
 
         private void RemoveCurrentTask() => Vill.Build.Tasks.Remove(this._buildingTask);

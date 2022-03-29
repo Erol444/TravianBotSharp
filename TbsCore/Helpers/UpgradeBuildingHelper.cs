@@ -136,6 +136,13 @@ namespace TbsCore.Helpers
 
         private static bool IsValidTask(Account acc, Village vill, BuildingTask task)
         {
+            // check complete
+            if (IsTaskCompleted(vill, task))
+            {
+                acc.Logger.Warning($"{task.Building} - Level {task.Level} already completed. Removed");
+                vill.Build.Tasks.Remove(task);
+                return false;
+            }
             // check space
             if (task.BuildingId == null && task.TaskType == BuildingType.General)
             {
@@ -148,13 +155,11 @@ namespace TbsCore.Helpers
                     return false;
                 }
             }
-            // check complete
-            if (UpgradeBuildingHelper.IsTaskCompleted(vill, task))
-            {
-                acc.Logger.Warning($"{task.Building} - Level {task.Level} already completed. Removed");
-                vill.Build.Tasks.Remove(task);
-                return false;
-            }
+
+            // check prerequisite
+            var prerequisite = AddBuildingPrerequisites(acc, vill, task.Building, false);
+            if (prerequisite) return false;
+
             return true;
         }
 
@@ -537,7 +542,6 @@ namespace TbsCore.Helpers
 
         /// <summary>
         /// Adds all building prerequisites for this building if they do not exist yet.
-        /// After this you should call RemoveDuplicates().
         /// </summary>
         /// <param name="acc"></param>
         /// <param name="vill"></param>
@@ -550,29 +554,40 @@ namespace TbsCore.Helpers
             (var tribe, var prereqs) = BuildingsData.GetBuildingPrerequisites(building);
             if (acc.AccInfo.Tribe != tribe && tribe != TribeEnum.Any) return false;
             if (prereqs.Count == 0) return true;
+
             var ret = true;
+
             foreach (var prereq in prereqs)
             {
-                var prereqBuilding = vill.Build.Buildings.Where(x => x.Type == prereq.Building);
-
-                // Prerequired building already exists and is on on/above/being upgraded on desired level
-                if (prereqBuilding.Any(x =>
-                        prereq.Level <= x.Level + (x.UnderConstruction ? 1 : 0))
-                    ) continue;
-
-                if (bottom && vill.Build.Tasks.Any(x => prereq.Building == x.Building &&
-                                              prereq.Level <= x.Level)) continue;
-
-                // If there is no required building, build it's prerequisites first
-                if (!prereqBuilding.Any()) AddBuildingPrerequisites(acc, vill, prereq.Building);
-
-                AddBuildingTask(acc, vill, new BuildingTask()
+                var prereqBuilding = vill.Build.Buildings.FirstOrDefault(x => x.Type == prereq.Building && x.Level >= prereq.Level);
+                if (prereqBuilding == null)
                 {
-                    Building = prereq.Building,
-                    Level = prereq.Level,
-                    TaskType = BuildingType.General
-                }, bottom);
-                ret = false;
+                    var currentlyBuilding = vill.Build.CurrentlyBuilding.FirstOrDefault(x => x.Building == prereq.Building && x.Level >= prereq.Level);
+                    if (currentlyBuilding == null)
+                    {
+                        if (bottom) // bottom add prereq first, building follow
+                        {
+                            AddBuildingPrerequisites(acc, vill, prereq.Building, bottom);
+                            AddBuildingTask(acc, vill, new BuildingTask()
+                            {
+                                Building = prereq.Building,
+                                Level = prereq.Level,
+                                TaskType = BuildingType.General
+                            }, bottom);
+                        }
+                        else //top, add building first, prereq follow,
+                        {
+                            AddBuildingTask(acc, vill, new BuildingTask()
+                            {
+                                Building = prereq.Building,
+                                Level = prereq.Level,
+                                TaskType = BuildingType.General
+                            }, bottom);
+                            AddBuildingPrerequisites(acc, vill, prereq.Building, bottom);
+                        }
+                    }
+                    ret = false;
+                }
             }
             return ret;
         }
