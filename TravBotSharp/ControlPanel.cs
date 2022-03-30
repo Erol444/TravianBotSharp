@@ -141,10 +141,10 @@ namespace TravBotSharp
         private void InsertAccIntoListView(string nick, string url, string proxy, int port, bool selected = false)
         {
             var item = new ListViewItem();
-            item.SubItems[0].Text = $"{nick} ({IoHelperCore.UrlRemoveHttp(url)})"; //account
+            item.SubItems[0].Text = $"{nick}"; //account
             item.SubItems[0].ForeColor = Color.FromName(selected ? "DodgerBlue" : "Black");
             //item.SubItems.Add("❌"); //proxy error
-            item.SubItems.Add(string.IsNullOrEmpty(proxy) ? "/" : proxy + ":" + port); //proxy
+            item.SubItems.Add(IoHelperCore.UrlRemoveHttp(url));
             accListView.Items.Add(item);
         }
 
@@ -329,6 +329,28 @@ namespace TravBotSharp
 
         private void button8_Click(object sender, EventArgs e)
         {
+            using (var form = new AddAccounts())
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    var accList = form.GetAccounts();
+                    foreach (var acc in accList)
+                    {
+                        DbRepository.SaveAccount(acc);
+                        if (string.IsNullOrEmpty(acc.AccInfo.Nickname) ||
+                            string.IsNullOrEmpty(acc.AccInfo.ServerUrl)) return;
+
+                        LogOutput.Instance.AddUsername(acc.AccInfo.Nickname);
+                        acc.Logger = new Logger(acc.AccInfo.Nickname);
+
+                        acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
+                        accounts.Add(acc);
+                    }
+
+                    RefreshAccView();
+                }
+            }
         }
     }
 }
