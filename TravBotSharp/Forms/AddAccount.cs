@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -194,6 +195,11 @@ namespace TravBotSharp
                 }
                 catch { }
             }).Start();
+        }
+
+        private void AddAccount_Load(object sender, EventArgs e)
+        {
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
         }
     }
 }

@@ -16,6 +16,7 @@
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
+    <BUILD_NUMBER>1975.30.4.1</BUILD_NUMBER>
     <PublishUrl>\TravBotSharp\Publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -34,7 +35,6 @@
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <BUILD_NUMBER>1975.30.4.1</BUILD_NUMBER>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -179,6 +179,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>FormsResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\AddAccounts.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddAccounts.Designer.cs">
+      <DependentUpon>AddAccounts.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\AddFarmNonGold.cs">
       <SubType>Form</SubType>
@@ -350,6 +356,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ControlPanel.resx">
       <DependentUpon>ControlPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddAccounts.resx">
+      <DependentUpon>AddAccounts.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>

@@ -139,6 +139,7 @@ namespace TravBotSharp.Forms
             this.Controls.Add(this.textBox1);
             this.Name = "NewRelease";
             this.Text = "Message";
+            this.Load += new System.EventHandler(this.NewRelease_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

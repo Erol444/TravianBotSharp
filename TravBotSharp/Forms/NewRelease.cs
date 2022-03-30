@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using TbsCore.Helpers;
+using System.Drawing;
 
 namespace TravBotSharp.Forms
 {
@@ -108,6 +109,11 @@ namespace TravBotSharp.Forms
         {
             System.Diagnostics.Process.Start($"https://github.com/{GithubHelper.username}/{GithubHelper.repo}/releases/tag/{latestBuild}");
             this.Close();
+        }
+
+        private void NewRelease_Load(object sender, EventArgs e)
+        {
+            Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath);
         }
     }
 }
