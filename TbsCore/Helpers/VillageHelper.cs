@@ -91,13 +91,40 @@ namespace TbsCore.Helpers
             try
             {
                 acc.Wb.UpdateHtml();
-                var node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
-                if (node is null) return;
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case ServerVersionEnum.T4_5:
+                        {
+                            var node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
+                            if (node is null) return;
 
-                var element = acc.Wb.Driver.FindElement(By.XPath($"//div[@data-did='{id}']/a"));
-                element.Click();
-                //dorf1.php?newdid=25270&
-                await DriverHelper.WaitPageChange(acc, $"{id}", 0.2);
+                            var element = acc.Wb.Driver.FindElement(By.XPath($"//div[@data-did='{id}']/a"));
+                            element.Click();
+                            //dorf1.php?newdid=25270&
+                            await DriverHelper.WaitPageChange(acc, $"{id}", 0.2);
+                            break;
+                        }
+                    case ServerVersionEnum.TTwars:
+                        {
+                            Uri uri = new Uri(acc.Wb.CurrentUrl);
+
+                            // Parse village list again and find correct href
+                            var vills = RightBarParser.GetVillages(acc.Wb.Html, acc.AccInfo.ServerVersion);
+                            var href = vills.FirstOrDefault(x => x.Id == id)?.Href;
+                            if (string.IsNullOrEmpty(href)) // Login screen, server messages etc.
+                            {
+                                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
+                                return;
+                            }
+
+                            var val = $"?newdid={id}";
+                            // The * after href is for query selector; it will select all elements that contain {val}
+                            await DriverHelper.ClickByAttributeValue(acc, "href*", val);
+                            await DriverHelper.WaitPageLoaded(acc);
+                        }
+                        break;
+                }
+
                 return;
             }
             catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
