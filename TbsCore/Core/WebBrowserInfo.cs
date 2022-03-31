@@ -276,13 +276,17 @@ namespace TbsCore.Models.AccModels
         {
             if (Driver != null)
             {
-                var tabs = Driver.WindowHandles;
-                foreach (var tab in tabs)
+                try
                 {
-                    Driver.SwitchTo().Window(tab);
-                    Driver.Close();
+                    var tabs = Driver.WindowHandles;
+                    foreach (var tab in tabs)
+                    {
+                        Driver.SwitchTo().Window(tab);
+                        Driver.Close();
+                    }
+                    Driver.Dispose();
                 }
-                Driver.Dispose();
+                catch { }
             }
         }
 
