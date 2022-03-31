@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
@@ -66,34 +67,24 @@ namespace TbsCore.Helpers
             }
             else // dorf2
             {
-                if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
-                    await MainNavigate(acc, MainNavigationButton.Buildings);
-
-                string script = @"
-                function clickFirst(node)
+                do
                 {
-                    if (node.hasAttribute('href') && node.getAttribute('href'))
-                    {
-                        node.click();
-                        return true;
-                    }
-                    if (node.hasAttribute('onclick') && node.getAttribute('onclick'))
-                    {";
-                script += "url = node.getAttribute('onclick').split(\"'\")[1];";
-                script += @"
-                        window.location.href = url
-                    return true;
-                    }
-                    // node doesn't contain href/onlick. Check child nodes
-                    for (child of node.children)
-                    {
-                        if (clickFirst(child)) return true;
-                    }
-                }";
-                script += $"node = document.querySelectorAll('[data-aid=\"{index}\"]')[0]; clickFirst(node);";
-                await DriverHelper.ExecuteScript(acc, script);
+                    acc.Wb.UpdateHtml();
+                    if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
+                        await MainNavigate(acc, MainNavigationButton.Buildings);
+
+                    //*[@id="villageContent"]/div[1] => data-aid = 19
+                    var location = index - 18; // - 19 + 1
+                    var divBuilding = acc.Wb.Html.DocumentNode.SelectSingleNode($"//*[@id='villageContent']/div[{location}]");
+                    if (divBuilding == null) continue;
+                    var element = acc.Wb.Driver.FindElement(By.XPath($"//*[@id='villageContent']/div[{location}]"));
+                    if (element == null) continue;
+                    element.Click();
+                    break;
+                }
+                while (true);
             }
-            await DriverHelper.WaitPageLoaded(acc);
+            await DriverHelper.WaitPageChange(acc, $"id={index}");
         }
 
         internal static async Task ToConstructionTab(Account acc, BuildingEnum building)
