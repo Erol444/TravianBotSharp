@@ -316,7 +316,7 @@ namespace TbsCore.Parsers
             return ret;
         }
 
-        private static (Classificator.HeroItemEnum?, int) ParseItemNode(HtmlNode node)
+        public static (Classificator.HeroItemEnum?, int) ParseItemNode(HtmlNode node)
         {
             var itemClass = node.GetClasses().FirstOrDefault(x => x.Contains("_item_"));
             if (itemClass == null) return (null, 0);

@@ -2,21 +2,40 @@
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Tasks.LowLevel
 {
     public class HeroUpdateInfo : BotTask
     {
+        private readonly Random ran = new Random();
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Attributes);
 
-            HeroHelper.ParseHeroPage(acc);
+            if (acc.Hero.Settings.AutoAuction)
+            {
+                var items = acc.Hero.Items;
+                foreach (var item in items)
+                {
+                    (var heroItemEnum, int amount) = (item.Item, item.Count);
+                    if (heroItemEnum == HeroItemEnum.Others_Wood_0) continue;
+                    if (heroItemEnum == HeroItemEnum.Others_Clay_0) continue;
+                    if (heroItemEnum == HeroItemEnum.Others_Iron_0) continue;
+                    if (heroItemEnum == HeroItemEnum.Others_Crop_0) continue;
+                    if (HeroHelper.GetHeroItemCategory(heroItemEnum) == HeroItemCategory.Horse) continue;
+                    if (HeroHelper.GetHeroItemCategory(heroItemEnum) == HeroItemCategory.Others && amount < 5) continue;
 
+                    acc.Tasks.Add(new SellOnAuctions()
+                    {
+                        ExecuteAt = DateTime.Now
+                    });
+                    break;
+                }
+            }
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
-                var ran = new Random();
-
                 this.NextExecute = DateTime.Now.AddMinutes(
                     ran.Next(acc.Hero.Settings.MinUpdate, acc.Hero.Settings.MaxUpdate)
                     );
