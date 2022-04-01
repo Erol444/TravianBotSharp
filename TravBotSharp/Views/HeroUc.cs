@@ -5,6 +5,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
 using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
+using TravBotSharp.Forms.Hero;
 
 namespace TravBotSharp.Views
 {
@@ -20,39 +21,13 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             buyAdventuresCheckBox.Checked = acc.Hero.Settings.BuyAdventures;
             checkBoxAutoSendToAdventures.Checked = acc.Hero.Settings.AutoSendToAdventure;
-            minHeroHealthUpDown.Value = acc.Hero.Settings.MinHealth;
             autoReviveHero.Checked = acc.Hero.Settings.AutoReviveHero;
             refreshInfo.Checked = acc.Hero.Settings.AutoRefreshInfo;
             helmetSwitcher.Checked = acc.Hero.Settings.AutoSwitchHelmets;
             autoEquip.Checked = acc.Hero.Settings.AutoEquip;
 
-            var heroUpgrade = acc.Hero.Settings.Upgrades;
-            strength.Value = 0;
-            offBonus.Value = 0;
-            deffBonus.Value = 0;
-            resources.Value = 0;
-            strength.Value = heroUpgrade[0];
-            offBonus.Value = heroUpgrade[1];
-            deffBonus.Value = heroUpgrade[2];
-            resources.Value = heroUpgrade[3];
-
             autoSetHeroPoints.Checked = acc.Hero.Settings.AutoSetPoints;
-            maxDistanceUpDown.Value = acc.Hero.Settings.MaxDistance;
-            LimitHeroPoints();
-
-            maxInterval.Value = acc.Hero.Settings.MaxUpdate;
-            minInterval.Value = acc.Hero.Settings.MinUpdate;
-
-            SupplyResVillageComboBox.Items.Clear();
-            foreach (var vill in acc.Villages)
-            {
-                SupplyResVillageComboBox.Items.Add(vill.Name);
-            }
-            if (SupplyResVillageComboBox.Items.Count > 0)
-            {
-                SupplyResVillageComboBox.SelectedIndex = 0;
-                SupplyResVillageSelected.Text = "Selected: " + AccountHelper.GetHeroReviveVillage(acc).Name;
-            }
+            checkBox1.Checked = acc.Hero.Settings.AutoAuction;
 
             if (acc.Hero.Items == null) return;
 
@@ -125,68 +100,11 @@ namespace TravBotSharp.Views
             GetSelectedAcc().Hero.Settings.BuyAdventures = buyAdventuresCheckBox.Checked;
         }
 
-        private void minHeroHealthUpDown_ValueChanged(object sender, EventArgs e)
-        {
-            GetSelectedAcc().Hero.Settings.MinHealth = (int)minHeroHealthUpDown.Value;
-        }
-
-        private void strength_ValueChanged(object sender, EventArgs e)
-        {
-            LimitHeroPoints();
-        }
-
-        private void offBonus_ValueChanged(object sender, EventArgs e)
-        {
-            LimitHeroPoints();
-        }
-
-        private void deffBonus_ValueChanged(object sender, EventArgs e)
-        {
-            LimitHeroPoints();
-        }
-
-        private void resources_ValueChanged(object sender, EventArgs e)
-        {
-            LimitHeroPoints();
-        }
-
-        private int HeroPointsUSer()
-        {
-            int str = (int)strength.Value;
-            int off = (int)offBonus.Value;
-            int deff = (int)deffBonus.Value;
-            int res = (int)resources.Value;
-            return str + off + deff + res;
-        }
-
-        private void LimitHeroPoints()
-        {
-            int lockPoints = HeroPointsUSer();
-            strength.Maximum = strength.Value + 4 - lockPoints;
-            offBonus.Maximum = offBonus.Value + 4 - lockPoints;
-            deffBonus.Maximum = deffBonus.Value + 4 - lockPoints;
-            resources.Maximum = resources.Value + 4 - lockPoints;
-            var acc = GetSelectedAcc();
-            var vals = new byte[] { (byte)strength.Value, (byte)offBonus.Value, (byte)deffBonus.Value, (byte)resources.Value };
-            acc.Hero.Settings.Upgrades = vals;
-        }
-
         private void autoSetHeroPoints_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.AutoSetPoints = autoSetHeroPoints.Checked;
 
-        private void maxDistanceUpDown_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedAcc().Hero.Settings.MaxDistance = (int)maxDistanceUpDown.Value;
-
         private void autoReviveHero_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.AutoReviveHero = autoReviveHero.Checked;
-
-        private void SupplyResourcesButton_Click(object sender, EventArgs e)
-        {
-            var acc = GetSelectedAcc();
-            var vill = acc.Villages[SupplyResVillageComboBox.SelectedIndex];
-            acc.Hero.ReviveInVillage = vill.Id;
-            SupplyResVillageSelected.Text = "Selected: " + vill.Name;
-        }
 
         private void refreshInfo_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.AutoRefreshInfo = refreshInfo.Checked;
@@ -226,10 +144,69 @@ namespace TravBotSharp.Views
         private void helmetSwitcher_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.AutoSwitchHelmets = helmetSwitcher.Checked;
 
-        private void minInterval_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedAcc().Hero.Settings.MinUpdate = (int)minInterval.Value;
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            using (var form = new AdventuresSettings(acc))
+            {
+                var result = form.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    acc.Hero.Settings.MinHealth = form.MinHealth;
+                    acc.Hero.Settings.MaxDistance = form.MaxDistance;
+                }
+            }
+        }
 
-        private void maxInterval_ValueChanged(object sender, EventArgs e) =>
-            GetSelectedAcc().Hero.Settings.MaxUpdate = (int)maxInterval.Value;
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            using (var form = new ReviveSettings(acc))
+            {
+                var result = form.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    acc.Hero.ReviveInVillage = form.VillageId;
+                }
+            }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            using (var form = new UpdateSetings(acc))
+            {
+                var result = form.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    acc.Hero.Settings.MaxUpdate = form.Min;
+                    acc.Hero.Settings.MinUpdate = form.Max;
+                }
+            }
+        }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            using (var form = new SetPointSettings(acc))
+            {
+                var result = form.ShowDialog(this);
+                if (result == DialogResult.OK)
+                {
+                    var heroUpgrade = acc.Hero.Settings.Upgrades;
+
+                    heroUpgrade[0] = form.Strength;
+                    heroUpgrade[1] = form.OffBonus;
+                    heroUpgrade[2] = form.DeffBonus;
+                    heroUpgrade[3] = form.Resources;
+                }
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            acc.Hero.Settings.AutoAuction = checkBox1.Checked;
+        }
     }
 }
