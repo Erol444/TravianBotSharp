@@ -192,6 +192,12 @@
     <Compile Include="Forms\AddFarmNonGold.Designer.cs">
       <DependentUpon>AddFarmNonGold.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Closing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Closing.Designer.cs">
+      <DependentUpon>Closing.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Hero\SetPointSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -393,6 +399,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddFarmNonGold.resx">
       <DependentUpon>AddFarmNonGold.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Closing.resx">
+      <DependentUpon>Closing.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Hero\SetPointSettings.resx">
       <DependentUpon>SetPointSettings.cs</DependentUpon>

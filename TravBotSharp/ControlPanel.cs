@@ -114,21 +114,30 @@ namespace TravBotSharp
             closing = true;
             await Task.Yield();
             var form = sender as Form;
-            IoHelperCore.SaveAccounts(accounts);
-            var tasks = new List<Task>();
-            foreach (var acc in accounts)
+            using (var closingForm = new Closing())
             {
-                tasks.Add(IoHelperCore.Logout(acc));
+                var progressFormTask = closingForm.ShowDialogAsync();
+
+                IoHelperCore.SaveAccounts(accounts);
+                var tasks = new List<Task>();
+                foreach (var acc in accounts)
+                {
+                    tasks.Add(IoHelperCore.Logout(acc));
+                }
+
+                await Task.WhenAll(tasks);
+
+                foreach (var acc in accounts)
+                {
+                    acc.Dispose();
+                }
+
+                SerilogSingleton.Close();
+
+                closingForm.Close();
+                await progressFormTask;
             }
 
-            await Task.WhenAll(tasks);
-
-            foreach (var acc in accounts)
-            {
-                acc.Dispose();
-            }
-
-            SerilogSingleton.Close();
             form.Close();
         }
 
@@ -398,6 +407,17 @@ namespace TravBotSharp
                     RefreshAccView();
                 }
             }
+        }
+    }
+
+    public static class DialogExt
+    {
+        public static async Task<DialogResult> ShowDialogAsync(this Form @this)
+        {
+            await Task.Yield();
+            if (@this.IsDisposed)
+                return DialogResult.Cancel;
+            return @this.ShowDialog();
         }
     }
 }
