@@ -165,7 +165,7 @@ namespace TravBotSharp
             if (acc == null) return;
             acc.Status = Status.Starting;
             generalUc1.UpdateBotRunning();
-
+            button2.Enabled = false;
             var success = await IoHelperCore.Login(acc);
             if (success)
             {
@@ -176,7 +176,10 @@ namespace TravBotSharp
                 _ = MessageBox.Show("Check debug log to more info", $"Error while logging {acc.AccInfo.Nickname}", MessageBoxButtons.OK);
                 acc.Status = Status.Offline;
             }
-
+            if (GetSelectedAcc() == acc)
+            {
+                button2.Enabled = true;
+            }
             generalUc1.UpdateBotRunning();
         }
 
@@ -203,7 +206,7 @@ namespace TravBotSharp
         private void accListView_SelectedIndexChanged(object sender, EventArgs e) // Different acc selected
         {
             // remove event task update on previous account
-            if (GetSelectedAcc().Tasks != null) GetSelectedAcc().Tasks.OnUpdateTask = null;
+            if (GetSelectedAcc()?.Tasks != null) GetSelectedAcc().Tasks.OnUpdateTask = null;
 
             var indicies = accListView.SelectedIndices;
             if (indicies.Count > 0)
@@ -211,8 +214,9 @@ namespace TravBotSharp
                 accSelected = indicies[0];
             }
             var acc = GetSelectedAcc();
-            // If account has no Wb object, it's not logged in at the moment
-            button2.Enabled = !(acc?.TaskTimer?.IsBotRunning ?? false);
+
+            button2.Enabled = acc.CanLogin();
+            button5.Enabled = acc.CanLogout();
 
             UpdateFrontEnd();
 
@@ -280,11 +284,15 @@ namespace TravBotSharp
             }
             acc.Status = Status.Stopping;
             generalUc1.UpdateBotRunning();
-
+            button5.Enabled = false;
             await IoHelperCore.Logout(GetSelectedAcc());
 
             acc.Status = Status.Offline;
             generalUc1.UpdateBotRunning();
+            if (GetSelectedAcc() == acc)
+            {
+                button5.Enabled = true;
+            }
         }
 
         private async void button6_Click(object sender, EventArgs e) // Login all accounts

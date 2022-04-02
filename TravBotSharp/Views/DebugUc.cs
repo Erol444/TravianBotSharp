@@ -74,6 +74,7 @@ namespace TravBotSharp.Views
                 }));
                 return;
             }
+            if (!taskListView.Visible) return;
 
             taskListView.Items.Clear();
             var acc = GetSelectedAcc();
