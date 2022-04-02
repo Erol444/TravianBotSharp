@@ -27,10 +27,11 @@ namespace TravBotSharp
         private int accSelected = 0;
         private System.Timers.Timer saveAccountsTimer;
         private ITbsUc[] Ucs;
-        private bool closing = false;
+        private bool closing;
 
         public ControlPanel()
         {
+            closing = false;
             InitializeComponent();
             //read list of accounts!
             SerilogSingleton.Init();
@@ -113,11 +114,10 @@ namespace TravBotSharp
             e.Cancel = true;
             closing = true;
             await Task.Yield();
-            var form = sender as Form;
-            using (var closingForm = new Closing())
+            Form closingForm = new Closing();
+            var formTask = Task.Run(() => Invoke(new Action(() => closingForm.ShowDialog(this))));
+            var savingTask = Task.Run(async () =>
             {
-                var progressFormTask = closingForm.ShowDialogAsync();
-
                 IoHelperCore.SaveAccounts(accounts);
                 var tasks = new List<Task>();
                 foreach (var acc in accounts)
@@ -133,12 +133,14 @@ namespace TravBotSharp
                 }
 
                 SerilogSingleton.Close();
+            });
 
-                closingForm.Close();
-                await progressFormTask;
-            }
+            await savingTask;
+            closingForm.Close();
+            await formTask;
+            closingForm.Dispose();
 
-            form.Close();
+            Close();
         }
 
         /// <summary>
@@ -187,7 +189,7 @@ namespace TravBotSharp
             }
             if (GetSelectedAcc() == acc)
             {
-                button2.Enabled = true;
+                button5.Enabled = true;
             }
             generalUc1.UpdateBotRunning();
         }
@@ -300,7 +302,7 @@ namespace TravBotSharp
             generalUc1.UpdateBotRunning();
             if (GetSelectedAcc() == acc)
             {
-                button5.Enabled = true;
+                button2.Enabled = true;
             }
         }
 
