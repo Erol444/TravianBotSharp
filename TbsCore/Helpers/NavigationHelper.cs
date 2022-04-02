@@ -23,6 +23,22 @@ namespace TbsCore.Helpers
             "messages",
         };
 
+        private static readonly string[] urlHeroNavigationTTWars = new string[]
+        {
+            "t=1",
+            "t=2",
+            "t=3",
+            "t=4",
+        };
+
+        private static readonly string[] urlHeroNaviagtionT45 = new string[]
+        {
+            "attributes",
+            "appearance",
+            "adventures",
+            "auction",
+        };
+
         public static async Task<bool> ToDorf1(Account acc) => await MainNavigate(acc, MainNavigationButton.Resources);
 
         public static async Task<bool> ToDorf2(Account acc) => await MainNavigate(acc, MainNavigationButton.Buildings);
@@ -211,33 +227,91 @@ namespace TbsCore.Helpers
         public static async Task<bool> ToTreasury(Account acc, Village vill, TreasuryTab tab) =>
             await EnterBuilding(acc, vill, BuildingEnum.Treasury, (int)tab);
 
-        public static async Task<bool> ToHero(Account acc, HeroTab tab)
+        public static async Task ToHero(Account acc, HeroTab tab)
         {
-            string query = "";
-            switch (tab)
+            switch (acc.AccInfo.ServerVersion)
             {
-                case HeroTab.Appearance:
-                case HeroTab.Attributes:
-                    await DriverHelper.ClickById(acc, "heroImageButton");
-                    // Navigate to correct tab
-                    var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
-                    if (currentTab != (int)tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
-                    return true;
-
-                case HeroTab.Adventures:
-                    query = "adventure";
-                    // .
-                    // ttwars: adventureWhite
+                case ServerVersionEnum.TTwars:
+                    await ToHeroTTwar(acc, tab);
                     break;
 
-                case HeroTab.Auctions:
-                    query = "auction";
-                    // auction
-                    //ttwars auctionWhite
+                case ServerVersionEnum.T4_5:
+                    await ToHeroT45(acc, tab);
                     break;
             }
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars) query += "White";
-            return await DriverHelper.ClickByClassName(acc, query);
+        }
+
+        private static async Task ToHeroTTwar(Account acc, HeroTab tab)
+        {
+            do
+            {
+                switch (tab)
+                {
+                    case HeroTab.Appearance:
+                        throw new NotImplementedException();
+
+                    case HeroTab.Attributes:
+                        await DriverHelper.ClickById(acc, "heroImageButton");
+                        break;
+
+                    case HeroTab.Adventures:
+                        await DriverHelper.ClickByClassName(acc, "adventureWhite");
+                        break;
+
+                    case HeroTab.Auctions:
+                        await DriverHelper.ClickByClassName(acc, "auctionWhite");
+                        break;
+                }
+
+                try
+                {
+                    await DriverHelper.WaitPageChange(acc, "hero.php");
+
+                    if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
+                }
+                catch
+                {
+                    continue;
+                }
+                return;
+            }
+            while (true);
+        }
+
+        private static async Task ToHeroT45(Account acc, HeroTab tab)
+        {
+            do
+            {
+                switch (tab)
+                {
+                    case HeroTab.Appearance:
+                        throw new NotImplementedException();
+
+                    case HeroTab.Attributes:
+                        await DriverHelper.ClickById(acc, "heroImageButton");
+                        break;
+
+                    case HeroTab.Adventures:
+                        await DriverHelper.ClickByClassName(acc, "adventure");
+                        break;
+
+                    case HeroTab.Auctions:
+                        await DriverHelper.ClickByClassName(acc, "auction");
+                        break;
+                }
+
+                try
+                {
+                    await DriverHelper.WaitPageChange(acc, "hero");
+                    if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
+                }
+                catch
+                {
+                    continue;
+                }
+                return;
+            }
+            while (true);
         }
 
         public static async Task<bool> ToOverview(Account acc, OverviewTab tab, TroopOverview subTab = TroopOverview.OwnTroops)
