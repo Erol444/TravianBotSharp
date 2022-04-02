@@ -287,10 +287,18 @@ namespace TravBotSharp.Views
             UpdateBotRunning();
         }
 
-        public void UpdateBotRunning(string running = null)
+        public void UpdateBotRunning()
         {
-            if (string.IsNullOrEmpty(running)) running = GetSelectedAcc().TaskTimer?.IsBotRunning.ToString();
-            botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
+            if (botRunning.InvokeRequired)
+            {
+                botRunning.Invoke(new Action(UpdateBotRunning));
+            }
+            else
+            {
+                if (!botRunning.Visible) return;
+                var acc = GetSelectedAcc();
+                botRunning.Text = $"Bot status: {acc.Status}";
+            }
         }
 
         private void openMinimizedCheckbox_CheckedChanged(object sender, EventArgs e)

@@ -207,10 +207,14 @@ namespace TbsCore.Helpers
         /// Logout from the account. Closes web driver.
         /// </summary>
         /// <param name="acc"></param>
-        public static void Logout(Account acc)
+        public static async Task Logout(Account acc)
         {
-            acc.TaskTimer.Stop();
-            acc.Wb?.Close();
+            var task = Task.Run(() =>
+            {
+                acc.TaskTimer.Stop();
+                acc.Wb?.Close();
+            });
+            await task;
         }
     }
 }

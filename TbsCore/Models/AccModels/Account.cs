@@ -67,5 +67,18 @@ namespace TbsCore.Models.AccModels
 
         [JsonIgnore]
         public Logger Logger;
+
+        [JsonIgnore]
+        public Status Status;
+    }
+
+    public enum Status
+    {
+        Offline,
+        Starting,
+        Online,
+        Pausing,
+        Paused,
+        Stopping,
     }
 }

@@ -17,6 +17,7 @@ using TravBotSharp.Interfaces;
 using TravBotSharp.Views;
 using TbsCore.Models.Logging;
 using TbsCore.Models.VillageModels;
+using TbsCore.Extensions;
 
 namespace TravBotSharp
 {
@@ -77,7 +78,11 @@ namespace TravBotSharp
             accounts.ForEach(x =>
             {
                 ObjectHelper.FixAccObj(x, x);
-                x.Tasks = new TaskList(x);
+                x.Tasks = new TaskList(x)
+                {
+                    OnUpdateTask = debugUc1.UpdateTaskTable
+                };
+
                 x.TaskTimer = new TaskTimer(x);
                 // we will check again before we login
                 x.Access.AllAccess.ForEach(a => a.Ok = true);
@@ -107,6 +112,7 @@ namespace TravBotSharp
 
                     LogOutput.Instance.AddUsername(acc.AccInfo.Nickname);
                     acc.Logger = new Logger(acc.AccInfo.Nickname);
+                    acc.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
 
                     acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
                     accounts.Add(acc);
@@ -151,42 +157,39 @@ namespace TravBotSharp
         private async void button2_Click(object sender, EventArgs e) //login button
         {
             var acc = GetSelectedAcc();
-            if (0 < acc.Access.AllAccess.Count)
+            if (acc == null) return;
+            acc.Status = Status.Starting;
+            generalUc1.UpdateBotRunning();
+
+            var task = await Task.Run(async () =>
             {
-                var task = await Task.Run(async () =>
-                {
-                    var success = await IoHelperCore.LoginAccount(acc);
-                    if (!success) return false;
-                    acc.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
-                    debugUc1.UpdateTaskTable();
+                var success = await IoHelperCore.LoginAccount(acc);
+                if (!success) return false;
+                return true;
+            });
 
-                    return true;
-                });
-
-                if (task)
-                {
-                    generalUc1.UpdateBotRunning("true");
-                    return;
-                }
-                else
-                {
-                    _ = MessageBox.Show("Check debug log to more info", "Error in account", MessageBoxButtons.OK);
-                    return;
-                }
+            if (task)
+            {
+                acc.Status = Status.Online;
+            }
+            else
+            {
+                _ = MessageBox.Show("Check debug log to more info", $"Error while logging {acc.AccInfo.Nickname}", MessageBoxButtons.OK);
+                acc.Status = Status.Offline;
             }
 
-            // Alert user that account has no access defined
-            string message = "Account you are trying to login has no access' defined. Please edit the account.";
-            string caption = "Error in account";
-            MessageBoxButtons buttons = MessageBoxButtons.OK;
-            DialogResult result = MessageBox.Show(message, caption, buttons);
+            generalUc1.UpdateBotRunning();
         }
 
         private void button3_Click(object sender, EventArgs e) // Remove an account
         {
             var acc = GetSelectedAcc();
             if (acc == null) return;
-
+            if (acc.Status != Status.Offline)
+            {
+                _ = MessageBox.Show("You need logout this account before remove it", "Cannot remove this account", MessageBoxButtons.OK);
+                return;
+            }
             IoHelperCore.RemoveCache(acc);
             accounts.Remove(acc);
             DbRepository.RemoveAccount(acc);
@@ -267,39 +270,79 @@ namespace TravBotSharp
             }
         }
 
-        private void button5_Click(object sender, EventArgs e) // Logout
+        private async void button5_Click(object sender, EventArgs e) // Logout
         {
-            new Thread(() => IoHelperCore.Logout(GetSelectedAcc())).Start();
-            generalUc1.UpdateBotRunning("false");
-        }
-
-        private void button6_Click(object sender, EventArgs e) // Login all accounts
-        {
-            new Thread(async () =>
+            var acc = GetSelectedAcc();
+            if (acc == null) return;
+            if (!acc.CanLogout())
             {
-                var ran = new Random();
-                foreach (var acc in accounts)
-                {
-                    // If account is already running, don't login
-                    if (acc.TaskTimer.IsBotRunning) continue;
+                _ = MessageBox.Show("Please wait bot complete its task", "Cannot logout");
+                return;
+            }
+            acc.Status = Status.Stopping;
+            generalUc1.UpdateBotRunning();
 
-                    _ = IoHelperCore.LoginAccount(acc);
-                    await Task.Delay(AccountHelper.Delay(acc));
-                }
-            }).Start();
-            generalUc1.UpdateBotRunning("true");
+            await Task.Run(() => IoHelperCore.Logout(GetSelectedAcc()));
+
+            acc.Status = Status.Offline;
+            generalUc1.UpdateBotRunning();
         }
 
-        private void button4_Click(object sender, EventArgs e) // Logout all accounts
+        private async void button6_Click(object sender, EventArgs e) // Login all accounts
         {
-            new Thread(() =>
+            var ran = new Random();
+            var failed = new List<string>();
+            await Task.Run(async () =>
             {
                 foreach (var acc in accounts)
                 {
-                    IoHelperCore.Logout(acc);
+                    if (!acc.CanLogin()) continue;
+                    acc.Status = Status.Starting;
+
+                    if (GetSelectedAcc() == acc) generalUc1.UpdateBotRunning();
+
+                    var result = await IoHelperCore.LoginAccount(acc);
+                    if (!result)
+                    {
+                        failed.Add(acc.AccInfo.Nickname);
+                        acc.Status = Status.Offline;
+                    }
+                    else
+                    {
+                        await Task.Delay(ran.Next(10000, 30000));
+                        acc.Status = Status.Online;
+                    }
+                    if (GetSelectedAcc() == acc) generalUc1.UpdateBotRunning();
                 }
-            }).Start();
-            generalUc1.UpdateBotRunning("false");
+            });
+
+            if (failed.Count > 0)
+            {
+                _ = MessageBox.Show($"Error while logging {string.Join(" & ", failed)}", "Check debug log each account to more info", MessageBoxButtons.OK);
+            }
+            else
+            {
+                _ = MessageBox.Show($"Complete login all account in TBS's account list", "Success login all account ", MessageBoxButtons.OK);
+            }
+        }
+
+        private async void button4_Click(object sender, EventArgs e) // Logout all accounts
+        {
+            var tasks = new List<Task>();
+            foreach (var acc in accounts)
+            {
+                tasks.Add(Task.Run(async () =>
+               {
+                   acc.Status = Status.Stopping;
+                   if (GetSelectedAcc() == acc) generalUc1.UpdateBotRunning();
+                   await IoHelperCore.Logout(acc);
+                   acc.Status = Status.Offline;
+                   if (GetSelectedAcc() == acc) generalUc1.UpdateBotRunning();
+               }));
+            }
+
+            await Task.WhenAll(tasks);
+            _ = MessageBox.Show($"Complete logout account in TBS's account list", "Logout all account", MessageBoxButtons.OK);
         }
 
         private void checkNewVersion()
