@@ -38,6 +38,14 @@ namespace TbsCore.Models.AccModels
         public async Task<bool> Init(Account acc, bool newAccess = true)
         {
             this.acc = acc;
+            if (acc.Access.AllAccess.Count == 0)
+            {
+                acc.Logger.Warning("Account doesn't have any access. Press Edit account to check access");
+                return false;
+            }
+
+            acc.Access.AllAccess.ForEach(a => a.Ok = true);
+
             Access.Access access = newAccess ? acc.Access.GetNewAccess() : acc.Access.GetCurrentAccess();
 
             if (!string.IsNullOrEmpty(access.Proxy))
@@ -259,7 +267,7 @@ namespace TbsCore.Models.AccModels
                     }
                     else
                     {
-                        acc.Logger.Warning($"There's only one access to this account! Please check your proxy status");
+                        acc.Logger.Warning($"There's only one proxy to this account! Please check your proxy status");
                         return false;
                     }
                 }

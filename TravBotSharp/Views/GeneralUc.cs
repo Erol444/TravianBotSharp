@@ -98,11 +98,19 @@ namespace TravBotSharp.Views
         private void startTimersButton_Click(object sender, EventArgs e) //start timer
         {
             var acc = GetSelectedAcc();
-            acc.TaskTimer.Start();
+            if (acc == null) return;
+            if (acc.Status != Status.Paused)
+            {
+                _ = MessageBox.Show("Restart only work when account paused", "Cannot restart now");
+                return;
+            }
 
             acc.Tasks.Clear();
             AccountHelper.StartAccountTasks(acc);
             acc.Villages.ForEach(x => x.UnfinishedTasks.Clear());
+
+            acc.TaskTimer.Start();
+            acc.Status = Status.Online;
             UpdateBotRunning();
         }
 
@@ -217,7 +225,14 @@ namespace TravBotSharp.Views
 
         private void button6_Click(object sender, EventArgs e) // Stop timers
         {
-            GetSelectedAcc().TaskTimer?.Stop();
+            var acc = GetSelectedAcc();
+            if (acc == null) return;
+            if (acc.Status != Status.Online)
+            {
+                _ = MessageBox.Show("Pause only work when account online", "Cannot pause now");
+            }
+            acc.TaskTimer.Stop();
+            acc.Status = Status.Paused;
             UpdateBotRunning();
         }
 
@@ -283,7 +298,14 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e)
         {
-            GetSelectedAcc().TaskTimer.Start();
+            var acc = GetSelectedAcc();
+            if (acc == null) return;
+            if (acc.Status != Status.Paused)
+            {
+                _ = MessageBox.Show("Resume only work when account paused", "Cannot resume now");
+            }
+            acc.TaskTimer.Start();
+            acc.Status = Status.Online;
             UpdateBotRunning();
         }
 

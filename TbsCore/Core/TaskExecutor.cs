@@ -25,8 +25,7 @@ namespace TbsCore.Helpers
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
                 acc.Logger.Warning("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
-                acc.TaskTimer.Stop();
-                return;
+                acc.TaskTimer.ForceTimerStop();
             }
             if (CheckCookies(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click();");
@@ -49,7 +48,6 @@ namespace TbsCore.Helpers
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
                 acc.Tasks.Add(new LoginTask() { ExecuteAt = DateTime.MinValue });
-                return;
             }
 
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
@@ -89,7 +87,13 @@ namespace TbsCore.Helpers
                     acc.Logger.Warning($"Chrome has problem while executing task {task.GetName()}! Vill {task.Vill?.Name}. Try reopen Chrome");
 
                     acc.Wb.Close();
-                    await acc.Wb.Init(acc);
+
+                    var result = await acc.Wb.Init(acc);
+                    if (!result)
+                    {
+                        acc.TaskTimer.ForceTimerStop();
+                        return;
+                    }
                 }
                 catch (Exception e)
                 {

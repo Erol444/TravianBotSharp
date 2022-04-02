@@ -9,21 +9,36 @@ namespace TbsCore.Tasks.LowLevel
     /// <summary>
     /// Task will close and reopen driver then the next Normal/High priority task has to be executed
     /// </summary>
-    public class ReopenDriver : BotTask
+    public abstract class ReopenDriver : BotTask
     {
+        public bool ChangeAccess = false;
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             acc.Wb.Close();
-
             string previousLog = "";
             do
             {
                 await Task.Delay(1000);
-                var nextTask = acc.Tasks.ToList().FirstOrDefault();
-                var delay = nextTask.ExecuteAt - DateTime.Now;
-                int minutes = (int)delay.TotalMinutes;
-                if (minutes <= 5) break;
-                var log = $"Chrome will reopen in {minutes - 5} mins";
+                var minutes = GetMinutes(acc);
+                if (minutes <= 0) break;
+                string log;
+                switch (acc.Status)
+                {
+                    case Status.Paused:
+                    case Status.Pausing:
+                        log = $"Chrome will reopen in {minutes} mins but account is paused, chrome won't be open until bot is resumed";
+                        break;
+
+                    case Status.Stopping:
+                        acc.Logger.Information("Account logout. Ignore reopen chrome");
+                        return TaskRes.Executed;
+
+                    default:
+                        log = $"Chrome will reopen in {minutes} mins";
+                        break;
+                }
+
                 if (log != previousLog)
                 {
                     acc.Logger.Information(log);
@@ -32,9 +47,15 @@ namespace TbsCore.Tasks.LowLevel
             }
             while (true);
             // Use the same access
-            await acc.Wb.Init(acc, false);
+            var result = await acc.Wb.Init(acc, ChangeAccess);
+            if (!result)
+            {
+                acc.TaskTimer.ForceTimerStop();
+            }
 
             return TaskRes.Executed;
         }
+
+        public abstract int GetMinutes(Account acc);
     }
 }

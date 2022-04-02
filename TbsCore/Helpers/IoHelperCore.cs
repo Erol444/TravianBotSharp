@@ -170,7 +170,7 @@ namespace TbsCore.Helpers
         /// Login into account and initialize everything
         /// </summary>
         /// <param name="acc">Account</param>
-        public static async Task<bool> LoginAccount(Account acc)
+        public static async Task<bool> Login(Account acc)
         {
             var opened = await acc.Wb.Init(acc);
             if (!opened)
@@ -190,11 +190,8 @@ namespace TbsCore.Helpers
         /// <param name="acc"></param>
         public static async Task Logout(Account acc)
         {
-            await Task.Run(() =>
-            {
-                acc.TaskTimer.Stop();
-                acc.Wb.Close();
-            });
+            await acc.TaskTimer.Stop();
+            acc.Wb.Close();
         }
     }
 }

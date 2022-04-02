@@ -63,9 +63,6 @@ namespace TbsCore.Models.AccModels
                 }
             }
 
-            // we will check again before we login
-            Access.AllAccess.ForEach(a => a.Ok = true);
-
             LogOutput.Instance.AddUsername(AccInfo.Nickname);
             Logger = new Logger(AccInfo.Nickname);
 

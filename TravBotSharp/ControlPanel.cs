@@ -166,14 +166,8 @@ namespace TravBotSharp
             acc.Status = Status.Starting;
             generalUc1.UpdateBotRunning();
 
-            var task = await Task.Run(async () =>
-            {
-                var success = await IoHelperCore.LoginAccount(acc);
-                if (!success) return false;
-                return true;
-            });
-
-            if (task)
+            var success = await IoHelperCore.Login(acc);
+            if (success)
             {
                 acc.Status = Status.Online;
             }
@@ -287,7 +281,7 @@ namespace TravBotSharp
             acc.Status = Status.Stopping;
             generalUc1.UpdateBotRunning();
 
-            await Task.Run(() => IoHelperCore.Logout(GetSelectedAcc()));
+            await IoHelperCore.Logout(GetSelectedAcc());
 
             acc.Status = Status.Offline;
             generalUc1.UpdateBotRunning();
@@ -306,7 +300,7 @@ namespace TravBotSharp
 
                     if (GetSelectedAcc() == acc) generalUc1.UpdateBotRunning();
 
-                    var result = await IoHelperCore.LoginAccount(acc);
+                    var result = await IoHelperCore.Login(acc);
                     if (!result)
                     {
                         failed.Add(acc.AccInfo.Nickname);
