@@ -184,7 +184,7 @@ namespace TbsCore.Models.AccModels
             foreach (var task in list)
             {
                 var type = Type.GetType(task.Type);
-                if (type == typeof(Sleep))
+                if (type == typeof(TimeSleep))
                 {
                     continue;
                 }

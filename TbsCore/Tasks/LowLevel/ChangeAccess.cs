@@ -8,9 +8,10 @@ namespace TbsCore.Tasks.LowLevel
     /// <summary>
     /// This task changes access (and restarts selenium driver) for the account and sets the next access change, if there are multiple access'.
     /// </summary>
-    public class ChangeAccess : BotTask
+    public class ChangeAccess : ReopenDriver
     {
         private readonly Random rand = new Random();
+        private DateTime sleepEnd;
 
         public override async Task<TaskRes> Execute(Account acc)
         {
@@ -19,28 +20,11 @@ namespace TbsCore.Tasks.LowLevel
             var min = 10 * 60; // 10 mins
             var max = 30 * 60; // 30 mins
             int nextTime = rand.Next(min, max);
-            var completeChange = DateTime.Now.AddSeconds(nextTime);
+            sleepEnd = DateTime.Now.AddSeconds(nextTime);
 
-            acc.Logger.Information($"New proxy will be change at {completeChange}");
-            acc.Wb.Close();
-
-            string previousLog = "";
-            do
-            {
-                await Task.Delay(1000);
-                var delay = completeChange - DateTime.Now;
-                int minutes = (int)delay.TotalMinutes;
-                if (minutes <= 0) break;
-                var log = $"Chrome will reopen in {minutes} mins";
-                if (log != previousLog)
-                {
-                    acc.Logger.Information(log);
-                    previousLog = log;
-                }
-            }
-            while (true);
-            // Use the different access
-            await acc.Wb.Init(acc);
+            acc.Logger.Information($"New proxy will be change at {sleepEnd}");
+            ChangeAccess = true;
+            await base.Execute(acc);
 
             var nextProxyChange = TimeHelper.GetNextProxyChange(acc);
             if (nextProxyChange != TimeSpan.MaxValue)
@@ -50,6 +34,20 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             return TaskRes.Executed;
+        }
+
+        public DateTime GetSleepEnd(Account acc)
+        {
+            var min = acc.Settings.Time.MinSleep * 60;
+            var max = acc.Settings.Time.MaxSleep * 60;
+            int sleepSec = rand.Next(min, max);
+            return DateTime.Now.AddSeconds(sleepSec);
+        }
+
+        public override int GetMinutes(Account acc)
+        {
+            var delay = sleepEnd - DateTime.Now;
+            return (int)delay.TotalMinutes;
         }
     }
 }

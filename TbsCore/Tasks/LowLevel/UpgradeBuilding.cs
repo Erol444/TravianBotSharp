@@ -31,6 +31,8 @@ namespace TbsCore.Tasks.LowLevel
                         return TaskRes.Executed;
                     }
 
+                    await SwitchVillage(acc);
+
                     var firstComplete = Vill.Build.CurrentlyBuilding.FirstOrDefault();
                     NextExecute = TimeHelper.RanDelay(acc, firstComplete.Duration);
                     acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete. ({NextExecute})", this);
@@ -38,12 +40,6 @@ namespace TbsCore.Tasks.LowLevel
                 }
 
                 _buildingTask = nextTask;
-
-                if (!EnoughFreeCrop(acc))
-                {
-                    acc.Logger.Warning($"Don't have enough Free Crop for {_buildingTask.Building} - level {_buildingTask.Level}. Will upgrade Cropland instead.", this);
-                    continue;
-                }
 
                 // check place to construct or upgrade
                 switch (_buildingTask.TaskType)
@@ -65,6 +61,13 @@ namespace TbsCore.Tasks.LowLevel
                         }
                 }
 
+                await SwitchVillage(acc);
+
+                if (!EnoughFreeCrop(acc))
+                {
+                    acc.Logger.Warning($"Don't have enough Free Crop for {_buildingTask.Building} - level {_buildingTask.Level}. Will upgrade Cropland instead.", this);
+                    continue;
+                }
                 // Fast building for TTWars
                 if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars &&
                     !_buildingTask.ConstructNew)
@@ -501,6 +504,16 @@ namespace TbsCore.Tasks.LowLevel
                     Level = currentLvl + 1,
                     BuildingId = upgrade.Id
                 }, bottom);
+            }
+        }
+
+        private async Task SwitchVillage(Account acc)
+        {
+            await DriverHelper.WaitPageLoaded(acc);
+            var active = acc.Villages.FirstOrDefault(x => x.Active);
+            if (active != null && active.Id != Vill.Id)
+            {
+                await VillageHelper.SwitchVillage(acc, Vill.Id);
             }
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
 using TbsCore.Helpers;
 using TbsCore.Tasks;
@@ -13,6 +14,13 @@ namespace TbsCore.Models.AccModels
         private readonly Random _random;
         private readonly Account _acc;
         private readonly Timer _mainTimer;
+        private bool flagStopTimer;
+
+        public void ForceTimerStop()
+        {
+            _acc.Status = Status.Stopping;
+            flagStopTimer = true;
+        }
 
         // subTimer is for Tbs's Alzheimer disease
         private readonly Timer _subTimer;
@@ -57,16 +65,30 @@ namespace TbsCore.Models.AccModels
 
         public void Start()
         {
+            if (IsBotRunning) return;
             IsBotRunning = true;
             IsTaskExcuting = false;
+            flagStopTimer = false;
             _mainTimer.Start();
+            _subTimer.Start();
         }
 
-        public void Stop()
+        public async Task Stop(bool force = false)
         {
+            if (!IsBotRunning) return;
+
             IsBotRunning = false;
-            IsTaskExcuting = false;
+
+            if (!force)
+            {
+                while (IsTaskExcuting)
+                {
+                    await Task.Delay(1000);
+                }
+            }
+
             _mainTimer.Stop();
+            _subTimer.Stop();
         }
 
         private void MainTimerElapsed(object source, ElapsedEventArgs e) => NewTick();
@@ -84,7 +106,12 @@ namespace TbsCore.Models.AccModels
         {
             if (!IsBotRunning) return;
             if (IsTaskExcuting) return;
-
+            if (flagStopTimer)
+            {
+                await Stop(true);
+                _acc.Status = Status.Offline;
+                return;
+            }
             IsTaskExcuting = true;
 
             if (_acc.Tasks.Count == 0)
@@ -120,7 +147,7 @@ namespace TbsCore.Models.AccModels
             firstTask.Stage = TaskStage.Executing;
 
             //If correct village is selected, otherwise change village
-            if (firstTask.Vill != null)
+            if (firstTask.Vill != null && firstTask.GetType() != typeof(UpgradeBuilding))
             {
                 var active = _acc.Villages.FirstOrDefault(x => x.Active);
                 if (active != null && active != firstTask.Vill)
@@ -140,7 +167,7 @@ namespace TbsCore.Models.AccModels
                 var delay = TimeSpan.FromMinutes(5);
                 if (nextTask == null || nextTask.ExecuteAt - DateTime.Now > delay)
                 {
-                    _acc.Tasks.Add(new ReopenDriver()
+                    _acc.Tasks.Add(new TaskSleep()
                     {
                         ExecuteAt = DateTime.Now,
                     });

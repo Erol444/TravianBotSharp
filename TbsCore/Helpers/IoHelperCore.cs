@@ -157,17 +157,10 @@ namespace TbsCore.Helpers
         /// Saves accounts into the SQLite DB
         /// </summary>
         /// <param name="accounts"></param>
-        public static void SaveAccounts(List<Account> accounts, bool logout)
+        public static void SaveAccounts(List<Account> accounts)
         {
             foreach (var acc in accounts)
             {
-                if (logout)
-                {
-                    Logout(acc);
-                    acc.Wb?.Dispose();
-                    acc.TaskTimer?.Dispose();
-                    acc.WebhookClient?.Dispose();
-                }
                 acc.Tasks.Save();
                 DbRepository.SaveAccount(acc);
             }
@@ -177,29 +170,17 @@ namespace TbsCore.Helpers
         /// Login into account and initialize everything
         /// </summary>
         /// <param name="acc">Account</param>
-        public static async Task<bool> LoginAccount(Account acc)
+        public static async Task<bool> Login(Account acc)
         {
-            if (acc.Wb == null)
+            var opened = await acc.Wb.Init(acc);
+            if (!opened)
             {
-                acc.Wb = new WebBrowserInfo();
-                var opened = await acc.Wb.Init(acc);
-                if (!opened)
-                {
-                    acc.Logger.Warning("Cannot open browser. Check warning below");
-                    return false;
-                }
-                AccountHelper.StartAccountTasks(acc);
-                acc.TaskTimer.Start();
+                acc.Logger.Warning("Cannot open browser. Check warning below");
+                return false;
             }
+            AccountHelper.StartAccountTasks(acc);
+            acc.TaskTimer.Start();
 
-            if (acc.Settings.DiscordWebhook && !string.IsNullOrEmpty(acc.AccInfo.WebhookUrl))
-            {
-                acc.WebhookClient = new DiscordWebhookClient(acc.AccInfo.WebhookUrl);
-                if (acc.Settings.DiscordOnlineAnnouncement)
-                {
-                    DiscordHelper.SendMessage(acc, "TravianBotSharp is online now");
-                }
-            }
             return true;
         }
 
@@ -207,10 +188,10 @@ namespace TbsCore.Helpers
         /// Logout from the account. Closes web driver.
         /// </summary>
         /// <param name="acc"></param>
-        public static void Logout(Account acc)
+        public static async Task Logout(Account acc)
         {
-            acc.TaskTimer.Stop();
-            acc.Wb?.Close();
+            await acc.TaskTimer.Stop();
+            acc.Wb.Close();
         }
     }
 }
