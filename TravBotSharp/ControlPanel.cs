@@ -27,6 +27,7 @@ namespace TravBotSharp
         private int accSelected = 0;
         private System.Timers.Timer saveAccountsTimer;
         private ITbsUc[] Ucs;
+        private bool closing = false;
 
         public ControlPanel()
         {
@@ -69,7 +70,7 @@ namespace TravBotSharp
             UseragentDatabase.Instance.Load();
         }
 
-        private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts, false);
+        private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts);
 
         private void LoadAccounts()
         {
@@ -78,23 +79,11 @@ namespace TravBotSharp
             accounts.ForEach(x =>
             {
                 ObjectHelper.FixAccObj(x, x);
-                x.Tasks = new TaskList(x)
-                {
-                    OnUpdateTask = debugUc1.UpdateTaskTable
-                };
+                x.Load();
+                x.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
 
-                x.TaskTimer = new TaskTimer(x);
-                // we will check again before we login
-                x.Access.AllAccess.ForEach(a => a.Ok = true);
-
-                LogOutput.Instance.AddUsername(x.AccInfo.Nickname);
-                x.Logger = new Logger(x.AccInfo.Nickname);
-
-                x.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
-                // x.Tasks.Load();
+                RefreshAccView();
             });
-
-            RefreshAccView();
         }
 
         private void button1_Click(object sender, EventArgs e) // Add account
@@ -110,21 +99,37 @@ namespace TravBotSharp
                     if (string.IsNullOrEmpty(acc.AccInfo.Nickname) ||
                         string.IsNullOrEmpty(acc.AccInfo.ServerUrl)) return;
 
-                    LogOutput.Instance.AddUsername(acc.AccInfo.Nickname);
-                    acc.Logger = new Logger(acc.AccInfo.Nickname);
+                    acc.Load();
                     acc.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
-
-                    acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
                     accounts.Add(acc);
                     RefreshAccView();
                 }
             }
         }
 
-        private void ControlPanel_FormClosing(object sender, FormClosingEventArgs e)
+        private async void ControlPanel_FormClosing(object sender, FormClosingEventArgs e)
         {
-            IoHelperCore.SaveAccounts(accounts, true);
+            if (closing) return;
+            e.Cancel = true;
+            closing = true;
+            await Task.Yield();
+            var form = sender as Form;
+            IoHelperCore.SaveAccounts(accounts);
+            var tasks = new List<Task>();
+            foreach (var acc in accounts)
+            {
+                tasks.Add(IoHelperCore.Logout(acc));
+            }
+
+            await Task.WhenAll(tasks);
+
+            foreach (var acc in accounts)
+            {
+                acc.Dispose();
+            }
+
             SerilogSingleton.Close();
+            form.Close();
         }
 
         /// <summary>
@@ -384,10 +389,7 @@ namespace TravBotSharp
                         if (string.IsNullOrEmpty(acc.AccInfo.Nickname) ||
                             string.IsNullOrEmpty(acc.AccInfo.ServerUrl)) return;
 
-                        LogOutput.Instance.AddUsername(acc.AccInfo.Nickname);
-                        acc.Logger = new Logger(acc.AccInfo.Nickname);
-
-                        acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
+                        acc.Load();
                         accounts.Add(acc);
                     }
 
