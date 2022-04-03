@@ -75,7 +75,6 @@ namespace TravBotSharp.Forms
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Travian Bot Sharp is saving and closing.";
-            this.TopMost = true;
             this.mainPanel.ResumeLayout(false);
             this.mainPanel.PerformLayout();
             this.ResumeLayout(false);
