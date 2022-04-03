@@ -22,9 +22,6 @@ namespace TbsCore.Models.AccModels
             flagStopTimer = true;
         }
 
-        // subTimer is for Tbs's Alzheimer disease
-        private readonly Timer _subTimer;
-
         private long _isTaskExcuting;
 
         public bool IsTaskExcuting
@@ -57,10 +54,8 @@ namespace TbsCore.Models.AccModels
         {
             _acc = Account;
             _mainTimer = new Timer(500);
-            _subTimer = new Timer(500);
             _random = new Random();
             _mainTimer.Elapsed += MainTimerElapsed;
-            _subTimer.Elapsed += SubTimerElapsed;
         }
 
         public void Start()
@@ -70,7 +65,6 @@ namespace TbsCore.Models.AccModels
             IsTaskExcuting = false;
             flagStopTimer = false;
             _mainTimer.Start();
-            _subTimer.Start();
         }
 
         public async Task Stop(bool force = false)
@@ -78,29 +72,15 @@ namespace TbsCore.Models.AccModels
             if (!IsBotRunning) return;
 
             IsBotRunning = false;
+            _mainTimer.Stop();
 
             if (!force)
             {
-                while (IsTaskExcuting)
-                {
-                    await Task.Delay(1000);
-                }
+                await Task.Run(() => { while (IsTaskExcuting) { } });
             }
-
-            _mainTimer.Stop();
-            _subTimer.Stop();
         }
 
         private void MainTimerElapsed(object source, ElapsedEventArgs e) => NewTick();
-
-        private void SubTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            // if there is no task and bot still dont know it can execute next task
-            if (_acc.Tasks.IsTaskExcuting()) return;
-            if (!IsTaskExcuting) return;
-
-            IsTaskExcuting = false;
-        }
 
         private async void NewTick()
         {
@@ -119,43 +99,27 @@ namespace TbsCore.Models.AccModels
                 IsTaskExcuting = false;
                 return; //No tasks
             }
-            // Another task is already in progress. wait
-            if (_acc.Tasks.IsTaskExcuting())
-            {
-                IsTaskExcuting = false;
-                return;
-            }
 
-            var tasks = _acc.Tasks.GetTasksReady();
-            if (tasks.Count == 0)
+            var task = _acc.Tasks.FirstTask;
+            if (task.ExecuteAt > DateTime.Now)
             {
                 NoTasks(_acc);
                 IsTaskExcuting = false;
                 return;
             }
 
-            BotTask firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
-            if (firstTask == null) firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.Medium);
-            if (firstTask == null) firstTask = tasks.FirstOrDefault();
-
-            if (firstTask.Stage == TaskStage.Executing)
-            {
-                IsTaskExcuting = false;
-                return;
-            }
-
-            firstTask.Stage = TaskStage.Executing;
+            task.Stage = TaskStage.Executing;
 
             //If correct village is selected, otherwise change village
-            if (firstTask.Vill != null && firstTask.GetType() != typeof(UpgradeBuilding))
+            if (task.Vill != null && task.GetType() != typeof(UpgradeBuilding))
             {
                 var active = _acc.Villages.FirstOrDefault(x => x.Active);
-                if (active != null && active != firstTask.Vill)
+                if (active != null && active != task.Vill)
                 {
-                    await VillageHelper.SwitchVillage(_acc, firstTask.Vill.Id);
+                    await VillageHelper.SwitchVillage(_acc, task.Vill.Id);
                 }
             }
-            await TaskExecutor.Execute(_acc, firstTask);
+            await TaskExecutor.Execute(_acc, task);
             IsTaskExcuting = false;
         }
 
@@ -193,7 +157,6 @@ namespace TbsCore.Models.AccModels
         public void Dispose()
         {
             _mainTimer.Dispose();
-            _subTimer.Dispose();
         }
     }
 }

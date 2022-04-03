@@ -223,7 +223,7 @@ namespace TravBotSharp.Views
             GetSelectedAcc().Settings.AutoReadIgms = autoReadIGMs.Checked;
         }
 
-        private void button6_Click(object sender, EventArgs e) // Stop timers
+        private async void button6_Click(object sender, EventArgs e) // Stop timers
         {
             var acc = GetSelectedAcc();
             if (acc == null) return;
@@ -231,7 +231,9 @@ namespace TravBotSharp.Views
             {
                 _ = MessageBox.Show("Pause only work when account online", "Cannot pause now");
             }
-            acc.TaskTimer.Stop();
+            acc.Status = Status.Pausing;
+            UpdateBotRunning();
+            await acc.TaskTimer.Stop();
             acc.Status = Status.Paused;
             UpdateBotRunning();
         }
@@ -304,6 +306,7 @@ namespace TravBotSharp.Views
             {
                 _ = MessageBox.Show("Resume only work when account paused", "Cannot resume now");
             }
+
             acc.TaskTimer.Start();
             acc.Status = Status.Online;
             UpdateBotRunning();
@@ -462,6 +465,15 @@ namespace TravBotSharp.Views
         private void clickDelayMax_ValueChanged(object sender, EventArgs e)
         {
             GetSelectedAcc().Settings.DelayClickingMax = (int)clickDelayMax.Value;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            acc.Tasks.Add(new TimeSleep()
+            {
+                ExecuteAt = DateTime.Now,
+            });
         }
 
         private void UpdaterResPrio(Account acc)
