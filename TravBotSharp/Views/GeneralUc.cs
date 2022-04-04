@@ -223,19 +223,24 @@ namespace TravBotSharp.Views
             GetSelectedAcc().Settings.AutoReadIgms = autoReadIGMs.Checked;
         }
 
-        private async void button6_Click(object sender, EventArgs e) // Stop timers
+        private void button6_Click(object sender, EventArgs e) // Stop timers
         {
             var acc = GetSelectedAcc();
             if (acc == null) return;
             if (acc.Status != Status.Online)
             {
                 _ = MessageBox.Show("Pause only work when account online", "Cannot pause now");
+                return;
             }
-            acc.Status = Status.Pausing;
-            UpdateBotRunning();
-            await acc.TaskTimer.Stop();
-            acc.Status = Status.Paused;
-            UpdateBotRunning();
+            var thread = new Thread(async () =>
+            {
+                acc.Status = Status.Pausing;
+                UpdateBotRunning();
+                await acc.TaskTimer.Stop();
+                acc.Status = Status.Paused;
+                UpdateBotRunning();
+            });
+            thread.Start();
         }
 
         private void headlessCheckbox_CheckedChanged(object sender, EventArgs e)
