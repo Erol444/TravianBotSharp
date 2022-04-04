@@ -158,7 +158,7 @@ namespace TbsCore.Helpers
 
             // check prerequisite
             var prerequisite = AddBuildingPrerequisites(acc, vill, task.Building, false);
-            if (prerequisite) return false;
+            if (!prerequisite) return false;
 
             return true;
         }

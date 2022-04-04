@@ -100,7 +100,7 @@ namespace TbsCore.Tasks.LowLevel
                     else
                     {
                         acc.Logger.Warning($"Cannot find button to build {_buildingTask.Building} - Level {_buildingTask.Level}!", this);
-                        return TaskRes.Retry;
+                        continue;
                     }
                 }
 
@@ -111,7 +111,7 @@ namespace TbsCore.Tasks.LowLevel
                     if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
                     {
                         acc.Logger.Warning($"Storage is too low to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will build storage first", this);
-                        return await Execute(acc);
+                        continue;
                     }
                     var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
 
@@ -121,7 +121,7 @@ namespace TbsCore.Tasks.LowLevel
                         acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will try finish the task later", this);
                         DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
                         NextExecute = TimeHelper.RanDelay(acc, enoughRes);
-                        return TaskRes.Executed;
+                        continue;
                     }
                     var heroRes = HeroHelper.GetHeroResources(acc);
 
