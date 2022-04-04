@@ -63,27 +63,27 @@ namespace TbsCore.Helpers
         /// </summary>
         private static async Task ToBuildingId(Account acc, int index)
         {
-            // If we are already at the correct building, don't re-enter it, just navigate to correct tab afterwards.
-            if (acc.Wb.CurrentUrl.Contains($"build.php?id={index}"))
+            do
             {
-                // If we have just updated the village, don't re-navigate
-                var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
-                if (lastUpdate < TimeSpan.FromSeconds(10)) return;
+                // If we are already at the correct building, don't re-enter it, just navigate to correct tab afterwards.
+                if (acc.Wb.CurrentUrl.Contains($"build.php?id={index}"))
+                {
+                    // If we have just updated the village, don't re-navigate
+                    var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
+                    if (lastUpdate < TimeSpan.FromSeconds(10)) return;
 
-                // If we haven't updated it recently (last 10sec), refresh
-                await acc.Wb.Refresh();
-                return;
-            }
+                    // If we haven't updated it recently (last 10sec), refresh
+                    await acc.Wb.Refresh();
+                    return;
+                }
 
-            if (index < 19) // dorf1
-            {
-                if (!acc.Wb.CurrentUrl.Contains("dorf1.php") || acc.Wb.CurrentUrl.Contains("id="))
-                    await MainNavigate(acc, MainNavigationButton.Resources);
-                await DriverHelper.ClickByClassName(acc, $"buildingSlot{index}");
-            }
-            else // dorf2
-            {
-                do
+                if (index < 19) // dorf1
+                {
+                    if (!acc.Wb.CurrentUrl.Contains("dorf1.php") || acc.Wb.CurrentUrl.Contains("id="))
+                        await MainNavigate(acc, MainNavigationButton.Resources);
+                    await DriverHelper.ClickByClassName(acc, $"buildingSlot{index}");
+                }
+                else // dorf2
                 {
                     acc.Wb.UpdateHtml();
                     if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
@@ -93,14 +93,16 @@ namespace TbsCore.Helpers
                     var location = index - 18; // - 19 + 1
                     var divBuilding = acc.Wb.Html.DocumentNode.SelectSingleNode($"//*[@id='villageContent']/div[{location}]");
                     if (divBuilding == null) continue;
-                    var element = acc.Wb.Driver.FindElement(By.XPath($"//*[@id='villageContent']/div[{location}]"));
-                    if (element == null) continue;
-                    element.Click();
-                    break;
+                    var pathBuilding = divBuilding.Descendants("a").FirstOrDefault();
+                    if (pathBuilding == null) continue;
+                    var href = pathBuilding.GetAttributeValue("href", "");
+                    var url = $"{acc.AccInfo.ServerUrl}{href}";
+                    await acc.Wb.Navigate(url);
                 }
-                while (true);
+                await DriverHelper.WaitPageChange(acc, $"id={index}");
+                break;
             }
-            await DriverHelper.WaitPageChange(acc, $"id={index}");
+            while (true);
         }
 
         internal static async Task ToConstructionTab(Account acc, BuildingEnum building)
