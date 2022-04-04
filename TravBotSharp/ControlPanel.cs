@@ -207,6 +207,7 @@ namespace TravBotSharp
             accounts.Remove(acc);
             DbRepository.RemoveAccount(acc);
             accListView.Items.RemoveAt(accSelected);
+            acc.Dispose();
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
