@@ -16,6 +16,7 @@ namespace TbsCore.Tasks.LowLevel
     public class UpgradeBuilding : BotTask
     {
         private BuildingTask _buildingTask;
+        private readonly Random rand = new Random();
 
         public override async Task<TaskRes> Execute(Account acc)
         {
@@ -137,16 +138,32 @@ namespace TbsCore.Tasks.LowLevel
                     }
                 }
 
+                bool result;
                 if (construct)
                 {
-                    await Construct(acc, contractNode);
+                    result = await Construct(acc, contractNode);
                 }
                 else
                 {
-                    await Upgrade(acc, contractNode);
+                    result = await Upgrade(acc, contractNode);
                 }
-
-                await PostTaskCheckDorf(acc);
+                if (!result)
+                {
+                    var chanceDorf2 = rand.Next(1, 100);
+                    if (chanceDorf2 >= 50)
+                    {
+                        await NavigationHelper.ToDorf2(acc);
+                    }
+                    else
+                    {
+                        await NavigationHelper.ToDorf1(acc);
+                    }
+                }
+                else
+                {
+                    await DriverHelper.WaitPageChange(acc, "dorf");
+                }
+                PostTaskCheckDorf(acc);
             }
             while (true);
         }
@@ -156,14 +173,14 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TaskResult</returnss>
-        private async Task Construct(Account acc, HtmlNode node)
+        private async Task<bool> Construct(Account acc, HtmlNode node)
         {
             var button = node.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
 
             // Check for prerequisites
             if (button == null)
             {
-                return;
+                return false;
             }
 
             await DriverHelper.ClickById(acc, button.Id);
@@ -176,7 +193,7 @@ namespace TbsCore.Tasks.LowLevel
                 RemoveCurrentTask();
             }
 
-            return;
+            return true;
         }
 
         /// <summary>
@@ -184,7 +201,7 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TaskResult</returns>
-        private async Task Upgrade(Account acc, HtmlNode node)
+        private async Task<bool> Upgrade(Account acc, HtmlNode node)
         {
             (var buildingEnum, var lvl) = InfrastructureParser.UpgradeBuildingGetInfo(node);
 
@@ -192,7 +209,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 acc.Logger.Warning($"Can't upgrade building {_buildingTask.Building} in village {Vill.Name}. Will be removed from the queue.");
                 RemoveCurrentTask();
-                return;
+                return false;
             }
 
             // Basic task already on/above desired level, don't upgrade further
@@ -210,7 +227,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 acc.Logger.Information($"{_buildingTask.Building} is already level {lvl} in village {Vill.Name}. Will be removed from the queue.");
                 RemoveCurrentTask();
-                return;
+                return false;
             }
 
             var container = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
@@ -218,7 +235,7 @@ namespace TbsCore.Tasks.LowLevel
             if (buttons == null)
             {
                 acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}");
-                return;
+                return false;
             }
 
             var errorMessage = acc.Wb.Html.GetElementbyId("build")
@@ -231,14 +248,14 @@ namespace TbsCore.Tasks.LowLevel
             if (upgradeButton == null)
             {
                 acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found!");
-                return;
+                return false;
             }
 
             // Not enough resources?
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
             {
                 acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}");
-                return;
+                return false;
             }
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
@@ -261,14 +278,13 @@ namespace TbsCore.Tasks.LowLevel
             {
                 RemoveCurrentTask();
             }
+            return true;
         }
 
         private void RemoveCurrentTask() => Vill.Build.Tasks.Remove(this._buildingTask);
 
-        private async Task PostTaskCheckDorf(Account acc)
+        private void PostTaskCheckDorf(Account acc)
         {
-            await DriverHelper.WaitPageChange(acc, "dorf");
-
             // Check if residence is getting upgraded to level 10 => train settlers
             var cbResidence = Vill.Build
                 .CurrentlyBuilding
@@ -377,7 +393,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 var build = acc.Wb.Html.GetElementbyId("build");
                 if (build != null) RemoveCurrentTask(); // Already on max lvl
-                else await PostTaskCheckDorf(acc);
+                else PostTaskCheckDorf(acc);
                 return true;
             }
 
