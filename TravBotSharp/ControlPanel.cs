@@ -193,6 +193,7 @@ namespace TravBotSharp
                 {
                     _ = MessageBox.Show("Check debug log to more info", $"Error while logging {acc.AccInfo.Nickname}", MessageBoxButtons.OK);
                     acc.Status = Status.Offline;
+                    button2.Invoke(new Action(() => button2.Enabled = true));
                 }
                 if (GetSelectedAcc() == acc)
                 {
