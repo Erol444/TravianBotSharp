@@ -335,8 +335,17 @@ namespace TbsCore.Tasks.LowLevel
                 await Task.Delay(AccountHelper.Delay(acc));
             }
 
+            while ( true)
+            {
+                acc.Wb.UpdateHtml();
+                var node = acc.Wb.Html.GetElementbyId("videoFeature");
+                if (node == null) continue;
+                var element = acc.Wb.Driver.FindElementById("videoFeature");
+                if (element == null) continue;
+                element.Click();
+                break;
+            }
             // Has to be a legit "click"
-            acc.Wb.FindElementById("videoFeature").Click();
 
             // wait for finish watching ads
             var timeout = DateTime.Now.AddSeconds(100);
