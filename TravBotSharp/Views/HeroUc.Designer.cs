@@ -57,7 +57,7 @@
             this.centerPanel = new System.Windows.Forms.TableLayoutPanel();
             this.leftPanel = new System.Windows.Forms.TableLayoutPanel();
             this.button5 = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.autoAuction = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
@@ -387,7 +387,7 @@
             this.leftPanel.Controls.Add(this.buyAdventuresCheckBox, 0, 7);
             this.leftPanel.Controls.Add(this.autoSetHeroPoints, 0, 6);
             this.leftPanel.Controls.Add(this.helmetSwitcher, 0, 5);
-            this.leftPanel.Controls.Add(this.checkBox1, 0, 4);
+            this.leftPanel.Controls.Add(this.autoAuction, 0, 4);
             this.leftPanel.Controls.Add(this.button3, 1, 0);
             this.leftPanel.Controls.Add(this.button4, 1, 1);
             this.leftPanel.Controls.Add(this.button7, 1, 6);
@@ -417,18 +417,18 @@
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
             // 
-            // checkBox1
+            // autoAuction
             // 
-            this.checkBox1.AutoSize = true;
-            this.leftPanel.SetColumnSpan(this.checkBox1, 2);
-            this.checkBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.checkBox1.Location = new System.Drawing.Point(3, 287);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(257, 65);
-            this.checkBox1.TabIndex = 153;
-            this.checkBox1.Text = "Auto action (Offcial only)";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.autoAuction.AutoSize = true;
+            this.leftPanel.SetColumnSpan(this.autoAuction, 2);
+            this.autoAuction.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.autoAuction.Location = new System.Drawing.Point(3, 287);
+            this.autoAuction.Name = "autoAuction";
+            this.autoAuction.Size = new System.Drawing.Size(257, 65);
+            this.autoAuction.TabIndex = 153;
+            this.autoAuction.Text = "Auto auction (Offcial only)";
+            this.autoAuction.UseVisualStyleBackColor = true;
+            this.autoAuction.CheckedChanged += new System.EventHandler(this.autoAuction_CheckedChanged);
             // 
             // button3
             // 
@@ -512,7 +512,7 @@
         private System.Windows.Forms.TableLayoutPanel centerPanel;
         private System.Windows.Forms.TableLayoutPanel leftPanel;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox autoAuction;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button7;

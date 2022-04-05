@@ -14,6 +14,15 @@ namespace TravBotSharp.Views
         public HeroUc()
         {
             InitializeComponent();
+            CreateTooltip();
+        }
+
+        private void CreateTooltip()
+        {
+            var toolTip = new ToolTip();
+            toolTip.SetToolTip(autoEquip, "Required refresh update info");
+            toolTip.SetToolTip(autoAuction, "Required refresh update info");
+            toolTip.SetToolTip(helmetSwitcher, "Required refresh update info");
         }
 
         public void UpdateUc()
@@ -27,7 +36,7 @@ namespace TravBotSharp.Views
             autoEquip.Checked = acc.Hero.Settings.AutoEquip;
 
             autoSetHeroPoints.Checked = acc.Hero.Settings.AutoSetPoints;
-            checkBox1.Checked = acc.Hero.Settings.AutoAuction;
+            autoAuction.Checked = acc.Hero.Settings.AutoAuction;
 
             if (acc.Hero.Items == null) return;
 
@@ -92,7 +101,26 @@ namespace TravBotSharp.Views
 
         private void checkBoxAutoSendToAdventures_CheckedChanged(object sender, EventArgs e)
         {
-            GetSelectedAcc().Hero.Settings.AutoSendToAdventure = checkBoxAutoSendToAdventures.Checked;
+            var acc = GetSelectedAcc();
+            acc.Hero.Settings.AutoSendToAdventure = checkBoxAutoSendToAdventures.Checked;
+            var task = acc.Tasks.FindTask(typeof(StartAdventure));
+            if (checkBoxAutoSendToAdventures.Checked)
+            {
+                if (task == null)
+                {
+                    acc.Tasks.Add(new StartAdventure()
+                    {
+                        ExecuteAt = DateTime.Now,
+                    });
+                }
+            }
+            else
+            {
+                if (task != null)
+                {
+                    acc.Tasks.Remove(task);
+                }
+            }
         }
 
         private void buyAdventuresCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -103,11 +131,53 @@ namespace TravBotSharp.Views
         private void autoSetHeroPoints_CheckedChanged(object sender, EventArgs e) =>
             GetSelectedAcc().Hero.Settings.AutoSetPoints = autoSetHeroPoints.Checked;
 
-        private void autoReviveHero_CheckedChanged(object sender, EventArgs e) =>
-            GetSelectedAcc().Hero.Settings.AutoReviveHero = autoReviveHero.Checked;
+        private void autoReviveHero_CheckedChanged(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            acc.Hero.Settings.AutoReviveHero = autoReviveHero.Checked;
+            var task = acc.Tasks.FindTask(typeof(ReviveHero));
+            if (autoReviveHero.Checked)
+            {
+                if (task == null)
+                {
+                    acc.Tasks.Add(new ReviveHero()
+                    {
+                        ExecuteAt = DateTime.Now,
+                    });
+                }
+            }
+            else
+            {
+                if (task != null)
+                {
+                    acc.Tasks.Remove(task);
+                }
+            }
+        }
 
-        private void refreshInfo_CheckedChanged(object sender, EventArgs e) =>
-            GetSelectedAcc().Hero.Settings.AutoRefreshInfo = refreshInfo.Checked;
+        private void refreshInfo_CheckedChanged(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            acc.Hero.Settings.AutoRefreshInfo = refreshInfo.Checked;
+            var task = acc.Tasks.FindTask(typeof(HeroUpdateInfo));
+            if (refreshInfo.Checked)
+            {
+                if (task == null)
+                {
+                    acc.Tasks.Add(new HeroUpdateInfo()
+                    {
+                        ExecuteAt = DateTime.Now,
+                    });
+                }
+            }
+            else
+            {
+                if (task != null)
+                {
+                    acc.Tasks.Remove(task);
+                }
+            }
+        }
 
         private void autoEquip_CheckedChanged(object sender, EventArgs e)
         {
@@ -203,10 +273,28 @@ namespace TravBotSharp.Views
             }
         }
 
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void autoAuction_CheckedChanged(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
-            acc.Hero.Settings.AutoAuction = checkBox1.Checked;
+            acc.Hero.Settings.AutoAuction = autoAuction.Checked;
+            var task = acc.Tasks.FindTask(typeof(SellOnAuctions));
+            if (autoAuction.Checked)
+            {
+                if (task == null)
+                {
+                    acc.Tasks.Add(new SellOnAuctions()
+                    {
+                        ExecuteAt = DateTime.Now,
+                    });
+                }
+            }
+            else
+            {
+                if (task != null)
+                {
+                    acc.Tasks.Remove(task);
+                }
+            }
         }
     }
 }
