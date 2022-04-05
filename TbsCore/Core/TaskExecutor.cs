@@ -47,7 +47,8 @@ namespace TbsCore.Helpers
 
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
-                acc.Tasks.Add(new LoginTask() { ExecuteAt = DateTime.MinValue });
+                var task = new LoginTask();
+                await task.Execute(acc);
             }
 
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
