@@ -73,7 +73,7 @@ namespace TbsCore.Helpers
             if (acc.Farming.Enabled) acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now }, true);
 
             // Bot sleep
-            acc.Tasks.Add(new Sleep()
+            acc.Tasks.Add(new TimeSleep()
             {
                 ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc),
             }, true);

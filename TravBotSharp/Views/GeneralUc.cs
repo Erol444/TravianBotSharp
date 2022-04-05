@@ -98,11 +98,19 @@ namespace TravBotSharp.Views
         private void startTimersButton_Click(object sender, EventArgs e) //start timer
         {
             var acc = GetSelectedAcc();
-            acc.TaskTimer.Start();
+            if (acc == null) return;
+            if (acc.Status != Status.Paused)
+            {
+                _ = MessageBox.Show("Restart only work when account paused", "Cannot restart now");
+                return;
+            }
 
             acc.Tasks.Clear();
             AccountHelper.StartAccountTasks(acc);
             acc.Villages.ForEach(x => x.UnfinishedTasks.Clear());
+
+            acc.TaskTimer.Start();
+            acc.Status = Status.Online;
             UpdateBotRunning();
         }
 
@@ -217,8 +225,22 @@ namespace TravBotSharp.Views
 
         private void button6_Click(object sender, EventArgs e) // Stop timers
         {
-            GetSelectedAcc().TaskTimer?.Stop();
-            UpdateBotRunning();
+            var acc = GetSelectedAcc();
+            if (acc == null) return;
+            if (acc.Status != Status.Online)
+            {
+                _ = MessageBox.Show("Pause only work when account online", "Cannot pause now");
+                return;
+            }
+            var thread = new Thread(async () =>
+            {
+                acc.Status = Status.Pausing;
+                UpdateBotRunning();
+                await acc.TaskTimer.Stop();
+                acc.Status = Status.Paused;
+                UpdateBotRunning();
+            });
+            thread.Start();
         }
 
         private void headlessCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -283,14 +305,30 @@ namespace TravBotSharp.Views
 
         private void button1_Click(object sender, EventArgs e)
         {
-            GetSelectedAcc().TaskTimer.Start();
+            var acc = GetSelectedAcc();
+            if (acc == null) return;
+            if (acc.Status != Status.Paused)
+            {
+                _ = MessageBox.Show("Resume only work when account paused", "Cannot resume now");
+            }
+
+            acc.TaskTimer.Start();
+            acc.Status = Status.Online;
             UpdateBotRunning();
         }
 
-        public void UpdateBotRunning(string running = null)
+        public void UpdateBotRunning()
         {
-            if (string.IsNullOrEmpty(running)) running = GetSelectedAcc().TaskTimer?.IsBotRunning.ToString();
-            botRunning.Text = "Bot running: " + (string.IsNullOrEmpty(running) ? "false" : running);
+            if (botRunning.InvokeRequired)
+            {
+                botRunning.Invoke(new Action(UpdateBotRunning));
+            }
+            else
+            {
+                if (!botRunning.Visible) return;
+                var acc = GetSelectedAcc();
+                botRunning.Text = $"Bot status: {acc.Status}";
+            }
         }
 
         private void openMinimizedCheckbox_CheckedChanged(object sender, EventArgs e)
@@ -432,6 +470,15 @@ namespace TravBotSharp.Views
         private void clickDelayMax_ValueChanged(object sender, EventArgs e)
         {
             GetSelectedAcc().Settings.DelayClickingMax = (int)clickDelayMax.Value;
+        }
+
+        private void button13_Click(object sender, EventArgs e)
+        {
+            var acc = GetSelectedAcc();
+            acc.Tasks.Add(new TimeSleep()
+            {
+                ExecuteAt = DateTime.Now,
+            });
         }
 
         private void UpdaterResPrio(Account acc)

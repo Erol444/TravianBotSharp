@@ -180,23 +180,23 @@ namespace TbsCore.Helpers
                 if (heroRes[i] < resToBeUsed) resToBeUsed = heroRes[i];
                 neededRes[i] -= resToBeUsed;
 
-                HeroItemEnum item = HeroItemEnum.Others_Wood_0;
+                HeroItemEnum item = HeroItemEnum.Resource_Wood_0;
                 switch (i)
                 {
                     case 0:
-                        item = HeroItemEnum.Others_Wood_0;
+                        item = HeroItemEnum.Resource_Wood_0;
                         break;
 
                     case 1:
-                        item = HeroItemEnum.Others_Clay_0;
+                        item = HeroItemEnum.Resource_Clay_0;
                         break;
 
                     case 2:
-                        item = HeroItemEnum.Others_Iron_0;
+                        item = HeroItemEnum.Resource_Iron_0;
                         break;
 
                     case 3:
-                        item = HeroItemEnum.Others_Crop_0;
+                        item = HeroItemEnum.Resource_Crop_0;
                         break;
                 }
                 useRes.Add((item, (int)resToBeUsed));

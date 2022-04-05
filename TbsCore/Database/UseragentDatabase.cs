@@ -73,7 +73,7 @@ namespace TbsCore.Database
             _userAgentList = modelLoaded.UserAgentList;
             _dateTime = modelLoaded.DateTime;
 
-            if (_dateTime.IsExpired())
+            if (_dateTime.IsExpired() || _userAgentList.Count < 1000)
             {
                 Update();
             }
@@ -108,7 +108,11 @@ namespace TbsCore.Database
                     }
                 }
                 while (duplicate);
-                return _userAgentList[index]; // i dont think this will loop over 5000 times =))            }
+
+                var result = _userAgentList[index];
+                _userAgentList.RemoveAt(index);
+                Save();
+                return result;
             }
         }
 

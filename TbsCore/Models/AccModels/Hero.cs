@@ -8,7 +8,7 @@ namespace TbsCore.Models.AccModels
 {
     public class Hero
     {
-        public void init()
+        public void Init()
         {
             HeroInfo = new HeroInfo();
             Settings = new HeroSettings();

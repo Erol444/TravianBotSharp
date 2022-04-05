@@ -42,6 +42,7 @@ namespace TbsCore.Parsers
         /// <returns>TimeSpan</returns>
         public static TimeSpan ParseTimer(HtmlNode node)
         {
+            if (node == null) return TimeSpan.Zero;
             var timer = node.Descendants().FirstOrDefault(x => x.HasClass("timer"));
             if (timer == null) return TimeSpan.Zero;
             int sec = int.Parse(timer.GetAttributeValue("value", "0"));

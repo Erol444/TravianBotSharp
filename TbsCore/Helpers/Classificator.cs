@@ -61,7 +61,10 @@
             Armor,
             Boots,
             Horse,
-            Others // Expand others?
+            Resource,
+            Stackable,
+            NonStackable,
+            Others,
         }
 
         public enum HeroItemEnum
@@ -195,16 +198,16 @@
             Horse_Horse_3,
 
             // Others
-            Others_Ointment_0, // =106
+            Stackable_Ointment_0, // =106
 
-            Others_Scroll_0,
-            Others_Bucket_0,
-            Others_Tablets_0,
-            Others_Book_0, // =110
-            Others_Artwork_0,
-            Others_SmallBandage_0,
-            Others_BigBandage_0,
-            Others_Cage_0,
+            Stackable_Scroll_0,
+            NonStackable_Bucket_0,
+            NonStackable_Tablets_0,
+            NonStackable_Book_0, // =110
+            NonStackable_Artwork_0,
+            Stackable_SmallBandage_0,
+            Stackable_BigBandage_0,
+            Stackable_Cage_0,
 
             // Egyptian weapons
             Weapon_SlaveMilitia_1, // =115
@@ -242,12 +245,10 @@
             Weapon_Marauder_2,
             Weapon_Marauder_3,
 
-            // Resources (Since T4.5)
-            Others_Wood_0, // =145
-
-            Others_Clay_0,
-            Others_Iron_0,
-            Others_Crop_0 // =148
+            Resource_Wood_0,
+            Resource_Clay_0,
+            Resource_Iron_0,
+            Resource_Crop_0 // =148
         }
 
         public enum TroopsEnum

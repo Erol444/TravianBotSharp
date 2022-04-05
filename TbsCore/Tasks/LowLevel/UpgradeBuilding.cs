@@ -16,10 +16,10 @@ namespace TbsCore.Tasks.LowLevel
     public class UpgradeBuilding : BotTask
     {
         private BuildingTask _buildingTask;
+        private readonly Random rand = new Random();
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            // todo: remove recursive and use loop instead
             do
             {
                 var nextTask = UpgradeBuildingHelper.NextBuildingTask(acc, Vill);
@@ -32,19 +32,15 @@ namespace TbsCore.Tasks.LowLevel
                         return TaskRes.Executed;
                     }
 
+                    await SwitchVillage(acc);
+
                     var firstComplete = Vill.Build.CurrentlyBuilding.FirstOrDefault();
                     NextExecute = TimeHelper.RanDelay(acc, firstComplete.Duration);
-                    acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete.", this);
+                    acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete. ({NextExecute})", this);
                     return TaskRes.Executed;
                 }
 
                 _buildingTask = nextTask;
-
-                if (!EnoughFreeCrop(acc))
-                {
-                    acc.Logger.Warning($"Don't have enough Free Crop for {_buildingTask.Building} - level {_buildingTask.Level}. Will upgrade Cropland instead.", this);
-                    continue;
-                }
 
                 // check place to construct or upgrade
                 switch (_buildingTask.TaskType)
@@ -66,6 +62,13 @@ namespace TbsCore.Tasks.LowLevel
                         }
                 }
 
+                await SwitchVillage(acc);
+
+                if (!EnoughFreeCrop(acc))
+                {
+                    acc.Logger.Warning($"Don't have enough Free Crop for {_buildingTask.Building} - level {_buildingTask.Level}. Will upgrade Cropland instead.", this);
+                    continue;
+                }
                 // Fast building for TTWars
                 if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars &&
                     !_buildingTask.ConstructNew)
@@ -98,7 +101,7 @@ namespace TbsCore.Tasks.LowLevel
                     else
                     {
                         acc.Logger.Warning($"Cannot find button to build {_buildingTask.Building} - Level {_buildingTask.Level}!", this);
-                        return TaskRes.Retry;
+                        continue;
                     }
                 }
 
@@ -109,7 +112,7 @@ namespace TbsCore.Tasks.LowLevel
                     if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
                     {
                         acc.Logger.Warning($"Storage is too low to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will build storage first", this);
-                        return await Execute(acc);
+                        continue;
                     }
                     var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
 
@@ -119,7 +122,7 @@ namespace TbsCore.Tasks.LowLevel
                         acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will try finish the task later", this);
                         DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
                         NextExecute = TimeHelper.RanDelay(acc, enoughRes);
-                        return TaskRes.Executed;
+                        continue;
                     }
                     var heroRes = HeroHelper.GetHeroResources(acc);
 
@@ -144,9 +147,23 @@ namespace TbsCore.Tasks.LowLevel
                 {
                     result = await Upgrade(acc, contractNode);
                 }
-
-                if (!result) return TaskRes.Retry;
-                await PostTaskCheckDorf(acc);
+                if (!result)
+                {
+                    var chanceDorf2 = rand.Next(1, 100);
+                    if (chanceDorf2 >= 50)
+                    {
+                        await NavigationHelper.ToDorf2(acc);
+                    }
+                    else
+                    {
+                        await NavigationHelper.ToDorf1(acc);
+                    }
+                }
+                else
+                {
+                    await DriverHelper.WaitPageChange(acc, "dorf");
+                }
+                PostTaskCheckDorf(acc);
             }
             while (true);
         }
@@ -163,11 +180,7 @@ namespace TbsCore.Tasks.LowLevel
             // Check for prerequisites
             if (button == null)
             {
-                // Add prerequisite buildings in order to construct this building.
-                UpgradeBuildingHelper.AddBuildingPrerequisites(acc, Vill, _buildingTask.Building, false);
-
-                acc.Logger.Warning($"Wanted to construct {_buildingTask.Building} but prerequired buildings are missing.", this);
-                return true;
+                return false;
             }
 
             await DriverHelper.ClickById(acc, button.Id);
@@ -196,7 +209,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 acc.Logger.Warning($"Can't upgrade building {_buildingTask.Building} in village {Vill.Name}. Will be removed from the queue.");
                 RemoveCurrentTask();
-                return true;
+                return false;
             }
 
             // Basic task already on/above desired level, don't upgrade further
@@ -210,6 +223,13 @@ namespace TbsCore.Tasks.LowLevel
                 if (cb != null && lvl < cb.Level) lvl = cb.Level;
             }
 
+            if (lvl >= _buildingTask.Level)
+            {
+                acc.Logger.Information($"{_buildingTask.Building} is already level {lvl} in village {Vill.Name}. Will be removed from the queue.");
+                RemoveCurrentTask();
+                return false;
+            }
+
             var container = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
             var buttons = container?.Descendants("button");
             if (buttons == null)
@@ -220,7 +240,6 @@ namespace TbsCore.Tasks.LowLevel
 
             var errorMessage = acc.Wb.Html.GetElementbyId("build")
                 .Descendants("div")
-
                 .FirstOrDefault(x => x.HasClass("upgradeBuilding"))?
                 .Descendants("div")?
                 .FirstOrDefault(x => x.HasClass("errorMessage"));
@@ -241,7 +260,7 @@ namespace TbsCore.Tasks.LowLevel
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
 
-            acc.Logger.Information($"Started upgrading {_buildingTask.Building} to level {lvl} in {Vill.Name}");
+            acc.Logger.Information($"Started upgrading {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}");
 
             var watchAd = false;
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
@@ -254,21 +273,18 @@ namespace TbsCore.Tasks.LowLevel
                 await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
             }
 
-            acc.Logger.Information($"Upgraded {_buildingTask.Building} to level {lvl} in {Vill.Name}");
+            acc.Logger.Information($"Upgraded {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}");
             if (_buildingTask.Level == lvl + 1)
             {
                 RemoveCurrentTask();
             }
-
             return true;
         }
 
         private void RemoveCurrentTask() => Vill.Build.Tasks.Remove(this._buildingTask);
 
-        private async Task PostTaskCheckDorf(Account acc)
+        private void PostTaskCheckDorf(Account acc)
         {
-            await DriverHelper.WaitPageChange(acc, "dorf");
-
             // Check if residence is getting upgraded to level 10 => train settlers
             var cbResidence = Vill.Build
                 .CurrentlyBuilding
@@ -319,8 +335,17 @@ namespace TbsCore.Tasks.LowLevel
                 await Task.Delay(AccountHelper.Delay(acc));
             }
 
+            while ( true)
+            {
+                acc.Wb.UpdateHtml();
+                var node = acc.Wb.Html.GetElementbyId("videoFeature");
+                if (node == null) continue;
+                var element = acc.Wb.Driver.FindElementById("videoFeature");
+                if (element == null) continue;
+                element.Click();
+                break;
+            }
             // Has to be a legit "click"
-            acc.Wb.FindElementById("videoFeature").Click();
 
             // wait for finish watching ads
             var timeout = DateTime.Now.AddSeconds(100);
@@ -377,7 +402,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 var build = acc.Wb.Html.GetElementbyId("build");
                 if (build != null) RemoveCurrentTask(); // Already on max lvl
-                else await PostTaskCheckDorf(acc);
+                else PostTaskCheckDorf(acc);
                 return true;
             }
 
@@ -511,6 +536,16 @@ namespace TbsCore.Tasks.LowLevel
                     Level = currentLvl + 1,
                     BuildingId = upgrade.Id
                 }, bottom);
+            }
+        }
+
+        private async Task SwitchVillage(Account acc)
+        {
+            await DriverHelper.WaitPageLoaded(acc);
+            var active = acc.Villages.FirstOrDefault(x => x.Active);
+            if (active != null && active.Id != Vill.Id)
+            {
+                await VillageHelper.SwitchVillage(acc, Vill.Id);
             }
         }
     }

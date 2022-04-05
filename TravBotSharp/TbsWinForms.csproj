@@ -16,6 +16,7 @@
     </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TargetFrameworkProfile />
+    <BUILD_NUMBER>1975.30.4.1</BUILD_NUMBER>
     <PublishUrl>\TravBotSharp\Publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -34,7 +35,6 @@
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <BUILD_NUMBER>1975.30.4.1</BUILD_NUMBER>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -180,11 +180,53 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>FormsResources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Forms\AddAccounts.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\AddAccounts.Designer.cs">
+      <DependentUpon>AddAccounts.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\AddFarmNonGold.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\AddFarmNonGold.Designer.cs">
       <DependentUpon>AddFarmNonGold.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Splash.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Splash.Designer.cs">
+      <DependentUpon>Splash.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Closing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Closing.Designer.cs">
+      <DependentUpon>Closing.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hero\SetPointSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hero\SetPointSettings.Designer.cs">
+      <DependentUpon>SetPointSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hero\UpdateSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hero\UpdateSettings.Designer.cs">
+      <DependentUpon>UpdateSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hero\ReviveSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hero\ReviveSettings.Designer.cs">
+      <DependentUpon>ReviveSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Hero\AdventuresSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Hero\AdventuresSettings.Designer.cs">
+      <DependentUpon>AdventuresSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\NewRelease.cs">
       <SubType>Form</SubType>
@@ -351,6 +393,9 @@
     <EmbeddedResource Include="ControlPanel.resx">
       <DependentUpon>ControlPanel.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\AddAccounts.resx">
+      <DependentUpon>AddAccounts.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\AlertForm.resx">
       <DependentUpon>AlertForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -360,6 +405,24 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddFarmNonGold.resx">
       <DependentUpon>AddFarmNonGold.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Splash.resx">
+      <DependentUpon>Splash.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Closing.resx">
+      <DependentUpon>Closing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hero\SetPointSettings.resx">
+      <DependentUpon>SetPointSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hero\UpdateSettings.resx">
+      <DependentUpon>UpdateSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hero\ReviveSettings.resx">
+      <DependentUpon>ReviveSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Hero\AdventuresSettings.resx">
+      <DependentUpon>AdventuresSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\NewRelease.resx">
       <DependentUpon>NewRelease.cs</DependentUpon>
@@ -612,7 +675,7 @@
       <Version>3.141.0</Version>
     </PackageReference>
     <PackageReference Include="Selenium.WebDriver.ChromeDriver">
-      <Version>98.0.4758.8000</Version>
+      <Version>100.0.4896.6000</Version>
     </PackageReference>
     <PackageReference Include="Serilog">
       <Version>2.10.0</Version>

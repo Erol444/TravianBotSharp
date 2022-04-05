@@ -62,13 +62,6 @@ namespace TbsCore.Models.AccModels
             return _tasks.Where(x => x.Vill == vill && x.GetType() == typeTask).ToList();
         }
 
-        public List<BotTask> GetTasksReady()
-        {
-            var current = DateTime.Now;
-            var tasks = _tasks.Where(x => x.ExecuteAt <= current).ToList();
-            return tasks;
-        }
-
         public BotTask FindTaskBasedPriority(TaskPriority priority)
         {
             switch (priority)
@@ -132,11 +125,6 @@ namespace TbsCore.Models.AccModels
             OnUpdateTask?.Invoke();
         }
 
-        public bool IsTaskExcuting()
-        {
-            return _tasks.Any(x => x.Stage != TaskStage.Start);
-        }
-
         public bool IsTaskExists(Type typeTask, Village vill = null)
         {
             if (vill != null)
@@ -157,6 +145,11 @@ namespace TbsCore.Models.AccModels
         public List<BotTask> ToList()
         {
             return _tasks.ToList();
+        }
+
+        public BotTask FirstTask
+        {
+            get => _tasks.FirstOrDefault();
         }
 
         public void Save()
@@ -184,7 +177,7 @@ namespace TbsCore.Models.AccModels
             foreach (var task in list)
             {
                 var type = Type.GetType(task.Type);
-                if (type == typeof(Sleep))
+                if (type == typeof(TimeSleep))
                 {
                     continue;
                 }

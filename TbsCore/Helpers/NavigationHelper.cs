@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
@@ -20,6 +21,22 @@ namespace TbsCore.Helpers
             "statistics",
             "report",
             "messages",
+        };
+
+        private static readonly string[] urlHeroNavigationTTWars = new string[]
+        {
+            "t=1",
+            "t=2",
+            "t=3",
+            "t=4",
+        };
+
+        private static readonly string[] urlHeroNaviagtionT45 = new string[]
+        {
+            "attributes",
+            "appearance",
+            "adventures",
+            "auction",
         };
 
         public static async Task<bool> ToDorf1(Account acc) => await MainNavigate(acc, MainNavigationButton.Resources);
@@ -46,54 +63,46 @@ namespace TbsCore.Helpers
         /// </summary>
         private static async Task ToBuildingId(Account acc, int index)
         {
-            // If we are already at the correct building, don't re-enter it, just navigate to correct tab afterwards.
-            if (acc.Wb.CurrentUrl.Contains($"build.php?id={index}"))
+            do
             {
-                // If we have just updated the village, don't re-navigate
-                var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
-                if (lastUpdate < TimeSpan.FromSeconds(10)) return;
-
-                // If we haven't updated it recently (last 10sec), refresh
-                await acc.Wb.Refresh();
-                return;
-            }
-
-            if (index < 19) // dorf1
-            {
-                if (!acc.Wb.CurrentUrl.Contains("dorf1.php") || acc.Wb.CurrentUrl.Contains("id="))
-                    await MainNavigate(acc, MainNavigationButton.Resources);
-                await DriverHelper.ClickByClassName(acc, $"buildingSlot{index}");
-            }
-            else // dorf2
-            {
-                if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
-                    await MainNavigate(acc, MainNavigationButton.Buildings);
-
-                string script = @"
-                function clickFirst(node)
+                // If we are already at the correct building, don't re-enter it, just navigate to correct tab afterwards.
+                if (acc.Wb.CurrentUrl.Contains($"build.php?id={index}"))
                 {
-                    if (node.hasAttribute('href') && node.getAttribute('href'))
-                    {
-                        node.click();
-                        return true;
-                    }
-                    if (node.hasAttribute('onclick') && node.getAttribute('onclick'))
-                    {";
-                script += "url = node.getAttribute('onclick').split(\"'\")[1];";
-                script += @"
-                        window.location.href = url
-                    return true;
-                    }
-                    // node doesn't contain href/onlick. Check child nodes
-                    for (child of node.children)
-                    {
-                        if (clickFirst(child)) return true;
-                    }
-                }";
-                script += $"node = document.querySelectorAll('[data-aid=\"{index}\"]')[0]; clickFirst(node);";
-                await DriverHelper.ExecuteScript(acc, script);
+                    // If we have just updated the village, don't re-navigate
+                    var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
+                    if (lastUpdate < TimeSpan.FromSeconds(10)) return;
+
+                    // If we haven't updated it recently (last 10sec), refresh
+                    await acc.Wb.Refresh();
+                    return;
+                }
+
+                if (index < 19) // dorf1
+                {
+                    if (!acc.Wb.CurrentUrl.Contains("dorf1.php") || acc.Wb.CurrentUrl.Contains("id="))
+                        await MainNavigate(acc, MainNavigationButton.Resources);
+                    await DriverHelper.ClickByClassName(acc, $"buildingSlot{index}");
+                }
+                else // dorf2
+                {
+                    acc.Wb.UpdateHtml();
+                    if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
+                        await MainNavigate(acc, MainNavigationButton.Buildings);
+
+                    //*[@id="villageContent"]/div[1] => data-aid = 19
+                    var location = index - 18; // - 19 + 1
+                    var divBuilding = acc.Wb.Html.DocumentNode.SelectSingleNode($"//*[@id='villageContent']/div[{location}]");
+                    if (divBuilding == null) continue;
+                    var pathBuilding = divBuilding.Descendants("a").FirstOrDefault();
+                    if (pathBuilding == null) continue;
+                    var href = pathBuilding.GetAttributeValue("href", "");
+                    var url = $"{acc.AccInfo.ServerUrl}{href.Replace("&amp;", "&")}";
+                    await acc.Wb.Navigate(url);
+                }
+                await DriverHelper.WaitPageChange(acc, $"id={index}");
+                break;
             }
-            await DriverHelper.WaitPageLoaded(acc);
+            while (true);
         }
 
         internal static async Task ToConstructionTab(Account acc, BuildingEnum building)
@@ -220,33 +229,91 @@ namespace TbsCore.Helpers
         public static async Task<bool> ToTreasury(Account acc, Village vill, TreasuryTab tab) =>
             await EnterBuilding(acc, vill, BuildingEnum.Treasury, (int)tab);
 
-        public static async Task<bool> ToHero(Account acc, HeroTab tab)
+        public static async Task ToHero(Account acc, HeroTab tab)
         {
-            string query = "";
-            switch (tab)
+            switch (acc.AccInfo.ServerVersion)
             {
-                case HeroTab.Appearance:
-                case HeroTab.Attributes:
-                    await DriverHelper.ClickById(acc, "heroImageButton");
-                    // Navigate to correct tab
-                    var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
-                    if (currentTab != (int)tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
-                    return true;
-
-                case HeroTab.Adventures:
-                    query = "adventure";
-                    // .
-                    // ttwars: adventureWhite
+                case ServerVersionEnum.TTwars:
+                    await ToHeroTTwar(acc, tab);
                     break;
 
-                case HeroTab.Auctions:
-                    query = "auction";
-                    // auction
-                    //ttwars auctionWhite
+                case ServerVersionEnum.T4_5:
+                    await ToHeroT45(acc, tab);
                     break;
             }
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars) query += "White";
-            return await DriverHelper.ClickByClassName(acc, query);
+        }
+
+        private static async Task ToHeroTTwar(Account acc, HeroTab tab)
+        {
+            do
+            {
+                switch (tab)
+                {
+                    case HeroTab.Appearance:
+                        throw new NotImplementedException();
+
+                    case HeroTab.Attributes:
+                        await DriverHelper.ClickById(acc, "heroImageButton");
+                        break;
+
+                    case HeroTab.Adventures:
+                        await DriverHelper.ClickByClassName(acc, "adventureWhite");
+                        break;
+
+                    case HeroTab.Auctions:
+                        await DriverHelper.ClickByClassName(acc, "auctionWhite");
+                        break;
+                }
+
+                try
+                {
+                    await DriverHelper.WaitPageChange(acc, "hero.php");
+
+                    if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
+                }
+                catch
+                {
+                    continue;
+                }
+                return;
+            }
+            while (true);
+        }
+
+        private static async Task ToHeroT45(Account acc, HeroTab tab)
+        {
+            do
+            {
+                switch (tab)
+                {
+                    case HeroTab.Appearance:
+                        throw new NotImplementedException();
+
+                    case HeroTab.Attributes:
+                        await DriverHelper.ClickById(acc, "heroImageButton");
+                        break;
+
+                    case HeroTab.Adventures:
+                        await DriverHelper.ClickByClassName(acc, "adventure");
+                        break;
+
+                    case HeroTab.Auctions:
+                        await DriverHelper.ClickByClassName(acc, "auction");
+                        break;
+                }
+
+                try
+                {
+                    await DriverHelper.WaitPageChange(acc, "hero");
+                    if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
+                }
+                catch
+                {
+                    continue;
+                }
+                return;
+            }
+            while (true);
         }
 
         public static async Task<bool> ToOverview(Account acc, OverviewTab tab, TroopOverview subTab = TroopOverview.OwnTroops)
