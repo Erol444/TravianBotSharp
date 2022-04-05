@@ -335,7 +335,7 @@ namespace TbsCore.Tasks.LowLevel
                 await Task.Delay(AccountHelper.Delay(acc));
             }
 
-            while ( true)
+            while (true)
             {
                 acc.Wb.UpdateHtml();
                 var node = acc.Wb.Html.GetElementbyId("videoFeature");
