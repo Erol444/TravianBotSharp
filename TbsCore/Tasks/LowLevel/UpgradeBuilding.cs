@@ -206,6 +206,13 @@ namespace TbsCore.Tasks.LowLevel
                 if (cb != null && lvl < cb.Level) lvl = cb.Level;
             }
 
+            if (lvl >= _buildingTask.Level)
+            {
+                acc.Logger.Information($"{_buildingTask.Building} is already level {lvl} in village {Vill.Name}. Will be removed from the queue.");
+                RemoveCurrentTask();
+                return;
+            }
+
             var container = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
             var buttons = container?.Descendants("button");
             if (buttons == null)
