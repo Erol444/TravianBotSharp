@@ -428,16 +428,12 @@ namespace TravBotSharp
                 }
             }
         }
-    }
 
-    public static class DialogExt
-    {
-        public static async Task<DialogResult> ShowDialogAsync(this Form @this)
+        private void ControlPanel_Load(object sender, EventArgs e)
         {
-            await Task.Yield();
-            if (@this.IsDisposed)
-                return DialogResult.Cancel;
-            return @this.ShowDialog();
+            this.WindowState = FormWindowState.Minimized;
+            this.WindowState = FormWindowState.Normal;
+            this.Focus(); this.Show();
         }
     }
 }
