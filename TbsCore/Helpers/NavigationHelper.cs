@@ -96,7 +96,7 @@ namespace TbsCore.Helpers
                     var pathBuilding = divBuilding.Descendants("a").FirstOrDefault();
                     if (pathBuilding == null) continue;
                     var href = pathBuilding.GetAttributeValue("href", "");
-                    var url = $"{acc.AccInfo.ServerUrl}{href}";
+                    var url = $"{acc.AccInfo.ServerUrl}{href.Replace("&amp;", "&")}";
                     await acc.Wb.Navigate(url);
                 }
                 await DriverHelper.WaitPageChange(acc, $"id={index}");
