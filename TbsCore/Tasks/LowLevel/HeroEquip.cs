@@ -20,8 +20,8 @@ namespace TbsCore.Tasks.LowLevel
             {
                 var (item, amount) = use;
 
-                var (category, name, tier) = HeroHelper.ParseHeroItem(item);
-                if (category != HeroItemCategory.Others)
+                var (category, _, _) = HeroHelper.ParseHeroItem(item);
+                if (category != HeroItemCategory.Resource || category != HeroItemCategory.Stackable || category != HeroItemCategory.NonStackable)
                 {
                     // Check if hero is at home
                     if (acc.Hero.Status != Hero.StatusEnum.Home)

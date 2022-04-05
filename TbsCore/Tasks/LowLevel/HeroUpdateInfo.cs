@@ -19,18 +19,25 @@ namespace TbsCore.Tasks.LowLevel
                 var items = acc.Hero.Items;
                 foreach (var item in items)
                 {
-                    (var heroItemEnum, int amount) = (item.Item, item.Count);
-                    if (heroItemEnum == HeroItemEnum.Others_Wood_0) continue;
-                    if (heroItemEnum == HeroItemEnum.Others_Clay_0) continue;
-                    if (heroItemEnum == HeroItemEnum.Others_Iron_0) continue;
-                    if (heroItemEnum == HeroItemEnum.Others_Crop_0) continue;
-                    if (HeroHelper.GetHeroItemCategory(heroItemEnum) == HeroItemCategory.Horse) continue;
-                    if (HeroHelper.GetHeroItemCategory(heroItemEnum) == HeroItemCategory.Others && amount < 5) continue;
+                    var (heroItemEnum, amount) = (item.Item, item.Count);
+                    var category = HeroHelper.GetHeroItemCategory(heroItemEnum);
+                    switch (category)
+                    {
+                        case HeroItemCategory.Resource:
+                            continue;
+
+                        case HeroItemCategory.Stackable:
+                            if (amount < 5) continue;
+                            break;
+
+                        case HeroItemCategory.Horse:
+                            continue;
+                    }
 
                     acc.Tasks.Add(new SellOnAuctions()
                     {
                         ExecuteAt = DateTime.Now
-                    });
+                    }, true);
                     break;
                 }
             }

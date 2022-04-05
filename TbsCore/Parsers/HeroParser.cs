@@ -291,8 +291,7 @@ namespace TbsCore.Parsers
             { Classificator.HeroItemCategory.Weapon, "rightHand" },
             { Classificator.HeroItemCategory.Armor, "body" },
             { Classificator.HeroItemCategory.Horse, "horse" },
-            { Classificator.HeroItemCategory.Boots, "shoes" },
-            { Classificator.HeroItemCategory.Others, "bag" }
+            { Classificator.HeroItemCategory.Boots, "shoes" }
         };
 
         /// <summary>

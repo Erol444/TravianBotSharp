@@ -14,40 +14,44 @@ namespace TbsCore.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars) return TaskRes.Executed;
-            string xPathSellTab = null;
-
-            switch (acc.AccInfo.ServerVersion)
+            if (!acc.Wb.CurrentUrl.Contains("auction?action=sell"))
             {
-                case ServerVersionEnum.TTwars:
-                    xPathSellTab = "//*[@id='content']/div[4]/div[2]/div[3]/a";
-                    break;
+                string xPathSellTab = null;
 
-                case ServerVersionEnum.T4_5:
-                    xPathSellTab = "//*[@id='heroAuction']/div[2]/div[2]/div[3]/a";
-                    break;
-            }
-            // enter right tab
-            do
-            {
-                await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Auctions);
-
-                var node = acc.Wb.Html.DocumentNode.SelectSingleNode(xPathSellTab);
-                if (node == null) continue;
-                var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
-                if (element == null) continue;
-                element.Click();
-
-                try
+                switch (acc.AccInfo.ServerVersion)
                 {
-                    await DriverHelper.WaitPageChange(acc, "auction?action=sell");
+                    case ServerVersionEnum.TTwars:
+                        xPathSellTab = "//*[@id='content']/div[4]/div[2]/div[3]/a";
+                        break;
+
+                    case ServerVersionEnum.T4_5:
+                        xPathSellTab = "//*[@id='heroAuction']/div[2]/div[2]/div[3]/a";
+                        break;
                 }
-                catch
+                // enter right tab
+
+                do
                 {
-                    continue;
+                    await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Auctions);
+
+                    var node = acc.Wb.Html.DocumentNode.SelectSingleNode(xPathSellTab);
+                    if (node == null) continue;
+                    var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+                    if (element == null) continue;
+                    element.Click();
+
+                    try
+                    {
+                        await DriverHelper.WaitPageChange(acc, "auction?action=sell");
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                    break;
                 }
-                break;
+                while (true);
             }
-            while (true);
 
             acc.Wb.UpdateHtml();
             var nodeAllItem = acc.Wb.Html.GetElementbyId("itemsToSale");
@@ -60,8 +64,22 @@ namespace TbsCore.Tasks.LowLevel
             {
                 (var heroItemEnum, int amount) = HeroParser.ParseItemNode(nodeItem);
                 if (heroItemEnum == null) continue;
-                if (HeroHelper.GetHeroItemCategory(heroItemEnum ?? HeroItemEnum.Others_None_0) == HeroItemCategory.Horse) continue;
-                if (HeroHelper.GetHeroItemCategory(heroItemEnum ?? HeroItemEnum.Others_None_0) == HeroItemCategory.Others && amount < 5) continue;
+
+                var category = HeroHelper.GetHeroItemCategory(heroItemEnum ?? HeroItemEnum.Others_None_0);
+                switch (category)
+                {
+                    case HeroItemCategory.Others:
+                        continue;
+                    case HeroItemCategory.Resource:
+                        continue;
+
+                    case HeroItemCategory.Stackable:
+                        if (amount < 5) continue;
+                        break;
+
+                    case HeroItemCategory.Horse:
+                        continue;
+                }
 
                 var nodeParentItem = nodeItem.ParentNode;
                 var nodeItemXPath = acc.Wb.Html.DocumentNode.SelectSingleNode($"//*[@id='{nodeParentItem.Id}']/div");
