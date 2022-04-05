@@ -255,7 +255,9 @@ namespace TbsCore.Parsers
 
         public static TimeSpan GetHeroArrival(HtmlDocument htmlDoc)
         {
-            return TimeParser.ParseTimer(htmlDoc.GetElementbyId("tileDetails"));
+            var nodeStatus = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
+            if (nodeStatus == null) return TimeSpan.Zero;
+            return TimeParser.ParseTimer(nodeStatus);
         }
 
         public static List<HeroItem> GetHeroItems(HtmlDocument html)
