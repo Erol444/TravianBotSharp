@@ -319,6 +319,7 @@ namespace TravBotSharp
                     button2.Invoke(new Action(() => button2.Enabled = false));
                 }
             });
+            thread.Start();
         }
 
         private void button6_Click(object sender, EventArgs e) // Login all accounts
