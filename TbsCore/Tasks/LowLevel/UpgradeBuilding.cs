@@ -124,7 +124,7 @@ namespace TbsCore.Tasks.LowLevel
                         acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will try finish the task later", this);
                         DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
                         NextExecute = TimeHelper.RanDelay(acc, enoughRes);
-                        continue;
+                        return TaskRes.Executed;
                     }
                     var heroRes = HeroHelper.GetHeroResources(acc);
 
