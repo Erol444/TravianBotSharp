@@ -36,6 +36,7 @@ namespace TbsCore.Models.Logging
                 lock (objLock)
                 {
                     var log = string.Join("", _logs[username]);
+
                     return log;
                 }
             }
@@ -49,14 +50,17 @@ namespace TbsCore.Models.Logging
 
         public void Add(string username, string message)
         {
-            _logs[username].AddFirst(message);
-            // keeps 200 message
-            while (_logs[username].Count > 200)
+            lock (objLock)
             {
-                _logs[username].RemoveLast();
-            }
+                _logs[username].AddFirst(message);
+                // keeps 200 message
+                while (_logs[username].Count > 200)
+                {
+                    _logs[username].RemoveLast();
+                }
 
-            OnUpdateLog(username);
+                OnUpdateLog(username);
+            }
         }
 
         public void AddUsername(string username)
