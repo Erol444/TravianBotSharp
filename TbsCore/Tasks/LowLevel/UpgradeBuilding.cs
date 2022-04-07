@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using OpenQA.Selenium;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,6 +36,7 @@ namespace TbsCore.Tasks.LowLevel
                     await SwitchVillage(acc);
 
                     var firstComplete = Vill.Build.CurrentlyBuilding.FirstOrDefault();
+                    if (firstComplete == null) continue;
                     NextExecute = TimeHelper.RanDelay(acc, firstComplete.Duration);
                     acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete. ({NextExecute})", this);
                     return TaskRes.Executed;
@@ -122,7 +124,7 @@ namespace TbsCore.Tasks.LowLevel
                         acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will try finish the task later", this);
                         DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
                         NextExecute = TimeHelper.RanDelay(acc, enoughRes);
-                        continue;
+                        return TaskRes.Executed;
                     }
                     var heroRes = HeroHelper.GetHeroResources(acc);
 
@@ -265,11 +267,12 @@ namespace TbsCore.Tasks.LowLevel
             var watchAd = false;
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
             {
-                watchAd = await TryFastUpgrade(acc);
+                // watchAd = await TryFastUpgrade(acc);
             }
 
             if (!watchAd)
             {
+                upgradeButton = buttons.FirstOrDefault(x => x.HasClass("build"));
                 await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
             }
 
@@ -321,58 +324,60 @@ namespace TbsCore.Tasks.LowLevel
         /// <returns>Whether bot watched the ad</returns>
         private async Task<bool> TryFastUpgrade(Account acc)
         {
-            if (!await DriverHelper.ClickByClassName(acc, "videoFeatureButton green", log: false)) return false;
-            await Task.Delay(AccountHelper.Delay(acc));
+            acc.Wb.UpdateHtml();
+            var nodeFastUpgrade = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("videoFeatureButton") && x.HasClass("green"));
+            if (nodeFastUpgrade == null) return false;
+            var elementFastUpgrade = acc.Wb.Driver.FindElement(By.XPath(nodeFastUpgrade.XPath));
+            if (elementFastUpgrade == null) return false;
+            elementFastUpgrade.Click();
+
+            await Task.Delay(rand.Next(1000, 2000));
 
             // Confirm
             acc.Wb.UpdateHtml();
-            if (acc.Wb.Html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']") != null)
+            var node = acc.Wb.Html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']");
+            if (node != null)
             {
-                await DriverHelper.ClickByName(acc, "adSalesVideoInfoScreen");
-                await Task.Delay(AccountHelper.Delay(acc));
-
-                await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
-                await Task.Delay(AccountHelper.Delay(acc));
-            }
-
-            while (true)
-            {
-                acc.Wb.UpdateHtml();
-                var node = acc.Wb.Html.GetElementbyId("videoFeature");
-                if (node == null) continue;
-                var element = acc.Wb.Driver.FindElementById("videoFeature");
-                if (element == null) continue;
-                element.Click();
-                break;
-            }
-            // Has to be a legit "click"
-
-            // wait for finish watching ads
-            var timeout = DateTime.Now.AddSeconds(100);
-            do
-            {
-                await Task.Delay(3000);
-
-                //skip ads from Travian Games
-                //they use ifarme to emebed ads video to their game
-                acc.Wb.UpdateHtml();
-
-                if (acc.Wb.Html.GetElementbyId("videoArea") != null)
+                var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+                if (element == null)
                 {
-                    acc.Wb.SwitchTo().Frame(acc.Wb.FindElementById("videoArea"));
-
-                    // trick to skip
-                    await DriverHelper.ExecuteScript(acc, "var video = document.getElementsByTagName('video')[0];video.currentTime = video.duration - 1;", false, false);
-                    //back to first page
-
-                    acc.Wb.SwitchTo().DefaultContent();
+                    await acc.Wb.Refresh();
+                    return false;
                 }
-                if (timeout < DateTime.Now) return false;
+                element.Click();
+                await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
             }
-            while (acc.Wb.CurrentUrl.Contains("build.php"));
+
+            await Task.Delay(rand.Next(10000, 18000));
+
+            // click to play video
+            acc.Wb.UpdateHtml();
+            var nodeIframe = acc.Wb.Html.GetElementbyId("videoFeature");
+            if (nodeIframe == null)
+            {
+                await acc.Wb.Refresh();
+                return false;
+            }
+            var elementIframe = acc.Wb.Driver.FindElementById("videoFeature");
+            if (elementIframe == null)
+            {
+                await acc.Wb.Refresh();
+                return false;
+            }
+            elementIframe.Click();
+
+            try
+            {
+                await DriverHelper.WaitPageChange(acc, "dorf", 3);
+            }
+            catch
+            {
+                await acc.Wb.Refresh();
+                return false;
+            }
 
             // Don't show again
-            await Task.Delay(1000);
+            await Task.Delay(rand.Next(1000, 2000));
             acc.Wb.UpdateHtml();
 
             if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
@@ -380,6 +385,7 @@ namespace TbsCore.Tasks.LowLevel
                 await DriverHelper.ClickById(acc, "dontShowThisAgain");
                 await Task.Delay(800);
                 await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
+                await acc.Wb.Refresh();
             }
 
             return true;

@@ -11,7 +11,10 @@ namespace TbsCore.Tasks.LowLevel
 {
     public class SellOnAuctions : BotTask
     {
+        private readonly Random rand = new Random();
+
         public override async Task<TaskRes> Execute(Account acc)
+
         {
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars) return TaskRes.Executed;
             if (!acc.Wb.CurrentUrl.Contains("auction?action=sell"))
@@ -87,7 +90,7 @@ namespace TbsCore.Tasks.LowLevel
                 var element = acc.Wb.Driver.FindElement(By.XPath(nodeItemXPath.XPath));
                 if (element == null) continue;
                 element.Click();
-                await Task.Delay(600);
+                await Task.Delay(rand.Next(1500, 2500));
 
                 int counter = 3;
                 do
