@@ -155,12 +155,15 @@ namespace TravBotSharp.Views
                 var upgradeBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == id);
                 if (upgradeBuilding != null)
                 {
-                    upgradeLvl = " -> " + upgradeBuilding.Level;
+                    if (upgradeBuilding.TaskType == BuildingType.General)
+                    {
+                        upgradeLvl = " -> " + upgradeBuilding.Level;
+                    }
                     if (buildingName == "Site") buildingName = VillageHelper.BuildingTypeToString(upgradeBuilding.Building);
                 }
                 item.SubItems.Add(buildingName); //building
 
-                item.SubItems.Add(building.Level.ToString() + upgradeLvl); //level
+                item.SubItems.Add($"{building.Level}{upgradeLvl}"); //level
                 //set color
                 switch (building.Type)
                 {
