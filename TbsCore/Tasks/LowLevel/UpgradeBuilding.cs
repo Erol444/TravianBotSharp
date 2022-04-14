@@ -23,6 +23,7 @@ namespace TbsCore.Tasks.LowLevel
         {
             do
             {
+                acc.Logger.Information("Choosing building task to execute", this);
                 var nextTask = UpgradeBuildingHelper.NextBuildingTask(acc, Vill);
 
                 if (nextTask == null)
@@ -64,6 +65,8 @@ namespace TbsCore.Tasks.LowLevel
                         }
                 }
 
+                acc.Logger.Information($"Will build {_buildingTask.Building} to level {_buildingTask.Level}", this);
+
                 await SwitchVillage(acc);
 
                 if (!EnoughFreeCrop(acc))
@@ -75,17 +78,22 @@ namespace TbsCore.Tasks.LowLevel
                 if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars &&
                     !_buildingTask.ConstructNew)
                 {
+                    acc.Logger.Information("Try using TTWars fast build method", this);
                     var fastUpgrade = await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={_buildingTask.BuildingId}");
                     if (fastUpgrade) continue;
+                    acc.Logger.Information("Using TTWars fast build method failed. Continue normal method", this);
                 }
 
+                acc.Logger.Information($"Move to correct place for building {_buildingTask.Building}", this);
                 await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
                 if (_buildingTask.ConstructNew)
                 {
+                    acc.Logger.Information($"This is contruct task, choose correct tab for building {_buildingTask.Building}", this);
                     await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
                 }
 
                 // find button to contruct/upgrade
+                acc.Wb.UpdateHtml();
                 bool construct;
                 var contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
 
@@ -108,39 +116,44 @@ namespace TbsCore.Tasks.LowLevel
                 }
 
                 // check enough res
+                acc.Logger.Information($"Check resource for building {_buildingTask.Building} to level {_buildingTask.Level}", this);
                 var cost = ResourceParser.ParseResourcesNeed(contractNode);
+                acc.Logger.Information($"{_buildingTask.Building} to level {_buildingTask.Level} need {cost} ");
                 if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
                 {
                     if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
                     {
-                        acc.Logger.Warning($"Storage is too low to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will build storage first", this);
-                        continue;
-                    }
-                    var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
-
-                    if (!Vill.Settings.UseHeroRes ||
-                    acc.AccInfo.ServerVersion != ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
-                    {
-                        acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will try finish the task later", this);
-                        DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
-                        NextExecute = TimeHelper.RanDelay(acc, enoughRes);
+                        acc.Logger.Warning($"Storage is too low to build {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Need upgrade storage first", this);
+                        acc.Logger.Information("Now bot CANNOT add upgrade storage task, please do it manually.", this);
                         return TaskRes.Executed;
                     }
-                    var heroRes = HeroHelper.GetHeroResources(acc);
 
-                    if (ResourcesHelper.IsEnoughRes(heroRes, stillNeededRes))
+                    var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
+
+                    if (Vill.Settings.UseHeroRes && acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
                     {
-                        // If we have enough hero res for our task, execute the task
-                        // right after hero equip finishes
-                        acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will use resource from hero inventory", this);
+                        var heroRes = HeroHelper.GetHeroResources(acc);
 
-                        var heroEquipTask = ResourcesHelper.UseHeroResources(acc, Vill, ref stillNeededRes, heroRes, _buildingTask);
-                        await heroEquipTask.Execute(acc);
-                        continue;
+                        if (ResourcesHelper.IsEnoughRes(heroRes, stillNeededRes))
+                        {
+                            // If we have enough hero res for our task, execute the task
+                            // right after hero equip finishes
+                            acc.Logger.Warning($"Not enough resources to build {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will use resource from hero inventory", this);
+
+                            var heroEquipTask = ResourcesHelper.UseHeroResources(acc, Vill, ref stillNeededRes, heroRes, _buildingTask);
+                            await heroEquipTask.Execute(acc);
+                            continue;
+                        }
                     }
+
+                    acc.Logger.Warning($"Not enough resources to build {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will try finish the task later", this);
+                    DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
+                    NextExecute = TimeHelper.RanDelay(acc, enoughRes);
+                    return TaskRes.Executed;
                 }
 
                 bool result;
+                acc.Wb.UpdateHtml();
                 if (construct)
                 {
                     result = await Construct(acc, contractNode);
@@ -551,6 +564,7 @@ namespace TbsCore.Tasks.LowLevel
             var active = acc.Villages.FirstOrDefault(x => x.Active);
             if (active != null && active.Id != Vill.Id)
             {
+                acc.Logger.Information($"Now in village {active.Name}. Move to correct village => {Vill.Name}", this);
                 await VillageHelper.SwitchVillage(acc, Vill.Id);
             }
         }
