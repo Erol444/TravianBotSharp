@@ -90,18 +90,16 @@ jobs:
   prerelease:
     runs-on: ubuntu-latest
     needs: [build, version]
-    steps:    
-        
+    steps:        
       - name: Download artifact
         uses: actions/download-artifact@master
         with:
           name: TBS-prerelease
-          path: TravBotSharp/bin/Release
-      
+          path: TBS-${{needs.version.outputs.version}}
       - name: Archive pre release
         uses: montudor/action-zip@v1
         with:
-            args: zip -qq -r TBS-${{needs.version.outputs.version}}.zip TravBotSharp/bin/Release
+            args: zip -r TBS-${{needs.version.outputs.version}}.zip TBS-${{needs.version.outputs.version}}
 
       - name: Create pre release
         uses: ncipollo/release-action@v1

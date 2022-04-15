@@ -98,12 +98,12 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: TBS-release
-          path: TravBotSharp/bin/Release
+          path: TBS-${{needs.version.outputs.version}}
 
       - name: Archive Release
         uses: montudor/action-zip@v1
         with:
-            args: zip -qq -r TBS-${{needs.version.outputs.version}}.zip TravBotSharp/bin/Release
+            args: zip -qq -r TBS-${{needs.version.outputs.version}}.zip TBS-${{needs.version.outputs.version}}
 
 
       - name: Create release
