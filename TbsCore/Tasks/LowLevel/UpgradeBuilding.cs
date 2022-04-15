@@ -61,26 +61,21 @@ namespace TbsCore.Tasks.LowLevel
                 await MoveIntoBuilding(acc);
                 if (StopFlag) return TaskRes.Executed;
 
-                var contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
-
-                result = IsContructPage(acc, contractNode);
+                result = IsContructPage(acc);
                 if (StopFlag) return TaskRes.Executed;
                 if (!result) continue;
 
-                result = await IsEnoughRes(acc, contractNode);
+                result = await IsEnoughRes(acc);
                 if (StopFlag) return TaskRes.Executed;
                 if (!result) continue;
-
-                acc.Wb.UpdateHtml();
-                contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
 
                 if (construct)
                 {
-                    result = await Construct(acc, contractNode);
+                    result = await Construct(acc);
                 }
                 else
                 {
-                    result = await Upgrade(acc, contractNode);
+                    result = await Upgrade(acc);
                 }
                 if (StopFlag) return TaskRes.Executed;
                 if (!result) continue;
@@ -95,8 +90,10 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TaskResult</returnss>
-        private async Task<bool> Construct(Account acc, HtmlNode node)
+        private async Task<bool> Construct(Account acc)
         {
+            acc.Wb.UpdateHtml();
+            var node = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
             var button = node.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
 
             // Check for prerequisites
@@ -123,8 +120,20 @@ namespace TbsCore.Tasks.LowLevel
         /// </summary>
         /// <param name="acc">Account</param>
         /// <returns>TaskResult</returns>
-        private async Task<bool> Upgrade(Account acc, HtmlNode node)
+        private async Task<bool> Upgrade(Account acc)
         {
+            acc.Wb.UpdateHtml();
+            HtmlNode node = null;
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case ServerVersionEnum.TTwars:
+                    node = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
+                    break;
+
+                case ServerVersionEnum.T4_5:
+                    node = acc.Wb.Html.GetElementbyId("build");
+                    break;
+            }
             (var buildingEnum, var lvl) = InfrastructureParser.UpgradeBuildingGetInfo(node);
 
             if (buildingEnum == BuildingEnum.Site || lvl == -1)
@@ -442,17 +451,20 @@ namespace TbsCore.Tasks.LowLevel
         {
             acc.Logger.Information($"Move into building {_buildingTask.Building}", this);
             await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
-            if (_buildingTask.ConstructNew)
+            var build = Vill.Build.Buildings.FirstOrDefault(x => x.Id == _buildingTask.BuildingId);
+            if (build.Type == BuildingEnum.Site)
             {
                 acc.Logger.Information($"This is contruct task, choose correct tab for building {_buildingTask.Building}", this);
                 await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
             }
         }
 
-        private bool IsContructPage(Account acc, HtmlNode contractNode)
+        private bool IsContructPage(Account acc)
         {
             acc.Logger.Information($"Finding button to build ...", this);
 
+            acc.Wb.UpdateHtml();
+            var contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
             if (contractNode != null)
             {
                 construct = true;
@@ -474,10 +486,23 @@ namespace TbsCore.Tasks.LowLevel
             return true;
         }
 
-        private async Task<bool> IsEnoughRes(Account acc, HtmlNode contractNode)
+        private async Task<bool> IsEnoughRes(Account acc)
         {
             // check enough res
             acc.Logger.Information($"Check resource ...", this);
+
+            acc.Wb.UpdateHtml();
+            HtmlNode contractNode = null;
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case ServerVersionEnum.TTwars:
+                    contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
+                    break;
+
+                case ServerVersionEnum.T4_5:
+                    contractNode = acc.Wb.Html.GetElementbyId("contract");
+                    break;
+            }
             var cost = ResourceParser.ParseResourcesNeed(contractNode);
             acc.Logger.Information($"Need {cost}");
 
