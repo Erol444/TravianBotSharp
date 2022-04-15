@@ -50,7 +50,7 @@ namespace TbsCore.Tasks.LowLevel
             var result = await acc.Wb.Init(acc, ChangeAccess);
             if (!result)
             {
-                acc.TaskTimer.ForceTimerStop();
+                acc.TaskTimer.Stop();
             }
 
             return TaskRes.Executed;

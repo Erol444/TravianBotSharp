@@ -190,8 +190,11 @@ namespace TbsCore.Helpers
         /// <param name="acc"></param>
         public static async Task Logout(Account acc)
         {
-            await acc.TaskTimer.Stop();
+            acc.TaskTimer.Stop();
+            await acc.TaskTimer.WaitStop();
+            acc.Status = Status.Stopping;
             acc.Wb.Close();
+            acc.Status = Status.Offline;
         }
     }
 }

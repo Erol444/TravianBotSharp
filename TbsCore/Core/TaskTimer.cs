@@ -14,13 +14,6 @@ namespace TbsCore.Models.AccModels
         private readonly Random _random;
         private readonly Account _acc;
         private readonly Timer _mainTimer;
-        private bool flagStopTimer;
-
-        public void ForceTimerStop()
-        {
-            _acc.Status = Status.Stopping;
-            flagStopTimer = true;
-        }
 
         private long _isTaskExcuting;
 
@@ -63,21 +56,25 @@ namespace TbsCore.Models.AccModels
             if (IsBotRunning) return;
             IsBotRunning = true;
             IsTaskExcuting = false;
-            flagStopTimer = false;
             _mainTimer.Start();
         }
 
-        public async Task Stop(bool force = false)
+        public void Stop()
         {
             if (!IsBotRunning) return;
 
             IsBotRunning = false;
             _mainTimer.Stop();
 
-            if (!force)
-            {
-                await Task.Run(() => { while (IsTaskExcuting) { } });
-            }
+            var currentTask = _acc.Tasks.CurrentTask;
+            if (currentTask != null) currentTask.StopFlag = true;
+            _acc.Status = Status.Pausing;
+        }
+
+        public async Task WaitStop()
+        {
+            await Task.Run(() => { while (IsTaskExcuting) { } });
+            _acc.Status = Status.Paused;
         }
 
         private void MainTimerElapsed(object source, ElapsedEventArgs e) => NewTick();
@@ -86,12 +83,6 @@ namespace TbsCore.Models.AccModels
         {
             if (!IsBotRunning) return;
             if (IsTaskExcuting) return;
-            if (flagStopTimer)
-            {
-                await Stop(true);
-                _acc.Status = Status.Offline;
-                return;
-            }
             IsTaskExcuting = true;
 
             if (_acc.Tasks.Count == 0)

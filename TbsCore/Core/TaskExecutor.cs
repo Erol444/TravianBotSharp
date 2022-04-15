@@ -25,7 +25,7 @@ namespace TbsCore.Helpers
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
                 acc.Logger.Warning("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
-                acc.TaskTimer.ForceTimerStop();
+                acc.TaskTimer.Stop();
             }
             if (CheckCookies(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click();");
@@ -92,7 +92,7 @@ namespace TbsCore.Helpers
                     var result = await acc.Wb.Init(acc);
                     if (!result)
                     {
-                        acc.TaskTimer.ForceTimerStop();
+                        acc.TaskTimer.Stop();
                         return;
                     }
                 }

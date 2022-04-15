@@ -234,10 +234,9 @@ namespace TravBotSharp.Views
             }
             var thread = new Thread(async () =>
             {
-                acc.Status = Status.Pausing;
+                acc.TaskTimer.Stop();
                 UpdateBotRunning();
-                await acc.TaskTimer.Stop();
-                acc.Status = Status.Paused;
+                await acc.TaskTimer.WaitStop();
                 UpdateBotRunning();
             });
             thread.Start();

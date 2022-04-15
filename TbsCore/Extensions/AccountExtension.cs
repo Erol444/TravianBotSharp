@@ -20,13 +20,5 @@ namespace TbsCore.Extensions
             if (acc.Status == Status.Online) return true;
             return false;
         }
-
-        public static async Task Stop(this Account acc)
-        {
-            if (acc.Status == Status.Offline) return;
-            acc.Status = Status.Stopping;
-            await acc.TaskTimer.Stop();
-            acc.Status = Status.Offline;
-        }
     }
 }
