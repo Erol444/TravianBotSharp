@@ -105,12 +105,42 @@ namespace TbsCore.Helpers
             while (true);
         }
 
-        internal static async Task ToConstructionTab(Account acc, BuildingEnum building)
+        internal static async Task<bool> ToConstructionTab(Account acc, BuildingEnum building)
         {
-            BuildingCategoryEnum tab = BuildingsData.GetBuildingsCategory(building);
-            if ((int)tab == 0) return;
-            await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
-            await DriverHelper.WaitPageLoaded(acc);
+            var tab = BuildingsData.GetBuildingsCategory(building);
+            if (tab == BuildingCategoryEnum.Infrastructure) return true;
+            acc.Logger.Information($"{building} is in {tab} section, switch tab");
+            string classNode;
+            switch (tab)
+            {
+                case BuildingCategoryEnum.Military:
+                    classNode = "military";
+                    break;
+
+                case BuildingCategoryEnum.Resources:
+                    classNode = "resources";
+                    break;
+
+                default:
+                    classNode = "";
+                    break;
+            }
+            var node = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("tabItem") && x.HasClass(classNode));
+            if (node == null) return false;
+
+            var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+            if (element == null) return false;
+            element.Click();
+            acc.Logger.Information($"Waitting tab change");
+            try
+            {
+                await DriverHelper.WaitPageChange(acc, "category", 0.5);
+            }
+            catch
+            {
+                await DriverHelper.WaitPageLoaded(acc);
+            }
+            return true;
         }
 
         /// <summary>

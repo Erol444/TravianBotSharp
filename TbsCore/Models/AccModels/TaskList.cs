@@ -152,6 +152,11 @@ namespace TbsCore.Models.AccModels
             get => _tasks.FirstOrDefault();
         }
 
+        public BotTask CurrentTask
+        {
+            get => _tasks.FirstOrDefault(x => x.Stage == TaskStage.Executing);
+        }
+
         public void Save()
         {
             var list = new List<TaskFileModel>();

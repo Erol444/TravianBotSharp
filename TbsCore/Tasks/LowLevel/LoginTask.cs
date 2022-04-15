@@ -35,7 +35,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 // Wrong password/nickname
                 acc.Logger.Warning("Password is incorrect!");
-                acc.TaskTimer.ForceTimerStop();
+                acc.TaskTimer.Stop();
             }
             else
             {

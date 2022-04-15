@@ -18,129 +18,62 @@ namespace TbsCore.Tasks.LowLevel
     {
         private BuildingTask _buildingTask;
         private readonly Random rand = new Random();
+        private bool construct = false;
+        private bool result = true;
 
         public override async Task<TaskRes> Execute(Account acc)
         {
+            StopFlag = false;
             do
             {
-                var nextTask = UpgradeBuildingHelper.NextBuildingTask(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
 
-                if (nextTask == null)
+                _buildingTask = await ChooseTask(acc);
+                if (StopFlag) return TaskRes.Executed;
+
+                if (_buildingTask == null) continue;
+                if (_buildingTask.TaskType == BuildingType.AutoUpgradeResFields)
                 {
-                    if (Vill.Build.Tasks.Count == 0)
-                    {
-                        acc.Logger.Information("Building queue empty.", this);
-                        return TaskRes.Executed;
-                    }
-
-                    await SwitchVillage(acc);
-
-                    var firstComplete = Vill.Build.CurrentlyBuilding.FirstOrDefault();
-                    if (firstComplete == null) continue;
-                    NextExecute = TimeHelper.RanDelay(acc, firstComplete.Duration);
-                    acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete. ({NextExecute})", this);
-                    return TaskRes.Executed;
-                }
-
-                _buildingTask = nextTask;
-
-                // check place to construct or upgrade
-                switch (_buildingTask.TaskType)
-                {
-                    case BuildingType.General:
-                        if (!UpgradeBuildingHelper.CheckGeneralTaskBuildPlace(Vill, _buildingTask))
-                        {
-                            acc.Logger.Warning($"Don't have slot to construct {_buildingTask.Building}. Will skip this and move on next one", this);
-                            RemoveCurrentTask();
-                            _buildingTask = null;
-                            continue;
-                        }
-                        break;
-
-                    case BuildingType.AutoUpgradeResFields:
-                        {
-                            UpgradeBuildingHelper.AddResFields(acc, Vill, _buildingTask);
-                            continue;
-                        }
-                }
-
-                await SwitchVillage(acc);
-
-                if (!EnoughFreeCrop(acc))
-                {
-                    acc.Logger.Warning($"Don't have enough Free Crop for {_buildingTask.Building} - level {_buildingTask.Level}. Will upgrade Cropland instead.", this);
-                    continue;
-                }
-                // Fast building for TTWars
-                if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars &&
-                    !_buildingTask.ConstructNew)
-                {
-                    var fastUpgrade = await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={_buildingTask.BuildingId}");
-                    if (fastUpgrade) continue;
-                }
-
-                await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
-                if (_buildingTask.ConstructNew)
-                {
-                    await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
-                }
-
-                // find button to contruct/upgrade
-                bool construct;
-                var contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
-
-                if (contractNode != null)
-                {
-                    construct = true;
+                    acc.Logger.Information($"{_buildingTask.ResourceType} - Level {_buildingTask.Level} is chosen", this);
                 }
                 else
                 {
-                    contractNode = acc.Wb.Html.GetElementbyId("build");
-                    if (contractNode != null)
-                    {
-                        construct = false;
-                    }
-                    else
-                    {
-                        acc.Logger.Warning($"Cannot find button to build {_buildingTask.Building} - Level {_buildingTask.Level}!", this);
-                        continue;
-                    }
+                    acc.Logger.Information($"{_buildingTask.Building} - Level {_buildingTask.Level} is chosen", this);
                 }
 
-                // check enough res
-                var cost = ResourceParser.ParseResourcesNeed(contractNode);
-                if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
+                result = TaskTypeCondition(acc);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) continue;
+
+                result = await FreeCropCondition(acc);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) continue;
+
+                // Fast building for TTWars
+                if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars && !_buildingTask.ConstructNew)
                 {
-                    if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
-                    {
-                        acc.Logger.Warning($"Storage is too low to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will build storage first", this);
-                        continue;
-                    }
-                    var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
-
-                    if (!Vill.Settings.UseHeroRes ||
-                    acc.AccInfo.ServerVersion != ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
-                    {
-                        acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will try finish the task later", this);
-                        DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
-                        NextExecute = TimeHelper.RanDelay(acc, enoughRes);
-                        return TaskRes.Executed;
-                    }
-                    var heroRes = HeroHelper.GetHeroResources(acc);
-
-                    if (ResourcesHelper.IsEnoughRes(heroRes, stillNeededRes))
-                    {
-                        // If we have enough hero res for our task, execute the task
-                        // right after hero equip finishes
-                        acc.Logger.Warning($"Not enough resources to construct {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Bot will use resource from hero inventory", this);
-
-                        var heroEquipTask = ResourcesHelper.UseHeroResources(acc, Vill, ref stillNeededRes, heroRes, _buildingTask);
-                        await heroEquipTask.Execute(acc);
-                        continue;
-                    }
+                    acc.Logger.Information("Try using TTWars fast build method", this);
+                    var fastUpgrade = await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={_buildingTask.BuildingId}");
+                    if (fastUpgrade) continue;
+                    acc.Logger.Information("Using TTWars fast build method failed. Continue normal method", this);
                 }
 
-                bool result;
+                await MoveIntoBuilding(acc);
+                if (StopFlag) return TaskRes.Executed;
+
+                var contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
+
+                result = IsContructPage(acc, contractNode);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) continue;
+
+                result = await IsEnoughRes(acc, contractNode);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) continue;
+
+                acc.Wb.UpdateHtml();
+                contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
+
                 if (construct)
                 {
                     result = await Construct(acc, contractNode);
@@ -149,23 +82,10 @@ namespace TbsCore.Tasks.LowLevel
                 {
                     result = await Upgrade(acc, contractNode);
                 }
-                if (!result)
-                {
-                    var chanceDorf2 = rand.Next(1, 100);
-                    if (chanceDorf2 >= 50)
-                    {
-                        await NavigationHelper.ToDorf2(acc);
-                    }
-                    else
-                    {
-                        await NavigationHelper.ToDorf1(acc);
-                    }
-                }
-                else
-                {
-                    await DriverHelper.WaitPageChange(acc, "dorf");
-                }
-                PostTaskCheckDorf(acc);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) continue;
+
+                await DriverHelper.WaitPageChange(acc, "dorf");
             }
             while (true);
         }
@@ -415,144 +335,187 @@ namespace TbsCore.Tasks.LowLevel
             return false;
         }
 
-        private bool EnoughFreeCrop(Account acc)
-        {
-            // 5 is maximum a building can take up free crop (stable lvl 1)
-            if (Vill.Res.FreeCrop <= 5 && _buildingTask.Building != BuildingEnum.Cropland)
-            {
-                UpgradeBuildingHelper.UpgradeBuildingForOneLvl(acc, Vill, BuildingEnum.Cropland, false);
-                return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// For auto-building resource bonus building
-        /// </summary>
-        /// <param name="acc">Account</param>
-        /// <param name="vill">Village</param>
-        private void CheckResourceBonus(Account acc, Village vill, bool restart = true)
-        {
-            // If enabled and MainBuilding is above level 5
-            if (vill.Build.Buildings.Any(x => x.Type == BuildingEnum.MainBuilding && 5 <= x.Level))
-            {
-                var bonusBuilding = CheckBonusBuildings(vill);
-                if (bonusBuilding == BuildingEnum.Site) return;
-
-                var bonusTask = new BuildingTask()
-                {
-                    TaskType = BuildingType.General,
-                    Building = bonusBuilding,
-                    Level = 5,
-                };
-
-                UpgradeBuildingHelper.AddBuildingTask(acc, vill, bonusTask, false, restart);
-            }
-        }
-
-        private BuildingEnum CheckBonusBuildings(Village vill)
-        {
-            if (BonusHelper(vill, BuildingEnum.Woodcutter, BuildingEnum.Sawmill, 10))
-                return BuildingEnum.Sawmill;
-            if (BonusHelper(vill, BuildingEnum.ClayPit, BuildingEnum.Brickyard, 10))
-                return BuildingEnum.Brickyard;
-            if (BonusHelper(vill, BuildingEnum.IronMine, BuildingEnum.IronFoundry, 10))
-                return BuildingEnum.IronFoundry;
-            if (BonusHelper(vill, BuildingEnum.Cropland, BuildingEnum.GrainMill, 5))
-                return BuildingEnum.GrainMill;
-            if (BonusHelper(vill, BuildingEnum.Cropland, BuildingEnum.Bakery, 10) &&
-                vill.Build.Buildings.Any(x => x.Type == BuildingEnum.GrainMill && x.Level >= 5))
-                return BuildingEnum.Bakery;
-
-            return BuildingEnum.Site;
-        }
-
-        /// <summary>
-        /// Helper method for checking whether the bot should add the bonus building to the build list
-        /// </summary>
-        private bool BonusHelper(Village vill, BuildingEnum field, BuildingEnum bonus, int fieldLvl)
-        {
-            // If the bonus building is currently being upgraded to level 5, don't try to re-add it
-            if (vill.Build.CurrentlyBuilding.Any(x => x.Building == bonus && x.Level == 5)) return false;
-
-            // Bonus building is not on 5, res field is high enough, there is still space left to build, there isn't already a bonus building buildtask
-            return (!vill.Build.Buildings.Any(x => x.Type == bonus && 5 <= x.Level) &&
-                vill.Build.Buildings.Any(x => x.Type == field && fieldLvl <= x.Level) &&
-                vill.Build.Buildings.Any(x => x.Type == BuildingEnum.Site) &&
-                !vill.Build.Tasks.Any(x => x.Building == bonus));
-        }
-
-        /// <summary>
-        /// Upgrades specified building for exactly one level. Will upgrade the lowest level building.
-        /// </summary>
-        /// <param name="acc">Account</param>
-        /// <param name="vill">Village</param>
-        /// <param name="building">Building to be upgraded by one</param>
-        /// <param name="bottom">Whether to insert the building task on the bottom of the build list</param>
-        /// <returns>Whether the method executed successfully</returns>
-        internal static bool UpgradeBuildingForOneLvl(Account acc, Village vill, BuildingEnum building, bool bottom = true)
-        {
-            // We already have a build task
-            if (!bottom && vill.Build.Tasks.FirstOrDefault()?.Building == building) return true;
-            if (bottom && vill.Build.Tasks.LastOrDefault()?.Building == building) return true;
-
-            var upgrade = vill.Build
-                .Buildings
-                .OrderBy(x => x.Level)
-                .FirstOrDefault(x => x.Type == building);
-
-            // We don't have this building in the village yet
-            if (upgrade == null)
-            {
-                return UpgradeBuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
-                {
-                    TaskType = BuildingType.General,
-                    Building = building,
-                    Level = 1,
-                }, bottom);
-            }
-
-            // Current lvl in bot's data
-            var currentLvl = (int)upgrade.Level;
-
-            UpgradeBuildingHelper.RemoveFinishedCB(vill);
-
-            // Current lvl in current building list
-            var currentBuilding = vill.Build.CurrentlyBuilding.FirstOrDefault(x => x.Building == building);
-            if (currentBuilding != null) currentLvl = currentBuilding.Level;
-
-            if (BuildingsData.MaxBuildingLevel(acc, building) == currentLvl)
-            {
-                // Building is on max level, construct new building if possible
-                if (!BuildingsData.CanHaveMultipleBuildings(building)) return false;
-
-                return UpgradeBuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
-                {
-                    TaskType = BuildingType.General,
-                    Building = building,
-                    Level = 1,
-                }, bottom);
-            }
-            else // Upgrade the defined building
-            {
-                return UpgradeBuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
-                {
-                    TaskType = BuildingType.General,
-                    Building = building,
-                    Level = currentLvl + 1,
-                    BuildingId = upgrade.Id
-                }, bottom);
-            }
-        }
-
         private async Task SwitchVillage(Account acc)
         {
             await DriverHelper.WaitPageLoaded(acc);
             var active = acc.Villages.FirstOrDefault(x => x.Active);
             if (active != null && active.Id != Vill.Id)
             {
+                acc.Logger.Information($"Now in village {active.Name}. Move to correct village => {Vill.Name}", this);
                 await VillageHelper.SwitchVillage(acc, Vill.Id);
             }
+        }
+
+        private async Task GoRandomDorf(Account acc)
+        {
+            var chanceDorf2 = rand.Next(1, 100);
+            if (chanceDorf2 >= 50)
+            {
+                await NavigationHelper.ToDorf2(acc);
+            }
+            else
+            {
+                await NavigationHelper.ToDorf1(acc);
+            }
+        }
+
+        private async Task<BuildingTask> ChooseTask(Account acc)
+        {
+            acc.Logger.Information("Choosing building task to execute", this);
+            var nextTask = UpgradeBuildingHelper.NextBuildingTask(acc, Vill);
+
+            if (nextTask == null)
+            {
+                if (Vill.Build.Tasks.Count == 0)
+                {
+                    acc.Logger.Information("Building queue empty.", this);
+                    StopFlag = true;
+                    return nextTask;
+                }
+
+                acc.Logger.Information("Cannot choose next building task. Will check currently building", this);
+                acc.Logger.Information("Checking current village ...", this);
+                await SwitchVillage(acc);
+                acc.Logger.Information("Update currently building ... ", this);
+                await GoRandomDorf(acc);
+
+                var firstComplete = Vill.Build.CurrentlyBuilding.FirstOrDefault();
+                if (firstComplete == null)
+                {
+                    Retry(acc, "Currently building list is empty");
+                    return nextTask;
+                }
+
+                NextExecute = TimeHelper.RanDelay(acc, firstComplete.Duration);
+                acc.Logger.Information($"Next building will be contructed after {firstComplete.Building} - level {firstComplete.Level} complete. ({NextExecute})", this);
+                StopFlag = true;
+                return nextTask;
+            }
+
+            return nextTask;
+        }
+
+        private bool TaskTypeCondition(Account acc)
+        {
+            switch (_buildingTask.TaskType)
+            {
+                case BuildingType.General:
+                    if (!UpgradeBuildingHelper.CheckGeneralTaskBuildPlace(Vill, _buildingTask))
+                    {
+                        acc.Logger.Warning($"Cannot find place to construct {_buildingTask.Building}. Skip this and move on next one", this);
+                        RemoveCurrentTask();
+                        _buildingTask = null;
+                        return false;
+                    }
+                    return true;
+
+                case BuildingType.AutoUpgradeResFields:
+                    {
+                        acc.Logger.Information("This is task auto upgrade res field. Choose what res fields will upgrade", this);
+                        UpgradeBuildingHelper.AddResFields(acc, Vill, _buildingTask);
+                        var task = Vill.Build.Tasks.FirstOrDefault();
+                        acc.Logger.Information($"Added {task.Building} - Level {task.Level} to queue", this);
+                        return false;
+                    }
+            }
+
+            return true;
+        }
+
+        private async Task<bool> FreeCropCondition(Account acc)
+        {
+            acc.Logger.Information($"Checking current village ...", this);
+            await SwitchVillage(acc);
+            acc.Logger.Information($"Update free crop ...", this);
+
+            if (Vill.Res.FreeCrop <= 5 && _buildingTask.Building != BuildingEnum.Cropland)
+            {
+                acc.Logger.Warning($"Don't have enough Free Crop for {_buildingTask.Building} - level {_buildingTask.Level}. Will upgrade Cropland instead.", this);
+
+                UpgradeBuildingHelper.UpgradeBuildingForOneLvl(acc, Vill, BuildingEnum.Cropland, false);
+                return false;
+            }
+            return true;
+        }
+
+        private async Task MoveIntoBuilding(Account acc)
+        {
+            acc.Logger.Information($"Move into building {_buildingTask.Building}", this);
+            await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
+            if (_buildingTask.ConstructNew)
+            {
+                acc.Logger.Information($"This is contruct task, choose correct tab for building {_buildingTask.Building}", this);
+                await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
+            }
+        }
+
+        private bool IsContructPage(Account acc, HtmlNode contractNode)
+        {
+            acc.Logger.Information($"Finding button to build ...", this);
+
+            if (contractNode != null)
+            {
+                construct = true;
+            }
+            else
+            {
+                contractNode = acc.Wb.Html.GetElementbyId("build");
+                if (contractNode != null)
+                {
+                    construct = false;
+                }
+                else
+                {
+                    Retry(acc, "Couldn't find");
+                    return false;
+                }
+            }
+            acc.Logger.Information("Found it!", this);
+            return true;
+        }
+
+        private async Task<bool> IsEnoughRes(Account acc, HtmlNode contractNode)
+        {
+            // check enough res
+            acc.Logger.Information($"Check resource ...", this);
+            var cost = ResourceParser.ParseResourcesNeed(contractNode);
+            acc.Logger.Information($"Need {cost}");
+
+            if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
+            {
+                if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
+                {
+                    acc.Logger.Warning($"Storage is too low to build {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Need upgrade storage first", this);
+                    acc.Logger.Information("Now bot CANNOT add upgrade storage task, please do it manually.", this);
+                    StopFlag = true;
+                    return false;
+                }
+
+                var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
+                acc.Logger.Information("Not enough resources to build.");
+                if (Vill.Settings.UseHeroRes && acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
+                {
+                    var heroRes = HeroHelper.GetHeroResources(acc);
+
+                    if (ResourcesHelper.IsEnoughRes(heroRes, stillNeededRes))
+                    {
+                        // If we have enough hero res for our task, execute the task
+                        // right after hero equip finishes
+                        acc.Logger.Information("Bot will use resource from hero inventory", this);
+
+                        var heroEquipTask = ResourcesHelper.UseHeroResources(acc, Vill, ref stillNeededRes, heroRes, _buildingTask);
+                        await heroEquipTask.Execute(acc);
+                        return false;
+                    }
+                }
+
+                acc.Logger.Information($"Bot will try finish the task later", this);
+                DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
+                NextExecute = TimeHelper.RanDelay(acc, enoughRes);
+                StopFlag = true;
+                return false;
+            }
+            return true;
         }
     }
 }
