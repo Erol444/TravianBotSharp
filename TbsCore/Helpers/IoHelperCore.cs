@@ -135,12 +135,16 @@ namespace TbsCore.Helpers
             var userCacheFolder = UserCachePath(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
             if (!UserDataExists(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl)) return;
 
-            var removeFolders = Directory.GetDirectories(userCacheFolder);
-
-            for (int i = 0; i < removeFolders.Count(); i++)
+            try
             {
-                Directory.Delete(removeFolders[i], true);
+                var removeFolders = Directory.GetDirectories(userCacheFolder);
+
+                for (int i = 0; i < removeFolders.Count(); i++)
+                {
+                    Directory.Delete(removeFolders[i], true);
+                }
             }
+            catch { }
         }
 
         /// <summary>

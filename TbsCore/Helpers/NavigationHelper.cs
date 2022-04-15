@@ -110,22 +110,38 @@ namespace TbsCore.Helpers
             var tab = BuildingsData.GetBuildingsCategory(building);
             if (tab == BuildingCategoryEnum.Infrastructure) return true;
             acc.Logger.Information($"{building} is in {tab} section, switch tab");
-            string classNode;
+            string classCategoryNode;
             switch (tab)
             {
                 case BuildingCategoryEnum.Military:
-                    classNode = "military";
+                    classCategoryNode = "military";
                     break;
 
                 case BuildingCategoryEnum.Resources:
-                    classNode = "resources";
+                    classCategoryNode = "resources";
                     break;
 
                 default:
-                    classNode = "";
+                    classCategoryNode = "";
                     break;
             }
-            var node = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("tabItem") && x.HasClass(classNode));
+            string classFirstNode;
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case ServerVersionEnum.TTwars:
+                    classFirstNode = "container";
+                    break;
+
+                case ServerVersionEnum.T4_5:
+                    classFirstNode = "tabItem";
+
+                    break;
+
+                default:
+                    classFirstNode = "";
+                    break;
+            }
+            var node = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass(classFirstNode) && x.HasClass(classCategoryNode));
             if (node == null) return false;
 
             var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));

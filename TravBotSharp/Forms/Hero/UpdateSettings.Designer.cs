@@ -118,6 +118,7 @@ namespace TravBotSharp.Forms.Hero
             0,
             0,
             0});
+            this.maxInterval.ValueChanged += new System.EventHandler(this.maxInterval_ValueChanged);
             // 
             // label14
             // 
@@ -147,6 +148,7 @@ namespace TravBotSharp.Forms.Hero
             0,
             0,
             0});
+            this.minInterval.ValueChanged += new System.EventHandler(this.minInterval_ValueChanged);
             // 
             // label15
             // 

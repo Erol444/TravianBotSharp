@@ -31,6 +31,7 @@ namespace TravBotSharp.Forms
             var strArr = richTextBox1.Text.Split('\n');
             richTextBox2.Text = "";
 
+            accounts.Clear();
             foreach (var str in strArr)
             {
                 var account = ParserAccout(str);
@@ -41,17 +42,17 @@ namespace TravBotSharp.Forms
                     {
                         if (!string.IsNullOrEmpty(account.Proxy.ProxyUsername))
                         {
-                            richTextBox2.AppendText($"{account.Server} {account.Username} {account.Proxy.Password} {account.Proxy.Proxy} {account.Proxy.ProxyPort} {account.Proxy.ProxyUsername} {account.Proxy.ProxyPassword}\n");
+                            richTextBox2.AppendText($"[{account.Server}] [{account.Username}] [{account.Proxy.Password}] [{account.Proxy.Proxy}] [{account.Proxy.ProxyPort}] [{account.Proxy.ProxyUsername}] [{account.Proxy.ProxyPassword}]\n");
 
                         }
                         else
                         {
-                            richTextBox2.AppendText($"{account.Server} {account.Username} {account.Proxy.Password} {account.Proxy.Proxy} {account.Proxy.ProxyPort}\n");
+                            richTextBox2.AppendText($"[{account.Server}] [{account.Username}] [{account.Proxy.Password}] [{account.Proxy.Proxy}] [{account.Proxy.ProxyPort}]\n");
                         }
                     }
                     else
                     {
-                        richTextBox2.AppendText($"{account.Server} {account.Username} {account.Proxy.Password} \n");
+                        richTextBox2.AppendText($"[{account.Server}] [{account.Username}] [{account.Proxy.Password}]\n");
                     }
                 }
             }
