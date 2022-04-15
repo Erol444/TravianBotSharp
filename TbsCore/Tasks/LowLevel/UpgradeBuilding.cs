@@ -23,6 +23,7 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
+            StopFlag = false;
             do
             {
                 if (StopFlag) return TaskRes.Executed;

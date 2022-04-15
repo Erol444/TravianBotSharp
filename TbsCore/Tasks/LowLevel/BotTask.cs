@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
@@ -52,7 +53,19 @@ namespace TbsCore.Tasks
         /// </summary>
         public TaskPriority Priority { get; set; }
 
-        protected bool StopFlag = false;
+        private long stopFlag;
+
+        public bool StopFlag
+        {
+            get
+            {
+                return Interlocked.Read(ref stopFlag) == 1;
+            }
+            set
+            {
+                Interlocked.Exchange(ref stopFlag, Convert.ToInt64(value));
+            }
+        }
 
         protected void Retry(Account acc, string message)
         {
