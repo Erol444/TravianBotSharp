@@ -51,8 +51,12 @@ namespace TbsCore.Database
         {
             using (var context = new TbsContext())
             {
-                context.DbAccount.Remove(FindDbAccount(acc, context));
-                context.SaveChanges();
+                var account = FindDbAccount(acc, context);
+                if (account != null)
+                {
+                    context.DbAccount.Remove(account);
+                    context.SaveChanges();
+                }
             }
         }
 
