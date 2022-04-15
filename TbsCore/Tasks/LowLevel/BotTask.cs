@@ -44,13 +44,30 @@ namespace TbsCore.Tasks
         /// Counts how many times we retried executing the task. After 3rd try, stop retrying. Something is clearly wrong
         /// Used in TaskExecutor and TaskTimer
         /// </summary>
-        public int RetryCounter { get; set; }
+        public int RetryCounter { get; set; } = 0;
 
         /// <summary>
         /// How high of a priority does this task have.
         /// Tasks like attacking and deffending (waves) have highest priority and should as such be executed first
         /// </summary>
         public TaskPriority Priority { get; set; }
+
+        protected bool StopFlag = false;
+
+        protected void Retry(Account acc, string message)
+        {
+            if (RetryCounter < 4)
+            {
+                RetryCounter++;
+                acc.Logger.Information($"{message}. Try again. ({RetryCounter} time(s))", this);
+            }
+            else
+            {
+                acc.Logger.Information($"{message}.", this);
+                acc.Logger.Warning($"Already tries 3 times. Considering there is error, please check account's browser.", this);
+                StopFlag = true;
+            }
+        }
 
         public enum TaskRes
         {
