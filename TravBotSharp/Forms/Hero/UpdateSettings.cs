@@ -29,5 +29,15 @@ namespace TravBotSharp.Forms.Hero
         {
             Close();
         }
+
+        private void minInterval_ValueChanged(object sender, EventArgs e)
+        {
+            if (minInterval.Value > maxInterval.Value) minInterval.Value = maxInterval.Value;
+        }
+
+        private void maxInterval_ValueChanged(object sender, EventArgs e)
+        {
+            if (minInterval.Value > maxInterval.Value) maxInterval.Value = minInterval.Value;
+        }
     }
 }
