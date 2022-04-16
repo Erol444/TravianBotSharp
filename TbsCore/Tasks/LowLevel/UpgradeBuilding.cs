@@ -156,7 +156,7 @@ namespace TbsCore.Tasks.LowLevel
 
             if (lvl >= _buildingTask.Level)
             {
-                acc.Logger.Information($"{_buildingTask.Building} is already level {lvl} in village {Vill.Name}. Will be removed from the queue.");
+                acc.Logger.Information($"{_buildingTask.Building} is already level {lvl} in village {Vill.Name}. Will be removed from the queue.", this);
                 RemoveCurrentTask();
                 return false;
             }
@@ -165,7 +165,7 @@ namespace TbsCore.Tasks.LowLevel
             var buttons = container?.Descendants("button");
             if (buttons == null)
             {
-                acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}");
+                acc.Logger.Information($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}", this);
                 return false;
             }
 
@@ -178,20 +178,21 @@ namespace TbsCore.Tasks.LowLevel
 
             if (upgradeButton == null)
             {
-                acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found!");
+                acc.Logger.Information($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found!", this);
                 return false;
             }
 
             // Not enough resources?
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
             {
-                acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}");
+                acc.Logger.Information($"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}", this);
                 return false;
             }
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
 
-            acc.Logger.Information($"Started upgrading {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}");
+            acc.Logger.Information("Complete checking", this);
+            acc.Logger.Information($"Upgrading {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}", this);
 
             var watchAd = false;
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
@@ -205,7 +206,7 @@ namespace TbsCore.Tasks.LowLevel
                 await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
             }
 
-            acc.Logger.Information($"Upgraded {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}");
+            acc.Logger.Information($"Upgraded {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}", this);
             if (_buildingTask.Level == lvl + 1)
             {
                 RemoveCurrentTask();
@@ -514,7 +515,7 @@ namespace TbsCore.Tasks.LowLevel
             var resWrapper = contractNode.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var cost = ResourceParser.GetResourceCost(resWrapper);
 
-            acc.Logger.Information($"Need {cost}");
+            acc.Logger.Information($"Need {cost}", this);
 
             if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
             {
@@ -527,7 +528,7 @@ namespace TbsCore.Tasks.LowLevel
                 }
 
                 var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
-                acc.Logger.Information("Not enough resources to build.");
+                acc.Logger.Information("Not enough resources to build.", this);
                 if (Vill.Settings.UseHeroRes && acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
                 {
                     var heroRes = HeroHelper.GetHeroResources(acc);
