@@ -213,7 +213,11 @@ namespace TbsCore.Helpers
         public static async Task WaitPageChange(Account acc, string part, double delay = 1)
         {
             var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(delay));
-            wait.Until(driver => driver.Url.Contains(part));
+            try
+            {
+                wait.Until(driver => driver.Url.Contains(part));
+            }
+            catch { }
             await WaitPageLoaded(acc, delay);
         }
     }

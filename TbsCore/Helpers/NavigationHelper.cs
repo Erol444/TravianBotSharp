@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -125,37 +126,29 @@ namespace TbsCore.Helpers
                     classCategoryNode = "";
                     break;
             }
-            string classFirstNode;
+            HtmlNode node;
             switch (acc.AccInfo.ServerVersion)
             {
                 case ServerVersionEnum.TTwars:
-                    classFirstNode = "container";
+                    node = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("container") && x.HasClass(classCategoryNode));
                     break;
 
                 case ServerVersionEnum.T4_5:
-                    classFirstNode = "tabItem";
+                    node = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("tabItem") && x.HasClass(classCategoryNode));
 
                     break;
 
                 default:
-                    classFirstNode = "";
+                    node = null;
                     break;
             }
-            var node = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass(classFirstNode) && x.HasClass(classCategoryNode));
             if (node == null) return false;
 
             var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
             if (element == null) return false;
             element.Click();
             acc.Logger.Information($"Waitting tab change");
-            try
-            {
-                await DriverHelper.WaitPageChange(acc, "category", 0.5);
-            }
-            catch
-            {
-                await DriverHelper.WaitPageLoaded(acc);
-            }
+            await DriverHelper.WaitPageChange(acc, "category");
             return true;
         }
 
