@@ -500,10 +500,20 @@ namespace TbsCore.Tasks.LowLevel
                     break;
 
                 case ServerVersionEnum.T4_5:
-                    contractNode = acc.Wb.Html.GetElementbyId("contract");
+                    if (construct)
+                    {
+                        contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
+                    }
+                    else
+                    {
+                        contractNode = acc.Wb.Html.GetElementbyId("contract");
+                    }
                     break;
             }
-            var cost = ResourceParser.ParseResourcesNeed(contractNode);
+
+            var resWrapper = contractNode.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
+            var cost = ResourceParser.GetResourceCost(resWrapper);
+
             acc.Logger.Information($"Need {cost}");
 
             if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
