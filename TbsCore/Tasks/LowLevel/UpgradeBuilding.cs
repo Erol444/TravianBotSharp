@@ -104,7 +104,7 @@ namespace TbsCore.Tasks.LowLevel
                 return false;
             }
 
-            await Task.Delay(AccountHelper.Delay(acc));
+            await AccountHelper.DelayWait(acc);
             acc.Logger.Information($"Starting contruct {_buildingTask.Building} in {Vill.Name}");
             var element = acc.Wb.Driver.FindElement(By.XPath(button.XPath));
             if (element == null)
@@ -203,6 +203,7 @@ namespace TbsCore.Tasks.LowLevel
 
             if (!watchAd)
             {
+                await AccountHelper.DelayWait(acc);
                 acc.Logger.Information("Using normal upgrade button");
 
                 upgradeButton = buttons.FirstOrDefault(x => x.HasClass("build"));
@@ -460,13 +461,13 @@ namespace TbsCore.Tasks.LowLevel
 
         private async Task MoveIntoBuilding(Account acc)
         {
-            await Task.Delay(AccountHelper.Delay(acc));
+            await AccountHelper.DelayWait(acc);
             acc.Logger.Information($"Move into building {_buildingTask.Building}", this);
             await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
             var build = Vill.Build.Buildings.FirstOrDefault(x => x.Id == _buildingTask.BuildingId);
             if (build.Type == BuildingEnum.Site)
             {
-                await Task.Delay(AccountHelper.Delay(acc));
+                await AccountHelper.DelayWait(acc);
                 acc.Logger.Information($"This is contruct task, choose correct tab for building {_buildingTask.Building}", this);
                 await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
             }
