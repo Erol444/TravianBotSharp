@@ -53,6 +53,7 @@ namespace TbsCore.Tasks.LowLevel
                 if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars && !_buildingTask.ConstructNew)
                 {
                     acc.Logger.Information("Try using TTWars fast build method", this);
+                    await Task.Delay(AccountHelper.Delay(acc));
                     var fastUpgrade = await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={_buildingTask.BuildingId}");
                     if (fastUpgrade) continue;
                     acc.Logger.Information("Using TTWars fast build method failed. Continue normal method", this);
@@ -99,11 +100,19 @@ namespace TbsCore.Tasks.LowLevel
             // Check for prerequisites
             if (button == null)
             {
+                Retry(acc, "Button disappear.");
                 return false;
             }
 
-            await DriverHelper.ClickById(acc, button.Id);
-
+            await AccountHelper.DelayWait(acc);
+            acc.Logger.Information($"Starting contruct {_buildingTask.Building} in {Vill.Name}");
+            var element = acc.Wb.Driver.FindElement(By.XPath(button.XPath));
+            if (element == null)
+            {
+                Retry(acc, "Button disappear.");
+                return false;
+            }
+            element.Click();
             _buildingTask.ConstructNew = false;
 
             acc.Logger.Warning($"Started construction of {_buildingTask.Building} in {Vill.Name}");
@@ -123,17 +132,7 @@ namespace TbsCore.Tasks.LowLevel
         private async Task<bool> Upgrade(Account acc)
         {
             acc.Wb.UpdateHtml();
-            HtmlNode node = null;
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case ServerVersionEnum.TTwars:
-                    node = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
-                    break;
-
-                case ServerVersionEnum.T4_5:
-                    node = acc.Wb.Html.GetElementbyId("build");
-                    break;
-            }
+            HtmlNode node = acc.Wb.Html.GetElementbyId("build");
             (var buildingEnum, var lvl) = InfrastructureParser.UpgradeBuildingGetInfo(node);
 
             if (buildingEnum == BuildingEnum.Site || lvl == -1)
@@ -156,7 +155,7 @@ namespace TbsCore.Tasks.LowLevel
 
             if (lvl >= _buildingTask.Level)
             {
-                acc.Logger.Information($"{_buildingTask.Building} is already level {lvl} in village {Vill.Name}. Will be removed from the queue.");
+                acc.Logger.Information($"{_buildingTask.Building} is already level {lvl} in village {Vill.Name}. Will be removed from the queue.", this);
                 RemoveCurrentTask();
                 return false;
             }
@@ -165,7 +164,7 @@ namespace TbsCore.Tasks.LowLevel
             var buttons = container?.Descendants("button");
             if (buttons == null)
             {
-                acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}");
+                acc.Logger.Information($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found! Url={acc.Wb.CurrentUrl}", this);
                 return false;
             }
 
@@ -178,34 +177,47 @@ namespace TbsCore.Tasks.LowLevel
 
             if (upgradeButton == null)
             {
-                acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found!");
+                Retry(acc, $"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found!");
                 return false;
             }
 
             // Not enough resources?
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
             {
-                acc.Logger.Warning($"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}");
+                Retry(acc, $"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}");
                 return false;
             }
 
             var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
 
-            acc.Logger.Information($"Started upgrading {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}");
+            acc.Logger.Information("Complete checking", this);
+            acc.Logger.Information($"Upgrading {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}", this);
 
             var watchAd = false;
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
             {
                 // watchAd = await TryFastUpgrade(acc);
+                acc.Logger.Information("Try using watch ads upgrade button", this);
+                acc.Logger.Information("Watch ads function is disable because of bugs from Chrome. We cannot do anything about this", this);
             }
 
             if (!watchAd)
             {
+                await AccountHelper.DelayWait(acc);
+                acc.Logger.Information("Using normal upgrade button");
+
                 upgradeButton = buttons.FirstOrDefault(x => x.HasClass("build"));
-                await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
+
+                var element = acc.Wb.Driver.FindElement(By.XPath(upgradeButton.XPath));
+                if (element == null)
+                {
+                    Retry(acc, "Button disappear.");
+                    return false;
+                }
+                element.Click();
             }
 
-            acc.Logger.Information($"Upgraded {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}");
+            acc.Logger.Information($"Upgraded {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}", this);
             if (_buildingTask.Level == lvl + 1)
             {
                 RemoveCurrentTask();
@@ -449,11 +461,13 @@ namespace TbsCore.Tasks.LowLevel
 
         private async Task MoveIntoBuilding(Account acc)
         {
+            await AccountHelper.DelayWait(acc);
             acc.Logger.Information($"Move into building {_buildingTask.Building}", this);
             await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
             var build = Vill.Build.Buildings.FirstOrDefault(x => x.Id == _buildingTask.BuildingId);
             if (build.Type == BuildingEnum.Site)
             {
+                await AccountHelper.DelayWait(acc);
                 acc.Logger.Information($"This is contruct task, choose correct tab for building {_buildingTask.Building}", this);
                 await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
             }
@@ -493,31 +507,30 @@ namespace TbsCore.Tasks.LowLevel
 
             acc.Wb.UpdateHtml();
             HtmlNode contractNode = null;
-            switch (acc.AccInfo.ServerVersion)
+            if (construct)
             {
-                case ServerVersionEnum.TTwars:
-                    contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
-                    break;
-
-                case ServerVersionEnum.T4_5:
-                    contractNode = acc.Wb.Html.GetElementbyId("contract");
-                    break;
+                contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
             }
-            var cost = ResourceParser.ParseResourcesNeed(contractNode);
-            acc.Logger.Information($"Need {cost}");
+            else
+            {
+                contractNode = acc.Wb.Html.GetElementbyId("contract");
+            }
+
+            var resWrapper = contractNode.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
+            var cost = ResourceParser.GetResourceCost(resWrapper);
+
+            acc.Logger.Information($"Need {cost}", this);
 
             if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
             {
                 if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
                 {
-                    acc.Logger.Warning($"Storage is too low to build {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Need upgrade storage first", this);
-                    acc.Logger.Information("Now bot CANNOT add upgrade storage task, please do it manually.", this);
-                    StopFlag = true;
+                    acc.Logger.Warning($"Storage is too low. Added storage upgrade.", this);
                     return false;
                 }
 
                 var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
-                acc.Logger.Information("Not enough resources to build.");
+                acc.Logger.Information("Not enough resources to build.", this);
                 if (Vill.Settings.UseHeroRes && acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
                 {
                     var heroRes = HeroHelper.GetHeroResources(acc);
