@@ -197,8 +197,8 @@ namespace TbsCore.Tasks.LowLevel
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
             {
                 // watchAd = await TryFastUpgrade(acc);
-                acc.Logger.Information("Try using watch ads upgrade button");
-                acc.Logger.Information("Watch ads function is disable because of bugs from Chrome. We cannot do anything about this");
+                acc.Logger.Information("Try using watch ads upgrade button", this);
+                acc.Logger.Information("Watch ads function is disable because of bugs from Chrome. We cannot do anything about this", this);
             }
 
             if (!watchAd)
