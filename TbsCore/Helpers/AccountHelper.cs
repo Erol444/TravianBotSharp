@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks.LowLevel;
@@ -9,6 +10,8 @@ namespace TbsCore.Helpers
 {
     public static class AccountHelper
     {
+        private static Random rnd = new Random();
+
         public static Village GetMainVillage(Account acc)
         {
             var main = acc.Villages.FirstOrDefault(x => x.Id == acc.Settings.MainVillage);
@@ -46,15 +49,14 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Returns a random delay (click delay, ~0.5-1.6sec).
+        /// Returns a random
+        ///
+        /// (click delay, ~0.5-1.6sec).
         /// </summary>
         /// <returns>Random delay in milliseconds</returns>
-        public static int Delay(Account acc)
-        {
-            //Return random delay
-            Random rnd = new Random();
-            return rnd.Next(acc.Settings.DelayClickingMin, acc.Settings.DelayClickingMax);
-        }
+        public static int Delay(Account acc) => rnd.Next(acc.Settings.DelayClickingMin, acc.Settings.DelayClickingMax);
+
+        public static Task DelayWait(Account acc) => Task.Delay(Delay(acc));
 
         public static void StartAccountTasks(Account acc)
         {

@@ -53,6 +53,7 @@ namespace TbsCore.Tasks.LowLevel
                 if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars && !_buildingTask.ConstructNew)
                 {
                     acc.Logger.Information("Try using TTWars fast build method", this);
+                    await Task.Delay(AccountHelper.Delay(acc));
                     var fastUpgrade = await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={_buildingTask.BuildingId}");
                     if (fastUpgrade) continue;
                     acc.Logger.Information("Using TTWars fast build method failed. Continue normal method", this);
@@ -99,11 +100,19 @@ namespace TbsCore.Tasks.LowLevel
             // Check for prerequisites
             if (button == null)
             {
+                Retry(acc, "Button disappear.");
                 return false;
             }
 
-            await DriverHelper.ClickById(acc, button.Id);
-
+            await Task.Delay(AccountHelper.Delay(acc));
+            acc.Logger.Information($"Starting contruct {_buildingTask.Building} in {Vill.Name}");
+            var element = acc.Wb.Driver.FindElement(By.XPath(button.XPath));
+            if (element == null)
+            {
+                Retry(acc, "Button disappear.");
+                return false;
+            }
+            element.Click();
             _buildingTask.ConstructNew = false;
 
             acc.Logger.Warning($"Started construction of {_buildingTask.Building} in {Vill.Name}");
@@ -168,14 +177,14 @@ namespace TbsCore.Tasks.LowLevel
 
             if (upgradeButton == null)
             {
-                acc.Logger.Information($"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found!", this);
+                Retry(acc, $"We wanted to upgrade {_buildingTask.Building}, but no 'upgrade' button was found!");
                 return false;
             }
 
             // Not enough resources?
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
             {
-                acc.Logger.Information($"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}", this);
+                Retry(acc, $"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}");
                 return false;
             }
 
@@ -188,12 +197,23 @@ namespace TbsCore.Tasks.LowLevel
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
             {
                 // watchAd = await TryFastUpgrade(acc);
+                acc.Logger.Information("Try using watch ads upgrade button");
+                acc.Logger.Information("Watch ads function is disable because of bugs from Chrome. We cannot do anything about this");
             }
 
             if (!watchAd)
             {
+                acc.Logger.Information("Using normal upgrade button");
+
                 upgradeButton = buttons.FirstOrDefault(x => x.HasClass("build"));
-                await DriverHelper.ClickById(acc, upgradeButton.Id); // Normal upgrade
+
+                var element = acc.Wb.Driver.FindElement(By.XPath(upgradeButton.XPath));
+                if (element == null)
+                {
+                    Retry(acc, "Button disappear.");
+                    return false;
+                }
+                element.Click();
             }
 
             acc.Logger.Information($"Upgraded {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}", this);
@@ -440,11 +460,13 @@ namespace TbsCore.Tasks.LowLevel
 
         private async Task MoveIntoBuilding(Account acc)
         {
+            await Task.Delay(AccountHelper.Delay(acc));
             acc.Logger.Information($"Move into building {_buildingTask.Building}", this);
             await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId);
             var build = Vill.Build.Buildings.FirstOrDefault(x => x.Id == _buildingTask.BuildingId);
             if (build.Type == BuildingEnum.Site)
             {
+                await Task.Delay(AccountHelper.Delay(acc));
                 acc.Logger.Information($"This is contruct task, choose correct tab for building {_buildingTask.Building}", this);
                 await NavigationHelper.ToConstructionTab(acc, _buildingTask.Building);
             }
