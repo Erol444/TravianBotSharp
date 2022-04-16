@@ -123,17 +123,7 @@ namespace TbsCore.Tasks.LowLevel
         private async Task<bool> Upgrade(Account acc)
         {
             acc.Wb.UpdateHtml();
-            HtmlNode node = null;
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case ServerVersionEnum.TTwars:
-                    node = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
-                    break;
-
-                case ServerVersionEnum.T4_5:
-                    node = acc.Wb.Html.GetElementbyId("build");
-                    break;
-            }
+            HtmlNode node = acc.Wb.Html.GetElementbyId("build");
             (var buildingEnum, var lvl) = InfrastructureParser.UpgradeBuildingGetInfo(node);
 
             if (buildingEnum == BuildingEnum.Site || lvl == -1)
@@ -494,22 +484,13 @@ namespace TbsCore.Tasks.LowLevel
 
             acc.Wb.UpdateHtml();
             HtmlNode contractNode = null;
-            switch (acc.AccInfo.ServerVersion)
+            if (construct)
             {
-                case ServerVersionEnum.TTwars:
-                    contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
-                    break;
-
-                case ServerVersionEnum.T4_5:
-                    if (construct)
-                    {
-                        contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
-                    }
-                    else
-                    {
-                        contractNode = acc.Wb.Html.GetElementbyId("contract");
-                    }
-                    break;
+                contractNode = acc.Wb.Html.GetElementbyId($"contract_building{(int)_buildingTask.Building}");
+            }
+            else
+            {
+                contractNode = acc.Wb.Html.GetElementbyId("contract");
             }
 
             var resWrapper = contractNode.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
