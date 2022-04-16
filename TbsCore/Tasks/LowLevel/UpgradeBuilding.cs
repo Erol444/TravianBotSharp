@@ -525,9 +525,7 @@ namespace TbsCore.Tasks.LowLevel
             {
                 if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
                 {
-                    acc.Logger.Warning($"Storage is too low to build {_buildingTask.Building} - Level {_buildingTask.Level}! Needed {cost}. Need upgrade storage first", this);
-                    acc.Logger.Information("Now bot CANNOT add upgrade storage task, please do it manually.", this);
-                    StopFlag = true;
+                    acc.Logger.Warning($"Storage is too low. Added storage upgrade.", this);
                     return false;
                 }
 
