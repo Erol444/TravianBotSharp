@@ -356,17 +356,6 @@ namespace TbsCore.Tasks.LowLevel
             return false;
         }
 
-        private async Task SwitchVillage(Account acc)
-        {
-            await DriverHelper.WaitPageLoaded(acc);
-            var active = acc.Villages.FirstOrDefault(x => x.Active);
-            if (active != null && active.Id != Vill.Id)
-            {
-                acc.Logger.Information($"Now in village {active.Name}. Move to correct village => {Vill.Name}", this);
-                await VillageHelper.SwitchVillage(acc, Vill.Id);
-            }
-        }
-
         private async Task GoRandomDorf(Account acc)
         {
             var chanceDorf2 = rand.Next(1, 100);
@@ -396,7 +385,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 acc.Logger.Information("Cannot choose next building task. Will check currently building", this);
                 acc.Logger.Information("Checking current village ...", this);
-                await SwitchVillage(acc);
+                await NavigationHelper.SwitchVillage(acc, Vill);
                 acc.Logger.Information("Update currently building ... ", this);
                 await GoRandomDorf(acc);
 
@@ -446,7 +435,7 @@ namespace TbsCore.Tasks.LowLevel
         private async Task<bool> FreeCropCondition(Account acc)
         {
             acc.Logger.Information($"Checking current village ...", this);
-            await SwitchVillage(acc);
+            await NavigationHelper.SwitchVillage(acc, Vill);
             acc.Logger.Information($"Update free crop ...", this);
 
             if (Vill.Res.FreeCrop <= 5 && _buildingTask.Building != BuildingEnum.Cropland)

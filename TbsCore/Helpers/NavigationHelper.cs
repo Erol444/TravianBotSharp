@@ -67,7 +67,7 @@ namespace TbsCore.Helpers
             do
             {
                 // If we are already at the correct building, don't re-enter it, just navigate to correct tab afterwards.
-                if (acc.Wb.CurrentUrl.Contains($"build.php?id={index}"))
+                if (acc.Wb.CurrentUrl.Contains($"{index}"))
                 {
                     // If we have just updated the village, don't re-navigate
                     var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
@@ -393,6 +393,18 @@ namespace TbsCore.Helpers
         //    Normal = 1,
         //    Faster,
         //}
+
+        public static async Task<bool> SwitchVillage(Account acc, Village vill)
+        {
+            await DriverHelper.WaitPageLoaded(acc);
+            var active = acc.Villages.FirstOrDefault(x => x.Active);
+            if (active != null && active.Id != vill.Id)
+            {
+                acc.Logger.Information($"Now in village {active.Name}. Move to correct village {vill.Name}");
+                return await VillageHelper.SwitchVillage(acc, vill.Id);
+            }
+            return true;
+        }
 
         public enum MainNavigationButton
         {

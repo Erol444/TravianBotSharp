@@ -5,104 +5,70 @@ using TbsCore.Models.AccModels;
 using TbsCore.TravianData;
 using TbsCore.Helpers;
 using TbsCore.Parsers;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Tasks.LowLevel
 {
     public class TrainSettlers : BotTask
     {
+        private TroopsEnum settlerId;
+
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if (!await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Train))
-                return TaskRes.Executed;
-
-            var settler = TroopsData.TribeSettler(acc.AccInfo.Tribe);
-            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settler));
-
-            if (troopNode == null)
+            settlerId = TroopsData.TribeSettler(acc.AccInfo.Tribe);
+            StopFlag = false;
+            do
             {
-                acc.Logger.Warning("No new settler can be trained, probably because 3 settlers are already (being) trained");
-                SendSettlersTask(acc);
-                return TaskRes.Executed;
-            }
+                if (StopFlag) return TaskRes.Executed;
 
-            while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
-
-            var div = troopNode.Descendants("div");
-            Vill.Troops.Settlers = (int)Parser.RemoveNonNumeric(div.FirstOrDefault(x => x.HasClass("tit")).Descendants("span").FirstOrDefault().InnerText);
-
-            string innertext = "";
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    innertext = troopNode.ChildNodes.First(x => x.Name == "a").InnerText;
-                    break;
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    // no expansion slot
-                    if (div.FirstOrDefault(x => x.HasClass("noExpansionSlot")) != null)
-                    {
-                        if (Vill.Troops.Settlers >= 3)
-                        {
-                            if (acc.NewVillages.AutoSettleNewVillages)
-                            {
-                                acc.Tasks.Add(new SendSettlers()
-                                {
-                                    ExecuteAt = DateTime.Now.AddHours(-3),
-                                    Vill = this.Vill,
-                                    // For high speed servers, you want to train settlers asap
-                                    Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
-                                }, true);
-                            }
-
-                            acc.Logger.Warning("Have enoung settlers");
-                        }
-                        else
-                        {
-                            acc.Logger.Warning("Don't have enough expansion slot or settlers are training.");
-                        }
-                        return TaskRes.Executed;
-                    }
-
-                    innertext = div.FirstOrDefault(x => x.HasClass("cta")).Descendants("a").FirstOrDefault().InnerText;
-                    break;
-            }
-            var maxNum = Parser.RemoveNonNumeric(innertext);
-            Vill.Troops.Settlers = (int)TroopsParser.ParseAvailable(troopNode);
-
-            var costNode = troopNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
-            var cost = ResourceParser.GetResourceCost(costNode);
-
-            if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
-            {
-                ResourcesHelper.NotEnoughRes(acc, Vill, cost, this);
-                return TaskRes.Executed;
-            }
-
-            await DriverHelper.WriteByName(acc, "t10", maxNum);
-            await Task.Delay(AccountHelper.Delay(acc));
-
-            // Click Train button
-            await DriverHelper.ClickById(acc, "s1");
-            Vill.Troops.Settlers += (int)maxNum;
-
-            if (Vill.Troops.Settlers < 3)
-            {
-                // random train next settlers after 30 - 60 mins
-                var ran = new Random();
-                this.NextExecute = DateTime.Now.AddMinutes(ran.Next(30, 60));
-            }
-            else
-            {
-                if (acc.NewVillages.AutoSettleNewVillages)
                 {
-                    SendSettlersTask(acc);
+                    acc.Logger.Information("Checking building ...", this);
+                    var result = await BuildingRequired(acc);
+                    if (StopFlag) return TaskRes.Executed;
+                    if (!result) continue;
+                }
+
+                {
+                    acc.Logger.Information("Enter building ...", this);
+                    var result = await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Train);
+                    if (StopFlag) return TaskRes.Executed;
+                    if (!result) continue;
+                }
+
+                {
+                    acc.Logger.Information("Checking settlers condition ...", this);
+                    var result = EnoughSettlers(acc);
+                    if (StopFlag) return TaskRes.Executed;
+                    if (!result) continue;
+                }
+                {
+                    acc.Logger.Information("Checking settler current number ...", this);
+                    var result = UpdateSettlersAmount(acc);
+                    if (StopFlag) return TaskRes.Executed;
+                    if (!result) continue;
+                }
+
+                {
+                    acc.Logger.Information("Checking resource ...", this);
+                    var result = await IsEnoughRes(acc);
+                    if (StopFlag) return TaskRes.Executed;
+                    if (!result) continue;
+                }
+
+                {
+                    acc.Logger.Information("Enter amount ... ", this);
+                    await DriverHelper.WriteByName(acc, "t10", 1);
+                    acc.Logger.Information("Click train button ... ", this);
+                    await Task.Delay(900);
+                    await DriverHelper.ClickById(acc, "s1");
                 }
             }
-            return TaskRes.Executed;
+            while (true);
         }
 
         private void SendSettlersTask(Account acc)
         {
+            acc.Wb.UpdateHtml();
             var training = TroopsHelper.TrainingDuration(acc.Wb.Html);
             if (training < DateTime.Now) training = DateTime.Now;
             training = training.AddSeconds(5);
@@ -116,6 +82,166 @@ namespace TbsCore.Tasks.LowLevel
                 // For high speed servers, you want to train settlers asap
                 Priority = 1000 < acc.AccInfo.ServerSpeed ? TaskPriority.High : TaskPriority.Medium,
             }, true);
+        }
+
+        private async Task<bool> BuildingRequired(Account acc)
+        {
+            var building = Vill.Build.Buildings.FirstOrDefault(x =>
+                x.Type == BuildingEnum.Residence ||
+                x.Type == BuildingEnum.Palace ||
+                x.Type == BuildingEnum.CommandCenter
+            );
+            if (building == null)
+            {
+                acc.Logger.Information($"Cannot found residence/palace or command center in {Vill.Name}", this);
+                acc.Logger.Information($"Update dorf2 to confirm", this);
+                {
+                    var resultSwitch = await NavigationHelper.SwitchVillage(acc, Vill);
+                    if (!resultSwitch)
+                    {
+                        Retry(acc, "Cannot switch village");
+                        return false;
+                    }
+                }
+                {
+                    var resultSwitch = await NavigationHelper.ToDorf2(acc);
+                    if (!resultSwitch)
+                    {
+                        Retry(acc, "Cannot enter dorf2");
+                        return false;
+                    }
+                }
+
+                building = Vill.Build.Buildings.FirstOrDefault(x =>
+                    x.Type == BuildingEnum.Residence ||
+                    x.Type == BuildingEnum.Palace ||
+                    x.Type == BuildingEnum.CommandCenter
+                );
+
+                if (building == null)
+                {
+                    acc.Logger.Information($"Confirm there isn't residence/palace or command center in {Vill.Name}");
+                    StopFlag = true;
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private bool EnoughSettlers(Account acc)
+        {
+            acc.Wb.UpdateHtml();
+            var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass($"u{(int)settlerId}"));
+
+            if (troopNode == null)
+            {
+                acc.Logger.Information("No new settler can be trained, probably because 3 settlers are already (being) trained", this);
+                SendSettlersTask(acc);
+                StopFlag = true;
+                return false;
+            }
+            return true;
+        }
+
+        private bool UpdateSettlersAmount(Account acc)
+        {
+            acc.Wb.UpdateHtml();
+            var troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
+            if (troopBox == null)
+            {
+                Retry(acc, "Cannot find settler box");
+                return false;
+            }
+            var divTit = troopBox.Descendants("div").FirstOrDefault(x => x.HasClass("tit"));
+            if (divTit == null)
+            {
+                Retry(acc, "Cannot find Settler title");
+                return false;
+            }
+            var spanPresent = divTit.Descendants("span").FirstOrDefault();
+            if (spanPresent == null)
+            {
+                Retry(acc, "Cannot find Settler present number");
+                return false;
+            }
+            Vill.Troops.Settlers = (int)Parser.RemoveNonNumeric(spanPresent.InnerText);
+            acc.Logger.Information($"Update Settler present number: {Vill.Troops.Settlers}");
+
+            acc.Wb.UpdateHtml();
+            var training = TroopsParser.GetTroopsCurrentlyTraining(acc.Wb.Html);
+            var countTraning = 0;
+            foreach (var item in training)
+            {
+                if (item.Troop == settlerId) countTraning += item.TrainNumber;
+            }
+            acc.Logger.Information($"Update Settler training number: {countTraning}");
+
+            if (Vill.Troops.Settlers + countTraning >= 3)
+            {
+                acc.Logger.Information($"Have enough settler.");
+                StopFlag = true;
+                if (acc.NewVillages.AutoSettleNewVillages)
+                {
+                    SendSettlersTask(acc);
+                }
+                return false;
+            }
+            return true;
+        }
+
+        private async Task<bool> IsEnoughRes(Account acc)
+        {
+            acc.Wb.UpdateHtml();
+            var troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
+            if (troopBox == null)
+            {
+                Retry(acc, "Cannot find settler box");
+                return false;
+            }
+            var resWrapper = troopBox.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
+            if (resWrapper == null)
+            {
+                Retry(acc, "Cannot find resource list");
+                return false;
+            }
+            var cost = ResourceParser.GetResourceCost(resWrapper);
+
+            acc.Logger.Information($"Need {cost}", this);
+
+            if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
+            {
+                if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
+                {
+                    acc.Logger.Warning($"Storage is too low. Added storage upgrade.", this);
+                    StopFlag = true;
+                    return false;
+                }
+
+                var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
+                acc.Logger.Information("Not enough resources to train.", this);
+                if (Vill.Settings.UseHeroRes && acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
+                {
+                    var heroRes = HeroHelper.GetHeroResources(acc);
+
+                    if (ResourcesHelper.IsEnoughRes(heroRes, stillNeededRes))
+                    {
+                        // If we have enough hero res for our task, execute the task
+                        // right after hero equip finishes
+                        acc.Logger.Information("Bot will use resource from hero inventory", this);
+
+                        var heroEquipTask = ResourcesHelper.UseHeroResources(acc, Vill, ref stillNeededRes, heroRes);
+                        await heroEquipTask.Execute(acc);
+                        return false;
+                    }
+                }
+
+                acc.Logger.Information($"Bot will try finish the task later", this);
+                DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
+                NextExecute = TimeHelper.RanDelay(acc, enoughRes);
+                StopFlag = true;
+                return false;
+            }
+            return true;
         }
     }
 }
