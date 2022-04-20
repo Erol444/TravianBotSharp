@@ -23,7 +23,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 {
                     var result = await Update(acc);
-                    if (result) return TaskRes.Executed;
+                    if (!result) return TaskRes.Executed;
                 }
 
                 {
@@ -35,7 +35,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 {
                     var result = await Update(acc);
-                    if (result) return TaskRes.Executed;
+                    if (!result) return TaskRes.Executed;
                 }
 
                 {
@@ -47,7 +47,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 {
                     var result = await Update(acc);
-                    if (result) return TaskRes.Executed;
+                    if (!result) return TaskRes.Executed;
                 }
 
                 {
@@ -59,7 +59,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 {
                     var result = await Update(acc);
-                    if (result) return TaskRes.Executed;
+                    if (!result) return TaskRes.Executed;
                 }
 
                 {
@@ -71,7 +71,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 {
                     var result = await Update(acc);
-                    if (result) return TaskRes.Executed;
+                    if (!result) return TaskRes.Executed;
                 }
 
                 {
@@ -83,7 +83,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 {
                     var result = await Update(acc);
-                    if (result) return TaskRes.Executed;
+                    if (!result) return TaskRes.Executed;
                 }
 
                 {
@@ -124,8 +124,8 @@ namespace TbsCore.Tasks.LowLevel
             );
             if (building == null)
             {
-                acc.Logger.Information($"Cannot found residence/palace or command center in {Vill.Name}", this);
-                acc.Logger.Information($"Update dorf2 to confirm", this);
+                acc.Logger.Information($"Cannot found residence/palace or command center in {Vill.Name}");
+                acc.Logger.Information($"Update dorf2 to confirm");
                 {
                     var resultSwitch = await NavigationHelper.SwitchVillage(acc, Vill);
                     if (!resultSwitch)
@@ -161,7 +161,7 @@ namespace TbsCore.Tasks.LowLevel
 
         private async Task<bool> EnterBuilding(Account acc)
         {
-            await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Train);
+            return await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Train);
         }
 
         private bool EnoughSettlers(Account acc)
@@ -170,7 +170,7 @@ namespace TbsCore.Tasks.LowLevel
 
             if (troopNode == null)
             {
-                acc.Logger.Information("No new settler can be trained, probably because 3 settlers are already (being) trained", this);
+                acc.Logger.Information("No new settler can be trained, probably because 3 settlers are already (being) trained");
                 SendSettlersTask(acc);
                 StopFlag = true;
                 return false;
@@ -239,19 +239,19 @@ namespace TbsCore.Tasks.LowLevel
             }
             var cost = ResourceParser.GetResourceCost(resWrapper);
 
-            acc.Logger.Information($"Need {cost}", this);
+            acc.Logger.Information($"Need {cost}");
 
             if (!ResourcesHelper.IsEnoughRes(Vill, cost.ToArray()))
             {
                 if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
                 {
-                    acc.Logger.Warning($"Storage is too low. Added storage upgrade.", this);
+                    acc.Logger.Warning($"Storage is too low. Added storage upgrade.");
                     StopFlag = true;
                     return false;
                 }
 
                 var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
-                acc.Logger.Information("Not enough resources to train.", this);
+                acc.Logger.Information("Not enough resources to train.");
                 if (Vill.Settings.UseHeroRes && acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
                 {
                     var heroRes = HeroHelper.GetHeroResources(acc);
@@ -260,7 +260,7 @@ namespace TbsCore.Tasks.LowLevel
                     {
                         // If we have enough hero res for our task, execute the task
                         // right after hero equip finishes
-                        acc.Logger.Information("Bot will use resource from hero inventory", this);
+                        acc.Logger.Information("Bot will use resource from hero inventory");
 
                         var heroEquipTask = ResourcesHelper.UseHeroResources(acc, Vill, ref stillNeededRes, heroRes);
                         await heroEquipTask.Execute(acc);
@@ -268,7 +268,7 @@ namespace TbsCore.Tasks.LowLevel
                     }
                 }
 
-                acc.Logger.Information($"Bot will try finish the task later", this);
+                acc.Logger.Information($"Bot will try finish the task later");
                 DateTime enoughRes = TimeHelper.EnoughResToUpgrade(Vill, stillNeededRes);
                 NextExecute = TimeHelper.RanDelay(acc, enoughRes);
                 StopFlag = true;
