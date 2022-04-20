@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 
@@ -65,6 +66,16 @@ namespace TbsCore.Tasks
             {
                 Interlocked.Exchange(ref stopFlag, Convert.ToInt64(value));
             }
+        }
+
+        protected async Task<bool> Update(Account acc)
+        {
+            if (await DriverHelper.WaitPageLoaded(acc))
+            {
+                StopFlag = true;
+                return false;
+            }
+            return true;
         }
 
         protected void Retry(Account acc, string message)

@@ -134,53 +134,33 @@ namespace TbsCore.Models.AccModels
         /// <summary>
         /// Refresh page. Same as clicking F5
         /// </summary>
-        public async Task Refresh() => await Navigate(this.CurrentUrl);
+        public async Task<bool> Refresh() => await Navigate(CurrentUrl);
 
-        public async Task Navigate(string url)
+        public async Task<bool> Navigate(string url)
         {
-            if (string.IsNullOrEmpty(url)) return;
+            if (string.IsNullOrEmpty(url)) return await Refresh();
 
-            int repeatCnt = 0;
-            bool repeat;
-            do
+            try
             {
-                CheckChromeOpen();
-
-                try
-                {
-                    // Will throw exception after timeout
-                    Driver.Navigate().GoToUrl(url);
-                    repeat = false;
-                }
-                catch (Exception e)
-                {
-                    acc.Logger.Error(e, $"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened");
-                    repeat = true;
-                    if (5 <= ++repeatCnt && !string.IsNullOrEmpty(acc.Access.GetCurrentAccess().Proxy))
-                    {
-                        // Change access
-                        repeatCnt = 0;
-                        var changeAccess = new ChangeAccess();
-                        await changeAccess.Execute(acc);
-                        await Task.Delay(AccountHelper.Delay(acc) * 5);
-                    }
-                    await Task.Delay(AccountHelper.Delay(acc));
-                }
+                // Will throw exception after timeout
+                Driver.Navigate().GoToUrl(url);
             }
-            while (repeat);
+            catch (Exception e)
+            {
+                acc.Logger.Error(e, $"Error navigation to {url} - probably due to proxy/Internet or due to chrome still being opened");
+                return false;
+            }
 
-            await DriverHelper.WaitPageLoaded(acc);
+            return await DriverHelper.WaitPageLoaded(acc);
         }
 
         public void UpdateHtml()
         {
-            CheckChromeOpen();
             Html.LoadHtml(Driver.PageSource);
         }
 
         public void ExecuteScript(string script)
         {
-            CheckChromeOpen();
             Driver.ExecuteScript(script);
         }
 
@@ -203,35 +183,39 @@ namespace TbsCore.Models.AccModels
         /// </summary>
         public string GetBearerToken()
         {
-            CheckChromeOpen();
             IJavaScriptExecutor js = acc.Wb.Driver;
             return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
         }
 
         public IWebElement FindElementById(string element)
         {
-            CheckChromeOpen();
             return Driver.FindElementById(element);
         }
 
         public IWebElement FindElementByXPath(string xPath)
         {
-            CheckChromeOpen();
             return Driver.FindElementByXPath(xPath);
         }
 
         public ITargetLocator SwitchTo()
         {
-            CheckChromeOpen();
             return Driver.SwitchTo();
         }
 
         /// <summary>
         /// catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
         /// </summary>
-        public void CheckChromeOpen()
+        public bool CheckChromeOpen()
         {
-            _ = Driver.Title;
+            try
+            {
+                _ = Driver.Title;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public async Task<bool> CheckProxy(Account acc)

@@ -20,12 +20,32 @@ namespace TbsCore.Helpers
         /// In first case execute the task, in second remove it.
         /// </summary>
         /// <param name="acc"></param>
-        public static async Task PageLoaded(Account acc)
+        public static async Task<bool> PageLoaded(Account acc)
         {
+            {
+                var counter = 3;
+                while (!acc.Wb.CheckChromeOpen())
+                {
+                    acc.Logger.Warning("Chrome browser  missing");
+                    if (counter == 0)
+                    {
+                        acc.Logger.Warning("Chrome still missing after 3 times restart. Pause bot (suggest logout bot before use bot on this account)");
+                        acc.TaskTimer.Stop();
+                        return false;
+                    }
+                    counter--;
+                    acc.Logger.Information("Chrome browser is restarting ...");
+                    var task = new RestartChrome();
+                    await task.Execute(acc);
+                    acc.Logger.Information("Confirm browser opened ...");
+                    await Task.Delay(5000);
+                }
+            }
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
                 acc.Logger.Warning("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
                 acc.TaskTimer.Stop();
+                return false;
             }
             if (CheckCookies(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click();");
@@ -48,17 +68,20 @@ namespace TbsCore.Helpers
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
                 var task = new LoginTask();
-                await task.Execute(acc);
+                var result = await task.Execute(acc);
+                if (result == TaskRes.Retry) return false;
             }
 
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
             {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?ok=1");
                 await Task.Delay(AccountHelper.Delay(acc));
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?ok=1");
+                return true;
             }
 
             //TODO: limit this for performance reasons?
             PostLoadTasks(acc);
+            return true;
         }
 
         /// <summary>
