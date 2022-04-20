@@ -71,7 +71,7 @@ namespace TbsCore.Helpers
                 {
                     // If we have just updated the village, don't re-navigate
                     var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
-                    if (lastUpdate < TimeSpan.FromSeconds(10)) return;
+                    if (lastUpdate < TimeSpan.FromMinutes(1)) return;
 
                     // If we haven't updated it recently (last 10sec), refresh
                     await acc.Wb.Refresh();

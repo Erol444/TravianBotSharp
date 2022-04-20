@@ -22,6 +22,11 @@ namespace TbsCore.Tasks.LowLevel
                 if (StopFlag) return TaskRes.Executed;
 
                 {
+                    var result = await Update(acc);
+                    if (result) return TaskRes.Executed;
+                }
+
+                {
                     acc.Logger.Information("Checking building ...", this);
                     var result = await BuildingRequired(acc);
                     if (StopFlag) return TaskRes.Executed;
@@ -29,10 +34,20 @@ namespace TbsCore.Tasks.LowLevel
                 }
 
                 {
+                    var result = await Update(acc);
+                    if (result) return TaskRes.Executed;
+                }
+
+                {
                     acc.Logger.Information("Enter building ...", this);
-                    var result = await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Train);
+                    var result = await EnterBuilding(acc);
                     if (StopFlag) return TaskRes.Executed;
                     if (!result) continue;
+                }
+
+                {
+                    var result = await Update(acc);
+                    if (result) return TaskRes.Executed;
                 }
 
                 {
@@ -41,6 +56,12 @@ namespace TbsCore.Tasks.LowLevel
                     if (StopFlag) return TaskRes.Executed;
                     if (!result) continue;
                 }
+
+                {
+                    var result = await Update(acc);
+                    if (result) return TaskRes.Executed;
+                }
+
                 {
                     acc.Logger.Information("Checking settler current number ...", this);
                     var result = UpdateSettlersAmount(acc);
@@ -49,10 +70,20 @@ namespace TbsCore.Tasks.LowLevel
                 }
 
                 {
+                    var result = await Update(acc);
+                    if (result) return TaskRes.Executed;
+                }
+
+                {
                     acc.Logger.Information("Checking resource ...", this);
                     var result = await IsEnoughRes(acc);
                     if (StopFlag) return TaskRes.Executed;
                     if (!result) continue;
+                }
+
+                {
+                    var result = await Update(acc);
+                    if (result) return TaskRes.Executed;
                 }
 
                 {
@@ -128,9 +159,13 @@ namespace TbsCore.Tasks.LowLevel
             return true;
         }
 
+        private async Task<bool> EnterBuilding(Account acc)
+        {
+            await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Train);
+        }
+
         private bool EnoughSettlers(Account acc)
         {
-            acc.Wb.UpdateHtml();
             var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass($"u{(int)settlerId}"));
 
             if (troopNode == null)
@@ -145,7 +180,6 @@ namespace TbsCore.Tasks.LowLevel
 
         private bool UpdateSettlersAmount(Account acc)
         {
-            acc.Wb.UpdateHtml();
             var troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
             if (troopBox == null)
             {
@@ -191,7 +225,6 @@ namespace TbsCore.Tasks.LowLevel
 
         private async Task<bool> IsEnoughRes(Account acc)
         {
-            acc.Wb.UpdateHtml();
             var troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
             if (troopBox == null)
             {
