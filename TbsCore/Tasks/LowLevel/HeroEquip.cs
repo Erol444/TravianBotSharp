@@ -55,7 +55,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 // No amount specified, meaning we have already equipt the item
                 if (amount == 0) continue;
-                await Task.Delay(600);
+                await Task.Delay(900);
                 await DriverHelper.WriteById(acc, "amount", amount);
 
                 await DriverHelper.ClickByClassName(acc, "ok");
