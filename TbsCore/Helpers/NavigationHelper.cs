@@ -67,7 +67,7 @@ namespace TbsCore.Helpers
             do
             {
                 // If we are already at the correct building, don't re-enter it, just navigate to correct tab afterwards.
-                if (acc.Wb.CurrentUrl.Contains($"{index}"))
+                if (acc.Wb.CurrentUrl.Contains($"?id={index}&"))
                 {
                     // If we have just updated the village, don't re-navigate
                     var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;

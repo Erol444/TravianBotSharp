@@ -70,7 +70,7 @@ namespace TbsCore.Tasks
 
         protected async Task<bool> Update(Account acc)
         {
-            if (await DriverHelper.WaitPageLoaded(acc))
+            if (!await DriverHelper.WaitPageLoaded(acc))
             {
                 StopFlag = true;
                 return false;
