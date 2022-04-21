@@ -89,6 +89,7 @@ namespace TbsCore.Helpers
                 }
                 var elementBuilding = acc.Wb.Driver.FindElement(By.XPath(divBuilding.XPath));
                 elementBuilding.Click();
+                await DriverHelper.WaitPageChange(acc, $"?id={index}&");
             }
             else // dorf2
             {
@@ -112,8 +113,8 @@ namespace TbsCore.Helpers
                 var href = pathBuilding.GetAttributeValue("onclick", "");
                 var script = href.Replace("&amp;", "&");
                 acc.Wb.Driver.ExecuteScript(script);
+                await DriverHelper.WaitPageChange(acc, $"?id={index}");
             }
-            await DriverHelper.WaitPageChange(acc, $"?id={index}&");
             return true;
         }
 

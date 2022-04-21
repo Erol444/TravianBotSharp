@@ -501,7 +501,6 @@ namespace TbsCore.Tasks.LowLevel
         private async Task MoveIntoBuilding(Account acc)
         {
             await AccountHelper.DelayWait(acc);
-            acc.Logger.Information($"Move into building {_buildingTask.Building}");
             await NavigationHelper.EnterBuilding(acc, Vill, (int)_buildingTask.BuildingId, 0);
             var build = Vill.Build.Buildings.FirstOrDefault(x => x.Id == _buildingTask.BuildingId);
             if (build.Type == BuildingEnum.Site)
