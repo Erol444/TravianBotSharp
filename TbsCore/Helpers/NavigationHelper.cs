@@ -224,11 +224,14 @@ namespace TbsCore.Helpers
                     // Enter building (if not already there)
                     await ToBuildingId(acc, building.Id);
 
-                    if (tab != null) // Navigate to correct tab
+                    if (BuildingsData.HasMultipleTabs(building.Type))
                     {
-                        var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
-                        // Navigate to correct tab if not already on it
-                        if (currentTab != tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+                        if (tab != null) // Navigate to correct tab
+                        {
+                            var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
+                            // Navigate to correct tab if not already on it
+                            if (currentTab != tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+                        }
                     }
                     break;
 
