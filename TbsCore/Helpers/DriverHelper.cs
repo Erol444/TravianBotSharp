@@ -216,9 +216,11 @@ namespace TbsCore.Helpers
             try
             {
                 wait.Until(driver => driver.Url.Contains(part));
+            }
+            catch
+            {
                 acc.Logger.Warning($"Chrome failed when change to page have url part is {part}");
             }
-            catch { }
             return await WaitPageLoaded(acc, delay);
         }
     }
