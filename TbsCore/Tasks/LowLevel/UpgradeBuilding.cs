@@ -429,12 +429,11 @@ namespace TbsCore.Tasks.LowLevel
             {
                 if (Vill.Build.Tasks.Count == 0)
                 {
-                    acc.Logger.Information("Building queue empty.");
                     StopFlag = true;
                     return nextTask;
                 }
 
-                acc.Logger.Information("Cannot choose next building task. Will check currently building");
+                acc.Logger.Information("Cannot choose next building task.");
                 acc.Logger.Information("Checking current village ...");
                 await NavigationHelper.SwitchVillage(acc, Vill);
                 acc.Logger.Information("Update currently building ... ");

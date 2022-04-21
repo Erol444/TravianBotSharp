@@ -19,7 +19,12 @@ namespace TbsCore.Helpers
     {
         public static BuildingTask NextBuildingTask(Account acc, Village vill)
         {
-            if (vill.Build.Tasks.Count == 0) return null;
+            if (vill.Build.Tasks.Count == 0)
+            {
+                acc.Logger.Information("Building queue empty.");
+                return null;
+            }
+
             RemoveFinishedCB(vill);
 
             var totalBuild = vill.Build.CurrentlyBuilding.Count;
@@ -28,7 +33,11 @@ namespace TbsCore.Helpers
                 var maxBuild = 1;
                 if (acc.AccInfo.PlusAccount) maxBuild++;
                 if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuild++;
-                if (totalBuild == maxBuild) return null;
+                if (totalBuild == maxBuild)
+                {
+                    acc.Logger.Information("Amount of currently building is equal with maximum building can build in same time");
+                    return null;
+                }
 
                 if (maxBuild - totalBuild == 1)
                 {
