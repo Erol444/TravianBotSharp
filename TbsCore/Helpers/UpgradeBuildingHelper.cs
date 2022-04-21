@@ -49,12 +49,17 @@ namespace TbsCore.Helpers
 
                         if (numRes > numInfra)
                         {
-                            if (vill.Res.FreeCrop <= 5) return null;
+                            if (vill.Res.FreeCrop <= 5)
+                            {
+                                acc.Logger.Information("Don't have enough slot building because of freecrop ");
+                                return null;
+                            }
                             return GetFirstInfrastructureTask(acc, vill);
                         }
                         else if (numInfra > numRes)
                         {
                             // no need check free crop, there is magic make sure this always choose crop
+                            // just kidding, because of how we check free crop later, first res task is always crop
                             return GetFirstResTask(acc, vill);
                         }
                         // if same means 1 R and 1 I already, 1 ANY will be choose below
