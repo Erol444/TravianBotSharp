@@ -202,23 +202,26 @@ namespace TbsCore.Helpers
         public abstract class Query
         { public string val; }
 
-        public static async Task WaitPageLoaded(Account acc, double delay = 1)
+        public static async Task<bool> WaitPageLoaded(Account acc, double delay = 1)
         {
             var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(delay));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
             acc.Wb.UpdateHtml();
-            await TaskExecutor.PageLoaded(acc);
+            return await TaskExecutor.PageLoaded(acc);
         }
 
-        public static async Task WaitPageChange(Account acc, string part, double delay = 1)
+        public static async Task<bool> WaitPageChange(Account acc, string part, double delay = 1)
         {
             var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(delay));
             try
             {
                 wait.Until(driver => driver.Url.Contains(part));
             }
-            catch { }
-            await WaitPageLoaded(acc, delay);
+            catch
+            {
+                acc.Logger.Warning($"Chrome failed when change to page have url part is {part}");
+            }
+            return await WaitPageLoaded(acc, delay);
         }
     }
 }

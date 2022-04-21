@@ -36,6 +36,7 @@ namespace TbsCore.Tasks.LowLevel
                 // Wrong password/nickname
                 acc.Logger.Warning("Password is incorrect!");
                 acc.TaskTimer.Stop();
+                return TaskRes.Retry;
             }
             else
             {
@@ -44,9 +45,8 @@ namespace TbsCore.Tasks.LowLevel
                 var auction = acc.Wb.Html.DocumentNode.SelectSingleNode("//a[contains(@class,'auction')]");
 
                 acc.Access.GetCurrentAccess().IsSittering = (auction != null && auction.HasClass("disable"));
+                return TaskRes.Executed;
             }
-
-            return TaskRes.Executed;
         }
     }
 }

@@ -62,48 +62,60 @@ namespace TbsCore.Helpers
         /// <summary>
         /// Navigates to a specific building id
         /// </summary>
-        private static async Task ToBuildingId(Account acc, int index)
+        private static async Task<bool> ToBuildingId(Account acc, int index)
         {
-            do
+            if (!await DriverHelper.WaitPageLoaded(acc)) return false;
+            // If we are already at the correct building, don't re-enter it, just navigate to correct tab afterwards.
+            if (acc.Wb.CurrentUrl.Contains($"?id={index}&"))
             {
-                // If we are already at the correct building, don't re-enter it, just navigate to correct tab afterwards.
-                if (acc.Wb.CurrentUrl.Contains($"build.php?id={index}"))
-                {
-                    // If we have just updated the village, don't re-navigate
-                    var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
-                    if (lastUpdate < TimeSpan.FromSeconds(10)) return;
+                // If we have just updated the village, don't re-navigate
+                var lastUpdate = DateTime.Now - VillageHelper.ActiveVill(acc).Res.Stored.LastRefresh;
+                if (lastUpdate < TimeSpan.FromMinutes(1)) return true;
 
-                    // If we haven't updated it recently (last 10sec), refresh
-                    await acc.Wb.Refresh();
-                    return;
-                }
-
-                if (index < 19) // dorf1
-                {
-                    if (!acc.Wb.CurrentUrl.Contains("dorf1.php") || acc.Wb.CurrentUrl.Contains("id="))
-                        await MainNavigate(acc, MainNavigationButton.Resources);
-                    await DriverHelper.ClickByClassName(acc, $"buildingSlot{index}");
-                }
-                else // dorf2
-                {
-                    acc.Wb.UpdateHtml();
-                    if (!acc.Wb.CurrentUrl.Contains("dorf2.php") || acc.Wb.CurrentUrl.Contains("id="))
-                        await MainNavigate(acc, MainNavigationButton.Buildings);
-
-                    //*[@id="villageContent"]/div[1] => data-aid = 19
-                    var location = index - 18; // - 19 + 1
-                    var divBuilding = acc.Wb.Html.DocumentNode.SelectSingleNode($"//*[@id='villageContent']/div[{location}]");
-                    if (divBuilding == null) continue;
-                    var pathBuilding = divBuilding.Descendants("a").FirstOrDefault();
-                    if (pathBuilding == null) continue;
-                    var href = pathBuilding.GetAttributeValue("href", "");
-                    var url = $"{acc.AccInfo.ServerUrl}{href.Replace("&amp;", "&")}";
-                    await acc.Wb.Navigate(url);
-                }
-                await DriverHelper.WaitPageChange(acc, $"id={index}");
-                break;
+                // If we haven't updated it recently (last 1 min), refresh
+                await acc.Wb.Refresh();
+                return true;
             }
-            while (true);
+
+            if (index < 19) // dorf1
+            {
+                if (!acc.Wb.CurrentUrl.Contains("dorf1.php"))
+                    await MainNavigate(acc, MainNavigationButton.Resources);
+                var divBuilding = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass($"buildingSlot{index}"));
+                if (divBuilding == null)
+                {
+                    acc.Logger.Warning($"Cannot find resfield has id {index}");
+                    return false;
+                }
+                var elementBuilding = acc.Wb.Driver.FindElement(By.XPath(divBuilding.XPath));
+                elementBuilding.Click();
+                await DriverHelper.WaitPageChange(acc, $"?id={index}&");
+            }
+            else // dorf2
+            {
+                if (!acc.Wb.CurrentUrl.Contains("dorf2.php"))
+                    await MainNavigate(acc, MainNavigationButton.Buildings);
+
+                //*[@id="villageContent"]/div[1] => data-aid = 19
+                var location = index - 18; // - 19 + 1
+                var divBuilding = acc.Wb.Html.DocumentNode.SelectSingleNode($"//*[@id='villageContent']/div[{location}]");
+                if (divBuilding == null)
+                {
+                    acc.Logger.Warning($"Cannot find building has id {index}");
+                    return false;
+                }
+                var pathBuilding = divBuilding.Descendants("path").FirstOrDefault();
+                if (pathBuilding == null)
+                {
+                    acc.Logger.Warning($"Cannot find place to click on building has id {index}");
+                    return false;
+                }
+                var href = pathBuilding.GetAttributeValue("onclick", "");
+                var script = href.Replace("&amp;", "&");
+                acc.Wb.Driver.ExecuteScript(script);
+                await DriverHelper.WaitPageChange(acc, $"?id={index}");
+            }
+            return true;
         }
 
         internal static async Task<bool> ToConstructionTab(Account acc, BuildingEnum building)
@@ -212,11 +224,14 @@ namespace TbsCore.Helpers
                     // Enter building (if not already there)
                     await ToBuildingId(acc, building.Id);
 
-                    if (tab != null) // Navigate to correct tab
+                    if (BuildingsData.HasMultipleTabs(building.Type))
                     {
-                        var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
-                        // Navigate to correct tab if not already on it
-                        if (currentTab != tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+                        if (tab != null) // Navigate to correct tab
+                        {
+                            var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
+                            // Navigate to correct tab if not already on it
+                            if (currentTab != tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+                        }
                     }
                     break;
 
@@ -393,6 +408,18 @@ namespace TbsCore.Helpers
         //    Normal = 1,
         //    Faster,
         //}
+
+        public static async Task<bool> SwitchVillage(Account acc, Village vill)
+        {
+            await DriverHelper.WaitPageLoaded(acc);
+            var active = acc.Villages.FirstOrDefault(x => x.Active);
+            if (active != null && active.Id != vill.Id)
+            {
+                acc.Logger.Information($"Now in village {active.Name}. Move to correct village {vill.Name}");
+                return await VillageHelper.SwitchVillage(acc, vill.Id);
+            }
+            return true;
+        }
 
         public enum MainNavigationButton
         {

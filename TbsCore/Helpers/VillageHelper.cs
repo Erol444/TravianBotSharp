@@ -86,58 +86,38 @@ namespace TbsCore.Helpers
             return acc.Villages.FirstOrDefault(x => x.Id == id);
         }
 
-        public static async Task SwitchVillage(Account acc, int id)
+        public static async Task<bool> SwitchVillage(Account acc, int id)
         {
-            try
+            acc.Wb.UpdateHtml();
+            HtmlAgilityPack.HtmlNode node = null;
+            switch (acc.AccInfo.ServerVersion)
             {
-                acc.Wb.UpdateHtml();
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case ServerVersionEnum.T4_5:
-                        {
-                            var node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
-                            if (node is null) return;
-
-                            var element = acc.Wb.Driver.FindElement(By.XPath($"//div[@data-did='{id}']/a"));
-                            element.Click();
-                            //dorf1.php?newdid=25270&
-                            await DriverHelper.WaitPageChange(acc, $"{id}", 0.2);
-                            break;
-                        }
-                    case ServerVersionEnum.TTwars:
-                        {
-                            Uri uri = new Uri(acc.Wb.CurrentUrl);
-
-                            // Parse village list again and find correct href
-                            var vills = RightBarParser.GetVillages(acc.Wb.Html, acc.AccInfo.ServerVersion);
-                            var href = vills.FirstOrDefault(x => x.Id == id)?.Href;
-                            if (string.IsNullOrEmpty(href)) // Login screen, server messages etc.
-                            {
-                                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
-                                return;
-                            }
-
-                            var val = $"?newdid={id}";
-                            // The * after href is for query selector; it will select all elements that contain {val}
-                            await DriverHelper.ClickByAttributeValue(acc, "href*", val);
-                            await DriverHelper.WaitPageLoaded(acc);
-                        }
+                case ServerVersionEnum.T4_5:
+                    {
+                        node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
                         break;
-                }
+                    }
+                case ServerVersionEnum.TTwars:
+                    {
+                        var nodeBoxVillage = acc.Wb.Html.DocumentNode.SelectSingleNode("//*[@id='sidebarBoxVillagelist']");
+                        if (nodeBoxVillage == null) return false;
 
-                return;
+                        node = nodeBoxVillage.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("href", "").Contains($"{id}"));
+                        break;
+                    }
             }
-            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
-            {
-                acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
 
-                acc.Wb.Close();
-                await acc.Wb.Init(acc);
-            }
-            catch // when waitpagechange timeout
+            if (node == null)
             {
-                await DriverHelper.WaitPageLoaded(acc);
+                acc.Logger.Information("Cannot find village in village list");
+                return false;
             }
+
+            var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+            element.Click();
+            //dorf1.php?newdid=25270&
+            await DriverHelper.WaitPageChange(acc, $"{id}", 0.2);
+            return true;
         }
 
         /// <summary>

@@ -19,7 +19,12 @@ namespace TbsCore.Helpers
     {
         public static BuildingTask NextBuildingTask(Account acc, Village vill)
         {
-            if (vill.Build.Tasks.Count == 0) return null;
+            if (vill.Build.Tasks.Count == 0)
+            {
+                acc.Logger.Information("Building queue empty.");
+                return null;
+            }
+
             RemoveFinishedCB(vill);
 
             var totalBuild = vill.Build.CurrentlyBuilding.Count;
@@ -28,7 +33,11 @@ namespace TbsCore.Helpers
                 var maxBuild = 1;
                 if (acc.AccInfo.PlusAccount) maxBuild++;
                 if (acc.AccInfo.Tribe == TribeEnum.Romans) maxBuild++;
-                if (totalBuild == maxBuild) return null;
+                if (totalBuild == maxBuild)
+                {
+                    acc.Logger.Information("Amount of currently building is equal with maximum building can build in same time");
+                    return null;
+                }
 
                 if (maxBuild - totalBuild == 1)
                 {
@@ -40,12 +49,17 @@ namespace TbsCore.Helpers
 
                         if (numRes > numInfra)
                         {
-                            if (vill.Res.FreeCrop <= 5) return null;
+                            if (vill.Res.FreeCrop <= 5)
+                            {
+                                acc.Logger.Information("Don't have enough slot building because of freecrop ");
+                                return null;
+                            }
                             return GetFirstInfrastructureTask(acc, vill);
                         }
                         else if (numInfra > numRes)
                         {
                             // no need check free crop, there is magic make sure this always choose crop
+                            // just kidding, because of how we check free crop later, first res task is always crop
                             return GetFirstResTask(acc, vill);
                         }
                         // if same means 1 R and 1 I already, 1 ANY will be choose below
