@@ -359,6 +359,15 @@ namespace TbsCore.Tasks.LowLevel
             var elementIframe = acc.Wb.Driver.FindElementById("videoFeature");
             elementIframe.Click();
 
+            // if bot click failed and open new tab ( well done Travian devs, well done)
+            await Task.Delay(rand.Next(5000, 9000));
+
+            while (!acc.Wb.Driver.Url.Contains(acc.AccInfo.ServerUrl))
+            {
+                acc.Wb.Driver.Close();
+                await Task.Delay(rand.Next(1000, 2000));
+            }
+
             try
             {
                 await DriverHelper.WaitPageChange(acc, "dorf", 3);
