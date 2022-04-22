@@ -342,7 +342,6 @@ namespace TbsCore.Tasks.LowLevel
 
             // click to play video
             acc.Logger.Information("Waiting ads video load before clicking play button");
-            await Task.Delay(rand.Next(5000, 9000));
 
             {
                 var result = await Update(acc);
@@ -355,6 +354,8 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             {
+                await Task.Delay(rand.Next(20000, 30000));
+
                 var elementIframe = acc.Wb.Driver.FindElement(By.XPath(nodeIframe.XPath));
                 Actions act = new Actions(acc.Wb.Driver);
                 act.MoveToElement(elementIframe).Click().Build().Perform();
