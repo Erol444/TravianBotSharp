@@ -358,7 +358,22 @@ namespace TbsCore.Tasks.LowLevel
 
                 var elementIframe = acc.Wb.Driver.FindElement(By.XPath(nodeIframe.XPath));
                 Actions act = new Actions(acc.Wb.Driver);
-                act.MoveToElement(elementIframe).Click().Build().Perform();
+                var action = act.MoveToElement(elementIframe).Click().Build();
+                action.Perform();
+
+                await Task.Delay(rand.Next(10000, 15000));
+                var handles = acc.Wb.Driver.WindowHandles;
+
+                while (handles.Count > 1)
+                {
+                    acc.Logger.Information("Detect auto play ads, bot maybe pause ads. Great work Travian Devs");
+                    var current = acc.Wb.Driver.CurrentWindowHandle;
+                    var other = acc.Wb.Driver.WindowHandles.FirstOrDefault(x => !x.Equals(current));
+                    acc.Wb.Driver.SwitchTo().Window(other);
+                    acc.Wb.Driver.Close();
+                    acc.Wb.Driver.SwitchTo().Window(current);
+                    action.Perform();
+                }
             }
 
             acc.Logger.Information("Clicked play button, if ads doesn't play please click to help bot");
