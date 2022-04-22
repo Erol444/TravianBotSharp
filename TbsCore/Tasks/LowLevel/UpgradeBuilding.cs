@@ -343,8 +343,6 @@ namespace TbsCore.Tasks.LowLevel
             // click to play video
             acc.Logger.Information("Waiting ads video load before clicking play button");
             await Task.Delay(rand.Next(5000, 9000));
-            acc.Logger.Information("Clicked play button, if ads doesn't play please click to help bot");
-            acc.Logger.Information("Cooldown 3 mins. If building cannot upgrade will use normal button");
 
             {
                 var result = await Update(acc);
@@ -353,20 +351,17 @@ namespace TbsCore.Tasks.LowLevel
             var nodeIframe = acc.Wb.Html.GetElementbyId("videoFeature");
             if (nodeIframe == null)
             {
-                await acc.Wb.Refresh();
                 return false;
             }
-            var elementIframe = acc.Wb.Driver.FindElementById("videoFeature");
-            elementIframe.Click();
 
-            // if bot click failed and open new tab ( well done Travian devs, well done)
-            await Task.Delay(rand.Next(5000, 9000));
-
-            while (!acc.Wb.Driver.Url.Contains(acc.AccInfo.ServerUrl))
             {
-                acc.Wb.Driver.Close();
-                await Task.Delay(rand.Next(1000, 2000));
+                var elementIframe = acc.Wb.Driver.FindElement(By.XPath(nodeIframe.XPath));
+                Actions act = new Actions(acc.Wb.Driver);
+                act.MoveToElement(elementIframe).Click().Build().Perform();
             }
+
+            acc.Logger.Information("Clicked play button, if ads doesn't play please click to help bot");
+            acc.Logger.Information("Cooldown 3 mins. If building cannot upgrade will use normal button");
 
             try
             {
