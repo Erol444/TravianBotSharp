@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -248,9 +249,8 @@ namespace TbsCore.Tasks.LowLevel
             var watchAd = false;
             if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
             {
-                // watchAd = await TryFastUpgrade(acc);
                 acc.Logger.Information("Try using watch ads upgrade button");
-                acc.Logger.Information("Watch ads function is disable because of bugs from Chrome. We cannot do anything about this");
+                watchAd = await TryFastUpgrade(acc);
             }
 
             if (!watchAd)
@@ -317,47 +317,52 @@ namespace TbsCore.Tasks.LowLevel
         /// <returns>Whether bot watched the ad</returns>
         private async Task<bool> TryFastUpgrade(Account acc)
         {
-            acc.Wb.UpdateHtml();
             var nodeFastUpgrade = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("videoFeatureButton") && x.HasClass("green"));
             if (nodeFastUpgrade == null) return false;
-            var elementFastUpgrade = acc.Wb.Driver.FindElement(By.XPath(nodeFastUpgrade.XPath));
-            if (elementFastUpgrade == null) return false;
-            elementFastUpgrade.Click();
-
-            await Task.Delay(rand.Next(1000, 2000));
-
+            var href = nodeFastUpgrade.GetAttributeValue("onclick", "");
+            var script = href.Replace("&amp;", "&");
+            acc.Wb.Driver.ExecuteScript(script);
+            await Task.Delay(rand.Next(900, 1300));
             // Confirm
-            acc.Wb.UpdateHtml();
-            var node = acc.Wb.Html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']");
-            if (node != null)
+
             {
-                var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
-                if (element == null)
-                {
-                    await acc.Wb.Refresh();
-                    return false;
-                }
-                element.Click();
-                await DriverHelper.ExecuteScript(acc, "jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
+                var result = await Update(acc);
+                if (!result) return false;
             }
 
-            await Task.Delay(rand.Next(10000, 18000));
+            var nodeNotShowAgainConfirm = acc.Wb.Html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']");
+            if (nodeNotShowAgainConfirm != null)
+            {
+                acc.Logger.Information("Detected Watch AD diaglog. Choose Don't show again. ...");
+                var element = acc.Wb.Driver.FindElement(By.XPath(nodeNotShowAgainConfirm.XPath));
+                Actions act = new Actions(acc.Wb.Driver);
+                act.MoveToElement(element).Click().Build().Perform();
+                acc.Wb.Driver.ExecuteScript("jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
+            }
 
             // click to play video
-            acc.Wb.UpdateHtml();
+            acc.Logger.Information("Waiting ads video load before clicking play button");
+
+            {
+                var result = await Update(acc);
+                if (!result) return false;
+            }
             var nodeIframe = acc.Wb.Html.GetElementbyId("videoFeature");
             if (nodeIframe == null)
             {
-                await acc.Wb.Refresh();
                 return false;
             }
-            var elementIframe = acc.Wb.Driver.FindElementById("videoFeature");
-            if (elementIframe == null)
+
             {
-                await acc.Wb.Refresh();
-                return false;
+                await Task.Delay(rand.Next(20000, 30000));
+
+                var elementIframe = acc.Wb.Driver.FindElement(By.XPath(nodeIframe.XPath));
+                Actions act = new Actions(acc.Wb.Driver);
+                act.MoveToElement(elementIframe).Click().Build().Perform();
             }
-            elementIframe.Click();
+
+            acc.Logger.Information("Clicked play button, if ads doesn't play please click to help bot");
+            acc.Logger.Information("Cooldown 3 mins. If building cannot upgrade will use normal button");
 
             try
             {
@@ -365,20 +370,18 @@ namespace TbsCore.Tasks.LowLevel
             }
             catch
             {
-                await acc.Wb.Refresh();
-                return false;
-            }
-
-            // Don't show again
-            await Task.Delay(rand.Next(1000, 2000));
-            acc.Wb.UpdateHtml();
-
-            if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
-            {
-                await DriverHelper.ClickById(acc, "dontShowThisAgain");
-                await Task.Delay(800);
-                await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
-                await acc.Wb.Refresh();
+                acc.Wb.UpdateHtml();
+                if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
+                {
+                    await DriverHelper.ClickById(acc, "dontShowThisAgain");
+                    await Task.Delay(800);
+                    await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
+                }
+                else
+                {
+                    await acc.Wb.Refresh();
+                    return false;
+                }
             }
 
             return true;
