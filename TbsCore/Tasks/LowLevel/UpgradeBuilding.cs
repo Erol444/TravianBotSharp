@@ -341,7 +341,15 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // click to play video
-            acc.Wb.UpdateHtml();
+            acc.Logger.Information("Waiting ads video load before clicking play button");
+            await Task.Delay(rand.Next(5000, 9000));
+            acc.Logger.Information("Clicked play button, if ads doesn't play please click to help bot");
+            acc.Logger.Information("Cooldown 3 mins. If building cannot upgrade will use normal button");
+
+            {
+                var result = await Update(acc);
+                if (!result) return false;
+            }
             var nodeIframe = acc.Wb.Html.GetElementbyId("videoFeature");
             if (nodeIframe == null)
             {
@@ -349,11 +357,6 @@ namespace TbsCore.Tasks.LowLevel
                 return false;
             }
             var elementIframe = acc.Wb.Driver.FindElementById("videoFeature");
-            if (elementIframe == null)
-            {
-                await acc.Wb.Refresh();
-                return false;
-            }
             elementIframe.Click();
 
             try
@@ -372,6 +375,7 @@ namespace TbsCore.Tasks.LowLevel
                 else
                 {
                     await acc.Wb.Refresh();
+                    return false;
                 }
             }
 
