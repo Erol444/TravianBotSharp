@@ -341,7 +341,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // click to play video
-            acc.Logger.Information("Waiting ads video load before clicking play button");
+            acc.Logger.Information("Waiting ads video play button show");
 
             {
                 var result = await Update(acc);
@@ -362,10 +362,12 @@ namespace TbsCore.Tasks.LowLevel
                 action.Perform();
 
                 await Task.Delay(rand.Next(10000, 15000));
-                var handles = acc.Wb.Driver.WindowHandles;
 
-                while (handles.Count > 1)
+                do
                 {
+                    var handles = acc.Wb.Driver.WindowHandles;
+                    if (handles.Count == 1) break;
+
                     acc.Logger.Information("Detect auto play ads, bot maybe pause ads. Great work Travian Devs");
                     var current = acc.Wb.Driver.CurrentWindowHandle;
                     var other = acc.Wb.Driver.WindowHandles.FirstOrDefault(x => !x.Equals(current));
@@ -374,28 +376,31 @@ namespace TbsCore.Tasks.LowLevel
                     acc.Wb.Driver.SwitchTo().Window(current);
                     action.Perform();
                 }
+                while (true);
             }
+
+            acc.Wb.Driver.SwitchTo().DefaultContent();
 
             acc.Logger.Information("Clicked play button, if ads doesn't play please click to help bot");
             acc.Logger.Information("Cooldown 3 mins. If building cannot upgrade will use normal button");
 
-            try
             {
-                await DriverHelper.WaitPageChange(acc, "dorf", 3);
-            }
-            catch
-            {
-                acc.Wb.UpdateHtml();
-                if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
+                var result = await DriverHelper.WaitPageChange(acc, "dorf", 3);
+                if (!result)
                 {
-                    await DriverHelper.ClickById(acc, "dontShowThisAgain");
-                    await Task.Delay(800);
-                    await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
-                }
-                else
-                {
-                    await acc.Wb.Refresh();
-                    return false;
+                    acc.Wb.UpdateHtml();
+                    if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
+                    {
+                        await DriverHelper.ClickById(acc, "dontShowThisAgain");
+                        await Task.Delay(800);
+                        await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
+                        return true;
+                    }
+                    else
+                    {
+                        await acc.Wb.Refresh();
+                        return false;
+                    }
                 }
             }
 
