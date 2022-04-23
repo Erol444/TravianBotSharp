@@ -24,7 +24,7 @@ namespace TbsCore.Tasks.LowLevel
                 await ClaimRewards(acc);
             }
 
-            acc.Tasks.Add(new HeroUpdateInfo() { ExecuteAt = DateTime.Now }, true);
+            acc.Tasks.Add(new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
 
             return TaskRes.Executed;
         }
