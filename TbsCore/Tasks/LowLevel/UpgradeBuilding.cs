@@ -584,7 +584,17 @@ namespace TbsCore.Tasks.LowLevel
             {
                 if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
                 {
-                    acc.Logger.Warning($"Storage is too low. Added storage upgrade.");
+                    var building = Vill.Build.CurrentlyBuilding.FirstOrDefault(x => x.Building == BuildingEnum.Warehouse || x.Building == BuildingEnum.Granary);
+                    if (building == null)
+                    {
+                        acc.Logger.Warning($"Storage is too low. Added storage upgrade.");
+                    }
+                    else
+                    {
+                        acc.Logger.Warning($"Storage is too low. Next building will be contructed after {building.Building} - level {building.Level} complete. ({NextExecute})");
+                        NextExecute = TimeHelper.RanDelay(acc, building.Duration);
+                        StopFlag = true;
+                    }
                     return false;
                 }
 

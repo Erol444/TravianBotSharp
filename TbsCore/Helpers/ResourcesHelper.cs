@@ -140,7 +140,7 @@ namespace TbsCore.Helpers
             var task = new BuildingTask()
             {
                 Building = building,
-                TaskType = Classificator.BuildingType.General
+                TaskType = BuildingType.General
             };
 
             var current = vill.Build.Buildings.FirstOrDefault(x =>
