@@ -341,7 +341,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             // click to play video
-            acc.Logger.Information("Waiting ads video load before clicking play button");
+            acc.Logger.Information("Waiting ads video play button show");
 
             {
                 var result = await Update(acc);
@@ -358,29 +358,49 @@ namespace TbsCore.Tasks.LowLevel
 
                 var elementIframe = acc.Wb.Driver.FindElement(By.XPath(nodeIframe.XPath));
                 Actions act = new Actions(acc.Wb.Driver);
-                act.MoveToElement(elementIframe).Click().Build().Perform();
+                var action = act.MoveToElement(elementIframe).Click().Build();
+                action.Perform();
+
+                await Task.Delay(rand.Next(10000, 15000));
+
+                do
+                {
+                    var handles = acc.Wb.Driver.WindowHandles;
+                    if (handles.Count == 1) break;
+
+                    acc.Logger.Information("Detect auto play ads, bot maybe pause ads. Great work Travian Devs");
+                    var current = acc.Wb.Driver.CurrentWindowHandle;
+                    var other = acc.Wb.Driver.WindowHandles.FirstOrDefault(x => !x.Equals(current));
+                    acc.Wb.Driver.SwitchTo().Window(other);
+                    acc.Wb.Driver.Close();
+                    acc.Wb.Driver.SwitchTo().Window(current);
+                    action.Perform();
+                }
+                while (true);
             }
+
+            acc.Wb.Driver.SwitchTo().DefaultContent();
 
             acc.Logger.Information("Clicked play button, if ads doesn't play please click to help bot");
             acc.Logger.Information("Cooldown 3 mins. If building cannot upgrade will use normal button");
 
-            try
             {
-                await DriverHelper.WaitPageChange(acc, "dorf", 3);
-            }
-            catch
-            {
-                acc.Wb.UpdateHtml();
-                if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
+                var result = await DriverHelper.WaitPageChange(acc, "dorf", 3);
+                if (!result)
                 {
-                    await DriverHelper.ClickById(acc, "dontShowThisAgain");
-                    await Task.Delay(800);
-                    await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
-                }
-                else
-                {
-                    await acc.Wb.Refresh();
-                    return false;
+                    acc.Wb.UpdateHtml();
+                    if (acc.Wb.Html.GetElementbyId("dontShowThisAgain") != null)
+                    {
+                        await DriverHelper.ClickById(acc, "dontShowThisAgain");
+                        await Task.Delay(800);
+                        await DriverHelper.ClickByClassName(acc, "dialogButtonOk ok");
+                        return true;
+                    }
+                    else
+                    {
+                        await acc.Wb.Refresh();
+                        return false;
+                    }
                 }
             }
 
@@ -564,7 +584,17 @@ namespace TbsCore.Tasks.LowLevel
             {
                 if (ResourcesHelper.IsStorageTooLow(acc, Vill, cost))
                 {
-                    acc.Logger.Warning($"Storage is too low. Added storage upgrade.");
+                    var building = Vill.Build.CurrentlyBuilding.FirstOrDefault(x => x.Building == BuildingEnum.Warehouse || x.Building == BuildingEnum.Granary);
+                    if (building == null)
+                    {
+                        acc.Logger.Warning($"Storage is too low. Added storage upgrade.");
+                    }
+                    else
+                    {
+                        acc.Logger.Warning($"Storage is too low. Next building will be contructed after {building.Building} - level {building.Level} complete. ({NextExecute})");
+                        NextExecute = TimeHelper.RanDelay(acc, building.Duration);
+                        StopFlag = true;
+                    }
                     return false;
                 }
 

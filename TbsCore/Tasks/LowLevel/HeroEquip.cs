@@ -1,5 +1,7 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
@@ -56,9 +58,19 @@ namespace TbsCore.Tasks.LowLevel
                 // No amount specified, meaning we have already equipt the item
                 if (amount == 0) continue;
                 await Task.Delay(900);
-                await DriverHelper.WriteById(acc, "amount", amount);
+                acc.Wb.UpdateHtml();
+                var amountNode = acc.Wb.Html.GetElementbyId("amount");
+                if (amountNode == null) continue;
+                var amountElement = acc.Wb.Driver.FindElement(By.XPath(amountNode.XPath));
+                amountElement.SendKeys(Keys.Home);
+                amountElement.SendKeys(Keys.Shift + Keys.End);
+                amountElement.SendKeys($"{ amount}");
 
-                await DriverHelper.ClickByClassName(acc, "ok");
+                var okNode = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("ok"));
+                if (okNode == null) continue;
+                var okElement = acc.Wb.Driver.FindElement(By.XPath(okNode.XPath));
+                okElement.Click();
+                await Task.Delay(900);
                 HeroHelper.ParseHeroPage(acc);
             }
 

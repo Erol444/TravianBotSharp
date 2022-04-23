@@ -180,13 +180,33 @@ namespace TbsCore.Tasks.LowLevel
 
         private bool UpdateSettlersAmount(Account acc)
         {
-            var troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
-            if (troopBox == null)
+            HtmlAgilityPack.HtmlNode nodeSettler = null;
+            switch (acc.AccInfo.ServerVersion)
             {
-                Retry(acc, "Cannot find settler box");
-                return false;
+                case ServerVersionEnum.TTwars:
+                    {
+                        var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settlerId));
+                        while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
+                        nodeSettler = troopNode;
+                    }
+                    break;
+
+                case ServerVersionEnum.T4_5:
+                    {
+                        var troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
+                        if (troopBox == null)
+                        {
+                            Retry(acc, "Cannot find settler box");
+                            return false;
+                        }
+                        nodeSettler = troopBox;
+                    }
+                    break;
+
+                default:
+                    break;
             }
-            var divTit = troopBox.Descendants("div").FirstOrDefault(x => x.HasClass("tit"));
+            var divTit = nodeSettler.Descendants("div").FirstOrDefault(x => x.HasClass("tit"));
             if (divTit == null)
             {
                 Retry(acc, "Cannot find Settler title");
@@ -198,6 +218,7 @@ namespace TbsCore.Tasks.LowLevel
                 Retry(acc, "Cannot find Settler present number");
                 return false;
             }
+
             Vill.Troops.Settlers = (int)Parser.RemoveNonNumeric(spanPresent.InnerText);
             acc.Logger.Information($"Update Settler present number: {Vill.Troops.Settlers}");
 
