@@ -4,60 +4,86 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
 using TbsCore.Parsers;
+using System;
 
 namespace TbsCore.Tasks.LowLevel
 {
-    public class GetTribe : RandomTask
+    public class GetTribe : BotTask
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            // Tribe => id="questmasterButton", class name vid_{tribeId}
-            // If no questmasterButton, check tribe after updating villages => rally point/barracks
-
-            base.MinWait = 500;
-            base.MaxWait = 3000;
-            await base.Execute(acc);
-
-            var questMaster = acc.Wb.Html.GetElementbyId("questmasterButton");
-            if (questMaster != null)
+            await Task.Yield();
+            switch (acc.AccInfo.ServerVersion)
             {
-                var vid = questMaster.GetClasses().FirstOrDefault(x => x.StartsWith("vid"));
-                var tribeId = Parser.RemoveNonNumeric(vid);
+                case Classificator.ServerVersionEnum.TTwars:
+                    {
+                        var result = CheckTTWars(acc);
+                        if (StopFlag) return TaskRes.Executed;
+                        if (!result) return TaskRes.Executed;
+                    }
+                    break;
 
-                SetTribe(acc, (Classificator.TribeEnum)tribeId);
+                case Classificator.ServerVersionEnum.T4_5:
+                    {
+                        var result = CheckT45(acc);
+                        if (StopFlag) return TaskRes.Executed;
+                        if (!result) return TaskRes.Executed;
+                    }
+                    break;
 
-                return TaskRes.Executed;
+                default:
+                    break;
             }
-
-            await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.Managenment);
-
-            List<int> idsChecked = new List<int>(acc.Villages.Count);
-
-            // If no rally point, navigate somewhere else
-            while (acc.Wb.Html.GetElementbyId("contract") == null)
-            {
-                idsChecked.Add(acc.Villages.FirstOrDefault(x => x.Active).Id);
-
-                var nextId = NextVillCheck(acc, idsChecked);
-                if (nextId == 0) throw new System.Exception("Can't get account tribe! Please build rally point!");
-                await VillageHelper.SwitchVillage(acc, nextId);
-            }
-
-            await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.SendTroops);
-
-            var unitImg = acc.Wb.Html.DocumentNode.Descendants("img").First(x => x.HasClass("unit"));
-            var unitInt = Parser.RemoveNonNumeric(unitImg.GetClasses().First(x => x != "unit"));
-            int tribeInt = (int)(unitInt / 10);
-            // ++ since the first element in Classificator.TribeEnum is Any, second is Romans.
-            tribeInt++;
-            SetTribe(acc, (Classificator.TribeEnum)tribeInt);
-
+            var tribeStr = acc.AccInfo.Tribe == null ? "Unknown" : $"{acc.AccInfo.Tribe}";
+            acc.Logger.Information($"Tribe account is {tribeStr}");
             return TaskRes.Executed;
         }
 
-        private void SetTribe(Account acc, Classificator.TribeEnum tribe) => acc.AccInfo.Tribe = tribe;
+        private static bool CheckTTWars(Account acc)
+        {
+            var nodeDiv = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("playerName"));
+            if (nodeDiv == null)
+            {
+                acc.Logger.Warning("Cannot find hero name");
+                return false;
+            }
+            var nodeImage = nodeDiv.Descendants("img").FirstOrDefault();
+            if (nodeImage == null)
+            {
+                acc.Logger.Warning("Cannot find image hero tribe");
+                return false;
+            }
+            var tribeStr = nodeImage.GetAttributeValue("alt", "");
+            var result = Enum.TryParse(tribeStr, out Classificator.TribeEnum tribe);
+            if (!result)
+            {
+                acc.Logger.Warning($"Cannot parse tribe name [{tribeStr}]");
+                return false;
+            }
 
-        private int NextVillCheck(Account acc, List<int> villsChecked) =>
-            acc.Villages.FirstOrDefault(x => !villsChecked.Contains(x.Id))?.Id ?? 0;
+            acc.AccInfo.Tribe = tribe;
+            return true;
+        }
+
+        private static bool CheckT45(Account acc)
+        {
+            var questMaster = acc.Wb.Html.GetElementbyId("questmasterButton");
+            if (questMaster == null)
+            {
+                acc.Logger.Warning("Cannot find avatar tribe questmater");
+                return false;
+            }
+            var vid = questMaster.GetClasses().FirstOrDefault(x => x.StartsWith("vid"));
+            if (vid == null)
+            {
+                acc.Logger.Warning("Cannot detect tribe");
+                return false;
+            }
+
+            var tribeId = Parser.RemoveNonNumeric(vid);
+            acc.AccInfo.Tribe = (Classificator.TribeEnum)tribeId;
+
+            return true;
+        }
     }
 }
