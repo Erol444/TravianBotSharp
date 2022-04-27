@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OpenQA.Selenium;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
@@ -59,11 +60,11 @@ namespace TbsCore.Tasks.LowLevel
                         // Empty text box
                         await DriverHelper.WriteByName(acc, $"dname[{change.Item1}]=", "");
                         //insert new name into the textbox
-                        acc.Wb.FindElementByXPath($"//input[@name='dname[{change.Item1}]=']").SendKeys(change.Item2);
+                        acc.Wb.Driver.FindElement(By.XPath($"//input[@name='dname[{change.Item1}]=']")).SendKeys(change.Item2);
                     }
 
                     await Task.Delay(AccountHelper.Delay(acc));
-                    acc.Wb.FindElementById("btn_ok").Click();  //click save button
+                    acc.Wb.Driver.FindElement(By.Id("btn_ok")).Click();  //click save button
 
                     return TaskRes.Executed;
             }

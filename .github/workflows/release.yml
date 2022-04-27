@@ -2,8 +2,8 @@ name: ReleaseFlow
 
 on:
   pull_request:
-    branches: master
-    types: closed
+    branches: [master]
+    types: [closed]
   workflow_dispatch:
   
 jobs:
@@ -18,7 +18,7 @@ jobs:
         with:
           one_of: release
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-      
+          
       - name: 'Checkout repo' 
         uses: actions/checkout@v2    
 

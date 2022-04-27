@@ -112,12 +112,19 @@ namespace TbsCore.Helpers
                 acc.Logger.Information("Cannot find village in village list");
                 return false;
             }
+            try
+            {
+                var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+                element.Click();
+            }
+            catch
+            {
+                acc.Logger.Warning("Bot cannot switch village, may break some things later.");
+                return false;
+            }
 
-            var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
-            element.Click();
             //dorf1.php?newdid=25270&
-            await DriverHelper.WaitPageChange(acc, $"{id}", 0.2);
-            return true;
+            return await DriverHelper.WaitPageChange(acc, $"{id}");
         }
 
         /// <summary>

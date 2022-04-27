@@ -110,7 +110,9 @@ namespace TbsCore.Models.AccModels
                     await VillageHelper.SwitchVillage(_acc, task.Vill.Id);
                 }
             }
+
             await TaskExecutor.Execute(_acc, task);
+
             IsTaskExcuting = false;
         }
 
