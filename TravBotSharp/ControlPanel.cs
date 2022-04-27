@@ -136,6 +136,11 @@ namespace TravBotSharp
             });
 
             await savingTask;
+            var pluginsFolder = Path.Combine(AppContext.BaseDirectory, "Plugins");
+            if (Directory.Exists(pluginsFolder))
+            {
+                Directory.Delete(pluginsFolder, true);
+            }
             closingForm.Close();
             await formTask;
             closingForm.Dispose();
