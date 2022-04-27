@@ -192,6 +192,12 @@
     <Compile Include="Forms\AddFarmNonGold.Designer.cs">
       <DependentUpon>AddFarmNonGold.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\Helper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\Helper.Designer.cs">
+      <DependentUpon>Helper.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Splash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -405,6 +411,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\AddFarmNonGold.resx">
       <DependentUpon>AddFarmNonGold.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Helper.resx">
+      <DependentUpon>Helper.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Splash.resx">
       <DependentUpon>Splash.cs</DependentUpon>

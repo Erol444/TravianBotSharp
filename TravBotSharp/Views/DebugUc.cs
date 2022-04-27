@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows.Forms;
 using TbsCore.Models.Logging;
+using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -92,6 +93,12 @@ namespace TravBotSharp.Views
                     taskListView.Items.Add(item);
                 }
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var form = new Helper();
+            form.Show(Parent);
         }
     }
 }
