@@ -322,7 +322,7 @@ namespace TbsCore.Tasks.LowLevel
             var href = nodeFastUpgrade.GetAttributeValue("onclick", "");
             var script = href.Replace("&amp;", "&");
             acc.Wb.Driver.ExecuteScript(script);
-            await Task.Delay(rand.Next(900, 1300));
+            await Task.Delay(rand.Next(2400, 5300)); // just random number =))
             // Confirm
 
             {
@@ -347,22 +347,34 @@ namespace TbsCore.Tasks.LowLevel
                 var result = await Update(acc);
                 if (!result) return false;
             }
-            var nodeIframe = acc.Wb.Html.GetElementbyId("videoFeature");
-            if (nodeIframe == null)
             {
-                return false;
+                // close all tab except current
+                var current = acc.Wb.Driver.CurrentWindowHandle;
+                while (acc.Wb.Driver.WindowHandles.Count > 1)
+                {
+                    if (StopFlag) return false;
+                    var other = acc.Wb.Driver.WindowHandles.FirstOrDefault(x => !x.Equals(current));
+                    acc.Wb.Driver.SwitchTo().Window(other);
+                    acc.Wb.Driver.Close();
+                    acc.Wb.Driver.SwitchTo().Window(current);
+                }
             }
-
             {
-                await Task.Delay(rand.Next(20000, 30000));
+                acc.Wb.UpdateHtml();
+                var nodeIframe = acc.Wb.Html.GetElementbyId("videoFeature");
+                if (nodeIframe == null)
+                {
+                    acc.Logger.Warning("Cannot find play ads button");
+                    return false;
+                }
 
                 var elementIframe = acc.Wb.Driver.FindElement(By.XPath(nodeIframe.XPath));
                 Actions act = new Actions(acc.Wb.Driver);
                 var action = act.MoveToElement(elementIframe).Click().Build();
                 action.Perform();
+                acc.Wb.Driver.SwitchTo().DefaultContent();
 
-                await Task.Delay(rand.Next(10000, 15000));
-
+                await Task.Delay(rand.Next(1300, 2000)); // another random number
                 do
                 {
                     var handles = acc.Wb.Driver.WindowHandles;
@@ -375,11 +387,10 @@ namespace TbsCore.Tasks.LowLevel
                     acc.Wb.Driver.Close();
                     acc.Wb.Driver.SwitchTo().Window(current);
                     action.Perform();
+                    acc.Wb.Driver.SwitchTo().DefaultContent();
                 }
                 while (true);
             }
-
-            acc.Wb.Driver.SwitchTo().DefaultContent();
 
             acc.Logger.Information("Clicked play button, if ads doesn't play please click to help bot");
             acc.Logger.Information("Cooldown 3 mins. If building cannot upgrade will use normal button");
