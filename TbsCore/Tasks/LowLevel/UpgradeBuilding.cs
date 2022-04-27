@@ -360,6 +360,12 @@ namespace TbsCore.Tasks.LowLevel
                 }
             }
             {
+                var result = await Update(acc);
+                if (!result) return false;
+            }
+            {
+                await Task.Delay(rand.Next(20000, 25000)); // another random number
+
                 acc.Wb.UpdateHtml();
                 var nodeIframe = acc.Wb.Html.GetElementbyId("videoFeature");
                 if (nodeIframe == null)
