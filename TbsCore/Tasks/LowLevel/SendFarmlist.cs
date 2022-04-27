@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,7 +88,7 @@ namespace TbsCore.Tasks.LowLevel
 
                 case ServerVersionEnum.T4_5:
                     var startRaid = flNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
-                    acc.Wb.FindElementById(startRaid.Id).Click();
+                    acc.Wb.Driver.FindElement(By.Id(startRaid.Id)).Click();
                     break;
             }
 

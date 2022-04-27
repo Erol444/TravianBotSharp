@@ -83,7 +83,7 @@ namespace TbsCore.Models.AccModels
 
             // So websites (Travian) can't detect the bot
             options.AddExcludedArgument("enable-automation");
-            options.AddAdditionalCapability("useAutomationExtension", false);
+            options.AddAdditionalOption("useAutomationExtension", false);
             options.AddArgument("--disable-blink-features=AutomationControlled");
             options.AddArgument("--disable-features=UserAgentClientHint");
             options.AddArguments("--disable-logging");
@@ -185,21 +185,6 @@ namespace TbsCore.Models.AccModels
         {
             IJavaScriptExecutor js = acc.Wb.Driver;
             return (string)js.ExecuteScript("for(let field in Travian) { if (Travian[field].length == 32) return Travian[field]; }");
-        }
-
-        public IWebElement FindElementById(string element)
-        {
-            return Driver.FindElementById(element);
-        }
-
-        public IWebElement FindElementByXPath(string xPath)
-        {
-            return Driver.FindElementByXPath(xPath);
-        }
-
-        public ITargetLocator SwitchTo()
-        {
-            return Driver.SwitchTo();
         }
 
         /// <summary>
