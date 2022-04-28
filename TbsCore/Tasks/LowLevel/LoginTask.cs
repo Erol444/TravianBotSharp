@@ -54,9 +54,9 @@ namespace TbsCore.Tasks.LowLevel
             var buttonElement = acc.Wb.Driver.FindElement(By.XPath(buttonNode.XPath));
             buttonElement.Click();
 
-            acc.Wb.UpdateHtml();
+            var result = await DriverHelper.WaitPageChange(acc, "dorf");
 
-            if (TaskExecutor.IsLoginScreen(acc))
+            if (!result && TaskExecutor.IsLoginScreen(acc))
             {
                 // Wrong password/nickname
                 acc.Logger.Warning("Password is incorrect!");
@@ -66,10 +66,8 @@ namespace TbsCore.Tasks.LowLevel
             }
             else
             {
-                await DriverHelper.WaitPageChange(acc, "dorf");
                 // check sitter account
-                var auction = acc.Wb.Html.DocumentNode.SelectSingleNode("//a[contains(@class,'auction')]");
-
+                var auction = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("auction"));
                 acc.Access.GetCurrentAccess().IsSittering = (auction != null && auction.HasClass("disable"));
                 return TaskRes.Executed;
             }
