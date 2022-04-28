@@ -17,7 +17,7 @@ namespace TbsCore.Tasks.LowLevel
 
             var mainVill = AccountHelper.GetMainVillage(acc);
 
-            var mapTiles = MapHelper.GetMapTiles(acc, mainVill.Coordinates);
+            var mapTiles = await MapHelper.GetMapTiles(acc, mainVill.Coordinates);
 
             Coordinates closesCoords = GetClosestCoordinates(acc, mapTiles);
             if (closesCoords == null) return TaskRes.Retry;

@@ -1,5 +1,4 @@
-﻿using Discord.Net.Queue;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -12,6 +11,7 @@ using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TbsCore.Parsers;
 using TbsCore.Models.TroopsModels;
+using System.Threading.Tasks;
 
 namespace TbsCore.Helpers
 {
@@ -26,17 +26,17 @@ namespace TbsCore.Helpers
         /// <summary>
         /// Send raw HTTP request to the server and request the map tiles around the coords. This mimics browser on the map page.
         /// </summary>
-        public static List<MapTile> GetMapTiles(Account acc, Coordinates coords)
+        public static async Task<List<MapTile>> GetMapTiles(Account acc, Coordinates coords)
         {
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.TTwars:
                     var ajaxToken = DriverHelper.GetJsObj<string>(acc, "ajaxToken");
 
-                    var req = new RestSharp.RestRequest
+                    var req = new RestRequest
                     {
                         Resource = "/ajax.php?cmd=mapPositionData",
-                        Method = Method.POST,
+                        Method = Method.Post,
                     };
 
                     req.AddParameter("cmd", "mapPositionData");
@@ -45,68 +45,27 @@ namespace TbsCore.Helpers
                     req.AddParameter("data[zoomLevel]", "3");
                     req.AddParameter("ajaxToken", ajaxToken);
 
-                    var resString = HttpHelper.SendPostReq(acc, req);
+                    var resString = await HttpHelper.SendPostReqAsync(acc, req);
 
                     var root = JsonConvert.DeserializeObject<MapPositionDataT4_4.Root>(resString);
                     if (root.response.error) throw new Exception("Unable to get T4.4 map position data!\n" + root.response.error);
                     return root.response.data.tiles.Select(x => x.GetMapTile()).ToList();
 
-                //case Classificator.ServerVersionEnum.T4_5:
-                //{
-                //    var bearerToken = DriverHelper.GetBearerToken(acc);
-
-                //    var reqMapInfo = new RestSharp.RestRequest
-                //    {
-                //        Resource = "/api/v1/ajax/mapInfo",
-                //        Method = Method.POST,
-                //        RequestFormat = DataFormat.Json
-                //    };
-                //    reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
-                //    reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
-                //    reqMapInfo.AddJsonBody(GenerateMapInfo(coords));
-
-                //    var mapInfoRes = HttpHelper.SendPostReq(acc, reqMapInfo);
-
-                //    var mapPosition = new SendMapPositionT4_5.Root()
-                //    {
-                //        data = new SendMapPositionT4_5.Data()
-                //        {
-                //            x = coords.x,
-                //            y = coords.y,
-                //            zoomLevel = 3,
-                //            ignorePositions = new List<object>()
-                //        }
-                //    };
-
-                //    var reqMapPosition = new RestSharp.RestRequest
-                //    {
-                //        Resource = "/api/v1/ajax/mapPositionData",
-                //        Method = Method.POST,
-                //        RequestFormat = DataFormat.Json
-                //    };
-                //    reqMapPosition.AddHeader("authorization", $"Bearer {bearerToken}");
-                //    reqMapPosition.AddHeader("content-type", "application/json; charset=UTF-8");
-                //    reqMapPosition.AddJsonBody(mapPosition);
-
-                //    var mapPositionRes = HttpHelper.SendPostReq(acc, reqMapPosition);
-                //    var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
-                //    return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
-                //}
-                default:
+                case Classificator.ServerVersionEnum.T4_5:
                     {
                         var bearerToken = DriverHelper.GetBearerToken(acc);
 
-                        var reqMapInfo = new RestSharp.RestRequest
+                        var reqMapInfo = new RestRequest
                         {
                             Resource = "/api/v1/map/info",
-                            Method = Method.POST,
+                            Method = Method.Post,
                             RequestFormat = DataFormat.Json
                         };
                         reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
                         reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
                         reqMapInfo.AddJsonBody(GenerateMapInfo(coords));
 
-                        var mapInfoRes = HttpHelper.SendPostReq(acc, reqMapInfo);
+                        var mapInfoRes = await HttpHelper.SendPostReqAsync(acc, reqMapInfo);
 
                         var mapPosition = new SendMapPositionT4_5.Root()
                         {
@@ -119,27 +78,28 @@ namespace TbsCore.Helpers
                             }
                         };
 
-                        var reqMapPosition = new RestSharp.RestRequest
+                        var reqMapPosition = new RestRequest
                         {
                             Resource = "/api/v1/map/position",
-                            Method = Method.POST,
+                            Method = Method.Post,
                             RequestFormat = DataFormat.Json
                         };
                         reqMapPosition.AddHeader("authorization", $"Bearer {bearerToken}");
                         reqMapPosition.AddHeader("content-type", "application/json; charset=UTF-8");
                         reqMapPosition.AddJsonBody(mapPosition);
 
-                        var mapPositionRes = HttpHelper.SendPostReq(acc, reqMapPosition);
+                        var mapPositionRes = await HttpHelper.SendPostReqAsync(acc, reqMapPosition);
                         var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
                         return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
                     }
             }
+            return null;
         }
 
         /// <summary>
         /// Sends HTTP request to the server and gets number of animals inside the oasis
         /// </summary>
-        public static TroopsBase GetOasisAnimals(Account acc, Coordinates oasis)
+        public static async Task<TroopsBase> GetOasisAnimals(Account acc, Coordinates oasis)
         {
             var htmlDoc = new HtmlAgilityPack.HtmlDocument();
             string html = "";
@@ -149,10 +109,10 @@ namespace TbsCore.Helpers
                 case Classificator.ServerVersionEnum.TTwars:
                     var ajaxToken = DriverHelper.GetJsObj<string>(acc, "ajaxToken");
 
-                    var req = new RestSharp.RestRequest
+                    var req = new RestRequest
                     {
                         Resource = "/ajax.php?cmd=viewTileDetails",
-                        Method = Method.POST,
+                        Method = Method.Post,
                     };
 
                     req.AddParameter("cmd", "viewTileDetails");
@@ -160,7 +120,7 @@ namespace TbsCore.Helpers
                     req.AddParameter("y", oasis.y.ToString());
                     req.AddParameter("ajaxToken", ajaxToken);
 
-                    var resString = HttpHelper.SendPostReq(acc, req);
+                    var resString = await HttpHelper.SendPostReqAsync(acc, req);
 
                     var root = JsonConvert.DeserializeObject<TileDetailsT4_4>(resString);
                     if (root.response.error) throw new Exception("Unable to get T4.4 tile details!\n" + root.response.error);
@@ -171,17 +131,17 @@ namespace TbsCore.Helpers
                 case Classificator.ServerVersionEnum.T4_5:
                     var bearerToken = DriverHelper.GetBearerToken(acc);
 
-                    var reqMapInfo = new RestSharp.RestRequest
+                    var reqMapInfo = new RestRequest
                     {
                         Resource = "/api/v1/ajax/viewTileDetails",
-                        Method = Method.POST,
+                        Method = Method.Post,
                         RequestFormat = DataFormat.Json
                     };
                     reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
                     reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
                     reqMapInfo.AddJsonBody(oasis);
 
-                    var tileDetails = HttpHelper.SendPostReq(acc, reqMapInfo);
+                    var tileDetails = await HttpHelper.SendPostReqAsync(acc, reqMapInfo);
 
                     var tile = JsonConvert.DeserializeObject<TileDetailsT4_5>(tileDetails);
                     html = WebUtility.HtmlDecode(tile.html);

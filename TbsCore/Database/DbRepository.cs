@@ -51,25 +51,12 @@ namespace TbsCore.Database
         {
             using (var context = new TbsContext())
             {
-                context.DbAccount.Remove(FindDbAccount(acc, context));
-                context.SaveChanges();
-            }
-        }
-
-        public static void SyncAccountsTxt()
-        {
-            using (var context = new TbsContext())
-            {
-                var accs = IoHelperCore.ReadAccounts();
-                var dbAccs = new List<DbAccount>(accs.Count);
-
-                foreach (var acc in accs)
+                var account = FindDbAccount(acc, context);
+                if (account != null)
                 {
-                    dbAccs.Add(ConvertAcc(acc));
+                    context.DbAccount.Remove(account);
+                    context.SaveChanges();
                 }
-
-                context.DbAccount.AddRange(dbAccs);
-                context.SaveChanges();
             }
         }
 

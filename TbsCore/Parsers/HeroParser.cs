@@ -255,7 +255,9 @@ namespace TbsCore.Parsers
 
         public static TimeSpan GetHeroArrival(HtmlDocument htmlDoc)
         {
-            return TimeParser.ParseTimer(htmlDoc.GetElementbyId("tileDetails"));
+            var nodeStatus = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
+            if (nodeStatus == null) return TimeSpan.Zero;
+            return TimeParser.ParseTimer(nodeStatus);
         }
 
         public static List<HeroItem> GetHeroItems(HtmlDocument html)
@@ -289,8 +291,7 @@ namespace TbsCore.Parsers
             { Classificator.HeroItemCategory.Weapon, "rightHand" },
             { Classificator.HeroItemCategory.Armor, "body" },
             { Classificator.HeroItemCategory.Horse, "horse" },
-            { Classificator.HeroItemCategory.Boots, "shoes" },
-            { Classificator.HeroItemCategory.Others, "bag" }
+            { Classificator.HeroItemCategory.Boots, "shoes" }
         };
 
         /// <summary>
@@ -316,7 +317,7 @@ namespace TbsCore.Parsers
             return ret;
         }
 
-        private static (Classificator.HeroItemEnum?, int) ParseItemNode(HtmlNode node)
+        public static (Classificator.HeroItemEnum?, int) ParseItemNode(HtmlNode node)
         {
             var itemClass = node.GetClasses().FirstOrDefault(x => x.Contains("_item_"));
             if (itemClass == null) return (null, 0);

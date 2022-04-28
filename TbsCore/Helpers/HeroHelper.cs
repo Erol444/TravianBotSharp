@@ -48,7 +48,9 @@ namespace TbsCore.Helpers
             foreach (HeroItemCategory category
                 in (HeroItemCategory[])Enum.GetValues(typeof(HeroItemCategory)))
             {
-                if (category == HeroItemCategory.Others) continue; // Don't equip into hero bag
+                if (category == HeroItemCategory.Resource) continue; // Don't equip into hero bag
+                if (category == HeroItemCategory.Stackable) continue; // Don't equip into hero bag
+                if (category == HeroItemCategory.NonStackable) continue; // Don't equip into hero bag
                 int currentTier = 0;
                 if (acc.Hero.Equipt.TryGetValue(category, out var item))
                 {
@@ -101,7 +103,7 @@ namespace TbsCore.Helpers
         public static (TroopsEnum, int) ParseWeapon(HeroItemEnum item)
         {
             var (_, name, tier) = ParseHeroItem(item);
-            if(Enum.TryParse(name, out TroopsEnum troop))
+            if (Enum.TryParse(name, out TroopsEnum troop))
             {
                 return (troop, GetWeaponBoost(troop, tier));
             }
@@ -144,11 +146,13 @@ namespace TbsCore.Helpers
             var (_, _, itemTier) = ParseHeroItem(item);
             return itemTier;
         }
+
         public static string GetHeroItemName(HeroItemEnum item)
         {
             var (_, name, _) = ParseHeroItem(item);
             return name;
         }
+
         public static HeroItemCategory GetHeroItemCategory(HeroItemEnum item)
         {
             var (category, _, _) = ParseHeroItem(item);
@@ -184,6 +188,7 @@ namespace TbsCore.Helpers
                 case Classificator.ServerVersionEnum.TTwars:
                     acc.Hero.HomeVillageId = hrefId ?? 0;
                     return;
+
                 case ServerVersionEnum.T4_5:
                     // Convert from coordinates id -> coordinates -> villageId
                     var coordinates = new Coordinates(acc, hrefId ?? 0);
@@ -199,10 +204,10 @@ namespace TbsCore.Helpers
             var heroItems = acc.Hero.Items;
             return new long[]
             {
-                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Others_Wood_0)?.Count ?? 0,
-                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Others_Clay_0)?.Count ?? 0,
-                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Others_Iron_0)?.Count ?? 0,
-                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Others_Crop_0)?.Count ?? 0
+                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Resource_Wood_0)?.Count ?? 0,
+                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Resource_Clay_0)?.Count ?? 0,
+                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Resource_Iron_0)?.Count ?? 0,
+                heroItems.FirstOrDefault(x => x.Item == HeroItemEnum.Resource_Crop_0)?.Count ?? 0
             };
         }
 

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Timers;
-
-using OpenQA.Selenium;
-
 using TbsCore.Helpers;
 using TbsCore.Tasks;
 using TbsCore.Tasks.LowLevel;
@@ -11,112 +9,147 @@ using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Models.AccModels
 {
-    public class TaskTimer : IDisposable
+    public sealed class TaskTimer : IDisposable
     {
-        private readonly Account acc;
-        private Timer Timer { get; set; }
+        private readonly Random _random;
+        private readonly Account _acc;
+        private readonly Timer _mainTimer;
 
-        public bool? IsBotRunning() => Timer.Enabled;
+        private long _isTaskExcuting;
 
-        public TaskTimer(Account account)
+        public bool IsTaskExcuting
         {
-            acc = account;
-            Timer = new Timer(500);
-            Timer.Elapsed += TimerElapsed;
-            Start();
+            get
+            {
+                return System.Threading.Interlocked.Read(ref _isTaskExcuting) == 1;
+            }
+            private set
+            {
+                System.Threading.Interlocked.Exchange(ref _isTaskExcuting, Convert.ToInt64(value));
+            }
+        }
+
+        private long _isBotRunning;
+
+        public bool IsBotRunning
+        {
+            get
+            {
+                return System.Threading.Interlocked.Read(ref _isBotRunning) == 1;
+            }
+            private set
+            {
+                System.Threading.Interlocked.Exchange(ref _isBotRunning, Convert.ToInt64(value));
+            }
+        }
+
+        public TaskTimer(Account Account)
+        {
+            _acc = Account;
+            _mainTimer = new Timer(500);
+            _random = new Random();
+            _mainTimer.Elapsed += MainTimerElapsed;
         }
 
         public void Start()
         {
-            Timer.Start();
-            Timer.Enabled = true;
-            Timer.AutoReset = true;
+            if (IsBotRunning) return;
+            IsBotRunning = true;
+            IsTaskExcuting = false;
+            _mainTimer.Start();
         }
 
         public void Stop()
         {
-            Timer.Stop();
-            Timer.Enabled = false;
+            if (!IsBotRunning) return;
+
+            IsBotRunning = false;
+            _mainTimer.Stop();
+
+            var currentTask = _acc.Tasks.CurrentTask;
+            if (currentTask != null) currentTask.StopFlag = true;
+            _acc.Status = Status.Pausing;
         }
 
-        private void TimerElapsed(Object source, ElapsedEventArgs e) => NewTick();
+        public async Task WaitStop()
+        {
+            await Task.Run(() => { while (IsTaskExcuting) { } });
+            _acc.Status = Status.Paused;
+        }
+
+        private void MainTimerElapsed(object source, ElapsedEventArgs e) => NewTick();
 
         private async void NewTick()
         {
-            if (acc.Tasks.Count == 0) return; //No tasks
+            if (!IsBotRunning) return;
+            if (IsTaskExcuting) return;
+            IsTaskExcuting = true;
 
-            // Another task is already in progress. wait
-            if (acc.Tasks.IsTaskExcuting()) return;
-
-            var tasks = acc.Tasks.GetTasksReady();
-            if (tasks.Count == 0)
+            if (_acc.Tasks.Count == 0)
             {
-                NoTasks(acc);
+                IsTaskExcuting = false;
+                return; //No tasks
+            }
+
+            var task = _acc.Tasks.FirstTask;
+            if (task.ExecuteAt > DateTime.Now)
+            {
+                NoTasks(_acc);
+                IsTaskExcuting = false;
                 return;
             }
 
-            BotTask firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.High);
-            if (firstTask == null) firstTask = tasks.FirstOrDefault(x => x.Priority == TaskPriority.Medium);
-            if (firstTask == null) firstTask = tasks.FirstOrDefault();
-
-            firstTask.Stage = TaskStage.Executing;
+            task.Stage = TaskStage.Executing;
 
             //If correct village is selected, otherwise change village
-            if (firstTask.Vill != null)
+            if (task.Vill != null && task.GetType() != typeof(UpgradeBuilding))
             {
-                var active = acc.Villages.FirstOrDefault(x => x.Active);
-                if (active != null && active != firstTask.Vill)
+                var active = _acc.Villages.FirstOrDefault(x => x.Active);
+                if (active != null && active != task.Vill)
                 {
-                    try
-                    {
-                        await VillageHelper.SwitchVillage(acc, firstTask.Vill.Id);
-                    }
-                    catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
-                    {
-                        acc.Logger.Warning($"Chrome has problem. Try reopen Chrome");
-
-                        acc.Tasks.Add(new ReopenDriver()
-                        {
-                            ExecuteAt = DateTime.MinValue,
-                            Priority = TaskPriority.High,
-                            ReopenAt = DateTime.MinValue
-                        });
-
-                        firstTask.Stage = TaskStage.Start;
-                        return;
-                    }
+                    await VillageHelper.SwitchVillage(_acc, task.Vill.Id);
                 }
             }
-            await TaskExecutor.Execute(acc, firstTask);
+
+            await TaskExecutor.Execute(_acc, task);
+
+            IsTaskExcuting = false;
         }
 
-        private void NoTasks(Account acc)
+        private void NoTasks(Account _acc)
         {
-            BotTask task = null;
-
-            if (acc.Settings.AutoCloseDriver &&
-                TimeSpan.FromMinutes(5) < TimeHelper.NextPrioTask(acc, TaskPriority.Medium))
+            if (_acc.Settings.AutoCloseDriver)
             {
-                // Auto close chrome and reopen when there is a high/normal prio BotTask
-                task = new ReopenDriver();
-                ((ReopenDriver)task).LowestPrio = TaskPriority.Medium;
+                var nextTask = _acc.Tasks.ToList().FirstOrDefault();
+                var delay = TimeSpan.FromMinutes(5);
+                if (nextTask == null || nextTask.ExecuteAt - DateTime.Now > delay)
+                {
+                    _acc.Tasks.Add(new TaskSleep()
+                    {
+                        ExecuteAt = DateTime.Now,
+                    });
+                    return;
+                }
             }
-            else if (acc.Settings.AutoRandomTasks)
-            {
-                task = new RandomTask();
-            }
 
-            if (task != null)
+            if (_acc.Settings.AutoRandomTasks)
             {
-                task.ExecuteAt = DateTime.Now;
-                task.Priority = TaskPriority.Low;
-                acc.Tasks.Add(task);
+                var nextTask = _acc.Tasks.ToList().FirstOrDefault();
+                var delay = TimeSpan.FromMinutes(20);
+                if (nextTask == null || nextTask.ExecuteAt - DateTime.Now > delay)
+                {
+                    _acc.Tasks.Add(new RandomTask()
+                    {
+                        ExecuteAt = DateTime.Now.AddSeconds(_random.Next(60, 600)),
+                    });
+                    return;
+                }
             }
         }
 
         public void Dispose()
         {
-            this.Timer.Dispose();
+            _mainTimer.Dispose();
         }
     }
 }

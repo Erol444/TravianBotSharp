@@ -155,12 +155,15 @@ namespace TravBotSharp.Views
                 var upgradeBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == id);
                 if (upgradeBuilding != null)
                 {
-                    upgradeLvl = " -> " + upgradeBuilding.Level;
+                    if (upgradeBuilding.TaskType == BuildingType.General)
+                    {
+                        upgradeLvl = " -> " + upgradeBuilding.Level;
+                    }
                     if (buildingName == "Site") buildingName = VillageHelper.BuildingTypeToString(upgradeBuilding.Building);
                 }
                 item.SubItems.Add(buildingName); //building
 
-                item.SubItems.Add(building.Level.ToString() + upgradeLvl); //level
+                item.SubItems.Add($"{building.Level}{upgradeLvl}"); //level
                 //set color
                 switch (building.Type)
                 {
@@ -244,7 +247,7 @@ namespace TravBotSharp.Views
                     task.Building = selectedBuilding.Type;
                 }
 
-                BuildingHelper.AddBuildingTask(acc, vill, task);
+                UpgradeBuildingHelper.AddBuildingTask(acc, vill, task);
             }
             else if (demolishRadioButton.Checked)
             {
@@ -338,7 +341,7 @@ namespace TravBotSharp.Views
                 ResourceType = (ResTypeEnum)autoBuildResType.SelectedIndex,
                 BuildingStrategy = (BuildingStrategyEnum)autoBuildResStrat.SelectedIndex
             };
-            BuildingHelper.AddBuildingTask(acc, vill, task);
+            UpgradeBuildingHelper.AddBuildingTask(acc, vill, task);
             UpdateUc();
         }
 
@@ -347,7 +350,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
             DefaultConfigurations.SupplyVillagePlan(acc, vill);
-            BuildingHelper.RemoveCompletedTasks(vill);
+            UpgradeBuildingHelper.RemoveCompletedTasks(vill);
             UpdateUc();
         }
 
@@ -356,7 +359,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
             DefaultConfigurations.OffVillagePlan(acc, vill);
-            BuildingHelper.RemoveCompletedTasks(vill);
+            UpgradeBuildingHelper.RemoveCompletedTasks(vill);
             UpdateUc();
         }
 
@@ -365,7 +368,7 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage();
             DefaultConfigurations.DeffVillagePlan(acc, vill);
-            BuildingHelper.RemoveCompletedTasks(vill);
+            UpgradeBuildingHelper.RemoveCompletedTasks(vill);
             UpdateUc();
         }
 
@@ -484,9 +487,9 @@ namespace TravBotSharp.Views
             var acc = GetSelectedAcc();
             var vill = GetSelectedVillage(acc);
             Enum.TryParse(prereqCombo.SelectedItem.ToString(), out BuildingEnum building);
-            BuildingHelper.AddBuildingPrerequisites(acc, vill, building);
+            UpgradeBuildingHelper.AddBuildingPrerequisites(acc, vill, building);
 
-            BuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
+            UpgradeBuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
             {
                 Building = building,
                 Level = 1,

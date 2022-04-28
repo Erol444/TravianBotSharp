@@ -45,7 +45,7 @@ namespace TbsCore.Tasks.SecondLevel
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.TTwars:
-                    acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(totalSec) });
+                    nextExecuteSec = totalSec;
                     break;
 
                 case Classificator.ServerVersionEnum.T4_5:

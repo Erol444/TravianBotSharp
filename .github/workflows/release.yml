@@ -2,8 +2,8 @@ name: ReleaseFlow
 
 on:
   pull_request:
-    branches: master
-    types: closed
+    branches: [master]
+    types: [closed]
   workflow_dispatch:
   
 jobs:
@@ -18,7 +18,7 @@ jobs:
         with:
           one_of: release
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-      
+          
       - name: 'Checkout repo' 
         uses: actions/checkout@v2    
 
@@ -40,14 +40,13 @@ jobs:
       - name: 'Create changelog'
         id: Changelog
         run: |
-          last=$(git log --merges --grep='develop' --first-parent master --pretty=format:"%h" | sed -n '2p')
-          changelog=$(git log --no-merges --pretty=format:'- %s' $last..HEAD --reverse)
+          changelog="${{github.event.pull_request.body}}"
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'%0A'}"
           changelog="${changelog//$'\r'/'%0D'}"
           echo "::set-output name=changelog::$changelog"
   build:
-    runs-on: windows-latest
+    runs-on: windows-2019
     needs: version
     steps:
       - name: setup-msbuild
@@ -99,12 +98,12 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: TBS-release
-          path: TravBotSharp/bin/Release
+          path: TBS-${{needs.version.outputs.version}}
 
       - name: Archive Release
         uses: montudor/action-zip@v1
         with:
-            args: zip -qq -r TBS-${{needs.version.outputs.version}}.zip TravBotSharp/bin/Release
+            args: zip -qq -r TBS-${{needs.version.outputs.version}}.zip TBS-${{needs.version.outputs.version}}
 
 
       - name: Create release

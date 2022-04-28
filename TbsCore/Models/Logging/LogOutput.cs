@@ -1,23 +1,42 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace TbsCore.Models.Logging
 {
     public class LogOutput
     {
+        private LogOutput()
+        {
+        }
+
+        private static LogOutput instance = null;
+        private readonly object objLock = new object();
+
+        public static LogOutput Instance
+        {
+            get
+            {
+                if (instance == null)
+                {
+                    instance = new LogOutput();
+                }
+                return instance;
+            }
+        }
+
         public event EventHandler<UpdateLogEventArgs> LogUpdated;
 
-        private IDictionary<string, LinkedList<string>> _logs = new Dictionary<string, LinkedList<string>>();
-        private readonly object _syncRoot = new object();
+        private readonly ConcurrentDictionary<string, LinkedList<string>> _logs = new ConcurrentDictionary<string, LinkedList<string>>();
 
         public string GetLog(string username)
         {
             if (_logs.ContainsKey(username))
             {
-                lock (_syncRoot)
+                lock (objLock)
                 {
                     var log = string.Join("", _logs[username]);
+
                     return log;
                 }
             }
@@ -29,14 +48,9 @@ namespace TbsCore.Models.Logging
             return _logs.ContainsKey(username) ? _logs[username].First.Value : "";
         }
 
-        /// <summary>
-        /// lock before use because as i read Dictionary is not theard safe
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="message"></param>
         public void Add(string username, string message)
         {
-            lock (_syncRoot)
+            lock (objLock)
             {
                 _logs[username].AddFirst(message);
                 // keeps 200 message
@@ -44,16 +58,14 @@ namespace TbsCore.Models.Logging
                 {
                     _logs[username].RemoveLast();
                 }
+
+                OnUpdateLog(username);
             }
-            OnUpdateLog(username);
         }
 
         public void AddUsername(string username)
         {
-            if (!_logs.ContainsKey(username))
-            {
-                _logs.Add(username, new LinkedList<string>());
-            }
+            _logs.TryAdd(username, new LinkedList<string>());
         }
 
         private void OnUpdateLog(string username)

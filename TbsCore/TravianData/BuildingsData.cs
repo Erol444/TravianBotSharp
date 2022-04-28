@@ -37,7 +37,6 @@ namespace TbsCore.TravianData
         public static bool CanHaveMultipleBuildings(BuildingEnum building) =>
             multipleBuildingsAllowes.Any(x => x == building);
 
-
         private static readonly float[,] WallData = new float[,] {
             { 1.030F, 10}, // City wall
             { 1.020F, 6}, // Earth wall
@@ -203,6 +202,7 @@ namespace TbsCore.TravianData
                 case BuildingEnum.GreatStable:
                 case BuildingEnum.Workshop:
                 case BuildingEnum.TournamentSquare:
+                case BuildingEnum.Trapper:
                     return BuildingCategoryEnum.Military;
 
                 default:

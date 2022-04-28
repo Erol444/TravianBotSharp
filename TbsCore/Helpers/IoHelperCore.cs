@@ -19,23 +19,30 @@ namespace TbsCore.Helpers
 {
     public static class IoHelperCore
     {
-        public static string AccountsPath => Path.Combine(TbsPath, "accounts.txt");
-        public static string CachePath => Path.Combine(TbsPath, "cache");
+        public static string TbsPath => Path.Combine(AppContext.BaseDirectory, "Data");
         public static string SqlitePath => Path.Combine(TbsPath, "db.sqlite");
+        public static string UseragentPath => Path.Combine(TbsPath, "useragent.json");
 
-        public static string TbsPath =>
-            Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TravBotSharp");
+        public static string UserDataPath(string username, string server) => Path.Combine(TbsPath, UrlRemoveHttp(server), username);
+
+        public static string UserTaskPath(string username, string server) => Path.Combine(UserDataPath(username, server), "tasks.json");
+
+        public static string UserCachePath(string username, string server) => Path.Combine(UserDataPath(username, server), "Cache");
+
+        public static string UserCachePath(string username, string server, string host) => Path.Combine(UserCachePath(username, server), string.IsNullOrWhiteSpace(host) ? "default" : host);
 
         public static bool SQLiteExists() => File.Exists(SqlitePath);
 
-        public static bool AccountsTxtExists() => File.Exists(AccountsPath);
+        public static bool UserAgentExists() => File.Exists(UseragentPath);
 
-        public static string GetCacheDir(string username, string server, Access access)
-        {
-            return Path.Combine(IoHelperCore.CachePath, GetCacheFolder(username, server, access.Proxy));
-        }
+        public static bool UserTaskExists(string username, string server) => File.Exists(UserTaskPath(username, server));
+
+        public static bool UserDataExists(string username, string server) => Directory.Exists(UserDataPath(username, server));
+
+        public static void CreateUserData(string username, string server) => Directory.CreateDirectory(UserDataPath(username, server));
 
         /// <summary>
+
         /// Gets set by WinForms on startup, so TbsCore can alert user (sound+popup)
         /// </summary>
         public static Func<string, bool> AlertUser { get; set; }
@@ -60,9 +67,9 @@ namespace TbsCore.Helpers
 
             foreach (var task in tasks)
             {
-                BuildingHelper.AddBuildingTask(acc, vill, task);
+                UpgradeBuildingHelper.AddBuildingTask(acc, vill, task);
             }
-            BuildingHelper.RemoveCompletedTasks(vill);
+            UpgradeBuildingHelper.RemoveCompletedTasks(vill);
         }
 
         private static List<BuildingTask> DecodeTrbc(TbRoot root)
@@ -125,19 +132,19 @@ namespace TbsCore.Helpers
         /// <param name="acc">Account</param>
         public static void RemoveCache(Account acc)
         {
-            var userFolder = IoHelperCore.GetCacheFolder(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl, "");
+            var userCacheFolder = UserCachePath(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl);
+            if (!UserDataExists(acc.AccInfo.Nickname, acc.AccInfo.ServerUrl)) return;
 
-            var removeFolders = Directory
-                .GetDirectories(CachePath + "\\")
-                .Where(x => x.Replace(CachePath + "\\", "").StartsWith(userFolder))
-                .ToArray();
-
-            if (removeFolders == null) return;
-
-            for (int i = 0; i < removeFolders.Count(); i++)
+            try
             {
-                Directory.Delete(removeFolders[i], true);
+                var removeFolders = Directory.GetDirectories(userCacheFolder);
+
+                for (int i = 0; i < removeFolders.Count(); i++)
+                {
+                    Directory.Delete(removeFolders[i], true);
+                }
             }
+            catch { }
         }
 
         /// <summary>
@@ -151,54 +158,14 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Read accounts from the accounts.txt file
-        /// TODO: remove in future version
-        /// </summary>
-        /// <returns>Accounts saved in the file</returns>
-        public static List<Account> ReadAccounts()
-        {
-            var accounts = new List<Account>();
-            try
-            {
-                // Open the text file using a stream reader.
-                System.IO.Directory.CreateDirectory(IoHelperCore.TbsPath);
-
-                using (StreamReader sr = new StreamReader(IoHelperCore.AccountsPath))
-                {
-                    accounts = JsonConvert.DeserializeObject<List<Account>>(sr.ReadToEnd());
-                }
-                if (accounts == null) accounts = new List<Account>();
-
-                accounts.ForEach(x => ObjectHelper.FixAccObj(x, x));
-            }
-            catch (IOException e)
-            {
-                Console.WriteLine(", Exception thrown: " + e.Message);
-            }
-            return accounts;
-        }
-
-        /// <summary>
-        /// Cache folder selenium will use for this account
-        /// </summary>
-        /// <param name="username">Username</param>
-        /// <param name="server">Server url</param>
-        /// <param name="proxy">Proxy ip</param>
-        /// <returns></returns>
-        internal static string GetCacheFolder(string username, string server, string proxy)
-        {
-            return $"{username}_{IoHelperCore.UrlRemoveHttp(server)}_{proxy}";
-        }
-
-        /// <summary>
         /// Saves accounts into the SQLite DB
         /// </summary>
         /// <param name="accounts"></param>
-        public static void SaveAccounts(List<Account> accounts, bool logout)
+        public static void SaveAccounts(List<Account> accounts)
         {
             foreach (var acc in accounts)
             {
-                if (logout) Logout(acc);
+                acc.Tasks.Save();
                 DbRepository.SaveAccount(acc);
             }
         }
@@ -207,51 +174,31 @@ namespace TbsCore.Helpers
         /// Login into account and initialize everything
         /// </summary>
         /// <param name="acc">Account</param>
-        public static async Task LoginAccount(Account acc)
+        public static async Task<bool> Login(Account acc)
         {
-            if (acc.Wb == null)
+            var opened = await acc.Wb.Init(acc);
+            if (!opened)
             {
-                SerilogSingleton.LogOutput.AddUsername(acc.AccInfo.Nickname);
-
-                acc.Logger = new Logger(acc.AccInfo.Nickname);
-
-                acc.Tasks = new TaskList();
-                acc.Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
-
-                acc.Wb = new WebBrowserInfo();
-                await acc.Wb.InitSelenium(acc);
-                acc.TaskTimer = new TaskTimer(acc);
-
-                AccountHelper.StartAccountTasks(acc);
+                acc.Logger.Warning("Cannot open browser. Check warning below");
+                return false;
             }
+            AccountHelper.StartAccountTasks(acc);
+            acc.TaskTimer.Start();
 
-            if (acc.Settings.DiscordWebhook && !string.IsNullOrEmpty(acc.AccInfo.WebhookUrl))
-            {
-                acc.WebhookClient = new DiscordWebhookClient(acc.AccInfo.WebhookUrl);
-                if (acc.Settings.DiscordOnlineAnnouncement)
-                {
-                    DiscordHelper.SendMessage(acc, "TravianBotSharp is online now");
-                }
-            }
+            return true;
         }
 
         /// <summary>
         /// Logout from the account. Closes web driver.
         /// </summary>
         /// <param name="acc"></param>
-        public static void Logout(Account acc)
+        public static async Task Logout(Account acc)
         {
-            if (acc.TaskTimer != null)
-            {
-                acc.TaskTimer.Dispose();
-                acc.TaskTimer = default;
-            }
-            if (acc.Wb != null)
-            {
-                acc.Wb.Dispose();
-                acc.Wb = default;
-            }
-            acc.Tasks = default; //TODO: somehow save tasks, JSON cant parse/stringify abstract classes :(
+            acc.TaskTimer.Stop();
+            await acc.TaskTimer.WaitStop();
+            acc.Status = Status.Stopping;
+            acc.Wb.Close();
+            acc.Status = Status.Offline;
         }
     }
 }

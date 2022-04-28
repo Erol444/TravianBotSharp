@@ -113,7 +113,7 @@ namespace TbsCore.Helpers
         /// <param name="vill">Village</param>
         /// <param name="res">Required resources</param>
         /// <returns>Whether storage is too low</returns>
-        private static bool IsStorageTooLow(Account acc, Village vill, Resources res)
+        public static bool IsStorageTooLow(Account acc, Village vill, Resources res)
         {
             bool upgradeWarehouse =
                 res.Wood > vill.Res.Capacity.WarehouseCapacity ||
@@ -140,7 +140,7 @@ namespace TbsCore.Helpers
             var task = new BuildingTask()
             {
                 Building = building,
-                TaskType = Classificator.BuildingType.General
+                TaskType = BuildingType.General
             };
 
             var current = vill.Build.Buildings.FirstOrDefault(x =>
@@ -157,7 +157,7 @@ namespace TbsCore.Helpers
             {
                 task.Level = current.Level + 1;
             }
-            BuildingHelper.AddBuildingTask(acc, vill, task, false);
+            UpgradeBuildingHelper.AddBuildingTask(acc, vill, task, false);
         }
 
         /// <summary>
@@ -168,9 +168,9 @@ namespace TbsCore.Helpers
         /// <param name="neededRes">Needed resources</param>
         /// <param name="heroRes">Hero resources</param
         /// <param name="task">Potential BuildingTask that requires the resources</param>
-        private static HeroEquip UseHeroResources(Account acc, Village vill, ref long[] neededRes, long[] heroRes, BuildingTask task = null)
+        public static HeroEquip UseHeroResources(Account acc, Village vill, ref long[] neededRes, long[] heroRes, BuildingTask task = null)
         {
-            var useRes = new List<(Classificator.HeroItemEnum, int)>();
+            var useRes = new List<(HeroItemEnum, int)>();
 
             for (int i = 0; i < 4; i++)
             {
@@ -180,23 +180,23 @@ namespace TbsCore.Helpers
                 if (heroRes[i] < resToBeUsed) resToBeUsed = heroRes[i];
                 neededRes[i] -= resToBeUsed;
 
-                HeroItemEnum item = HeroItemEnum.Others_Wood_0;
+                HeroItemEnum item = HeroItemEnum.Resource_Wood_0;
                 switch (i)
                 {
                     case 0:
-                        item = HeroItemEnum.Others_Wood_0;
+                        item = HeroItemEnum.Resource_Wood_0;
                         break;
 
                     case 1:
-                        item = HeroItemEnum.Others_Clay_0;
+                        item = HeroItemEnum.Resource_Clay_0;
                         break;
 
                     case 2:
-                        item = HeroItemEnum.Others_Iron_0;
+                        item = HeroItemEnum.Resource_Iron_0;
                         break;
 
                     case 3:
-                        item = HeroItemEnum.Others_Crop_0;
+                        item = HeroItemEnum.Resource_Crop_0;
                         break;
                 }
                 useRes.Add((item, (int)resToBeUsed));
@@ -208,24 +208,6 @@ namespace TbsCore.Helpers
                 ExecuteAt = DateTime.Now.AddHours(-2), // -2 since sendRes is -1
                 Vill = vill
             };
-
-            acc.Tasks.Add(heroEquip);
-
-            // A BuildTask needed the resources. If it was auto-build res fields task, make a new
-            // general building task - so resources actually get used for intended building upgrade
-            if (task != null && task.TaskType == Classificator.BuildingType.AutoUpgradeResFields)
-            {
-                var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == task.BuildingId);
-                var lvl = building.Level;
-                if (building.UnderConstruction) lvl++;
-                BuildingHelper.AddBuildingTask(acc, vill, new BuildingTask()
-                {
-                    TaskType = Classificator.BuildingType.General,
-                    Building = task.Building,
-                    BuildingId = task.BuildingId,
-                    Level = ++lvl
-                }, false);
-            }
 
             return heroEquip;
         }
@@ -304,7 +286,7 @@ namespace TbsCore.Helpers
             return neededRes;
         }
 
-        private static long[] SubtractResources(long[] subtractFrom, long[] subtract, bool capToZero)
+        public static long[] SubtractResources(long[] subtractFrom, long[] subtract, bool capToZero)
         {
             var ret = new long[4];
 

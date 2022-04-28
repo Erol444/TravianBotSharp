@@ -11,6 +11,7 @@ using TbsCore.Tasks;
 
 using Serilog;
 using TbsCore.Models.World;
+using TbsCore.Helpers;
 
 namespace TbsCore.Models.AccModels
 {
@@ -21,25 +22,59 @@ namespace TbsCore.Models.AccModels
         /// </summary>
         public void Init()
         {
-            Hero = new Hero();
-            Hero.init();
-
-            Tasks = new TaskList();
-            Villages = new List<Village>();
-            Access = new AccessInfo();
-            Access.Init();
             AccInfo = new AccInfo();
             AccInfo.Init();
+
+            Access = new AccessInfo();
+            Access.Init();
+
+            Villages = new List<Village>();
+
+            Farming = new Farming();
+
+            Hero = new Hero();
+            Hero.Init();
+
             Quests = new QuestsSettings();
             Quests.Init();
-            Settings = new GeneralSettings();
-            Settings.Init();
-            Farming = new Farming();
+
             NewVillages = new NewVillageSettings();
             NewVillages.Init();
 
+            Settings = new GeneralSettings();
+            Settings.Init();
+
             Server = new AccServerData();
             Server.Init();
+        }
+
+        public void Load()
+        {
+            Wb = new WebBrowserInfo();
+            Tasks = new TaskList(this);
+            TaskTimer = new TaskTimer(this);
+
+            if (Settings.DiscordWebhook && !string.IsNullOrEmpty(AccInfo.WebhookUrl))
+            {
+                WebhookClient = new DiscordWebhookClient(AccInfo.WebhookUrl);
+                if (Settings.DiscordOnlineAnnouncement)
+                {
+                    DiscordHelper.SendMessage(this, "Account loaded");
+                }
+            }
+
+            LogOutput.Instance.AddUsername(AccInfo.Nickname);
+            Logger = new Logger(AccInfo.Nickname);
+
+            Villages.ForEach(vill => vill.UnfinishedTasks = new List<VillUnfinishedTask>());
+            // x.Tasks.Load();
+        }
+
+        public void Dispose()
+        {
+            Wb.Dispose();
+            TaskTimer.Dispose();
+            WebhookClient?.Dispose();
         }
 
         public AccInfo AccInfo { get; set; }
@@ -50,21 +85,34 @@ namespace TbsCore.Models.AccModels
         public QuestsSettings Quests { get; set; }
         public NewVillageSettings NewVillages { get; set; }
         public GeneralSettings Settings { get; set; }
-        public AccServerData Server { get; set; }
+        public AccServerData Server { get; private set; }
 
         [JsonIgnore]
-        public WebBrowserInfo Wb { get; set; }
+        public WebBrowserInfo Wb { get; private set; }
 
         [JsonIgnore]
-        public TaskList Tasks;
+        public TaskList Tasks { get; private set; }
 
         [JsonIgnore]
-        public TaskTimer TaskTimer { get; set; }
+        public TaskTimer TaskTimer { get; private set; }
 
         [JsonIgnore]
         public DiscordWebhookClient WebhookClient { get; set; }
 
         [JsonIgnore]
-        public Logger Logger;
+        public Logger Logger { get; private set; }
+
+        [JsonIgnore]
+        public Status Status;
+    }
+
+    public enum Status
+    {
+        Offline,
+        Starting,
+        Online,
+        Pausing,
+        Paused,
+        Stopping,
     }
 }

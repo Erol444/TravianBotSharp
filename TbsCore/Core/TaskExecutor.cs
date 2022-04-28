@@ -1,15 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-using OpenQA.Selenium;
-
 using TbsCore.Extensions;
-using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.JsObjects;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks;
@@ -26,13 +20,32 @@ namespace TbsCore.Helpers
         /// In first case execute the task, in second remove it.
         /// </summary>
         /// <param name="acc"></param>
-        public static async Task PageLoaded(Account acc)
+        public static async Task<bool> PageLoaded(Account acc)
         {
+            {
+                var counter = 3;
+                while (!acc.Wb.CheckChromeOpen())
+                {
+                    acc.Logger.Warning("Chrome browser  missing");
+                    if (counter == 0)
+                    {
+                        acc.Logger.Warning("Chrome still missing after 3 times restart. Pause bot (suggest logout bot before use bot on this account)");
+                        acc.TaskTimer.Stop();
+                        return false;
+                    }
+                    counter--;
+                    acc.Logger.Information("Chrome browser is restarting ...");
+                    var task = new RestartChrome();
+                    await task.Execute(acc);
+                    acc.Logger.Information("Confirm browser opened ...");
+                    await Task.Delay(5000);
+                }
+            }
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
                 acc.Logger.Warning("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
                 acc.TaskTimer.Stop();
-                return;
+                return false;
             }
             if (CheckCookies(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementById('CybotCookiebotDialogBodyLevelButtonLevelOptinDeclineAll').click();");
@@ -54,18 +67,21 @@ namespace TbsCore.Helpers
 
             if (IsLoginScreen(acc)) //Check if you are on login page -> Login task
             {
-                acc.Tasks.Add(new LoginTask() { ExecuteAt = DateTime.MinValue });
-                return;
+                var task = new LoginTask();
+                var result = await task.Execute(acc);
+                if (result == TaskRes.Retry) return false;
             }
 
             if (IsSysMsg(acc)) //Check if there is a system message (eg. Artifacts/WW plans appeared)
             {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?ok=1");
                 await Task.Delay(AccountHelper.Delay(acc));
+                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php?ok=1");
+                return true;
             }
 
             //TODO: limit this for performance reasons?
             PostLoadTasks(acc);
+            return true;
         }
 
         /// <summary>
@@ -81,50 +97,63 @@ namespace TbsCore.Helpers
             await Task.Delay(AccountHelper.Delay(acc));
 
             if (task.Vill == null) task.Vill = acc.Villages.FirstOrDefault(x => x.Active);
-
-            acc.Logger.Information($"Executing task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name}"));
-
-            try
+            acc.Logger.Information($"Executing task {task.GetName()} in village {task.Vill?.Name}");
+            TaskRes taskRes = TaskRes.Executed;
+            do
             {
-                switch (await task.Execute(acc))
+                try
                 {
-                    case TaskRes.Retry:
-                        task.RetryCounter++;
-                        if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
-                        break;
+                    taskRes = await task.Execute(acc);
+                    break;
+                }
+                catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+                {
+                    acc.Logger.Warning($"Chrome has problem while executing task {task.GetName()}! Vill {task.Vill?.Name}. Try reopen Chrome");
 
-                    default:
-                        task.RetryCounter = 0;
-                        if (task.NextTask != null)
-                        {
-                            task.NextTask.ExecuteAt = DateTime.MinValue.AddHours(5);
-                            task.NextTask.Stage = TaskStage.Start;
-                            acc.Tasks.Add(task.NextTask);
-                            task.NextTask = null;
-                        }
-                        break;
+                    acc.Wb.Close();
+
+                    var result = await acc.Wb.Init(acc);
+                    if (!result)
+                    {
+                        acc.TaskTimer.Stop();
+                        return;
+                    }
+                }
+                catch (Exception e)
+                {
+                    acc.Logger.Error(e, $"Error executing task {task.GetName()}! Vill {task.Vill?.Name}");
+                    task.RetryCounter++;
+                    if (task.NextExecute == null)
+                    {
+                        task.NextExecute = DateTime.Now.AddMinutes(3);
+                        acc.Tasks.ReOrder();
+                    }
+                    break;
                 }
             }
-            catch (WebDriverException e) when (e.Message.Contains("chrome not reachable") || e.Message.Contains("no such window:"))
+            while (true);
+
+            switch (taskRes)
             {
-                acc.Logger.Warning($"Chrome has problem while executing task {task.GetName()}! Vill {task.Vill?.Name}. Try reopen Chrome");
+                case TaskRes.Retry:
+                    task.RetryCounter++;
+                    if (task.NextExecute == null)
+                    {
+                        task.NextExecute = DateTime.Now.AddMinutes(3);
+                        acc.Tasks.ReOrder();
+                    }
+                    break;
 
-                acc.Tasks.Add(new ReopenDriver()
-                {
-                    ExecuteAt = DateTime.MinValue,
-                    Priority = TaskPriority.High,
-                    ReopenAt = DateTime.MinValue
-                });
-
-                //try exccute task after we reopen chrome 1 mintues
-
-                if (task.NextExecute == null) task.NextExecute = DateTime.MinValue.AddMinutes(1); // make sure current task is excuted after reopen driver
-            }
-            catch (Exception e)
-            {
-                acc.Logger.Error(e, $"Error executing task {task.GetName()}! Vill {task.Vill?.Name}");
-                task.RetryCounter++;
-                if (task.NextExecute == null) task.NextExecute = DateTime.Now.AddMinutes(3);
+                default:
+                    task.RetryCounter = 0;
+                    if (task.NextTask != null)
+                    {
+                        task.NextTask.ExecuteAt = DateTime.MinValue.AddHours(5);
+                        task.NextTask.Stage = TaskStage.Start;
+                        acc.Tasks.Add(task.NextTask);
+                        task.NextTask = null;
+                    }
+                    break;
             }
 
             //We want to re-execute the same task later
@@ -135,18 +164,18 @@ namespace TbsCore.Helpers
                 acc.Tasks.ReOrder();
 
                 task.Stage = TaskStage.Start;
-                acc.Logger.Warning($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} will be re-executed at {task.ExecuteAt}"));
+                acc.Logger.Warning($"Task {task.GetName()} in village {task.Vill?.Name} will be re-executed at {task.ExecuteAt}");
                 return;
             }
             // Remove the task from the task list
             acc.Tasks.Remove(task);
             if (task.RetryCounter >= 3)
             {
-                acc.Logger.Warning($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is already re-executed 3 times. Ignore it"));
+                acc.Logger.Warning($"Task {task.GetName()} in village {task.Vill?.Name} is already re-executed 3 times. Ignore it");
             }
             else
             {
-                acc.Logger.Information($"Task {task.GetName()}" + (task.Vill == null ? "" : $" in village {task.Vill.Name} is done."));
+                acc.Logger.Information($"Task {task.GetName()} in village {task.Vill?.Name} is done.");
             }
         }
 
@@ -180,8 +209,6 @@ namespace TbsCore.Helpers
             //remove any further UpdateDorf2 BotTasks for this village (if below 5min)
             acc.Tasks.Remove(typeof(UpdateDorf2), vill, 5);
 
-            UpdateCurrentlyBuilding(acc, vill);
-
             var buildings = InfrastructureParser.GetBuildings(acc, acc.Wb.Html);
             foreach (var field in buildings)
             {
@@ -190,6 +217,8 @@ namespace TbsCore.Helpers
                 building.Type = field.Type;
                 building.UnderConstruction = field.UnderConstruction;
             }
+
+            UpdateCurrentlyBuilding(acc, vill);
         }
 
         public static void UpdateDorf1Info(Account acc)
@@ -199,8 +228,6 @@ namespace TbsCore.Helpers
 
             //remove any further UpdateDorf1 BotTasks for this village (if below 5min)
             acc.Tasks.Remove(typeof(UpdateDorf1), vill, 5);
-
-            UpdateCurrentlyBuilding(acc, vill);
 
             var dorf1Movements = TroopsMovementParser.ParseDorf1Movements(acc.Wb.Html);
 
@@ -224,16 +251,21 @@ namespace TbsCore.Helpers
                 building.Type = field.Type;
                 building.UnderConstruction = field.UnderConstruction;
             }
+
+            UpdateCurrentlyBuilding(acc, vill);
         }
 
         private static void UpdateCurrentlyBuilding(Account acc, Village vill)
         {
             vill.Build.CurrentlyBuilding.Clear();
-            var cb = InfrastructureParser.CurrentlyBuilding(acc.Wb.Html, acc);
+            var cb = InfrastructureParser.CurrentlyBuilding(acc.Wb.Html);
             if (cb == null) return; // Nothing is currently building
 
             for (int i = 0; i < cb.Count; i++)
             {
+                var build = vill.Build.Buildings.FirstOrDefault(x => x.Type == cb[i].Building && x.Level - cb[i].Level < 3);
+                if (build == null) continue;
+                cb[i].Location = build.Id;
                 vill.Build.CurrentlyBuilding.Add(cb[i]);
             }
         }

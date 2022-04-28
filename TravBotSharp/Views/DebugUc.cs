@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Windows.Forms;
-using TbsCore.Models.AccModels;
-using TravBotSharp.Interfaces;
-using static TbsCore.Models.AccModels.WebBrowserInfo;
 using TbsCore.Models.Logging;
+using TravBotSharp.Forms;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
@@ -44,7 +43,7 @@ namespace TravBotSharp.Views
             // only update current account
             if (e.Username == GetSelectedAcc().AccInfo.Nickname)
             {
-                UpdateLogData();
+                GetLogData();
             }
         }
 
@@ -65,21 +64,6 @@ namespace TravBotSharp.Views
             logTextBox.Text = Log.GetLog(acc.AccInfo.Nickname);
         }
 
-        public void UpdateLogData()
-        {
-            if (!active) return;
-            if (logTextBox.InvokeRequired)
-            {
-                logTextBox.BeginInvoke(new Action(delegate
-                {
-                    UpdateLogData();
-                }));
-                return;
-            }
-            var acc = GetSelectedAcc();
-            logTextBox.Text = $"{Log.GetLastLog(acc.AccInfo.Nickname)}{logTextBox.Text}";
-        }
-
         public void UpdateTaskTable()
         {
             if (!active) return;
@@ -91,6 +75,7 @@ namespace TravBotSharp.Views
                 }));
                 return;
             }
+            if (!taskListView.Visible) return;
 
             taskListView.Items.Clear();
             var acc = GetSelectedAcc();
@@ -98,6 +83,7 @@ namespace TravBotSharp.Views
             {
                 foreach (var task in GetSelectedAcc().Tasks.ToList())
                 {
+                    if (task == null) continue;
                     var item = new ListViewItem();
                     item.SubItems[0].Text = task.ToString().Split('.').Last(); // Task name
                     item.SubItems.Add(task.Vill?.Name ?? "/"); // Village name
@@ -107,6 +93,12 @@ namespace TravBotSharp.Views
                     taskListView.Items.Add(item);
                 }
             }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            var form = new Helper();
+            form.Show(Parent);
         }
     }
 }

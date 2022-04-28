@@ -98,6 +98,7 @@ namespace TbsCore.Helpers
         }
 
         #region By Id
+
         public static async Task<bool> ClickById(Account acc, string query, bool log = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionClick(), log);
 
@@ -109,7 +110,8 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> SelectIndexById(Account acc, string query, int index, bool log = true) =>
             await ExecuteAction(acc, new QueryById(query), new ActionSelectIndex(index), log);
-        #endregion
+
+        #endregion By Id
 
         #region By Class Name
 
@@ -124,14 +126,15 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> SelectIndexByClassName(Account acc, string query, int index, int qindex = 0, bool log = true) =>
             await ExecuteAction(acc, new QueryByClassName(query, qindex), new ActionSelectIndex(index), log);
-        #endregion
+
+        #endregion By Class Name
 
         #region By Name
 
         public static async Task<bool> ClickByName(Account acc, string query, int qindex = 0, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query, qindex), new ActionClick(), log);
 
-        public static async Task<bool> WriteByName(Account acc, string query, object text, int qindex = 0,  bool log = true) =>
+        public static async Task<bool> WriteByName(Account acc, string query, object text, int qindex = 0, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query, qindex), new ActionWrite(text), log);
 
         public static async Task<bool> CheckByName(Account acc, string query, bool check, int qindex = 0, bool log = true) =>
@@ -139,9 +142,11 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> SelectIndexByName(Account acc, string query, int index, int qindex = 0, bool log = true) =>
             await ExecuteAction(acc, new QueryByName(query, qindex), new ActionSelectIndex(index), log);
-        #endregion
+
+        #endregion By Name
 
         #region By Attribute Value
+
         public static async Task<bool> ClickByAttributeValue(Account acc, string attribute, string value, bool log = true) =>
             await ExecuteAction(acc, new QueryByAttributeVal(attribute, value), new ActionClick(), log);
 
@@ -153,45 +158,70 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> SelectByAttributeValue(Account acc, string attribute, string value, int index, bool log = true) =>
             await ExecuteAction(acc, new QueryByAttributeVal(attribute, value), new ActionSelectIndex(index), log);
-        #endregion
+
+        #endregion By Attribute Value
 
         private static async Task<bool> ExecuteAction(Account acc, Query query, Action action, bool log = true, bool update = true) =>
             await ExecuteScript(acc, $"document.{query.val}{action.val}", log, update);
 
         public class QueryById : Query
+
         { public QueryById(string str) => base.val = $"getElementById('{str}')"; }
 
         public class QueryByName : Query
+
         { public QueryByName(string str, int index = 0) => base.val = $"getElementsByName('{str}')[{index}]"; }
 
         public class QueryByClassName : Query
+
         { public QueryByClassName(string str, int index = 0) => base.val = $"getElementsByClassName('{str}')[{index}]"; }
 
         public class QueryByAttributeVal : Query
+
         { public QueryByAttributeVal(string attribute, string value) => base.val = $"querySelectorAll('[{attribute}=\"{value}\"]')[0]"; }
 
-
         public class ActionWrite : Action
+
         { public ActionWrite(object str) => base.val = $".value='{str}';"; }
 
         public class ActionClick : Action
+
         { public ActionClick() => base.val = ".click();"; }
+
         public class ActionCheck : Action
+
         { public ActionCheck(bool check) => base.val = $".checked={(check ? "true" : "false")};"; }
 
         public class ActionSelectIndex : Action
+
         { public ActionSelectIndex(int index) => base.val = $".selectedIndex = {index};"; }
 
-        public abstract class Action { public string val; }
+        public abstract class Action
+        { public string val; }
 
-        public abstract class Query { public string val; }
+        public abstract class Query
+        { public string val; }
 
-        public static async Task WaitLoaded(Account acc, int delay = 15)
+        public static async Task<bool> WaitPageLoaded(Account acc, double delay = 1)
         {
-            var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromSeconds(delay));
+            var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(delay));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
             acc.Wb.UpdateHtml();
-            await TaskExecutor.PageLoaded(acc);
+            return await TaskExecutor.PageLoaded(acc);
+        }
+
+        public static async Task<bool> WaitPageChange(Account acc, string part, double delay = 1)
+        {
+            var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(delay));
+            try
+            {
+                wait.Until(driver => driver.Url.Contains(part));
+            }
+            catch
+            {
+                acc.Logger.Warning($"Chrome failed when change to page have url part is {part}");
+            }
+            return await WaitPageLoaded(acc, delay);
         }
     }
 }

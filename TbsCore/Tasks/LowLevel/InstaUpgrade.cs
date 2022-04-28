@@ -31,9 +31,10 @@ namespace TbsCore.Tasks.LowLevel
             if (task != null)
             {
                 task.ExecuteAt = DateTime.Now;
+                acc.Tasks.ReOrder();
             }
 
-            await TaskExecutor.PageLoaded(acc);
+            await DriverHelper.WaitPageLoaded(acc);
 
             return TaskRes.Executed;
         }

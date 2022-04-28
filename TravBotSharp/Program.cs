@@ -1,19 +1,23 @@
 ﻿using System;
 using System.Windows.Forms;
+using TravBotSharp.Forms;
 
 namespace TravBotSharp
 {
-    static class Program
+    internal static class Program
     {
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new ControlPanel());
+            Splash.ShowSplashScreen();
+            var mainForm = new ControlPanel();
+            Splash.CloseForm();
+            Application.Run(mainForm);
         }
     }
 }

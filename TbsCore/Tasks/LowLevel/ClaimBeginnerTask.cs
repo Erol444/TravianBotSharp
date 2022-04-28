@@ -29,7 +29,7 @@ namespace TbsCore.Tasks.LowLevel
             }
 
             await DriverHelper.ClickById(acc, buttonId);
-            await TaskExecutor.PageLoaded(acc); // Optional
+            await DriverHelper.WaitPageLoaded(acc); // Optional
 
             return TaskRes.Executed;
         }

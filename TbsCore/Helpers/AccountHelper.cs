@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks.LowLevel;
@@ -9,6 +10,8 @@ namespace TbsCore.Helpers
 {
     public static class AccountHelper
     {
+        private static Random rnd = new Random();
+
         public static Village GetMainVillage(Account acc)
         {
             var main = acc.Villages.FirstOrDefault(x => x.Id == acc.Settings.MainVillage);
@@ -46,22 +49,21 @@ namespace TbsCore.Helpers
         }
 
         /// <summary>
-        /// Returns a random delay (click delay, ~0.5-1.6sec).
+        /// Returns a random
+        ///
+        /// (click delay, ~0.5-1.6sec).
         /// </summary>
         /// <returns>Random delay in milliseconds</returns>
-        public static int Delay(Account acc)
-        {
-            //Return random delay
-            Random rnd = new Random();
-            return rnd.Next(acc.Settings.DelayClickingMin, acc.Settings.DelayClickingMax);
-        }
+        public static int Delay(Account acc) => rnd.Next(acc.Settings.DelayClickingMin, acc.Settings.DelayClickingMax);
+
+        public static Task DelayWait(Account acc) => Task.Delay(Delay(acc));
 
         public static void StartAccountTasks(Account acc)
         {
             // Get the server info (on first running the account)
             if (acc.AccInfo.ServerSpeed == 0 || acc.AccInfo.MapSize == 0)
             {
-                acc.Tasks.Add(new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) });
+                acc.Tasks.Add(new GetServerInfo() { ExecuteAt = DateTime.MinValue.AddHours(2) }, true);
             }
 
             if (acc.AccInfo.Tribe == null)
@@ -73,10 +75,9 @@ namespace TbsCore.Helpers
             if (acc.Farming.Enabled) acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now }, true);
 
             // Bot sleep
-            acc.Tasks.Add(new Sleep()
+            acc.Tasks.Add(new TimeSleep()
             {
                 ExecuteAt = DateTime.Now + TimeHelper.GetWorkTime(acc),
-                AutoSleep = true
             }, true);
 
             // Access change
@@ -91,7 +92,7 @@ namespace TbsCore.Helpers
                 //if (vill.Troops.Researched.Count == 0) acc.Tasks.Add( new UpdateTroops() { ExecuteAt = DateTime.Now, vill = vill });
                 TroopsHelper.ReStartResearchAndImprovement(acc, vill);
                 TroopsHelper.ReStartTroopTraining(acc, vill);
-                BuildingHelper.ReStartBuilding(acc, vill);
+                UpgradeBuildingHelper.ReStartBuilding(acc, vill);
                 BuildingHelper.ReStartDemolishing(acc, vill);
                 MarketHelper.ReStartSendingToMain(acc, vill);
                 ReStartCelebration(acc, vill);
@@ -117,7 +118,7 @@ namespace TbsCore.Helpers
                 {
                     ExecuteAt = DateTime.Now.AddMinutes(ran.Next(40, 80)),
                     Priority = Tasks.BotTask.TaskPriority.Low
-                });
+                }, true);
             }
         }
 

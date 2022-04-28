@@ -29,22 +29,24 @@ namespace TbsCore.Tasks.LowLevel
 
             await DriverHelper.ClickByName(acc, "s1");
 
+            acc.Wb.UpdateHtml();
+
             if (TaskExecutor.IsLoginScreen(acc))
             {
                 // Wrong password/nickname
                 acc.Logger.Warning("Password is incorrect!");
                 acc.TaskTimer.Stop();
+                return TaskRes.Retry;
             }
             else
             {
-                await TaskExecutor.PageLoaded(acc);
+                await DriverHelper.WaitPageChange(acc, "dorf");
                 // check sitter account
                 var auction = acc.Wb.Html.DocumentNode.SelectSingleNode("//a[contains(@class,'auction')]");
 
                 acc.Access.GetCurrentAccess().IsSittering = (auction != null && auction.HasClass("disable"));
+                return TaskRes.Executed;
             }
-
-            return TaskRes.Executed;
         }
     }
 }

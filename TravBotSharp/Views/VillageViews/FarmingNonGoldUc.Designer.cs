@@ -42,7 +42,6 @@ namespace TravBotSharp.Views
             this.farmingYHeader = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.farmingList = new System.Windows.Forms.ListView();
             this.troopsSelectorUc1 = new TravBotSharp.Forms.TroopsSelectorUc();
-            this.button6 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.button9 = new System.Windows.Forms.Button();
@@ -194,16 +193,6 @@ namespace TravBotSharp.Views
         0,
         0};
             // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(254, 173);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(70, 47);
-            this.button6.TabIndex = 167;
-            this.button6.Text = "More farm";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
-            // 
             // button8
             // 
             this.button8.Location = new System.Drawing.Point(38, 89);
@@ -326,7 +315,6 @@ namespace TravBotSharp.Views
             this.Controls.Add(this.button9);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.button8);
-            this.Controls.Add(this.button6);
             this.Controls.Add(this.troopsSelectorUc1);
             this.Controls.Add(this.comboBox_NameList);
             this.Controls.Add(this.button7);
@@ -362,7 +350,6 @@ namespace TravBotSharp.Views
         private System.Windows.Forms.ColumnHeader farmingYHeader;
         private System.Windows.Forms.ListView farmingList;
         private Forms.TroopsSelectorUc troopsSelectorUc1;
-        private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button9;

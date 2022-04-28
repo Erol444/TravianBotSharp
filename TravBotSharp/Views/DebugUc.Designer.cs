@@ -37,7 +37,9 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.logTextBox = new System.Windows.Forms.RichTextBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // taskListView
@@ -48,13 +50,14 @@
             this.cH3,
             this.cHvill,
             this.cH4});
+            this.taskListView.Dock = System.Windows.Forms.DockStyle.Fill;
             this.taskListView.FullRowSelect = true;
             this.taskListView.GridLines = true;
             this.taskListView.HideSelection = false;
-            this.taskListView.Location = new System.Drawing.Point(3, 30);
+            this.taskListView.Location = new System.Drawing.Point(3, 52);
             this.taskListView.MultiSelect = false;
             this.taskListView.Name = "taskListView";
-            this.taskListView.Size = new System.Drawing.Size(401, 596);
+            this.taskListView.Size = new System.Drawing.Size(369, 574);
             this.taskListView.TabIndex = 35;
             this.taskListView.UseCompatibleStateImageBehavior = false;
             this.taskListView.View = System.Windows.Forms.View.Details;
@@ -86,7 +89,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(-1, 9);
+            this.label1.Location = new System.Drawing.Point(3, 29);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(160, 20);
             this.label1.TabIndex = 36;
@@ -96,7 +99,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(417, 7);
+            this.label2.Location = new System.Drawing.Point(378, 29);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(36, 20);
             this.label2.TabIndex = 37;
@@ -104,37 +107,57 @@
             // 
             // logTextBox
             // 
-            this.logTextBox.Location = new System.Drawing.Point(410, 30);
+            this.logTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.logTextBox.Location = new System.Drawing.Point(378, 52);
             this.logTextBox.Name = "logTextBox";
             this.logTextBox.ReadOnly = true;
-            this.logTextBox.Size = new System.Drawing.Size(522, 596);
+            this.logTextBox.Size = new System.Drawing.Size(558, 574);
             this.logTextBox.TabIndex = 38;
             this.logTextBox.Text = "";
             // 
-            // label3
+            // tableLayoutPanel1
             // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(459, 13);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(308, 12);
-            this.label3.TabIndex = 39;
-            this.label3.Text = "Log will auto-update only if you access the Debug tab from some other tab!";
+            this.tableLayoutPanel1.ColumnCount = 2;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.tableLayoutPanel1.Controls.Add(this.label1, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.taskListView, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.logTextBox, 1, 2);
+            this.tableLayoutPanel1.Controls.Add(this.label2, 1, 1);
+            this.tableLayoutPanel1.Controls.Add(this.button1, 0, 0);
+            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(939, 629);
+            this.tableLayoutPanel1.TabIndex = 39;
+            // 
+            // button1
+            // 
+            this.tableLayoutPanel1.SetColumnSpan(this.button1, 2);
+            this.button1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button1.Location = new System.Drawing.Point(3, 3);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(933, 23);
+            this.button1.TabIndex = 39;
+            this.button1.Text = "Got problem when using TBS ?";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // DebugUc
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CausesValidation = false;
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.logTextBox);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.taskListView);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Name = "DebugUc";
             this.Size = new System.Drawing.Size(939, 629);
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -149,6 +172,7 @@
         private System.Windows.Forms.ColumnHeader cHvill;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RichTextBox logTextBox;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.Button button1;
     }
 }
