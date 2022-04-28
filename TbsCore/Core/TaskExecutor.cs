@@ -41,6 +41,7 @@ namespace TbsCore.Helpers
                     await Task.Delay(5000);
                 }
             }
+
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
                 acc.Logger.Warning("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
@@ -312,15 +313,33 @@ namespace TbsCore.Helpers
         //will be called before executing PreTaskRefresh
         internal static bool IsLoginScreen(Account acc)
         {
-            var outerLoginBox = acc.Wb.Html.DocumentNode
-                .Descendants("form")
-                .FirstOrDefault(x => x.GetAttributeValue("name", "") == "login");
-
-            if (outerLoginBox != null)
+            switch (acc.AccInfo.ServerVersion)
             {
-                if (!IsCaptcha(acc)) return true;
+                case Classificator.ServerVersionEnum.TTwars:
+                    {
+                        var outerLoginBox = acc.Wb.Html.DocumentNode
+               .Descendants("form")
+               .FirstOrDefault(x => x.GetAttributeValue("name", "") == "login");
+
+                        if (outerLoginBox != null)
+                        {
+                            if (!IsCaptcha(acc)) return true;
+                        }
+                        return false;
+                    }
+                case Classificator.ServerVersionEnum.T4_5:
+                    {
+                        var tableLogin = acc.Wb.Html.GetElementbyId("loginForm");
+
+                        if (tableLogin != null)
+                        {
+                            if (!IsCaptcha(acc)) return true;
+                        }
+                        return false;
+                    }
+                default:
+                    return false;
             }
-            return false;
         }
 
         private static bool IsSysMsg(Account acc)

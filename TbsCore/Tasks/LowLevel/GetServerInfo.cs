@@ -19,10 +19,6 @@ namespace TbsCore.Tasks.LowLevel
             acc.AccInfo.ServerSpeed = (int)speed;
             acc.Logger.Information($"Server speed is {acc.AccInfo.ServerSpeed}");
 
-            // Get server version
-            acc.AccInfo.ServerVersion = (acc.Wb.Html.GetElementbyId("sidebarBoxDailyquests") == null ? Classificator.ServerVersionEnum.T4_5 : Classificator.ServerVersionEnum.TTwars);
-            acc.Logger.Information($"Server version is {acc.AccInfo.ServerVersion}");
-
             return TaskRes.Executed;
         }
     }

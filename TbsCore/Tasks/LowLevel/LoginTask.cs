@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium;
+using System.Linq;
+using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 
@@ -8,45 +11,114 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if (!TaskExecutor.IsLoginScreen(acc))
+            var usernameNode = GetUsernameNode(acc);
+            if (usernameNode == null)
             {
-                await Task.Delay(AccountHelper.Delay(acc) * 2);
-                return TaskRes.Executed;
+                acc.Logger.Warning("Cannot find username box");
+                acc.TaskTimer.Stop();
+                acc.Status = Status.Paused;
+                return TaskRes.Retry;
+            }
+
+            var passwordNode = GetPasswordNode(acc);
+            if (passwordNode == null)
+            {
+                acc.Logger.Warning("Cannot find password box");
+                acc.TaskTimer.Stop();
+                acc.Status = Status.Paused;
+                return TaskRes.Retry;
+            }
+
+            var buttonNode = GetLoginButton(acc);
+            if (buttonNode == null)
+            {
+                acc.Logger.Warning("Cannot find login button");
+                acc.TaskTimer.Stop();
+                acc.Status = Status.Paused;
+                return TaskRes.Retry;
             }
 
             var access = acc.Access.GetCurrentAccess();
 
-            if (acc.AccInfo.ServerUrl.Contains("ttwars"))
-            {
-                await DriverHelper.WriteByName(acc, "user", acc.AccInfo.Nickname);
-                await DriverHelper.WriteByName(acc, "pw", access.Password);
-            }
-            else
-            {
-                await DriverHelper.WriteByName(acc, "name", acc.AccInfo.Nickname);
-                await DriverHelper.WriteByName(acc, "password", access.Password);
-            }
+            var usernameElement = acc.Wb.Driver.FindElement(By.XPath(usernameNode.XPath));
 
-            await DriverHelper.ClickByName(acc, "s1");
+            usernameElement.SendKeys(Keys.Home);
+            usernameElement.SendKeys(Keys.Shift + Keys.End);
+            usernameElement.SendKeys(acc.AccInfo.Nickname);
 
-            acc.Wb.UpdateHtml();
+            var passwordElement = acc.Wb.Driver.FindElement(By.XPath(passwordNode.XPath));
+            passwordElement.SendKeys(Keys.Home);
+            passwordElement.SendKeys(Keys.Shift + Keys.End);
+            passwordElement.SendKeys(access.Password);
 
-            if (TaskExecutor.IsLoginScreen(acc))
+            var buttonElement = acc.Wb.Driver.FindElement(By.XPath(buttonNode.XPath));
+            buttonElement.Click();
+
+            var result = await DriverHelper.WaitPageChange(acc, "dorf");
+
+            if (!result && TaskExecutor.IsLoginScreen(acc))
             {
                 // Wrong password/nickname
                 acc.Logger.Warning("Password is incorrect!");
                 acc.TaskTimer.Stop();
+                acc.Status = Status.Paused;
                 return TaskRes.Retry;
             }
             else
             {
-                await DriverHelper.WaitPageChange(acc, "dorf");
                 // check sitter account
-                var auction = acc.Wb.Html.DocumentNode.SelectSingleNode("//a[contains(@class,'auction')]");
-
+                var auction = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("auction"));
                 acc.Access.GetCurrentAccess().IsSittering = (auction != null && auction.HasClass("disable"));
                 return TaskRes.Executed;
             }
+        }
+
+        private HtmlNode GetUsernameNode(Account acc)
+        {
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.TTwars:
+                    return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("user"));
+
+                case Classificator.ServerVersionEnum.T4_5:
+                    return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("name"));
+
+                default:
+                    return null;
+            };
+        }
+
+        private HtmlNode GetPasswordNode(Account acc)
+        {
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.TTwars:
+                    return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("pw"));
+
+                case Classificator.ServerVersionEnum.T4_5:
+                    return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("password"));
+
+                default:
+                    return null;
+            };
+        }
+
+        private HtmlNode GetLoginButton(Account acc)
+        {
+            switch (acc.AccInfo.ServerVersion)
+            {
+                case Classificator.ServerVersionEnum.TTwars:
+                    return acc.Wb.Html.GetElementbyId("s1");
+
+                case Classificator.ServerVersionEnum.T4_5:
+                    {
+                        var trNode = acc.Wb.Html.DocumentNode.Descendants("tr").FirstOrDefault(x => x.HasClass("loginButtonRow"));
+                        if (trNode == null) return null;
+                        return trNode.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
+                    }
+                default:
+                    return null;
+            };
         }
     }
 }
