@@ -30,7 +30,6 @@ namespace TbsCore.Tasks.LowLevel
 
             await UpdateTroopsResearchedAndLevels(acc);
 
-            await NavigationHelper.ToDorf2(acc);
             await Task.Delay(AccountHelper.Delay(acc));
             await UpdateTroopsTraining(acc);
 
