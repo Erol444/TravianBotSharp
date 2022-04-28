@@ -163,6 +163,7 @@ namespace TravBotSharp
         {
             this.DialogResult = DialogResult.OK;
             IoHelperCore.CreateUserData(Acc.AccInfo.Nickname, IoHelperCore.UrlRemoveHttp(Acc.AccInfo.ServerUrl));
+            Acc.AccInfo.ServerVersion = Acc.AccInfo.ServerUrl.Contains("ttwars.com") ? Classificator.ServerVersionEnum.TTwars : Classificator.ServerVersionEnum.T4_5;
 
             this.Close();
         }
