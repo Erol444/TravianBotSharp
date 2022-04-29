@@ -27,7 +27,6 @@ namespace TbsCore.Tasks.Update
 
             {
                 var result = await Update(acc);
-                if (StopFlag) return TaskRes.Executed;
                 if (!result) return TaskRes.Executed;
             }
 

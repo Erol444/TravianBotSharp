@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using OpenQA.Selenium;
+using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SideBarModels;
 
@@ -12,24 +12,44 @@ namespace TbsCore.Tasks.Sim
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            var script = $"document.getElementById('mentorTaskList').querySelector('[data-questid=\"{this.QuestToClaim.Id}\"]').click();";
-            await DriverHelper.ExecuteScript(acc, script);
-            await Task.Delay(AccountHelper.Delay(acc) * 2);
-
-            string buttonId = "";
-            switch (acc.AccInfo.ServerVersion)
             {
-                case Classificator.ServerVersionEnum.T4_5:
-                    buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.GetAttributeValue("questid", "") == this.QuestToClaim.Id).Id;
-                    break;
-
-                case Classificator.ServerVersionEnum.TTwars:
-                    buttonId = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("questButtonNext"))?.Id;
-                    break;
+                var result = await Update(acc);
+                if (!result) return TaskRes.Executed;
             }
 
-            await DriverHelper.ClickById(acc, buttonId);
-            await DriverHelper.WaitPageLoaded(acc); // Optional
+            var mentorTaskNode = acc.Wb.Html.GetElementbyId("mentorTaskList");
+            if (mentorTaskNode == null)
+            {
+                acc.Logger.Warning("Cannot find mentor.");
+                return TaskRes.Executed;
+            }
+            var questNode = mentorTaskNode.Descendants().FirstOrDefault(x => x.GetAttributeValue("data-questid", "").Equals($"{QuestToClaim.Id}"));
+            if (questNode == null)
+            {
+                acc.Logger.Warning("Cannot find quest.");
+                return TaskRes.Executed;
+            }
+            var questElement = acc.Wb.Driver.FindElement(By.XPath(questNode.XPath));
+            questElement.Click();
+
+            {
+                var result = await Update(acc);
+                if (!result) return TaskRes.Executed;
+            }
+
+            var buttonNode = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("questButtonNext"));
+            if (buttonNode == null)
+            {
+                acc.Logger.Warning("Cannot find Next button");
+                return TaskRes.Executed;
+            }
+            var buttonElement = acc.Wb.Driver.FindElement(By.XPath(buttonNode.XPath));
+            buttonElement.Click();
+
+            {
+                var result = await Update(acc);
+                if (!result) return TaskRes.Executed;
+            }
 
             return TaskRes.Executed;
         }

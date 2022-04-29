@@ -292,6 +292,9 @@ namespace TbsCore.Helpers
 
                 case ServerVersionEnum.T4_5:
                     return await ToHeroT45(acc, tab);
+
+                default:
+                    return false;
             }
         }
 
