@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Helpers;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SideBarModels;
-using TbsCore.Helpers;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Parsers

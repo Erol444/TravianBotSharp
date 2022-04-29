@@ -58,25 +58,5 @@ namespace TbsCore.Parsers
             var dur = TimeParser.ParseDuration(timer.InnerText);
             return DateTime.Today.Add(dur);
         }
-
-        /// <summary>
-        /// Gets the TimeSpan when the current celebration will end
-        /// </summary>
-        /// <param name="html">Html</param>
-        /// <returns>When celebration will end</returns>
-        public static DateTime GetCelebrationTime(HtmlDocument html)
-        {
-            var underProgress = html.GetElementbyId("under_progress"); // T4.4
-
-            if (underProgress == null) // T4.5
-            {
-                var content = html.GetElementbyId("content");
-                underProgress = content.Descendants().FirstOrDefault(x => x.HasClass("under_progress"));
-            }
-
-            if (underProgress == null) return DateTime.MinValue; // No celebration is under progress
-
-            return DateTime.Now + TimeParser.ParseTimer(underProgress);
-        }
     }
 }

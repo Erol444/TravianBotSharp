@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
-using TbsCore.Helpers;
 using TbsCore.TravianData;
 
 namespace TbsCore.Models.VillageModels

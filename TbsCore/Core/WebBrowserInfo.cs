@@ -1,18 +1,13 @@
 ﻿using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using RestSharp;
+using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
 using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading.Tasks;
-using TbsCore.Helpers;
-using TbsCore.Models;
-using TbsCore.Tasks.LowLevel;
-using TbsCore.Helpers.ChromeExtension;
-using static TbsCore.Tasks.BotTask;
-using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
-using System.Collections.ObjectModel;
 using TbsCore.Database;
+using TbsCore.Helpers;
+using TbsCore.Helpers.ChromeExtension;
 
 namespace TbsCore.Models.AccModels
 {

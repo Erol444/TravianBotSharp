@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using TbsCore.Models.CombatModels;
+﻿using TbsCore.Models.CombatModels;
 
 namespace TbsCore.TravianData
 {

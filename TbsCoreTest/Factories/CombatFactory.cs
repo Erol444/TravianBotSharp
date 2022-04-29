@@ -74,12 +74,12 @@ namespace TbsCoreTest.Factories
             };
         }
 
-    /// <summary>
-    /// Deff1: 2000 phalanx (20), 500 druids (15), 200 heudans, Hero: 50 strenght, 50 bonus, max phalanx, horse
-    /// Deff2: 1000 legionnaires (18), 1000 praetorian (19), 500 EC
-    /// Deffender: 450 Population, romans, wall level 15
-    /// </summary>
-    public CombatDeffender CreateDeffender3()
+        /// <summary>
+        /// Deff1: 2000 phalanx (20), 500 druids (15), 200 heudans, Hero: 50 strenght, 50 bonus, max phalanx, horse
+        /// Deff2: 1000 legionnaires (18), 1000 praetorian (19), 500 EC
+        /// Deffender: 450 Population, romans, wall level 15
+        /// </summary>
+        public CombatDeffender CreateDeffender3()
         {
             return new CombatDeffender
             {

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
 
 namespace TbsCore.Models.TroopsModels

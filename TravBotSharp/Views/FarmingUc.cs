@@ -2,14 +2,11 @@
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using TbsCore.Models.TroopsModels;
 using TbsCore.Helpers;
-
-using TbsCore.Tasks.LowLevel;
-using TbsCore.Tasks.SecondLevel;
-using TravBotSharp.Interfaces;
-using TravBotSharp.Forms;
 using TbsCore.Models.MapModels;
+using TbsCore.Models.TroopsModels;
+using TbsCore.Tasks.Farming;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {

@@ -1,12 +1,8 @@
-using System;
+using System.Linq;
 using TbsCore.Helpers;
-using TbsCore.Models.ResourceModels;
-using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TbsCoreTest.Factories;
-using TbsCore.Tasks.LowLevel;
 using Xunit;
-using System.Linq;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCoreTest

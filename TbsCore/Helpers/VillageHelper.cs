@@ -2,12 +2,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.Parsers;
-using TbsCore.Tasks.LowLevel;
-using TbsCore.TravianData;
+using TbsCore.Tasks.Update;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Helpers

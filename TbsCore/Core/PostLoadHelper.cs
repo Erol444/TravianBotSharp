@@ -5,9 +5,10 @@ using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.JsObjects;
 using TbsCore.Models.VillageModels;
-using TbsCore.Helpers;
 using TbsCore.Parsers;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Others;
+using TbsCore.Tasks.Sim;
+using TbsCore.Tasks.Update;
 using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Helpers
@@ -91,7 +92,7 @@ namespace TbsCore.Helpers
                         acc.Wb.Html.GetElementbyId("mentorTaskList") == null &&
                         acc.Quests.ClaimBeginnerQuests)
                     {
-                        acc.Tasks.Add(new ClaimBeginnerTask2021() { ExecuteAt = DateTime.Now}, true);
+                        acc.Tasks.Add(new ClaimBeginnerTask2021() { Vill = vill, ExecuteAt = DateTime.Now}, true); ;
                         return;
                     }
 

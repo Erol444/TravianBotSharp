@@ -1,10 +1,6 @@
 using System;
-using System.Collections.Generic;
 using TbsCore.Helpers;
 using TbsCore.Models.CombatModels;
-using TbsCore.Models.ResourceModels;
-using TbsCore.Models.Settings;
-using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 using TbsCoreTest.Factories;
 using Xunit;
@@ -71,7 +67,7 @@ namespace TbsCoreTest
             Assert.Equal((261000, 4598), GetBaseVals(attackers[1], deffenders[0]));
             Assert.Equal((261000, 131523), GetBaseVals(attackers[1], deffenders[1]));
             Assert.Equal((261000, 294580), GetBaseVals(attackers[1], deffenders[2]));
-            
+
             Assert.Equal((640000, 4563), GetBaseVals(attackers[2], deffenders[0]));
             Assert.Equal((640000, 131875), GetBaseVals(attackers[2], deffenders[1]));
             Assert.Equal((640000, 294281), GetBaseVals(attackers[2], deffenders[2]));
@@ -96,7 +92,7 @@ namespace TbsCoreTest
 
             combat.Attacker.Population = 4;
             Assert.Equal(0.94, Rnd(combat.GetMoraleBonus()));
-            
+
             combat.Attacker.Population = 2;
             combat.Deffender.Population = 2;
             Assert.Equal(1, combat.GetMoraleBonus());

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using TbsCore.TravianData;
 
 namespace TbsCore.Models.CombatModels
 {
@@ -25,7 +21,7 @@ namespace TbsCore.Models.CombatModels
             if ((Hero?.Info?.Health ?? 0) == 0) return unitsOff;
 
             var heroOff = Hero.GetOff();
-            
+
             var (troop, boost) = Hero.GetWeaponBoost();
             var weaponBoost = CombatPoints.Both(base.Troops[(int)troop % 10] * boost);
 

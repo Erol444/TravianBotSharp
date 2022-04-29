@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TbsCore.Parsers;
+﻿using TbsCore.Parsers;
 
 namespace TbsCore.Helpers
 {

@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.ResourceModels;
 
-using TbsCore.TravianData;
-
 namespace TbsCore.Parsers
 {
     public static class MarketParser

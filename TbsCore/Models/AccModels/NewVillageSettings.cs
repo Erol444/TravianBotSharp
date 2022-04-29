@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
-using TbsCore.Models.Settings;
-using TbsCore.Models.VillageModels;
 using TbsCore.Helpers;
+using TbsCore.Models.VillageModels;
 
 namespace TbsCore.Models.AccModels
 {

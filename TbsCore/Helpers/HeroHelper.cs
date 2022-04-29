@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
-using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Farming;
+using TbsCore.Tasks.Others;
 using TbsCore.TravianData;
 using static TbsCore.Helpers.Classificator;
 

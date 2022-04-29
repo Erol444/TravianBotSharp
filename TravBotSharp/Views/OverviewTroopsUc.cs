@@ -4,7 +4,7 @@ using System.Linq;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Others;
 using TbsCore.TravianData;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;

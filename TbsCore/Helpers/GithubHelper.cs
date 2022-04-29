@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Octokit;
+using System;
 using System.Threading.Tasks;
-using Octokit;
 
 namespace TbsCore.Helpers
 {

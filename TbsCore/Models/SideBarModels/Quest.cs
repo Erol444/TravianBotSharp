@@ -1,6 +1,4 @@
-﻿using TbsCore.Models.SideBarModels;
-
-namespace TbsCore.Models.SideBarModels
+﻿namespace TbsCore.Models.SideBarModels
 {
     public class Quest
     {

@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.BuildingModels;
-using TbsCore.Helpers;
-using static TbsCore.Helpers.Classificator;
 using TbsCore.Models.VillageModels;
-using System.Linq;
+using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.TravianData
 {

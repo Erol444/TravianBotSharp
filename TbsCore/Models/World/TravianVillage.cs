@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TbsCore.Models.MapModels;
+﻿using TbsCore.Models.MapModels;
 
 namespace TbsCore.Models.AttackModels
 {

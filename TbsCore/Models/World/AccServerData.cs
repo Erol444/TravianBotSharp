@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using TbsCore.Models.AttackModels;
-using TbsCore.Models.MapModels;
 
 namespace TbsCore.Models.World
 {

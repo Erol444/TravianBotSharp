@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsMovementModels;
 
@@ -8,7 +6,7 @@ namespace TbsCore.Models.VillageModels
 {
     public class VillTroopMovements
     {
-        public void Init() 
+        public void Init()
         {
             IncomingAttacks = new List<TroopsMovementRallyPoint>();
         }
