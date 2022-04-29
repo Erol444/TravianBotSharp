@@ -161,6 +161,11 @@ namespace TbsCore.Tasks.Sim
 
         private async Task<bool> EnterBuilding(Account acc)
         {
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (!result) return false;
+            }
             return await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Train);
         }
 

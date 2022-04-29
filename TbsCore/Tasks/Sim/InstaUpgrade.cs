@@ -13,6 +13,14 @@ namespace TbsCore.Tasks.Sim
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
+            StopFlag = false;
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
+
             await NavigationHelper.ToDorf1(acc);
 
             var finishClass = acc.Wb.Html.DocumentNode
