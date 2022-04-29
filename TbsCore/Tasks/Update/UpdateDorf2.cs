@@ -8,11 +8,25 @@ namespace TbsCore.Tasks.Update
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            acc.Tasks.Remove(this.GetType(), Vill, thisTask: this);
+            StopFlag = false;
 
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
             if (!acc.Wb.CurrentUrl.Contains("/dorf2.php")) // Don't re-navigate
             {
-                await NavigationHelper.ToDorf2(acc);
+                var result = await NavigationHelper.ToDorf2(acc);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
+
+            {
+                var result = await Update(acc);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
             }
 
             return TaskRes.Executed;
