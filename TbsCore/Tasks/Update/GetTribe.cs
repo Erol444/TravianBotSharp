@@ -11,7 +11,11 @@ namespace TbsCore.Tasks.Update
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await Task.Yield();
+            {
+                var result = await Update(acc);
+                if (!result) return TaskRes.Executed;
+            }
+
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.TTwars:

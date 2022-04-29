@@ -8,7 +8,10 @@ namespace TbsCore.Tasks.Update
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await Task.Yield();
+            {
+                var result = await Update(acc);
+                if (!result) return TaskRes.Executed;
+            }
             // Get Map size
             var size = DriverHelper.GetJsObj<long>(acc, "window.TravianDefaults.Map.Size.top");
             acc.AccInfo.MapSize = (int)size;
