@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Browser
 {
     public class TimeSleep : ReopenDriver
     {

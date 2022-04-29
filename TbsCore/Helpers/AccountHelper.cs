@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
+using TbsCore.Tasks.Browser;
 using TbsCore.Tasks.LowLevel;
 using TbsCore.Tasks.SecondLevel;
 
@@ -10,7 +11,7 @@ namespace TbsCore.Helpers
 {
     public static class AccountHelper
     {
-        private static Random rnd = new Random();
+        private static readonly Random rnd = new Random();
 
         public static Village GetMainVillage(Account acc)
         {

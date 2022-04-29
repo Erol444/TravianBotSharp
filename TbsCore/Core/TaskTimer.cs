@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using TbsCore.Helpers;
 using TbsCore.Tasks;
+using TbsCore.Tasks.Browser;
 using TbsCore.Tasks.LowLevel;
 using static TbsCore.Tasks.BotTask;
 

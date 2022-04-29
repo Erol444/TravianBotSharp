@@ -7,6 +7,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks;
+using TbsCore.Tasks.Browser;
 using TbsCore.Tasks.LowLevel;
 using static TbsCore.Tasks.BotTask;
 

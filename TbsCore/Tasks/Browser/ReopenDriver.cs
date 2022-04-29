@@ -4,7 +4,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
 using System.Linq;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Browser
 {
     /// <summary>
     /// Task will close and reopen driver then the next Normal/High priority task has to be executed

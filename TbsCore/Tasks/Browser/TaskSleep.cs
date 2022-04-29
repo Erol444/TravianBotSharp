@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using System.Linq;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Browser
 {
     public class TaskSleep : ReopenDriver
     {

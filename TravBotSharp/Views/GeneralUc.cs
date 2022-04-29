@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Drawing;
-using System.Threading;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
-using TbsCore.Helpers;
+using TbsCore.Tasks.Browser;
 using TbsCore.Tasks.LowLevel;
-using TravBotSharp.Interfaces;
 using TravBotSharp.Forms;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {

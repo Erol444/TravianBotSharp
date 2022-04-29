@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Browser
 {
     /// <summary>
     /// This task changes access (and restarts selenium driver) for the account and sets the next access change, if there are multiple access'.
