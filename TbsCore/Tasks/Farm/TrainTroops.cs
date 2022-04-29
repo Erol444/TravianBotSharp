@@ -6,6 +6,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Parsers;
+using TbsCore.Tasks.Update;
 using TbsCore.TravianData;
 
 using static TbsCore.Helpers.Classificator;

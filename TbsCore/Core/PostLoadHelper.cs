@@ -8,6 +8,7 @@ using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks.LowLevel;
 using TbsCore.Tasks.Sim;
+using TbsCore.Tasks.Update;
 using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Helpers

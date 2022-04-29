@@ -6,11 +6,12 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.AttackModels;
 using TbsCore.Parsers;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Update
 {
     public class CheckProfile : BotTask
     {
         public int UserId { get; set; }
+
         public TravianUser Profile { get; } = new TravianUser()
         {
             Villages = new List<TravianVillage>()
@@ -26,6 +27,7 @@ namespace TbsCore.Tasks.LowLevel
                 case Classificator.ServerVersionEnum.T4_5:
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/profile/{UserId}");
                     break;
+
                 case Classificator.ServerVersionEnum.TTwars:
                     await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/spieler.php?uid={UserId}");
                     break;

@@ -5,7 +5,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Update
 {
     public class UpdateTroops : BotTask
     {

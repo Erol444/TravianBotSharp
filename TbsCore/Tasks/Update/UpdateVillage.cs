@@ -4,7 +4,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Parsers;
 using TbsCore.TravianData;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Update
 {
     public class UpdateVillage : BotTask
     {

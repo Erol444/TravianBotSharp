@@ -2,7 +2,7 @@
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Update
 {
     internal class UpdateTaskUseRes : BotTask
     {

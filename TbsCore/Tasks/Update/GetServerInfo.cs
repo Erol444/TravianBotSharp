@@ -2,7 +2,7 @@
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Update
 {
     public class GetServerInfo : BotTask
     {
@@ -17,7 +17,7 @@ namespace TbsCore.Tasks.LowLevel
             // Get server speed
             var speed = DriverHelper.GetJsObj<long>(acc, "Travian.Game.speed");
             acc.AccInfo.ServerSpeed = (int)speed;
-            acc.Logger.Information($"Server speed is {acc.AccInfo.ServerSpeed}");
+            acc.Logger.Information($"Server speed is {acc.AccInfo.ServerSpeed}x");
 
             return TaskRes.Executed;
         }

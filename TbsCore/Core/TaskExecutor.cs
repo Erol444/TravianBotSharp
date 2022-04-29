@@ -9,6 +9,7 @@ using TbsCore.Parsers;
 using TbsCore.Tasks;
 using TbsCore.Tasks.Browser;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Update;
 using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Helpers

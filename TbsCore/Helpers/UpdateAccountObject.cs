@@ -6,6 +6,7 @@ using TbsCore.Models.SideBarModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Update;
 
 namespace TbsCore.Helpers
 {
@@ -32,7 +33,7 @@ namespace TbsCore.Helpers
 
                 if (oldVill.UnderAttack != foundVill.UnderAttack &&
                     foundVill.UnderAttack &&
-                    oldVill.Deffing.AlertType != Models.VillageModels.AlertTypeEnum.Disabled)
+                    oldVill.Deffing.AlertType != AlertTypeEnum.Disabled)
                 {
                     acc.Tasks.Add(new CheckAttacks() { Vill = oldVill, Priority = Tasks.BotTask.TaskPriority.High }, true, oldVill);
                 }

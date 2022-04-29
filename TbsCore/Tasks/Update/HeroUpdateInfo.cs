@@ -2,9 +2,10 @@
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
+using TbsCore.Tasks.LowLevel;
 using static TbsCore.Helpers.Classificator;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Update
 {
     public class HeroUpdateInfo : BotTask
     {

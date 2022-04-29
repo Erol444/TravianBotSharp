@@ -7,6 +7,7 @@ using TbsCore.Tasks.Browser;
 using TbsCore.Tasks.LowLevel;
 using TbsCore.Tasks.SecondLevel;
 using TbsCore.Tasks.Sim;
+using TbsCore.Tasks.Update;
 
 namespace TbsCore.Helpers
 {

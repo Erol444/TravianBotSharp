@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Update;
 using TravBotSharp.Forms.Hero;
 using TravBotSharp.Interfaces;
 
