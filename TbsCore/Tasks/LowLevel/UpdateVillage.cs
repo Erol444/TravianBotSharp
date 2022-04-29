@@ -37,12 +37,6 @@ namespace TbsCore.Tasks.LowLevel
             Vill.Troops.TroopToTrain = firstTroop;
             Vill.Troops.Researched.Add(firstTroop);
 
-            if (await NavigationHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.TownHall))
-            {
-                // Village has town hall, parse celebration duration
-                Vill.Expansion.CelebrationEnd = TimeParser.GetCelebrationTime(acc.Wb.Html);
-            }
-
             return TaskRes.Executed;
         }
 

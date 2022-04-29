@@ -616,7 +616,7 @@ namespace TbsCore.Tasks.LowLevel
                 }
 
                 var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
-                acc.Logger.Information("Not enough resources to build.");
+                acc.Logger.Information($"Not enough resources to build. Still need {stillNeededRes}");
                 if (Vill.Settings.UseHeroRes && acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
                 {
                     var heroRes = HeroHelper.GetHeroResources(acc);

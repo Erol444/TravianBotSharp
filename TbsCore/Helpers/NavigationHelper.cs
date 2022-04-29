@@ -411,7 +411,8 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> SwitchVillage(Account acc, Village vill)
         {
-            await DriverHelper.WaitPageLoaded(acc);
+            var result = await DriverHelper.WaitPageLoaded(acc);
+            if (!result) return false;
             var active = acc.Villages.FirstOrDefault(x => x.Active);
             if (active != null && active.Id != vill.Id)
             {
