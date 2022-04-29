@@ -283,91 +283,96 @@ namespace TbsCore.Helpers
         public static async Task<bool> ToTreasury(Account acc, Village vill, TreasuryTab tab) =>
             await EnterBuilding(acc, vill, BuildingEnum.Treasury, (int)tab);
 
-        public static async Task ToHero(Account acc, HeroTab tab)
+        public static async Task<bool> ToHero(Account acc, HeroTab tab)
         {
             switch (acc.AccInfo.ServerVersion)
             {
                 case ServerVersionEnum.TTwars:
-                    await ToHeroTTwar(acc, tab);
-                    break;
+                    return await ToHeroTTwar(acc, tab);
 
                 case ServerVersionEnum.T4_5:
-                    await ToHeroT45(acc, tab);
+                    return await ToHeroT45(acc, tab);
+            }
+        }
+
+        private static async Task<bool> ToHeroTTwar(Account acc, HeroTab tab)
+        {
+            HtmlNode node;
+            switch (tab)
+            {
+                case HeroTab.Appearance:
+                    throw new NotImplementedException();
+
+                case HeroTab.Attributes:
+                    node = acc.Wb.Html.GetElementbyId("heroImageButton");
+                    break;
+
+                case HeroTab.Adventures:
+                    node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventureWhite"));
+                    break;
+
+                case HeroTab.Auctions:
+                    node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("auctionWhite"));
+                    break;
+
+                default:
+                    node = null;
                     break;
             }
+
+            if (node == null)
+            {
+                acc.Logger.Warning($"Cannot find button to go to {tab}");
+                return false;
+            }
+
+            var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+            element.Click();
+
+            var result = await DriverHelper.WaitPageChange(acc, "hero.php");
+            if (!result) return false;
+            if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
+            return true;
         }
 
-        private static async Task ToHeroTTwar(Account acc, HeroTab tab)
+        private static async Task<bool> ToHeroT45(Account acc, HeroTab tab)
         {
-            do
+            HtmlNode node;
+            switch (tab)
             {
-                switch (tab)
-                {
-                    case HeroTab.Appearance:
-                        throw new NotImplementedException();
+                case HeroTab.Appearance:
+                    throw new NotImplementedException();
 
-                    case HeroTab.Attributes:
-                        await DriverHelper.ClickById(acc, "heroImageButton");
-                        break;
+                case HeroTab.Attributes:
+                    node = acc.Wb.Html.GetElementbyId("heroImageButton");
+                    break;
 
-                    case HeroTab.Adventures:
-                        await DriverHelper.ClickByClassName(acc, "adventureWhite");
-                        break;
+                case HeroTab.Adventures:
+                    node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventure"));
+                    break;
 
-                    case HeroTab.Auctions:
-                        await DriverHelper.ClickByClassName(acc, "auctionWhite");
-                        break;
-                }
+                case HeroTab.Auctions:
+                    node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("auction"));
+                    break;
 
-                try
-                {
-                    await DriverHelper.WaitPageChange(acc, "hero.php");
-
-                    if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
-                }
-                catch
-                {
-                    continue;
-                }
-                return;
+                default:
+                    node = null;
+                    break;
             }
-            while (true);
-        }
 
-        private static async Task ToHeroT45(Account acc, HeroTab tab)
-        {
-            do
+            if (node == null)
             {
-                switch (tab)
-                {
-                    case HeroTab.Appearance:
-                        throw new NotImplementedException();
-
-                    case HeroTab.Attributes:
-                        await DriverHelper.ClickById(acc, "heroImageButton");
-                        break;
-
-                    case HeroTab.Adventures:
-                        await DriverHelper.ClickByClassName(acc, "adventure");
-                        break;
-
-                    case HeroTab.Auctions:
-                        await DriverHelper.ClickByClassName(acc, "auction");
-                        break;
-                }
-
-                try
-                {
-                    await DriverHelper.WaitPageChange(acc, "hero");
-                    if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
-                }
-                catch
-                {
-                    continue;
-                }
-                return;
+                acc.Logger.Warning($"Cannot find button to go to {tab}");
+                return false;
             }
-            while (true);
+
+            var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+            element.Click();
+
+            var result = await DriverHelper.WaitPageChange(acc, "hero");
+            if (!result) return false;
+            if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
+            return true;
         }
 
         public static async Task<bool> ToOverview(Account acc, OverviewTab tab, TroopOverview subTab = TroopOverview.OwnTroops)

@@ -13,7 +13,16 @@ namespace TbsCore.Tasks.Update
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Attributes);
+            {
+                var result = await Update(acc);
+                if (!result) return TaskRes.Executed;
+            }
+
+            {
+                var result = await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Attributes);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
 
             if (acc.Hero.Settings.AutoAuction)
             {
@@ -42,12 +51,14 @@ namespace TbsCore.Tasks.Update
                     break;
                 }
             }
+
             if (acc.Hero.Settings.AutoRefreshInfo)
             {
-                this.NextExecute = DateTime.Now.AddMinutes(
+                NextExecute = DateTime.Now.AddMinutes(
                     ran.Next(acc.Hero.Settings.MinUpdate, acc.Hero.Settings.MaxUpdate)
                     );
             }
+
             acc.Tasks.Remove(typeof(HeroUpdateInfo), thisTask: this);
 
             return TaskRes.Executed;
