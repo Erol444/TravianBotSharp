@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Others;
 using TbsCore.Tasks.Update;
 using TravBotSharp.Forms.Hero;
 using TravBotSharp.Interfaces;
@@ -278,7 +278,7 @@ namespace TravBotSharp.Views
         {
             var acc = GetSelectedAcc();
             acc.Hero.Settings.AutoAuction = autoAuction.Checked;
-            var task = acc.Tasks.FindTask(typeof(SellOnAuctions));
+            TbsCore.Tasks.BotTask task = acc.Tasks.FindTask(typeof(SellOnAuctions));
             if (autoAuction.Checked)
             {
                 if (task == null)

@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Tasks.LowLevel;
 
-namespace TbsCore.Tasks.SecondLevel
+namespace TbsCore.Tasks.Farming
 {
     public class SendFLs : BotTask
     {

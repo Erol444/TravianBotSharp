@@ -7,7 +7,7 @@ using TbsCore.Models.BuildingModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Others;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Helpers

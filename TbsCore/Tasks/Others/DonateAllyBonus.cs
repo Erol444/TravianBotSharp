@@ -3,7 +3,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Others
 {
     public class DonateAllyBonus : BotTask
     {

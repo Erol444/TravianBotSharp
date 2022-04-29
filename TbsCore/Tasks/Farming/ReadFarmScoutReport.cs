@@ -6,7 +6,7 @@ using TbsCore.Models.MapModels;
 using TbsCore.Parsers;
 using static TbsCore.Helpers.Classificator;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     /// <summary>
     /// Use in combination with ScoutPlayer.cs. It will first scout villages, read the reports and then potentially send raid attack
@@ -17,6 +17,7 @@ namespace TbsCore.Tasks.LowLevel
         /// Coordinates to read the scout report
         /// </summary>
         public Coordinates Coordinates { get; set; }
+
         /// <summary>
         /// Minimal resources that have to be available to send raid
         /// </summary>

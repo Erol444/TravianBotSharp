@@ -7,8 +7,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.Tasks.LowLevel;
-using TbsCore.Tasks.SecondLevel;
+using TbsCore.Tasks.Farming;
 using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
 

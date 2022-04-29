@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using TbsCore.Helpers;
-using TbsCore.Tasks.SecondLevel;
+using TbsCore.Tasks.Farming;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views

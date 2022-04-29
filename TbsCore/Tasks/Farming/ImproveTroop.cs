@@ -8,7 +8,7 @@ using TbsCore.Models.TroopsModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     public class ImproveTroop : BotTask
     {

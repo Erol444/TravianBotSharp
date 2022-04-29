@@ -7,7 +7,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Parsers;
 using static TbsCore.Helpers.Classificator;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Others
 {
     public class SellOnAuctions : BotTask
     {

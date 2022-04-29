@@ -2,11 +2,10 @@
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Tasks.LowLevel;
 using TbsCore.Tasks.Update;
 using TbsCore.TravianData;
 
-namespace TbsCore.Tasks.SecondLevel
+namespace TbsCore.Tasks.Farming
 {
     public class ScoutPlayer : CheckProfile
     {

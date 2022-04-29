@@ -8,7 +8,7 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Others;
 
 namespace TbsCore.Tasks.Update
 {

@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks.Browser;
-using TbsCore.Tasks.LowLevel;
-using TbsCore.Tasks.SecondLevel;
+using TbsCore.Tasks.Farming;
 using TbsCore.Tasks.Sim;
 using TbsCore.Tasks.Update;
 

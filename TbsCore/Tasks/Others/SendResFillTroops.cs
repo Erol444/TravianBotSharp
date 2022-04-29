@@ -4,9 +4,10 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
+using TbsCore.Tasks.Farming;
 using TbsCore.TravianData;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Others
 {
     /// <summary>
     /// Sends resources from main village to target village so it can fill up the troops to above X hours

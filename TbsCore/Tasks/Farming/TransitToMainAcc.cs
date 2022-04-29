@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
+using TbsCore.Tasks.Others;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     /// <summary>
     /// Used on TTWars to constantly send resources to your main account

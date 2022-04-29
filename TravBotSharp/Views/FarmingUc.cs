@@ -5,8 +5,7 @@ using System.Windows.Forms;
 using TbsCore.Helpers;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.TroopsModels;
-using TbsCore.Tasks.LowLevel;
-using TbsCore.Tasks.SecondLevel;
+using TbsCore.Tasks.Farming;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views

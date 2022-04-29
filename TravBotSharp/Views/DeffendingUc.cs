@@ -4,8 +4,8 @@ using System.Linq;
 using System.Windows.Forms;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
-
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Farming;
+using TbsCore.Tasks.Others;
 using TravBotSharp.Interfaces;
 using XPTable.Editors;
 using XPTable.Models;

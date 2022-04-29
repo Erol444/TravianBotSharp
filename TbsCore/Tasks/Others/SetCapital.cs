@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Others
 {
     public class SetCapital : BotTask
     {

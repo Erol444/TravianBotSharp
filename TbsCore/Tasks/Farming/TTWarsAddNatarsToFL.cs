@@ -3,10 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
-using TbsCore.Tasks.LowLevel;
 using TbsCore.Tasks.Update;
 
-namespace TbsCore.Tasks.SecondLevel
+namespace TbsCore.Tasks.Farming
 {
     public class TTWarsAddNatarsToFL : CheckProfile
     {

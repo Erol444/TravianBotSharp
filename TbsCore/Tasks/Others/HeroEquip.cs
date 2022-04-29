@@ -8,7 +8,7 @@ using TbsCore.Models.AccModels;
 
 using static TbsCore.Helpers.Classificator;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Others
 {
     public class HeroEquip : BotTask
     {

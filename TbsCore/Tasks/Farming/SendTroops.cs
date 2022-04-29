@@ -7,7 +7,7 @@ using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsModels;
 using TbsCore.Parsers;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     public class SendTroops : BotTask
     {

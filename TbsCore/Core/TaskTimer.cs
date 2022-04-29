@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using System.Timers;
 using TbsCore.Helpers;
 using TbsCore.Tasks.Browser;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Others;
 using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Models.AccModels

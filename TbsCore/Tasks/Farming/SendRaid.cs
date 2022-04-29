@@ -6,7 +6,7 @@ using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsModels;
 using TbsCore.TravianData;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     public class SendRaid : SendTroops
     {
@@ -14,6 +14,7 @@ namespace TbsCore.Tasks.LowLevel
         /// Bot will only send enough troops to raid all resources availabe
         /// </summary>
         public long ResourcesAvailable { get; set; }
+
         public Coordinates TargetVillage { get; set; }
 
         public override async Task<TaskRes> Execute(Account acc)

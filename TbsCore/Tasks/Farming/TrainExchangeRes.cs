@@ -4,7 +4,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.TravianData;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     public class TrainExchangeRes : BotTask
     {

@@ -9,7 +9,7 @@ using TbsCore.Models.TroopsModels;
 using TbsCore.Parsers;
 using static TbsCore.Helpers.Classificator;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     public class UpdateFarmLists : BotTask
     {

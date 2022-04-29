@@ -8,7 +8,7 @@ using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks;
 using TbsCore.Tasks.Browser;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Others;
 using TbsCore.Tasks.Update;
 using static TbsCore.Tasks.BotTask;
 

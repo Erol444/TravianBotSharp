@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Others
 {
     public class TTWarsBuyAdventure : BotTask
     {

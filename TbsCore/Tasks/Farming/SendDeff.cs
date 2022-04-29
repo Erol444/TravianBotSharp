@@ -6,7 +6,7 @@ using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsModels;
 using TbsCore.TravianData;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     public class SendDeff : SendTroops
     {

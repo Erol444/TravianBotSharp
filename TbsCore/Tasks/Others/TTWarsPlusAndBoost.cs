@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Others
 {
     //since "extend automatically" doesn't work on TTWars, this task will automatically prolong plus account / +25% resource boost
     public class TTWarsPlusAndBoost : BotTask

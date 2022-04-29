@@ -6,12 +6,13 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Parsers;
+using TbsCore.Tasks.Others;
 using TbsCore.Tasks.Update;
 using TbsCore.TravianData;
 
 using static TbsCore.Helpers.Classificator;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     /// <summary>
     /// Old train troops task, only here because of high speed TTWars servers.

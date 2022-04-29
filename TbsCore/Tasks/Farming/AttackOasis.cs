@@ -10,7 +10,7 @@ using TbsCore.Models.TroopsModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Farming
 {
     public class AttackOasis : SendTroops
     {

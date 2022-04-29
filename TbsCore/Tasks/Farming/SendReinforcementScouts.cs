@@ -3,10 +3,9 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsModels;
-using TbsCore.Tasks.LowLevel;
 using TbsCore.TravianData;
 
-namespace TbsCore.Tasks.SecondLevel
+namespace TbsCore.Tasks.Farming
 {
     /// <summary>
     /// Send scouts to all your villages
@@ -14,6 +13,7 @@ namespace TbsCore.Tasks.SecondLevel
     public class SendReinforcementScouts : SendTroops
     {
         public int Scouts { get; set; }
+
         public override async Task<TaskRes> Execute(Account acc)
         {
             if (Scouts == 0) return TaskRes.Executed;

@@ -6,7 +6,7 @@ using TbsCore.Models.ResourceModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Farming;
 using TbsCore.Tasks.Sim;
 
 namespace TbsCore.Helpers
