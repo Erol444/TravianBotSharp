@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Models.AccModels;
-using TbsCore.TravianData;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
 using TbsCore.Parsers;
+using TbsCore.TravianData;
 using static TbsCore.Helpers.Classificator;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Sim
 {
     public class TrainSettlers : BotTask
     {

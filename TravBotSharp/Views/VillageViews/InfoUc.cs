@@ -1,5 +1,6 @@
 ﻿using System;
 using TbsCore.Extensions;
+using TbsCore.Tasks.Sim;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views

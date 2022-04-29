@@ -7,7 +7,7 @@ using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Sim
 {
     public class FindVillageToSettle : BotTask
     {

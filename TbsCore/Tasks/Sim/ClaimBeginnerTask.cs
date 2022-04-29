@@ -4,7 +4,7 @@ using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SideBarModels;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Sim
 {
     public class ClaimBeginnerTask : BotTask
     {

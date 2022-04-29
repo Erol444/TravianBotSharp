@@ -1,16 +1,16 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using OpenQA.Selenium;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.TravianData;
 using TbsCore.Parsers;
+using TbsCore.TravianData;
 using static TbsCore.Helpers.Classificator;
-using HtmlAgilityPack;
-using OpenQA.Selenium;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Sim
 {
     public class Celebration : BotTask
     {

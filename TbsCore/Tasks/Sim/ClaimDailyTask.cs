@@ -2,13 +2,12 @@
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Sim
 {
     public class ClaimDailyTask : BotTask
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-
             switch (acc.AccInfo.ServerVersion)
             {
                 case Classificator.ServerVersionEnum.TTwars:

@@ -3,6 +3,7 @@ using TbsCore.Models.ResourceModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Sim;
 using TbsCoreTest.Factories;
 using Xunit;
 

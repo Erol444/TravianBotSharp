@@ -7,6 +7,7 @@ using TbsCore.Models.JsObjects;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Sim;
 using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Helpers

@@ -1,12 +1,12 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Parsers;
-using HtmlAgilityPack;
 
-namespace TbsCore.Tasks.LowLevel
+namespace TbsCore.Tasks.Sim
 {
     public class NPC : BotTask
     {
