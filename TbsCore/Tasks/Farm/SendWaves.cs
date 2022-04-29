@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.SendTroopsModels;
-using TbsCore.TravianData;
-using TbsCore.Helpers;
 using TbsCore.Parsers;
 
 namespace TbsCore.Tasks.LowLevel

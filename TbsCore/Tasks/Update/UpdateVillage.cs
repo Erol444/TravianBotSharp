@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.TravianData;
 using TbsCore.Parsers;
+using TbsCore.TravianData;
 
 namespace TbsCore.Tasks.LowLevel
 {

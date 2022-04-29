@@ -1,11 +1,4 @@
-﻿using System.Threading.Tasks;
-using TbsCore.Helpers;
-using TbsCore.Models.AccModels;
-using TbsCore.Models.VillageModels;
-using static TbsCore.Helpers.Classificator;
-using System;
-
-namespace TbsCore.Extensions
+﻿namespace TbsCore.Extensions
 {
     /// <summary>
     /// WIP!

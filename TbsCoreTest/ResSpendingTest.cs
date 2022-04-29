@@ -1,10 +1,9 @@
-using System;
 using TbsCore.Helpers;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
-using TbsCoreTest.Factories;
 using TbsCore.Tasks.LowLevel;
+using TbsCoreTest.Factories;
 using Xunit;
 
 namespace TbsCoreTest

@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
+using TbsCore.Models.TroopsModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.TravianData;
-using TbsCore.Helpers;
-using TbsCore.Models.TroopsModels;
 
 namespace TbsCore.Tasks.LowLevel
 {

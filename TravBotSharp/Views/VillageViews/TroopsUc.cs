@@ -60,7 +60,8 @@ namespace TravBotSharp.Views
 
         private void button2_Click(object sender, EventArgs e) // scouts
         {
-            GetSelectedAcc().Tasks.Add(new SendReinforcementScouts {
+            GetSelectedAcc().Tasks.Add(new SendReinforcementScouts
+            {
                 Scouts = (int)scouts.Value,
                 Vill = GetSelectedVillage()
             }, true);

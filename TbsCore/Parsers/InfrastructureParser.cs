@@ -1,11 +1,11 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.Helpers;
 using TbsCore.TravianData;
-using HtmlAgilityPack;
 
 namespace TbsCore.Parsers
 {

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using TbsCore.Helpers;
-using TbsCore.Models.MapModels;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.TroopsModels;
 
@@ -42,7 +39,7 @@ namespace TbsCore.Models.AttackModels
         /// </summary>
         /// 
 
-        public int ResidenceLevel {get;set;}
+        public int ResidenceLevel { get; set; }
         public int WallLevel { get; set; }
 
         /// <summary>

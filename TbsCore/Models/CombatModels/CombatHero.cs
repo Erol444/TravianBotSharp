@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.TroopsModels;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Models.CombatModels
@@ -17,7 +16,7 @@ namespace TbsCore.Models.CombatModels
         /// Hero power, offensive / deffensive bonus
         /// </summary>
         public HeroInfo Info { get; set; }
-        
+
         /// <summary>
         /// Hero items (natar horn, shield, right hand items)
         /// </summary>

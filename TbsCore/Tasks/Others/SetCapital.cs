@@ -9,7 +9,7 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if(!Vill.Build.Buildings.Any(x => x.Type == Classificator.BuildingEnum.Palace))
+            if (!Vill.Build.Buildings.Any(x => x.Type == Classificator.BuildingEnum.Palace))
             {
                 // TODO: Check for residence, if it exists demolish it and build palace
                 acc.Logger.Information("Palace was not found in the village!");

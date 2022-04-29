@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace TbsCore.Models.AttackModels
 {
@@ -10,7 +9,7 @@ namespace TbsCore.Models.AttackModels
         // Tribe
         // Ally
         // Hero!! For checking if anything changed, to recognize fake attacks
-        
+
         public List<TravianVillage> Villages { get; set; }
     }
 

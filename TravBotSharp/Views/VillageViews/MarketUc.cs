@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
 using TbsCore.Tasks;
-using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views

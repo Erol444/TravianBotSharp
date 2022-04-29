@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.Helpers;
 
 using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;

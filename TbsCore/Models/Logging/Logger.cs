@@ -1,5 +1,5 @@
-﻿using System;
-using Serilog;
+﻿using Serilog;
+using System;
 using TbsCore.Extensions;
 using TbsCore.Tasks;
 

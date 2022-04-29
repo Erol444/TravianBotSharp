@@ -1,13 +1,8 @@
 ﻿using HtmlAgilityPack;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
-using TbsCore.Models.VillageModels;
-using TbsCore.Helpers;
-using TbsCore.Parsers;
 
 namespace TbsCore.Parsers
 {

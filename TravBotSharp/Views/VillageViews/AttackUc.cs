@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using TbsCore.Models.MapModels;
+using TbsCore.Helpers;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.TravianData;
-using TbsCore.Helpers;
 using TbsCore.Tasks.LowLevel;
-using TravBotSharp.Interfaces;
 using TbsCore.Tasks.SecondLevel;
+using TbsCore.TravianData;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {

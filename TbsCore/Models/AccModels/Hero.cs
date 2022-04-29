@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using TbsCore.Helpers;
 using TbsCore.Models.Settings;
 using TbsCore.Models.TroopsModels;
-using TbsCore.Helpers;
 
 namespace TbsCore.Models.AccModels
 {

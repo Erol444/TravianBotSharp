@@ -1,5 +1,4 @@
 ﻿using System;
-using TbsCore.Models.ResourceModels;
 
 namespace TbsCore.Models.ResourceModels
 {

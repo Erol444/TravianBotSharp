@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using TbsCore.Helpers;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.Helpers;
-using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views

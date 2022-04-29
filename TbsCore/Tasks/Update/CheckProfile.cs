@@ -11,7 +11,8 @@ namespace TbsCore.Tasks.LowLevel
     public class CheckProfile : BotTask
     {
         public int UserId { get; set; }
-        public TravianUser Profile { get; } = new TravianUser() {
+        public TravianUser Profile { get; } = new TravianUser()
+        {
             Villages = new List<TravianVillage>()
         };
 

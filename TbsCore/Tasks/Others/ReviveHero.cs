@@ -1,8 +1,8 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Threading.Tasks;
-using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
-using OpenQA.Selenium;
+using TbsCore.Models.AccModels;
 
 namespace TbsCore.Tasks.LowLevel
 {

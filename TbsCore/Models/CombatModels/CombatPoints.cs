@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace TbsCore.Models.CombatModels
 {
@@ -31,7 +29,7 @@ namespace TbsCore.Models.CombatModels
         public static CombatPoints Sum(CombatPoints[] arr)
         {
             var total = CombatPoints.Zero();
-            foreach(var cp in arr)
+            foreach (var cp in arr)
             {
                 total.i += cp.i;
                 total.c += cp.c;
@@ -51,11 +49,13 @@ namespace TbsCore.Models.CombatModels
             this.c = (long)Math.Round(cav, MidpointRounding.AwayFromZero);
         }
 
-        public void Add(CombatPoints that) {
+        public void Add(CombatPoints that)
+        {
             this.i += that.i;
             this.c += that.c;
         }
-        public CombatPoints Mul(double m) {
+        public CombatPoints Mul(double m)
+        {
             return new CombatPoints(this.i * m, this.c * m);
         }
         //public CombatPoints Mask(CombatPoints mask) {

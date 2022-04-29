@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using System.Linq;
 
 namespace TbsCore.Tasks.Browser
 {

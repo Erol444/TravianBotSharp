@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Tasks.LowLevel;
@@ -19,7 +18,7 @@ namespace TbsCore.Tasks.SecondLevel
 
             var villages = base.Profile.Villages
                 .Where(vill => MinPop < vill.Population && vill.Population < MaxPop)
-                .OrderBy(x=>x.Coordinates.CalculateDistance(acc, this.Vill.Coordinates))
+                .OrderBy(x => x.Coordinates.CalculateDistance(acc, this.Vill.Coordinates))
                 .ToList();
 
             for (int i = 0; i < villages.Count; i++)

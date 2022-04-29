@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace TbsCore.Models.CombatModels
+﻿namespace TbsCore.Models.CombatModels
 {
     public class CombatAttacker
     {
@@ -10,7 +6,7 @@ namespace TbsCore.Models.CombatModels
         /// Troops, hero, tribe
         /// </summary>
         public CombatArmy Army { get; set; }
-        
+
         /// <summary>
         /// Population of the attacker, morale bonus depends on it
         /// </summary>

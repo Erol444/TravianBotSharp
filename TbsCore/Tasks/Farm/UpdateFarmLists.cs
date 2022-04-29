@@ -1,13 +1,13 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.TroopsModels;
 using TbsCore.Parsers;
 using static TbsCore.Helpers.Classificator;
-using HtmlAgilityPack;
-using TbsCore.Models.TroopsModels;
-using System.Collections.Generic;
 
 namespace TbsCore.Tasks.LowLevel
 {

@@ -6,7 +6,6 @@ using System.Linq;
 using TbsCore.Helpers;
 using TbsCore.Models.VillageModels;
 using TbsCore.Tasks;
-using TbsCore.Tasks.Browser;
 using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Models.AccModels

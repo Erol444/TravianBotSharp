@@ -1,6 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Globalization;
 using TbsCore.Models.AccModels;
 
 namespace TbsCore.Models.MapModels
@@ -37,7 +35,7 @@ namespace TbsCore.Models.MapModels
         // Used in cmd=mapPositionData, gets the map JSON where
         public int GetKid(Account acc)
         {
-            return 1 + ((acc.AccInfo.MapSize - this.y) * (acc.AccInfo.MapSize* 2 + 1)) + acc.AccInfo.MapSize + this.x;
+            return 1 + ((acc.AccInfo.MapSize - this.y) * (acc.AccInfo.MapSize * 2 + 1)) + acc.AccInfo.MapSize + this.x;
         }
 
         /// <summary>

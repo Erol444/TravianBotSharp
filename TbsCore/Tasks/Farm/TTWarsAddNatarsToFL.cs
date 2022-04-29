@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
-using TbsCore.Models.MapModels;
 using TbsCore.Models.TroopsModels;
-using TbsCore.Helpers;
-using TbsCore.Parsers;
 using TbsCore.Tasks.LowLevel;
 
 namespace TbsCore.Tasks.SecondLevel

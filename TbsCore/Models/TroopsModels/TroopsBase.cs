@@ -9,7 +9,7 @@ namespace TbsCore.Models.TroopsModels
     /// </summary>
     public class TroopsBase
     {
-        public TroopsBase() {}
+        public TroopsBase() { }
         public TroopsBase(int[] arr, Classificator.TribeEnum? tribe)
         {
             this.Troops = arr;
@@ -33,7 +33,7 @@ namespace TbsCore.Models.TroopsModels
         public long TotalBaseDeff()
         {
             long totalDeff = 0;
-            foreach(var troop in GetTroopList())
+            foreach (var troop in GetTroopList())
             {
                 totalDeff += troop.Count * (TroopsData.TroopDeffenseInfrantry(troop.Type) + TroopsData.TroopDeffenseCavalry(troop.Type));
             }

@@ -1,6 +1,6 @@
 ﻿using System;
-using TbsCore.Models.ResourceModels;
 using TbsCore.Helpers;
+using TbsCore.Models.ResourceModels;
 
 namespace TbsCore.Models.TroopsModels
 {

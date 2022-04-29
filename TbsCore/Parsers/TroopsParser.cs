@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TbsCore.Helpers;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.TroopsModels;
-using TbsCore.Helpers;
 
 namespace TbsCore.Parsers
 {

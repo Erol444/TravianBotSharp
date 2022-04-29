@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using TbsCore.Helpers;
 
 namespace TbsCore.Models.TroopsMovementModels

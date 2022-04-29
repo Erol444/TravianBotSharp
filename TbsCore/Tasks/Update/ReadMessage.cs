@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using TbsCore.Models.AccModels;
 using TbsCore.Helpers;
+using TbsCore.Models.AccModels;
 
 namespace TbsCore.Tasks.LowLevel
 {
@@ -15,7 +15,7 @@ namespace TbsCore.Tasks.LowLevel
                 var msg = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("messageStatusUnread"));
                 if (msg != null)
                 {
-                    
+
                     var url = msg.ParentNode.GetAttributeValue("href", "").Replace("amp;", "");
                     switch (acc.AccInfo.ServerVersion)
                     {

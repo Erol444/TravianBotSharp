@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
-using TbsCore.Models.AccModels;
-using TbsCore.Models.MapModels;
-using TbsCore.Models.SendTroopsModels;
-using TbsCore.Models.VillageModels;
-using TbsCore.TravianData;
+﻿using System.Threading.Tasks;
 using TbsCore.Helpers;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Models.AccModels;
+using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsModels;
+using TbsCore.Tasks.LowLevel;
+using TbsCore.TravianData;
 
 namespace TbsCore.Tasks.SecondLevel
 {
@@ -25,7 +19,7 @@ namespace TbsCore.Tasks.SecondLevel
             if (Scouts == 0) return TaskRes.Executed;
 
             bool stop = false;
-            foreach(var vill in acc.Villages)
+            foreach (var vill in acc.Villages)
             {
                 if (vill == this.Vill || stop) continue;
                 base.TroopsMovement = new TroopsSendModel();
@@ -63,7 +57,7 @@ namespace TbsCore.Tasks.SecondLevel
                     break;
                 }
             }
-           return ret;
+            return ret;
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using TbsCore.TravianData;
 using static TbsCore.Helpers.Classificator;
 
@@ -92,7 +90,7 @@ namespace TbsCore.Models.CombatModels
             var offPts = this.Attacker.Army.GetOffense();
             var defPts = Deffender.GetDeffense();
             var (off, def) = GetAducedDef(offPts, defPts);
-            baseState = ( off, def );
+            baseState = (off, def);
             return baseState;
         }
 
