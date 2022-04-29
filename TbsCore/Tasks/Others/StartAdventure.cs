@@ -64,6 +64,15 @@ namespace TbsCore.Tasks.Others
                     break;
             }
 
+            if (DateTime.Now.Millisecond % 2 == 0)
+            {
+                await NavigationHelper.ToDorf1(acc);
+            }
+            else
+            {
+                await NavigationHelper.ToDorf2(acc);
+            }
+
             return TaskRes.Executed;
         }
     }
