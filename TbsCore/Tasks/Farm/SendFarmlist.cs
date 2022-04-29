@@ -18,6 +18,12 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
+            {
+                var result = await NavigationHelper.SwitchVillage(acc, acc.Villages.First());
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
+
             await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.Farmlist);
 
             var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);

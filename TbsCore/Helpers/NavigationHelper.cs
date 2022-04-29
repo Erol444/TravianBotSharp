@@ -251,7 +251,7 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> EnterBuilding(Account acc, Village vill, BuildingEnum buildingEnum, int? tab = null, Coordinates coords = null)
         {
-            var building = vill.Build.Buildings.FirstOrDefault(x => x.Type == buildingEnum);
+            var building = vill?.Build.Buildings.FirstOrDefault(x => x.Type == buildingEnum);
             if (building == null)
             {
                 acc.Logger.Warning($"Tried to enter {buildingEnum} but couldn't find it in village {vill.Name}!");

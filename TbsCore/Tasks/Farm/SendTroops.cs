@@ -30,6 +30,7 @@ namespace TbsCore.Tasks.LowLevel
         /// If false, bot will skip this task.
         /// </summary>
         public bool SendPartialAttack { get; set; } = false;
+
         /// <summary>
         /// Whether we want to embed coordinates into the url. This saves ~1 sec and it used when searching from the map / send troops clicked
         /// </summary>
@@ -38,6 +39,12 @@ namespace TbsCore.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             //if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.TTwars) SetCoordsInUrl = true;
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
 
             await NavigationHelper.ToRallyPoint(acc, Vill,
                 NavigationHelper.RallyPointTab.SendTroops, TroopsMovement.TargetCoordinates

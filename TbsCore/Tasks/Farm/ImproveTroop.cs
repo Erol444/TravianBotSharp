@@ -14,7 +14,12 @@ namespace TbsCore.Tasks.LowLevel
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            if (Vill == null) Vill = acc.Villages.First(x => x.Active);
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
 
             if (!await NavigationHelper.EnterBuilding(acc, Vill, Classificator.BuildingEnum.Smithy))
                 return TaskRes.Executed;

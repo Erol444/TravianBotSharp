@@ -14,7 +14,12 @@ namespace TbsCore.Tasks.LowLevel
         public override async Task<TaskRes> Execute(Account acc)
         {
             if (Vill == null) Vill = AccountHelper.GetMainVillage(acc);
-
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
             var building = TroopsData.GetTroopBuilding(troop, Great);
             if (!await NavigationHelper.EnterBuilding(acc, Vill, building))
                 return TaskRes.Executed;

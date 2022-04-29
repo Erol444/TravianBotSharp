@@ -16,6 +16,12 @@ namespace TbsCore.Tasks.LowLevel
         //If Troop == null, just update the troop levels
         public override async Task<TaskRes> Execute(Account acc)
         {
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
             if (!await NavigationHelper.EnterBuilding(acc, Vill, BuildingEnum.Academy))
                 return TaskRes.Executed;
 

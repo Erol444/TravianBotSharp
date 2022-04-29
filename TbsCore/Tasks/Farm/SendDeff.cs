@@ -15,6 +15,13 @@ namespace TbsCore.Tasks.LowLevel
 
         public override async Task<TaskRes> Execute(Account acc)
         {
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
+
             // Can't send deff to home village or to 0/0
             if (TargetVillage == null ||
                 TargetVillage.Equals(Vill.Coordinates) ||
