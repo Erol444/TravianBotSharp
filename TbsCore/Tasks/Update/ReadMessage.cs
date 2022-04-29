@@ -9,27 +9,45 @@ namespace TbsCore.Tasks.Update
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
-            while (true)
+            StopFlag = false;
+            do
             {
-                await NavigationHelper.MainNavigate(acc, NavigationHelper.MainNavigationButton.Messages);
-                var msg = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("messageStatusUnread"));
-                if (msg != null)
-                {
-                    var url = msg.ParentNode.GetAttributeValue("href", "").Replace("amp;", "");
-                    switch (acc.AccInfo.ServerVersion)
-                    {
-                        case Classificator.ServerVersionEnum.T4_5:
-                            await acc.Wb.Navigate(acc.AccInfo.ServerUrl + url);
-                            break;
+                if (StopFlag) return TaskRes.Executed;
 
-                        case Classificator.ServerVersionEnum.TTwars:
-                            await acc.Wb.Navigate(acc.AccInfo.ServerUrl + "/" + url);
-                            break;
-                    }
-                    await Task.Delay(AccountHelper.Delay(acc) * 5);
+                {
+                    var result = await Update(acc);
+                    if (!result) return TaskRes.Executed;
                 }
-                else return TaskRes.Executed;
-            }
+
+                {
+                    var result = await NavigationHelper.MainNavigate(acc, NavigationHelper.MainNavigationButton.Messages);
+                    if (StopFlag) return TaskRes.Executed;
+                    if (!result) return TaskRes.Executed;
+                }
+
+                var msg = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("messageStatusUnread"));
+                if (msg == null)
+                {
+                    acc.Logger.Information("Cannot found any unread message");
+                    return TaskRes.Executed;
+                }
+
+                var url = msg.ParentNode.GetAttributeValue("href", "").Replace("amp;", "");
+
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case Classificator.ServerVersionEnum.T4_5:
+                        await acc.Wb.Navigate(acc.AccInfo.ServerUrl + url);
+                        break;
+
+                    case Classificator.ServerVersionEnum.TTwars:
+                        await acc.Wb.Navigate(acc.AccInfo.ServerUrl + "/" + url);
+                        break;
+                }
+
+                if (StopFlag) return TaskRes.Executed;
+                await AccountHelper.DelayWait(acc, 5);
+            } while (true);
         }
     }
 }

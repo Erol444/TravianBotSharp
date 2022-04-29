@@ -59,7 +59,7 @@ namespace TbsCore.Helpers
         /// <returns>Random delay in milliseconds</returns>
         public static int Delay(Account acc) => rnd.Next(acc.Settings.DelayClickingMin, acc.Settings.DelayClickingMax);
 
-        public static Task DelayWait(Account acc) => Task.Delay(Delay(acc));
+        public static Task DelayWait(Account acc, int multiple = 1) => Task.Delay(Delay(acc) * multiple);
 
         public static void StartAccountTasks(Account acc)
         {
