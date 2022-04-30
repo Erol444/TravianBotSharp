@@ -201,10 +201,10 @@
             Stackable_Ointment_0, // =106
 
             Stackable_Scroll_0,
-            NonStackable_Bucket_0,
-            NonStackable_Tablets_0,
-            NonStackable_Book_0, // =110
-            NonStackable_Artwork_0,
+            Stackable_Bucket_0,
+            Stackable_Tablets_0,
+            Stackable_Book_0, // =110
+            Stackable_Artwork_0,
             Stackable_SmallBandage_0,
             Stackable_BigBandage_0,
             Stackable_Cage_0,
