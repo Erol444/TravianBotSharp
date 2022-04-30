@@ -16,6 +16,13 @@ namespace TbsCore.Tasks.Update
     {
         public override async Task<TaskRes> Execute(Account acc)
         {
+            StopFlag = false;
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
             //await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.Overview)
             await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/build.php?gid=16&tt=1&filter=1&subfilters=1");
 

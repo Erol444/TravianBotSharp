@@ -15,6 +15,13 @@ namespace TbsCore.Tasks.Update
         /// </summary>
         public override async Task<TaskRes> Execute(Account acc)
         {
+            StopFlag = false;
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
             // If we have Plus account, just check that.
             if (acc.AccInfo.PlusAccount)
             {
