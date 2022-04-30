@@ -17,8 +17,16 @@ namespace TbsCore.Tasks.Update
         {
             acc.Tasks.Remove(typeof(UpdateDorf1), Vill, thisTask: this);
             acc.Tasks.Remove(typeof(UpdateDorf2), Vill, thisTask: this);
+            StopFlag = false;
+            {
+                acc.Logger.Information($"Checking current village ...");
+                var result = await NavigationHelper.SwitchVillage(acc, Vill);
+                if (StopFlag) return TaskRes.Executed;
+                if (!result) return TaskRes.Executed;
+            }
 
             await NavigationHelper.ToDorf1(acc);
+            await AccountHelper.DelayWait(acc);
             await NavigationHelper.ToDorf2(acc);
 
             // On new village import the building tasks
@@ -29,7 +37,6 @@ namespace TbsCore.Tasks.Update
 
             await UpdateTroopsResearchedAndLevels(acc);
 
-            await Task.Delay(AccountHelper.Delay(acc));
             await UpdateTroopsTraining(acc);
 
             var firstTroop = TroopsData.TribeFirstTroop(acc.AccInfo.Tribe);
