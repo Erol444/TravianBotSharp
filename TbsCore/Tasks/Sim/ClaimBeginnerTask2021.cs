@@ -88,14 +88,17 @@ namespace TbsCore.Tasks.Sim
                     if (!result) return false;
                 }
 
-                var collectNode = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("collect"));
-                if (collectNode == null) return true;
+                var collectNodes = acc.Wb.Html.DocumentNode.Descendants("button").Where(x => x.HasClass("collect"));
+                if (collectNodes.Count() == 0) return true;
 
-                var collectElement = acc.Wb.Driver.FindElement(By.XPath(collectNode.XPath));
-                collectElement.Click();
-                if (StopFlag) return false;
+                foreach (var node in collectNodes)
+                {
+                    var collectElement = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+                    collectElement.Click();
+                    if (StopFlag) return false;
 
-                await AccountHelper.DelayWait(acc, 5);
+                    await AccountHelper.DelayWait(acc, 5);
+                }
 
                 {
                     var result = await Update(acc);
