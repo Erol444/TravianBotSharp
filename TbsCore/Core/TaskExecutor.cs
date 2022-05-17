@@ -28,7 +28,7 @@ namespace TbsCore.Helpers
                 var counter = 3;
                 while (!acc.Wb.CheckChromeOpen())
                 {
-                    acc.Logger.Warning("Chrome browser  missing");
+                    acc.Logger.Warning("Chrome browser missing");
                     if (counter == 0)
                     {
                         acc.Logger.Warning("Chrome still missing after 3 times restart. Pause bot (suggest logout bot before use bot on this account)");
@@ -61,7 +61,6 @@ namespace TbsCore.Helpers
                 acc.Tasks.Add(new EditPreferences()
                 {
                     ExecuteAt = DateTime.Now.AddHours(-1),
-                    TroopsPerPage = 99,
                     ContextualHelp = true
                 }, true);
             }
