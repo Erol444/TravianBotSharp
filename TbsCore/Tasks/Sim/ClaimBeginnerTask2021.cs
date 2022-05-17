@@ -15,7 +15,10 @@ namespace TbsCore.Tasks.Sim
             StopFlag = false;
 
             {
-                acc.Tasks.Add(new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+                if (acc.Hero.Settings.AutoRefreshInfo)
+                {
+                    acc.Tasks.Add(new HeroUpdateInfo() { ExecuteAt = DateTime.Now });
+                }
             }
 
             {

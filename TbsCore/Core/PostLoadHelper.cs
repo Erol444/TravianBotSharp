@@ -220,6 +220,7 @@ namespace TbsCore.Helpers
                 // 19:  Hero:
                 () =>
                 {
+                    if ( !acc.Hero.Settings.AutoRefreshInfo) return;
                     bool heroReady = (acc.Hero.HeroInfo.Health > acc.Hero.Settings.MinHealth &&
                         acc.Hero.Settings.AutoSendToAdventure &&
                         acc.Hero.Status == Hero.StatusEnum.Home &&
