@@ -92,7 +92,8 @@ namespace TbsCore.Helpers
                         acc.Wb.Html.GetElementbyId("mentorTaskList") == null &&
                         acc.Quests.ClaimBeginnerQuests)
                     {
-                        acc.Tasks.Add(new ClaimBeginnerTask2021() { Vill = vill, ExecuteAt = DateTime.Now}, true); ;
+                        acc.Tasks.Add(new ClaimBeginnerTask2021() { Vill = vill, ExecuteAt = DateTime.Now}, true);
+
                         return;
                     }
 
