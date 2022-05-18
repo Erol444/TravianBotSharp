@@ -12,5 +12,5 @@
     <vm:MainWindowViewModel />
   </Design.DataContext>
 
-  <Button HorizontalAlignment="Center" Content="Open chrome" />
+  <Button HorizontalAlignment="Center" Command="{Binding OnClickCommand}" Content="{Binding ContentButton}" />
 </Window>
