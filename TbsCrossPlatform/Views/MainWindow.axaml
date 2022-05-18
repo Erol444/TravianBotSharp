@@ -5,13 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TbsCrossPlatform.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-        Title="TbsCrossPlatform">
+        Icon="/Assets/favicon.ico"
+        Title="TravianBotSharp">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+  <Design.DataContext>
+    <vm:MainWindowViewModel />
+  </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-
+  <Button HorizontalAlignment="Center" Content="Open chrome" />
 </Window>
