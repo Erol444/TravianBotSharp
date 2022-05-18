@@ -1,4 +1,4 @@
-name: BuildFlow
+name: BuildFlow2
 
 on:
   pull_request:
