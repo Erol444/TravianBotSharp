@@ -4,11 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.TravianData;
 using TbsCore.Parsers;
-using TbsCore.Tasks.LowLevel;
-
-using static TbsCore.Helpers.BuildingHelper;
+using TbsCore.Tasks.Farming;
+using TbsCore.TravianData;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Helpers

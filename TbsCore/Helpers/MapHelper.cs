@@ -4,14 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using TbsCore.Helpers;
+using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.MapModels;
-using TbsCore.Models.VillageModels;
-using TbsCore.TravianData;
-using TbsCore.Parsers;
 using TbsCore.Models.TroopsModels;
-using System.Threading.Tasks;
+using TbsCore.Parsers;
 
 namespace TbsCore.Helpers
 {

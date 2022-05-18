@@ -7,7 +7,7 @@
         /// If delay is set, Arrival will be ignored for all proceeding waves
         /// </summary>
         public int DelayMs { get; set; }
-        
+
         /// <summary>
         /// Dirty hack like one above. 19 troops + catapult
         /// </summary>

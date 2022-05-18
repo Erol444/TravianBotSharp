@@ -1,8 +1,6 @@
 ﻿using HtmlAgilityPack;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TbsCore.Helpers;
 using TbsCore.Models.AttackModels;
 using TbsCore.Models.ResourceModels;
@@ -47,7 +45,7 @@ namespace TbsCore.Parsers
             // Deffender List<troops, tribe, killed>
             var attacker = content.Descendants("div").First(x => x.HasClass("attacker"));
             var deffender = content.Descendants("div").First(x => x.HasClass("defender"));
-            
+
             report.Deffender = ParseHeader(deffender);
             report.Attacker = ParseHeader(attacker);
 
@@ -65,8 +63,8 @@ namespace TbsCore.Parsers
 
         private static CombatParticipant ParseHeader(HtmlNode header)
         {
-            var headline = header.Descendants("div").First(x => x.HasClass("troopHeadline")).ChildNodes.First(x=>x.Name == "div");
-            var ahref = headline.ChildNodes.Where(x=>x.Name == "a").ToArray();
+            var headline = header.Descendants("div").First(x => x.HasClass("troopHeadline")).ChildNodes.First(x => x.Name == "div");
+            var ahref = headline.ChildNodes.Where(x => x.Name == "a").ToArray();
             var ret = new CombatParticipant();
 
             ret.Username = ahref[0].InnerText;

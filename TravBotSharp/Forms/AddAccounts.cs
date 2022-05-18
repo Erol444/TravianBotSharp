@@ -43,7 +43,6 @@ namespace TravBotSharp.Forms
                         if (!string.IsNullOrEmpty(account.Proxy.ProxyUsername))
                         {
                             richTextBox2.AppendText($"[{account.Server}] [{account.Username}] [{account.Proxy.Password}] [{account.Proxy.Proxy}] [{account.Proxy.ProxyPort}] [{account.Proxy.ProxyUsername}] [{account.Proxy.ProxyPassword}]\n");
-
                         }
                         else
                         {
@@ -142,6 +141,7 @@ namespace TravBotSharp.Forms
                 acc.AccInfo.Nickname = item.Username;
                 acc.Access.AddNewAccess(item.Proxy);
                 IoHelperCore.CreateUserData(acc.AccInfo.Nickname, IoHelperCore.UrlRemoveHttp(acc.AccInfo.ServerUrl));
+                acc.AccInfo.ServerVersion = acc.AccInfo.ServerUrl.Contains("ttwars.com") ? Classificator.ServerVersionEnum.TTwars : Classificator.ServerVersionEnum.T4_5;
 
                 result.Add(acc);
             }

@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using TbsCore.Helpers;
-using TbsCore.Tasks;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Browser;
+using TbsCore.Tasks.Others;
 using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Models.AccModels
@@ -100,17 +100,6 @@ namespace TbsCore.Models.AccModels
             }
 
             task.Stage = TaskStage.Executing;
-
-            //If correct village is selected, otherwise change village
-            if (task.Vill != null && task.GetType() != typeof(UpgradeBuilding))
-            {
-                var active = _acc.Villages.FirstOrDefault(x => x.Active);
-                if (active != null && active != task.Vill)
-                {
-                    await VillageHelper.SwitchVillage(_acc, task.Vill.Id);
-                }
-            }
-
             await TaskExecutor.Execute(_acc, task);
 
             IsTaskExcuting = false;

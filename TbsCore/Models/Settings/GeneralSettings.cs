@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using static TbsCore.Helpers.Classificator;
-
-namespace TbsCore.Models.Settings
+﻿namespace TbsCore.Models.Settings
 {
     public class GeneralSettings
     {

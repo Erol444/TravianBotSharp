@@ -1,9 +1,9 @@
 ﻿using HtmlAgilityPack;
 using System;
 using System.Linq;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.TroopsModels;
-using TbsCore.Helpers;
 
 namespace TbsCore.Parsers
 {

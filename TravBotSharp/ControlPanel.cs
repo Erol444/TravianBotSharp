@@ -3,21 +3,18 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
-using System.Reflection;
 using System.Windows.Forms;
 using TbsCore.Database;
+using TbsCore.Extensions;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-
+using TbsCore.Models.Logging;
 using TravBotSharp.Forms;
 using TravBotSharp.Interfaces;
-using TravBotSharp.Views;
-using TbsCore.Models.Logging;
-using TbsCore.Models.VillageModels;
-using TbsCore.Extensions;
 
 namespace TravBotSharp
 {

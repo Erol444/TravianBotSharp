@@ -3,13 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
+using TbsCore.Models.MapModels;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.TroopsMovementModels;
-using TbsCore.Helpers;
 using static TbsCore.Helpers.Classificator;
-using TbsCore.Models.TroopsModels;
-using TbsCore.Models.MapModels;
 
 namespace TbsCore.Parsers
 {

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using TbsCore.Models.MapModels;
-using TbsCore.Models.TroopsModels;
 
 namespace TbsCore.Models.TroopsModels
 {

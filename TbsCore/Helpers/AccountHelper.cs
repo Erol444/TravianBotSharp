@@ -3,14 +3,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.Tasks.LowLevel;
-using TbsCore.Tasks.SecondLevel;
+using TbsCore.Tasks.Browser;
+using TbsCore.Tasks.Farming;
+using TbsCore.Tasks.Sim;
+using TbsCore.Tasks.Update;
 
 namespace TbsCore.Helpers
 {
     public static class AccountHelper
     {
-        private static Random rnd = new Random();
+        private static readonly Random rnd = new Random();
 
         public static Village GetMainVillage(Account acc)
         {
@@ -56,7 +58,7 @@ namespace TbsCore.Helpers
         /// <returns>Random delay in milliseconds</returns>
         public static int Delay(Account acc) => rnd.Next(acc.Settings.DelayClickingMin, acc.Settings.DelayClickingMax);
 
-        public static Task DelayWait(Account acc) => Task.Delay(Delay(acc));
+        public static Task DelayWait(Account acc, int multiple = 1) => Task.Delay(Delay(acc) * multiple);
 
         public static void StartAccountTasks(Account acc)
         {

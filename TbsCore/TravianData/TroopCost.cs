@@ -3,7 +3,6 @@ using System.Linq;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
-using TbsCore.TravianData;
 
 namespace TbsCore.TravianData
 {

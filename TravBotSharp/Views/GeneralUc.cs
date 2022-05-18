@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Drawing;
-using System.Threading;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
 using TbsCore.Models.Settings;
-using TbsCore.Helpers;
-using TbsCore.Tasks.LowLevel;
-using TravBotSharp.Interfaces;
+using TbsCore.Tasks.Browser;
+using TbsCore.Tasks.Farming;
+using TbsCore.Tasks.Others;
 using TravBotSharp.Forms;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {
@@ -191,7 +193,7 @@ namespace TravBotSharp.Views
             numericUpDown5.Value = 0;
             if (expandTimes != 0)
             {
-                acc.Tasks.Add(new TTWarsExpandStorage() { ExecuteAt = DateTime.Now, Times = expandTimes }, true);
+                acc.Tasks.Add(task: new TTWarsExpandStorage() { ExecuteAt = DateTime.Now, Times = expandTimes }, true);
             }
             else if (seconds != 0)
             {

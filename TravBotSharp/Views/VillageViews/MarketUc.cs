@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using TbsCore.Tasks;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Sim;
 using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
@@ -64,6 +64,7 @@ namespace TravBotSharp.Views
             GetSelectedVillage().Market.Npc.Enabled = npcEnabled.Checked;
 
         #region SendMainVill Callbacks
+
         private void woodSend_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Wood = (long)woodSend.Value;
 
@@ -75,9 +76,11 @@ namespace TravBotSharp.Views
 
         private void cropSend_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Settings.Configuration.SendResLimit.Crop = (long)cropSend.Value;
-        #endregion
+
+        #endregion SendMainVill Callbacks
 
         #region TargetLimit Callbacks
+
         private void TargetLimitWood_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Wood = (long)TargetLimitWood.Value;
 
@@ -89,9 +92,11 @@ namespace TravBotSharp.Views
 
         private void TargetLimitCrop_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Settings.Configuration.TargetLimit.Crop = (long)TargetLimitCrop.Value;
-        #endregion
+
+        #endregion TargetLimit Callbacks
 
         #region FillLimit Callbacks
+
         private void FillLimitWood_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Settings.Configuration.FillLimit.Wood = (long)FillLimitWood.Value;
 
@@ -103,7 +108,8 @@ namespace TravBotSharp.Views
 
         private void FillLimitCrop_ValueChanged(object sender, EventArgs e) =>
             GetSelectedVillage().Market.Settings.Configuration.FillLimit.Crop = (long)FillLimitCrop.Value;
-        #endregion
+
+        #endregion FillLimit Callbacks
 
         private void npc_Click(object sender, EventArgs e)
         {
@@ -117,7 +123,6 @@ namespace TravBotSharp.Views
             {
                 Vill = vill,
                 Priority = BotTask.TaskPriority.High
-
             }, true, vill);
         }
     }

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using TbsCore.Extensions;
-using TbsCore.Helpers;
+using TbsCore.Tasks.Sim;
 using TravBotSharp.Interfaces;
-using TbsCore.Tasks.LowLevel;
 
 namespace TravBotSharp.Views
 {

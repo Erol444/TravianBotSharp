@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Windows.Forms;
-using System.Drawing;
-
-using TravBotSharp.Interfaces;
-using TbsCore.Helpers;
-using TbsCore.Tasks;
-using TbsCore.Tasks.LowLevel;
-
-using TbsCore.Models.VillageModels;
-using TbsCore.Models.SendTroopsModels;
-using TbsCore.Models.MapModels;
-using TbsCore.Models.AccModels;
-using TravBotSharp.Forms;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using TbsCore.Tasks.SecondLevel;
+using System.Windows.Forms;
+using TbsCore.Helpers;
+using TbsCore.Models.MapModels;
+using TbsCore.Models.SendTroopsModels;
+using TbsCore.Models.VillageModels;
+using TbsCore.Tasks.Farming;
+using TravBotSharp.Forms;
+using TravBotSharp.Interfaces;
 
 namespace TravBotSharp.Views
 {

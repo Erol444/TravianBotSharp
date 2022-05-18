@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using TbsCore.Models.ResourceModels;
+﻿using TbsCore.Models.ResourceModels;
 using TbsCore.Tasks;
 
 namespace TbsCore.Models.VillageModels

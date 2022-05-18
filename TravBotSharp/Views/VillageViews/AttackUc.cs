@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
-using TbsCore.Models.MapModels;
+using TbsCore.Helpers;
 using TbsCore.Models.SendTroopsModels;
 using TbsCore.Models.VillageModels;
+using TbsCore.Tasks.Farming;
 using TbsCore.TravianData;
-using TbsCore.Helpers;
-using TbsCore.Tasks.LowLevel;
 using TravBotSharp.Interfaces;
-using TbsCore.Tasks.SecondLevel;
 
 namespace TravBotSharp.Views
 {
@@ -228,7 +225,6 @@ namespace TravBotSharp.Views
             GetSelectedVillage().FarmingNonGold.MinTroops = (int)oasisMinTroops.Value;
 
         #endregion Oasis farming callbacks
-
 
         // Scout player
         private void button3_Click_1(object sender, EventArgs e)

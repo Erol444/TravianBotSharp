@@ -1,17 +1,12 @@
-﻿using Newtonsoft.Json;
-using System.IO;
+﻿using Discord.Webhook;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using Discord.Webhook;
+using TbsCore.Helpers;
 using TbsCore.Models.Access;
+using TbsCore.Models.Logging;
 using TbsCore.Models.Settings;
 using TbsCore.Models.VillageModels;
-using TbsCore.Models.Logging;
-using TbsCore.Models.AccModels;
-using TbsCore.Tasks;
-
-using Serilog;
 using TbsCore.Models.World;
-using TbsCore.Helpers;
 
 namespace TbsCore.Models.AccModels
 {

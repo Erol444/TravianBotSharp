@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using TbsCore.Helpers;
 
 namespace TbsCore.Models.CombatModels
@@ -11,12 +9,12 @@ namespace TbsCore.Models.CombatModels
         /// List of (Troops, hero, tribe), since deffender can have armies from multiple accounts / villages
         /// </summary>
         public List<CombatArmy> Armies { get; set; }
-        
+
         /// <summary>
         /// Population of the deffender, morale bonus depends on it
         /// </summary>
         public int Population { get; set; }
-        
+
         /// <summary>
         /// Level of the wall inside the village
         /// </summary>
@@ -26,7 +24,7 @@ namespace TbsCore.Models.CombatModels
         /// Level of Palace / Residence
         /// </summary>
         public int PalaceLevel { get; set; }
-        
+
         /// <summary>
         /// Which tribe is the deffender. Wall bonus depends on the tribe
         /// </summary>

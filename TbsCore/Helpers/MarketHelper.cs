@@ -10,7 +10,7 @@ using TbsCore.Models.VillageModels;
 
 using TbsCore.Parsers;
 using TbsCore.Tasks;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Others;
 
 namespace TbsCore.Helpers
 {
@@ -183,7 +183,7 @@ namespace TbsCore.Helpers
                 // Error "Abuse! You have not enough resources." is displayed.
             }
             //get duration of transit
-            // Class destination when ok. 
+            // Class destination when ok.
 
             var dur = durNode.Descendants("td").ToList()[3].InnerText.Replace("\t", "").Replace("\n", "");
 

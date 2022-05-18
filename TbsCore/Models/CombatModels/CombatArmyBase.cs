@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using TbsCore.Helpers;
 using TbsCore.Models.TroopsModels;
 using TbsCore.TravianData;

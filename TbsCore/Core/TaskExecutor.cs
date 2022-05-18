@@ -7,7 +7,9 @@ using TbsCore.Models.AccModels;
 using TbsCore.Models.VillageModels;
 using TbsCore.Parsers;
 using TbsCore.Tasks;
-using TbsCore.Tasks.LowLevel;
+using TbsCore.Tasks.Browser;
+using TbsCore.Tasks.Others;
+using TbsCore.Tasks.Update;
 using static TbsCore.Tasks.BotTask;
 
 namespace TbsCore.Helpers
@@ -26,7 +28,7 @@ namespace TbsCore.Helpers
                 var counter = 3;
                 while (!acc.Wb.CheckChromeOpen())
                 {
-                    acc.Logger.Warning("Chrome browser  missing");
+                    acc.Logger.Warning("Chrome browser missing");
                     if (counter == 0)
                     {
                         acc.Logger.Warning("Chrome still missing after 3 times restart. Pause bot (suggest logout bot before use bot on this account)");
@@ -41,6 +43,7 @@ namespace TbsCore.Helpers
                     await Task.Delay(5000);
                 }
             }
+
             if (IsCaptcha(acc) || IsWWMsg(acc) || IsBanMsg(acc) || IsMaintanance(acc)) //Check if a captcha/ban/end of server/maintanance
             {
                 acc.Logger.Warning("Captcha/WW/Ban/Maintanance found! Stopping bot for this account!");
@@ -58,7 +61,6 @@ namespace TbsCore.Helpers
                 acc.Tasks.Add(new EditPreferences()
                 {
                     ExecuteAt = DateTime.Now.AddHours(-1),
-                    TroopsPerPage = 99,
                     ContextualHelp = true
                 }, true);
             }
@@ -312,15 +314,33 @@ namespace TbsCore.Helpers
         //will be called before executing PreTaskRefresh
         internal static bool IsLoginScreen(Account acc)
         {
-            var outerLoginBox = acc.Wb.Html.DocumentNode
-                .Descendants("form")
-                .FirstOrDefault(x => x.GetAttributeValue("name", "") == "login");
-
-            if (outerLoginBox != null)
+            switch (acc.AccInfo.ServerVersion)
             {
-                if (!IsCaptcha(acc)) return true;
+                case Classificator.ServerVersionEnum.TTwars:
+                    {
+                        var outerLoginBox = acc.Wb.Html.DocumentNode
+               .Descendants("form")
+               .FirstOrDefault(x => x.GetAttributeValue("name", "") == "login");
+
+                        if (outerLoginBox != null)
+                        {
+                            if (!IsCaptcha(acc)) return true;
+                        }
+                        return false;
+                    }
+                case Classificator.ServerVersionEnum.T4_5:
+                    {
+                        var tableLogin = acc.Wb.Html.GetElementbyId("loginForm");
+
+                        if (tableLogin != null)
+                        {
+                            if (!IsCaptcha(acc)) return true;
+                        }
+                        return false;
+                    }
+                default:
+                    return false;
             }
-            return false;
         }
 
         private static bool IsSysMsg(Account acc)

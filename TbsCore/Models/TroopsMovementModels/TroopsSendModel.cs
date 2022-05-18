@@ -1,7 +1,4 @@
-﻿using System;
-using TbsCore.Models.MapModels;
-using TbsCore.Helpers;
-using static TbsCore.Helpers.Classificator;
+﻿using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Models.SendTroopsModels
 {

@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using TbsCore.Models.SendTroopsModels;
-using TbsCore.Models.VillageModels;
-
-namespace TbsCore.Models.VillageModels
+﻿namespace TbsCore.Models.VillageModels
 {
     public class VillDeffing
     {
