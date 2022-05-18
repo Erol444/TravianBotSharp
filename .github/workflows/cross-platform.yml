@@ -21,12 +21,12 @@ jobs:
     - name: Build
       run: |
         dotnet publish TbsCrossPlatform -p:PublishProfile=WindowsProfile
-        ls TbsCrossPlatform\bin\publish\
+        ls TbsCrossPlatform/bin/publish/
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
         name: TBS-Build-Windows-${{ github.sha }}
-        path: TbsCrossPlatform\bin\publish\Windows
+        path: TbsCrossPlatform/bin/publish/Windows
         if-no-files-found: error
 
     - name: Comment on PR when success
