@@ -7,6 +7,9 @@ on:
 
 jobs:
   build:
+   strategy:
+      matrix:
+        profile: ['Linux', 'Mac', 'Windows']
    runs-on: ubuntu-latest
    steps:
     - uses: actions/checkout@v2
@@ -20,13 +23,12 @@ jobs:
       
     - name: Build
       run: |
-        dotnet publish TbsCrossPlatform -p:PublishProfile=WindowsProfile
-        ls TbsCrossPlatform/bin/publish/
+        dotnet publish TbsCrossPlatform -p:PublishProfile=${{ matrix.profile }}
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2
       with:
-        name: TBS-Build-Windows-${{ github.sha }}
-        path: TbsCrossPlatform/bin/publish/Windows
+        name: TBS-Build-${{ matrix.profile }}-${{ github.sha }}
+        path: TbsCrossPlatform/bin/publish/${{ matrix.profile }}
         if-no-files-found: error
 
     - name: Comment on PR when success
