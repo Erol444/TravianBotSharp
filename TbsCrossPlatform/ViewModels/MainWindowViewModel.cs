@@ -2,6 +2,7 @@ using Avalonia.Interactivity;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using ReactiveUI;
+using TbsCrossPlatform.Helper;
 
 namespace TbsCrossPlatform.ViewModels
 {
@@ -22,10 +23,11 @@ namespace TbsCrossPlatform.ViewModels
 
         public string ContentButton => Browser ? "Close chrome" : "Open chrome";
 
-        public void OnClickCommand()
+        public async void OnClickCommand()
         {
             if (!browser)
             {
+                await ChromeDriverInstaller.Install();
                 ChromeDriverService chromeService = ChromeDriverService.CreateDefaultService();
                 chromeService.HideCommandPromptWindow = true;
                 driver = new ChromeDriver(chromeService);
