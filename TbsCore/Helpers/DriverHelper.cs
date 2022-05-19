@@ -219,7 +219,7 @@ namespace TbsCore.Helpers
             }
             catch
             {
-                acc.Logger.Warning($"Chrome failed when change to page have url part is {part}");
+                return false;
             }
             return await WaitPageLoaded(acc, delay);
         }

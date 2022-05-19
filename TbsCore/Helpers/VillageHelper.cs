@@ -85,43 +85,51 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> SwitchVillage(Account acc, int id)
         {
-            acc.Wb.UpdateHtml();
-            HtmlAgilityPack.HtmlNode node = null;
-            switch (acc.AccInfo.ServerVersion)
+            var counter = 3;
+            do
             {
-                case ServerVersionEnum.T4_5:
-                    {
-                        node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
-                        break;
-                    }
-                case ServerVersionEnum.TTwars:
-                    {
-                        var nodeBoxVillage = acc.Wb.Html.DocumentNode.SelectSingleNode("//*[@id='sidebarBoxVillagelist']");
-                        if (nodeBoxVillage == null) return false;
+                if (counter != 3) await acc.Wb.Refresh();
+                counter--;
+                if (counter == 0) return false;
 
-                        node = nodeBoxVillage.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("href", "").Contains($"{id}"));
-                        break;
-                    }
-            }
+                HtmlAgilityPack.HtmlNode node = null;
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case ServerVersionEnum.T4_5:
+                        {
+                            node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
+                            break;
+                        }
+                    case ServerVersionEnum.TTwars:
+                        {
+                            var nodeBoxVillage = acc.Wb.Html.DocumentNode.SelectSingleNode("//*[@id='sidebarBoxVillagelist']");
+                            if (nodeBoxVillage == null) return false;
 
-            if (node == null)
-            {
-                acc.Logger.Information("Cannot find village in village list");
-                return false;
-            }
-            try
-            {
-                var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
-                element.Click();
-            }
-            catch
-            {
-                acc.Logger.Warning("Bot cannot switch village, may break some things later.");
-                return false;
-            }
+                            node = nodeBoxVillage.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("href", "").Contains($"{id}"));
+                            break;
+                        }
+                }
 
-            //dorf1.php?newdid=25270&
-            return await DriverHelper.WaitPageChange(acc, $"{id}");
+                if (node == null)
+                {
+                    acc.Logger.Information("Cannot find village in village list");
+                    return false;
+                }
+                try
+                {
+                    var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+                    element.Click();
+                }
+                catch
+                {
+                    acc.Logger.Warning("Bot cannot switch village, may break some things later.");
+                    return false;
+                }
+
+                //dorf1.php?newdid=25270&
+            }
+            while (!await DriverHelper.WaitPageChange(acc, $"{id}", 0.1));
+            return true;
         }
 
         /// <summary>

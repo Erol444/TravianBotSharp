@@ -78,44 +78,59 @@ namespace TbsCore.Helpers
                 await acc.Wb.Refresh();
                 return true;
             }
+            var counter = 3;
 
             if (index < 19) // dorf1
             {
                 if (!acc.Wb.CurrentUrl.Contains("dorf1.php"))
                     await MainNavigate(acc, MainNavigationButton.Resources);
-                var divBuilding = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass($"buildingSlot{index}"));
-                if (divBuilding == null)
+                do
                 {
-                    acc.Logger.Warning($"Cannot find resfield has id {index}");
-                    return false;
+                    if (counter != 3) await acc.Wb.Refresh();
+                    counter--;
+                    if (counter == 0) return false;
+                    var divBuilding = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass($"buildingSlot{index}"));
+                    if (divBuilding == null)
+                    {
+                        acc.Logger.Warning($"Cannot find resfield has id {index}");
+                        return false;
+                    }
+                    var elementBuilding = acc.Wb.Driver.FindElement(By.XPath(divBuilding.XPath));
+                    elementBuilding.Click();
                 }
-                var elementBuilding = acc.Wb.Driver.FindElement(By.XPath(divBuilding.XPath));
-                elementBuilding.Click();
-                await DriverHelper.WaitPageChange(acc, $"?id={index}&");
+                while (!await DriverHelper.WaitPageChange(acc, $"?id={index}&"));
             }
             else // dorf2
             {
                 if (!acc.Wb.CurrentUrl.Contains("dorf2.php"))
                     await MainNavigate(acc, MainNavigationButton.Buildings);
 
-                //*[@id="villageContent"]/div[1] => data-aid = 19
-                var location = index - 18; // - 19 + 1
-                var divBuilding = acc.Wb.Html.DocumentNode.SelectSingleNode($"//*[@id='villageContent']/div[{location}]");
-                if (divBuilding == null)
+                do
                 {
-                    acc.Logger.Warning($"Cannot find building has id {index}");
-                    return false;
+                    if (counter != 3) await acc.Wb.Refresh();
+
+                    counter--;
+                    if (counter == 0) return false;
+                    //*[@id="villageContent"]/div[1] => data-aid = 19
+                    await acc.Wb.Refresh();
+                    var location = index - 18; // - 19 + 1
+                    var divBuilding = acc.Wb.Html.DocumentNode.SelectSingleNode($"//*[@id='villageContent']/div[{location}]");
+                    if (divBuilding == null)
+                    {
+                        acc.Logger.Warning($"Cannot find building has id {index}");
+                        return false;
+                    }
+                    var pathBuilding = divBuilding.Descendants("path").FirstOrDefault();
+                    if (pathBuilding == null)
+                    {
+                        acc.Logger.Warning($"Cannot find place to click on building has id {index}");
+                        return false;
+                    }
+                    var href = pathBuilding.GetAttributeValue("onclick", "");
+                    var script = href.Replace("&amp;", "&");
+                    acc.Wb.Driver.ExecuteScript(script);
                 }
-                var pathBuilding = divBuilding.Descendants("path").FirstOrDefault();
-                if (pathBuilding == null)
-                {
-                    acc.Logger.Warning($"Cannot find place to click on building has id {index}");
-                    return false;
-                }
-                var href = pathBuilding.GetAttributeValue("onclick", "");
-                var script = href.Replace("&amp;", "&");
-                acc.Wb.Driver.ExecuteScript(script);
-                await DriverHelper.WaitPageChange(acc, $"?id={index}");
+                while (!await DriverHelper.WaitPageChange(acc, $"?id={index}"));
             }
             return true;
         }
@@ -140,29 +155,38 @@ namespace TbsCore.Helpers
                     classCategoryNode = "";
                     break;
             }
-            HtmlNode node;
-            switch (acc.AccInfo.ServerVersion)
+            var counter = 3;
+
+            do
             {
-                case ServerVersionEnum.TTwars:
-                    node = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("container") && x.HasClass(classCategoryNode));
-                    break;
+                if (counter != 3) await acc.Wb.Refresh();
+                counter--;
+                if (counter == 0) return false;
+                HtmlNode node;
+                switch (acc.AccInfo.ServerVersion)
+                {
+                    case ServerVersionEnum.TTwars:
+                        node = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("container") && x.HasClass(classCategoryNode));
+                        break;
 
-                case ServerVersionEnum.T4_5:
-                    node = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("tabItem") && x.HasClass(classCategoryNode));
+                    case ServerVersionEnum.T4_5:
+                        node = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("tabItem") && x.HasClass(classCategoryNode));
 
-                    break;
+                        break;
 
-                default:
-                    node = null;
-                    break;
+                    default:
+                        node = null;
+                        break;
+                }
+                if (node == null) return false;
+
+                var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
+                if (element == null) return false;
+                element.Click();
+                acc.Logger.Information($"Waitting tab change");
             }
-            if (node == null) return false;
+            while (!await DriverHelper.WaitPageChange(acc, "category"));
 
-            var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
-            if (element == null) return false;
-            element.Click();
-            acc.Logger.Information($"Waitting tab change");
-            await DriverHelper.WaitPageChange(acc, "category");
             return true;
         }
 

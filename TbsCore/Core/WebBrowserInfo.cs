@@ -106,14 +106,15 @@ namespace TbsCore.Models.AccModels
                 if (acc.Settings.OpenMinimized)
                 {
                     options.AddArguments("--window-position=5000,5000");
-                    this.Driver = new ChromeDriver(chromeService, options);
-                    this.Driver.Manage().Window.Position = new System.Drawing.Point(200, 200); // TODO: change coords?
-                    this.Driver.Manage().Window.Minimize();
+                    Driver = new ChromeDriver(chromeService, options);
+                    Driver.Manage().Window.Position = new System.Drawing.Point(200, 200); // TODO: change coords?
+                    Driver.Manage().Window.Minimize();
                 }
-                else this.Driver = new ChromeDriver(chromeService, options);
+                else Driver = new ChromeDriver(chromeService, options);
 
                 // Set timeout
-                this.Driver.Manage().Timeouts().PageLoad = TimeSpan.FromMinutes(5);
+                Driver.Manage().Timeouts().PageLoad = TimeSpan.FromMinutes(5);
+                Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             }
             catch (Exception e)
             {
