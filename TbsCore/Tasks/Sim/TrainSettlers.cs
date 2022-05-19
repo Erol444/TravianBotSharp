@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
@@ -191,7 +192,17 @@ namespace TbsCore.Tasks.Sim
                 case ServerVersionEnum.TTwars:
                     {
                         var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settlerId));
-                        while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
+                        while (!troopNode.HasClass("details"))
+                        {
+                            troopNode = troopNode.ParentNode;
+                            if (troopNode == null)
+                            {
+                                acc.Logger.Information("No new settler can be trained, probably because 3 settlers are already (being) trained");
+                                SendSettlersTask(acc);
+                                StopFlag = true;
+                                return false;
+                            }
+                        }
                         nodeSettler = troopNode;
                     }
                     break;
@@ -251,12 +262,25 @@ namespace TbsCore.Tasks.Sim
 
         private async Task<bool> IsEnoughRes(Account acc)
         {
-            var troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
-            if (troopBox == null)
+            HtmlNode troopBox = null;
+            switch (acc.AccInfo.ServerVersion)
             {
-                Retry(acc, "Cannot find settler box");
-                return false;
+                case ServerVersionEnum.TTwars:
+                    var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settlerId));
+                    while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
+                    troopBox = troopNode;
+                    break;
+
+                case ServerVersionEnum.T4_5:
+                    troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
+                    if (troopBox == null)
+                    {
+                        Retry(acc, "Cannot find settler box");
+                        return false;
+                    }
+                    break;
             }
+
             var resWrapper = troopBox.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
             if (resWrapper == null)
             {
