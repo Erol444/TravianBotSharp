@@ -99,15 +99,12 @@ namespace TbsCore.Helpers
 
                     acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html, acc.AccInfo.ServerVersion);
                     var claimQuest = acc.Quests?.Quests?.FirstOrDefault(x => x.finished);
-                    if (claimQuest != null &&
-                        acc.Quests.ClaimBeginnerQuests
-                        )
+                    if (claimQuest != null && acc.Quests.ClaimBeginnerQuests)
                     {
                         acc.Tasks.Add( new ClaimBeginnerTask()
                         {
                             ExecuteAt = DateTime.Now,
-                            QuestToClaim = claimQuest,
-                            Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim)
+                            Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim),
                         }, true);
                     }
                 },
