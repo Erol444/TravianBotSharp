@@ -259,13 +259,19 @@ namespace TbsCore.Models.AccModels
                     Driver.Dispose();
                 }
                 catch { }
+
+                Driver = null;
             }
         }
 
         public void Dispose()
         {
             Close();
-            chromeService.Dispose();
+            try
+            {
+                chromeService.Dispose();
+            }
+            catch { }
         }
     }
 }

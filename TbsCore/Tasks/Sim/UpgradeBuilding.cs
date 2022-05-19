@@ -55,7 +55,7 @@ namespace TbsCore.Tasks.Sim
 
                 {
                     acc.Logger.Information("Check condition ...", this);
-                    var result = TaskTypeCondition(acc);
+                    var result = await TaskTypeCondition(acc);
                     if (StopFlag) return TaskRes.Executed;
                     if (!result) continue;
                 }
@@ -494,7 +494,7 @@ namespace TbsCore.Tasks.Sim
             return nextTask;
         }
 
-        private bool TaskTypeCondition(Account acc)
+        private async Task<bool> TaskTypeCondition(Account acc)
         {
             switch (_buildingTask.TaskType)
             {
@@ -510,6 +510,10 @@ namespace TbsCore.Tasks.Sim
 
                 case BuildingType.AutoUpgradeResFields:
                     {
+                        if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars)
+                        {
+                            await NavigationHelper.ToDorf1(acc);
+                        }
                         acc.Logger.Information("This is task auto upgrade res field. Choose what res fields will upgrade");
                         UpgradeBuildingHelper.AddResFields(acc, Vill, _buildingTask);
                         var task = Vill.Build.Tasks.FirstOrDefault();
@@ -591,6 +595,7 @@ namespace TbsCore.Tasks.Sim
                 contractNode = acc.Wb.Html.GetElementbyId("contract");
             }
 
+            if (contractNode == null) return false;
             var resWrapper = contractNode.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var cost = ResourceParser.GetResourceCost(resWrapper);
 

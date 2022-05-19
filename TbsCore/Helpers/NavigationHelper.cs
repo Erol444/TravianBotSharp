@@ -14,6 +14,8 @@ namespace TbsCore.Helpers
 {
     public static class NavigationHelper
     {
+        private static readonly Random rand = new Random();
+
         private static readonly string[] urlMaianNavigation = new string[]{
             "dummy",
             "dorf1",
@@ -236,6 +238,20 @@ namespace TbsCore.Helpers
                     break;
 
                 case ServerVersionEnum.TTwars:
+                    // update building info if there is looping
+                    var chance = rand.Next(0, 100);
+                    if (chance > 50)
+                    {
+                        if (building.Id < 19) // dorf1
+                        {
+                            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
+                        }
+                        else
+                        {
+                            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
+                        }
+                    }
+
                     // Directly navigate to url
                     string url = $"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}";
                     if (tab != null) url += "&" + TTWarsTabUrl(building.Type, tab ?? 0);
