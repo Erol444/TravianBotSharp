@@ -1,9 +1,14 @@
+using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Interactivity;
+using Microsoft.Extensions.DependencyInjection;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using ReactiveUI;
+using System;
+using System.Threading.Tasks;
 using TbsCrossPlatform.Database;
 using TbsCrossPlatform.Helper;
+using TbsCrossPlatform.Services;
 using TbsCrossPlatform.Views;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -11,37 +16,21 @@ namespace TbsCrossPlatform.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private bool browser = false;
-        private LoadingWindow loadingWindow;
+        private readonly IWaitingService _waitingService;
 
-        private bool Browser
+        public MainWindowViewModel()
         {
-            set
-            {
-                browser = value;
-                this.RaisePropertyChanged(nameof(ContentButton));
-            }
-            get => browser;
+            _waitingService = Program.GetService<IWaitingService>();
         }
 
-        public string ContentButton => Browser ? "Close chrome" : "Open chrome";
+        public static string ContentButton => "Test";
 
-        public void OnClickCommand()
+        public async void OnClickCommand()
         {
-            if (!browser)
-            {
-                loadingWindow = new();
-                loadingWindow.ViewModel.Message = "Please wait . . .";
-                using var context = new AccountContext();
-                loadingWindow.Show();
-                Browser = true;
-            }
-            else
-            {
-                loadingWindow.ViewModel.CanClose = true;
-                loadingWindow.Close();
-                Browser = false;
-            }
+            var task = _waitingService.Show();
+            using var context = new AccountContext();
+            _waitingService.Close();
+            await task;
         }
     }
 }
