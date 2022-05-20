@@ -33,6 +33,7 @@ namespace TbsCrossPlatform
             var services = new ServiceCollection();
 
             services.AddSingleton<IWaitingService, WaitingService>();
+            services.AddSingleton<IDbContextPool, DbContextPool>();
 
             ServiceProvider = services.BuildServiceProvider();
         }
