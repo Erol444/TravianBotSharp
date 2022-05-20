@@ -2,6 +2,7 @@ using Avalonia.Interactivity;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using ReactiveUI;
+using TbsCrossPlatform.Database;
 using TbsCrossPlatform.Helper;
 using TbsCrossPlatform.Views;
 using static System.Net.Mime.MediaTypeNames;
@@ -31,6 +32,7 @@ namespace TbsCrossPlatform.ViewModels
             {
                 loadingWindow = new();
                 loadingWindow.ViewModel.Message = "Please wait . . .";
+                using var context = new AccountContext();
                 loadingWindow.Show();
                 Browser = true;
             }
