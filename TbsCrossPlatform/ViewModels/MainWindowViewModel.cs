@@ -3,13 +3,15 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using ReactiveUI;
 using TbsCrossPlatform.Helper;
+using TbsCrossPlatform.Views;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TbsCrossPlatform.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
         private bool browser = false;
-        private IWebDriver driver;
+        private LoadingWindow loadingWindow;
 
         private bool Browser
         {
@@ -23,20 +25,19 @@ namespace TbsCrossPlatform.ViewModels
 
         public string ContentButton => Browser ? "Close chrome" : "Open chrome";
 
-        public async void OnClickCommand()
+        public void OnClickCommand()
         {
             if (!browser)
             {
-                await ChromeDriverInstaller.Install();
-                ChromeDriverService chromeService = ChromeDriverService.CreateDefaultService();
-                chromeService.HideCommandPromptWindow = true;
-                driver = new ChromeDriver(chromeService);
-                driver.Navigate().GoToUrl("https://github.com/Erol444/TravianBotSharp");
+                loadingWindow = new();
+                loadingWindow.ViewModel.Message = "Please wait . . .";
+                loadingWindow.Show();
                 Browser = true;
             }
             else
             {
-                driver.Quit();
+                loadingWindow.ViewModel.CanClose = true;
+                loadingWindow.Close();
                 Browser = false;
             }
         }
