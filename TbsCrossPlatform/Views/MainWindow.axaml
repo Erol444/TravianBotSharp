@@ -12,5 +12,35 @@
   <Design.DataContext>
     <vm:MainWindowViewModel />
   </Design.DataContext>
-  <v:SidebarUc />
+  <Grid ColumnDefinitions="1*, 3*" RowDefinitions="Auto">
+    <v:SidebarUc Grid.Row="0" Grid.Column="0" />
+    <TabControl Grid.Row="0" Grid.Column="1">
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock VerticalAlignment="Center" FontSize="15">Test</TextBlock>
+        </TabItem.Header>
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock VerticalAlignment="Center" FontSize="15">Info</TextBlock>
+        </TabItem.Header>
+        <TextBlock>If you see this tab, click "Add account" button to using TBS</TextBlock>
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock VerticalAlignment="Center" FontSize="15">Info</TextBlock>
+        </TabItem.Header>
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock VerticalAlignment="Center" FontSize="15">Villages</TextBlock>
+        </TabItem.Header>
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock VerticalAlignment="Center" FontSize="15">Activity</TextBlock>
+        </TabItem.Header>
+      </TabItem>
+    </TabControl>
+  </Grid>
 </Window>
