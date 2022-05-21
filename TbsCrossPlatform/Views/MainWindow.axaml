@@ -35,6 +35,7 @@
         <TabItem.Header>
           <TextBlock VerticalAlignment="Center" FontSize="15">Villages</TextBlock>
         </TabItem.Header>
+        <v:SidebarVillageUc />
       </TabItem>
       <TabItem>
         <TabItem.Header>

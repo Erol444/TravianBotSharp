@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TbsCrossPlatform.Views.SidebarVillageUc">
+  <Grid ColumnDefinitions="*" RowDefinitions="*">
+    <ListBox Grid.Row="0" Grid.Column="0" Items="{Binding Villages}" SelectedItem="{Binding Account}">
+      <ListBox.DataTemplates>
+        <DataTemplate>
+          <Border CornerRadius="10"
+                  Padding="4">
+            <StackPanel>
+              <TextBlock HorizontalAlignment="Center" Text="{Binding Name}" />
+              <TextBlock HorizontalAlignment="Center" Text="{Binding Coordinates}" />
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </ListBox.DataTemplates>
+    </ListBox>
+  </Grid>
+</UserControl>
