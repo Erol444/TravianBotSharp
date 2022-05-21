@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using TbsCrossPlatform.Models.Enums;
 
-namespace TbsCrossPlatform.Models
+namespace TbsCrossPlatform.Models.Database
 {
     [Index(nameof(Username), nameof(Server), Name = "Index_account")]
     public class Account

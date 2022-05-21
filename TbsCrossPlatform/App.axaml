@@ -3,5 +3,6 @@
              x:Class="TbsCrossPlatform.App">
   <Application.Styles>
     <FluentTheme Mode="Light" />
+    <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Default.xaml" />
   </Application.Styles>
 </Application>

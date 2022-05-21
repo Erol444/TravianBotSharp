@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TbsCrossPlatform.Models;
+using TbsCrossPlatform.Models.Database;
 
 namespace TbsCrossPlatform.Database
 {

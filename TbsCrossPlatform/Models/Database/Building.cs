@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using TbsCrossPlatform.Models.Enums;
 
-namespace TbsCrossPlatform.Models
+namespace TbsCrossPlatform.Models.Database
 {
     public class Building
     {

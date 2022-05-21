@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TbsCrossPlatform.Models
+namespace TbsCrossPlatform.Models.Database
 {
     [Index(nameof(UserAgent), Name = "Index_Useragent")]
     public class Access

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TbsCrossPlatform.Models
+namespace TbsCrossPlatform.Models.Database
 {
     public class Hero
     {

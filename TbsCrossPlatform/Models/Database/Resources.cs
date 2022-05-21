@@ -1,4 +1,4 @@
-﻿namespace TbsCrossPlatform.Models
+﻿namespace TbsCrossPlatform.Models.Database
 {
     public class Resources
     {

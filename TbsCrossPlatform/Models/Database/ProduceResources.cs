@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace TbsCrossPlatform.Models
+namespace TbsCrossPlatform.Models.Database
 {
     public class ProduceResources : Resources
     {

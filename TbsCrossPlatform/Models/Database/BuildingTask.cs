@@ -1,6 +1,6 @@
 ﻿using TbsCrossPlatform.Models.Enums;
 
-namespace TbsCrossPlatform.Models
+namespace TbsCrossPlatform.Models.Database
 {
     public class BuildingTask
     {

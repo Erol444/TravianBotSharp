@@ -1,0 +1,31 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="200"
+            x:Class="TbsCrossPlatform.Views.SidebarUc">
+  <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
+    <Button Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Check new version</Button>
+    <Button Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Add account</Button>
+    <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Add accounts</Button>
+    <Button Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Edit account</Button>
+    <Button Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Delete account</Button>
+    <Button Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Login</Button>
+    <Button Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Logout</Button>
+    <Button Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Login all</Button>
+    <Button Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Logout all</Button>
+    <ListBox Grid.Row="5" Grid.ColumnSpan="2" Items="{Binding Accounts}" SelectedItem="{Binding Account}">
+      <ListBox.DataTemplates>
+        <DataTemplate>
+          <Border CornerRadius="10"
+                  Padding="4">
+            <StackPanel>
+              <TextBlock HorizontalAlignment="Center" Text="{Binding Username}" />
+              <TextBlock HorizontalAlignment="Center" Text="{Binding ServerUrl}" />
+            </StackPanel>
+          </Border>
+        </DataTemplate>
+      </ListBox.DataTemplates>
+    </ListBox>
+  </Grid>
+</UserControl>

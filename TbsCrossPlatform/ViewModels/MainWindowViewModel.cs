@@ -1,16 +1,4 @@
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Interactivity;
-using Microsoft.Extensions.DependencyInjection;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using ReactiveUI;
-using System;
-using System.Threading.Tasks;
-using TbsCrossPlatform.Database;
-using TbsCrossPlatform.Helper;
 using TbsCrossPlatform.Services;
-using TbsCrossPlatform.Views;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace TbsCrossPlatform.ViewModels
 {
