@@ -65,6 +65,12 @@
           "System.Reactive": "5.0.0"
         }
       },
+      "HtmlAgilityPack": {
+        "type": "Direct",
+        "requested": "[1.11.42, )",
+        "resolved": "1.11.42",
+        "contentHash": "LDc1bEfF14EY2DZzak4xvzWvbpNXK3vi1u0KQbBpLUN4+cx/VrvXhgCAMSJhSU5vz0oMfW9JZIR20vj/PkDHPA=="
+      },
       "MessageBox.Avalonia": {
         "type": "Direct",
         "requested": "[2.0.0, )",
