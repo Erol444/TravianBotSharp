@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="using:TbsCrossPlatform.Views"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="TbsCrossPlatform.Views.VillageUc">
+  <Grid ColumnDefinitions="1*, 3*" RowDefinitions="Auto">
+    <v:SidebarVillageUc Grid.Row="0" Grid.Column="0" />
+    <TabControl Grid.Row="0" Grid.Column="1">
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock VerticalAlignment="Center" FontSize="15">Build</TextBlock>
+        </TabItem.Header>
+      </TabItem>
+      <TabItem>
+        <TabItem.Header>
+          <TextBlock VerticalAlignment="Center" FontSize="15">Info</TextBlock>
+        </TabItem.Header>
+      </TabItem>
+    </TabControl>
+  </Grid>
+</UserControl>
