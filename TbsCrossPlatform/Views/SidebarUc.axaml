@@ -6,14 +6,13 @@
             x:Class="TbsCrossPlatform.Views.SidebarUc">
   <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto,*">
     <Button Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Check new version</Button>
-    <Button Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Add account</Button>
-    <Button Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Add accounts</Button>
-    <Button Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Edit account</Button>
-    <Button Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Delete account</Button>
-    <Button Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Login</Button>
-    <Button Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Logout</Button>
-    <Button Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Login all</Button>
-    <Button Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Logout all</Button>
+    <Button Command="{Binding AddAccountsCommand}" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Add accounts</Button>
+    <Button Command="{Binding EditAccountCommand}" Grid.Row="2" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Edit account</Button>
+    <Button Command="{Binding DeleteAccountCommand}" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Delete account</Button>
+    <Button Command="{Binding LoginCommand}" Grid.Row="3" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Login</Button>
+    <Button Command="{Binding LogoutCommand}" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Logout</Button>
+    <Button Command="{Binding LoginAllCommand}" Grid.Row="4" Grid.Column="0" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Login all</Button>
+    <Button Command="{Binding LogoutAllCommand}" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center">Logout all</Button>
     <ListBox Grid.Row="5" Grid.ColumnSpan="2" Items="{Binding Accounts}" SelectedItem="{Binding Account}">
       <ListBox.DataTemplates>
         <DataTemplate>
