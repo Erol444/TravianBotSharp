@@ -42,7 +42,6 @@ namespace TbsCrossPlatform.ViewModels
         {
             foreach (var item in _accounts)
             {
-                item.Id = $"{item.Username}{item.ServerUrl}";
                 item.Useragent = _useragentService.Get();
             }
             return _accounts;

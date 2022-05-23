@@ -2,7 +2,7 @@
 {
     public class Account
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string Username { get; set; }
         public string ServerUrl { get; set; }
     }

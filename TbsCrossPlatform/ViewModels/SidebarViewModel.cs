@@ -48,19 +48,19 @@ namespace TbsCrossPlatform.ViewModels
             {
                 new Account()
                 {
-                    Id = "1asd",
+                    Id = 1,
                     ServerUrl = "ts2.internal",
                     Username = "abc",
                 },
                 new Account()
                 {
-                    Id = "20d",
+                    Id = 2,
                     ServerUrl = "ts2.internal",
                     Username = "wsd",
                 },
                 new Account()
                 {
-                    Id = "3asd",
+                    Id = 3,
                     ServerUrl = "ts2.internal",
                     Username = "vca",
                 }

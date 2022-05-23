@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using TbsCrossPlatform.Models.Enums;
 
 namespace TbsCrossPlatform.Models.Database
@@ -11,8 +12,9 @@ namespace TbsCrossPlatform.Models.Database
         /// Id account, not related to Travian account id
         /// Based on account username & server url
         /// </summary>
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         [Key]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Account's username
