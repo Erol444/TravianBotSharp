@@ -1,8 +1,11 @@
-﻿using ReactiveUI;
+﻿using Avalonia.Controls.ApplicationLifetimes;
+using ReactiveUI;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Threading.Tasks;
 using TbsCrossPlatform.Models.UI;
+using TbsCrossPlatform.Views;
 
 namespace TbsCrossPlatform.ViewModels
 {
@@ -29,12 +32,9 @@ namespace TbsCrossPlatform.ViewModels
             set => this.RaiseAndSetIfChanged(ref _account, value);
         }
 
-        public string UserName { get; set; }
-        public string Password { get; set; }
-
         public SidebarViewModel()
         {
-            var active = this.WhenAnyValue(x => x.Account, x => x.Account, (account, hm) => account is not null);
+            var active = this.WhenAnyValue(x => x.Account, x => x.Account, (x, y) => x is not null);
 
             AddAccountsCommand = ReactiveCommand.CreateFromTask(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.CreateFromTask(EditAccountTask, active);
@@ -67,16 +67,18 @@ namespace TbsCrossPlatform.ViewModels
             };
         }
 
-        private async Task AddAccountTask()
-        {
-            await Task.Yield();
-            // Code for executing the command here.
-        }
-
         private async Task AddAccountsTask()
         {
             await Task.Yield();
-            // Code for executing the command here.
+            var window = new AddAccountsWindow();
+            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                var result = await window.ShowDialog<List<AccountInput>>(desktop.MainWindow);
+                foreach (var item in result)
+                {
+                    _accounts.Add(new Account { Id = item.Id, ServerUrl = item.ServerUrl, Username = item.Username });
+                }
+            }
         }
 
         private async Task LoginTask()

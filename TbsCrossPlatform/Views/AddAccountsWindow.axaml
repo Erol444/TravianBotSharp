@@ -1,0 +1,27 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="TbsCrossPlatform.Views.AddAccountsWindow"
+        Icon="/Assets/favicon.ico"
+        Title="AddAccountsWindow">
+  <Border BorderBrush="Black"
+          BorderThickness="2"
+          CornerRadius="3"
+          Margin="5">
+    <Grid ColumnDefinitions="Auto" RowDefinitions="Auto,Auto, 3, Auto, 3,Auto, 3,Auto" Margin="5">
+      <StackPanel Grid.Row="0" Spacing="3" Margin="5">
+        <TextBlock Text="Input your account line by line" />
+        <TextBlock Text="Format: serverurl username password hostProxy portProxy usernameProxy passwordProxy" />
+        <TextBlock Text="Example:" />
+        <TextBlock Text="https://tsx.international.travian.com testaccount testpassword" />
+        <TextBlock Text="https://tsx.international.travian.com testaccount testpassword 1.1.1.1 1111" />
+        <TextBlock Text="https://tsx.international.travian.com testaccount testpassword 1.1.1.1 1111 test test" />
+      </StackPanel>
+      <TextBox Grid.Row="1" AcceptsReturn="True" TextWrapping="Wrap" Text="{Binding Lines}" />
+      <TextBlock Grid.Row="3" Text="Check again" />
+      <TextBox Grid.Row="5" AcceptsReturn="True" TextWrapping="Wrap" IsReadOnly="True" Text="{Binding FormatedLines}" />
+      <Button Grid.Row="7"  Click="AddButton_Click" Content="Add" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" />
+    </Grid>
+  </Border>
+</Window>

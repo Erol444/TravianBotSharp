@@ -91,6 +91,12 @@
           "SQLitePCLRaw.bundle_e_sqlite3": "2.0.6"
         }
       },
+      "RestSharp": {
+        "type": "Direct",
+        "requested": "[107.3.0, )",
+        "resolved": "107.3.0",
+        "contentHash": "qu+A+VAnVLX3OeWVNm11UJz0aVErqSfYqIiOUbJM9x98uLymCOoL/oXRAjMb6XHra27WXxHmzy9EKEOKXWR6Pw=="
+      },
       "Selenium.WebDriver": {
         "type": "Direct",
         "requested": "[4.1.1, )",
