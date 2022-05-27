@@ -59,7 +59,6 @@ namespace TravBotSharp.Views
             autoBuildResStrat.SelectedIndex = 0;
             autoBuildResLevel.Value = 10;
 
-            AutoBuildBonusBuildings.Checked = vill.Build.AutoBuildResourceBonusBuildings;
             buildTypeComboBox.Enabled = false;
 
             buildRadioButton.Checked = true;
@@ -398,9 +397,6 @@ namespace TravBotSharp.Views
             IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
             UpdateUc();
         }
-
-        private void AutoBuildBonusBuildings_CheckedChanged(object sender, EventArgs e) =>
-            GetSelectedVillage().Build.AutoBuildResourceBonusBuildings = AutoBuildBonusBuildings.Checked;
 
         private void buildingsList_SelectedIndexChanged(object sender, EventArgs e)
         {

@@ -8,6 +8,8 @@ namespace TbsCore.Helpers
 {
     public static class TimeHelper
     {
+        private static readonly Random rand = new Random();
+
         /// <summary>
         /// Get DateTime when there will be enough resources, based on production
         /// </summary>
@@ -55,7 +57,6 @@ namespace TbsCore.Helpers
         /// <returns>TimeSpan of the working time. After this, account should sleep</returns>
         public static TimeSpan GetWorkTime(Account acc)
         {
-            var rand = new Random();
             TimeSpan workTime = new TimeSpan(0,
                 rand.Next(acc.Settings.Time.MinWork, acc.Settings.Time.MaxWork),
                 0);

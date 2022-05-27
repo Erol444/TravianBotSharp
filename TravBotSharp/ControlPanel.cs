@@ -320,6 +320,7 @@ namespace TravBotSharp
                 {
                     button2.Invoke(new Action(() => button2.Enabled = false));
                 }
+                acc.Logger.Information("Account logged out");
             });
             thread.Start();
         }
