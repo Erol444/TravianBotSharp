@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using TbsCore.Helpers;
+using TbsCore.Tasks;
 using TbsCore.Tasks.Browser;
 using TbsCore.Tasks.Others;
 using static TbsCore.Tasks.BotTask;
@@ -14,6 +15,7 @@ namespace TbsCore.Models.AccModels
         private readonly Random _random;
         private readonly Account _acc;
         private readonly Timer _mainTimer;
+        private BotTask _currentTask;
 
         private long _isTaskExcuting;
 
@@ -49,6 +51,7 @@ namespace TbsCore.Models.AccModels
             _mainTimer = new Timer(500);
             _random = new Random();
             _mainTimer.Elapsed += MainTimerElapsed;
+            _currentTask = null;
         }
 
         public void Start()
@@ -66,8 +69,7 @@ namespace TbsCore.Models.AccModels
             IsBotRunning = false;
             _mainTimer.Stop();
 
-            var currentTask = _acc.Tasks.CurrentTask;
-            if (currentTask != null) currentTask.StopFlag = true;
+            if (_currentTask != null) _currentTask.StopFlag = true;
             _acc.Status = Status.Pausing;
         }
 
@@ -100,8 +102,9 @@ namespace TbsCore.Models.AccModels
             }
 
             task.Stage = TaskStage.Executing;
+            _currentTask = task;
             await TaskExecutor.Execute(_acc, task);
-
+            _currentTask = null;
             IsTaskExcuting = false;
         }
 

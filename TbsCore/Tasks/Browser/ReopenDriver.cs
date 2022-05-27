@@ -17,7 +17,11 @@ namespace TbsCore.Tasks.Browser
             string previousLog = "";
             do
             {
-                if (StopFlag) break;
+                if (StopFlag)
+                {
+                    acc.Logger.Information("Stop signal detected.");
+                    break;
+                }
                 await Task.Delay(1000);
                 var minutes = GetMinutes(acc);
                 if (minutes <= 0) break;
