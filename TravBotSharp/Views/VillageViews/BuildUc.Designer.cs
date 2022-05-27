@@ -34,10 +34,6 @@
             this.buildTypeComboBox = new System.Windows.Forms.ComboBox();
             this.button22 = new System.Windows.Forms.Button();
             this.button23 = new System.Windows.Forms.Button();
-            this.AutoBuildBonusBuildings = new System.Windows.Forms.CheckBox();
-            this.button20 = new System.Windows.Forms.Button();
-            this.button19 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.button12 = new System.Windows.Forms.Button();
             this.button11 = new System.Windows.Forms.Button();
@@ -150,47 +146,6 @@
             this.button23.Text = "Move Top";
             this.button23.UseVisualStyleBackColor = true;
             this.button23.Click += new System.EventHandler(this.button23_Click);
-            // 
-            // AutoBuildBonusBuildings
-            // 
-            this.AutoBuildBonusBuildings.AutoSize = true;
-            this.AutoBuildBonusBuildings.Location = new System.Drawing.Point(456, 129);
-            this.AutoBuildBonusBuildings.Name = "AutoBuildBonusBuildings";
-            this.AutoBuildBonusBuildings.Size = new System.Drawing.Size(149, 17);
-            this.AutoBuildBonusBuildings.TabIndex = 53;
-            this.AutoBuildBonusBuildings.Text = "Auto build bonus buildings";
-            this.AutoBuildBonusBuildings.UseVisualStyleBackColor = true;
-            this.AutoBuildBonusBuildings.CheckedChanged += new System.EventHandler(this.AutoBuildBonusBuildings_CheckedChanged);
-            // 
-            // button20
-            // 
-            this.button20.Location = new System.Drawing.Point(521, 162);
-            this.button20.Name = "button20";
-            this.button20.Size = new System.Drawing.Size(84, 23);
-            this.button20.TabIndex = 52;
-            this.button20.Text = "Support vill";
-            this.button20.UseVisualStyleBackColor = true;
-            this.button20.Click += new System.EventHandler(this.button20_Click);
-            // 
-            // button19
-            // 
-            this.button19.Location = new System.Drawing.Point(521, 191);
-            this.button19.Name = "button19";
-            this.button19.Size = new System.Drawing.Size(84, 23);
-            this.button19.TabIndex = 51;
-            this.button19.Text = "Off vill";
-            this.button19.UseVisualStyleBackColor = true;
-            this.button19.Click += new System.EventHandler(this.button19_Click);
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(521, 220);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(84, 23);
-            this.button6.TabIndex = 50;
-            this.button6.Text = "Deff vill tasks";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button13
             // 
@@ -552,7 +507,7 @@
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label10.Location = new System.Drawing.Point(68, 65);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(54, 16);
+            this.label10.Size = new System.Drawing.Size(53, 16);
             this.label10.TabIndex = 67;
             this.label10.Text = "minutes";
             // 
@@ -575,7 +530,7 @@
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(3, 45);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(188, 16);
+            this.label9.Size = new System.Drawing.Size(187, 16);
             this.label9.TabIndex = 55;
             this.label9.Text = "When currently building above";
             // 
@@ -585,7 +540,7 @@
             this.instaUpgradeCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.instaUpgradeCheckbox.Location = new System.Drawing.Point(6, 23);
             this.instaUpgradeCheckbox.Name = "instaUpgradeCheckbox";
-            this.instaUpgradeCheckbox.Size = new System.Drawing.Size(157, 20);
+            this.instaUpgradeCheckbox.Size = new System.Drawing.Size(156, 20);
             this.instaUpgradeCheckbox.TabIndex = 54;
             this.instaUpgradeCheckbox.Text = "Insta upgrade (2 gold)";
             this.instaUpgradeCheckbox.UseVisualStyleBackColor = true;
@@ -597,7 +552,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(3, 4);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(103, 16);
+            this.label1.Size = new System.Drawing.Size(102, 16);
             this.label1.TabIndex = 46;
             this.label1.Text = "Insta upgrade";
             // 
@@ -636,7 +591,7 @@
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.Location = new System.Drawing.Point(8, 5);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(138, 16);
+            this.label13.Size = new System.Drawing.Size(137, 16);
             this.label13.TabIndex = 46;
             this.label13.Text = "Build prerequisites";
             // 
@@ -661,10 +616,6 @@
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.AutoBuildBonusBuildings);
-            this.Controls.Add(this.button20);
-            this.Controls.Add(this.button19);
-            this.Controls.Add(this.button6);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.currentlyBuildinglistView);
             this.Controls.Add(this.AutBuildResButton);
@@ -704,10 +655,6 @@
         private System.Windows.Forms.ComboBox buildTypeComboBox;
         private System.Windows.Forms.Button button22;
         private System.Windows.Forms.Button button23;
-        private System.Windows.Forms.CheckBox AutoBuildBonusBuildings;
-        private System.Windows.Forms.Button button20;
-        private System.Windows.Forms.Button button19;
-        private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button button11;
