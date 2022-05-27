@@ -4,7 +4,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         x:Class="TbsCrossPlatform.Views.AddAccountsWindow"
         Icon="/Assets/favicon.ico"
-        Title="AddAccountsWindow">
+        Title="AddAccountsWindow"
+        WindowStartupLocation="CenterScreen">
   <Border BorderBrush="Black"
           BorderThickness="2"
           CornerRadius="3"

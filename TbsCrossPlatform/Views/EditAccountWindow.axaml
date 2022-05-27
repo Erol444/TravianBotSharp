@@ -1,0 +1,30 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        x:Class="TbsCrossPlatform.Views.EditAccountWindow"
+        Title="EditAccountWindow"
+        Icon="/Assets/favicon.ico"
+        WindowStartupLocation="CenterScreen">
+  <Border BorderBrush="Black"
+          BorderThickness="2"
+          CornerRadius="3"
+          Margin="5">
+    <Grid ColumnDefinitions="Auto,5, Auto" RowDefinitions="Auto,10, Auto, 3, Auto, 3,Auto, 3,Auto" Margin="5">
+      <TextBlock Text="Username" />
+      <TextBox HorizontalContentAlignment="Stretch" Text="{Binding Username}" />
+      <TextBlock Text="Server" />
+      <TextBox HorizontalContentAlignment="Stretch" Text="{Binding Server}" />
+      <DataGrid Items="{Binding Accesses}" AutoGenerateColumns="False"  Grid.Row="2" Grid.ColumnSpan="3">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Password"  Binding="{Binding Password}" />
+          <DataGridTextColumn Header="Proxy's host" Binding="{Binding ProxyHost}" />
+          <DataGridTextColumn Header="Proxy's port" Binding="{Binding ProxyPort}" />
+          <DataGridTextColumn Header="Proxy's username" Binding="{Binding ProxyUsername}" />
+          <DataGridTextColumn Header="Proxy's password" Binding="{Binding ProxyPassword}" />
+          <DataGridCheckBoxColumn IsReadOnly="True" Header="Working" Binding="{Binding Ok}" />
+        </DataGrid.Columns>
+      </DataGrid>
+    </Grid>
+  </Border>
+</Window>

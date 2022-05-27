@@ -74,6 +74,7 @@ namespace TbsCrossPlatform.ViewModels
             if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 var result = await window.ShowDialog<List<AccountInput>>(desktop.MainWindow);
+                if (result == null || result.Count == 0) return;
                 foreach (var item in result)
                 {
                     _accounts.Add(new Account { Id = item.Id, ServerUrl = item.ServerUrl, Username = item.Username });
@@ -108,7 +109,11 @@ namespace TbsCrossPlatform.ViewModels
         private async Task EditAccountTask()
         {
             await Task.Yield();
-            // Code for executing the command here.
+            var window = new EditAccountWindow();
+            if (Avalonia.Application.Current.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            {
+                await window.ShowDialog(desktop.MainWindow);
+            }
         }
 
         private async Task DeleteAccountTask()
