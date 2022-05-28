@@ -116,69 +116,6 @@ namespace TravBotSharp.Views
             UpdateBotRunning();
         }
 
-        private void button16_Click(object sender, EventArgs e) //all villages farm tasks
-        {
-            var acc = GetSelectedAcc();
-            foreach (var vill in acc.Villages)
-            {
-                DefaultConfigurations.FarmVillagePlan(acc, vill);
-                UpgradeBuildingHelper.RemoveCompletedTasks(vill);
-            }
-        }
-
-        private void button17_Click(object sender, EventArgs e) //all villages support tasks
-        {
-            var acc = GetSelectedAcc();
-            foreach (var vill in acc.Villages)
-            {
-                DefaultConfigurations.SupplyVillagePlan(acc, vill);
-                UpgradeBuildingHelper.RemoveCompletedTasks(vill);
-            }
-        }
-
-        private void button14_Click(object sender, EventArgs e) //all villages deff tasks
-        {
-            var acc = GetSelectedAcc();
-            foreach (var vill in acc.Villages)
-            {
-                DefaultConfigurations.DeffVillagePlan(acc, vill);
-                UpgradeBuildingHelper.RemoveCompletedTasks(vill);
-            }
-        }
-
-        private void button4_Click(object sender, EventArgs e) //all villages off tasks
-        {
-            var acc = GetSelectedAcc();
-            foreach (var vill in acc.Villages)
-            {
-                DefaultConfigurations.OffVillagePlan(acc, vill);
-                UpgradeBuildingHelper.RemoveCompletedTasks(vill);
-            }
-        }
-
-        private void button5_Click(object sender, EventArgs e) //all villages select from file
-        {
-            var acc = GetSelectedAcc();
-
-            string location = IoHelperForms.PromptUserForBuidTasksLocation();
-
-            if (location == null) return;
-
-            foreach (var vill in acc.Villages)
-            {
-                IoHelperCore.AddBuildTasksFromFile(acc, vill, location);
-            }
-        }
-
-        private void button18_Click(object sender, EventArgs e) //clear all villages build tasks
-        {
-            var acc = GetSelectedAcc();
-            foreach (var vill in acc.Villages)
-            {
-                vill.Build.Tasks.Clear();
-            }
-        }
-
         /// <summary>
         /// Automatically expand storage. For TTwars UNL/VIP servers
         /// </summary>

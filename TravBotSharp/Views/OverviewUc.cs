@@ -246,27 +246,6 @@ namespace TravBotSharp.Views
             var type = (VillType)Enum.Parse(typeof(VillType), cells[column].Text);
             if (type == vill.Settings.Type) return;
             vill.Settings.Type = type;
-
-            if (acc.Wb == null) return;
-            //User just selected different Village Type
-            switch (type)
-            {
-                case VillType.Farm:
-                    DefaultConfigurations.FarmVillagePlan(acc, vill);
-                    return;
-
-                case VillType.Support:
-                    DefaultConfigurations.SupplyVillagePlan(acc, vill);
-                    return;
-
-                case VillType.Deff:
-                    DefaultConfigurations.DeffVillagePlan(acc, vill);
-                    return;
-
-                case VillType.Off:
-                    DefaultConfigurations.OffVillagePlan(acc, vill);
-                    return;
-            }
         }
 
         private void button2_Click(object sender, EventArgs e)

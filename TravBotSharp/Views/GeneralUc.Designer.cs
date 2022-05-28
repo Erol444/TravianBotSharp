@@ -73,15 +73,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.numericUpDown4 = new System.Windows.Forms.NumericUpDown();
             this.label6 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.label35 = new System.Windows.Forms.Label();
             this.label33 = new System.Windows.Forms.Label();
             this.button21 = new System.Windows.Forms.Button();
-            this.button18 = new System.Windows.Forms.Button();
-            this.button17 = new System.Windows.Forms.Button();
-            this.button16 = new System.Windows.Forms.Button();
-            this.button14 = new System.Windows.Forms.Button();
             this.SupplyResourcesButton = new System.Windows.Forms.Button();
             this.SupplyResVillageSelected = new System.Windows.Forms.Label();
             this.label17 = new System.Windows.Forms.Label();
@@ -117,7 +110,6 @@
             this.resPrioView = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.button11 = new System.Windows.Forms.Button();
-            this.panel10 = new System.Windows.Forms.Panel();
             this.panel11 = new System.Windows.Forms.Panel();
             this.panel12 = new System.Windows.Forms.Panel();
             this.button12 = new System.Windows.Forms.Button();
@@ -148,7 +140,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.donateExcessOf)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.donateAbove)).BeginInit();
             this.panel9.SuspendLayout();
-            this.panel10.SuspendLayout();
             this.panel11.SuspendLayout();
             this.panel12.SuspendLayout();
             this.panel13.SuspendLayout();
@@ -175,7 +166,7 @@
             this.botRunning.Location = new System.Drawing.Point(9, 109);
             this.botRunning.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.botRunning.Name = "botRunning";
-            this.botRunning.Size = new System.Drawing.Size(77, 16);
+            this.botRunning.Size = new System.Drawing.Size(76, 16);
             this.botRunning.TabIndex = 176;
             this.botRunning.Text = "Bot running:";
             // 
@@ -346,7 +337,7 @@
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.Location = new System.Drawing.Point(11, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(119, 16);
+            this.label1.Size = new System.Drawing.Size(118, 16);
             this.label1.TabIndex = 165;
             this.label1.Text = "Chrome settings";
             // 
@@ -466,7 +457,7 @@
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.Location = new System.Drawing.Point(35, 13);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(225, 16);
+            this.label4.Size = new System.Drawing.Size(224, 16);
             this.label4.TabIndex = 171;
             this.label4.Text = "Bot activity settings [in minutes]";
             // 
@@ -530,7 +521,7 @@
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.Location = new System.Drawing.Point(16, 58);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(142, 16);
+            this.label12.Size = new System.Drawing.Size(141, 16);
             this.label12.TabIndex = 157;
             this.label12.Text = "When below, fill for ";
             // 
@@ -582,7 +573,7 @@
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.Location = new System.Drawing.Point(16, 14);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(125, 16);
+            this.label9.Size = new System.Drawing.Size(124, 16);
             this.label9.TabIndex = 152;
             this.label9.Text = "Fill troops above";
             // 
@@ -664,36 +655,6 @@
             this.label6.TabIndex = 142;
             this.label6.Text = "Expand storage TTWars";
             // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(15, 150);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(110, 23);
-            this.button5.TabIndex = 121;
-            this.button5.Text = "select from file";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(15, 121);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(110, 23);
-            this.button4.TabIndex = 120;
-            this.button4.Text = "off tasks building";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // label35
-            // 
-            this.label35.AutoSize = true;
-            this.label35.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label35.Location = new System.Drawing.Point(6, 8);
-            this.label35.Name = "label35";
-            this.label35.Size = new System.Drawing.Size(127, 18);
-            this.label35.TabIndex = 119;
-            this.label35.Text = "Affects all villages:";
-            // 
             // label33
             // 
             this.label33.AutoSize = true;
@@ -712,46 +673,6 @@
             this.button21.Text = "Animals+Res";
             this.button21.UseVisualStyleBackColor = true;
             this.button21.Click += new System.EventHandler(this.button21_Click);
-            // 
-            // button18
-            // 
-            this.button18.Location = new System.Drawing.Point(15, 179);
-            this.button18.Name = "button18";
-            this.button18.Size = new System.Drawing.Size(110, 30);
-            this.button18.TabIndex = 110;
-            this.button18.Text = "Clear all";
-            this.button18.UseVisualStyleBackColor = true;
-            this.button18.Click += new System.EventHandler(this.button18_Click);
-            // 
-            // button17
-            // 
-            this.button17.Location = new System.Drawing.Point(15, 63);
-            this.button17.Name = "button17";
-            this.button17.Size = new System.Drawing.Size(110, 23);
-            this.button17.TabIndex = 109;
-            this.button17.Text = "sup tasks building";
-            this.button17.UseVisualStyleBackColor = true;
-            this.button17.Click += new System.EventHandler(this.button17_Click);
-            // 
-            // button16
-            // 
-            this.button16.Location = new System.Drawing.Point(15, 34);
-            this.button16.Name = "button16";
-            this.button16.Size = new System.Drawing.Size(110, 23);
-            this.button16.TabIndex = 108;
-            this.button16.Text = "farm tasks building";
-            this.button16.UseVisualStyleBackColor = true;
-            this.button16.Click += new System.EventHandler(this.button16_Click);
-            // 
-            // button14
-            // 
-            this.button14.Location = new System.Drawing.Point(15, 92);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(110, 23);
-            this.button14.TabIndex = 107;
-            this.button14.Text = "deff tasks building";
-            this.button14.UseVisualStyleBackColor = true;
-            this.button14.Click += new System.EventHandler(this.button14_Click);
             // 
             // SupplyResourcesButton
             // 
@@ -778,7 +699,7 @@
             this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label17.Location = new System.Drawing.Point(6, 23);
             this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(157, 16);
+            this.label17.Size = new System.Drawing.Size(156, 16);
             this.label17.TabIndex = 104;
             this.label17.Text = "Main resource village";
             // 
@@ -857,7 +778,7 @@
             this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label21.Location = new System.Drawing.Point(16, 14);
             this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(81, 16);
+            this.label21.Size = new System.Drawing.Size(80, 16);
             this.label21.TabIndex = 152;
             this.label21.Text = "Watch ads";
             // 
@@ -952,7 +873,7 @@
             this.label25.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label25.Location = new System.Drawing.Point(8, 12);
             this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(132, 16);
+            this.label25.Size = new System.Drawing.Size(131, 16);
             this.label25.TabIndex = 181;
             this.label25.Text = "Ally bonus priority";
             // 
@@ -1040,7 +961,7 @@
             this.label27.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label27.Location = new System.Drawing.Point(7, 9);
             this.label27.Name = "label27";
-            this.label27.Size = new System.Drawing.Size(150, 16);
+            this.label27.Size = new System.Drawing.Size(149, 16);
             this.label27.TabIndex = 152;
             this.label27.Text = "Donate to ally bonus";
             // 
@@ -1082,7 +1003,7 @@
             this.label36.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label36.Location = new System.Drawing.Point(8, 12);
             this.label36.Name = "label36";
-            this.label36.Size = new System.Drawing.Size(127, 16);
+            this.label36.Size = new System.Drawing.Size(126, 16);
             this.label36.TabIndex = 181;
             this.label36.Text = "Resource priority";
             // 
@@ -1128,21 +1049,6 @@
             this.button11.Text = "↑";
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
-            // 
-            // panel10
-            // 
-            this.panel10.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel10.Controls.Add(this.label35);
-            this.panel10.Controls.Add(this.button14);
-            this.panel10.Controls.Add(this.button16);
-            this.panel10.Controls.Add(this.button17);
-            this.panel10.Controls.Add(this.button18);
-            this.panel10.Controls.Add(this.button4);
-            this.panel10.Controls.Add(this.button5);
-            this.panel10.Location = new System.Drawing.Point(590, 33);
-            this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(139, 222);
-            this.panel10.TabIndex = 184;
             // 
             // panel11
             // 
@@ -1283,7 +1189,7 @@
             this.label38.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label38.Location = new System.Drawing.Point(9, 11);
             this.label38.Name = "label38";
-            this.label38.Size = new System.Drawing.Size(198, 16);
+            this.label38.Size = new System.Drawing.Size(197, 16);
             this.label38.TabIndex = 152;
             this.label38.Text = "Click delay [in miliseconds]";
             // 
@@ -1295,7 +1201,6 @@
             this.Controls.Add(this.button12);
             this.Controls.Add(this.panel12);
             this.Controls.Add(this.panel11);
-            this.Controls.Add(this.panel10);
             this.Controls.Add(this.panel9);
             this.Controls.Add(this.panel8);
             this.Controls.Add(this.panel7);
@@ -1336,8 +1241,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.donateAbove)).EndInit();
             this.panel9.ResumeLayout(false);
             this.panel9.PerformLayout();
-            this.panel10.ResumeLayout(false);
-            this.panel10.PerformLayout();
             this.panel11.ResumeLayout(false);
             this.panel11.PerformLayout();
             this.panel12.ResumeLayout(false);
@@ -1351,15 +1254,8 @@
         }
 
         #endregion
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Label label35;
         private System.Windows.Forms.Label label33;
         private System.Windows.Forms.Button button21;
-        private System.Windows.Forms.Button button18;
-        private System.Windows.Forms.Button button17;
-        private System.Windows.Forms.Button button16;
-        private System.Windows.Forms.Button button14;
         private System.Windows.Forms.Button SupplyResourcesButton;
         private System.Windows.Forms.Label SupplyResVillageSelected;
         private System.Windows.Forms.Label label17;
@@ -1440,7 +1336,6 @@
         private System.Windows.Forms.ListView resPrioView;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.Button button11;
-        private System.Windows.Forms.Panel panel10;
         private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.Panel panel12;
         private System.Windows.Forms.Button button12;
