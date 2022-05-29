@@ -345,33 +345,6 @@ namespace TravBotSharp.Views
             UpdateUc();
         }
 
-        private void button20_Click(object sender, EventArgs e) //support vill button
-        {
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage();
-            DefaultConfigurations.SupplyVillagePlan(acc, vill);
-            UpgradeBuildingHelper.RemoveCompletedTasks(vill);
-            UpdateUc();
-        }
-
-        private void button19_Click(object sender, EventArgs e) //off vill button
-        {
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage();
-            DefaultConfigurations.OffVillagePlan(acc, vill);
-            UpgradeBuildingHelper.RemoveCompletedTasks(vill);
-            UpdateUc();
-        }
-
-        private void button6_Click(object sender, EventArgs e) //deff vill button
-        {
-            var acc = GetSelectedAcc();
-            var vill = GetSelectedVillage();
-            DefaultConfigurations.DeffVillagePlan(acc, vill);
-            UpgradeBuildingHelper.RemoveCompletedTasks(vill);
-            UpdateUc();
-        }
-
         private void button9_Click(object sender, EventArgs e) //export build tasks button
         {
             DialogResult dialog = MessageBox.Show("Do you want to save building locations?",
@@ -410,7 +383,7 @@ namespace TravBotSharp.Views
             else return;
 
             // Check if there is already a building planner for that id
-            var planedBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == selectedBuilding.Id);
+            var planedBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == selectedBuilding.Id && x.TaskType == BuildingType.General);
 
             // Building level selector
             if (selectedBuilding.Type != BuildingEnum.Site) buildLevelUpDown.Value = selectedBuilding.Level + 1;

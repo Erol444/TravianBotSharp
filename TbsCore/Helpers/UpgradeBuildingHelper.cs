@@ -228,10 +228,23 @@ namespace TbsCore.Helpers
 
             // check building has same type
             var existingBuilding = vill.Build.Buildings.FirstOrDefault(x => x.Type == task.Building);
-
+            if (existingBuilding == null)
+            {
+                var currentBuilding = vill.Build.CurrentlyBuilding.FirstOrDefault(x => x.Building == task.Building);
+                if (currentBuilding != null)
+                {
+                    existingBuilding = new Building()
+                    {
+                        Id = (byte)currentBuilding.Location,
+                        Level = currentBuilding.Level,
+                        Type = currentBuilding.Building,
+                        UnderConstruction = true,
+                    };
+                }
+            }
             // Only special buildings (warehouse, cranny, granary etc.) can have multiple
             // buildings of it's type and use ConstructNew option
-            if (!BuildingsData.CanHaveMultipleBuildings(task.Building)) task.ConstructNew = false;
+            task.ConstructNew = BuildingsData.CanHaveMultipleBuildings(task.Building);
 
             // change to current building place instead of build new one
             if (existingBuilding != null && !task.ConstructNew)
@@ -252,7 +265,7 @@ namespace TbsCore.Helpers
 
             // now find place to build in empty slot
             var FreeSites = vill.Build.Buildings
-                .Where(x => x.Type == BuildingEnum.Site && 19 <= x.Id && x.Id <= 39)
+                .Where(x => x.Type == BuildingEnum.Site && 18 < x.Id && x.Id < 39)
                 .OrderBy(a => Guid.NewGuid()) // Shuffle the free sites
                 .ToList();
 
@@ -361,45 +374,55 @@ namespace TbsCore.Helpers
             }
             // other building
             else if (task.BuildingId == null ||
-                     vill.Build.Buildings.Any(x => x.Id == task.BuildingId &&
-                                                   x.Type != task.Building &&
-                                                   x.Type != BuildingEnum.Site))
+                    vill.Build.Buildings.Any(x => x.Id == task.BuildingId &&
+                                                  x.Type != task.Building &&
+                                                  x.Type != BuildingEnum.Site))
             {
                 //Check if bot has any space to build new buildings, otherwise return
                 if (!FindPlaceToBuild(vill, task)) return false;
             }
 
+            // double check building's location
+
             // checking multiple building
             // you need at least one at level 20 before building other
-            if (BuildingsData.CanHaveMultipleBuildings(task.Building))
+            if (BuildingsData.CanHaveMultipleBuildings(task.Building) && !BuildingHelper.IsResourceField(task.Building))
             {
                 if (task.ConstructNew)
                 {
+                    var maxLevel = BuildingsData.MaxBuildingLevel(acc, task.Building);
                     // Highest level building
                     var highestLvl = vill.Build
                         .Buildings
-                        .Where(x => x.Type == task.Building)
-                        .OrderByDescending(x => x.Level)
-                        .FirstOrDefault();
-
-                    if (highestLvl != null &&
-                        highestLvl.Level != BuildingsData.MaxBuildingLevel(acc, task.Building))
+                        .FirstOrDefault(x => x.Type == task.Building && x.Level == maxLevel);
+                    if (highestLvl == null)
                     {
-                        task.BuildingId = highestLvl.Id;
+                        var currentBuilding = vill.Build
+                            .CurrentlyBuilding
+                            .FirstOrDefault(x => x.Building == task.Building && x.Level == maxLevel);
+                        if (currentBuilding == null)
+                        {
+                            var plannedBuilding = vill.Build
+                            .Tasks
+                            .FirstOrDefault(x => x.Building == task.Building && x.Level == maxLevel);
+
+                            if (plannedBuilding == null)
+                            {
+                                var onlyBuilding = vill.Build
+                                    .Buildings
+                                    .FirstOrDefault(x => x.Type == task.Building);
+                                if (onlyBuilding != null) task.BuildingId = onlyBuilding.Id;
+                            }
+                        }
                     }
                 }
             }
             else if (!BuildingHelper.IsResourceField(task.Building))
             {
-                var buildings = vill.Build.Buildings.Where(x => x.Type == task.Building);
-                if (buildings.Count() > 0)
-                {
-                    var id = buildings.First().Id;
-                    if (id != task.BuildingId)
-                    {
-                        task.BuildingId = id;
-                    }
-                }
+                var onlyBuilding = vill.Build
+                                    .Buildings
+                                    .FirstOrDefault(x => x.Type == task.Building);
+                if (onlyBuilding != null) task.BuildingId = onlyBuilding.Id;
             }
 
             if (bottom) vill.Build.Tasks.Add(task);
