@@ -383,7 +383,7 @@ namespace TravBotSharp.Views
             else return;
 
             // Check if there is already a building planner for that id
-            var planedBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == selectedBuilding.Id);
+            var planedBuilding = vill.Build.Tasks.LastOrDefault(x => x.BuildingId == selectedBuilding.Id && x.TaskType == BuildingType.General);
 
             // Building level selector
             if (selectedBuilding.Type != BuildingEnum.Site) buildLevelUpDown.Value = selectedBuilding.Level + 1;
