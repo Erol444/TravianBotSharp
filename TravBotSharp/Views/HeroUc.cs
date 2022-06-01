@@ -250,8 +250,8 @@ namespace TravBotSharp.Views
                 var result = form.ShowDialog(this);
                 if (result == DialogResult.OK)
                 {
-                    acc.Hero.Settings.MaxUpdate = form.Min;
-                    acc.Hero.Settings.MinUpdate = form.Max;
+                    acc.Hero.Settings.MaxUpdate = form.Max;
+                    acc.Hero.Settings.MinUpdate = form.Min;
                 }
             }
         }
