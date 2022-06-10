@@ -240,6 +240,7 @@
     <Compile Include="Forms\NewRelease.Designer.cs">
       <DependentUpon>NewRelease.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ChromeDriverInstaller.cs" />
     <Compile Include="UserControls\TroopsDisplayUc.cs">
       <SubType>UserControl</SubType>
     </Compile>

@@ -438,7 +438,8 @@ namespace TravBotSharp
         {
             this.WindowState = FormWindowState.Minimized;
             this.WindowState = FormWindowState.Normal;
-            this.Focus(); this.Show();
+            this.Focus();
+            this.Show();
         }
     }
 }
