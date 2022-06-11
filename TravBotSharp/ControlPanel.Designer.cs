@@ -31,8 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ControlPanel));
             this.button1 = new System.Windows.Forms.Button();
             this.accTabController = new System.Windows.Forms.TabControl();
-            this.tabGeneral = new System.Windows.Forms.TabPage();
-            this.generalUc1 = new TravBotSharp.Views.GeneralUc();
             this.tabHero = new System.Windows.Forms.TabPage();
             this.heroUc1 = new TravBotSharp.Views.HeroUc();
             this.tabVillages = new System.Windows.Forms.TabPage();
@@ -45,12 +43,8 @@
             this.farmingUc1 = new TravBotSharp.Views.FarmingUc();
             this.newVillagesTab = new System.Windows.Forms.TabPage();
             this.newVillagesUc1 = new TravBotSharp.Views.NewVillagesUc();
-            this.deffendingTab = new System.Windows.Forms.TabPage();
-            this.deffendingUc1 = new TravBotSharp.Views.DeffendingUc();
             this.questsTab = new System.Windows.Forms.TabPage();
             this.questsUc1 = new TravBotSharp.Views.QuestsUc();
-            this.discordTab = new System.Windows.Forms.TabPage();
-            this.discordUc1 = new TravBotSharp.Views.DiscordUc();
             this.debugTab = new System.Windows.Forms.TabPage();
             this.debugUc1 = new TravBotSharp.Views.DebugUc();
             this.button2 = new System.Windows.Forms.Button();
@@ -66,21 +60,21 @@
             this.sidePannel = new System.Windows.Forms.TableLayoutPanel();
             this.buttonPannel = new System.Windows.Forms.TableLayoutPanel();
             this.button8 = new System.Windows.Forms.Button();
+            this.generalUc1 = new TravBotSharp.Views.GeneralUc();
+            this.tabGeneral = new System.Windows.Forms.TabPage();
             this.accTabController.SuspendLayout();
-            this.tabGeneral.SuspendLayout();
             this.tabHero.SuspendLayout();
             this.tabVillages.SuspendLayout();
             this.tabOverview.SuspendLayout();
             this.troopsTab.SuspendLayout();
             this.FarmingTab.SuspendLayout();
             this.newVillagesTab.SuspendLayout();
-            this.deffendingTab.SuspendLayout();
             this.questsTab.SuspendLayout();
-            this.discordTab.SuspendLayout();
             this.debugTab.SuspendLayout();
             this.mainPannel.SuspendLayout();
             this.sidePannel.SuspendLayout();
             this.buttonPannel.SuspendLayout();
+            this.tabGeneral.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -103,9 +97,7 @@
             this.accTabController.Controls.Add(this.troopsTab);
             this.accTabController.Controls.Add(this.FarmingTab);
             this.accTabController.Controls.Add(this.newVillagesTab);
-            this.accTabController.Controls.Add(this.deffendingTab);
             this.accTabController.Controls.Add(this.questsTab);
-            this.accTabController.Controls.Add(this.discordTab);
             this.accTabController.Controls.Add(this.debugTab);
             this.accTabController.Dock = System.Windows.Forms.DockStyle.Fill;
             this.accTabController.Location = new System.Drawing.Point(215, 3);
@@ -114,26 +106,6 @@
             this.accTabController.Size = new System.Drawing.Size(953, 655);
             this.accTabController.TabIndex = 3;
             this.accTabController.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
-            // 
-            // tabGeneral
-            // 
-            this.tabGeneral.Controls.Add(this.generalUc1);
-            this.tabGeneral.Location = new System.Drawing.Point(4, 22);
-            this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGeneral.Size = new System.Drawing.Size(945, 629);
-            this.tabGeneral.TabIndex = 3;
-            this.tabGeneral.Text = "General";
-            this.tabGeneral.UseVisualStyleBackColor = true;
-            // 
-            // generalUc1
-            // 
-            this.generalUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.generalUc1.Location = new System.Drawing.Point(3, 3);
-            this.generalUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.generalUc1.Name = "generalUc1";
-            this.generalUc1.Size = new System.Drawing.Size(939, 623);
-            this.generalUc1.TabIndex = 0;
             // 
             // tabHero
             // 
@@ -252,26 +224,6 @@
             this.newVillagesUc1.Size = new System.Drawing.Size(939, 623);
             this.newVillagesUc1.TabIndex = 0;
             // 
-            // deffendingTab
-            // 
-            this.deffendingTab.Controls.Add(this.deffendingUc1);
-            this.deffendingTab.Location = new System.Drawing.Point(4, 22);
-            this.deffendingTab.Name = "deffendingTab";
-            this.deffendingTab.Padding = new System.Windows.Forms.Padding(3);
-            this.deffendingTab.Size = new System.Drawing.Size(945, 629);
-            this.deffendingTab.TabIndex = 7;
-            this.deffendingTab.Text = "Deffending";
-            this.deffendingTab.UseVisualStyleBackColor = true;
-            // 
-            // deffendingUc1
-            // 
-            this.deffendingUc1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.deffendingUc1.Location = new System.Drawing.Point(3, 3);
-            this.deffendingUc1.Margin = new System.Windows.Forms.Padding(4);
-            this.deffendingUc1.Name = "deffendingUc1";
-            this.deffendingUc1.Size = new System.Drawing.Size(939, 623);
-            this.deffendingUc1.TabIndex = 0;
-            // 
             // questsTab
             // 
             this.questsTab.Controls.Add(this.questsUc1);
@@ -291,26 +243,6 @@
             this.questsUc1.Name = "questsUc1";
             this.questsUc1.Size = new System.Drawing.Size(939, 623);
             this.questsUc1.TabIndex = 0;
-            // 
-            // discordTab
-            // 
-            this.discordTab.Controls.Add(this.discordUc1);
-            this.discordTab.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.discordTab.Location = new System.Drawing.Point(4, 22);
-            this.discordTab.Name = "discordTab";
-            this.discordTab.Padding = new System.Windows.Forms.Padding(3);
-            this.discordTab.Size = new System.Drawing.Size(945, 629);
-            this.discordTab.TabIndex = 11;
-            this.discordTab.Text = "Discord";
-            this.discordTab.UseVisualStyleBackColor = true;
-            // 
-            // discordUc1
-            // 
-            this.discordUc1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.discordUc1.Location = new System.Drawing.Point(2, 2);
-            this.discordUc1.Name = "discordUc1";
-            this.discordUc1.Size = new System.Drawing.Size(950, 536);
-            this.discordUc1.TabIndex = 0;
             // 
             // debugTab
             // 
@@ -492,6 +424,26 @@
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.button8_Click);
             // 
+            // generalUc1
+            // 
+            this.generalUc1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.generalUc1.Location = new System.Drawing.Point(3, 3);
+            this.generalUc1.Margin = new System.Windows.Forms.Padding(4);
+            this.generalUc1.Name = "generalUc1";
+            this.generalUc1.Size = new System.Drawing.Size(939, 623);
+            this.generalUc1.TabIndex = 0;
+            // 
+            // tabGeneral
+            // 
+            this.tabGeneral.Controls.Add(this.generalUc1);
+            this.tabGeneral.Location = new System.Drawing.Point(4, 22);
+            this.tabGeneral.Name = "tabGeneral";
+            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3);
+            this.tabGeneral.Size = new System.Drawing.Size(945, 629);
+            this.tabGeneral.TabIndex = 3;
+            this.tabGeneral.Text = "General";
+            this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
             // ControlPanel
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,20 +457,18 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlPanel_FormClosing);
             this.Load += new System.EventHandler(this.ControlPanel_Load);
             this.accTabController.ResumeLayout(false);
-            this.tabGeneral.ResumeLayout(false);
             this.tabHero.ResumeLayout(false);
             this.tabVillages.ResumeLayout(false);
             this.tabOverview.ResumeLayout(false);
             this.troopsTab.ResumeLayout(false);
             this.FarmingTab.ResumeLayout(false);
             this.newVillagesTab.ResumeLayout(false);
-            this.deffendingTab.ResumeLayout(false);
             this.questsTab.ResumeLayout(false);
-            this.discordTab.ResumeLayout(false);
             this.debugTab.ResumeLayout(false);
             this.mainPannel.ResumeLayout(false);
             this.sidePannel.ResumeLayout(false);
             this.buttonPannel.ResumeLayout(false);
+            this.tabGeneral.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -534,8 +484,6 @@
         private System.Windows.Forms.ColumnHeader accServerHeader;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.TabPage tabHero;
-        private System.Windows.Forms.TabPage tabGeneral;
-        private Views.GeneralUc generalUc1;
         private Views.HeroUc heroUc1;
         private System.Windows.Forms.TabPage tabOverview;
         private Views.OverviewUc overviewUc1;
@@ -543,8 +491,6 @@
         private Views.FarmingUc farmingUc1;
         private System.Windows.Forms.TabPage newVillagesTab;
         private Views.NewVillagesUc newVillagesUc1;
-        private System.Windows.Forms.TabPage deffendingTab;
-        private Views.DeffendingUc deffendingUc1;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.TabPage debugTab;
         private Views.DebugUc debugUc1;
@@ -555,11 +501,11 @@
         private System.Windows.Forms.TabPage troopsTab;
         private Views.OverviewTroopsUc overviewTroopsUc1;
         private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.TabPage discordTab;
-        private Views.DiscordUc discordUc1;
         private System.Windows.Forms.TableLayoutPanel buttonPannel;
         private System.Windows.Forms.TableLayoutPanel mainPannel;
         private System.Windows.Forms.TableLayoutPanel sidePannel;
         private System.Windows.Forms.Button button8;
+        private System.Windows.Forms.TabPage tabGeneral;
+        private Views.GeneralUc generalUc1;
     }
 }

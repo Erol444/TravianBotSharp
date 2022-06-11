@@ -46,9 +46,7 @@ namespace TravBotSharp
                 overviewTroopsUc1,
                 farmingUc1,
                 newVillagesUc1,
-                deffendingUc1,
                 questsUc1,
-                discordUc1,
                 debugUc1,
             };
 
