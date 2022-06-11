@@ -12,7 +12,7 @@ namespace TravBotSharp
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        private static async Task Main()
+        private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

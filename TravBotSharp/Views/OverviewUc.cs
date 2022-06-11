@@ -57,13 +57,13 @@ namespace TravBotSharp.Views
                 }
             }
         }
-    }
 
-    public class Data
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public bool ExpandStorage { get; set; }
-        public bool UseHeroRes { get; set; }
+        public class Data
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public bool ExpandStorage { get; set; }
+            public bool UseHeroRes { get; set; }
+        }
     }
 }
