@@ -30,13 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.SaveButton = new System.Windows.Forms.Button();
-            this.villId = new XPTable.Models.TextColumn();
-            this.vill = new XPTable.Models.TextColumn();
-            this.type = new XPTable.Models.ComboBoxColumn();
-            this.barracks = new XPTable.Models.ComboBoxColumn();
-            this.gb = new XPTable.Models.CheckBoxColumn();
-            this.stable = new XPTable.Models.ComboBoxColumn();
-            this.gs = new XPTable.Models.CheckBoxColumn();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
@@ -64,56 +57,7 @@
             this.SaveButton.Text = "Save";
             this.SaveButton.UseVisualStyleBackColor = true;
             this.SaveButton.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // villId
-            // 
-            this.villId.Editable = false;
-            this.villId.IsTextTrimmed = false;
-            this.villId.Text = "Id";
-            this.villId.ToolTipText = "Village Id";
-            this.villId.Width = 40;
-            // 
-            // vill
-            // 
-            this.vill.IsTextTrimmed = false;
-            this.vill.Text = "Village";
-            this.vill.ToolTipText = "Village name";
-            this.vill.Width = 120;
-            // 
-            // type
-            // 
-            this.type.IsTextTrimmed = false;
-            this.type.Text = "Type";
-            this.type.ToolTipText = "Type of the village";
-            this.type.Width = 100;
-            // 
-            // barracks
-            // 
-            this.barracks.IsTextTrimmed = false;
-            this.barracks.Text = "Barracks";
-            this.barracks.ToolTipText = "Troops to train in Barracks";
-            this.barracks.Width = 100;
-            // 
-            // gb
-            // 
-            this.gb.IsTextTrimmed = false;
-            this.gb.Text = "GB";
-            this.gb.ToolTipText = "Train troops in Great Barracks";
-            this.gb.Width = 40;
-            // 
-            // stable
-            // 
-            this.stable.IsTextTrimmed = false;
-            this.stable.Text = "Stable";
-            this.stable.ToolTipText = "Troops to train in Stable";
-            this.stable.Width = 100;
-            // 
-            // gs
-            // 
-            this.gs.IsTextTrimmed = false;
-            this.gs.Text = "GS";
-            this.gs.ToolTipText = "Train troops in Great Stable";
-            this.gs.Width = 40;
+            
             // 
             // tableLayoutPanel1
             // 
@@ -229,13 +173,6 @@
 
         #endregion
         private System.Windows.Forms.Button SaveButton;
-        private XPTable.Models.TextColumn villId;
-        private XPTable.Models.TextColumn vill;
-        private XPTable.Models.ComboBoxColumn type;
-        private XPTable.Models.ComboBoxColumn barracks;
-        private XPTable.Models.CheckBoxColumn gb;
-        private XPTable.Models.ComboBoxColumn stable;
-        private XPTable.Models.CheckBoxColumn gs;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.BindingSource bindingSource1;

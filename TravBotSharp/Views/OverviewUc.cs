@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using TbsCore.Helpers;
-using TbsCore.Models.Settings;
-using TbsCore.Models.VillageModels;
-using TbsCore.Tasks.Others;
 using TravBotSharp.Interfaces;
-using XPTable.Editors;
-using XPTable.Models;
 
 namespace TravBotSharp.Views
 {
