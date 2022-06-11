@@ -19,7 +19,7 @@ namespace TravBotSharp
             Splash.ShowSplashScreen();
             try
             {
-                await ChromeDriverInstaller.Install();
+                // await ChromeDriverInstaller.Install();
             }
             catch (Exception e)
             {
