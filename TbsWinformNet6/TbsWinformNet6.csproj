@@ -6,6 +6,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <AssemblyVersion>1975.30.4.0</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

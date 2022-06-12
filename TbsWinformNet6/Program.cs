@@ -1,3 +1,5 @@
+using TbsWinformNet6.Forms;
+
 namespace TbsWinformNet6
 {
     internal static class Program
@@ -8,10 +10,8 @@ namespace TbsWinformNet6
         [STAThread]
         private static void Main()
         {
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new ControlPanel());
+            Application.Run(new Splash());
         }
     }
 }

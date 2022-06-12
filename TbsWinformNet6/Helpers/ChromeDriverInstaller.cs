@@ -1,17 +1,13 @@
 ﻿using Microsoft.Win32;
-using System;
 using System.Diagnostics;
-using System.IO;
 using System.IO.Compression;
 using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace TbsWinformNet6.Helpers
 {
     public static class ChromeDriverInstaller
     {
-        private static readonly HttpClient httpClient = new HttpClient
+        private static readonly HttpClient httpClient = new()
         {
             BaseAddress = new Uri("https://chromedriver.storage.googleapis.com/")
         };
@@ -32,7 +28,7 @@ namespace TbsWinformNet6.Helpers
             }
 
             //   Take the Chrome version number, remove the last part,
-            chromeVersion = chromeVersion.Substring(0, chromeVersion.LastIndexOf('.'));
+            chromeVersion = chromeVersion[..chromeVersion.LastIndexOf('.')];
 
             //   and append the result to URL "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_".
             //   For example, with Chrome version 72.0.3626.81, you'd get a URL "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_72.0.3626".
@@ -100,16 +96,12 @@ namespace TbsWinformNet6.Helpers
 
             // this reads the zipfile as a stream, opens the archive,
             // and extracts the chromedriver executable to the targetPath without saving any intermediate files to disk
-            using (var zipFileStream = await driverZipResponse.Content.ReadAsStreamAsync())
-            using (var zipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Read))
-            using (var chromeDriverWriter = new FileStream(targetPath, FileMode.Create))
-            {
-                var entry = zipArchive.GetEntry(driverName);
-                using (Stream chromeDriverStream = entry.Open())
-                {
-                    await chromeDriverStream.CopyToAsync(chromeDriverWriter);
-                }
-            }
+            using var zipFileStream = await driverZipResponse.Content.ReadAsStreamAsync();
+            using var zipArchive = new ZipArchive(zipFileStream, ZipArchiveMode.Read);
+            using var chromeDriverWriter = new FileStream(targetPath, FileMode.Create);
+            var entry = zipArchive.GetEntry(driverName);
+            using Stream chromeDriverStream = entry.Open();
+            await chromeDriverStream.CopyToAsync(chromeDriverWriter);
         }
 
         public static string GetChromeVersion()
