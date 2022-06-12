@@ -23,7 +23,7 @@ jobs:
 
       - name: Build Bot
         run: |
-          dotnet publish TbsWinformNet6 -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:PublishTrimmed=true
+          dotnet publish TbsWinformNet6 -c Release --self-contained true -p:PublishSingleFile=true -r win-x86
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
