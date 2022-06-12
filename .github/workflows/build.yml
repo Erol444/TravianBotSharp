@@ -10,11 +10,10 @@ jobs:
   build:
     runs-on: windows-2019
     steps:
-      - name: setup-msbuild
-        uses: microsoft/setup-msbuild@v1     
-
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.0.5
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+            dotnet-version: 6.0.x
       
       - name: 'Checkout repo' 
         uses: actions/checkout@v2
@@ -24,7 +23,7 @@ jobs:
 
       - name: Build Bot
         run: |
-          dotnet publish TbsWinformNet6 -p:AssemblyVersion=1.2.3.4 -p:PublishProfile=PublishProfile -c Release
+          dotnet publish TbsWinformNet6 -p:PublishProfile=PublishProfile -c Release
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
