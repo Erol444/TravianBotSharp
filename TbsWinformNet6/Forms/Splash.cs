@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Windows.Forms;
+using TbsWinformNet6.Helpers;
 
 namespace TbsWinformNet6.Forms
 {
@@ -14,6 +15,7 @@ namespace TbsWinformNet6.Forms
         {
             await Task.Delay(500); // random delay ._.
             var mainForm = new ControlPanel();
+            await ChromeDriverInstaller.Install();
             mainForm.Show();
             Hide();
         }

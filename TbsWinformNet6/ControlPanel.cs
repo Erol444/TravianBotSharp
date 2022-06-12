@@ -23,6 +23,40 @@ namespace TbsWinformNet6
         {
             closing = false;
             InitializeComponent();
+
+            SerilogSingleton.Init();
+
+            LoadAccounts();
+            accListView.Select();
+
+            // Be sure to have these in correct order!
+            Ucs = new ITbsUc[]
+            {
+                generalUc1,
+                heroUc1,
+                villagesUc1,
+                overviewUc1,
+                overviewTroopsUc1,
+                farmingUc1,
+                newVillagesUc1,
+                questsUc1,
+                debugUc1,
+            };
+
+            // Initialize all the views
+            foreach (var uc in Ucs) uc.Init(this);
+
+            saveAccountsTimer = new System.Timers.Timer(1000 * 60 * 30); // Every 30 min
+            saveAccountsTimer.Elapsed += SaveAccounts_TimerElapsed;
+            saveAccountsTimer.AutoReset = true;
+            saveAccountsTimer.Start();
+
+            // So TbsCore can access forms and alert user
+            IoHelperCore.AlertUser = IoHelperForms.AlertUser;
+
+            checkNewVersion();
+            debugUc1.InitLog(LogOutput.Instance);
+            UseragentDatabase.Instance.Load();
         }
 
         private void SaveAccounts_TimerElapsed(object sender, ElapsedEventArgs e) => IoHelperCore.SaveAccounts(accounts);
@@ -389,45 +423,6 @@ namespace TbsWinformNet6
                     RefreshAccView();
                 }
             }
-        }
-
-        private async void ControlPanel_Load(object sender, EventArgs e)
-        {
-            SerilogSingleton.Init();
-
-            LoadAccounts();
-            accListView.Select();
-
-            // Be sure to have these in correct order!
-            Ucs = new ITbsUc[]
-            {
-                generalUc1,
-                heroUc1,
-                villagesUc1,
-                overviewUc1,
-                overviewTroopsUc1,
-                farmingUc1,
-                newVillagesUc1,
-                questsUc1,
-                debugUc1,
-            };
-
-            // Initialize all the views
-            foreach (var uc in Ucs) uc.Init(this);
-
-            saveAccountsTimer = new System.Timers.Timer(1000 * 60 * 30); // Every 30 min
-            saveAccountsTimer.Elapsed += SaveAccounts_TimerElapsed;
-            saveAccountsTimer.AutoReset = true;
-            saveAccountsTimer.Start();
-
-            // So TbsCore can access forms and alert user
-            IoHelperCore.AlertUser = IoHelperForms.AlertUser;
-
-            checkNewVersion();
-            debugUc1.InitLog(LogOutput.Instance);
-            UseragentDatabase.Instance.Load();
-
-            await ChromeDriverInstaller.Install();
         }
 
         private void ControlPanel_FormClosed(object sender, FormClosedEventArgs e)

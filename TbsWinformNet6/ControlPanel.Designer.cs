@@ -479,7 +479,6 @@
             this.Text = "TravianBotSharp";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ControlPanel_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ControlPanel_FormClosed);
-            this.Load += new System.EventHandler(this.ControlPanel_Load);
             this.accTabController.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
             this.tabHero.ResumeLayout(false);
