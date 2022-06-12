@@ -21,33 +21,16 @@ jobs:
 
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
-        
-      - name: Get cache
-        uses: actions/cache@v2
-        with:
-          path: |
-              packages
-              TbsCore/obj/project.assets.json
-              TbsCore/TbsCore.csproj.nuget.g.targets
-              TbsCore/TbsCore.csproj.nuget.g.props.              
-          key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
-          restore-keys: |
-              ${{ runner.os }}-nuget-
-              
-      - name: Restore Packages
-        run: |
-          nuget restore TbsCore/TbsCore.csproj -PackagesDirectory packages
-          nuget restore TravBotSharp/TbsWinForms.csproj -PackagesDirectory packages
 
       - name: Build Bot
         run: |
-          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true /p:BUILD_NUMBER=30.4.1975.0
+          dotnet publish TbsWinformNet6 -p:AssemblyVersion=1.2.3.4 -p:PublishProfile=PublishProfile -c Release
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
           name: TBS-Build-${{ github.sha }}
-          path: TravBotSharp\bin\Release
+          path: TbsWinformNet6\bin\Publish
           if-no-files-found: error
 
       - name: Comment on PR when success
