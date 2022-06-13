@@ -240,6 +240,7 @@
     <Compile Include="Forms\NewRelease.Designer.cs">
       <DependentUpon>NewRelease.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ChromeDriverInstaller.cs" />
     <Compile Include="UserControls\TroopsDisplayUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -281,12 +282,6 @@
     </Compile>
     <Compile Include="Views\BaseViews\BaseVillageUc.cs">
       <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\DiscordUc.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\DiscordUc.Designer.cs">
-      <DependentUpon>DiscordUc.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\OverviewTroopsUc.cs">
       <SubType>UserControl</SubType>
@@ -341,12 +336,6 @@
     </Compile>
     <Compile Include="Views\VillageViews\MarketUc.Designer.cs">
       <DependentUpon>MarketUc.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Views\DeffendingUc.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Views\DeffendingUc.Designer.cs">
-      <DependentUpon>DeffendingUc.cs</DependentUpon>
     </Compile>
     <Compile Include="Views\OverviewUc.cs">
       <SubType>UserControl</SubType>
@@ -461,9 +450,6 @@
     <EmbeddedResource Include="UserControls\CoordinatesUc.resx">
       <DependentUpon>CoordinatesUc.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Views\DiscordUc.resx">
-      <DependentUpon>DiscordUc.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Views\OverviewTroopsUc.resx">
       <DependentUpon>OverviewTroopsUc.cs</DependentUpon>
     </EmbeddedResource>
@@ -496,9 +482,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Views\NewVillagesUc.resx">
       <DependentUpon>NewVillagesUc.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Views\DeffendingUc.resx">
-      <DependentUpon>DeffendingUc.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Views\OverviewUc.resx">
       <DependentUpon>OverviewUc.cs</DependentUpon>
@@ -587,14 +570,8 @@
     <PackageReference Include="Octokit">
       <Version>0.50.0</Version>
     </PackageReference>
-    <PackageReference Include="Selenium.WebDriver.ChromeDriver">
-      <Version>102.0.5005.6100</Version>
-    </PackageReference>
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3">
       <Version>2.0.7</Version>
-    </PackageReference>
-    <PackageReference Include="XPTable">
-      <Version>1.6.1.140</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

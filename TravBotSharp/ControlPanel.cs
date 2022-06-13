@@ -46,9 +46,7 @@ namespace TravBotSharp
                 overviewTroopsUc1,
                 farmingUc1,
                 newVillagesUc1,
-                deffendingUc1,
                 questsUc1,
-                discordUc1,
                 debugUc1,
             };
 
@@ -438,7 +436,8 @@ namespace TravBotSharp
         {
             this.WindowState = FormWindowState.Minimized;
             this.WindowState = FormWindowState.Normal;
-            this.Focus(); this.Show();
+            this.Focus();
+            this.Show();
         }
     }
 }
