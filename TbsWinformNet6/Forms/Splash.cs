@@ -14,8 +14,8 @@ namespace TbsWinformNet6.Forms
         private async void Splash_Shown(object sender, EventArgs e)
         {
             await Task.Delay(500); // random delay ._.
-            var mainForm = new ControlPanel();
             await ChromeDriverInstaller.Install();
+            var mainForm = new ControlPanel();
             mainForm.Show();
             Hide();
         }
