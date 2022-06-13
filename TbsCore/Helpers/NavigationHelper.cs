@@ -325,96 +325,89 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> ToHero(Account acc, HeroTab tab)
         {
-            switch (acc.AccInfo.ServerVersion)
+            var heroAvatarNode = acc.Wb.Html.GetElementbyId("heroImageButton");
+
+            if (heroAvatarNode == null)
             {
-                case ServerVersionEnum.TTwars:
-                    return await ToHeroTTwar(acc, tab);
-
-                case ServerVersionEnum.T4_5:
-                    return await ToHeroT45(acc, tab);
-
-                default:
-                    return false;
-            }
-        }
-
-        private static async Task<bool> ToHeroTTwar(Account acc, HeroTab tab)
-        {
-            HtmlNode node;
-            switch (tab)
-            {
-                case HeroTab.Appearance:
-                    throw new NotImplementedException();
-
-                case HeroTab.Attributes:
-                    node = acc.Wb.Html.GetElementbyId("heroImageButton");
-                    break;
-
-                case HeroTab.Adventures:
-                    node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventureWhite"));
-                    break;
-
-                case HeroTab.Auctions:
-                    node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("auctionWhite"));
-                    break;
-
-                default:
-                    node = null;
-                    break;
-            }
-
-            if (node == null)
-            {
-                acc.Logger.Warning($"Cannot find button to go to {tab}");
+                acc.Logger.Warning($"Cannot find Hero avatar");
                 return false;
             }
 
-            var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
-            element.Click();
+            var elements = acc.Wb.Driver.FindElements(By.XPath(heroAvatarNode.XPath));
+            if (elements.Count == 0)
+            {
+                acc.Logger.Warning($"Cannot find Hero avatar");
+                return false;
+            }
+            elements[0].Click();
+            {
+                var result = await DriverHelper.WaitPageLoaded(acc);
+                acc.Logger.Warning($"Click Hero avatar failed");
 
-            var result = await DriverHelper.WaitPageChange(acc, "hero.php");
-            if (!result) return false;
-            if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
+                if (!result) return false;
+            }
+
+            var navigatorDiv = acc.Wb.Html.GetElementbyId("heroV2");
+            var index = tab == HeroTab.Attributes ? 2 : 3;
+            var tabNode = navigatorDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == index);
+            if (tabNode == null) return false;
+            var tabElements = acc.Wb.Driver.FindElements(By.XPath(tabNode.XPath));
+            if (tabElements.Count == 0) return false;
+            tabElements[0].Click();
+            {
+                var result = await DriverHelper.WaitPageLoaded(acc);
+                acc.Logger.Warning($"Click Change tab failed");
+
+                if (!result) return false;
+            }
             return true;
         }
 
-        private static async Task<bool> ToHeroT45(Account acc, HeroTab tab)
+        public static async Task<bool> ToAdventure(Account acc)
         {
-            HtmlNode node;
-            switch (tab)
-            {
-                case HeroTab.Appearance:
-                    throw new NotImplementedException();
-
-                case HeroTab.Attributes:
-                    node = acc.Wb.Html.GetElementbyId("heroImageButton");
-                    break;
-
-                case HeroTab.Adventures:
-                    node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventure"));
-                    break;
-
-                case HeroTab.Auctions:
-                    node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("auction"));
-                    break;
-
-                default:
-                    node = null;
-                    break;
-            }
-
+            var node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventure"));
             if (node == null)
             {
-                acc.Logger.Warning($"Cannot find button to go to {tab}");
+                acc.Logger.Warning($"Cannot found Adventures button");
                 return false;
             }
+            var elements = acc.Wb.Driver.FindElements(By.XPath(node.XPath));
+            if (elements.Count == 0)
+            {
+                acc.Logger.Warning($"Cannot found Adventures button");
+                return false;
+            }
+            elements[0].Click();
+            {
+                var result = await DriverHelper.WaitPageLoaded(acc);
+                acc.Logger.Warning($"Click Adventures button failed");
 
-            var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
-            element.Click();
+                if (!result) return false;
+            }
+            return true;
+        }
 
-            var result = await DriverHelper.WaitPageChange(acc, "hero");
-            if (!result) return false;
-            if (tab == HeroTab.Attributes) HeroHelper.ParseHeroPage(acc);
+        public static async Task<bool> ToAuction(Account acc)
+        {
+            var node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("auction"));
+            if (node == null)
+            {
+                acc.Logger.Warning($"Cannot found Auction button");
+                return false;
+            }
+            var elements = acc.Wb.Driver.FindElements(By.XPath(node.XPath));
+            if (elements.Count == 0)
+            {
+                acc.Logger.Warning($"Cannot found Auction button");
+                return false;
+            }
+            elements[0].Click();
+            {
+                var result = await DriverHelper.WaitPageLoaded(acc);
+                acc.Logger.Warning($"Click Auction button failed");
+
+                if (!result) return false;
+            }
             return true;
         }
 
@@ -517,10 +510,9 @@ namespace TbsCore.Helpers
 
         public enum HeroTab
         {
-            Attributes = 0,
+            Inventory = 0,
+            Attributes,
             Appearance,
-            Adventures,
-            Auctions,
         }
 
         public enum OverviewTab

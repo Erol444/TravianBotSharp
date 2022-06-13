@@ -35,7 +35,7 @@ namespace TbsCore.Tasks.Others
 
                 do
                 {
-                    await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Auctions);
+                    await NavigationHelper.ToAuction(acc);
 
                     var node = acc.Wb.Html.DocumentNode.SelectSingleNode(xPathSellTab);
                     if (node == null) continue;

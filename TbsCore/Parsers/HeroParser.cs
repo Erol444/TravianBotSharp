@@ -24,7 +24,7 @@ namespace TbsCore.Parsers
             else return true;
         }
 
-        public static HeroInfo GetHeroInfo(HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static HeroInfo GetHeroInfo(HtmlDocument htmlDoc)
         {
             var content = htmlDoc.GetElementbyId("content");
             var heroInfo = new HeroInfo();
@@ -122,7 +122,7 @@ namespace TbsCore.Parsers
             return TimeParser.ParseTimer(statusMsg);
         }
 
-        public static int GetAdventureNum(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static int GetAdventureNum(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
             {
@@ -142,7 +142,7 @@ namespace TbsCore.Parsers
             }
         }
 
-        public static bool LeveledUp(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static bool LeveledUp(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
             {
@@ -159,7 +159,7 @@ namespace TbsCore.Parsers
             return false;
         }
 
-        public static Hero.StatusEnum HeroStatus(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static Hero.StatusEnum HeroStatus(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
             {
@@ -182,9 +182,11 @@ namespace TbsCore.Parsers
                         default: return Hero.StatusEnum.Unknown;
                     }
                 case Classificator.ServerVersionEnum.T4_5:
-                    var heroStatus5 = htmlDoc.DocumentNode.Descendants("div").First(x => x.HasClass("heroStatus")).Descendants().FirstOrDefault(x => x.Name == "svg");
-                    if (heroStatus5 == null) return Hero.StatusEnum.Unknown;
-                    var str = heroStatus5.GetClasses().FirstOrDefault();
+                    var heroStatusDiv = htmlDoc.DocumentNode.Descendants("div").First(x => x.HasClass("heroStatus"));
+                    if (heroStatusDiv == null) return Hero.StatusEnum.Unknown;
+                    var iconHeroStatus = heroStatusDiv.Descendants("i").FirstOrDefault();
+                    if (iconHeroStatus == null) return Hero.StatusEnum.Unknown;
+                    var str = iconHeroStatus.GetClasses().FirstOrDefault();
                     if (str == null) return Hero.StatusEnum.Unknown;
                     switch (str)
                     {
@@ -210,7 +212,7 @@ namespace TbsCore.Parsers
             return Hero.StatusEnum.Unknown;
         }
 
-        public static int GetHeroHealth(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static int GetHeroHealth(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             switch (version)
             {

@@ -124,5 +124,19 @@ namespace TbsWinformNet6.Views
         {
             GetSelectedAcc().Tasks.Add(new FindVillageToSettle() { ExecuteAt = DateTime.Now });
         }
+
+        private async void button5_Click(object sender, EventArgs e)
+        {
+            await NavigationHelper.ToAdventure(GetSelectedAcc());
+        }
+
+        private async void button6_Click(object sender, EventArgs e)
+        {
+            await NavigationHelper.ToAuction(GetSelectedAcc());
+        }
+
+        private async void button7_Click(object sender, EventArgs e)
+        {
+        }
     }
 }

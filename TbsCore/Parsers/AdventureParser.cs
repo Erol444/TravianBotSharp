@@ -18,58 +18,26 @@ namespace TbsCore.Parsers
         public static List<Adventure> GetAdventures(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
         {
             List<Adventure> adventuresList = new List<Adventure>();
-            var adventures = htmlDoc.GetElementbyId("adventureListForm");
+            var adventures = htmlDoc.GetElementbyId("heroAdventure");
             if (adventures == null) return adventuresList;
-            foreach (var adv in adventures.Descendants("tr"))
+            var tbody = adventures.Descendants("tbody").FirstOrDefault();
+            if (tbody == null) return adventuresList;
+            var trList = tbody.Descendants("tr");
+            foreach (var adv in trList)
             {
-                if (string.IsNullOrEmpty(adv.Id)) continue;
-                var sec = (int)TimeParser.ParseDuration(adv.Descendants("td").FirstOrDefault(x => x.HasClass("moveTime")).InnerText).TotalSeconds;
-                var coordinates = MapParser.GetCoordinates(adv);
+                var tdList = adv.Descendants("td").ToArray();
+                var sec = (int)TimeParser.ParseDuration(tdList[2].InnerText).TotalSeconds;
+                var coordinates = MapParser.GetCoordinates(tdList[1].InnerText);
 
-                DifficultyEnum difficulty = DifficultyEnum.Normal;
-                switch (version)
-                {
-                    case ServerVersionEnum.TTwars:
-                        difficulty = adv.Descendants("img").FirstOrDefault().GetAttributeValue("alt", "") == "Normal" ?
-                            DifficultyEnum.Normal : DifficultyEnum.Difficult;
-                        break;
-
-                    case ServerVersionEnum.T4_5:
-                        difficulty = adv.Descendants("img").FirstOrDefault().GetAttributeValue("class", "") == "adventureDifficulty1" ?
-                            DifficultyEnum.Normal : DifficultyEnum.Difficult;
-                        break;
-                }
-
-                var secStr = adv.Descendants("td").FirstOrDefault(x => x.HasClass("timeLeft"))?.InnerText;
-                int secRemaining = int.MaxValue;
-                if (!string.IsNullOrEmpty(secStr)) secRemaining = (int)TimeParser.ParseDuration(secStr).TotalSeconds;
-
-                switch (version)
-                {
-                    case Classificator.ServerVersionEnum.TTwars:
-                        var href = adv.Descendants("a").FirstOrDefault(x => x.HasClass("gotoAdventure")).GetAttributeValue("href", "").Replace("amp;", "");
+                var iconDifficulty = tdList[3].FirstChild;
+                var difficulty = iconDifficulty.GetAttributeValue("alt", "").Contains("hard") ? DifficultyEnum.Difficult : DifficultyEnum.Normal; 
+                
                         adventuresList.Add(new Adventure()
                         {
                             Coordinates = coordinates,
                             DurationSeconds = sec,
-                            TimeLeftSeconds = secRemaining,
                             Difficulty = difficulty,
-                            Ref = href
                         });
-                        break;
-
-                    case Classificator.ServerVersionEnum.T4_5:
-                        var elementId = adv.Descendants("td").FirstOrDefault(x => x.HasClass("goTo")).Id;
-                        adventuresList.Add(new Adventure()
-                        {
-                            Coordinates = coordinates,
-                            DurationSeconds = sec,
-                            TimeLeftSeconds = secRemaining,
-                            Difficulty = difficulty,
-                            AdventureId = elementId
-                        });
-                        break;
-                }
             }
             return adventuresList;
         }

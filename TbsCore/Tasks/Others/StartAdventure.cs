@@ -16,11 +16,9 @@ namespace TbsCore.Tasks.Others
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Adventures);
+            await NavigationHelper.ToAdventure(acc);
 
             acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html, acc.AccInfo.ServerVersion);
-
-            HeroHelper.UpdateHeroVillage(acc);
 
             if (acc.Hero.Adventures == null || acc.Hero.Adventures.Count == 0 || UpdateOnly) return TaskRes.Executed;
 
