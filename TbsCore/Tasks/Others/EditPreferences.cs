@@ -19,7 +19,7 @@ namespace TbsCore.Tasks.Others
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await VersionHelper.Navigate(acc, "/options.php", "/options");
+            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/options");
 
             if (ContextualHelp != null)
                 await DriverHelper.CheckById(acc, "v13", ContextualHelp ?? true);

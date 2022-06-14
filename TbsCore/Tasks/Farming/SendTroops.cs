@@ -75,16 +75,7 @@ namespace TbsCore.Tasks.Farming
                     }
                 }
 
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.TTwars:
-                        await DriverHelper.WriteByName(acc, $"t{i + 1}", TroopsMovement.Troops[i]);
-                        break;
-
-                    case Classificator.ServerVersionEnum.T4_5:
-                        await DriverHelper.WriteByName(acc, $"troops[0][t{i + 1}]", TroopsMovement.Troops[i]);
-                        break;
-                }
+                await DriverHelper.WriteByName(acc, $"troops[0][t{i + 1}]", TroopsMovement.Troops[i]);
             }
 
             // Select coordinates, if we haven't set them in the url already

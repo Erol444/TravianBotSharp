@@ -77,11 +77,6 @@ namespace TbsCore.Models.AccModels
         public int ServerSpeed { get; set; }
 
         /// <summary>
-        /// Version of the server account is playing on
-        /// </summary>
-        public Classificator.ServerVersionEnum ServerVersion { get; set; }
-
-        /// <summary>
         /// Discord webhook url
         /// </summary>
         public string WebhookUrl { get; set; }

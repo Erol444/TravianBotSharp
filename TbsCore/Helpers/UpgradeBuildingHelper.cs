@@ -40,8 +40,7 @@ namespace TbsCore.Helpers
 
                 if (maxBuild - totalBuild == 1)
                 {
-                    if (acc.AccInfo.Tribe == TribeEnum.Romans ||
-                        (acc.AccInfo.PlusAccount && acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars))
+                    if (acc.AccInfo.Tribe == TribeEnum.Romans)
                     {
                         var numRes = vill.Build.CurrentlyBuilding.Count(x => BuildingHelper.IsResourceField(x.Building));
                         var numInfra = totalBuild - numRes;

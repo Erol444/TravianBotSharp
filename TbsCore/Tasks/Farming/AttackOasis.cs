@@ -178,18 +178,8 @@ namespace TbsCore.Tasks.Farming
             {
                 if (tile.Title == null) continue;
 
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.TTwars:
-                        // Occupied "{k.fo}", unoccupied "{k.bt}"
-                        if (tile.Title == "{k.bt}") ret.Add(tile.Coordinates);
-                        break;
-
-                    case Classificator.ServerVersionEnum.T4_5:
-                        // Occupied "{k.bt}", unoccupied "{k.fo}"
-                        if (tile.Title == "{k.fo}") ret.Add(tile.Coordinates);
-                        break;
-                }
+                // Occupied "{k.bt}", unoccupied "{k.fo}"
+                if (tile.Title == "{k.fo}") ret.Add(tile.Coordinates);
             }
             return ret;
         }

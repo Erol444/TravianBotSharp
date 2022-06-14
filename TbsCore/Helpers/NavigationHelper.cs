@@ -162,22 +162,8 @@ namespace TbsCore.Helpers
                 if (counter != 3) await acc.Wb.Refresh();
                 counter--;
                 if (counter == 0) return false;
-                HtmlNode node;
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case ServerVersionEnum.TTwars:
-                        node = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("container") && x.HasClass(classCategoryNode));
-                        break;
+                HtmlNode node = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("tabItem") && x.HasClass(classCategoryNode));
 
-                    case ServerVersionEnum.T4_5:
-                        node = acc.Wb.Html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("tabItem") && x.HasClass(classCategoryNode));
-
-                        break;
-
-                    default:
-                        node = null;
-                        break;
-                }
                 if (node == null) return false;
 
                 var element = acc.Wb.Driver.FindElement(By.XPath(node.XPath));
@@ -244,45 +230,18 @@ namespace TbsCore.Helpers
         /// <returns>Whether it was successful</returns>
         public static async Task<bool> EnterBuilding(Account acc, Building building, int? tab = null, Coordinates coords = null)
         {
-            switch (acc.AccInfo.ServerVersion)
+            await ToBuildingId(acc, building.Id);
+
+            if (BuildingsData.HasMultipleTabs(building.Type))
             {
-                case ServerVersionEnum.T4_5:
-                    // Enter building (if not already there)
-                    await ToBuildingId(acc, building.Id);
-
-                    if (BuildingsData.HasMultipleTabs(building.Type))
-                    {
-                        if (tab != null) // Navigate to correct tab
-                        {
-                            var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
-                            // Navigate to correct tab if not already on it
-                            if (currentTab != tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
-                        }
-                    }
-                    break;
-
-                case ServerVersionEnum.TTwars:
-                    // update building info if there is looping
-                    var chance = rand.Next(0, 100);
-                    if (chance > 50)
-                    {
-                        if (building.Id < 19) // dorf1
-                        {
-                            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf1.php");
-                        }
-                        else
-                        {
-                            await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf2.php");
-                        }
-                    }
-
-                    // Directly navigate to url
-                    string url = $"{acc.AccInfo.ServerUrl}/build.php?id={building.Id}";
-                    if (tab != null) url += "&" + TTWarsTabUrl(building.Type, tab ?? 0);
-                    if (coords != null) url += "&z=" + coords.GetKid(acc);
-                    await acc.Wb.Navigate(url);
-                    break;
+                if (tab != null) // Navigate to correct tab
+                {
+                    var currentTab = InfrastructureParser.CurrentlyActiveTab(acc.Wb.Html);
+                    // Navigate to correct tab if not already on it
+                    if (currentTab != tab) await DriverHelper.ClickByClassName(acc, "tabItem", (int)tab);
+                }
             }
+
             return true;
         }
 
@@ -422,11 +381,6 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> ToOverview(Account acc, OverviewTab tab, TroopOverview subTab = TroopOverview.OwnTroops)
         {
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars)
-            {
-                await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/dorf3.php?s={TTWarsOverviewMapping(tab)}&su={(int)subTab}");
-                return true;
-            }
             string query = "overview";
             await DriverHelper.ClickByClassName(acc, query);
 

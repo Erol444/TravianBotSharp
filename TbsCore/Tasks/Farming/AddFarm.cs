@@ -37,16 +37,7 @@ namespace TbsCore.Tasks.Farming
             await Task.Delay(AccountHelper.Delay(acc));
 
             // Click "save"
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    acc.Wb.ExecuteScript("Travian.Game.RaidList.saveSlot(getSelectedListId(), $('edit_form').toQueryString().parseQueryString(), true);");
-                    break;
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    await DriverHelper.ClickById(acc, "save");
-                    break;
-            }
+            await DriverHelper.ClickById(acc, "save");
 
             return TaskRes.Executed;
         }

@@ -26,7 +26,7 @@ namespace TbsCore.Tasks.Farming
 
             await NavigationHelper.ToRallyPoint(acc, Vill, NavigationHelper.RallyPointTab.Farmlist);
 
-            var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
+            var flNode = GetFlNode(acc.Wb.Html);
 
             // If there is no rally point, switch to different village
             if (flNode == null)
@@ -34,7 +34,7 @@ namespace TbsCore.Tasks.Farming
                 var mainVill = AccountHelper.GetMainVillage(acc);
                 if (mainVill == this.Vill) return TaskRes.Executed; // No gold account?
                 await VillageHelper.SwitchVillage(acc, mainVill.Id);
-                flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
+                flNode = GetFlNode(acc.Wb.Html);
                 if (flNode == null) return TaskRes.Retry;
             }
 
@@ -50,14 +50,13 @@ namespace TbsCore.Tasks.Farming
             }
 
             // If FL is collapsed, expand it
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars ||
-                flNode.Descendants("div").Any(x => x.HasClass("expandCollapse") && x.HasClass("collapsed")))
+            if (flNode.Descendants("div").Any(x => x.HasClass("expandCollapse") && x.HasClass("collapsed")))
             {
                 await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({this.FL.Id});");
                 await Task.Delay(500);
                 acc.Wb.UpdateHtml();
                 // Update flNode!
-                flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion);
+                flNode = GetFlNode(acc.Wb.Html);
             }
 
             var farms = new List<GoldClubFarm>();
@@ -85,33 +84,17 @@ namespace TbsCore.Tasks.Farming
 
             await Task.Delay(AccountHelper.Delay(acc) * 2);
 
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case ServerVersionEnum.TTwars:
-                    var sendFlScript = $"document.getElementById('{flNode.Id}').childNodes[1].submit()";
-                    acc.Wb.ExecuteScript(sendFlScript);
-                    break;
-
-                case ServerVersionEnum.T4_5:
-                    var startRaid = flNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
-                    acc.Wb.Driver.FindElement(By.Id(startRaid.Id)).Click();
-                    break;
-            }
+            var startRaid = flNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
+            acc.Wb.Driver.FindElement(By.Id(startRaid.Id)).Click();
 
             acc.Logger.Information($"FarmList '{this.FL.Name}' was sent");
             await Task.Delay(1000);
             return TaskRes.Executed;
         }
 
-        private HtmlNode GetFlNode(HtmlDocument htmlDoc, ServerVersionEnum version)
+        private HtmlNode GetFlNode(HtmlDocument htmlDoc)
         {
-            switch (version)
-            {
-                case ServerVersionEnum.TTwars: return htmlDoc.GetElementbyId("list" + this.FL.Id);
-
-                case ServerVersionEnum.T4_5: return htmlDoc.GetElementbyId("raidList" + this.FL.Id);
-                default: return null;
-            }
+            return htmlDoc.GetElementbyId("raidList" + this.FL.Id);
         }
     }
 }

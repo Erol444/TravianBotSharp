@@ -187,41 +187,15 @@ namespace TbsCore.Tasks.Sim
         private bool UpdateSettlersAmount(Account acc)
         {
             HtmlAgilityPack.HtmlNode nodeSettler = null;
-            switch (acc.AccInfo.ServerVersion)
+
+            var troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
+            if (troopBox == null)
             {
-                case ServerVersionEnum.TTwars:
-                    {
-                        var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settlerId));
-                        while (!troopNode.HasClass("details"))
-                        {
-                            troopNode = troopNode.ParentNode;
-                            if (troopNode == null)
-                            {
-                                acc.Logger.Information("No new settler can be trained, probably because 3 settlers are already (being) trained");
-                                SendSettlersTask(acc);
-                                StopFlag = true;
-                                return false;
-                            }
-                        }
-                        nodeSettler = troopNode;
-                    }
-                    break;
-
-                case ServerVersionEnum.T4_5:
-                    {
-                        var troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
-                        if (troopBox == null)
-                        {
-                            Retry(acc, "Cannot find settler box");
-                            return false;
-                        }
-                        nodeSettler = troopBox;
-                    }
-                    break;
-
-                default:
-                    break;
+                Retry(acc, "Cannot find settler box");
+                return false;
             }
+            nodeSettler = troopBox;
+
             var divTit = nodeSettler.Descendants("div").FirstOrDefault(x => x.HasClass("tit"));
             if (divTit == null)
             {
@@ -263,22 +237,11 @@ namespace TbsCore.Tasks.Sim
         private async Task<bool> IsEnoughRes(Account acc)
         {
             HtmlNode troopBox = null;
-            switch (acc.AccInfo.ServerVersion)
+            troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
+            if (troopBox == null)
             {
-                case ServerVersionEnum.TTwars:
-                    var troopNode = acc.Wb.Html.DocumentNode.Descendants("img").FirstOrDefault(x => x.HasClass("u" + (int)settlerId));
-                    while (!troopNode.HasClass("details")) troopNode = troopNode.ParentNode;
-                    troopBox = troopNode;
-                    break;
-
-                case ServerVersionEnum.T4_5:
-                    troopBox = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"troop{(int)settlerId}") && x.HasClass("innerTroopWrapper"));
-                    if (troopBox == null)
-                    {
-                        Retry(acc, "Cannot find settler box");
-                        return false;
-                    }
-                    break;
+                Retry(acc, "Cannot find settler box");
+                return false;
             }
 
             var resWrapper = troopBox.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
@@ -302,7 +265,7 @@ namespace TbsCore.Tasks.Sim
 
                 var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
                 acc.Logger.Information("Not enough resources to train.");
-                if (Vill.Settings.UseHeroRes && acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
+                if (Vill.Settings.UseHeroRes) // Only T4.5 has resources in hero inv
                 {
                     var heroRes = HeroHelper.GetHeroResources(acc);
 

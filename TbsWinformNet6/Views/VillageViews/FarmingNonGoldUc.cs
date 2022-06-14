@@ -129,7 +129,7 @@ namespace TbsWinformNet6.Views
 
             var vill = GetSelectedVillage();
             if (vill == null) return;
-            if (GetSelectedAcc().AccInfo.ServerVersion != Classificator.ServerVersionEnum.TTwars && vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
+            if (vill.FarmingNonGold.ListFarm[currentFarmList_index].Targets.Count > 14)
             {
                 MessageBox.Show("Activities cannot be done by humans - RET (Rule Enforcement team)", "Limited at 15 farm per list");
                 return;

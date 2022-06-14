@@ -362,12 +362,6 @@
             Huns, //7
         }
 
-        public enum ServerVersionEnum
-        {
-            TTwars,
-            T4_5,
-        }
-
         public enum MovementType
         {
             Reinforcement = 2,

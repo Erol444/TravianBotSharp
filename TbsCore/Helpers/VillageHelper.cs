@@ -92,23 +92,7 @@ namespace TbsCore.Helpers
                 counter--;
                 if (counter == 0) return false;
 
-                HtmlAgilityPack.HtmlNode node = null;
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case ServerVersionEnum.T4_5:
-                        {
-                            node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
-                            break;
-                        }
-                    case ServerVersionEnum.TTwars:
-                        {
-                            var nodeBoxVillage = acc.Wb.Html.DocumentNode.SelectSingleNode("//*[@id='sidebarBoxVillagelist']");
-                            if (nodeBoxVillage == null) return false;
-
-                            node = nodeBoxVillage.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("href", "").Contains($"{id}"));
-                            break;
-                        }
-                }
+                HtmlAgilityPack.HtmlNode node = acc.Wb.Html.DocumentNode.SelectSingleNode($"//div[@data-did='{id}']/a");
 
                 if (node == null)
                 {

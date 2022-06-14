@@ -60,16 +60,7 @@ namespace TbsCore.Tasks.Sim
             for (int i = 0; i < 4; i++)
             {
                 //await acc.Wb.Driver.FindElementById($"m2[{i}]").Write(targetRes[i]);
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.TTwars:
-                        await DriverHelper.ExecuteScript(acc, $"document.getElementById('m2[{i}]').value='{targetRes[i]}'");
-                        break;
-
-                    case Classificator.ServerVersionEnum.T4_5:
-                        await DriverHelper.ExecuteScript(acc, $"document.getElementsByName('desired{i}')[0].value='{targetRes[i]}'");
-                        break;
-                }
+                await DriverHelper.ExecuteScript(acc, $"document.getElementsByName('desired{i}')[0].value='{targetRes[i]}'");
             }
 
             var submit = acc.Wb.Html.GetElementbyId("submitText");

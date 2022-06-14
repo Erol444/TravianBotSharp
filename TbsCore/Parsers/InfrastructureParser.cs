@@ -14,17 +14,7 @@ namespace TbsCore.Parsers
         public static List<Building> GetBuildings(Account acc, HtmlDocument htmlDoc)
         {
             List<Building> buildings = new List<Building>();
-            HtmlAgilityPack.HtmlNode villMap = null;
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.T4_5:
-                    villMap = htmlDoc.GetElementbyId("villageContent");
-                    break;
-
-                case Classificator.ServerVersionEnum.TTwars:
-                    villMap = htmlDoc.GetElementbyId("village_map");
-                    break;
-            }
+            var villMap = htmlDoc.GetElementbyId("villageContent");
 
             if (villMap == null) return buildings;
 
@@ -40,14 +30,18 @@ namespace TbsCore.Parsers
                 var gid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("g")).Replace("g", ""));
 
                 byte lvl;
+
                 // TODO: aid
                 var lvlNode = fields[i].Descendants().FirstOrDefault(x => x.HasClass("aid" + location));
+
                 if (lvlNode == null) lvl = 0;
                 else lvl = Convert.ToByte(lvlNode.InnerText);
 
                 var uc = fields[i].Descendants().FirstOrDefault(x => x.HasClass("underConstruction")) != null;
+
                 //var b = fields[i].Child
                 var building = new Building();
+
                 buildings.Add(building.Init(
                     location,
                     lvl,//Convert.ToByte(vals[4].Replace("level", "")),
@@ -55,6 +49,7 @@ namespace TbsCore.Parsers
                     uc
                 ));
             }
+
             buildings.FirstOrDefault(x => x.Id == 39).Type = Classificator.BuildingEnum.RallyPoint;
             buildings.FirstOrDefault(x => x.Id == 40).Type = BuildingsData.GetTribesWall(acc.AccInfo.Tribe);
             return buildings;
@@ -87,23 +82,15 @@ namespace TbsCore.Parsers
             return ret;
         }
 
-        public static TimeSpan GetBuildDuration(HtmlNode node, Classificator.ServerVersionEnum version)
+        public static TimeSpan GetBuildDuration(HtmlNode node)
         {
             var duration = node.Descendants("div").FirstOrDefault(x => x.HasClass("duration"));
             if (duration != null)
             {
-                switch (version)
+                var dur = duration.Descendants("span").FirstOrDefault(x => x.HasClass("value"));
+                if (dur != null)
                 {
-                    case Classificator.ServerVersionEnum.TTwars:
-                        return TimeParser.ParseDuration(duration.InnerText);
-
-                    case Classificator.ServerVersionEnum.T4_5:
-                        var dur = duration.Descendants("span").FirstOrDefault(x => x.HasClass("value"));
-                        if (dur != null)
-                        {
-                            return TimeParser.ParseDuration(dur.InnerText);
-                        }
-                        break;
+                    return TimeParser.ParseDuration(dur.InnerText);
                 }
             }
             return new TimeSpan();

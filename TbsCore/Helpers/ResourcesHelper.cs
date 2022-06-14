@@ -69,8 +69,7 @@ namespace TbsCore.Helpers
             }
 
             // Try to use hero resources first
-            if (vill.Settings.UseHeroRes &&
-                acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
+            if (vill.Settings.UseHeroRes) // Only T4.5 has resources in hero inv
             {
                 var heroRes = HeroHelper.GetHeroResources(acc);
 

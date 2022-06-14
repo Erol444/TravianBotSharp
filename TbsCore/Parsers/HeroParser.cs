@@ -134,41 +134,19 @@ namespace TbsCore.Parsers
             return TimeParser.ParseTimer(statusMsg);
         }
 
-        public static int GetAdventureNum(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static int GetAdventureNum(HtmlDocument htmlDoc)
         {
-            switch (version)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    var adv44 = htmlDoc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("adventureWhite"));
-                    var bubble = adv44.Descendants().FirstOrDefault(x => x.HasClass("speechBubbleContent"));
-                    if (bubble == null) return 0; //No bubble, no adventures
-                    return (int)Parser.RemoveNonNumeric(bubble.InnerText);
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    var adv45 = htmlDoc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("adventure"));
-                    var num = adv45.ChildNodes.FirstOrDefault(x => x.HasClass("content") && x.Name == "div");
-                    if (num == null) return 0;
-                    return (int)Parser.RemoveNonNumeric(num.InnerText);
-
-                default: return 0;
-            }
+            var adv45 = htmlDoc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("adventure"));
+            var num = adv45.ChildNodes.FirstOrDefault(x => x.HasClass("content") && x.Name == "div");
+            if (num == null) return 0;
+            return (int)Parser.RemoveNonNumeric(num.InnerText);
         }
 
-        public static bool LeveledUp(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static bool LeveledUp(HtmlDocument htmlDoc)
         {
-            switch (version)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    return htmlDoc.DocumentNode
-                        .Descendants("div")
-                        .Any(x => x.HasClass("levelUp"));
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    return htmlDoc.DocumentNode
-                        .Descendants("i")
-                        .Any(x => x.HasClass("levelUp") && x.HasClass("show"));
-            }
-            return false;
+            return htmlDoc.DocumentNode
+                .Descendants("i")
+                .Any(x => x.HasClass("levelUp") && x.HasClass("show"));
         }
 
         public static Hero.StatusEnum HeroStatus(HtmlDocument htmlDoc)
@@ -201,26 +179,16 @@ namespace TbsCore.Parsers
             }
         }
 
-        public static int GetHeroHealth(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static int GetHeroHealth(HtmlDocument htmlDoc)
         {
-            switch (version)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    var health = htmlDoc.GetElementbyId("sidebarBoxHero").Descendants("div").FirstOrDefault(x => x.HasClass("bar")).Attributes.FirstOrDefault(x => x.Name == "style").Value.Split(':')[1].Replace("%", "");
-                    health = health.Split('.')[0];
-                    return (int)Parser.RemoveNonNumeric(health);
+            var path = htmlDoc.GetElementbyId("healthMask").Descendants("path").FirstOrDefault();
+            if (path == null) return 0;
+            var commands = path.GetAttributeValue("d", "").Split(' ');
+            var xx = double.Parse(commands[commands.Length - 2], System.Globalization.CultureInfo.InvariantCulture);
+            var yy = double.Parse(commands[commands.Length - 1], System.Globalization.CultureInfo.InvariantCulture);
 
-                case Classificator.ServerVersionEnum.T4_5:
-                    var path = htmlDoc.GetElementbyId("healthMask").Descendants("path").FirstOrDefault();
-                    if (path == null) return 0;
-                    var commands = path.GetAttributeValue("d", "").Split(' ');
-                    var xx = double.Parse(commands[commands.Length - 2], System.Globalization.CultureInfo.InvariantCulture);
-                    var yy = double.Parse(commands[commands.Length - 1], System.Globalization.CultureInfo.InvariantCulture);
-
-                    var rad = Math.Atan2(yy - 55, xx - 55);
-                    return (int)Math.Round(-56.173 * rad + 96.077);
-            }
-            return 0;
+            var rad = Math.Atan2(yy - 55, xx - 55);
+            return (int)Math.Round(-56.173 * rad + 96.077);
         }
 
         /// <summary>

@@ -55,8 +55,7 @@ namespace TbsCore.Helpers
             if (CheckCookiesNew(acc))
                 await DriverHelper.ExecuteScript(acc, "document.getElementsByClassName('cmpboxbtnyes')[0].click();");
 
-            if (CheckContextualHelp(acc) &&
-                acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5)
+            if (CheckContextualHelp(acc))
             {
                 acc.Tasks.Add(new EditPreferences()
                 {
@@ -245,7 +244,7 @@ namespace TbsCore.Helpers
             }
             vill.TroopMovements.Dorf1Movements = dorf1Movements;
 
-            var resFields = ResourceParser.GetResourcefields(acc.Wb.Html, acc.AccInfo.ServerVersion);
+            var resFields = ResourceParser.GetResourcefields(acc.Wb.Html);
             foreach (var field in resFields)
             {
                 var building = vill.Build.Buildings.FirstOrDefault(x => x.Id == field.Id);
@@ -314,33 +313,13 @@ namespace TbsCore.Helpers
         //will be called before executing PreTaskRefresh
         internal static bool IsLoginScreen(Account acc)
         {
-            switch (acc.AccInfo.ServerVersion)
+            var tableLogin = acc.Wb.Html.GetElementbyId("loginForm");
+
+            if (tableLogin != null)
             {
-                case Classificator.ServerVersionEnum.TTwars:
-                    {
-                        var outerLoginBox = acc.Wb.Html.DocumentNode
-               .Descendants("form")
-               .FirstOrDefault(x => x.GetAttributeValue("name", "") == "login");
-
-                        if (outerLoginBox != null)
-                        {
-                            if (!IsCaptcha(acc)) return true;
-                        }
-                        return false;
-                    }
-                case Classificator.ServerVersionEnum.T4_5:
-                    {
-                        var tableLogin = acc.Wb.Html.GetElementbyId("loginForm");
-
-                        if (tableLogin != null)
-                        {
-                            if (!IsCaptcha(acc)) return true;
-                        }
-                        return false;
-                    }
-                default:
-                    return false;
+                if (!IsCaptcha(acc)) return true;
             }
+            return false;
         }
 
         private static bool IsSysMsg(Account acc)

@@ -71,7 +71,7 @@ namespace TbsCore.Helpers
                     else if (acc.Wb.CurrentUrl.Contains("dorf2")) TaskExecutor.UpdateDorf2Info(acc);
                 },
                 // 2: get culture point
-                () => acc.AccInfo.CulturePoints = RightBarParser.GetCulturePoints(html, acc.AccInfo.ServerVersion),
+                () => acc.AccInfo.CulturePoints = RightBarParser.GetCulturePoints(html),
                 // 3: Village expansion:
                 () =>
                 {
@@ -86,8 +86,7 @@ namespace TbsCore.Helpers
                 // 4: claim Beginner Quests:
                 () =>
                 {
-                    if(acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
-                        acc.Wb.Html.GetElementbyId("sidebarBoxQuestmaster")?
+                    if( acc.Wb.Html.GetElementbyId("sidebarBoxQuestmaster")?
                         .Descendants()?.FirstOrDefault(x=>x.HasClass("newQuestSpeechBubble")) != null &&
                         acc.Wb.Html.GetElementbyId("mentorTaskList") == null &&
                         acc.Quests.ClaimBeginnerQuests)
@@ -96,23 +95,11 @@ namespace TbsCore.Helpers
 
                         return;
                     }
-
-                    acc.Quests.Quests = RightBarParser.GetBeginnerQuests(html, acc.AccInfo.ServerVersion);
-                    var claimQuest = acc.Quests?.Quests?.FirstOrDefault(x => x.finished);
-                    if (claimQuest != null && acc.Quests.ClaimBeginnerQuests)
-                    {
-                        acc.Tasks.Add( new ClaimBeginnerTask()
-                        {
-                            ExecuteAt = DateTime.Now,
-                            Vill = VillageHelper.VillageFromId(acc, acc.Quests.VillToClaim),
-                        }, true);
-                    }
                 },
                 // 5: claim Daily Quest:
                 () =>
                 {
-                    if (acc.AccInfo.ServerVersion == Classificator.ServerVersionEnum.T4_5 &&
-                    RightBarParser.CheckDailyQuest(html) &&
+                    if ( RightBarParser.CheckDailyQuest(html) &&
                     acc.Quests.ClaimDailyQuests)
                     {
                         acc.Tasks.Add( new ClaimDailyTask()
@@ -125,17 +112,17 @@ namespace TbsCore.Helpers
                 // 6: Parse gold/silver
                 () =>
                 {
-                    var goldSilver = RightBarParser.GetGoldAndSilver(html, acc.AccInfo.ServerVersion);
+                    var goldSilver = RightBarParser.GetGoldAndSilver(html);
                     acc.AccInfo.Gold = goldSilver[0];
                     acc.AccInfo.Silver = goldSilver[1];
                 },
                 // 7: plus acconunt
-                () => acc.AccInfo.PlusAccount = RightBarParser.HasPlusAccount(html, acc.AccInfo.ServerVersion),
+                () => acc.AccInfo.PlusAccount = RightBarParser.HasPlusAccount(html),
 
                 // 8: Check msgs:
                 () =>
                 {
-                    if (MsgParser.UnreadMessages(html, acc.AccInfo.ServerVersion) > 0
+                    if (MsgParser.UnreadMessages(html) > 0
                         && !acc.Wb.CurrentUrl.Contains("messages.php")
                         && acc.Settings.AutoReadIgms)
                     {
@@ -210,11 +197,11 @@ namespace TbsCore.Helpers
                     }
                 },
                 // 16: Adventure num
-                () => acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html, acc.AccInfo.ServerVersion),
+                () => acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html),
                 // 17: status of hero
                 () => acc.Hero.Status = HeroParser.HeroStatus(html),
                 // 18: health of hero
-                () => acc.Hero.HeroInfo.Health = HeroParser.GetHeroHealth(html, acc.AccInfo.ServerVersion),
+                () => acc.Hero.HeroInfo.Health = HeroParser.GetHeroHealth(html),
                 // 19:  Hero:
                 () =>
                 {
@@ -248,7 +235,7 @@ namespace TbsCore.Helpers
                             Vill = AccountHelper.GetHeroReviveVillage(acc)
                         }, true);
                     }
-                    if (HeroParser.LeveledUp(html, acc.AccInfo.ServerVersion) && acc.Hero.Settings.AutoSetPoints)
+                    if (HeroParser.LeveledUp(html) && acc.Hero.Settings.AutoSetPoints)
                     {
                         acc.Tasks.Add(  new HeroSetPoints() { ExecuteAt = DateTime.Now }, true);
                     }

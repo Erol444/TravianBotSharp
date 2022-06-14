@@ -53,18 +53,9 @@ namespace TbsCore.Tasks.Sim
             string kid = newVillage.Coordinates.GetKid(acc).ToString();
 
             string url = $"{acc.AccInfo.ServerUrl}/build.php?id=39&tt=2";
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    // https://low4.ttwars.com/build.php?id=39&tt=2&kid=7274&a=6
-                    url += $"&kid={kid}&a=6";
-                    break;
+            // https://tx3.travian.com/build.php?id=39&tt=2&mapid=123&s=1&gid=16
+            url += $"&mapid={kid}&s=1&gid=16";
 
-                case Classificator.ServerVersionEnum.T4_5:
-                    // https://tx3.travian.com/build.php?id=39&tt=2&mapid=123&s=1&gid=16
-                    url += $"&mapid={kid}&s=1&gid=16";
-                    break;
-            }
             await acc.Wb.Navigate(url);
 
             // Check if we have enough resource

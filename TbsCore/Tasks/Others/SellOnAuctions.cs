@@ -16,7 +16,6 @@ namespace TbsCore.Tasks.Others
         public override async Task<TaskRes> Execute(Account acc)
 
         {
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars) return TaskRes.Executed;
             //if (!acc.Wb.CurrentUrl.Contains("auction?action=sell"))
             //{
             //    string xPathSellTab = null;

@@ -96,16 +96,7 @@ namespace TbsCore.Tasks.Farming
                         troopsAtHome[j] = 0;
                     }
 
-                    switch (acc.AccInfo.ServerVersion)
-                    {
-                        case Classificator.ServerVersionEnum.TTwars:
-                            req.AddParameter($"t{j + 1}", TroopCount(SendWaveModels[i].Troops[j]));
-                            break;
-
-                        case Classificator.ServerVersionEnum.T4_5:
-                            req.AddParameter($"troops[0][t{j + 1}]", TroopCount(SendWaveModels[i].Troops[j]));
-                            break;
-                    }
+                    req.AddParameter($"troops[0][t{j + 1}]", TroopCount(SendWaveModels[i].Troops[j]));
                 }
                 await Task.Delay(rnd.Next(800, 1000));
 
@@ -158,20 +149,11 @@ namespace TbsCore.Tasks.Farming
 
                 // Add catapult targets
                 string cataCount = "0";
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.TTwars:
-                        cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "t8").Value.ToString();
-                        break;
-
-                    case Classificator.ServerVersionEnum.T4_5:
-                        cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "troops[0][t8]").Value.ToString();
-                        // If T4.5, we need to get value "a" as well - From Confirm button
-                        var button = htmlDoc2.GetElementbyId("btn_ok");
-                        string a = button.GetAttributeValue("value", "");
-                        req2.AddParameter("a", a);
-                        break;
-                }
+                cataCount = req2.Parameters.FirstOrDefault(x => x.Name == "troops[0][t8]").Value.ToString();
+                // If T4.5, we need to get value "a" as well - From Confirm button
+                var button = htmlDoc2.GetElementbyId("btn_ok");
+                string a = button.GetAttributeValue("value", "");
+                req2.AddParameter("a", a);
 
                 if (int.Parse(cataCount) > 0)
                 {
