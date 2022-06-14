@@ -341,11 +341,16 @@ namespace TbsCore.Helpers
             }
             elements[0].Click();
             {
-                var result = await DriverHelper.WaitPageLoaded(acc);
-                acc.Logger.Warning($"Click Hero avatar failed");
+                var result = await DriverHelper.WaitPageChange(acc, "/hero/inventory");
 
-                if (!result) return false;
+                if (!result)
+                {
+                    acc.Logger.Warning($"Click Hero avatar failed");
+                    return false;
+                }
             }
+
+            if (tab == HeroTab.Inventory) return true;
 
             var navigatorDiv = acc.Wb.Html.GetElementbyId("heroV2");
             var index = tab == HeroTab.Attributes ? 2 : 3;
@@ -355,10 +360,14 @@ namespace TbsCore.Helpers
             if (tabElements.Count == 0) return false;
             tabElements[0].Click();
             {
+                await Task.Delay(800);
                 var result = await DriverHelper.WaitPageLoaded(acc);
-                acc.Logger.Warning($"Click Change tab failed");
 
-                if (!result) return false;
+                if (!result)
+                {
+                    acc.Logger.Warning($"Click Change tab failed");
+                    return false;
+                }
             }
             return true;
         }

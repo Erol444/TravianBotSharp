@@ -10,13 +10,6 @@ namespace TbsCore.Parsers
 {
     public static class HeroParser
     {
-        private static readonly string[] domId = new string[] {
-            "attributepower",
-            "attributeoffBonus",
-            "attributedefBonus",
-            "attributeproductionPoints"
-        };
-
         public static bool AttributesHidden(HtmlDocument htmlDoc)
         {
             var attributes = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroPropertiesContent"));
@@ -26,73 +19,59 @@ namespace TbsCore.Parsers
 
         public static HeroInfo GetHeroInfo(HtmlDocument htmlDoc)
         {
-            var content = htmlDoc.GetElementbyId("content");
             var heroInfo = new HeroInfo();
-
-            var dead = IsHeroDead(htmlDoc);
-            // If hero is dead you can't parse health/experience
-            if (!dead)
             {
-                var health = content.Descendants("tr")
-                    .FirstOrDefault(x => x.HasClass("health"))
-                    .Descendants("span")
-                    .FirstOrDefault(x => x.HasClass("value"))
-                    .InnerText;
-
-                var experience = content.Descendants("tr")
-                     .FirstOrDefault(x => x.HasClass("experience"))
-                     .Descendants("span")
-                     .FirstOrDefault(x => x.HasClass("value"))
-                     .InnerText;
-
-                heroInfo.Health = (int)Parser.ParseNum(health.Replace("%", ""));
-                heroInfo.Experience = (int)Parser.RemoveNonNumeric(experience);
-            }
-
-            string[] heroPoints = new string[4];
-            for (int i = 0; i < 4; i++)
-            {
-                heroPoints[i] = htmlDoc.GetElementbyId(domId[i])
-                    .ChildNodes
-                    .FirstOrDefault(x => x.HasClass("points"))
+                var heroLevel = htmlDoc.DocumentNode.Descendants()
+                    .FirstOrDefault(x => x.HasClass("titleInHeader"))
                     .InnerText
-                    .Replace("%", "");
+                    .Split('-')
+                    .Last();
+                heroInfo.Level = (int)Parser.RemoveNonNumeric(heroLevel);
             }
 
-            var availablePoints = System.Net.WebUtility.HtmlDecode(htmlDoc.GetElementbyId("availablePoints").InnerText);
-            heroInfo.AvaliblePoints = (int)Parser.ParseNum(availablePoints.Split('/').LastOrDefault());
-            if (heroInfo.AvaliblePoints == 0)
             {
-                heroInfo.FightingStrengthPoints = (int)Parser.ParseNum(heroPoints[0]);
-                heroInfo.OffBonusPoints = (int)Parser.ParseNum(heroPoints[1]);
-                heroInfo.DeffBonusPoints = (int)Parser.ParseNum(heroPoints[2]);
-                heroInfo.ResourcesPoints = (int)Parser.ParseNum(heroPoints[3]);
+                var statsDiv = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("stats"));
+                var valueDivs = statsDiv.Descendants("div").Where(x => x.HasClass("value")).ToArray();
+                heroInfo.Health = (int)Parser.ParseNum(valueDivs[0].InnerText.Replace("%", ""));
+                heroInfo.Experience = (int)Parser.RemoveNonNumeric(valueDivs[1].InnerText);
             }
 
-            var heroLevel = htmlDoc.DocumentNode.Descendants()
-                .FirstOrDefault(x => x.HasClass("titleInHeader"))
-                .InnerText
-                .Split('-')
-                .Last();
-            heroInfo.Level = (int)Parser.RemoveNonNumeric(heroLevel);
-
-            var production = htmlDoc.DocumentNode.Descendants()
-                .FirstOrDefault(x => x.HasClass("production"))
-                .Descendants("span")
-                .FirstOrDefault(x => x.HasClass("value"))
-                .InnerText;
-            heroInfo.HeroProduction = (int)Parser.RemoveNonNumeric(production);
-
-            var resRadioChecked = htmlDoc.DocumentNode.Descendants("input").FirstOrDefault(x =>
-                x.HasClass("radio") &&
-                x.GetAttributeValue("checked", "") == "checked"
-            );
-            byte resSelectedByte = 0;
-            if (resRadioChecked != null)
             {
-                resSelectedByte = (byte)Parser.RemoveNonNumeric(resRadioChecked.GetAttributeValue("value", "0"));
+                var productionDiv = htmlDoc.DocumentNode.Descendants("div").LastOrDefault(x => x.HasClass("productionItem"));
+                heroInfo.HeroProduction = (int)Parser.RemoveNonNumeric(productionDiv.InnerText);
+
+                var changeProductionDiv = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("changeProduction"));
+                var buttons = changeProductionDiv.Descendants("button").ToArray();
+
+                for (var i = 0; i < buttons.Length; i++)
+                {
+                    if (buttons[i].HasClass("active"))
+                    {
+                        heroInfo.SelectedResource = i;
+                        break;
+                    }
+                }
             }
-            heroInfo.SelectedResource = resSelectedByte;
+            {
+                var attributesDiv = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroAttributes"));
+                var avaliblePoints = attributesDiv.Descendants("div").FirstOrDefault(x => x.HasClass("pointsAvailable"));
+                heroInfo.AvaliblePoints = (int)Parser.RemoveNonNumeric(avaliblePoints.InnerText);
+                if (heroInfo.AvaliblePoints > 0) heroInfo.NewLevel = true;
+
+                var pointInputs = attributesDiv.Descendants("input");
+
+                var fightingStrengthInput = pointInputs.FirstOrDefault(x => x.GetAttributeValue("name", "").Contains("fightingStrength"));
+                heroInfo.FightingStrengthPoints = fightingStrengthInput.GetAttributeValue("value", 0);
+
+                var offBonusInput = pointInputs.FirstOrDefault(x => x.GetAttributeValue("name", "").Contains("offBonus"));
+                heroInfo.OffBonusPoints = offBonusInput.GetAttributeValue("value", 0);
+
+                var defBonusInput = pointInputs.FirstOrDefault(x => x.GetAttributeValue("name", "").Contains("defBonus"));
+                heroInfo.DeffBonusPoints = defBonusInput.GetAttributeValue("value", 0);
+
+                var resourceProductionInput = pointInputs.FirstOrDefault(x => x.GetAttributeValue("name", "").Contains("resourceProduction"));
+                heroInfo.ResourcesPoints = resourceProductionInput.GetAttributeValue("value", 0);
+            }
 
             return heroInfo;
         }
@@ -257,7 +236,7 @@ namespace TbsCore.Parsers
 
         public static TimeSpan GetHeroArrival(HtmlDocument htmlDoc)
         {
-            var nodeStatus = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
+            var nodeStatus = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroState"));
             if (nodeStatus == null) return TimeSpan.Zero;
             return TimeParser.ParseTimer(nodeStatus);
         }

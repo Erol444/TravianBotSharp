@@ -1,6 +1,7 @@
 ﻿using TbsCore.Helpers;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
+using TbsCore.Tasks.Others;
 using TbsCore.Tasks.Sim;
 using TbsWinformNet6.Helpers;
 using TbsWinformNet6.Interfaces;
@@ -127,12 +128,30 @@ namespace TbsWinformNet6.Views
 
         private async void button5_Click(object sender, EventArgs e)
         {
-            await NavigationHelper.ToAdventure(GetSelectedAcc());
+            var acc = GetSelectedAcc();
+            var task = new HeroSetPoints();
+            try
+            {
+                await task.Execute(acc);
+            }
+            catch (Exception ex)
+            {
+                _ = ex;
+            }
         }
 
         private async void button6_Click(object sender, EventArgs e)
         {
-            await NavigationHelper.ToAuction(GetSelectedAcc());
+            var acc = GetSelectedAcc();
+            var task = new StartAdventure();
+            try
+            {
+                await task.Execute(acc);
+            }
+            catch (Exception ex)
+            {
+                _ = ex;
+            }
         }
 
         private async void button7_Click(object sender, EventArgs e)

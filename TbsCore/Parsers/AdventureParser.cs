@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using HtmlAgilityPack;
+using System.Collections.Generic;
 using System.Linq;
 using TbsCore.Helpers;
 using TbsCore.Models;
@@ -15,7 +16,7 @@ namespace TbsCore.Parsers
             return (int)Parser.ParseNum(count);
         }
 
-        public static List<Adventure> GetAdventures(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static List<Adventure> GetAdventures(HtmlDocument htmlDoc)
         {
             List<Adventure> adventuresList = new List<Adventure>();
             var adventures = htmlDoc.GetElementbyId("heroAdventure");
@@ -30,14 +31,14 @@ namespace TbsCore.Parsers
                 var coordinates = MapParser.GetCoordinates(tdList[1].InnerText);
 
                 var iconDifficulty = tdList[3].FirstChild;
-                var difficulty = iconDifficulty.GetAttributeValue("alt", "").Contains("hard") ? DifficultyEnum.Difficult : DifficultyEnum.Normal; 
-                
-                        adventuresList.Add(new Adventure()
-                        {
-                            Coordinates = coordinates,
-                            DurationSeconds = sec,
-                            Difficulty = difficulty,
-                        });
+                var difficulty = iconDifficulty.GetAttributeValue("alt", "").Contains("hard") ? DifficultyEnum.Difficult : DifficultyEnum.Normal;
+
+                adventuresList.Add(new Adventure()
+                {
+                    Coordinates = coordinates,
+                    DurationSeconds = sec,
+                    Difficulty = difficulty,
+                });
             }
             return adventuresList;
         }

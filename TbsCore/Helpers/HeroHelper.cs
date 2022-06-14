@@ -163,10 +163,8 @@ namespace TbsCore.Helpers
         /// <param name="acc">Account</param>
         public static void ParseHeroPage(Account acc)
         {
-            //acc.Hero.HeroInfo = HeroParser.GetHeroInfo(acc.Wb.Html);
-            //acc.Hero.Items = HeroParser.GetHeroItems(acc.Wb.Html);
-            //acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
-            acc.Hero.HeroArrival = DateTime.Now + HeroParser.GetHeroArrivalInfo(acc.Wb.Html);
+            acc.Hero.Items = HeroParser.GetHeroItems(acc.Wb.Html);
+            acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
 
             UpdateHeroVillage(acc);
 
