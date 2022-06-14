@@ -71,7 +71,7 @@ namespace TbsWinformNet6.Views
 
                 var attr = pair.Value.ToString().Split('_');
 
-                viewItem.SubItems[0].Text = attr[0];
+                viewItem.SubItems[0].Text = pair.Key.ToString();
                 viewItem.SubItems.Add(attr[1]);
                 viewItem.SubItems.Add(attr[2] == "0" ? "" : attr[2]);
 

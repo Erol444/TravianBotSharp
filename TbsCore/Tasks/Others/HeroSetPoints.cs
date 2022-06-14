@@ -12,7 +12,7 @@ namespace TbsCore.Tasks.Others
         {
             await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Attributes);
 
-            acc.Hero.HeroInfo = HeroParser.GetHeroInfo(acc.Wb.Html);
+            acc.Hero.HeroInfo = HeroParser.GetHeroAttributes(acc.Wb.Html);
             acc.Hero.HeroArrival = DateTime.Now + HeroParser.GetHeroArrivalInfo(acc.Wb.Html);
 
             float sum = 0;

@@ -10,14 +10,17 @@ namespace TbsCore.Parsers
 {
     public static class HeroParser
     {
-        public static bool AttributesHidden(HtmlDocument htmlDoc)
-        {
-            var attributes = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroPropertiesContent"));
-            if (attributes?.GetClasses()?.FirstOrDefault(x => x == "hide") == null) return false;
-            else return true;
-        }
+        private static readonly Classificator.HeroItemCategory[] heroItemCategories = new Classificator.HeroItemCategory[7] {
+            Classificator.HeroItemCategory.Helmet,
+            Classificator.HeroItemCategory.Armor,
+            Classificator.HeroItemCategory.Boots,
+            Classificator.HeroItemCategory.Left,
+            Classificator.HeroItemCategory.Weapon,
+            Classificator.HeroItemCategory.Horse,
+            Classificator.HeroItemCategory.Stackable,
+        };
 
-        public static HeroInfo GetHeroInfo(HtmlDocument htmlDoc)
+        public static HeroInfo GetHeroAttributes(HtmlDocument htmlDoc)
         {
             var heroInfo = new HeroInfo();
             {
@@ -76,16 +79,46 @@ namespace TbsCore.Parsers
             return heroInfo;
         }
 
-        /// <summary>
-        /// Checks if hero is dead
-        /// </summary>
-        public static bool IsHeroDead(HtmlDocument html)
+        public static List<HeroItem> GetHeroInventory(HtmlDocument htmlDoc)
         {
-            var status = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
-            if (status == null) return false;
-            var img = status.Descendants("img").FirstOrDefault(x => x.HasClass("heroStatus101"));
-            if (img == null) return false;
-            return true;
+            List<HeroItem> heroItems = new List<HeroItem>();
+            var heroItemsDiv = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroItems"));
+            var heroItemDivs = heroItemsDiv.Descendants("div").Where(x => x.HasClass("heroItem") && !x.HasClass("empty"));
+            foreach (var itemSlot in heroItemDivs)
+            {
+                (var heroItemEnum, int amount) = ParseItemNode(itemSlot);
+
+                var heroItem = new HeroItem
+                {
+                    Item = heroItemEnum,
+                    Count = amount
+                };
+
+                heroItems.Add(heroItem);
+            }
+            return heroItems;
+        }
+
+        public static Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum> GetHeroEquipment(HtmlDocument htmlDoc)
+        {
+            var ret = new Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum>();
+            var equipmentSlotsDiv = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("equipmentSlots"));
+            var heroItemDivs = equipmentSlotsDiv.Descendants("div").Where(x => x.HasClass("heroItem")).ToArray();
+
+            for (var i = 0; i < 7; i++)
+            {
+                var slot = heroItemDivs[i];
+                if (slot.HasClass("empty"))
+                {
+                    ret.Add(heroItemCategories[i], Classificator.HeroItemEnum.Others_None_0);
+                }
+                else
+                {
+                    (var heroItemEnum, _) = ParseItemNode(slot);
+                    ret.Add(heroItemCategories[i], heroItemEnum);
+                }
+            }
+            return ret;
         }
 
         /// <summary>
@@ -138,57 +171,34 @@ namespace TbsCore.Parsers
             return false;
         }
 
-        public static Hero.StatusEnum HeroStatus(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static Hero.StatusEnum HeroStatus(HtmlDocument htmlDoc)
         {
-            switch (version)
+            var heroStatusDiv = htmlDoc.DocumentNode.Descendants("div").First(x => x.HasClass("heroStatus"));
+            if (heroStatusDiv == null) return Hero.StatusEnum.Unknown;
+            var iconHeroStatus = heroStatusDiv.Descendants("i").FirstOrDefault();
+            if (iconHeroStatus == null) return Hero.StatusEnum.Unknown;
+            var str = iconHeroStatus.GetClasses().FirstOrDefault();
+            if (str == null) return Hero.StatusEnum.Unknown;
+            switch (str)
             {
-                case Classificator.ServerVersionEnum.TTwars:
-                    var HeroStatus = htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage")).ChildNodes.FirstOrDefault(x => x.Name == "img").GetAttributeValue("class", "");
-                    switch (HeroStatus)
-                    {
-                        case "heroStatus101Regenerate":
-                            return Hero.StatusEnum.Regenerating;
+                case "heroRunning":
+                    return Hero.StatusEnum.Away;
 
-                        case "heroStatus101":
-                            return Hero.StatusEnum.Dead;
+                case "heroHome":
+                    return Hero.StatusEnum.Home;
 
-                        case "heroStatus100":
-                            return Hero.StatusEnum.Home;
+                case "heroDead":
+                    return Hero.StatusEnum.Dead;
 
-                        case "heroStatus50":
-                            return Hero.StatusEnum.Away;
+                case "heroReviving":
+                    return Hero.StatusEnum.Regenerating;
 
-                        default: return Hero.StatusEnum.Unknown;
-                    }
-                case Classificator.ServerVersionEnum.T4_5:
-                    var heroStatusDiv = htmlDoc.DocumentNode.Descendants("div").First(x => x.HasClass("heroStatus"));
-                    if (heroStatusDiv == null) return Hero.StatusEnum.Unknown;
-                    var iconHeroStatus = heroStatusDiv.Descendants("i").FirstOrDefault();
-                    if (iconHeroStatus == null) return Hero.StatusEnum.Unknown;
-                    var str = iconHeroStatus.GetClasses().FirstOrDefault();
-                    if (str == null) return Hero.StatusEnum.Unknown;
-                    switch (str)
-                    {
-                        case "heroRunning":
-                            return Hero.StatusEnum.Away;
+                case "heroReinforcing":
+                    return Hero.StatusEnum.Reinforcing;
 
-                        case "heroHome":
-                            return Hero.StatusEnum.Home;
-
-                        case "heroDead":
-                            return Hero.StatusEnum.Dead;
-
-                        case "heroReviving":
-                            return Hero.StatusEnum.Regenerating;
-
-                        case "heroReinforcing":
-                            return Hero.StatusEnum.Reinforcing;
-
-                        default: return Hero.StatusEnum.Unknown;
-                            //TODO ADD FOR DEAD, REGENERATING
-                    }
+                default:
+                    return Hero.StatusEnum.Unknown;
             }
-            return Hero.StatusEnum.Unknown;
         }
 
         public static int GetHeroHealth(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
@@ -241,30 +251,6 @@ namespace TbsCore.Parsers
             return TimeParser.ParseTimer(nodeStatus);
         }
 
-        public static List<HeroItem> GetHeroItems(HtmlDocument html)
-        {
-            List<HeroItem> heroItems = new List<HeroItem>();
-            var inventory = html.GetElementbyId("itemsToSale");
-
-            foreach (var itemSlot in inventory.ChildNodes)
-            {
-                var item = itemSlot.ChildNodes.FirstOrDefault(x => x.Id.StartsWith("item_"));
-                if (item == null) continue;
-
-                (var heroItemEnum, int amount) = ParseItemNode(item);
-                if (heroItemEnum == null) continue;
-
-                var heroItem = new HeroItem
-                {
-                    Item = heroItemEnum ?? Classificator.HeroItemEnum.Others_None_0,
-                    Count = amount
-                };
-
-                heroItems.Add(heroItem);
-            }
-            return heroItems;
-        }
-
         private static readonly Dictionary<Classificator.HeroItemCategory, string> HeroTypeIds = new Dictionary<Classificator.HeroItemCategory, string>()
         {
             { Classificator.HeroItemCategory.Helmet, "helmet" },
@@ -275,41 +261,16 @@ namespace TbsCore.Parsers
             { Classificator.HeroItemCategory.Boots, "shoes" }
         };
 
-        /// <summary>
-        /// Parses what items is hero currently equipt with
-        /// </summary>
-        /// <param name="html">Html</param>
-        /// <returns>Equipt items</returns>
-        public static Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum> GetHeroEquipment(HtmlDocument html)
+        public static (Classificator.HeroItemEnum, int) ParseItemNode(HtmlNode node)
         {
-            var ret = new Dictionary<Classificator.HeroItemCategory, Classificator.HeroItemEnum>();
-
-            foreach (var pair in HeroTypeIds)
+            var itemNode = node.ChildNodes[1];
+            var itemEnum = (Classificator.HeroItemEnum)Parser.RemoveNonNumeric(itemNode.GetClasses().ToArray()[1]);
+            var amountNum = 1;
+            if (node.GetAttributeValue("data-tier", "").Contains("consumable"))
             {
-                var item = html.GetElementbyId(pair.Value).ChildNodes.FirstOrDefault(x => x.HasClass("item"));
-                if (item == null) continue;
-
-                (Classificator.HeroItemEnum? heroItemEnum, int amount) = ParseItemNode(item);
-                if (heroItemEnum == null) continue;
-
-                var itemEnum = heroItemEnum ?? Classificator.HeroItemEnum.Others_None_0;
-                ret.Add(pair.Key, itemEnum);
+                var amountNode = node.ChildNodes[2];
+                amountNum = (int)Parser.RemoveNonNumeric(amountNode.InnerText);
             }
-            return ret;
-        }
-
-        public static (Classificator.HeroItemEnum?, int) ParseItemNode(HtmlNode node)
-        {
-            var itemClass = node.GetClasses().FirstOrDefault(x => x.Contains("_item_"));
-            if (itemClass == null) return (null, 0);
-
-            var itemEnum = (Classificator.HeroItemEnum)Parser.RemoveNonNumeric(itemClass.Split('_').LastOrDefault());
-
-            // Get amount
-            var amount = node.ChildNodes.FirstOrDefault(x => x.HasClass("amount"));
-            if (amount == null) return (itemEnum, 0);
-
-            var amountNum = (int)Parser.RemoveNonNumeric(amount.InnerText);
 
             return (itemEnum, amountNum);
         }

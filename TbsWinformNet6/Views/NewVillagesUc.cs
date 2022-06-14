@@ -143,7 +143,7 @@ namespace TbsWinformNet6.Views
         private async void button6_Click(object sender, EventArgs e)
         {
             var acc = GetSelectedAcc();
-            var task = new StartAdventure();
+            var task = new HeroEquip();
             try
             {
                 await task.Execute(acc);

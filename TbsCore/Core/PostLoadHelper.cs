@@ -212,7 +212,7 @@ namespace TbsCore.Helpers
                 // 16: Adventure num
                 () => acc.Hero.AdventureNum = HeroParser.GetAdventureNum(html, acc.AccInfo.ServerVersion),
                 // 17: status of hero
-                () => acc.Hero.Status = HeroParser.HeroStatus(html, acc.AccInfo.ServerVersion),
+                () => acc.Hero.Status = HeroParser.HeroStatus(html),
                 // 18: health of hero
                 () => acc.Hero.HeroInfo.Health = HeroParser.GetHeroHealth(html, acc.AccInfo.ServerVersion),
                 // 19:  Hero:
