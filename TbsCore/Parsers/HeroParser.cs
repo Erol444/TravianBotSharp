@@ -128,7 +128,7 @@ namespace TbsCore.Parsers
         /// <returns>TimeSpan after how much time hero arrival will happen</returns>
         public static TimeSpan GetHeroArrivalInfo(HtmlDocument html)
         {
-            var statusMsg = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
+            var statusMsg = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroState"));
             if (statusMsg == null) return new TimeSpan(-1, 0, 0); // -1 hour
 
             return TimeParser.ParseTimer(statusMsg);
