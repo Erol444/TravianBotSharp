@@ -26,31 +26,13 @@ namespace TbsCore.Tasks.Farming
                 if (fl.Enabled)
                 {
                     acc.Tasks.Add(new SendFarmlist() { ExecuteAt = DateTime.Now.AddSeconds(totalSec), FL = fl, Priority = TaskPriority.High });
-                    switch (acc.AccInfo.ServerVersion)
-                    {
-                        case Classificator.ServerVersionEnum.TTwars:
-                            // For TTWars, you need 30sec delay between each FL send
-                            totalSec += rnd.Next(acc.Farming.MinInterval, acc.Farming.MaxInterval);
-                            break;
-
-                        case Classificator.ServerVersionEnum.T4_5:
-                            totalSec += rnd.Next(5, 13);
-                            break;
-                    }
+                    totalSec += rnd.Next(5, 13);
                 }
             }
 
             int nextExecuteSec = 100;
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    nextExecuteSec = totalSec;
-                    break;
+            nextExecuteSec = rnd.Next(acc.Farming.MinInterval, acc.Farming.MaxInterval);
 
-                case Classificator.ServerVersionEnum.T4_5:
-                    nextExecuteSec = rnd.Next(acc.Farming.MinInterval, acc.Farming.MaxInterval);
-                    break;
-            }
             acc.Tasks.Add(new SendFLs() { ExecuteAt = DateTime.Now.AddSeconds(nextExecuteSec), Priority = TaskPriority.High });
 
             return TaskRes.Executed;

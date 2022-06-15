@@ -12,6 +12,6 @@
         public int DeffBonusPoints { get; set; }
         public int ResourcesPoints { get; set; }
         public int HeroProduction { get; set; }
-        public byte SelectedResource { get; set; }
+        public int SelectedResource { get; set; }
     }
 }

@@ -55,7 +55,7 @@ namespace TbsCore.Tasks.Sim
 
                 {
                     acc.Logger.Information("Check condition ...", this);
-                    var result = await TaskTypeCondition(acc);
+                    var result = TaskTypeCondition(acc);
                     if (StopFlag) return TaskRes.Executed;
                     if (!result) continue;
                 }
@@ -70,16 +70,6 @@ namespace TbsCore.Tasks.Sim
                     result = await FreeCropCondition(acc);
                     if (StopFlag) return TaskRes.Executed;
                     if (!result) continue;
-                }
-
-                // Fast building for TTWars
-                if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars && !_buildingTask.ConstructNew)
-                {
-                    acc.Logger.Information("Try using TTWars fast build method", this);
-                    await Task.Delay(AccountHelper.Delay(acc));
-                    var fastUpgrade = await TTWarsTryFastUpgrade(acc, $"{acc.AccInfo.ServerUrl}/build.php?id={_buildingTask.BuildingId}");
-                    if (fastUpgrade) continue;
-                    acc.Logger.Information("Using TTWars fast build method failed. Continue normal method", this);
                 }
 
                 {
@@ -234,19 +224,19 @@ namespace TbsCore.Tasks.Sim
             }
 
             // Not enough resources?
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && errorMessage != null)
+            if (errorMessage != null)
             {
                 Retry(acc, $"We wanted to upgrade {_buildingTask.Building}, but there was an error message:\n{errorMessage.InnerText}");
                 return false;
             }
 
-            var buildDuration = InfrastructureParser.GetBuildDuration(container, acc.AccInfo.ServerVersion);
+            var buildDuration = InfrastructureParser.GetBuildDuration(container);
 
             acc.Logger.Information("Complete checking");
             acc.Logger.Information($"Upgrading {_buildingTask.Building} to level {lvl + 1} in {Vill.Name}");
 
             var watchAd = false;
-            if (acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5 && buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
+            if (buildDuration.TotalMinutes > acc.Settings.WatchAdAbove)
             {
                 acc.Logger.Information("Try using watch ads upgrade button");
                 watchAd = await TryFastUpgrade(acc);
@@ -494,7 +484,7 @@ namespace TbsCore.Tasks.Sim
             return nextTask;
         }
 
-        private async Task<bool> TaskTypeCondition(Account acc)
+        private bool TaskTypeCondition(Account acc)
         {
             switch (_buildingTask.TaskType)
             {
@@ -510,10 +500,6 @@ namespace TbsCore.Tasks.Sim
 
                 case BuildingType.AutoUpgradeResFields:
                     {
-                        if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars)
-                        {
-                            await NavigationHelper.ToDorf1(acc);
-                        }
                         acc.Logger.Information("This is task auto upgrade res field. Choose what res fields will upgrade");
                         UpgradeBuildingHelper.AddResFields(acc, Vill, _buildingTask);
                         var task = Vill.Build.Tasks.FirstOrDefault();
@@ -621,7 +607,7 @@ namespace TbsCore.Tasks.Sim
 
                 var stillNeededRes = ResourcesHelper.SubtractResources(cost.ToArray(), Vill.Res.Stored.Resources.ToArray(), true);
                 acc.Logger.Information($"Not enough resources to build. Still need {stillNeededRes}");
-                if (Vill.Settings.UseHeroRes && acc.AccInfo.ServerVersion == ServerVersionEnum.T4_5) // Only T4.5 has resources in hero inv
+                if (Vill.Settings.UseHeroRes) // Only T4.5 has resources in hero inv
                 {
                     var heroRes = HeroHelper.GetHeroResources(acc);
 

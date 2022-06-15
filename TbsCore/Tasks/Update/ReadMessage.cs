@@ -34,16 +34,7 @@ namespace TbsCore.Tasks.Update
 
                 var url = msg.ParentNode.GetAttributeValue("href", "").Replace("amp;", "");
 
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case Classificator.ServerVersionEnum.T4_5:
-                        await acc.Wb.Navigate(acc.AccInfo.ServerUrl + url);
-                        break;
-
-                    case Classificator.ServerVersionEnum.TTwars:
-                        await acc.Wb.Navigate(acc.AccInfo.ServerUrl + "/" + url);
-                        break;
-                }
+                await acc.Wb.Navigate(acc.AccInfo.ServerUrl + url);
 
                 if (StopFlag) return TaskRes.Executed;
                 await AccountHelper.DelayWait(acc, 5);

@@ -77,24 +77,13 @@ namespace TbsCore.Tasks.Farming
             var inputName = troopNode.Descendants("input").FirstOrDefault().GetAttributeValue("name", "");
 
             long maxNum = 0;
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case ServerVersionEnum.TTwars:
-                    maxNum = Parser.RemoveNonNumeric(
-                        troopNode.ChildNodes
-                        .FirstOrDefault(x => x.Name == "a")?.InnerText ?? "0"
-                        );
-                    break;
 
-                case ServerVersionEnum.T4_5:
-                    maxNum = Parser.RemoveNonNumeric(
-                            troopNode.ChildNodes
-                            .First(x => x.HasClass("cta"))
-                            .ChildNodes
-                            .First(x => x.Name == "a")
-                            .InnerText);
-                    break;
-            }
+            maxNum = Parser.RemoveNonNumeric(
+                    troopNode.ChildNodes
+                    .First(x => x.HasClass("cta"))
+                    .ChildNodes
+                    .First(x => x.Name == "a")
+                    .InnerText);
 
             if (!HighSpeedServer)
             {

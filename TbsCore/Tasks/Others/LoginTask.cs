@@ -75,50 +75,19 @@ namespace TbsCore.Tasks.Others
 
         private HtmlNode GetUsernameNode(Account acc)
         {
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("user"));
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("name"));
-
-                default:
-                    return null;
-            };
+            return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("name"));
         }
 
         private HtmlNode GetPasswordNode(Account acc)
         {
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("pw"));
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("password"));
-
-                default:
-                    return null;
-            };
+            return acc.Wb.Html.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("password"));
         }
 
         private HtmlNode GetLoginButton(Account acc)
         {
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    return acc.Wb.Html.GetElementbyId("s1");
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    {
-                        var trNode = acc.Wb.Html.DocumentNode.Descendants("tr").FirstOrDefault(x => x.HasClass("loginButtonRow"));
-                        if (trNode == null) return null;
-                        return trNode.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
-                    }
-                default:
-                    return null;
-            };
+            var trNode = acc.Wb.Html.DocumentNode.Descendants("tr").FirstOrDefault(x => x.HasClass("loginButtonRow"));
+            if (trNode == null) return null;
+            return trNode.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OpenQA.Selenium;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
@@ -16,53 +17,48 @@ namespace TbsCore.Tasks.Others
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Adventures);
+            await NavigationHelper.ToAdventure(acc);
 
-            acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html, acc.AccInfo.ServerVersion);
-
-            HeroHelper.UpdateHeroVillage(acc);
+            acc.Hero.Adventures = AdventureParser.GetAdventures(acc.Wb.Html);
 
             if (acc.Hero.Adventures == null || acc.Hero.Adventures.Count == 0 || UpdateOnly) return TaskRes.Executed;
-
-            var adventures = acc.Hero.Adventures
-                .Where(x =>
-                    x.Coordinates.CalculateDistance(acc, HeroHelper.GetHeroHomeVillage(acc).Coordinates) <= acc.Hero.Settings.MaxDistance
-                )
-                .ToList();
-
-            if (adventures.Count == 0) return TaskRes.Executed;
-
-            var adventure = adventures.FirstOrDefault(x => x.Difficulty == Classificator.DifficultyEnum.Normal);
-            if (adventure == null) adventure = adventures.FirstOrDefault();
-
-            acc.Hero.NextHeroSend = DateTime.Now.AddSeconds(adventure.DurationSeconds * 2);
-
-            switch (acc.AccInfo.ServerVersion)
+            if (acc.Hero.Status != Hero.StatusEnum.Home)
             {
-                case Classificator.ServerVersionEnum.TTwars:
-                    await acc.Wb.Navigate($"{acc.AccInfo.ServerUrl}/{adventure.Ref}");
-
-                    var startButton = acc.Wb.Html.GetElementbyId("start");
-                    if (startButton == null)
-                    {
-                        //Hero is probably out of the village.
-                        this.NextExecute = DateTime.Now.AddMinutes(10);
-                        return TaskRes.Executed;
-                    }
-                    await DriverHelper.ClickById(acc, "start");
-                    break;
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    string script = $"var div = document.getElementById('{adventure.AdventureId}');";
-                    script += $"div.children[0].submit();";
-                    await DriverHelper.ExecuteScript(acc, script);
-
-                    // Check hero outgoing time
-                    var outTime = HeroParser.GetHeroArrival(acc.Wb.Html);
-                    // At least 1.5x longer (if hero has Large map)
-                    acc.Hero.NextHeroSend = DateTime.Now + TimeSpan.FromTicks((long)(outTime.Ticks * 1.5));
-                    break;
+                acc.Logger.Warning("Hero isn't in home village.");
+                return TaskRes.Executed;
             }
+
+            var adventures = acc.Wb.Html.GetElementbyId("heroAdventure");
+            if (adventures == null)
+            {
+                acc.Logger.Warning("Cannot find adventures table");
+                return TaskRes.Executed;
+            }
+            var tbody = adventures.Descendants("tbody").FirstOrDefault();
+            if (adventures == null)
+            {
+                acc.Logger.Warning("Cannot find adventures body table");
+                return TaskRes.Executed;
+            }
+            var buttons = tbody.Descendants("button").ToArray();
+            if (buttons.Length == 0)
+            {
+                acc.Logger.Warning("Cannot find button to start adventure");
+                return TaskRes.Executed;
+            }
+            var buttonElements = acc.Wb.Driver.FindElements(By.XPath(buttons[0].XPath));
+            if (buttons.Length == 0)
+            {
+                acc.Logger.Warning("Cannot find button to start adventure");
+                return TaskRes.Executed;
+            }
+            buttonElements[0].Click();
+            await Task.Delay(900); //random magic numer
+
+            // Check hero outgoing time
+            var outTime = HeroParser.GetHeroArrival(acc.Wb.Html);
+            // At least 1.5x longer (if hero has Large map)
+            acc.Hero.NextHeroSend = DateTime.Now + TimeSpan.FromTicks((long)(outTime.Ticks * 1.5));
 
             if (DateTime.Now.Millisecond % 2 == 0)
             {

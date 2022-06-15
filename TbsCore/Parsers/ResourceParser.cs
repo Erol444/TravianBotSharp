@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using TbsCore.Helpers;
 using TbsCore.Models.ResourceModels;
 using TbsCore.Models.VillageModels;
 
@@ -16,48 +15,25 @@ namespace TbsCore.Parsers
             return Parser.RemoveNonNumeric(decoded);
         }
 
-        public static List<Building> GetResourcefields(HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static List<Building> GetResourcefields(HtmlDocument htmlDoc)
         {
-            switch (version)
+            var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.HasClass("level")).ToList();
+            List<Building> resFields5 = new List<Building>();
+            foreach (var field in fields5)
             {
-                case Classificator.ServerVersionEnum.TTwars:
-                    var fields = htmlDoc.GetElementbyId("village_map").Descendants("div").Where(x => !x.HasClass("labelLayer")).ToList();
-                    List<Building> resFields = new List<Building>();
-                    for (int i = 0; i < 18; i++)
-                    {
-                        var vals = fields.ElementAt(i).GetAttributeValue("class", "").Split(' ');
-                        var building = new Building();
+                var vals = field.GetClasses(); //.GetAttributeValue("class", "").Split(' ');
+                                               //fields5.ElementAt(1).GetClasses().
+                var building = new Building();
 
-                        var aid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("aid")).Replace("aid", ""));
-                        var lvl = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("level") && x != "level").Replace("level", ""));
-                        var gid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("gid")).Replace("gid", ""));
-                        var uc = vals.Contains("underConstruction");
+                var aid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("buildingSlot")).Replace("buildingSlot", ""));
+                var lvl = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("level") && x != "level").Replace("level", ""));
+                var gid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("gid")).Replace("gid", ""));
+                var uc = vals.Contains("underConstruction");
 
-                        building.Init(aid, lvl, gid, uc);
-                        resFields.Add(building);
-                    }
-                    return resFields;
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    var fields5 = htmlDoc.GetElementbyId("resourceFieldContainer").ChildNodes.Where(x => x.HasClass("level")).ToList();
-                    List<Building> resFields5 = new List<Building>();
-                    foreach (var field in fields5)
-                    {
-                        var vals = field.GetClasses(); //.GetAttributeValue("class", "").Split(' ');
-                        //fields5.ElementAt(1).GetClasses().
-                        var building = new Building();
-
-                        var aid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("buildingSlot")).Replace("buildingSlot", ""));
-                        var lvl = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("level") && x != "level").Replace("level", ""));
-                        var gid = Convert.ToByte(vals.FirstOrDefault(x => x.StartsWith("gid")).Replace("gid", ""));
-                        var uc = vals.Contains("underConstruction");
-
-                        building.Init(aid, lvl, gid, uc);
-                        resFields5.Add(building);
-                    }
-                    return resFields5;
+                building.Init(aid, lvl, gid, uc);
+                resFields5.Add(building);
             }
-            return null;
+            return resFields5;
         }
 
         public static Resources GetResourceCost(HtmlNode node)

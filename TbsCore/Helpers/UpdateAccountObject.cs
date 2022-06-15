@@ -14,7 +14,7 @@ namespace TbsCore.Helpers
     {
         public static bool UpdateVillages(HtmlAgilityPack.HtmlDocument htmlDoc, Account acc)
         {
-            List<VillageChecked> foundVills = RightBarParser.GetVillages(htmlDoc, acc.AccInfo.ServerVersion);
+            List<VillageChecked> foundVills = RightBarParser.GetVillages(htmlDoc);
             if (foundVills.Count == 0) return false; //some problem in GetVillages function!
 
             for (int i = 0; i < acc.Villages.Count; i++)

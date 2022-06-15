@@ -70,6 +70,7 @@ namespace TbsWinformNet6
                 ObjectHelper.FixAccObj(x, x);
                 x.Load();
                 x.Tasks.OnUpdateTask = debugUc1.UpdateTaskTable;
+                x.Hero.Settings.AutoAuction = false;
 
                 RefreshAccView();
             });

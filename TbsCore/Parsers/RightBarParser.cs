@@ -1,32 +1,22 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using TbsCore.Helpers;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.SideBarModels;
-using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Parsers
 {
     public static class RightBarParser
     {
-        public static CulturePoints GetCulturePoints(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static CulturePoints GetCulturePoints(HtmlDocument htmlDoc)
         {
             var slot = htmlDoc.GetElementbyId("sidebarBoxVillagelist");
             if (slot == null) return null;
             var expensionSlotInfo = slot.Descendants("div").FirstOrDefault(x => x.HasClass("expansionSlotInfo"));
 
-            string[] nums = { "", "" };
-            switch (version)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    nums = expensionSlotInfo.Descendants("div").FirstOrDefault(x => x.HasClass("boxTitleAdditional")).InnerText.Split('/');
-                    break;
+            var nums = expensionSlotInfo.Descendants("span").FirstOrDefault(x => x.HasClass("slots")).InnerText.Split('/');
 
-                case Classificator.ServerVersionEnum.T4_5:
-                    nums = expensionSlotInfo.Descendants("span").FirstOrDefault(x => x.HasClass("slots")).InnerText.Split('/');
-                    break;
-            }
             var percentage = expensionSlotInfo.Descendants("div").FirstOrDefault(x => x.HasClass("bar")).Attributes.FirstOrDefault(x => x.Name == "style").Value.Split(':')[1].Replace("%", "");
             percentage = percentage.Split('.')[0];
 
@@ -38,26 +28,13 @@ namespace TbsCore.Parsers
             };
         }
 
-        public static List<VillageChecked> GetVillages(HtmlAgilityPack.HtmlDocument htmlDoc, ServerVersionEnum serverVersion)
+        public static List<VillageChecked> GetVillages(HtmlDocument htmlDoc)
         {
             List<VillageChecked> ret = new List<VillageChecked>();
 
             var villsNode = htmlDoc.GetElementbyId("sidebarBoxVillagelist");
             if (villsNode == null) return ret;
-            List<HtmlAgilityPack.HtmlNode> vills = null;
-            switch (serverVersion)
-            {
-                case ServerVersionEnum.TTwars:
-                    {
-                        vills = villsNode.Descendants("li").ToList();
-                        break;
-                    }
-                case ServerVersionEnum.T4_5:
-                    {
-                        vills = villsNode.Descendants("div").Where(x => x.HasClass("listEntry")).ToList();
-                        break;
-                    }
-            }
+            var vills = villsNode.Descendants("div").Where(x => x.HasClass("listEntry")).ToList();
 
             if (vills == null) return ret;
 
@@ -106,30 +83,17 @@ namespace TbsCore.Parsers
             return ret;
         }
 
-        public static bool HasPlusAccount(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static bool HasPlusAccount(HtmlDocument htmlDoc)
         {
-            switch (version)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    var buttons = htmlDoc.DocumentNode.Descendants("button");
-                    var off = buttons.FirstOrDefault(x => x.HasClass("barracksBlack"));
-                    if (off != null) return false;
+            var market = htmlDoc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("market") && x.HasClass("round"));
+            if (market == null) return false;
 
-                    var on = buttons.FirstOrDefault(x => x.HasClass("barracksWhite"));
-                    if (on != null) return true;
-                    break;
+            //layoutButton buttonFramed withIcon round market green disabled  // No market, Plus account
+            //layoutButton buttonFramed withIcon round market gold disabled   // No market, No plus account
 
-                case Classificator.ServerVersionEnum.T4_5:
-                    var market = htmlDoc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("market") && x.HasClass("round"));
-                    if (market == null) return false;
+            if (market.HasClass("green")) return true;
+            if (market.HasClass("gold")) return false;
 
-                    //layoutButton buttonFramed withIcon round market green disabled  // No market, Plus account
-                    //layoutButton buttonFramed withIcon round market gold disabled   // No market, No plus account
-
-                    if (market.HasClass("green")) return true;
-                    if (market.HasClass("gold")) return false;
-                    break;
-            }
             return false;
         }
 
@@ -138,7 +102,7 @@ namespace TbsCore.Parsers
         /// </summary>
         /// <param name="html"></param>
         /// <returns>Whether there are daily quests complete</returns>
-        public static bool CheckDailyQuest(HtmlAgilityPack.HtmlDocument html)
+        public static bool CheckDailyQuest(HtmlDocument html)
         {
             var node = html.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("dailyQuests"));
             if (node == null) return false;
@@ -151,7 +115,7 @@ namespace TbsCore.Parsers
         /// </summary>
         /// <param name="htmlDoc"></param>
         /// <returns>List of beginner quests</returns>
-        public static List<Quest> GetBeginnerQuests(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static List<Quest> GetBeginnerQuests(HtmlDocument htmlDoc)
         {
             List<Quest> QuestList = new List<Quest>();
 
@@ -164,74 +128,43 @@ namespace TbsCore.Parsers
             {
                 Quest quest = new Quest();
                 quest.finished = false;
-                switch (version)
+
+                if (node.Descendants("svg").FirstOrDefault(x => x.HasClass("check")) != null) quest.finished = true;
+                //quest.level  = (byte)Parser.RemoveNonNumeric(node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value);
+                quest.Id = node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value;
+                switch (node.Attributes.FirstOrDefault(x => x.Name == "data-category").Value)
                 {
-                    case Classificator.ServerVersionEnum.T4_5:
-                        if (node.Descendants("svg").FirstOrDefault(x => x.HasClass("check")) != null) quest.finished = true;
-                        //quest.level  = (byte)Parser.RemoveNonNumeric(node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value);
-                        quest.Id = node.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value;
-                        switch (node.Attributes.FirstOrDefault(x => x.Name == "data-category").Value)
-                        {
-                            case "battle":
-                                quest.category = Category.Battle;
-                                break;
-
-                            case "economy":
-                                quest.category = Category.Economy;
-                                break;
-
-                            case "world":
-                                quest.category = Category.World;
-                                break;
-                        }
+                    case "battle":
+                        quest.category = Category.Battle;
                         break;
 
-                    case Classificator.ServerVersionEnum.TTwars:
-                        if (node.Descendants("img").FirstOrDefault(x => x.HasClass("finished")) != null) quest.finished = true;
-                        var node1 = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
-                        //quest.level = byte.Parse(.Split('_')[1]);
-                        quest.Id = node1.Attributes.FirstOrDefault(x => x.Name == "data-questid").Value;
-                        switch (node1.Attributes.FirstOrDefault(x => x.Name == "data-category").Value)
-                        {
-                            case "battle":
-                                quest.category = Category.Battle;
-                                break;
+                    case "economy":
+                        quest.category = Category.Economy;
+                        break;
 
-                            case "economy":
-                                quest.category = Category.Economy;
-                                break;
-
-                            case "world":
-                                quest.category = Category.World;
-                                break;
-                        }
+                    case "world":
+                        quest.category = Category.World;
                         break;
                 }
                 QuestList.Add(quest);
             }
+
             return QuestList;
         }
 
-        public static List<long> GetGoldAndSilver(HtmlAgilityPack.HtmlDocument htmlDoc, Classificator.ServerVersionEnum version)
+        public static List<long> GetGoldAndSilver(HtmlDocument htmlDoc)
         {
             //first gold, then silver
-            List<long> ret = new List<long>();
-            switch (version)
+            List<long> ret = new List<long>
             {
-                case Classificator.ServerVersionEnum.TTwars:
-                    ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("gold")).ChildNodes.FirstOrDefault(x => x.Name == "span").InnerText));
-                    ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("silver")).ChildNodes.FirstOrDefault(x => x.Name == "span").InnerText));
-                    break;
+                Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("ajaxReplaceableGoldAmount")).InnerText),
+                Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("ajaxReplaceableSilverAmount")).InnerText)
+            };
 
-                case Classificator.ServerVersionEnum.T4_5:
-                    ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("ajaxReplaceableGoldAmount")).InnerText));
-                    ret.Add(Parser.RemoveNonNumeric(htmlDoc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("ajaxReplaceableSilverAmount")).InnerText));
-                    break;
-            }
             return ret;
         }
 
-        public static long GetFreeCrop(HtmlAgilityPack.HtmlDocument htmlDoc)
+        public static long GetFreeCrop(HtmlDocument htmlDoc)
         {
             return Parser.RemoveNonNumeric(htmlDoc.GetElementbyId("stockBarFreeCrop").InnerHtml);
         }

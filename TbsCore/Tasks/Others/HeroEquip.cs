@@ -1,11 +1,12 @@
 ﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
-
+using TbsCore.Parsers;
 using static TbsCore.Helpers.Classificator;
 
 namespace TbsCore.Tasks.Others
@@ -16,7 +17,10 @@ namespace TbsCore.Tasks.Others
 
         public override async Task<TaskRes> Execute(Account acc)
         {
-            await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Attributes);
+            await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Inventory);
+
+            acc.Hero.Items = HeroParser.GetHeroInventory(acc.Wb.Html);
+            acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
 
             foreach (var use in Items)
             {
@@ -28,6 +32,7 @@ namespace TbsCore.Tasks.Others
                     // Check if hero is at home
                     if (acc.Hero.Status != Hero.StatusEnum.Home)
                     {
+                        acc.Logger.Warning("Hero isn't in home village");
                         // Wait for hero to come home
                         var nextExecute = acc.Hero.NextHeroSend > acc.Hero.HeroArrival ?
                             acc.Hero.NextHeroSend :
@@ -35,56 +40,44 @@ namespace TbsCore.Tasks.Others
 
                         var in5Min = DateTime.Now.AddMinutes(5);
                         if (nextExecute < in5Min) nextExecute = in5Min;
-                        this.NextExecute = nextExecute;
+                        NextExecute = nextExecute;
                         return TaskRes.Retry;
                     }
                 }
 
-                string script = "var items = document.getElementById('itemsToSale');";
-
-                switch (acc.AccInfo.ServerVersion)
-                {
-                    case ServerVersionEnum.T4_5:
-                        script += $"items.querySelector('div[class$=\"_{(int)item}\"]').click();";
-                        break;
-
-                    case ServerVersionEnum.TTwars:
-                        script += $"items.querySelector('div[class$=\"_{(int)item} \"]').click();";
-                        break;
-                }
-
-                await DriverHelper.ExecuteScript(acc, script);
-
-                // No amount specified, meaning we have already equipt the item
-                if (amount == 0) continue;
-                await Task.Delay(900);
+                var itemNode = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass($"item{(int)item}"));
+                itemNode = itemNode.ParentNode;
+                var elements = acc.Wb.Driver.FindElements(By.XPath(itemNode.XPath));
+                elements[0].Click();
+                var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(1));
+                wait.Until(driver => driver.FindElements(By.Id("consumableHeroItem")).Count > 0);
                 acc.Wb.UpdateHtml();
-                var amountNode = acc.Wb.Html.GetElementbyId("amount");
-                if (amountNode == null) continue;
-                var amountElement = acc.Wb.Driver.FindElement(By.XPath(amountNode.XPath));
-                amountElement.SendKeys(Keys.Home);
-                amountElement.SendKeys(Keys.Shift + Keys.End);
-                amountElement.SendKeys($"{ amount}");
 
-                var okNode = acc.Wb.Html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("ok"));
-                if (okNode == null) continue;
-                var okElement = acc.Wb.Driver.FindElement(By.XPath(okNode.XPath));
-                okElement.Click();
-                await Task.Delay(900);
-                HeroHelper.ParseHeroPage(acc);
+                var form = acc.Wb.Html.GetElementbyId("consumableHeroItem");
+                var input = form.Descendants("input").FirstOrDefault();
+                var inputElements = acc.Wb.Driver.FindElements(By.XPath(input.XPath));
+
+                inputElements[0].SendKeys(Keys.Home);
+                inputElements[0].SendKeys(Keys.Shift + Keys.End);
+                inputElements[0].SendKeys($"{amount}");
+
+                var dialog = acc.Wb.Html.GetElementbyId("dialogContent");
+                var buttonWrapper = dialog.Descendants("div").FirstOrDefault(x => x.HasClass("buttonsWrapper"));
+                var buttonTransfer = buttonWrapper.Descendants("button").ToArray();
+                var buttonTransferElements = acc.Wb.Driver.FindElements(By.XPath(buttonTransfer[1].XPath));
+                buttonTransferElements[0].Click();
+
+                wait.Until(driver =>
+                {
+                    acc.Wb.UpdateHtml();
+                    var inventoryPageWrapper = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("inventoryPageWrapper"));
+                    return !inventoryPageWrapper.HasClass("loading");
+                });
             }
 
-            return Done(acc);
-        }
+            acc.Hero.Items = HeroParser.GetHeroInventory(acc.Wb.Html);
+            acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
 
-        /// <summary>
-        /// Refresh the hero page after equipping an item
-        /// </summary>
-        /// <param name="acc">Account</param>
-        /// <returns>TaskRes</returns>
-
-        private TaskRes Done(Account acc)
-        {
             return TaskRes.Executed;
         }
     }

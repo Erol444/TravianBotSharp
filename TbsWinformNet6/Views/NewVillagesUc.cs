@@ -1,10 +1,15 @@
-﻿using TbsCore.Helpers;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
+using TbsCore.Helpers;
 using TbsCore.Models.MapModels;
 using TbsCore.Models.VillageModels;
+using TbsCore.Parsers;
+using TbsCore.Tasks.Others;
 using TbsCore.Tasks.Sim;
 using TbsWinformNet6.Helpers;
 using TbsWinformNet6.Interfaces;
 using TbsWinformNet6.Views.BaseViews;
+using Keys = OpenQA.Selenium.Keys;
 
 namespace TbsWinformNet6.Views
 {

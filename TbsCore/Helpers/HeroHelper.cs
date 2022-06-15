@@ -163,10 +163,7 @@ namespace TbsCore.Helpers
         /// <param name="acc">Account</param>
         public static void ParseHeroPage(Account acc)
         {
-            acc.Hero.HeroInfo = HeroParser.GetHeroInfo(acc.Wb.Html);
-            acc.Hero.Items = HeroParser.GetHeroItems(acc.Wb.Html);
             acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
-            acc.Hero.HeroArrival = DateTime.Now + HeroParser.GetHeroArrivalInfo(acc.Wb.Html);
 
             UpdateHeroVillage(acc);
 
@@ -181,20 +178,11 @@ namespace TbsCore.Helpers
             var hrefId = HeroParser.GetHeroVillageHref(acc.Wb.Html);
             if (hrefId == null) return;
 
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    acc.Hero.HomeVillageId = hrefId ?? 0;
-                    return;
-
-                case ServerVersionEnum.T4_5:
-                    // Convert from coordinates id -> coordinates -> villageId
-                    var coordinates = new Coordinates(acc, hrefId ?? 0);
-                    var vill = acc.Villages.FirstOrDefault(x => x.Coordinates.Equals(coordinates));
-                    if (vill == null) return;
-                    acc.Hero.HomeVillageId = vill.Id;
-                    return;
-            }
+            // Convert from coordinates id -> coordinates -> villageId
+            var coordinates = new Coordinates(acc, hrefId ?? 0);
+            var vill = acc.Villages.FirstOrDefault(x => x.Coordinates.Equals(coordinates));
+            if (vill == null) return;
+            acc.Hero.HomeVillageId = vill.Id;
         }
 
         public static long[] GetHeroResources(Account acc)
@@ -222,8 +210,7 @@ namespace TbsCore.Helpers
             // In T4.5, helmet will only have effect in hero home village
             // In TTWars, helmets have acc-wide effect
             // TODO: for T4.5, add auto-move hero feature (for helmet effect purposes)
-            if (GetHeroHomeVillage(acc) != trainVill &&
-                acc.AccInfo.ServerVersion != Classificator.ServerVersionEnum.TTwars) return false;
+            if (GetHeroHomeVillage(acc) != trainVill) return false;
 
             string type = "";
             if (building == BuildingEnum.Barracks ||

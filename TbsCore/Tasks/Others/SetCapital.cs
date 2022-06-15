@@ -19,18 +19,8 @@ namespace TbsCore.Tasks.Others
             // Go into palace
             await NavigationHelper.ToGovernmentBuilding(acc, Vill, NavigationHelper.ResidenceTab.Managenment);
 
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case Classificator.ServerVersionEnum.TTwars:
-                    await acc.Wb.Navigate(acc.Wb.CurrentUrl + "&change_capital");
-                    await DriverHelper.WriteByName(acc, "pw", acc.Access.GetCurrentAccess().Password);
-                    await DriverHelper.ClickById(acc, "btn_ok");
-                    break;
+            acc.Logger.Warning("Setting capital isn't supported in T4.5 yet!");
 
-                case Classificator.ServerVersionEnum.T4_5:
-                    acc.Logger.Warning("Setting capital isn't supported in T4.5 yet!");
-                    break;
-            }
             return TaskRes.Executed;
         }
     }

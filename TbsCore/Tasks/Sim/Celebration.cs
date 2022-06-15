@@ -115,23 +115,8 @@ namespace TbsCore.Tasks.Sim
         private bool IsFreeSlot(Account acc)
         {
             HtmlNode underProgressNode;
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case ServerVersionEnum.TTwars:
-                    underProgressNode = acc.Wb.Html.GetElementbyId("under_progress");
-                    break;
-
-                case ServerVersionEnum.T4_5:
-                    {
-                        var content = acc.Wb.Html.GetElementbyId("content");
-                        underProgressNode = content.Descendants("table").FirstOrDefault(x => x.HasClass("under_progress"));
-                    }
-                    break;
-
-                default:
-                    underProgressNode = null;
-                    break;
-            }
+            var content = acc.Wb.Html.GetElementbyId("content");
+            underProgressNode = content.Descendants("table").FirstOrDefault(x => x.HasClass("under_progress"));
 
             if (underProgressNode == null) return true; // No celebration is under progress
 
@@ -214,23 +199,9 @@ namespace TbsCore.Tasks.Sim
         private bool PostCheck(Account acc)
         {
             HtmlNode underProgressNode;
-            switch (acc.AccInfo.ServerVersion)
-            {
-                case ServerVersionEnum.TTwars:
-                    underProgressNode = acc.Wb.Html.GetElementbyId("under_progress");
-                    break;
 
-                case ServerVersionEnum.T4_5:
-                    {
-                        var content = acc.Wb.Html.GetElementbyId("content");
-                        underProgressNode = content.Descendants("table").FirstOrDefault(x => x.HasClass("under_progress"));
-                    }
-                    break;
-
-                default:
-                    underProgressNode = null;
-                    break;
-            }
+            var content = acc.Wb.Html.GetElementbyId("content");
+            underProgressNode = content.Descendants("table").FirstOrDefault(x => x.HasClass("under_progress"));
 
             if (underProgressNode == null) return true; // No celebration is under progress
 

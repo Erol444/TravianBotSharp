@@ -25,72 +25,44 @@ namespace TbsCore.Helpers
         /// </summary>
         public static async Task<List<MapTile>> GetMapTiles(Account acc, Coordinates coords)
         {
-            switch (acc.AccInfo.ServerVersion)
+            var bearerToken = DriverHelper.GetBearerToken(acc);
+
+            var reqMapInfo = new RestRequest
             {
-                case Classificator.ServerVersionEnum.TTwars:
-                    var ajaxToken = DriverHelper.GetJsObj<string>(acc, "ajaxToken");
+                Resource = "/api/v1/map/info",
+                Method = Method.Post,
+                RequestFormat = DataFormat.Json
+            };
+            reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
+            reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
+            reqMapInfo.AddJsonBody(GenerateMapInfo(coords));
 
-                    var req = new RestRequest
-                    {
-                        Resource = "/ajax.php?cmd=mapPositionData",
-                        Method = Method.Post,
-                    };
+            var mapInfoRes = await HttpHelper.SendPostReqAsync(acc, reqMapInfo);
 
-                    req.AddParameter("cmd", "mapPositionData");
-                    req.AddParameter("data[x]", coords.x.ToString());
-                    req.AddParameter("data[y]", coords.y.ToString());
-                    req.AddParameter("data[zoomLevel]", "3");
-                    req.AddParameter("ajaxToken", ajaxToken);
+            var mapPosition = new SendMapPositionT4_5.Root()
+            {
+                data = new SendMapPositionT4_5.Data()
+                {
+                    x = coords.x,
+                    y = coords.y,
+                    zoomLevel = 3,
+                    ignorePositions = new List<object>()
+                }
+            };
 
-                    var resString = await HttpHelper.SendPostReqAsync(acc, req);
+            var reqMapPosition = new RestRequest
+            {
+                Resource = "/api/v1/map/position",
+                Method = Method.Post,
+                RequestFormat = DataFormat.Json
+            };
+            reqMapPosition.AddHeader("authorization", $"Bearer {bearerToken}");
+            reqMapPosition.AddHeader("content-type", "application/json; charset=UTF-8");
+            reqMapPosition.AddJsonBody(mapPosition);
 
-                    var root = JsonConvert.DeserializeObject<MapPositionDataT4_4.Root>(resString);
-                    if (root.response.error) throw new Exception("Unable to get T4.4 map position data!\n" + root.response.error);
-                    return root.response.data.tiles.Select(x => x.GetMapTile()).ToList();
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    {
-                        var bearerToken = DriverHelper.GetBearerToken(acc);
-
-                        var reqMapInfo = new RestRequest
-                        {
-                            Resource = "/api/v1/map/info",
-                            Method = Method.Post,
-                            RequestFormat = DataFormat.Json
-                        };
-                        reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
-                        reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
-                        reqMapInfo.AddJsonBody(GenerateMapInfo(coords));
-
-                        var mapInfoRes = await HttpHelper.SendPostReqAsync(acc, reqMapInfo);
-
-                        var mapPosition = new SendMapPositionT4_5.Root()
-                        {
-                            data = new SendMapPositionT4_5.Data()
-                            {
-                                x = coords.x,
-                                y = coords.y,
-                                zoomLevel = 3,
-                                ignorePositions = new List<object>()
-                            }
-                        };
-
-                        var reqMapPosition = new RestRequest
-                        {
-                            Resource = "/api/v1/map/position",
-                            Method = Method.Post,
-                            RequestFormat = DataFormat.Json
-                        };
-                        reqMapPosition.AddHeader("authorization", $"Bearer {bearerToken}");
-                        reqMapPosition.AddHeader("content-type", "application/json; charset=UTF-8");
-                        reqMapPosition.AddJsonBody(mapPosition);
-
-                        var mapPositionRes = await HttpHelper.SendPostReqAsync(acc, reqMapPosition);
-                        var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
-                        return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
-                    }
-            }
-            return null;
+            var mapPositionRes = await HttpHelper.SendPostReqAsync(acc, reqMapPosition);
+            var mapPositionData = JsonConvert.DeserializeObject<MapPositionDataT4_5>(mapPositionRes);
+            return mapPositionData.tiles.Select(x => x.GetMapTile()).ToList();
         }
 
         /// <summary>
@@ -101,49 +73,22 @@ namespace TbsCore.Helpers
             var htmlDoc = new HtmlAgilityPack.HtmlDocument();
             string html = "";
 
-            switch (acc.AccInfo.ServerVersion)
+            var bearerToken = DriverHelper.GetBearerToken(acc);
+
+            var reqMapInfo = new RestRequest
             {
-                case Classificator.ServerVersionEnum.TTwars:
-                    var ajaxToken = DriverHelper.GetJsObj<string>(acc, "ajaxToken");
+                Resource = "/api/v1/ajax/viewTileDetails",
+                Method = Method.Post,
+                RequestFormat = DataFormat.Json
+            };
+            reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
+            reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
+            reqMapInfo.AddJsonBody(oasis);
 
-                    var req = new RestRequest
-                    {
-                        Resource = "/ajax.php?cmd=viewTileDetails",
-                        Method = Method.Post,
-                    };
+            var tileDetails = await HttpHelper.SendPostReqAsync(acc, reqMapInfo);
 
-                    req.AddParameter("cmd", "viewTileDetails");
-                    req.AddParameter("x", oasis.x.ToString());
-                    req.AddParameter("y", oasis.y.ToString());
-                    req.AddParameter("ajaxToken", ajaxToken);
-
-                    var resString = await HttpHelper.SendPostReqAsync(acc, req);
-
-                    var root = JsonConvert.DeserializeObject<TileDetailsT4_4>(resString);
-                    if (root.response.error) throw new Exception("Unable to get T4.4 tile details!\n" + root.response.error);
-
-                    html = WebUtility.HtmlDecode(root.response.data.html);
-                    break;
-
-                case Classificator.ServerVersionEnum.T4_5:
-                    var bearerToken = DriverHelper.GetBearerToken(acc);
-
-                    var reqMapInfo = new RestRequest
-                    {
-                        Resource = "/api/v1/ajax/viewTileDetails",
-                        Method = Method.Post,
-                        RequestFormat = DataFormat.Json
-                    };
-                    reqMapInfo.AddHeader("authorization", $"Bearer {bearerToken}");
-                    reqMapInfo.AddHeader("content-type", "application/json; charset=UTF-8");
-                    reqMapInfo.AddJsonBody(oasis);
-
-                    var tileDetails = await HttpHelper.SendPostReqAsync(acc, reqMapInfo);
-
-                    var tile = JsonConvert.DeserializeObject<TileDetailsT4_5>(tileDetails);
-                    html = WebUtility.HtmlDecode(tile.html);
-                    break;
-            }
+            var tile = JsonConvert.DeserializeObject<TileDetailsT4_5>(tileDetails);
+            html = WebUtility.HtmlDecode(tile.html);
 
             htmlDoc.LoadHtml(html);
             return TroopsParser.GetOasisAnimals(htmlDoc);

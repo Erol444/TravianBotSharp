@@ -141,7 +141,6 @@ namespace TbsWinformNet6.Forms
                 acc.AccInfo.Nickname = item.Username;
                 acc.Access.AddNewAccess(item.Proxy);
                 IoHelperCore.CreateUserData(acc.AccInfo.Nickname, IoHelperCore.UrlRemoveHttp(acc.AccInfo.ServerUrl));
-                acc.AccInfo.ServerVersion = acc.AccInfo.ServerUrl.Contains("ttwars.com") ? Classificator.ServerVersionEnum.TTwars : Classificator.ServerVersionEnum.T4_5;
 
                 result.Add(acc);
             }

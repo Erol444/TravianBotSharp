@@ -70,11 +70,7 @@ namespace TbsCore.TravianData
             switch (building)
             {
                 case BuildingEnum.Brewery:
-                    switch (acc.AccInfo.ServerVersion)
-                    {
-                        case ServerVersionEnum.TTwars: return 10;
-                        default: return 20;
-                    }
+                    return 20;
 
                 case BuildingEnum.Bakery:
                 case BuildingEnum.Brickyard:

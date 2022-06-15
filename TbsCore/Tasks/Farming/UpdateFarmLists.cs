@@ -24,7 +24,7 @@ namespace TbsCore.Tasks.Farming
             }
             await NavigationHelper.ToRallyPoint(acc, this.Vill, NavigationHelper.RallyPointTab.Farmlist);
 
-            var foundFLs = FarmlistParser.ParseFL(acc.Wb.Html, acc.AccInfo.ServerVersion);
+            var foundFLs = FarmlistParser.ParseFL(acc.Wb.Html);
             if (foundFLs == null)
             {
                 acc.Logger.Warning("No FL, do you have rally point in this village?");
@@ -51,14 +51,13 @@ namespace TbsCore.Tasks.Farming
             // Read all farms in all farmlists
             foreach (var farmlist in acc.Farming.FL)
             {
-                var flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion, farmlist.Id);
-                if (acc.AccInfo.ServerVersion == ServerVersionEnum.TTwars ||
-                        flNode.Descendants("div").Any(x => x.HasClass("expandCollapse") && x.HasClass("collapsed")))
+                var flNode = GetFlNode(acc.Wb.Html, farmlist.Id);
+                if (flNode.Descendants("div").Any(x => x.HasClass("expandCollapse") && x.HasClass("collapsed")))
                 {
                     await DriverHelper.ExecuteScript(acc, $"Travian.Game.RaidList.toggleList({farmlist.Id});");
                     await Task.Delay(AccountHelper.Delay(acc) * 2);
                     // Update flNode!
-                    flNode = GetFlNode(acc.Wb.Html, acc.AccInfo.ServerVersion, farmlist.Id);
+                    flNode = GetFlNode(acc.Wb.Html, farmlist.Id);
                 }
 
                 farmlist.Farms = new List<GoldClubFarm>();
@@ -71,14 +70,9 @@ namespace TbsCore.Tasks.Farming
             return TaskRes.Executed;
         }
 
-        private HtmlNode GetFlNode(HtmlDocument htmlDoc, ServerVersionEnum version, int id)
+        private HtmlNode GetFlNode(HtmlDocument htmlDoc, int id)
         {
-            switch (version)
-            {
-                case ServerVersionEnum.TTwars: return htmlDoc.GetElementbyId("list" + id);
-                case ServerVersionEnum.T4_5: return htmlDoc.GetElementbyId("raidList" + id);
-                default: return null;
-            }
+            return htmlDoc.GetElementbyId("raidList" + id);
         }
     }
 }
