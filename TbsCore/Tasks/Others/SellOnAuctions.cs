@@ -14,8 +14,10 @@ namespace TbsCore.Tasks.Others
         private readonly Random rand = new Random();
 
         public override async Task<TaskRes> Execute(Account acc)
-
         {
+            await Task.Yield();
+            acc.Logger.Warning("This feature is temporary disabled");
+            return TaskRes.Executed;
             //if (!acc.Wb.CurrentUrl.Contains("auction?action=sell"))
             //{
             //    string xPathSellTab = null;
@@ -112,8 +114,6 @@ namespace TbsCore.Tasks.Others
             //    }
             //    while (counter > 0);
             //}
-
-            return TaskRes.Executed;
         }
     }
 }
