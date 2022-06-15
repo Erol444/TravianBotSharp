@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -299,36 +300,38 @@ namespace TbsCore.Helpers
                 return false;
             }
             elements[0].Click();
-            {
-                var result = await DriverHelper.WaitPageChange(acc, "/hero/inventory");
 
-                if (!result)
-                {
-                    acc.Logger.Warning($"Click Hero avatar failed");
-                    return false;
-                }
-            }
+            var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(1));
+            wait.Until(driver =>
+            {
+                acc.Wb.UpdateHtml();
+                var heroDiv = acc.Wb.Html.GetElementbyId("heroV2");
+                if (heroDiv == null) return false;
+                var aNode = heroDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == 1);
+                if (aNode == null) return false;
+                return aNode.HasClass("active");
+            });
 
             if (tab == HeroTab.Inventory) return true;
 
             var navigatorDiv = acc.Wb.Html.GetElementbyId("heroV2");
-            var index = tab == HeroTab.Attributes ? 2 : 3;
-            var tabNode = navigatorDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == index);
+            var tabNode = navigatorDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == (int)tab);
             if (tabNode == null) return false;
             var tabElements = acc.Wb.Driver.FindElements(By.XPath(tabNode.XPath));
             if (tabElements.Count == 0) return false;
             tabElements[0].Click();
-            {
-                await Task.Delay(800);
-                var result = await DriverHelper.WaitPageLoaded(acc);
 
-                if (!result)
-                {
-                    acc.Logger.Warning($"Click Change tab failed");
-                    return false;
-                }
-            }
-            return true;
+            wait.Until(driver =>
+            {
+                acc.Wb.UpdateHtml();
+                var heroDiv = acc.Wb.Html.GetElementbyId("heroV2");
+                if (heroDiv == null) return false;
+                var aNode = heroDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == (int)tab);
+                if (aNode == null) return false;
+                return aNode.HasClass("active");
+            });
+
+            return await DriverHelper.WaitPageLoaded(acc);
         }
 
         public static async Task<bool> ToAdventure(Account acc)
@@ -346,16 +349,21 @@ namespace TbsCore.Helpers
                 return false;
             }
             elements[0].Click();
-            {
-                var result = await DriverHelper.WaitPageLoaded(acc);
-                acc.Logger.Warning($"Click Adventures button failed");
 
-                if (!result) return false;
-            }
-            return true;
+            var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(1));
+            wait.Until(driver =>
+            {
+                acc.Wb.UpdateHtml();
+                var adventureDiv = acc.Wb.Html.GetElementbyId("heroAdventure");
+                if (adventureDiv == null) return false;
+                var heroState = adventureDiv.Descendants("div").FirstOrDefault(x => x.HasClass("heroState"));
+                if (heroState == null) return false;
+                return driver.FindElements(By.XPath(heroState.XPath)).Count > 0;
+            });
+            return await DriverHelper.WaitPageLoaded(acc);
         }
 
-        public static async Task<bool> ToAuction(Account acc)
+        public static async Task<bool> ToAuction(Account acc, AuctionTab tab)
         {
             var node = acc.Wb.Html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("auction"));
             if (node == null)
@@ -370,13 +378,38 @@ namespace TbsCore.Helpers
                 return false;
             }
             elements[0].Click();
-            {
-                var result = await DriverHelper.WaitPageLoaded(acc);
-                acc.Logger.Warning($"Click Auction button failed");
 
-                if (!result) return false;
-            }
-            return true;
+            var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(1));
+            wait.Until(driver =>
+            {
+                acc.Wb.UpdateHtml();
+                var auctionDiv = acc.Wb.Html.GetElementbyId("heroAuction");
+                if (auctionDiv == null) return false;
+                var aNode = auctionDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == 1);
+                if (aNode == null) return false;
+                return aNode.HasClass("active");
+            });
+
+            if (tab == AuctionTab.Buy) return true;
+
+            var navigatorDiv = acc.Wb.Html.GetElementbyId("heroAuction");
+            var tabNode = navigatorDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == (int)tab);
+            if (tabNode == null) return false;
+            var tabElements = acc.Wb.Driver.FindElements(By.XPath(tabNode.XPath));
+            if (tabElements.Count == 0) return false;
+            tabElements[0].Click();
+
+            wait.Until(driver =>
+            {
+                acc.Wb.UpdateHtml();
+                var auctionDiv = acc.Wb.Html.GetElementbyId("heroAuction");
+                if (auctionDiv == null) return false;
+                var aNode = auctionDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == (int)tab);
+                if (aNode == null) return false;
+                return aNode.HasClass("active");
+            });
+
+            return await DriverHelper.WaitPageLoaded(acc);
         }
 
         public static async Task<bool> ToOverview(Account acc, OverviewTab tab, TroopOverview subTab = TroopOverview.OwnTroops)
@@ -473,9 +506,17 @@ namespace TbsCore.Helpers
 
         public enum HeroTab
         {
-            Inventory = 0,
+            Inventory = 1,
             Attributes,
             Appearance,
+        }
+
+        public enum AuctionTab
+        {
+            Buy = 1,
+            Sell,
+            Bids,
+            Silver,
         }
 
         public enum OverviewTab
