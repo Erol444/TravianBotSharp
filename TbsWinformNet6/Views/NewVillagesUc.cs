@@ -129,56 +129,5 @@ namespace TbsWinformNet6.Views
         {
             GetSelectedAcc().Tasks.Add(new FindVillageToSettle() { ExecuteAt = DateTime.Now });
         }
-
-        private async void button5_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                await NavigationHelper.ToAuction(GetSelectedAcc(), NavigationHelper.AuctionTab.Bids);
-            }
-            catch (Exception ex)
-            {
-                _ = ex;
-            }
-        }
-
-        private async void button6_Click(object sender, EventArgs e)
-        {
-            var acc = GetSelectedAcc();
-            var items = new List<(Classificator.HeroItemEnum, int)>
-            {
-                new (Classificator.HeroItemEnum.Resource_Crop_0, 1),
-            };
-            var task = new HeroEquip() { Items = items };
-            try
-            {
-                await task.Execute(acc);
-            }
-            catch (Exception ex)
-            {
-                _ = ex;
-            }
-        }
-
-        private async void button7_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var acc = GetSelectedAcc();
-                acc.Wb.UpdateHtml();
-                acc.Hero.HeroInfo = HeroParser.GetHeroAttributes(acc.Wb.Html);
-                acc.Hero.HeroArrival = DateTime.Now + HeroParser.GetHeroArrivalInfo(acc.Wb.Html);
-                
-                var attributesDiv = acc.Wb.Html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroAttributes"));
-                var pointButtons = attributesDiv.Descendants("button").Where(x => x.HasClass("plus")).ToArray();
-                var elements = acc.Wb.Driver.FindElements(By.XPath(pointButtons[3].XPath));
-                elements[0].Click();
-                //savePoints
-            }
-            catch (Exception ex)
-            {
-                _ = ex;
-            }
-        }
     }
 }
