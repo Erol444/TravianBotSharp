@@ -285,42 +285,46 @@ namespace TbsCore.Helpers
 
         public static async Task<bool> ToHero(Account acc, HeroTab tab)
         {
-            var heroAvatarNode = acc.Wb.Html.GetElementbyId("heroImageButton");
-
-            if (heroAvatarNode == null)
-            {
-                acc.Logger.Warning($"Cannot find Hero avatar");
-                return false;
-            }
-
-            var elements = acc.Wb.Driver.FindElements(By.XPath(heroAvatarNode.XPath));
-            if (elements.Count == 0)
-            {
-                acc.Logger.Warning($"Cannot find Hero avatar");
-                return false;
-            }
-            elements[0].Click();
-
             var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(1));
-            wait.Until(driver =>
+
+            if (!acc.Wb.CurrentUrl.Contains("hero"))
+            {
+                var heroAvatarNode = acc.Wb.Html.GetElementbyId("heroImageButton");
+
+                if (heroAvatarNode == null)
+                {
+                    acc.Logger.Warning($"Cannot find Hero avatar");
+                    return false;
+                }
+
+                var elements = acc.Wb.Driver.FindElements(By.XPath(heroAvatarNode.XPath));
+                if (elements.Count == 0)
+                {
+                    acc.Logger.Warning($"Cannot find Hero avatar");
+                    return false;
+                }
+                elements[0].Click();
+
+                wait.Until(driver =>
+                {
+                    acc.Wb.UpdateHtml();
+                    var heroDiv = acc.Wb.Html.GetElementbyId("heroV2");
+                    if (heroDiv == null) return false;
+                    var aNode = heroDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == 1);
+                    if (aNode == null) return false;
+                    return aNode.HasClass("active");
+                });
+            }
             {
                 acc.Wb.UpdateHtml();
-                var heroDiv = acc.Wb.Html.GetElementbyId("heroV2");
-                if (heroDiv == null) return false;
-                var aNode = heroDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == 1);
-                if (aNode == null) return false;
-                return aNode.HasClass("active");
-            });
-
-            if (tab == HeroTab.Inventory) return true;
-
-            var navigatorDiv = acc.Wb.Html.GetElementbyId("heroV2");
-            var tabNode = navigatorDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == (int)tab);
-            if (tabNode == null) return false;
-            var tabElements = acc.Wb.Driver.FindElements(By.XPath(tabNode.XPath));
-            if (tabElements.Count == 0) return false;
-            tabElements[0].Click();
-
+                var navigatorDiv = acc.Wb.Html.GetElementbyId("heroV2");
+                var tabNode = navigatorDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == (int)tab);
+                if (tabNode == null) return false;
+                if (tabNode.HasClass("active")) return true;
+                var tabElements = acc.Wb.Driver.FindElements(By.XPath(tabNode.XPath));
+                if (tabElements.Count == 0) return false;
+                tabElements[0].Click();
+            }
             wait.Until(driver =>
             {
                 acc.Wb.UpdateHtml();
