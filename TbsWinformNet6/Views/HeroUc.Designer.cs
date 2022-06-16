@@ -72,6 +72,7 @@
             this.buyAdventuresCheckBox.AutoSize = true;
             this.leftPanel.SetColumnSpan(this.buyAdventuresCheckBox, 2);
             this.buyAdventuresCheckBox.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.buyAdventuresCheckBox.Enabled = false;
             this.buyAdventuresCheckBox.Location = new System.Drawing.Point(4, 577);
             this.buyAdventuresCheckBox.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.buyAdventuresCheckBox.Name = "buyAdventuresCheckBox";
@@ -111,6 +112,7 @@
             // 
             this.autoReviveHero.AutoSize = true;
             this.autoReviveHero.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.autoReviveHero.Enabled = false;
             this.autoReviveHero.Location = new System.Drawing.Point(4, 85);
             this.autoReviveHero.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.autoReviveHero.Name = "autoReviveHero";
@@ -283,6 +285,7 @@
             this.helmetSwitcher.AutoSize = true;
             this.leftPanel.SetColumnSpan(this.helmetSwitcher, 2);
             this.helmetSwitcher.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.helmetSwitcher.Enabled = false;
             this.helmetSwitcher.Location = new System.Drawing.Point(4, 413);
             this.helmetSwitcher.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.helmetSwitcher.Name = "helmetSwitcher";
@@ -340,7 +343,7 @@
             this.mainPanel.Location = new System.Drawing.Point(0, 0);
             this.mainPanel.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.mainPanel.Name = "mainPanel";
-            this.mainPanel.Padding = new System.Windows.Forms.Padding(12, 12, 12, 12);
+            this.mainPanel.Padding = new System.Windows.Forms.Padding(12);
             this.mainPanel.RowCount = 1;
             this.mainPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.mainPanel.Size = new System.Drawing.Size(1391, 690);
@@ -465,6 +468,7 @@
             // button4
             // 
             this.button4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.button4.Enabled = false;
             this.button4.Location = new System.Drawing.Point(215, 85);
             this.button4.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.button4.Name = "button4";
