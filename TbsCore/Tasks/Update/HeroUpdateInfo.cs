@@ -19,7 +19,7 @@ namespace TbsCore.Tasks.Update
             }
 
             {
-                var result = await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Attributes);
+                var result = await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Inventory);
                 if (StopFlag) return TaskRes.Executed;
                 if (!result) return TaskRes.Executed;
             }
