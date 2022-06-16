@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using TbsCore.Helpers;
 using TbsCore.Models.AccModels;
+using TbsCore.Parsers;
 using TbsCore.Tasks.Others;
 using static TbsCore.Helpers.Classificator;
 
@@ -22,6 +23,11 @@ namespace TbsCore.Tasks.Update
                 var result = await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Inventory);
                 if (StopFlag) return TaskRes.Executed;
                 if (!result) return TaskRes.Executed;
+            }
+
+            {
+                acc.Hero.Items = HeroParser.GetHeroInventory(acc.Wb.Html);
+                acc.Hero.Equipt = HeroParser.GetHeroEquipment(acc.Wb.Html);
             }
 
             if (acc.Hero.Settings.AutoRefreshInfo)
