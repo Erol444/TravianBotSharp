@@ -135,26 +135,6 @@ namespace TbsWinformNet6.Views
 
         private void autoReviveHero_CheckedChanged(object sender, EventArgs e)
         {
-            var acc = GetSelectedAcc();
-            acc.Hero.Settings.AutoReviveHero = autoReviveHero.Checked;
-            var task = acc.Tasks.FindTask(typeof(ReviveHero));
-            if (autoReviveHero.Checked)
-            {
-                if (task == null)
-                {
-                    acc.Tasks.Add(new ReviveHero()
-                    {
-                        ExecuteAt = DateTime.Now,
-                    });
-                }
-            }
-            else
-            {
-                if (task != null)
-                {
-                    acc.Tasks.Remove(task);
-                }
-            }
         }
 
         private void refreshInfo_CheckedChanged(object sender, EventArgs e)
@@ -277,26 +257,6 @@ namespace TbsWinformNet6.Views
 
         private void autoAuction_CheckedChanged(object sender, EventArgs e)
         {
-            var acc = GetSelectedAcc();
-            acc.Hero.Settings.AutoAuction = autoAuction.Checked;
-            TbsCore.Tasks.BotTask task = acc.Tasks.FindTask(typeof(SellOnAuctions));
-            if (autoAuction.Checked)
-            {
-                if (task == null)
-                {
-                    acc.Tasks.Add(new SellOnAuctions()
-                    {
-                        ExecuteAt = DateTime.Now,
-                    });
-                }
-            }
-            else
-            {
-                if (task != null)
-                {
-                    acc.Tasks.Remove(task);
-                }
-            }
         }
     }
 }

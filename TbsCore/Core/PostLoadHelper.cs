@@ -228,13 +228,6 @@ namespace TbsCore.Helpers
                     {
                         acc.Tasks.Add(  new TTWarsBuyAdventure() { ExecuteAt = DateTime.Now.AddSeconds(5) }, true);
                     }
-                    if (acc.Hero.Status == Hero.StatusEnum.Dead && acc.Hero.Settings.AutoReviveHero) //if hero is dead, revive him
-                    {
-                        acc.Tasks.Add(  new ReviveHero() {
-                            ExecuteAt = DateTime.Now.AddSeconds(5),
-                            Vill = AccountHelper.GetHeroReviveVillage(acc)
-                        }, true);
-                    }
                     if (HeroParser.LeveledUp(html) && acc.Hero.Settings.AutoSetPoints)
                     {
                         acc.Tasks.Add(  new HeroSetPoints() { ExecuteAt = DateTime.Now }, true);

@@ -19,37 +19,9 @@ namespace TbsCore.Tasks.Update
             }
 
             {
-                var result = await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Attributes);
+                var result = await NavigationHelper.ToHero(acc, NavigationHelper.HeroTab.Inventory);
                 if (StopFlag) return TaskRes.Executed;
                 if (!result) return TaskRes.Executed;
-            }
-
-            if (acc.Hero.Settings.AutoAuction)
-            {
-                var items = acc.Hero.Items;
-                foreach (var item in items)
-                {
-                    var (heroItemEnum, amount) = (item.Item, item.Count);
-                    var category = HeroHelper.GetHeroItemCategory(heroItemEnum);
-                    switch (category)
-                    {
-                        case HeroItemCategory.Resource:
-                            continue;
-
-                        case HeroItemCategory.Stackable:
-                            if (amount < 5) continue;
-                            break;
-
-                        case HeroItemCategory.Horse:
-                            continue;
-                    }
-
-                    acc.Tasks.Add(new SellOnAuctions()
-                    {
-                        ExecuteAt = DateTime.Now
-                    }, true);
-                    break;
-                }
             }
 
             if (acc.Hero.Settings.AutoRefreshInfo)
