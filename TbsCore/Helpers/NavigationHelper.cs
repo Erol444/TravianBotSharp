@@ -287,7 +287,7 @@ namespace TbsCore.Helpers
         {
             var wait = new WebDriverWait(acc.Wb.Driver, TimeSpan.FromMinutes(1));
 
-            if (!acc.Wb.CurrentUrl.Contains("hero"))
+            if (!(acc.Wb.CurrentUrl.Contains("hero/inventory") || acc.Wb.CurrentUrl.Contains("hero/attributes") || acc.Wb.CurrentUrl.Contains("hero/appearance")))
             {
                 var heroAvatarNode = acc.Wb.Html.GetElementbyId("heroImageButton");
 

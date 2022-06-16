@@ -184,11 +184,18 @@ namespace TbsCore.Parsers
             var path = htmlDoc.GetElementbyId("healthMask").Descendants("path").FirstOrDefault();
             if (path == null) return 0;
             var commands = path.GetAttributeValue("d", "").Split(' ');
-            var xx = double.Parse(commands[commands.Length - 2], System.Globalization.CultureInfo.InvariantCulture);
-            var yy = double.Parse(commands[commands.Length - 1], System.Globalization.CultureInfo.InvariantCulture);
+            try
+            {
+                var xx = double.Parse(commands[commands.Length - 2], System.Globalization.CultureInfo.InvariantCulture);
+                var yy = double.Parse(commands[commands.Length - 1], System.Globalization.CultureInfo.InvariantCulture);
 
-            var rad = Math.Atan2(yy - 55, xx - 55);
-            return (int)Math.Round(-56.173 * rad + 96.077);
+                var rad = Math.Atan2(yy - 55, xx - 55);
+                return (int)Math.Round(-56.173 * rad + 96.077);
+            }
+            catch
+            {
+                return 100;
+            }
         }
 
         /// <summary>
