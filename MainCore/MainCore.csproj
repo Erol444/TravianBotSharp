@@ -5,4 +5,11 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
+    <PackageReference Include="OpenQA.Selenium.Chrome.ChromeDriverExtensions" Version="1.2.0" />
+    <PackageReference Include="Selenium.Support" Version="4.2.0" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.2.0" />
+  </ItemGroup>
+
 </Project>
