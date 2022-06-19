@@ -11,25 +11,20 @@ namespace MainCore.Services
 {
     public class ChromeManager : IChromeManager
     {
-        private ConcurrentDictionary<int, ChromeBrowser> _dictionary = new();
-        private readonly ChromeDriverService _chromeService;
-
+        private readonly ConcurrentDictionary<int, ChromeBrowser> _dictionary = new();
         private string[] _extensionsPath;
 
         public ChromeManager()
         {
-            _chromeService = ChromeDriverService.CreateDefaultService();
-            _chromeService.HideCommandPromptWindow = true;
-            _chromeService.Start();
         }
+
         public ChromeBrowser Get(int id)
         {
             var result = _dictionary.TryGetValue(id, out ChromeBrowser browser);
             if (result) return browser;
 
-            browser = new ChromeBrowser(_chromeService, _extensionsPath);
-            _dictionary.TryAdd(id, new ChromeBrowser(_chromeService, _extensionsPath));
-
+            browser = new ChromeBrowser(_extensionsPath);
+            _dictionary.TryAdd(id, browser);
             return browser;
         }
 
@@ -40,7 +35,6 @@ namespace MainCore.Services
                 _dictionary.Remove(id, out ChromeBrowser browser);
                 browser.Shutdown();
             }
-            _chromeService.Dispose();
         }
 
         public void LoadExtension()
@@ -54,9 +48,9 @@ namespace MainCore.Services
             var extensionsName = asmb.GetManifestResourceNames();
             var list = new List<string>();
 
-            for (var i = 1; i < extensionsName.Length; i++)
+            foreach (var extensionName in extensionsName)
             {
-                var extensionName = extensionsName[i];
+                if (!extensionName.Contains(".crx")) continue;
                 var path = Path.Combine(extenstionDir, extensionName);
                 list.Add(path);
                 if (!isCreated)

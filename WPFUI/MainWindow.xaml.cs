@@ -1,5 +1,10 @@
-﻿using ReactiveUI;
+﻿using MainCore.Services;
+using ReactiveUI;
+using System;
+using System.Reactive;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
+using System.Windows;
 
 namespace WPFUI
 {
@@ -8,11 +13,17 @@ namespace WPFUI
     /// </summary>
     public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
-        public MainWindow()
+        public MainWindow(IChromeManager chromeManager)
         {
-            ViewModel = new();
+            ViewModel = new(chromeManager);
+            ViewModel.RequestClose += Close;
+            ViewModel.RequestHide += Hide;
+            InitializeComponent();
+
             this.WhenActivated(d =>
             {
+                #region Commands
+
                 this.BindCommand(ViewModel,
                     vm => vm.AddAccountCommand,
                     v => v.AddAccount
@@ -45,8 +56,22 @@ namespace WPFUI
                    vm => vm.LogoutAllCommand,
                    v => v.LogoutAll
                ).DisposeWith(d);
+
+                #endregion Commands
+
+                #region Events
+
+                this.Events().Closing.InvokeCommand(this, x => x.ViewModel.ClosingCommand);
+
+                #endregion Events
             });
-            InitializeComponent();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+
+            Application.Current.Shutdown();
         }
     }
 }

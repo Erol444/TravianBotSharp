@@ -1,13 +1,20 @@
-﻿using ReactiveUI;
+﻿using MainCore.Services;
+using ReactiveUI;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
+using System.Windows;
+using WPFUI.Views;
 
 namespace WPFUI
 {
     public class MainWindowViewModel : ReactiveObject
     {
-        public MainWindowViewModel()
+        public MainWindowViewModel(IChromeManager chromeManager)
         {
+            _chromeManager = chromeManager;
             AddAccountCommand = ReactiveCommand.CreateFromTask(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.CreateFromTask(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.CreateFromTask(EditAccountTask);
@@ -16,26 +23,39 @@ namespace WPFUI
             LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask);
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
             LogoutAllCommand = ReactiveCommand.CreateFromTask(LogoutAllTask);
+            ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
         }
 
         private async Task AddAccountTask()
         {
-            await Task.Yield();
+            await Task.Run(() =>
+            {
+                for (var i = 0; i < 2; i++)
+                {
+                    var browser = _chromeManager.Get(i);
+                    browser.Setup();
+                }
+            });
         }
 
         private async Task AddAccountsTask()
         {
             await Task.Yield();
+            _chromeManager.Clear();
         }
 
         private async Task LoginTask()
         {
             await Task.Yield();
+            var browser = _chromeManager.Get(0);
+            browser.Close();
         }
 
         private async Task LogoutTask()
         {
             await Task.Yield();
+            var browser = _chromeManager.Get(0);
+            browser.Setup();
         }
 
         private async Task LoginAllTask()
@@ -58,6 +78,27 @@ namespace WPFUI
             await Task.Yield();
         }
 
+        private async Task ClosingTask(CancelEventArgs e)
+        {
+            if (_closed) return;
+            e.Cancel = true;
+            var closingWindow = new ClosingWindow();
+            RequestHide();
+            closingWindow.Show();
+
+            await Task.Run(_chromeManager.Clear);
+            _closed = true;
+            closingWindow.Close();
+            RequestClose();
+        }
+
+        private readonly IChromeManager _chromeManager;
+        private bool _closed = false;
+
+        public event Action RequestClose;
+
+        public event Action RequestHide;
+
         public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }
         public ReactiveCommand<Unit, Unit> EditAccountCommand { get; }
@@ -66,5 +107,6 @@ namespace WPFUI
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
         public ReactiveCommand<Unit, Unit> LoginAllCommand { get; }
         public ReactiveCommand<Unit, Unit> LogoutAllCommand { get; }
+        public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
     }
 }

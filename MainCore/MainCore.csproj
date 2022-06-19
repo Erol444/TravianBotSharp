@@ -6,6 +6,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="ExtensionFile\audiocontext-fingerprint.crx" />
+    <None Remove="ExtensionFile\canvas-fingerprint-defend.crx" />
+    <None Remove="ExtensionFile\DisableWebRTCLeak.crx" />
+    <None Remove="ExtensionFile\font-fingerprint-defender.crx" />
+    <None Remove="ExtensionFile\spoof-timezone.crx" />
+    <None Remove="ExtensionFile\webgl-fingerprint-defende.crx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="ExtensionFile\audiocontext-fingerprint.crx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtensionFile\canvas-fingerprint-defend.crx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtensionFile\DisableWebRTCLeak.crx" />
+    <EmbeddedResource Include="ExtensionFile\font-fingerprint-defender.crx" />
+    <EmbeddedResource Include="ExtensionFile\spoof-timezone.crx" />
+    <EmbeddedResource Include="ExtensionFile\webgl-fingerprint-defende.crx" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
     <PackageReference Include="OpenQA.Selenium.Chrome.ChromeDriverExtensions" Version="1.2.0" />
     <PackageReference Include="Selenium.Support" Version="4.2.0" />

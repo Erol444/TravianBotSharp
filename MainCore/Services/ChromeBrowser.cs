@@ -27,10 +27,12 @@ namespace MainCore.Services
             }
         }
 
-        public ChromeBrowser(ChromeDriverService chromeService, string[] extensionsPath)
+        public ChromeBrowser(string[] extensionsPath)
         {
             _extensionsPath = extensionsPath;
-            _chromeService = chromeService;
+
+            _chromeService = ChromeDriverService.CreateDefaultService();
+            _chromeService.HideCommandPromptWindow = true;
         }
 
         public void Setup()
