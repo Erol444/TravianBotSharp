@@ -1,9 +1,7 @@
 ﻿using MainCore.Services;
 using ReactiveUI;
 using System;
-using System.Reactive;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using System.Windows;
 
 namespace WPFUI

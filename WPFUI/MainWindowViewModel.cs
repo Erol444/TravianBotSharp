@@ -1,11 +1,9 @@
 ﻿using MainCore.Services;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
-using System.Windows;
 using WPFUI.Views;
 
 namespace WPFUI
