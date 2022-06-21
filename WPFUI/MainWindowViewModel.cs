@@ -1,18 +1,22 @@
 ﻿using MainCore.Services;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
 using System.Reactive;
 using System.Threading.Tasks;
+using TTWarsCore;
 using WPFUI.Views;
 
 namespace WPFUI
 {
     public class MainWindowViewModel : ReactiveObject
     {
-        public MainWindowViewModel(IChromeManager chromeManager)
+        public MainWindowViewModel(IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory)
         {
             _chromeManager = chromeManager;
+            _contextFactory = contextFactory;
+
             AddAccountCommand = ReactiveCommand.CreateFromTask(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.CreateFromTask(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.CreateFromTask(EditAccountTask);
@@ -22,6 +26,8 @@ namespace WPFUI
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
             LogoutAllCommand = ReactiveCommand.CreateFromTask(LogoutAllTask);
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
+
+            using var context = _contextFactory.CreateDbContext();
         }
 
         private async Task AddAccountTask()
@@ -91,6 +97,7 @@ namespace WPFUI
         }
 
         private readonly IChromeManager _chromeManager;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private bool _closed = false;
 
         public event Action RequestClose;

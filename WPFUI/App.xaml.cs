@@ -1,4 +1,5 @@
 ﻿using MainCore.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,9 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TTWarsCore;
 using WPFUI.Views;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WPFUI
 {
@@ -27,6 +30,7 @@ namespace WPFUI
 
         private static void ConfigureServices(ServiceCollection services)
         {
+            services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite("DataSource=TBS.db;Cache=Shared"));
             services.AddSingleton<MainWindow>();
             services.AddSingleton<StartupWindow>();
 
@@ -41,8 +45,8 @@ namespace WPFUI
             var chromeManager = _serviceProvider.GetService<IChromeManager>();
             chromeManager.LoadExtension();
             var mainWindow = _serviceProvider.GetService<MainWindow>();
-            startupWindow.Hide();
             mainWindow.Show();
+            startupWindow.Hide();
         }
     }
 }

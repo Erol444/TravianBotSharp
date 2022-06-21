@@ -1,8 +1,10 @@
 ﻿using MainCore.Services;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Reactive.Disposables;
 using System.Windows;
+using TTWarsCore;
 
 namespace WPFUI
 {
@@ -11,9 +13,9 @@ namespace WPFUI
     /// </summary>
     public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
-        public MainWindow(IChromeManager chromeManager)
+        public MainWindow(IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory)
         {
-            ViewModel = new(chromeManager);
+            ViewModel = new(chromeManager, contextFactory);
             ViewModel.RequestClose += Close;
             ViewModel.RequestHide += Hide;
             InitializeComponent();
