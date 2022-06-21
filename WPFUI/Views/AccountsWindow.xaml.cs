@@ -6,9 +6,9 @@ namespace WPFUI.Views
     /// <summary>
     /// Interaction logic for AddAccountsWindow.xaml
     /// </summary>
-    public partial class AddAccountsWindow : ReactiveWindow<AddAccountsViewModel>
+    public partial class AccountsWindow : ReactiveWindow<AccountsViewModel>
     {
-        public AddAccountsWindow()
+        public AccountsWindow()
         {
             ViewModel = new();
 

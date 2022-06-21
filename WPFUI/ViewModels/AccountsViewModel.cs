@@ -2,7 +2,7 @@
 
 namespace WPFUI.ViewModels
 {
-    public class AddAccountsViewModel : ReactiveObject
+    public class AccountsViewModel : ReactiveObject
     {
     }
 }

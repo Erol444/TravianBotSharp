@@ -4,11 +4,11 @@ using WPFUI.ViewModels;
 namespace WPFUI.Views
 {
     /// <summary>
-    /// Interaction logic for AddAccountWindow.xaml
+    /// Interaction logic for EditAccountWindow.xaml
     /// </summary>
-    public partial class AddAccountWindow : ReactiveWindow<AddAccountViewModel>
+    public partial class AccountWindow : ReactiveWindow<AccountViewModel>
     {
-        public AddAccountWindow()
+        public AccountWindow()
         {
             ViewModel = new();
 
