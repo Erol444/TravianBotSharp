@@ -46,9 +46,9 @@ namespace WPFUI.Views
                 vm => vm.Username,
                 v => v.UsernameTextBox.Text);
 
-            this.Bind(ViewModel,
-                vm => vm.Access,
-                v => v.ProxiesDataGrid.DataContext);
+            this.OneWayBind(ViewModel,
+                vm => vm.Accessess,
+                v => v.ProxiesDataGrid.ItemsSource);
 
             #endregion Data
         }

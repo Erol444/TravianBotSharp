@@ -28,16 +28,8 @@
             <TextBox x:Name="ServerTextBox" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" />
             <TextBox x:Name="UsernameTextBox" Grid.Column="3" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" />
         </Grid>
-        <DataGrid x:Name="ProxiesDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" AutoGenerateColumns="False" >
-            <DataGrid.Columns>
-                <DataGridTextColumn x:Name="PasswordColumn" Header="Password"/>
-                <DataGridTextColumn x:Name="ProxyHostColumn" Header="Proxy's host"/>
-                <DataGridTextColumn x:Name="ProxyPortColumn" Header="Proxy's port"/>
-                <DataGridTextColumn x:Name="ProxyUsernameColumn" Header="Proxy's username"/>
-                <DataGridTextColumn x:Name="ProxyPasswordColumn" Header="Proxy's password"/>
-                <DataGridCheckBoxColumn x:Name="ProxyStatusColumn" Header="Proxy's status"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <DataGrid x:Name="ProxiesDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" />
+
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*" />
