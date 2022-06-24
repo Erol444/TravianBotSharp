@@ -5,6 +5,7 @@ using System;
 using System.Reactive.Disposables;
 using System.Windows;
 using TTWarsCore;
+using WPFUI.Views;
 
 namespace WPFUI
 {
@@ -13,58 +14,54 @@ namespace WPFUI
     /// </summary>
     public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     {
-        public MainWindow(IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory)
+        public MainWindow()
         {
-            ViewModel = new(chromeManager, contextFactory);
-            ViewModel.RequestClose += Close;
-            ViewModel.RequestHide += Hide;
+            ViewModel = new();
+
             InitializeComponent();
 
-            this.WhenActivated(d =>
-            {
-                #region Commands
+            #region Commands
 
-                this.BindCommand(ViewModel,
-                    vm => vm.AddAccountCommand,
-                    v => v.AddAccount
-                ).DisposeWith(d);
-                this.BindCommand(ViewModel,
-                   vm => vm.AddAccountsCommand,
-                   v => v.AddAccounts
-               ).DisposeWith(d);
-                this.BindCommand(ViewModel,
-                   vm => vm.LoginCommand,
-                   v => v.Login
-               ).DisposeWith(d);
-                this.BindCommand(ViewModel,
-                   vm => vm.LogoutCommand,
-                   v => v.Logout
-               ).DisposeWith(d);
-                this.BindCommand(ViewModel,
-                   vm => vm.EditAccountCommand,
-                   v => v.Edit
-               ).DisposeWith(d);
-                this.BindCommand(ViewModel,
-                   vm => vm.DeleteAccountCommand,
-                   v => v.Delete
-               ).DisposeWith(d);
-                this.BindCommand(ViewModel,
-                   vm => vm.LoginAllCommand,
-                   v => v.LoginAll
-               ).DisposeWith(d);
-                this.BindCommand(ViewModel,
-                   vm => vm.LogoutAllCommand,
-                   v => v.LogoutAll
-               ).DisposeWith(d);
+            this.BindCommand(ViewModel,
+                vm => vm.AddAccountCommand,
+                v => v.AddAccount
+            );
+            this.BindCommand(ViewModel,
+               vm => vm.AddAccountsCommand,
+               v => v.AddAccounts
+           );
+            this.BindCommand(ViewModel,
+               vm => vm.LoginCommand,
+               v => v.Login
+           );
+            this.BindCommand(ViewModel,
+               vm => vm.LogoutCommand,
+               v => v.Logout
+           );
+            this.BindCommand(ViewModel,
+               vm => vm.EditAccountCommand,
+               v => v.Edit
+           );
+            this.BindCommand(ViewModel,
+               vm => vm.DeleteAccountCommand,
+               v => v.Delete
+           );
+            this.BindCommand(ViewModel,
+               vm => vm.LoginAllCommand,
+               v => v.LoginAll
+           );
+            this.BindCommand(ViewModel,
+               vm => vm.LogoutAllCommand,
+               v => v.LogoutAll
+           );
 
-                #endregion Commands
+            #endregion Commands
 
-                #region Events
+            #region Events
 
-                this.Events().Closing.InvokeCommand(this, x => x.ViewModel.ClosingCommand);
+            this.Events().Closing.InvokeCommand(this, x => x.ViewModel.ClosingCommand);
 
-                #endregion Events
-            });
+            #endregion Events
         }
 
         protected override void OnClosed(EventArgs e)

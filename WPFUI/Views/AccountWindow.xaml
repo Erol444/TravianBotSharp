@@ -8,7 +8,7 @@
         xmlns:local="clr-namespace:WPFUI.ViewModels"
         xmlns:reactiveui="http://reactiveui.net"
         mc:Ignorable="d"
-        Title="Account" Height="300" Width="400">
+        Title="Account" Height="300" Width="530">
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="10*" />
@@ -28,7 +28,16 @@
             <TextBox x:Name="ServerTextBox" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" />
             <TextBox x:Name="UsernameTextBox" Grid.Column="3" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" />
         </Grid>
-        <DataGrid x:Name="ProxiesDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" />
+        <DataGrid x:Name="ProxiesDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" AutoGenerateColumns="False" >
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="PasswordColumn" Header="Password"/>
+                <DataGridTextColumn x:Name="ProxyHostColumn" Header="Proxy's host"/>
+                <DataGridTextColumn x:Name="ProxyPortColumn" Header="Proxy's port"/>
+                <DataGridTextColumn x:Name="ProxyUsernameColumn" Header="Proxy's username"/>
+                <DataGridTextColumn x:Name="ProxyPasswordColumn" Header="Proxy's password"/>
+                <DataGridCheckBoxColumn x:Name="ProxyStatusColumn" Header="Proxy's status"/>
+            </DataGrid.Columns>
+        </DataGrid>
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="5*" />

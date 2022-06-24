@@ -18,8 +18,4 @@
     <ProjectReference Include="..\TTWarsCore\TTWarsCore.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
-
 </Project>

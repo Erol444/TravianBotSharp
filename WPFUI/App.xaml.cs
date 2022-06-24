@@ -19,32 +19,19 @@ namespace WPFUI
     /// </summary>
     public partial class App : Application
     {
-        private readonly ServiceProvider _serviceProvider;
-
         public App()
         {
-            ServiceCollection services = new();
-            ConfigureServices(services);
-            _serviceProvider = services.BuildServiceProvider();
-        }
-
-        private static void ConfigureServices(ServiceCollection services)
-        {
-            services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite("DataSource=TBS.db;Cache=Shared"));
-            services.AddSingleton<MainWindow>();
-            services.AddSingleton<StartupWindow>();
-
-            services.AddSingleton<IChromeManager, ChromeManager>();
+            SetupService.Init();
         }
 
         private async void OnStartup(object sender, StartupEventArgs e)
         {
-            var startupWindow = _serviceProvider.GetService<StartupWindow>();
+            var startupWindow = SetupService.GetService<StartupWindow>();
             startupWindow.Show();
             await ChromeDriverInstaller.Install();
-            var chromeManager = _serviceProvider.GetService<IChromeManager>();
+            var chromeManager = SetupService.GetService<IChromeManager>();
             chromeManager.LoadExtension();
-            var mainWindow = _serviceProvider.GetService<MainWindow>();
+            var mainWindow = SetupService.GetService<MainWindow>();
             mainWindow.Show();
             startupWindow.Hide();
         }

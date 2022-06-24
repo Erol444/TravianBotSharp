@@ -1,5 +1,6 @@
 ﻿using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 using ReactiveUI;
 using System;
 using System.ComponentModel;
@@ -12,11 +13,11 @@ namespace WPFUI
 {
     public class MainWindowViewModel : ReactiveObject
     {
-        public MainWindowViewModel(IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory)
+        public MainWindowViewModel()
         {
-            _chromeManager = chromeManager;
-            _contextFactory = contextFactory;
-
+            _chromeManager = SetupService.GetService<IChromeManager>();
+            _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
+            _accountWindow = SetupService.GetService<AccountWindow>();
             AddAccountCommand = ReactiveCommand.CreateFromTask(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.CreateFromTask(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.CreateFromTask(EditAccountTask);
@@ -26,18 +27,24 @@ namespace WPFUI
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
             LogoutAllCommand = ReactiveCommand.CreateFromTask(LogoutAllTask);
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
-
-            using var context = _contextFactory.CreateDbContext();
         }
 
         private async Task AddAccountTask()
         {
             await Task.Run(() =>
             {
-                for (var i = 0; i < 2; i++)
+                if (!_accountWindow.Dispatcher.CheckAccess())
                 {
-                    var browser = _chromeManager.Get(i);
-                    browser.Setup();
+                    _accountWindow.Dispatcher.Invoke(() =>
+                    {
+                        _accountWindow.ViewModel.IsNewAccount = true;
+                        _accountWindow.Show();
+                    });
+                }
+                else
+                {
+                    _accountWindow.ViewModel.IsNewAccount = true;
+                    _accountWindow.Show();
                 }
             });
         }
@@ -87,22 +94,21 @@ namespace WPFUI
             if (_closed) return;
             e.Cancel = true;
             var closingWindow = new ClosingWindow();
-            RequestHide();
+            var mainWindow = SetupService.GetService<MainWindow>();
+            mainWindow.Hide();
+
             closingWindow.Show();
 
             await Task.Run(_chromeManager.Clear);
             _closed = true;
             closingWindow.Close();
-            RequestClose();
+            mainWindow.Close();
         }
 
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly AccountWindow _accountWindow;
         private bool _closed = false;
-
-        public event Action RequestClose;
-
-        public event Action RequestHide;
 
         public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }

@@ -8,14 +8,24 @@
         xmlns:local="clr-namespace:WPFUI.ViewModels"
         xmlns:reactiveui="http://reactiveui.net"
         mc:Ignorable="d"
-        Title="Accounts" Height="300" Width="400">
+        Title="Accounts" Height="300" Width="560">
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="50*" />
             <RowDefinition Height="50*" />
             <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="AccountsDatagrid" Margin="0,2,0,2" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" />
+        <DataGrid x:Name="AccountsDatagrid" Margin="0,2,0,2" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" AutoGenerateColumns="False" IsReadOnly="True" >
+            <DataGrid.Columns>
+                <DataGridTextColumn x:Name="ServerColumn" CanUserSort="False" Header="Server"/>
+                <DataGridTextColumn x:Name="UsernameColumn" Header="Username"/>
+                <DataGridTextColumn x:Name="PasswordColumn" Header="Password"/>
+                <DataGridTextColumn x:Name="ProxyHostColumn" Header="Proxy's host"/>
+                <DataGridTextColumn x:Name="ProxyPortColumn" Header="Proxy's port"/>
+                <DataGridTextColumn x:Name="ProxyUsernameColumn" Header="Proxy's username"/>
+                <DataGridTextColumn x:Name="ProxyPasswordColumn" Header="Proxy's password"/>
+            </DataGrid.Columns>
+        </DataGrid>
         <RichTextBox x:Name="AccountsInput">
             <FlowDocument>
                 <Paragraph>
