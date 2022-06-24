@@ -62,6 +62,18 @@ namespace WPFUI
             this.Events().Closing.InvokeCommand(this, x => x.ViewModel.ClosingCommand);
 
             #endregion Events
+
+            #region Data
+
+            this.OneWayBind(ViewModel,
+                vm => vm.Accounts,
+                v => v.AccountGrid.ItemsSource);
+
+            this.Bind(ViewModel,
+                vm => vm.CurrentAccount,
+                v => v.AccountGrid.SelectedItem);
+
+            #endregion Data
         }
 
         protected override void OnClosed(EventArgs e)

@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using ReactiveUI;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using TTWarsCore;
@@ -18,6 +20,7 @@ namespace WPFUI
             _chromeManager = SetupService.GetService<IChromeManager>();
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _accountWindow = SetupService.GetService<AccountWindow>();
+
             AddAccountCommand = ReactiveCommand.CreateFromTask(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.CreateFromTask(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.CreateFromTask(EditAccountTask);
@@ -27,6 +30,21 @@ namespace WPFUI
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
             LogoutAllCommand = ReactiveCommand.CreateFromTask(LogoutAllTask);
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
+        }
+
+        public async Task LoadData()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var accounts = context.Accounts.ToList();
+            Accounts.Clear();
+            foreach (var item in accounts)
+            {
+                Accounts.Add(new Models.Account
+                {
+                    Username = item.Username,
+                    Server = item.Server,
+                });
+            }
         }
 
         private async Task AddAccountTask()
@@ -109,6 +127,27 @@ namespace WPFUI
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly AccountWindow _accountWindow;
         private bool _closed = false;
+
+        private int _currentAccountId;
+        private Models.Account _currentAccount;
+        public ObservableCollection<Models.Account> Accounts { get; } = new();
+
+        public Models.Account CurrentAccount
+        {
+            get => _currentAccount;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _currentAccount, value);
+                using var context = _contextFactory.CreateDbContext();
+                CurrentAccountId = context.Accounts.FirstOrDefault(x => x.Server.Equals(_currentAccount.Server) && x.Username.Equals(_currentAccount.Username))?.Id ?? 0;
+            }
+        }
+
+        public int CurrentAccountId
+        {
+            get => _currentAccountId;
+            set => this.RaiseAndSetIfChanged(ref _currentAccountId, value);
+        }
 
         public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }

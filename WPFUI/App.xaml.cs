@@ -32,6 +32,7 @@ namespace WPFUI
             var chromeManager = SetupService.GetService<IChromeManager>();
             chromeManager.LoadExtension();
             var mainWindow = SetupService.GetService<MainWindow>();
+            await mainWindow.ViewModel.LoadData();
             mainWindow.Show();
             startupWindow.Hide();
         }
