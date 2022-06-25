@@ -23,6 +23,29 @@ namespace WPFUI.ViewModels
             CancelCommand = ReactiveCommand.CreateFromTask(CancelTask);
         }
 
+        public void LoadData()
+        {
+            if (AccountId == -1) return;
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
+            if (account == null) return;
+            Username = account.Username;
+            Server = account.Server;
+            var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
+            Accessess.Clear();
+            foreach (var item in accesses)
+            {
+                Accessess.Add(new Models.Access()
+                {
+                    Password = item.Password,
+                    ProxyHost = item.ProxyHost,
+                    ProxyPort = item.ProxyPort.ToString(),
+                    ProxyUsername = item.ProxyUsername,
+                    ProxyPassword = item.ProxyPassword,
+                });
+            }
+        }
+
         private async Task TestTask()
         {
             await Task.Delay(599);
@@ -74,31 +97,46 @@ namespace WPFUI.ViewModels
                 }
             }
             await Task.Run(() =>
-        {
-            var context = _contextFactory.CreateDbContext();
-
-            if (IsNewAccount)
             {
-                if (context.Accounts.Any(x => x.Server.Equals(Username) && x.Server.Equals(Server)))
+                var context = _contextFactory.CreateDbContext();
+
+                if (AccountId == -1)
                 {
-                    MessageBox.Show("This account was already in TBS", "Warning");
-                    return;
+                    if (context.Accounts.Any(x => x.Server.Equals(Username) && x.Server.Equals(Server)))
+                    {
+                        MessageBox.Show("This account was already in TBS", "Warning");
+                        return;
+                    }
+
+                    var account = new Account()
+                    {
+                        Username = Username,
+                        Server = Server,
+                    };
+
+                    context.Add(account);
+                    context.SaveChanges();
+                    AccountId = account.Id;
                 }
-
-                var account = new Account()
+                else
                 {
-                    Username = Username,
-                    Server = Server,
-                };
+                    var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
+                    if (account is null) return;
 
-                context.Add(account);
-                context.SaveChanges();
+                    account.Server = Server;
+                    account.Username = Username;
+
+                    var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
+
+                    context.Accesses.RemoveRange(accesses);
+                    context.SaveChanges();
+                }
 
                 foreach (var access in Accessess)
                 {
                     var accessDb = new Access()
                     {
-                        AccountId = account.Id,
+                        AccountId = AccountId,
                         Password = access.Password,
                         ProxyHost = access.ProxyHost,
                         ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
@@ -108,10 +146,8 @@ namespace WPFUI.ViewModels
                     context.Add(accessDb);
                 }
                 context.SaveChanges();
-            }
-
+            });
             Clean();
-        });
         }
 
         private async Task CancelTask()
@@ -160,7 +196,7 @@ namespace WPFUI.ViewModels
 
         public ObservableCollection<Models.Access> Accessess { get; } = new();
 
-        public bool IsNewAccount { get; set; }
+        public int AccountId { get; set; }
 
         public ReactiveCommand<Unit, Unit> TestCommand { get; }
         public ReactiveCommand<Unit, Unit> TestAllCommand { get; }

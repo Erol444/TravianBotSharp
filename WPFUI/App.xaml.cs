@@ -19,20 +19,17 @@ namespace WPFUI
     /// </summary>
     public partial class App : Application
     {
-        public App()
-        {
-            SetupService.Init();
-        }
-
         private async void OnStartup(object sender, StartupEventArgs e)
         {
+            SetupService.Init();
+
             var startupWindow = SetupService.GetService<StartupWindow>();
             startupWindow.Show();
             await ChromeDriverInstaller.Install();
             var chromeManager = SetupService.GetService<IChromeManager>();
             chromeManager.LoadExtension();
             var mainWindow = SetupService.GetService<MainWindow>();
-            await mainWindow.ViewModel.LoadData();
+            mainWindow.ViewModel.LoadData();
             mainWindow.Show();
             startupWindow.Hide();
         }

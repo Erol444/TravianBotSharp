@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFUI.Views"
         mc:Ignorable="d"
+        WindowStyle="None"
         WindowStartupLocation="CenterScreen"
         Title="Closing . . ." Height="110" Width="250">
     <Grid>

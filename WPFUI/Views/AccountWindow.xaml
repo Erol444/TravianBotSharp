@@ -8,6 +8,8 @@
         xmlns:local="clr-namespace:WPFUI.ViewModels"
         xmlns:reactiveui="http://reactiveui.net"
         mc:Ignorable="d"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
         Title="Account" Height="300" Width="530">
     <Grid Margin="5,5,5,5">
         <Grid.RowDefinitions>
@@ -28,7 +30,7 @@
             <TextBox x:Name="ServerTextBox" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" />
             <TextBox x:Name="UsernameTextBox" Grid.Column="3" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" />
         </Grid>
-        <DataGrid x:Name="ProxiesDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" />
+        <DataGrid x:Name="ProxiesDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" CanUserDeleteRows="True" />
 
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>

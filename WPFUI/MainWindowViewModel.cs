@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using TTWarsCore;
 using WPFUI.Views;
 
@@ -21,18 +22,20 @@ namespace WPFUI
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _accountWindow = SetupService.GetService<AccountWindow>();
 
-            AddAccountCommand = ReactiveCommand.CreateFromTask(AddAccountTask);
-            AddAccountsCommand = ReactiveCommand.CreateFromTask(AddAccountsTask);
-            EditAccountCommand = ReactiveCommand.CreateFromTask(EditAccountTask);
-            DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask);
-            LoginCommand = ReactiveCommand.CreateFromTask(LoginTask);
-            LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask);
-            LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
-            LogoutAllCommand = ReactiveCommand.CreateFromTask(LogoutAllTask);
-            ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
+            var accountAvailable = this.WhenAnyValue(vm => vm.CurrentAccount, vm => vm.CurrentAccount, (currentAccount, b) => currentAccount is not null);
+
+            AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
+            AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
+            EditAccountCommand = ReactiveCommand.Create(EditAccountTask, accountAvailable);
+            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, accountAvailable);
+            LoginCommand = ReactiveCommand.Create(LoginTask);
+            LogoutCommand = ReactiveCommand.Create(LogoutTask);
+            LoginAllCommand = ReactiveCommand.Create(LoginAllTask);
+            LogoutAllCommand = ReactiveCommand.Create(LogoutAllTask);
+            ClosingCommand = ReactiveCommand.Create<CancelEventArgs>(ClosingTask);
         }
 
-        public async Task LoadData()
+        public void LoadData()
         {
             using var context = _contextFactory.CreateDbContext();
             var accounts = context.Accounts.ToList();
@@ -47,67 +50,53 @@ namespace WPFUI
             }
         }
 
-        private async Task AddAccountTask()
+        private void AddAccountTask()
         {
-            await Task.Run(() =>
-            {
-                if (!_accountWindow.Dispatcher.CheckAccess())
-                {
-                    _accountWindow.Dispatcher.Invoke(() =>
-                    {
-                        _accountWindow.ViewModel.IsNewAccount = true;
-                        _accountWindow.Show();
-                    });
-                }
-                else
-                {
-                    _accountWindow.ViewModel.IsNewAccount = true;
-                    _accountWindow.Show();
-                }
-            });
+            _accountWindow.ViewModel.AccountId = -1;
+            _accountWindow.ShowDialog();
+            LoadData();
         }
 
-        private async Task AddAccountsTask()
+        private void AddAccountsTask()
         {
-            await Task.Yield();
-            _chromeManager.Clear();
+            LoadData();
         }
 
-        private async Task LoginTask()
+        private void LoginTask()
         {
-            await Task.Yield();
             var browser = _chromeManager.Get(0);
             browser.Close();
         }
 
-        private async Task LogoutTask()
+        private void LogoutTask()
         {
-            await Task.Yield();
             var browser = _chromeManager.Get(0);
             browser.Setup();
         }
 
-        private async Task LoginAllTask()
+        private void LoginAllTask()
         {
-            await Task.Yield();
         }
 
-        private async Task LogoutAllTask()
+        private void LogoutAllTask()
         {
-            await Task.Yield();
         }
 
-        private async Task EditAccountTask()
+        private void EditAccountTask()
         {
-            await Task.Yield();
+            _accountWindow.ViewModel.AccountId = CurrentAccountId;
+            _accountWindow.ViewModel.LoadData();
+            _accountWindow.ShowDialog();
+            LoadData();
         }
 
-        private async Task DeleteAccountTask()
+        private void DeleteAccountTask()
         {
-            await Task.Yield();
+            DeleteAccount(CurrentAccountId);
+            LoadData();
         }
 
-        private async Task ClosingTask(CancelEventArgs e)
+        private void ClosingTask(CancelEventArgs e)
         {
             if (_closed) return;
             e.Cancel = true;
@@ -117,18 +106,27 @@ namespace WPFUI
 
             closingWindow.Show();
 
-            await Task.Run(_chromeManager.Clear);
+            _chromeManager.Clear();
             _closed = true;
             closingWindow.Close();
             mainWindow.Close();
+        }
+
+        private void DeleteAccount(int index)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.Accounts.FirstOrDefault(x => x.Id == index);
+            if (account is null) return;
+            context.Accounts.Remove(account);
+            context.SaveChanges();
         }
 
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly AccountWindow _accountWindow;
         private bool _closed = false;
-
-        private int _currentAccountId;
+        private bool _accountCache = false;
+        private int _currentAccountId = -1;
         private Models.Account _currentAccount;
         public ObservableCollection<Models.Account> Accounts { get; } = new();
 
@@ -138,15 +136,32 @@ namespace WPFUI
             set
             {
                 this.RaiseAndSetIfChanged(ref _currentAccount, value);
-                using var context = _contextFactory.CreateDbContext();
-                CurrentAccountId = context.Accounts.FirstOrDefault(x => x.Server.Equals(_currentAccount.Server) && x.Username.Equals(_currentAccount.Username))?.Id ?? 0;
+                if (_currentAccount != value)
+                {
+                    _accountCache = false;
+                    this.RaisePropertyChanged(nameof(CurrentAccountId));
+                }
             }
         }
 
         public int CurrentAccountId
         {
-            get => _currentAccountId;
-            set => this.RaiseAndSetIfChanged(ref _currentAccountId, value);
+            get
+            {
+                if (CurrentAccount is not null)
+                {
+                    if (!_accountCache)
+                    {
+                        using var context = _contextFactory.CreateDbContext();
+                        _currentAccountId = context.Accounts.Where(x => x.Server.Equals(_currentAccount.Server)).FirstOrDefault(x => x.Username.Equals(_currentAccount.Username))?.Id ?? 0;
+                    }
+                }
+                else
+                {
+                    _currentAccountId = -1;
+                }
+                return _currentAccountId;
+            }
         }
 
         public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }

@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:WPFUI.Views"
         mc:Ignorable="d"
         Title="Loading . . ." Height="110" Width="250"
+        WindowStyle="None"
         WindowStartupLocation="CenterScreen">
     <Grid>
         <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">Travian Bot Sharp is loading data . . .</TextBlock>
