@@ -3,6 +3,7 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Threading.Tasks;
 using System.Windows;
 using TTWarsCore;
 using TTWarsCore.Models;
@@ -15,12 +16,13 @@ namespace WPFUI.ViewModels
         public AccountsViewModel()
         {
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
+            _waitingWindow = SetupService.GetService<WaitingWindow>();
 
-            SaveCommand = ReactiveCommand.Create(SaveTask);
+            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
         }
 
-        private void SaveTask()
+        private async Task SaveTask()
         {
             if (Accounts.Count == 0)
             {
@@ -49,62 +51,68 @@ namespace WPFUI.ViewModels
                     }
                 }
             }
+            _waitingWindow.ViewModel.Text = "adding accounts";
+            Hide();
+            _waitingWindow.Show();
 
-            var context = _contextFactory.CreateDbContext();
-
-            foreach (var acc in Accounts)
+            await Task.Run(() =>
             {
-                if (context.Accounts.Any(x => x.Username.Equals(acc.Username) && x.Server.Equals(acc.Server)))
+                var context = _contextFactory.CreateDbContext();
+
+                foreach (var acc in Accounts)
                 {
-                    MessageBox.Show($"Account {acc.Username} - {acc.Server} was already in TBS", "Warning");
-                    return;
+                    if (context.Accounts.Any(x => x.Username.Equals(acc.Username) && x.Server.Equals(acc.Server)))
+                    {
+                        MessageBox.Show($"Account {acc.Username} - {acc.Server} was already in TBS", "Warning");
+                        Show();
+                        return;
+                    }
+                    var account = new Account()
+                    {
+                        Username = acc.Username,
+                        Server = acc.Server,
+                    };
+                    context.Add(account);
+                    context.SaveChanges();
+
+                    var accessDb = new Access()
+                    {
+                        AccountId = account.Id,
+                        Password = acc.Password,
+                        ProxyHost = acc.ProxyHost,
+                        ProxyPort = int.Parse(acc.ProxyPort ?? "-1"),
+                        ProxyUsername = acc.ProxyUsername,
+                        ProxyPassword = acc.ProxyPassword,
+                    };
+                    context.Add(accessDb);
                 }
-                var account = new Account()
-                {
-                    Username = acc.Username,
-                    Server = acc.Server,
-                };
-                context.Add(account);
                 context.SaveChanges();
-
-                var accessDb = new Access()
-                {
-                    AccountId = account.Id,
-                    Password = acc.Password,
-                    ProxyHost = acc.ProxyHost,
-                    ProxyPort = int.Parse(acc.ProxyPort ?? "-1"),
-                    ProxyUsername = acc.ProxyUsername,
-                    ProxyPassword = acc.ProxyPassword,
-                };
-                context.Add(accessDb);
-            }
-            context.SaveChanges();
-
+            });
             Clean();
+            _waitingWindow.Hide();
         }
 
         private void CancelTask()
         {
+            Hide();
             Clean();
         }
 
         private void Clean()
         {
-            var accountsWindow = SetupService.GetService<AccountsWindow>();
+            InputText = "";
+        }
 
-            if (!accountsWindow.Dispatcher.CheckAccess())
-            {
-                accountsWindow.Dispatcher.Invoke(() =>
-                {
-                    accountsWindow.Hide();
-                    InputText = "";
-                });
-            }
-            else
-            {
-                accountsWindow.Hide();
-                InputText = "";
-            }
+        private void Hide()
+        {
+            var accountsWindow = SetupService.GetService<AccountsWindow>();
+            accountsWindow.Hide();
+        }
+
+        private void Show()
+        {
+            var accountWindow = SetupService.GetService<AccountWindow>();
+            accountWindow.Show();
         }
 
         private string _inputText;
@@ -164,6 +172,7 @@ namespace WPFUI.ViewModels
         }
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly WaitingWindow _waitingWindow;
 
         public ObservableCollection<Models.AccountMulti> Accounts { get; } = new();
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }

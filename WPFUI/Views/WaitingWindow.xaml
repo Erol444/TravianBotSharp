@@ -1,0 +1,17 @@
+﻿<reactiveui:ReactiveWindow
+        x:Class="WPFUI.Views.WaitingWindow"
+        x:TypeArguments="local:WaitingViewModel"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFUI.ViewModels"
+        xmlns:reactiveui="http://reactiveui.net"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        WindowStartupLocation="CenterScreen"
+        Title="Account" Height="110" Width="250">
+    <Grid>
+        <TextBlock x:Name="Text" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" />
+    </Grid>
+</reactiveui:ReactiveWindow>

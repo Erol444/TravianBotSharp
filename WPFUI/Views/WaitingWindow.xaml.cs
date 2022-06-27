@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,17 +12,24 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WPFUI.ViewModels;
 
 namespace WPFUI.Views
 {
     /// <summary>
-    /// Interaction logic for ClosingWindow.xaml
+    /// Interaction logic for WaitingWindow.xaml
     /// </summary>
-    public partial class ClosingWindow : Window
+    public partial class WaitingWindow : ReactiveWindow<WaitingViewModel>
+
     {
-        public ClosingWindow()
+        public WaitingWindow()
         {
+            ViewModel = new();
             InitializeComponent();
+
+            this.OneWayBind(ViewModel,
+                vm => vm.Text,
+                v => v.Text.Text);
         }
     }
 }

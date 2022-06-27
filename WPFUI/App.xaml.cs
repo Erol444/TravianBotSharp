@@ -23,15 +23,16 @@ namespace WPFUI
         {
             SetupService.Init();
 
-            var startupWindow = SetupService.GetService<StartupWindow>();
-            startupWindow.Show();
+            var waitingWindow = SetupService.GetService<WaitingWindow>();
+            waitingWindow.ViewModel.Text = "loading data";
+            waitingWindow.Show();
             await ChromeDriverInstaller.Install();
             var chromeManager = SetupService.GetService<IChromeManager>();
             chromeManager.LoadExtension();
             var mainWindow = SetupService.GetService<MainWindow>();
             mainWindow.ViewModel.LoadData();
             mainWindow.Show();
-            startupWindow.Hide();
+            waitingWindow.Hide();
         }
     }
 }

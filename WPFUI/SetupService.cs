@@ -30,12 +30,12 @@ namespace WPFUI
     {
         public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite("DataSource=TBS.db;Cache=Shared"));
-            services.AddSingleton<StartupWindow>();
+            services.AddSingleton<WaitingWindow>();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<AccountWindow>();
             services.AddSingleton<AccountsWindow>();
 
+            services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite("DataSource=TBS.db;Cache=Shared"));
             services.AddSingleton<IChromeManager, ChromeManager>();
             return services;
         }

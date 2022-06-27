@@ -22,6 +22,7 @@ namespace WPFUI
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _accountWindow = SetupService.GetService<AccountWindow>();
             _accountsWindow = SetupService.GetService<AccountsWindow>();
+            _waitingWindow = SetupService.GetService<WaitingWindow>();
 
             var accountAvailable = this.WhenAnyValue(vm => vm.CurrentAccount, vm => vm.CurrentAccount, (currentAccount, b) => currentAccount is not null);
 
@@ -31,9 +32,9 @@ namespace WPFUI
             DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, accountAvailable);
             LoginCommand = ReactiveCommand.Create(LoginTask);
             LogoutCommand = ReactiveCommand.Create(LogoutTask);
-            LoginAllCommand = ReactiveCommand.Create(LoginAllTask);
+            LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
             LogoutAllCommand = ReactiveCommand.Create(LogoutAllTask);
-            ClosingCommand = ReactiveCommand.Create<CancelEventArgs>(ClosingTask);
+            ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
         }
 
         public void LoadData()
@@ -76,8 +77,9 @@ namespace WPFUI
             browser.Setup();
         }
 
-        private void LoginAllTask()
+        private async Task LoginAllTask()
         {
+            await Task.Yield();
         }
 
         private void LogoutAllTask()
@@ -98,19 +100,18 @@ namespace WPFUI
             LoadData();
         }
 
-        private void ClosingTask(CancelEventArgs e)
+        private async Task ClosingTask(CancelEventArgs e)
         {
             if (_closed) return;
             e.Cancel = true;
-            var closingWindow = new ClosingWindow();
+            _waitingWindow.ViewModel.Text = "saving data";
+            _waitingWindow.Show();
             var mainWindow = SetupService.GetService<MainWindow>();
+            await Task.Delay(2000);
             mainWindow.Hide();
-
-            closingWindow.Show();
-
             _chromeManager.Clear();
             _closed = true;
-            closingWindow.Close();
+            _waitingWindow.Close();
             mainWindow.Close();
         }
 
@@ -127,6 +128,7 @@ namespace WPFUI
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly AccountWindow _accountWindow;
         private readonly AccountsWindow _accountsWindow;
+        private readonly WaitingWindow _waitingWindow;
 
         private bool _closed = false;
         private bool _accountCache = false;

@@ -16,10 +16,11 @@ namespace WPFUI.ViewModels
         public AccountViewModel()
         {
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
+            _waitingWindow = SetupService.GetService<WaitingWindow>();
 
             TestCommand = ReactiveCommand.CreateFromTask(TestTask);
             TestAllCommand = ReactiveCommand.CreateFromTask(TestAllTask);
-            SaveCommand = ReactiveCommand.Create(SaveTask);
+            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
         }
 
@@ -57,7 +58,7 @@ namespace WPFUI.ViewModels
             await Task.Delay(599);
         }
 
-        private void SaveTask()
+        private async Task SaveTask()
         {
             if (string.IsNullOrWhiteSpace(Username))
             {
@@ -96,90 +97,95 @@ namespace WPFUI.ViewModels
                     }
                 }
             }
+            _waitingWindow.ViewModel.Text = "adding account";
+            Hide();
+            _waitingWindow.Show();
 
-            var context = _contextFactory.CreateDbContext();
-
-            if (AccountId == -1)
+            await Task.Run(() =>
             {
-                if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
+                var context = _contextFactory.CreateDbContext();
+
+                if (AccountId == -1)
                 {
-                    MessageBox.Show("This account was already in TBS", "Warning");
-                    return;
+                    if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
+                    {
+                        MessageBox.Show("This account was already in TBS", "Warning");
+                        Show();
+                        return;
+                    }
+
+                    var account = new Account()
+                    {
+                        Username = Username,
+                        Server = Server,
+                    };
+
+                    context.Add(account);
+                    context.SaveChanges();
+                    AccountId = account.Id;
+                }
+                else
+                {
+                    var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
+                    if (account is null) return;
+
+                    account.Server = Server;
+                    account.Username = Username;
+
+                    var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
+
+                    context.Accesses.RemoveRange(accesses);
+                    context.SaveChanges();
                 }
 
-                var account = new Account()
+                foreach (var access in Accessess)
                 {
-                    Username = Username,
-                    Server = Server,
-                };
-
-                context.Add(account);
+                    var accessDb = new Access()
+                    {
+                        AccountId = AccountId,
+                        Password = access.Password,
+                        ProxyHost = access.ProxyHost,
+                        ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
+                        ProxyUsername = access.ProxyUsername,
+                        ProxyPassword = access.ProxyPassword,
+                    };
+                    context.Add(accessDb);
+                }
                 context.SaveChanges();
-                AccountId = account.Id;
-            }
-            else
-            {
-                var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
-                if (account is null) return;
-
-                account.Server = Server;
-                account.Username = Username;
-
-                var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
-
-                context.Accesses.RemoveRange(accesses);
-                context.SaveChanges();
-            }
-
-            foreach (var access in Accessess)
-            {
-                var accessDb = new Access()
-                {
-                    AccountId = AccountId,
-                    Password = access.Password,
-                    ProxyHost = access.ProxyHost,
-                    ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
-                    ProxyUsername = access.ProxyUsername,
-                    ProxyPassword = access.ProxyPassword,
-                };
-                context.Add(accessDb);
-            }
-            context.SaveChanges();
-
+            });
             Clean();
+            _waitingWindow.Hide();
         }
 
         private void CancelTask()
         {
+            Hide();
             Clean();
         }
 
         private void Clean()
         {
-            var accountWindow = SetupService.GetService<AccountWindow>();
+            Server = "";
+            Username = "";
+            Accessess.Clear();
+        }
 
-            if (!accountWindow.Dispatcher.CheckAccess())
-            {
-                accountWindow.Dispatcher.Invoke(() =>
-                {
-                    accountWindow.Hide();
-                    Server = "";
-                    Username = "";
-                    Accessess.Clear();
-                });
-            }
-            else
-            {
-                accountWindow.Hide();
-                Server = "";
-                Username = "";
-                Accessess.Clear();
-            }
+        private void Hide()
+        {
+            var accountWindow = SetupService.GetService<AccountWindow>();
+            accountWindow.Hide();
+        }
+
+        private void Show()
+        {
+            var accountWindow = SetupService.GetService<AccountWindow>();
+            accountWindow.Show();
         }
 
         private string _server;
         private string _username;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly WaitingWindow _waitingWindow;
 
         public string Server
         {
