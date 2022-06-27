@@ -34,6 +34,7 @@ namespace WPFUI
             services.AddSingleton<StartupWindow>();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<AccountWindow>();
+            services.AddSingleton<AccountsWindow>();
 
             services.AddSingleton<IChromeManager, ChromeManager>();
             return services;

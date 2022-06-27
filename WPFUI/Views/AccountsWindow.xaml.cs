@@ -11,8 +11,33 @@ namespace WPFUI.Views
         public AccountsWindow()
         {
             ViewModel = new();
-
             InitializeComponent();
+
+            #region Commands
+
+            this.BindCommand(ViewModel,
+                vm => vm.SaveCommand,
+                v => v.AddButton
+            );
+
+            this.BindCommand(ViewModel,
+                vm => vm.CancelCommand,
+                v => v.CancelButton
+            );
+
+            #endregion Commands
+
+            #region Data
+
+            this.Bind(ViewModel,
+                vm => vm.InputText,
+                v => v.AccountsInput.Text);
+
+            this.OneWayBind(ViewModel,
+                vm => vm.Accounts,
+                v => v.AccountsDatagrid.ItemsSource);
+
+            #endregion Data
         }
     }
 }

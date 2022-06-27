@@ -17,24 +17,10 @@
             <RowDefinition Height="50*" />
             <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="AccountsDatagrid" Margin="0,2,0,2" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn x:Name="ServerColumn" CanUserSort="False" Header="Server" />
-                <DataGridTextColumn x:Name="UsernameColumn" Header="Username" />
-                <DataGridTextColumn x:Name="PasswordColumn" Header="Password" />
-                <DataGridTextColumn x:Name="ProxyHostColumn" Header="Proxy's host" />
-                <DataGridTextColumn x:Name="ProxyPortColumn" Header="Proxy's port" />
-                <DataGridTextColumn x:Name="ProxyUsernameColumn" Header="Proxy's username" />
-                <DataGridTextColumn x:Name="ProxyPasswordColumn" Header="Proxy's password" />
-            </DataGrid.Columns>
-        </DataGrid>
-        <RichTextBox x:Name="AccountsInput">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text="RichTextBox" />
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
+        <DataGrid x:Name="AccountsDatagrid" Margin="0,2,0,2" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" />
+
+        <TextBox x:Name="AccountsInput" AcceptsReturn="True"  VerticalScrollBarVisibility="Visible" />
+
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="118*" />

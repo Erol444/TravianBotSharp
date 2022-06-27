@@ -21,6 +21,7 @@ namespace WPFUI
             _chromeManager = SetupService.GetService<IChromeManager>();
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _accountWindow = SetupService.GetService<AccountWindow>();
+            _accountsWindow = SetupService.GetService<AccountsWindow>();
 
             var accountAvailable = this.WhenAnyValue(vm => vm.CurrentAccount, vm => vm.CurrentAccount, (currentAccount, b) => currentAccount is not null);
 
@@ -59,6 +60,7 @@ namespace WPFUI
 
         private void AddAccountsTask()
         {
+            _accountsWindow.ShowDialog();
             LoadData();
         }
 
@@ -124,6 +126,8 @@ namespace WPFUI
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly AccountWindow _accountWindow;
+        private readonly AccountsWindow _accountsWindow;
+
         private bool _closed = false;
         private bool _accountCache = false;
         private int _currentAccountId = -1;

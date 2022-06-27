@@ -19,8 +19,8 @@ namespace WPFUI.ViewModels
 
             TestCommand = ReactiveCommand.CreateFromTask(TestTask);
             TestAllCommand = ReactiveCommand.CreateFromTask(TestAllTask);
-            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
-            CancelCommand = ReactiveCommand.CreateFromTask(CancelTask);
+            SaveCommand = ReactiveCommand.Create(SaveTask);
+            CancelCommand = ReactiveCommand.Create(CancelTask);
         }
 
         public void LoadData()
@@ -57,7 +57,7 @@ namespace WPFUI.ViewModels
             await Task.Delay(599);
         }
 
-        private async Task SaveTask()
+        private void SaveTask()
         {
             if (string.IsNullOrWhiteSpace(Username))
             {
@@ -96,63 +96,62 @@ namespace WPFUI.ViewModels
                     }
                 }
             }
-            await Task.Run(() =>
+
+            var context = _contextFactory.CreateDbContext();
+
+            if (AccountId == -1)
             {
-                var context = _contextFactory.CreateDbContext();
-
-                if (AccountId == -1)
+                if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
                 {
-                    if (context.Accounts.Any(x => x.Server.Equals(Username) && x.Server.Equals(Server)))
-                    {
-                        MessageBox.Show("This account was already in TBS", "Warning");
-                        return;
-                    }
-
-                    var account = new Account()
-                    {
-                        Username = Username,
-                        Server = Server,
-                    };
-
-                    context.Add(account);
-                    context.SaveChanges();
-                    AccountId = account.Id;
-                }
-                else
-                {
-                    var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
-                    if (account is null) return;
-
-                    account.Server = Server;
-                    account.Username = Username;
-
-                    var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
-
-                    context.Accesses.RemoveRange(accesses);
-                    context.SaveChanges();
+                    MessageBox.Show("This account was already in TBS", "Warning");
+                    return;
                 }
 
-                foreach (var access in Accessess)
+                var account = new Account()
                 {
-                    var accessDb = new Access()
-                    {
-                        AccountId = AccountId,
-                        Password = access.Password,
-                        ProxyHost = access.ProxyHost,
-                        ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
-                        ProxyUsername = access.ProxyUsername,
-                        ProxyPassword = access.ProxyPassword,
-                    };
-                    context.Add(accessDb);
-                }
+                    Username = Username,
+                    Server = Server,
+                };
+
+                context.Add(account);
                 context.SaveChanges();
-            });
+                AccountId = account.Id;
+            }
+            else
+            {
+                var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
+                if (account is null) return;
+
+                account.Server = Server;
+                account.Username = Username;
+
+                var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
+
+                context.Accesses.RemoveRange(accesses);
+                context.SaveChanges();
+            }
+
+            foreach (var access in Accessess)
+            {
+                var accessDb = new Access()
+                {
+                    AccountId = AccountId,
+                    Password = access.Password,
+                    ProxyHost = access.ProxyHost,
+                    ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
+                    ProxyUsername = access.ProxyUsername,
+                    ProxyPassword = access.ProxyPassword,
+                };
+                context.Add(accessDb);
+            }
+            context.SaveChanges();
+
             Clean();
         }
 
-        private async Task CancelTask()
+        private void CancelTask()
         {
-            await Task.Run(Clean);
+            Clean();
         }
 
         private void Clean()
