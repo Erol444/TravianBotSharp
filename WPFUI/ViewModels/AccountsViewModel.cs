@@ -104,6 +104,7 @@ namespace WPFUI.ViewModels
         private void Clean()
         {
             InputText = "";
+            Accounts.Clear();
         }
 
         private void Hide()

@@ -1,6 +1,7 @@
 ﻿using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -24,12 +25,10 @@ namespace WPFUI
             _accountsWindow = SetupService.GetService<AccountsWindow>();
             _waitingWindow = SetupService.GetService<WaitingWindow>();
 
-            var accountAvailable = this.WhenAnyValue(vm => vm.CurrentAccount, vm => vm.CurrentAccount, (currentAccount, b) => currentAccount is not null);
-
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
-            EditAccountCommand = ReactiveCommand.Create(EditAccountTask, accountAvailable);
-            DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, accountAvailable);
+            EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
+            DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
             LoginCommand = ReactiveCommand.Create(LoginTask);
             LogoutCommand = ReactiveCommand.Create(LogoutTask);
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
@@ -138,6 +137,8 @@ namespace WPFUI
 
         private bool _closed = false;
         private bool _accountCache = false;
+        private bool _isAccountSelected = false;
+        private bool _isAccountNotSelected = true;
         private int _currentAccountId = -1;
         private Models.Account _currentAccount;
         public ObservableCollection<Models.Account> Accounts { get; } = new();
@@ -147,12 +148,25 @@ namespace WPFUI
             get => _currentAccount;
             set
             {
+                var temp = _currentAccount;
                 this.RaiseAndSetIfChanged(ref _currentAccount, value);
-                if (_currentAccount != value)
+                if (_currentAccount != temp)
                 {
                     _accountCache = false;
                     this.RaisePropertyChanged(nameof(CurrentAccountId));
+                    if (value is null)
+                    {
+                        IsAccountNotSelected = true;
+                        IsAccountSelected = false;
+                    }
+                    else
+                    {
+                        IsAccountNotSelected = false;
+                        IsAccountSelected = true;
+                    }
                 }
+
+               
             }
         }
 
@@ -174,6 +188,18 @@ namespace WPFUI
                 }
                 return _currentAccountId;
             }
+        }
+
+        public bool IsAccountSelected
+        {
+            get => _isAccountSelected;
+            set => this.RaiseAndSetIfChanged(ref _isAccountSelected, value);
+        }
+
+        public bool IsAccountNotSelected
+        {
+            get => _isAccountNotSelected;
+            set => this.RaiseAndSetIfChanged(ref _isAccountNotSelected, value);
         }
 
         public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }

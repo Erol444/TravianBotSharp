@@ -39,7 +39,7 @@
             <DataGrid x:Name="AccountGrid" Grid.ColumnSpan="2" Grid.Row="5" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" SelectionMode="Single" />
         </Grid>
         <TabControl Grid.Column="1" Margin="5,0,0,0">
-            <TabItem x:Name="NoAccountTab" Header="No account">
+            <TabItem x:Name="NoAccountTab" Header="No account" Visibility="Visible">
                 <Grid Background="#FFE5E5E5" />
             </TabItem>
             <TabItem x:Name="GeneralTab" Header="General">

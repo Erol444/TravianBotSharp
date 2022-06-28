@@ -73,6 +73,30 @@ namespace WPFUI
                 vm => vm.CurrentAccount,
                 v => v.AccountGrid.SelectedItem);
 
+            this.OneWayBind(ViewModel,
+                vm => vm.IsAccountNotSelected,
+                v => v.NoAccountTab.Visibility);
+
+            this.OneWayBind(ViewModel,
+                vm => vm.IsAccountSelected,
+                v => v.GeneralTab.Visibility);
+
+            this.OneWayBind(ViewModel,
+                vm => vm.IsAccountSelected,
+                v => v.HeroTab.Visibility);
+
+            this.OneWayBind(ViewModel,
+                vm => vm.IsAccountSelected,
+                v => v.OverviewTab.Visibility);
+
+            this.OneWayBind(ViewModel,
+                vm => vm.IsAccountSelected,
+                v => v.VillagesTab.Visibility);
+
+            this.OneWayBind(ViewModel,
+                vm => vm.IsAccountSelected,
+                v => v.DebugTab.Visibility);
+
             #endregion Data
         }
 
