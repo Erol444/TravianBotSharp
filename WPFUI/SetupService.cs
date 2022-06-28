@@ -1,12 +1,8 @@
-﻿using MainCore.Services;
+﻿using MainCore;
+using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TTWarsCore;
 using WPFUI.Views;
 
 namespace WPFUI
@@ -37,6 +33,8 @@ namespace WPFUI
 
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite("DataSource=TBS.db;Cache=Shared"));
             services.AddSingleton<IChromeManager, ChromeManager>();
+            services.AddSingleton<IRestClientManager, RestClientManager>();
+            services.AddSingleton<IUseragentManager, UseragentManager>();
             services.AddSingleton<DatabaseEvent>();
             return services;
         }

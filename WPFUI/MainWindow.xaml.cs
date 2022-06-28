@@ -1,11 +1,6 @@
-﻿using MainCore.Services;
-using Microsoft.EntityFrameworkCore;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
-using System.Reactive.Disposables;
 using System.Windows;
-using TTWarsCore;
-using WPFUI.Views;
 
 namespace WPFUI
 {

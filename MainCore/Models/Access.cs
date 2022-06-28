@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TTWarsCore.Models
+﻿namespace MainCore.Models
 {
     public class Access
     {
@@ -18,5 +12,6 @@ namespace TTWarsCore.Models
         public int ProxyPort { get; set; }
         public string ProxyUsername { get; set; }
         public string ProxyPassword { get; set; }
+        public string Useragent { get; set; }
     }
 }

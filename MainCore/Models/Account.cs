@@ -1,4 +1,4 @@
-﻿namespace TTWarsCore.Models
+﻿namespace MainCore.Models
 {
     public class Account
     {

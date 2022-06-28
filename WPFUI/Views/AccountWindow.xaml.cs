@@ -1,7 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ReactiveUI;
-using System.Reactive.Disposables;
-using TTWarsCore;
+﻿using ReactiveUI;
 using WPFUI.ViewModels;
 
 namespace WPFUI.Views

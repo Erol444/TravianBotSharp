@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using TTWarsCore.Models;
+﻿using MainCore.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace TTWarsCore
+namespace MainCore
 {
     public class AppDbContext : DbContext
     {

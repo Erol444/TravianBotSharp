@@ -1,4 +1,6 @@
-﻿using MainCore.Services;
+﻿using MainCore;
+using MainCore.Models;
+using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -6,8 +8,6 @@ using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using System.Windows;
-using TTWarsCore;
-using TTWarsCore.Models;
 using WPFUI.Views;
 
 namespace WPFUI.ViewModels

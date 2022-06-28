@@ -1,4 +1,5 @@
-﻿using MainCore.Services;
+﻿using MainCore;
+using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
@@ -7,7 +8,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
-using TTWarsCore;
 using WPFUI.Views;
 
 namespace WPFUI
@@ -165,8 +165,6 @@ namespace WPFUI
                         IsAccountSelected = true;
                     }
                 }
-
-               
             }
         }
 
