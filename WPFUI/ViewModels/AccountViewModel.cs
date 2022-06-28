@@ -19,6 +19,7 @@ namespace WPFUI.ViewModels
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _waitingWindow = SetupService.GetService<WaitingWindow>();
             _databaseEvent = SetupService.GetService<DatabaseEvent>();
+            _useragentManager = SetupService.GetService<IUseragentManager>();
 
             TestCommand = ReactiveCommand.CreateFromTask(TestTask);
             TestAllCommand = ReactiveCommand.CreateFromTask(TestAllTask);
@@ -150,6 +151,7 @@ namespace WPFUI.ViewModels
                         ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
                         ProxyUsername = access.ProxyUsername,
                         ProxyPassword = access.ProxyPassword,
+                        Useragent = _useragentManager.Get(),
                     };
                     context.Add(accessDb);
                 }
@@ -189,6 +191,7 @@ namespace WPFUI.ViewModels
         private string _username;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly DatabaseEvent _databaseEvent;
+        private readonly IUseragentManager _useragentManager;
 
         private readonly WaitingWindow _waitingWindow;
 

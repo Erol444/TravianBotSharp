@@ -2,7 +2,6 @@
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -92,7 +91,11 @@ namespace WPFUI
 
         private async Task DeleteAccountTask()
         {
-            await DeleteAccount(CurrentAccountId);
+            _waitingWindow.ViewModel.Text = "saving data";
+            _waitingWindow.Show();
+            await Task.Run(() => DeleteAccount(CurrentAccountId));
+            _databaseEvent.OnAccountsTableUpdate();
+            _waitingWindow.Hide();
         }
 
         private async Task ClosingTask(CancelEventArgs e)
@@ -110,21 +113,16 @@ namespace WPFUI
             mainWindow.Close();
         }
 
-        private async Task DeleteAccount(int index)
+        private void DeleteAccount(int index)
         {
-            _waitingWindow.ViewModel.Text = "saving data";
-            _waitingWindow.Show();
-            await Task.Run(() =>
-            {
-                using var context = _contextFactory.CreateDbContext();
-                var account = context.Accounts.FirstOrDefault(x => x.Id == index);
-                if (account is null) return;
-                context.Accounts.Remove(account);
-                context.SaveChanges();
-            });
-            await Task.Yield();
-            _databaseEvent.OnAccountsTableUpdate();
-            _waitingWindow.Hide();
+            using var context = _contextFactory.CreateDbContext();
+
+            var accesses = context.Accesses.Where(x => x.AccountId == index);
+            context.Accesses.RemoveRange(accesses);
+
+            var account = context.Accounts.FirstOrDefault(x => x.Id == index);
+            context.Accounts.Remove(account);
+            context.SaveChanges();
         }
 
         private readonly IChromeManager _chromeManager;

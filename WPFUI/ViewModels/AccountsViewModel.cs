@@ -19,6 +19,7 @@ namespace WPFUI.ViewModels
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _waitingWindow = SetupService.GetService<WaitingWindow>();
             _databaseEvent = SetupService.GetService<DatabaseEvent>();
+            _useragentManager = SetupService.GetService<IUseragentManager>();
 
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
@@ -85,12 +86,15 @@ namespace WPFUI.ViewModels
                         ProxyPort = int.Parse(acc.ProxyPort ?? "-1"),
                         ProxyUsername = acc.ProxyUsername,
                         ProxyPassword = acc.ProxyPassword,
+                        Useragent = _useragentManager.Get(),
                     };
                     context.Add(accessDb);
                 }
                 context.SaveChanges();
             });
+
             Clean();
+
             _databaseEvent.OnAccountsTableUpdate();
             _waitingWindow.Hide();
         }
@@ -177,6 +181,7 @@ namespace WPFUI.ViewModels
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly DatabaseEvent _databaseEvent;
+        private readonly IUseragentManager _useragentManager;
 
         private readonly WaitingWindow _waitingWindow;
 
