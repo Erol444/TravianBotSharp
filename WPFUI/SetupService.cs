@@ -1,4 +1,6 @@
-﻿using MainCore;
+﻿using FluentMigrator.Runner;
+using MainCore;
+using MainCore.MigrationDb;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +21,8 @@ namespace WPFUI
             return serviceProvider;
         }
 
+        public static IServiceProvider ServiceProvider { get => _serviceProvider; }
+
         public static T GetService<T>() => _serviceProvider.GetService<T>();
     }
 
@@ -36,6 +40,11 @@ namespace WPFUI
             services.AddSingleton<IRestClientManager, RestClientManager>();
             services.AddSingleton<IUseragentManager, UseragentManager>();
             services.AddSingleton<DatabaseEvent>();
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                .AddSQLite()
+                .WithGlobalConnectionString("DataSource=TBS.db;Cache=Shared")
+                .ScanIn(typeof(AddUserAgent).Assembly).For.Migrations());
             return services;
         }
     }

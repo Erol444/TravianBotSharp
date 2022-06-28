@@ -40,13 +40,15 @@ namespace MainCore.Services
 
         public async Task Load()
         {
-            var path = Path.Combine(AppContext.BaseDirectory, "Data", "useragent.json");
-            if (!File.Exists(path))
+            var pathFolder = Path.Combine(AppContext.BaseDirectory, "Data");
+            if (!Directory.Exists(pathFolder)) Directory.CreateDirectory(pathFolder);
+            var pathFile = Path.Combine(pathFolder, "useragent.json");
+            if (!File.Exists(pathFile))
             {
                 await Update();
                 return;
             }
-            var userAgentJsonString = File.ReadAllText(path);
+            var userAgentJsonString = File.ReadAllText(pathFile);
             var modelLoaded = JsonSerializer.Deserialize<Model>(userAgentJsonString);
             _userAgentList = modelLoaded.UserAgentList;
             _dateTime = modelLoaded.DateTime;

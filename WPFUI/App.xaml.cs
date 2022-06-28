@@ -1,4 +1,7 @@
-﻿using MainCore.Services;
+﻿using FluentMigrator.Runner;
+using MainCore.MigrationDb;
+using MainCore.Services;
+using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using WPFUI.Views;
 
@@ -22,6 +25,12 @@ namespace WPFUI
 
             var useragentManager = SetupService.GetService<IUseragentManager>();
             await useragentManager.Load();
+
+            using (var scope = SetupService.ServiceProvider.CreateScope())
+            {
+                var migrationRunner = scope.ServiceProvider.GetService<IMigrationRunner>();
+                migrationRunner.MigrateUp();
+            }
 
             var mainWindow = SetupService.GetService<MainWindow>();
             mainWindow.ViewModel.LoadData();
