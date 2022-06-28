@@ -1,14 +1,11 @@
 ﻿using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using TTWarsCore;
 using WPFUI.Views;
 
@@ -20,6 +17,9 @@ namespace WPFUI
         {
             _chromeManager = SetupService.GetService<IChromeManager>();
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
+            _databaseEvent = SetupService.GetService<DatabaseEvent>();
+            _databaseEvent.AccountsTableUpdate = LoadData;
+
             _accountWindow = SetupService.GetService<AccountWindow>();
             _accountsWindow = SetupService.GetService<AccountsWindow>();
             _waitingWindow = SetupService.GetService<WaitingWindow>();
@@ -29,7 +29,7 @@ namespace WPFUI
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.Create(EditAccountTask, accountAvailable);
-            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, accountAvailable);
+            DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, accountAvailable);
             LoginCommand = ReactiveCommand.Create(LoginTask);
             LogoutCommand = ReactiveCommand.Create(LogoutTask);
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
@@ -55,14 +55,12 @@ namespace WPFUI
         private void AddAccountTask()
         {
             _accountWindow.ViewModel.AccountId = -1;
-            _accountWindow.ShowDialog();
-            LoadData();
+            _accountWindow.Show();
         }
 
         private void AddAccountsTask()
         {
-            _accountsWindow.ShowDialog();
-            LoadData();
+            _accountsWindow.Show();
         }
 
         private void LoginTask()
@@ -90,14 +88,12 @@ namespace WPFUI
         {
             _accountWindow.ViewModel.AccountId = CurrentAccountId;
             _accountWindow.ViewModel.LoadData();
-            _accountWindow.ShowDialog();
-            LoadData();
+            _accountWindow.Show();
         }
 
-        private void DeleteAccountTask()
+        private async Task DeleteAccountTask()
         {
-            DeleteAccount(CurrentAccountId);
-            LoadData();
+            await DeleteAccount(CurrentAccountId);
         }
 
         private async Task ClosingTask(CancelEventArgs e)
@@ -115,17 +111,27 @@ namespace WPFUI
             mainWindow.Close();
         }
 
-        private void DeleteAccount(int index)
+        private async Task DeleteAccount(int index)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.FirstOrDefault(x => x.Id == index);
-            if (account is null) return;
-            context.Accounts.Remove(account);
-            context.SaveChanges();
+            _waitingWindow.ViewModel.Text = "saving data";
+            _waitingWindow.Show();
+            await Task.Run(() =>
+            {
+                using var context = _contextFactory.CreateDbContext();
+                var account = context.Accounts.FirstOrDefault(x => x.Id == index);
+                if (account is null) return;
+                context.Accounts.Remove(account);
+                context.SaveChanges();
+            });
+            await Task.Yield();
+            _databaseEvent.OnAccountsTableUpdate();
+            _waitingWindow.Hide();
         }
 
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly DatabaseEvent _databaseEvent;
+
         private readonly AccountWindow _accountWindow;
         private readonly AccountsWindow _accountsWindow;
         private readonly WaitingWindow _waitingWindow;

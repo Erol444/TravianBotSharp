@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MainCore.Services;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace WPFUI.ViewModels
         {
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _waitingWindow = SetupService.GetService<WaitingWindow>();
+            _databaseEvent = SetupService.GetService<DatabaseEvent>();
 
             TestCommand = ReactiveCommand.CreateFromTask(TestTask);
             TestAllCommand = ReactiveCommand.CreateFromTask(TestAllTask);
@@ -154,6 +156,7 @@ namespace WPFUI.ViewModels
                 context.SaveChanges();
             });
             Clean();
+            _databaseEvent.OnAccountsTableUpdate();
             _waitingWindow.Hide();
         }
 
@@ -173,18 +176,20 @@ namespace WPFUI.ViewModels
         private void Hide()
         {
             var accountWindow = SetupService.GetService<AccountWindow>();
-            accountWindow.Hide();
+            accountWindow.Dispatcher.Invoke(accountWindow.Hide);
         }
 
         private void Show()
         {
             var accountWindow = SetupService.GetService<AccountWindow>();
-            accountWindow.Show();
+            accountWindow.Dispatcher.Invoke(accountWindow.Show);
         }
 
         private string _server;
         private string _username;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly DatabaseEvent _databaseEvent;
+
         private readonly WaitingWindow _waitingWindow;
 
         public string Server

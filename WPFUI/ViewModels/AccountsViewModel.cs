@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MainCore.Services;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace WPFUI.ViewModels
         {
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _waitingWindow = SetupService.GetService<WaitingWindow>();
+            _databaseEvent = SetupService.GetService<DatabaseEvent>();
 
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
@@ -89,6 +91,7 @@ namespace WPFUI.ViewModels
                 context.SaveChanges();
             });
             Clean();
+            _databaseEvent.OnAccountsTableUpdate();
             _waitingWindow.Hide();
         }
 
@@ -106,13 +109,13 @@ namespace WPFUI.ViewModels
         private void Hide()
         {
             var accountsWindow = SetupService.GetService<AccountsWindow>();
-            accountsWindow.Hide();
+            accountsWindow.Dispatcher.Invoke(accountsWindow.Hide);
         }
 
         private void Show()
         {
-            var accountWindow = SetupService.GetService<AccountWindow>();
-            accountWindow.Show();
+            var accountsWindow = SetupService.GetService<AccountsWindow>();
+            accountsWindow.Dispatcher.Invoke(accountsWindow.Show);
         }
 
         private string _inputText;
@@ -172,6 +175,8 @@ namespace WPFUI.ViewModels
         }
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly DatabaseEvent _databaseEvent;
+
         private readonly WaitingWindow _waitingWindow;
 
         public ObservableCollection<Models.AccountMulti> Accounts { get; } = new();

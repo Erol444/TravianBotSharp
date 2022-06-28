@@ -37,6 +37,7 @@ namespace WPFUI
 
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite("DataSource=TBS.db;Cache=Shared"));
             services.AddSingleton<IChromeManager, ChromeManager>();
+            services.AddSingleton<DatabaseEvent>();
             return services;
         }
     }
