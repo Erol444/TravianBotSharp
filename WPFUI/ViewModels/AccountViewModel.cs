@@ -1,5 +1,5 @@
 ﻿using MainCore;
-using MainCore.Models;
+using MainCore.Models.Database;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;

@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using MainCore.Models.Database;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
@@ -6,7 +7,7 @@ namespace MainCore.Services
 {
     public interface IChromeBrowser
     {
-        public void Setup();
+        public void Setup(Access access);
 
         public void Stop();
 

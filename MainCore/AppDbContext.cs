@@ -1,4 +1,4 @@
-﻿using MainCore.Models;
+﻿using MainCore.Models.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace MainCore

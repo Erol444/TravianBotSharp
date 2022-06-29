@@ -1,6 +1,8 @@
 ﻿using HtmlAgilityPack;
+using MainCore.Models.Database;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
 using OpenQA.Selenium.Support.UI;
 
 namespace MainCore.Services
@@ -35,26 +37,25 @@ namespace MainCore.Services
             _chromeService.HideCommandPromptWindow = true;
         }
 
-        public void Setup()
+        public void Setup(Access access)
         {
             ChromeOptions options = new();
 
             options.AddExtensions(_extensionsPath);
 
-            //if (proxy.Host is not null)
-            //{
-            //    options.AddHttpProxy(proxy.Host, int.Parse(proxy.Port), proxy.Username, proxy.Password);
-            //}
+            if (string.IsNullOrEmpty(access.ProxyHost))
+            {
+                options.AddHttpProxy(access.ProxyHost, access.ProxyPort, access.ProxyUsername, access.ProxyPassword);
+            }
+            options.AddArgument($"--user-agent={access.Useragent}");
+
             // So websites (Travian) can't detect the bot
             options.AddExcludedArgument("enable-automation");
             options.AddAdditionalOption("useAutomationExtension", false);
             options.AddArgument("--disable-blink-features=AutomationControlled");
             options.AddArgument("--disable-features=UserAgentClientHint");
             options.AddArgument("--disable-logging");
-            //if (!string.IsNullOrEmpty(_useragent))
-            //{
-            //    options.AddArgument($"--user-agent={_useragent}");
-            //}
+
             // Mute audio because of the Ads
             options.AddArgument("--mute-audio");
             options.AddArgument("--no-sandbox");

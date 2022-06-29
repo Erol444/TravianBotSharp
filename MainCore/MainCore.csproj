@@ -37,4 +37,8 @@
     <PackageReference Include="Selenium.WebDriver" Version="4.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Runtime\" />
+  </ItemGroup>
+
 </Project>
