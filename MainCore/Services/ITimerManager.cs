@@ -1,4 +1,6 @@
-﻿namespace MainCore.Services
+﻿using System;
+
+namespace MainCore.Services
 {
     public interface ITimerManager : IDisposable
     {

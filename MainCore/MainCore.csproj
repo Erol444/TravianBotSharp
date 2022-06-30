@@ -1,8 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,10 +20,18 @@
     <EmbeddedResource Include="ExtensionFile\canvas-fingerprint-defend.crx">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Include="ExtensionFile\DisableWebRTCLeak.crx" />
-    <EmbeddedResource Include="ExtensionFile\font-fingerprint-defender.crx" />
-    <EmbeddedResource Include="ExtensionFile\spoof-timezone.crx" />
-    <EmbeddedResource Include="ExtensionFile\webgl-fingerprint-defende.crx" />
+    <EmbeddedResource Include="ExtensionFile\DisableWebRTCLeak.crx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtensionFile\font-fingerprint-defender.crx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtensionFile\spoof-timezone.crx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ExtensionFile\webgl-fingerprint-defende.crx">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -38,7 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Tasks\Misc\" />
+    <ProjectReference Include="..\TravianOffcialCore\TravianOffcialCore.csproj" />
+    <ProjectReference Include="..\TravianOfficalNewHeroUICore\TravianOfficalNewHeroUICore.csproj" />
+    <ProjectReference Include="..\TTWarsCore\TTWarsCore.csproj" />
   </ItemGroup>
 
 </Project>

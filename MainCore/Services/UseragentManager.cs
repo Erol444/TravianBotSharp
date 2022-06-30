@@ -1,5 +1,9 @@
 ﻿using RestSharp;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace MainCore.Services
 {

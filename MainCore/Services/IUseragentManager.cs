@@ -1,4 +1,6 @@
-﻿namespace MainCore.Services
+﻿using System.Threading.Tasks;
+
+namespace MainCore.Services
 {
     public interface IUseragentManager
     {

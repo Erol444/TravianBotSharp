@@ -1,5 +1,5 @@
-﻿using System.Timers;
-using Timer = System.Timers.Timer;
+﻿using System;
+using System.Timers;
 
 namespace MainCore.Services
 {

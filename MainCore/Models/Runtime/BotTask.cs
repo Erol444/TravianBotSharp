@@ -1,9 +1,14 @@
 ﻿using MainCore.Enums;
+using MainCore.Services;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MainCore.Models.Runtime
 {
-    public abstract class BotTask : IBotTask
+    public abstract class BotTask
     {
+        public IChromeBrowser ChromeBrowser { get; set; }
         public TaskStage Stage { get; set; }
         public DateTime ExecuteAt { get; set; }
         public int RetryCounter { get; set; } = 0;
