@@ -18,7 +18,7 @@ namespace WPFUI
             _chromeManager = SetupService.GetService<IChromeManager>();
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _databaseEvent = SetupService.GetService<DatabaseEvent>();
-            _databaseEvent.AccountsTableUpdate = LoadData;
+            _databaseEvent.AccountsTableUpdate += LoadData;
 
             _accountWindow = SetupService.GetService<AccountWindow>();
             _accountsWindow = SetupService.GetService<AccountsWindow>();
@@ -70,7 +70,7 @@ namespace WPFUI
         private void LogoutTask()
         {
             var browser = _chromeManager.Get(0);
-            browser.Setup();
+            //browser.Setup();
         }
 
         private async Task LoginAllTask()
@@ -127,7 +127,7 @@ namespace WPFUI
 
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly DatabaseEvent _databaseEvent;
+        private readonly IDatabaseEvent _databaseEvent;
 
         private readonly AccountWindow _accountWindow;
         private readonly AccountsWindow _accountsWindow;

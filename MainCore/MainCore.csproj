@@ -38,7 +38,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Runtime\" />
+    <Folder Include="Tasks\Misc\" />
   </ItemGroup>
 
 </Project>

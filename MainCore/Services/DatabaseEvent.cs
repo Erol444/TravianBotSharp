@@ -1,12 +1,10 @@
 ﻿namespace MainCore.Services
 {
-    public class DatabaseEvent
+    public class DatabaseEvent : IDatabaseEvent
     {
         #region Accounts
 
-        public delegate void AccountsTableUpdateDelegate();
-
-        public AccountsTableUpdateDelegate AccountsTableUpdate;
+        public event Action AccountsTableUpdate;
 
         public void OnAccountsTableUpdate()
         {

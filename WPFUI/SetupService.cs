@@ -39,7 +39,10 @@ namespace WPFUI
             services.AddSingleton<IChromeManager, ChromeManager>();
             services.AddSingleton<IRestClientManager, RestClientManager>();
             services.AddSingleton<IUseragentManager, UseragentManager>();
-            services.AddSingleton<DatabaseEvent>();
+            services.AddSingleton<IDatabaseEvent, DatabaseEvent>();
+            services.AddSingleton<ITimerManager, TimerManager>();
+            services.AddSingleton<ITaskManager, TaskManager>();
+
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
                 .AddSQLite()
