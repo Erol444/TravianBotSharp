@@ -1,6 +1,6 @@
 ﻿using MainCore.Models.Runtime;
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace MainCore.Services
 {
@@ -20,6 +20,6 @@ namespace MainCore.Services
 
         public int Count(int index);
 
-        public ObservableCollection<BotTask> GetTaskList(int index);
+        public List<BotTask> GetTaskList(int index);
     }
 }

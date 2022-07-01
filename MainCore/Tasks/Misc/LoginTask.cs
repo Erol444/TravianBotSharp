@@ -6,9 +6,10 @@ namespace MainCore.Tasks.Misc
 {
     public class LoginTask : BotTask
     {
-        public override Task<TaskRes> Execute()
+        public override async Task<TaskRes> Execute()
         {
-            throw new System.NotImplementedException();
+            await Task.Run(async () => await Task.Delay(2000));
+            return TaskRes.Executed;
         }
     }
 }

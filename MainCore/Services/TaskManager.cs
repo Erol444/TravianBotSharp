@@ -1,14 +1,22 @@
 ﻿using MainCore.Models.Runtime;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MainCore.Services
 {
     public class TaskManager : ITaskManager
     {
         public event Action TaskUpdate;
+
+        public TaskManager(IDatabaseEvent databaseEvent, ITimerManager timerManager)
+        {
+            _databaseEvent = databaseEvent;
+            _timerManager = timerManager;
+            _timerManager.TaskExecute += Loop;
+        }
 
         public void Add(int index, BotTask task)
         {
@@ -48,7 +56,7 @@ namespace MainCore.Services
             TaskUpdate?.Invoke();
         }
 
-        public ObservableCollection<BotTask> GetTaskList(int index)
+        public List<BotTask> GetTaskList(int index)
         {
             Check(index);
             return _tasksDict[index];
@@ -56,12 +64,46 @@ namespace MainCore.Services
 
         private void Check(int index)
         {
-            if (!_tasksDict.TryGetValue(index, out _))
-            {
-                _tasksDict.Add(index, new());
-            }
+            _tasksDict.TryAdd(index, new());
+            _taskExecuting.TryAdd(index, false);
+            _botRunning.TryAdd(index, false);
         }
 
-        private readonly Dictionary<int, ObservableCollection<BotTask>> _tasksDict = new();
+        private async void Loop()
+        {
+            var tasks = new List<Task>();
+            foreach (var item in _tasksDict.Keys)
+            {
+                tasks.Add(TaskExecute(item));
+            }
+            await Task.WhenAll(tasks);
+        }
+
+        private async Task TaskExecute(int index)
+        {
+            Check(index);
+
+            bool isBotRunning;
+            while (_botRunning.TryGetValue(index, out isBotRunning)) ;
+            if (!isBotRunning) return;
+
+            bool isTaskExcuting;
+            while (_taskExecuting.TryGetValue(index, out isTaskExcuting)) ;
+            if (isTaskExcuting) return;
+
+            while (_taskExecuting.TryUpdate(index, true, false)) ;
+
+            await _tasksDict[index].First().Execute();
+
+            while (_taskExecuting.TryUpdate(index, false, true)) ;
+        }
+
+        private readonly Dictionary<int, List<BotTask>> _tasksDict = new();
+        private readonly ConcurrentDictionary<int, bool> _taskExecuting = new();
+        private readonly ConcurrentDictionary<int, bool> _botRunning = new();
+
+        private readonly IDatabaseEvent _databaseEvent;
+
+        private readonly ITimerManager _timerManager;
     }
 }
