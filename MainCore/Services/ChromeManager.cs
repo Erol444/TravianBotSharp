@@ -11,11 +11,7 @@ namespace MainCore.Services
         private readonly ConcurrentDictionary<int, ChromeBrowser> _dictionary = new();
         private string[] _extensionsPath;
 
-        public ChromeManager()
-        {
-        }
-
-        public ChromeBrowser Get(int id)
+        public IChromeBrowser Get(int id)
         {
             var result = _dictionary.TryGetValue(id, out ChromeBrowser browser);
             if (result) return browser;

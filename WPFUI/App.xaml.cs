@@ -32,6 +32,9 @@ namespace WPFUI
                 migrationRunner.MigrateUp();
             }
 
+            var timerManager = SetupService.GetService<ITimerManager>();
+            timerManager.Start();
+
             var mainWindow = SetupService.GetService<MainWindow>();
             mainWindow.ViewModel.LoadData();
             mainWindow.Show();

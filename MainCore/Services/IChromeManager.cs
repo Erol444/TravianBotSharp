@@ -4,7 +4,7 @@
     {
         public void LoadExtension();
 
-        public ChromeBrowser Get(int id);
+        public IChromeBrowser Get(int id);
 
         public void Clear();
     }

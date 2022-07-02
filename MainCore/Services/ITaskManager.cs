@@ -1,4 +1,5 @@
-﻿using MainCore.Models.Runtime;
+﻿using MainCore.Enums;
+using MainCore.Models.Runtime;
 using System;
 using System.Collections.Generic;
 
@@ -21,5 +22,11 @@ namespace MainCore.Services
         public int Count(int index);
 
         public List<BotTask> GetTaskList(int index);
+
+        public bool IsTaskExecuting(int index);
+
+        public AccountStatus GetAccountStatus(int index);
+
+        public void UpdateAccountStatus(int index, AccountStatus status);
     }
 }

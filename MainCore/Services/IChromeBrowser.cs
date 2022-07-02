@@ -9,13 +9,13 @@ namespace MainCore.Services
     {
         public void Setup(Access access);
 
-        public void Stop();
-
         public void Close();
 
         public void Shutdown();
 
         public string GetCurrentUrl();
+
+        public bool IsOpen();
 
         public ChromeDriver GetChrome();
 

@@ -18,7 +18,7 @@ namespace WPFUI.ViewModels
         {
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
             _waitingWindow = SetupService.GetService<WaitingWindow>();
-            _databaseEvent = SetupService.GetService<DatabaseEvent>();
+            _databaseEvent = SetupService.GetService<IDatabaseEvent>();
             _useragentManager = SetupService.GetService<IUseragentManager>();
 
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
@@ -180,7 +180,7 @@ namespace WPFUI.ViewModels
         }
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly DatabaseEvent _databaseEvent;
+        private readonly IDatabaseEvent _databaseEvent;
         private readonly IUseragentManager _useragentManager;
 
         private readonly WaitingWindow _waitingWindow;

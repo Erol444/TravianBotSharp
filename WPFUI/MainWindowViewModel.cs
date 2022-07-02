@@ -1,4 +1,5 @@
 ﻿using MainCore;
+using MainCore.Enums;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
@@ -17,8 +18,10 @@ namespace WPFUI
         {
             _chromeManager = SetupService.GetService<IChromeManager>();
             _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
-            _databaseEvent = SetupService.GetService<DatabaseEvent>();
+            _databaseEvent = SetupService.GetService<IDatabaseEvent>();
             _databaseEvent.AccountsTableUpdate += LoadData;
+            _databaseEvent.AccountStatusUpdate += OnAccountUpdate;
+            _taskManager = SetupService.GetService<ITaskManager>();
 
             _accountWindow = SetupService.GetService<AccountWindow>();
             _accountsWindow = SetupService.GetService<AccountsWindow>();
@@ -28,8 +31,8 @@ namespace WPFUI
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
             DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
-            LoginCommand = ReactiveCommand.Create(LoginTask);
-            LogoutCommand = ReactiveCommand.Create(LogoutTask);
+            LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
+            LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAccountRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
             LogoutAllCommand = ReactiveCommand.Create(LogoutAllTask);
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
@@ -61,16 +64,26 @@ namespace WPFUI
             _accountsWindow.Show();
         }
 
-        private void LoginTask()
+        private async Task LoginTask()
         {
-            var browser = _chromeManager.Get(0);
-            browser.Close();
+            _taskManager.UpdateAccountStatus(CurrentAccountId, AccountStatus.Starting);
+            await Task.Run(() =>
+            {
+                using var context = _contextFactory.CreateDbContext();
+                var access = context.Accesses.Where(x => x.AccountId == CurrentAccountId).OrderBy(x => x.LastUsed).FirstOrDefault();
+                _chromeManager.Get(CurrentAccountId).Setup(access);
+            });
+            _taskManager.UpdateAccountStatus(CurrentAccountId, AccountStatus.Online);
         }
 
-        private void LogoutTask()
+        private async Task LogoutTask()
         {
-            var browser = _chromeManager.Get(0);
-            //browser.Setup();
+            _taskManager.UpdateAccountStatus(CurrentAccountId, AccountStatus.Stopping);
+            await Task.Run(() =>
+            {
+                _chromeManager.Get(CurrentAccountId).Close();
+            });
+            _taskManager.UpdateAccountStatus(CurrentAccountId, AccountStatus.Offline);
         }
 
         private async Task LoginAllTask()
@@ -125,9 +138,19 @@ namespace WPFUI
             context.SaveChanges();
         }
 
+        private void OnAccountUpdate()
+        {
+            if (CurrentAccountId != -1)
+            {
+                IsAccountRunning = _taskManager.GetAccountStatus(CurrentAccountId) == AccountStatus.Online;
+                IsAccountNotRunning = _taskManager.GetAccountStatus(CurrentAccountId) == AccountStatus.Offline;
+            }
+        }
+
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IDatabaseEvent _databaseEvent;
+        private readonly ITaskManager _taskManager;
 
         private readonly AccountWindow _accountWindow;
         private readonly AccountsWindow _accountsWindow;
@@ -148,6 +171,7 @@ namespace WPFUI
             {
                 var temp = _currentAccount;
                 this.RaiseAndSetIfChanged(ref _currentAccount, value);
+
                 if (_currentAccount != temp)
                 {
                     _accountCache = false;
@@ -156,12 +180,20 @@ namespace WPFUI
                     {
                         IsAccountNotSelected = true;
                         IsAccountSelected = false;
+                        var mainWindow = SetupService.GetService<MainWindow>();
+                        mainWindow.NoAccountTab.IsSelected = true;
                     }
                     else
                     {
                         IsAccountNotSelected = false;
                         IsAccountSelected = true;
+                        if (temp is null)
+                        {
+                            var mainWindow = SetupService.GetService<MainWindow>();
+                            mainWindow.GeneralTab.IsSelected = true;
+                        }
                     }
+                    _databaseEvent.OnAccountStatusUpdate();
                 }
             }
         }
@@ -183,6 +215,28 @@ namespace WPFUI
                     _currentAccountId = -1;
                 }
                 return _currentAccountId;
+            }
+        }
+
+        private bool _isAccountRunning;
+
+        public bool IsAccountRunning
+        {
+            get => _isAccountRunning;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _isAccountRunning, value);
+            }
+        }
+
+        private bool _isAccountNotRunning;
+
+        public bool IsAccountNotRunning
+        {
+            get => _isAccountNotRunning;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _isAccountNotRunning, value);
             }
         }
 

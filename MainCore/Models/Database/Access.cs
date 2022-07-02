@@ -1,4 +1,6 @@
-﻿namespace MainCore.Models.Database
+﻿using System;
+
+namespace MainCore.Models.Database
 {
     public class Access
     {
@@ -13,5 +15,6 @@
         public string ProxyUsername { get; set; }
         public string ProxyPassword { get; set; }
         public string Useragent { get; set; }
+        public DateTime LastUsed { get; set; }
     }
 }

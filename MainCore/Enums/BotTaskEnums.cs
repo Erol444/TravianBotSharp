@@ -3,7 +3,7 @@
     public enum TaskRes
     {
         Executed,
-        Retry
+        Retry,
     }
 
     public enum TaskStage

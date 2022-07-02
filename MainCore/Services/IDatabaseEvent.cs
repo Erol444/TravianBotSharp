@@ -7,5 +7,9 @@ namespace MainCore.Services
         public event Action AccountsTableUpdate;
 
         public void OnAccountsTableUpdate();
+
+        public event Action AccountStatusUpdate;
+
+        public void OnAccountStatusUpdate();
     }
 }

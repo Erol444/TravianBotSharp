@@ -5,7 +5,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
 using OpenQA.Selenium.Support.UI;
 using System;
-using System.Threading;
+using System.IO;
 
 namespace MainCore.Services
 {
@@ -17,19 +17,6 @@ namespace MainCore.Services
 
         private readonly string[] _extensionsPath;
         private readonly HtmlDocument _htmlDoc = new();
-        private long _isStop;
-
-        private bool IsStop
-        {
-            get
-            {
-                return Interlocked.Read(ref _isStop) == 1;
-            }
-            set
-            {
-                Interlocked.Exchange(ref _isStop, Convert.ToInt64(value));
-            }
-        }
 
         public ChromeBrowser(string[] extensionsPath)
         {
@@ -45,10 +32,18 @@ namespace MainCore.Services
 
             options.AddExtensions(_extensionsPath);
 
-            if (string.IsNullOrEmpty(access.ProxyHost))
+            if (!string.IsNullOrEmpty(access.ProxyHost))
             {
-                options.AddHttpProxy(access.ProxyHost, access.ProxyPort, access.ProxyUsername, access.ProxyPassword);
+                if (!string.IsNullOrEmpty(access.ProxyUsername))
+                {
+                    options.AddHttpProxy(access.ProxyHost, access.ProxyPort, access.ProxyUsername, access.ProxyPassword);
+                }
+                else
+                {
+                    options.AddArgument($"--proxy-server={access.ProxyHost}:{access.ProxyPort}");
+                }
             }
+
             options.AddArgument($"--user-agent={access.Useragent}");
 
             // So websites (Travian) can't detect the bot
@@ -62,12 +57,13 @@ namespace MainCore.Services
             options.AddArgument("--mute-audio");
             options.AddArgument("--no-sandbox");
 
+            var path = Path.Combine(AppContext.BaseDirectory, "Data", "Cache", access.ProxyHost ?? "default");
+            Directory.CreateDirectory(path);
+            options.AddArguments($"user-data-dir={path}");
+
             _driver = new ChromeDriver(_chromeService, options);
             _driver.Manage().Timeouts().PageLoad = TimeSpan.FromMinutes(1);
             _wait = new WebDriverWait(_driver, TimeSpan.FromMinutes(1));
-
-            Navigate("https://www.travian.com/");
-            IsStop = false;
         }
 
         public ChromeDriver GetChrome() => _driver;
@@ -75,11 +71,6 @@ namespace MainCore.Services
         public HtmlDocument GetHtml() => _htmlDoc;
 
         public WebDriverWait GetWait() => _wait;
-
-        public void Stop()
-        {
-            IsStop = true;
-        }
 
         public void Shutdown()
         {
@@ -97,6 +88,19 @@ namespace MainCore.Services
             }
             catch { }
             _driver = null;
+        }
+
+        public bool IsOpen()
+        {
+            try
+            {
+                _ = _driver.Title;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public string GetCurrentUrl() => _driver.Url;
