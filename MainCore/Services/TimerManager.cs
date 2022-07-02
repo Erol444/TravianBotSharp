@@ -5,17 +5,16 @@ namespace MainCore.Services
 {
     public sealed class TimerManager : ITimerManager
     {
-        public event Action TaskExecute;
-
-        public TimerManager()
+        public TimerManager(IDatabaseEvent databaseEvent)
         {
             _mainTimer = new Timer(500);
-            _mainTimer.Elapsed += mainTimer_Elapsed;
+            _mainTimer.Elapsed += MainTimer_Elapsed;
+            _databaseEvent = databaseEvent;
         }
 
-        private void mainTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
-            TaskExecute?.Invoke();
+            _databaseEvent.OnTaskExecuted();
         }
 
         public void Dispose()
@@ -28,11 +27,7 @@ namespace MainCore.Services
             _mainTimer.Start();
         }
 
-        public void Stop()
-        {
-            _mainTimer.Stop();
-        }
-
         private readonly Timer _mainTimer;
+        private readonly IDatabaseEvent _databaseEvent;
     }
 }

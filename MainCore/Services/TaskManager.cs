@@ -10,27 +10,25 @@ namespace MainCore.Services
 {
     public class TaskManager : ITaskManager
     {
-        public event Action TaskUpdate;
-
-        public TaskManager(IDatabaseEvent databaseEvent, ITimerManager timerManager)
+        public TaskManager(IDatabaseEvent databaseEvent, ILogManager logManager)
         {
             _databaseEvent = databaseEvent;
-            _timerManager = timerManager;
-            _timerManager.TaskExecute += Loop;
+            _logManager = logManager;
+            _databaseEvent.TaskExecuted += Loop;
         }
 
         public void Add(int index, BotTask task)
         {
             Check(index);
             _tasksDict[index].Add(task);
-            TaskUpdate?.Invoke();
+            _databaseEvent.OnTaskUpdated(index);
         }
 
         public void Clear(int index)
         {
             Check(index);
             _tasksDict[index].Clear();
-            TaskUpdate?.Invoke();
+            _databaseEvent.OnTaskUpdated(index);
         }
 
         public int Count(int index)
@@ -47,14 +45,14 @@ namespace MainCore.Services
 
         public BotTask GetCurrentTask(int index)
         {
-            throw new NotImplementedException();
+            return _tasksDict[index].FirstOrDefault(x => x.Stage == TaskStage.Executing);
         }
 
         public void Remove(int index, BotTask task)
         {
             Check(index);
             _tasksDict[index].Remove(task);
-            TaskUpdate?.Invoke();
+            _databaseEvent.OnTaskUpdated(index);
         }
 
         public List<BotTask> GetTaskList(int index)
@@ -123,7 +121,6 @@ namespace MainCore.Services
         private readonly Dictionary<int, AccountStatus> _botStatus = new();
 
         private readonly IDatabaseEvent _databaseEvent;
-
-        private readonly ITimerManager _timerManager;
+        private readonly ILogManager _logManager;
     }
 }

@@ -7,8 +7,6 @@ namespace MainCore.Services
 {
     public interface ITaskManager
     {
-        public event Action TaskUpdate;
-
         public void Add(int index, BotTask task);
 
         public BotTask Find(int index, Type type);

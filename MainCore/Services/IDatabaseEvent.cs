@@ -11,5 +11,17 @@ namespace MainCore.Services
         public event Action AccountStatusUpdate;
 
         public void OnAccountStatusUpdate();
+
+        public event Action<int> LogUpdated;
+
+        public void OnLogUpdated(int accountId);
+
+        public event Action<int> TaskUpdated;
+
+        public void OnTaskUpdated(int accountId);
+
+        public event Action TaskExecuted;
+
+        public void OnTaskExecuted();
     }
 }

@@ -28,12 +28,15 @@ namespace WPFUI
 
             using (var scope = SetupService.ServiceProvider.CreateScope())
             {
-                var migrationRunner = scope.ServiceProvider.GetService<IMigrationRunner>();
+                var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
                 migrationRunner.MigrateUp();
             }
 
             var timerManager = SetupService.GetService<ITimerManager>();
             timerManager.Start();
+
+            var logManager = SetupService.GetService<ILogManager>();
+            logManager.Init();
 
             var mainWindow = SetupService.GetService<MainWindow>();
             mainWindow.ViewModel.LoadData();

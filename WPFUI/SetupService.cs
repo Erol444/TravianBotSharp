@@ -23,7 +23,19 @@ namespace WPFUI
 
         public static IServiceProvider ServiceProvider { get => _serviceProvider; }
 
-        public static T GetService<T>() => _serviceProvider.GetService<T>();
+        public static T GetService<T>() => _serviceProvider.GetRequiredService<T>();
+
+        public static void Shutdown()
+        {
+            var timerManager = GetService<ITimerManager>();
+            timerManager.Dispose();
+            var restClientManager = GetService<IRestClientManager>();
+            restClientManager.Dispose();
+            var chromeManager = GetService<IChromeManager>();
+            chromeManager.Dispose();
+            var logManager = GetService<ILogManager>();
+            logManager.Dispose();
+        }
     }
 
     public static class DependencyInjectionContainer
@@ -42,6 +54,7 @@ namespace WPFUI
             services.AddSingleton<IDatabaseEvent, DatabaseEvent>();
             services.AddSingleton<ITimerManager, TimerManager>();
             services.AddSingleton<ITaskManager, TaskManager>();
+            services.AddSingleton<ILogManager, LogManager>();
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb

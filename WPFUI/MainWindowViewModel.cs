@@ -38,6 +38,8 @@ namespace WPFUI
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
         }
 
+        #region Main
+
         public void LoadData()
         {
             using var context = _contextFactory.CreateDbContext();
@@ -117,10 +119,10 @@ namespace WPFUI
             e.Cancel = true;
             _waitingWindow.ViewModel.Text = "saving data";
             _waitingWindow.Show();
-            var mainWindow = SetupService.GetService<MainWindow>();
             await Task.Delay(2000);
+            var mainWindow = SetupService.GetService<MainWindow>();
             mainWindow.Hide();
-            _chromeManager.Clear();
+            await Task.Run(SetupService.Shutdown);
             _closed = true;
             _waitingWindow.Close();
             mainWindow.Close();
@@ -261,5 +263,7 @@ namespace WPFUI
         public ReactiveCommand<Unit, Unit> LoginAllCommand { get; }
         public ReactiveCommand<Unit, Unit> LogoutAllCommand { get; }
         public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
+
+        #endregion Main
     }
 }

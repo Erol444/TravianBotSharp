@@ -25,5 +25,38 @@ namespace MainCore.Services
         }
 
         #endregion Account status update
+
+        #region Log update
+
+        public event Action<int> LogUpdated;
+
+        public void OnLogUpdated(int accountId)
+        {
+            LogUpdated?.Invoke(accountId);
+        }
+
+        #endregion Log update
+
+        #region Task update
+
+        public event Action<int> TaskUpdated;
+
+        public void OnTaskUpdated(int accountId)
+        {
+            TaskUpdated?.Invoke(accountId);
+        }
+
+        #endregion Task update
+
+        #region Task execute
+
+        public event Action TaskExecuted;
+
+        public void OnTaskExecuted()
+        {
+            TaskExecuted?.Invoke();
+        }
+
+        #endregion Task execute
     }
 }

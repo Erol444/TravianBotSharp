@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace MainCore.Services
 {
-    public class ChromeManager : IChromeManager
+    public sealed class ChromeManager : IChromeManager
     {
         private readonly ConcurrentDictionary<int, ChromeBrowser> _dictionary = new();
         private string[] _extensionsPath;
@@ -21,7 +21,7 @@ namespace MainCore.Services
             return browser;
         }
 
-        public void Clear()
+        public void Dispose()
         {
             foreach (var id in _dictionary.Keys)
             {

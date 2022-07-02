@@ -6,7 +6,7 @@ using System.Net;
 
 namespace MainCore.Services
 {
-    public class RestClientManager : IRestClientManager
+    public sealed class RestClientManager : IRestClientManager
     {
         public RestClientManager(IDbContextFactory<AppDbContext> contextFactory)
         {
@@ -58,6 +58,14 @@ namespace MainCore.Services
             client = new RestClient(clientOptions);
             _database.Add(id, client);
             return client;
+        }
+
+        public void Dispose()
+        {
+            foreach (var item in _database.Values)
+            {
+                item.Dispose();
+            }
         }
 
         private readonly Dictionary<int, RestClient> _database = new();
