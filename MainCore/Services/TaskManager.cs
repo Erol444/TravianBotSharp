@@ -74,6 +74,8 @@ namespace MainCore.Services
             foreach (var item in _tasksDict.Keys)
             {
                 Check(item);
+                if (_tasksDict[item].Count == 0) continue;
+
                 tasks.Add(TaskExecute(item));
             }
             await Task.WhenAll(tasks);
@@ -89,8 +91,11 @@ namespace MainCore.Services
 
             _taskExecuting.TryUpdate(index, true, false);
 
-            //await _tasksDict[index].First().Execute();
-            await Task.Delay(1000);
+            var task = _tasksDict[index].First();
+            await task.Execute();
+
+            _tasksDict[index].Remove(task);
+
             _taskExecuting.TryUpdate(index, false, true);
         }
 

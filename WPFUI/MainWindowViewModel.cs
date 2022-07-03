@@ -2,6 +2,7 @@
 using MainCore.Enums;
 using MainCore.Models.Database;
 using MainCore.Services;
+using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -23,6 +24,7 @@ namespace WPFUI
             _databaseEvent.AccountsTableUpdate += LoadData;
             _databaseEvent.AccountStatusUpdate += OnAccountUpdate;
             _taskManager = SetupService.GetService<ITaskManager>();
+            _logManager = SetupService.GetService<ILogManager>();
 
             _accountWindow = SetupService.GetService<AccountWindow>();
             _accountsWindow = SetupService.GetService<AccountsWindow>();
@@ -70,8 +72,13 @@ namespace WPFUI
             {
                 using var context = _contextFactory.CreateDbContext();
                 var access = context.Accesses.Where(x => x.AccountId == CurrentAccount.Id).OrderBy(x => x.LastUsed).FirstOrDefault();
-                _chromeManager.Get(CurrentAccount.Id).Setup(access);
+                var chromeBrowser = _chromeManager.Get(CurrentAccount.Id);
+                chromeBrowser.Setup(access);
+                _logManager.AddAccount(CurrentAccount.Id);
+                _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id, _contextFactory, chromeBrowser, _taskManager, _databaseEvent, _logManager));
             });
+            await Task.Delay(5000);
+
             _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Online);
         }
 
@@ -150,13 +157,13 @@ namespace WPFUI
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IDatabaseEvent _databaseEvent;
         private readonly ITaskManager _taskManager;
+        private readonly ILogManager _logManager;
 
         private readonly AccountWindow _accountWindow;
         private readonly AccountsWindow _accountsWindow;
         private readonly WaitingWindow _waitingWindow;
 
         private bool _closed = false;
-        private bool _accountCache = false;
         private bool _isAccountSelected = false;
         private bool _isAccountNotSelected = true;
 
@@ -179,6 +186,7 @@ namespace WPFUI
                         IsAccountSelected = false;
                         var mainWindow = SetupService.GetService<MainWindow>();
                         mainWindow.NoAccountTab.IsSelected = true;
+                        _databaseEvent.OnAccountSelected(-1);
                     }
                     else
                     {
@@ -189,6 +197,7 @@ namespace WPFUI
                             var mainWindow = SetupService.GetService<MainWindow>();
                             mainWindow.GeneralTab.IsSelected = true;
                         }
+                        _databaseEvent.OnAccountSelected(value.Id);
                     }
                     _databaseEvent.OnAccountStatusUpdate();
                 }

@@ -1,0 +1,29 @@
+﻿<reactiveui:ReactivePage
+      x:Class="WPFUI.Views.Tabs.DebugPage"
+      x:TypeArguments="local:DebugViewModel"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:local="clr-namespace:WPFUI.ViewModels.Tabs"
+      xmlns:reactiveui="http://reactiveui.net"
+      mc:Ignorable="d"
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="DebugPage">
+    <Grid Background="#FFE5E5E5" Margin="0,2,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="34*" />
+            <RowDefinition Height="37*" />
+            <RowDefinition Height="385*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Button x:Name="ReportButton" Content="Button" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <TextBlock x:Name="TaskTableLabel" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Task table" VerticalAlignment="Center" TextAlignment="Center" />
+        <TextBlock x:Name="LogTableLabel" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Log table" VerticalAlignment="Center" TextAlignment="Center" />
+        <DataGrid x:Name="TaskGird" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,1,0" IsReadOnly="True" />
+        <DataGrid x:Name="LogGrid" Grid.Column="1" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="1,0,0,0" IsReadOnly="True" />
+    </Grid>
+</reactiveui:ReactivePage>

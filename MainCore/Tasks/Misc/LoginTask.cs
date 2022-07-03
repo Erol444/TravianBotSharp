@@ -28,14 +28,11 @@ namespace MainCore.Tasks.Misc
 
         public override async Task<TaskRes> Execute()
         {
-            await Task.Delay(1000);
+            await Task.Delay(2000);
             using var context = _contextFactory.CreateDbContext();
             var account = context.Accounts.Find(_accountId);
             _logManager.Information(_accountId, "hi");
-            if (!_chromeBrowser.GetCurrentUrl().Contains(account.Server))
-            {
-                _chromeBrowser.Navigate(account.Server);
-            }
+
             _logManager.Warning(_accountId, "my name");
             _logManager.Error(_accountId, "my name", new Exception("nis vinaghost"));
 

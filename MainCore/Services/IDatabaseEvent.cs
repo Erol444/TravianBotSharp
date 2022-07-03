@@ -8,6 +8,10 @@ namespace MainCore.Services
 
         public void OnAccountsTableUpdate();
 
+        public event Action<int> AccountSelected;
+
+        public void OnAccountSelected(int accountId);
+
         public event Action AccountStatusUpdate;
 
         public void OnAccountStatusUpdate();

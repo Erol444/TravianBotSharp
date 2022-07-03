@@ -58,5 +58,16 @@ namespace MainCore.Services
         }
 
         #endregion Task execute
+
+        #region Account selected
+
+        public event Action<int> AccountSelected;
+
+        public void OnAccountSelected(int accountId)
+        {
+            AccountSelected?.Invoke(accountId);
+        }
+
+        #endregion Account selected
     }
 }
