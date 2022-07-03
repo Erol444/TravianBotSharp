@@ -1,5 +1,6 @@
 ﻿using MainCore;
 using MainCore.Enums;
+using MainCore.Models.Database;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
@@ -47,11 +48,7 @@ namespace WPFUI
             Accounts.Clear();
             foreach (var item in accounts)
             {
-                Accounts.Add(new Models.Account
-                {
-                    Username = item.Username,
-                    Server = item.Server,
-                });
+                Accounts.Add(item);
             }
         }
 
@@ -68,24 +65,24 @@ namespace WPFUI
 
         private async Task LoginTask()
         {
-            _taskManager.UpdateAccountStatus(CurrentAccountId, AccountStatus.Starting);
+            _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Starting);
             await Task.Run(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
-                var access = context.Accesses.Where(x => x.AccountId == CurrentAccountId).OrderBy(x => x.LastUsed).FirstOrDefault();
-                _chromeManager.Get(CurrentAccountId).Setup(access);
+                var access = context.Accesses.Where(x => x.AccountId == CurrentAccount.Id).OrderBy(x => x.LastUsed).FirstOrDefault();
+                _chromeManager.Get(CurrentAccount.Id).Setup(access);
             });
-            _taskManager.UpdateAccountStatus(CurrentAccountId, AccountStatus.Online);
+            _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Online);
         }
 
         private async Task LogoutTask()
         {
-            _taskManager.UpdateAccountStatus(CurrentAccountId, AccountStatus.Stopping);
+            _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Stopping);
             await Task.Run(() =>
             {
-                _chromeManager.Get(CurrentAccountId).Close();
+                _chromeManager.Get(CurrentAccount.Id).Close();
             });
-            _taskManager.UpdateAccountStatus(CurrentAccountId, AccountStatus.Offline);
+            _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Offline);
         }
 
         private async Task LoginAllTask()
@@ -99,7 +96,7 @@ namespace WPFUI
 
         private void EditAccountTask()
         {
-            _accountWindow.ViewModel.AccountId = CurrentAccountId;
+            _accountWindow.ViewModel.AccountId = CurrentAccount.Id;
             _accountWindow.ViewModel.LoadData();
             _accountWindow.Show();
         }
@@ -108,7 +105,7 @@ namespace WPFUI
         {
             _waitingWindow.ViewModel.Text = "saving data";
             _waitingWindow.Show();
-            await Task.Run(() => DeleteAccount(CurrentAccountId));
+            await Task.Run(() => DeleteAccount(CurrentAccount.Id));
             _databaseEvent.OnAccountsTableUpdate();
             _waitingWindow.Hide();
         }
@@ -142,10 +139,10 @@ namespace WPFUI
 
         private void OnAccountUpdate()
         {
-            if (CurrentAccountId != -1)
+            if (CurrentAccount.Id != -1)
             {
-                IsAccountRunning = _taskManager.GetAccountStatus(CurrentAccountId) == AccountStatus.Online;
-                IsAccountNotRunning = _taskManager.GetAccountStatus(CurrentAccountId) == AccountStatus.Offline;
+                IsAccountRunning = _taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Online;
+                IsAccountNotRunning = _taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Offline;
             }
         }
 
@@ -162,11 +159,11 @@ namespace WPFUI
         private bool _accountCache = false;
         private bool _isAccountSelected = false;
         private bool _isAccountNotSelected = true;
-        private int _currentAccountId = -1;
-        private Models.Account _currentAccount;
-        public ObservableCollection<Models.Account> Accounts { get; } = new();
 
-        public Models.Account CurrentAccount
+        private Account _currentAccount;
+        public ObservableCollection<Account> Accounts { get; } = new();
+
+        public Account CurrentAccount
         {
             get => _currentAccount;
             set
@@ -176,8 +173,6 @@ namespace WPFUI
 
                 if (_currentAccount != temp)
                 {
-                    _accountCache = false;
-                    this.RaisePropertyChanged(nameof(CurrentAccountId));
                     if (value is null)
                     {
                         IsAccountNotSelected = true;
@@ -197,26 +192,6 @@ namespace WPFUI
                     }
                     _databaseEvent.OnAccountStatusUpdate();
                 }
-            }
-        }
-
-        public int CurrentAccountId
-        {
-            get
-            {
-                if (CurrentAccount is not null)
-                {
-                    if (!_accountCache)
-                    {
-                        using var context = _contextFactory.CreateDbContext();
-                        _currentAccountId = context.Accounts.Where(x => x.Server.Equals(_currentAccount.Server)).FirstOrDefault(x => x.Username.Equals(_currentAccount.Username))?.Id ?? 0;
-                    }
-                }
-                else
-                {
-                    _currentAccountId = -1;
-                }
-                return _currentAccountId;
             }
         }
 
