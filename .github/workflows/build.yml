@@ -8,6 +8,16 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        server: [TRAVIAN_OFFCIAL, TRAVIAN_OFFCIAL_HEROUI, TTWARS]
+        include:
+            - server: TRAVIAN_OFFCIAL
+              name: Travian Offcial 
+            - server: TRAVIAN_OFFCIAL_HEROUI
+              name: Travian Offcial - New hero UI
+            - server: TTWARS
+              name: TTWars 
     runs-on: windows-2019
     steps:
       - name: Setup dotnet
@@ -23,15 +33,18 @@ jobs:
 
       - name: Build Bot
         run: |
-          dotnet publish TbsWinformNet6 -c Release --self-contained true -p:PublishSingleFile=true -r win-x86
+          dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }}
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: TBS-Build-${{ github.sha }}
-          path: TbsWinformNet6\bin\Release\net6.0-windows\win-x86\publish\
+          name: TBS-Build-${{ matrix.server }}-${{ github.sha }}
+          path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
-
+  comment:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Comment on PR when success
         uses: actions/github-script@0.3.0
         if: |
