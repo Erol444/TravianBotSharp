@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 #if TRAVIAN_OFFCIAL
 
-using TravianOffcialCore;
+using TravianOffcialCore.FindElements;
 
 #elif TRAVIAN_OFFCIAL_HEROUI
 
-using TravianOfficalNewHeroUICore;
+using TravianOfficalNewHeroUICore.FindElements;
 
 #elif TTWARS
 
