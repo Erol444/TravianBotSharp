@@ -52,10 +52,12 @@ namespace MainCore.Services
 
         public void AddAccount(int accountId)
         {
-            _logs.Add(accountId, new LinkedList<LogMessage>());
-            using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(accountId);
-            _loggers.Add(accountId, Log.ForContext("Account", account.Username));
+            if (_logs.TryAdd(accountId, new LinkedList<LogMessage>()))
+            {
+                using var context = _contextFactory.CreateDbContext();
+                var account = context.Accounts.Find(accountId);
+                _loggers.Add(accountId, Log.ForContext("Account", account.Username));
+            }
         }
 
         public void Dispose()

@@ -25,7 +25,7 @@ namespace MainCore.Services
 
         public void Navigate(string url);
 
-        public void UpdateHtml(string source);
+        public void UpdateHtml(string source = null);
 
         public void WaitPageLoaded();
     }

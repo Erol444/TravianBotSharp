@@ -92,7 +92,10 @@ namespace MainCore.Services
             _taskExecuting.TryUpdate(index, true, false);
 
             var task = _tasksDict[index].First();
+
+            _logManager.Information(index, $"{task.GetType().Name} is started");
             await task.Execute();
+            _logManager.Information(index, $"{task.GetType().Name} is completed");
 
             _tasksDict[index].Remove(task);
 

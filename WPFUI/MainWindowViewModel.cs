@@ -146,7 +146,7 @@ namespace WPFUI
 
         private void OnAccountUpdate()
         {
-            if (CurrentAccount.Id != -1)
+            if (CurrentAccount is not null)
             {
                 IsAccountRunning = _taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Online;
                 IsAccountNotRunning = _taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Offline;
