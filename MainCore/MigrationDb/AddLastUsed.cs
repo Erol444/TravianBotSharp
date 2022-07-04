@@ -8,10 +8,13 @@ namespace MainCore.MigrationDb
     {
         public override void Up()
         {
-            Alter.Table("Access")
+            if (!Schema.Table("Access").Column("LastUsed").Exists())
+            {
+                Alter.Table("Access")
                 .AddColumn("LastUsed")
                 .AsDateTime()
                 .WithDefaultValue(DateTime.Now);
+            }
         }
 
         public override void Down()

@@ -7,10 +7,13 @@ namespace MainCore.MigrationDb
     {
         public override void Up()
         {
-            Alter.Table("Access")
-                .AddColumn("Useragent")
-                .AsString()
-                .Nullable();
+            if (!Schema.Table("Access").Column("Useragent").Exists())
+            {
+                Alter.Table("Access")
+                    .AddColumn("Useragent")
+                    .AsString()
+                    .Nullable();
+            }
         }
 
         public override void Down()

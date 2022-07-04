@@ -75,7 +75,7 @@ namespace MainCore.Services
                 throw new PlatformNotSupportedException("Your operating system is not supported.");
             }
 
-            string targetPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string targetPath = Path.GetDirectoryName(AppContext.BaseDirectory);
             targetPath = Path.Combine(targetPath, driverName);
             if (!forceDownload && File.Exists(targetPath))
             {

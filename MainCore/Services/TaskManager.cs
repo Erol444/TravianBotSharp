@@ -97,7 +97,7 @@ namespace MainCore.Services
             await task.Execute();
             _logManager.Information(index, $"{task.GetType().Name} is completed");
 
-            _tasksDict[index].Remove(task);
+            Remove(index, task);
 
             _taskExecuting.TryUpdate(index, false, true);
         }

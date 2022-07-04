@@ -1,6 +1,8 @@
 ﻿using FluentMigrator.Runner;
+using MainCore;
 using MainCore.MigrationDb;
 using MainCore.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using WPFUI.Views;
@@ -26,10 +28,15 @@ namespace WPFUI
             var useragentManager = SetupService.GetService<IUseragentManager>();
             await useragentManager.Load();
 
-            using (var scope = SetupService.ServiceProvider.CreateScope())
+            var contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
+            using (var context = contextFactory.CreateDbContext())
             {
+                using var scope = SetupService.ServiceProvider.CreateScope();
                 var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-                migrationRunner.MigrateUp();
+                if (!context.Database.EnsureCreated())
+                {
+                    migrationRunner.MigrateUp();
+                }
             }
 
             var timerManager = SetupService.GetService<ITimerManager>();
