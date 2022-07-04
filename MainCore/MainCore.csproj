@@ -2,15 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TTWARS</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>$(DefineConstants);TTWARS</DefineConstants>
+    <DefineConstants Condition=" '$(Server)' != '' ">$(DefineConstants);$(Server)</DefineConstants>
+    <DefineConstants Condition=" '$(Server)' == '' ">$(DefineConstants);TTWARS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
