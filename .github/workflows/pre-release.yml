@@ -94,7 +94,7 @@ jobs:
           prerelease: true
           tag: ${{needs.version.outputs.version}}
           commit: develop          
-          artifacts: ["TBS-${{needs.version.outputs.version}}-Travian Official.zip", "TBS-${{needs.version.outputs.version}}-Travian Official - New hero UI.zip", "TBS-${{needs.version.outputs.version}}-TTWars.zip"]
+          artifacts: "TBS-${{needs.version.outputs.version}}-Travian Official.zip, TBS-${{needs.version.outputs.version}}-Travian Official - New hero UI.zip, TBS-${{needs.version.outputs.version}}-TTWars.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             **Changelog**: 
