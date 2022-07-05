@@ -67,6 +67,11 @@ jobs:
         with:
           path: TBS
       
+      - name: Archive pre release
+        run: |
+            zip -r TBS-${{needs.version.outputs.version}}-Travian Official.zip TBS/TBS-Build-TRAVIAN_OFFICIAL-${{ github.sha }}
+            zip -r TBS-${{needs.version.outputs.version}}-Travian Official - New hero UI.zip TBS/TBS-Build-TRAVIAN_OFFICIAL_HEROUI-${{ github.sha }}
+            zip -r TBS-${{needs.version.outputs.version}}-TTWars.zip TBS/TBS-Build-TTWARS-${{ github.sha }}
+            
       - name: Display structure of downloaded files
-        run: ls -R
-        working-directory: TBS
+        run: ls
