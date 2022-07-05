@@ -58,7 +58,7 @@ jobs:
           name: TBS-Build-${{ matrix.server }}-${{ github.sha }}
           path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
-  test:
+  check:
     needs: build
     runs-on: ubuntu-latest
     steps:        
