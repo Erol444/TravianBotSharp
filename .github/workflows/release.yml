@@ -5,7 +5,7 @@ on:
     branches: [master,premium]
     types: [closed]
   workflow_dispatch:
-  
+
 jobs:
   version:
     if: github.event.pull_request.merged == true
