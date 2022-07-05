@@ -58,3 +58,15 @@ jobs:
           name: TBS-Build-${{ matrix.server }}-${{ github.sha }}
           path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:        
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          path: TBS
+      
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: TBS
