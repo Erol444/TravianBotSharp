@@ -2,7 +2,7 @@ name: ReleaseFlow
 
 on:
   pull_request:
-    branches: [master,premium]
+    branches: [master]
     types: [closed]
   workflow_dispatch:
 
