@@ -47,6 +47,9 @@ jobs:
   build:
     runs-on: windows-2019
     needs: version
+    strategy:
+      matrix:
+        server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
     steps:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v2
@@ -60,13 +63,13 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Build Bot
-        run: |
-          dotnet publish TbsWinformNet6 -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:AssemblyVersion=${{needs.version.outputs.version}}.0
+        run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }} -p:AssemblyVersion=${{needs.version.outputs.version}}.0
+
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: TBS-prerelease
-          path: TbsWinformNet6\bin\Release\net6.0-windows\win-x86\publish\
+          name: TBS-${{ matrix.server }}
+          path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
 
   prerelease:
@@ -74,14 +77,15 @@ jobs:
     needs: [build, version]
     steps:        
       - name: Download artifact
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v3
         with:
-          name: TBS-prerelease
-          path: TBS-${{needs.version.outputs.version}}
+          path: TBS
+      
       - name: Archive pre release
-        uses: montudor/action-zip@v1
-        with:
-            args: zip -r TBS-${{needs.version.outputs.version}}.zip TBS-${{needs.version.outputs.version}}
+        run: |
+            zip -r "TBS-${{needs.version.outputs.version}}-Travian Official.zip" TBS/TBS-TRAVIAN_OFFICIAL
+            zip -r "TBS-${{needs.version.outputs.version}}-Travian Official - New hero UI.zip" TBS/TBS-TRAVIAN_OFFICIAL_HEROUI
+            zip -r "TBS-${{needs.version.outputs.version}}-TTWars.zip" TBS/TBS-TTWARS
 
       - name: Create pre release
         uses: ncipollo/release-action@v1
@@ -94,7 +98,7 @@ jobs:
             **Changelog**: 
             ${{needs.version.outputs.changelog}}
       
-          artifacts: TBS-${{needs.version.outputs.version}}.zip
+          artifacts: "TBS-${{needs.version.outputs.version}}-Travian Official.zip", "TBS-${{needs.version.outputs.version}}-Travian Official - New hero UI.zip", "TBS-${{needs.version.outputs.version}}-TTWars.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
   Discord:
     runs-on: ubuntu-latest

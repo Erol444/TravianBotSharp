@@ -29,13 +29,6 @@ jobs:
     strategy:
       matrix:
         server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
-        include:
-            - server: TRAVIAN_OFFICIAL
-              name: Travian Official 
-            - server: TRAVIAN_OFFICIAL_HEROUI
-              name: Travian Official - New hero UI
-            - server: TTWARS
-              name: TTWars 
     runs-on: windows-2019
     steps:
       - name: Setup dotnet
@@ -58,20 +51,3 @@ jobs:
           name: TBS-Build-${{ matrix.server }}-${{ github.sha }}
           path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
-  check:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:        
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          path: TBS
-      
-      - name: Archive pre release
-        run: |
-            zip -r "TBS-${{needs.version.outputs.version}}-Travian Official.zip" TBS/TBS-Build-TRAVIAN_OFFICIAL-${{ github.sha }}
-            zip -r "TBS-${{needs.version.outputs.version}}-Travian Official - New hero UI.zip" TBS/TBS-Build-TRAVIAN_OFFICIAL_HEROUI-${{ github.sha }}
-            zip -r "TBS-${{needs.version.outputs.version}}-TTWars.zip" TBS/TBS-Build-TTWARS-${{ github.sha }}
-            
-      - name: Display structure of downloaded files
-        run: ls
