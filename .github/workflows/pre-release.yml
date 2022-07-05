@@ -87,7 +87,19 @@ jobs:
             zip -r "TBS-${{needs.version.outputs.version}}-Travian Official - New hero UI.zip" TBS/TBS-TRAVIAN_OFFICIAL_HEROUI
             zip -r "TBS-${{needs.version.outputs.version}}-TTWars.zip" TBS/TBS-TTWARS
 
-
+      - name: Create pre release
+        uses: ncipollo/release-action@v1
+        with:
+          name: TBS-${{needs.version.outputs.version}}-pre
+          prerelease: true
+          tag: ${{needs.version.outputs.version}}
+          commit: develop
+          body: |
+            **Changelog**: 
+            ${{needs.version.outputs.changelog}}
+      
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Create pre release
         uses: ncipollo/release-action@v1
         with:
