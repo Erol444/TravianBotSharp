@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <DefineConstants Condition=" '$(Server)' != '' ">$(DefineConstants);$(Server)</DefineConstants>
-    <DefineConstants Condition=" '$(Server)' == '' ">$(DefineConstants);TTWARS</DefineConstants>
+    <DefineConstants Condition="'$(Server)' != ''">$(DefineConstants);$(Server)</DefineConstants>
+    <DefineConstants Condition="'$(Server)' == ''">$(DefineConstants);TTWARS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,22 +17,16 @@
 
   <ItemGroup>
     <EmbeddedResource Include="ExtensionFile\audiocontext-fingerprint.crx">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="ExtensionFile\canvas-fingerprint-defend.crx">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="ExtensionFile\DisableWebRTCLeak.crx">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="ExtensionFile\font-fingerprint-defender.crx">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="ExtensionFile\spoof-timezone.crx">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
     <EmbeddedResource Include="ExtensionFile\webgl-fingerprint-defende.crx">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
@@ -51,13 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TravianOffcialCore\TravianOffcialCore.csproj" />
-    <ProjectReference Include="..\TravianOfficalNewHeroUICore\TravianOfficalNewHeroUICore.csproj" />
-    <ProjectReference Include="..\TTWarsCore\TTWarsCore.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Logging\" />
+    <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL'" Include="..\TravianOffcialCore\TravianOffcialCore.csproj" />
+    <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL_HEROUI'" Include="..\TravianOfficalNewHeroUICore\TravianOfficalNewHeroUICore.csproj" />
+    <ProjectReference Condition="'$(Server)' == 'TTWARS' Or '$(Server)' == ''" Include="..\TTWarsCore\TTWarsCore.csproj" />
   </ItemGroup>
 
 </Project>
