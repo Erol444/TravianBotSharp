@@ -87,6 +87,7 @@ jobs:
             zip -r "TBS-${{needs.version.outputs.version}}-Travian Official - New hero UI.zip" TBS/TBS-TRAVIAN_OFFICIAL_HEROUI
             zip -r "TBS-${{needs.version.outputs.version}}-TTWars.zip" TBS/TBS-TTWARS
 
+
       - name: Create pre release
         uses: ncipollo/release-action@v1
         with:
