@@ -14,25 +14,25 @@ jobs:
         uses: actions/setup-dotnet@v2
         with:
             dotnet-version: 6.0.x
-      
+
       - name: 'Checkout repo' 
         uses: actions/checkout@v2
 
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
-      - name: Build Bot
-        run: |
-          dotnet test
 
+      - name: Test bot
+        run: dotnet test
+          
   build:
     needs: test
     strategy:
       matrix:
-        server: [TRAVIAN_OFFCIAL, TRAVIAN_OFFCIAL_HEROUI, TTWARS]
+        server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
         include:
-            - server: TRAVIAN_OFFCIAL
+            - server: TRAVIAN_OFFICIAL
               name: Travian Offcial 
-            - server: TRAVIAN_OFFCIAL_HEROUI
+            - server: TRAVIAN_OFFICIAL_HEROUI
               name: Travian Offcial - New hero UI
             - server: TTWARS
               name: TTWars 
