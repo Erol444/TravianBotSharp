@@ -7,7 +7,28 @@ on:
   workflow_dispatch:
 
 jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+            dotnet-version: 6.0.x
+
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v2
+
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+
+      - name: Test bot
+        run: dotnet test
+          
   build:
+    needs: test
+    strategy:
+      matrix:
+        server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
     runs-on: windows-2019
     steps:
       - name: Setup dotnet
@@ -22,33 +43,11 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Build Bot
-        run: |
-          dotnet publish TbsWinformNet6 -c Release --self-contained true -p:PublishSingleFile=true -r win-x86
+        run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }}
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: TBS-Build-${{ github.sha }}
-          path: TbsWinformNet6\bin\Release\net6.0-windows\win-x86\publish\
+          name: TBS-Build-${{ matrix.server }}-${{ github.sha }}
+          path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
-
-      - name: Comment on PR when success
-        uses: actions/github-script@0.3.0
-        if: |
-          github.event_name == 'pull_request' && success()
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-            github.issues.createComment({ issue_number, owner, repo, body: "Congratulation this commit was built successfully. Check detail [here](https://github.com/Erol444/TravianBotSharp/actions/runs/${{ github.run_id }}?check_suite_focus=true)" });
-
-      - name: Comment on PR when fail
-        uses: actions/github-script@0.3.0
-        if: |
-          github.event_name == 'pull_request' && failure()
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-            github.issues.createComment({ issue_number, owner, repo, body: "There is error while building this commit. Check detail [here](https://github.com/Erol444/TravianBotSharp/actions/runs/${{ github.run_id }}?check_suite_focus=true)" });
-

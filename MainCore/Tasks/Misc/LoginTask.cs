@@ -7,11 +7,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-#if TRAVIAN_OFFCIAL
+#if TRAVIAN_OFFICIAL
 
 using TravianOffcialCore.FindElements;
 
-#elif TRAVIAN_OFFCIAL_HEROUI
+#elif TRAVIAN_OFFICIAL_HEROUI
 
 using TravianOfficalNewHeroUICore.FindElements;
 

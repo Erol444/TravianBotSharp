@@ -18,36 +18,40 @@ namespace WPFUI
             #region Commands
 
             this.BindCommand(ViewModel,
+                vm => vm.CheckVersionCommand,
+                v => v.CheckVersionButton
+            );
+            this.BindCommand(ViewModel,
                 vm => vm.AddAccountCommand,
-                v => v.AddAccount
+                v => v.AddAccountButton
             );
             this.BindCommand(ViewModel,
                vm => vm.AddAccountsCommand,
-               v => v.AddAccounts
+               v => v.AddAccountsButton
            );
             this.BindCommand(ViewModel,
                vm => vm.LoginCommand,
-               v => v.Login
+               v => v.LoginButton
            );
             this.BindCommand(ViewModel,
                vm => vm.LogoutCommand,
-               v => v.Logout
+               v => v.LogoutButton
            );
             this.BindCommand(ViewModel,
                vm => vm.EditAccountCommand,
-               v => v.Edit
+               v => v.EditButton
            );
             this.BindCommand(ViewModel,
                vm => vm.DeleteAccountCommand,
-               v => v.Delete
+               v => v.DeleteButton
            );
             this.BindCommand(ViewModel,
                vm => vm.LoginAllCommand,
-               v => v.LoginAll
+               v => v.LoginAllButton
            );
             this.BindCommand(ViewModel,
                vm => vm.LogoutAllCommand,
-               v => v.LogoutAll
+               v => v.LogoutAllButton
            );
 
             #endregion Commands
