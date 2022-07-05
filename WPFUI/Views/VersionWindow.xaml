@@ -1,0 +1,45 @@
+﻿<reactiveui:ReactiveWindow
+        x:Class="WPFUI.Views.VersionWindow"
+        x:TypeArguments="local:VersionViewModel"
+        xmlns:reactiveui="http://reactiveui.net"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPFUI.ViewModels"
+        mc:Ignorable="d"
+        Title="VersionWindow" Height="300" Width="600" WindowStyle="None" WindowStartupLocation="CenterScreen">
+    <Grid Margin="5,5,5,5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Border x:Name="StatusBorder" BorderBrush="Black" BorderThickness="1,1,1,1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,20,20,10">
+            <TextBlock x:Name="StatusLabel" FontSize="40" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Foreground="Black"  />
+        </Border>
+        <Border x:Name="CurrentBorder" BorderBrush="Black" BorderThickness="1" Margin="20,10,20,0" Grid.Row="2">
+            <TextBlock x:Name="CurrentLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" />
+        </Border>
+        <Border x:Name="LastVersionBorder" BorderBrush="Black" BorderThickness="1" Grid.Column="1" Margin="20,10,20,0" Grid.Row="2">
+            <TextBlock x:Name="LastVersionLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" />
+        </Border>
+        <Border x:Name="LastBuildBorder" BorderBrush="Black" BorderThickness="1" Grid.Column="2" Margin="20,10,20,0" Grid.Row="2">
+            <TextBlock x:Name="LastBuildLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" />
+        </Border>
+        <Border x:Name="NoteBorder" BorderBrush="Black" BorderThickness="1" Grid.ColumnSpan="3" Margin="20,5,20,5" Grid.Row="3">
+            <TextBlock x:Name="NoteLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Latest version is stable (we hope) while latest build is unstable and maybe for tester only" VerticalAlignment="Center" />
+        </Border>
+        <Button x:Name="DiscordButton" Content="Discord" HorizontalAlignment="Stretch" Margin="20,0,20,0" Grid.Row="1" VerticalAlignment="Stretch" />
+        <Button x:Name="LastVersionButton" Grid.Column="1" Content="Download latest version" HorizontalAlignment="Stretch" Margin="20,0,20,0" Grid.Row="1" VerticalAlignment="Stretch" />
+        <Button x:Name="LastBuildButton" Grid.Column="2" Content="Download latest build" HorizontalAlignment="Stretch" Margin="20,0,20,0" Grid.Row="1" VerticalAlignment="Stretch" />
+        <Button x:Name="CloseButton" Content="Close" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Margin="20,0,20,10" Grid.Row="4" VerticalAlignment="Stretch" />
+    </Grid>
+</reactiveui:ReactiveWindow>

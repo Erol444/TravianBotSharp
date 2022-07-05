@@ -46,6 +46,7 @@ namespace WPFUI
             services.AddSingleton<MainWindow>();
             services.AddSingleton<AccountWindow>();
             services.AddSingleton<AccountsWindow>();
+            services.AddSingleton<VersionWindow>();
 
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite("DataSource=TBS.db;Cache=Shared"));
             services.AddSingleton<IChromeManager, ChromeManager>();

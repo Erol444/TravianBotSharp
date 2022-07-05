@@ -5,6 +5,8 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
+    <AssemblyName>TravianBotSharp</AssemblyName>
+    <AssemblyVersion>1975.4.30</AssemblyVersion>
   </PropertyGroup>
 
   <ItemGroup>

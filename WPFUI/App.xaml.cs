@@ -45,6 +45,10 @@ namespace WPFUI
             var logManager = SetupService.GetService<ILogManager>();
             logManager.Init();
 
+            var versionWindow = SetupService.GetService<VersionWindow>();
+            await versionWindow.ViewModel.Load();
+            if (versionWindow.ViewModel.IsNewVersion) versionWindow.Show();
+
             var mainWindow = SetupService.GetService<MainWindow>();
             mainWindow.ViewModel.LoadData();
             mainWindow.Show();

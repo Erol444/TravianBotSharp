@@ -29,7 +29,9 @@ namespace WPFUI
             _accountWindow = SetupService.GetService<AccountWindow>();
             _accountsWindow = SetupService.GetService<AccountsWindow>();
             _waitingWindow = SetupService.GetService<WaitingWindow>();
+            _versionWindow = SetupService.GetService<VersionWindow>();
 
+            CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
@@ -41,8 +43,6 @@ namespace WPFUI
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
         }
 
-        #region Main
-
         public void LoadData()
         {
             using var context = _contextFactory.CreateDbContext();
@@ -52,6 +52,11 @@ namespace WPFUI
             {
                 Accounts.Add(item);
             }
+        }
+
+        private void CheckVersionTask()
+        {
+            _versionWindow.Show();
         }
 
         private void AddAccountTask()
@@ -162,6 +167,7 @@ namespace WPFUI
         private readonly AccountWindow _accountWindow;
         private readonly AccountsWindow _accountsWindow;
         private readonly WaitingWindow _waitingWindow;
+        private readonly VersionWindow _versionWindow;
 
         private bool _closed = false;
         private bool _isAccountSelected = false;
@@ -238,6 +244,7 @@ namespace WPFUI
             set => this.RaiseAndSetIfChanged(ref _isAccountNotSelected, value);
         }
 
+        public ReactiveCommand<Unit, Unit> CheckVersionCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }
         public ReactiveCommand<Unit, Unit> EditAccountCommand { get; }
@@ -247,7 +254,5 @@ namespace WPFUI
         public ReactiveCommand<Unit, Unit> LoginAllCommand { get; }
         public ReactiveCommand<Unit, Unit> LogoutAllCommand { get; }
         public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
-
-        #endregion Main
     }
 }
