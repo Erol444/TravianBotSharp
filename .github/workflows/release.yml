@@ -73,7 +73,7 @@ jobs:
           path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
 
-  prerelease:
+  release:
     runs-on: ubuntu-latest
     needs: [build, version]
     steps:        
