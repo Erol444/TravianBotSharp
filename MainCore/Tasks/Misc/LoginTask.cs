@@ -28,27 +28,43 @@ namespace MainCore.Tasks.Misc
         public LoginTask(int accountId, IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, ILogManager logManager, IDatabaseEvent databaseEvent)
             : base(accountId, contextFactory, chromeBrowser, taskManager, logManager, databaseEvent) { }
 
-        public override async Task<TaskRes> Execute()
+        public override Task Execute()
         {
-            using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(_accountId);
+            return Task.Run(Login);
+        }
 
-            var url = _chromeBrowser.GetCurrentUrl();
-            if (!url.Contains(account.Server))
+        private void Login()
+        {
+            var html = _chromeBrowser.GetHtml();
+
+            var usernameNode = LoginPage.GetUsernameNode(html);
+            if (usernameNode is null)
             {
-                await Task.Run(() => _chromeBrowser.Navigate(account.Server));
+                _logManager.Warning(_accountId, "[Login Task] Cannot find username box");
+                _taskManager.UpdateAccountStatus(_accountId, AccountStatus.Offline);
+                return;
+            }
+            var passwordNode = LoginPage.GetPasswordNode(html);
+            if (passwordNode is null)
+            {
+                _logManager.Warning(_accountId, "[Login Task] Cannot find password box");
+                _taskManager.UpdateAccountStatus(_accountId, AccountStatus.Offline);
+                return;
+            }
+            var buttonNode = LoginPage.GetLoginButton(html);
+            if (buttonNode is null)
+            {
+                _logManager.Warning(_accountId, "[Login Task] Cannot find login button");
+                _taskManager.UpdateAccountStatus(_accountId, AccountStatus.Offline);
+                return;
             }
 
-            _chromeBrowser.UpdateHtml();
-            var html = _chromeBrowser.GetHtml();
-            var usernameNode = LoginPage.GetUsernameNode(html);
-            var passwordNode = LoginPage.GetPasswordNode(html);
-            var buttonNode = LoginPage.GetLoginButton(html);
-
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.Accounts.Find(_accountId);
             var access = context.Accesses.Where(x => x.AccountId == _accountId).OrderByDescending(x => x.LastUsed).FirstOrDefault();
             var chrome = _chromeBrowser.GetChrome();
-            var usernameElement = chrome.FindElements(By.XPath(usernameNode.XPath));
 
+            var usernameElement = chrome.FindElements(By.XPath(usernameNode.XPath));
             usernameElement[0].SendKeys(Keys.Home);
             usernameElement[0].SendKeys(Keys.Shift + Keys.End);
             usernameElement[0].SendKeys(account.Username);
@@ -61,11 +77,9 @@ namespace MainCore.Tasks.Misc
             var buttonElement = chrome.FindElements(By.XPath(buttonNode.XPath));
             buttonElement[0].Click();
 
-            var waiter = _chromeBrowser.GetWait();
-            waiter.Until(driver => driver.Url.Contains("dorf"));
-            waiter.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
-
-            return TaskRes.Executed;
+            var wait = _chromeBrowser.GetWait();
+            wait.Until(driver => driver.Url.Contains("dorf"));
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
     }
 }

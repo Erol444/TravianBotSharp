@@ -68,7 +68,11 @@ namespace MainCore.Services
 
         public ChromeDriver GetChrome() => _driver;
 
-        public HtmlDocument GetHtml() => _htmlDoc;
+        public HtmlDocument GetHtml()
+        {
+            UpdateHtml();
+            return _htmlDoc;
+        }
 
         public WebDriverWait GetWait() => _wait;
 
@@ -113,9 +117,10 @@ namespace MainCore.Services
             }
 
             _driver.Navigate().GoToUrl(url);
+            _wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
 
-        public void UpdateHtml(string source = null)
+        private void UpdateHtml(string source = null)
         {
             if (string.IsNullOrEmpty(source))
             {
