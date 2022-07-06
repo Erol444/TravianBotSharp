@@ -17,7 +17,7 @@ namespace MainCore.Models.Runtime
 
         protected int _accountId;
 
-        public BotTask(int accountId, IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IDatabaseEvent databaseEvent, ILogManager logManager)
+        public BotTask(int accountId, IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, ILogManager logManager, IDatabaseEvent databaseEvent)
         {
             _accountId = accountId;
 
@@ -26,10 +26,11 @@ namespace MainCore.Models.Runtime
             _taskManager = taskManager;
             _databaseEvent = databaseEvent;
             _logManager = logManager;
+            ExecuteAt = DateTime.Now;
         }
 
         public TaskStage Stage { get; protected set; }
-        public DateTime ExecuteAt { get; protected set; }
+        public DateTime ExecuteAt { get; set; }
         protected int RetryCounter { get; set; } = 0;
 
         public abstract Task<TaskRes> Execute();

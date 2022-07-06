@@ -25,8 +25,8 @@ namespace MainCore.Tasks.Misc
 {
     public class LoginTask : BotTask
     {
-        public LoginTask(int accountId, IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IDatabaseEvent databaseEvent, ILogManager logManager)
-            : base(accountId, contextFactory, chromeBrowser, taskManager, databaseEvent, logManager) { }
+        public LoginTask(int accountId, IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, ILogManager logManager, IDatabaseEvent databaseEvent)
+            : base(accountId, contextFactory, chromeBrowser, taskManager, logManager, databaseEvent) { }
 
         public override async Task<TaskRes> Execute()
         {
