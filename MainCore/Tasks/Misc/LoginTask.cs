@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 #if TRAVIAN_OFFICIAL
 
-using TravianOffcialCore.FindElements;
+using TravianOffcialCore.Parsers;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
-using TravianOfficalNewHeroUICore.FindElements;
+using TravianOfficalNewHeroUICore.Parsers;
 
 #elif TTWARS
 
-using TTWarsCore.FindElements;
+using TTWarsCore.Parsers;
 
 #endif
 

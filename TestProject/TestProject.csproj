@@ -20,10 +20,28 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="FindElements\LoginPage_Travian.html">
+    <None Update="TestFile\Dorf1\Travian.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="FindElements\LoginPage_TTWars.html">
+    <None Update="TestFile\Dorf1\TravianHeroUI.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFile\Dorf1\TTWars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFile\Dorf2\Travian.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFile\Dorf2\TravianHeroUI.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFile\Dorf2\TTwars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFile\LoginPage\Travian.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestFile\LoginPage\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
