@@ -15,7 +15,7 @@ namespace MainCore.MigrationDb
             if (!Schema.Table("Villages").Exists())
             {
                 Create.Table("Villages")
-                     .WithColumn("Id").AsInt32().PrimaryKey()
+                     .WithColumn("Id").AsInt32().PrimaryKey("PK_VILLAGES")
                      .WithColumn("AccountId").AsInt32()
                      .WithColumn("Name").AsString()
                      .WithColumn("X").AsInt32()

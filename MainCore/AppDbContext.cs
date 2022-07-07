@@ -50,6 +50,28 @@ namespace MainCore
 
             #endregion Village
 
+            #region Village Building
+
+            modelBuilder.Entity<VillageBuilding>(entity =>
+            {
+                entity.ToTable("VillagesBuildings");
+                entity.HasKey(e => new { e.VillageId, e.Id })
+                    .HasName("PK_VILLAGESBUILDINGS");
+            });
+
+            #endregion Village Building
+
+            #region Village Resource
+
+            modelBuilder.Entity<VillageResources>(entity =>
+            {
+                entity.ToTable("VillagesResources");
+                entity.HasKey(e => e.VillageId)
+                    .HasName("PK_VILLAGESRESOURCES");
+            });
+
+            #endregion Village Resource
+
             #region Village Update time
 
             modelBuilder.Entity<VillageUpdateTime>(entity =>
@@ -65,6 +87,8 @@ namespace MainCore
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Access> Accesses { get; set; }
         public DbSet<Village> Villages { get; set; }
+        public DbSet<VillageBuilding> VillagesBuildings { get; set; }
+        public DbSet<VillageResources> VillagesResources { get; set; }
         public DbSet<VillageUpdateTime> VillagesUpdateTime { get; set; }
     }
 }
