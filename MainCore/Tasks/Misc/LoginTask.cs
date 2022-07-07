@@ -6,6 +6,7 @@ using OpenQA.Selenium;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using TTWarsCore.FindElements;
 
 #if TRAVIAN_OFFICIAL
 
@@ -17,7 +18,6 @@ using TravianOfficalNewHeroUICore.Parsers;
 
 #elif TTWARS
 
-using TTWarsCore.Parsers;
 
 #endif
 

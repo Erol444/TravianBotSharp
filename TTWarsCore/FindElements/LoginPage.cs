@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System.Linq;
 
-namespace TTWarsCore.Parsers
+namespace TTWarsCore.FindElements
 {
     public static class LoginPage
     {

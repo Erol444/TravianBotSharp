@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestProject.Parsers
+namespace TestProject.FindElements
 {
     [TestClass]
     public class LoginPage
@@ -19,33 +19,33 @@ namespace TestProject.Parsers
         [TestMethod]
         public void GetUsernameNode()
         {
-            var node = TTWarsCore.Parsers.LoginPage.GetUsernameNode(_ttwarsDoc);
+            var node = TTWarsCore.FindElements.LoginPage.GetUsernameNode(_ttwarsDoc);
             Assert.IsNotNull(node);
-            node = TravianOffcialCore.Parsers.LoginPage.GetUsernameNode(_travianDoc);
+            node = TravianOffcialCore.FindElements.LoginPage.GetUsernameNode(_travianDoc);
             Assert.IsNotNull(node);
-            node = TravianOfficalNewHeroUICore.Parsers.LoginPage.GetUsernameNode(_travianDoc);
+            node = TravianOfficalNewHeroUICore.FindElements.LoginPage.GetUsernameNode(_travianDoc);
             Assert.IsNotNull(node);
         }
 
         [TestMethod]
         public void GetPasswordNode()
         {
-            var node = TTWarsCore.Parsers.LoginPage.GetPasswordNode(_ttwarsDoc);
+            var node = TTWarsCore.FindElements.LoginPage.GetPasswordNode(_ttwarsDoc);
             Assert.IsNotNull(node);
-            node = TravianOffcialCore.Parsers.LoginPage.GetPasswordNode(_travianDoc);
+            node = TravianOffcialCore.FindElements.LoginPage.GetPasswordNode(_travianDoc);
             Assert.IsNotNull(node);
-            node = TravianOfficalNewHeroUICore.Parsers.LoginPage.GetPasswordNode(_travianDoc);
+            node = TravianOfficalNewHeroUICore.FindElements.LoginPage.GetPasswordNode(_travianDoc);
             Assert.IsNotNull(node);
         }
 
         [TestMethod]
         public void GetLoginButton()
         {
-            var node = TTWarsCore.Parsers.LoginPage.GetLoginButton(_ttwarsDoc);
+            var node = TTWarsCore.FindElements.LoginPage.GetLoginButton(_ttwarsDoc);
             Assert.IsNotNull(node);
-            node = TravianOffcialCore.Parsers.LoginPage.GetLoginButton(_travianDoc);
+            node = TravianOffcialCore.FindElements.LoginPage.GetLoginButton(_travianDoc);
             Assert.IsNotNull(node);
-            node = TravianOfficalNewHeroUICore.Parsers.LoginPage.GetLoginButton(_travianDoc);
+            node = TravianOfficalNewHeroUICore.FindElements.LoginPage.GetLoginButton(_travianDoc);
             Assert.IsNotNull(node);
         }
     }
