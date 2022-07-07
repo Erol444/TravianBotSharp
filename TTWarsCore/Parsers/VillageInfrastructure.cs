@@ -11,7 +11,7 @@ namespace TTWarsCore.Parsers
         {
             var villageContentNode = doc.GetElementbyId("village_map");
             if (villageContentNode is null) return new();
-            return villageContentNode.Descendants("div").ToList();
+            return villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
         }
 
         public static int GetId(HtmlNode node)
@@ -27,7 +27,7 @@ namespace TTWarsCore.Parsers
         public static int GetType(HtmlNode node)
         {
             var classess = node.GetClasses();
-            var needClass = classess.FirstOrDefault(x => x.StartsWith("gid"));
+            var needClass = classess.FirstOrDefault(x => x.StartsWith("g"));
             if (string.IsNullOrEmpty(needClass)) return -1;
             var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
 
@@ -45,7 +45,7 @@ namespace TTWarsCore.Parsers
 
         public static bool IsUnderConstruction(HtmlNode node)
         {
-            return node.Descendants("a").Any(x => x.HasClass("underConstruction"));
+            return node.Descendants("div").Any(x => x.HasClass("underConstruction"));
         }
     }
 }

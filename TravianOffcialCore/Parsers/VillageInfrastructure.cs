@@ -11,36 +11,26 @@ namespace TravianOffcialCore.Parsers
         {
             var villageContentNode = doc.GetElementbyId("villageContent");
             if (villageContentNode is null) return new();
-            return villageContentNode.Descendants("div").ToList();
+            var list = villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
+            list.RemoveAt(list.Count - 1);
+            return list;
         }
 
         public static int GetId(HtmlNode node)
         {
-            var classess = node.GetClasses();
-            var needClass = classess.FirstOrDefault(x => x.StartsWith("aid"));
-            if (string.IsNullOrEmpty(needClass)) return -1;
-            var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
-
-            return int.Parse(strResult);
+            return node.GetAttributeValue<int>("data-aid", -1);
         }
 
         public static int GetType(HtmlNode node)
         {
-            var classess = node.GetClasses();
-            var needClass = classess.FirstOrDefault(x => x.StartsWith("gid"));
-            if (string.IsNullOrEmpty(needClass)) return -1;
-            var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
-
-            return int.Parse(strResult);
+            return node.GetAttributeValue<int>("data-gid", -1);
         }
 
         public static int GetLevel(HtmlNode node)
         {
-            var labelLayerNode = node.Descendants("div").FirstOrDefault(x => x.HasClass("labelLayer"));
-            if (labelLayerNode is null) return -1;
-            var valueStrFixed = WebUtility.HtmlDecode(labelLayerNode.InnerText);
-            var valueStr = new string(valueStrFixed.Where(c => char.IsDigit(c)).ToArray());
-            return int.Parse(valueStr);
+            var aNode = node.Descendants("a").FirstOrDefault();
+            if (aNode is null) return -1;
+            return aNode.GetAttributeValue<int>("data-level", -1);
         }
 
         public static bool IsUnderConstruction(HtmlNode node)

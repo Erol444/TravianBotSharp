@@ -15,7 +15,7 @@ namespace TravianOfficalNewHeroUICore.Parsers
             return resourceFieldContainerNode.ChildNodes.Where(x => x.HasClass("level")).ToList();
         }
 
-        public static int GetResourceId(HtmlNode node)
+        public static int GetId(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("buildingSlot"));
@@ -25,7 +25,7 @@ namespace TravianOfficalNewHeroUICore.Parsers
             return int.Parse(strResult);
         }
 
-        public static int GetResourceType(HtmlNode node)
+        public static int GetType(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("gid"));
@@ -35,7 +35,7 @@ namespace TravianOfficalNewHeroUICore.Parsers
             return int.Parse(strResult);
         }
 
-        public static int GetResourceLevel(HtmlNode node)
+        public static int GetLevel(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("level") && x != "level");
