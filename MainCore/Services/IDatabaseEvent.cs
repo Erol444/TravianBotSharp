@@ -27,5 +27,9 @@ namespace MainCore.Services
         public event Action TaskExecuted;
 
         public void OnTaskExecuted();
+
+        public event Action<int> VillagesUpdated;
+
+        public void OnVillagesUpdated(int accountId);
     }
 }

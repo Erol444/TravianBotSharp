@@ -69,5 +69,16 @@ namespace MainCore.Services
         }
 
         #endregion Account selected
+
+        #region Villages table update
+
+        public event Action<int> VillagesUpdated;
+
+        public void OnVillagesUpdated(int accountId)
+        {
+            VillagesUpdated?.Invoke(accountId);
+        }
+
+        #endregion Villages table update
     }
 }
