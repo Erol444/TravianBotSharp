@@ -13,22 +13,26 @@
 
     <Grid Background="#FFE5E5E5" Margin="0,2,0,0">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="93*"/>
-            <ColumnDefinition Width="307*"/>
+            <ColumnDefinition Width="93*" />
+            <ColumnDefinition Width="307*" />
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="VillagesGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,1,0">
+        <DataGrid x:Name="VillagesGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,1,0" AutoGenerateColumns="False" IsReadOnly="True">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
                 <DataGridTextColumn Header="Coords" Binding="{Binding Coords}" />
-                <DataGridTextColumn Header="Resources status" Binding="{Binding ResourcesStatus}" />
             </DataGrid.Columns>
         </DataGrid>
         <TabControl Grid.Column="1" Margin="1,0,0,0">
+            <TabItem x:Name="NoVillageTab" Header="No village">
+                <Grid Background="#FFE5E5E5">
+                    <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="NO VILLAGE IS SELECTED" VerticalAlignment="Center" TextAlignment="Center" LineHeight="11" />
+                </Grid>
+            </TabItem>
             <TabItem x:Name="BuildTab" Header="Build">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5" />
             </TabItem>
             <TabItem x:Name="InfoTab" Header="Info">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5" />
             </TabItem>
         </TabControl>
     </Grid>

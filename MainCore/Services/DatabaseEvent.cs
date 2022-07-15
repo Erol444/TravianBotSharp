@@ -80,5 +80,16 @@ namespace MainCore.Services
         }
 
         #endregion Villages table update
+
+        #region Village selected
+
+        public event Action<int> VillageSelected;
+
+        public void OnVillageSelected(int villageId)
+        {
+            VillageSelected?.Invoke(villageId);
+        }
+
+        #endregion Village selected
     }
 }

@@ -60,7 +60,11 @@
                 <Grid Background="#FFE5E5E5" />
             </TabItem>
             <TabItem x:Name="VillagesTab" Header="Villages">
-                <Grid Background="#FFE5E5E5" />
+                <Frame>
+                    <Frame.Content>
+                        <tabs:VillagesPage />
+                    </Frame.Content>
+                </Frame>
             </TabItem>
             <TabItem x:Name="DebugTab" Header="Debug">
                 <Frame>

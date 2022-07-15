@@ -1,18 +1,5 @@
 ﻿using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
@@ -26,6 +13,31 @@ namespace WPFUI.Views.Tabs
         {
             ViewModel = new();
             InitializeComponent();
+            this.WhenActivated(d =>
+            {
+                this.OneWayBind(ViewModel,
+                    vm => vm.Villages,
+                    v => v.VillagesGrid.ItemsSource)
+                .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.IsVillageNotSelected,
+                    v => v.NoVillageTab.Visibility)
+                .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.IsVillageSelected,
+                    v => v.BuildTab.Visibility)
+                .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                   vm => vm.IsVillageSelected,
+                   v => v.InfoTab.Visibility)
+               .DisposeWith(d);
+
+                var mainWindow = SetupService.GetService<MainWindow>();
+                ViewModel.LoadData(mainWindow.ViewModel.CurrentAccount.Id);
+            });
         }
     }
 }

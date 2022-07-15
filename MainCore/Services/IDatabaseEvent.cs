@@ -12,6 +12,10 @@ namespace MainCore.Services
 
         public void OnAccountSelected(int accountId);
 
+        public event Action<int> VillageSelected;
+
+        public void OnVillageSelected(int villageId);
+
         public event Action AccountStatusUpdate;
 
         public void OnAccountStatusUpdate();
