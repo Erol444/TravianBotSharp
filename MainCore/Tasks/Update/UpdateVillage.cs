@@ -14,14 +14,16 @@ namespace MainCore.Tasks.Update
         public UpdateVillage(int villageId, int accountId, IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, ILogManager logManager, IDatabaseEvent databaseEvent)
             : base(accountId, contextFactory, chromeBrowser, taskManager, logManager, databaseEvent)
         {
-            _villageId = villageId;
+            VillageId = villageId;
         }
 
-        protected int _villageId;
+        public int VillageId { get; protected set; }
 
         public override async Task Execute()
         {
             await Task.Delay(1000);
         }
+
+        public override string Name => "Update Village";
     }
 }

@@ -34,6 +34,8 @@ namespace MainCore.Tasks.Update
             await Update();
         }
 
+        public override string Name => "Update Info";
+
         private async Task Update()
         {
             var taskFoundVills = Task.Run(UpdateVillageTable);

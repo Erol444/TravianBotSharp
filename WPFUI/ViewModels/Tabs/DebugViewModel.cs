@@ -39,7 +39,7 @@ namespace WPFUI.ViewModels.Tabs
                 {
                     Tasks.Add(new TaskModel()
                     {
-                        Task = $"{item.GetType().Name}",
+                        Task = item.Name,
                         ExecuteAt = item.ExecuteAt,
                         Stage = item.Stage,
                     });

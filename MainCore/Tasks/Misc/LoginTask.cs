@@ -32,6 +32,8 @@ namespace MainCore.Tasks.Misc
             return Task.Run(Login);
         }
 
+        public override string Name => "Login Task";
+
         private void Login()
         {
             var html = _chromeBrowser.GetHtml();

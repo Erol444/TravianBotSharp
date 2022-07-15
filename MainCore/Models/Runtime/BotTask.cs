@@ -33,6 +33,8 @@ namespace MainCore.Models.Runtime
         public DateTime ExecuteAt { get; set; }
         protected int RetryCounter { get; set; } = 0;
 
+        public abstract string Name { get; }
+
         public abstract Task Execute();
     }
 }
