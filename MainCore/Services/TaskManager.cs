@@ -20,14 +20,29 @@ namespace MainCore.Services
         public void Add(int index, BotTask task)
         {
             Check(index);
+            if (task.ExecuteAt == default) task.ExecuteAt = DateTime.Now;
             _tasksDict[index].Add(task);
-            _databaseEvent.OnTaskUpdated(index);
+            ReOrder(index);
+        }
+
+        public void Remove(int index, BotTask task)
+        {
+            Check(index);
+            _tasksDict[index].Remove(task);
+            ReOrder(index);
         }
 
         public void Clear(int index)
         {
             Check(index);
             _tasksDict[index].Clear();
+            ReOrder(index);
+        }
+
+        public void ReOrder(int index)
+        {
+            Check(index);
+            _tasksDict[index].Sort((x, y) => DateTime.Compare(x.ExecuteAt, y.ExecuteAt));
             _databaseEvent.OnTaskUpdated(index);
         }
 
@@ -37,27 +52,16 @@ namespace MainCore.Services
             return _tasksDict[index].Count;
         }
 
-        public BotTask Find(int index, Type type)
-        {
-            Check(index);
-            return _tasksDict[index].FirstOrDefault(x => x.GetType() == type);
-        }
-
         public BotTask GetCurrentTask(int index)
         {
-            return _tasksDict[index].FirstOrDefault(x => x.Stage == TaskStage.Executing);
-        }
-
-        public void Remove(int index, BotTask task)
-        {
             Check(index);
-            _tasksDict[index].Remove(task);
-            _databaseEvent.OnTaskUpdated(index);
+            return _tasksDict[index].FirstOrDefault(x => x.Stage == TaskStage.Executing);
         }
 
         public List<BotTask> GetTaskList(int index)
         {
             Check(index);
+
             return _tasksDict[index];
         }
 
@@ -94,7 +98,9 @@ namespace MainCore.Services
             var task = _tasksDict[index].First();
 
             _logManager.Information(index, $"{task.GetType().Name} is started");
+            task.Stage = TaskStage.Executing;
             await task.Execute();
+            task.Stage = TaskStage.Start;
             _logManager.Information(index, $"{task.GetType().Name} is completed");
 
             if (task.ExecuteAt < DateTime.Now) Remove(index, task);

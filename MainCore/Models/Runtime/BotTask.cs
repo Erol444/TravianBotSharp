@@ -29,7 +29,7 @@ namespace MainCore.Models.Runtime
             ExecuteAt = DateTime.Now;
         }
 
-        public TaskStage Stage { get; protected set; }
+        public TaskStage Stage { get; set; }
         public DateTime ExecuteAt { get; set; }
         protected int RetryCounter { get; set; } = 0;
 

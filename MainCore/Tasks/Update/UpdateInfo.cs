@@ -31,7 +31,7 @@ namespace MainCore.Tasks.Update
 
         public override async Task Execute()
         {
-            await Task.Run(Update);
+            await Update();
         }
 
         private async Task Update()

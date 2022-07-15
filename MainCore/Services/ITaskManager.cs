@@ -9,8 +9,6 @@ namespace MainCore.Services
     {
         public void Add(int index, BotTask task);
 
-        public BotTask Find(int index, Type type);
-
         public void Remove(int index, BotTask task);
 
         public void Clear(int index);
