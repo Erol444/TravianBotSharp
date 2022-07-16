@@ -31,12 +31,12 @@ namespace MainCore.Tasks.Update
 
         public override async Task Execute()
         {
-            await Update();
+            await UpdateVillageList();
         }
 
         public override string Name => "Update Info";
 
-        private async Task Update()
+        private async Task UpdateVillageList()
         {
             var taskFoundVills = Task.Run(UpdateVillageTable);
             using var context = _contextFactory.CreateDbContext();
@@ -64,7 +64,15 @@ namespace MainCore.Tasks.Update
             var taskSave = context.SaveChangesAsync();
             foreach (var newVill in foundVills)
             {
-                _taskManager.Add(_accountId, new UpdateVillage(newVill.Id, _accountId, _contextFactory, _chromeBrowser, _taskManager, _logManager, _databaseEvent));
+                var tasks = _taskManager.GetTaskList(_accountId).Where(x => x.GetType() == typeof(UpdateVillage)).Cast<UpdateVillage>().ToList();
+                var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
+                if (task is null)
+                {
+                    _taskManager.Add(_accountId, new UpdateVillage(newVill.Id, _accountId, _contextFactory, _chromeBrowser, _taskManager, _logManager, _databaseEvent)
+                    {
+                        IsNewVillage = true,
+                    });
+                }
             }
             await taskSave;
         }
