@@ -51,13 +51,21 @@
                 </Grid>
             </TabItem>
             <TabItem x:Name="GeneralTab" Header="General">
-                <Grid Background="#FFE5E5E5" />
+                <Frame>
+                    <Frame.Content>
+                        <tabs:GeneralPage />
+                    </Frame.Content>
+                </Frame>
             </TabItem>
             <TabItem x:Name="HeroTab" Header="Hero">
                 <Grid Background="#FFE5E5E5" />
             </TabItem>
             <TabItem x:Name="OverviewTab" Header="Overview">
-                <Grid Background="#FFE5E5E5" />
+                <Frame>
+                    <Frame.Content>
+                        <tabs:OverviewPage />
+                    </Frame.Content>
+                </Frame>
             </TabItem>
             <TabItem x:Name="VillagesTab" Header="Villages">
                 <Frame>
