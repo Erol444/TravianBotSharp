@@ -1,7 +1,10 @@
-﻿using ReactiveUI;
+﻿using MainCore.Models.Database;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,5 +12,47 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class OverviewViewModel : ReactiveObject
     {
+        public OverviewViewModel()
+        {
+            SaveCommand = ReactiveCommand.Create(SaveTask);
+            ExportCommand = ReactiveCommand.Create(ExportTask, this.WhenAnyValue(vm => vm.IsSelected));
+            ImportCommand = ReactiveCommand.Create(ImportTask, this.WhenAnyValue(vm => vm.IsSelected));
+        }
+
+        public void SaveTask()
+        {
+        }
+
+        public void ExportTask()
+        {
+        }
+
+        public void ImportTask()
+        {
+        }
+
+        public ReactiveCommand<Unit, Unit> SaveCommand;
+        public ReactiveCommand<Unit, Unit> ExportCommand;
+        public ReactiveCommand<Unit, Unit> ImportCommand;
+        public ObservableCollection<VillageSetting> VillagesSettings { get; } = new();
+        private VillageSetting _current;
+
+        public VillageSetting Current
+        {
+            get => _current;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _current, value);
+                if (value is not null) IsSelected = true;
+            }
+        }
+
+        private bool _isSelected;
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => this.RaiseAndSetIfChanged(ref _isSelected, value);
+        }
     }
 }

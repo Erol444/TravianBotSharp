@@ -7,6 +7,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:WPFUI.ViewModels.Tabs"
       xmlns:reactiveui="http://reactiveui.net"
+      xmlns:tabs="clr-namespace:WPFUI.Views.Tabs.Villages"    
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
       Title="VillagesPage">
@@ -29,10 +30,18 @@
                 </Grid>
             </TabItem>
             <TabItem x:Name="BuildTab" Header="Build">
-                <Grid Background="#FFE5E5E5" />
+                <Frame>
+                    <Frame.Content>
+                        <tabs:BuildPage />
+                    </Frame.Content>
+                </Frame>
             </TabItem>
             <TabItem x:Name="InfoTab" Header="Info">
-                <Grid Background="#FFE5E5E5" />
+                <Frame>
+                    <Frame.Content>
+                        <tabs:InfoPage />
+                    </Frame.Content>
+                </Frame>
             </TabItem>
         </TabControl>
     </Grid>
