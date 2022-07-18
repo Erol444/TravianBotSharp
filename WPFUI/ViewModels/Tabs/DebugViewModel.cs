@@ -11,9 +11,9 @@ namespace WPFUI.ViewModels.Tabs
     {
         public DebugViewModel()
         {
-            _taskManager = SetupService.GetService<ITaskManager>();
-            _logManager = SetupService.GetService<ILogManager>();
-            _databaseEvent = SetupService.GetService<IDatabaseEvent>();
+            _taskManager = App.GetService<ITaskManager>();
+            _logManager = App.GetService<ILogManager>();
+            _databaseEvent = App.GetService<IDatabaseEvent>();
 
             _databaseEvent.AccountSelected += OnAccountSelected;
             _databaseEvent.TaskUpdated += OnTasksUpdate;

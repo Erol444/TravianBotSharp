@@ -16,10 +16,10 @@ namespace WPFUI.ViewModels
     {
         public AccountsViewModel()
         {
-            _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
-            _waitingWindow = SetupService.GetService<WaitingWindow>();
-            _databaseEvent = SetupService.GetService<IDatabaseEvent>();
-            _useragentManager = SetupService.GetService<IUseragentManager>();
+            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+            _waitingWindow = App.GetService<WaitingWindow>();
+            _databaseEvent = App.GetService<IDatabaseEvent>();
+            _useragentManager = App.GetService<IUseragentManager>();
 
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
@@ -113,13 +113,13 @@ namespace WPFUI.ViewModels
 
         private void Hide()
         {
-            var accountsWindow = SetupService.GetService<AccountsWindow>();
+            var accountsWindow = App.GetService<AccountsWindow>();
             accountsWindow.Dispatcher.Invoke(accountsWindow.Hide);
         }
 
         private void Show()
         {
-            var accountsWindow = SetupService.GetService<AccountsWindow>();
+            var accountsWindow = App.GetService<AccountsWindow>();
             accountsWindow.Dispatcher.Invoke(accountsWindow.Show);
         }
 

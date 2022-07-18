@@ -62,7 +62,7 @@ namespace WPFUI.ViewModels
 
         private void CloseTask()
         {
-            _versionWindow ??= SetupService.GetService<VersionWindow>();
+            _versionWindow ??= App.GetService<VersionWindow>();
             _versionWindow.Dispatcher.Invoke(_versionWindow.Hide);
         }
 

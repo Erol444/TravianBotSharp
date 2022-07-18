@@ -18,18 +18,18 @@ namespace WPFUI
     {
         public MainWindowViewModel()
         {
-            _chromeManager = SetupService.GetService<IChromeManager>();
-            _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
-            _databaseEvent = SetupService.GetService<IDatabaseEvent>();
+            _chromeManager = App.GetService<IChromeManager>();
+            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+            _databaseEvent = App.GetService<IDatabaseEvent>();
             _databaseEvent.AccountsTableUpdate += LoadData;
             _databaseEvent.AccountStatusUpdate += OnAccountUpdate;
-            _taskManager = SetupService.GetService<ITaskManager>();
-            _logManager = SetupService.GetService<ILogManager>();
+            _taskManager = App.GetService<ITaskManager>();
+            _logManager = App.GetService<ILogManager>();
 
-            _accountWindow = SetupService.GetService<AccountWindow>();
-            _accountsWindow = SetupService.GetService<AccountsWindow>();
-            _waitingWindow = SetupService.GetService<WaitingWindow>();
-            _versionWindow = SetupService.GetService<VersionWindow>();
+            _accountWindow = App.GetService<AccountWindow>();
+            _accountsWindow = App.GetService<AccountsWindow>();
+            _waitingWindow = App.GetService<WaitingWindow>();
+            _versionWindow = App.GetService<VersionWindow>();
 
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
@@ -129,9 +129,8 @@ namespace WPFUI
             _waitingWindow.ViewModel.Text = "saving data";
             _waitingWindow.Show();
             await Task.Delay(2000);
-            var mainWindow = SetupService.GetService<MainWindow>();
+            var mainWindow = App.GetService<MainWindow>();
             mainWindow.Hide();
-            await Task.Run(SetupService.Shutdown);
             _closed = true;
             _waitingWindow.Close();
             mainWindow.Close();
@@ -190,7 +189,7 @@ namespace WPFUI
                     {
                         IsAccountNotSelected = true;
                         IsAccountSelected = false;
-                        var mainWindow = SetupService.GetService<MainWindow>();
+                        var mainWindow = App.GetService<MainWindow>();
                         mainWindow.NoAccountTab.IsSelected = true;
                         _databaseEvent.OnAccountSelected(-1);
                     }
@@ -200,7 +199,7 @@ namespace WPFUI
                         IsAccountSelected = true;
                         if (temp is null)
                         {
-                            var mainWindow = SetupService.GetService<MainWindow>();
+                            var mainWindow = App.GetService<MainWindow>();
                             mainWindow.GeneralTab.IsSelected = true;
                         }
                         _databaseEvent.OnAccountSelected(value.Id);

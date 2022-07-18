@@ -12,10 +12,10 @@ namespace WPFUI.ViewModels.Tabs
     {
         public VillagesViewModel()
         {
-            _databaseEvent = SetupService.GetService<IDatabaseEvent>();
+            _databaseEvent = App.GetService<IDatabaseEvent>();
             _databaseEvent.AccountSelected += LoadData;
             _databaseEvent.VillagesUpdated += LoadData;
-            _contextFactory = SetupService.GetService<IDbContextFactory<AppDbContext>>();
+            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
         }
 
         public void LoadData(int accountId)

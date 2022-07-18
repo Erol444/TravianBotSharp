@@ -35,7 +35,7 @@ namespace WPFUI.Views.Tabs
                    v => v.InfoTab.Visibility)
                .DisposeWith(d);
 
-                var mainWindow = SetupService.GetService<MainWindow>();
+                var mainWindow = App.GetService<MainWindow>();
                 ViewModel.LoadData(mainWindow.ViewModel.CurrentAccount.Id);
             });
         }
