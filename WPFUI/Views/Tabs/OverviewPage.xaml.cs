@@ -30,7 +30,7 @@ namespace WPFUI.Views.Tabs
                     v => v.ImportButton)
                 .DisposeWith(d);
 
-                this.Bind(ViewModel,
+                this.OneWayBind(ViewModel,
                     vm => vm.VillagesSettings,
                     v => v.VillagesGrid.ItemsSource)
                 .DisposeWith(d);

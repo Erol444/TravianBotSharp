@@ -67,18 +67,14 @@ namespace WPFUI
                 {
                     var logManager = GetService<ILogManager>();
                     logManager.Init();
-                }),
-
-                Task.Run(async () =>
-                {
-                    var versionWindow = GetService<VersionWindow>();
-
-                    await versionWindow.ViewModel.Load();
-                    if (versionWindow.ViewModel.IsNewVersion) versionWindow.Show();
                 })
             };
 
             await Task.WhenAll(tasks);
+            var versionWindow = GetService<VersionWindow>();
+
+            await versionWindow.ViewModel.Load();
+            if (versionWindow.ViewModel.IsNewVersion) versionWindow.Show();
 
             var mainWindow = GetService<MainWindow>();
             mainWindow.ViewModel.LoadData();
