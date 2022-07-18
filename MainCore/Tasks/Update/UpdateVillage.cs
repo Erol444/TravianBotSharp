@@ -25,8 +25,7 @@ namespace MainCore.Tasks.Update
 {
     public class UpdateVillage : UpdateInfo
     {
-        public UpdateVillage(int villageId, int accountId, IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, ILogManager logManager, IDatabaseEvent databaseEvent)
-            : base(accountId, contextFactory, chromeBrowser, taskManager, logManager, databaseEvent)
+        public UpdateVillage(int villageId, int accountId) : base(accountId)
         {
             VillageId = villageId;
         }
@@ -43,7 +42,7 @@ namespace MainCore.Tasks.Update
 
             await base.Execute();
 
-            var currentUrl = _chromeBrowser.GetCurrentUrl();
+            var currentUrl = ChromeBrowser.GetCurrentUrl();
             var tasks = new List<Task>();
             if (currentUrl.Contains("dorf1"))
             {
@@ -62,7 +61,7 @@ namespace MainCore.Tasks.Update
 
         private bool IsCorrectVillage()
         {
-            var html = _chromeBrowser.GetHtml();
+            var html = ChromeBrowser.GetHtml();
 
             var listNode = VillagesTable.GetVillageNodes(html);
             foreach (var node in listNode)
@@ -81,8 +80,8 @@ namespace MainCore.Tasks.Update
 
         private async Task UpdateResource()
         {
-            var html = _chromeBrowser.GetHtml();
-            using var context = _contextFactory.CreateDbContext();
+            var html = ChromeBrowser.GetHtml();
+            using var context = ContextFactory.CreateDbContext();
             var resource = context.VillagesResources.Find(VillageId);
 
             if (resource is null)
@@ -119,9 +118,9 @@ namespace MainCore.Tasks.Update
 
         private async Task UpdateDorf1()
         {
-            var html = _chromeBrowser.GetHtml();
+            var html = ChromeBrowser.GetHtml();
             var resFields = VillageFields.GetResourceNodes(html);
-            using var context = _contextFactory.CreateDbContext();
+            using var context = ContextFactory.CreateDbContext();
             foreach (var fieldNode in resFields)
             {
                 var id = VillageFields.GetId(fieldNode);
@@ -150,9 +149,9 @@ namespace MainCore.Tasks.Update
 
         private async Task UpdateDorf2()
         {
-            var html = _chromeBrowser.GetHtml();
+            var html = ChromeBrowser.GetHtml();
             var buildingNodes = VillageInfrastructure.GetBuildingNodes(html);
-            using var context = _contextFactory.CreateDbContext();
+            using var context = ContextFactory.CreateDbContext();
             foreach (var buildingNode in buildingNodes)
             {
                 var id = VillageFields.GetId(buildingNode);

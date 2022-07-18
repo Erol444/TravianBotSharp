@@ -1,5 +1,6 @@
 ﻿using MainCore.Enums;
-using MainCore.Models.Runtime;
+using MainCore.Tasks;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -10,9 +11,11 @@ namespace MainCore.Services
 {
     public class TaskManager : ITaskManager
     {
-        public TaskManager(IDatabaseEvent databaseEvent, ILogManager logManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IDatabaseEvent databaseEvent, ILogManager logManager)
         {
+            _contextFactory = contextFactory;
             _databaseEvent = databaseEvent;
+            _chromeManager = chromeManager;
             _logManager = logManager;
             _databaseEvent.TaskExecuted += Loop;
         }
@@ -21,6 +24,13 @@ namespace MainCore.Services
         {
             Check(index);
             if (task.ExecuteAt == default) task.ExecuteAt = DateTime.Now;
+
+            task.ContextFactory = _contextFactory;
+            task.DatabaseEvent = _databaseEvent;
+            task.TaskManager = this;
+            task.LogManager = _logManager;
+            task.ChromeBrowser = _chromeManager.Get(task.AccountId);
+
             _tasksDict[index].Add(task);
             ReOrder(index);
         }
@@ -134,7 +144,9 @@ namespace MainCore.Services
         private readonly ConcurrentDictionary<int, bool> _taskExecuting = new();
         private readonly Dictionary<int, AccountStatus> _botStatus = new();
 
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IDatabaseEvent _databaseEvent;
+        private readonly IChromeManager _chromeManager;
         private readonly ILogManager _logManager;
     }
 }

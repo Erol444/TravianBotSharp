@@ -80,7 +80,7 @@ namespace WPFUI
                 var chromeBrowser = _chromeManager.Get(CurrentAccount.Id);
                 chromeBrowser.Setup(access);
                 _logManager.AddAccount(CurrentAccount.Id);
-                _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id, _contextFactory, chromeBrowser, _taskManager, _logManager, _databaseEvent));
+                _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id));
             });
             await Task.Delay(5000);
 

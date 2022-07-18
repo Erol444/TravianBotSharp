@@ -1,5 +1,4 @@
 ﻿using MainCore.Models.Database;
-using MainCore.Models.Runtime;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,8 +25,9 @@ namespace MainCore.Tasks.Update
 {
     public class UpdateInfo : BotTask
     {
-        public UpdateInfo(int accountId, IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, ILogManager logManager, IDatabaseEvent databaseEvent)
-            : base(accountId, contextFactory, chromeBrowser, taskManager, logManager, databaseEvent) { }
+        public UpdateInfo(int accountId) : base(accountId)
+        {
+        }
 
         public override async Task Execute()
         {
@@ -39,8 +39,8 @@ namespace MainCore.Tasks.Update
         private async Task UpdateVillageList()
         {
             var taskFoundVills = Task.Run(UpdateVillageTable);
-            using var context = _contextFactory.CreateDbContext();
-            var taskCurrentVills = context.Villages.Where(x => x.AccountId == _accountId).ToListAsync();
+            using var context = ContextFactory.CreateDbContext();
+            var taskCurrentVills = context.Villages.Where(x => x.AccountId == AccountId).ToListAsync();
 
             var foundVills = await taskFoundVills;
             var currentVills = await taskCurrentVills;
@@ -64,11 +64,11 @@ namespace MainCore.Tasks.Update
             var taskSave = context.SaveChangesAsync();
             foreach (var newVill in foundVills)
             {
-                var tasks = _taskManager.GetTaskList(_accountId).Where(x => x.GetType() == typeof(UpdateVillage)).Cast<UpdateVillage>().ToList();
+                var tasks = TaskManager.GetTaskList(AccountId).Where(x => x.GetType() == typeof(UpdateVillage)).Cast<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
                 if (task is null)
                 {
-                    _taskManager.Add(_accountId, new UpdateVillage(newVill.Id, _accountId, _contextFactory, _chromeBrowser, _taskManager, _logManager, _databaseEvent)
+                    TaskManager.Add(AccountId, new UpdateVillage(newVill.Id, AccountId)
                     {
                         IsNewVillage = true,
                     });
@@ -79,7 +79,7 @@ namespace MainCore.Tasks.Update
 
         private List<Village> UpdateVillageTable()
         {
-            var html = _chromeBrowser.GetHtml();
+            var html = ChromeBrowser.GetHtml();
 
             var listNode = VillagesTable.GetVillageNodes(html);
             var listVillage = new List<Village>();
@@ -91,7 +91,7 @@ namespace MainCore.Tasks.Update
                 var y = VillagesTable.GetY(node);
                 listVillage.Add(new()
                 {
-                    AccountId = _accountId,
+                    AccountId = AccountId,
                     Id = id,
                     Name = name,
                     X = x,
