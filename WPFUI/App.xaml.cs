@@ -1,6 +1,7 @@
-﻿using FluentMigrator.Runner;
+﻿//using FluentMigrator.Runner;
 using MainCore;
-using MainCore.MigrationDb;
+
+//using MainCore.MigrationDb;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,12 +50,19 @@ namespace WPFUI
                 {
                     var contextFactory = GetService<IDbContextFactory<AppDbContext>>();
                     using var context = contextFactory.CreateDbContext();
-                    using var scope = Provider.CreateScope();
-                    var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-                    if (!context.Database.EnsureCreated())
-                    {
-                        migrationRunner.MigrateUp();
-                    }
+                    //using var scope = Provider.CreateScope();
+                    //var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+                    //if (!context.Database.EnsureCreated())
+                    //{
+                    //    migrationRunner.MigrateUp();
+                    //}
+                    context.Database.EnsureDeleted();
+                    context.Database.EnsureCreated();
+                    context.Accounts.Add(new MainCore.Models.Database.Account{
+                        Server = "adasd",
+                        Username = "vina",
+                    });
+                    context.SaveChanges();
                 }),
 
                 Task.Run(() =>
@@ -94,6 +102,7 @@ namespace WPFUI
             services.AddSingleton<AccountWindow>();
             services.AddSingleton<AccountsWindow>();
             services.AddSingleton<VersionWindow>();
+            services.AddSingleton<AccountSettingsWindow>();
 
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(_connectionString));
             services.AddSingleton<IChromeManager, ChromeManager>();
@@ -104,11 +113,11 @@ namespace WPFUI
             services.AddSingleton<ITaskManager, TaskManager>();
             services.AddSingleton<ILogManager, LogManager>();
 
-            services.AddFluentMigratorCore()
-                .ConfigureRunner(rb => rb
-                .AddSQLite()
-                .WithGlobalConnectionString(_connectionString)
-                .ScanIn(typeof(AddUserAgent).Assembly).For.Migrations());
+            //services.AddFluentMigratorCore()
+            //    .ConfigureRunner(rb => rb
+            //    .AddSQLite()
+            //    .WithGlobalConnectionString(_connectionString)
+            //    .ScanIn(typeof(AddUserAgent).Assembly).For.Migrations());
             return services;
         }
     }

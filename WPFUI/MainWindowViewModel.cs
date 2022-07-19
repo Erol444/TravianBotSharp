@@ -28,6 +28,7 @@ namespace WPFUI
 
             _accountWindow = App.GetService<AccountWindow>();
             _accountsWindow = App.GetService<AccountsWindow>();
+            _accountSettingsWindow = App.GetService<AccountSettingsWindow>();
             _waitingWindow = App.GetService<WaitingWindow>();
             _versionWindow = App.GetService<VersionWindow>();
 
@@ -36,6 +37,8 @@ namespace WPFUI
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
             DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
+            SettingsAccountCommand = ReactiveCommand.Create(SettingsAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
+
             LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
             LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAccountRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
@@ -122,6 +125,12 @@ namespace WPFUI
             _waitingWindow.Hide();
         }
 
+        private void SettingsAccountTask()
+        {
+            _accountSettingsWindow.ViewModel.LoadData();
+            _accountSettingsWindow.Show();
+        }
+
         private async Task ClosingTask(CancelEventArgs e)
         {
             if (_closed) return;
@@ -142,6 +151,26 @@ namespace WPFUI
 
             var accesses = context.Accesses.Where(x => x.AccountId == index);
             context.Accesses.RemoveRange(accesses);
+
+            var settings = context.AccountsSettings.Where(x => x.AccountId == index);
+            context.AccountsSettings.RemoveRange(settings);
+
+            var villages = context.Villages.Where(x => x.AccountId == index);
+            foreach (var village in villages)
+            {
+                var villagesResource = context.VillagesResources.Where(x => x.VillageId == village.Id);
+                context.VillagesResources.RemoveRange(villagesResource);
+
+                var villagesBuilding = context.VillagesBuildings.Where(x => x.VillageId == village.Id);
+                context.VillagesBuildings.RemoveRange(villagesBuilding);
+
+                var villagesUpdate = context.VillagesUpdateTime.Where(x => x.VillageId == village.Id);
+                context.VillagesUpdateTime.RemoveRange(villagesUpdate);
+
+                var villagesSetting = context.VillagesSettings.Where(x => x.VillageId == village.Id);
+                context.VillagesSettings.RemoveRange(villagesSetting);
+            }
+            context.Villages.RemoveRange(villages);
 
             var account = context.Accounts.FirstOrDefault(x => x.Id == index);
             context.Accounts.Remove(account);
@@ -165,6 +194,7 @@ namespace WPFUI
 
         private readonly AccountWindow _accountWindow;
         private readonly AccountsWindow _accountsWindow;
+        private readonly AccountSettingsWindow _accountSettingsWindow;
         private readonly WaitingWindow _waitingWindow;
         private readonly VersionWindow _versionWindow;
 
@@ -192,6 +222,7 @@ namespace WPFUI
                         var mainWindow = App.GetService<MainWindow>();
                         mainWindow.NoAccountTab.IsSelected = true;
                         _databaseEvent.OnAccountSelected(-1);
+                        App.AccountId = -1;
                     }
                     else
                     {
@@ -200,9 +231,10 @@ namespace WPFUI
                         if (temp is null)
                         {
                             var mainWindow = App.GetService<MainWindow>();
-                            mainWindow.GeneralTab.IsSelected = true;
+                            mainWindow.OverviewTab.IsSelected = true;
                         }
                         _databaseEvent.OnAccountSelected(value.Id);
+                        App.AccountId = value.Id;
                     }
                     _databaseEvent.OnAccountStatusUpdate();
                 }
@@ -248,6 +280,7 @@ namespace WPFUI
         public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }
         public ReactiveCommand<Unit, Unit> EditAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> DeleteAccountCommand { get; }
+        public ReactiveCommand<Unit, Unit> SettingsAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> LoginCommand { get; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
         public ReactiveCommand<Unit, Unit> LoginAllCommand { get; }

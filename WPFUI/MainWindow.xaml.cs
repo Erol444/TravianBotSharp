@@ -46,6 +46,10 @@ namespace WPFUI
                v => v.DeleteButton
            );
             this.BindCommand(ViewModel,
+              vm => vm.SettingsAccountCommand,
+              v => v.SettingsButton
+          );
+            this.BindCommand(ViewModel,
                vm => vm.LoginAllCommand,
                v => v.LoginAllButton
            );
@@ -75,14 +79,6 @@ namespace WPFUI
             this.OneWayBind(ViewModel,
                 vm => vm.IsAccountNotSelected,
                 v => v.NoAccountTab.Visibility);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.IsAccountSelected,
-                v => v.GeneralTab.Visibility);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.IsAccountSelected,
-                v => v.HeroTab.Visibility);
 
             this.OneWayBind(ViewModel,
                 vm => vm.IsAccountSelected,

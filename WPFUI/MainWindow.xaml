@@ -17,27 +17,29 @@
         </Grid.ColumnDefinitions>
         <Grid x:Name="LeftGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50*" />
-                <ColumnDefinition Width="63*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30*" />
-                <RowDefinition Height="30*" />
-                <RowDefinition Height="30*" />
-                <RowDefinition Height="30*" />
-                <RowDefinition Height="30*" />
-                <RowDefinition Height="300*" />
+                <RowDefinition Height="32*" />
+                <RowDefinition Height="32*" />
+                <RowDefinition Height="32*" />
+                <RowDefinition Height="32*" />
+                <RowDefinition Height="32*" />
+                <RowDefinition Height="32*" />
+                <RowDefinition Height="286*" />
             </Grid.RowDefinitions>
-            <Button x:Name="CheckVersionButton" Content="CHECK NEW VERSION" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,2" Background="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}" Foreground="White" />
-            <Button x:Name="AddAccountButton" Content="Add account" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Margin="0,0,1,2" />
-            <Button x:Name="AddAccountsButton" Grid.Column="1" Content="Add accounts" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Margin="1,0,0,2" />
-            <Button x:Name="LoginButton" Content="Login" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch" Margin="0,0,1,2" />
-            <Button x:Name="LogoutButton" Grid.Column="1" Content="Logout" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch" Margin="1,0,0,2" />
-            <Button x:Name="EditButton" Content="Edit" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Stretch" Margin="0,0,1,2" />
-            <Button x:Name="DeleteButton" Grid.Column="1" Content="Delete" HorizontalAlignment="Stretch" Grid.Row="3" VerticalAlignment="Stretch" Margin="1,0,0,2" />
-            <Button x:Name="LoginAllButton" Content="Login all" HorizontalAlignment="Stretch" Grid.Row="4" VerticalAlignment="Stretch" Margin="0,0,1,2" />
-            <Button x:Name="LogoutAllButton" Grid.Column="1" Content="Logout all" HorizontalAlignment="Stretch" Grid.Row="4" VerticalAlignment="Stretch" Margin="1,0,0,2" />
-            <DataGrid x:Name="AccountGrid" Grid.ColumnSpan="2" Grid.Row="5"  IsReadOnly="True" SelectionMode="Single" AutoGenerateColumns="False">
+            <Button x:Name="CheckVersionButton" Content="CHECK NEW VERSION" Grid.ColumnSpan="2" Margin="0,0,0,2" Background="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}" Foreground="White" />
+            <Button x:Name="AddAccountButton" Content="Add account" Grid.Row="1" Margin="0,0,1,2" />
+            <Button x:Name="AddAccountsButton" Grid.Column="1" Content="Add accounts" Grid.Row="1" Margin="1,0,0,2" />
+            <Button x:Name="LoginButton" Content="Login" Grid.Row="2" Margin="0,0,1,2" />
+            <Button x:Name="LogoutButton" Grid.Column="1" Content="Logout" Grid.Row="2" Margin="1,0,0,2" />
+            <Button x:Name="EditButton" Content="Edit" Grid.Row="3" Margin="0,0,1,2" />
+            <Button x:Name="DeleteButton" Grid.Column="1" Content="Delete" Grid.Row="3" Margin="1,0,0,2" />
+            <Button x:Name="SettingsButton" Content="Settings" Grid.ColumnSpan="2" Grid.Row="4" Margin="0,0,0,1" />
+            <Button x:Name="LoginAllButton" Content="Login all" Grid.Row="5" Margin="0,0,1,2" />
+            <Button x:Name="LogoutAllButton" Grid.Column="1" Content="Logout all" Grid.Row="5" Margin="1,0,0,2" />
+            <DataGrid x:Name="AccountGrid" Grid.ColumnSpan="2" Grid.Row="6"  IsReadOnly="True" SelectionMode="Single" AutoGenerateColumns="False">
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Account" Binding="{Binding Username}" />
                     <DataGridTextColumn Header="Server" Binding="{Binding Server}" />
@@ -49,16 +51,6 @@
                 <Grid Background="#FFE5E5E5">
                     <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="NO ACCOUNT IS SELECTED" VerticalAlignment="Center" TextAlignment="Center" LineHeight="11" />
                 </Grid>
-            </TabItem>
-            <TabItem x:Name="GeneralTab" Header="General">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:GeneralPage />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="HeroTab" Header="Hero">
-                <Grid Background="#FFE5E5E5" />
             </TabItem>
             <TabItem x:Name="OverviewTab" Header="Overview">
                 <Frame>
