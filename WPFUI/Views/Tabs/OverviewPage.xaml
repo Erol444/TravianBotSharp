@@ -14,18 +14,18 @@
 
     <Grid  Background="#FFE5E5E5" Margin="0,2,0,0">
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
-            <RowDefinition Height="10*"/>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="6*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="6*" />
+            <ColumnDefinition Width="3*" />
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="VillagesGrid" Grid.ColumnSpan="3" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="5,5,5,5" AutoGenerateColumns="False">
+        <DataGrid x:Name="VillagesGrid" Grid.ColumnSpan="3" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="5,5,5,5" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                <DataGridTextColumn Header="Coords" Binding="{Binding Coords}" />
+                <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Coords" Binding="{Binding Coords}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Update info per X mintues" Binding="{Binding TimeUpdate}" />
                 <DataGridTextColumn Header="Random range for update time" Binding="{Binding TimeUpdateRange}" />
                 <DataGridCheckBoxColumn Header="Instant upgrade" Binding="{Binding IsInstantUpgrade}" />
@@ -34,12 +34,12 @@
         </DataGrid>
         <Grid Grid.Column="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="ExportButton" Content="Export" Margin="5,5,5,5"/>
-            <Button x:Name="ImportButton" Grid.Column="1" Content="Import" Margin="5,5,5,5"/>
+            <Button x:Name="ExportButton" Content="Export" Margin="5,5,5,5" />
+            <Button x:Name="ImportButton" Grid.Column="1" Content="Import" Margin="5,5,5,5" />
         </Grid>
-        <Button x:Name="SaveButton" Content="Save" Margin="5,5,5,5"/>
+        <Button x:Name="SaveButton" Content="Save" Margin="5,5,5,5" />
     </Grid>
 </rxui:ReactivePage>
