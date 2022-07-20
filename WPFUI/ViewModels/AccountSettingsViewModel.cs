@@ -9,6 +9,7 @@ using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using WPFUI.Views;
 
 namespace WPFUI.ViewModels
 {
@@ -17,6 +18,7 @@ namespace WPFUI.ViewModels
         public AccountSettingsViewModel()
         {
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+            _waitingWindow = App.GetService<WaitingWindow>();
 
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CloseCommand = ReactiveCommand.Create(CloseTask);
@@ -67,6 +69,7 @@ namespace WPFUI.ViewModels
             var account = context.Accounts.Find(index);
             Username = account.Username;
             Server = account.Server;
+            _waitingWindow.Hide();
         }
 
         private async Task SaveTask()
@@ -111,6 +114,7 @@ namespace WPFUI.ViewModels
                 MessageBox.Show("Sleep time range is non-numeric.", "Warning");
                 return;
             }
+            _waitingWindow.Show();
 
             await Task.Run(() =>
             {
@@ -151,6 +155,8 @@ namespace WPFUI.ViewModels
                 context.Update(accountSetting);
                 context.SaveChanges();
             });
+            _waitingWindow.Hide();
+
             MessageBox.Show("Saved.", "Info");
         }
 
@@ -277,5 +283,6 @@ namespace WPFUI.ViewModels
         }
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly WaitingWindow _waitingWindow;
     }
 }

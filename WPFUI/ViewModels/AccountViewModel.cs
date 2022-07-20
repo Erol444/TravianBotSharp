@@ -3,6 +3,7 @@ using MainCore.Models.Database;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -101,7 +102,7 @@ namespace WPFUI.ViewModels
                 }
             }
             _waitingWindow.ViewModel.Text = "adding account";
-            Hide();
+            CloseWindow?.Invoke();
             _waitingWindow.Show();
 
             await Task.Run(() =>
@@ -113,7 +114,7 @@ namespace WPFUI.ViewModels
                     if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
                     {
                         MessageBox.Show("This account was already in TBS", "Warning");
-                        Show();
+                        ShowWindow?.Invoke();
                         return;
                     }
 
@@ -164,7 +165,7 @@ namespace WPFUI.ViewModels
 
         private void CancelTask()
         {
-            Hide();
+            CloseWindow?.Invoke();
             Clean();
         }
 
@@ -173,18 +174,6 @@ namespace WPFUI.ViewModels
             Server = "";
             Username = "";
             Accessess.Clear();
-        }
-
-        private void Hide()
-        {
-            var accountWindow = App.GetService<AccountWindow>();
-            accountWindow.Dispatcher.Invoke(accountWindow.Hide);
-        }
-
-        private void Show()
-        {
-            var accountWindow = App.GetService<AccountWindow>();
-            accountWindow.Dispatcher.Invoke(accountWindow.Show);
         }
 
         private string _server;
@@ -215,5 +204,9 @@ namespace WPFUI.ViewModels
         public ReactiveCommand<Unit, Unit> TestAllCommand { get; }
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }
+
+        public event Action CloseWindow;
+
+        public event Action ShowWindow;
     }
 }

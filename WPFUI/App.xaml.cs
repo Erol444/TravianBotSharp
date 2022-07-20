@@ -62,6 +62,10 @@ namespace WPFUI
                         Server = "adasd",
                         Username = "vina",
                     });
+                     context.Accounts.Add(new MainCore.Models.Database.Account{
+                        Server = "as",
+                        Username = "ghost",
+                    });
                     context.SaveChanges();
                 }),
 
