@@ -11,6 +11,7 @@ namespace WPFUI.Views
         public VersionWindow()
         {
             ViewModel = new();
+            ViewModel.CloseWindow += Hide;
             InitializeComponent();
 
             #region command

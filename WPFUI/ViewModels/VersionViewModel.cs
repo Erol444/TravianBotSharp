@@ -62,8 +62,7 @@ namespace WPFUI.ViewModels
 
         private void CloseTask()
         {
-            _versionWindow ??= App.GetService<VersionWindow>();
-            _versionWindow.Dispatcher.Invoke(_versionWindow.Hide);
+            CloseWindow?.Invoke();
         }
 
         private string _currentVersion = "0.0.0";
@@ -136,5 +135,7 @@ namespace WPFUI.ViewModels
         public ReactiveCommand<Unit, Unit> LatestVersionCommand { get; }
         public ReactiveCommand<Unit, Unit> LatestBuildCommand { get; }
         public ReactiveCommand<Unit, Unit> CloseCommand { get; }
+
+        public event Action CloseWindow;
     }
 }

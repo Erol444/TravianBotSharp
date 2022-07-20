@@ -13,6 +13,9 @@ namespace WPFUI.Views
             ViewModel = new();
             InitializeComponent();
 
+            ViewModel.ShowWindow += Show;
+            ViewModel.CloseWindow += Hide;
+
             #region Commands
 
             this.BindCommand(ViewModel,

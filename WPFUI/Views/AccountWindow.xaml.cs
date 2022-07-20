@@ -11,7 +11,8 @@ namespace WPFUI.Views
         public AccountWindow()
         {
             ViewModel = new();
-
+            ViewModel.CloseWindow += Hide;
+            ViewModel.ShowWindow += Show;
             InitializeComponent();
 
             #region Commands

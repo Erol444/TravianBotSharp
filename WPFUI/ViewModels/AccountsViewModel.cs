@@ -3,6 +3,7 @@ using MainCore.Models.Database;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -55,7 +56,8 @@ namespace WPFUI.ViewModels
                 }
             }
             _waitingWindow.ViewModel.Text = "adding accounts";
-            Hide();
+            CloseWindow?.Invoke();
+
             _waitingWindow.Show();
 
             await Task.Run(() =>
@@ -67,7 +69,7 @@ namespace WPFUI.ViewModels
                     if (context.Accounts.Any(x => x.Username.Equals(acc.Username) && x.Server.Equals(acc.Server)))
                     {
                         MessageBox.Show($"Account {acc.Username} - {acc.Server} was already in TBS", "Warning");
-                        Show();
+                        ShowWindow?.Invoke();
                         return;
                     }
                     var account = new Account()
@@ -76,7 +78,6 @@ namespace WPFUI.ViewModels
                         Server = acc.Server,
                     };
                     context.Add(account);
-                    context.SaveChanges();
 
                     var accessDb = new Access()
                     {
@@ -101,7 +102,8 @@ namespace WPFUI.ViewModels
 
         private void CancelTask()
         {
-            Hide();
+            CloseWindow?.Invoke();
+
             Clean();
         }
 
@@ -109,18 +111,6 @@ namespace WPFUI.ViewModels
         {
             InputText = "";
             Accounts.Clear();
-        }
-
-        private void Hide()
-        {
-            var accountsWindow = App.GetService<AccountsWindow>();
-            accountsWindow.Dispatcher.Invoke(accountsWindow.Hide);
-        }
-
-        private void Show()
-        {
-            var accountsWindow = App.GetService<AccountsWindow>();
-            accountsWindow.Dispatcher.Invoke(accountsWindow.Show);
         }
 
         private string _inputText;
@@ -184,9 +174,12 @@ namespace WPFUI.ViewModels
         private readonly IUseragentManager _useragentManager;
 
         private readonly WaitingWindow _waitingWindow;
-
         public ObservableCollection<Models.AccountMulti> Accounts { get; } = new();
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }
+
+        public event Action CloseWindow;
+
+        public event Action ShowWindow;
     }
 }
