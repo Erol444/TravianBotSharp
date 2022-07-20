@@ -1,5 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Services;
+using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System.Linq;
@@ -29,12 +30,17 @@ namespace MainCore.Tasks.Misc
 
         public override Task Execute()
         {
-            return Task.Run(Login);
+            return Task.Run(() =>
+            {
+                var result = Login();
+                if (!result) return;
+                TaskManager.Add(AccountId, new UpdateInfo(AccountId));
+            });
         }
 
         public override string Name => "Login Task";
 
-        private void Login()
+        private bool Login()
         {
             var html = ChromeBrowser.GetHtml();
 
@@ -43,21 +49,21 @@ namespace MainCore.Tasks.Misc
             {
                 LogManager.Warning(AccountId, "[Login Task] Cannot find username box");
                 TaskManager.UpdateAccountStatus(AccountId, AccountStatus.Offline);
-                return;
+                return false;
             }
             var passwordNode = LoginPage.GetPasswordNode(html);
             if (passwordNode is null)
             {
                 LogManager.Warning(AccountId, "[Login Task] Cannot find password box");
                 TaskManager.UpdateAccountStatus(AccountId, AccountStatus.Offline);
-                return;
+                return false;
             }
             var buttonNode = LoginPage.GetLoginButton(html);
             if (buttonNode is null)
             {
                 LogManager.Warning(AccountId, "[Login Task] Cannot find login button");
                 TaskManager.UpdateAccountStatus(AccountId, AccountStatus.Offline);
-                return;
+                return false;
             }
 
             using var context = ContextFactory.CreateDbContext();
@@ -81,6 +87,7 @@ namespace MainCore.Tasks.Misc
             var wait = ChromeBrowser.GetWait();
             wait.Until(driver => driver.Url.Contains("dorf"));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            return true;
         }
     }
 }

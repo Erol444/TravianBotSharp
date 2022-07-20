@@ -56,17 +56,9 @@ namespace WPFUI
                     //{
                     //    migrationRunner.MigrateUp();
                     //}
-                    context.Database.EnsureDeleted();
+
+                    //context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
-                    context.Accounts.Add(new MainCore.Models.Database.Account{
-                        Server = "adasd",
-                        Username = "vina",
-                    });
-                     context.Accounts.Add(new MainCore.Models.Database.Account{
-                        Server = "as",
-                        Username = "ghost",
-                    });
-                    context.SaveChanges();
                 }),
 
                 Task.Run(() =>

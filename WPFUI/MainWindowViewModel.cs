@@ -5,6 +5,7 @@ using MainCore.Services;
 using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -82,6 +83,7 @@ namespace WPFUI
                 var access = context.Accesses.Where(x => x.AccountId == CurrentAccount.Id).OrderBy(x => x.LastUsed).FirstOrDefault();
                 var chromeBrowser = _chromeManager.Get(CurrentAccount.Id);
                 chromeBrowser.Setup(access);
+                chromeBrowser.Navigate(CurrentAccount.Server);
                 _logManager.AddAccount(CurrentAccount.Id);
                 _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id));
             });

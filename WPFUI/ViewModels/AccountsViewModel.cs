@@ -78,6 +78,7 @@ namespace WPFUI.ViewModels
                         Server = acc.Server,
                     };
                     context.Add(account);
+                    context.SaveChanges();
 
                     var accessDb = new Access()
                     {
@@ -128,13 +129,20 @@ namespace WPFUI.ViewModels
                     foreach (var str in strArr)
                     {
                         var strAccount = str.Trim().Split(' ');
-
+                        Uri url = null;
+                        if (strAccount.Length > 0)
+                        {
+                            if (!Uri.TryCreate(strAccount[0], UriKind.Absolute, out url))
+                            {
+                                continue;
+                            };
+                        }
                         switch (strAccount.Length)
                         {
                             case 3:
                                 Accounts.Add(new Models.AccountMulti()
                                 {
-                                    Server = strAccount[0],
+                                    Server = url.AbsoluteUri,
                                     Username = strAccount[1],
                                     Password = strAccount[2],
                                 });
@@ -143,7 +151,7 @@ namespace WPFUI.ViewModels
                             case 5:
                                 Accounts.Add(new Models.AccountMulti()
                                 {
-                                    Server = strAccount[0],
+                                    Server = url.AbsoluteUri,
                                     Username = strAccount[1],
                                     Password = strAccount[2],
                                     ProxyHost = strAccount[3],
@@ -154,7 +162,7 @@ namespace WPFUI.ViewModels
                             case 7:
                                 Accounts.Add(new Models.AccountMulti()
                                 {
-                                    Server = strAccount[0],
+                                    Server = url.AbsoluteUri,
                                     Username = strAccount[1],
                                     Password = strAccount[2],
                                     ProxyHost = strAccount[3],

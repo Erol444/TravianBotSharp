@@ -71,9 +71,15 @@ namespace WPFUI.ViewModels
             }
             if (string.IsNullOrWhiteSpace(Server))
             {
-                MessageBox.Show("Username is empty", "Warning");
+                MessageBox.Show("Server is empty", "Warning");
                 return;
             }
+            Uri url = null;
+            if (!Uri.TryCreate(Server, UriKind.Absolute, out url))
+            {
+                MessageBox.Show("Server string is invaild", "Warning");
+                return;
+            };
             if (Accessess.Count == 0)
             {
                 MessageBox.Show("No password in table", "Warning");
@@ -121,7 +127,7 @@ namespace WPFUI.ViewModels
                     var account = new Account()
                     {
                         Username = Username,
-                        Server = Server,
+                        Server = url.AbsoluteUri,
                     };
 
                     context.Add(account);
@@ -133,7 +139,7 @@ namespace WPFUI.ViewModels
                     var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
                     if (account is null) return;
 
-                    account.Server = Server;
+                    account.Server = url.AbsoluteUri;
                     account.Username = Username;
 
                     var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
