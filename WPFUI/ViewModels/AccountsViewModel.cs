@@ -78,7 +78,6 @@ namespace WPFUI.ViewModels
                         Server = acc.Server,
                     };
                     context.Add(account);
-                    context.SaveChanges();
 
                     var accessDb = new Access()
                     {

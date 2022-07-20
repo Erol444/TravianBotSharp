@@ -30,6 +30,7 @@ namespace WPFUI.ViewModels
 
         public void LoadData()
         {
+            _waitingWindow.Show();
             var index = App.AccountId;
             using var context = _contextFactory.CreateDbContext();
             var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == index);
