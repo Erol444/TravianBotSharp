@@ -16,7 +16,6 @@ namespace WPFUI.Views.Tabs
 
             this.WhenActivated(d =>
             {
-                ViewModel.Active = true;
                 this.OneWayBind(ViewModel,
                     vm => vm.Logs,
                     v => v.LogGrid.ItemsSource)
@@ -26,6 +25,8 @@ namespace WPFUI.Views.Tabs
                     vm => vm.Tasks,
                     v => v.TaskGird.ItemsSource)
                 .DisposeWith(d);
+
+                ViewModel.LoadData(App.AccountId);
             });
         }
     }

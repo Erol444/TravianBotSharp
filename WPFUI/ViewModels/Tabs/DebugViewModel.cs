@@ -15,22 +15,20 @@ namespace WPFUI.ViewModels.Tabs
             _logManager = App.GetService<ILogManager>();
             _databaseEvent = App.GetService<IDatabaseEvent>();
 
-            _databaseEvent.AccountSelected += OnAccountSelected;
+            _databaseEvent.AccountSelected += LoadData;
             _databaseEvent.TaskUpdated += OnTasksUpdate;
             _databaseEvent.LogUpdated += OnLogsUpdate;
         }
 
-        private void OnAccountSelected(int accountId)
+        public void LoadData(int accountId)
         {
-            _accountId = accountId;
             OnTasksUpdate(accountId);
             OnLogsUpdate(accountId);
         }
 
         private async void OnTasksUpdate(int accountId)
         {
-            if (!Active) return;
-            if (_accountId != accountId) return;
+            if (App.AccountId != accountId) return;
 
             await App.Current.Dispatcher.InvokeAsync(() =>
             {
@@ -49,9 +47,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private async void OnLogsUpdate(int accountId)
         {
-            if (!Active) return;
-
-            if (_accountId != accountId) return;
+            if (App.AccountId != accountId) return;
             await App.Current.Dispatcher.InvokeAsync(() =>
             {
                 Logs.Clear();
@@ -62,8 +58,6 @@ namespace WPFUI.ViewModels.Tabs
             });
         }
 
-        private int _accountId = -1;
-
         private readonly ILogManager _logManager;
         private readonly ITaskManager _taskManager;
         private readonly IDatabaseEvent _databaseEvent;
@@ -71,7 +65,5 @@ namespace WPFUI.ViewModels.Tabs
         public ObservableCollection<TaskModel> Tasks { get; } = new();
 
         public ObservableCollection<LogMessage> Logs { get; } = new();
-
-        public bool Active { get; set; }
     }
 }

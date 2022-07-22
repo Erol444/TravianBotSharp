@@ -123,7 +123,6 @@ namespace WPFUI.ViewModels
             get => message[IsNewVersion ? 1 : 0];
         }
 
-        private VersionWindow _versionWindow;
         private readonly string discordUrl = "https://discord.gg/DVPV4gesCz";
 
         private readonly string[] message = {
