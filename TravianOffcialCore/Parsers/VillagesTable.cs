@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TravianOffcialCore.Parsers
+namespace TravianOfficialCore.Parsers
 {
     public static class VillagesTable
     {
@@ -24,13 +24,6 @@ namespace TravianOffcialCore.Parsers
             return node.HasClass("active");
         }
 
-        private static string Href(HtmlNode node)
-        {
-            var hrefNode = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
-            if (hrefNode is null) return "";
-            return System.Net.WebUtility.HtmlDecode(hrefNode.GetAttributeValue("href", ""));
-        }
-
         public static int GetId(HtmlNode node)
         {
             var hrefNode = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
@@ -44,7 +37,9 @@ namespace TravianOffcialCore.Parsers
         {
             var textNode = node.Descendants("a").FirstOrDefault();
             if (textNode is null) return "";
-            return textNode.InnerText.Replace(" ", "").Replace("\n", "");
+            var nameNode = textNode.Descendants("span").FirstOrDefault(x => x.HasClass("name"));
+            if (nameNode is null) return "";
+            return nameNode.InnerText;
         }
 
         public static int GetX(HtmlNode node)

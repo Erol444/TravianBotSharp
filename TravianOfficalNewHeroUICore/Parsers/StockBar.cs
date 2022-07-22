@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 
-namespace TravianOfficalNewHeroUICore.Parsers
+namespace TravianOfficialNewHeroUICore.Parsers
 {
     public static class StockBar
     {

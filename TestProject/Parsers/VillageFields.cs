@@ -19,7 +19,7 @@ namespace TestProject.Parsers
         }
 
         [TestMethod]
-        public void TTWarsGeResourceNodes()
+        public void TTWarsGetResourceNodes()
         {
             var value = TTWarsCore.Parsers.VillageFields.GetResourceNodes(_ttwarsDoc);
             Assert.AreEqual(18, value.Count);
@@ -35,7 +35,7 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetResourceNodes()
         {
-            var value = TravianOfficialCore.Parsers.VillageFields.GetResourceNodes(_travianHeroDoc);
+            var value = TravianOfficialNewHeroUICore.Parsers.VillageFields.GetResourceNodes(_travianHeroDoc);
             Assert.AreEqual(18, value.Count);
         }
 

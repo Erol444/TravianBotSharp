@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace TravianOffcialCore.Parsers
+namespace TravianOfficialCore.Parsers
 {
     public class VillageInfrastructure
     {
@@ -12,7 +12,6 @@ namespace TravianOffcialCore.Parsers
             var villageContentNode = doc.GetElementbyId("villageContent");
             if (villageContentNode is null) return new();
             var list = villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
-            list.RemoveAt(list.Count - 1);
             return list;
         }
 

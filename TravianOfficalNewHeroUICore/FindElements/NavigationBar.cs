@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System.Linq;
 
-namespace TravianOfficalNewHeroUICore.FindElements
+namespace TravianOfficialNewHeroUICore.FindElements
 {
     public static class NavigationBar
     {

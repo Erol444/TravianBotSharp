@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TravianOffcialCore.Parsers
+namespace TravianOfficialCore.Parsers
 {
     public static class VillageFields
     {

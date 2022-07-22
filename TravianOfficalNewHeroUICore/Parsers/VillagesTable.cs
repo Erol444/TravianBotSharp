@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TravianOfficalNewHeroUICore.Parsers
+namespace TravianOfficialNewHeroUICore.Parsers
 {
     public static class VillagesTable
     {
@@ -44,7 +44,9 @@ namespace TravianOfficalNewHeroUICore.Parsers
         {
             var textNode = node.Descendants("a").FirstOrDefault();
             if (textNode is null) return "";
-            return textNode.InnerText.Replace(" ", "").Replace("\n", "");
+            var nameNode = textNode.Descendants("span").FirstOrDefault(x => x.HasClass("name"));
+            if (nameNode is null) return "";
+            return nameNode.InnerText;
         }
 
         public static int GetX(HtmlNode node)

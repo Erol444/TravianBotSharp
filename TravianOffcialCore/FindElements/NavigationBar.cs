@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TravianOffcialCore.FindElements
+namespace TravianOfficialCore.FindElements
 {
     public static class NavigationBar
     {

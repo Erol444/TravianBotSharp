@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
 using System.Linq;
 
-namespace TravianOffcialCore.FindElements
+namespace TravianOfficialCore.FindElements
 {
     public static class LoginPage
     {

@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 #if TRAVIAN_OFFICIAL
 
-using TravianOffcialCore.Parsers;
+using TravianOfficialCore.Parsers;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
-using TravianOfficalNewHeroUICore.Parsers;
+using TravianOfficialNewHeroUICore.Parsers;
 
 #elif TTWARS
 
@@ -61,20 +61,26 @@ namespace MainCore.Tasks.Update
                 foundVills.Remove(foundVillage);
             }
             context.Villages.RemoveRange(missingVills);
-            var taskSave = context.SaveChangesAsync();
             foreach (var newVill in foundVills)
             {
+                context.Villages.Add(new Village()
+                {
+                    Id = newVill.Id,
+                    Name = newVill.Name,
+                    AccountId = newVill.AccountId,
+                });
+
                 var tasks = TaskManager.GetTaskList(AccountId).Where(x => x.GetType() == typeof(UpdateVillage)).Cast<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
-                if (task is null)
-                {
-                    TaskManager.Add(AccountId, new UpdateVillage(newVill.Id, AccountId)
-                    {
-                        IsNewVillage = true,
-                    });
-                }
+                //if (task is null)
+                //{
+                //    TaskManager.Add(AccountId, new UpdateVillage(newVill.Id, AccountId)
+                //    {
+                //        IsNewVillage = true,
+                //    });
+                //}
             }
-            await taskSave;
+            await context.SaveChangesAsync();
         }
 
         private List<Village> UpdateVillageTable()

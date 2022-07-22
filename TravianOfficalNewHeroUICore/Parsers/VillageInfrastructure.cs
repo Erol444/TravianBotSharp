@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace TravianOfficalNewHeroUICore.Parsers
+namespace TravianOfficialNewHeroUICore.Parsers
 {
     public class VillageInfrastructure
     {
