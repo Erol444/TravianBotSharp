@@ -18,13 +18,13 @@ namespace WPFUI
     /// </summary>
     public partial class App : Application
     {
-        private static IServiceProvider _provider;
+        private static ServiceProvider _provider;
         public static IServiceProvider Provider => _provider;
         public static int AccountId { get; set; }
 
         public static T GetService<T>() => Provider.GetRequiredService<T>();
 
-        private async void OnStartup(object sender, StartupEventArgs e)
+        private async void Application_Startup(object sender, StartupEventArgs e)
         {
             _provider = new ServiceCollection().ConfigureServices().BuildServiceProvider();
 
@@ -84,6 +84,11 @@ namespace WPFUI
             mainWindow.ViewModel.LoadData();
             mainWindow.Show();
             waitingWindow.Hide();
+        }
+
+        private void Application_Exit(object sender, ExitEventArgs e)
+        {
+            _provider.Dispose();
         }
     }
 

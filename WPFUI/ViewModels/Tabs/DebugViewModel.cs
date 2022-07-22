@@ -27,12 +27,12 @@ namespace WPFUI.ViewModels.Tabs
             OnLogsUpdate(accountId);
         }
 
-        private void OnTasksUpdate(int accountId)
+        private async void OnTasksUpdate(int accountId)
         {
             if (!Active) return;
             if (_accountId != accountId) return;
 
-            App.Current.Dispatcher.Invoke(() =>
+            await App.Current.Dispatcher.InvokeAsync(() =>
             {
                 Tasks.Clear();
                 foreach (var item in _taskManager.GetTaskList(accountId))
@@ -47,12 +47,12 @@ namespace WPFUI.ViewModels.Tabs
             });
         }
 
-        private void OnLogsUpdate(int accountId)
+        private async void OnLogsUpdate(int accountId)
         {
             if (!Active) return;
 
             if (_accountId != accountId) return;
-            App.Current.Dispatcher.Invoke(() =>
+            await App.Current.Dispatcher.InvokeAsync(() =>
             {
                 Logs.Clear();
                 foreach (var item in _logManager.GetLog(accountId))
