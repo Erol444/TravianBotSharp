@@ -21,9 +21,9 @@ namespace TestProject.FindElements
         {
             var node = TTWarsCore.FindElements.LoginPage.GetUsernameNode(_ttwarsDoc);
             Assert.IsNotNull(node);
-            node = TravianOffcialCore.FindElements.LoginPage.GetUsernameNode(_travianDoc);
+            node = TravianOfficialCore.FindElements.LoginPage.GetUsernameNode(_travianDoc);
             Assert.IsNotNull(node);
-            node = TravianOfficalNewHeroUICore.FindElements.LoginPage.GetUsernameNode(_travianDoc);
+            node = TravianOfficialNewHeroUICore.FindElements.LoginPage.GetUsernameNode(_travianDoc);
             Assert.IsNotNull(node);
         }
 
@@ -32,9 +32,9 @@ namespace TestProject.FindElements
         {
             var node = TTWarsCore.FindElements.LoginPage.GetPasswordNode(_ttwarsDoc);
             Assert.IsNotNull(node);
-            node = TravianOffcialCore.FindElements.LoginPage.GetPasswordNode(_travianDoc);
+            node = TravianOfficialCore.FindElements.LoginPage.GetPasswordNode(_travianDoc);
             Assert.IsNotNull(node);
-            node = TravianOfficalNewHeroUICore.FindElements.LoginPage.GetPasswordNode(_travianDoc);
+            node = TravianOfficialNewHeroUICore.FindElements.LoginPage.GetPasswordNode(_travianDoc);
             Assert.IsNotNull(node);
         }
 
@@ -43,9 +43,9 @@ namespace TestProject.FindElements
         {
             var node = TTWarsCore.FindElements.LoginPage.GetLoginButton(_ttwarsDoc);
             Assert.IsNotNull(node);
-            node = TravianOffcialCore.FindElements.LoginPage.GetLoginButton(_travianDoc);
+            node = TravianOfficialCore.FindElements.LoginPage.GetLoginButton(_travianDoc);
             Assert.IsNotNull(node);
-            node = TravianOfficalNewHeroUICore.FindElements.LoginPage.GetLoginButton(_travianDoc);
+            node = TravianOfficialNewHeroUICore.FindElements.LoginPage.GetLoginButton(_travianDoc);
             Assert.IsNotNull(node);
         }
     }
