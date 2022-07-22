@@ -72,7 +72,7 @@ namespace MainCore.Services
         {
             Check(index);
 
-            return _tasksDict[index];
+            return _tasksDict[index].ToList();
         }
 
         private void Check(int index)

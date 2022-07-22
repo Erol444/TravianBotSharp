@@ -68,19 +68,22 @@ namespace MainCore.Tasks.Update
                     Id = newVill.Id,
                     Name = newVill.Name,
                     AccountId = newVill.AccountId,
+                    X = newVill.X,
+                    Y = newVill.Y,
                 });
 
                 var tasks = TaskManager.GetTaskList(AccountId).Where(x => x.GetType() == typeof(UpdateVillage)).Cast<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
-                //if (task is null)
-                //{
-                //    TaskManager.Add(AccountId, new UpdateVillage(newVill.Id, AccountId)
-                //    {
-                //        IsNewVillage = true,
-                //    });
-                //}
+                if (task is null)
+                {
+                    TaskManager.Add(AccountId, new UpdateVillage(newVill.Id, AccountId)
+                    {
+                        IsNewVillage = true,
+                    });
+                }
             }
             await context.SaveChangesAsync();
+            DatabaseEvent.OnVillagesUpdated(AccountId);
         }
 
         private List<Village> UpdateVillageTable()

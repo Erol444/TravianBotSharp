@@ -31,7 +31,6 @@ namespace MainCore.Tasks.Update
         }
 
         public int VillageId { get; protected set; }
-        public bool IsNewVillage { get; set; }
 
         public override async Task Execute()
         {
@@ -41,19 +40,25 @@ namespace MainCore.Tasks.Update
             }
 
             await base.Execute();
+            await Update();
+        }
 
+        private async Task Update()
+        {
             var currentUrl = ChromeBrowser.GetCurrentUrl();
             var tasks = new List<Task>();
+
             if (currentUrl.Contains("dorf1"))
             {
                 tasks.Add(UpdateDorf1());
+                tasks.Add(UpdateCurrentlyBuilding());
             }
             else if (currentUrl.Contains("dorf2"))
             {
                 tasks.Add(UpdateDorf2());
+                tasks.Add(UpdateCurrentlyBuilding());
             }
 
-            tasks.Add(UpdateCurrentlyBuilding());
             tasks.Add(UpdateResource());
 
             await Task.WhenAll(tasks);
@@ -86,7 +91,7 @@ namespace MainCore.Tasks.Update
 
             if (resource is null)
             {
-                context.VillagesResources.Add(new Models.Database.VillageResources()
+                context.VillagesResources.Add(new()
                 {
                     VillageId = VillageId,
                     Wood = StockBar.GetWood(html),
@@ -108,6 +113,21 @@ namespace MainCore.Tasks.Update
                 resource.Granary = StockBar.GetGranaryCapacity(html);
                 resource.FreeCrop = StockBar.GetFreeCrop(html);
             }
+
+            var updateTime = context.VillagesUpdateTime.Find(VillageId);
+            if (updateTime is null)
+            {
+                context.VillagesUpdateTime.Add(new()
+                {
+                    VillageId = VillageId,
+                    Resource = DateTime.Now,
+                });
+            }
+            else
+            {
+                updateTime.Resource = DateTime.Now;
+            }
+
             await context.SaveChangesAsync();
         }
 
@@ -143,7 +163,19 @@ namespace MainCore.Tasks.Update
                     resource.IsUnderConstruction = VillageFields.IsUnderConstruction(fieldNode);
                 }
             }
-
+            var updateTime = context.VillagesUpdateTime.Find(VillageId);
+            if (updateTime is null)
+            {
+                context.VillagesUpdateTime.Add(new()
+                {
+                    VillageId = VillageId,
+                    Dorf1 = DateTime.Now,
+                });
+            }
+            else
+            {
+                updateTime.Dorf1 = DateTime.Now;
+            }
             await context.SaveChangesAsync();
         }
 
@@ -174,7 +206,19 @@ namespace MainCore.Tasks.Update
                     building.IsUnderConstruction = VillageFields.IsUnderConstruction(buildingNode);
                 }
             }
-
+            var updateTime = context.VillagesUpdateTime.Find(VillageId);
+            if (updateTime is null)
+            {
+                context.VillagesUpdateTime.Add(new()
+                {
+                    VillageId = VillageId,
+                    Dorf2 = DateTime.Now,
+                });
+            }
+            else
+            {
+                updateTime.Dorf2 = DateTime.Now;
+            }
             await context.SaveChangesAsync();
         }
 
