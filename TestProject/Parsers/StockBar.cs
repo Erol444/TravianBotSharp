@@ -8,14 +8,14 @@ namespace TestProject.Parsers
     {
         private readonly HtmlDocument _ttwarsDoc = new();
         private readonly HtmlDocument _travianDoc = new();
-        private readonly HtmlDocument _travianHeroUIDoc = new();
+        private readonly HtmlDocument _travianHeroDoc = new();
 
         [TestInitialize]
         public void InitializeTests()
         {
             _ttwarsDoc.Load("TestFile/Dorf1/TTWars.html");
             _travianDoc.Load("TestFile/Dorf1/Travian.html");
-            _travianHeroUIDoc.Load("TestFile/Dorf1/TravianHeroUI.html");
+            _travianHeroDoc.Load("TestFile/Dorf1/TravianHeroUI.html");
         }
 
         [TestMethod]
@@ -35,7 +35,7 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetWood()
         {
-            var value = TravianOfficialCore.Parsers.StockBar.GetWood(_travianHeroUIDoc);
+            var value = TravianOfficialCore.Parsers.StockBar.GetWood(_travianHeroDoc);
             Assert.AreEqual(661, value);
         }
 
@@ -56,7 +56,7 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetClay()
         {
-            var value = TravianOfficialCore.Parsers.StockBar.GetClay(_travianHeroUIDoc);
+            var value = TravianOfficialCore.Parsers.StockBar.GetClay(_travianHeroDoc);
             Assert.AreEqual(701, value);
         }
 
@@ -77,7 +77,7 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetIron()
         {
-            var value = TravianOfficialCore.Parsers.StockBar.GetIron(_travianHeroUIDoc);
+            var value = TravianOfficialCore.Parsers.StockBar.GetIron(_travianHeroDoc);
             Assert.AreEqual(675, value);
         }
 
@@ -98,7 +98,7 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetCrop()
         {
-            var value = TravianOfficialCore.Parsers.StockBar.GetCrop(_travianHeroUIDoc);
+            var value = TravianOfficialCore.Parsers.StockBar.GetCrop(_travianHeroDoc);
             Assert.AreEqual(726, value);
         }
 
@@ -119,7 +119,7 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetFreeCrop()
         {
-            var value = TravianOfficialCore.Parsers.StockBar.GetFreeCrop(_travianHeroUIDoc);
+            var value = TravianOfficialCore.Parsers.StockBar.GetFreeCrop(_travianHeroDoc);
             Assert.AreEqual(19, value);
         }
 
@@ -140,7 +140,7 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetWarehouseCapacity()
         {
-            var value = TravianOfficialCore.Parsers.StockBar.GetWarehouseCapacity(_travianHeroUIDoc);
+            var value = TravianOfficialCore.Parsers.StockBar.GetWarehouseCapacity(_travianHeroDoc);
             Assert.AreEqual(800, value);
         }
 
@@ -161,7 +161,7 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetGranaryCapacity()
         {
-            var value = TravianOfficialCore.Parsers.StockBar.GetGranaryCapacity(_travianHeroUIDoc);
+            var value = TravianOfficialCore.Parsers.StockBar.GetGranaryCapacity(_travianHeroDoc);
             Assert.AreEqual(800, value);
         }
     }
