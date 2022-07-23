@@ -30,8 +30,21 @@ namespace MainCore.Tasks.Update
 
         public override async Task Execute()
         {
-            var random = new Random(DateTime.Now.Second);
-            if (random.Next(0, 100) > 50)
+            var url = ChromeBrowser.GetCurrentUrl();
+            if (url.Contains("dorf2"))
+            {
+                {
+                    var result = ToDorf2();
+                    if (!result) return;
+                    await base.Execute();
+                }
+                {
+                    var result = ToDorf1();
+                    if (!result) return;
+                    await base.Execute();
+                }
+            }
+            else if (url.Contains("dorf1"))
             {
                 {
                     var result = ToDorf1();
@@ -46,15 +59,32 @@ namespace MainCore.Tasks.Update
             }
             else
             {
+                var random = new Random(DateTime.Now.Second);
+                if (random.Next(0, 100) > 50)
                 {
-                    var result = ToDorf2();
-                    if (!result) return;
-                    await base.Execute();
+                    {
+                        var result = ToDorf1();
+                        if (!result) return;
+                        await base.Execute();
+                    }
+                    {
+                        var result = ToDorf2();
+                        if (!result) return;
+                        await base.Execute();
+                    }
                 }
+                else
                 {
-                    var result = ToDorf1();
-                    if (!result) return;
-                    await base.Execute();
+                    {
+                        var result = ToDorf2();
+                        if (!result) return;
+                        await base.Execute();
+                    }
+                    {
+                        var result = ToDorf1();
+                        if (!result) return;
+                        await base.Execute();
+                    }
                 }
             }
         }
