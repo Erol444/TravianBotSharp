@@ -1,6 +1,7 @@
 ﻿using MainCore.Models.Runtime;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,7 +37,7 @@ namespace MainCore.Tasks.Update
         {
             if (!IsCorrectVillage())
             {
-                await SwitchVillage();
+                SwitchVillage();
             }
 
             await base.Execute();
@@ -78,9 +79,24 @@ namespace MainCore.Tasks.Update
             return false;
         }
 
-        private async Task SwitchVillage()
+        private void SwitchVillage()
         {
-            await Task.Delay(1000);
+            do
+            {
+                var html = ChromeBrowser.GetHtml();
+
+                var listNode = VillagesTable.GetVillageNodes(html);
+                foreach (var node in listNode)
+                {
+                    var id = VillagesTable.GetId(node);
+                    if (id != VillageId) continue;
+
+                    var chrome = ChromeBrowser.GetChrome();
+                    var elements = chrome.FindElements(By.XPath(node.XPath));
+                    elements[0].Click();
+                }
+            }
+            while (!IsCorrectVillage());
         }
 
         private async Task UpdateResource()
@@ -144,7 +160,7 @@ namespace MainCore.Tasks.Update
             foreach (var fieldNode in resFields)
             {
                 var id = VillageFields.GetId(fieldNode);
-                var resource = context.VillagesBuildings.Find(new { VillageId, id });
+                var resource = context.VillagesBuildings.Find( VillageId, id );
                 if (resource is null)
                 {
                     context.VillagesBuildings.Add(new()
@@ -186,24 +202,24 @@ namespace MainCore.Tasks.Update
             using var context = ContextFactory.CreateDbContext();
             foreach (var buildingNode in buildingNodes)
             {
-                var id = VillageFields.GetId(buildingNode);
-                var building = context.VillagesBuildings.Find(new { VillageId, id });
+                var id = VillageInfrastructure.GetId(buildingNode);
+                var building = context.VillagesBuildings.Find(VillageId, id);
                 if (building is null)
                 {
                     context.VillagesBuildings.Add(new()
                     {
                         VillageId = VillageId,
                         Id = id,
-                        Level = VillageFields.GetLevel(buildingNode),
-                        Type = VillageFields.GetType(buildingNode),
-                        IsUnderConstruction = VillageFields.IsUnderConstruction(buildingNode),
+                        Level = VillageInfrastructure.GetLevel(buildingNode),
+                        Type = VillageInfrastructure.GetType(buildingNode),
+                        IsUnderConstruction = VillageInfrastructure.IsUnderConstruction(buildingNode),
                     });
                 }
                 else
                 {
-                    building.Level = VillageFields.GetLevel(buildingNode);
-                    building.Type = VillageFields.GetType(buildingNode);
-                    building.IsUnderConstruction = VillageFields.IsUnderConstruction(buildingNode);
+                    building.Level = VillageInfrastructure.GetLevel(buildingNode);
+                    building.Type = VillageInfrastructure.GetType(buildingNode);
+                    building.IsUnderConstruction = VillageInfrastructure.IsUnderConstruction(buildingNode);
                 }
             }
             var updateTime = context.VillagesUpdateTime.Find(VillageId);

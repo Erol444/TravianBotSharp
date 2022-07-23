@@ -20,18 +20,21 @@ namespace WPFUI.ViewModels.Tabs
 
         public void LoadData(int accountId)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var villages = context.Villages.Where(x => x.AccountId == accountId);
-            Villages.Clear();
-            foreach (var village in villages)
+            App.Current.Dispatcher.Invoke(() =>
             {
-                Villages.Add(new VillageInfo()
+                using var context = _contextFactory.CreateDbContext();
+                var villages = context.Villages.Where(x => x.AccountId == accountId);
+                Villages.Clear();
+                foreach (var village in villages)
                 {
-                    Id = village.Id,
-                    Name = village.Name,
-                    Coords = $"{village.X}|{village.Y}",
-                });
-            }
+                    Villages.Add(new VillageInfo()
+                    {
+                        Id = village.Id,
+                        Name = village.Name,
+                        Coords = $"{village.X}|{village.Y}",
+                    });
+                }
+            });
         }
 
         private VillageInfo _currentVillage;

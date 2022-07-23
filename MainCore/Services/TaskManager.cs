@@ -109,8 +109,10 @@ namespace MainCore.Services
 
             _logManager.Information(index, $"{task.GetType().Name} is started");
             task.Stage = TaskStage.Executing;
+            _databaseEvent.OnTaskUpdated(index);
             await task.Execute();
             task.Stage = TaskStage.Start;
+            _databaseEvent.OnTaskUpdated(index);
             _logManager.Information(index, $"{task.GetType().Name} is completed");
 
             if (task.ExecuteAt < DateTime.Now) Remove(index, task);

@@ -72,14 +72,11 @@ namespace MainCore.Tasks.Update
                     Y = newVill.Y,
                 });
 
-                var tasks = TaskManager.GetTaskList(AccountId).Where(x => x.GetType() == typeof(UpdateVillage)).Cast<UpdateVillage>().ToList();
+                var tasks = TaskManager.GetTaskList(AccountId).Where(x => x.GetType() == typeof(UpdateBothDorf)).Cast<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
                 if (task is null)
                 {
-                    TaskManager.Add(AccountId, new UpdateVillage(newVill.Id, AccountId)
-                    {
-                        IsNewVillage = true,
-                    });
+                    TaskManager.Add(AccountId, new UpdateBothDorf(newVill.Id, AccountId));
                 }
             }
             await context.SaveChangesAsync();
