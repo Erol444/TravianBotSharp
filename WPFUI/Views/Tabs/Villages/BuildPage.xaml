@@ -81,7 +81,7 @@
             <Button x:Name="UpButton" Grid.Column="1" Content="Up" HorizontalAlignment="Stretch" Margin="1,2,1,1" VerticalAlignment="Stretch" />
             <Button x:Name="DownButton" Grid.Column="1" Content="Down" HorizontalAlignment="Stretch" Margin="1,1,1,2" Grid.Row="1" VerticalAlignment="Stretch" />
             <Button x:Name="DeleteButton" Grid.Column="2" Content="Delete" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1,2,1,1" />
-            <Button x:Name="ClearButton" Grid.Column="2" Content="Clear" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Margin="1,1,1,2" />
+            <Button x:Name="DeleteAllButton" Grid.Column="2" Content="Delete all" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch" Margin="1,1,1,2" />
             <Button x:Name="ImportButton" Grid.Column="3" Content="Import" HorizontalAlignment="Stretch" Margin="1,2,2,1" VerticalAlignment="Stretch" />
             <Button x:Name="ExportButton" Grid.Column="3" Content="Export" HorizontalAlignment="Stretch" Margin="1,1,2,2" Grid.Row="1" VerticalAlignment="Stretch" />
             <DataGrid x:Name="QueueGrid" Grid.ColumnSpan="4" Grid.Row="3" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGenerateColumns="False">
