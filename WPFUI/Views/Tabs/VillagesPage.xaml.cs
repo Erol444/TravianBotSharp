@@ -20,6 +20,11 @@ namespace WPFUI.Views.Tabs
                     v => v.VillagesGrid.ItemsSource)
                 .DisposeWith(d);
 
+                this.Bind(ViewModel,
+                    vm => vm.CurrentVillage,
+                    v => v.VillagesGrid.SelectedItem)
+                .DisposeWith(d);
+
                 this.OneWayBind(ViewModel,
                     vm => vm.IsVillageNotSelected,
                     v => v.NoVillageTab.Visibility)
@@ -37,6 +42,24 @@ namespace WPFUI.Views.Tabs
 
                 ViewModel.LoadData(App.AccountId);
             });
+        }
+
+        private void NoVillageTab_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            var value = (bool)e.NewValue;
+            if (!value)
+            {
+                BuildTab.IsSelected = true;
+            }
+        }
+
+        private void BuildTab_IsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            var value = (bool)e.NewValue;
+            if (!value)
+            {
+                NoVillageTab.IsSelected = true;
+            }
         }
     }
 }

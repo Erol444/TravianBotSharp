@@ -221,8 +221,6 @@ namespace WPFUI
                     {
                         IsAccountNotSelected = true;
                         IsAccountSelected = false;
-                        var mainWindow = App.GetService<MainWindow>();
-                        mainWindow.NoAccountTab.IsSelected = true;
                         _databaseEvent.OnAccountSelected(-1);
                         App.AccountId = -1;
                     }
@@ -230,11 +228,6 @@ namespace WPFUI
                     {
                         IsAccountNotSelected = false;
                         IsAccountSelected = true;
-                        if (temp is null)
-                        {
-                            var mainWindow = App.GetService<MainWindow>();
-                            mainWindow.OverviewTab.IsSelected = true;
-                        }
                         _databaseEvent.OnAccountSelected(value.Id);
                         App.AccountId = value.Id;
                     }

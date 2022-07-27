@@ -101,5 +101,23 @@ namespace WPFUI
 
             Application.Current.Shutdown();
         }
+
+        private void NoAccountTab_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var value = (bool)e.NewValue;
+            if (!value)
+            {
+                DebugTab.IsSelected = true;
+            }
+        }
+
+        private void OverviewTab_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var value = (bool)e.NewValue;
+            if (!value)
+            {
+                NoAccountTab.IsSelected = true;
+            }
+        }
     }
 }

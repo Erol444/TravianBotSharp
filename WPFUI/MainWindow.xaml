@@ -47,12 +47,12 @@
             </DataGrid>
         </Grid>
         <TabControl Grid.Column="1" Margin="5,0,0,0">
-            <TabItem x:Name="NoAccountTab" Header="No account" Visibility="Visible">
+            <TabItem x:Name="NoAccountTab" Header="No account" Visibility="Visible" IsVisibleChanged="NoAccountTab_IsVisibleChanged">
                 <Grid Background="#FFE5E5E5">
                     <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="NO ACCOUNT IS SELECTED" VerticalAlignment="Center" TextAlignment="Center" LineHeight="11" />
                 </Grid>
             </TabItem>
-            <TabItem x:Name="OverviewTab" Header="Overview">
+            <TabItem x:Name="OverviewTab" Header="Overview" IsVisibleChanged="OverviewTab_IsVisibleChanged">
                 <Frame>
                     <Frame.Content>
                         <tabs:OverviewPage />
