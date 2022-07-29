@@ -24,7 +24,7 @@ namespace MainCore.Tasks
         public IDbContextFactory<AppDbContext> ContextFactory { get; set; }
         public IChromeBrowser ChromeBrowser { get; set; }
         public ITaskManager TaskManager { get; set; }
-        public IDatabaseEvent DatabaseEvent { get; set; }
+        public IEventManager DatabaseEvent { get; set; }
         public ILogManager LogManager { get; set; }
 
         public abstract string Name { get; }

@@ -17,7 +17,7 @@ namespace WPFUI.Views.Tabs.Villages
             InitializeComponent();
             this.WhenActivated(d =>
             {
-                App.GetService<IDatabaseEvent>().OnTabActived(ViewModel.GetType(), VillageId);
+                App.GetService<IEventManager>().OnTabActived(ViewModel.GetType(), VillageId);
             });
         }
     }

@@ -2,7 +2,7 @@
 
 namespace MainCore.Services
 {
-    public interface IDatabaseEvent
+    public interface IEventManager
     {
         public event Action AccountsTableUpdate;
 

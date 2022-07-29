@@ -5,7 +5,7 @@ namespace MainCore.Services
 {
     public sealed class TimerManager : ITimerManager
     {
-        public TimerManager(IDatabaseEvent databaseEvent)
+        public TimerManager(IEventManager databaseEvent)
         {
             _mainTimer = new Timer(500);
             _mainTimer.Elapsed += MainTimer_Elapsed;
@@ -28,6 +28,6 @@ namespace MainCore.Services
         }
 
         private readonly Timer _mainTimer;
-        private readonly IDatabaseEvent _databaseEvent;
+        private readonly IEventManager _databaseEvent;
     }
 }

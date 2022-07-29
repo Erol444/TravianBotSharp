@@ -14,7 +14,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             _taskManager = App.GetService<ITaskManager>();
             _logManager = App.GetService<ILogManager>();
-            _databaseEvent = App.GetService<IDatabaseEvent>();
+            _databaseEvent = App.GetService<IEventManager>();
 
             _databaseEvent.AccountSelected += LoadData;
             _databaseEvent.TaskUpdated += OnTasksUpdate;
@@ -71,7 +71,7 @@ namespace WPFUI.ViewModels.Tabs
         private int _accountId;
         private readonly ILogManager _logManager;
         private readonly ITaskManager _taskManager;
-        private readonly IDatabaseEvent _databaseEvent;
+        private readonly IEventManager _databaseEvent;
 
         public ObservableCollection<TaskModel> Tasks { get; } = new();
 

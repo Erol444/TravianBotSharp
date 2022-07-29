@@ -1,5 +1,6 @@
 ﻿using MainCore;
 using MainCore.Enums;
+using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
@@ -19,6 +20,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public BuildViewModel()
         {
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+            _eventManager = App.GetService<IEventManager>();
+            _eventManager.TabActived += OnTabActived;
+            _eventManager.VillageSelected += LoadData;
 
             BuildCommand = ReactiveCommand.Create(BuildTask);
 
@@ -30,6 +34,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
             DeleteAllCommand = ReactiveCommand.Create(DeleteAllTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
+        }
+
+        private void OnTabActived(Type tabType, int index)
+        {
+            if (tabType.Equals(GetType()))
+            {
+                LoadData(index);
+            }
         }
 
         public void LoadData(int villageId)
@@ -146,5 +158,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
         }
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _eventManager;
     }
 }

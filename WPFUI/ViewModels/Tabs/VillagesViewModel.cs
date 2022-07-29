@@ -13,7 +13,7 @@ namespace WPFUI.ViewModels.Tabs
     {
         public VillagesViewModel()
         {
-            _databaseEvent = App.GetService<IDatabaseEvent>();
+            _databaseEvent = App.GetService<IEventManager>();
             _databaseEvent.AccountSelected += LoadData;
             _databaseEvent.VillagesUpdated += LoadData;
             _databaseEvent.TabActived += OnTabActived;
@@ -90,7 +90,7 @@ namespace WPFUI.ViewModels.Tabs
 
         public ObservableCollection<VillageInfo> Villages { get; } = new();
 
-        private readonly IDatabaseEvent _databaseEvent;
+        private readonly IEventManager _databaseEvent;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
     }
 }

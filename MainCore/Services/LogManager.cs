@@ -10,7 +10,7 @@ namespace MainCore.Services
 {
     public sealed class LogManager : ILogManager
     {
-        public LogManager(IDatabaseEvent databaseEvent, IDbContextFactory<AppDbContext> contextFactory)
+        public LogManager(IEventManager databaseEvent, IDbContextFactory<AppDbContext> contextFactory)
         {
             _databaseEvent = databaseEvent;
             _contextFactory = contextFactory;
@@ -101,7 +101,7 @@ namespace MainCore.Services
         private readonly Dictionary<int, LinkedList<LogMessage>> _logs = new();
         private readonly Dictionary<int, ILogger> _loggers = new();
 
-        private readonly IDatabaseEvent _databaseEvent;
+        private readonly IEventManager _databaseEvent;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
     }
 }

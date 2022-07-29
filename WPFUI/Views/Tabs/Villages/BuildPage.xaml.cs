@@ -99,7 +99,7 @@ namespace WPFUI.Views.Tabs.Villages
                     v => v.LevelTextBox.Text)
                 .DisposeWith(d);
 
-                App.GetService<IDatabaseEvent>().OnTabActived(ViewModel.GetType(), VillageId);
+                App.GetService<IEventManager>().OnTabActived(ViewModel.GetType(), VillageId);
             });
         }
     }

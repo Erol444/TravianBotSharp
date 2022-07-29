@@ -21,7 +21,7 @@ namespace WPFUI
         {
             _chromeManager = App.GetService<IChromeManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _databaseEvent = App.GetService<IDatabaseEvent>();
+            _databaseEvent = App.GetService<IEventManager>();
             _databaseEvent.AccountsTableUpdate += LoadData;
             _databaseEvent.AccountStatusUpdate += OnAccountUpdate;
             _taskManager = App.GetService<ITaskManager>();
@@ -190,7 +190,7 @@ namespace WPFUI
 
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IDatabaseEvent _databaseEvent;
+        private readonly IEventManager _databaseEvent;
         private readonly ITaskManager _taskManager;
         private readonly ILogManager _logManager;
 

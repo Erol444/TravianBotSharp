@@ -38,7 +38,7 @@ namespace WPFUI.Views.Tabs
                     v => v.VillagesGrid.ItemsSource)
                 .DisposeWith(d);
 
-                App.GetService<IDatabaseEvent>().OnTabActived(ViewModel.GetType(), AccountId);
+                App.GetService<IEventManager>().OnTabActived(ViewModel.GetType(), AccountId);
             });
         }
     }

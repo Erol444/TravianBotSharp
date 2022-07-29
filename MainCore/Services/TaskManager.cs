@@ -11,7 +11,7 @@ namespace MainCore.Services
 {
     public class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IDatabaseEvent databaseEvent, ILogManager logManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IEventManager databaseEvent, ILogManager logManager)
         {
             _contextFactory = contextFactory;
             _databaseEvent = databaseEvent;
@@ -147,7 +147,7 @@ namespace MainCore.Services
         private readonly Dictionary<int, AccountStatus> _botStatus = new();
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IDatabaseEvent _databaseEvent;
+        private readonly IEventManager _databaseEvent;
         private readonly IChromeManager _chromeManager;
         private readonly ILogManager _logManager;
     }
