@@ -92,6 +92,16 @@ namespace WPFUI
                 vm => vm.IsAccountSelected,
                 v => v.DebugTab.Visibility);
 
+            this.OneWayBind(ViewModel,
+                vm => vm.CurrentAccount.Id,
+                v => v.DebugPage.AccountId);
+            this.OneWayBind(ViewModel,
+                vm => vm.CurrentAccount.Id,
+                v => v.OverviewPage.AccountId);
+            this.OneWayBind(ViewModel,
+                vm => vm.CurrentAccount.Id,
+                v => v.VillagesPage.AccountId);
+
             #endregion Data
         }
 

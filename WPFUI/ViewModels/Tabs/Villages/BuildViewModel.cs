@@ -1,4 +1,7 @@
-﻿using ReactiveUI;
+﻿using MainCore;
+using MainCore.Enums;
+using Microsoft.EntityFrameworkCore;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -6,6 +9,7 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs.Villages
@@ -14,6 +18,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
     {
         public BuildViewModel()
         {
+            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+
             BuildCommand = ReactiveCommand.Create(BuildTask);
 
             TopCommand = ReactiveCommand.Create(TopTask);
@@ -26,7 +32,33 @@ namespace WPFUI.ViewModels.Tabs.Villages
             ExportCommand = ReactiveCommand.Create(ExportTask);
         }
 
-        public void LoadData(int accountId)
+        public void LoadData(int villageId)
+        {
+            LoadBuildings(villageId);
+        }
+
+        private void LoadBuildings(int villageId)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).OrderBy(x => x.Id);
+            Buildings.Clear();
+            foreach (var building in buildings)
+            {
+                Buildings.Add(new()
+                {
+                    Location = building.Id,
+                    Type = (BuildingEnums)building.Type,
+                    Level = building.Level.ToString(),
+                    Color = Color.FromRgb(0, 0, 0),
+                });
+            }
+        }
+
+        private void LoadCurrent(int villageId)
+        {
+        }
+
+        private void LoadQueue(int villageId)
         {
         }
 
@@ -112,5 +144,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             get => _level;
             set => this.RaiseAndSetIfChanged(ref _level, value);
         }
+
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
     }
 }

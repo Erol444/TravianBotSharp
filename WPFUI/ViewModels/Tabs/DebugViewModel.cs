@@ -1,6 +1,7 @@
 ﻿using MainCore.Models.Runtime;
 using MainCore.Services;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using WPFUI.Models;
@@ -18,6 +19,16 @@ namespace WPFUI.ViewModels.Tabs
             _databaseEvent.AccountSelected += LoadData;
             _databaseEvent.TaskUpdated += OnTasksUpdate;
             _databaseEvent.LogUpdated += OnLogsUpdate;
+            _databaseEvent.TabActived += OnTabActived;
+        }
+
+        private void OnTabActived(Type tabType, int index)
+        {
+            if (tabType.Equals(GetType()))
+            {
+                LoadData(index);
+                _accountId = index;
+            }
         }
 
         public void LoadData(int accountId)
@@ -28,8 +39,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private async void OnTasksUpdate(int accountId)
         {
-            if (App.AccountId != accountId) return;
-
+            if (accountId != _accountId) return;
             await App.Current.Dispatcher.InvokeAsync(() =>
             {
                 Tasks.Clear();
@@ -47,7 +57,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private async void OnLogsUpdate(int accountId)
         {
-            if (App.AccountId != accountId) return;
+            if (accountId != _accountId) return;
             await App.Current.Dispatcher.InvokeAsync(() =>
             {
                 Logs.Clear();
@@ -58,6 +68,7 @@ namespace WPFUI.ViewModels.Tabs
             });
         }
 
+        private int _accountId;
         private readonly ILogManager _logManager;
         private readonly ITaskManager _taskManager;
         private readonly IDatabaseEvent _databaseEvent;

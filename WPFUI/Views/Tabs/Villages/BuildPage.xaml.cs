@@ -1,19 +1,6 @@
-﻿using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MainCore.Services;
+using ReactiveUI;
 using System.Reactive.Disposables;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WPFUI.ViewModels.Tabs.Villages;
 
 namespace WPFUI.Views.Tabs.Villages
@@ -21,8 +8,10 @@ namespace WPFUI.Views.Tabs.Villages
     /// <summary>
     /// Interaction logic for BuildPage.xaml
     /// </summary>
-    public partial class BuildPage : ReactivePage<BuildViewModel>
+    public partial class BuildPage : ReactivePage<BuildViewModel>, IVillageTabPage
     {
+        public int VillageId { get; set; }
+
         public BuildPage()
         {
             ViewModel = new();
@@ -109,6 +98,8 @@ namespace WPFUI.Views.Tabs.Villages
                     vm => vm.Level,
                     v => v.LevelTextBox.Text)
                 .DisposeWith(d);
+
+                App.GetService<IDatabaseEvent>().OnTabActived(ViewModel.GetType(), VillageId);
             });
         }
     }

@@ -28,10 +28,10 @@ namespace WPFUI.ViewModels
 
         public event Action CloseView;
 
-        public void LoadData()
+        public void LoadData(int index)
         {
+            _accountId = index;
             _waitingWindow.Show();
-            var index = App.AccountId;
             using var context = _contextFactory.CreateDbContext();
             var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == index);
             if (accountSetting is null)
@@ -119,14 +119,13 @@ namespace WPFUI.ViewModels
 
             await Task.Run(() =>
             {
-                var index = App.AccountId;
                 using var context = _contextFactory.CreateDbContext();
-                var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == index);
+                var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == _accountId);
                 if (accountSetting is null)
                 {
                     accountSetting = new()
                     {
-                        AccountId = index
+                        AccountId = _accountId
                     };
                 }
 
@@ -285,5 +284,6 @@ namespace WPFUI.ViewModels
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly WaitingWindow _waitingWindow;
+        private int _accountId;
     }
 }

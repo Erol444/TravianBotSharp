@@ -129,7 +129,7 @@ namespace WPFUI
 
         private void SettingsAccountTask()
         {
-            _accountSettingsWindow.ViewModel.LoadData();
+            _accountSettingsWindow.ViewModel.LoadData(CurrentAccount.Id);
             _accountSettingsWindow.Show();
         }
 
@@ -222,14 +222,12 @@ namespace WPFUI
                         IsAccountNotSelected = true;
                         IsAccountSelected = false;
                         _databaseEvent.OnAccountSelected(-1);
-                        App.AccountId = -1;
                     }
                     else
                     {
                         IsAccountNotSelected = false;
                         IsAccountSelected = true;
                         _databaseEvent.OnAccountSelected(value.Id);
-                        App.AccountId = value.Id;
                     }
                     _databaseEvent.OnAccountStatusUpdate();
                 }

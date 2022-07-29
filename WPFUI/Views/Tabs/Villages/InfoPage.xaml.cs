@@ -1,18 +1,5 @@
-﻿using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using MainCore.Services;
+using ReactiveUI;
 using WPFUI.ViewModels.Tabs.Villages;
 
 namespace WPFUI.Views.Tabs.Villages
@@ -20,11 +7,18 @@ namespace WPFUI.Views.Tabs.Villages
     /// <summary>
     /// Interaction logic for InfoPage.xaml
     /// </summary>
-    public partial class InfoPage : ReactivePage<InfoViewModel>
+    public partial class InfoPage : ReactivePage<InfoViewModel>, IVillageTabPage
     {
+        public int VillageId { get; set; }
+
         public InfoPage()
         {
+            ViewModel = new();
             InitializeComponent();
+            this.WhenActivated(d =>
+            {
+                App.GetService<IDatabaseEvent>().OnTabActived(ViewModel.GetType(), VillageId);
+            });
         }
     }
 }

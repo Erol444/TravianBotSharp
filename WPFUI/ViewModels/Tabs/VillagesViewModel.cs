@@ -2,6 +2,7 @@
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using WPFUI.Models;
@@ -15,7 +16,16 @@ namespace WPFUI.ViewModels.Tabs
             _databaseEvent = App.GetService<IDatabaseEvent>();
             _databaseEvent.AccountSelected += LoadData;
             _databaseEvent.VillagesUpdated += LoadData;
+            _databaseEvent.TabActived += OnTabActived;
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+        }
+
+        private void OnTabActived(Type tabType, int index)
+        {
+            if (tabType.Equals(GetType()))
+            {
+                LoadData(index);
+            }
         }
 
         public void LoadData(int accountId)

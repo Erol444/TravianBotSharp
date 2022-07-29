@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using MainCore.Services;
+using ReactiveUI;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs;
 
@@ -7,8 +8,10 @@ namespace WPFUI.Views.Tabs
     /// <summary>
     /// Interaction logic for DebugPage.xaml
     /// </summary>
-    public partial class DebugPage : ReactivePage<DebugViewModel>
+    public partial class DebugPage : ReactivePage<DebugViewModel>, IMainTabPage
     {
+        public int AccountId { get; set; }
+
         public DebugPage()
         {
             ViewModel = new();
@@ -26,7 +29,7 @@ namespace WPFUI.Views.Tabs
                     v => v.TaskGird.ItemsSource)
                 .DisposeWith(d);
 
-                ViewModel.LoadData(App.AccountId);
+                App.GetService<IDatabaseEvent>().OnTabActived(ViewModel.GetType(), AccountId);
             });
         }
     }

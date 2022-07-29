@@ -21,7 +21,6 @@ namespace MainCore.Services
             Log.Logger = new LoggerConfiguration()
               .WriteTo.Map("Account", "Other", (acc, wt) => wt.File($"./logs/log-{acc}-.txt",
                                                                         rollingInterval: RollingInterval.Day,
-                                                                        encoding: Encoding.Unicode,
                                                                         outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
               .CreateLogger();
         }
@@ -30,7 +29,7 @@ namespace MainCore.Services
         {
             if (_logs.TryGetValue(accountId, out var logs))
             {
-                return logs;
+                return new LinkedList<LogMessage>(logs);
             }
             return new LinkedList<LogMessage>();
         }

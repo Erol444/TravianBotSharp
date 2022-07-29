@@ -20,7 +20,6 @@ namespace WPFUI
     {
         private static ServiceProvider _provider;
         public static IServiceProvider Provider => _provider;
-        public static int AccountId { get; set; }
 
         public static T GetService<T>() => Provider.GetRequiredService<T>();
 

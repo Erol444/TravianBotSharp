@@ -4,92 +4,40 @@ namespace MainCore.Services
 {
     public class DatabaseEvent : IDatabaseEvent
     {
-        #region Accounts table update
-
         public event Action AccountsTableUpdate;
 
-        public void OnAccountsTableUpdate()
-        {
-            AccountsTableUpdate?.Invoke();
-        }
-
-        #endregion Accounts table update
-
-        #region Account status update
+        public void OnAccountsTableUpdate() => AccountsTableUpdate?.Invoke();
 
         public event Action AccountStatusUpdate;
 
-        public void OnAccountStatusUpdate()
-        {
-            AccountStatusUpdate?.Invoke();
-        }
-
-        #endregion Account status update
-
-        #region Log update
+        public void OnAccountStatusUpdate() => AccountStatusUpdate?.Invoke();
 
         public event Action<int> LogUpdated;
 
-        public void OnLogUpdated(int accountId)
-        {
-            LogUpdated?.Invoke(accountId);
-        }
-
-        #endregion Log update
-
-        #region Task update
+        public void OnLogUpdated(int accountId) => LogUpdated?.Invoke(accountId);
 
         public event Action<int> TaskUpdated;
 
-        public void OnTaskUpdated(int accountId)
-        {
-            TaskUpdated?.Invoke(accountId);
-        }
-
-        #endregion Task update
-
-        #region Task execute
+        public void OnTaskUpdated(int accountId) => TaskUpdated?.Invoke(accountId);
 
         public event Action TaskExecuted;
 
-        public void OnTaskExecuted()
-        {
-            TaskExecuted?.Invoke();
-        }
-
-        #endregion Task execute
-
-        #region Account selected
+        public void OnTaskExecuted() => TaskExecuted?.Invoke();
 
         public event Action<int> AccountSelected;
 
-        public void OnAccountSelected(int accountId)
-        {
-            AccountSelected?.Invoke(accountId);
-        }
-
-        #endregion Account selected
-
-        #region Villages table update
+        public void OnAccountSelected(int accountId) => AccountSelected?.Invoke(accountId);
 
         public event Action<int> VillagesUpdated;
 
-        public void OnVillagesUpdated(int accountId)
-        {
-            VillagesUpdated?.Invoke(accountId);
-        }
-
-        #endregion Villages table update
-
-        #region Village selected
+        public void OnVillagesUpdated(int accountId) => VillagesUpdated?.Invoke(accountId);
 
         public event Action<int> VillageSelected;
 
-        public void OnVillageSelected(int villageId)
-        {
-            VillageSelected?.Invoke(villageId);
-        }
+        public void OnVillageSelected(int villageId) => VillageSelected?.Invoke(villageId);
 
-        #endregion Village selected
+        public event Action<Type, int> TabActived;
+
+        public void OnTabActived(Type tabType, int index) => TabActived?.Invoke(tabType, index);
     }
 }

@@ -35,5 +35,9 @@ namespace MainCore.Services
         public event Action<int> VillagesUpdated;
 
         public void OnVillagesUpdated(int accountId);
+
+        public event Action<Type, int> TabActived;
+
+        public void OnTabActived(Type tabType, int index);
     }
 }

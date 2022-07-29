@@ -32,14 +32,14 @@
             <TabItem x:Name="BuildTab" Header="Build" IsVisibleChanged="BuildTab_IsVisibleChanged">
                 <Frame>
                     <Frame.Content>
-                        <tabs:BuildPage />
+                        <tabs:BuildPage x:Name="BuildPage" />
                     </Frame.Content>
                 </Frame>
             </TabItem>
             <TabItem x:Name="InfoTab" Header="Info">
                 <Frame>
                     <Frame.Content>
-                        <tabs:InfoPage />
+                        <tabs:InfoPage x:Name="InfoPage" />
                     </Frame.Content>
                 </Frame>
             </TabItem>

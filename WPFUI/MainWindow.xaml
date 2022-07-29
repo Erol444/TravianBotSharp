@@ -55,21 +55,21 @@
             <TabItem x:Name="OverviewTab" Header="Overview" IsVisibleChanged="OverviewTab_IsVisibleChanged">
                 <Frame>
                     <Frame.Content>
-                        <tabs:OverviewPage />
+                        <tabs:OverviewPage x:Name="OverviewPage" />
                     </Frame.Content>
                 </Frame>
             </TabItem>
             <TabItem x:Name="VillagesTab" Header="Villages">
                 <Frame>
                     <Frame.Content>
-                        <tabs:VillagesPage />
+                        <tabs:VillagesPage x:Name="VillagesPage" />
                     </Frame.Content>
                 </Frame>
             </TabItem>
             <TabItem x:Name="DebugTab" Header="Debug">
                 <Frame>
                     <Frame.Content>
-                        <tabs:DebugPage />
+                        <tabs:DebugPage x:Name="DebugPage" />
                     </Frame.Content>
                 </Frame>
             </TabItem>
