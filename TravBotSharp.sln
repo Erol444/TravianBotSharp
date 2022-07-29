@@ -9,11 +9,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFUI", "WPFUI\WPFUI.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TTWarsCore", "TTWarsCore\TTWarsCore.csproj", "{9FFB28C4-1EF6-4803-BA93-ED99EFC12932}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravianOffcialCore", "TravianOffcialCore\TravianOffcialCore.csproj", "{D663785D-6F7D-4F37-9B4B-0D0C1E8067EF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravianOfficialCore", "TravianOffcialCore\TravianOfficialCore.csproj", "{D663785D-6F7D-4F37-9B4B-0D0C1E8067EF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravianOfficalNewHeroUICore", "TravianOfficalNewHeroUICore\TravianOfficalNewHeroUICore.csproj", "{9D58E37F-38B7-473B-B2F9-A23B31EC3C49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravianOfficialNewHeroUICore", "TravianOfficalNewHeroUICore\TravianOfficialNewHeroUICore.csproj", "{9D58E37F-38B7-473B-B2F9-A23B31EC3C49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject", "TestProject\TestProject.csproj", "{6A81A22F-139C-4124-A8D1-B9368270E25A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "TestProject\TestProject.csproj", "{6A81A22F-139C-4124-A8D1-B9368270E25A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
