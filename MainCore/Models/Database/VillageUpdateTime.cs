@@ -7,6 +7,5 @@ namespace MainCore.Models.Database
         public int VillageId { get; set; }
         public DateTime Dorf1 { get; set; }
         public DateTime Dorf2 { get; set; }
-        public DateTime Resource { get; set; }
     }
 }

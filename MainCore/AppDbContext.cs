@@ -99,11 +99,33 @@ namespace MainCore
             modelBuilder.Entity<VillageSetting>(entity =>
             {
                 entity.ToTable("VillagesSettings");
-                entity.HasKey(e => new { e.AccountId, e.VillageId })
+                entity.HasKey(e => e.VillageId)
                     .HasName("PK_VILLAGESSETTINGS");
             });
 
             #endregion Village setting
+
+            #region Village Currently Building
+
+            modelBuilder.Entity<VillageCurrentlyBuilding>(entity =>
+            {
+                entity.ToTable("VillagesCurrentlyBuildings");
+                entity.HasKey(e => new { e.VillageId, e.Id })
+                    .HasName("PK_VILLAGESCURRENTLYBUILDINGS");
+            });
+
+            #endregion Village Currently Building
+
+            #region Village Queue Building
+
+            modelBuilder.Entity<VillageQueueBuilding>(entity =>
+            {
+                entity.ToTable("VillagesQueueBuildings");
+                entity.HasKey(e => new { e.VillageId, e.Id })
+                    .HasName("PK_VILLAGESQUEUEBUILDINGS");
+            });
+
+            #endregion Village Queue Building
         }
 
         public DbSet<Account> Accounts { get; set; }
