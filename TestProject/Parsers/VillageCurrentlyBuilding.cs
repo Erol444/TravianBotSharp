@@ -29,14 +29,14 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialGetNodes()
         {
-            var nodes = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianDoc);
+            var nodes = TravianOfficialCore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianDoc);
             Assert.AreEqual(0, nodes.Count);
         }
 
         [TestMethod]
         public void TravianOfficialHeroGetNodes()
         {
-            var nodes = TravianOfficalNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianHeroDoc);
+            var nodes = TravianOfficialNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianHeroDoc);
             Assert.AreEqual(1, nodes.Count);
         }
 
@@ -53,16 +53,16 @@ namespace TestProject.Parsers
         [Ignore]
         public void TravianOfficialGetType()
         {
-            var nodes = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianDoc);
-            var result = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetType(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianDoc);
+            var result = TravianOfficialCore.Parsers.VillageCurrentlyBuilding.GetType(nodes[0]);
             Assert.AreEqual("", result);
         }
 
         [TestMethod]
         public void TravianOfficialHeroGetType()
         {
-            var nodes = TravianOfficalNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianHeroDoc);
-            var result = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetType(nodes[0]);
+            var nodes = TravianOfficialNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianHeroDoc);
+            var result = TravianOfficialNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetType(nodes[0]);
             Assert.AreEqual("MainBuilding", result);
         }
 
@@ -79,16 +79,16 @@ namespace TestProject.Parsers
         [Ignore]
         public void TravianOfficialGetLevel()
         {
-            var nodes = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianDoc);
-            var result = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetLevel(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianDoc);
+            var result = TravianOfficialCore.Parsers.VillageCurrentlyBuilding.GetLevel(nodes[0]);
             Assert.AreEqual("", result);
         }
 
         [TestMethod]
         public void TravianOfficialHeroGetLevel()
         {
-            var nodes = TravianOfficalNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianHeroDoc);
-            var result = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetLevel(nodes[0]);
+            var nodes = TravianOfficialNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianHeroDoc);
+            var result = TravianOfficialNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetLevel(nodes[0]);
             Assert.AreEqual(2, result);
         }
 
@@ -105,16 +105,16 @@ namespace TestProject.Parsers
         [Ignore]
         public void TravianOfficialGetDuration()
         {
-            var nodes = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianDoc);
-            var result = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetDuration(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianDoc);
+            var result = TravianOfficialCore.Parsers.VillageCurrentlyBuilding.GetDuration(nodes[0]);
             Assert.AreEqual("", result);
         }
 
         [TestMethod]
         public void TravianOfficialHeroGetDuration()
         {
-            var nodes = TravianOfficalNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianHeroDoc);
-            var result = TravianOffcialCore.Parsers.VillageCurrentlyBuilding.GetDuration(nodes[0]);
+            var nodes = TravianOfficialNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetNodes(_travianHeroDoc);
+            var result = TravianOfficialNewHeroUICore.Parsers.VillageCurrentlyBuilding.GetDuration(nodes[0]);
             Assert.AreEqual(TimeSpan.Parse("00:43:20"), result);
         }
     }
