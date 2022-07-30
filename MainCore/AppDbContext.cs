@@ -136,5 +136,7 @@ namespace MainCore
         public DbSet<VillageUpdateTime> VillagesUpdateTime { get; set; }
         public DbSet<AccountSetting> AccountsSettings { get; set; }
         public DbSet<VillageSetting> VillagesSettings { get; set; }
+        public DbSet<VillageCurrentlyBuilding> VillagesCurrentlyBuildings { get; set; }
+        public DbSet<VillageQueueBuilding> VillagesQueueBuildings { get; set; }
     }
 }

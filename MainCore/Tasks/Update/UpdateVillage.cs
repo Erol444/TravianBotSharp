@@ -1,11 +1,8 @@
-﻿using MainCore.Models.Runtime;
-using MainCore.Services;
-using Microsoft.EntityFrameworkCore;
+﻿using MainCore.Enums;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 #if TRAVIAN_OFFICIAL
@@ -48,21 +45,71 @@ namespace MainCore.Tasks.Update
         {
             var currentUrl = ChromeBrowser.GetCurrentUrl();
             var tasks = new List<Task>();
-
+            var dorf = 0;
+            if (currentUrl.Contains("dorf")) UpdateCurrentlyBuilding();
             if (currentUrl.Contains("dorf1"))
             {
-                tasks.Add(UpdateDorf1());
-                tasks.Add(UpdateCurrentlyBuilding());
+                tasks.Add(Task.Run(UpdateDorf1));
+                dorf = 1;
             }
             else if (currentUrl.Contains("dorf2"))
             {
-                tasks.Add(UpdateDorf2());
-                tasks.Add(UpdateCurrentlyBuilding());
+                tasks.Add(Task.Run(UpdateDorf2));
+                dorf = 2;
             }
 
-            tasks.Add(UpdateResource());
+            tasks.Add(Task.Run(UpdateResource));
 
             await Task.WhenAll(tasks);
+
+            using var context = ContextFactory.CreateDbContext();
+            var updateTime = context.VillagesUpdateTime.Find(VillageId);
+            if (updateTime is null)
+            {
+                switch (dorf)
+                {
+                    case 1:
+                        updateTime = new()
+                        {
+                            VillageId = VillageId,
+                            Dorf1 = DateTime.Now
+                        };
+                        break;
+
+                    case 2:
+
+                        updateTime = new()
+                        {
+                            VillageId = VillageId,
+                            Dorf2 = DateTime.Now
+                        };
+                        break;
+
+                    default:
+                        break;
+                }
+
+                context.VillagesUpdateTime.Add(updateTime);
+            }
+            else
+            {
+                switch (dorf)
+                {
+                    case 1:
+
+                        updateTime.Dorf1 = DateTime.Now;
+                        break;
+
+                    case 2:
+
+                        updateTime.Dorf2 = DateTime.Now;
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            context.SaveChanges();
         }
 
         private bool IsCorrectVillage()
@@ -99,7 +146,7 @@ namespace MainCore.Tasks.Update
             while (!IsCorrectVillage());
         }
 
-        private async Task UpdateResource()
+        private void UpdateResource()
         {
             var html = ChromeBrowser.GetHtml();
             using var context = ContextFactory.CreateDbContext();
@@ -129,30 +176,68 @@ namespace MainCore.Tasks.Update
                 resource.Granary = StockBar.GetGranaryCapacity(html);
                 resource.FreeCrop = StockBar.GetFreeCrop(html);
             }
-
-            var updateTime = context.VillagesUpdateTime.Find(VillageId);
-            if (updateTime is null)
-            {
-                context.VillagesUpdateTime.Add(new()
-                {
-                    VillageId = VillageId,
-                    Resource = DateTime.Now,
-                });
-            }
-            else
-            {
-                updateTime.Resource = DateTime.Now;
-            }
-
-            await context.SaveChangesAsync();
+            context.SaveChanges();
         }
 
-        private async Task UpdateCurrentlyBuilding()
+        private void UpdateCurrentlyBuilding()
         {
-            await Task.Delay(1000);
+            var html = ChromeBrowser.GetHtml();
+            using var context = ContextFactory.CreateDbContext();
+            var nodes = VillageCurrentlyBuilding.GetNodes(html);
+            for (int i = 0; i < nodes.Count; i++)
+            {
+                var node = nodes[i];
+                var building = context.VillagesCurrentlyBuildings.Find(VillageId, i);
+
+                var strType = VillageCurrentlyBuilding.GetType(node);
+                var level = VillageCurrentlyBuilding.GetLevel(node);
+                var duration = VillageCurrentlyBuilding.GetDuration(node);
+
+                var type = (int)Enum.Parse(typeof(BuildingEnums), strType);
+
+                if (building is null)
+                {
+                    context.VillagesCurrentlyBuildings.Add(new()
+                    {
+                        Id = i,
+                        VillageId = VillageId,
+                        Type = type,
+                        Level = level,
+                        CompleteTime = DateTime.Now.Add(duration),
+                    });
+                }
+                else
+                {
+                    building.Type = type;
+                    building.Level = level;
+                    building.CompleteTime = DateTime.Now.Add(duration);
+                }
+            }
+            for (int i = nodes.Count; i < 4; i++) // we will save 3 slot for each village, Roman can build 3 building in one time
+            {
+                var building = context.VillagesCurrentlyBuildings.Find(VillageId, i);
+                if (building is null) continue;
+                if (building is null)
+                {
+                    context.VillagesCurrentlyBuildings.Add(new()
+                    {
+                        Id = i,
+                        VillageId = VillageId,
+                        Type = 0,
+                        Level = -1,
+                        CompleteTime = DateTime.MaxValue,
+                    });
+                }
+                else
+                {
+                    building.Type = 0;
+                    building.Level = -1;
+                    building.CompleteTime = DateTime.MaxValue;
+                }
+            }
         }
 
-        private async Task UpdateDorf1()
+        private void UpdateDorf1()
         {
             var html = ChromeBrowser.GetHtml();
             var resFields = VillageFields.GetResourceNodes(html);
@@ -160,42 +245,44 @@ namespace MainCore.Tasks.Update
             foreach (var fieldNode in resFields)
             {
                 var id = VillageFields.GetId(fieldNode);
-                var resource = context.VillagesBuildings.Find( VillageId, id );
+                var resource = context.VillagesBuildings.Find(VillageId, id);
+                var level = VillageFields.GetLevel(fieldNode);
+                var type = VillageFields.GetType(fieldNode);
+                var isUnderConstruction = VillageFields.IsUnderConstruction(fieldNode);
                 if (resource is null)
                 {
                     context.VillagesBuildings.Add(new()
                     {
                         VillageId = VillageId,
                         Id = id,
-                        Level = VillageFields.GetLevel(fieldNode),
-                        Type = VillageFields.GetType(fieldNode),
-                        IsUnderConstruction = VillageFields.IsUnderConstruction(fieldNode),
+                        Level = level,
+                        Type = type,
+                        IsUnderConstruction = isUnderConstruction,
                     });
                 }
                 else
                 {
-                    resource.Level = VillageFields.GetLevel(fieldNode);
-                    resource.Type = VillageFields.GetType(fieldNode);
-                    resource.IsUnderConstruction = VillageFields.IsUnderConstruction(fieldNode);
+                    resource.Level = level;
+                    resource.Type = type;
+                    resource.IsUnderConstruction = isUnderConstruction;
                 }
             }
-            var updateTime = context.VillagesUpdateTime.Find(VillageId);
-            if (updateTime is null)
+            context.SaveChanges();
+
+            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).ToList();
+            if (currentlyBuilding.Count > 0)
             {
-                context.VillagesUpdateTime.Add(new()
+                foreach (var building in currentlyBuilding)
                 {
-                    VillageId = VillageId,
-                    Dorf1 = DateTime.Now,
-                });
+                    var build = context.VillagesBuildings.FirstOrDefault(x => x.IsUnderConstruction && x.Type == building.Type && x.Level - building.Level < 3);
+                    if (build is null) continue;
+                    building.Location = build.Id;
+                }
+                context.SaveChanges();
             }
-            else
-            {
-                updateTime.Dorf1 = DateTime.Now;
-            }
-            await context.SaveChangesAsync();
         }
 
-        private async Task UpdateDorf2()
+        private void UpdateDorf2()
         {
             var html = ChromeBrowser.GetHtml();
             var buildingNodes = VillageInfrastructure.GetBuildingNodes(html);
@@ -204,38 +291,39 @@ namespace MainCore.Tasks.Update
             {
                 var id = VillageInfrastructure.GetId(buildingNode);
                 var building = context.VillagesBuildings.Find(VillageId, id);
+                var level = VillageInfrastructure.GetLevel(buildingNode);
+                var type = VillageInfrastructure.GetType(buildingNode);
+                var isUnderConstruction = VillageInfrastructure.IsUnderConstruction(buildingNode);
                 if (building is null)
                 {
                     context.VillagesBuildings.Add(new()
                     {
                         VillageId = VillageId,
                         Id = id,
-                        Level = VillageInfrastructure.GetLevel(buildingNode),
-                        Type = VillageInfrastructure.GetType(buildingNode),
-                        IsUnderConstruction = VillageInfrastructure.IsUnderConstruction(buildingNode),
+                        Level = level,
+                        Type = type,
+                        IsUnderConstruction = isUnderConstruction,
                     });
                 }
                 else
                 {
-                    building.Level = VillageInfrastructure.GetLevel(buildingNode);
-                    building.Type = VillageInfrastructure.GetType(buildingNode);
-                    building.IsUnderConstruction = VillageInfrastructure.IsUnderConstruction(buildingNode);
+                    building.Level = level;
+                    building.Type = type;
+                    building.IsUnderConstruction = isUnderConstruction;
                 }
             }
-            var updateTime = context.VillagesUpdateTime.Find(VillageId);
-            if (updateTime is null)
+            context.SaveChanges();
+            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).ToList();
+            if (currentlyBuilding.Count > 0)
             {
-                context.VillagesUpdateTime.Add(new()
+                foreach (var building in currentlyBuilding)
                 {
-                    VillageId = VillageId,
-                    Dorf2 = DateTime.Now,
-                });
+                    var build = context.VillagesBuildings.FirstOrDefault(x => x.IsUnderConstruction && x.Type == building.Type && x.Level - building.Level < 3);
+                    if (build is null) continue;
+                    building.Location = build.Id;
+                }
+                context.SaveChanges();
             }
-            else
-            {
-                updateTime.Dorf2 = DateTime.Now;
-            }
-            await context.SaveChangesAsync();
         }
 
         public override string Name => $"Update village {VillageId}";

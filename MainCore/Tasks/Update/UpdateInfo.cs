@@ -1,10 +1,7 @@
 ﻿using MainCore.Models.Database;
-using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 #if TRAVIAN_OFFICIAL
