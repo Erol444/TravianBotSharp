@@ -26,12 +26,12 @@ namespace MainCore.Tasks.Update
         {
         }
 
+        public override string Name => "Update Info";
+
         public override async Task Execute()
         {
             await UpdateVillageList();
         }
-
-        public override string Name => "Update Info";
 
         private async Task UpdateVillageList()
         {

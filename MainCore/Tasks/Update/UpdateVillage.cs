@@ -28,6 +28,8 @@ namespace MainCore.Tasks.Update
             VillageId = villageId;
         }
 
+        public override string Name => $"Update village {VillageId}";
+
         public int VillageId { get; protected set; }
 
         public override async Task Execute()
@@ -325,7 +327,5 @@ namespace MainCore.Tasks.Update
                 context.SaveChanges();
             }
         }
-
-        public override string Name => $"Update village {VillageId}";
     }
 }

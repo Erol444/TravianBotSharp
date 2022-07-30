@@ -47,6 +47,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public void LoadData(int villageId)
         {
             LoadBuildings(villageId);
+            LoadCurrent(villageId);
         }
 
         private void LoadBuildings(int villageId)
@@ -61,13 +62,25 @@ namespace WPFUI.ViewModels.Tabs.Villages
                     Location = building.Id,
                     Type = (BuildingEnums)building.Type,
                     Level = building.Level.ToString(),
-                    Color = Color.FromRgb(0, 0, 0),
                 });
             }
         }
 
         private void LoadCurrent(int villageId)
         {
+            using var context = _contextFactory.CreateDbContext();
+            var buildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).OrderBy(x => x.Id);
+            CurrentlyBuildings.Clear();
+            foreach (var building in buildings)
+            {
+                CurrentlyBuildings.Add(new()
+                {
+                    Location = building.Id,
+                    Type = (BuildingEnums)building.Type,
+                    Level = building.Level,
+                    CompleteTime = building.CompleteTime,
+                });
+            }
         }
 
         private void LoadQueue(int villageId)

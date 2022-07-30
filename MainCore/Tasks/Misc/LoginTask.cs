@@ -32,6 +32,7 @@ namespace MainCore.Tasks.Misc
         {
             return Task.Run(() =>
             {
+                AcceptCookie();
                 var result = Login();
                 if (!result) return;
                 TaskManager.Add(AccountId, new UpdateInfo(AccountId));
@@ -39,6 +40,17 @@ namespace MainCore.Tasks.Misc
         }
 
         public override string Name => "Login Task";
+
+        private void AcceptCookie()
+        {
+            var html = ChromeBrowser.GetHtml();
+            if (html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes")))
+            {
+                var driver = ChromeBrowser.GetChrome();
+                var acceptCookie = driver.FindElements(By.ClassName("cmpboxbtnyes"));
+                acceptCookie[0].Click();
+            }
+        }
 
         private bool Login()
         {

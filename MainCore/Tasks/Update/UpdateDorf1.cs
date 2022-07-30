@@ -28,6 +28,8 @@ namespace MainCore.Tasks.Update
         {
         }
 
+        public override string Name => $"Update both dorf1 {VillageId}";
+
         public override async Task Execute()
         {
             var result = ToDorf1();
