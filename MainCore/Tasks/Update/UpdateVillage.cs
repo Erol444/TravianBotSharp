@@ -234,6 +234,7 @@ namespace MainCore.Tasks.Update
                     building.CompleteTime = DateTime.MaxValue;
                 }
             }
+            context.SaveChanges();
         }
 
         private void UpdateDorf1()

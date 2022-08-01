@@ -30,7 +30,7 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Buildings" Binding="{Binding Name}" />
                     <DataGridTextColumn Header="Level" Binding="{Binding Level}" />
-                    <DataGridTextColumn Header="Complete at" Binding="{Binding Complete}" />
+                    <DataGridTextColumn Header="Complete at" Binding="{Binding CompleteTime}" />
                 </DataGrid.Columns>
             </DataGrid>
             <TextBlock x:Name="Buildins" HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" Text="Buildings" />
