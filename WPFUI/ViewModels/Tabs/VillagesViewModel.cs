@@ -26,9 +26,11 @@ namespace WPFUI.ViewModels.Tabs
 
         public void LoadData(int accountId)
         {
+            var currentVillageIndex = Villages.IndexOf(CurrentVillage);
+            using var context = _contextFactory.CreateDbContext();
+
             App.Current.Dispatcher.Invoke(() =>
             {
-                using var context = _contextFactory.CreateDbContext();
                 var villages = context.Villages.Where(x => x.AccountId == accountId);
                 Villages.Clear();
                 foreach (var village in villages)
@@ -39,6 +41,10 @@ namespace WPFUI.ViewModels.Tabs
                         Name = village.Name,
                         Coords = $"{village.X}|{village.Y}",
                     });
+                }
+                if (currentVillageIndex != -1)
+                {
+                    CurrentVillage = Villages[currentVillageIndex];
                 }
             });
         }

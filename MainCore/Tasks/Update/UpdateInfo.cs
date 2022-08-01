@@ -57,6 +57,7 @@ namespace MainCore.Tasks.Update
                 currentVillage.Name = foundVillage.Name;
                 foundVills.Remove(foundVillage);
             }
+            bool villageChange = missingVills.Count > 0 || foundVills.Count > 0;
             context.Villages.RemoveRange(missingVills);
             foreach (var newVill in foundVills)
             {
@@ -77,7 +78,10 @@ namespace MainCore.Tasks.Update
                 }
             }
             await context.SaveChangesAsync();
-            DatabaseEvent.OnVillagesUpdated(AccountId);
+            if (villageChange)
+            {
+                DatabaseEvent.OnVillagesUpdated(AccountId);
+            }
         }
 
         private List<Village> UpdateVillageTable()
