@@ -94,13 +94,13 @@ namespace WPFUI
 
             this.OneWayBind(ViewModel,
                 vm => vm.CurrentAccount.Id,
-                v => v.DebugPage.AccountId);
+                v => v.DebugPage.ViewModel.AccountId);
             this.OneWayBind(ViewModel,
                 vm => vm.CurrentAccount.Id,
-                v => v.OverviewPage.AccountId);
+                v => v.OverviewPage.ViewModel.AccountId);
             this.OneWayBind(ViewModel,
                 vm => vm.CurrentAccount.Id,
-                v => v.VillagesPage.AccountId);
+                v => v.VillagesPage.ViewModel.AccountId);
 
             #endregion Data
         }

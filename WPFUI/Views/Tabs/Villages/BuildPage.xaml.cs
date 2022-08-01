@@ -1,6 +1,7 @@
 ﻿using MainCore.Services;
 using ReactiveUI;
 using System.Reactive.Disposables;
+using WPFUI.Interfaces;
 using WPFUI.ViewModels.Tabs.Villages;
 
 namespace WPFUI.Views.Tabs.Villages
@@ -8,10 +9,8 @@ namespace WPFUI.Views.Tabs.Villages
     /// <summary>
     /// Interaction logic for BuildPage.xaml
     /// </summary>
-    public partial class BuildPage : ReactivePage<BuildViewModel>, IVillageTabPage
+    public partial class BuildPage : ReactivePage<BuildViewModel>
     {
-        public int VillageId { get; set; }
-
         public BuildPage()
         {
             ViewModel = new();
@@ -99,7 +98,7 @@ namespace WPFUI.Views.Tabs.Villages
                     v => v.LevelTextBox.Text)
                 .DisposeWith(d);
 
-                App.GetService<IEventManager>().OnTabActived(ViewModel.GetType(), VillageId);
+                ViewModel.OnActived();
             });
         }
     }

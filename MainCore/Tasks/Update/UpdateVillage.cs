@@ -40,29 +40,26 @@ namespace MainCore.Tasks.Update
             }
 
             await base.Execute();
-            await Update();
+            Update();
         }
 
-        private async Task Update()
+        private void Update()
         {
             var currentUrl = ChromeBrowser.GetCurrentUrl();
-            var tasks = new List<Task>();
             var dorf = 0;
             if (currentUrl.Contains("dorf")) UpdateCurrentlyBuilding();
             if (currentUrl.Contains("dorf1"))
             {
-                tasks.Add(Task.Run(UpdateDorf1));
+                UpdateDorf1();
                 dorf = 1;
             }
             else if (currentUrl.Contains("dorf2"))
             {
-                tasks.Add(Task.Run(UpdateDorf2));
+                UpdateDorf2();
                 dorf = 2;
             }
 
-            tasks.Add(Task.Run(UpdateResource));
-
-            await Task.WhenAll(tasks);
+            UpdateResource();
 
             using var context = ContextFactory.CreateDbContext();
             var updateTime = context.VillagesUpdateTime.Find(VillageId);

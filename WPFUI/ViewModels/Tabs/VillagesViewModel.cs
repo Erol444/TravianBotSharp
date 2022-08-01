@@ -5,27 +5,23 @@ using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using WPFUI.Interfaces;
 using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class VillagesViewModel : ReactiveObject
+    public class VillagesViewModel : ReactiveObject, IMainTabPage
     {
         public VillagesViewModel()
         {
             _databaseEvent = App.GetService<IEventManager>();
-            _databaseEvent.AccountSelected += LoadData;
             _databaseEvent.VillagesUpdated += LoadData;
-            _databaseEvent.TabActived += OnTabActived;
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
         }
 
-        private void OnTabActived(Type tabType, int index)
+        public void OnActived()
         {
-            if (tabType.Equals(GetType()))
-            {
-                LoadData(index);
-            }
+            LoadData(AccountId);
         }
 
         public void LoadData(int accountId)
@@ -57,12 +53,10 @@ namespace WPFUI.ViewModels.Tabs
                 this.RaiseAndSetIfChanged(ref _currentVillage, value);
                 if (value is not null)
                 {
-                    _databaseEvent.OnVillageSelected(value.Id);
                     IsVillageSelected = true;
                 }
                 else
                 {
-                    _databaseEvent.OnVillageSelected(-1);
                     IsVillageSelected = false;
                 }
             }
@@ -92,5 +86,16 @@ namespace WPFUI.ViewModels.Tabs
 
         private readonly IEventManager _databaseEvent;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private int _accountId;
+
+        public int AccountId
+        {
+            get => _accountId;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _accountId, value);
+                LoadData(value);
+            }
+        }
     }
 }

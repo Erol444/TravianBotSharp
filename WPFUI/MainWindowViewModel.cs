@@ -219,17 +219,13 @@ namespace WPFUI
                 {
                     if (value is null)
                     {
-                        IsAccountNotSelected = true;
                         IsAccountSelected = false;
-                        _databaseEvent.OnAccountSelected(-1);
                     }
                     else
                     {
-                        IsAccountNotSelected = false;
                         IsAccountSelected = true;
-                        _databaseEvent.OnAccountSelected(value.Id);
+                        OnAccountUpdate();
                     }
-                    _databaseEvent.OnAccountStatusUpdate();
                 }
             }
         }
@@ -259,7 +255,11 @@ namespace WPFUI
         public bool IsAccountSelected
         {
             get => _isAccountSelected;
-            set => this.RaiseAndSetIfChanged(ref _isAccountSelected, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _isAccountSelected, value);
+                IsAccountNotSelected = !value;
+            }
         }
 
         public bool IsAccountNotSelected

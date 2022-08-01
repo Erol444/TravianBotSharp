@@ -1,6 +1,7 @@
 ﻿using MainCore.Services;
 using ReactiveUI;
 using System.Reactive.Disposables;
+using WPFUI.Interfaces;
 using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
@@ -8,10 +9,8 @@ namespace WPFUI.Views.Tabs
     /// <summary>
     /// Interaction logic for OverviewPage.xaml
     /// </summary>
-    public partial class OverviewPage : ReactivePage<OverviewViewModel>, IMainTabPage
+    public partial class OverviewPage : ReactivePage<OverviewViewModel>
     {
-        public int AccountId { get; set; }
-
         public OverviewPage()
         {
             ViewModel = new();
@@ -38,7 +37,7 @@ namespace WPFUI.Views.Tabs
                     v => v.VillagesGrid.ItemsSource)
                 .DisposeWith(d);
 
-                App.GetService<IEventManager>().OnTabActived(ViewModel.GetType(), AccountId);
+                ViewModel.OnActived();
             });
         }
     }

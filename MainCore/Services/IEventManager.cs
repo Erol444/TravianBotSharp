@@ -8,14 +8,6 @@ namespace MainCore.Services
 
         public void OnAccountsTableUpdate();
 
-        public event Action<int> AccountSelected;
-
-        public void OnAccountSelected(int accountId);
-
-        public event Action<int> VillageSelected;
-
-        public void OnVillageSelected(int villageId);
-
         public event Action AccountStatusUpdate;
 
         public void OnAccountStatusUpdate();
@@ -35,9 +27,5 @@ namespace MainCore.Services
         public event Action<int> VillagesUpdated;
 
         public void OnVillagesUpdated(int accountId);
-
-        public event Action<Type, int> TabActived;
-
-        public void OnTabActived(Type tabType, int index);
     }
 }

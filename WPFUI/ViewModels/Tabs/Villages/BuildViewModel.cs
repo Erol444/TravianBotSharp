@@ -12,17 +12,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using WPFUI.Models;
+using WPFUI.Interfaces;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class BuildViewModel : ReactiveObject
+    public class BuildViewModel : ReactiveObject, IVillageTabPage
     {
         public BuildViewModel()
         {
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = App.GetService<IEventManager>();
-            _eventManager.TabActived += OnTabActived;
-            _eventManager.VillageSelected += LoadData;
 
             BuildCommand = ReactiveCommand.Create(BuildTask);
 
@@ -36,12 +35,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
             ExportCommand = ReactiveCommand.Create(ExportTask);
         }
 
-        private void OnTabActived(Type tabType, int index)
+        public void OnActived()
         {
-            if (tabType.Equals(GetType()))
-            {
-                LoadData(index);
-            }
+            LoadData(VillageId);
         }
 
         public void LoadData(int villageId)
@@ -172,5 +168,25 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
+
+        private int _accountId;
+
+        public int AccountId
+        {
+            get => _accountId;
+            set => this.RaiseAndSetIfChanged(ref _accountId, value);
+        }
+
+        private int _villageId;
+
+        public int VillageId
+        {
+            get => _villageId;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _villageId, value);
+                LoadData(value);
+            }
+        }
     }
 }

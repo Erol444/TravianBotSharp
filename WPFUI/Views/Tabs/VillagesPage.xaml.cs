@@ -1,6 +1,7 @@
 ﻿using MainCore.Services;
 using ReactiveUI;
 using System.Reactive.Disposables;
+using WPFUI.Interfaces;
 using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
@@ -8,10 +9,8 @@ namespace WPFUI.Views.Tabs
     /// <summary>
     /// Interaction logic for VillagesPage.xaml
     /// </summary>
-    public partial class VillagesPage : ReactivePage<VillagesViewModel>, IMainTabPage
+    public partial class VillagesPage : ReactivePage<VillagesViewModel>
     {
-        public int AccountId { get; set; }
-
         public VillagesPage()
         {
             ViewModel = new();
@@ -45,14 +44,24 @@ namespace WPFUI.Views.Tabs
 
                 this.OneWayBind(ViewModel,
                     vm => vm.CurrentVillage.Id,
-                    v => v.BuildPage.VillageId)
+                    v => v.BuildPage.ViewModel.VillageId)
                 .DisposeWith(d);
                 this.OneWayBind(ViewModel,
-                    vm => vm.CurrentVillage.Id,
-                    v => v.InfoPage.VillageId)
+                    vm => vm.AccountId,
+                    v => v.BuildPage.ViewModel.AccountId)
                 .DisposeWith(d);
 
-                App.GetService<IEventManager>().OnTabActived(ViewModel.GetType(), AccountId);
+                this.OneWayBind(ViewModel,
+                    vm => vm.CurrentVillage.Id,
+                    v => v.InfoPage.ViewModel.VillageId)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.AccountId,
+                    v => v.InfoPage.ViewModel.AccountId)
+                .DisposeWith(d);
+
+                ViewModel.OnActived();
+                NoVillageTab.IsSelected = true;
             });
         }
 

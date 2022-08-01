@@ -2,16 +2,21 @@
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Reactive;
+using WPFUI.Interfaces;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class OverviewViewModel : ReactiveObject
+    public class OverviewViewModel : ReactiveObject, IMainTabPage
     {
         public OverviewViewModel()
         {
             SaveCommand = ReactiveCommand.Create(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask, this.WhenAnyValue(vm => vm.IsSelected));
             ImportCommand = ReactiveCommand.Create(ImportTask, this.WhenAnyValue(vm => vm.IsSelected));
+        }
+
+        public void OnActived()
+        {
         }
 
         public void SaveTask()
@@ -48,6 +53,14 @@ namespace WPFUI.ViewModels.Tabs
         {
             get => _isSelected;
             set => this.RaiseAndSetIfChanged(ref _isSelected, value);
+        }
+
+        private int _accountId;
+
+        public int AccountId
+        {
+            get => _accountId;
+            set => this.RaiseAndSetIfChanged(ref _accountId, value);
         }
     }
 }

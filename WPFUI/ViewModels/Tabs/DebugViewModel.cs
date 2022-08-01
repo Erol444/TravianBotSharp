@@ -4,11 +4,12 @@ using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using WPFUI.Interfaces;
 using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class DebugViewModel : ReactiveObject
+    public class DebugViewModel : ReactiveObject, IMainTabPage
     {
         public DebugViewModel()
         {
@@ -16,19 +17,13 @@ namespace WPFUI.ViewModels.Tabs
             _logManager = App.GetService<ILogManager>();
             _databaseEvent = App.GetService<IEventManager>();
 
-            _databaseEvent.AccountSelected += LoadData;
             _databaseEvent.TaskUpdated += OnTasksUpdate;
             _databaseEvent.LogUpdated += OnLogsUpdate;
-            _databaseEvent.TabActived += OnTabActived;
         }
 
-        private void OnTabActived(Type tabType, int index)
+        public void OnActived()
         {
-            if (tabType.Equals(GetType()))
-            {
-                LoadData(index);
-                _accountId = index;
-            }
+            LoadData(AccountId);
         }
 
         public void LoadData(int accountId)
@@ -68,7 +63,6 @@ namespace WPFUI.ViewModels.Tabs
             });
         }
 
-        private int _accountId;
         private readonly ILogManager _logManager;
         private readonly ITaskManager _taskManager;
         private readonly IEventManager _databaseEvent;
@@ -76,5 +70,17 @@ namespace WPFUI.ViewModels.Tabs
         public ObservableCollection<TaskModel> Tasks { get; } = new();
 
         public ObservableCollection<LogMessage> Logs { get; } = new();
+
+        private int _accountId;
+
+        public int AccountId
+        {
+            get => _accountId;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _accountId, value);
+                LoadData(value);
+            }
+        }
     }
 }
