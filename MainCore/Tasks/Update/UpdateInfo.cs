@@ -1,5 +1,7 @@
-﻿using MainCore.Models.Database;
+﻿using MainCore.Enums;
+using MainCore.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,19 +30,35 @@ namespace MainCore.Tasks.Update
 
         public override string Name => "Update Info";
 
-        public override async Task Execute()
+        public override Task Execute()
         {
-            await UpdateVillageList();
+            return Task.Run(() =>
+            {
+                try
+                {
+                    UpdateVillageList();
+                }
+                catch (Exception e)
+                {
+                    LogManager.Error(AccountId, "Update village list failed", e);
+                }
+                try
+                {
+                    UpdateAccountInfo();
+                }
+                catch (Exception e)
+                {
+                    LogManager.Error(AccountId, "Update account info failed", e);
+                }
+            });
         }
 
-        private async Task UpdateVillageList()
+        private void UpdateVillageList()
         {
-            var taskFoundVills = Task.Run(UpdateVillageTable);
             using var context = ContextFactory.CreateDbContext();
-            var taskCurrentVills = context.Villages.Where(x => x.AccountId == AccountId).ToListAsync();
+            var currentVills = context.Villages.Where(x => x.AccountId == AccountId).ToList();
 
-            var foundVills = await taskFoundVills;
-            var currentVills = await taskCurrentVills;
+            var foundVills = UpdateVillageTable();
 
             var missingVills = new List<Village>();
             for (var i = 0; i < currentVills.Count; i++)
@@ -77,11 +95,49 @@ namespace MainCore.Tasks.Update
                     TaskManager.Add(AccountId, new UpdateBothDorf(newVill.Id, AccountId));
                 }
             }
-            await context.SaveChangesAsync();
+            context.SaveChanges();
             if (villageChange)
             {
                 DatabaseEvent.OnVillagesUpdated(AccountId);
             }
+        }
+
+        private void UpdateAccountInfo()
+        {
+            var html = ChromeBrowser.GetHtml();
+            var tribe = RightBar.GetTribe(html);
+            if (tribe == 0) throw new Exception("Cannot read account's tribe.");
+            var hasPlusAccount = RightBar.HasPlusAccount(html);
+            if (hasPlusAccount is null) throw new Exception("Cannot detect account has plus or not.");
+            var gold = StockBar.GetGold(html);
+            if (gold == -1) throw new Exception("Cannot read account's gold.");
+            var silver = StockBar.GetSilver(html);
+            if (silver == -1) throw new Exception("Cannot read account's silver.");
+
+            using var context = ContextFactory.CreateDbContext();
+            var account = context.AccountsInfo.Find(AccountId);
+            if (account is null)
+            {
+                account = new()
+                {
+                    Id = AccountId,
+                    HasPlusAccount = hasPlusAccount.Value,
+                    Gold = gold,
+                    Silver = silver,
+                    Tribe = (TribeEnums)tribe,
+                };
+
+                context.AccountsInfo.Add(account);
+            }
+            else
+            {
+                account.HasPlusAccount = hasPlusAccount.Value;
+                account.Gold = gold;
+                account.Silver = silver;
+                account.Tribe = (TribeEnums)tribe;
+            }
+
+            context.SaveChanges();
         }
 
         private List<Village> UpdateVillageTable()

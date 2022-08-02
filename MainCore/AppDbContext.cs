@@ -126,9 +126,21 @@ namespace MainCore
             });
 
             #endregion Village Queue Building
+
+            #region Account info
+
+            modelBuilder.Entity<AccountInfo>(entity =>
+            {
+                entity.ToTable("AccountsInfo");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_ACCOUNTSINFO");
+            });
+
+            #endregion Account info
         }
 
         public DbSet<Account> Accounts { get; set; }
+        public DbSet<AccountInfo> AccountsInfo { get; set; }
         public DbSet<Access> Accesses { get; set; }
         public DbSet<Village> Villages { get; set; }
         public DbSet<VillageBuilding> VillagesBuildings { get; set; }
