@@ -192,7 +192,7 @@ namespace MainCore.Tasks.Update
                 var level = VillageCurrentlyBuilding.GetLevel(node);
                 var duration = VillageCurrentlyBuilding.GetDuration(node);
 
-                var type = (int)Enum.Parse(typeof(BuildingEnums), strType);
+                var type = (BuildingEnums)Enum.Parse(typeof(BuildingEnums), strType);
 
                 if (building is null)
                 {
@@ -256,14 +256,14 @@ namespace MainCore.Tasks.Update
                         VillageId = VillageId,
                         Id = id,
                         Level = level,
-                        Type = type,
+                        Type = (BuildingEnums)type,
                         IsUnderConstruction = isUnderConstruction,
                     });
                 }
                 else
                 {
                     resource.Level = level;
-                    resource.Type = type;
+                    resource.Type = (BuildingEnums)type;
                     resource.IsUnderConstruction = isUnderConstruction;
                 }
             }
@@ -301,14 +301,14 @@ namespace MainCore.Tasks.Update
                         VillageId = VillageId,
                         Id = id,
                         Level = level,
-                        Type = type,
+                        Type = (BuildingEnums)type,
                         IsUnderConstruction = isUnderConstruction,
                     });
                 }
                 else
                 {
                     building.Level = level;
-                    building.Type = type;
+                    building.Type = (BuildingEnums)type;
                     building.IsUnderConstruction = isUnderConstruction;
                 }
             }

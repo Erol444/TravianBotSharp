@@ -83,6 +83,50 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
         }
 
+        private void LoadBuildingCombo()
+        {
+            if (CurrentBuilding is null)
+            {
+                ComboBuildings.Clear();
+                IsComboActive = false;
+                IsLevelActive = false;
+                return;
+            }
+
+            if (CurrentBuilding.Type != BuildingEnums.Site)
+            {
+                ComboBuildings.Clear();
+                ComboBuildings.Add(CurrentBuilding);
+                SelectedBuilding = CurrentBuilding;
+
+                IsComboActive = false;
+                IsLevelActive = true;
+                return;
+            }
+
+            using var context = _contextFactory.CreateDbContext();
+
+            var plannedBuilding = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == CurrentBuilding.Location);
+            if (plannedBuilding is not null)
+            {
+                ComboBuildings.Clear();
+                var building = new Building()
+                {
+                    Location = plannedBuilding.Location,
+                    Type = (BuildingEnums)plannedBuilding.Type,
+                };
+                ComboBuildings.Add(building);
+                SelectedBuilding = building;
+
+                IsComboActive = false;
+                IsLevelActive = true;
+                return;
+            }
+
+            IsComboActive = true;
+            IsLevelActive = true;
+        }
+
         private void BuildTask()
         {
         }
@@ -132,19 +176,19 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public ObservableCollection<BuildingInfo> Buildings { get; } = new();
         public ObservableCollection<CurrentlyBuildingInfo> CurrentlyBuildings { get; } = new();
         public ObservableCollection<QueueBuildingInfo> QueueBuildings { get; } = new();
-        public ObservableCollection<Building> SelectorBuildings { get; } = new();
+        public ObservableCollection<Building> ComboBuildings { get; } = new();
 
-        private Building _currentBuilding;
+        private BuildingInfo _currentBuilding;
 
-        public Building CurrentBuilding
+        public BuildingInfo CurrentBuilding
         {
             get => _currentBuilding;
             set => this.RaiseAndSetIfChanged(ref _currentBuilding, value);
         }
 
-        private Building _currentQueueBuilding;
+        private QueueBuildingInfo _currentQueueBuilding;
 
-        public Building CurrentQueueBuilding
+        public QueueBuildingInfo CurrentQueueBuilding
         {
             get => _currentQueueBuilding;
             set => this.RaiseAndSetIfChanged(ref _currentQueueBuilding, value);
@@ -164,6 +208,22 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             get => _level;
             set => this.RaiseAndSetIfChanged(ref _level, value);
+        }
+
+        private bool _isLevelActive;
+
+        public bool IsLevelActive
+        {
+            get => _isLevelActive;
+            set => this.RaiseAndSetIfChanged(ref _isLevelActive, value);
+        }
+
+        private bool _isComboActive;
+
+        public bool IsComboActive
+        {
+            get => _isComboActive;
+            set => this.RaiseAndSetIfChanged(ref _isComboActive, value);
         }
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;

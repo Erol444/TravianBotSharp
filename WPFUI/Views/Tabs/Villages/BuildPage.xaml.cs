@@ -69,7 +69,7 @@ namespace WPFUI.Views.Tabs.Villages
                 .DisposeWith(d);
 
                 this.Bind(ViewModel,
-                    vm => vm.SelectedBuilding,
+                    vm => vm.CurrentBuilding,
                     v => v.BuildingsGrid.SelectedItem)
                 .DisposeWith(d);
 
@@ -86,6 +86,11 @@ namespace WPFUI.Views.Tabs.Villages
                 this.Bind(ViewModel,
                     vm => vm.CurrentQueueBuilding,
                     v => v.CurrentGrid.SelectedItem)
+                .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.ComboBuildings,
+                    v => v.BuildingsComboBox.ItemsSource)
                 .DisposeWith(d);
 
                 this.Bind(ViewModel,
