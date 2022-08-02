@@ -55,6 +55,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
             if (xNode is null) return 0;
             var xStr = new string(xNode.InnerText.Where(c => char.IsDigit(c) || c.Equals('−')).ToArray());
             xStr = xStr.Replace('−', '-');
+            if (string.IsNullOrEmpty(xStr)) return 0;
 
             return int.Parse(xStr);
         }
@@ -65,7 +66,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
             if (yNode is null) return 0;
             var yStr = new string(yNode.InnerText.Where(c => char.IsDigit(c) || c.Equals('−')).ToArray());
             yStr = yStr.Replace('−', '-');
-
+            if (string.IsNullOrEmpty(yStr)) return 0;
             return int.Parse(yStr);
         }
     }

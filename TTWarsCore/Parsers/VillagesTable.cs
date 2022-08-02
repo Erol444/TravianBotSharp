@@ -46,7 +46,7 @@ namespace TTWarsCore.Parsers
             var xNode = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateX"));
             if (xNode is null) return 0;
             var xStr = new string(xNode.InnerText.Where(c => char.IsDigit(c) || c.Equals('-')).ToArray());
-
+            if (string.IsNullOrEmpty(xStr)) return 0;
             return int.Parse(xStr);
         }
 
@@ -55,6 +55,7 @@ namespace TTWarsCore.Parsers
             var yNode = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateY"));
             if (yNode is null) return 0;
             var yStr = new string(yNode.InnerText.Where(c => char.IsDigit(c) || c.Equals('-')).ToArray());
+            if (string.IsNullOrEmpty(yStr)) return 0;
 
             return int.Parse(yStr);
         }

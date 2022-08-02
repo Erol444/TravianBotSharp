@@ -20,7 +20,7 @@ namespace TTWarsCore.Parsers
             var needClass = classess.FirstOrDefault(x => x.StartsWith("aid"));
             if (string.IsNullOrEmpty(needClass)) return -1;
             var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
-
+            if (string.IsNullOrEmpty(strResult)) return -1;
             return int.Parse(strResult);
         }
 
@@ -30,6 +30,7 @@ namespace TTWarsCore.Parsers
             var needClass = classess.FirstOrDefault(x => x.StartsWith("g"));
             if (string.IsNullOrEmpty(needClass)) return -1;
             var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
+            if (string.IsNullOrEmpty(strResult)) return -1;
 
             return int.Parse(strResult);
         }
@@ -39,7 +40,9 @@ namespace TTWarsCore.Parsers
             var labelLayerNode = node.Descendants("div").FirstOrDefault(x => x.HasClass("labelLayer"));
             if (labelLayerNode is null) return -1;
             var valueStrFixed = WebUtility.HtmlDecode(labelLayerNode.InnerText);
+            if (string.IsNullOrEmpty(valueStrFixed)) return -1;
             var valueStr = new string(valueStrFixed.Where(c => char.IsDigit(c)).ToArray());
+            if (string.IsNullOrEmpty(valueStr)) return -1;
             return int.Parse(valueStr);
         }
 

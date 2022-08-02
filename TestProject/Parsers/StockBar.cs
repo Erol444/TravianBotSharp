@@ -164,5 +164,47 @@ namespace TestProject.Parsers
             var value = TravianOfficialCore.Parsers.StockBar.GetGranaryCapacity(_travianHeroDoc);
             Assert.AreEqual(800, value);
         }
+
+        [TestMethod]
+        public void TTWarsGetGold()
+        {
+            var value = TTWarsCore.Parsers.StockBar.GetGold(_ttwarsDoc);
+            Assert.AreEqual(250, value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialGetGold()
+        {
+            var value = TravianOfficialCore.Parsers.StockBar.GetGold(_travianDoc);
+            Assert.AreEqual(32, value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialHeroGetGold()
+        {
+            var value = TravianOfficialCore.Parsers.StockBar.GetGold(_travianHeroDoc);
+            Assert.AreEqual(130, value);
+        }
+
+        [TestMethod]
+        public void TTWarsGetSilver()
+        {
+            var value = TTWarsCore.Parsers.StockBar.GetSilver(_ttwarsDoc);
+            Assert.AreEqual(0, value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialGetSilver()
+        {
+            var value = TravianOfficialCore.Parsers.StockBar.GetSilver(_travianDoc);
+            Assert.AreEqual(2409, value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialHeroGetSilver()
+        {
+            var value = TravianOfficialCore.Parsers.StockBar.GetSilver(_travianHeroDoc);
+            Assert.AreEqual(0, value);
+        }
     }
 }

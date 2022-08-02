@@ -35,8 +35,8 @@ namespace TravianOfficialNewHeroUICore.Parsers
             var nodeTimer = node.Descendants().FirstOrDefault(x => x.HasClass("timer"));
             if (nodeTimer is null) return TimeSpan.Zero;
             var strSec = new string(nodeTimer.GetAttributeValue("value", "0").Where(c => char.IsNumber(c)).ToArray());
+            if (string.IsNullOrEmpty(strSec)) return TimeSpan.Zero;
             int sec = int.Parse(strSec);
-            if (sec < 0) sec = 0;
             return TimeSpan.FromSeconds(sec);
         }
     }
