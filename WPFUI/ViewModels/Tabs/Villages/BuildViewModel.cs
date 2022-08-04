@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using WPFUI.Models;
 using WPFUI.Interfaces;
+using MainCore.Helper;
+using System.Windows;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
@@ -23,14 +25,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = App.GetService<IEventManager>();
 
-            BuildCommand = ReactiveCommand.Create(BuildTask);
+            BuildCommand = ReactiveCommand.Create(BuildTask, this.WhenAnyValue(x => x.IsLevelActive));
 
-            TopCommand = ReactiveCommand.Create(TopTask);
-            BottomCommand = ReactiveCommand.Create(BottomTask);
-            UpCommand = ReactiveCommand.Create(UpTask);
-            DownCommand = ReactiveCommand.Create(DownTask);
-            DeleteCommand = ReactiveCommand.Create(DeleteTask);
-            DeleteAllCommand = ReactiveCommand.Create(DeleteAllTask);
+            TopCommand = ReactiveCommand.Create(TopTask, this.WhenAnyValue(x => x.IsControlActive));
+            BottomCommand = ReactiveCommand.Create(BottomTask, this.WhenAnyValue(x => x.IsControlActive));
+            UpCommand = ReactiveCommand.Create(UpTask, this.WhenAnyValue(x => x.IsControlActive));
+            DownCommand = ReactiveCommand.Create(DownTask, this.WhenAnyValue(x => x.IsControlActive));
+            DeleteCommand = ReactiveCommand.Create(DeleteTask, this.WhenAnyValue(x => x.IsControlActive));
+            DeleteAllCommand = ReactiveCommand.Create(DeleteAllTask, this.WhenAnyValue(x => x.IsControlActive));
             ImportCommand = ReactiveCommand.Create(ImportTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
         }
@@ -38,12 +40,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public void OnActived()
         {
             LoadData(VillageId);
+            LoadBuildingCombo();
         }
 
         public void LoadData(int villageId)
         {
             LoadBuildings(villageId);
             LoadCurrent(villageId);
+            LoadQueue(villageId);
         }
 
         private void LoadBuildings(int villageId)
@@ -56,7 +60,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 Buildings.Add(new()
                 {
                     Location = building.Id,
-                    Type = (BuildingEnums)building.Type,
+                    Type = building.Type,
                     Level = building.Level.ToString(),
                 });
             }
@@ -72,7 +76,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 CurrentlyBuildings.Add(new()
                 {
                     Location = building.Id,
-                    Type = (BuildingEnums)building.Type,
+                    Type = building.Type,
                     Level = building.Level,
                     CompleteTime = building.CompleteTime,
                 });
@@ -81,13 +85,26 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadQueue(int villageId)
         {
+            QueueBuildings.Clear();
+            using var context = _contextFactory.CreateDbContext();
+            var queueBuildings = context.VillagesQueueBuildings.Where(x => x.VillageId == villageId).OrderBy(x => x.Item);
+            foreach (var building in queueBuildings)
+            {
+                QueueBuildings.Add(new()
+                {
+                    Id = building.Id,
+                    Location = building.Location,
+                    Type = building.Type,
+                    Level = building.Level,
+                });
+            }
         }
 
         private void LoadBuildingCombo()
         {
+            ComboBuildings.Clear();
             if (CurrentBuilding is null)
             {
-                ComboBuildings.Clear();
                 IsComboActive = false;
                 IsLevelActive = false;
                 return;
@@ -95,9 +112,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             if (CurrentBuilding.Type != BuildingEnums.Site)
             {
-                ComboBuildings.Clear();
-                ComboBuildings.Add(CurrentBuilding);
-                SelectedBuilding = CurrentBuilding;
+                ComboBuildings.Add(new() { Building = CurrentBuilding.Type });
+                SelectedBuildingIndex = 0;
 
                 IsComboActive = false;
                 IsLevelActive = true;
@@ -109,50 +125,162 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var plannedBuilding = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == CurrentBuilding.Location);
             if (plannedBuilding is not null)
             {
-                ComboBuildings.Clear();
-                var building = new Building()
-                {
-                    Location = plannedBuilding.Location,
-                    Type = (BuildingEnums)plannedBuilding.Type,
-                };
-                ComboBuildings.Add(building);
-                SelectedBuilding = building;
+                ComboBuildings.Add(new() { Building = plannedBuilding.Type });
+                SelectedBuildingIndex = 0;
 
                 IsComboActive = false;
                 IsLevelActive = true;
                 return;
             }
 
+            var buildings = BuildingsHelper.GetCanBuild(context, AccountId, VillageId);
+            if (buildings.Count > 0)
+            {
+                foreach (var building in buildings)
+                {
+                    ComboBuildings.Add(new() { Building = building });
+                }
+                SelectedBuildingIndex = 0;
+            }
             IsComboActive = true;
             IsLevelActive = true;
         }
 
         private void BuildTask()
         {
+            if (!Level.IsNumeric())
+            {
+                MessageBox.Show("Level must be numeric");
+                return;
+            }
+            using var context = _contextFactory.CreateDbContext();
+            context.VillagesQueueBuildings.Add(new()
+            {
+                Item = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).Count(),
+                VillageId = VillageId,
+                Level = Level.ToNumeric(),
+                Type = SelectedBuilding.Building,
+                Location = CurrentBuilding.Location,
+            });
+            context.SaveChanges();
+            LoadQueue(VillageId);
         }
 
         private void TopTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var count = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).Count();
+            if (count < 2)
+            {
+                return;
+            }
+            var current = context.VillagesQueueBuildings.Find(CurrentQueueBuilding.Id);
+            var others = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Item < current.Item);
+
+            current.Item = 0;
+
+            foreach (var other in others)
+            {
+                other.Item++;
+            }
+            context.SaveChanges();
+            LoadQueue(VillageId);
         }
 
         private void BottomTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var count = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).Count();
+            if (count < 2)
+            {
+                return;
+            }
+            var current = context.VillagesQueueBuildings.Find(CurrentQueueBuilding.Id);
+            var others = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Item > current.Item);
+
+            current.Item = count-1;
+
+            foreach (var other in others)
+            {
+                other.Item--;
+            }
+            context.SaveChanges();
+            LoadQueue(VillageId);
         }
 
         private void UpTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var count = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).Count();
+            if (count < 2)
+            {
+                return;
+            }
+            var current = context.VillagesQueueBuildings.Find(CurrentQueueBuilding.Id);
+            if (current.Item == 0)
+            {
+                return;
+            }
+            var other = context.VillagesQueueBuildings.FirstOrDefault(x => x.Item == current.Item - 1);
+
+            var temp = current.Item;
+            current.Item = other.Item;
+            other.Item = temp;
+            context.SaveChanges();
+            LoadQueue(VillageId);
         }
 
         private void DownTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var count = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).Count();
+            if (count < 2)
+            {
+                return;
+            }
+            var current = context.VillagesQueueBuildings.Find(CurrentQueueBuilding.Id);
+            if (current.Item == count - 1)
+            {
+                return;
+            }
+            var other = context.VillagesQueueBuildings.FirstOrDefault(x => x.Item == current.Item + 1);
+
+            var temp = current.Item;
+            current.Item = other.Item;
+            other.Item = temp;
+            context.SaveChanges();
+            LoadQueue(VillageId);
         }
 
         private void DeleteTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var current = context.VillagesQueueBuildings.Find(VillageId, CurrentQueueBuilding.Id);
+            var count = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).Count();
+            if (count < 2)
+            {
+                context.Remove(current);
+            }
+            else
+            {
+                var others = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Item > current.Item);
+                foreach (var other in others)
+                {
+                    other.Item--;
+                }
+                context.Remove(current);
+            }
+            context.SaveChanges();
+            LoadQueue(VillageId);
         }
 
         private void DeleteAllTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var plannedBuild = context.VillagesQueueBuildings.Where(x => x.VillageId == VillageId);
+            context.RemoveRange(plannedBuild);
+            context.SaveChanges();
+            LoadQueue(VillageId);
         }
 
         private void ImportTask()
@@ -176,14 +304,18 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public ObservableCollection<BuildingInfo> Buildings { get; } = new();
         public ObservableCollection<CurrentlyBuildingInfo> CurrentlyBuildings { get; } = new();
         public ObservableCollection<QueueBuildingInfo> QueueBuildings { get; } = new();
-        public ObservableCollection<Building> ComboBuildings { get; } = new();
+        public ObservableCollection<BuildingComboBox> ComboBuildings { get; } = new();
 
         private BuildingInfo _currentBuilding;
 
         public BuildingInfo CurrentBuilding
         {
             get => _currentBuilding;
-            set => this.RaiseAndSetIfChanged(ref _currentBuilding, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _currentBuilding, value);
+                LoadBuildingCombo();
+            }
         }
 
         private QueueBuildingInfo _currentQueueBuilding;
@@ -191,15 +323,27 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public QueueBuildingInfo CurrentQueueBuilding
         {
             get => _currentQueueBuilding;
-            set => this.RaiseAndSetIfChanged(ref _currentQueueBuilding, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _currentQueueBuilding, value);
+                IsControlActive = value is not null;
+            }
         }
 
-        private Building _selectedBuilding;
+        private BuildingComboBox _selectedBuilding;
 
-        public Building SelectedBuilding
+        public BuildingComboBox SelectedBuilding
         {
             get => _selectedBuilding;
             set => this.RaiseAndSetIfChanged(ref _selectedBuilding, value);
+        }
+
+        private int _selectedBuildingIndex;
+
+        public int SelectedBuildingIndex
+        {
+            get => _selectedBuildingIndex;
+            set => this.RaiseAndSetIfChanged(ref _selectedBuildingIndex, value);
         }
 
         private string _level;
@@ -224,6 +368,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             get => _isComboActive;
             set => this.RaiseAndSetIfChanged(ref _isComboActive, value);
+        }
+
+        private bool _isControlActive;
+
+        public bool IsControlActive
+        {
+            get => _isControlActive;
+            set => this.RaiseAndSetIfChanged(ref _isControlActive, value);
         }
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;

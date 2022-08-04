@@ -11,7 +11,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="BuildPage">
 
-    <Grid x:Name="MainGrid" Background="#FFE5E5E5" Margin="0,2,0,0">
+    <Grid  x:Name="MainGrid" Background="#FFE5E5E5" Margin="0,2,0,0">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="112*" />
             <ColumnDefinition Width="153*" />
@@ -58,7 +58,7 @@
                 </Grid.RowDefinitions>
                 <Label x:Name="Buildings" Content="Buildings" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="White" />
                 <Label x:Name="Level" Content="Level" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Foreground="White" />
-                <ComboBox x:Name="BuildingsComboBox" Grid.Column="1" VerticalAlignment="Center" />
+                <ComboBox x:Name="BuildingsComboBox" Grid.Column="1" VerticalAlignment="Center" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Name" />
                 <TextBox x:Name="LevelTextBox" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" />
                 <Button x:Name="BuildButton" Grid.Column="2" Content="Build" Grid.Row="1" Margin="10,10,10,10" />
             </Grid>

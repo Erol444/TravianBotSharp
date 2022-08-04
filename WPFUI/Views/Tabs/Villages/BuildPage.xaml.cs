@@ -85,7 +85,7 @@ namespace WPFUI.Views.Tabs.Villages
 
                 this.Bind(ViewModel,
                     vm => vm.CurrentQueueBuilding,
-                    v => v.CurrentGrid.SelectedItem)
+                    v => v.QueueGrid.SelectedItem)
                 .DisposeWith(d);
 
                 this.OneWayBind(ViewModel,
@@ -99,8 +99,23 @@ namespace WPFUI.Views.Tabs.Villages
                 .DisposeWith(d);
 
                 this.Bind(ViewModel,
+                    vm => vm.SelectedBuildingIndex,
+                    v => v.BuildingsComboBox.SelectedIndex)
+                .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.IsComboActive,
+                    v => v.BuildingsComboBox.IsEnabled)
+                .DisposeWith(d);
+
+                this.Bind(ViewModel,
                     vm => vm.Level,
                     v => v.LevelTextBox.Text)
+                .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.IsLevelActive,
+                    v => v.LevelTextBox.IsEnabled)
                 .DisposeWith(d);
 
                 ViewModel.OnActived();

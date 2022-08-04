@@ -120,7 +120,7 @@ namespace MainCore.Tasks.Update
             {
                 account = new()
                 {
-                    Id = AccountId,
+                    AccountId = AccountId,
                     HasPlusAccount = hasPlusAccount.Value,
                     Gold = gold,
                     Silver = silver,

@@ -121,8 +121,10 @@ namespace MainCore
             modelBuilder.Entity<VillageQueueBuilding>(entity =>
             {
                 entity.ToTable("VillagesQueueBuildings");
-                entity.HasKey(e => new { e.VillageId, e.Id })
+                entity.HasKey(e => e.Id)
                     .HasName("PK_VILLAGESQUEUEBUILDINGS");
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
             });
 
             #endregion Village Queue Building
@@ -132,7 +134,7 @@ namespace MainCore
             modelBuilder.Entity<AccountInfo>(entity =>
             {
                 entity.ToTable("AccountsInfo");
-                entity.HasKey(e => e.Id)
+                entity.HasKey(e => e.AccountId)
                     .HasName("PK_ACCOUNTSINFO");
             });
 
