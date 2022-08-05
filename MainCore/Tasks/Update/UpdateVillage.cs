@@ -1,10 +1,4 @@
-﻿using MainCore.Enums;
-using MainCore.Helper;
-using MainCore.TravianData;
-using OpenQA.Selenium;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MainCore.Helper;
 using System.Threading.Tasks;
 
 namespace MainCore.Tasks.Update

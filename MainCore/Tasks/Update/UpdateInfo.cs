@@ -34,22 +34,8 @@ namespace MainCore.Tasks.Update
         {
             return Task.Run(() =>
             {
-                try
-                {
-                    UpdateVillageList();
-                }
-                catch (Exception e)
-                {
-                    LogManager.Error(AccountId, "Update village list failed", e);
-                }
-                try
-                {
-                    UpdateAccountInfo();
-                }
-                catch (Exception e)
-                {
-                    LogManager.Error(AccountId, "Update account info failed", e);
-                }
+                UpdateVillageList();
+                UpdateAccountInfo();
             });
         }
 

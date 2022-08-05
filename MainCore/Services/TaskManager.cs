@@ -109,7 +109,7 @@ namespace MainCore.Services
 
             var task = _tasksDict[index].First();
 
-            _logManager.Information(index, $"{task.GetType().Name} is started");
+            _logManager.Information(index, $"{task.Name} is started");
             task.Stage = TaskStage.Executing;
             _databaseEvent.OnTaskUpdated(index);
             try
@@ -119,6 +119,7 @@ namespace MainCore.Services
             catch (Exception e)
             {
                 _ = e;
+                UpdateAccountStatus(index, AccountStatus.Offline);
             }
             task.Stage = TaskStage.Start;
             _databaseEvent.OnTaskUpdated(index);

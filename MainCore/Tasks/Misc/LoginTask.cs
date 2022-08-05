@@ -1,8 +1,6 @@
-﻿using MainCore.Enums;
-using MainCore.Services;
-using MainCore.Tasks.Update;
-using Microsoft.EntityFrameworkCore;
+﻿using MainCore.Tasks.Update;
 using OpenQA.Selenium;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -59,23 +57,17 @@ namespace MainCore.Tasks.Misc
             var usernameNode = LoginPage.GetUsernameNode(html);
             if (usernameNode is null)
             {
-                LogManager.Warning(AccountId, "[Login Task] Cannot find username box");
-                TaskManager.UpdateAccountStatus(AccountId, AccountStatus.Offline);
-                return false;
+                throw new Exception("Cannot find username box");
             }
             var passwordNode = LoginPage.GetPasswordNode(html);
             if (passwordNode is null)
             {
-                LogManager.Warning(AccountId, "[Login Task] Cannot find password box");
-                TaskManager.UpdateAccountStatus(AccountId, AccountStatus.Offline);
-                return false;
+                throw new Exception("Cannot find password box");
             }
             var buttonNode = LoginPage.GetLoginButton(html);
             if (buttonNode is null)
             {
-                LogManager.Warning(AccountId, "[Login Task] Cannot find login button");
-                TaskManager.UpdateAccountStatus(AccountId, AccountStatus.Offline);
-                return false;
+                throw new Exception("Cannot find login button");
             }
 
             using var context = ContextFactory.CreateDbContext();
@@ -84,17 +76,30 @@ namespace MainCore.Tasks.Misc
             var chrome = ChromeBrowser.GetChrome();
 
             var usernameElement = chrome.FindElements(By.XPath(usernameNode.XPath));
+            if (usernameElement.Count == 0)
+            {
+                throw new Exception("Cannot find username box");
+            }
+            var passwordElement = chrome.FindElements(By.XPath(passwordNode.XPath));
+            if (passwordElement.Count == 0)
+            {
+                throw new Exception("Cannot find password box");
+            }
+            var buttonElements = chrome.FindElements(By.XPath(buttonNode.XPath));
+            if (buttonElements.Count == 0)
+            {
+                throw new Exception("Cannot find login button");
+            }
+
             usernameElement[0].SendKeys(Keys.Home);
             usernameElement[0].SendKeys(Keys.Shift + Keys.End);
             usernameElement[0].SendKeys(account.Username);
 
-            var passwordElement = chrome.FindElements(By.XPath(passwordNode.XPath));
             passwordElement[0].SendKeys(Keys.Home);
             passwordElement[0].SendKeys(Keys.Shift + Keys.End);
             passwordElement[0].SendKeys(access.Password);
 
-            var buttonElement = chrome.FindElements(By.XPath(buttonNode.XPath));
-            buttonElement[0].Click();
+            buttonElements[0].Click();
 
             var wait = ChromeBrowser.GetWait();
             wait.Until(driver => driver.Url.Contains("dorf"));
