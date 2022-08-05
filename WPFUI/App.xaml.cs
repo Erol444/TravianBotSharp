@@ -58,6 +58,9 @@ namespace WPFUI
 
                    // context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
+
+                    var planManager = GetService<IPlanManager>();
+                    planManager.Load();
                 }),
 
                 Task.Run(() =>
@@ -111,6 +114,7 @@ namespace WPFUI
             services.AddSingleton<IEventManager, MainCore.Services.EventManager>();
             services.AddSingleton<ITimerManager, TimerManager>();
             services.AddSingleton<ITaskManager, TaskManager>();
+            services.AddSingleton<IPlanManager, PlanManager>();
             services.AddSingleton<ILogManager, LogManager>();
 
             //services.AddFluentMigratorCore()

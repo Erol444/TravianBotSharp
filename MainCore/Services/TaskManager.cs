@@ -11,12 +11,13 @@ namespace MainCore.Services
 {
     public class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IEventManager databaseEvent, ILogManager logManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IEventManager databaseEvent, ILogManager logManager, IPlanManager planManager)
         {
             _contextFactory = contextFactory;
             _databaseEvent = databaseEvent;
             _chromeManager = chromeManager;
             _logManager = logManager;
+            _planManager = planManager;
             _databaseEvent.TaskExecuted += Loop;
         }
 
@@ -30,6 +31,7 @@ namespace MainCore.Services
             task.TaskManager = this;
             task.LogManager = _logManager;
             task.ChromeBrowser = _chromeManager.Get(task.AccountId);
+            task.PlanManager = _planManager;
 
             _tasksDict[index].Add(task);
             ReOrder(index);
@@ -68,7 +70,7 @@ namespace MainCore.Services
             return _tasksDict[index].FirstOrDefault(x => x.Stage == TaskStage.Executing);
         }
 
-        public List<BotTask> GetTaskList(int index)
+        public List<BotTask> GetList(int index)
         {
             Check(index);
 
@@ -157,5 +159,6 @@ namespace MainCore.Services
         private readonly IEventManager _databaseEvent;
         private readonly IChromeManager _chromeManager;
         private readonly ILogManager _logManager;
+        private readonly IPlanManager _planManager;
     }
 }

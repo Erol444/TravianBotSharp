@@ -140,6 +140,10 @@ namespace WPFUI
             _waitingWindow.ViewModel.Text = "saving data";
             _waitingWindow.Show();
             await Task.Delay(2000);
+
+            var planManager = App.GetService<IPlanManager>();
+            planManager.Save();
+
             var mainWindow = App.GetService<MainWindow>();
             mainWindow.Hide();
             _closed = true;

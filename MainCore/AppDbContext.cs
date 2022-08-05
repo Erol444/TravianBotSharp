@@ -121,10 +121,8 @@ namespace MainCore
             modelBuilder.Entity<VillageQueueBuilding>(entity =>
             {
                 entity.ToTable("VillagesQueueBuildings");
-                entity.HasKey(e => e.Id)
+                entity.HasKey(e => e.VillageId)
                     .HasName("PK_VILLAGESQUEUEBUILDINGS");
-                entity.Property(e => e.Id)
-                    .ValueGeneratedOnAdd();
             });
 
             #endregion Village Queue Building

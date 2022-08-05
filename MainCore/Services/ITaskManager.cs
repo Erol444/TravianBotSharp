@@ -17,7 +17,7 @@ namespace MainCore.Services
 
         public int Count(int index);
 
-        public List<BotTask> GetTaskList(int index);
+        public List<BotTask> GetList(int index);
 
         public bool IsTaskExecuting(int index);
 

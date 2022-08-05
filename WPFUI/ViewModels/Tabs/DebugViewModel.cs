@@ -38,7 +38,7 @@ namespace WPFUI.ViewModels.Tabs
             await App.Current.Dispatcher.InvokeAsync(() =>
             {
                 Tasks.Clear();
-                foreach (var item in _taskManager.GetTaskList(accountId))
+                foreach (var item in _taskManager.GetList(accountId))
                 {
                     Tasks.Add(new TaskModel()
                     {

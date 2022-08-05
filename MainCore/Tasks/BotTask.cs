@@ -26,6 +26,7 @@ namespace MainCore.Tasks
         public ITaskManager TaskManager { get; set; }
         public IEventManager DatabaseEvent { get; set; }
         public ILogManager LogManager { get; set; }
+        public IPlanManager PlanManager { get; set; }
 
         public abstract string Name { get; }
 

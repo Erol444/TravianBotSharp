@@ -203,5 +203,23 @@ namespace MainCore.TravianData
             }
             return (tribe, ret);
         }
+
+        public static int MaxBuildingLevel(BuildingEnums building) => building switch
+        {
+            BuildingEnums.Brewery => 20,
+            BuildingEnums.Bakery or BuildingEnums.Brickyard or BuildingEnums.IronFoundry or BuildingEnums.GrainMill or BuildingEnums.Sawmill => 5,
+            BuildingEnums.Cranny => 10,
+            _ => 20,
+        };
+
+        public static BuildingEnums GetTribesWall(TribeEnums tribe) => tribe switch
+        {
+            TribeEnums.Teutons => BuildingEnums.EarthWall,
+            TribeEnums.Romans => BuildingEnums.CityWall,
+            TribeEnums.Gauls => BuildingEnums.Palisade,
+            TribeEnums.Egyptians => BuildingEnums.StoneWall,
+            TribeEnums.Huns => BuildingEnums.MakeshiftWall,
+            _ => BuildingEnums.Site,
+        };
     }
 }

@@ -19,11 +19,6 @@ namespace WPFUI.Views.Tabs.Villages
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel,
-                    vm => vm.BuildCommand,
-                    v => v.BuildButton)
-                .DisposeWith(d);
-
-                this.BindCommand(ViewModel,
                     vm => vm.TopCommand,
                     v => v.TopButton)
                 .DisposeWith(d);
@@ -88,34 +83,69 @@ namespace WPFUI.Views.Tabs.Villages
                     v => v.QueueGrid.SelectedItem)
                 .DisposeWith(d);
 
+                this.BindCommand(ViewModel,
+                    vm => vm.NormalBuildCommand,
+                    v => v.NormalBuild.BuildButton)
+               .DisposeWith(d);
+
                 this.OneWayBind(ViewModel,
                     vm => vm.ComboBuildings,
-                    v => v.BuildingsComboBox.ItemsSource)
+                    v => v.NormalBuild.BuildingBox.ItemsSource)
                 .DisposeWith(d);
 
                 this.Bind(ViewModel,
                     vm => vm.SelectedBuilding,
-                    v => v.BuildingsComboBox.SelectedItem)
+                    v => v.NormalBuild.BuildingBox.SelectedItem)
                 .DisposeWith(d);
 
                 this.Bind(ViewModel,
                     vm => vm.SelectedBuildingIndex,
-                    v => v.BuildingsComboBox.SelectedIndex)
+                    v => v.NormalBuild.BuildingBox.SelectedIndex)
                 .DisposeWith(d);
 
                 this.OneWayBind(ViewModel,
                     vm => vm.IsComboActive,
-                    v => v.BuildingsComboBox.IsEnabled)
+                    v => v.NormalBuild.BuildingBox.IsEnabled)
                 .DisposeWith(d);
 
                 this.Bind(ViewModel,
-                    vm => vm.Level,
-                    v => v.LevelTextBox.Text)
+                    vm => vm.NormalLevel,
+                    v => v.NormalBuild.LevelText.Text)
                 .DisposeWith(d);
 
                 this.OneWayBind(ViewModel,
                     vm => vm.IsLevelActive,
-                    v => v.LevelTextBox.IsEnabled)
+                    v => v.NormalBuild.LevelText.IsEnabled)
+                .DisposeWith(d);
+
+                this.BindCommand(ViewModel,
+                    vm => vm.ResBuildCommand,
+                    v => v.ResBuild.BuildButton)
+                .DisposeWith(d);
+
+                this.Bind(ViewModel,
+                    vm => vm.SelectedResType,
+                    v => v.ResBuild.Type.SelectedItem)
+                .DisposeWith(d);
+
+                this.Bind(ViewModel,
+                    vm => vm.SelectedBuildingStrategy,
+                    v => v.ResBuild.Strategy.SelectedItem)
+                .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.ComboResTypes,
+                    v => v.ResBuild.Type.ItemsSource)
+                .DisposeWith(d);
+
+                this.Bind(ViewModel,
+                    vm => vm.ResLevel,
+                    v => v.ResBuild.LevelText.Text)
+                .DisposeWith(d);
+
+                this.OneWayBind(ViewModel,
+                    vm => vm.ComboStrategy,
+                    v => v.ResBuild.Strategy.ItemsSource)
                 .DisposeWith(d);
 
                 ViewModel.OnActived();
