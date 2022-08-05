@@ -1,4 +1,5 @@
 ﻿using MainCore.Enums;
+using MainCore.TravianData;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -287,12 +288,18 @@ namespace MainCore.Tasks.Update
             var html = ChromeBrowser.GetHtml();
             var buildingNodes = VillageInfrastructure.GetBuildingNodes(html);
             using var context = ContextFactory.CreateDbContext();
+            var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             foreach (var buildingNode in buildingNodes)
             {
                 var id = VillageInfrastructure.GetId(buildingNode);
                 var building = context.VillagesBuildings.Find(VillageId, id);
                 var level = VillageInfrastructure.GetLevel(buildingNode);
                 var type = VillageInfrastructure.GetType(buildingNode);
+                if (id == 39)
+                {
+                    var wall = BuildingsData.GetTribesWall(tribe);
+                    type = (int)wall;
+                }
                 var isUnderConstruction = VillageInfrastructure.IsUnderConstruction(buildingNode);
                 if (building is null)
                 {
