@@ -20,6 +20,7 @@ namespace MainCore.Tasks
         public TaskStage Stage { get; set; }
         public DateTime ExecuteAt { get; set; }
         protected int RetryCounter { get; set; }
+        protected bool StopFlag { get; set; }
 
         public IDbContextFactory<AppDbContext> ContextFactory { get; set; }
         public IChromeBrowser ChromeBrowser { get; set; }
@@ -31,5 +32,25 @@ namespace MainCore.Tasks
         public abstract string Name { get; }
 
         public abstract Task Execute();
+
+        protected void Retry(string message)
+        {
+            if (RetryCounter < 4)
+            {
+                RetryCounter++;
+                if (!string.IsNullOrEmpty(message))
+                {
+                    LogManager.Information(AccountId, $"{message}. Try again. ({RetryCounter} time(s))");
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(message))
+                {
+                    LogManager.Information(AccountId, $"{message}.");
+                }
+                throw new Exception("Already tries 3 times.");
+            }
+        }
     }
 }

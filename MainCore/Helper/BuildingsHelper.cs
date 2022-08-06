@@ -1,9 +1,8 @@
-﻿using MainCore.TravianData;
-using MainCore.Enums;
+﻿using MainCore.Enums;
+using MainCore.Services;
+using MainCore.TravianData;
 using System.Collections.Generic;
 using System.Linq;
-using MainCore.Models.Runtime;
-using MainCore.Services;
 
 namespace MainCore.Helper
 {
@@ -57,6 +56,13 @@ namespace MainCore.Helper
         {
             return (context.VillagesBuildings.Where(x => x.VillageId == villageId).Any(x => x.Type == building && lvl <= x.Level) ||
                     planManager.GetList(villageId).Any(x => x.Building == building && lvl <= x.Level));
+        }
+
+        public static bool IsResourceField(BuildingEnums building)
+        {
+            int buildingInt = (int)building;
+            // If id between 1 and 4, it's resource field
+            return buildingInt < 5 && buildingInt > 0;
         }
     }
 }

@@ -7,12 +7,13 @@ namespace MainCore.Tasks.Update
     {
         public UpdateVillage(int villageId, int accountId) : base(accountId)
         {
-            VillageId = villageId;
+            _villageId = villageId;
         }
 
         public override string Name => $"Update village {VillageId}";
 
-        public int VillageId { get; protected set; }
+        private readonly int _villageId;
+        public int VillageId => _villageId;
 
         public override async Task Execute()
         {

@@ -27,6 +27,8 @@ namespace MainCore.Helper
 {
     public static class NavigateHelper
     {
+        public static readonly Random random = new();
+
         public static void SwitchVillage(AppDbContext context, IChromeBrowser chromeBrowser, int villageId)
         {
             while (!CheckHelper.IsCorrectVillage(context, chromeBrowser, villageId))
@@ -94,6 +96,19 @@ namespace MainCore.Helper
             wait.Until(driver => driver.Url.Contains("dorf"));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
             return true;
+        }
+
+        public static void GoRandomDorf(IChromeBrowser chromeBrowser)
+        {
+            var chanceDorf2 = random.Next(1, 100);
+            if (chanceDorf2 >= 50)
+            {
+                ToDorf2(chromeBrowser);
+            }
+            else
+            {
+                ToDorf1(chromeBrowser);
+            }
         }
     }
 }

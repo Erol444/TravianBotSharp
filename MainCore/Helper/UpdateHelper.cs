@@ -151,12 +151,27 @@ namespace MainCore.Helper
                 var building = context.VillagesBuildings.Find(villageId, id);
                 var level = VillageInfrastructure.GetLevel(buildingNode);
                 var type = VillageInfrastructure.GetType(buildingNode);
-                if (id == 39)
+                switch (id)
                 {
-                    var tribe = context.AccountsInfo.Find(accountId).Tribe;
+                    case 26:
+                        type = (int)BuildingEnums.MainBuilding;
+                        break;
 
-                    var wall = BuildingsData.GetTribesWall(tribe);
-                    type = (int)wall;
+                    case 39:
+                        type = (int)BuildingEnums.RallyPoint;
+                        break;
+
+                    case 40:
+                        {
+                            var tribe = context.AccountsInfo.Find(accountId).Tribe;
+
+                            var wall = BuildingsData.GetTribesWall(tribe);
+                            type = (int)wall;
+                        }
+                        break;
+
+                    default:
+                        break;
                 }
                 var isUnderConstruction = VillageInfrastructure.IsUnderConstruction(buildingNode);
                 if (building is null)

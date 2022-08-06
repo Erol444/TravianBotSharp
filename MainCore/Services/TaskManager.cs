@@ -126,7 +126,7 @@ namespace MainCore.Services
             _logManager.Information(index, $"{task.GetType().Name} is completed");
 
             if (task.ExecuteAt < DateTime.Now) Remove(index, task);
-
+            else ReOrder(index);
             _taskExecuting.TryUpdate(index, false, true);
         }
 
