@@ -221,5 +221,11 @@ namespace MainCore.TravianData
             TribeEnums.Huns => BuildingEnums.MakeshiftWall,
             _ => BuildingEnums.Site,
         };
+
+        public static bool HasMultipleTabs(BuildingEnums building) => building switch
+        {
+            BuildingEnums.RallyPoint or BuildingEnums.CommandCenter or BuildingEnums.Residence or BuildingEnums.Palace or BuildingEnums.Marketplace or BuildingEnums.Treasury => true,
+            _ => false,
+        };
     }
 }

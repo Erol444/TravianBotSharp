@@ -1,6 +1,8 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper;
 using MainCore.Models.Runtime;
+using MainCore.TravianData;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -83,20 +85,112 @@ namespace MainCore.Tasks.Sim
                     PlanManager.Insert(VillageId, 0, task);
                     continue;
                 }
+
+                // move to correct page
+                var dorf = BuildingsHelper.GetDorf(buildingTask.Location);
+                switch (dorf)
+                {
+                    case 1:
+                        NavigateHelper.ToDorf1(ChromeBrowser, true);
+                        UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+                        UpdateHelper.UpdateDorf1(context, ChromeBrowser, VillageId);
+                        break;
+
+                    case 2:
+                        NavigateHelper.ToDorf2(ChromeBrowser, true);
+                        UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+                        UpdateHelper.UpdateDorf2(context, ChromeBrowser, AccountId, VillageId);
+                        break;
+                }
+
+                var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
+                if (building.Level >= buildingTask.Level)
+                {
+                    PlanManager.Remove(VillageId, buildingTask);
+                    continue;
+                }
+                var currently = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == buildingTask.Location);
+                if (currently.Level >= buildingTask.Level)
+                {
+                    PlanManager.Remove(VillageId, buildingTask);
+                    continue;
+                }
+
+                NavigateHelper.GoToBuilding(ChromeBrowser, buildingTask.Location);
+
+                bool isNewBuilding = false;
+                if (building.Type == BuildingEnums.Site)
+                {
+                    isNewBuilding = true;
+                }
+                else
+                {
+                    if (BuildingsData.HasMultipleTabs(buildingTask.Building))
+                    {
+                        NavigateHelper.SwitchTab(ChromeBrowser, 0);
+                    }
+                }
+
+                var resNeed = CheckHelper.GetResourceNeed(ChromeBrowser, buildingTask.Building, isNewBuilding);
+                var resCurrent = context.VillagesResources.Find(VillageId);
+                if (resNeed[0] > resCurrent.Wood || resNeed[1] > resCurrent.Clay || resNeed[2] > resCurrent.Iron || resNeed[3] > resCurrent.Crop)
+                {
+                    LogManager.Information(AccountId, "Don't have enough resources.");
+                    break;
+                }
+
+                if (isNewBuilding) Construct(buildingTask);
+                else Upgrade(buildingTask);
             }
             while (true);
         }
 
-        private bool ExtractResField(AppDbContext context)
+        private void Construct(PlanTask buildingTask)
         {
-            LogManager.Information(AccountId, "This is task auto upgrade res field. Choose what res fields will upgrade");
-            if (task is null)
+            var html = ChromeBrowser.GetHtml();
+            var node = html.GetElementbyId($"contract_building{(int)buildingTask.Building}");
+            var button = node.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
+
+            // Check for prerequisites
+            if (button == null)
             {
-                Retry("There is not buiding in progress. Try get another building");
-                return false;
+                throw new Exception($"Cannot find Build button for {buildingTask.Building}");
             }
-            acc.Logger.Information($"Added {task.Building} - Level {task.Level} to queue");
-            return false;
+
+            var chrome = ChromeBrowser.GetChrome();
+            var elements = chrome.FindElements(By.XPath(button.XPath));
+            if (elements.Count == 0)
+            {
+                throw new Exception($"Cannot find Build button for {buildingTask.Building}");
+            }
+            elements[0].Click();
+
+            if (buildingTask.Level == 1)
+            {
+                PlanManager.Remove(VillageId, buildingTask);
+            }
+        }
+
+        private void Upgrade(PlanTask buildingTask)
+        {
+            var html = ChromeBrowser.GetHtml();
+            var container = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
+            var upgradeButton = container.Descendants("button").FirstOrDefault(x => x.HasClass("build"));
+
+            if (upgradeButton == null)
+            {
+                throw new Exception("Cannot find upgrade button");
+            }
+
+            var chrome = ChromeBrowser.GetChrome();
+
+            var elements = chrome.FindElements(By.XPath(upgradeButton.XPath));
+            if (elements.Count == 0)
+            {
+                throw new Exception("Cannot find upgrade button");
+            }
+
+            elements[0].Click();
         }
     }
 }

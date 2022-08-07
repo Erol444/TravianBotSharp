@@ -113,6 +113,7 @@ namespace MainCore.Services
         {
             if (string.IsNullOrEmpty(url))
             {
+                Navigate(GetCurrentUrl());
                 return;
             }
 

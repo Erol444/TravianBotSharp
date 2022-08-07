@@ -48,10 +48,18 @@ namespace MainCore.Helper
             }
         }
 
-        public static bool ToDorf1(IChromeBrowser chromeBrowser)
+        public static bool ToDorf1(IChromeBrowser chromeBrowser, bool isForce = false)
+
         {
             var currentUrl = chromeBrowser.GetCurrentUrl();
-            if (currentUrl.Contains("dorf1")) return true;
+
+            if (currentUrl.Contains("dorf1"))
+            {
+                if (isForce) chromeBrowser.Navigate();
+
+                return true;
+            }
+
             var doc = chromeBrowser.GetHtml();
             var node = NavigationBar.GetResourceButton(doc);
             if (node is null)
@@ -73,10 +81,14 @@ namespace MainCore.Helper
             return true;
         }
 
-        public static bool ToDorf2(IChromeBrowser chromeBrowser)
+        public static bool ToDorf2(IChromeBrowser chromeBrowser, bool isForce = false)
         {
             var currentUrl = chromeBrowser.GetCurrentUrl();
-            if (currentUrl.Contains("dorf2")) return true;
+            if (currentUrl.Contains("dorf2"))
+            {
+                if (isForce) chromeBrowser.Navigate();
+                return true;
+            }
             var doc = chromeBrowser.GetHtml();
             var node = NavigationBar.GetBuildingButton(doc);
             if (node is null)
@@ -108,6 +120,74 @@ namespace MainCore.Helper
             else
             {
                 ToDorf1(chromeBrowser);
+            }
+        }
+
+        public static void GoToBuilding(IChromeBrowser chromeBrowser, int index)
+        {
+            var currentUrl = chromeBrowser.GetCurrentUrl();
+#if TTWARS
+            var uri = new Uri(currentUrl);
+            var serverUrl = $"{uri.Scheme}://{uri.Host}";
+            var url = $"{serverUrl}/build.php?id={index}";
+            chromeBrowser.Navigate(url);
+#else
+            var dorf = BuildingsHelper.GetDorf(index);
+            var html = chromeBrowser.GetHtml();
+            var chrome = chromeBrowser.GetChrome();
+            switch (dorf)
+            {
+                case 1:
+                    {
+                        var node = Building.GetResourceField(html, index);
+                        if (node is null)
+                        {
+                            throw new Exception($"Cannot find resource field at {index}");
+                        }
+                        var elements = chrome.FindElements(By.XPath(node.XPath));
+                        if (elements.Count == 0)
+                        {
+                            throw new Exception($"Cannot find resource field at {index}");
+                        }
+                        elements[0].Click();
+                    }
+                    break;
+
+                case 2:
+                    {
+                        var node = Building.GetBuilding(html, index);
+                        if (node is null)
+                        {
+                            throw new Exception($"Cannot find building at {index}");
+                        }
+                        var elements = chrome.FindElements(By.XPath(node.XPath));
+                        if (elements.Count == 0)
+                        {
+                            throw new Exception($"Cannot find building at {index}");
+                        }
+                        elements[0].Click();
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+            var wait = chromeBrowser.GetWait();
+            wait.Until(driver => driver.Url.Contains($"?id={index}&"));
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+
+#endif
+        }
+
+        public static void SwitchTab(IChromeBrowser chromeBrowser, int index)
+        {
+            while (!CheckHelper.IsCorrectTab(chromeBrowser, index))
+            {
+                var html = chromeBrowser.GetHtml();
+                var listNode = BuildingTab.GetBuildingTabNodes(html);
+                var chrome = chromeBrowser.GetChrome();
+                var elements = chrome.FindElements(By.XPath(listNode[index].XPath));
+                elements[0].Click();
             }
         }
     }

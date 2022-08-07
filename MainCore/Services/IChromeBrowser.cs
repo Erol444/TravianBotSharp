@@ -23,7 +23,7 @@ namespace MainCore.Services
 
         public WebDriverWait GetWait();
 
-        public void Navigate(string url);
+        public void Navigate(string url = null);
 
         public void WaitPageLoaded();
     }
