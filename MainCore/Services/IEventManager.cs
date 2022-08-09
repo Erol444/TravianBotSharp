@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Timers;
 
 namespace MainCore.Services
 {
@@ -20,9 +21,9 @@ namespace MainCore.Services
 
         public void OnTaskUpdated(int accountId);
 
-        public event Action TaskExecuted;
+        public event Action<int> TaskExecuted;
 
-        public void OnTaskExecuted();
+        public void OnTaskExecuted(int index);
 
         public event Action<int> VillagesUpdated;
 

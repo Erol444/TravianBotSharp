@@ -31,7 +31,7 @@ namespace MainCore.Tasks
 
         public abstract string Name { get; }
 
-        public abstract Task Execute();
+        public abstract void Execute();
 
         protected void Retry(string message)
         {

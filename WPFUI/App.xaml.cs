@@ -65,12 +65,6 @@ namespace WPFUI
 
                 Task.Run(() =>
                 {
-                    var timerManager = GetService<ITimerManager>();
-                    timerManager.Start();
-                }),
-
-                Task.Run(() =>
-                {
                     var logManager = GetService<ILogManager>();
                     logManager.Init();
                 })

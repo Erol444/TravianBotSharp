@@ -1,5 +1,4 @@
 ﻿using MainCore.Helper;
-using System.Threading.Tasks;
 
 namespace MainCore.Tasks.Update
 {
@@ -11,10 +10,10 @@ namespace MainCore.Tasks.Update
 
         public override string Name => $"Update dorf2 village {VillageId}";
 
-        public override async Task Execute()
+        public override void Execute()
         {
             NavigateHelper.ToDorf2(ChromeBrowser);
-            await base.Execute();
+            base.Execute();
         }
     }
 }

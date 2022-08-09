@@ -30,13 +30,10 @@ namespace MainCore.Tasks.Update
 
         public override string Name => "Update Info";
 
-        public override Task Execute()
+        public override void Execute()
         {
-            return Task.Run(() =>
-            {
-                UpdateVillageList();
-                UpdateAccountInfo();
-            });
+            UpdateVillageList();
+            UpdateAccountInfo();
         }
 
         private void UpdateVillageList()

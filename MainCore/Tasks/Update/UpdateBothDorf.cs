@@ -1,6 +1,5 @@
 ﻿using MainCore.Helper;
 using System;
-using System.Threading.Tasks;
 
 namespace MainCore.Tasks.Update
 {
@@ -12,24 +11,24 @@ namespace MainCore.Tasks.Update
 
         public override string Name => $"Update both dorf village {VillageId}";
 
-        public override async Task Execute()
+        public override void Execute()
         {
             var url = ChromeBrowser.GetCurrentUrl();
             if (url.Contains("dorf2"))
             {
                 NavigateHelper.ToDorf2(ChromeBrowser);
-                await base.Execute();
+                base.Execute();
 
                 NavigateHelper.ToDorf1(ChromeBrowser);
-                await base.Execute();
+                base.Execute();
             }
             else if (url.Contains("dorf1"))
             {
                 NavigateHelper.ToDorf1(ChromeBrowser);
-                await base.Execute();
+                base.Execute();
 
                 NavigateHelper.ToDorf2(ChromeBrowser);
-                await base.Execute();
+                base.Execute();
             }
             else
             {
@@ -37,18 +36,18 @@ namespace MainCore.Tasks.Update
                 if (random.Next(0, 100) > 50)
                 {
                     NavigateHelper.ToDorf1(ChromeBrowser);
-                    await base.Execute();
+                    base.Execute();
 
                     NavigateHelper.ToDorf2(ChromeBrowser);
-                    await base.Execute();
+                    base.Execute();
                 }
                 else
                 {
                     NavigateHelper.ToDorf2(ChromeBrowser);
-                    await base.Execute();
+                    base.Execute();
 
                     NavigateHelper.ToDorf1(ChromeBrowser);
-                    await base.Execute();
+                    base.Execute();
                 }
             }
         }

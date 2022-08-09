@@ -5,7 +5,6 @@ using MainCore.Services;
 using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -26,6 +25,7 @@ namespace WPFUI
             _databaseEvent.AccountStatusUpdate += OnAccountUpdate;
             _taskManager = App.GetService<ITaskManager>();
             _logManager = App.GetService<ILogManager>();
+            _timeManager = App.GetService<ITimerManager>();
 
             _accountWindow = App.GetService<AccountWindow>();
             _accountsWindow = App.GetService<AccountsWindow>();
@@ -86,9 +86,8 @@ namespace WPFUI
                 chromeBrowser.Navigate(CurrentAccount.Server);
                 _logManager.AddAccount(CurrentAccount.Id);
                 _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id));
+                _timeManager.Start(CurrentAccount.Id);
             });
-            await Task.Delay(5000);
-
             _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Online);
         }
 
@@ -200,6 +199,7 @@ namespace WPFUI
         private readonly IEventManager _databaseEvent;
         private readonly ITaskManager _taskManager;
         private readonly ILogManager _logManager;
+        private readonly ITimerManager _timeManager;
 
         private readonly AccountWindow _accountWindow;
         private readonly AccountsWindow _accountsWindow;

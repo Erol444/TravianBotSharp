@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Timers;
 
 namespace MainCore.Services
@@ -7,27 +7,33 @@ namespace MainCore.Services
     {
         public TimerManager(IEventManager databaseEvent)
         {
-            _mainTimer = new Timer(500);
-            _mainTimer.Elapsed += MainTimer_Elapsed;
             _databaseEvent = databaseEvent;
-        }
-
-        private void MainTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            _databaseEvent.OnTaskExecuted();
         }
 
         public void Dispose()
         {
-            _mainTimer.Dispose();
+            foreach (var timer in _dictTimer.Values)
+            {
+                timer.Dispose();
+            }
         }
 
-        public void Start()
+        public void Start(int index)
         {
-            _mainTimer.Start();
+            if (!_dictTimer.ContainsKey(index))
+            {
+                var timer = new Timer(500) { AutoReset = false };
+                timer.Elapsed += (object sender, ElapsedEventArgs e) =>
+                {
+                    _databaseEvent.OnTaskExecuted(index);
+                    timer.Start();
+                };
+            }
+
+            _dictTimer[index].Start();
         }
 
-        private readonly Timer _mainTimer;
+        private readonly Dictionary<int, Timer> _dictTimer = new();
         private readonly IEventManager _databaseEvent;
     }
 }

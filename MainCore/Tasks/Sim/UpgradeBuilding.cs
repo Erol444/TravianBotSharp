@@ -23,12 +23,7 @@ namespace MainCore.Tasks.Sim
         private readonly int _villageId;
         public int VillageId => _villageId;
 
-        public override Task Execute()
-        {
-            return Task.Run(Up);
-        }
-
-        private void Up()
+        public override void Execute()
         {
             using var context = ContextFactory.CreateDbContext();
 
@@ -129,7 +124,6 @@ namespace MainCore.Tasks.Sim
                     isNewBuilding = true;
                     var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
                     NavigateHelper.SwitchTab(ChromeBrowser, tab);
-
                 }
                 else
                 {

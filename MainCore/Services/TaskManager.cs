@@ -84,18 +84,7 @@ namespace MainCore.Services
             _botStatus.TryAdd(index, AccountStatus.Offline);
         }
 
-        private async void Loop()
-        {
-            foreach (var item in _tasksDict.Keys)
-            {
-                Check(item);
-                if (_tasksDict[item].Count == 0) continue;
-
-                await TaskExecute(item);
-            }
-        }
-
-        private async Task TaskExecute(int index)
+        private void Loop(int index)
         {
             _botStatus.TryGetValue(index, out var accountStatus);
             if (accountStatus != AccountStatus.Online) return;
@@ -112,7 +101,7 @@ namespace MainCore.Services
             _databaseEvent.OnTaskUpdated(index);
             try
             {
-                await task.Execute();
+                task.Execute();
             }
             catch (Exception e)
             {

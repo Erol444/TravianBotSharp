@@ -26,15 +26,12 @@ namespace MainCore.Tasks.Misc
         {
         }
 
-        public override Task Execute()
+        public override void Execute()
         {
-            return Task.Run(() =>
-            {
-                AcceptCookie();
-                var result = Login();
-                if (!result) return;
-                TaskManager.Add(AccountId, new UpdateInfo(AccountId));
-            });
+            AcceptCookie();
+            var result = Login();
+            if (!result) return;
+            TaskManager.Add(AccountId, new UpdateInfo(AccountId));
         }
 
         public override string Name => "Login Task";

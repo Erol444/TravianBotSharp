@@ -1,5 +1,4 @@
 ﻿using MainCore.Helper;
-using System.Threading.Tasks;
 
 namespace MainCore.Tasks.Update
 {
@@ -15,10 +14,10 @@ namespace MainCore.Tasks.Update
         private readonly int _villageId;
         public int VillageId => _villageId;
 
-        public override async Task Execute()
+        public override void Execute()
         {
             Navigate();
-            await base.Execute();
+            base.Execute();
             Update();
         }
 
