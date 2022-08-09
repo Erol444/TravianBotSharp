@@ -21,8 +21,8 @@ namespace MainCore.Helper
 
             RemoveFinishedCB(context, villageId);
 
-            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId);
-            var totalBuild = currentList.Count();
+            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
+            var totalBuild = currentList.Count(x => x.CompleteTime != DateTime.MaxValue);
 
             if (totalBuild > 0)
             {
@@ -41,7 +41,7 @@ namespace MainCore.Helper
 
                 if (tribe == TribeEnums.Romans && maxBuild - totalBuild == 1)
                 {
-                    var numRes = currentList.Count(x => BuildingsHelper.IsResourceField(x.Type));
+                    var numRes = currentList.Count(x => x.Type.IsResourceField());
                     var numInfra = totalBuild - numRes;
 
                     if (numRes > numInfra)
@@ -136,14 +136,14 @@ namespace MainCore.Helper
         private static PlanTask GetFirstResTask(IPlanManager planManager, int villageId)
         {
             var tasks = planManager.GetList(villageId);
-            var task = tasks.FirstOrDefault(x => x.Type == PlanTypeEnums.ResFields || BuildingsHelper.IsResourceField(x.Building));
+            var task = tasks.FirstOrDefault(x => x.Type == PlanTypeEnums.ResFields || x.Building.IsResourceField());
             return task;
         }
 
         private static PlanTask GetFirstInfrastructureTask(IPlanManager planManager, int villageId)
         {
             var tasks = planManager.GetList(villageId);
-            var task = tasks.FirstOrDefault(x => x.Type == PlanTypeEnums.General && !BuildingsHelper.IsResourceField(x.Building));
+            var task = tasks.FirstOrDefault(x => x.Type == PlanTypeEnums.General && !x.Building.IsResourceField());
             return task;
         }
 

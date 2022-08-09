@@ -160,12 +160,14 @@ namespace MainCore.Helper
                         {
                             throw new Exception($"Cannot find building at {index}");
                         }
-                        var elements = chrome.FindElements(By.XPath(node.XPath));
-                        if (elements.Count == 0)
+                        var pathBuilding = node.Descendants("path").FirstOrDefault();
+                        if (pathBuilding is null)
                         {
                             throw new Exception($"Cannot find building at {index}");
                         }
-                        elements[0].Click();
+                        var href = pathBuilding.GetAttributeValue("onclick", "");
+                        var script = href.Replace("&amp;", "&");
+                        chrome.ExecuteScript(script);
                     }
                     break;
 
@@ -173,7 +175,7 @@ namespace MainCore.Helper
                     break;
             }
             var wait = chromeBrowser.GetWait();
-            wait.Until(driver => driver.Url.Contains($"?id={index}&"));
+            wait.Until(driver => driver.Url.Contains($"?id={index}"));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 
 #endif

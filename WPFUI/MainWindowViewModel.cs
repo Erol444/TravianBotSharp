@@ -187,8 +187,11 @@ namespace WPFUI
         {
             if (CurrentAccount is not null)
             {
-                IsAccountRunning = _taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Online;
-                IsAccountNotRunning = _taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Offline;
+                App.Current.Dispatcher.Invoke(() =>
+                {
+                    IsAccountRunning = _taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Online;
+                    IsAccountNotRunning = _taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Offline;
+                });
             }
         }
 

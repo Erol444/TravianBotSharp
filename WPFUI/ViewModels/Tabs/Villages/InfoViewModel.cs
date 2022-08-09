@@ -1,4 +1,5 @@
 ﻿using MainCore.Services;
+using MainCore.Tasks.Sim;
 using MainCore.Tasks.Update;
 using ReactiveUI;
 using System;
@@ -28,7 +29,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void BothDorf()
         {
-            _taskManager.Add(AccountId, new UpdateBothDorf(VillageId, AccountId));
+            _taskManager.Add(AccountId, new UpgradeBuilding(VillageId, AccountId));
         }
 
         private void Dorf1()

@@ -86,15 +86,13 @@ namespace MainCore.Services
 
         private async void Loop()
         {
-            var tasks = new List<Task>();
             foreach (var item in _tasksDict.Keys)
             {
                 Check(item);
                 if (_tasksDict[item].Count == 0) continue;
 
-                tasks.Add(TaskExecute(item));
+                await TaskExecute(item);
             }
-            await Task.WhenAll(tasks);
         }
 
         private async Task TaskExecute(int index)
@@ -119,7 +117,7 @@ namespace MainCore.Services
             catch (Exception e)
             {
                 _ = e;
-                UpdateAccountStatus(index, AccountStatus.Offline);
+                //UpdateAccountStatus(index, AccountStatus.Paused);
             }
             task.Stage = TaskStage.Start;
             _databaseEvent.OnTaskUpdated(index);

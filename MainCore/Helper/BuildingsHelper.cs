@@ -58,7 +58,7 @@ namespace MainCore.Helper
                     planManager.GetList(villageId).Any(x => x.Building == building && lvl <= x.Level));
         }
 
-        public static bool IsResourceField(BuildingEnums building)
+        public static bool IsResourceField(this BuildingEnums building)
         {
             int buildingInt = (int)building;
             // If id between 1 and 4, it's resource field

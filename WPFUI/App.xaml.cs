@@ -56,7 +56,7 @@ namespace WPFUI
                     //    migrationRunner.MigrateUp();
                     //}
 
-                    context.Database.EnsureDeleted();
+                    //context.Database.EnsureDeleted();
                     context.Database.EnsureCreated();
 
                     var planManager = GetService<IPlanManager>();

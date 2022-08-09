@@ -58,7 +58,6 @@ namespace MainCore.Helper
             for (int i = nodes.Count; i < 4; i++) // we will save 3 slot for each village, Roman can build 3 building in one time
             {
                 var building = context.VillagesCurrentlyBuildings.Find(villageId, i);
-                if (building is null) continue;
                 if (building is null)
                 {
                     context.VillagesCurrentlyBuildings.Add(new()

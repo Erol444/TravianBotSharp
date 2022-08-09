@@ -108,6 +108,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             CurrentlyBuildings.Clear();
             foreach (var building in buildings)
             {
+                if (building.CompleteTime == DateTime.MaxValue) continue;
                 CurrentlyBuildings.Add(new()
                 {
                     Location = building.Id,

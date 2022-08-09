@@ -23,7 +23,12 @@ namespace MainCore.Tasks.Sim
         private readonly int _villageId;
         public int VillageId => _villageId;
 
-        public override async Task Execute()
+        public override Task Execute()
+        {
+            return Task.Run(Up);
+        }
+
+        private void Up()
         {
             using var context = ContextFactory.CreateDbContext();
 
@@ -51,7 +56,7 @@ namespace MainCore.Tasks.Sim
 
                     ExecuteAt = firstComplete.CompleteTime.AddSeconds(10);
                     LogManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
-                    break;
+                    return;
                 }
 
                 if (buildingTask.Type == PlanTypeEnums.ResFields)
@@ -110,7 +115,7 @@ namespace MainCore.Tasks.Sim
                     continue;
                 }
                 var currently = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == buildingTask.Location);
-                if (currently.Level >= buildingTask.Level)
+                if (currently is not null && currently.Level >= buildingTask.Level)
                 {
                     PlanManager.Remove(VillageId, buildingTask);
                     continue;
@@ -122,6 +127,9 @@ namespace MainCore.Tasks.Sim
                 if (building.Type == BuildingEnums.Site)
                 {
                     isNewBuilding = true;
+                    var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
+                    NavigateHelper.SwitchTab(ChromeBrowser, tab);
+
                 }
                 else
                 {
