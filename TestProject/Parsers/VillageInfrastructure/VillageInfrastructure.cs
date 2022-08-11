@@ -13,9 +13,9 @@ namespace TestProject.Parsers
         [TestInitialize]
         public void InitializeTests()
         {
-            _ttwarsDoc.Load("TestFile/Dorf2/TTWars.html");
-            _travianDoc.Load("TestFile/Dorf2/Travian.html");
-            _travianHeroDoc.Load("TestFile/Dorf2/TravianHeroUI.html");
+            _ttwarsDoc.Load("Parsers/VillageInfrastructure/TTWars.html");
+            _travianDoc.Load("Parsers/VillageInfrastructure/Travian.html");
+            _travianHeroDoc.Load("Parsers/VillageInfrastructure/TravianHeroUI.html");
         }
 
         [TestMethod]
