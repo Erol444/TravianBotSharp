@@ -137,6 +137,39 @@ namespace MainCore
             });
 
             #endregion Account info
+
+            #region Hero
+
+            modelBuilder.Entity<Hero>(entity =>
+            {
+                entity.ToTable("Heroes");
+                entity.HasKey(e => e.AccountId)
+                    .HasName("PK_HEROES");
+            });
+
+            #endregion Hero
+
+            #region Adventures
+
+            modelBuilder.Entity<Adventure>(entity =>
+            {
+                entity.ToTable("Adventures");
+                entity.HasKey(e => e.AdventureId)
+                    .HasName("PK_ADVENTURES");
+            });
+
+            #endregion Adventures
+
+            #region item
+
+            modelBuilder.Entity<HeroItem>(entity =>
+            {
+                entity.ToTable("HeroesItems");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_HEROESITEMS");
+            });
+
+            #endregion item
         }
 
         public DbSet<Account> Accounts { get; set; }
@@ -150,5 +183,8 @@ namespace MainCore
         public DbSet<VillageSetting> VillagesSettings { get; set; }
         public DbSet<VillageCurrentlyBuilding> VillagesCurrentlyBuildings { get; set; }
         public DbSet<VillageQueueBuilding> VillagesQueueBuildings { get; set; }
+        public DbSet<Hero> Heroes { get; set; }
+        public DbSet<Adventure> Adventures { get; set; }
+        public DbSet<HeroItem> HeroesItems { get; set; }
     }
 }

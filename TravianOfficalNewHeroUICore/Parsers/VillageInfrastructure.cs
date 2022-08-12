@@ -11,7 +11,13 @@ namespace TravianOfficialNewHeroUICore.Parsers
         {
             var villageContentNode = doc.GetElementbyId("villageContent");
             if (villageContentNode is null) return new();
-            return villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
+            var list = villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
+            if (list.Count == 23) // level 1 wall and above has 2 part
+            {
+                list.RemoveAt(list.Count - 1);
+            }
+
+            return list;
         }
 
         public static int GetId(HtmlNode node)

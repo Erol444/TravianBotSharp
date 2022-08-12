@@ -12,6 +12,11 @@ namespace TravianOfficialCore.Parsers
             var villageContentNode = doc.GetElementbyId("villageContent");
             if (villageContentNode is null) return new();
             var list = villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
+            if (list.Count == 23) // level 1 wall and above has 2 part
+            {
+                list.RemoveAt(list.Count - 1);
+            }
+
             return list;
         }
 

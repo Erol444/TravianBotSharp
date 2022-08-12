@@ -84,7 +84,7 @@ namespace TestProject.Parsers
         {
             var nodes = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetBuildingNodes(_travianHeroDoc);
             var result = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetLevel(nodes[1]);
-            Assert.AreEqual(-1, result);
+            Assert.AreEqual(1, result);
         }
 
         [TestMethod]
@@ -108,7 +108,7 @@ namespace TestProject.Parsers
         {
             var nodes = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetBuildingNodes(_travianHeroDoc);
             var result = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetLevel(nodes[1]);
-            Assert.AreEqual(-1, result);
+            Assert.AreEqual(1, result);
         }
 
         [TestMethod]
