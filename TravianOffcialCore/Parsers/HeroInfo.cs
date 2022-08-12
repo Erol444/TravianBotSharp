@@ -2,10 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace TravianOfficialNewHeroUICore.Parsers
+namespace TravianOfficialCore.Parsers
 {
-    public static class Hero
+    public static class HeroInfo
     {
         public static int GetHealth(HtmlDocument doc)
         {
@@ -23,11 +25,11 @@ namespace TravianOfficialNewHeroUICore.Parsers
 
         public static int GetStatus(HtmlDocument doc)
         {
-            var heroStatusDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatus"));
-            if (heroStatusDiv is null) return 0;
-            var iconHeroStatus = heroStatusDiv.Descendants("i").FirstOrDefault();
-            if (iconHeroStatus == null) return 0;
-            var status = iconHeroStatus.GetClasses().FirstOrDefault();
+            var statusNode = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatus"));
+            if (statusNode is null) return 0;
+            var img = statusNode.Descendants().FirstOrDefault(x => x.Name == "svg");
+            if (img is null) return 0;
+            var status = img.GetClasses().FirstOrDefault();
             if (status is null) return 0;
             return status switch
             {
@@ -54,45 +56,36 @@ namespace TravianOfficialNewHeroUICore.Parsers
         public static List<(int, int)> GetItems(HtmlDocument doc)
         {
             var heroItems = new List<(int, int)>();
-            var heroItemsDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroItems"));
-            if (heroItemsDiv is null) return null;
-            var heroItemDivs = heroItemsDiv.Descendants("div").Where(x => x.HasClass("heroItem") && !x.HasClass("empty"));
-            if (!heroItemDivs.Any()) return null;
+            var inventory = doc.GetElementbyId("itemsToSale");
+            if (inventory is null) return null;
 
-            foreach (var itemSlot in heroItemDivs)
+            foreach (var itemSlot in inventory.ChildNodes)
             {
-                if (itemSlot.ChildNodes.Count != 2) continue;
-                var itemNode = itemSlot.ChildNodes[1];
-                var classes = itemNode.GetClasses();
-                if (classes.Count() != 2) continue;
+                var item = itemSlot.ChildNodes.FirstOrDefault(x => x.Id.StartsWith("item_"));
+                if (item is null) continue;
 
-                var itemValue = classes.ElementAt(1);
+                var itemClass = item.GetClasses().FirstOrDefault(x => x.Contains("_item_"));
+                var itemValue = itemClass.Split('_').LastOrDefault();
                 if (itemValue is null) continue;
 
                 var itemValueStr = new string(itemValue.Where(c => char.IsDigit(c)).ToArray());
                 if (string.IsNullOrEmpty(itemValueStr)) continue;
 
-                if (itemSlot.GetAttributeValue("data-tier", "").Contains("consumable"))
-                {
-                    if (itemSlot.ChildNodes.Count != 3)
-                    {
-                        heroItems.Add((int.Parse(itemValueStr), 1));
-                        continue;
-                    }
-                    var amountNode = itemSlot.ChildNodes[2];
-
-                    var amountValueStr = new string(amountNode.InnerText.Where(c => char.IsDigit(c)).ToArray());
-                    if (string.IsNullOrEmpty(amountValueStr))
-                    {
-                        heroItems.Add((int.Parse(itemValueStr), 1));
-                        continue;
-                    }
-                    heroItems.Add((int.Parse(itemValueStr), int.Parse(amountValueStr)));
-                }
-                else
+                var amountValue = item.ChildNodes.FirstOrDefault(x => x.HasClass("amount"));
+                if (amountValue is null)
                 {
                     heroItems.Add((int.Parse(itemValueStr), 1));
+                    continue;
                 }
+
+                var amountValueStr = new string(amountValue.InnerText.Where(c => char.IsDigit(c)).ToArray());
+                if (string.IsNullOrEmpty(itemValueStr))
+                {
+                    heroItems.Add((int.Parse(itemValueStr), 1));
+                    continue;
+                }
+
+                heroItems.Add((int.Parse(itemValueStr), int.Parse(amountValueStr)));
             }
             return heroItems;
         }

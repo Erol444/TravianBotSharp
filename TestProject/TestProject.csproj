@@ -20,22 +20,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="FindElements\Hero\dialog\Travian.html">
+    <None Update="FindElements\HeroPage\dialog\Travian.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="FindElements\Hero\dialog\TravianHeroUI.html">
+    <None Update="FindElements\HeroPage\dialog\TravianHeroUI.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="FindElements\Hero\dialog\TTWars.html">
+    <None Update="FindElements\HeroPage\dialog\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="FindElements\Hero\inventory\Travian.html">
+    <None Update="FindElements\HeroPage\inventory\Travian.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="FindElements\Hero\inventory\TravianHeroUI.html">
+    <None Update="FindElements\HeroPage\inventory\TravianHeroUI.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="FindElements\Hero\inventory\TTWars.html">
+    <None Update="FindElements\HeroPage\inventory\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="FindElements\LoginPage\Travian.html">
@@ -44,22 +44,22 @@
     <None Update="FindElements\LoginPage\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parsers\Hero\inventory\Travian.html">
+    <None Update="Parsers\HeroInfo\inventory\Travian.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parsers\Hero\inventory\TravianHeroUI.html">
+    <None Update="Parsers\HeroInfo\inventory\TravianHeroUI.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parsers\Hero\inventory\TTWars.html">
+    <None Update="Parsers\HeroInfo\inventory\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parsers\Hero\logo\Travian.html">
+    <None Update="Parsers\HeroInfo\logo\Travian.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parsers\Hero\logo\TravianHeroUI.html">
+    <None Update="Parsers\HeroInfo\logo\TravianHeroUI.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parsers\Hero\logo\TTWars.html">
+    <None Update="Parsers\HeroInfo\logo\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Parsers\RightBar\Travian.html">

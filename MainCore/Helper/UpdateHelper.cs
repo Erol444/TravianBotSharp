@@ -2,6 +2,7 @@
 using MainCore.Services;
 using MainCore.TravianData;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 #if TRAVIAN_OFFICIAL
@@ -251,6 +252,40 @@ namespace MainCore.Helper
                 resource.Granary = StockBar.GetGranaryCapacity(html);
                 resource.FreeCrop = StockBar.GetFreeCrop(html);
             }
+            context.SaveChanges();
+        }
+
+        public static void UpdateHeroInventory(AppDbContext context, IChromeBrowser chromeBrowser, int accountId)
+        {
+            var foundItems = HeroInfo.GetItems(chromeBrowser.GetHtml());
+            if (foundItems.Count == 0) return;
+            var heroItems = context.HeroesItems.Where(x => x.AccountId == accountId).ToList();
+            var addedItems = new List<Models.Database.HeroItem>();
+            foreach (var item in foundItems)
+            {
+                (var type, var count) = ((HeroItemEnums)item.Item1, item.Item2);
+                var existItem = heroItems.FirstOrDefault(x => x.Item == type);
+                if (existItem is null)
+                {
+                    context.HeroesItems.Add(new()
+                    {
+                        AccountId = accountId,
+                        Item = type,
+                        Count = count,
+                    });
+                }
+                else
+                {
+                    existItem.Count = count;
+                    addedItems.Add(existItem);
+                }
+            }
+
+            foreach (var item in addedItems)
+            {
+                heroItems.Remove(item);
+            }
+            context.HeroesItems.RemoveRange(heroItems);
             context.SaveChanges();
         }
     }

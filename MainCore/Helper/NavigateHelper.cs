@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using HtmlAgilityPack;
 
 #if TRAVIAN_OFFICIAL
 
@@ -191,6 +193,52 @@ namespace MainCore.Helper
                 var elements = chrome.FindElements(By.XPath(listNode[index].XPath));
                 elements[0].Click();
             }
+        }
+
+        public static void ToHeroInventory(IChromeBrowser chromeBrowser)
+        {
+            var html = chromeBrowser.GetHtml();
+#if TRAVIAN_OFFICIAL_HEROUI
+            var avatar = Hero.GetHeroAvatar(html);
+            if (avatar is null)
+            {
+                throw new Exception("Cannot find hero avatar");
+            }
+            var chrome = chromeBrowser.GetChrome();
+            var elements = chrome.FindElements(By.XPath(avatar.XPath));
+            if (elements.Count == 0)
+            {
+                throw new Exception("Cannot find hero avatar");
+            }
+            elements[0].Click();
+            var wait = chromeBrowser.GetWait();
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            wait.Until(driver =>
+            {
+                var doc = new HtmlDocument();
+                doc.LoadHtml(driver.PageSource);
+                var tab = Hero.GetHeroTab(doc, 1);
+                if (tab is null) return false;
+                return tab.IsCurrentTab();
+            });
+
+#else
+            var inventory = HeroPage.GetHeroInventory(html);
+            if (inventory is null)
+            {
+                throw new Exception("Cannot find hero inventory button");
+            }
+            var chrome = chromeBrowser.GetChrome();
+            var elements = chrome.FindElements(By.XPath(inventory.XPath));
+            if (elements.Count == 0)
+            {
+                throw new Exception("Cannot find hero inventory button");
+            }
+            elements[0].Click();
+
+            var wait = chromeBrowser.GetWait();
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+#endif
         }
     }
 }

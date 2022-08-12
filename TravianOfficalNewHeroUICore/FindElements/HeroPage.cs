@@ -8,8 +8,26 @@ using System.Threading.Tasks;
 
 namespace TravianOfficialNewHeroUICore.FindElements
 {
-    public static class Hero
+    public static class HeroPage
     {
+        public static HtmlNode GetHeroAvatar(HtmlDocument doc)
+        {
+            return doc.GetElementbyId("heroImageButton");
+        }
+
+        public static HtmlNode GetHeroTab(HtmlDocument doc, int index)
+        {
+            var heroDiv = doc.GetElementbyId("heroV2");
+            if (heroDiv is null) return null;
+            var aNode = heroDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == index);
+            return aNode;
+        }
+
+        public static HtmlNode GetAdventuresButton(HtmlDocument doc)
+        {
+            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventureWhite"));
+        }
+
         public static HtmlNode GetItemSlot(HtmlDocument doc, int type)
         {
             var heroItemsDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroItems"));

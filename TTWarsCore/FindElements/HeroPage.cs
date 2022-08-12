@@ -7,8 +7,18 @@ using System.Threading.Tasks;
 
 namespace TTWarsCore.FindElements
 {
-    public static class Hero
+    public static class HeroPage
     {
+        public static HtmlNode GetHeroInventory(HtmlDocument doc)
+        {
+            return doc.GetElementbyId("heroImageButton");
+        }
+
+        public static HtmlNode GetAdventuresButton(HtmlDocument doc)
+        {
+            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventureWhite"));
+        }
+
         public static HtmlNode GetItemSlot(HtmlDocument doc, int type)
         {
             var inventory = doc.GetElementbyId("itemsToSale");

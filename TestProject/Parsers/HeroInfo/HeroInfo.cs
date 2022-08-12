@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 namespace TestProject.Parsers
 {
     [TestClass]
-    public class Hero
+    public class HeroInfo
     {
         [TestMethod]
         public void TTWarsGetHealth()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/logo/TTWars.html");
-            var value = TTWarsCore.Parsers.Hero.GetHealth(doc);
+            doc.Load("Parsers/HeroInfo/logo/TTWars.html");
+            var value = TTWarsCore.Parsers.HeroInfo.GetHealth(doc);
             Assert.AreEqual(100, value);
         }
 
@@ -24,8 +24,8 @@ namespace TestProject.Parsers
         public void TravianOfficialGetHealth()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/logo/Travian.html");
-            var value = TravianOfficialCore.Parsers.Hero.GetHealth(doc);
+            doc.Load("Parsers/HeroInfo/logo/Travian.html");
+            var value = TravianOfficialCore.Parsers.HeroInfo.GetHealth(doc);
             Assert.AreEqual(100, value);
         }
 
@@ -33,8 +33,8 @@ namespace TestProject.Parsers
         public void TravianOfficialHeroGetHealth()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/logo/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.Parsers.Hero.GetHealth(doc);
+            doc.Load("Parsers/HeroInfo/logo/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetHealth(doc);
             Assert.AreEqual(100, value);
         }
 
@@ -42,8 +42,8 @@ namespace TestProject.Parsers
         public void TTWarsGetStatus()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/logo/TTWars.html");
-            var value = TTWarsCore.Parsers.Hero.GetStatus(doc);
+            doc.Load("Parsers/HeroInfo/logo/TTWars.html");
+            var value = TTWarsCore.Parsers.HeroInfo.GetStatus(doc);
             Assert.AreEqual(1, value);
         }
 
@@ -51,8 +51,8 @@ namespace TestProject.Parsers
         public void TravianOfficialGetStatus()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/logo/Travian.html");
-            var value = TravianOfficialCore.Parsers.Hero.GetStatus(doc);
+            doc.Load("Parsers/HeroInfo/logo/Travian.html");
+            var value = TravianOfficialCore.Parsers.HeroInfo.GetStatus(doc);
             Assert.AreEqual(1, value);
         }
 
@@ -60,8 +60,8 @@ namespace TestProject.Parsers
         public void TravianOfficialHeroGetStatus()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/logo/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.Parsers.Hero.GetStatus(doc);
+            doc.Load("Parsers/HeroInfo/logo/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetStatus(doc);
             Assert.AreEqual(1, value);
         }
 
@@ -69,8 +69,8 @@ namespace TestProject.Parsers
         public void TTWarsGetAdventureNum()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/logo/TTWars.html");
-            var value = TTWarsCore.Parsers.Hero.GetAdventureNum(doc);
+            doc.Load("Parsers/HeroInfo/logo/TTWars.html");
+            var value = TTWarsCore.Parsers.HeroInfo.GetAdventureNum(doc);
             Assert.AreEqual(3, value);
         }
 
@@ -78,8 +78,8 @@ namespace TestProject.Parsers
         public void TravianOfficialGetAdventureNum()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/logo/Travian.html");
-            var value = TravianOfficialCore.Parsers.Hero.GetAdventureNum(doc);
+            doc.Load("Parsers/HeroInfo/logo/Travian.html");
+            var value = TravianOfficialCore.Parsers.HeroInfo.GetAdventureNum(doc);
             Assert.AreEqual(13, value);
         }
 
@@ -87,8 +87,8 @@ namespace TestProject.Parsers
         public void TravianOfficialHeroGetAdventureNum()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/logo/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.Parsers.Hero.GetAdventureNum(doc);
+            doc.Load("Parsers/HeroInfo/logo/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetAdventureNum(doc);
             Assert.AreEqual(3, value);
         }
 
@@ -96,8 +96,8 @@ namespace TestProject.Parsers
         public void TTWarsGetItems()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/inventory/TTWars.html");
-            var value = TTWarsCore.Parsers.Hero.GetItems(doc);
+            doc.Load("Parsers/HeroInfo/inventory/TTWars.html");
+            var value = TTWarsCore.Parsers.HeroInfo.GetItems(doc);
             Assert.AreEqual(5, value.Count);
         }
 
@@ -105,8 +105,8 @@ namespace TestProject.Parsers
         public void TravianOfficialGetItems()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/inventory/Travian.html");
-            var value = TravianOfficialCore.Parsers.Hero.GetItems(doc);
+            doc.Load("Parsers/HeroInfo/inventory/Travian.html");
+            var value = TravianOfficialCore.Parsers.HeroInfo.GetItems(doc);
             Assert.AreEqual(19, value.Count);
         }
 
@@ -114,8 +114,8 @@ namespace TestProject.Parsers
         public void TravianOfficialHeroGetItems()
         {
             var doc = new HtmlDocument();
-            doc.Load("Parsers/Hero/inventory/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.Parsers.Hero.GetItems(doc);
+            doc.Load("Parsers/HeroInfo/inventory/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetItems(doc);
             Assert.AreEqual(11, value.Count);
         }
     }

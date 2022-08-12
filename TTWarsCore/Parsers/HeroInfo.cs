@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace TTWarsCore.Parsers
 {
-    public static class Hero
+    public static class HeroInfo
     {
         public static int GetHealth(HtmlDocument doc)
         {

@@ -16,7 +16,7 @@
         Difficult = 2
     }
 
-    public enum HeroItemEnum
+    public enum HeroItemEnums
     {
         None = 0,
         Helmet_Experience_1,
