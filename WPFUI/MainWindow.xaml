@@ -52,6 +52,13 @@
                     <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="NO ACCOUNT IS SELECTED" VerticalAlignment="Center" TextAlignment="Center" LineHeight="11" />
                 </Grid>
             </TabItem>
+            <TabItem x:Name="HeroTab" Header="Hero">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:HeroPage x:Name="HeroPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
             <TabItem x:Name="OverviewTab" Header="Overview" IsVisibleChanged="OverviewTab_IsVisibleChanged">
                 <Frame>
                     <Frame.Content>
