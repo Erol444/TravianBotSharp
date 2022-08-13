@@ -25,7 +25,7 @@ namespace TravianOfficialNewHeroUICore.FindElements
 
         public static HtmlNode GetAdventuresButton(HtmlDocument doc)
         {
-            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventureWhite"));
+            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventure"));
         }
 
         public static HtmlNode GetItemSlot(HtmlDocument doc, int type)

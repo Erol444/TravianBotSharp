@@ -7,6 +7,60 @@ namespace TestProject.FindElements
     public class HeroPage
     {
         [TestMethod]
+        public void TTWarsGetHeroInventory()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("FindElements/HeroPage/inventory/TTWars.html");
+            var value = TTWarsCore.FindElements.HeroPage.GetHeroInventory(doc);
+            Assert.IsNotNull(value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialGetHeroInventory()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("FindElements/HeroPage/inventory/Travian.html");
+            var value = TravianOfficialCore.FindElements.HeroPage.GetHeroInventory(doc);
+            Assert.IsNotNull(value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialHeroGetHeroAvatar()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("FindElements/HeroPage/inventory/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetHeroAvatar(doc);
+            Assert.IsNotNull(value);
+        }
+
+        [TestMethod]
+        public void TTWarsGetAdventuresButton()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("FindElements/HeroPage/inventory/TTWars.html");
+            var value = TTWarsCore.FindElements.HeroPage.GetAdventuresButton(doc);
+            Assert.IsNotNull(value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialGetAdventuresButton()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("FindElements/HeroPage/inventory/Travian.html");
+            var value = TravianOfficialCore.FindElements.HeroPage.GetAdventuresButton(doc);
+            Assert.IsNotNull(value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialHeroGetAdventuresButton()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("FindElements/HeroPage/inventory/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetAdventuresButton(doc);
+            Assert.IsNotNull(value);
+        }
+
+        [TestMethod]
         public void TTWarsGetHealth()
         {
             var doc = new HtmlDocument();

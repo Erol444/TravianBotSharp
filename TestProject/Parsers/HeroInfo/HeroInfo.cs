@@ -125,7 +125,7 @@ namespace TestProject.Parsers
             var doc = new HtmlDocument();
             doc.Load("Parsers/HeroInfo/adventure/TTWars.html");
             var value = TTWarsCore.Parsers.HeroInfo.GetAdventures(doc);
-            Assert.AreEqual(11, value.Count);
+            Assert.AreEqual(10, value.Count);
         }
 
         [TestMethod]
@@ -134,7 +134,7 @@ namespace TestProject.Parsers
             var doc = new HtmlDocument();
             doc.Load("Parsers/HeroInfo/adventure/Travian.html");
             var value = TravianOfficialCore.Parsers.HeroInfo.GetAdventures(doc);
-            Assert.AreEqual(21, value.Count);
+            Assert.AreEqual(20, value.Count);
         }
 
         [TestMethod]
@@ -144,6 +144,66 @@ namespace TestProject.Parsers
             doc.Load("Parsers/HeroInfo/adventure/TravianHeroUI.html");
             var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetAdventures(doc);
             Assert.AreEqual(1, value.Count);
+        }
+
+        [TestMethod]
+        public void TTWarsGetAdventureDifficult()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("Parsers/HeroInfo/adventure/TTWars.html");
+            var value = TTWarsCore.Parsers.HeroInfo.GetAdventures(doc);
+            var result = TTWarsCore.Parsers.HeroInfo.GetAdventureDifficult(value[0]);
+            Assert.AreEqual(0, result);
+        }
+
+        [TestMethod]
+        public void TravianOfficialGetAdventureDifficult()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("Parsers/HeroInfo/adventure/Travian.html");
+            var value = TravianOfficialCore.Parsers.HeroInfo.GetAdventures(doc);
+            var result = TravianOfficialCore.Parsers.HeroInfo.GetAdventureDifficult(value[0]);
+            Assert.AreEqual(1, result);
+        }
+
+        [TestMethod]
+        public void TravianOfficialHeroGetAdventureDifficult()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("Parsers/HeroInfo/adventure/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetAdventures(doc);
+            var result = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetAdventureDifficult(value[0]);
+            Assert.AreEqual(1, result);
+        }
+
+        [TestMethod]
+        public void TTWarsGetAdventureCoordinates()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("Parsers/HeroInfo/adventure/TTWars.html");
+            var value = TTWarsCore.Parsers.HeroInfo.GetAdventures(doc);
+            var result = TTWarsCore.Parsers.HeroInfo.GetAdventureCoordinates(value[0]);
+            Assert.AreEqual((65, 49), result);
+        }
+
+        [TestMethod]
+        public void TravianOfficialGetAdventureCoordinates()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("Parsers/HeroInfo/adventure/Travian.html");
+            var value = TravianOfficialCore.Parsers.HeroInfo.GetAdventures(doc);
+            var result = TravianOfficialCore.Parsers.HeroInfo.GetAdventureCoordinates(value[0]);
+            Assert.AreEqual((112, 118), result);
+        }
+
+        [TestMethod]
+        public void TravianOfficialHeroGetAdventureCoordinates()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("Parsers/HeroInfo/adventure/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetAdventures(doc);
+            var result = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetAdventureCoordinates(value[0]);
+            Assert.AreEqual((49, 36), result);
         }
     }
 }

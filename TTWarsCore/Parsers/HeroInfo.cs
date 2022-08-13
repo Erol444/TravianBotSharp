@@ -108,8 +108,9 @@ namespace TTWarsCore.Parsers
         {
             var adventures = doc.GetElementbyId("adventureListForm");
             if (adventures is null) return null;
-
-            return adventures.Descendants("tr").ToList();
+            var list = adventures.Descendants("tr").ToList();
+            list.RemoveAt(0);
+            return list;
         }
 
         public static int GetAdventureDifficult(HtmlNode node)

@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using HtmlAgilityPack;
+using OpenQA.Selenium.Support.UI;
+using MainCore.Models.Database;
 
 #if TRAVIAN_OFFICIAL
 
@@ -236,6 +238,54 @@ namespace MainCore.Helper
             }
             elements[0].Click();
 
+            var wait = chromeBrowser.GetWait();
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+#endif
+        }
+
+        public static void ToAdventure(IChromeBrowser chromeBrowser)
+        {
+            var html = chromeBrowser.GetHtml();
+#if TRAVIAN_OFFICIAL_HEROUI
+            var node = HeroPage.GetAdventuresButton(html);
+            if (node is null)
+            {
+                throw new Exception("Cannot find adventures button");
+            }
+            var chrome = chromeBrowser.GetChrome();
+            var elements = chrome.FindElements(By.XPath(node.XPath));
+
+            if (elements.Count == 0)
+            {
+                throw new Exception("Cannot find adventures button");
+            }
+
+            elements[0].Click();
+            var wait = chromeBrowser.GetWait();
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            wait.Until(driver =>
+            {
+                var doc = new HtmlDocument();
+                doc.LoadHtml(driver.PageSource);
+                var adventureDiv = doc.GetElementbyId("heroAdventure");
+                if (adventureDiv is null) return false;
+                var heroState = adventureDiv.Descendants("div").FirstOrDefault(x => x.HasClass("heroState"));
+                if (heroState is null) return false;
+                return driver.FindElements(By.XPath(heroState.XPath)).Count > 0;
+            });
+#else
+            var inventory = HeroPage.GetAdventuresButton(html);
+            if (inventory is null)
+            {
+                throw new Exception("Cannot find adventures button");
+            }
+            var chrome = chromeBrowser.GetChrome();
+            var elements = chrome.FindElements(By.XPath(inventory.XPath));
+            if (elements.Count == 0)
+            {
+                throw new Exception("Cannot find adventures button");
+            }
+            elements[0].Click();
             var wait = chromeBrowser.GetWait();
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 #endif

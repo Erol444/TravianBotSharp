@@ -288,5 +288,40 @@ namespace MainCore.Helper
             context.HeroesItems.RemoveRange(heroItems);
             context.SaveChanges();
         }
+
+        public static void UpdateAdventures(AppDbContext context, IChromeBrowser chromeBrowser, int accountId)
+        {
+            var foundAdventures = HeroInfo.GetAdventures(chromeBrowser.GetHtml());
+            if (foundAdventures.Count == 0) return;
+            var heroAdventures = context.Adventures.Where(x => x.AccountId == accountId).ToList();
+            var addedAdventures = new List<Models.Database.Adventure>();
+            foreach (var adventure in foundAdventures)
+            {
+                (var x, var y) = HeroInfo.GetAdventureCoordinates(adventure);
+                var difficulty = HeroInfo.GetAdventureDifficult(adventure);
+                var existItem = heroAdventures.FirstOrDefault(a => a.X == x && a.Y == y);
+                if (existItem is null)
+                {
+                    context.Adventures.Add(new()
+                    {
+                        AccountId = accountId,
+                        X = x,
+                        Y = y,
+                        Difficulty = (DifficultyEnums)difficulty,
+                    });
+                }
+                else
+                {
+                    addedAdventures.Add(existItem);
+                }
+            }
+
+            foreach (var item in addedAdventures)
+            {
+                heroAdventures.Remove(item);
+            }
+            context.Adventures.RemoveRange(heroAdventures);
+            context.SaveChanges();
+        }
     }
 }
