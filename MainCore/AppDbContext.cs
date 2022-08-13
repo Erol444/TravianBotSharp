@@ -154,13 +154,13 @@ namespace MainCore
             modelBuilder.Entity<Adventure>(entity =>
             {
                 entity.ToTable("Adventures");
-                entity.HasKey(e => e.AdventureId)
+                entity.HasKey(e => e.Id)
                     .HasName("PK_ADVENTURES");
             });
 
             #endregion Adventures
 
-            #region item
+            #region Inventory
 
             modelBuilder.Entity<HeroItem>(entity =>
             {
@@ -169,7 +169,7 @@ namespace MainCore
                     .HasName("PK_HEROESITEMS");
             });
 
-            #endregion item
+            #endregion Inventory
         }
 
         public DbSet<Account> Accounts { get; set; }

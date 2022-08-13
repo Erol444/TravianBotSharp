@@ -10,7 +10,7 @@ namespace TestProject.FindElements
         public void TTWarsGetHealth()
         {
             var doc = new HtmlDocument();
-            doc.Load("FindElements/HeroInfo/inventory/TTWars.html");
+            doc.Load("FindElements/HeroPage/inventory/TTWars.html");
             var value = TTWarsCore.FindElements.HeroPage.GetItemSlot(doc, 114);
             Assert.IsNotNull(value);
         }
@@ -19,7 +19,7 @@ namespace TestProject.FindElements
         public void TravianOfficialGetHealth()
         {
             var doc = new HtmlDocument();
-            doc.Load("FindElements/HeroInfo/inventory/Travian.html");
+            doc.Load("FindElements/HeroPage/inventory/Travian.html");
             var value = TravianOfficialCore.FindElements.HeroPage.GetItemSlot(doc, 108);
             Assert.IsNotNull(value);
         }
@@ -28,7 +28,7 @@ namespace TestProject.FindElements
         public void TravianOfficialHeroGetHealth()
         {
             var doc = new HtmlDocument();
-            doc.Load("FindElements/HeroInfo/inventory/TravianHeroUI.html");
+            doc.Load("FindElements/HeroPage/inventory/TravianHeroUI.html");
             var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetItemSlot(doc, 58);
             Assert.IsNotNull(value);
         }
@@ -37,7 +37,7 @@ namespace TestProject.FindElements
         public void TTWarsGetAmountBox()
         {
             var doc = new HtmlDocument();
-            doc.Load("FindElements/HeroInfo/dialog/TTWars.html");
+            doc.Load("FindElements/HeroPage/dialog/TTWars.html");
             var value = TTWarsCore.FindElements.HeroPage.GetAmountBox(doc);
             Assert.IsNotNull(value);
         }
@@ -46,7 +46,7 @@ namespace TestProject.FindElements
         public void TravianOfficialGetAmountBox()
         {
             var doc = new HtmlDocument();
-            doc.Load("FindElements/HeroInfo/dialog/Travian.html");
+            doc.Load("FindElements/HeroPage/dialog/Travian.html");
             var value = TravianOfficialCore.FindElements.HeroPage.GetAmountBox(doc);
             Assert.IsNotNull(value);
         }
@@ -55,7 +55,7 @@ namespace TestProject.FindElements
         public void TravianOfficialHeroGetAmountBox()
         {
             var doc = new HtmlDocument();
-            doc.Load("FindElements/HeroInfo/dialog/TravianHeroUI.html");
+            doc.Load("FindElements/HeroPage/dialog/TravianHeroUI.html");
             var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetAmountBox(doc);
             Assert.IsNotNull(value);
         }
@@ -64,7 +64,7 @@ namespace TestProject.FindElements
         public void TTWarsGetConfirmButton()
         {
             var doc = new HtmlDocument();
-            doc.Load("FindElements/HeroInfo/dialog/TTWars.html");
+            doc.Load("FindElements/HeroPage/dialog/TTWars.html");
             var value = TTWarsCore.FindElements.HeroPage.GetConfirmButton(doc);
             Assert.IsNotNull(value);
         }
@@ -73,7 +73,7 @@ namespace TestProject.FindElements
         public void TravianOfficialGetConfirmButton()
         {
             var doc = new HtmlDocument();
-            doc.Load("FindElements/HeroInfo/dialog/Travian.html");
+            doc.Load("FindElements/HeroPage/dialog/Travian.html");
             var value = TravianOfficialCore.FindElements.HeroPage.GetConfirmButton(doc);
             Assert.IsNotNull(value);
         }
@@ -82,7 +82,7 @@ namespace TestProject.FindElements
         public void TravianOfficialHeroGetConfirmButton()
         {
             var doc = new HtmlDocument();
-            doc.Load("FindElements/HeroInfo/dialog/TravianHeroUI.html");
+            doc.Load("FindElements/HeroPage/dialog/TravianHeroUI.html");
             var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetConfirmButton(doc);
             Assert.IsNotNull(value);
         }

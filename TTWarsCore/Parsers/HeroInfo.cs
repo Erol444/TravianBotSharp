@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -101,6 +102,36 @@ namespace TTWarsCore.Parsers
                 heroItems.Add((int.Parse(itemValueStr), int.Parse(amountValueStr)));
             }
             return heroItems;
+        }
+
+        public static List<HtmlNode> GetAdventures(HtmlDocument doc)
+        {
+            var adventures = doc.GetElementbyId("adventureListForm");
+            if (adventures is null) return null;
+
+            return adventures.Descendants("tr").ToList();
+        }
+
+        public static int GetAdventureDifficult(HtmlNode node)
+        {
+            var img = node.Descendants("img").FirstOrDefault();
+            if (img is null) return 0;
+            var value = img.GetAttributeValue("alt", "");
+            if (value.Equals("Normal")) return 0;
+            return 1;
+        }
+
+        public static (int, int) GetAdventureCoordinates(HtmlNode node)
+        {
+            var coordsNode = node.Descendants("td").FirstOrDefault(x => x.HasClass("coords"));
+            if (coordsNode is null) return (0, 0);
+            var coords = coordsNode.InnerText.Split('|');
+            if (coords.Length < 2) return (0, 0);
+            var valueX = new string(coords[0].Where(c => char.IsDigit(c)).ToArray());
+            if (string.IsNullOrEmpty(valueX)) return (0, 0);
+            var valueY = new string(coords[1].Where(c => char.IsDigit(c)).ToArray());
+            if (string.IsNullOrEmpty(valueY)) return (0, 0);
+            return (int.Parse(valueX), int.Parse(valueY));
         }
     }
 }

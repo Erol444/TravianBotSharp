@@ -89,5 +89,34 @@ namespace TravianOfficialCore.Parsers
             }
             return heroItems;
         }
+
+        public static List<HtmlNode> GetAdventures(HtmlDocument doc)
+        {
+            var adventures = doc.GetElementbyId("adventureListForm");
+            if (adventures is null) return null;
+
+            return adventures.Descendants("tr").ToList();
+        }
+
+        public static int GetAdventureDifficult(HtmlNode node)
+        {
+            var img = node.Descendants("img").FirstOrDefault();
+            if (img is null) return 0;
+            if (img.HasClass("adventureDifficulty1")) return 0;
+            return 1;
+        }
+
+        public static (int, int) GetAdventureCoordinates(HtmlNode node)
+        {
+            var coordsNode = node.Descendants("td").FirstOrDefault(x => x.HasClass("coords"));
+            if (coordsNode is null) return (0, 0);
+            var coords = coordsNode.InnerText.Split('|');
+            if (coords.Length < 2) return (0, 0);
+            var valueX = new string(coords[0].Where(c => char.IsDigit(c)).ToArray());
+            if (string.IsNullOrEmpty(valueX)) return (0, 0);
+            var valueY = new string(coords[1].Where(c => char.IsDigit(c)).ToArray());
+            if (string.IsNullOrEmpty(valueY)) return (0, 0);
+            return (int.Parse(valueX), int.Parse(valueY));
+        }
     }
 }

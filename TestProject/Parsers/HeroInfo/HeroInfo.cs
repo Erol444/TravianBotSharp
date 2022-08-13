@@ -118,5 +118,32 @@ namespace TestProject.Parsers
             var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetItems(doc);
             Assert.AreEqual(11, value.Count);
         }
+
+        [TestMethod]
+        public void TTWarsGetAdventures()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("Parsers/HeroInfo/adventure/TTWars.html");
+            var value = TTWarsCore.Parsers.HeroInfo.GetAdventures(doc);
+            Assert.AreEqual(11, value.Count);
+        }
+
+        [TestMethod]
+        public void TravianOfficialGetAdventures()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("Parsers/HeroInfo/adventure/Travian.html");
+            var value = TravianOfficialCore.Parsers.HeroInfo.GetAdventures(doc);
+            Assert.AreEqual(21, value.Count);
+        }
+
+        [TestMethod]
+        public void TravianOfficialHeroGetAdventures()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("Parsers/HeroInfo/adventure/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetAdventures(doc);
+            Assert.AreEqual(1, value.Count);
+        }
     }
 }

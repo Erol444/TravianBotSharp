@@ -101,5 +101,37 @@ namespace TravianOfficialNewHeroUICore.Parsers
         {
             return tabNode.HasClass("active");
         }
+
+        public static List<HtmlNode> GetAdventures(HtmlDocument doc)
+        {
+            var adventures = doc.GetElementbyId("heroAdventure");
+            if (adventures is null) return null;
+            var tbody = adventures.Descendants("tbody").FirstOrDefault();
+            if (tbody is null) return null;
+
+            return tbody.Descendants("tr").ToList();
+        }
+
+        public static int GetAdventureDifficult(HtmlNode node)
+        {
+            var tdList = node.Descendants("td").ToArray();
+            if (tdList.Length < 3) return 0;
+            var iconDifficulty = tdList[3].FirstChild;
+            if (iconDifficulty.GetAttributeValue("alt", "").Contains("hard")) return 1;
+            return 0;
+        }
+
+        public static (int, int) GetAdventureCoordinates(HtmlNode node)
+        {
+            var tdList = node.Descendants("td").ToArray();
+            if (tdList.Length < 2) return (0, 0);
+            var coords = tdList[1].InnerText.Split('|');
+            if (coords.Length < 2) return (0, 0);
+            var valueX = new string(coords[0].Where(c => char.IsDigit(c)).ToArray());
+            if (string.IsNullOrEmpty(valueX)) return (0, 0);
+            var valueY = new string(coords[1].Where(c => char.IsDigit(c)).ToArray());
+            if (string.IsNullOrEmpty(valueY)) return (0, 0);
+            return (int.Parse(valueX), int.Parse(valueY));
+        }
     }
 }

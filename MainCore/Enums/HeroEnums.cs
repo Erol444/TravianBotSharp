@@ -12,8 +12,8 @@
 
     public enum DifficultyEnums
     {
-        Normal = 1,
-        Difficult = 2
+        Normal = 0,
+        Hard = 1
     }
 
     public enum HeroItemEnums
