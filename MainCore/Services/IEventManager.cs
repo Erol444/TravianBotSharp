@@ -27,5 +27,17 @@ namespace MainCore.Services
         public event Action<int> VillagesUpdated;
 
         public void OnVillagesUpdated(int accountId);
+
+        public event Action<int> HeroInfoUpdate;
+
+        public void OnHeroInfoUpdate(int accountId);
+
+        public event Action<int> HeroInventoryUpdate;
+
+        public void OnHeroInventoryUpdate(int accountId);
+
+        public event Action<int> HeroAdventuresUpdate;
+
+        public void OnHeroAdventuresUpdate(int accountId);
     }
 }

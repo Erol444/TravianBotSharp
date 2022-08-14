@@ -27,5 +27,17 @@ namespace MainCore.Services
         public event Action<int> VillagesUpdated;
 
         public void OnVillagesUpdated(int accountId) => VillagesUpdated?.Invoke(accountId);
+
+        public event Action<int> HeroInfoUpdate;
+
+        public void OnHeroInfoUpdate(int accountId) => HeroInfoUpdate?.Invoke(accountId);
+
+        public event Action<int> HeroInventoryUpdate;
+
+        public void OnHeroInventoryUpdate(int accountId) => HeroInventoryUpdate?.Invoke(accountId);
+
+        public event Action<int> HeroAdventuresUpdate;
+
+        public void OnHeroAdventuresUpdate(int accountId) => HeroAdventuresUpdate?.Invoke(accountId);
     }
 }
