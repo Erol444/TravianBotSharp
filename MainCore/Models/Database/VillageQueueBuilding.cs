@@ -1,6 +1,4 @@
-﻿using MainCore.Enums;
-
-namespace MainCore.Models.Database
+﻿namespace MainCore.Models.Database
 {
     public class VillageQueueBuilding
     {

@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace MainCore.Services
 {

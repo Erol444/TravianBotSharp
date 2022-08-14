@@ -1,22 +1,18 @@
 ﻿using MainCore;
 using MainCore.Enums;
+using MainCore.Helper;
+using MainCore.Models.Runtime;
 using MainCore.Services;
+using MainCore.TravianData;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using WPFUI.Models;
-using WPFUI.Interfaces;
-using MainCore.Helper;
 using System.Windows;
-using MainCore.Models.Runtime;
-using MainCore.TravianData;
+using WPFUI.Interfaces;
+using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {

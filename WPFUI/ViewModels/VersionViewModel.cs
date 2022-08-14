@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Reactive;
 using System.Reflection;
 using System.Threading.Tasks;
-using WPFUI.Views;
 
 namespace WPFUI.ViewModels
 {

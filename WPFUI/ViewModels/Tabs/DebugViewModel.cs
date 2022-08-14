@@ -1,8 +1,6 @@
 ﻿using MainCore.Models.Runtime;
 using MainCore.Services;
 using ReactiveUI;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using WPFUI.Interfaces;
 using WPFUI.Models;

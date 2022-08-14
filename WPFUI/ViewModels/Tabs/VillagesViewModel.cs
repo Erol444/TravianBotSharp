@@ -2,7 +2,6 @@
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using WPFUI.Interfaces;

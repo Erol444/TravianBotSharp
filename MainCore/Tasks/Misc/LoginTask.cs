@@ -2,7 +2,6 @@
 using OpenQA.Selenium;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 #if TRAVIAN_OFFICIAL
 

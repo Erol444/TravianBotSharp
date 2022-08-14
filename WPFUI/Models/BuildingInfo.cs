@@ -1,6 +1,4 @@
-﻿using System.Windows.Media;
-
-namespace WPFUI.Models
+﻿namespace WPFUI.Models
 {
     public class BuildingInfo : Building
     {
