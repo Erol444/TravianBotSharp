@@ -2,7 +2,6 @@
 using MainCore.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -85,19 +84,15 @@ namespace MainCore.Services
 
         private void Loop(int index)
         {
-            _botStatus.TryGetValue(index, out var accountStatus);
+            var accountStatus = _botStatus[index];
             if (accountStatus != AccountStatus.Online) return;
-
-            _taskExecuting.TryGetValue(index, out var isTaskExcuting);
-            if (isTaskExcuting) return;
-
-            _taskExecuting.TryUpdate(index, true, false);
-
+            if (_tasksDict[index].Count == 0) return;
             var task = _tasksDict[index].First();
 
-            _logManager.Information(index, $"{task.Name} is started");
+            _taskExecuting[index] = true;
             task.Stage = TaskStage.Executing;
             _databaseEvent.OnTaskUpdated(index);
+            _logManager.Information(index, $"{task.Name} is started");
             try
             {
                 task.Execute();
@@ -107,20 +102,22 @@ namespace MainCore.Services
                 _ = e;
                 //UpdateAccountStatus(index, AccountStatus.Paused);
             }
-            task.Stage = TaskStage.Start;
-            _databaseEvent.OnTaskUpdated(index);
             _logManager.Information(index, $"{task.GetType().Name} is completed");
 
             if (task.ExecuteAt < DateTime.Now) Remove(index, task);
-            else ReOrder(index);
-            _taskExecuting.TryUpdate(index, false, true);
+            else
+            {
+                task.Stage = TaskStage.Start;
+                ReOrder(index);
+            }
+            _databaseEvent.OnTaskUpdated(index);
+            _taskExecuting[index] = false;
         }
 
         public bool IsTaskExecuting(int index)
         {
             Check(index);
-            _taskExecuting.TryGetValue(index, out var isTaskExcuting);
-            return isTaskExcuting;
+            return _taskExecuting[index];
         }
 
         public AccountStatus GetAccountStatus(int index)
@@ -139,7 +136,7 @@ namespace MainCore.Services
         }
 
         private readonly Dictionary<int, List<BotTask>> _tasksDict = new();
-        private readonly ConcurrentDictionary<int, bool> _taskExecuting = new();
+        private readonly Dictionary<int, bool> _taskExecuting = new();
         private readonly Dictionary<int, AccountStatus> _botStatus = new();
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;

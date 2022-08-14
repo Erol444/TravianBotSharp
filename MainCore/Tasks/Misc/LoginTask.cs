@@ -28,8 +28,7 @@ namespace MainCore.Tasks.Misc
         public override void Execute()
         {
             AcceptCookie();
-            var result = Login();
-            if (!result) return;
+            Login();
             TaskManager.Add(AccountId, new UpdateInfo(AccountId));
         }
 
@@ -46,7 +45,7 @@ namespace MainCore.Tasks.Misc
             }
         }
 
-        private bool Login()
+        private void Login()
         {
             var html = ChromeBrowser.GetHtml();
 
@@ -100,7 +99,6 @@ namespace MainCore.Tasks.Misc
             var wait = ChromeBrowser.GetWait();
             wait.Until(driver => driver.Url.Contains("dorf"));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
-            return true;
         }
     }
 }

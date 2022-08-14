@@ -22,17 +22,16 @@ namespace MainCore.Services
         {
             if (!_dictTimer.ContainsKey(index))
             {
-                var timer = new Timer(500) { AutoReset = false };
+                var timer = new Timer(100) { AutoReset = false };
                 timer.Elapsed += (object sender, ElapsedEventArgs e) =>
                 {
                     _databaseEvent.OnTaskExecuted(index);
                     timer.Start();
                 };
+                _dictTimer.Add(index, timer);
             }
-            else
-            {
-                _dictTimer[index].Start();
-            }
+            _dictTimer[index].Start();
+
         }
 
         private readonly Dictionary<int, Timer> _dictTimer = new();
