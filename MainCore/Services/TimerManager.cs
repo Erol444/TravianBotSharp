@@ -29,8 +29,10 @@ namespace MainCore.Services
                     timer.Start();
                 };
             }
-
-            _dictTimer[index].Start();
+            else
+            {
+                _dictTimer[index].Start();
+            }
         }
 
         private readonly Dictionary<int, Timer> _dictTimer = new();
