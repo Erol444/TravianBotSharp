@@ -1,6 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Update.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace MainCore.Tasks.Update
         {
             UpdateVillageList();
             UpdateAccountInfo();
+            UpdateHeroInfo();
         }
 
         private void UpdateVillageList()
@@ -121,6 +123,49 @@ namespace MainCore.Tasks.Update
             }
 
             context.SaveChanges();
+        }
+
+        private void UpdateHeroInfo()
+        {
+            var html = ChromeBrowser.GetHtml();
+            var health = HeroInfo.GetHealth(html);
+            if (health == -1) throw new Exception("Cannot read hero's health.");
+            var status = HeroInfo.GetStatus(html);
+            if (status == 0) throw new Exception("Cannot read hero's status.");
+            var numberAdventure = HeroInfo.GetAdventureNum(html);
+            if (numberAdventure == -1) throw new Exception("Cannot read hero's adventure number.");
+
+            using var context = ContextFactory.CreateDbContext();
+            var account = context.Heroes.Find(AccountId);
+            if (account is null)
+            {
+                account = new()
+                {
+                    AccountId = AccountId,
+                    Health = health,
+                    Status = (HeroStatusEnums)status,
+                };
+
+                context.Heroes.Add(account);
+            }
+            else
+            {
+                account.Health = health;
+                account.Status = (HeroStatusEnums)status;
+            }
+
+            context.SaveChanges();
+
+            var adventures = context.Adventures.Count(x => x.AccountId == AccountId);
+            if (adventures != numberAdventure)
+            {
+                var listTask = TaskManager.GetList(AccountId);
+                var task = listTask.FirstOrDefault(x => x.GetType() == typeof(UpdateAdventures));
+                if (task is null)
+                {
+                    TaskManager.Add(AccountId, new UpdateAdventures(AccountId));
+                }
+            }
         }
 
         private List<Village> UpdateVillageTable()
