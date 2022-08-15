@@ -14,69 +14,69 @@
 
     <Grid Background="#FFE5E5E5" Margin="0,2,0,-4">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="15*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="5*"/>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="15*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="5*" />
             </Grid.RowDefinitions>
-            <Button x:Name="AdventuresButton" Content="Refresh adventures" Margin="10,10,10,10"/>
+            <Button x:Name="AdventuresButton" Content="Refresh adventures" Margin="10,10,10,10" />
             <DataGrid x:Name="AdventuresGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGenerateColumns="False" Margin="5,0,5,0">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Coordinates" Binding="{Binding Coordinates}" />
-                    <DataGridTextColumn Header="Difficulty" Binding="{Binding Difficulty}" />
+                    <DataGridTextColumn Header="Coordinates" Binding="{Binding Coordinates}" Width="1*" />
+                    <DataGridTextColumn Header="Difficulty" Binding="{Binding Difficulty}" Width="1*" />
                 </DataGrid.Columns>
             </DataGrid>
-            <TextBlock Grid.Row="1" TextWrapping="Wrap" Text="Adventures list" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Hero's info" VerticalAlignment="Top"/>
+            <TextBlock Grid.Row="1" TextWrapping="Wrap" Text="Adventures list" VerticalAlignment="Center" HorizontalAlignment="Center" />
+            <TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Hero's info" VerticalAlignment="Top" />
             <Grid Grid.Row="4">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="63*"/>
-                    <ColumnDefinition Width="76*"/>
+                    <ColumnDefinition Width="63*" />
+                    <ColumnDefinition Width="76*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Health" VerticalAlignment="Center"/>
-                <TextBlock HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Status" VerticalAlignment="Center"/>
-                <TextBlock HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" Text="Number of adventures" VerticalAlignment="Center"/>
-                <TextBox x:Name="HealthTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,5,0"/>
-                <TextBox x:Name="StatusTextbox" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,5,0"/>
-                <TextBox x:Name="NumAdventuresTextbox" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,5,0"/>
+                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Health" VerticalAlignment="Center" />
+                <TextBlock HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Status" VerticalAlignment="Center" />
+                <TextBlock HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" Text="Number of adventures" VerticalAlignment="Center" />
+                <TextBox x:Name="HealthTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,5,0" />
+                <TextBox x:Name="StatusTextbox" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,5,0" />
+                <TextBox x:Name="NumAdventuresTextbox" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,5,0" />
             </Grid>
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="10*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="10*"/>
+                <RowDefinition Height="3*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="10*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="10*" />
             </Grid.RowDefinitions>
             <DataGrid x:Name="ItemsGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGenerateColumns="False" Margin="5,0,5,0">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Item" Binding="{Binding Item}" />
-                    <DataGridTextColumn Header="Tier" Binding="{Binding Tier}" />
-                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" />
+                    <DataGridTextColumn Header="Item" Binding="{Binding Item}"  Width="3*" />
+                    <DataGridTextColumn Header="Tier" Binding="{Binding Tier}"  Width="1*" />
+                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount}"  Width="1*" />
                 </DataGrid.Columns>
             </DataGrid>
-            <DataGrid x:Name="EquiptGrid" Grid.Row="4" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGenerateColumns="False" Margin="5,0,5,0">
+            <DataGrid x:Name="EquiptGrid" Grid.Row="4" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGenerateColumns="False" Margin="5,0,5,0" IsEnabled="False">
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Item" Binding="{Binding Item}" />
-                    <DataGridTextColumn Header="Tier" Binding="{Binding Tier}" />
-                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" />
+                    <DataGridTextColumn Header="Item" Binding="{Binding Item}" Width="3*" />
+                    <DataGridTextColumn Header="Tier" Binding="{Binding Tier}" Width="1*" />
+                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" Width="1*" />
                 </DataGrid.Columns>
             </DataGrid>
-            <TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Hero's equipt" VerticalAlignment="Center"/>
-            <TextBlock TextWrapping="Wrap" Text="Hero's items" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-            <Button x:Name="InventoryButton" Content="Refresh inventory" Margin="10,10,10,10"/>
+            <TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Hero's equipt (Work in progress)" VerticalAlignment="Center" />
+            <TextBlock TextWrapping="Wrap" Text="Hero's items" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            <Button x:Name="InventoryButton" Content="Refresh inventory" Margin="10,10,10,10" />
         </Grid>
     </Grid>
 </rxui:ReactivePage>

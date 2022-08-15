@@ -70,6 +70,7 @@ namespace WPFUI.ViewModels.Tabs
                     Y = adventure.Y,
                 });
             }
+            AdventureNum = Adventures.Count.ToString();
         }
 
         private void LoadInventory(int accountId)
@@ -79,11 +80,15 @@ namespace WPFUI.ViewModels.Tabs
             Inventory.Clear();
             foreach (var item in inventory)
             {
+                var itemStr = item.Item.ToString();
+                var itemName = new string(itemStr.Where(x => char.IsLetter(x)).ToArray());
+                var lastChar = itemStr[^1];
+                var tier = char.IsDigit(lastChar) ? int.Parse(lastChar.ToString()) : 0;
                 Inventory.Add(new()
                 {
-                    Item = item.Item.ToString(),
+                    Item = itemName.EnumStrToString(),
                     Amount = item.Count,
-                    Tier = 99,
+                    Tier = tier,
                 });
             }
         }
@@ -95,7 +100,6 @@ namespace WPFUI.ViewModels.Tabs
             if (info is null) return;
             Health = info.Health.ToString();
             Status = info.Status.ToString().EnumStrToString();
-            AdventureNum = "~";
         }
 
         private void AdventuresTask()
