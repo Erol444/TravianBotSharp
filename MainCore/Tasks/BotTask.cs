@@ -30,25 +30,18 @@ namespace MainCore.Tasks
         public abstract string Name { get; }
 
         public abstract void Execute();
+    }
 
-        protected void Retry(string message)
+    public static class BotTaskExtension
+    {
+        public static void CopyTo(this BotTask source, BotTask destination)
         {
-            if (RetryCounter < 4)
-            {
-                RetryCounter++;
-                if (!string.IsNullOrEmpty(message))
-                {
-                    LogManager.Information(AccountId, $"{message}. Try again. ({RetryCounter} time(s))");
-                }
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(message))
-                {
-                    LogManager.Information(AccountId, $"{message}.");
-                }
-                throw new Exception("Already tries 3 times.");
-            }
+            source.ContextFactory = destination.ContextFactory;
+            source.DatabaseEvent = destination.DatabaseEvent;
+            source.TaskManager = destination.TaskManager;
+            source.LogManager = destination.LogManager;
+            source.ChromeBrowser = destination.ChromeBrowser;
+            source.PlanManager = destination.PlanManager;
         }
     }
 }
