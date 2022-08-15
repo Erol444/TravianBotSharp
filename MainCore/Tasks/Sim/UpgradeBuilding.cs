@@ -1,9 +1,12 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper;
 using MainCore.Models.Runtime;
+using MainCore.Tasks.Misc;
+using MainCore.Tasks.Update;
 using MainCore.TravianData;
 using OpenQA.Selenium;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MainCore.Tasks.Sim
@@ -134,8 +137,39 @@ namespace MainCore.Tasks.Sim
                 var resCurrent = context.VillagesResources.Find(VillageId);
                 if (resNeed[0] > resCurrent.Wood || resNeed[1] > resCurrent.Clay || resNeed[2] > resCurrent.Iron || resNeed[3] > resCurrent.Crop)
                 {
-                    LogManager.Information(AccountId, "Don't have enough resources.");
-                    break;
+#if TRAVIAN_OFFICIAL ||TRAVIAN_OFFICIAL_HEROUI
+                    var taskUpdate = new UpdateHeroItems(AccountId);
+                    this.CopyTo(taskUpdate);
+                    taskUpdate.Execute();
+                    var itemsHero = context.HeroesItems.Where(x => x.AccountId == AccountId);
+                    var woodAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Wood);
+                    var clayAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Clay);
+                    var ironAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Iron);
+                    var cropAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Crop);
+
+                    var resAvaliable = new long[] { woodAvaliable?.Count ?? 0, clayAvaliable?.Count ?? 0, ironAvaliable?.Count ?? 0, cropAvaliable?.Count ?? 0 };
+                    var resMissing = new long[] { resNeed[0] - resCurrent.Wood, resNeed[1] - resCurrent.Clay, resNeed[2] - resCurrent.Iron, resNeed[3] - resCurrent.Crop };
+
+                    var resLeft = new long[] { resAvaliable[0] - resMissing[0], resAvaliable[1] - resMissing[1], resAvaliable[2] - resMissing[2], resAvaliable[3] - resMissing[3] };
+                    if (resLeft.Any(x => x <= 0))
+                    {
+                        LogManager.Information(AccountId, "Don't have enough resources.");
+                        break;
+                    }
+                    var items = new List<(HeroItemEnums, int)>()
+                    {
+                        (HeroItemEnums.Wood, (int)resMissing[0]),
+                        (HeroItemEnums.Clay, (int)resMissing[1]),
+                        (HeroItemEnums.Iron, (int)resMissing[2]),
+                        (HeroItemEnums.Crop, (int)resMissing[3]),
+                    };
+                    var taskEquip = new HeroEquip(VillageId, AccountId, items);
+                    this.CopyTo(taskEquip);
+                    taskEquip.Execute();
+#else
+                        LogManager.Information(AccountId, "Don't have enough resources.");
+                        break;
+#endif
                 }
 
                 if (isNewBuilding) Construct(buildingTask);
