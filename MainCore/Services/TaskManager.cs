@@ -89,6 +89,7 @@ namespace MainCore.Services
             if (_tasksDict[index].Count == 0) return;
             var task = _tasksDict[index].First();
 
+            if (task.ExecuteAt > DateTime.Now) return;
             _taskExecuting[index] = true;
             task.Stage = TaskStage.Executing;
             _databaseEvent.OnTaskUpdated(index);
