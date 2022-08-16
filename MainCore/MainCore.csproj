@@ -45,8 +45,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL'" Include="..\TravianOffcialCore\TravianOfficialCore.csproj" />
-    <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL_HEROUI'" Include="..\TravianOfficalNewHeroUICore\TravianOfficalNewHeroUICore.csproj" />
+    <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL'" Include="..\TravianOfficialCore\TravianOfficialCore.csproj" />
+    <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL_HEROUI'" Include="..\TravianOfficialNewHeroUICore\TravianOfficalNewHeroUICore.csproj" />
     <ProjectReference Condition="'$(Server)' == 'TTWARS'" Include="..\TTWarsCore\TTWarsCore.csproj" />
   </ItemGroup>
 
