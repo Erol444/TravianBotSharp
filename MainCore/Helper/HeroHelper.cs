@@ -10,12 +10,11 @@ using TravianOfficialCore.FindElements;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
-using TravianOfficialNewHeroUICore.Parsers;
+using System.Linq;
 using TravianOfficialNewHeroUICore.FindElements;
 
 #elif TTWARS
 
-using TTWarsCore.Parsers;
 using TTWarsCore.FindElements;
 
 #endif
@@ -113,13 +112,13 @@ namespace MainCore.Helper
             elements[0].Click();
             var wait = chromeBrowser.GetWait();
 #if TRAVIAN_OFFICIAL_HEROUI
-                wait.Until(driver =>
-                {
-                    var html = new HtmlDocument();
-                    html.Load(driver.PageSource);
-                    var inventoryPageWrapper = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("inventoryPageWrapper"));
-                    return !inventoryPageWrapper.HasClass("loading");
-                });
+            wait.Until(driver =>
+            {
+                var html = new HtmlDocument();
+                html.Load(driver.PageSource);
+                var inventoryPageWrapper = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("inventoryPageWrapper"));
+                return !inventoryPageWrapper.HasClass("loading");
+            });
 #else
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 #endif

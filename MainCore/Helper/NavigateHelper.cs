@@ -1,7 +1,7 @@
 ﻿using MainCore.Services;
-using OpenQA.Selenium;
 using System;
 using System.Linq;
+using HtmlAgilityPack;
 
 #if TRAVIAN_OFFICIAL
 
@@ -10,6 +10,7 @@ using TravianOfficialCore.FindElements;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
+using OpenQA.Selenium;
 using TravianOfficialNewHeroUICore.Parsers;
 using TravianOfficialNewHeroUICore.FindElements;
 
@@ -194,7 +195,7 @@ namespace MainCore.Helper
         {
             var html = chromeBrowser.GetHtml();
 #if TRAVIAN_OFFICIAL_HEROUI
-            var avatar = Hero.GetHeroAvatar(html);
+            var avatar = HeroPage.GetHeroAvatar(html);
             if (avatar is null)
             {
                 throw new Exception("Cannot find hero avatar");
@@ -212,7 +213,7 @@ namespace MainCore.Helper
             {
                 var doc = new HtmlDocument();
                 doc.LoadHtml(driver.PageSource);
-                var tab = Hero.GetHeroTab(doc, 1);
+                var tab = HeroPage.GetHeroTab(doc, 1);
                 if (tab is null) return false;
                 return tab.IsCurrentTab();
             });
