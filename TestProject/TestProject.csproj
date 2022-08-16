@@ -14,8 +14,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TravianOffcialCore\TravianOfficialCore.csproj" />
-    <ProjectReference Include="..\TravianOfficalNewHeroUICore\TravianOfficialNewHeroUICore.csproj" />
+    <ProjectReference Include="..\TravianOfficialCore\TravianOfficialCore.csproj" />
+    <ProjectReference Include="..\TravianOfficialNewHeroUICore\TravianOfficialNewHeroUICore.csproj" />
     <ProjectReference Include="..\TTWarsCore\TTWarsCore.csproj" />
   </ItemGroup>
 
