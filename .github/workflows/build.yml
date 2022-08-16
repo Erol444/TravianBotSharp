@@ -51,3 +51,14 @@ jobs:
           name: TBS-Build-${{ matrix.server }}-${{ github.sha }}
           path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
+  commentor:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v1.4.1
+        with:
+          message: Click [here](https://nightly.link/Erol444/TravianBotSharp/actions/runs/${{ github.run_id }}) to check the build          
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    
