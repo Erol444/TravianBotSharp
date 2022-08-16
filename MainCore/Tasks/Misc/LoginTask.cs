@@ -1,4 +1,5 @@
-﻿using MainCore.Tasks.Update;
+﻿using MainCore.Tasks.Sim;
+using MainCore.Tasks.Update;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace MainCore.Tasks.Misc
         {
             AcceptCookie();
             Login();
-            TaskManager.Add(AccountId, new UpdateInfo(AccountId));
+            AddTask();
         }
 
         public override string Name => "Login Task";
@@ -99,6 +100,28 @@ namespace MainCore.Tasks.Misc
             var wait = ChromeBrowser.GetWait();
             wait.Until(driver => driver.Url.Contains("dorf"));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+        }
+
+        private void AddTask()
+        {
+            TaskManager.Add(AccountId, new UpdateInfo(AccountId));
+
+            using var context = ContextFactory.CreateDbContext();
+            var villages = context.Villages.Where(x => x.AccountId == AccountId);
+            var listTask = TaskManager.GetList(AccountId);
+            var upgradeBuildingList = listTask.Where(x => x.GetType() == typeof(UpgradeBuilding)).OfType<UpgradeBuilding>();
+            foreach (var village in villages)
+            {
+                var queue = context.VillagesQueueBuildings.Where(x => x.VillageId == village.Id);
+                if (queue.Any())
+                {
+                    var upgradeBuilding = upgradeBuildingList.FirstOrDefault(x => x.VillageId == village.Id);
+                    if (upgradeBuilding is null)
+                    {
+                        TaskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
+                    }
+                }
+            }
         }
     }
 }

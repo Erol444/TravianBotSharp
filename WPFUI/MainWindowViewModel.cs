@@ -3,7 +3,6 @@ using MainCore.Enums;
 using MainCore.Models.Database;
 using MainCore.Services;
 using MainCore.Tasks.Misc;
-using MainCore.Tasks.Sim;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -88,16 +87,6 @@ namespace WPFUI
                 _logManager.AddAccount(CurrentAccount.Id);
                 _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id));
                 _timeManager.Start(CurrentAccount.Id);
-
-                var villages = context.Villages.Where(x => x.AccountId == CurrentAccount.Id);
-                foreach (var village in villages)
-                {
-                    var queue = context.VillagesQueueBuildings.Where(x => x.VillageId == village.Id);
-                    if (queue.Any())
-                    {
-                        _taskManager.Add(CurrentAccount.Id, new UpgradeBuilding(village.Id, CurrentAccount.Id));
-                    }
-                }
             });
             _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Online);
         }
