@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using HtmlAgilityPack;
+using OpenQA.Selenium;
 
 #if TRAVIAN_OFFICIAL
 
@@ -10,7 +11,6 @@ using TravianOfficialCore.FindElements;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
-using OpenQA.Selenium;
 using TravianOfficialNewHeroUICore.Parsers;
 using TravianOfficialNewHeroUICore.FindElements;
 
