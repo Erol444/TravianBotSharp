@@ -133,6 +133,8 @@ namespace WPFUI.ViewModels
                     context.Add(account);
                     context.SaveChanges();
                     AccountId = account.Id;
+                    context.AddAccount(account.Id);
+                    context.SaveChanges();
                 }
                 else
                 {

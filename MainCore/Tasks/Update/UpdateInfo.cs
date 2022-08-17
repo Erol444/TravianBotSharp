@@ -58,7 +58,11 @@ namespace MainCore.Tasks.Update
                 foundVills.Remove(foundVillage);
             }
             bool villageChange = missingVills.Count > 0 || foundVills.Count > 0;
-            context.Villages.RemoveRange(missingVills);
+            foreach (var item in missingVills)
+            {
+                context.DeleteVillage(item.Id);
+            }
+
             foreach (var newVill in foundVills)
             {
                 context.Villages.Add(new Village()
@@ -69,6 +73,7 @@ namespace MainCore.Tasks.Update
                     X = newVill.X,
                     Y = newVill.Y,
                 });
+                context.AddVillage(newVill.Id);
 
                 var tasks = TaskManager.GetList(AccountId).Where(x => x.GetType() == typeof(UpdateBothDorf)).Cast<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);

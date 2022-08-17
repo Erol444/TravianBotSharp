@@ -184,16 +184,40 @@ namespace MainCore
             #endregion Village production
         }
 
+        public void AddAccount(int accountId)
+        {
+            AccountsInfo.Add(new AccountInfo { AccountId = accountId });
+            AccountsSettings.Add(new AccountSetting { AccountId = accountId });
+            Heroes.Add(new Hero { AccountId = accountId });
+
+            //Accesses
+            //Adventures
+            //HeroesItems
+        }
+
+        public void AddVillage(int villageId)
+        {
+            VillagesResources.Add(new VillageResources { VillageId = villageId });
+            VillagesUpdateTime.Add(new VillageUpdateTime { VillageId = villageId });
+            VillagesSettings.Add(new VillageSetting { VillageId = villageId });
+            VillagesProduction.Add(new VillageProduction { VillageId = villageId });
+
+            //VillagesQueueBuildings
+            //VillagesCurrentlyBuildings
+            //VillagesBuildings
+        }
+
         public void DeleteAccount(int accountId)
         {
             var info = AccountsInfo.Find(accountId);
             AccountsInfo.Remove(info);
-            var accesses = Accesses.Where(x => x.AccountId == accountId);
-            Accesses.RemoveRange(accesses);
             var settings = AccountsSettings.Find(accountId);
             AccountsSettings.Remove(settings);
             var hero = Heroes.Find(accountId);
             Heroes.Remove(hero);
+
+            var accesses = Accesses.Where(x => x.AccountId == accountId);
+            Accesses.RemoveRange(accesses);
             var adventures = Adventures.Where(x => x.AccountId == accountId);
             Adventures.RemoveRange(adventures);
             var items = HeroesItems.Where(x => x.AccountId == accountId);
@@ -204,24 +228,29 @@ namespace MainCore
             {
                 DeleteVillage(village.Id);
             }
+
+            var account = Accounts.Find(accountId);
+            Accounts.Remove(account);
         }
 
         public void DeleteVillage(int villageId)
         {
-            var buildings = VillagesBuildings.Where(x => x.VillageId == villageId);
-            VillagesBuildings.RemoveRange(buildings);
             var resouce = VillagesResources.Find(villageId);
             VillagesResources.Remove(resouce);
             var updateTime = VillagesUpdateTime.Find(villageId);
             VillagesUpdateTime.Remove(updateTime);
             var settings = VillagesSettings.Find(villageId);
             VillagesSettings.Remove(settings);
+            var production = VillagesProduction.Find(villageId);
+            VillagesProduction.Remove(production);
+
             var currently = VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId);
             VillagesCurrentlyBuildings.RemoveRange(currently);
             var queue = VillagesQueueBuildings.Where(x => x.VillageId == villageId);
             VillagesQueueBuildings.RemoveRange(queue);
-            var production = VillagesProduction.Find(villageId);
-            VillagesProduction.Remove(production);
+            var buildings = VillagesBuildings.Where(x => x.VillageId == villageId);
+            VillagesBuildings.RemoveRange(buildings);
+
             var village = Villages.Find(villageId);
             Villages.Remove(village);
         }
