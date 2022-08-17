@@ -1,5 +1,6 @@
 ﻿using MainCore.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace MainCore
 {
@@ -170,6 +171,59 @@ namespace MainCore
             });
 
             #endregion Inventory
+
+            #region Village production
+
+            modelBuilder.Entity<VillageProduction>(entity =>
+            {
+                entity.ToTable("VillagesProductions");
+                entity.HasKey(e => e.VillageId)
+                    .HasName("PK_VILLAGESPRODUCTIONS");
+            });
+
+            #endregion Village production
+        }
+
+        public void DeleteAccount(int accountId)
+        {
+            var info = AccountsInfo.Find(accountId);
+            AccountsInfo.Remove(info);
+            var accesses = Accesses.Where(x => x.AccountId == accountId);
+            Accesses.RemoveRange(accesses);
+            var settings = AccountsSettings.Find(accountId);
+            AccountsSettings.Remove(settings);
+            var hero = Heroes.Find(accountId);
+            Heroes.Remove(hero);
+            var adventures = Adventures.Where(x => x.AccountId == accountId);
+            Adventures.RemoveRange(adventures);
+            var items = HeroesItems.Where(x => x.AccountId == accountId);
+            HeroesItems.RemoveRange(items);
+
+            var villages = Villages.Where(x => x.AccountId == accountId).ToList();
+            foreach (var village in villages)
+            {
+                DeleteVillage(village.Id);
+            }
+        }
+
+        public void DeleteVillage(int villageId)
+        {
+            var buildings = VillagesBuildings.Where(x => x.VillageId == villageId);
+            VillagesBuildings.RemoveRange(buildings);
+            var resouce = VillagesResources.Find(villageId);
+            VillagesResources.Remove(resouce);
+            var updateTime = VillagesUpdateTime.Find(villageId);
+            VillagesUpdateTime.Remove(updateTime);
+            var settings = VillagesSettings.Find(villageId);
+            VillagesSettings.Remove(settings);
+            var currently = VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId);
+            VillagesCurrentlyBuildings.RemoveRange(currently);
+            var queue = VillagesQueueBuildings.Where(x => x.VillageId == villageId);
+            VillagesQueueBuildings.RemoveRange(queue);
+            var production = VillagesProduction.Find(villageId);
+            VillagesProduction.Remove(production);
+            var village = Villages.Find(villageId);
+            Villages.Remove(village);
         }
 
         public DbSet<Account> Accounts { get; set; }
@@ -186,5 +240,6 @@ namespace MainCore
         public DbSet<Hero> Heroes { get; set; }
         public DbSet<Adventure> Adventures { get; set; }
         public DbSet<HeroItem> HeroesItems { get; set; }
+        public DbSet<VillageProduction> VillagesProduction { get; set; }
     }
 }

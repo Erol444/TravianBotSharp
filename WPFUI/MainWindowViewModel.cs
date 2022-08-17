@@ -153,32 +153,7 @@ namespace WPFUI
         private void DeleteAccount(int index)
         {
             using var context = _contextFactory.CreateDbContext();
-
-            var accesses = context.Accesses.Where(x => x.AccountId == index);
-            context.Accesses.RemoveRange(accesses);
-
-            var settings = context.AccountsSettings.Where(x => x.AccountId == index);
-            context.AccountsSettings.RemoveRange(settings);
-
-            var villages = context.Villages.Where(x => x.AccountId == index);
-            foreach (var village in villages)
-            {
-                var villagesResource = context.VillagesResources.Where(x => x.VillageId == village.Id);
-                context.VillagesResources.RemoveRange(villagesResource);
-
-                var villagesBuilding = context.VillagesBuildings.Where(x => x.VillageId == village.Id);
-                context.VillagesBuildings.RemoveRange(villagesBuilding);
-
-                var villagesUpdate = context.VillagesUpdateTime.Where(x => x.VillageId == village.Id);
-                context.VillagesUpdateTime.RemoveRange(villagesUpdate);
-
-                var villagesSetting = context.VillagesSettings.Where(x => x.VillageId == village.Id);
-                context.VillagesSettings.RemoveRange(villagesSetting);
-            }
-            context.Villages.RemoveRange(villages);
-
-            var account = context.Accounts.FirstOrDefault(x => x.Id == index);
-            context.Accounts.Remove(account);
+            context.DeleteAccount(index);
             context.SaveChanges();
         }
 
