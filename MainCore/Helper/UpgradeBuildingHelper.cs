@@ -153,5 +153,30 @@ namespace MainCore.Helper
             var task = tasks.FirstOrDefault();
             return task;
         }
+
+        public static DateTime GetTimeWhenEnough(this VillageProduction production, long[] resRequired)
+        {
+            var productionArr = new long[] { production.Wood, production.Clay, production.Iron, production.Crop };
+
+            var now = DateTime.Now;
+            var ret = now.AddMinutes(2);
+
+            for (int i = 0; i < 4; i++)
+            {
+                DateTime toWaitForThisRes = DateTime.MinValue;
+                if (resRequired[i] > 0)
+                {
+                    // In case of negative crop, we will never have enough crop
+                    if (productionArr[i] <= 0) return DateTime.MaxValue;
+
+                    float hoursToWait = resRequired[i] / (float)productionArr[i];
+                    float secToWait = hoursToWait * 3600;
+                    toWaitForThisRes = now.AddSeconds(secToWait);
+                }
+
+                if (ret < toWaitForThisRes) ret = toWaitForThisRes;
+            }
+            return ret;
+        }
     }
 }

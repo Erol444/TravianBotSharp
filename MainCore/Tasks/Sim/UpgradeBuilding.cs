@@ -137,6 +137,7 @@ namespace MainCore.Tasks.Sim
                 var resCurrent = context.VillagesResources.Find(VillageId);
                 if (resNeed[0] > resCurrent.Wood || resNeed[1] > resCurrent.Clay || resNeed[2] > resCurrent.Iron || resNeed[3] > resCurrent.Crop)
                 {
+                    var resMissing = new long[] { resNeed[0] - resCurrent.Wood, resNeed[1] - resCurrent.Clay, resNeed[2] - resCurrent.Iron, resNeed[3] - resCurrent.Crop };
 #if TRAVIAN_OFFICIAL ||TRAVIAN_OFFICIAL_HEROUI
                     var taskUpdate = new UpdateHeroItems(AccountId);
                     this.CopyTo(taskUpdate);
@@ -148,12 +149,14 @@ namespace MainCore.Tasks.Sim
                     var cropAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Crop);
 
                     var resAvaliable = new long[] { woodAvaliable?.Count ?? 0, clayAvaliable?.Count ?? 0, ironAvaliable?.Count ?? 0, cropAvaliable?.Count ?? 0 };
-                    var resMissing = new long[] { resNeed[0] - resCurrent.Wood, resNeed[1] - resCurrent.Clay, resNeed[2] - resCurrent.Iron, resNeed[3] - resCurrent.Crop };
 
                     var resLeft = new long[] { resAvaliable[0] - resMissing[0], resAvaliable[1] - resMissing[1], resAvaliable[2] - resMissing[2], resAvaliable[3] - resMissing[3] };
                     if (resLeft.Any(x => x <= 0))
                     {
                         LogManager.Information(AccountId, "Don't have enough resources.");
+                        var production = context.VillagesProduction.Find(VillageId);
+                        var timeEnough = production.GetTimeWhenEnough(resMissing);
+                        ExecuteAt = timeEnough;
                         break;
                     }
                     var items = new List<(HeroItemEnums, int)>()
@@ -167,8 +170,11 @@ namespace MainCore.Tasks.Sim
                     this.CopyTo(taskEquip);
                     taskEquip.Execute();
 #else
-                        LogManager.Information(AccountId, "Don't have enough resources.");
-                        break;
+                    LogManager.Information(AccountId, "Don't have enough resources.");
+                    var production = context.VillagesProduction.Find(VillageId);
+                    var timeEnough = production.GetTimeWhenEnough(resMissing);
+                    ExecuteAt = timeEnough;
+                    break;
 #endif
                 }
 
