@@ -38,6 +38,7 @@ namespace MainCore.Tasks.Update
             if (currentUrl.Contains("dorf1"))
             {
                 UpdateHelper.UpdateDorf1(context, ChromeBrowser, VillageId);
+                UpdateHelper.UpdateProduction(context, ChromeBrowser, VillageId);
             }
             else if (currentUrl.Contains("dorf2"))
             {

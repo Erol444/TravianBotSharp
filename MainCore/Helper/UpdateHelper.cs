@@ -323,5 +323,37 @@ namespace MainCore.Helper
             context.Adventures.RemoveRange(heroAdventures);
             context.SaveChanges();
         }
+
+        public static void UpdateProduction(AppDbContext context, IChromeBrowser chromeBrowser, int villageId)
+        {
+            var html = chromeBrowser.GetHtml();
+            var production = context.VillagesProduction.Find(villageId);
+
+            var productionList = SubTab.GetProductionNum(html);
+            var wood = SubTab.GetNum(productionList[0]);
+            var clay = SubTab.GetNum(productionList[1]);
+            var iron = SubTab.GetNum(productionList[2]);
+            var crop = SubTab.GetNum(productionList[3]);
+
+            if (production is null)
+            {
+                context.VillagesProduction.Add(new()
+                {
+                    VillageId = villageId,
+                    Wood = wood,
+                    Clay = clay,
+                    Iron = iron,
+                    Crop = crop,
+                });
+            }
+            else
+            {
+                production.Wood = wood;
+                production.Clay = clay;
+                production.Iron = iron;
+                production.Crop = crop;
+            }
+            context.SaveChanges();
+        }
     }
 }
