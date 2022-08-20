@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System.Linq;
 using System.Reactive;
+using System.Threading.Tasks;
 using WPFUI.Interfaces;
 
 namespace WPFUI.ViewModels.Tabs
@@ -19,7 +20,8 @@ namespace WPFUI.ViewModels.Tabs
             _eventManager = App.GetService<IEventManager>();
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
             _taskManager = App.GetService<ITaskManager>();
-            PauseCommand = ReactiveCommand.Create(PauseTask, this.WhenAnyValue(x => x.IsValidStatus));
+            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+            PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsValidStatus));
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
         }
 
@@ -33,8 +35,19 @@ namespace WPFUI.ViewModels.Tabs
             LoadData();
         }
 
-        public void PauseTask()
+        public async Task PauseTask()
         {
+            var current = _taskManager.GetCurrentTask(AccountId);
+            _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Pausing);
+            if (current is not null)
+            {
+                current.Cts.Cancel();
+                await Task.Run(() =>
+                {
+                    while (current.Stage != TaskStage.Start) { }
+                });
+            }
+            _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Paused);
         }
 
         public void RestartTask()

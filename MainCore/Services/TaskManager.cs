@@ -30,7 +30,6 @@ namespace MainCore.Services
             task.LogManager = _logManager;
             task.ChromeBrowser = _chromeManager.Get(task.AccountId);
             task.PlanManager = _planManager;
-
             _tasksDict[index].Add(task);
             ReOrder(index);
         }
@@ -92,25 +91,35 @@ namespace MainCore.Services
             if (task.ExecuteAt > DateTime.Now) return;
             _taskExecuting[index] = true;
             task.Stage = TaskStage.Executing;
+            task.Cts = new();
             _databaseEvent.OnTaskUpdated(index);
             _logManager.Information(index, $"{task.Name} is started");
+            var cacheExecuteTime = task.ExecuteAt;
             try
             {
                 task.Execute();
             }
             catch (Exception e)
             {
-                _ = e;
-                //UpdateAccountStatus(index, AccountStatus.Paused);
+                _logManager.Error(index, e.Message, e);
+                UpdateAccountStatus(index, AccountStatus.Paused);
             }
-            _logManager.Information(index, $"{task.GetType().Name} is completed");
-
-            if (task.ExecuteAt < DateTime.Now) Remove(index, task);
+            if (task.Cts.Token.IsCancellationRequested)
+            {
+                _logManager.Information(index, $"{task.Name} is stopped and reset.");
+                task.Stage = TaskStage.Start;
+            }
             else
             {
-                task.Stage = TaskStage.Start;
-                ReOrder(index);
+                _logManager.Information(index, $"{task.Name} is finished");
+                if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
+                else
+                {
+                    task.Stage = TaskStage.Start;
+                    ReOrder(index);
+                }
             }
+
             _databaseEvent.OnTaskUpdated(index);
             _taskExecuting[index] = false;
         }

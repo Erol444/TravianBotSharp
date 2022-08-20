@@ -93,6 +93,9 @@ namespace WPFUI
 
             this.OneWayBind(ViewModel,
                 vm => vm.IsAccountSelected,
+                v => v.GeneralPage.Visibility);
+            this.OneWayBind(ViewModel,
+                vm => vm.IsAccountSelected,
                 v => v.DebugTab.Visibility);
 
             this.OneWayBind(ViewModel,
@@ -108,6 +111,9 @@ namespace WPFUI
             this.OneWayBind(ViewModel,
                 vm => vm.CurrentAccount.Id,
                 v => v.VillagesPage.ViewModel.AccountId);
+            this.OneWayBind(ViewModel,
+                vm => vm.CurrentAccount.Id,
+                v => v.GeneralPage.ViewModel.AccountId);
 
             #endregion Data
         }

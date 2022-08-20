@@ -2,6 +2,7 @@
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Threading;
 
 namespace MainCore.Tasks
 {
@@ -18,7 +19,7 @@ namespace MainCore.Tasks
         public TaskStage Stage { get; set; }
         public DateTime ExecuteAt { get; set; }
         protected int RetryCounter { get; set; }
-        protected bool StopFlag { get; set; }
+        public CancellationTokenSource Cts { get; set; }
 
         public IDbContextFactory<AppDbContext> ContextFactory { get; set; }
         public IChromeBrowser ChromeBrowser { get; set; }
@@ -36,12 +37,13 @@ namespace MainCore.Tasks
     {
         public static void CopyTo(this BotTask source, BotTask destination)
         {
-            source.ContextFactory = destination.ContextFactory;
-            source.DatabaseEvent = destination.DatabaseEvent;
-            source.TaskManager = destination.TaskManager;
-            source.LogManager = destination.LogManager;
-            source.ChromeBrowser = destination.ChromeBrowser;
-            source.PlanManager = destination.PlanManager;
+            destination.ContextFactory = source.ContextFactory;
+            destination.DatabaseEvent = source.DatabaseEvent;
+            destination.TaskManager = source.TaskManager;
+            destination.LogManager = source.LogManager;
+            destination.ChromeBrowser = source.ChromeBrowser;
+            destination.PlanManager = source.PlanManager;
+            destination.Cts = source.Cts;
         }
     }
 }
