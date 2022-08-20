@@ -37,17 +37,28 @@ namespace WPFUI.ViewModels.Tabs
 
         public async Task PauseTask()
         {
-            var current = _taskManager.GetCurrentTask(AccountId);
-            _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Pausing);
-            if (current is not null)
+            var status = _taskManager.GetAccountStatus(AccountId);
+            if (status == AccountStatus.Paused)
             {
-                current.Cts.Cancel();
-                await Task.Run(() =>
-                {
-                    while (current.Stage != TaskStage.Waiting) { }
-                });
+                _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Online);
+                return;
             }
-            _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Paused);
+
+            if (status == AccountStatus.Online)
+            {
+                var current = _taskManager.GetCurrentTask(AccountId);
+                _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Pausing);
+                if (current is not null)
+                {
+                    current.Cts.Cancel();
+                    await Task.Run(() =>
+                    {
+                        while (current.Stage != TaskStage.Waiting) { }
+                    });
+                }
+                _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Paused);
+                return;
+            }
         }
 
         public void RestartTask()
@@ -64,6 +75,7 @@ namespace WPFUI.ViewModels.Tabs
                     _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
                 }
             }
+            _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Online);
         }
 
         private void LoadData()

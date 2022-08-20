@@ -115,6 +115,8 @@ namespace WPFUI
                 {
                     _logManager.Information(CurrentAccount.Id, "All proxy of this account is not working");
                     MessageBox.Show("All proxy of this account is not working");
+                    _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Offline);
+
                     return;
                 }
 
@@ -134,12 +136,18 @@ namespace WPFUI
 
         private async Task LogoutTask()
         {
-            if (_taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Paused)
-            {
-                MessageBox.Show("Bot must be paused before logout");
-                return;
-            }
             _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Stopping);
+
+            var current = _taskManager.GetCurrentTask(CurrentAccount.Id);
+            if (current is not null)
+            {
+                current.Cts.Cancel();
+                await Task.Run(() =>
+                {
+                    while (current.Stage != TaskStage.Waiting) { }
+                });
+            }
+
             await Task.Run(() =>
             {
                 _chromeManager.Get(CurrentAccount.Id).Close();

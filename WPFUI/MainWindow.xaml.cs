@@ -82,6 +82,9 @@ namespace WPFUI
 
             this.OneWayBind(ViewModel,
                 vm => vm.IsAccountSelected,
+                v => v.GeneralTab.Visibility);
+            this.OneWayBind(ViewModel,
+                vm => vm.IsAccountSelected,
                 v => v.OverviewTab.Visibility);
 
             this.OneWayBind(ViewModel,
@@ -91,9 +94,6 @@ namespace WPFUI
                 vm => vm.IsAccountSelected,
                 v => v.VillagesTab.Visibility);
 
-            this.OneWayBind(ViewModel,
-                vm => vm.IsAccountSelected,
-                v => v.GeneralPage.Visibility);
             this.OneWayBind(ViewModel,
                 vm => vm.IsAccountSelected,
                 v => v.DebugTab.Visibility);
