@@ -6,7 +6,7 @@ namespace MainCore.Services
 {
     public interface ITaskManager
     {
-        public void Add(int index, BotTask task);
+        public void Add(int index, BotTask task, bool first = false);
 
         public void Remove(int index, BotTask task);
 

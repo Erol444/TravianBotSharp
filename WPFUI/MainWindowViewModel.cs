@@ -121,7 +121,12 @@ namespace WPFUI
                 var chromeBrowser = _chromeManager.Get(CurrentAccount.Id);
                 chromeBrowser.Setup(selectedAccess);
                 chromeBrowser.Navigate(CurrentAccount.Server);
-                _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id));
+                _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id), true);
+                var setting = context.AccountsSettings.Find(CurrentAccount.Id);
+                (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
+
+                var time = TimeSpan.FromMinutes(rand.Next(min, max));
+                _taskManager.Add(CurrentAccount.Id, new SleepTask(CurrentAccount.Id) { ExecuteAt = DateTime.Now.Add(time) });
                 _timeManager.Start(CurrentAccount.Id);
             });
             _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Online);
@@ -129,6 +134,11 @@ namespace WPFUI
 
         private async Task LogoutTask()
         {
+            if (_taskManager.GetAccountStatus(CurrentAccount.Id) == AccountStatus.Paused)
+            {
+                MessageBox.Show("Bot must be paused before logout");
+                return;
+            }
             _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Stopping);
             await Task.Run(() =>
             {
@@ -222,6 +232,7 @@ namespace WPFUI
         private bool _closed = false;
         private bool _isAccountSelected = false;
         private bool _isAccountNotSelected = true;
+        private readonly Random rand = new();
 
         private Account _currentAccount;
         public ObservableCollection<Account> Accounts { get; } = new();

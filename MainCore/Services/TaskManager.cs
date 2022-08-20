@@ -9,19 +9,29 @@ namespace MainCore.Services
 {
     public class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IEventManager databaseEvent, ILogManager logManager, IPlanManager planManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IEventManager databaseEvent, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             _contextFactory = contextFactory;
             _databaseEvent = databaseEvent;
             _chromeManager = chromeManager;
             _logManager = logManager;
             _planManager = planManager;
+            _restClientManager = restClientManager;
             _databaseEvent.TaskExecuted += Loop;
         }
 
-        public void Add(int index, BotTask task)
+        public void Add(int index, BotTask task, bool first = false)
         {
             Check(index);
+            if (first)
+            {
+                var firstTask = _tasksDict[index].FirstOrDefault();
+                if (firstTask is not null)
+                {
+                    task.ExecuteAt = firstTask.ExecuteAt.AddSeconds(-1);
+                    ReOrder(index);
+                }
+            }
             if (task.ExecuteAt == default) task.ExecuteAt = DateTime.Now;
 
             task.ContextFactory = _contextFactory;
@@ -30,6 +40,7 @@ namespace MainCore.Services
             task.LogManager = _logManager;
             task.ChromeBrowser = _chromeManager.Get(task.AccountId);
             task.PlanManager = _planManager;
+            task.RestClientManager = _restClientManager;
             _tasksDict[index].Add(task);
             ReOrder(index);
         }
@@ -156,5 +167,6 @@ namespace MainCore.Services
         private readonly IChromeManager _chromeManager;
         private readonly ILogManager _logManager;
         private readonly IPlanManager _planManager;
+        private readonly IRestClientManager _restClientManager;
     }
 }

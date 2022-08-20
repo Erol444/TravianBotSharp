@@ -27,6 +27,7 @@ namespace MainCore.Tasks
         public IEventManager DatabaseEvent { get; set; }
         public ILogManager LogManager { get; set; }
         public IPlanManager PlanManager { get; set; }
+        public IRestClientManager RestClientManager { get; set; }
 
         public abstract string Name { get; }
 
@@ -43,6 +44,7 @@ namespace MainCore.Tasks
             destination.LogManager = source.LogManager;
             destination.ChromeBrowser = source.ChromeBrowser;
             destination.PlanManager = source.PlanManager;
+            destination.RestClientManager = source.RestClientManager;
             destination.Cts = source.Cts;
         }
     }
