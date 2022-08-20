@@ -120,7 +120,7 @@ namespace MainCore.Services
             if (isCancellationRequested)
             {
                 _logManager.Information(index, $"{task.Name} is stopped and reset.");
-                task.Stage = TaskStage.Start;
+                task.Stage = TaskStage.Waiting;
             }
             else
             {
@@ -128,7 +128,7 @@ namespace MainCore.Services
                 if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
                 else
                 {
-                    task.Stage = TaskStage.Start;
+                    task.Stage = TaskStage.Waiting;
                     ReOrder(index);
                 }
             }

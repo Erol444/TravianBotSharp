@@ -44,7 +44,7 @@ namespace WPFUI.ViewModels.Tabs
                 current.Cts.Cancel();
                 await Task.Run(() =>
                 {
-                    while (current.Stage != TaskStage.Start) { }
+                    while (current.Stage != TaskStage.Waiting) { }
                 });
             }
             _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Paused);
