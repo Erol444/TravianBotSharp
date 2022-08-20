@@ -1,9 +1,11 @@
 ﻿using MainCore;
+using MainCore.Helper;
 using MainCore.Models.Database;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -21,6 +23,7 @@ namespace WPFUI.ViewModels
             _waitingWindow = App.GetService<WaitingWindow>();
             _databaseEvent = App.GetService<IEventManager>();
             _useragentManager = App.GetService<IUseragentManager>();
+            _restClientManager = App.GetService<IRestClientManager>();
 
             TestCommand = ReactiveCommand.CreateFromTask(TestTask);
             TestAllCommand = ReactiveCommand.CreateFromTask(TestAllTask);
@@ -58,8 +61,21 @@ namespace WPFUI.ViewModels
 
         private async Task TestAllTask()
         {
-            _ = Accessess.Count;
-            await Task.Delay(599);
+            var checkTasks = new List<Task<bool>>();
+            using var context = _contextFactory.CreateDbContext();
+            var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
+            foreach (var access in accesses)
+            {
+                checkTasks.Add(Task.Run(() => AccessHelper.CheckAccess(_restClientManager.Get(access.Id), access.ProxyHost)));
+            }
+
+            var results = await Task.WhenAll(checkTasks);
+
+            for (int i = 0; i < results.Length; i++)
+            {
+                var result = results[i];
+                Accessess[i].ProxyStatus = result ? "Working" : "Not working";
+            }
         }
 
         private async Task SaveTask()
@@ -189,7 +205,7 @@ namespace WPFUI.ViewModels
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _databaseEvent;
         private readonly IUseragentManager _useragentManager;
-
+        private readonly IRestClientManager _restClientManager;
         private readonly WaitingWindow _waitingWindow;
 
         public string Server

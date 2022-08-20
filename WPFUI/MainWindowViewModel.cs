@@ -1,15 +1,18 @@
 ﻿using MainCore;
 using MainCore.Enums;
+using MainCore.Helper;
 using MainCore.Models.Database;
 using MainCore.Services;
 using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
+using System.Windows;
 using WPFUI.Views;
 
 namespace WPFUI
@@ -26,6 +29,7 @@ namespace WPFUI
             _taskManager = App.GetService<ITaskManager>();
             _logManager = App.GetService<ILogManager>();
             _timeManager = App.GetService<ITimerManager>();
+            _restClientManager = App.GetService<IRestClientManager>();
 
             _accountWindow = App.GetService<AccountWindow>();
             _accountsWindow = App.GetService<AccountsWindow>();
@@ -79,12 +83,44 @@ namespace WPFUI
             _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Starting);
             await Task.Run(() =>
             {
-                using var context = _contextFactory.CreateDbContext();
-                var access = context.Accesses.Where(x => x.AccountId == CurrentAccount.Id).OrderBy(x => x.LastUsed).FirstOrDefault();
-                var chromeBrowser = _chromeManager.Get(CurrentAccount.Id);
-                chromeBrowser.Setup(access);
-                chromeBrowser.Navigate(CurrentAccount.Server);
                 _logManager.AddAccount(CurrentAccount.Id);
+                using var context = _contextFactory.CreateDbContext();
+                var accesses = context.Accesses.Where(x => x.AccountId == CurrentAccount.Id).OrderBy(x => x.LastUsed);
+                Access selectedAccess = null;
+                foreach (var access in accesses)
+                {
+                    if (string.IsNullOrEmpty(access.ProxyHost))
+                    {
+                        selectedAccess = access;
+                        break;
+                    }
+
+                    _logManager.Information(CurrentAccount.Id, $"Checking proxy {access.ProxyHost}");
+                    var result = AccessHelper.CheckAccess(_restClientManager.Get(access.Id), access.ProxyHost);
+                    if (result)
+                    {
+                        _logManager.Information(CurrentAccount.Id, $"Proxy {access.ProxyHost} is working");
+                        selectedAccess = access;
+                        access.LastUsed = DateTime.Now;
+                        context.SaveChanges();
+                        break;
+                    }
+                    else
+                    {
+                        _logManager.Information(CurrentAccount.Id, $"Proxy {access.ProxyHost} is not working");
+                    }
+                }
+
+                if (selectedAccess is null)
+                {
+                    _logManager.Information(CurrentAccount.Id, "All proxy of this account is not working");
+                    MessageBox.Show("All proxy of this account is not working");
+                    return;
+                }
+
+                var chromeBrowser = _chromeManager.Get(CurrentAccount.Id);
+                chromeBrowser.Setup(selectedAccess);
+                chromeBrowser.Navigate(CurrentAccount.Server);
                 _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id));
                 _timeManager.Start(CurrentAccount.Id);
             });
@@ -175,6 +211,7 @@ namespace WPFUI
         private readonly ITaskManager _taskManager;
         private readonly ILogManager _logManager;
         private readonly ITimerManager _timeManager;
+        private readonly IRestClientManager _restClientManager;
 
         private readonly AccountWindow _accountWindow;
         private readonly AccountsWindow _accountsWindow;

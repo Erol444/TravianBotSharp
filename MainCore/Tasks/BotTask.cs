@@ -14,7 +14,6 @@ namespace MainCore.Tasks
         public BotTask(int accountId)
         {
             _accountId = accountId;
-            Cts.IsCancellationRequested
         }
 
         public TaskStage Stage { get; set; }

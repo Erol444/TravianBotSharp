@@ -1,12 +1,20 @@
-﻿namespace WPFUI.Models
+﻿using ReactiveUI;
+
+namespace WPFUI.Models
 {
-    public class Access
+    public class Access : ReactiveObject
     {
         public string Password { get; set; }
         public string ProxyHost { get; set; }
         public string ProxyPort { get; set; }
         public string ProxyUsername { get; set; }
         public string ProxyPassword { get; set; }
-        public string ProxyStatus { get; set; }
+        private string _proxyStatus;
+
+        public string ProxyStatus
+        {
+            get => _proxyStatus;
+            set => this.RaiseAndSetIfChanged(ref _proxyStatus, value);
+        }
     }
 }
