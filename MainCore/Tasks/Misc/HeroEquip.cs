@@ -28,6 +28,7 @@ namespace MainCore.Tasks.Misc
 
             foreach ((var item, var amount) in _items)
             {
+                if (Cts.IsCancellationRequested) return;
                 if (heroStatus != HeroStatusEnums.Home && !item.IsUsableWhenHeroAway())
                 {
                     return;

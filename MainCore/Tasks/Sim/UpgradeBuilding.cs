@@ -29,6 +29,8 @@ namespace MainCore.Tasks.Sim
 
             do
             {
+                if (Cts.IsCancellationRequested) return;
+
                 var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, PlanManager, LogManager, AccountId, VillageId);
                 if (buildingTask is null)
                 {
@@ -53,6 +55,7 @@ namespace MainCore.Tasks.Sim
                     LogManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
                     return;
                 }
+                if (Cts.IsCancellationRequested) return;
 
                 if (buildingTask.Type == PlanTypeEnums.ResFields)
                 {
@@ -68,8 +71,10 @@ namespace MainCore.Tasks.Sim
                         continue;
                     }
                 }
+                if (Cts.IsCancellationRequested) return;
 
                 NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
+                if (Cts.IsCancellationRequested) return;
                 UpdateHelper.UpdateResource(context, ChromeBrowser, VillageId);
 
                 if (context.VillagesResources.Find(VillageId).FreeCrop <= 5 && buildingTask.Building != BuildingEnums.Cropland)
@@ -86,6 +91,7 @@ namespace MainCore.Tasks.Sim
                     continue;
                 }
 
+                if (Cts.IsCancellationRequested) return;
                 // move to correct page
                 var dorf = BuildingsHelper.GetDorf(buildingTask.Location);
                 switch (dorf)
@@ -116,8 +122,10 @@ namespace MainCore.Tasks.Sim
                     continue;
                 }
 
+                if (Cts.IsCancellationRequested) return;
                 NavigateHelper.GoToBuilding(ChromeBrowser, buildingTask.Location);
 
+                if (Cts.IsCancellationRequested) return;
                 bool isNewBuilding = false;
                 if (building.Type == BuildingEnums.Site)
                 {
@@ -133,6 +141,7 @@ namespace MainCore.Tasks.Sim
                     }
                 }
 
+                if (Cts.IsCancellationRequested) return;
                 var resNeed = CheckHelper.GetResourceNeed(ChromeBrowser, buildingTask.Building, isNewBuilding);
                 var resCurrent = context.VillagesResources.Find(VillageId);
                 if (resNeed[0] > resCurrent.Wood || resNeed[1] > resCurrent.Clay || resNeed[2] > resCurrent.Iron || resNeed[3] > resCurrent.Crop)
@@ -178,6 +187,7 @@ namespace MainCore.Tasks.Sim
 #endif
                 }
 
+                if (Cts.IsCancellationRequested) return;
                 if (isNewBuilding) Construct(buildingTask);
                 else Upgrade(buildingTask);
             }

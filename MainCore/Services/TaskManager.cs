@@ -104,7 +104,9 @@ namespace MainCore.Services
                 _logManager.Error(index, e.Message, e);
                 UpdateAccountStatus(index, AccountStatus.Paused);
             }
-            if (task.Cts.Token.IsCancellationRequested)
+            var isCancellationRequested = task.Cts.IsCancellationRequested;
+            task.Cts.Dispose();
+            if (isCancellationRequested)
             {
                 _logManager.Information(index, $"{task.Name} is stopped and reset.");
                 task.Stage = TaskStage.Start;
