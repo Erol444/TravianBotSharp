@@ -1,10 +1,13 @@
 ﻿using MainCore;
 using MainCore.Helper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using ReactiveUI;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Views;
@@ -119,13 +122,6 @@ namespace WPFUI.ViewModels
             {
                 using var context = _contextFactory.CreateDbContext();
                 var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == _accountId);
-                if (accountSetting is null)
-                {
-                    accountSetting = new()
-                    {
-                        AccountId = _accountId
-                    };
-                }
 
                 var clickDelay = int.Parse(ClickDelay);
                 var clickDelayRange = int.Parse(ClickDelayRange);
@@ -165,10 +161,66 @@ namespace WPFUI.ViewModels
 
         private void ImportTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.Accounts.Find(_accountId);
+            var ofd = new OpenFileDialog
+            {
+                InitialDirectory = AppContext.BaseDirectory,
+                Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true,
+                FileName = $"{account.Username}_{account.Server}_settings.tbs",
+            };
+
+            if (ofd.ShowDialog() == true)
+            {
+                var jsonString = File.ReadAllText(ofd.FileName);
+                try
+                {
+                    var setting = JsonSerializer.Deserialize<MainCore.Models.Database.AccountSetting>(jsonString);
+                    var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == _accountId);
+                    accountSetting.ClickDelayMax = setting.ClickDelayMax;
+                    accountSetting.ClickDelayMin = setting.ClickDelayMin;
+                    accountSetting.TaskDelayMax = setting.TaskDelayMax;
+                    accountSetting.TaskDelayMin = setting.TaskDelayMin;
+                    accountSetting.WorkTimeMax = setting.WorkTimeMax;
+                    accountSetting.WorkTimeMin = setting.WorkTimeMin;
+                    accountSetting.SleepTimeMax = setting.SleepTimeMax;
+                    accountSetting.SleepTimeMin = setting.SleepTimeMin;
+                    accountSetting.IsDontLoadImage = setting.IsDontLoadImage;
+                    accountSetting.IsClosedIfNoTask = setting.IsClosedIfNoTask;
+                    accountSetting.IsMinimized = setting.IsMinimized;
+                    context.Update(accountSetting);
+                    context.SaveChanges();
+                    LoadData(_accountId);
+                }
+                catch
+                {
+                    MessageBox.Show("Invalid file.", "Warning");
+                    return;
+                }
+            }
         }
 
         private void ExportTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == _accountId);
+            var jsonString = JsonSerializer.Serialize(accountSetting);
+            var account = context.Accounts.Find(_accountId);
+            var svd = new SaveFileDialog
+            {
+                InitialDirectory = AppContext.BaseDirectory,
+                Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true,
+                FileName = $"{account.Username}_{account.Server}_settings.tbs",
+            };
+
+            if (svd.ShowDialog() == true)
+            {
+                File.WriteAllText(svd.FileName, jsonString);
+            }
         }
 
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }

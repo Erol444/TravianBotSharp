@@ -5,11 +5,15 @@ using MainCore.Models.Runtime;
 using MainCore.Services;
 using MainCore.TravianData;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Win32;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Text.Json;
 using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
@@ -280,10 +284,58 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void ImportTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.Accounts.Find(AccountId);
+            var village = context.Villages.Find(VillageId);
+            var ofd = new OpenFileDialog
+            {
+                InitialDirectory = AppContext.BaseDirectory,
+                Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true,
+                FileName = $"{village.Name.Replace('.', '_')}_{account.Username}_queuebuildings.tbs",
+            };
+
+            if (ofd.ShowDialog() == true)
+            {
+                var jsonString = File.ReadAllText(ofd.FileName);
+                try
+                {
+                    var queue = JsonSerializer.Deserialize<List<PlanTask>>(jsonString);
+                    foreach (var item in queue)
+                    {
+                        _planManager.Add(VillageId, item);
+                    }
+                    LoadQueue(VillageId);
+                }
+                catch
+                {
+                    MessageBox.Show("Invalid file.", "Warning");
+                    return;
+                }
+            }
         }
 
         private void ExportTask()
         {
+            using var context = _contextFactory.CreateDbContext();
+            var queueBuildings = _planManager.GetList(VillageId);
+            var account = context.Accounts.Find(AccountId);
+            var village = context.Villages.Find(VillageId);
+            var jsonString = JsonSerializer.Serialize(queueBuildings);
+            var svd = new SaveFileDialog
+            {
+                InitialDirectory = AppContext.BaseDirectory,
+                Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true,
+                FileName = $"{village.Name.Replace('.', '_')}_{account.Username}_queuebuildings.tbs",
+            };
+
+            if (svd.ShowDialog() == true)
+            {
+                File.WriteAllText(svd.FileName, jsonString);
+            }
         }
 
         public ReactiveCommand<Unit, Unit> NormalBuildCommand { get; }
