@@ -26,10 +26,9 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Coords" Binding="{Binding Coords}" IsReadOnly="True" />
-                <DataGridTextColumn Header="Update info per X mintues" Binding="{Binding TimeUpdate}" />
-                <DataGridTextColumn Header="Random range for update time" Binding="{Binding TimeUpdateRange}" />
-                <DataGridCheckBoxColumn Header="Instant upgrade" Binding="{Binding IsInstantUpgrade}" />
-                <DataGridTextColumn Header="above x minutes" Binding="{Binding InstantTime}" />
+                <DataGridCheckBoxColumn Header="Use hero res" Binding="{Binding IsUseHeroRes}" />
+                <DataGridCheckBoxColumn Header="Instant complete" Binding="{Binding IsInstantComplete}" />
+                <DataGridTextColumn Header="if above" Binding="{Binding InstantCompleteTime}" />
             </DataGrid.Columns>
         </DataGrid>
         <Grid Grid.Column="2">
@@ -37,8 +36,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="ExportButton" Content="Export" Margin="5,5,5,5" />
-            <Button x:Name="ImportButton" Grid.Column="1" Content="Import" Margin="5,5,5,5" />
+            <Button x:Name="ExportButton" Content="Export" Margin="5,5,5,5" IsEnabled="False" />
+            <Button x:Name="ImportButton" Grid.Column="1" Content="Import" Margin="5,5,5,5" IsEnabled="False" />
         </Grid>
         <Button x:Name="SaveButton" Content="Save" Margin="5,5,5,5" />
     </Grid>
