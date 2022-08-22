@@ -204,6 +204,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
             };
             _planManager.Add(VillageId, task);
             LoadQueue(VillageId);
+
+            var listTask = _taskManager.GetList(AccountId);
+            var tasks = listTask.Where(x => x.AccountId == AccountId).OfType<UpgradeBuilding>().Where(x => x.VillageId == VillageId);
+            if (!tasks.Any())
+            {
+                _taskManager.Add(AccountId, new UpgradeBuilding(VillageId, AccountId));
+            }
         }
 
         private void ResBuildTask()
