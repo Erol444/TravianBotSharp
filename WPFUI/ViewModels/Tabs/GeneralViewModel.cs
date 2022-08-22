@@ -1,9 +1,11 @@
 ﻿using MainCore;
 using MainCore.Enums;
 using MainCore.Services;
+using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using System;
 using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
@@ -14,6 +16,7 @@ namespace WPFUI.ViewModels.Tabs
     public class GeneralViewModel : ReactiveObject, IMainTabPage
     {
         public int AccountId { get; set; }
+        private readonly Random rand = new();
 
         public GeneralViewModel()
         {
@@ -75,6 +78,11 @@ namespace WPFUI.ViewModels.Tabs
                     _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
                 }
             }
+            var setting = context.AccountsSettings.Find(AccountId);
+            (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
+
+            var time = TimeSpan.FromMinutes(rand.Next(min, max));
+            _taskManager.Add(AccountId, new SleepTask(AccountId) { ExecuteAt = DateTime.Now.Add(time) });
             _taskManager.UpdateAccountStatus(AccountId, AccountStatus.Online);
         }
 
