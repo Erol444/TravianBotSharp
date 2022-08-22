@@ -190,6 +190,12 @@ namespace MainCore.Tasks.Sim
                 if (Cts.IsCancellationRequested) return;
                 if (isNewBuilding) Construct(buildingTask);
                 else Upgrade(buildingTask);
+                var wait = ChromeBrowser.GetWait();
+                wait.Until(driver => driver.Url.Contains("dorf"));
+                wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+                var taskUpdateVillage = new UpdateVillage(VillageId, AccountId);
+                this.CopyTo(taskUpdateVillage);
+                taskUpdateVillage.Execute();
             }
             while (true);
         }

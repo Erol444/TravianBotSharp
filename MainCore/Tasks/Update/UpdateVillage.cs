@@ -1,4 +1,7 @@
 ﻿using MainCore.Helper;
+using MainCore.Tasks.Sim;
+using System;
+using System.Linq;
 
 namespace MainCore.Tasks.Update
 {
@@ -34,6 +37,8 @@ namespace MainCore.Tasks.Update
             if (currentUrl.Contains("dorf"))
             {
                 UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+
+                InstantUpgrade();
             }
             if (currentUrl.Contains("dorf1"))
             {
@@ -46,6 +51,23 @@ namespace MainCore.Tasks.Update
             }
 
             UpdateHelper.UpdateResource(context, ChromeBrowser, VillageId);
+        }
+
+        private void InstantUpgrade()
+        {
+            using var context = ContextFactory.CreateDbContext();
+
+            var setting = context.VillagesSettings.Find(VillageId);
+            if (!setting.IsInstantComplete) return;
+            var info = context.AccountsInfo.Find(AccountId);
+            if (info.Gold < 2) return;
+            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1);
+            if (currentlyBuilding.Count() < (info.HasPlusAccount ? 2 : 1)) return;
+            if (currentlyBuilding.Last().CompleteTime < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
+            var listTask = TaskManager.GetList(AccountId);
+            var tasks = listTask.Where(x => x.GetType() == typeof(InstantUpgrade)).OfType<InstantUpgrade>().Where(x => x.VillageId == VillageId);
+            if (tasks.Any()) return;
+            TaskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
         }
     }
 }
