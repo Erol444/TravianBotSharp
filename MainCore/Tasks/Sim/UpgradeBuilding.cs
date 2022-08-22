@@ -148,6 +148,16 @@ namespace MainCore.Tasks.Sim
                 {
                     var resMissing = new long[] { resNeed[0] - resCurrent.Wood, resNeed[1] - resCurrent.Clay, resNeed[2] - resCurrent.Iron, resNeed[3] - resCurrent.Crop };
 #if TRAVIAN_OFFICIAL ||TRAVIAN_OFFICIAL_HEROUI
+
+                    var setting = context.VillagesSettings.Find(VillageId);
+                    if (!setting.IsUseHeroRes)
+                    {
+                        LogManager.Information(AccountId, "Don't have enough resources.");
+                        var production = context.VillagesProduction.Find(VillageId);
+                        var timeEnough = production.GetTimeWhenEnough(resMissing);
+                        ExecuteAt = timeEnough;
+                        break;
+                    }
                     var taskUpdate = new UpdateHeroItems(AccountId);
                     this.CopyTo(taskUpdate);
                     taskUpdate.Execute();
@@ -190,12 +200,8 @@ namespace MainCore.Tasks.Sim
                 if (Cts.IsCancellationRequested) return;
                 if (isNewBuilding) Construct(buildingTask);
                 else Upgrade(buildingTask);
-                var wait = ChromeBrowser.GetWait();
-                wait.Until(driver => driver.Url.Contains("dorf"));
-                wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
-                var taskUpdateVillage = new UpdateVillage(VillageId, AccountId);
-                this.CopyTo(taskUpdateVillage);
-                taskUpdateVillage.Execute();
+
+                Update();
             }
             while (true);
         }
@@ -246,6 +252,16 @@ namespace MainCore.Tasks.Sim
             }
 
             elements[0].Click();
+        }
+
+        private void Update()
+        {
+            var wait = ChromeBrowser.GetWait();
+            wait.Until(driver => driver.Url.Contains("dorf"));
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            var taskUpdateVillage = new UpdateVillage(VillageId, AccountId);
+            this.CopyTo(taskUpdateVillage);
+            taskUpdateVillage.Execute();
         }
     }
 }
