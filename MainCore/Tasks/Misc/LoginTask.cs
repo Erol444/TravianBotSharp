@@ -112,7 +112,7 @@ namespace MainCore.Tasks.Misc
             var upgradeBuildingList = listTask.Where(x => x.GetType() == typeof(UpgradeBuilding)).OfType<UpgradeBuilding>();
             foreach (var village in villages)
             {
-                var queue = context.VillagesQueueBuildings.Where(x => x.VillageId == village.Id);
+                var queue = PlanManager.GetList(village.Id);
                 if (queue.Any())
                 {
                     var upgradeBuilding = upgradeBuildingList.FirstOrDefault(x => x.VillageId == village.Id);

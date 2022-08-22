@@ -3,6 +3,7 @@ using MainCore.Enums;
 using MainCore.Helper;
 using MainCore.Models.Runtime;
 using MainCore.Services;
+using MainCore.Tasks.Sim;
 using MainCore.TravianData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
@@ -27,6 +28,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = App.GetService<IEventManager>();
             _planManager = App.GetService<IPlanManager>();
+            _taskManager = App.GetService<ITaskManager>();
 
             NormalBuildCommand = ReactiveCommand.Create(NormalBuildTask, this.WhenAnyValue(x => x.IsLevelActive));
             ResBuildCommand = ReactiveCommand.Create(ResBuildTask);
@@ -230,6 +232,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
             };
             _planManager.Add(VillageId, task);
             LoadQueue(VillageId);
+            var listTask = _taskManager.GetList(AccountId);
+
+            var tasks = listTask.Where(x => x.AccountId == AccountId).OfType<UpgradeBuilding>().Where(x => x.VillageId == VillageId);
+            if (!tasks.Any())
+            {
+                _taskManager.Add(AccountId, new UpgradeBuilding(VillageId, AccountId));
+            }
         }
 
         private void TopTask()
@@ -455,6 +464,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
         private readonly IPlanManager _planManager;
+        private readonly ITaskManager _taskManager;
 
         private int _accountId;
 

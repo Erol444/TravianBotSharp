@@ -23,6 +23,7 @@ namespace WPFUI.ViewModels.Tabs
             _eventManager = App.GetService<IEventManager>();
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
             _taskManager = App.GetService<ITaskManager>();
+            _planManager = App.GetService<IPlanManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsValidStatus));
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
@@ -72,7 +73,7 @@ namespace WPFUI.ViewModels.Tabs
 
             foreach (var village in villages)
             {
-                var queue = context.VillagesQueueBuildings.Where(x => x.VillageId == village.Id);
+                var queue = _planManager.GetList(village.Id);
                 if (queue.Any())
                 {
                     _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
@@ -155,6 +156,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
+        private readonly IPlanManager _planManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
     }
 }
