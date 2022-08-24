@@ -188,7 +188,7 @@ namespace TestProject.Parsers
             doc.Load("Parsers/HeroInfo/adventure/Travian.html");
             var value = TravianOfficialCore.Parsers.HeroInfo.GetAdventures(doc);
             var result = TravianOfficialCore.Parsers.HeroInfo.GetAdventureCoordinates(value[0]);
-            Assert.AreEqual((112, 118), result);
+            Assert.AreEqual((112, -118), result);
         }
 
         [TestMethod]
@@ -198,7 +198,7 @@ namespace TestProject.Parsers
             doc.Load("Parsers/HeroInfo/adventure/TravianHeroUI.html");
             var value = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetAdventures(doc);
             var result = TravianOfficialNewHeroUICore.Parsers.HeroInfo.GetAdventureCoordinates(value[0]);
-            Assert.AreEqual((49, 36), result);
+            Assert.AreEqual((-49, -36), result);
         }
     }
 }
