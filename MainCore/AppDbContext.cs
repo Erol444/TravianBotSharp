@@ -202,7 +202,7 @@ namespace MainCore
                 IsDontLoadImage = false,
                 IsMinimized = false,
                 IsAutoAdventure = false,
-            };
+            });
             Heroes.Add(new Hero { AccountId = accountId });
 
             //Accesses
