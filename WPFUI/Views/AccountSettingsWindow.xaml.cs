@@ -78,6 +78,10 @@ namespace WPFUI.Views
                 v => v.CloseCheckBox.IsChecked);
 
             this.Bind(ViewModel,
+                vm => vm.IsAutoStartAdventure,
+                v => v.AutoStartAdventureCheckBox.IsChecked);
+
+            this.Bind(ViewModel,
                 vm => vm.Username,
                 v => v.UsernameLabel.Text);
 
@@ -86,6 +90,10 @@ namespace WPFUI.Views
                 v => v.ServerLabel.Text);
 
             #endregion data
+        }
+
+        private void MinimizedCheckBox_Copy_Checked(object sender, System.Windows.RoutedEventArgs e)
+        {
         }
     }
 }

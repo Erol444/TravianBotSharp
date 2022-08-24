@@ -1,5 +1,7 @@
 ﻿using MainCore;
 using MainCore.Helper;
+using MainCore.Services;
+using MainCore.Tasks.Sim;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using ReactiveUI;
@@ -19,6 +21,7 @@ namespace WPFUI.ViewModels
         public AccountSettingsViewModel()
         {
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+            _taskManager = App.GetService<ITaskManager>();
             _waitingWindow = App.GetService<WaitingWindow>();
 
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
@@ -51,6 +54,7 @@ namespace WPFUI.ViewModels
                     IsClosedIfNoTask = false,
                     IsDontLoadImage = false,
                     IsMinimized = false,
+                    IsAutoAdventure = false,
                 };
                 context.Add(accountSetting);
                 context.SaveChanges();
@@ -67,6 +71,7 @@ namespace WPFUI.ViewModels
             IsDontLoadImage = accountSetting.IsDontLoadImage;
             IsClosedIfNoTask = accountSetting.IsClosedIfNoTask;
             IsMinimized = accountSetting.IsMinimized;
+            IsAutoStartAdventure = accountSetting.IsAutoAdventure;
 
             var account = context.Accounts.Find(index);
             Username = account.Username;
@@ -146,6 +151,7 @@ namespace WPFUI.ViewModels
                 accountSetting.IsDontLoadImage = IsDontLoadImage;
                 accountSetting.IsClosedIfNoTask = IsClosedIfNoTask;
                 accountSetting.IsMinimized = IsMinimized;
+                accountSetting.IsAutoAdventure = IsAutoStartAdventure;
                 context.Update(accountSetting);
                 context.SaveChanges();
             });
@@ -332,7 +338,35 @@ namespace WPFUI.ViewModels
             set => this.RaiseAndSetIfChanged(ref _server, value);
         }
 
+        private bool _isAutoStartAdventure;
+
+        public bool IsAutoStartAdventure
+        {
+            get => _isAutoStartAdventure;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _isAutoStartAdventure, value);
+                var list = _taskManager.GetList(_accountId);
+                var tasks = list.Where(x => x.GetType() == typeof(StartAdventure));
+                if (value)
+                {
+                    if (!tasks.Any())
+                    {
+                        _taskManager.Add(_accountId, new StartAdventure(_accountId));
+                    }
+                }
+                else
+                {
+                    foreach (var task in tasks)
+                    {
+                        _taskManager.Remove(_accountId, task);
+                    }
+                }
+            }
+        }
+
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly ITaskManager _taskManager;
         private readonly WaitingWindow _waitingWindow;
         private int _accountId;
     }

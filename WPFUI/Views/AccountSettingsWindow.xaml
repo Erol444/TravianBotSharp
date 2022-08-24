@@ -15,7 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="7*" />
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -27,8 +27,8 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock x:Name="UsernameLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Username" VerticalAlignment="Center" FontSize="20" Grid.Row="1" />
-            <TextBlock x:Name="ServerLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Server" VerticalAlignment="Center" FontSize="20" />
+            <TextBlock x:Name="UsernameLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Username" VerticalAlignment="Center" Grid.Row="1" />
+            <TextBlock x:Name="ServerLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Server" VerticalAlignment="Center" />
         </Grid>
         <Button x:Name="SaveButton" Grid.Column="1" Content="Save" FontSize="15" FontWeight="Normal" Margin="0,0,5,0" />
         <Button x:Name="CloseButton" Grid.Column="2" Content="Close" FontSize="15" FontWeight="Normal" Margin="5,0,0,0" />
@@ -44,7 +44,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Grid >
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
@@ -63,7 +63,7 @@
                 <TextBox x:Name="TaskDelayRangeTextBox" Grid.Column="3" Margin="5,5,5,5" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" />
                 <TextBlock x:Name="ClickDelayLabel" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Click delay" VerticalAlignment="Center" />
                 <TextBlock x:Name="TaskDelayLabel" Grid.Row="2" TextWrapping="Wrap" Text="Task delay" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <TextBlock Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="±" VerticalAlignment="Center" FontSize="22" Margin="0,0,0,5"/>
+                <TextBlock Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="±" VerticalAlignment="Center" FontSize="22" Margin="0,0,0,5" />
                 <TextBlock Grid.Column="2" HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" Text="±" VerticalAlignment="Center" FontSize="22" Margin="0,0,0,5" />
             </Grid>
             <Grid Grid.Column="1">
@@ -88,7 +88,7 @@
                 <TextBlock Grid.Column="2" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="±" VerticalAlignment="Center" FontSize="22" Margin="0,0,0,5" />
                 <TextBlock Grid.Column="2" HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" Text="±" VerticalAlignment="Center" FontSize="22" Margin="0,0,0,5" />
             </Grid>
-            <Grid Grid.Column="2" Grid.ColumnSpan="2" Margin="197,0,0,0">
+            <Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
@@ -100,14 +100,24 @@
                 <CheckBox x:Name="MinimizedCheckBox" Content="Minimized when opening" Grid.Row="2" Margin="5,0,0,0" />
                 <CheckBox x:Name="CloseCheckBox" Content="Close if no task" Margin="5,0,0,0" Grid.Row="3" />
             </Grid>
+            <Grid Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="2*" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="HeroLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Hero settings" VerticalAlignment="Center" FontWeight="Bold" />
+                <CheckBox x:Name="AutoStartAdventureCheckBox" Content="Auto start adventures" Grid.Row="1" Grid.RowSpan="2" Checked="MinimizedCheckBox_Copy_Checked" />
+            </Grid>
         </Grid>
         <Grid Grid.ColumnSpan="2" Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="136*"/>
-                <ColumnDefinition Width="131*"/>
+                <ColumnDefinition Width="136*" />
+                <ColumnDefinition Width="131*" />
             </Grid.ColumnDefinitions>
-            <Button x:Name="ImportButton" Content="Import" Margin="0,0,5,0" FontSize="15"/>
-            <Button x:Name="ExportButton" Grid.Column="1" Content="Export" HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Stretch" FontSize="15"/>
+            <Button x:Name="ImportButton" Content="Import" Margin="0,0,5,0" FontSize="15" />
+            <Button x:Name="ExportButton" Grid.Column="1" Content="Export" HorizontalAlignment="Stretch" Margin="5,0,0,0" VerticalAlignment="Stretch" FontSize="15" />
         </Grid>
     </Grid>
 </reactiveui:ReactiveWindow>
