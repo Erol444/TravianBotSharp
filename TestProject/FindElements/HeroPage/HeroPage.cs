@@ -140,5 +140,32 @@ namespace TestProject.FindElements
             var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetConfirmButton(doc);
             Assert.IsNotNull(value);
         }
+
+        [TestMethod]
+        public void TTWarsGetStartAdventureButton()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("FindElements/HeroPage/adventure/TTWars.html");
+            var value = TTWarsCore.FindElements.HeroPage.GetStartAdventureButton(doc, 65, 49);
+            Assert.IsNotNull(value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialGetStartAdventureButton()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("FindElements/HeroPage/adventure/Travian.html");
+            var value = TravianOfficialCore.FindElements.HeroPage.GetStartAdventureButton(doc, 112, -118);
+            Assert.IsNotNull(value);
+        }
+
+        [TestMethod]
+        public void TravianOfficialHeroGetStartAdventureButton()
+        {
+            var doc = new HtmlDocument();
+            doc.Load("FindElements/HeroPage/adventure/TravianHeroUI.html");
+            var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetStartAdventureButton(doc, -49, -36);
+            Assert.IsNotNull(value);
+        }
     }
 }

@@ -66,5 +66,22 @@ namespace MainCore.Helper
             }
             finishElements[0].Click();
         }
+
+        public static void ClickStartAdventure(IChromeBrowser chromeBrowser, int x, int y)
+        {
+            var html = chromeBrowser.GetHtml();
+            var finishButton = HeroPage.GetStartAdventureButton(html, x, y);
+            if (finishButton is null)
+            {
+                throw new Exception("Cannot find start adventure button");
+            }
+            var chrome = chromeBrowser.GetChrome();
+            var finishElements = chrome.FindElements(By.XPath(finishButton.XPath));
+            if (finishElements.Count == 0)
+            {
+                throw new Exception("Cannot find start adventure button");
+            }
+            finishElements[0].Click();
+        }
     }
 }

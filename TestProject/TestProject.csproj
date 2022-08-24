@@ -20,6 +20,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="FindElements\HeroPage\adventure\Travian.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FindElements\HeroPage\adventure\TravianHeroUI.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FindElements\HeroPage\adventure\TTWars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="FindElements\HeroPage\dialog\Travian.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

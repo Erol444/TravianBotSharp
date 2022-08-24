@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System.Linq;
+using TravianOfficialNewHeroUICore.Parsers;
 
 namespace TravianOfficialNewHeroUICore.FindElements
 {
@@ -60,6 +61,21 @@ namespace TravianOfficialNewHeroUICore.FindElements
             var buttonTransfer = buttonWrapper.Descendants("button");
             if (buttonTransfer.Count() < 2) return null;
             return buttonTransfer.ElementAt(1);
+        }
+
+        public static HtmlNode GetStartAdventureButton(HtmlDocument doc, int x, int y)
+        {
+            var adventures = HeroInfo.GetAdventures(doc);
+            foreach (var adventure in adventures)
+            {
+                (var X, var Y) = HeroInfo.GetAdventureCoordinates(adventure);
+                if (X == x && Y == y)
+                {
+                    var last = adventure.ChildNodes.Last();
+                    return last.Descendants("button").FirstOrDefault();
+                }
+            }
+            return null;
         }
     }
 }

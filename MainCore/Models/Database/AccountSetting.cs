@@ -14,5 +14,6 @@
         public bool IsDontLoadImage { get; set; }
         public bool IsMinimized { get; set; }
         public bool IsClosedIfNoTask { get; set; }
+        public bool IsAutoAdventure { get; set; }
     }
 }

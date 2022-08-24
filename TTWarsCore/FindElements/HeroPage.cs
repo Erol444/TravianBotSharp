@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System.Linq;
+using TTWarsCore.Parsers;
 
 namespace TTWarsCore.FindElements
 {
@@ -43,6 +44,17 @@ namespace TTWarsCore.FindElements
         public static HtmlNode GetConfirmButton(HtmlDocument doc)
         {
             return doc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("ok"));
+        }
+
+        public static HtmlNode GetStartAdventureButton(HtmlDocument doc, int x, int y)
+        {
+            var adventures = HeroInfo.GetAdventures(doc);
+            foreach (var adventure in adventures)
+            {
+                (var X, var Y) = HeroInfo.GetAdventureCoordinates(adventure);
+                if (X == x && Y == y) return adventure.ChildNodes.Last();
+            }
+            return null;
         }
     }
 }

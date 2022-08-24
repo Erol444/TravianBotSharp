@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using System.Linq;
+using TravianOfficialCore.Parsers;
 
 namespace TravianOfficialCore.FindElements
 {
@@ -43,6 +44,20 @@ namespace TravianOfficialCore.FindElements
         public static HtmlNode GetConfirmButton(HtmlDocument doc)
         {
             return doc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("ok"));
+        }
+
+        public static HtmlNode GetStartAdventureButton(HtmlDocument doc, int x, int y)
+        {
+            var adventures = HeroInfo.GetAdventures(doc);
+            foreach (var adventure in adventures)
+            {
+                (var X, var Y) = HeroInfo.GetAdventureCoordinates(adventure);
+                if (X == x && Y == y)
+                {
+                    return adventure.Descendants("a").Last();
+                }
+            }
+            return null;
         }
     }
 }

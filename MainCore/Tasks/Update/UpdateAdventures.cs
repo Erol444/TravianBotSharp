@@ -1,4 +1,6 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Enums;
+using MainCore.Helper;
+using MainCore.Tasks.Sim;
 
 namespace MainCore.Tasks.Update
 {
@@ -13,8 +15,16 @@ namespace MainCore.Tasks.Update
         public override void Execute()
         {
             NavigateHelper.ToAdventure(ChromeBrowser);
+            if (Cts.IsCancellationRequested) return;
             using var context = ContextFactory.CreateDbContext();
             UpdateHelper.UpdateAdventures(context, ChromeBrowser, AccountId);
+
+            var hero = context.Heroes.Find(AccountId);
+            var setting = context.AccountsSettings.Find(AccountId);
+            if (hero.Status == HeroStatusEnums.Home && setting.IsAutoAdventure)
+            {
+                TaskManager.Add(AccountId, new StartAdventure(AccountId));
+            }
         }
     }
 }

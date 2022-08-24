@@ -123,10 +123,12 @@ namespace TTWarsCore.Parsers
             if (coordsNode is null) return (0, 0);
             var coords = coordsNode.InnerText.Split('|');
             if (coords.Length < 2) return (0, 0);
-            var valueX = new string(coords[0].Where(c => char.IsDigit(c)).ToArray());
+            var valueX = new string(coords[0].Where(c => char.IsDigit(c) || c == '−').ToArray());
             if (string.IsNullOrEmpty(valueX)) return (0, 0);
-            var valueY = new string(coords[1].Where(c => char.IsDigit(c)).ToArray());
+            var valueY = new string(coords[1].Where(c => char.IsDigit(c) || c == '−').ToArray());
             if (string.IsNullOrEmpty(valueY)) return (0, 0);
+            valueX = valueX.Replace('−', '-');
+            valueY = valueY.Replace('−', '-');
             return (int.Parse(valueX), int.Parse(valueY));
         }
     }
