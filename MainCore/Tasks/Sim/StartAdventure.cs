@@ -32,6 +32,10 @@ namespace MainCore.Tasks.Sim
             {
                 NavigateHelper.ToDorf2(ChromeBrowser);
             }
+
+            var taskUpdate = new UpdateInfo(AccountId);
+            this.CopyTo(taskUpdate);
+            taskUpdate.Execute();
         }
     }
 }
