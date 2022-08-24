@@ -187,7 +187,22 @@ namespace MainCore
         public void AddAccount(int accountId)
         {
             AccountsInfo.Add(new AccountInfo { AccountId = accountId });
-            AccountsSettings.Add(new AccountSetting { AccountId = accountId });
+            AccountsSettings.Add(new AccountSetting
+            {
+                AccountId = accountId,
+                ClickDelayMin = 500,
+                ClickDelayMax = 900,
+                TaskDelayMin = 1000,
+                TaskDelayMax = 1500,
+                WorkTimeMin = 340,
+                WorkTimeMax = 380,
+                SleepTimeMin = 480,
+                SleepTimeMax = 600,
+                IsClosedIfNoTask = false,
+                IsDontLoadImage = false,
+                IsMinimized = false,
+                IsAutoAdventure = false,
+            };
             Heroes.Add(new Hero { AccountId = accountId });
 
             //Accesses

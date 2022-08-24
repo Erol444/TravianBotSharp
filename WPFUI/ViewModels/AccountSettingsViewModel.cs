@@ -38,27 +38,6 @@ namespace WPFUI.ViewModels
             _waitingWindow.Show();
             using var context = _contextFactory.CreateDbContext();
             var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == index);
-            if (accountSetting is null)
-            {
-                accountSetting = new()
-                {
-                    AccountId = index,
-                    ClickDelayMin = 500,
-                    ClickDelayMax = 900,
-                    TaskDelayMin = 1000,
-                    TaskDelayMax = 1500,
-                    WorkTimeMin = 340,
-                    WorkTimeMax = 380,
-                    SleepTimeMin = 480,
-                    SleepTimeMax = 600,
-                    IsClosedIfNoTask = false,
-                    IsDontLoadImage = false,
-                    IsMinimized = false,
-                    IsAutoAdventure = false,
-                };
-                context.Add(accountSetting);
-                context.SaveChanges();
-            }
 
             ClickDelay = $"{(accountSetting.ClickDelayMin + accountSetting.ClickDelayMax) / 2}";
             ClickDelayRange = $"{(accountSetting.ClickDelayMax - accountSetting.ClickDelayMin) / 2}";

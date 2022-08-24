@@ -91,9 +91,5 @@ namespace WPFUI.Views
 
             #endregion data
         }
-
-        private void MinimizedCheckBox_Copy_Checked(object sender, System.Windows.RoutedEventArgs e)
-        {
-        }
     }
 }

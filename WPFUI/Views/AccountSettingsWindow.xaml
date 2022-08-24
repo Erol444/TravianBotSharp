@@ -108,7 +108,7 @@
                     <RowDefinition Height="2*" />
                 </Grid.RowDefinitions>
                 <TextBlock x:Name="HeroLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Hero settings" VerticalAlignment="Center" FontWeight="Bold" />
-                <CheckBox x:Name="AutoStartAdventureCheckBox" Content="Auto start adventures" Grid.Row="1" Grid.RowSpan="2" Checked="MinimizedCheckBox_Copy_Checked" />
+                <CheckBox x:Name="AutoStartAdventureCheckBox" Content="Auto start adventures" Grid.Row="1" Grid.RowSpan="2" />
             </Grid>
         </Grid>
         <Grid Grid.ColumnSpan="2" Grid.Row="2">
