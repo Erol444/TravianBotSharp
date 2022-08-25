@@ -1,7 +1,7 @@
 ﻿using MainCore;
 using MainCore.Helper;
 using MainCore.Services;
-using MainCore.Tasks.Sim;
+using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using ReactiveUI;
@@ -326,19 +326,12 @@ namespace WPFUI.ViewModels
             {
                 this.RaiseAndSetIfChanged(ref _isAutoStartAdventure, value);
                 var list = _taskManager.GetList(_accountId);
-                var tasks = list.Where(x => x.GetType() == typeof(StartAdventure));
+                var tasks = list.Where(x => x.GetType() == typeof(UpdateAdventures));
                 if (value)
                 {
                     if (!tasks.Any())
                     {
-                        _taskManager.Add(_accountId, new StartAdventure(_accountId));
-                    }
-                }
-                else
-                {
-                    foreach (var task in tasks)
-                    {
-                        _taskManager.Remove(_accountId, task);
+                        _taskManager.Add(_accountId, new UpdateAdventures(_accountId));
                     }
                 }
             }

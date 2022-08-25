@@ -1,11 +1,10 @@
 ﻿using MainCore.Helper;
-using MainCore.Tasks.Update;
 using System;
 using System.Linq;
 
 namespace MainCore.Tasks.Sim
 {
-    public class StartAdventure : UpdateAdventures
+    public class StartAdventure : BotTask
     {
         public StartAdventure(int accountId) : base(accountId)
         {
@@ -15,7 +14,6 @@ namespace MainCore.Tasks.Sim
 
         public override void Execute()
         {
-            base.Execute();
             using var context = ContextFactory.CreateDbContext();
             var adventures = context.Adventures.Where(a => a.AccountId == AccountId);
             if (!adventures.Any()) return;
@@ -32,10 +30,6 @@ namespace MainCore.Tasks.Sim
             {
                 NavigateHelper.ToDorf2(ChromeBrowser);
             }
-
-            var taskUpdate = new UpdateInfo(AccountId);
-            this.CopyTo(taskUpdate);
-            taskUpdate.Execute();
         }
     }
 }

@@ -1,7 +1,5 @@
-﻿using MainCore.Enums;
-using MainCore.Helper;
+﻿using MainCore.Helper;
 using MainCore.Tasks.Sim;
-using System.Linq;
 
 namespace MainCore.Tasks.Update
 {
@@ -24,13 +22,13 @@ namespace MainCore.Tasks.Update
             this.CopyTo(taskUpdate);
             taskUpdate.Execute();
 
-            var hero = context.Heroes.Find(AccountId);
             var setting = context.AccountsSettings.Find(AccountId);
-            if (hero.Status == HeroStatusEnums.Home && setting.IsAutoAdventure)
+            if (setting.IsAutoAdventure)
             {
-                var adventures = context.Adventures.Where(a => a.AccountId == AccountId);
-                if (!adventures.Any()) return;
-                TaskManager.Add(AccountId, new StartAdventure(AccountId));
+                var taskAutoSend = new StartAdventure(AccountId);
+                this.CopyTo(taskAutoSend);
+                taskAutoSend.Execute();
+                taskUpdate.Execute();
             }
         }
     }
