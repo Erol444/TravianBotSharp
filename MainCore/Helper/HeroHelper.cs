@@ -55,7 +55,7 @@ namespace MainCore.Helper
                 wait.Until(driver =>
                 {
                     var html = new HtmlDocument();
-                    html.Load(driver.PageSource);
+                    html.LoadHtml(driver.PageSource);
                     var dialog = HeroPage.GetAmountBox(html);
                     return dialog is not null;
                 });
@@ -66,7 +66,7 @@ namespace MainCore.Helper
                 wait.Until(driver =>
                 {
                     var html = new HtmlDocument();
-                    html.Load(driver.PageSource);
+                    html.LoadHtml(driver.PageSource);
                     var inventoryPageWrapper = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("inventoryPageWrapper"));
                     return !inventoryPageWrapper.HasClass("loading");
                 });
@@ -115,7 +115,7 @@ namespace MainCore.Helper
             wait.Until(driver =>
             {
                 var html = new HtmlDocument();
-                html.Load(driver.PageSource);
+                html.LoadHtml(driver.PageSource);
                 var inventoryPageWrapper = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("inventoryPageWrapper"));
                 return !inventoryPageWrapper.HasClass("loading");
             });
