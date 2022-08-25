@@ -1,6 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Tasks;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -115,14 +116,18 @@ namespace MainCore.Services
                 _logManager.Error(index, e.Message, e);
                 if (task.RetryCounter > 3)
                 {
-                    UpdateAccountStatus(index, AccountStatus.Paused);
                     _logManager.Information(index, $"{task.Name} was excuted 3 times. Bot is paused");
+                    UpdateAccountStatus(index, AccountStatus.Paused);
                 }
                 else
                 {
+                    _logManager.Information(index, $"{task.Name} is failed. Retry counter is increased ({task.RetryCounter})");
                     task.RetryCounter++;
                     task.Cts.Cancel();
-                    _logManager.Information(index, $"{task.Name} is failed. Retry counter is increased ({task.RetryCounter})");
+                    var chrome = task.ChromeBrowser;
+                    chrome.GetChrome().Navigate().Refresh();
+                    var wait = chrome.GetWait();
+                    wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
                 }
             }
             var isCancellationRequested = task.Cts.IsCancellationRequested;
