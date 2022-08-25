@@ -113,7 +113,17 @@ namespace MainCore.Services
             catch (Exception e)
             {
                 _logManager.Error(index, e.Message, e);
-                UpdateAccountStatus(index, AccountStatus.Paused);
+                if (task.RetryCounter > 3)
+                {
+                    UpdateAccountStatus(index, AccountStatus.Paused);
+                    _logManager.Information(index, $"{task.Name} was excuted 3 times. Bot is paused");
+                }
+                else
+                {
+                    task.RetryCounter++;
+                    task.Cts.Cancel();
+                    _logManager.Information(index, $"{task.Name} is failed. Retry counter is increased ({task.RetryCounter})");
+                }
             }
             var isCancellationRequested = task.Cts.IsCancellationRequested;
             task.Cts.Dispose();

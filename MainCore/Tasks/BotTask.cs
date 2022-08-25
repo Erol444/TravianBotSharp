@@ -18,7 +18,7 @@ namespace MainCore.Tasks
 
         public TaskStage Stage { get; set; }
         public DateTime ExecuteAt { get; set; }
-        protected int RetryCounter { get; set; }
+        public int RetryCounter { get; set; }
         public CancellationTokenSource Cts { get; set; }
 
         public IDbContextFactory<AppDbContext> ContextFactory { get; set; }
