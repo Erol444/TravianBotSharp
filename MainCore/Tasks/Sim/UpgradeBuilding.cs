@@ -8,6 +8,7 @@ using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Sim
 {
@@ -18,6 +19,7 @@ namespace MainCore.Tasks.Sim
             _villageId = villageId;
         }
 
+        private readonly Random rand = new();
         public override string Name => $"Upgrade building village {VillageId}";
 
         private readonly int _villageId;
@@ -230,8 +232,114 @@ namespace MainCore.Tasks.Sim
             {
                 PlanManager.Remove(VillageId, buildingTask);
             }
+
+            var wait = ChromeBrowser.GetWait();
+
+            wait.Until(driver => driver.Url.Contains("dorf"));
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
 
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+        private void Upgrade(PlanTask buildingTask)
+        {
+            var html = ChromeBrowser.GetHtml();
+            var chrome = ChromeBrowser.GetChrome();
+
+            {
+                var nodeFastUpgrade = html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("videoFeatureButton") && x.HasClass("green"));
+                if (nodeFastUpgrade is null)
+                {
+                    throw new Exception($"Cannot find fast upgrade button for {buildingTask.Building}");
+                }
+                var elements = chrome.FindElements(By.XPath(nodeFastUpgrade.XPath));
+                if (elements.Count == 0)
+                {
+                    throw new Exception($"Cannot find fast upgrade button for {buildingTask.Building}");
+                }
+                elements[0].Click();
+            }
+            Thread.Sleep(rand.Next(2400, 5300));
+            html = ChromeBrowser.GetHtml();
+            {
+                var nodeNotShowAgainConfirm = html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']");
+                if (nodeNotShowAgainConfirm is not null)
+                {
+                    var elements = chrome.FindElements(By.XPath(nodeNotShowAgainConfirm.XPath));
+                    elements[0].Click();
+                    chrome.ExecuteScript("jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
+                }
+            }
+            {
+                var current = chrome.CurrentWindowHandle;
+                while (chrome.WindowHandles.Count > 1)
+                {
+                    if (Cts.IsCancellationRequested) return;
+                    var other = chrome.WindowHandles.FirstOrDefault(x => !x.Equals(current));
+                    chrome.SwitchTo().Window(other);
+                    chrome.Close();
+                    chrome.SwitchTo().Window(current);
+                }
+            }
+            Thread.Sleep(rand.Next(20000, 25000));
+            html = ChromeBrowser.GetHtml();
+            {
+                var nodeIframe = html.GetElementbyId("videoFeature");
+                if (nodeIframe is null)
+                {
+                    throw new Exception($"Cannot find iframe for {buildingTask.Building}");
+                }
+                var elementsIframe = chrome.FindElements(By.XPath(nodeIframe.XPath));
+                if (elementsIframe.Count == 0)
+                {
+                    throw new Exception($"Cannot find iframe for {buildingTask.Building}");
+                }
+                elementsIframe[0].Click();
+                chrome.SwitchTo().DefaultContent();
+
+                Thread.Sleep(rand.Next(1300, 2000));
+
+                do
+                {
+                    if (Cts.IsCancellationRequested) return;
+
+                    var handles = chrome.WindowHandles;
+                    if (handles.Count == 1) break;
+
+                    var current = chrome.CurrentWindowHandle;
+                    var other = chrome.WindowHandles.FirstOrDefault(x => !x.Equals(current));
+                    chrome.SwitchTo().Window(other);
+                    chrome.Close();
+                    chrome.SwitchTo().Window(current);
+                    elementsIframe[0].Click();
+                    chrome.SwitchTo().DefaultContent();
+                }
+                while (true);
+            }
+
+            {
+                var wait = ChromeBrowser.GetWait();
+                try
+                {
+                    wait.Until(driver => driver.Url.Contains("dorf"));
+                    wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+                }
+                catch
+                {
+                    html = ChromeBrowser.GetHtml();
+                    if (html.GetElementbyId("dontShowThisAgain") is not null)
+                    {
+                        var dontshowthisagain = chrome.FindElements(By.Id("dontShowThisAgain"));
+                        dontshowthisagain[0].Click();
+                        Thread.Sleep(800);
+                        var dialogbuttonok = chrome.FindElements(By.ClassName("dialogButtonOk"));
+                        dialogbuttonok[0].Click();
+                    }
+                }
+            }
+        }
+
+#else
         private void Upgrade(PlanTask buildingTask)
         {
             var html = ChromeBrowser.GetHtml();
@@ -240,7 +348,7 @@ namespace MainCore.Tasks.Sim
 
             if (upgradeButton == null)
             {
-                throw new Exception("Cannot find upgrade button");
+                throw new Exception($"Cannot find upgrade button for {buildingTask.Building}");
             }
 
             var chrome = ChromeBrowser.GetChrome();
@@ -248,11 +356,17 @@ namespace MainCore.Tasks.Sim
             var elements = chrome.FindElements(By.XPath(upgradeButton.XPath));
             if (elements.Count == 0)
             {
-                throw new Exception("Cannot find upgrade button");
+                throw new Exception($"Cannot find upgrade button for {buildingTask.Building}");
             }
 
             elements[0].Click();
+
+            var wait = ChromeBrowser.GetWait();
+
+            wait.Until(driver => driver.Url.Contains("dorf"));
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
+#endif
 
         private void Update()
         {
