@@ -5,6 +5,7 @@ using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Services
 {
@@ -150,6 +151,11 @@ namespace MainCore.Services
 
             _databaseEvent.OnTaskUpdated(index);
             _taskExecuting[index] = false;
+
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.AccountsSettings.Find(index);
+
+            Thread.Sleep(_rand.Next(setting.TaskDelayMin, setting.TaskDelayMax));
         }
 
         public bool IsTaskExecuting(int index)
@@ -176,6 +182,7 @@ namespace MainCore.Services
         private readonly Dictionary<int, List<BotTask>> _tasksDict = new();
         private readonly Dictionary<int, bool> _taskExecuting = new();
         private readonly Dictionary<int, AccountStatus> _botStatus = new();
+        private readonly Random _rand = new();
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _databaseEvent;
