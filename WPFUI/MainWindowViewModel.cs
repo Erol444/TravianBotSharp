@@ -121,10 +121,10 @@ namespace WPFUI
                 }
 
                 var chromeBrowser = _chromeManager.Get(CurrentAccount.Id);
-                chromeBrowser.Setup(selectedAccess);
+                var setting = context.AccountsSettings.Find(CurrentAccount.Id);
+                chromeBrowser.Setup(selectedAccess, setting);
                 chromeBrowser.Navigate(CurrentAccount.Server);
                 _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id), true);
-                var setting = context.AccountsSettings.Find(CurrentAccount.Id);
                 (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
 
                 var time = TimeSpan.FromMinutes(rand.Next(min, max));

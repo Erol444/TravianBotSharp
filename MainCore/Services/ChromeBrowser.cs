@@ -26,7 +26,7 @@ namespace MainCore.Services
             _chromeService.HideCommandPromptWindow = true;
         }
 
-        public void Setup(Access access)
+        public void Setup(Access access, AccountSetting setting)
         {
             ChromeOptions options = new();
 
@@ -52,16 +52,18 @@ namespace MainCore.Services
             options.AddArgument("--disable-blink-features=AutomationControlled");
             options.AddArgument("--disable-features=UserAgentClientHint");
             options.AddArgument("--disable-logging");
-
-            // Mute audio because of the Ads
-            options.AddArgument("--mute-audio");
             options.AddArgument("--no-sandbox");
+
+            options.AddArgument("--mute-audio");
+            if (setting.IsDontLoadImage) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
 
             var path = Path.Combine(AppContext.BaseDirectory, "Data", "Cache", access.ProxyHost ?? "default");
             Directory.CreateDirectory(path);
             options.AddArguments($"user-data-dir={path}");
 
             _driver = new ChromeDriver(_chromeService, options);
+            if (setting.IsMinimized) _driver.Manage().Window.Minimize();
+
             _driver.Manage().Timeouts().PageLoad = TimeSpan.FromMinutes(1);
             _wait = new WebDriverWait(_driver, TimeSpan.FromMinutes(1));
         }

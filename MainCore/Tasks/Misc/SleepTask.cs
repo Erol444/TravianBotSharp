@@ -21,6 +21,7 @@ namespace MainCore.Tasks.Misc
             var context = ContextFactory.CreateDbContext();
             var accesses = context.Accesses.Where(x => x.AccountId == AccountId).OrderBy(x => x.LastUsed);
             var currentAccess = accesses.Last();
+            var setting = context.AccountsSettings.Find(AccountId);
 
             Access selectedAccess = null;
             foreach (var access in accesses)
@@ -46,7 +47,6 @@ namespace MainCore.Tasks.Misc
             }
             if (selectedAccess is null || selectedAccess.Id == currentAccess.Id)
             {
-                var setting = context.AccountsSettings.Find(AccountId);
                 (var min, var max) = (setting.SleepTimeMin, setting.SleepTimeMax);
 
                 var time = TimeSpan.FromMinutes(random.Next(min, max));
@@ -61,8 +61,7 @@ namespace MainCore.Tasks.Misc
                 LogManager.Information(AccountId, $"Bot is sleeping in {3} minute(s)");
                 Task.Delay(TimeSpan.FromMinutes(3), Cts.Token).Wait();
             }
-
-            ChromeBrowser.Setup(selectedAccess);
+            ChromeBrowser.Setup(selectedAccess, setting);
             var currentAccount = context.Accounts.Find(AccountId);
             ChromeBrowser.Navigate(currentAccount.Server);
             TaskManager.Add(AccountId, new LoginTask(AccountId), true);

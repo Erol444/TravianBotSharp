@@ -7,7 +7,7 @@ namespace MainCore.Services
 {
     public interface IChromeBrowser
     {
-        public void Setup(Access access);
+        public void Setup(Access access, AccountSetting setting);
 
         public void Close();
 
