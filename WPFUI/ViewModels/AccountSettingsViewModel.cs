@@ -131,12 +131,28 @@ namespace WPFUI.ViewModels
                 accountSetting.IsClosedIfNoTask = IsClosedIfNoTask;
                 accountSetting.IsMinimized = IsMinimized;
                 accountSetting.IsAutoAdventure = IsAutoStartAdventure;
+
                 context.Update(accountSetting);
                 context.SaveChanges();
+
+                TaskBasedSetting();
             });
             _waitingWindow.Hide();
 
             MessageBox.Show("Saved.", "Info");
+        }
+
+        private void TaskBasedSetting()
+        {
+            var list = _taskManager.GetList(_accountId);
+            var tasks = list.Where(x => x.GetType() == typeof(UpdateAdventures));
+            if (IsAutoStartAdventure)
+            {
+                if (!tasks.Any())
+                {
+                    _taskManager.Add(_accountId, new UpdateAdventures(_accountId));
+                }
+            }
         }
 
         private void CloseTask()
@@ -322,19 +338,7 @@ namespace WPFUI.ViewModels
         public bool IsAutoStartAdventure
         {
             get => _isAutoStartAdventure;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _isAutoStartAdventure, value);
-                var list = _taskManager.GetList(_accountId);
-                var tasks = list.Where(x => x.GetType() == typeof(UpdateAdventures));
-                if (value)
-                {
-                    if (!tasks.Any())
-                    {
-                        _taskManager.Add(_accountId, new UpdateAdventures(_accountId));
-                    }
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _isAutoStartAdventure, value);
         }
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
