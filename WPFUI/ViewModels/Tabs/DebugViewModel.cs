@@ -1,7 +1,11 @@
-﻿using MainCore.Models.Runtime;
+﻿using MainCore.Enums;
+using MainCore.Models.Runtime;
 using MainCore.Services;
+using MainCore.Tasks.Misc;
 using ReactiveUI;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Reactive;
 using WPFUI.Interfaces;
 using WPFUI.Models;
 
@@ -17,6 +21,8 @@ namespace WPFUI.ViewModels.Tabs
 
             _databaseEvent.TaskUpdated += OnTasksUpdate;
             _databaseEvent.LogUpdated += OnLogsUpdate;
+
+            Button = ReactiveCommand.Create(ButtonTask);
         }
 
         public void OnActived()
@@ -28,6 +34,18 @@ namespace WPFUI.ViewModels.Tabs
         {
             OnTasksUpdate(accountId);
             OnLogsUpdate(accountId);
+        }
+
+        private void ButtonTask()
+        {
+            var items = new List<(HeroItemEnums, int)>()  {
+                        (HeroItemEnums.Wood, 10),
+                        (HeroItemEnums.Clay, 10),
+                        (HeroItemEnums.Iron, 10),
+                (HeroItemEnums.Crop, 10),
+                    };
+            var taskEquip = new HeroEquip(23182, AccountId, items);
+            _taskManager.Add(AccountId, taskEquip);
         }
 
         private void OnTasksUpdate(int accountId)
@@ -69,6 +87,7 @@ namespace WPFUI.ViewModels.Tabs
         public ObservableCollection<TaskModel> Tasks { get; } = new();
 
         public ObservableCollection<LogMessage> Logs { get; } = new();
+        public ReactiveCommand<Unit, Unit> Button { get; }
 
         private int _accountId;
 

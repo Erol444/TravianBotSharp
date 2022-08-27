@@ -3,6 +3,7 @@ using MainCore.Enums;
 using MainCore.Services;
 using OpenQA.Selenium;
 using System;
+using System.Threading;
 
 #if TRAVIAN_OFFICIAL
 
@@ -120,6 +121,7 @@ namespace MainCore.Helper
                 return !inventoryPageWrapper.HasClass("loading");
             });
 #else
+            Thread.Sleep(3000);
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 #endif
         }

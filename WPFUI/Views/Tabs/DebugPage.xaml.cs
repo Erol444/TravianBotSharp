@@ -26,6 +26,11 @@ namespace WPFUI.Views.Tabs
                     v => v.TaskGird.ItemsSource)
                 .DisposeWith(d);
 
+                this.BindCommand(ViewModel,
+                    vm => vm.Button,
+                    v => v.ReportButton)
+                .DisposeWith(d);
+
                 ViewModel.OnActived();
             });
         }
