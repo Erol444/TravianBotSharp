@@ -64,5 +64,14 @@ namespace MainCore.Helper
             // If id between 1 and 4, it's resource field
             return buildingInt < 5 && buildingInt > 0;
         }
+
+        public static bool IsNotAdsUpgrade(this BuildingEnums building)
+        {
+            return building switch
+            {
+                BuildingEnums.CommandCenter or BuildingEnums.Palace or BuildingEnums.Residence => true,
+                _ => false,
+            };
+        }
     }
 }

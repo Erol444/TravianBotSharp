@@ -223,6 +223,7 @@ namespace MainCore.Tasks.Sim
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
                     if (buildingTask.Building.IsResourceField() && building.Level == 0) Upgrade(buildingTask);
+                    else if (buildingTask.Building.IsNotAdsUpgrade()) Upgrade(buildingTask);
                     else UpgradeAds(buildingTask);
 #else
                     Upgrade(buildingTask);
@@ -396,9 +397,6 @@ namespace MainCore.Tasks.Sim
 
         private void Update()
         {
-            var wait = ChromeBrowser.GetWait();
-            wait.Until(driver => driver.Url.Contains("dorf"));
-            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
             var taskUpdateVillage = new UpdateVillage(VillageId, AccountId);
             this.CopyTo(taskUpdateVillage);
             taskUpdateVillage.Execute();
