@@ -23,7 +23,6 @@ namespace MainCore.Tasks.Misc
 
         public override void Execute()
         {
-            NavigateHelper.ToHeroInventory(ChromeBrowser);
             using var context = ContextFactory.CreateDbContext();
             if (VillageId != -1) NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
             var heroStatus = context.Heroes.Find(AccountId).Status;
@@ -45,12 +44,18 @@ namespace MainCore.Tasks.Misc
                 else
                 {
                     Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
-                    HeroHelper.EnterAmount(ChromeBrowser, amount);
+                    HeroHelper.EnterAmount(ChromeBrowser, RoundUpTo100(amount));
                     HeroHelper.Confirm(ChromeBrowser);
                     Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
                 }
                 Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
             }
+        }
+
+        private static int RoundUpTo100(int res)
+        {
+            var remainder = res % 100;
+            return res + (100 - remainder);
         }
     }
 }

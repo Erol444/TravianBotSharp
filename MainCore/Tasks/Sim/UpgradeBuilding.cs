@@ -190,6 +190,23 @@ namespace MainCore.Tasks.Sim
                     var taskEquip = new HeroEquip(VillageId, AccountId, items);
                     this.CopyTo(taskEquip);
                     taskEquip.Execute();
+
+                    if (Cts.IsCancellationRequested) return;
+                    NavigateHelper.GoToBuilding(ChromeBrowser, buildingTask.Location);
+
+                    if (Cts.IsCancellationRequested) return;
+                    if (building.Type == BuildingEnums.Site)
+                    {
+                        var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
+                        NavigateHelper.SwitchTab(ChromeBrowser, tab);
+                    }
+                    else
+                    {
+                        if (BuildingsData.HasMultipleTabs(buildingTask.Building))
+                        {
+                            NavigateHelper.SwitchTab(ChromeBrowser, 0);
+                        }
+                    }
 #else
                     LogManager.Information(AccountId, "Don't have enough resources.");
                     var production = context.VillagesProduction.Find(VillageId);
@@ -201,7 +218,16 @@ namespace MainCore.Tasks.Sim
 
                 if (Cts.IsCancellationRequested) return;
                 if (isNewBuilding) Construct(buildingTask);
-                else Upgrade(buildingTask);
+                else
+                {
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+                    if (buildingTask.Building.IsResourceField() && building.Level == 0) Upgrade(buildingTask);
+                    else UpgradeAds(buildingTask);
+#else
+                    Upgrade(buildingTask);
+#endif
+                }
 
                 Update();
             }
@@ -241,7 +267,7 @@ namespace MainCore.Tasks.Sim
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
-        private void Upgrade(PlanTask buildingTask)
+        private void UpgradeAds(PlanTask buildingTask)
         {
             var html = ChromeBrowser.GetHtml();
             var chrome = ChromeBrowser.GetChrome();
@@ -339,7 +365,8 @@ namespace MainCore.Tasks.Sim
             }
         }
 
-#else
+#endif
+
         private void Upgrade(PlanTask buildingTask)
         {
             var html = ChromeBrowser.GetHtml();
@@ -366,7 +393,6 @@ namespace MainCore.Tasks.Sim
             wait.Until(driver => driver.Url.Contains("dorf"));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
-#endif
 
         private void Update()
         {

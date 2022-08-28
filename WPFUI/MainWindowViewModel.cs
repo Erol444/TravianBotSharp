@@ -113,10 +113,9 @@ namespace WPFUI
 
                 if (selectedAccess is null)
                 {
+                    _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Offline);
                     _logManager.Information(CurrentAccount.Id, "All proxy of this account is not working");
                     MessageBox.Show("All proxy of this account is not working");
-                    _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Offline);
-
                     return;
                 }
 

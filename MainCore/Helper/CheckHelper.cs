@@ -45,7 +45,7 @@ namespace MainCore.Helper
         {
             var html = chromeBrowser.GetHtml();
             HtmlNode contractNode;
-            if (multiple)
+            if (multiple && !building.IsResourceField())
             {
                 contractNode = html.GetElementbyId($"contract_building{(int)building}");
             }
