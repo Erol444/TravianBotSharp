@@ -124,10 +124,14 @@ namespace WPFUI
                 chromeBrowser.Setup(selectedAccess, setting);
                 chromeBrowser.Navigate(CurrentAccount.Server);
                 _taskManager.Add(CurrentAccount.Id, new LoginTask(CurrentAccount.Id), true);
-                (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
 
-                var time = TimeSpan.FromMinutes(rand.Next(min, max));
-                _taskManager.Add(CurrentAccount.Id, new SleepTask(CurrentAccount.Id) { ExecuteAt = DateTime.Now.Add(time) });
+                var sleepExist = _taskManager.GetList(CurrentAccount.Id).FirstOrDefault(x => x.GetType() == typeof(SleepTask));
+                if (sleepExist is null)
+                {
+                    (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
+                    var time = TimeSpan.FromMinutes(rand.Next(min, max));
+                    _taskManager.Add(CurrentAccount.Id, new SleepTask(CurrentAccount.Id) { ExecuteAt = DateTime.Now.Add(time) });
+                }
                 _timeManager.Start(CurrentAccount.Id);
             });
             _taskManager.UpdateAccountStatus(CurrentAccount.Id, AccountStatus.Online);

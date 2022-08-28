@@ -29,9 +29,8 @@ namespace MainCore.Services
                     timer.Start();
                 };
                 _dictTimer.Add(index, timer);
+                _dictTimer[index].Start();
             }
-            _dictTimer[index].Start();
-
         }
 
         private readonly Dictionary<int, Timer> _dictTimer = new();

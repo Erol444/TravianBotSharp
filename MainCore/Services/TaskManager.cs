@@ -30,7 +30,14 @@ namespace MainCore.Services
                 var firstTask = _tasksDict[index].FirstOrDefault();
                 if (firstTask is not null)
                 {
-                    task.ExecuteAt = firstTask.ExecuteAt.AddSeconds(-1);
+                    if (firstTask.ExecuteAt < DateTime.Now)
+                    {
+                        task.ExecuteAt = firstTask.ExecuteAt.AddSeconds(-1);
+                    }
+                    else
+                    {
+                        task.ExecuteAt = DateTime.Now;
+                    }
                     ReOrder(index);
                 }
             }
