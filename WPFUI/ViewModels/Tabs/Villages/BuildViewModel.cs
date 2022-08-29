@@ -89,6 +89,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                         Location = building.Id,
                         Type = plannedBuild.Building,
                         Level = $"{building.Level} -> {plannedBuild.Level}",
+                        Color = plannedBuild.Building.GetColor()
                     });
                 }
                 else
@@ -98,6 +99,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                         Location = building.Id,
                         Type = building.Type,
                         Level = building.Level.ToString(),
+                        Color = building.Type.GetColor()
                     });
                 }
             }
@@ -204,6 +206,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             };
             _planManager.Add(VillageId, task);
             LoadQueue(VillageId);
+            LoadBuildings(VillageId);
 
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.Where(x => x.AccountId == AccountId).OfType<UpgradeBuilding>().Where(x => x.VillageId == VillageId);
@@ -239,6 +242,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
             };
             _planManager.Add(VillageId, task);
             LoadQueue(VillageId);
+            LoadBuildings(VillageId);
+
             var listTask = _taskManager.GetList(AccountId);
 
             var tasks = listTask.Where(x => x.AccountId == AccountId).OfType<UpgradeBuilding>().Where(x => x.VillageId == VillageId);

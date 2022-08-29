@@ -73,5 +73,18 @@ namespace MainCore.Helper
                 _ => false,
             };
         }
+
+        public static string GetColor(this BuildingEnums building)
+        {
+            return building switch
+            {
+                BuildingEnums.Site => "White",
+                BuildingEnums.Woodcutter => "ForestGreen",
+                BuildingEnums.ClayPit => "Orange",
+                BuildingEnums.IronMine => "Gray",
+                BuildingEnums.Cropland => "Yellow",
+                _ => "LawnGreen",
+            };
+        }
     }
 }

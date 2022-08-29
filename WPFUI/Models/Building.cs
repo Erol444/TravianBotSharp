@@ -7,5 +7,6 @@ namespace WPFUI.Models
         public int Location { get; set; }
         public BuildingEnums Type { get; set; }
         public string Name => Type.ToString();
+        public string Color { get; set; }
     }
 }

@@ -36,6 +36,12 @@
             </DataGrid>
             <TextBlock x:Name="Buildins" HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" Text="Buildings" />
             <DataGrid x:Name="BuildingsGrid" Margin="2,2,2,2" Grid.Row="3" d:ItemsSource="{d:SampleData ItemCount=40}" IsReadOnly="True" AutoGenerateColumns="False">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Foreground" Value="{Binding Color}"/>
+                        <Setter Property="Background" Value="Black"/>
+                    </Style>
+                </DataGrid.RowStyle>
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Location" Binding="{Binding Location}" />
                     <DataGridTextColumn Header="Buildings" Binding="{Binding Name}" />
