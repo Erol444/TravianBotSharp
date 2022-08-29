@@ -27,11 +27,10 @@ namespace MainCore.Tasks.Sim
 
         public override void Execute()
         {
-            using var context = ContextFactory.CreateDbContext();
-
             do
             {
                 if (Cts.IsCancellationRequested) return;
+                using var context = ContextFactory.CreateDbContext();
 
                 var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, PlanManager, LogManager, AccountId, VillageId);
                 if (buildingTask is null)
@@ -192,11 +191,42 @@ namespace MainCore.Tasks.Sim
                     taskEquip.Execute();
 
                     if (Cts.IsCancellationRequested) return;
+                    // move to correct page
+                    switch (dorf)
+                    {
+                        case 1:
+                            NavigateHelper.ToDorf1(ChromeBrowser, true);
+                            UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+                            UpdateHelper.UpdateDorf1(context, ChromeBrowser, VillageId);
+                            break;
+
+                        case 2:
+                            NavigateHelper.ToDorf2(ChromeBrowser, true);
+                            UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+                            UpdateHelper.UpdateDorf2(context, ChromeBrowser, AccountId, VillageId);
+                            break;
+                    }
+
+                    building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
+                    if (building.Level >= buildingTask.Level)
+                    {
+                        PlanManager.Remove(VillageId, buildingTask);
+                        continue;
+                    }
+                    currently = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == buildingTask.Location);
+                    if (currently is not null && currently.Level >= buildingTask.Level)
+                    {
+                        PlanManager.Remove(VillageId, buildingTask);
+                        continue;
+                    }
+
+                    if (Cts.IsCancellationRequested) return;
                     NavigateHelper.GoToBuilding(ChromeBrowser, buildingTask.Location);
 
                     if (Cts.IsCancellationRequested) return;
                     if (building.Type == BuildingEnums.Site)
                     {
+                        isNewBuilding = true;
                         var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
                         NavigateHelper.SwitchTab(ChromeBrowser, tab);
                     }

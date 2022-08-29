@@ -22,7 +22,7 @@ namespace MainCore.Helper
             RemoveFinishedCB(context, villageId);
 
             var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-            var totalBuild = currentList.Count(x => x.CompleteTime != DateTime.MaxValue);
+            var totalBuild = currentList.Count(x => x.Level != -1);
 
             if (totalBuild > 0)
             {

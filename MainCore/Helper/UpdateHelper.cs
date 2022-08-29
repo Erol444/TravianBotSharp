@@ -111,7 +111,7 @@ namespace MainCore.Helper
             }
             context.SaveChanges();
 
-            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
+            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).Where(x => x.Level != -1).ToList();
             if (currentlyBuilding.Count > 0)
             {
                 foreach (var building in currentlyBuilding)
