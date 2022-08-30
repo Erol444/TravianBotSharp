@@ -27,10 +27,19 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="ServerTextBlock" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="Server" VerticalAlignment="Center" TextAlignment="Center" Margin="10,0,5,0" />
             <TextBlock x:Name="UsernameTextBlock" Grid.Column="2" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="Username" VerticalAlignment="Center" TextAlignment="Center" Margin="10,0,5,0" />
-            <TextBox x:Name="ServerTextBox" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" />
-            <TextBox x:Name="UsernameTextBox" Grid.Column="3" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Center" />
+            <TextBox x:Name="ServerTextBox" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Center" />
+            <TextBox x:Name="UsernameTextBox" Grid.Column="3" HorizontalAlignment="Stretch" TextWrapping="Wrap"  VerticalAlignment="Center" />
         </Grid>
-        <DataGrid x:Name="ProxiesDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" CanUserDeleteRows="True" />
+        <DataGrid x:Name="ProxiesDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" CanUserDeleteRows="True" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Password" Binding="{Binding Password}" />
+                <DataGridTextColumn Header="ProxyHost" Binding="{Binding ProxyHost}" />
+                <DataGridTextColumn Header="ProxyPort" Binding="{Binding ProxyPort}" />
+                <DataGridTextColumn Header="ProxyUsername" Binding="{Binding ProxyUsername}" />
+                <DataGridTextColumn Header="ProxyPassword" Binding="{Binding ProxyPassword}" />
+                <DataGridTextColumn Header="Status" Binding="{Binding ProxyStatus}" />
+            </DataGrid.Columns>
+        </DataGrid>
 
         <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
