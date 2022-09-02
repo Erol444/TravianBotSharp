@@ -1,0 +1,275 @@
+﻿using MainCore;
+using MainCore.Enums;
+using MainCore.Helper;
+using MainCore.Models.Database;
+using MainCore.Services;
+using MainCore.Tasks.Misc;
+using Microsoft.EntityFrameworkCore;
+using ReactiveUI;
+using System;
+using System.Linq;
+using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using WPFUI.Interfaces;
+using WPFUI.Views;
+
+namespace WPFUI.ViewModels.Uc
+{
+    public class ButtonPanelViewModel : ReactiveObject, IMainTabPage
+    {
+        public ButtonPanelViewModel()
+        {
+            _accountWindow = App.GetService<AccountWindow>();
+            _accountsWindow = App.GetService<AccountsWindow>();
+            _accountSettingsWindow = App.GetService<AccountSettingsWindow>();
+            _waitingWindow = App.GetService<WaitingWindow>();
+            _versionWindow = App.GetService<VersionWindow>();
+
+            _chromeManager = App.GetService<IChromeManager>();
+            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+            _databaseEvent = App.GetService<IEventManager>();
+            _databaseEvent.AccountStatusUpdate += OnAccountUpdate;
+            _taskManager = App.GetService<ITaskManager>();
+            _logManager = App.GetService<ILogManager>();
+            _timeManager = App.GetService<ITimerManager>();
+            _restClientManager = App.GetService<IRestClientManager>();
+
+            _isAccountNotSelected = this.WhenAnyValue(x => x.IsAccountSelected).Select(x => !x).ToProperty(this, x => x.IsAccountNotSelected);
+            _isAccountNotRunning = this.WhenAnyValue(x => x.IsAccountRunning).Select(x => !x).ToProperty(this, x => x.IsAccountNotRunning);
+
+            CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
+            AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
+            AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
+            EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
+            DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected), RxApp.TaskpoolScheduler);
+            SettingsAccountCommand = ReactiveCommand.Create(SettingsAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
+
+            LoginCommand = ReactiveCommand.Create(LoginTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b), RxApp.TaskpoolScheduler);
+            LogoutCommand = ReactiveCommand.Create(LogoutTask, this.WhenAnyValue(vm => vm.IsAccountRunning, vm => vm.IsAccountSelected, (a, b) => a && b), RxApp.TaskpoolScheduler);
+            LoginAllCommand = ReactiveCommand.Create(LoginAllTask, outputScheduler: RxApp.TaskpoolScheduler);
+            LogoutAllCommand = ReactiveCommand.Create(LogoutAllTask, outputScheduler: RxApp.TaskpoolScheduler);
+        }
+
+        private void OnAccountUpdate()
+        {
+            if (IsAccountSelected)
+            {
+                IsAccountRunning = _taskManager.GetAccountStatus(AccountId) == AccountStatus.Online;
+            }
+        }
+
+        private void CheckVersionTask()
+        {
+            _versionWindow.Show();
+        }
+
+        private void AddAccountTask()
+        {
+            _accountWindow.ViewModel.AccountId = -1;
+            _accountWindow.Show();
+        }
+
+        private void AddAccountsTask()
+        {
+            _accountsWindow.Show();
+        }
+
+        private void LoginTask() => LoginAccount(AccountId);
+
+        private void LogoutTask() => LogoutAccount(AccountId);
+
+        private void LoginAllTask()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var accounts = context.Accounts;
+            foreach (var account in accounts)
+            {
+                LoginAccount(account.Id);
+            }
+        }
+
+        private void LogoutAllTask()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var accounts = context.Accounts;
+            foreach (var account in accounts)
+            {
+                LogoutAccount(account.Id);
+            }
+        }
+
+        private void EditAccountTask()
+        {
+            _accountWindow.ViewModel.AccountId = AccountId;
+            _accountWindow.ViewModel.LoadData();
+            _accountWindow.Show();
+        }
+
+        private async Task DeleteAccountTask()
+        {
+            _waitingWindow.ViewModel.Text = "saving data";
+            _waitingWindow.Show();
+            await Task.Run(() => DeleteAccount(AccountId));
+            _databaseEvent.OnAccountsTableUpdate();
+            _waitingWindow.Hide();
+        }
+
+        private void SettingsAccountTask()
+        {
+            _accountSettingsWindow.ViewModel.LoadData(AccountId);
+            _accountSettingsWindow.Show();
+        }
+
+        private void LoginAccount(int index)
+        {
+            _taskManager.UpdateAccountStatus(index, AccountStatus.Starting);
+            _logManager.AddAccount(index);
+            using var context = _contextFactory.CreateDbContext();
+            var accesses = context.Accesses.Where(x => x.AccountId == index).OrderBy(x => x.LastUsed);
+            Access selectedAccess = null;
+            foreach (var access in accesses)
+            {
+                if (string.IsNullOrEmpty(access.ProxyHost))
+                {
+                    selectedAccess = access;
+                    break;
+                }
+
+                _logManager.Information(index, $"Checking proxy {access.ProxyHost}");
+                var result = AccessHelper.CheckAccess(_restClientManager.Get(access.Id), access.ProxyHost);
+                if (result)
+                {
+                    _logManager.Information(index, $"Proxy {access.ProxyHost} is working");
+                    selectedAccess = access;
+                    access.LastUsed = DateTime.Now;
+                    context.SaveChanges();
+                    break;
+                }
+                else
+                {
+                    _logManager.Information(index, $"Proxy {access.ProxyHost} is not working");
+                }
+            }
+
+            if (selectedAccess is null)
+            {
+                _taskManager.UpdateAccountStatus(index, AccountStatus.Offline);
+                _logManager.Information(index, "All proxy of this account is not working");
+                MessageBox.Show("All proxy of this account is not working");
+                return;
+            }
+
+            var chromeBrowser = _chromeManager.Get(index);
+            var setting = context.AccountsSettings.Find(index);
+            var account = context.Accounts.Find(index);
+            chromeBrowser.Setup(selectedAccess, setting);
+
+            chromeBrowser.Navigate(account.Server);
+            _taskManager.Add(index, new LoginTask(index), true);
+
+            var sleepExist = _taskManager.GetList(index).FirstOrDefault(x => x.GetType() == typeof(SleepTask));
+            if (sleepExist is null)
+            {
+                (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
+                var time = TimeSpan.FromMinutes(rand.Next(min, max));
+                _taskManager.Add(index, new SleepTask(index) { ExecuteAt = DateTime.Now.Add(time) });
+            }
+
+            _timeManager.Start(index);
+            _taskManager.UpdateAccountStatus(index, AccountStatus.Online);
+        }
+
+        private void LogoutAccount(int index)
+        {
+            _taskManager.UpdateAccountStatus(index, AccountStatus.Stopping);
+
+            var current = _taskManager.GetCurrentTask(index);
+            if (current is not null)
+            {
+                current.Cts.Cancel();
+                while (current.Stage != TaskStage.Waiting) { }
+            }
+
+            _chromeManager.Get(index).Close();
+            _taskManager.UpdateAccountStatus(index, AccountStatus.Offline);
+        }
+
+        private void DeleteAccount(int index)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            context.DeleteAccount(index);
+            context.SaveChanges();
+        }
+
+        public void OnActived()
+        {
+        }
+
+        public ReactiveCommand<Unit, Unit> CheckVersionCommand { get; }
+        public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }
+        public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }
+        public ReactiveCommand<Unit, Unit> EditAccountCommand { get; }
+        public ReactiveCommand<Unit, Unit> DeleteAccountCommand { get; }
+        public ReactiveCommand<Unit, Unit> SettingsAccountCommand { get; }
+        public ReactiveCommand<Unit, Unit> LoginCommand { get; }
+        public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
+        public ReactiveCommand<Unit, Unit> LoginAllCommand { get; }
+        public ReactiveCommand<Unit, Unit> LogoutAllCommand { get; }
+
+        private bool _isAccountSelected = false;
+
+        public bool IsAccountSelected
+        {
+            get => _isAccountSelected;
+            set => this.RaiseAndSetIfChanged(ref _isAccountSelected, value);
+        }
+
+        private readonly ObservableAsPropertyHelper<bool> _isAccountNotSelected;
+
+        public bool IsAccountNotSelected
+        {
+            get => _isAccountNotSelected.Value;
+        }
+
+        private bool _isAccountRunning;
+
+        public bool IsAccountRunning
+        {
+            get => _isAccountRunning;
+            set => this.RaiseAndSetIfChanged(ref _isAccountRunning, value);
+        }
+
+        private readonly ObservableAsPropertyHelper<bool> _isAccountNotRunning;
+
+        public bool IsAccountNotRunning
+        {
+            get => _isAccountNotRunning.Value;
+        }
+
+        private int _accountId;
+
+        public int AccountId
+        {
+            get => _accountId;
+            set => this.RaiseAndSetIfChanged(ref _accountId, value);
+        }
+
+        private readonly IChromeManager _chromeManager;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _databaseEvent;
+        private readonly ITaskManager _taskManager;
+        private readonly ILogManager _logManager;
+        private readonly ITimerManager _timeManager;
+        private readonly IRestClientManager _restClientManager;
+
+        private readonly AccountWindow _accountWindow;
+        private readonly AccountsWindow _accountsWindow;
+        private readonly AccountSettingsWindow _accountSettingsWindow;
+        private readonly WaitingWindow _waitingWindow;
+        private readonly VersionWindow _versionWindow;
+
+        private readonly Random rand = new();
+    }
+}

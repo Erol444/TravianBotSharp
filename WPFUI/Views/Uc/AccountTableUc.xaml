@@ -1,0 +1,17 @@
+﻿<rxui:ReactiveUserControl
+        x:Class="WPFUI.Views.Uc.AccountTableUc"
+        x:TypeArguments="vms:AccountTableViewModel"
+        xmlns:rxui="http://reactiveui.net"
+        xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d" d:DesignHeight="229.073">
+    <DataGrid x:Name="AccountGrid" Grid.ColumnSpan="2" Grid.Row="6"  IsReadOnly="True" SelectionMode="Single" AutoGenerateColumns="False">
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="Account" Binding="{Binding Username}" />
+            <DataGridTextColumn Header="Server" Binding="{Binding Server}" />
+        </DataGrid.Columns>
+    </DataGrid>
+</rxui:ReactiveUserControl>

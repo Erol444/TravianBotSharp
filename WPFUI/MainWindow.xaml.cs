@@ -15,50 +15,7 @@ namespace WPFUI
 
             InitializeComponent();
 
-            #region Commands
 
-            this.BindCommand(ViewModel,
-                vm => vm.CheckVersionCommand,
-                v => v.CheckVersionButton
-            );
-            this.BindCommand(ViewModel,
-                vm => vm.AddAccountCommand,
-                v => v.AddAccountButton
-            );
-            this.BindCommand(ViewModel,
-               vm => vm.AddAccountsCommand,
-               v => v.AddAccountsButton
-           );
-            this.BindCommand(ViewModel,
-               vm => vm.LoginCommand,
-               v => v.LoginButton
-           );
-            this.BindCommand(ViewModel,
-               vm => vm.LogoutCommand,
-               v => v.LogoutButton
-           );
-            this.BindCommand(ViewModel,
-               vm => vm.EditAccountCommand,
-               v => v.EditButton
-           );
-            this.BindCommand(ViewModel,
-               vm => vm.DeleteAccountCommand,
-               v => v.DeleteButton
-           );
-            this.BindCommand(ViewModel,
-              vm => vm.SettingsAccountCommand,
-              v => v.SettingsButton
-          );
-            this.BindCommand(ViewModel,
-               vm => vm.LoginAllCommand,
-               v => v.LoginAllButton
-           );
-            this.BindCommand(ViewModel,
-               vm => vm.LogoutAllCommand,
-               v => v.LogoutAllButton
-           );
-
-            #endregion Commands
 
             #region Events
 
@@ -68,13 +25,9 @@ namespace WPFUI
 
             #region Data
 
-            this.OneWayBind(ViewModel,
-                vm => vm.Accounts,
-                v => v.AccountGrid.ItemsSource);
-
             this.Bind(ViewModel,
-                vm => vm.CurrentAccount,
-                v => v.AccountGrid.SelectedItem);
+                vm => vm.IsAccountSelected,
+                v => v.AccountTable.ViewModel.IsAccountSelected);
 
             this.OneWayBind(ViewModel,
                 vm => vm.IsAccountNotSelected,

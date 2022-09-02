@@ -77,7 +77,6 @@ namespace WPFUI
             if (versionWindow.ViewModel.IsNewVersion) versionWindow.Show();
 
             var mainWindow = GetService<MainWindow>();
-            mainWindow.ViewModel.LoadData();
             mainWindow.Show();
             waitingWindow.Hide();
         }
