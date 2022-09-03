@@ -71,8 +71,8 @@ namespace WPFUI
             };
 
             await Task.WhenAll(tasks);
-            var versionWindow = GetService<VersionWindow>();
 
+            var versionWindow = GetService<VersionWindow>();
             await versionWindow.ViewModel.Load();
             if (versionWindow.ViewModel.IsNewVersion) versionWindow.Show();
 
@@ -95,10 +95,7 @@ namespace WPFUI
         {
             services.AddSingleton<WaitingWindow>();
             services.AddSingleton<MainWindow>();
-            services.AddSingleton<AccountWindow>();
-            services.AddSingleton<AccountsWindow>();
             services.AddSingleton<VersionWindow>();
-            services.AddSingleton<AccountSettingsWindow>();
 
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(_connectionString));
             services.AddSingleton<IChromeManager, ChromeManager>();

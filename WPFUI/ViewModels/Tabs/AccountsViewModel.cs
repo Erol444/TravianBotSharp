@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Views;
 
-namespace WPFUI.ViewModels
+namespace WPFUI.ViewModels.Tabs
 {
     public class AccountsViewModel : ReactiveObject
     {

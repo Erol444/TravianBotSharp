@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System.ComponentModel;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using WPFUI.Views;
 
@@ -17,11 +18,14 @@ namespace WPFUI
             _chromeManager = App.GetService<IChromeManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _databaseEvent = App.GetService<IEventManager>();
-            _databaseEvent.AccountStatusUpdate += OnAccountUpdate;
             _taskManager = App.GetService<ITaskManager>();
             _logManager = App.GetService<ILogManager>();
             _timeManager = App.GetService<ITimerManager>();
             _restClientManager = App.GetService<IRestClientManager>();
+
+            _waitingWindow = App.GetService<WaitingWindow>();
+
+            _isAccountNotSelected = this.WhenAnyValue(x => x.IsAccountSelected).Select(x => !x).ToProperty(this, x => x.IsAccountNotSelected);
 
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
         }
@@ -52,11 +56,7 @@ namespace WPFUI
         private readonly ITimerManager _timeManager;
         private readonly IRestClientManager _restClientManager;
 
-        private readonly AccountWindow _accountWindow;
-        private readonly AccountsWindow _accountsWindow;
-        private readonly AccountSettingsWindow _accountSettingsWindow;
         private readonly WaitingWindow _waitingWindow;
-        private readonly VersionWindow _versionWindow;
 
         private bool _closed = false;
 
@@ -76,12 +76,11 @@ namespace WPFUI
             set => this.RaiseAndSetIfChanged(ref _isAccountSelected, value);
         }
 
-        private bool _isAccountRunning;
+        private readonly ObservableAsPropertyHelper<bool> _isAccountNotSelected;
 
-        public bool IsAccountRunning
+        public bool IsAccountNotSelected
         {
-            get => _isAccountRunning;
-            set => this.RaiseAndSetIfChanged(ref _isAccountRunning, value);
+            get => _isAccountNotSelected.Value;
         }
 
         public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }

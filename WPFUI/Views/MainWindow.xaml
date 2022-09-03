@@ -67,6 +67,27 @@
                     </Frame.Content>
                 </Frame>
             </TabItem>
+            <TabItem x:Name="AddAccountTab" Header="Add account">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:AddAccountPage x:Name="AddAccountPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
+            <TabItem x:Name="AddAccountsTab" Header="Add accounts">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:AddAccountsPage x:Name="AddAccountsPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
+            <TabItem x:Name="EditAccountTab" Header="Edit account">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:EditAccountPage x:Name="EditAccountPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
         </TabControl>
     </Grid>
 </reactiveui:ReactiveWindow>

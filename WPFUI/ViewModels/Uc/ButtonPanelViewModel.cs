@@ -21,9 +21,6 @@ namespace WPFUI.ViewModels.Uc
     {
         public ButtonPanelViewModel()
         {
-            _accountWindow = App.GetService<AccountWindow>();
-            _accountsWindow = App.GetService<AccountsWindow>();
-            _accountSettingsWindow = App.GetService<AccountSettingsWindow>();
             _waitingWindow = App.GetService<WaitingWindow>();
             _versionWindow = App.GetService<VersionWindow>();
 
@@ -67,13 +64,10 @@ namespace WPFUI.ViewModels.Uc
 
         private void AddAccountTask()
         {
-            _accountWindow.ViewModel.AccountId = -1;
-            _accountWindow.Show();
         }
 
         private void AddAccountsTask()
         {
-            _accountsWindow.Show();
         }
 
         private void LoginTask() => LoginAccount(AccountId);
@@ -102,9 +96,6 @@ namespace WPFUI.ViewModels.Uc
 
         private void EditAccountTask()
         {
-            _accountWindow.ViewModel.AccountId = AccountId;
-            _accountWindow.ViewModel.LoadData();
-            _accountWindow.Show();
         }
 
         private async Task DeleteAccountTask()
@@ -118,8 +109,6 @@ namespace WPFUI.ViewModels.Uc
 
         private void SettingsAccountTask()
         {
-            _accountSettingsWindow.ViewModel.LoadData(AccountId);
-            _accountSettingsWindow.Show();
         }
 
         private void LoginAccount(int index)
@@ -264,9 +253,6 @@ namespace WPFUI.ViewModels.Uc
         private readonly ITimerManager _timeManager;
         private readonly IRestClientManager _restClientManager;
 
-        private readonly AccountWindow _accountWindow;
-        private readonly AccountsWindow _accountsWindow;
-        private readonly AccountSettingsWindow _accountSettingsWindow;
         private readonly WaitingWindow _waitingWindow;
         private readonly VersionWindow _versionWindow;
 
