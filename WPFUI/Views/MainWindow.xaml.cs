@@ -1,8 +1,10 @@
 ﻿using ReactiveUI;
 using System;
+using System.Reactive.Disposables;
 using System.Windows;
+using WPFUI.ViewModels;
 
-namespace WPFUI
+namespace WPFUI.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -14,61 +16,110 @@ namespace WPFUI
             ViewModel = new();
 
             InitializeComponent();
+            this.WhenActivated(d =>
+            {
+                this.Events().Closing.InvokeCommand(this, x => x.ViewModel.ClosingCommand).DisposeWith(d);
 
+                this.OneWayBind(ViewModel,
+                   vm => vm.Accounts,
+                   v => v.AccountGrid.ItemsSource)
+               .DisposeWith(d);
 
+                this.Bind(ViewModel,
+                    vm => vm.CurrentAccount,
+                    v => v.AccountGrid.CurrentItem)
+                .DisposeWith(d);
 
-            #region Events
+                this.Bind(ViewModel,
+                    vm => vm.TabSelector,
+                    v => v.ButtonPanel.ViewModel.TabSelector)
+                .DisposeWith(d);
 
-            this.Events().Closing.InvokeCommand(this, x => x.ViewModel.ClosingCommand);
+                this.OneWayBind(ViewModel,
+                    vm => vm.CurrentAccount.Id,
+                    v => v.GeneralPage.ViewModel.AccountId)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.CurrentAccount.Id,
+                    v => v.SettingsPage.ViewModel.AccountId)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.CurrentAccount.Id,
+                    v => v.HeroPage.ViewModel.AccountId)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.CurrentAccount.Id,
+                    v => v.VillagesPage.ViewModel.AccountId)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.CurrentAccount.Id,
+                    v => v.DebugPage.ViewModel.AccountId)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.CurrentAccount.Id,
+                    v => v.EditAccountPage.ViewModel.AccountId)
+                .DisposeWith(d);
 
-            #endregion Events
+                this.Bind(ViewModel,
+                    vm => vm.SelectedNoAccount,
+                    v => v.NoAccountTab.IsSelected)
+                .DisposeWith(d);
+                this.Bind(ViewModel,
+                    vm => vm.SelectedNormal,
+                    v => v.GeneralTab.IsSelected)
+                .DisposeWith(d);
+                this.Bind(ViewModel,
+                    vm => vm.SelectedAddAccount,
+                    v => v.AddAccountTab.IsSelected)
+                .DisposeWith(d);
+                this.Bind(ViewModel,
+                    vm => vm.SelectedAddAccounts,
+                    v => v.AddAccountsTab.IsSelected)
+                .DisposeWith(d);
+                this.Bind(ViewModel,
+                    vm => vm.SelectedEditAccount,
+                    v => v.EditAccountTab.IsSelected)
+                .DisposeWith(d);
 
-            #region Data
+                this.OneWayBind(ViewModel,
+                    vm => vm.ShowNoAccountTab,
+                    v => v.NoAccountTab.Visibility)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.ShowNormalTab,
+                    v => v.GeneralTab.Visibility)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.ShowNormalTab,
+                    v => v.SettingsTab.Visibility)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.ShowNormalTab,
+                    v => v.HeroTab.Visibility)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.ShowNormalTab,
+                    v => v.VillagesTab.Visibility)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.ShowNormalTab,
+                    v => v.DebugTab.Visibility)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                    vm => vm.ShowAddAccountTab,
+                    v => v.AddAccountTab.Visibility)
+                .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                   vm => vm.ShowAddAccountsTab,
+                   v => v.AddAccountsTab.Visibility)
+               .DisposeWith(d);
+                this.OneWayBind(ViewModel,
+                   vm => vm.ShowEditAccountTab,
+                   v => v.EditAccountTab.Visibility)
+               .DisposeWith(d);
 
-            this.Bind(ViewModel,
-                vm => vm.IsAccountSelected,
-                v => v.AccountTable.ViewModel.IsAccountSelected);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.IsAccountNotSelected,
-                v => v.NoAccountTab.Visibility);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.IsAccountSelected,
-                v => v.GeneralTab.Visibility);
-            this.OneWayBind(ViewModel,
-                vm => vm.IsAccountSelected,
-                v => v.OverviewTab.Visibility);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.IsAccountSelected,
-                v => v.HeroTab.Visibility);
-            this.OneWayBind(ViewModel,
-                vm => vm.IsAccountSelected,
-                v => v.VillagesTab.Visibility);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.IsAccountSelected,
-                v => v.DebugTab.Visibility);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.CurrentAccount.Id,
-                v => v.DebugPage.ViewModel.AccountId);
-
-            this.OneWayBind(ViewModel,
-                vm => vm.CurrentAccount.Id,
-                v => v.HeroPage.ViewModel.AccountId);
-            this.OneWayBind(ViewModel,
-                vm => vm.CurrentAccount.Id,
-                v => v.OverviewPage.ViewModel.AccountId);
-            this.OneWayBind(ViewModel,
-                vm => vm.CurrentAccount.Id,
-                v => v.VillagesPage.ViewModel.AccountId);
-            this.OneWayBind(ViewModel,
-                vm => vm.CurrentAccount.Id,
-                v => v.GeneralPage.ViewModel.AccountId);
-
-            #endregion Data
+                ViewModel.OnActived();
+            });
         }
 
         protected override void OnClosed(EventArgs e)
@@ -76,24 +127,6 @@ namespace WPFUI
             base.OnClosed(e);
 
             Application.Current.Shutdown();
-        }
-
-        private void NoAccountTab_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            var value = (bool)e.NewValue;
-            if (!value)
-            {
-                DebugTab.IsSelected = true;
-            }
-        }
-
-        private void OverviewTab_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            var value = (bool)e.NewValue;
-            if (!value)
-            {
-                NoAccountTab.IsSelected = true;
-            }
         }
     }
 }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Views;
+using EventManager = MainCore.Services.EventManager;
 
 namespace WPFUI
 {
@@ -72,7 +73,7 @@ namespace WPFUI
 
             await Task.WhenAll(tasks);
 
-            var versionWindow = GetService<VersionWindow>();
+            var versionWindow = new VersionWindow();
             await versionWindow.ViewModel.Load();
             if (versionWindow.ViewModel.IsNewVersion) versionWindow.Show();
 
@@ -93,15 +94,14 @@ namespace WPFUI
 
         public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            services.AddSingleton<WaitingWindow>();
             services.AddSingleton<MainWindow>();
-            services.AddSingleton<VersionWindow>();
+            services.AddSingleton<WaitingWindow>();
 
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(_connectionString));
             services.AddSingleton<IChromeManager, ChromeManager>();
             services.AddSingleton<IRestClientManager, RestClientManager>();
             services.AddSingleton<IUseragentManager, UseragentManager>();
-            services.AddSingleton<IEventManager, MainCore.Services.EventManager>();
+            services.AddSingleton<IEventManager, EventManager>();
             services.AddSingleton<ITimerManager, TimerManager>();
             services.AddSingleton<ITaskManager, TaskManager>();
             services.AddSingleton<IPlanManager, PlanManager>();

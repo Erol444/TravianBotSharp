@@ -8,7 +8,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFUI.ViewModels"
         mc:Ignorable="d"
-        Title="VersionWindow" Height="300" Width="600" WindowStyle="None" WindowStartupLocation="CenterScreen">
+        Title="Version" Height="300" Width="600" WindowStartupLocation="CenterScreen">
     <Grid Margin="5,5,5,5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -23,7 +23,7 @@
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <Border x:Name="StatusBorder" BorderBrush="Black" BorderThickness="1,1,1,1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20,20,20,10">
-            <TextBlock x:Name="StatusLabel" FontSize="40" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Foreground="Black"  />
+            <TextBlock x:Name="StatusLabel" FontSize="40" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Foreground="Black" />
         </Border>
         <Border x:Name="CurrentBorder" BorderBrush="Black" BorderThickness="1" Margin="20,10,20,0" Grid.Row="2">
             <TextBlock x:Name="CurrentLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" />

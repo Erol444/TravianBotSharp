@@ -1,7 +1,6 @@
 ﻿using MainCore;
 using MainCore.Enums;
 using MainCore.Helper;
-using MainCore.Models.Database;
 using MainCore.Services;
 using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +12,9 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Interfaces;
+using WPFUI.Models;
 using WPFUI.Views;
+using Access = MainCore.Models.Database.Access;
 
 namespace WPFUI.ViewModels.Uc
 {
@@ -22,8 +23,7 @@ namespace WPFUI.ViewModels.Uc
         public ButtonPanelViewModel()
         {
             _waitingWindow = App.GetService<WaitingWindow>();
-            _versionWindow = App.GetService<VersionWindow>();
-
+            _versionWindow = new VersionWindow();
             _chromeManager = App.GetService<IChromeManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _databaseEvent = App.GetService<IEventManager>();
@@ -41,7 +41,6 @@ namespace WPFUI.ViewModels.Uc
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
             DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected), RxApp.TaskpoolScheduler);
-            SettingsAccountCommand = ReactiveCommand.Create(SettingsAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
 
             LoginCommand = ReactiveCommand.Create(LoginTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b), RxApp.TaskpoolScheduler);
             LogoutCommand = ReactiveCommand.Create(LogoutTask, this.WhenAnyValue(vm => vm.IsAccountRunning, vm => vm.IsAccountSelected, (a, b) => a && b), RxApp.TaskpoolScheduler);
@@ -64,10 +63,12 @@ namespace WPFUI.ViewModels.Uc
 
         private void AddAccountTask()
         {
+            TabSelector = TabType.AddAccount;
         }
 
         private void AddAccountsTask()
         {
+            TabSelector = TabType.AddAccounts;
         }
 
         private void LoginTask() => LoginAccount(AccountId);
@@ -96,6 +97,7 @@ namespace WPFUI.ViewModels.Uc
 
         private void EditAccountTask()
         {
+            TabSelector = TabType.EditAccount;
         }
 
         private async Task DeleteAccountTask()
@@ -105,10 +107,6 @@ namespace WPFUI.ViewModels.Uc
             await Task.Run(() => DeleteAccount(AccountId));
             _databaseEvent.OnAccountsTableUpdate();
             _waitingWindow.Hide();
-        }
-
-        private void SettingsAccountTask()
-        {
         }
 
         private void LoginAccount(int index)
@@ -201,7 +199,6 @@ namespace WPFUI.ViewModels.Uc
         public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }
         public ReactiveCommand<Unit, Unit> EditAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> DeleteAccountCommand { get; }
-        public ReactiveCommand<Unit, Unit> SettingsAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> LoginCommand { get; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
         public ReactiveCommand<Unit, Unit> LoginAllCommand { get; }
@@ -243,6 +240,14 @@ namespace WPFUI.ViewModels.Uc
         {
             get => _accountId;
             set => this.RaiseAndSetIfChanged(ref _accountId, value);
+        }
+
+        private TabType _tabSelector;
+
+        public TabType TabSelector
+        {
+            get => _tabSelector;
+            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
         }
 
         private readonly IChromeManager _chromeManager;

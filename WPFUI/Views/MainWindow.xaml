@@ -1,12 +1,12 @@
 ﻿<reactiveui:ReactiveWindow
-        x:Class="WPFUI.MainWindow"
+        x:Class="WPFUI.Views.MainWindow"
         x:TypeArguments="vms:MainWindowViewModel"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:uc="clr-namespace:WPFUI.Views.Uc"
-        xmlns:vms="clr-namespace:WPFUI"
+        xmlns:vms="clr-namespace:WPFUI.ViewModels"
         xmlns:tabs="clr-namespace:WPFUI.Views.Tabs"
         xmlns:reactiveui="http://reactiveui.net"
         mc:Ignorable="d"
@@ -23,10 +23,15 @@
             </Grid.RowDefinitions>
 
             <uc:ButtonPanelUc x:Name="ButtonPanel" />
-            <uc:AccountTableUc x:Name="AccountTable" Grid.Row="1" />
+            <DataGrid x:Name="AccountGrid" Grid.Row="1" IsReadOnly="True" SelectionMode="Single" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Account" Binding="{Binding Username}" />
+                    <DataGridTextColumn Header="Server" Binding="{Binding Server}" />
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
         <TabControl Grid.Column="1" Margin="5,0,0,0">
-            <TabItem x:Name="NoAccountTab" Header="No account" Visibility="Visible" IsVisibleChanged="NoAccountTab_IsVisibleChanged">
+            <TabItem x:Name="NoAccountTab" Header="No account" Visibility="Visible">
                 <Grid Background="#FFE5E5E5">
                     <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="NO ACCOUNT IS SELECTED" VerticalAlignment="Center" TextAlignment="Center" LineHeight="11" />
                 </Grid>
@@ -39,17 +44,17 @@
                     </Frame.Content>
                 </Frame>
             </TabItem>
+            <TabItem x:Name="SettingsTab" Header="Settings">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:SettingsPage x:Name="SettingsPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
             <TabItem x:Name="HeroTab" Header="Hero">
                 <Frame>
                     <Frame.Content>
                         <tabs:HeroPage x:Name="HeroPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="OverviewTab" Header="Overview" IsVisibleChanged="OverviewTab_IsVisibleChanged">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:OverviewPage x:Name="OverviewPage" />
                     </Frame.Content>
                 </Frame>
             </TabItem>
