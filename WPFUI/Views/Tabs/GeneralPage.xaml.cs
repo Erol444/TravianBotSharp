@@ -15,25 +15,11 @@ namespace WPFUI.Views.Tabs
             InitializeComponent();
             this.WhenActivated(d =>
             {
-                this.BindCommand(ViewModel,
-                    vm => vm.PauseCommand,
-                    v => v.PauseButton)
-                .DisposeWith(d);
-
-                this.BindCommand(ViewModel,
-                    vm => vm.RestartCommand,
-                    v => v.RestartButton)
-                .DisposeWith(d);
-
-                this.OneWayBind(ViewModel,
-                    vm => vm.Status,
-                    v => v.StatusText.Text)
-                .DisposeWith(d);
-
-                this.OneWayBind(ViewModel,
-                    vm => vm.PauseText,
-                    v => v.PauseButton.Content)
-                .DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.PauseCommand, v => v.PauseButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RestartCommand, v => v.RestartButton).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Status, v => v.StatusText.Text).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.PauseText, v => v.PauseButton.Content).DisposeWith(d);
+                ViewModel.OnActived();
             });
         }
     }

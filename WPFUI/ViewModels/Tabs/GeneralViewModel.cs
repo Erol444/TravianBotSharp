@@ -8,6 +8,7 @@ using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using WPFUI.Interfaces;
 
@@ -15,7 +16,14 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class GeneralViewModel : ReactiveObject, IMainTabPage
     {
-        public int AccountId { get; set; }
+        private int _accountId;
+
+        public int AccountId
+        {
+            get => _accountId;
+            set => this.RaiseAndSetIfChanged(ref _accountId, value);
+        }
+
         private readonly Random rand = new();
 
         public GeneralViewModel()
@@ -31,7 +39,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private void OnAccountStatusUpdate()
         {
-            App.Current.Dispatcher.Invoke(LoadData);
+            RxApp.MainThreadScheduler.Schedule(LoadData);
         }
 
         public void OnActived()
