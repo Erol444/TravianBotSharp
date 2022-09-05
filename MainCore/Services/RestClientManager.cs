@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using MainCore.Models.Runtime;
+using Microsoft.EntityFrameworkCore;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace MainCore.Services
 {
@@ -18,33 +21,33 @@ namespace MainCore.Services
             };
 
             var client = new RestClient(clientOptions);
-            _database.Add(-1, client);
+            var key = GetKey(new ProxyInfo());
+            _database.Add(key, client);
         }
 
-        public RestClient Get(int id)
+        public RestClient Get(ProxyInfo proxyInfo)
         {
-            if (_database.TryGetValue(id, out RestClient client))
+            var key = GetKey(proxyInfo);
+            if (_database.TryGetValue(key, out RestClient client))
             {
                 return client;
             }
 
             using var context = _contextFactory.CreateDbContext();
 
-            var access = context.Accesses.Find(id);
-
             IWebProxy proxy = null;
-            if (!string.IsNullOrEmpty(access.ProxyHost))
+            if (!string.IsNullOrEmpty(proxyInfo.ProxyHost))
             {
-                if (!string.IsNullOrEmpty(access.ProxyUsername)) // Proxy auth
+                if (!string.IsNullOrEmpty(proxyInfo.ProxyUsername)) // Proxy auth
 
                 {
-                    ICredentials credentials = new NetworkCredential(access.ProxyUsername, access.ProxyPassword);
+                    ICredentials credentials = new NetworkCredential(proxyInfo.ProxyUsername, proxyInfo.ProxyPassword);
 
-                    proxy = new WebProxy($"{access.ProxyHost}:{access.ProxyPort}", false, null, credentials);
+                    proxy = new WebProxy($"{proxyInfo.ProxyHost}:{proxyInfo.ProxyPort}", false, null, credentials);
                 }
                 else // Without proxy auth
                 {
-                    proxy = new WebProxy(access.ProxyHost, access.ProxyPort);
+                    proxy = new WebProxy(proxyInfo.ProxyHost, proxyInfo.ProxyPort);
                 }
             }
 
@@ -56,7 +59,7 @@ namespace MainCore.Services
             };
 
             client = new RestClient(clientOptions);
-            _database.Add(id, client);
+            _database.Add(key, client);
             return client;
         }
 
@@ -66,6 +69,16 @@ namespace MainCore.Services
             {
                 item.Dispose();
             }
+        }
+
+        private static int GetKey(ProxyInfo proxyInfo)
+        {
+            var key = string.IsNullOrWhiteSpace(proxyInfo.ProxyHost) ? "default" : proxyInfo.ProxyHost;
+
+            using var sha256Hasher = SHA256.Create();
+            var hashed = sha256Hasher.ComputeHash(Encoding.UTF8.GetBytes(key));
+            var ivalue = BitConverter.ToInt32(hashed, 0);
+            return ivalue;
         }
 
         private readonly Dictionary<int, RestClient> _database = new();

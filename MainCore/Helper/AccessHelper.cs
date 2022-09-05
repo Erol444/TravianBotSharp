@@ -4,7 +4,7 @@ namespace MainCore.Helper
 {
     public static class AccessHelper
     {
-        public static bool CheckAccess(RestClient client, string ip)
+        public static bool CheckAccess(RestClient client)
         {
             var request = new RestRequest
             {
@@ -13,7 +13,7 @@ namespace MainCore.Helper
             try
             {
                 var response = client.Execute(request);
-                return response.Content.Equals(ip);
+                return string.IsNullOrWhiteSpace(response.Content);
             }
             catch
             {

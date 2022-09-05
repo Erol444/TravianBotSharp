@@ -1,6 +1,6 @@
 ﻿<rxui:ReactivePage
         x:Class="WPFUI.Views.Tabs.EditAccountPage"
-        x:TypeArguments="vms:AccountViewModel"
+        x:TypeArguments="vms:EditAccountViewModel"
         xmlns:rxui="http://reactiveui.net"
         xmlns:vms="clr-namespace:WPFUI.ViewModels.Tabs"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

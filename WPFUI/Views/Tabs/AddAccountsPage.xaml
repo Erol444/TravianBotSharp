@@ -1,6 +1,6 @@
 ﻿<rxui:ReactivePage
         x:Class="WPFUI.Views.Tabs.AddAccountsPage"
-        x:TypeArguments="vms:AccountsViewModel"
+        x:TypeArguments="vms:AddAccountsViewModel"
         xmlns:rxui="http://reactiveui.net"
         xmlns:vms="clr-namespace:WPFUI.ViewModels.Tabs"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -14,7 +14,19 @@
             <RowDefinition Height="50*" />
             <RowDefinition Height="10*" />
         </Grid.RowDefinitions>
-        <DataGrid x:Name="AccountsDatagrid" Margin="0,2,0,2" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" />
+        <ListView x:Name="AccountsDatagrid" Margin="0,2,0,2" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Server" DisplayMemberBinding="{Binding Server}" />
+                    <GridViewColumn Header="Username" DisplayMemberBinding="{Binding Username}" />
+                    <GridViewColumn Header="Password" DisplayMemberBinding="{Binding Password}" />
+                    <GridViewColumn Header="ProxyHost" DisplayMemberBinding="{Binding ProxyHost}" />
+                    <GridViewColumn Header="ProxyPort" DisplayMemberBinding="{Binding ProxyPort}" />
+                    <GridViewColumn Header="ProxyUsername" DisplayMemberBinding="{Binding ProxyUsername}" />
+                    <GridViewColumn Header="ProxyPassword" DisplayMemberBinding="{Binding ProxyPassword}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
 
         <TextBox x:Name="AccountsInput" AcceptsReturn="True"  VerticalScrollBarVisibility="Visible" />
 

@@ -29,8 +29,7 @@ namespace WPFUI
             _provider = new ServiceCollection().ConfigureServices().BuildServiceProvider();
 
             var waitingWindow = GetService<WaitingWindow>();
-            waitingWindow.ViewModel.Text = "loading data";
-            waitingWindow.Show();
+            waitingWindow.ViewModel.Show("loading data");
 
             var tasks = new List<Task>
             {
@@ -79,7 +78,7 @@ namespace WPFUI
 
             var mainWindow = GetService<MainWindow>();
             mainWindow.Show();
-            waitingWindow.Hide();
+            waitingWindow.ViewModel.Close();
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)

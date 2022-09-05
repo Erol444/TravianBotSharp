@@ -102,11 +102,10 @@ namespace WPFUI.ViewModels.Uc
 
         private async Task DeleteAccountTask()
         {
-            _waitingWindow.ViewModel.Text = "saving data";
-            _waitingWindow.Show();
+            _waitingWindow.ViewModel.Show("saving data");
             await Task.Run(() => DeleteAccount(AccountId));
             _databaseEvent.OnAccountsTableUpdate();
-            _waitingWindow.Hide();
+            _waitingWindow.ViewModel.Close();
         }
 
         private void LoginAccount(int index)
@@ -125,7 +124,7 @@ namespace WPFUI.ViewModels.Uc
                 }
 
                 _logManager.Information(index, $"Checking proxy {access.ProxyHost}");
-                var result = AccessHelper.CheckAccess(_restClientManager.Get(access.Id), access.ProxyHost);
+                var result = AccessHelper.CheckAccess(_restClientManager.Get(new(access)));
                 if (result)
                 {
                     _logManager.Information(index, $"Proxy {access.ProxyHost} is working");

@@ -11,7 +11,7 @@ namespace MainCore.Services
     {
         public UseragentManager(IRestClientManager restClientManager)
         {
-            _restClient = restClientManager.Get(-1);
+            _restClient = restClientManager.Get(new Models.Runtime.ProxyInfo());
         }
 
         private List<string> _userAgentList;

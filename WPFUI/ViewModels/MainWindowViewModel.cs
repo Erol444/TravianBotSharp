@@ -19,13 +19,7 @@ namespace WPFUI.ViewModels
     {
         public MainWindowViewModel()
         {
-            _chromeManager = App.GetService<IChromeManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _databaseEvent = App.GetService<IEventManager>();
-            _taskManager = App.GetService<ITaskManager>();
-            _logManager = App.GetService<ILogManager>();
-            _timeManager = App.GetService<ITimerManager>();
-            _restClientManager = App.GetService<IRestClientManager>();
             _planManager = App.GetService<IPlanManager>();
 
             _waitingWindow = App.GetService<WaitingWindow>();
@@ -94,8 +88,7 @@ namespace WPFUI.ViewModels
         {
             if (_closed) return;
             e.Cancel = true;
-            _waitingWindow.ViewModel.Text = "saving data";
-            _waitingWindow.Show();
+            _waitingWindow.ViewModel.Show("saving data");
             await Task.Delay(2000);
 
             _planManager.Save();
@@ -103,7 +96,7 @@ namespace WPFUI.ViewModels
             var mainWindow = App.GetService<MainWindow>();
             mainWindow.Hide();
             _closed = true;
-            _waitingWindow.Close();
+            _waitingWindow.ViewModel.Close();
             mainWindow.Close();
         }
 
@@ -174,13 +167,7 @@ namespace WPFUI.ViewModels
         }
 
         private readonly IPlanManager _planManager;
-        private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _databaseEvent;
-        private readonly ITaskManager _taskManager;
-        private readonly ILogManager _logManager;
-        private readonly ITimerManager _timeManager;
-        private readonly IRestClientManager _restClientManager;
         private readonly IEventManager _eventManager;
 
         private readonly WaitingWindow _waitingWindow;

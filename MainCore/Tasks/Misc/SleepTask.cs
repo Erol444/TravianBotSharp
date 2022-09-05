@@ -32,7 +32,7 @@ namespace MainCore.Tasks.Misc
                     break;
                 }
 
-                var result = AccessHelper.CheckAccess(RestClientManager.Get(access.Id), access.ProxyHost);
+                var result = AccessHelper.CheckAccess(RestClientManager.Get(new(access)));
                 if (result)
                 {
                     selectedAccess = access;
