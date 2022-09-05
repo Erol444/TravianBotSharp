@@ -21,7 +21,7 @@ namespace WPFUI.Views
                 this.Events().Closing.InvokeCommand(this, x => x.ViewModel.ClosingCommand).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.Accounts, v => v.AccountGrid.ItemsSource).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.CurrentAccount, v => v.AccountGrid.CurrentItem).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.CurrentAccount, v => v.AccountGrid.SelectedItem).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.TabSelector, v => v.ButtonPanel.ViewModel.TabSelector).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.IsAccountSelected, v => v.ButtonPanel.ViewModel.IsAccountSelected).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.GeneralPage.ViewModel.AccountId).DisposeWith(d);

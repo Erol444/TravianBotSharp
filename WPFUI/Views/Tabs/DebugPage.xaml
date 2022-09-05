@@ -23,7 +23,23 @@
         <Button x:Name="ReportButton" Content="Button" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         <TextBlock x:Name="TaskTableLabel" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Task table" VerticalAlignment="Center" TextAlignment="Center" />
         <TextBlock x:Name="LogTableLabel" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Log table" VerticalAlignment="Center" TextAlignment="Center" />
-        <DataGrid x:Name="TaskGird" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,1,0" IsReadOnly="True" />
-        <DataGrid x:Name="LogGrid" Grid.Column="1" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="1,0,0,0" IsReadOnly="True" />
+        <ListView x:Name="TaskGird" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,1,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Task" DisplayMemberBinding="{Binding Task}" />
+                    <GridViewColumn Header="Execute at" DisplayMemberBinding="{Binding ExecuteAt}" />
+                    <GridViewColumn Header="Stage" DisplayMemberBinding="{Binding Stage}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
+        <ListView x:Name="LogGrid" Grid.Column="1" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="1,0,0,0">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" />
+                    <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" />
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
     </Grid>
 </reactiveui:ReactivePage>

@@ -26,12 +26,14 @@
                 <RowDefinition Height="5*" />
             </Grid.RowDefinitions>
             <Button x:Name="AdventuresButton" Content="Refresh adventures" Margin="10,10,10,10" />
-            <DataGrid x:Name="AdventuresGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGenerateColumns="False" Margin="5,0,5,0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Coordinates" Binding="{Binding Coordinates}" Width="1*" />
-                    <DataGridTextColumn Header="Difficulty" Binding="{Binding Difficulty}" Width="1*" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <ListView x:Name="AdventuresGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="5,0,5,0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Coordinates" DisplayMemberBinding="{Binding Coordinates}" />
+                        <GridViewColumn Header="Difficulty" DisplayMemberBinding="{Binding Difficulty}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
             <TextBlock Grid.Row="1" TextWrapping="Wrap" Text="Adventures list" VerticalAlignment="Center" HorizontalAlignment="Center" />
             <TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Hero's info" VerticalAlignment="Top" />
             <Grid Grid.Row="4">
@@ -60,20 +62,24 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="10*" />
             </Grid.RowDefinitions>
-            <DataGrid x:Name="ItemsGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGenerateColumns="False" Margin="5,0,5,0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Item" Binding="{Binding Item}"  Width="3*" />
-                    <DataGridTextColumn Header="Tier" Binding="{Binding Tier}"  Width="1*" />
-                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount}"  Width="1*" />
-                </DataGrid.Columns>
-            </DataGrid>
-            <DataGrid x:Name="EquiptGrid" Grid.Row="4" d:ItemsSource="{d:SampleData ItemCount=5}" IsReadOnly="True" AutoGenerateColumns="False" Margin="5,0,5,0" IsEnabled="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Item" Binding="{Binding Item}" Width="3*" />
-                    <DataGridTextColumn Header="Tier" Binding="{Binding Tier}" Width="1*" />
-                    <DataGridTextColumn Header="Amount" Binding="{Binding Amount}" Width="1*" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <ListView x:Name="ItemsGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}"  Margin="5,0,5,0">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}" />
+                        <GridViewColumn Header="Tier" DisplayMemberBinding="{Binding Tier}" />
+                        <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <ListView x:Name="EquiptGrid" Grid.Row="4" d:ItemsSource="{d:SampleData ItemCount=5}"  Margin="5,0,5,0" IsEnabled="False">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}" />
+                        <GridViewColumn Header="Tier" DisplayMemberBinding="{Binding Tier}" />
+                        <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
             <TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Hero's equipt (Work in progress)" VerticalAlignment="Center" />
             <TextBlock TextWrapping="Wrap" Text="Hero's items" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
             <Button x:Name="InventoryButton" Content="Refresh inventory" Margin="10,10,10,10" />

@@ -17,12 +17,14 @@
             <ColumnDefinition Width="93*" />
             <ColumnDefinition Width="307*" />
         </Grid.ColumnDefinitions>
-        <DataGrid x:Name="VillagesGrid" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,1,0" AutoGenerateColumns="False" IsReadOnly="True">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Binding="{Binding Name}" />
-                <DataGridTextColumn Header="Coords" Binding="{Binding Coords}" />
-            </DataGrid.Columns>
-        </DataGrid>
+        <ListView x:Name="VillagesGrid" SelectionMode="Single" IsSynchronizedWithCurrentItem="True" d:ItemsSource="{d:SampleData ItemCount=5}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                    <GridViewColumn Header="Coords" DisplayMemberBinding="{Binding Coords}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
         <TabControl Grid.Column="1" Margin="1,0,0,0">
             <TabItem x:Name="NoVillageTab" Header="No village" IsVisibleChanged="NoVillageTab_IsVisibleChanged">
                 <Grid Background="#FFE5E5E5">

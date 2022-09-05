@@ -21,14 +21,15 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="2*" />
             </Grid.RowDefinitions>
-
             <uc:ButtonPanelUc x:Name="ButtonPanel" />
-            <DataGrid x:Name="AccountGrid" Grid.Row="1" IsReadOnly="True" SelectionMode="Single" AutoGenerateColumns="False">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Account" Binding="{Binding Username}" />
-                    <DataGridTextColumn Header="Server" Binding="{Binding Server}" />
-                </DataGrid.Columns>
-            </DataGrid>
+            <ListView x:Name="AccountGrid" Grid.Row="1" SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Account" DisplayMemberBinding="{Binding Username}" />
+                        <GridViewColumn Header="Server" DisplayMemberBinding="{Binding Server}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
         </Grid>
         <TabControl Grid.Column="1" Margin="5,0,0,0">
             <TabItem x:Name="NoAccountTab" Header="No account" Visibility="Visible">
