@@ -33,8 +33,6 @@ namespace MainCore.Services
                 return client;
             }
 
-            using var context = _contextFactory.CreateDbContext();
-
             IWebProxy proxy = null;
             if (!string.IsNullOrEmpty(proxyInfo.ProxyHost))
             {

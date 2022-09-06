@@ -18,9 +18,11 @@ namespace WPFUI.Views.Tabs
                 this.BindCommand(ViewModel, vm => vm.SaveCommand, v => v.SaveButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.CancelCommand, v => v.CancelButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.TestAllCommand, v => v.TestAllProxiesButton).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Server, v => v.ServerTextBlock.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Username, v => v.UsernameTextBlock.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Server, v => v.ServerTextBox.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Username, v => v.UsernameTextBox.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Accessess, v => v.ProxiesDataGrid.ItemsSource).DisposeWith(d);
+
+                ViewModel.OnActived();
             });
         }
     }

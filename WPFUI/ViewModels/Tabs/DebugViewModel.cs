@@ -1,11 +1,10 @@
-﻿using MainCore.Enums;
-using MainCore.Models.Runtime;
+﻿using MainCore.Models.Runtime;
 using MainCore.Services;
-using MainCore.Tasks.Misc;
 using ReactiveUI;
-using System.Collections.Generic;
+using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using WPFUI.Interfaces;
 using WPFUI.Models;
 
@@ -22,7 +21,9 @@ namespace WPFUI.ViewModels.Tabs
             _databaseEvent.TaskUpdated += OnTasksUpdate;
             _databaseEvent.LogUpdated += OnLogsUpdate;
 
-            Button = ReactiveCommand.Create(ButtonTask);
+            GetHelpCommand = ReactiveCommand.Create(GetHelpTask);
+
+            this.WhenAnyValue(x => x.AccountId).Subscribe(LoadData);
         }
 
         public void OnActived()
@@ -36,41 +37,34 @@ namespace WPFUI.ViewModels.Tabs
             OnLogsUpdate(accountId);
         }
 
-        private void ButtonTask()
+        private void GetHelpTask()
         {
-            var items = new List<(HeroItemEnums, int)>()  {
-                        (HeroItemEnums.Wood, 10),
-                        (HeroItemEnums.Clay, 10),
-                        (HeroItemEnums.Iron, 10),
-                (HeroItemEnums.Crop, 10),
-                    };
-            var taskEquip = new HeroEquip(23182, AccountId, items);
-            _taskManager.Add(AccountId, taskEquip);
         }
 
         private void OnTasksUpdate(int accountId)
         {
-            if (accountId != _accountId) return;
-            App.Current.Dispatcher.Invoke(() =>
-           {
-               Tasks.Clear();
-               foreach (var item in _taskManager.GetList(accountId))
-               {
-                   if (item is null) continue;
-                   Tasks.Add(new TaskModel()
-                   {
-                       Task = item.Name,
-                       ExecuteAt = item.ExecuteAt,
-                       Stage = item.Stage,
-                   });
-               }
-           });
+            if (accountId != AccountId) return;
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Tasks.Clear();
+                foreach (var item in _taskManager.GetList(accountId))
+                {
+                    if (item is null) continue;
+                    Tasks.Add(new TaskModel()
+                    {
+                        Task = item.Name,
+                        ExecuteAt = item.ExecuteAt,
+                        Stage = item.Stage,
+                    });
+                }
+            });
         }
 
         private void OnLogsUpdate(int accountId)
         {
-            if (accountId != _accountId) return;
-            App.Current.Dispatcher.Invoke(() =>
+            if (accountId != AccountId) return;
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Logs.Clear();
                 foreach (var item in _logManager.GetLog(accountId))
@@ -87,18 +81,14 @@ namespace WPFUI.ViewModels.Tabs
         public ObservableCollection<TaskModel> Tasks { get; } = new();
 
         public ObservableCollection<LogMessage> Logs { get; } = new();
-        public ReactiveCommand<Unit, Unit> Button { get; }
+        public ReactiveCommand<Unit, Unit> GetHelpCommand { get; }
 
         private int _accountId;
 
         public int AccountId
         {
             get => _accountId;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _accountId, value);
-                LoadData(value);
-            }
+            set => this.RaiseAndSetIfChanged(ref _accountId, value);
         }
     }
 }

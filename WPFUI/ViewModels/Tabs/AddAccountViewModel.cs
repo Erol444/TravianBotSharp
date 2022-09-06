@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.Views;
@@ -23,51 +24,51 @@ namespace WPFUI.ViewModels.Tabs
             _databaseEvent = App.GetService<IEventManager>();
             _useragentManager = App.GetService<IUseragentManager>();
 
-            SaveCommand = ReactiveCommand.Create(SaveTask, outputScheduler: RxApp.TaskpoolScheduler);
+            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
         }
 
-        private void SaveTask()
+        private async Task SaveTask()
         {
-            CheckInput();
+            if (!CheckInput()) return;
             _waitingWindow.ViewModel.Show("saving account");
-
-            var context = _contextFactory.CreateDbContext();
-            if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
+            await Observable.Start(() =>
             {
-                _waitingWindow.ViewModel.Close();
-                MessageBox.Show("This account was already in TBS", "Warning");
-                return;
-            }
-            Uri.TryCreate(Server, UriKind.Absolute, out var url);
-            var account = new Account()
-            {
-                Username = Username,
-                Server = url.AbsoluteUri,
-            };
-
-            context.Add(account);
-            context.SaveChanges();
-
-            context.AddAccount(account.Id);
-            context.SaveChanges();
-
-            foreach (var access in Accessess)
-            {
-                var dbAccess = new MainCore.Models.Database.Access()
+                var context = _contextFactory.CreateDbContext();
+                if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
                 {
-                    AccountId = account.Id,
-                    Password = access.Password,
-                    ProxyHost = access.ProxyHost,
-                    ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
-                    ProxyUsername = access.ProxyUsername,
-                    ProxyPassword = access.ProxyPassword,
-                    Useragent = _useragentManager.Get(),
+                    _waitingWindow.ViewModel.Close();
+                    MessageBox.Show("This account was already in TBS", "Warning");
+                    return;
+                }
+                Uri.TryCreate(Server, UriKind.Absolute, out var url);
+                var account = new Account()
+                {
+                    Username = Username,
+                    Server = url.AbsoluteUri,
                 };
-                context.Accesses.Add(dbAccess);
+
+                context.Add(account);
                 context.SaveChanges();
-                access.Id = dbAccess.Id;
-            }
+
+                context.AddAccount(account.Id);
+                context.SaveChanges();
+
+                foreach (var access in Accessess)
+                {
+                    context.Accesses.Add(new()
+                    {
+                        AccountId = account.Id,
+                        Password = access.Password,
+                        ProxyHost = access.ProxyHost,
+                        ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
+                        ProxyUsername = access.ProxyUsername,
+                        ProxyPassword = access.ProxyPassword,
+                        Useragent = _useragentManager.Get(),
+                    });
+                }
+                context.SaveChanges();
+            }, RxApp.TaskpoolScheduler);
             Clean();
             _databaseEvent.OnAccountsTableUpdate();
             _waitingWindow.ViewModel.Close();

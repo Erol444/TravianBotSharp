@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.Views;
@@ -23,49 +24,51 @@ namespace WPFUI.ViewModels.Tabs
             _databaseEvent = App.GetService<IEventManager>();
             _useragentManager = App.GetService<IUseragentManager>();
 
-            SaveCommand = ReactiveCommand.Create(SaveTask, outputScheduler: RxApp.TaskpoolScheduler);
+            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
 
             this.WhenAnyValue(x => x.InputText).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(UpdateData);
         }
 
-        private void SaveTask()
+        private async Task SaveTask()
         {
             if (!CheckInput()) return;
 
             _waitingWindow.ViewModel.Show("adding accounts");
 
-            var context = _contextFactory.CreateDbContext();
-
-            foreach (var acc in Accounts)
+            await Observable.Start(() =>
             {
-                if (context.Accounts.Any(x => x.Username.Equals(acc.Username) && x.Server.Equals(acc.Server)))
+                var context = _contextFactory.CreateDbContext();
+
+                foreach (var acc in Accounts)
                 {
-                    MessageBox.Show($"Account {acc.Username} - {acc.Server} was already in TBS", "Warning");
-                    return;
+                    if (context.Accounts.Any(x => x.Username.Equals(acc.Username) && x.Server.Equals(acc.Server)))
+                    {
+                        MessageBox.Show($"Account {acc.Username} - {acc.Server} was already in TBS", "Warning");
+                        return;
+                    }
+                    var account = new Account()
+                    {
+                        Username = acc.Username,
+                        Server = acc.Server,
+                    };
+                    context.Add(account);
+                    context.SaveChanges();
+                    context.AddAccount(account.Id);
+
+                    context.Accesses.Add(new()
+                    {
+                        AccountId = account.Id,
+                        Password = acc.Password,
+                        ProxyHost = acc.ProxyHost,
+                        ProxyPort = int.Parse(acc.ProxyPort ?? "-1"),
+                        ProxyUsername = acc.ProxyUsername,
+                        ProxyPassword = acc.ProxyPassword,
+                        Useragent = _useragentManager.Get(),
+                    });
                 }
-                var account = new Account()
-                {
-                    Username = acc.Username,
-                    Server = acc.Server,
-                };
-                context.Add(account);
                 context.SaveChanges();
-                context.AddAccount(account.Id);
-
-                context.Accesses.Add(new()
-                {
-                    AccountId = account.Id,
-                    Password = acc.Password,
-                    ProxyHost = acc.ProxyHost,
-                    ProxyPort = int.Parse(acc.ProxyPort ?? "-1"),
-                    ProxyUsername = acc.ProxyUsername,
-                    ProxyPassword = acc.ProxyPassword,
-                    Useragent = _useragentManager.Get(),
-                });
-            }
-            context.SaveChanges();
-
+            }, RxApp.TaskpoolScheduler);
             Clean();
             _databaseEvent.OnAccountsTableUpdate();
             _waitingWindow.ViewModel.Close();

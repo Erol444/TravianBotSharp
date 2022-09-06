@@ -4,9 +4,11 @@ using MainCore.Services;
 using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using WPFUI.Interfaces;
 using WPFUI.Models;
 
@@ -14,8 +16,6 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class HeroViewModel : ReactiveObject, IMainTabPage
     {
-        public int AccountId { get; set; }
-
         public HeroViewModel()
         {
             _eventManager = App.GetService<IEventManager>();
@@ -27,21 +27,23 @@ namespace WPFUI.ViewModels.Tabs
 
             AdventuresCommand = ReactiveCommand.Create(AdventuresTask);
             InventoryCommand = ReactiveCommand.Create(InventoryTask);
+
+            this.WhenAnyValue(x => x.AccountId).Subscribe(LoadData);
         }
 
         private void OnheroInventoryUpdate(int accountId)
         {
-            App.Current.Dispatcher.Invoke(LoadInventory, accountId);
+            RxApp.MainThreadScheduler.Schedule(() => LoadInventory(accountId));
         }
 
         private void OnHeroAdventuresUpdate(int accountId)
         {
-            App.Current.Dispatcher.Invoke(LoadAdventures, accountId);
+            RxApp.MainThreadScheduler.Schedule(() => LoadAdventures(accountId));
         }
 
         private void OnHeroInfoUpdate(int accountId)
         {
-            App.Current.Dispatcher.Invoke(LoadInfo, accountId);
+            RxApp.MainThreadScheduler.Schedule(() => LoadInfo(accountId));
         }
 
         public void OnActived()
@@ -51,9 +53,16 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int accountId)
         {
-            LoadAdventures(accountId);
-            LoadInventory(accountId);
-            LoadInfo(accountId);
+            {
+                using var context = _contextFactory.CreateDbContext();
+                if (context.Accounts.Find(accountId) is null) return;
+            }
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                LoadAdventures(accountId);
+                LoadInventory(accountId);
+                LoadInfo(accountId);
+            });
         }
 
         private void LoadAdventures(int accountId)
@@ -143,6 +152,14 @@ namespace WPFUI.ViewModels.Tabs
         {
             get => _adventureNum;
             set => this.RaiseAndSetIfChanged(ref _adventureNum, value);
+        }
+
+        private int _accountId;
+
+        public int AccountId
+        {
+            get => _accountId;
+            set => this.RaiseAndSetIfChanged(ref _accountId, value);
         }
     }
 }

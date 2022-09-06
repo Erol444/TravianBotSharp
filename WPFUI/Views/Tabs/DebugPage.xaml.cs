@@ -27,7 +27,7 @@ namespace WPFUI.Views.Tabs
                 .DisposeWith(d);
 
                 this.BindCommand(ViewModel,
-                    vm => vm.Button,
+                    vm => vm.GetHelpCommand,
                     v => v.ReportButton)
                 .DisposeWith(d);
 

@@ -105,6 +105,7 @@ namespace WPFUI.ViewModels
             switch (tab)
             {
                 case TabType.NoAccount:
+                    CurrentIndex = -1;
                     SelectedNoAccount = true;
                     ShowNormalTab = false;
                     ShowAddAccountTab = false;
@@ -121,6 +122,7 @@ namespace WPFUI.ViewModels
                     break;
 
                 case TabType.AddAccount:
+                    CurrentIndex = -1;
                     SelectedAddAccount = true;
                     ShowNoAccountTab = false;
                     ShowNormalTab = false;
@@ -129,6 +131,7 @@ namespace WPFUI.ViewModels
                     break;
 
                 case TabType.AddAccounts:
+                    CurrentIndex = -1;
                     SelectedAddAccounts = true;
                     ShowNoAccountTab = false;
                     ShowNormalTab = false;
@@ -182,6 +185,14 @@ namespace WPFUI.ViewModels
         {
             get => _currentAccount;
             set => this.RaiseAndSetIfChanged(ref _currentAccount, value);
+        }
+
+        private int _currentIndex;
+
+        public int CurrentIndex
+        {
+            get => _currentIndex;
+            set => this.RaiseAndSetIfChanged(ref _currentIndex, value);
         }
 
         private readonly ObservableAsPropertyHelper<bool> _isAccountSelected;

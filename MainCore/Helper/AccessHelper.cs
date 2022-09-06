@@ -13,7 +13,7 @@ namespace MainCore.Helper
             try
             {
                 var response = client.Execute(request);
-                return string.IsNullOrWhiteSpace(response.Content);
+                return !string.IsNullOrWhiteSpace(response.Content);
             }
             catch
             {

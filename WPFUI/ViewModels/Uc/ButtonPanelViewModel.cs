@@ -9,7 +9,6 @@ using System;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
@@ -40,12 +39,12 @@ namespace WPFUI.ViewModels.Uc
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
-            DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected), RxApp.TaskpoolScheduler);
+            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
 
-            LoginCommand = ReactiveCommand.Create(LoginTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b), RxApp.TaskpoolScheduler);
-            LogoutCommand = ReactiveCommand.Create(LogoutTask, this.WhenAnyValue(vm => vm.IsAccountRunning, vm => vm.IsAccountSelected, (a, b) => a && b), RxApp.TaskpoolScheduler);
-            LoginAllCommand = ReactiveCommand.Create(LoginAllTask, outputScheduler: RxApp.TaskpoolScheduler);
-            LogoutAllCommand = ReactiveCommand.Create(LogoutAllTask, outputScheduler: RxApp.TaskpoolScheduler);
+            LoginCommand = ReactiveCommand.Create(LoginTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
+            LogoutCommand = ReactiveCommand.Create(LogoutTask, this.WhenAnyValue(vm => vm.IsAccountRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
+            LoginAllCommand = ReactiveCommand.Create(LoginAllTask);
+            LogoutAllCommand = ReactiveCommand.Create(LogoutAllTask);
         }
 
         private void OnAccountUpdate()
@@ -100,10 +99,10 @@ namespace WPFUI.ViewModels.Uc
             TabSelector = TabType.EditAccount;
         }
 
-        private async Task DeleteAccountTask()
+        private void DeleteAccountTask()
         {
             _waitingWindow.ViewModel.Show("saving data");
-            await Task.Run(() => DeleteAccount(AccountId));
+            DeleteAccount(AccountId);
             _databaseEvent.OnAccountsTableUpdate();
             _waitingWindow.ViewModel.Close();
         }

@@ -4,7 +4,6 @@ using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -27,8 +26,8 @@ namespace WPFUI.ViewModels.Tabs
             _useragentManager = App.GetService<IUseragentManager>();
             _restClientManager = App.GetService<IRestClientManager>();
 
-            TestAllCommand = ReactiveCommand.CreateFromTask(TestAllTask, outputScheduler: RxApp.TaskpoolScheduler);
-            SaveCommand = ReactiveCommand.Create(SaveTask, outputScheduler: RxApp.TaskpoolScheduler);
+            TestAllCommand = ReactiveCommand.CreateFromTask(TestAllTask);
+            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
 
             this.WhenAnyValue(x => x.AccountId).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(LoadData);
@@ -42,7 +41,8 @@ namespace WPFUI.ViewModels.Tabs
         public void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.FirstOrDefault(x => x.Id == index);
+            var account = context.Accounts.Find(index);
+            if (account is null) return;
 
             Username = account.Username;
             Server = account.Server;
@@ -64,59 +64,59 @@ namespace WPFUI.ViewModels.Tabs
 
         private async Task TestAllTask()
         {
-            var checkTasks = new List<Task<bool>>();
-            using var context = _contextFactory.CreateDbContext();
-            var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
-            foreach (var access in accesses)
-            {
-                checkTasks.Add(Task.Run(() => AccessHelper.CheckAccess(_restClientManager.Get(new(access)))));
-            }
+            if (!CheckInput()) return;
 
             _waitingWindow.ViewModel.Show("testing proxies");
-
-            var results = await Task.WhenAll(checkTasks);
-
-            for (int i = 0; i < results.Length; i++)
+            await Observable.Start(() =>
             {
-                var result = results[i];
-                Accessess[i].ProxyStatus = result ? "Working" : "Not working";
-            }
+                for (int i = 0; i < Accessess.Count; i++)
+                {
+                    var proxyHost = Accessess[i].ProxyHost;
+                    var proxyPort = Accessess[i].ProxyPort;
+                    var proxyUsername = Accessess[i].ProxyUsername;
+                    var proxyPassword = Accessess[i].ProxyPassword;
 
+                    var result = AccessHelper.CheckAccess(_restClientManager.Get(new(proxyHost, string.IsNullOrEmpty(proxyPort) ? -1 : int.Parse(proxyPort), proxyUsername, proxyPassword)));
+                    Accessess[i].ProxyStatus = result ? "Working" : "Not working";
+                }
+            });
             _waitingWindow.ViewModel.Close();
         }
 
-        private void SaveTask()
+        private async Task SaveTask()
         {
             if (!CheckInput()) return;
             _waitingWindow.ViewModel.Show("saving account");
-
-            var context = _contextFactory.CreateDbContext();
-
-            var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
-            if (account is null) return;
-            Uri.TryCreate(Server, UriKind.Absolute, out var url);
-            account.Server = url.AbsoluteUri;
-            account.Username = Username;
-
-            var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
-
-            context.Accesses.RemoveRange(accesses);
-            context.SaveChanges();
-
-            foreach (var access in Accessess)
+            await Observable.Start(() =>
             {
-                context.Accesses.Add(new()
+                var context = _contextFactory.CreateDbContext();
+
+                var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
+                if (account is null) return;
+                Uri.TryCreate(Server, UriKind.Absolute, out var url);
+                account.Server = url.AbsoluteUri;
+                account.Username = Username;
+
+                var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
+
+                context.Accesses.RemoveRange(accesses);
+                context.SaveChanges();
+
+                foreach (var access in Accessess)
                 {
-                    AccountId = AccountId,
-                    Password = access.Password,
-                    ProxyHost = access.ProxyHost,
-                    ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
-                    ProxyUsername = access.ProxyUsername,
-                    ProxyPassword = access.ProxyPassword,
-                    Useragent = _useragentManager.Get(),
-                });
-            }
-            context.SaveChanges();
+                    context.Accesses.Add(new()
+                    {
+                        AccountId = AccountId,
+                        Password = access.Password,
+                        ProxyHost = access.ProxyHost,
+                        ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
+                        ProxyUsername = access.ProxyUsername,
+                        ProxyPassword = access.ProxyPassword,
+                        Useragent = _useragentManager.Get(),
+                    });
+                }
+                context.SaveChanges();
+            }, RxApp.TaskpoolScheduler);
 
             _databaseEvent.OnAccountsTableUpdate();
             Clean();
