@@ -8,7 +8,9 @@ using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
@@ -33,26 +35,62 @@ namespace WPFUI.ViewModels.Uc
             _restClientManager = App.GetService<IRestClientManager>();
 
             _isAccountNotSelected = this.WhenAnyValue(x => x.IsAccountSelected).Select(x => !x).ToProperty(this, x => x.IsAccountNotSelected);
-            _isAccountNotRunning = this.WhenAnyValue(x => x.IsAccountRunning).Select(x => !x).ToProperty(this, x => x.IsAccountNotRunning);
 
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
-            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
+            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
 
-            LoginCommand = ReactiveCommand.Create(LoginTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
-            LogoutCommand = ReactiveCommand.Create(LogoutTask, this.WhenAnyValue(vm => vm.IsAccountRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
-            LoginAllCommand = ReactiveCommand.Create(LoginAllTask);
-            LogoutAllCommand = ReactiveCommand.Create(LogoutAllTask);
+            LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
+            LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAccountRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
+            LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
+            LogoutAllCommand = ReactiveCommand.CreateFromTask(LogoutAllTask);
+
+            this.WhenAnyValue(x => x.AccountId).Subscribe(_ => OnAccountUpdate());
         }
 
         private void OnAccountUpdate()
         {
-            if (IsAccountSelected)
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                IsAccountRunning = _taskManager.GetAccountStatus(AccountId) == AccountStatus.Online;
-            }
+                if (IsAccountSelected)
+                {
+                    var status = _taskManager.GetAccountStatus(AccountId);
+                    switch (status)
+                    {
+                        case AccountStatus.Offline:
+                            IsAccountNotRunning = true;
+                            IsAccountRunning = false;
+                            break;
+
+                        case AccountStatus.Starting:
+                            IsAccountNotRunning = false;
+                            IsAccountRunning = false;
+                            break;
+
+                        case AccountStatus.Online:
+                            IsAccountNotRunning = false;
+                            IsAccountRunning = true;
+                            break;
+
+                        case AccountStatus.Pausing:
+                            IsAccountNotRunning = false;
+                            IsAccountRunning = false;
+                            break;
+
+                        case AccountStatus.Paused:
+                            IsAccountNotRunning = false;
+                            IsAccountRunning = true;
+                            break;
+
+                        case AccountStatus.Stopping:
+                            IsAccountNotRunning = false;
+                            IsAccountRunning = false;
+                            break;
+                    }
+                }
+            });
         }
 
         private void CheckVersionTask()
@@ -70,27 +108,27 @@ namespace WPFUI.ViewModels.Uc
             TabSelector = TabType.AddAccounts;
         }
 
-        private void LoginTask() => LoginAccount(AccountId);
+        private Task LoginTask() => Task.Run(() => LoginAccount(AccountId));
 
-        private void LogoutTask() => LogoutAccount(AccountId);
+        private Task LogoutTask() => Task.Run(() => LogoutAccount(AccountId));
 
-        private void LoginAllTask()
+        private async Task LoginAllTask()
         {
             using var context = _contextFactory.CreateDbContext();
             var accounts = context.Accounts;
             foreach (var account in accounts)
             {
-                LoginAccount(account.Id);
+                await Task.Run(() => LoginAccount(account.Id));
             }
         }
 
-        private void LogoutAllTask()
+        private async Task LogoutAllTask()
         {
             using var context = _contextFactory.CreateDbContext();
             var accounts = context.Accounts;
             foreach (var account in accounts)
             {
-                LogoutAccount(account.Id);
+                await Task.Run(() => LogoutAccount(account.Id));
             }
         }
 
@@ -225,11 +263,12 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _isAccountRunning, value);
         }
 
-        private readonly ObservableAsPropertyHelper<bool> _isAccountNotRunning;
+        private bool _isAccountNotRunning;
 
         public bool IsAccountNotRunning
         {
-            get => _isAccountNotRunning.Value;
+            get => _isAccountNotRunning;
+            set => this.RaiseAndSetIfChanged(ref _isAccountNotRunning, value);
         }
 
         private int _accountId;
