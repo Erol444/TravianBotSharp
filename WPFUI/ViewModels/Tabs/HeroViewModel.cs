@@ -1,34 +1,26 @@
-﻿using MainCore;
-using MainCore.Helper;
-using MainCore.Services;
+﻿using MainCore.Helper;
 using MainCore.Tasks.Update;
-using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using WPFUI.Interfaces;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class HeroViewModel : ReactiveObject, IMainTabPage
+    public class HeroViewModel : AccountTabBaseViewModel, IMainTabPage
     {
-        public HeroViewModel()
+        public HeroViewModel() : base()
         {
-            _eventManager = App.GetService<IEventManager>();
             _eventManager.HeroInfoUpdate += OnHeroInfoUpdate;
             _eventManager.HeroAdventuresUpdate += OnHeroAdventuresUpdate;
             _eventManager.HeroInventoryUpdate += OnheroInventoryUpdate;
-            _taskManager = App.GetService<ITaskManager>();
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
 
             AdventuresCommand = ReactiveCommand.Create(AdventuresTask);
             InventoryCommand = ReactiveCommand.Create(InventoryTask);
-
-            this.WhenAnyValue(x => x.AccountId).Subscribe(LoadData);
         }
 
         private void OnheroInventoryUpdate(int accountId)
@@ -51,7 +43,7 @@ namespace WPFUI.ViewModels.Tabs
             LoadData(AccountId);
         }
 
-        private void LoadData(int accountId)
+        protected override void LoadData(int accountId)
         {
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -121,9 +113,6 @@ namespace WPFUI.ViewModels.Tabs
             _taskManager.Add(AccountId, new UpdateHeroItems(AccountId));
         }
 
-        private readonly IEventManager _eventManager;
-        private readonly ITaskManager _taskManager;
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
         public ObservableCollection<AdventureInfo> Adventures { get; } = new();
         public ObservableCollection<ItemInfo> Inventory { get; } = new();
         public ObservableCollection<ItemInfo> Equipt { get; } = new();
@@ -152,14 +141,6 @@ namespace WPFUI.ViewModels.Tabs
         {
             get => _adventureNum;
             set => this.RaiseAndSetIfChanged(ref _adventureNum, value);
-        }
-
-        private int _accountId;
-
-        public int AccountId
-        {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
         }
     }
 }

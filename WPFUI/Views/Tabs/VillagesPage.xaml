@@ -26,15 +26,22 @@
             </ListView.View>
         </ListView>
         <TabControl Grid.Column="1" Margin="1,0,0,0">
-            <TabItem x:Name="NoVillageTab" Header="No village" IsVisibleChanged="NoVillageTab_IsVisibleChanged">
+            <TabItem x:Name="NoVillageTab" Header="No village">
                 <Grid Background="#FFE5E5E5">
                     <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="NO VILLAGE IS SELECTED" VerticalAlignment="Center" TextAlignment="Center" LineHeight="11" />
                 </Grid>
             </TabItem>
-            <TabItem x:Name="BuildTab" Header="Build" IsVisibleChanged="BuildTab_IsVisibleChanged">
+            <TabItem x:Name="BuildTab" Header="Build">
                 <Frame>
                     <Frame.Content>
                         <tabs:BuildPage x:Name="BuildPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
+            <TabItem x:Name="SettingsTab" Header="Settings">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:SettingsPage x:Name="SettingsPage" />
                     </Frame.Content>
                 </Frame>
             </TabItem>

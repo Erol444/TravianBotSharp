@@ -25,8 +25,8 @@ namespace WPFUI.ViewModels.Uc
             _versionWindow = new VersionWindow();
             _chromeManager = App.GetService<IChromeManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _databaseEvent = App.GetService<IEventManager>();
-            _databaseEvent.AccountStatusUpdate += OnAccountUpdate;
+            _eventManager = App.GetService<IEventManager>();
+            _eventManager.AccountStatusUpdate += OnAccountUpdate;
             _taskManager = App.GetService<ITaskManager>();
             _logManager = App.GetService<ILogManager>();
             _timeManager = App.GetService<ITimerManager>();
@@ -103,7 +103,7 @@ namespace WPFUI.ViewModels.Uc
         {
             _waitingWindow.ViewModel.Show("saving data");
             DeleteAccount(AccountId);
-            _databaseEvent.OnAccountsTableUpdate();
+            _eventManager.OnAccountsTableUpdate();
             _waitingWindow.ViewModel.Close();
         }
 
@@ -250,7 +250,7 @@ namespace WPFUI.ViewModels.Uc
 
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _databaseEvent;
+        private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
         private readonly ILogManager _logManager;
         private readonly ITimerManager _timeManager;

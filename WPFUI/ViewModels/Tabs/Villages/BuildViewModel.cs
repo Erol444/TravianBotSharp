@@ -1,11 +1,8 @@
-﻿using MainCore;
-using MainCore.Enums;
+﻿using MainCore.Enums;
 using MainCore.Helper;
 using MainCore.Models.Runtime;
-using MainCore.Services;
 using MainCore.Tasks.Sim;
 using MainCore.TravianData;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;
@@ -18,18 +15,14 @@ using System.Text.Json;
 using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class BuildViewModel : ReactiveObject, IVillageTabPage
+    public class BuildViewModel : VillageTabBaseViewModel, IVillageTabPage
     {
-        public BuildViewModel()
+        public BuildViewModel() : base()
         {
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _eventManager = App.GetService<IEventManager>();
-            _planManager = App.GetService<IPlanManager>();
-            _taskManager = App.GetService<ITaskManager>();
-
             NormalBuildCommand = ReactiveCommand.Create(NormalBuildTask, this.WhenAnyValue(x => x.IsLevelActive));
             ResBuildCommand = ReactiveCommand.Create(ResBuildTask);
 
@@ -57,19 +50,21 @@ namespace WPFUI.ViewModels.Tabs.Villages
                     Strategy = (BuildingStrategyEnums)item,
                 });
             }
+
+            this.WhenAnyValue(x => x.CurrentBuilding).Subscribe(_ => LoadBuildingCombo(VillageId));
         }
 
         public void OnActived()
         {
             LoadData(VillageId);
-            LoadBuildingCombo();
         }
 
-        public void LoadData(int villageId)
+        protected override void LoadData(int villageId)
         {
             LoadBuildings(villageId);
             LoadCurrent(villageId);
             LoadQueue(villageId);
+            LoadBuildingCombo(villageId);
         }
 
         private void LoadBuildings(int villageId)
@@ -133,7 +128,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             }
         }
 
-        private void LoadBuildingCombo()
+        private void LoadBuildingCombo(int villageId)
         {
             ComboBuildings.Clear();
             if (CurrentBuilding is null)
@@ -155,7 +150,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             using var context = _contextFactory.CreateDbContext();
 
-            var plannedBuilding = _planManager.GetList(VillageId).FirstOrDefault(x => x.Location == CurrentBuilding.Location);
+            var plannedBuilding = _planManager.GetList(villageId).FirstOrDefault(x => x.Location == CurrentBuilding.Location);
             if (plannedBuilding is not null)
             {
                 ComboBuildings.Add(new() { Building = plannedBuilding.Building });
@@ -166,7 +161,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 return;
             }
 
-            var buildings = BuildingsHelper.GetCanBuild(context, _planManager, AccountId, VillageId);
+            var buildings = BuildingsHelper.GetCanBuild(context, _planManager, AccountId, villageId);
             if (buildings.Count > 0)
             {
                 foreach (var building in buildings)
@@ -382,11 +377,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public BuildingInfo CurrentBuilding
         {
             get => _currentBuilding;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _currentBuilding, value);
-                LoadBuildingCombo();
-            }
+            set => this.RaiseAndSetIfChanged(ref _currentBuilding, value);
         }
 
         private PlanTask _currentQueueBuilding;
@@ -471,31 +462,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             get => _resLevel;
             set => this.RaiseAndSetIfChanged(ref _resLevel, value);
-        }
-
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _eventManager;
-        private readonly IPlanManager _planManager;
-        private readonly ITaskManager _taskManager;
-
-        private int _accountId;
-
-        public int AccountId
-        {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
-        }
-
-        private int _villageId;
-
-        public int VillageId
-        {
-            get => _villageId;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _villageId, value);
-                LoadData(value);
-            }
         }
     }
 }

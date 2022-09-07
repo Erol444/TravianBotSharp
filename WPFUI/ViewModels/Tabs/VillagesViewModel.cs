@@ -1,21 +1,22 @@
-﻿using MainCore;
-using MainCore.Services;
-using Microsoft.EntityFrameworkCore;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using WPFUI.Interfaces;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class VillagesViewModel : ReactiveObject, IMainTabPage
+    public class VillagesViewModel : AccountTabBaseViewModel, IMainTabPage
     {
-        public VillagesViewModel()
+        public VillagesViewModel() : base()
         {
-            _databaseEvent = App.GetService<IEventManager>();
-            _databaseEvent.VillagesUpdated += LoadData;
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
+            _eventManager.VillagesUpdated += LoadData;
+
+            _isVillageSelected = this.WhenAnyValue(x => x.CurrentVillage).Select(x => x is not null).ToProperty(this, x => x.IsVillageSelected);
+            _isVillageNotSelected = this.WhenAnyValue(x => x.CurrentVillage).Select(x => x is null).ToProperty(this, x => x.IsVillageNotSelected);
         }
 
         public void OnActived()
@@ -23,84 +24,50 @@ namespace WPFUI.ViewModels.Tabs
             LoadData(AccountId);
         }
 
-        public void LoadData(int accountId)
+        public void OnVillagesUpdate()
         {
-            var currentVillageIndex = Villages.IndexOf(CurrentVillage);
-            using var context = _contextFactory.CreateDbContext();
-
-            App.Current.Dispatcher.Invoke(() =>
-            {
-                var villages = context.Villages.Where(x => x.AccountId == accountId);
-                Villages.Clear();
-                foreach (var village in villages)
-                {
-                    Villages.Add(new VillageInfo()
-                    {
-                        Id = village.Id,
-                        Name = village.Name,
-                        Coords = $"{village.X}|{village.Y}",
-                    });
-                }
-                if (currentVillageIndex != -1)
-                {
-                    CurrentVillage = Villages[currentVillageIndex];
-                }
-            });
+            RxApp.MainThreadScheduler.Schedule(() => LoadData(AccountId));
         }
+
+        protected override void LoadData(int accountId)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            if (context.Accounts.Find(accountId) is null) return;
+            var villages = context.Villages.Where(x => x.AccountId == accountId);
+            Villages.Clear();
+            foreach (var village in villages)
+            {
+                Villages.Add(new()
+                {
+                    Id = village.Id,
+                    Name = village.Name,
+                    Coords = $"{village.X}|{village.Y}",
+                });
+            }
+        }
+
+        public ObservableCollection<VillageInfo> Villages { get; } = new();
 
         private VillageInfo _currentVillage;
 
         public VillageInfo CurrentVillage
         {
             get => _currentVillage;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _currentVillage, value);
-                if (value is not null)
-                {
-                    IsVillageSelected = true;
-                }
-                else
-                {
-                    IsVillageSelected = false;
-                }
-            }
+            set => this.RaiseAndSetIfChanged(ref _currentVillage, value);
         }
 
-        private bool _isVillageSelected = false;
+        private readonly ObservableAsPropertyHelper<bool> _isVillageSelected;
 
         public bool IsVillageSelected
         {
-            get => _isVillageSelected;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _isVillageSelected, value);
-                IsVillageNotSelected = !value;
-            }
+            get => _isVillageSelected.Value;
         }
 
-        private bool _isVillageNotSelected = true;
+        private readonly ObservableAsPropertyHelper<bool> _isVillageNotSelected;
 
         public bool IsVillageNotSelected
         {
-            get => _isVillageNotSelected;
-            set => this.RaiseAndSetIfChanged(ref _isVillageNotSelected, value);
-        }
-
-        public ObservableCollection<VillageInfo> Villages { get; } = new();
-
-        private readonly IEventManager _databaseEvent;
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private int _accountId;
-
-        public int AccountId
-        {
-            get => _accountId;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _accountId, value);
-                LoadData(value);
-            }
+            get => _isVillageNotSelected.Value;
         }
     }
 }

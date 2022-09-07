@@ -1,7 +1,4 @@
-﻿using MainCore;
-using MainCore.Models.Database;
-using MainCore.Services;
-using Microsoft.EntityFrameworkCore;
+﻿using MainCore.Models.Database;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -11,19 +8,14 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
-using WPFUI.Views;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class AddAccountsViewModel : ReactiveObject
+    public class AddAccountsViewModel : TabBaseViewModel
     {
         public AddAccountsViewModel()
         {
-            _waitingWindow = App.GetService<WaitingWindow>();
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _databaseEvent = App.GetService<IEventManager>();
-            _useragentManager = App.GetService<IUseragentManager>();
-
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
 
@@ -70,7 +62,7 @@ namespace WPFUI.ViewModels.Tabs
                 context.SaveChanges();
             }, RxApp.TaskpoolScheduler);
             Clean();
-            _databaseEvent.OnAccountsTableUpdate();
+            _eventManager.OnAccountsTableUpdate();
             _waitingWindow.ViewModel.Close();
         }
 
@@ -188,11 +180,6 @@ namespace WPFUI.ViewModels.Tabs
             set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
         }
 
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _databaseEvent;
-        private readonly IUseragentManager _useragentManager;
-
-        private readonly WaitingWindow _waitingWindow;
         public ObservableCollection<AccountMulti> Accounts { get; } = new();
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }

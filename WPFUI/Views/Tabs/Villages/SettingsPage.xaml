@@ -47,7 +47,7 @@
                     <TextBox x:Name="CompleteTextBox" TextWrapping="Wrap" Width="40" Margin="5,0,5,0" />
                     <TextBlock TextWrapping="Wrap" Text="min(s)" />
                 </StackPanel>
-                <CheckBox x:Name="WatchAdsCheckBox" Content="Watch ads when upgrading building" Grid.Row="4" Margin="5,0,0,0" />
+                <CheckBox x:Name="WatchAdsCheckBox" Content="Using ads upgrade button" Grid.Row="4" Margin="5,0,0,0" />
                 <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="5,0,0,0">
                     <TextBlock TextWrapping="Wrap" Text="when building time is longer than " />
                     <TextBox x:Name="WatchAdsTextBox" TextWrapping="Wrap" Width="40" Margin="5,0,5,0" />

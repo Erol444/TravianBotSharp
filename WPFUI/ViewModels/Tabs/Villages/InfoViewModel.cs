@@ -1,18 +1,16 @@
-﻿using MainCore.Services;
-using MainCore.Tasks.Sim;
+﻿using MainCore.Tasks.Sim;
 using MainCore.Tasks.Update;
 using ReactiveUI;
 using System.Reactive;
 using WPFUI.Interfaces;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class InfoViewModel : ReactiveObject, IVillageTabPage
+    public class InfoViewModel : VillageTabBaseViewModel, IVillageTabPage
     {
-        public InfoViewModel()
+        public InfoViewModel() : base()
         {
-            _taskManager = App.GetService<ITaskManager>();
-
             BothDorfCommand = ReactiveCommand.Create(BothDorf);
             Dorf1Command = ReactiveCommand.Create(Dorf1);
             Dorf2Command = ReactiveCommand.Create(Dorf2);
@@ -37,26 +35,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
             _taskManager.Add(AccountId, new UpdateDorf2(VillageId, AccountId));
         }
 
+        protected override void LoadData(int index)
+        {
+        }
+
         public ReactiveCommand<Unit, Unit> BothDorfCommand;
         public ReactiveCommand<Unit, Unit> Dorf1Command;
         public ReactiveCommand<Unit, Unit> Dorf2Command;
-
-        private readonly ITaskManager _taskManager;
-
-        private int _accountId;
-
-        public int AccountId
-        {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
-        }
-
-        private int _villageId;
-
-        public int VillageId
-        {
-            get => _villageId;
-            set => this.RaiseAndSetIfChanged(ref _villageId, value);
-        }
     }
 }

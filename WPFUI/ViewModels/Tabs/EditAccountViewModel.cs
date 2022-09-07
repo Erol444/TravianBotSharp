@@ -1,7 +1,4 @@
-﻿using MainCore;
-using MainCore.Helper;
-using MainCore.Services;
-using Microsoft.EntityFrameworkCore;
+﻿using MainCore.Helper;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -12,25 +9,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
-using WPFUI.Views;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class EditAccountViewModel : ReactiveObject, ITabPage
+    public class EditAccountViewModel : AccountTabBaseViewModel, ITabPage
     {
-        public EditAccountViewModel()
+        public EditAccountViewModel() : base()
         {
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _waitingWindow = App.GetService<WaitingWindow>();
-            _databaseEvent = App.GetService<IEventManager>();
-            _useragentManager = App.GetService<IUseragentManager>();
-            _restClientManager = App.GetService<IRestClientManager>();
-
             TestAllCommand = ReactiveCommand.CreateFromTask(TestAllTask);
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
-
-            this.WhenAnyValue(x => x.AccountId).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(LoadData);
         }
 
         public void OnActived()
@@ -38,7 +27,7 @@ namespace WPFUI.ViewModels.Tabs
             LoadData(AccountId);
         }
 
-        public void LoadData(int index)
+        protected override void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
             var account = context.Accounts.Find(index);
@@ -118,7 +107,7 @@ namespace WPFUI.ViewModels.Tabs
                 context.SaveChanges();
             }, RxApp.TaskpoolScheduler);
 
-            _databaseEvent.OnAccountsTableUpdate();
+            _eventManager.OnAccountsTableUpdate();
             Clean();
             _waitingWindow.ViewModel.Close();
         }
@@ -183,12 +172,6 @@ namespace WPFUI.ViewModels.Tabs
             return true;
         }
 
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _databaseEvent;
-        private readonly IUseragentManager _useragentManager;
-        private readonly IRestClientManager _restClientManager;
-        private readonly WaitingWindow _waitingWindow;
-
         private string _server;
 
         public string Server
@@ -206,14 +189,6 @@ namespace WPFUI.ViewModels.Tabs
         }
 
         public ObservableCollection<Models.Access> Accessess { get; } = new();
-
-        private int _accountId;
-
-        public int AccountId
-        {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
-        }
 
         private TabType _tabSelector;
 

@@ -1,29 +1,22 @@
 ﻿using MainCore.Models.Runtime;
-using MainCore.Services;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using WPFUI.Interfaces;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class DebugViewModel : ReactiveObject, IMainTabPage
+    public class DebugViewModel : AccountTabBaseViewModel, IMainTabPage
     {
         public DebugViewModel()
         {
-            _taskManager = App.GetService<ITaskManager>();
-            _logManager = App.GetService<ILogManager>();
-            _databaseEvent = App.GetService<IEventManager>();
-
-            _databaseEvent.TaskUpdated += OnTasksUpdate;
-            _databaseEvent.LogUpdated += OnLogsUpdate;
+            _eventManager.TaskUpdated += OnTasksUpdate;
+            _eventManager.LogUpdated += OnLogsUpdate;
 
             GetHelpCommand = ReactiveCommand.Create(GetHelpTask);
-
-            this.WhenAnyValue(x => x.AccountId).Subscribe(LoadData);
         }
 
         public void OnActived()
@@ -31,7 +24,7 @@ namespace WPFUI.ViewModels.Tabs
             LoadData(AccountId);
         }
 
-        public void LoadData(int accountId)
+        protected override void LoadData(int accountId)
         {
             OnTasksUpdate(accountId);
             OnLogsUpdate(accountId);
@@ -74,21 +67,9 @@ namespace WPFUI.ViewModels.Tabs
             });
         }
 
-        private readonly ILogManager _logManager;
-        private readonly ITaskManager _taskManager;
-        private readonly IEventManager _databaseEvent;
-
         public ObservableCollection<TaskModel> Tasks { get; } = new();
 
         public ObservableCollection<LogMessage> Logs { get; } = new();
         public ReactiveCommand<Unit, Unit> GetHelpCommand { get; }
-
-        private int _accountId;
-
-        public int AccountId
-        {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
-        }
     }
 }

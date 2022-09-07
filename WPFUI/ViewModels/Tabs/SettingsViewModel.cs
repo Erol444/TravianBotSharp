@@ -1,8 +1,5 @@
-﻿using MainCore;
-using MainCore.Helper;
-using MainCore.Services;
+﻿using MainCore.Helper;
 using MainCore.Tasks.Update;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;
@@ -14,23 +11,17 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Interfaces;
-using WPFUI.Views;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class SettingsViewModel : ReactiveObject, IMainTabPage
+    public class SettingsViewModel : AccountTabBaseViewModel, IMainTabPage
     {
-        public SettingsViewModel()
+        public SettingsViewModel() : base()
         {
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _taskManager = App.GetService<ITaskManager>();
-            _waitingWindow = App.GetService<WaitingWindow>();
-
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
-
-            this.WhenAnyValue(x => x.AccountId).Subscribe(LoadData);
         }
 
         public void OnActived()
@@ -38,7 +29,7 @@ namespace WPFUI.ViewModels.Tabs
             LoadData(AccountId);
         }
 
-        private void LoadData(int index)
+        protected override void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
             if (context.Accounts.Find(index) is null) return;
@@ -79,7 +70,7 @@ namespace WPFUI.ViewModels.Tabs
             if (!CheckInput()) return;
 
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(_accountId);
+            var account = context.Accounts.Find(AccountId);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
@@ -339,17 +330,5 @@ namespace WPFUI.ViewModels.Tabs
             get => _isAutoStartAdventure;
             set => this.RaiseAndSetIfChanged(ref _isAutoStartAdventure, value);
         }
-
-        private int _accountId;
-
-        public int AccountId
-        {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
-        }
-
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly ITaskManager _taskManager;
-        private readonly WaitingWindow _waitingWindow;
     }
 }

@@ -10,8 +10,12 @@ namespace WPFUI.Views.Tabs.Villages
     {
         public SettingsPage()
         {
+            ViewModel = new();
             InitializeComponent();
+            this.WhenActivated(d =>
+            {
+                ViewModel.OnActived();
+            });
         }
-
     }
 }

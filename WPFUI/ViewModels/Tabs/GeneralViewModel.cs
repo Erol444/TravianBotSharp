@@ -1,9 +1,6 @@
-﻿using MainCore;
-using MainCore.Enums;
-using MainCore.Services;
+﻿using MainCore.Enums;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
-using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Linq;
@@ -12,25 +9,18 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using WPFUI.Interfaces;
-using WPFUI.Views;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class GeneralViewModel : ReactiveObject, IMainTabPage
+    public class GeneralViewModel : AccountTabBaseViewModel, IMainTabPage
     {
-        public GeneralViewModel()
+        public GeneralViewModel() : base()
         {
-            _eventManager = App.GetService<IEventManager>();
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
-            _taskManager = App.GetService<ITaskManager>();
-            _planManager = App.GetService<IPlanManager>();
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _waitingWindow = App.GetService<WaitingWindow>();
 
             PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsValidStatus));
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
-
-            this.WhenAnyValue(x => x.AccountId).Subscribe(LoadData);
         }
 
         private void OnAccountStatusUpdate()
@@ -53,7 +43,7 @@ namespace WPFUI.ViewModels.Tabs
             Restart(AccountId);
         }
 
-        private void LoadData(int index)
+        protected override void LoadData(int index)
         {
             var status = _taskManager.GetAccountStatus(index);
             switch (status)
@@ -170,20 +160,6 @@ namespace WPFUI.ViewModels.Tabs
             set => this.RaiseAndSetIfChanged(ref _isValidRestart, value);
         }
 
-        private int _accountId;
-
-        public int AccountId
-        {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
-        }
-
         private readonly Random rand = new();
-
-        private readonly IEventManager _eventManager;
-        private readonly ITaskManager _taskManager;
-        private readonly IPlanManager _planManager;
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly WaitingWindow _waitingWindow;
     }
 }

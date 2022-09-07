@@ -1,7 +1,4 @@
-﻿using MainCore;
-using MainCore.Models.Database;
-using MainCore.Services;
-using Microsoft.EntityFrameworkCore;
+﻿using MainCore.Models.Database;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -11,19 +8,14 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
-using WPFUI.Views;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class AddAccountViewModel : ReactiveObject
+    public class AddAccountViewModel : TabBaseViewModel
     {
         public AddAccountViewModel()
         {
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _waitingWindow = App.GetService<WaitingWindow>();
-            _databaseEvent = App.GetService<IEventManager>();
-            _useragentManager = App.GetService<IUseragentManager>();
-
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
         }
@@ -70,7 +62,7 @@ namespace WPFUI.ViewModels.Tabs
                 context.SaveChanges();
             }, RxApp.TaskpoolScheduler);
             Clean();
-            _databaseEvent.OnAccountsTableUpdate();
+            _eventManager.OnAccountsTableUpdate();
             _waitingWindow.ViewModel.Close();
         }
 
@@ -133,11 +125,6 @@ namespace WPFUI.ViewModels.Tabs
             }
             return true;
         }
-
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _databaseEvent;
-        private readonly IUseragentManager _useragentManager;
-        private readonly WaitingWindow _waitingWindow;
 
         private string _server;
 
