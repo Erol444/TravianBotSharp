@@ -14,12 +14,12 @@ namespace MainCore.Services
         public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IEventManager databaseEvent, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             _contextFactory = contextFactory;
-            _databaseEvent = databaseEvent;
+            _eventManager = databaseEvent;
             _chromeManager = chromeManager;
             _logManager = logManager;
             _planManager = planManager;
             _restClientManager = restClientManager;
-            _databaseEvent.TaskExecuted += Loop;
+            _eventManager.TaskExecuted += Loop;
         }
 
         public void Add(int index, BotTask task, bool first = false)
@@ -42,14 +42,8 @@ namespace MainCore.Services
                 }
             }
             if (task.ExecuteAt == default) task.ExecuteAt = DateTime.Now;
+            task.SetService(_contextFactory, _chromeManager.Get(index), this, _eventManager, _logManager, _planManager, _restClientManager);
 
-            task.ContextFactory = _contextFactory;
-            task.DatabaseEvent = _databaseEvent;
-            task.TaskManager = this;
-            task.LogManager = _logManager;
-            task.ChromeBrowser = _chromeManager.Get(task.AccountId);
-            task.PlanManager = _planManager;
-            task.RestClientManager = _restClientManager;
             _tasksDict[index].Add(task);
             ReOrder(index);
         }
@@ -72,7 +66,7 @@ namespace MainCore.Services
         {
             Check(index);
             _tasksDict[index].Sort((x, y) => DateTime.Compare(x.ExecuteAt, y.ExecuteAt));
-            _databaseEvent.OnTaskUpdated(index);
+            _eventManager.OnTaskUpdated(index);
         }
 
         public int Count(int index)
@@ -112,7 +106,7 @@ namespace MainCore.Services
             _taskExecuting[index] = true;
             task.Stage = TaskStage.Executing;
             task.Cts = new();
-            _databaseEvent.OnTaskUpdated(index);
+            _eventManager.OnTaskUpdated(index);
             _logManager.Information(index, $"{task.Name} is started");
             var cacheExecuteTime = task.ExecuteAt;
             try
@@ -156,7 +150,7 @@ namespace MainCore.Services
                 }
             }
 
-            _databaseEvent.OnTaskUpdated(index);
+            _eventManager.OnTaskUpdated(index);
             _taskExecuting[index] = false;
 
             using var context = _contextFactory.CreateDbContext();
@@ -183,7 +177,7 @@ namespace MainCore.Services
             Check(index);
 
             _botStatus[index] = status;
-            _databaseEvent.OnAccountStatusUpdate();
+            _eventManager.OnAccountStatusUpdate();
         }
 
         private readonly Dictionary<int, List<BotTask>> _tasksDict = new();
@@ -192,7 +186,7 @@ namespace MainCore.Services
         private readonly Random _rand = new();
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _databaseEvent;
+        private readonly IEventManager _eventManager;
         private readonly IChromeManager _chromeManager;
         private readonly ILogManager _logManager;
         private readonly IPlanManager _planManager;

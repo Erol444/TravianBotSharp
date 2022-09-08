@@ -1,9 +1,11 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper;
 using MainCore.Models.Runtime;
+using MainCore.Services;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Update;
 using MainCore.TravianData;
+using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -34,236 +36,71 @@ namespace MainCore.Tasks.Sim
             _name = $"Upgrade building in {village.Name}";
         }
 
+        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        {
+            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
+            using var context = ContextFactory.CreateDbContext();
+            var village = context.Villages.Find(VillageId);
+            _name = $"Upgrade building in {village.Name}";
+        }
+
         public override void Execute()
         {
             do
             {
                 if (Cts.IsCancellationRequested) return;
-                using var context = ContextFactory.CreateDbContext();
 
-                var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, PlanManager, LogManager, AccountId, VillageId);
-                if (buildingTask is null)
+                var buildingTask = SelectBuilding();
+                if (Cts.IsCancellationRequested) return;
+                if (StopFlag) return;
+                if (buildingTask is null) continue;
+
+                if (IsAutoBuilding(buildingTask)) continue;
+                if (Cts.IsCancellationRequested) return;
+
                 {
-                    var tasks = PlanManager.GetList(VillageId);
-                    if (tasks.Count == 0)
-                    {
-                        LogManager.Information(AccountId, "Queue is empty.");
-                        return;
-                    }
-
+                    using var context = ContextFactory.CreateDbContext();
                     NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
-                    NavigateHelper.GoRandomDorf(ChromeBrowser);
-                    UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
-
-                    var firstComplete = context.VillagesCurrentlyBuildings.Find(VillageId, 0);
-                    if (firstComplete.CompleteTime == DateTime.MaxValue)
-                    {
-                        continue;
-                    }
-
-                    ExecuteAt = firstComplete.CompleteTime.AddSeconds(10);
-                    LogManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
-                    return;
-                }
-                if (Cts.IsCancellationRequested) return;
-
-                if (buildingTask.Type == PlanTypeEnums.ResFields)
-                {
-                    var task = UpgradeBuildingHelper.ExtractResField(context, VillageId, buildingTask);
-                    if (task is null)
-                    {
-                        PlanManager.Remove(VillageId, task);
-                        continue;
-                    }
-                    else
-                    {
-                        PlanManager.Insert(VillageId, 0, task);
-                        continue;
-                    }
-                }
-                if (Cts.IsCancellationRequested) return;
-
-                NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
-                if (Cts.IsCancellationRequested) return;
-                UpdateHelper.UpdateResource(context, ChromeBrowser, VillageId);
-
-                if (context.VillagesResources.Find(VillageId).FreeCrop <= 5 && buildingTask.Building != BuildingEnums.Cropland)
-                {
-                    var cropland = context.VillagesBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Type == BuildingEnums.Cropland).OrderBy(x => x.Level).FirstOrDefault();
-                    var task = new PlanTask()
-                    {
-                        Type = PlanTypeEnums.General,
-                        Level = cropland.Level + 1,
-                        Building = BuildingEnums.Cropland,
-                        Location = cropland.Id,
-                    };
-                    PlanManager.Insert(VillageId, 0, task);
-                    continue;
-                }
-
-                if (Cts.IsCancellationRequested) return;
-                // move to correct page
-                var dorf = BuildingsHelper.GetDorf(buildingTask.Location);
-                switch (dorf)
-                {
-                    case 1:
-                        NavigateHelper.ToDorf1(ChromeBrowser, true);
-                        UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
-                        UpdateHelper.UpdateDorf1(context, ChromeBrowser, VillageId);
-                        break;
-
-                    case 2:
-                        NavigateHelper.ToDorf2(ChromeBrowser, true);
-                        UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
-                        UpdateHelper.UpdateDorf2(context, ChromeBrowser, AccountId, VillageId);
-                        break;
-                }
-
-                var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
-                if (building.Level >= buildingTask.Level)
-                {
-                    PlanManager.Remove(VillageId, buildingTask);
-                    continue;
-                }
-                var currently = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == buildingTask.Location);
-                if (currently is not null && currently.Level >= buildingTask.Level)
-                {
-                    PlanManager.Remove(VillageId, buildingTask);
-                    continue;
-                }
-
-                if (Cts.IsCancellationRequested) return;
-                NavigateHelper.GoToBuilding(ChromeBrowser, buildingTask.Location);
-
-                if (Cts.IsCancellationRequested) return;
-                bool isNewBuilding = false;
-                if (building.Type == BuildingEnums.Site)
-                {
-                    isNewBuilding = true;
-                    var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
-                    NavigateHelper.SwitchTab(ChromeBrowser, tab);
-                }
-                else
-                {
-                    if (BuildingsData.HasMultipleTabs(buildingTask.Building))
-                    {
-                        NavigateHelper.SwitchTab(ChromeBrowser, 0);
-                    }
-                }
-
-                if (Cts.IsCancellationRequested) return;
-                var resNeed = CheckHelper.GetResourceNeed(ChromeBrowser, buildingTask.Building, isNewBuilding);
-                var resCurrent = context.VillagesResources.Find(VillageId);
-                if (resNeed[0] > resCurrent.Wood || resNeed[1] > resCurrent.Clay || resNeed[2] > resCurrent.Iron || resNeed[3] > resCurrent.Crop)
-                {
-                    var resMissing = new long[] { resNeed[0] - resCurrent.Wood, resNeed[1] - resCurrent.Clay, resNeed[2] - resCurrent.Iron, resNeed[3] - resCurrent.Crop };
-#if TRAVIAN_OFFICIAL ||TRAVIAN_OFFICIAL_HEROUI
-
-                    var setting = context.VillagesSettings.Find(VillageId);
-                    if (!setting.IsUseHeroRes)
-                    {
-                        LogManager.Information(AccountId, "Don't have enough resources.");
-                        var production = context.VillagesProduction.Find(VillageId);
-                        var timeEnough = production.GetTimeWhenEnough(resMissing);
-                        ExecuteAt = timeEnough;
-                        break;
-                    }
-                    var taskUpdate = new UpdateHeroItems(AccountId);
-                    taskUpdate.CopyFrom(this);
-                    taskUpdate.Execute();
-                    var itemsHero = context.HeroesItems.Where(x => x.AccountId == AccountId);
-                    var woodAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Wood);
-                    var clayAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Clay);
-                    var ironAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Iron);
-                    var cropAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Crop);
-
-                    var resAvaliable = new long[] { woodAvaliable?.Count ?? 0, clayAvaliable?.Count ?? 0, ironAvaliable?.Count ?? 0, cropAvaliable?.Count ?? 0 };
-
-                    var resLeft = new long[] { resAvaliable[0] - resMissing[0], resAvaliable[1] - resMissing[1], resAvaliable[2] - resMissing[2], resAvaliable[3] - resMissing[3] };
-                    if (resLeft.Any(x => x <= 0))
-                    {
-                        LogManager.Information(AccountId, "Don't have enough resources.");
-                        var production = context.VillagesProduction.Find(VillageId);
-                        var timeEnough = production.GetTimeWhenEnough(resMissing);
-                        ExecuteAt = timeEnough;
-                        break;
-                    }
-                    var items = new List<(HeroItemEnums, int)>()
-                    {
-                        (HeroItemEnums.Wood, (int)resMissing[0]),
-                        (HeroItemEnums.Clay, (int)resMissing[1]),
-                        (HeroItemEnums.Iron, (int)resMissing[2]),
-                        (HeroItemEnums.Crop, (int)resMissing[3]),
-                    };
-                    var taskEquip = new HeroEquip(VillageId, AccountId, items);
-                    taskEquip.CopyFrom(this);
-                    taskEquip.Execute();
-
                     if (Cts.IsCancellationRequested) return;
-                    // move to correct page
-                    switch (dorf)
-                    {
-                        case 1:
-                            NavigateHelper.ToDorf1(ChromeBrowser, true);
-                            UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
-                            UpdateHelper.UpdateDorf1(context, ChromeBrowser, VillageId);
-                            break;
-
-                        case 2:
-                            NavigateHelper.ToDorf2(ChromeBrowser, true);
-                            UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
-                            UpdateHelper.UpdateDorf2(context, ChromeBrowser, AccountId, VillageId);
-                            break;
-                    }
-
-                    building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
-                    if (building.Level >= buildingTask.Level)
-                    {
-                        PlanManager.Remove(VillageId, buildingTask);
-                        continue;
-                    }
-                    currently = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == buildingTask.Location);
-                    if (currently is not null && currently.Level >= buildingTask.Level)
-                    {
-                        PlanManager.Remove(VillageId, buildingTask);
-                        continue;
-                    }
-
+                    UpdateHelper.UpdateResource(context, ChromeBrowser, VillageId);
                     if (Cts.IsCancellationRequested) return;
-                    NavigateHelper.GoToBuilding(ChromeBrowser, buildingTask.Location);
-
-                    if (Cts.IsCancellationRequested) return;
-                    if (building.Type == BuildingEnums.Site)
-                    {
-                        isNewBuilding = true;
-                        var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
-                        NavigateHelper.SwitchTab(ChromeBrowser, tab);
-                    }
-                    else
-                    {
-                        if (BuildingsData.HasMultipleTabs(buildingTask.Building))
-                        {
-                            NavigateHelper.SwitchTab(ChromeBrowser, 0);
-                        }
-                    }
-#else
-                    LogManager.Information(AccountId, "Don't have enough resources.");
-                    var production = context.VillagesProduction.Find(VillageId);
-                    var timeEnough = production.GetTimeWhenEnough(resMissing);
-                    ExecuteAt = timeEnough;
-                    break;
-#endif
                 }
+
+                if (!IsEnoughFreeCrop(buildingTask)) continue;
+                if (Cts.IsCancellationRequested) return;
+
+                if (IsThereCompleteBuilding(buildingTask)) continue;
+                if (Cts.IsCancellationRequested) return;
+
+                var isNewBuilding = GotoBuilding(buildingTask);
+                if (Cts.IsCancellationRequested) return;
+
+                var isEnoughResource = IsEnoughResource(buildingTask, isNewBuilding);
+                if (StopFlag) return;
+                if (!isEnoughResource) continue;
 
                 if (Cts.IsCancellationRequested) return;
                 if (isNewBuilding) Construct(buildingTask);
                 else
                 {
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+                    using var context = ContextFactory.CreateDbContext();
+                    var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
 
                     if (buildingTask.Building.IsResourceField() && building.Level == 0) Upgrade(buildingTask);
                     else if (buildingTask.Building.IsNotAdsUpgrade()) Upgrade(buildingTask);
-                    else UpgradeAds(buildingTask);
+                    else
+                    {
+                        var setting = context.VillagesSettings.Find(VillageId);
+                        if (setting.IsAdsUpgrade)
+                        {
+                            UpgradeAds(buildingTask);
+                        }
+                        else
+                        {
+                            Upgrade(buildingTask);
+                        }
+                    }
 #else
                     Upgrade(buildingTask);
 #endif
@@ -434,6 +271,203 @@ namespace MainCore.Tasks.Sim
             var taskUpdateVillage = new UpdateVillage(VillageId, AccountId);
             taskUpdateVillage.CopyFrom(this);
             taskUpdateVillage.Execute();
+        }
+
+        private PlanTask SelectBuilding()
+        {
+            using var context = ContextFactory.CreateDbContext();
+
+            var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, PlanManager, LogManager, AccountId, VillageId);
+            if (buildingTask is null)
+            {
+                var tasks = PlanManager.GetList(VillageId);
+                if (tasks.Count == 0)
+                {
+                    LogManager.Information(AccountId, "Queue is empty.");
+                    StopFlag = true;
+                    return null;
+                }
+
+                NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
+                NavigateHelper.GoRandomDorf(ChromeBrowser);
+                UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+
+                var firstComplete = context.VillagesCurrentlyBuildings.Find(VillageId, 0);
+                if (firstComplete.CompleteTime == DateTime.MaxValue)
+                {
+                    return null;
+                }
+
+                ExecuteAt = firstComplete.CompleteTime.AddSeconds(10);
+                LogManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
+                StopFlag = true;
+                return null;
+            }
+            return buildingTask;
+        }
+
+        private bool IsAutoBuilding(PlanTask buildingTask)
+        {
+            if (buildingTask.Type == PlanTypeEnums.ResFields)
+            {
+                using var context = ContextFactory.CreateDbContext();
+                var task = UpgradeBuildingHelper.ExtractResField(context, VillageId, buildingTask);
+                if (task is null)
+                {
+                    PlanManager.Remove(VillageId, task);
+                    return true;
+                }
+                else
+                {
+                    PlanManager.Insert(VillageId, 0, task);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private bool IsEnoughFreeCrop(PlanTask buildingTask)
+        {
+            using var context = ContextFactory.CreateDbContext();
+            if (context.VillagesResources.Find(VillageId).FreeCrop <= 5 && buildingTask.Building != BuildingEnums.Cropland)
+            {
+                var cropland = context.VillagesBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Type == BuildingEnums.Cropland).OrderBy(x => x.Level).FirstOrDefault();
+                var task = new PlanTask()
+                {
+                    Type = PlanTypeEnums.General,
+                    Level = cropland.Level + 1,
+                    Building = BuildingEnums.Cropland,
+                    Location = cropland.Id,
+                };
+                PlanManager.Insert(VillageId, 0, task);
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsThereCompleteBuilding(PlanTask buildingTask)
+        {
+            using var context = ContextFactory.CreateDbContext();
+            // move to correct page
+            var dorf = BuildingsHelper.GetDorf(buildingTask.Location);
+            switch (dorf)
+            {
+                case 1:
+                    NavigateHelper.ToDorf1(ChromeBrowser, true);
+                    UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+                    UpdateHelper.UpdateDorf1(context, ChromeBrowser, VillageId);
+                    break;
+
+                case 2:
+                    NavigateHelper.ToDorf2(ChromeBrowser, true);
+                    UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+                    UpdateHelper.UpdateDorf2(context, ChromeBrowser, AccountId, VillageId);
+                    break;
+            }
+
+            var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
+            if (building.Level >= buildingTask.Level)
+            {
+                PlanManager.Remove(VillageId, buildingTask);
+                return true;
+            }
+            var currently = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == buildingTask.Location);
+            if (currently is not null && currently.Level >= buildingTask.Level)
+            {
+                PlanManager.Remove(VillageId, buildingTask);
+                return true;
+            }
+            return false;
+        }
+
+        private bool GotoBuilding(PlanTask buildingTask)
+        {
+            NavigateHelper.GoToBuilding(ChromeBrowser, buildingTask.Location);
+
+            using var context = ContextFactory.CreateDbContext();
+            var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
+
+            bool isNewBuilding = false;
+            if (building.Type == BuildingEnums.Site)
+            {
+                isNewBuilding = true;
+                var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
+                NavigateHelper.SwitchTab(ChromeBrowser, tab);
+            }
+            else
+            {
+                if (BuildingsData.HasMultipleTabs(buildingTask.Building))
+                {
+                    NavigateHelper.SwitchTab(ChromeBrowser, 0);
+                }
+            }
+            return isNewBuilding;
+        }
+
+        private bool IsEnoughResource(PlanTask buildingTask, bool isNewBuilding)
+        {
+            var resNeed = CheckHelper.GetResourceNeed(ChromeBrowser, buildingTask.Building, isNewBuilding);
+            using var context = ContextFactory.CreateDbContext();
+            var resCurrent = context.VillagesResources.Find(VillageId);
+            if (resNeed[0] > resCurrent.Wood || resNeed[1] > resCurrent.Clay || resNeed[2] > resCurrent.Iron || resNeed[3] > resCurrent.Crop)
+            {
+                var resMissing = new long[] { resNeed[0] - resCurrent.Wood, resNeed[1] - resCurrent.Clay, resNeed[2] - resCurrent.Iron, resNeed[3] - resCurrent.Crop };
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+                var setting = context.VillagesSettings.Find(VillageId);
+                if (!setting.IsUseHeroRes)
+                {
+                    LogManager.Information(AccountId, "Don't have enough resources.");
+                    var production = context.VillagesProduction.Find(VillageId);
+                    var timeEnough = production.GetTimeWhenEnough(resMissing);
+                    ExecuteAt = timeEnough;
+                    StopFlag = true;
+                    return false;
+                }
+                var taskUpdate = new UpdateHeroItems(AccountId);
+                taskUpdate.CopyFrom(this);
+                taskUpdate.Execute();
+                var itemsHero = context.HeroesItems.Where(x => x.AccountId == AccountId);
+                var woodAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Wood);
+                var clayAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Clay);
+                var ironAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Iron);
+                var cropAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Crop);
+
+                var resAvaliable = new long[] { woodAvaliable?.Count ?? 0, clayAvaliable?.Count ?? 0, ironAvaliable?.Count ?? 0, cropAvaliable?.Count ?? 0 };
+
+                var resLeft = new long[] { resAvaliable[0] - resMissing[0], resAvaliable[1] - resMissing[1], resAvaliable[2] - resMissing[2], resAvaliable[3] - resMissing[3] };
+                if (resLeft.Any(x => x <= 0))
+                {
+                    LogManager.Information(AccountId, "Don't have enough resources.");
+                    var production = context.VillagesProduction.Find(VillageId);
+                    var timeEnough = production.GetTimeWhenEnough(resMissing);
+                    ExecuteAt = timeEnough;
+                    StopFlag = true;
+                    return false;
+                }
+
+                var items = new List<(HeroItemEnums, int)>()
+                    {
+                        (HeroItemEnums.Wood, (int)resMissing[0]),
+                        (HeroItemEnums.Clay, (int)resMissing[1]),
+                        (HeroItemEnums.Iron, (int)resMissing[2]),
+                        (HeroItemEnums.Crop, (int)resMissing[3]),
+                    };
+                var taskEquip = new HeroEquip(VillageId, AccountId, items);
+                taskEquip.CopyFrom(this);
+                taskEquip.Execute();
+                if (IsThereCompleteBuilding(buildingTask)) return false;
+                GotoBuilding(buildingTask);
+#else
+                LogManager.Information(AccountId, "Don't have enough resources.");
+                var production = context.VillagesProduction.Find(VillageId);
+                var timeEnough = production.GetTimeWhenEnough(resMissing);
+                ExecuteAt = timeEnough;
+                StopFlag = true;
+                return false;
+#endif
+            }
+            return true;
         }
     }
 }

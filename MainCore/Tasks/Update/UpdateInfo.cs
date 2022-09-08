@@ -85,7 +85,7 @@ namespace MainCore.Tasks.Update
             context.SaveChanges();
             if (villageChange)
             {
-                DatabaseEvent.OnVillagesUpdated(AccountId);
+                EventManager.OnVillagesUpdated(AccountId);
             }
         }
 

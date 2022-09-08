@@ -19,12 +19,13 @@ namespace MainCore.Tasks
         public TaskStage Stage { get; set; }
         public DateTime ExecuteAt { get; set; }
         public int RetryCounter { get; set; }
+        protected bool StopFlag { get; set; }
         public CancellationTokenSource Cts { get; set; }
 
         public IDbContextFactory<AppDbContext> ContextFactory { get; set; }
         public IChromeBrowser ChromeBrowser { get; set; }
         public ITaskManager TaskManager { get; set; }
-        public IEventManager DatabaseEvent { get; set; }
+        public IEventManager EventManager { get; set; }
         public ILogManager LogManager { get; set; }
         public IPlanManager PlanManager { get; set; }
         public IRestClientManager RestClientManager { get; set; }
@@ -36,13 +37,24 @@ namespace MainCore.Tasks
         public virtual void CopyFrom(BotTask source)
         {
             ContextFactory = source.ContextFactory;
-            DatabaseEvent = source.DatabaseEvent;
+            EventManager = source.EventManager;
             TaskManager = source.TaskManager;
             LogManager = source.LogManager;
             ChromeBrowser = source.ChromeBrowser;
             PlanManager = source.PlanManager;
             RestClientManager = source.RestClientManager;
             Cts = source.Cts;
+        }
+
+        public virtual void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        {
+            ContextFactory = contextFactory;
+            EventManager = eventManager;
+            TaskManager = taskManager;
+            LogManager = logManager;
+            ChromeBrowser = chromeBrowser;
+            PlanManager = planManager;
+            RestClientManager = restClientManager;
         }
     }
 }

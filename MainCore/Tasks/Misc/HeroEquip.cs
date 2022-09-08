@@ -1,5 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper;
+using MainCore.Services;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -25,6 +27,14 @@ namespace MainCore.Tasks.Misc
         public override void CopyFrom(BotTask source)
         {
             base.CopyFrom(source);
+            using var context = ContextFactory.CreateDbContext();
+            var village = context.Villages.Find(VillageId);
+            _name = $"Use resource in {village.Name}";
+        }
+
+        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        {
+            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
             using var context = ContextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             _name = $"Use resource in {village.Name}";
