@@ -11,7 +11,16 @@ namespace MainCore.Tasks.Sim
 
         private readonly int _villageId;
         public int VillageId => _villageId;
-        public override string Name => $"Instant upgrade buinding village {VillageId}";
+        private string _name;
+        public override string Name => _name;
+
+        public override void CopyFrom(BotTask source)
+        {
+            base.CopyFrom(source);
+            using var context = ContextFactory.CreateDbContext();
+            var village = context.Villages.Find(VillageId);
+            _name = $"Complete upgrading in {village.Name}";
+        }
 
         public override void Execute()
         {

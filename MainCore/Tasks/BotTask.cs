@@ -32,20 +32,17 @@ namespace MainCore.Tasks
         public abstract string Name { get; }
 
         public abstract void Execute();
-    }
 
-    public static class BotTaskExtension
-    {
-        public static void CopyTo(this BotTask source, BotTask destination)
+        public virtual void CopyFrom(BotTask source)
         {
-            destination.ContextFactory = source.ContextFactory;
-            destination.DatabaseEvent = source.DatabaseEvent;
-            destination.TaskManager = source.TaskManager;
-            destination.LogManager = source.LogManager;
-            destination.ChromeBrowser = source.ChromeBrowser;
-            destination.PlanManager = source.PlanManager;
-            destination.RestClientManager = source.RestClientManager;
-            destination.Cts = source.Cts;
+            ContextFactory = source.ContextFactory;
+            DatabaseEvent = source.DatabaseEvent;
+            TaskManager = source.TaskManager;
+            LogManager = source.LogManager;
+            ChromeBrowser = source.ChromeBrowser;
+            PlanManager = source.PlanManager;
+            RestClientManager = source.RestClientManager;
+            Cts = source.Cts;
         }
     }
 }

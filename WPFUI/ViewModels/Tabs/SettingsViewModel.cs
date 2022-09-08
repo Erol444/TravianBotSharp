@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Interfaces;
+using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
@@ -34,20 +35,8 @@ namespace WPFUI.ViewModels.Tabs
             using var context = _contextFactory.CreateDbContext();
             if (context.Accounts.Find(index) is null) return;
 
-            var accountSetting = context.AccountsSettings.Find(index);
-
-            ClickDelay = $"{(accountSetting.ClickDelayMin + accountSetting.ClickDelayMax) / 2}";
-            ClickDelayRange = $"{(accountSetting.ClickDelayMax - accountSetting.ClickDelayMin) / 2}";
-            TaskDelay = $"{(accountSetting.TaskDelayMin + accountSetting.TaskDelayMax) / 2}";
-            TaskDelayRange = $"{(accountSetting.TaskDelayMax - accountSetting.TaskDelayMin) / 2}";
-            WorkTime = $"{(accountSetting.WorkTimeMax + accountSetting.WorkTimeMin) / 2}";
-            WorkTimeRange = $"{(accountSetting.WorkTimeMax - accountSetting.WorkTimeMin) / 2}";
-            SleepTime = $"{(accountSetting.SleepTimeMax + accountSetting.SleepTimeMin) / 2}";
-            SleepTimeRange = $"{(accountSetting.SleepTimeMax - accountSetting.SleepTimeMin) / 2}";
-            IsDontLoadImage = accountSetting.IsDontLoadImage;
-            IsClosedIfNoTask = accountSetting.IsClosedIfNoTask;
-            IsMinimized = accountSetting.IsMinimized;
-            IsAutoStartAdventure = accountSetting.IsAutoAdventure;
+            var settings = context.AccountsSettings.Find(index);
+            Settings.CopyFrom(settings);
         }
 
         private async Task SaveTask()
@@ -86,19 +75,8 @@ namespace WPFUI.ViewModels.Tabs
                 try
                 {
                     var setting = JsonSerializer.Deserialize<MainCore.Models.Database.AccountSetting>(jsonString);
-                    var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == AccountId);
-                    accountSetting.ClickDelayMax = setting.ClickDelayMax;
-                    accountSetting.ClickDelayMin = setting.ClickDelayMin;
-                    accountSetting.TaskDelayMax = setting.TaskDelayMax;
-                    accountSetting.TaskDelayMin = setting.TaskDelayMin;
-                    accountSetting.WorkTimeMax = setting.WorkTimeMax;
-                    accountSetting.WorkTimeMin = setting.WorkTimeMin;
-                    accountSetting.SleepTimeMax = setting.SleepTimeMax;
-                    accountSetting.SleepTimeMin = setting.SleepTimeMin;
-                    accountSetting.IsDontLoadImage = setting.IsDontLoadImage;
-                    accountSetting.IsClosedIfNoTask = setting.IsClosedIfNoTask;
-                    accountSetting.IsMinimized = setting.IsMinimized;
-                    context.Update(accountSetting);
+                    setting.AccountId = AccountId;
+                    context.Update(setting);
                     context.SaveChanges();
                     LoadData(AccountId);
                     TaskBasedSetting(AccountId);
@@ -114,9 +92,8 @@ namespace WPFUI.ViewModels.Tabs
         private void ExportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var accountSetting = context.AccountsSettings.FirstOrDefault(x => x.AccountId == AccountId);
-            var jsonString = JsonSerializer.Serialize(accountSetting);
             var account = context.Accounts.Find(AccountId);
+            if (account is null) return;
             var svd = new SaveFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
@@ -126,6 +103,8 @@ namespace WPFUI.ViewModels.Tabs
                 FileName = $"{account.Username}_settings.tbs",
             };
 
+            var accountSetting = context.AccountsSettings.Find(AccountId);
+            var jsonString = JsonSerializer.Serialize(accountSetting);
             if (svd.ShowDialog() == true)
             {
                 File.WriteAllText(svd.FileName, jsonString);
@@ -134,42 +113,42 @@ namespace WPFUI.ViewModels.Tabs
 
         private bool CheckInput()
         {
-            if (!ClickDelay.IsNumeric())
+            if (!Settings.ClickDelay.IsNumeric())
             {
                 MessageBox.Show("Click delay is non-numeric.", "Warning");
                 return false;
             }
-            if (!ClickDelayRange.IsNumeric())
+            if (!Settings.ClickDelayRange.IsNumeric())
             {
                 MessageBox.Show("Click delay range is non-numeric.", "Warning");
                 return false;
             }
-            if (!TaskDelay.IsNumeric())
+            if (!Settings.TaskDelay.IsNumeric())
             {
                 MessageBox.Show("Task delay is non-numeric.", "Warning");
                 return false;
             }
-            if (!TaskDelayRange.IsNumeric())
+            if (!Settings.TaskDelayRange.IsNumeric())
             {
                 MessageBox.Show("Task delay range is non-numeric.", "Warning");
                 return false;
             }
-            if (!WorkTime.IsNumeric())
+            if (!Settings.WorkTime.IsNumeric())
             {
                 MessageBox.Show("Work time is non-numeric.", "Warning");
                 return false;
             }
-            if (!WorkTimeRange.IsNumeric())
+            if (!Settings.WorkTimeRange.IsNumeric())
             {
                 MessageBox.Show("Work time range is non-numeric.", "Warning");
                 return false;
             }
-            if (!SleepTime.IsNumeric())
+            if (!Settings.SleepTime.IsNumeric())
             {
                 MessageBox.Show("Sleep time is non-numeric.", "Warning");
                 return false;
             }
-            if (!SleepTimeRange.IsNumeric())
+            if (!Settings.SleepTimeRange.IsNumeric())
             {
                 MessageBox.Show("Sleep time range is non-numeric.", "Warning");
                 return false;
@@ -181,32 +160,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var accountSetting = context.AccountsSettings.Find(index);
-
-            var clickDelay = int.Parse(ClickDelay);
-            var clickDelayRange = int.Parse(ClickDelayRange);
-            accountSetting.ClickDelayMin = clickDelay - clickDelayRange;
-            accountSetting.ClickDelayMax = clickDelay + clickDelayRange;
-
-            var taskDelay = int.Parse(TaskDelay);
-            var taskDelayRange = int.Parse(TaskDelayRange);
-            accountSetting.TaskDelayMin = taskDelay - taskDelayRange;
-            accountSetting.TaskDelayMax = taskDelay + taskDelayRange;
-
-            var workTime = int.Parse(WorkTime);
-            var workTimeRange = int.Parse(WorkTimeRange);
-            accountSetting.WorkTimeMin = workTime - workTimeRange;
-            accountSetting.WorkTimeMax = workTime + workTimeRange;
-
-            var sleepTime = int.Parse(SleepTime);
-            var sleepTimeRange = int.Parse(SleepTimeRange);
-            accountSetting.SleepTimeMin = sleepTime - sleepTimeRange;
-            accountSetting.SleepTimeMax = sleepTime + sleepTimeRange;
-
-            accountSetting.IsDontLoadImage = IsDontLoadImage;
-            accountSetting.IsClosedIfNoTask = IsClosedIfNoTask;
-            accountSetting.IsMinimized = IsMinimized;
-            accountSetting.IsAutoAdventure = IsAutoStartAdventure;
-
+            Settings.CopyTo(accountSetting);
             context.Update(accountSetting);
             context.SaveChanges();
         }
@@ -215,7 +169,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             var list = _taskManager.GetList(index);
             var tasks = list.Where(x => x.GetType() == typeof(UpdateAdventures));
-            if (IsAutoStartAdventure)
+            if (Settings.IsAutoStartAdventure)
             {
                 if (!tasks.Any())
                 {
@@ -231,104 +185,9 @@ namespace WPFUI.ViewModels.Tabs
             }
         }
 
+        public AccountSetting Settings { get; } = new();
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> ExportCommand { get; }
         public ReactiveCommand<Unit, Unit> ImportCommand { get; }
-
-        private string _clickDelay;
-
-        public string ClickDelay
-        {
-            get => _clickDelay;
-            set => this.RaiseAndSetIfChanged(ref _clickDelay, value);
-        }
-
-        private string _clickDelayRange;
-
-        public string ClickDelayRange
-        {
-            get => _clickDelayRange;
-            set => this.RaiseAndSetIfChanged(ref _clickDelayRange, value);
-        }
-
-        private string _taskDelay;
-
-        public string TaskDelay
-        {
-            get => _taskDelay;
-            set => this.RaiseAndSetIfChanged(ref _taskDelay, value);
-        }
-
-        private string _taskDelayRange;
-
-        public string TaskDelayRange
-        {
-            get => _taskDelayRange;
-            set => this.RaiseAndSetIfChanged(ref _taskDelayRange, value);
-        }
-
-        private string _workTime;
-
-        public string WorkTime
-        {
-            get => _workTime;
-            set => this.RaiseAndSetIfChanged(ref _workTime, value);
-        }
-
-        private string _workTimeRange;
-
-        public string WorkTimeRange
-        {
-            get => _workTimeRange;
-            set => this.RaiseAndSetIfChanged(ref _workTimeRange, value);
-        }
-
-        private string _sleepTime;
-
-        public string SleepTime
-        {
-            get => _sleepTime;
-            set => this.RaiseAndSetIfChanged(ref _sleepTime, value);
-        }
-
-        private string _sleepTimeRange;
-
-        public string SleepTimeRange
-        {
-            get => _sleepTimeRange;
-            set => this.RaiseAndSetIfChanged(ref _sleepTimeRange, value);
-        }
-
-        private bool _isDontLoadImage;
-
-        public bool IsDontLoadImage
-        {
-            get => _isDontLoadImage;
-            set => this.RaiseAndSetIfChanged(ref _isDontLoadImage, value);
-        }
-
-        private bool _isMinimized;
-
-        public bool IsMinimized
-        {
-            get => _isMinimized;
-            set => this.RaiseAndSetIfChanged(ref _isMinimized, value);
-        }
-
-        private bool _isClosedIfNoTask;
-
-        public bool IsClosedIfNoTask
-        {
-            get => _isClosedIfNoTask;
-            set => this.RaiseAndSetIfChanged(ref _isClosedIfNoTask, value);
-        }
-
-        private bool _isAutoStartAdventure;
-
-        public bool IsAutoStartAdventure
-        {
-            get => _isAutoStartAdventure;
-            set => this.RaiseAndSetIfChanged(ref _isAutoStartAdventure, value);
-        }
     }
 }

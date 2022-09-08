@@ -19,14 +19,14 @@ namespace MainCore.Tasks.Update
             UpdateHelper.UpdateAdventures(context, ChromeBrowser, AccountId);
 
             var taskUpdate = new UpdateInfo(AccountId);
-            this.CopyTo(taskUpdate);
+            taskUpdate.CopyFrom(this);
             taskUpdate.Execute();
 
             var setting = context.AccountsSettings.Find(AccountId);
             if (setting.IsAutoAdventure)
             {
                 var taskAutoSend = new StartAdventure(AccountId);
-                this.CopyTo(taskAutoSend);
+                taskAutoSend.CopyFrom(this);
                 taskAutoSend.Execute();
                 taskUpdate.Execute();
             }

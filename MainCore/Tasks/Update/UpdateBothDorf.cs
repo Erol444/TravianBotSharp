@@ -9,7 +9,16 @@ namespace MainCore.Tasks.Update
         {
         }
 
-        public override string Name => $"Update both dorf village {VillageId}";
+        private string _name;
+        public override string Name => _name;
+
+        public override void CopyFrom(BotTask source)
+        {
+            base.CopyFrom(source);
+            using var context = ContextFactory.CreateDbContext();
+            var village = context.Villages.Find(VillageId);
+            _name = $"Update both dorf in {village.Name}";
+        }
 
         public override void Execute()
         {

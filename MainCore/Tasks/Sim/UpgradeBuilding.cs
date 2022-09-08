@@ -20,10 +20,19 @@ namespace MainCore.Tasks.Sim
         }
 
         private readonly Random rand = new();
-        public override string Name => $"Upgrade building village {VillageId}";
+        private string _name;
+        public override string Name => _name;
 
         private readonly int _villageId;
         public int VillageId => _villageId;
+
+        public override void CopyFrom(BotTask source)
+        {
+            base.CopyFrom(source);
+            using var context = ContextFactory.CreateDbContext();
+            var village = context.Villages.Find(VillageId);
+            _name = $"Upgrade building in {village.Name}";
+        }
 
         public override void Execute()
         {
@@ -160,7 +169,7 @@ namespace MainCore.Tasks.Sim
                         break;
                     }
                     var taskUpdate = new UpdateHeroItems(AccountId);
-                    this.CopyTo(taskUpdate);
+                    taskUpdate.CopyFrom(this);
                     taskUpdate.Execute();
                     var itemsHero = context.HeroesItems.Where(x => x.AccountId == AccountId);
                     var woodAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Wood);
@@ -187,7 +196,7 @@ namespace MainCore.Tasks.Sim
                         (HeroItemEnums.Crop, (int)resMissing[3]),
                     };
                     var taskEquip = new HeroEquip(VillageId, AccountId, items);
-                    this.CopyTo(taskEquip);
+                    taskEquip.CopyFrom(this);
                     taskEquip.Execute();
 
                     if (Cts.IsCancellationRequested) return;
@@ -423,7 +432,7 @@ namespace MainCore.Tasks.Sim
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 
             var taskUpdateVillage = new UpdateVillage(VillageId, AccountId);
-            this.CopyTo(taskUpdateVillage);
+            taskUpdateVillage.CopyFrom(this);
             taskUpdateVillage.Execute();
         }
     }

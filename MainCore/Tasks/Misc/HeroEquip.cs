@@ -14,12 +14,21 @@ namespace MainCore.Tasks.Misc
             _items = items;
         }
 
-        public override string Name => $"Hero equip {VillageId}";
+        private string _name;
+        public override string Name => _name;
         private readonly List<(HeroItemEnums, int)> _items;
         private readonly Random _rand = new();
 
         private readonly int _villageId;
         public int VillageId => _villageId;
+
+        public override void CopyFrom(BotTask source)
+        {
+            base.CopyFrom(source);
+            using var context = ContextFactory.CreateDbContext();
+            var village = context.Villages.Find(VillageId);
+            _name = $"Use resource in {village.Name}";
+        }
 
         public override void Execute()
         {

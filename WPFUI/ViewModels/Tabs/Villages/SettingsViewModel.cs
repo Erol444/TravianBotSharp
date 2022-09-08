@@ -35,8 +35,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
             using var context = _contextFactory.CreateDbContext();
             if (context.Villages.Find(index) is null) return;
 
-            var villageSetting = context.VillagesSettings.Find(index);
-            Settings.CopyFrom(villageSetting);
+            var settings = context.VillagesSettings.Find(index);
+            Settings.CopyFrom(settings);
         }
 
         private async Task SaveTask()
