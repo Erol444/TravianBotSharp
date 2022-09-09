@@ -54,7 +54,7 @@ namespace MainCore.Tasks.Misc
                 {
                     return;
                 }
-
+                if (amount < 0) continue;
                 HeroHelper.ClickItem(ChromeBrowser, item);
 
                 if (amount <= 1)

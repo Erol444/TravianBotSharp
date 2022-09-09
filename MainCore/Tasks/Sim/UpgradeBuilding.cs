@@ -48,6 +48,7 @@ namespace MainCore.Tasks.Sim
         {
             do
             {
+                StopFlag = false;
                 if (Cts.IsCancellationRequested) return;
 
                 var buildingTask = SelectBuilding();
@@ -340,9 +341,9 @@ namespace MainCore.Tasks.Sim
                     Location = cropland.Id,
                 };
                 PlanManager.Insert(VillageId, 0, task);
-                return true;
+                return false;
             }
-            return false;
+            return true;
         }
 
         private bool IsThereCompleteBuilding(PlanTask buildingTask)
@@ -350,16 +351,39 @@ namespace MainCore.Tasks.Sim
             using var context = ContextFactory.CreateDbContext();
             // move to correct page
             var dorf = BuildingsHelper.GetDorf(buildingTask.Location);
+            var url = ChromeBrowser.GetCurrentUrl();
             switch (dorf)
             {
                 case 1:
-                    NavigateHelper.ToDorf1(ChromeBrowser, true);
+                    if (!url.Contains("dorf1"))
+                    {
+                        NavigateHelper.ToDorf1(ChromeBrowser, true);
+                    }
+                    else
+                    {
+                        var updateTime = context.VillagesUpdateTime.Find(VillageId);
+                        if (updateTime.Dorf1 - DateTime.Now > TimeSpan.FromMinutes(5))
+                        {
+                            NavigateHelper.ToDorf1(ChromeBrowser, true);
+                        }
+                    }
                     UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
                     UpdateHelper.UpdateDorf1(context, ChromeBrowser, VillageId);
                     break;
 
                 case 2:
-                    NavigateHelper.ToDorf2(ChromeBrowser, true);
+                    if (!url.Contains("dorf2"))
+                    {
+                        NavigateHelper.ToDorf2(ChromeBrowser, true);
+                    }
+                    else
+                    {
+                        var updateTime = context.VillagesUpdateTime.Find(VillageId);
+                        if (updateTime.Dorf2 - DateTime.Now > TimeSpan.FromMinutes(1))
+                        {
+                            NavigateHelper.ToDorf2(ChromeBrowser, true);
+                        }
+                    }
                     UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
                     UpdateHelper.UpdateDorf2(context, ChromeBrowser, AccountId, VillageId);
                     break;
