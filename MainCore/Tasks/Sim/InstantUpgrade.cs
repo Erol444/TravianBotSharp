@@ -23,7 +23,7 @@ namespace MainCore.Tasks.Sim
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
-                _name = $"Complete upgrading in Unknow {village.Id}";
+                _name = $"Complete upgrading in {VillageId}";
             }
             else
             {
@@ -38,7 +38,7 @@ namespace MainCore.Tasks.Sim
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
-                _name = $"Complete upgrading in Unknow {village.Id}";
+                _name = $"Complete upgrading in {VillageId}";
             }
             else
             {

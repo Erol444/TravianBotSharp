@@ -35,7 +35,7 @@ namespace MainCore.Tasks.Sim
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
-                _name = $"Upgrade building in Unknow {village.Id}";
+                _name = $"Upgrade building in {VillageId}";
             }
             else
             {
@@ -50,7 +50,7 @@ namespace MainCore.Tasks.Sim
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
-                _name = $"Upgrade building in Unknow {village.Id}";
+                _name = $"Upgrade building in {VillageId}";
             }
             else
             {

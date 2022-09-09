@@ -21,7 +21,7 @@ namespace MainCore.Tasks.Update
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
-                _name = $"Update both dorf in Unknow {village.Id}";
+                _name = $"Update both dorf in {VillageId}";
             }
             else
             {
@@ -36,7 +36,7 @@ namespace MainCore.Tasks.Update
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
-                _name = $"Update both dorf in Unknow {village.Id}";
+                _name = $"Update both dorf in {VillageId}";
             }
             else
             {

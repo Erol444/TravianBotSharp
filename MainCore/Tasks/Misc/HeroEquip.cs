@@ -31,7 +31,7 @@ namespace MainCore.Tasks.Misc
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
-                _name = $"Use resource in Unknow {village.Id}";
+                _name = $"Use resource in {VillageId}";
             }
             else
             {
@@ -46,7 +46,7 @@ namespace MainCore.Tasks.Misc
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
-                _name = $"Use resource in Unknow {village.Id}";
+                _name = $"Use resource in {VillageId}";
             }
             else
             {
