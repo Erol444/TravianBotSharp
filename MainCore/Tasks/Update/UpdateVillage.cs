@@ -22,7 +22,14 @@ namespace MainCore.Tasks.Update
             base.CopyFrom(source);
             using var context = ContextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
-            _name = $"Update village in {village.Name}";
+            if (village is null)
+            {
+                _name = $"Update village in Unknow {village.Id}";
+            }
+            else
+            {
+                _name = $"Update village in {village.Name}";
+            }
         }
 
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
@@ -30,7 +37,14 @@ namespace MainCore.Tasks.Update
             base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
             using var context = ContextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
-            _name = $"Update village in {village.Name}";
+            if (village is null)
+            {
+                _name = $"Update village in Unknow {village.Id}";
+            }
+            else
+            {
+                _name = $"Update village in {village.Name}";
+            }
         }
 
         private readonly int _villageId;

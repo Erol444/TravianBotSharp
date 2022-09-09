@@ -21,7 +21,14 @@ namespace MainCore.Tasks.Sim
             base.CopyFrom(source);
             using var context = ContextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
-            _name = $"Complete upgrading in {village.Name}";
+            if (village is null)
+            {
+                _name = $"Complete upgrading in Unknow {village.Id}";
+            }
+            else
+            {
+                _name = $"Complete upgrading in {village.Name}";
+            }
         }
 
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
@@ -29,7 +36,14 @@ namespace MainCore.Tasks.Sim
             base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
             using var context = ContextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
-            _name = $"Complete upgrading in {village.Name}";
+            if (village is null)
+            {
+                _name = $"Complete upgrading in Unknow {village.Id}";
+            }
+            else
+            {
+                _name = $"Complete upgrading in {village.Name}";
+            }
         }
 
         public override void Execute()
