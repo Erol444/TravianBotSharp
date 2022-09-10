@@ -43,11 +43,11 @@ namespace TravianOfficialCore.Parsers
         public static int GetAdventureNum(HtmlDocument doc)
         {
             var adv45 = doc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("adventure"));
-            if (adv45 is null) return -1;
+            if (adv45 is null) return 0;
             var content = adv45.Descendants("div").FirstOrDefault(x => x.HasClass("content"));
-            if (content is null) return -1;
+            if (content is null) return 0;
             var valueStr = new string(content.InnerText.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(valueStr)) return -1;
+            if (string.IsNullOrEmpty(valueStr)) return 0;
             return int.Parse(valueStr);
         }
 

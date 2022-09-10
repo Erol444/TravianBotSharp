@@ -54,11 +54,11 @@ namespace TTWarsCore.Parsers
         public static int GetAdventureNum(HtmlDocument doc)
         {
             var adv45 = doc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("adventureWhite"));
-            if (adv45 is null) return -1;
+            if (adv45 is null) return 0;
             var content = adv45.Descendants().FirstOrDefault(x => x.HasClass("speechBubbleContent"));
-            if (content is null) return -1;
+            if (content is null) return 0;
             var valueStr = new string(content.InnerText.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(valueStr)) return -1;
+            if (string.IsNullOrEmpty(valueStr)) return 0;
             return int.Parse(valueStr);
         }
 
