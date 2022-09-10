@@ -355,5 +355,30 @@ namespace MainCore.Helper
             }
             context.SaveChanges();
         }
+
+        public static void UpdateFarmList(AppDbContext context, IChromeBrowser chromeBrowser, int accountId)
+        {
+            var html = chromeBrowser.GetHtml();
+
+            var listFarm = context.FarmLists.Where(x => x.AccountId == accountId);
+            context.FarmLists.RemoveRange(listFarm);
+
+            var farmNodes = FarmList.GetFarmNodes(html);
+
+            foreach (var farmNode in farmNodes)
+            {
+                var name = FarmList.GetName(farmNode);
+                var id = FarmList.GetId(farmNode);
+                var count = FarmList.GetNumOfFarms(farmNode);
+                context.FarmLists.Add(new()
+                {
+                    AccountId = accountId,
+                    Id = id,
+                    Name = name,
+                    FarmCount = count,
+                });
+            }
+            context.SaveChanges();
+        }
     }
 }

@@ -182,6 +182,17 @@ namespace MainCore
             });
 
             #endregion Village production
+
+            #region Farm list
+
+            modelBuilder.Entity<FarmList>(entity =>
+            {
+                entity.ToTable("FarmLists");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_FARMLISTS");
+            });
+
+            #endregion Farm list
         }
 
         public void AddAccount(int accountId)
@@ -285,5 +296,6 @@ namespace MainCore
         public DbSet<Adventure> Adventures { get; set; }
         public DbSet<HeroItem> HeroesItems { get; set; }
         public DbSet<VillageProduction> VillagesProduction { get; set; }
+        public DbSet<FarmList> FarmLists { get; set; }
     }
 }
