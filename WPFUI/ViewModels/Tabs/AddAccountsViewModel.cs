@@ -19,7 +19,7 @@ namespace WPFUI.ViewModels.Tabs
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             CancelCommand = ReactiveCommand.Create(CancelTask);
 
-            this.WhenAnyValue(x => x.InputText).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(UpdateData);
+            this.WhenAnyValue(x => x.InputText).Subscribe(UpdateData);
         }
 
         private async Task SaveTask()

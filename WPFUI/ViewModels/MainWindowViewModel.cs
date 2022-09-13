@@ -35,29 +35,28 @@ namespace WPFUI.ViewModels
             this.WhenAnyValue(x => x.IsAccountSelected).Subscribe(x =>
             {
                 if (x) ShowNormalTab = true;
-                else ShowNoAccountTab = true;
             });
-            this.WhenAnyValue(x => x.ShowNoAccountTab).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowNoAccountTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.NoAccount);
             });
-            this.WhenAnyValue(x => x.ShowNormalTab).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowNormalTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.Normal);
             });
-            this.WhenAnyValue(x => x.ShowAddAccountTab).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowAddAccountTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.AddAccount);
             });
-            this.WhenAnyValue(x => x.ShowAddAccountsTab).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowAddAccountsTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.AddAccounts);
             });
-            this.WhenAnyValue(x => x.ShowEditAccountTab).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowEditAccountTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.EditAccount);
             });
-            this.WhenAnyValue(x => x.TabSelector).SubscribeOn(RxApp.TaskpoolScheduler).Subscribe(x =>
+            this.WhenAnyValue(x => x.TabSelector).Subscribe(x =>
             {
                 switch (x)
                 {
@@ -89,9 +88,10 @@ namespace WPFUI.ViewModels
             if (_closed) return;
             e.Cancel = true;
             _waitingWindow.ViewModel.Show("saving data");
-            await Task.Delay(2000);
-
-            _planManager.Save();
+            await Task.Run(() =>
+            {
+                _planManager.Save();
+            });
 
             var mainWindow = App.GetService<MainWindow>();
             mainWindow.Hide();
@@ -106,45 +106,45 @@ namespace WPFUI.ViewModels
             {
                 case TabType.NoAccount:
                     CurrentIndex = -1;
-                    SelectedNoAccount = true;
                     ShowNormalTab = false;
                     ShowAddAccountTab = false;
                     ShowAddAccountsTab = false;
                     ShowEditAccountTab = false;
+                    SelectedNoAccount = true;
                     break;
 
                 case TabType.Normal:
-                    SelectedNormal = true;
                     ShowNoAccountTab = false;
                     ShowAddAccountTab = false;
                     ShowAddAccountsTab = false;
                     ShowEditAccountTab = false;
+                    SelectedNormal = true;
                     break;
 
                 case TabType.AddAccount:
                     CurrentIndex = -1;
-                    SelectedAddAccount = true;
                     ShowNoAccountTab = false;
                     ShowNormalTab = false;
                     ShowAddAccountsTab = false;
                     ShowEditAccountTab = false;
+                    SelectedAddAccount = true;
                     break;
 
                 case TabType.AddAccounts:
                     CurrentIndex = -1;
-                    SelectedAddAccounts = true;
                     ShowNoAccountTab = false;
                     ShowNormalTab = false;
                     ShowAddAccountTab = false;
                     ShowEditAccountTab = false;
+                    SelectedAddAccounts = true;
                     break;
 
                 case TabType.EditAccount:
-                    SelectedEditAccount = true;
                     ShowNoAccountTab = false;
                     ShowNormalTab = false;
                     ShowAddAccountTab = false;
                     ShowAddAccountsTab = false;
+                    SelectedEditAccount = true;
                     break;
             }
         }
@@ -167,6 +167,7 @@ namespace WPFUI.ViewModels
             {
                 Accounts.Add(item);
             }
+            ShowNoAccountTab = true;
         }
 
         private readonly IPlanManager _planManager;

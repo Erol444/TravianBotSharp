@@ -41,7 +41,7 @@ namespace WPFUI.Views
                 this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.EditAccountPage.ViewModel.AccountId).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.SelectedNoAccount, v => v.NoAccountTab.IsSelected).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.SelectedNormal, v => v.GeneralTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedNormal, v => v.DebugTab.IsSelected).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.SelectedAddAccount, v => v.AddAccountTab.IsSelected).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.SelectedAddAccounts, v => v.AddAccountsTab.IsSelected).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.SelectedEditAccount, v => v.EditAccountTab.IsSelected).DisposeWith(d);
@@ -51,7 +51,7 @@ namespace WPFUI.Views
                 this.OneWayBind(ViewModel, vm => vm.ShowNormalTab, v => v.SettingsTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.ShowNormalTab, v => v.HeroTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.ShowNormalTab, v => v.VillagesTab.Visibility).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.ShowNormalTab, v => v.FarmingPage.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.ShowNormalTab, v => v.FarmingTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.ShowNormalTab, v => v.DebugTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.ShowAddAccountTab, v => v.AddAccountTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.ShowAddAccountsTab, v => v.AddAccountsTab.Visibility).DisposeWith(d);
