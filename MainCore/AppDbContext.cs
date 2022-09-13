@@ -1,6 +1,9 @@
 ﻿using MainCore.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System;
 using System.Linq;
+using System.Linq.Expressions;
 
 namespace MainCore
 {
@@ -185,20 +188,31 @@ namespace MainCore
 
             #region Farm list
 
-            modelBuilder.Entity<FarmList>(entity =>
+            modelBuilder.Entity<Farm>(entity =>
             {
-                entity.ToTable("FarmLists");
+                entity.ToTable("Farms");
                 entity.HasKey(e => e.Id)
-                    .HasName("PK_FARMLISTS");
+                    .HasName("PK_FARMS");
             });
 
             #endregion Farm list
+
+            #region Farm settings
+
+            modelBuilder.Entity<FarmSetting>(entity =>
+            {
+                entity.ToTable("FarmsSettings");
+                entity.HasKey(e => e.Id)
+                    .HasName("PK_FARMSSETTINGS");
+            });
+
+            #endregion Farm settings
         }
 
         public void AddAccount(int accountId)
         {
-            AccountsInfo.Add(new AccountInfo { AccountId = accountId });
-            AccountsSettings.Add(new AccountSetting
+            AccountsInfo.AddIfNotExists(new AccountInfo { AccountId = accountId });
+            AccountsSettings.AddIfNotExists(new AccountSetting
             {
                 AccountId = accountId,
                 ClickDelayMin = 500,
@@ -214,7 +228,7 @@ namespace MainCore
                 IsMinimized = false,
                 IsAutoAdventure = false,
             });
-            Heroes.Add(new Hero { AccountId = accountId });
+            Heroes.AddIfNotExists(new Hero { AccountId = accountId });
 
             //Accesses
             //Adventures
@@ -223,14 +237,36 @@ namespace MainCore
 
         public void AddVillage(int villageId)
         {
-            VillagesResources.Add(new VillageResources { VillageId = villageId });
-            VillagesUpdateTime.Add(new VillageUpdateTime { VillageId = villageId });
-            VillagesSettings.Add(new VillageSetting { VillageId = villageId });
-            VillagesProduction.Add(new VillageProduction { VillageId = villageId });
+            VillagesResources.AddIfNotExists(new VillageResources { VillageId = villageId });
+            VillagesUpdateTime.AddIfNotExists(new VillageUpdateTime { VillageId = villageId });
+            VillagesSettings.AddIfNotExists(new VillageSetting { VillageId = villageId });
+            VillagesProduction.AddIfNotExists(new VillageProduction { VillageId = villageId });
 
             //VillagesQueueBuildings
             //VillagesCurrentlyBuildings
             //VillagesBuildings
+        }
+
+        public void AddFarm(int farmId)
+        {
+            FarmsSettings.AddIfNotExists(new FarmSetting { Id = farmId });
+        }
+
+        public void UpdateDatabase()
+        {
+            foreach (var account in Accounts)
+            {
+                AddAccount(account.Id);
+            }
+
+            foreach (var village in Villages)
+            {
+                AddVillage(village.Id);
+            }
+            foreach (var farm in Farms)
+            {
+                AddFarm(farm.Id);
+            }
         }
 
         public void DeleteAccount(int accountId)
@@ -253,6 +289,12 @@ namespace MainCore
             foreach (var village in villages)
             {
                 DeleteVillage(village.Id);
+            }
+
+            var farms = Farms.Where(x => x.AccountId == accountId).ToList();
+            foreach (var farm in farms)
+            {
+                DeleteFarm(farm.Id);
             }
 
             var account = Accounts.Find(accountId);
@@ -281,6 +323,14 @@ namespace MainCore
             Villages.Remove(village);
         }
 
+        public void DeleteFarm(int farmId)
+        {
+            var setting = FarmsSettings.Find(farmId);
+            FarmsSettings.Remove(setting);
+            var farm = Farms.Find(farmId);
+            Farms.Remove(farm);
+        }
+
         public DbSet<Account> Accounts { get; set; }
         public DbSet<AccountInfo> AccountsInfo { get; set; }
         public DbSet<Access> Accesses { get; set; }
@@ -296,6 +346,16 @@ namespace MainCore
         public DbSet<Adventure> Adventures { get; set; }
         public DbSet<HeroItem> HeroesItems { get; set; }
         public DbSet<VillageProduction> VillagesProduction { get; set; }
-        public DbSet<FarmList> FarmLists { get; set; }
+        public DbSet<Farm> Farms { get; set; }
+        public DbSet<FarmSetting> FarmsSettings { get; set; }
+    }
+
+    public static class DbSetExtensions
+    {
+        public static EntityEntry<T> AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
+        {
+            var exists = predicate is not null ? dbSet.Any(predicate) : dbSet.Any();
+            return !exists ? dbSet.Add(entity) : null;
+        }
     }
 }

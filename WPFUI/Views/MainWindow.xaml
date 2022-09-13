@@ -66,6 +66,13 @@
                     </Frame.Content>
                 </Frame>
             </TabItem>
+            <TabItem x:Name="FarmingTab" Header="Farming">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:FarmingPage x:Name="FarmingPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
             <TabItem x:Name="DebugTab" Header="Debug">
                 <Frame>
                     <Frame.Content>
@@ -73,6 +80,7 @@
                     </Frame.Content>
                 </Frame>
             </TabItem>
+
             <TabItem x:Name="AddAccountTab" Header="Add account">
                 <Frame>
                     <Frame.Content>

@@ -360,8 +360,8 @@ namespace MainCore.Helper
         {
             var html = chromeBrowser.GetHtml();
 
-            var listFarm = context.FarmLists.Where(x => x.AccountId == accountId);
-            context.FarmLists.RemoveRange(listFarm);
+            var listFarm = context.Farms.Where(x => x.AccountId == accountId);
+            context.Farms.RemoveRange(listFarm);
 
             var farmNodes = FarmList.GetFarmNodes(html);
 
@@ -370,7 +370,7 @@ namespace MainCore.Helper
                 var name = FarmList.GetName(farmNode);
                 var id = FarmList.GetId(farmNode);
                 var count = FarmList.GetNumOfFarms(farmNode);
-                context.FarmLists.Add(new()
+                context.Farms.Add(new()
                 {
                     AccountId = accountId,
                     Id = id,

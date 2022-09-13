@@ -39,3 +39,4 @@ namespace TTWarsCore.Parsers
             return int.Parse(value);
         }
     }
+}

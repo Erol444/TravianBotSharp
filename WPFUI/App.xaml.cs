@@ -1,7 +1,6 @@
-﻿//using FluentMigrator.Runner;
+﻿using FluentMigrator.Runner;
 using MainCore;
-
-//using MainCore.MigrationDb;
+using MainCore.Miragations;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -49,16 +48,13 @@ namespace WPFUI
                 {
                     var contextFactory = GetService<IDbContextFactory<AppDbContext>>();
                     using var context = contextFactory.CreateDbContext();
-                    //using var scope = Provider.CreateScope();
-                    //var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
-                    //if (!context.Database.EnsureCreated())
-                    //{
-                    //    migrationRunner.MigrateUp();
-                    //}
-
-                    //context.Database.EnsureDeleted();
-                    context.Database.EnsureCreated();
-
+                    using var scope = Provider.CreateScope();
+                    var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+                    if (!context.Database.EnsureCreated())
+                    {
+                        migrationRunner.MigrateUp();
+                        context.UpdateDatabase();
+                    }
                     var planManager = GetService<IPlanManager>();
                     planManager.Load();
                 }),
@@ -106,11 +102,11 @@ namespace WPFUI
             services.AddSingleton<IPlanManager, PlanManager>();
             services.AddSingleton<ILogManager, LogManager>();
 
-            //services.AddFluentMigratorCore()
-            //    .ConfigureRunner(rb => rb
-            //    .AddSQLite()
-            //    .WithGlobalConnectionString(_connectionString)
-            //    .ScanIn(typeof(AddUserAgent).Assembly).For.Migrations());
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                .AddSQLite()
+                .WithGlobalConnectionString(_connectionString)
+                .ScanIn(typeof(Farming).Assembly).For.Migrations());
             return services;
         }
     }

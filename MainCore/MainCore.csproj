@@ -52,4 +52,8 @@
     <ProjectReference Condition="'$(Server)' == 'TTWARS'" Include="..\TTWarsCore\TTWarsCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tasks\Attack\" />
+  </ItemGroup>
+
 </Project>
