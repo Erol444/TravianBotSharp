@@ -37,10 +37,10 @@ namespace MainCore.Tasks.Misc
 
         private void AcceptCookie()
         {
-            var html = ChromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
             if (html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes")))
             {
-                var driver = ChromeBrowser.GetChrome();
+                var driver = _chromeBrowser.GetChrome();
                 var acceptCookie = driver.FindElements(By.ClassName("cmpboxbtnyes"));
                 acceptCookie[0].Click();
             }
@@ -48,7 +48,7 @@ namespace MainCore.Tasks.Misc
 
         private void Login()
         {
-            var html = ChromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
 
             var usernameNode = LoginPage.GetUsernameNode(html);
             if (usernameNode is null)
@@ -66,10 +66,10 @@ namespace MainCore.Tasks.Misc
                 throw new Exception("Cannot find login button");
             }
 
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var account = context.Accounts.Find(AccountId);
             var access = context.Accesses.Where(x => x.AccountId == AccountId).OrderByDescending(x => x.LastUsed).FirstOrDefault();
-            var chrome = ChromeBrowser.GetChrome();
+            var chrome = _chromeBrowser.GetChrome();
 
             var usernameElement = chrome.FindElements(By.XPath(usernameNode.XPath));
             if (usernameElement.Count == 0)
@@ -97,28 +97,28 @@ namespace MainCore.Tasks.Misc
 
             buttonElements[0].Click();
 
-            var wait = ChromeBrowser.GetWait();
+            var wait = _chromeBrowser.GetWait();
             wait.Until(driver => driver.Url.Contains("dorf"));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
 
         private void AddTask()
         {
-            TaskManager.Add(AccountId, new UpdateInfo(AccountId));
+            _taskManager.Add(AccountId, new UpdateInfo(AccountId));
 
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == AccountId);
-            var listTask = TaskManager.GetList(AccountId);
+            var listTask = _taskManager.GetList(AccountId);
             var upgradeBuildingList = listTask.Where(x => x.GetType() == typeof(UpgradeBuilding)).OfType<UpgradeBuilding>();
             foreach (var village in villages)
             {
-                var queue = PlanManager.GetList(village.Id);
+                var queue = _planManager.GetList(village.Id);
                 if (queue.Any())
                 {
                     var upgradeBuilding = upgradeBuildingList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (upgradeBuilding is null)
                     {
-                        TaskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
+                        _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
                     }
                 }
             }

@@ -1,6 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium;
 using System;
 using System.Threading;
 
@@ -22,13 +23,13 @@ namespace MainCore.Tasks
         protected bool StopFlag { get; set; }
         public CancellationTokenSource Cts { get; set; }
 
-        public IDbContextFactory<AppDbContext> ContextFactory { get; set; }
-        public IChromeBrowser ChromeBrowser { get; set; }
-        public ITaskManager TaskManager { get; set; }
-        public IEventManager EventManager { get; set; }
-        public ILogManager LogManager { get; set; }
-        public IPlanManager PlanManager { get; set; }
-        public IRestClientManager RestClientManager { get; set; }
+        protected IDbContextFactory<AppDbContext> _contextFactory;
+        protected IChromeBrowser _chromeBrowser;
+        protected ITaskManager _taskManager;
+        protected IEventManager _eventManager;
+        protected ILogManager _logManager;
+        protected IPlanManager _planManager;
+        protected IRestClientManager _restClientManager;
 
         public abstract string Name { get; }
 
@@ -36,25 +37,32 @@ namespace MainCore.Tasks
 
         public virtual void CopyFrom(BotTask source)
         {
-            ContextFactory = source.ContextFactory;
-            EventManager = source.EventManager;
-            TaskManager = source.TaskManager;
-            LogManager = source.LogManager;
-            ChromeBrowser = source.ChromeBrowser;
-            PlanManager = source.PlanManager;
-            RestClientManager = source.RestClientManager;
+            _contextFactory = source._contextFactory;
+            _eventManager = source._eventManager;
+            _taskManager = source._taskManager;
+            _logManager = source._logManager;
+            _chromeBrowser = source._chromeBrowser;
+            _planManager = source._planManager;
+            _restClientManager = source._restClientManager;
             Cts = source.Cts;
         }
 
         public virtual void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
-            ContextFactory = contextFactory;
-            EventManager = eventManager;
-            TaskManager = taskManager;
-            LogManager = logManager;
-            ChromeBrowser = chromeBrowser;
-            PlanManager = planManager;
-            RestClientManager = restClientManager;
+            _contextFactory = contextFactory;
+            _eventManager = eventManager;
+            _taskManager = taskManager;
+            _logManager = logManager;
+            _chromeBrowser = chromeBrowser;
+            _planManager = planManager;
+            _restClientManager = restClientManager;
+        }
+
+        public void Refresh()
+        {
+            _chromeBrowser.GetChrome().Navigate().Refresh();
+            var wait = _chromeBrowser.GetWait();
+            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
     }
 }

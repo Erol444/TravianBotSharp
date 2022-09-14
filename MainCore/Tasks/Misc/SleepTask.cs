@@ -18,7 +18,7 @@ namespace MainCore.Tasks.Misc
 
         public override void Execute()
         {
-            var context = ContextFactory.CreateDbContext();
+            var context = _contextFactory.CreateDbContext();
             var accesses = context.Accesses.Where(x => x.AccountId == AccountId).OrderBy(x => x.LastUsed);
             var currentAccess = accesses.Last();
             var setting = context.AccountsSettings.Find(AccountId);
@@ -32,7 +32,7 @@ namespace MainCore.Tasks.Misc
                     break;
                 }
 
-                var result = AccessHelper.CheckAccess(RestClientManager.Get(new(access)));
+                var result = AccessHelper.CheckAccess(_restClientManager.Get(new(access)));
                 if (result)
                 {
                     selectedAccess = access;
@@ -42,7 +42,7 @@ namespace MainCore.Tasks.Misc
                 }
                 else
                 {
-                    LogManager.Information(AccountId, $"Proxy {access.ProxyHost} is not working");
+                    _logManager.Information(AccountId, $"Proxy {access.ProxyHost} is not working");
                 }
             }
             if (selectedAccess is null || selectedAccess.Id == currentAccess.Id)
@@ -50,21 +50,21 @@ namespace MainCore.Tasks.Misc
                 (var min, var max) = (setting.SleepTimeMin, setting.SleepTimeMax);
 
                 var time = TimeSpan.FromMinutes(random.Next(min, max));
-                ChromeBrowser.Close();
-                LogManager.Information(AccountId, $"Bot is sleeping in {time} minute(s)");
+                _chromeBrowser.Close();
+                _logManager.Information(AccountId, $"Bot is sleeping in {time} minute(s)");
                 Task.Delay(time, Cts.Token).Wait();
                 if (Cts.IsCancellationRequested) return;
             }
             else
             {
-                ChromeBrowser.Close();
-                LogManager.Information(AccountId, $"Bot is sleeping in {3} minute(s)");
+                _chromeBrowser.Close();
+                _logManager.Information(AccountId, $"Bot is sleeping in {3} minute(s)");
                 Task.Delay(TimeSpan.FromMinutes(3), Cts.Token).Wait();
             }
-            ChromeBrowser.Setup(selectedAccess, setting);
+            _chromeBrowser.Setup(selectedAccess, setting);
             var currentAccount = context.Accounts.Find(AccountId);
-            ChromeBrowser.Navigate(currentAccount.Server);
-            TaskManager.Add(AccountId, new LoginTask(AccountId), true);
+            _chromeBrowser.Navigate(currentAccount.Server);
+            _taskManager.Add(AccountId, new LoginTask(AccountId), true);
         }
     }
 }

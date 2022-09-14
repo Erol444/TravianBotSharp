@@ -31,7 +31,7 @@ namespace MainCore.Tasks.Sim
         public override void CopyFrom(BotTask source)
         {
             base.CopyFrom(source);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -46,7 +46,7 @@ namespace MainCore.Tasks.Sim
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -74,10 +74,10 @@ namespace MainCore.Tasks.Sim
                 if (Cts.IsCancellationRequested) return;
 
                 {
-                    using var context = ContextFactory.CreateDbContext();
-                    NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
+                    using var context = _contextFactory.CreateDbContext();
+                    NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId);
                     if (Cts.IsCancellationRequested) return;
-                    UpdateHelper.UpdateResource(context, ChromeBrowser, VillageId);
+                    UpdateHelper.UpdateResource(context, _chromeBrowser, VillageId);
                     if (Cts.IsCancellationRequested) return;
                 }
 
@@ -99,7 +99,7 @@ namespace MainCore.Tasks.Sim
                 else
                 {
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-                    using var context = ContextFactory.CreateDbContext();
+                    using var context = _contextFactory.CreateDbContext();
                     var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
 
                     if (buildingTask.Building.IsResourceField() && building.Level == 0) Upgrade(buildingTask);
@@ -128,7 +128,7 @@ namespace MainCore.Tasks.Sim
 
         private void Construct(PlanTask buildingTask)
         {
-            var html = ChromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
             var node = html.GetElementbyId($"contract_building{(int)buildingTask.Building}");
             var button = node.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
 
@@ -138,7 +138,7 @@ namespace MainCore.Tasks.Sim
                 throw new Exception($"Cannot find Build button for {buildingTask.Building}");
             }
 
-            var chrome = ChromeBrowser.GetChrome();
+            var chrome = _chromeBrowser.GetChrome();
             var elements = chrome.FindElements(By.XPath(button.XPath));
             if (elements.Count == 0)
             {
@@ -148,7 +148,7 @@ namespace MainCore.Tasks.Sim
 
             if (buildingTask.Level == 1)
             {
-                PlanManager.Remove(VillageId, buildingTask);
+                _planManager.Remove(VillageId, buildingTask);
             }
         }
 
@@ -156,8 +156,8 @@ namespace MainCore.Tasks.Sim
 
         private void UpgradeAds(PlanTask buildingTask)
         {
-            var html = ChromeBrowser.GetHtml();
-            var chrome = ChromeBrowser.GetChrome();
+            var html = _chromeBrowser.GetHtml();
+            var chrome = _chromeBrowser.GetChrome();
 
             {
                 var nodeFastUpgrade = html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("videoFeatureButton") && x.HasClass("green"));
@@ -173,7 +173,7 @@ namespace MainCore.Tasks.Sim
                 elements[0].Click();
             }
             Thread.Sleep(rand.Next(2400, 5300));
-            html = ChromeBrowser.GetHtml();
+            html = _chromeBrowser.GetHtml();
             {
                 var nodeNotShowAgainConfirm = html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']");
                 if (nodeNotShowAgainConfirm is not null)
@@ -195,7 +195,7 @@ namespace MainCore.Tasks.Sim
                 }
             }
             Thread.Sleep(rand.Next(20000, 25000));
-            html = ChromeBrowser.GetHtml();
+            html = _chromeBrowser.GetHtml();
             {
                 var nodeIframe = html.GetElementbyId("videoFeature");
                 if (nodeIframe is null)
@@ -231,7 +231,7 @@ namespace MainCore.Tasks.Sim
             }
 
             {
-                var wait = ChromeBrowser.GetWait();
+                var wait = _chromeBrowser.GetWait();
                 try
                 {
                     wait.Until(driver => driver.Url.Contains("dorf"));
@@ -239,7 +239,7 @@ namespace MainCore.Tasks.Sim
                 }
                 catch
                 {
-                    html = ChromeBrowser.GetHtml();
+                    html = _chromeBrowser.GetHtml();
                     if (html.GetElementbyId("dontShowThisAgain") is not null)
                     {
                         var dontshowthisagain = chrome.FindElements(By.Id("dontShowThisAgain"));
@@ -256,7 +256,7 @@ namespace MainCore.Tasks.Sim
 
         private void Upgrade(PlanTask buildingTask)
         {
-            var html = ChromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
             var container = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
             var upgradeButton = container.Descendants("button").FirstOrDefault(x => x.HasClass("build"));
 
@@ -265,7 +265,7 @@ namespace MainCore.Tasks.Sim
                 throw new Exception($"Cannot find upgrade button for {buildingTask.Building}");
             }
 
-            var chrome = ChromeBrowser.GetChrome();
+            var chrome = _chromeBrowser.GetChrome();
 
             var elements = chrome.FindElements(By.XPath(upgradeButton.XPath));
             if (elements.Count == 0)
@@ -278,7 +278,7 @@ namespace MainCore.Tasks.Sim
 
         private void Update()
         {
-            var wait = ChromeBrowser.GetWait();
+            var wait = _chromeBrowser.GetWait();
 
             wait.Until(driver => driver.Url.Contains("dorf"));
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
@@ -290,22 +290,22 @@ namespace MainCore.Tasks.Sim
 
         private PlanTask SelectBuilding()
         {
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
-            var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, PlanManager, LogManager, AccountId, VillageId);
+            var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, _planManager, _logManager, AccountId, VillageId);
             if (buildingTask is null)
             {
-                var tasks = PlanManager.GetList(VillageId);
+                var tasks = _planManager.GetList(VillageId);
                 if (tasks.Count == 0)
                 {
-                    LogManager.Information(AccountId, "Queue is empty.");
+                    _logManager.Information(AccountId, "Queue is empty.");
                     StopFlag = true;
                     return null;
                 }
 
-                NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
-                NavigateHelper.GoRandomDorf(ChromeBrowser);
-                UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId);
+                NavigateHelper.GoRandomDorf(_chromeBrowser);
+                UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
 
                 var firstComplete = context.VillagesCurrentlyBuildings.Find(VillageId, 0);
                 if (firstComplete.CompleteTime == DateTime.MaxValue)
@@ -314,7 +314,7 @@ namespace MainCore.Tasks.Sim
                 }
 
                 ExecuteAt = firstComplete.CompleteTime.AddSeconds(10);
-                LogManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
+                _logManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
                 StopFlag = true;
                 return null;
             }
@@ -325,16 +325,16 @@ namespace MainCore.Tasks.Sim
         {
             if (buildingTask.Type == PlanTypeEnums.ResFields)
             {
-                using var context = ContextFactory.CreateDbContext();
+                using var context = _contextFactory.CreateDbContext();
                 var task = UpgradeBuildingHelper.ExtractResField(context, VillageId, buildingTask);
                 if (task is null)
                 {
-                    PlanManager.Remove(VillageId, task);
+                    _planManager.Remove(VillageId, task);
                     return true;
                 }
                 else
                 {
-                    PlanManager.Insert(VillageId, 0, task);
+                    _planManager.Insert(VillageId, 0, task);
                     return true;
                 }
             }
@@ -343,7 +343,7 @@ namespace MainCore.Tasks.Sim
 
         private bool IsEnoughFreeCrop(PlanTask buildingTask)
         {
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             if (context.VillagesResources.Find(VillageId).FreeCrop <= 5 && buildingTask.Building != BuildingEnums.Cropland)
             {
                 var cropland = context.VillagesBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Type == BuildingEnums.Cropland).OrderBy(x => x.Level).FirstOrDefault();
@@ -354,7 +354,7 @@ namespace MainCore.Tasks.Sim
                     Building = BuildingEnums.Cropland,
                     Location = cropland.Id,
                 };
-                PlanManager.Insert(VillageId, 0, task);
+                _planManager.Insert(VillageId, 0, task);
                 return false;
             }
             return true;
@@ -362,57 +362,57 @@ namespace MainCore.Tasks.Sim
 
         private bool IsThereCompleteBuilding(PlanTask buildingTask)
         {
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             // move to correct page
             var dorf = BuildingsHelper.GetDorf(buildingTask.Location);
-            var url = ChromeBrowser.GetCurrentUrl();
+            var url = _chromeBrowser.GetCurrentUrl();
             switch (dorf)
             {
                 case 1:
                     if (!url.Contains("dorf1"))
                     {
-                        NavigateHelper.ToDorf1(ChromeBrowser, true);
+                        NavigateHelper.ToDorf1(_chromeBrowser, true);
                     }
                     else
                     {
                         var updateTime = context.VillagesUpdateTime.Find(VillageId);
                         if (updateTime.Dorf1 - DateTime.Now > TimeSpan.FromMinutes(5))
                         {
-                            NavigateHelper.ToDorf1(ChromeBrowser, true);
+                            NavigateHelper.ToDorf1(_chromeBrowser, true);
                         }
                     }
-                    UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
-                    UpdateHelper.UpdateDorf1(context, ChromeBrowser, VillageId);
+                    UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
+                    UpdateHelper.UpdateDorf1(context, _chromeBrowser, VillageId);
                     break;
 
                 case 2:
                     if (!url.Contains("dorf2"))
                     {
-                        NavigateHelper.ToDorf2(ChromeBrowser, true);
+                        NavigateHelper.ToDorf2(_chromeBrowser, true);
                     }
                     else
                     {
                         var updateTime = context.VillagesUpdateTime.Find(VillageId);
                         if (updateTime.Dorf2 - DateTime.Now > TimeSpan.FromMinutes(1))
                         {
-                            NavigateHelper.ToDorf2(ChromeBrowser, true);
+                            NavigateHelper.ToDorf2(_chromeBrowser, true);
                         }
                     }
-                    UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
-                    UpdateHelper.UpdateDorf2(context, ChromeBrowser, AccountId, VillageId);
+                    UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
+                    UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, VillageId);
                     break;
             }
 
             var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
             if (building.Level >= buildingTask.Level)
             {
-                PlanManager.Remove(VillageId, buildingTask);
+                _planManager.Remove(VillageId, buildingTask);
                 return true;
             }
             var currently = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == buildingTask.Location);
             if (currently is not null && currently.Level >= buildingTask.Level)
             {
-                PlanManager.Remove(VillageId, buildingTask);
+                _planManager.Remove(VillageId, buildingTask);
                 return true;
             }
             return false;
@@ -420,9 +420,9 @@ namespace MainCore.Tasks.Sim
 
         private bool GotoBuilding(PlanTask buildingTask)
         {
-            NavigateHelper.GoToBuilding(ChromeBrowser, buildingTask.Location);
+            NavigateHelper.GoToBuilding(_chromeBrowser, buildingTask.Location);
 
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
 
             bool isNewBuilding = false;
@@ -430,13 +430,13 @@ namespace MainCore.Tasks.Sim
             {
                 isNewBuilding = true;
                 var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
-                NavigateHelper.SwitchTab(ChromeBrowser, tab);
+                NavigateHelper.SwitchTab(_chromeBrowser, tab);
             }
             else
             {
                 if (BuildingsData.HasMultipleTabs(buildingTask.Building))
                 {
-                    NavigateHelper.SwitchTab(ChromeBrowser, 0);
+                    NavigateHelper.SwitchTab(_chromeBrowser, 0);
                 }
             }
             return isNewBuilding;
@@ -444,8 +444,8 @@ namespace MainCore.Tasks.Sim
 
         private bool IsEnoughResource(PlanTask buildingTask, bool isNewBuilding)
         {
-            var resNeed = CheckHelper.GetResourceNeed(ChromeBrowser, buildingTask.Building, isNewBuilding);
-            using var context = ContextFactory.CreateDbContext();
+            var resNeed = CheckHelper.GetResourceNeed(_chromeBrowser, buildingTask.Building, isNewBuilding);
+            using var context = _contextFactory.CreateDbContext();
             var resCurrent = context.VillagesResources.Find(VillageId);
             if (resNeed[0] > resCurrent.Wood || resNeed[1] > resCurrent.Clay || resNeed[2] > resCurrent.Iron || resNeed[3] > resCurrent.Crop)
             {
@@ -455,7 +455,7 @@ namespace MainCore.Tasks.Sim
                 var setting = context.VillagesSettings.Find(VillageId);
                 if (!setting.IsUseHeroRes)
                 {
-                    LogManager.Information(AccountId, "Don't have enough resources.");
+                    _logManager.Information(AccountId, "Don't have enough resources.");
                     var production = context.VillagesProduction.Find(VillageId);
                     var timeEnough = production.GetTimeWhenEnough(resMissing);
                     ExecuteAt = timeEnough;
@@ -476,7 +476,7 @@ namespace MainCore.Tasks.Sim
                 var resLeft = new long[] { resAvaliable[0] - resMissing[0], resAvaliable[1] - resMissing[1], resAvaliable[2] - resMissing[2], resAvaliable[3] - resMissing[3] };
                 if (resLeft.Any(x => x <= 0))
                 {
-                    LogManager.Information(AccountId, "Don't have enough resources.");
+                    _logManager.Information(AccountId, "Don't have enough resources.");
                     var production = context.VillagesProduction.Find(VillageId);
                     var timeEnough = production.GetTimeWhenEnough(resMissing);
                     ExecuteAt = timeEnough;

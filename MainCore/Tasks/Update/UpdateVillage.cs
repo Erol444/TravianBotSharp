@@ -20,7 +20,7 @@ namespace MainCore.Tasks.Update
         public override void CopyFrom(BotTask source)
         {
             base.CopyFrom(source);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -35,7 +35,7 @@ namespace MainCore.Tasks.Update
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -59,35 +59,35 @@ namespace MainCore.Tasks.Update
 
         private void Navigate()
         {
-            using var context = ContextFactory.CreateDbContext();
-            NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
+            using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId);
         }
 
         private void Update()
         {
-            using var context = ContextFactory.CreateDbContext();
-            var currentUrl = ChromeBrowser.GetCurrentUrl();
+            using var context = _contextFactory.CreateDbContext();
+            var currentUrl = _chromeBrowser.GetCurrentUrl();
             if (currentUrl.Contains("dorf"))
             {
-                UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, VillageId);
+                UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
                 InstantUpgrade();
             }
             if (currentUrl.Contains("dorf1"))
             {
-                UpdateHelper.UpdateDorf1(context, ChromeBrowser, VillageId);
-                UpdateHelper.UpdateProduction(context, ChromeBrowser, VillageId);
+                UpdateHelper.UpdateDorf1(context, _chromeBrowser, VillageId);
+                UpdateHelper.UpdateProduction(context, _chromeBrowser, VillageId);
             }
             else if (currentUrl.Contains("dorf2"))
             {
-                UpdateHelper.UpdateDorf2(context, ChromeBrowser, AccountId, VillageId);
+                UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, VillageId);
             }
 
-            UpdateHelper.UpdateResource(context, ChromeBrowser, VillageId);
+            UpdateHelper.UpdateResource(context, _chromeBrowser, VillageId);
         }
 
         private void InstantUpgrade()
         {
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
             var setting = context.VillagesSettings.Find(VillageId);
             if (!setting.IsInstantComplete) return;
@@ -96,10 +96,10 @@ namespace MainCore.Tasks.Update
             var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1);
             if (currentlyBuilding.Count() < (info.HasPlusAccount ? 2 : 1)) return;
             if (currentlyBuilding.Last().CompleteTime < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
-            var listTask = TaskManager.GetList(AccountId);
+            var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.Where(x => x.GetType() == typeof(InstantUpgrade)).OfType<InstantUpgrade>().Where(x => x.VillageId == VillageId);
             if (tasks.Any()) return;
-            TaskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
+            _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
         }
     }
 }

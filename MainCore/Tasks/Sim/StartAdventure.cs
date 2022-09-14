@@ -14,21 +14,21 @@ namespace MainCore.Tasks.Sim
 
         public override void Execute()
         {
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var adventures = context.Adventures.Where(a => a.AccountId == AccountId);
             if (!adventures.Any()) return;
             var adventure = adventures.First();
             var x = adventure.X;
             var y = adventure.Y;
             if (Cts.IsCancellationRequested) return;
-            ClickHelper.ClickStartAdventure(ChromeBrowser, x, y);
+            ClickHelper.ClickStartAdventure(_chromeBrowser, x, y);
             if (DateTime.Now.Millisecond % 2 == 0)
             {
-                NavigateHelper.ToDorf1(ChromeBrowser);
+                NavigateHelper.ToDorf1(_chromeBrowser);
             }
             else
             {
-                NavigateHelper.ToDorf2(ChromeBrowser);
+                NavigateHelper.ToDorf2(_chromeBrowser);
             }
         }
     }

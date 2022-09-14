@@ -37,7 +37,7 @@ namespace MainCore.Tasks.Update
 
         private void UpdateVillageList()
         {
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var currentVills = context.Villages.Where(x => x.AccountId == AccountId).ToList();
 
             var foundVills = UpdateVillageTable();
@@ -75,23 +75,23 @@ namespace MainCore.Tasks.Update
                 });
                 context.AddVillage(newVill.Id);
 
-                var tasks = TaskManager.GetList(AccountId).Where(x => x.GetType() == typeof(UpdateBothDorf)).Cast<UpdateVillage>().ToList();
+                var tasks = _taskManager.GetList(AccountId).Where(x => x.GetType() == typeof(UpdateBothDorf)).Cast<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
                 if (task is null)
                 {
-                    TaskManager.Add(AccountId, new UpdateBothDorf(newVill.Id, AccountId));
+                    _taskManager.Add(AccountId, new UpdateBothDorf(newVill.Id, AccountId));
                 }
             }
             context.SaveChanges();
             if (villageChange)
             {
-                EventManager.OnVillagesUpdated(AccountId);
+                _eventManager.OnVillagesUpdated(AccountId);
             }
         }
 
         private void UpdateAccountInfo()
         {
-            var html = ChromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
             var tribe = RightBar.GetTribe(html);
             if (tribe == 0) throw new Exception("Cannot read account's tribe.");
             var hasPlusAccount = RightBar.HasPlusAccount(html);
@@ -101,7 +101,7 @@ namespace MainCore.Tasks.Update
             var silver = StockBar.GetSilver(html);
             if (silver == -1) throw new Exception("Cannot read account's silver.");
 
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var account = context.AccountsInfo.Find(AccountId);
             if (account is null)
             {
@@ -129,7 +129,7 @@ namespace MainCore.Tasks.Update
 
         private void UpdateHeroInfo()
         {
-            var html = ChromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
             var health = HeroInfo.GetHealth(html);
             if (health == -1) throw new Exception("Cannot read hero's health.");
             var status = HeroInfo.GetStatus(html);
@@ -137,7 +137,7 @@ namespace MainCore.Tasks.Update
             var numberAdventure = HeroInfo.GetAdventureNum(html);
             if (numberAdventure == -1) throw new Exception("Cannot read hero's adventure number.");
 
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var account = context.Heroes.Find(AccountId);
             if (account is null)
             {
@@ -161,18 +161,18 @@ namespace MainCore.Tasks.Update
             var adventures = context.Adventures.Count(x => x.AccountId == AccountId);
             if (adventures != numberAdventure)
             {
-                var listTask = TaskManager.GetList(AccountId);
+                var listTask = _taskManager.GetList(AccountId);
                 var task = listTask.FirstOrDefault(x => x.GetType() == typeof(UpdateAdventures));
                 if (task is null)
                 {
-                    TaskManager.Add(AccountId, new UpdateAdventures(AccountId));
+                    _taskManager.Add(AccountId, new UpdateAdventures(AccountId));
                 }
             }
         }
 
         private List<Village> UpdateVillageTable()
         {
-            var html = ChromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
 
             var listNode = VillagesTable.GetVillageNodes(html);
             var listVillage = new List<Village>();

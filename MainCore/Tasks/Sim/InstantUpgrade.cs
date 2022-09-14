@@ -19,7 +19,7 @@ namespace MainCore.Tasks.Sim
         public override void CopyFrom(BotTask source)
         {
             base.CopyFrom(source);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -34,7 +34,7 @@ namespace MainCore.Tasks.Sim
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -48,14 +48,14 @@ namespace MainCore.Tasks.Sim
 
         public override void Execute()
         {
-            using var context = ContextFactory.CreateDbContext();
-            NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
+            using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId);
             if (Cts.IsCancellationRequested) return;
-            NavigateHelper.GoRandomDorf(ChromeBrowser);
+            NavigateHelper.GoRandomDorf(_chromeBrowser);
             if (Cts.IsCancellationRequested) return;
-            ClickHelper.ClickCompleteNow(ChromeBrowser);
+            ClickHelper.ClickCompleteNow(_chromeBrowser);
             if (Cts.IsCancellationRequested) return;
-            ClickHelper.WaitDialogFinishNow(ChromeBrowser);
+            ClickHelper.WaitDialogFinishNow(_chromeBrowser);
         }
     }
 }

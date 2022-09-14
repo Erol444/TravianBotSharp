@@ -12,9 +12,9 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            NavigateHelper.ToHeroInventory(ChromeBrowser);
-            using var context = ContextFactory.CreateDbContext();
-            UpdateHelper.UpdateHeroInventory(context, ChromeBrowser, AccountId);
+            NavigateHelper.ToHeroInventory(_chromeBrowser);
+            using var context = _contextFactory.CreateDbContext();
+            UpdateHelper.UpdateHeroInventory(context, _chromeBrowser, AccountId);
         }
     }
 }

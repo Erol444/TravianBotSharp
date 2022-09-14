@@ -16,7 +16,7 @@ namespace MainCore.Tasks.Update
         public override void CopyFrom(BotTask source)
         {
             base.CopyFrom(source);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -31,7 +31,7 @@ namespace MainCore.Tasks.Update
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -45,7 +45,7 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            NavigateHelper.ToDorf1(ChromeBrowser);
+            NavigateHelper.ToDorf1(_chromeBrowser);
             base.Execute();
         }
     }

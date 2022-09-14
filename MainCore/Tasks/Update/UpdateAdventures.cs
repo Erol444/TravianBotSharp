@@ -13,10 +13,10 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            NavigateHelper.ToAdventure(ChromeBrowser);
+            NavigateHelper.ToAdventure(_chromeBrowser);
             if (Cts.IsCancellationRequested) return;
-            using var context = ContextFactory.CreateDbContext();
-            UpdateHelper.UpdateAdventures(context, ChromeBrowser, AccountId);
+            using var context = _contextFactory.CreateDbContext();
+            UpdateHelper.UpdateAdventures(context, _chromeBrowser, AccountId);
 
             var taskUpdate = new UpdateInfo(AccountId);
             taskUpdate.CopyFrom(this);

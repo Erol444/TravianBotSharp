@@ -27,7 +27,7 @@ namespace MainCore.Tasks.Misc
         public override void CopyFrom(BotTask source)
         {
             base.CopyFrom(source);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -42,7 +42,7 @@ namespace MainCore.Tasks.Misc
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -56,11 +56,11 @@ namespace MainCore.Tasks.Misc
 
         public override void Execute()
         {
-            using var context = ContextFactory.CreateDbContext();
-            if (VillageId != -1) NavigateHelper.SwitchVillage(context, ChromeBrowser, VillageId);
+            using var context = _contextFactory.CreateDbContext();
+            if (VillageId != -1) NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId);
             var heroStatus = context.Heroes.Find(AccountId).Status;
             var setting = context.AccountsSettings.Find(AccountId);
-            var wait = ChromeBrowser.GetWait();
+            var wait = _chromeBrowser.GetWait();
             foreach ((var item, var amount) in _items)
             {
                 if (Cts.IsCancellationRequested) return;
@@ -69,7 +69,7 @@ namespace MainCore.Tasks.Misc
                     return;
                 }
                 if (amount < 0) continue;
-                HeroHelper.ClickItem(ChromeBrowser, item);
+                HeroHelper.ClickItem(_chromeBrowser, item);
 
                 if (amount <= 1)
                 {
@@ -78,8 +78,8 @@ namespace MainCore.Tasks.Misc
                 else
                 {
                     Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
-                    HeroHelper.EnterAmount(ChromeBrowser, RoundUpTo100(amount));
-                    HeroHelper.Confirm(ChromeBrowser);
+                    HeroHelper.EnterAmount(_chromeBrowser, RoundUpTo100(amount));
+                    HeroHelper.Confirm(_chromeBrowser);
                     Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
                 }
                 Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));

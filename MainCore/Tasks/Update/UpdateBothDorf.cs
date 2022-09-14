@@ -17,7 +17,7 @@ namespace MainCore.Tasks.Update
         public override void CopyFrom(BotTask source)
         {
             base.CopyFrom(source);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -32,7 +32,7 @@ namespace MainCore.Tasks.Update
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(VillageId);
             if (village is null)
             {
@@ -46,21 +46,21 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            var url = ChromeBrowser.GetCurrentUrl();
+            var url = _chromeBrowser.GetCurrentUrl();
             if (url.Contains("dorf2"))
             {
-                NavigateHelper.ToDorf2(ChromeBrowser);
+                NavigateHelper.ToDorf2(_chromeBrowser);
                 base.Execute();
 
-                NavigateHelper.ToDorf1(ChromeBrowser);
+                NavigateHelper.ToDorf1(_chromeBrowser);
                 base.Execute();
             }
             else if (url.Contains("dorf1"))
             {
-                NavigateHelper.ToDorf1(ChromeBrowser);
+                NavigateHelper.ToDorf1(_chromeBrowser);
                 base.Execute();
 
-                NavigateHelper.ToDorf2(ChromeBrowser);
+                NavigateHelper.ToDorf2(_chromeBrowser);
                 base.Execute();
             }
             else
@@ -68,18 +68,18 @@ namespace MainCore.Tasks.Update
                 var random = new Random(DateTime.Now.Second);
                 if (random.Next(0, 100) > 50)
                 {
-                    NavigateHelper.ToDorf1(ChromeBrowser);
+                    NavigateHelper.ToDorf1(_chromeBrowser);
                     base.Execute();
 
-                    NavigateHelper.ToDorf2(ChromeBrowser);
+                    NavigateHelper.ToDorf2(_chromeBrowser);
                     base.Execute();
                 }
                 else
                 {
-                    NavigateHelper.ToDorf2(ChromeBrowser);
+                    NavigateHelper.ToDorf2(_chromeBrowser);
                     base.Execute();
 
-                    NavigateHelper.ToDorf1(ChromeBrowser);
+                    NavigateHelper.ToDorf1(_chromeBrowser);
                     base.Execute();
                 }
             }

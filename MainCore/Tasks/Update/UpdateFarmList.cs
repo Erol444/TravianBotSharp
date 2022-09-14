@@ -19,12 +19,12 @@ namespace MainCore.Tasks.Update
             if (Cts.IsCancellationRequested) return;
             if (village == -1)
             {
-                LogManager.Warning(AccountId, "There is no rallypoint in your villages");
+                _logManager.Warning(AccountId, "There is no rallypoint in your villages");
                 return;
             }
             {
-                using var context = ContextFactory.CreateDbContext();
-                NavigateHelper.SwitchVillage(context, ChromeBrowser, village);
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.SwitchVillage(context, _chromeBrowser, village);
                 if (Cts.IsCancellationRequested) return;
             }
             {
@@ -33,17 +33,18 @@ namespace MainCore.Tasks.Update
                 if (!result) return;
             }
             {
-                using var context = ContextFactory.CreateDbContext();
-                UpdateHelper.UpdateFarmList(context, ChromeBrowser, AccountId);
-                EventManager.OnFarmListUpdated(AccountId);
+                using var context = _contextFactory.CreateDbContext();
+                UpdateHelper.UpdateFarmList(context, _chromeBrowser, AccountId);
+                _eventManager.OnFarmListUpdated(AccountId);
             }
         }
 
         private int GetVillageHasRallyPoint()
         {
-            using var context = ContextFactory.CreateDbContext();
+            using var context = _contextFactory.CreateDbContext();
 
             var villages = context.Villages.Where(x => x.AccountId == AccountId);
+
             foreach (var village in villages)
             {
                 if (Cts.IsCancellationRequested) return -1;
@@ -58,29 +59,29 @@ namespace MainCore.Tasks.Update
 
         private bool GotoFarmListPage(int village)
         {
-            using var context = ContextFactory.CreateDbContext();
-            var url = ChromeBrowser.GetCurrentUrl();
+            using var context = _contextFactory.CreateDbContext();
+            var url = _chromeBrowser.GetCurrentUrl();
             if (!url.Contains("dorf2"))
             {
-                NavigateHelper.ToDorf2(ChromeBrowser, true);
+                NavigateHelper.ToDorf2(_chromeBrowser, true);
             }
             else
             {
                 var updateTime = context.VillagesUpdateTime.Find(village);
                 if (updateTime.Dorf2 - DateTime.Now > TimeSpan.FromMinutes(1))
                 {
-                    NavigateHelper.ToDorf2(ChromeBrowser, true);
+                    NavigateHelper.ToDorf2(_chromeBrowser, true);
                 }
             }
             if (Cts.IsCancellationRequested) return false;
 
-            UpdateHelper.UpdateCurrentlyBuilding(context, ChromeBrowser, village);
-            UpdateHelper.UpdateDorf2(context, ChromeBrowser, AccountId, village);
+            UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, village);
+            UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, village);
             var location = context.VillagesBuildings.Where(x => x.VillageId == village).FirstOrDefault(x => x.Type == BuildingEnums.RallyPoint).Id;
-            NavigateHelper.GoToBuilding(ChromeBrowser, location);
+            NavigateHelper.GoToBuilding(_chromeBrowser, location);
             if (Cts.IsCancellationRequested) return false;
 
-            NavigateHelper.SwitchTab(ChromeBrowser, 4);
+            NavigateHelper.SwitchTab(_chromeBrowser, 4);
             return true;
         }
     }
