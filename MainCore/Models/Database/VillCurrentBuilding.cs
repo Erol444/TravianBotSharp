@@ -3,7 +3,7 @@ using System;
 
 namespace MainCore.Models.Database
 {
-    public class VillageCurrentlyBuilding
+    public class VillCurrentBuilding
     {
         public int Id { get; set; }
         public int VillageId { get; set; }

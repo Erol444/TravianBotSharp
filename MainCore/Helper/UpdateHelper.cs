@@ -1,4 +1,5 @@
 ﻿using MainCore.Enums;
+using MainCore.Models.Database;
 using MainCore.Services;
 using MainCore.TravianData;
 using System;
@@ -370,13 +371,16 @@ namespace MainCore.Helper
                 var name = FarmList.GetName(farmNode);
                 var id = FarmList.GetId(farmNode);
                 var count = FarmList.GetNumOfFarms(farmNode);
-                context.Farms.Add(new()
+                var farm = new Farm()
                 {
                     AccountId = accountId,
                     Id = id,
                     Name = name,
                     FarmCount = count,
-                });
+                };
+                context.Farms.Add(farm);
+                context.SaveChanges();
+                context.AddFarm(farm.Id);
             }
             context.SaveChanges();
         }

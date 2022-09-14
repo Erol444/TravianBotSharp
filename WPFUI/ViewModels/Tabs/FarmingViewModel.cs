@@ -1,7 +1,10 @@
-﻿using ReactiveUI;
+﻿using MainCore.Tasks.Update;
+using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using WPFUI.Interfaces;
 using WPFUI.Models;
@@ -16,6 +19,9 @@ namespace WPFUI.ViewModels.Tabs
             RefreshCommand = ReactiveCommand.CreateFromTask(RefreshTask);
             StartCommand = ReactiveCommand.CreateFromTask(StartTask);
             StopCommand = ReactiveCommand.CreateFromTask(StopTask);
+
+            _eventManager.FarmListUpdated += OnFarmListUpdate;
+            this.WhenAnyValue(x => x.IsActiveChange).Subscribe(ChangeColor);
         }
 
         public void OnActived()
@@ -23,27 +29,38 @@ namespace WPFUI.ViewModels.Tabs
             LoadData(AccountId);
         }
 
+        private void OnFarmListUpdate(int index) => RxApp.MainThreadScheduler.Schedule(() => LoadData(index));
+
+        public void ChangeColor(bool value)
+        {
+            if (CurrentFarm is not null) CurrentFarm.Color = value ? "Green" : "Red";
+        }
+
         protected override void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
             var farms = context.Farms.Where(x => x.AccountId == index);
             FarmList.Clear();
-            ActiveFarmList.Clear();
             foreach (var farm in farms)
             {
-                var f = new FarmInfo() { Id = farm.Id, Name = farm.Name, };
-                FarmList.Add(f);
                 var farmSetting = context.FarmsSettings.Find(farm.Id);
-                if (farmSetting.IsActive)
-                {
-                    ActiveFarmList.Add(f);
-                }
+                var color = farmSetting.IsActive ? "Green" : "Red";
+                var f = new FarmInfo() { Id = farm.Id, Name = farm.Name, Color = color };
+                FarmList.Add(f);
             }
         }
 
         private async Task RefreshTask()
         {
-            await Task.Run(() => { });
+            await Task.Run(() =>
+            {
+                var accountId = AccountId;
+                var tasks = _taskManager.GetList(accountId);
+                if (!tasks.Any(x => x.GetType() == typeof(UpdateFarmList)))
+                {
+                    _taskManager.Add(accountId, new UpdateFarmList(accountId));
+                }
+            });
         }
 
         private async Task StartTask()
@@ -60,7 +77,6 @@ namespace WPFUI.ViewModels.Tabs
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
         public ObservableCollection<FarmInfo> FarmList { get; } = new();
-        public ObservableCollection<FarmInfo> ActiveFarmList { get; } = new();
 
         private FarmInfo _currentFarm;
 
@@ -68,6 +84,14 @@ namespace WPFUI.ViewModels.Tabs
         {
             get => _currentFarm;
             set => this.RaiseAndSetIfChanged(ref _currentFarm, value);
+        }
+
+        private bool _isActiveChange;
+
+        public bool IsActiveChange
+        {
+            get => _isActiveChange;
+            set => this.RaiseAndSetIfChanged(ref _isActiveChange, value);
         }
     }
 }

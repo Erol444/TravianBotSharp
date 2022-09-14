@@ -27,30 +27,27 @@
             </Grid.RowDefinitions>
             <Button x:Name="RefreshFarmListsButton" Content="Refresh farm lists" Margin="0,5,0,0" />
             <ListView x:Name="FarmListViewer" Grid.Row="1" Margin="0,5,0,0">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="Foreground" Value="{Binding Color}" />
+                    </Style>
+                </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn />
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
                     </GridView>
                 </ListView.View>
             </ListView>
         </Grid>
-        <uc:FarmListControllerUc x:Name="FarmListController" Grid.Column="1"  />
+        <uc:FarmListControllerUc x:Name="FarmListController" Grid.Column="1" />
 
-        <Grid Grid.Column="2" Grid.ColumnSpan="2" >
+        <Grid Grid.Column="2" Grid.ColumnSpan="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="10*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <Button x:Name="StartButton" Content="Start" Grid.Row="1" Margin="0,5,0,0"/>
-            <Button x:Name="StopButton" Content="Stop" Grid.Row="2" Margin="0,5,0,0"/>
-            <ListView x:Name="ActiveFarmListViewer" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,5,0,0">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn/>
-                    </GridView>
-                </ListView.View>
-            </ListView>
+            <Button x:Name="StartButton" Content="Start all active"  Margin="0,5,0,0" />
+            <Button x:Name="StopButton" Content="Stop all" Grid.Row="1" Margin="0,5,0,0" />
         </Grid>
     </Grid>
 </rxui:ReactivePage>

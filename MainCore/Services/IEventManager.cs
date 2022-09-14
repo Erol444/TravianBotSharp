@@ -39,5 +39,9 @@ namespace MainCore.Services
         public event Action<int> HeroAdventuresUpdate;
 
         public void OnHeroAdventuresUpdate(int accountId);
+
+        public event Action<int> FarmListUpdated;
+
+        public void OnFarmListUpdated(int accountId);
     }
 }

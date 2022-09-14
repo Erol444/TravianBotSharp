@@ -9,27 +9,26 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <Border BorderBrush="Black" BorderThickness="2">
-        <Grid Background="#FFE3E3E3" >
+    <Border BorderBrush="Black" BorderThickness="1">
+        <Grid Background="#FFE3E3E3">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
+                <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Label x:Name="NameFarmList" d:Content="Name of farm list" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
-            <Label x:Name="NumOfFarms" d:Content="3041975 farm(s)" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center"/>
-            <CheckBox x:Name="ActiveCheckBox" Content="Active this farm list" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center"/>
-            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" >
-                <Label x:Name="IntervalTimeLabel" Content="Interval (seconds):"/>
-                <TextBox x:Name="IntervalTimeText" TextWrapping="Wrap" d:Text="50" Margin="5,0,5,0" Width="50"/>
-                <Label x:Name="SignLabel" Content="±"/>
-                <TextBox x:Name="IntervalTimeDiffText" TextWrapping="Wrap" d:Text="50" Width="50" Background="White" Margin="5,0,0,0"/>
+            <Label x:Name="NameFarmList" d:Content="Name of farm list" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" />
+            <Label x:Name="NumOfFarms" d:Content="3041975 farm(s)" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" />
+            <CheckBox x:Name="ActiveCheckBox" Content="Active this farm list" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" />
+            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label x:Name="IntervalTimeLabel" Content="Interval (seconds):" />
+                <TextBox x:Name="IntervalTimeText" TextWrapping="Wrap" d:Text="50" Margin="5,0,5,0" Width="50" />
+                <Label x:Name="SignLabel" Content="±" />
+                <TextBox x:Name="IntervalTimeDiffText" TextWrapping="Wrap" d:Text="50" Width="50" Background="White" Margin="5,0,0,0" />
             </StackPanel>
-
         </Grid>
     </Border>
 </rxui:ReactiveUserControl>

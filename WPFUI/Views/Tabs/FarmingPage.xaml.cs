@@ -20,12 +20,11 @@ namespace WPFUI.Views.Tabs
                 this.BindCommand(ViewModel, vm => vm.StopCommand, v => v.StopButton).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.FarmList, v => v.FarmListViewer.ItemsSource).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.ActiveFarmList, v => v.ActiveFarmListViewer.ItemsSource).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.CurrentFarm, v => v.FarmListViewer.SelectedItem).DisposeWith(d);
 
-                this.OneWayBind(ViewModel, vm => vm.CurrentFarm, v => v.FarmListController.ViewModel.CurrentFarm);
-
+                this.OneWayBind(ViewModel, vm => vm.CurrentFarm, v => v.FarmListController.ViewModel.CurrentFarm).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsActiveChange, v => v.FarmListController.ActiveCheckBox.IsChecked).DisposeWith(d);
                 ViewModel.OnActived();
             });
         }

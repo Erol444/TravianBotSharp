@@ -1,9 +1,6 @@
 ﻿using MainCore.Models.Database;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using System;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace MainCore
 {
@@ -111,7 +108,7 @@ namespace MainCore
 
             #region Village Currently Building
 
-            modelBuilder.Entity<VillageCurrentlyBuilding>(entity =>
+            modelBuilder.Entity<VillCurrentBuilding>(entity =>
             {
                 entity.ToTable("VillagesCurrentlyBuildings");
                 entity.HasKey(e => new { e.VillageId, e.Id })
@@ -211,8 +208,9 @@ namespace MainCore
 
         public void AddAccount(int accountId)
         {
-            AccountsInfo.AddIfNotExists(new AccountInfo { AccountId = accountId });
-            AccountsSettings.AddIfNotExists(new AccountSetting
+            AccountsInfo.Add(new AccountInfo { AccountId = accountId });
+
+            AccountsSettings.Add(new AccountSetting
             {
                 AccountId = accountId,
                 ClickDelayMin = 500,
@@ -228,7 +226,7 @@ namespace MainCore
                 IsMinimized = false,
                 IsAutoAdventure = false,
             });
-            Heroes.AddIfNotExists(new Hero { AccountId = accountId });
+            Heroes.Add(new Hero { AccountId = accountId });
 
             //Accesses
             //Adventures
@@ -237,10 +235,10 @@ namespace MainCore
 
         public void AddVillage(int villageId)
         {
-            VillagesResources.AddIfNotExists(new VillageResources { VillageId = villageId });
-            VillagesUpdateTime.AddIfNotExists(new VillageUpdateTime { VillageId = villageId });
-            VillagesSettings.AddIfNotExists(new VillageSetting { VillageId = villageId });
-            VillagesProduction.AddIfNotExists(new VillageProduction { VillageId = villageId });
+            VillagesResources.Add(new VillageResources { VillageId = villageId });
+            VillagesUpdateTime.Add(new VillageUpdateTime { VillageId = villageId });
+            VillagesSettings.Add(new VillageSetting { VillageId = villageId });
+            VillagesProduction.Add(new VillageProduction { VillageId = villageId });
 
             //VillagesQueueBuildings
             //VillagesCurrentlyBuildings
@@ -249,23 +247,94 @@ namespace MainCore
 
         public void AddFarm(int farmId)
         {
-            FarmsSettings.AddIfNotExists(new FarmSetting { Id = farmId });
+            FarmsSettings.Add(new FarmSetting { Id = farmId });
         }
 
         public void UpdateDatabase()
         {
-            foreach (var account in Accounts)
+            if (!AccountsInfo.Any())
             {
-                AddAccount(account.Id);
+                foreach (var account in Accounts)
+                {
+                    var accountId = account.Id;
+                    AccountsInfo.Add(new AccountInfo { AccountId = accountId });
+                }
+            }
+            if (!AccountsSettings.Any())
+            {
+                foreach (var account in Accounts)
+                {
+                    var accountId = account.Id;
+                    AccountsSettings.Add(new AccountSetting
+                    {
+                        AccountId = accountId,
+                        ClickDelayMin = 500,
+                        ClickDelayMax = 900,
+                        TaskDelayMin = 1000,
+                        TaskDelayMax = 1500,
+                        WorkTimeMin = 340,
+                        WorkTimeMax = 380,
+                        SleepTimeMin = 480,
+                        SleepTimeMax = 600,
+                        IsClosedIfNoTask = false,
+                        IsDontLoadImage = false,
+                        IsMinimized = false,
+                        IsAutoAdventure = false,
+                    });
+                }
             }
 
-            foreach (var village in Villages)
+            if (!Heroes.Any())
             {
-                AddVillage(village.Id);
+                foreach (var account in Accounts)
+                {
+                    var accountId = account.Id;
+                    Heroes.Add(new Hero { AccountId = accountId });
+                }
             }
-            foreach (var farm in Farms)
+
+            if (!VillagesResources.Any())
             {
-                AddFarm(farm.Id);
+                foreach (var village in Villages)
+                {
+                    var villageId = village.Id;
+                    VillagesResources.Add(new VillageResources { VillageId = villageId });
+                }
+            }
+
+            if (!VillagesUpdateTime.Any())
+            {
+                foreach (var village in Villages)
+                {
+                    var villageId = village.Id;
+                    VillagesUpdateTime.Add(new VillageUpdateTime { VillageId = villageId });
+                }
+            }
+
+            if (!VillagesSettings.Any())
+            {
+                foreach (var village in Villages)
+                {
+                    var villageId = village.Id;
+                    VillagesSettings.Add(new VillageSetting { VillageId = villageId });
+                }
+            }
+            if (!VillagesProduction.Any())
+            {
+                foreach (var village in Villages)
+                {
+                    var villageId = village.Id;
+                    VillagesProduction.Add(new VillageProduction { VillageId = villageId });
+                }
+            }
+
+            if (!FarmsSettings.Any())
+            {
+                foreach (var farm in Farms)
+                {
+                    var farmId = farm.Id;
+                    FarmsSettings.Add(new FarmSetting { Id = farmId });
+                }
             }
         }
 
@@ -340,7 +409,7 @@ namespace MainCore
         public DbSet<VillageUpdateTime> VillagesUpdateTime { get; set; }
         public DbSet<AccountSetting> AccountsSettings { get; set; }
         public DbSet<VillageSetting> VillagesSettings { get; set; }
-        public DbSet<VillageCurrentlyBuilding> VillagesCurrentlyBuildings { get; set; }
+        public DbSet<VillCurrentBuilding> VillagesCurrentlyBuildings { get; set; }
         public DbSet<VillageQueueBuilding> VillagesQueueBuildings { get; set; }
         public DbSet<Hero> Heroes { get; set; }
         public DbSet<Adventure> Adventures { get; set; }
@@ -348,14 +417,5 @@ namespace MainCore
         public DbSet<VillageProduction> VillagesProduction { get; set; }
         public DbSet<Farm> Farms { get; set; }
         public DbSet<FarmSetting> FarmsSettings { get; set; }
-    }
-
-    public static class DbSetExtensions
-    {
-        public static EntityEntry<T> AddIfNotExists<T>(this DbSet<T> dbSet, T entity, Expression<Func<T, bool>> predicate = null) where T : class, new()
-        {
-            var exists = predicate is not null ? dbSet.Any(predicate) : dbSet.Any();
-            return !exists ? dbSet.Add(entity) : null;
-        }
     }
 }

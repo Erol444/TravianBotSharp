@@ -35,6 +35,7 @@ namespace MainCore.Tasks.Update
             {
                 using var context = ContextFactory.CreateDbContext();
                 UpdateHelper.UpdateFarmList(context, ChromeBrowser, AccountId);
+                EventManager.OnFarmListUpdated(AccountId);
             }
         }
 
