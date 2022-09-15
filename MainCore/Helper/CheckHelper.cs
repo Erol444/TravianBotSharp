@@ -35,6 +35,19 @@ namespace MainCore.Helper
             return false;
         }
 
+        public static int GetCurrentVillageId(IChromeBrowser chromeBrowser)
+        {
+            var html = chromeBrowser.GetHtml();
+
+            var listNode = VillagesTable.GetVillageNodes(html);
+            foreach (var node in listNode)
+            {
+                if (!VillagesTable.IsActive(node)) continue;
+                return VillagesTable.GetId(node);
+            }
+            return -1;
+        }
+
         public static bool IsCorrectTab(IChromeBrowser chromeBrowser, int tab)
         {
             var tabs = BuildingTab.GetBuildingTabNodes(chromeBrowser.GetHtml());

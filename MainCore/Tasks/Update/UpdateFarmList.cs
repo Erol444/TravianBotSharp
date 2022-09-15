@@ -43,6 +43,15 @@ namespace MainCore.Tasks.Update
         {
             using var context = _contextFactory.CreateDbContext();
 
+            var currentVillage = CheckHelper.GetCurrentVillageId(_chromeBrowser);
+            if (currentVillage != -1)
+            {
+                var building = context.VillagesBuildings
+                   .Where(x => x.VillageId == currentVillage)
+                   .FirstOrDefault(x => x.Type == BuildingEnums.RallyPoint && x.Level > 0);
+                if (building is not null) return currentVillage;
+            }
+
             var villages = context.Villages.Where(x => x.AccountId == AccountId);
 
             foreach (var village in villages)
