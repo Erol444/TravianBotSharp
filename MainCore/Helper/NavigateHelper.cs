@@ -10,6 +10,7 @@ using TravianOfficialCore.FindElements;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
+using HtmlAgilityPack;
 using TravianOfficialNewHeroUICore.Parsers;
 using TravianOfficialNewHeroUICore.FindElements;
 
