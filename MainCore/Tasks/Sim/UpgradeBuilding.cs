@@ -2,15 +2,20 @@
 using MainCore.Helper;
 using MainCore.Models.Runtime;
 using MainCore.Services;
-using MainCore.Tasks.Misc;
 using MainCore.Tasks.Update;
 using MainCore.TravianData;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+using MainCore.Tasks.Misc;
+using System.Collections.Generic;
 using System.Threading;
+
+#endif
 
 namespace MainCore.Tasks.Sim
 {
@@ -497,7 +502,7 @@ namespace MainCore.Tasks.Sim
                 if (IsThereCompleteBuilding(buildingTask)) return false;
                 GotoBuilding(buildingTask);
 #else
-                LogManager.Information(AccountId, "Don't have enough resources.");
+                _logManager.Information(AccountId, "Don't have enough resources.");
                 var production = context.VillagesProduction.Find(VillageId);
                 var timeEnough = production.GetTimeWhenEnough(resMissing);
                 ExecuteAt = timeEnough;

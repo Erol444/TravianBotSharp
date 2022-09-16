@@ -15,8 +15,7 @@ namespace WPFUI.Views.Uc
             InitializeComponent();
             this.WhenActivated(d =>
             {
-                this.Bind(ViewModel, vm => vm.FarmName, v => v.NameFarmList.Content).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.FarmCount, v => v.NumOfFarms.Content).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.SaveCommand, v => v.SaveButton).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.FarmSetting.IsActive, v => v.ActiveCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.FarmSetting.IntervalTime, v => v.IntervalTimeText.Text).DisposeWith(d);

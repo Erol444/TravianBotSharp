@@ -237,8 +237,16 @@ namespace MainCore
         {
             VillagesResources.Add(new VillageResources { VillageId = villageId });
             VillagesUpdateTime.Add(new VillageUpdateTime { VillageId = villageId });
-            VillagesSettings.Add(new VillageSetting { VillageId = villageId });
             VillagesProduction.Add(new VillageProduction { VillageId = villageId });
+            VillagesSettings.Add(new VillageSetting
+            {
+                VillageId = villageId,
+                IsAdsUpgrade = false,
+                AdsUpgradeTime = 5,
+                IsUseHeroRes = false,
+                IsInstantComplete = false,
+                InstantCompleteTime = 30
+            });
 
             //VillagesQueueBuildings
             //VillagesCurrentlyBuildings
@@ -247,7 +255,13 @@ namespace MainCore
 
         public void AddFarm(int farmId)
         {
-            FarmsSettings.Add(new FarmSetting { Id = farmId });
+            FarmsSettings.Add(new FarmSetting
+            {
+                Id = farmId,
+                IsActive = false,
+                IntervalMin = 590,
+                IntervalMax = 610,
+            });
         }
 
         public void UpdateDatabase()
@@ -316,7 +330,15 @@ namespace MainCore
                 foreach (var village in Villages)
                 {
                     var villageId = village.Id;
-                    VillagesSettings.Add(new VillageSetting { VillageId = villageId });
+                    VillagesSettings.Add(new VillageSetting
+                    {
+                        VillageId = villageId,
+                        IsAdsUpgrade = false,
+                        AdsUpgradeTime = 5,
+                        IsUseHeroRes = false,
+                        IsInstantComplete = false,
+                        InstantCompleteTime = 30
+                    });
                 }
             }
             if (!VillagesProduction.Any())
@@ -333,7 +355,13 @@ namespace MainCore
                 foreach (var farm in Farms)
                 {
                     var farmId = farm.Id;
-                    FarmsSettings.Add(new FarmSetting { Id = farmId });
+                    FarmsSettings.Add(new FarmSetting
+                    {
+                        Id = farmId,
+                        IsActive = false,
+                        IntervalMin = 590,
+                        IntervalMax = 610,
+                    });
                 }
             }
         }

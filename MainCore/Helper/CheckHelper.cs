@@ -78,5 +78,14 @@ namespace MainCore.Helper
             }
             return resNeed;
         }
+
+        public static bool IsFarmListPage(IChromeBrowser chromeBrowser)
+        {
+            // check building
+            var url = chromeBrowser.GetCurrentUrl();
+            if (!url.Contains("id=39")) return false;
+            //check tab
+            return IsCorrectTab(chromeBrowser, 4);
+        }
     }
 }

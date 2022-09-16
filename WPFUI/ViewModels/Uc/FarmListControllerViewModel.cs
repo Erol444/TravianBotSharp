@@ -1,6 +1,8 @@
-﻿using DynamicData.Binding;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
+using System.Reactive;
+using System.Threading.Tasks;
+using System.Windows;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
@@ -11,12 +13,11 @@ namespace WPFUI.ViewModels.Uc
         public FarmListControllerViewModel() : base()
         {
             this.WhenAnyValue(x => x.CurrentFarm).Subscribe(LoadData);
-            FarmSetting.WhenAnyPropertyChanged().Subscribe(SaveData);
+            SaveCommand = ReactiveCommand.CreateFromTask(SaveData, this.WhenAnyValue(x => x.IsActive));
         }
 
         public void LoadData(FarmInfo farm)
         {
-            _isLoading = true;
             if (farm is null)
             {
                 FarmName = "Not selected";
@@ -35,20 +36,22 @@ namespace WPFUI.ViewModels.Uc
                 var setting = context.FarmsSettings.Find(farm.Id);
                 FarmSetting.CopyFrom(setting);
             }
-            _isLoading = false;
         }
 
-        public void SaveData(FarmSettingInfo settingInfo)
+        public async Task SaveData()
         {
             if (CurrentFarm is null) return;
-
-            if (_isLoading) return;
-
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.FarmsSettings.Find(CurrentFarm.Id);
-            settingInfo.CopyTo(setting);
-            context.Update(setting);
-            context.SaveChanges();
+            _waitingWindow.ViewModel.Show("Saving ...");
+            await Task.Run(() =>
+            {
+                using var context = _contextFactory.CreateDbContext();
+                var setting = context.FarmsSettings.Find(CurrentFarm.Id);
+                FarmSetting.CopyTo(setting);
+                context.Update(setting);
+                context.SaveChanges();
+            });
+            _waitingWindow.ViewModel.Close();
+            MessageBox.Show("Saved");
         }
 
         private FarmInfo _currentFarm;
@@ -85,6 +88,6 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _isActive, value);
         }
 
-        private bool _isLoading = false;
+        public ReactiveCommand<Unit, Unit> SaveCommand { get; }
     }
 }

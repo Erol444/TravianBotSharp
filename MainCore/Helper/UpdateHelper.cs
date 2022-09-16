@@ -361,11 +361,8 @@ namespace MainCore.Helper
         {
             var html = chromeBrowser.GetHtml();
 
-            var listFarm = context.Farms.Where(x => x.AccountId == accountId);
-            context.Farms.RemoveRange(listFarm);
-
             var farmNodes = FarmList.GetFarmNodes(html);
-
+            var farms = new List<Farm>();
             foreach (var farmNode in farmNodes)
             {
                 var name = FarmList.GetName(farmNode);
@@ -378,10 +375,32 @@ namespace MainCore.Helper
                     Name = name,
                     FarmCount = count,
                 };
-                context.Farms.Add(farm);
-                context.SaveChanges();
-                context.AddFarm(farm.Id);
+                farms.Add(farm);
             }
+
+            var farmsOld = context.Farms.Where(x => x.AccountId == accountId).ToList();
+            foreach (var farm in farms)
+            {
+                var existFarm = context.Farms.FirstOrDefault(x => x.Id == farm.Id);
+                if (existFarm is null)
+                {
+                    context.Farms.Add(farm);
+                    context.AddFarm(farm.Id);
+                }
+                else
+                {
+                    existFarm.Name = farm.Name;
+                    existFarm.FarmCount = farm.FarmCount;
+                    farmsOld.Remove(farmsOld.FirstOrDefault(x => x.Id == farm.Id));
+                }
+            }
+
+            foreach (var farm in farmsOld)
+            {
+                context.Remove(farm);
+                context.DeleteFarm(farm.Id);
+            }
+
             context.SaveChanges();
         }
     }

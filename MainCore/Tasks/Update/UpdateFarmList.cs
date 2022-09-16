@@ -68,29 +68,33 @@ namespace MainCore.Tasks.Update
 
         private bool GotoFarmListPage(int village)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var url = _chromeBrowser.GetCurrentUrl();
-            if (!url.Contains("dorf2"))
+            if (!CheckHelper.IsFarmListPage(_chromeBrowser))
             {
-                NavigateHelper.ToDorf2(_chromeBrowser, true);
-            }
-            else
-            {
-                var updateTime = context.VillagesUpdateTime.Find(village);
-                if (updateTime.Dorf2 - DateTime.Now > TimeSpan.FromMinutes(1))
+                using var context = _contextFactory.CreateDbContext();
+                var url = _chromeBrowser.GetCurrentUrl();
+                if (!url.Contains("dorf2"))
                 {
                     NavigateHelper.ToDorf2(_chromeBrowser, true);
+                    UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, village);
+                    UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, village);
                 }
+                else
+                {
+                    var updateTime = context.VillagesUpdateTime.Find(village);
+                    if (updateTime.Dorf2 - DateTime.Now > TimeSpan.FromMinutes(1))
+                    {
+                        NavigateHelper.ToDorf2(_chromeBrowser, true);
+                        UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, village);
+                        UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, village);
+                    }
+                }
+                if (Cts.IsCancellationRequested) return false;
+
+                NavigateHelper.GoToBuilding(_chromeBrowser, 39);
+                if (Cts.IsCancellationRequested) return false;
+                NavigateHelper.SwitchTab(_chromeBrowser, 4);
             }
-            if (Cts.IsCancellationRequested) return false;
 
-            UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, village);
-            UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, village);
-            var location = context.VillagesBuildings.Where(x => x.VillageId == village).FirstOrDefault(x => x.Type == BuildingEnums.RallyPoint).Id;
-            NavigateHelper.GoToBuilding(_chromeBrowser, location);
-            if (Cts.IsCancellationRequested) return false;
-
-            NavigateHelper.SwitchTab(_chromeBrowser, 4);
             return true;
         }
     }

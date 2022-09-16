@@ -1,4 +1,5 @@
-﻿using MainCore.Tasks.Update;
+﻿using MainCore.Tasks.Attack;
+using MainCore.Tasks.Update;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -6,6 +7,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
+using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
@@ -65,12 +67,44 @@ namespace WPFUI.ViewModels.Tabs
 
         private async Task StartTask()
         {
-            await Task.Run(() => { });
+#if TTWARS
+            MessageBox.Show("Bot is not supported this feature in TTWars server yet");
+            return;
+#else
+            await Task.Run(() =>
+            {
+                using var context = _contextFactory.CreateDbContext();
+                var farms = context.Farms.Where(x => x.AccountId == AccountId);
+                foreach (var farm in farms)
+                {
+                    var farmSetting = context.FarmsSettings.Find(farm.Id);
+                    if (farmSetting.IsActive)
+                    {
+                        var tasks = _taskManager.GetList(AccountId);
+                        if (!tasks.Any(x => x.GetType() == typeof(StartFarmList) && (x as StartFarmList).FarmId == farm.Id))
+                        {
+                            _taskManager.Add(AccountId, new StartFarmList(AccountId, farm.Id));
+                        }
+                    }
+                }
+            });
+            MessageBox.Show("Started all active farm");
+#endif
         }
 
         private async Task StopTask()
         {
-            await Task.Run(() => { });
+            await Task.Run(() =>
+            {
+                var tasks = _taskManager.GetList(AccountId);
+                var farmLists = tasks.Where(x => x.GetType() == typeof(StartFarmList));
+                foreach (var farm in farmLists)
+                {
+                    _taskManager.Remove(AccountId, farm);
+                }
+            });
+
+            MessageBox.Show("Removed all farm task from queue");
         }
 
         public ReactiveCommand<Unit, Unit> RefreshCommand { get; }
