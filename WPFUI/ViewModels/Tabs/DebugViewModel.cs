@@ -1,6 +1,7 @@
 ﻿using MainCore.Models.Runtime;
 using ReactiveUI;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using WPFUI.Interfaces;
@@ -11,6 +12,8 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class DebugViewModel : AccountTabBaseViewModel, IMainTabPage
     {
+        private readonly string discordUrl = "https://discord.gg/DVPV4gesCz";
+
         public DebugViewModel()
         {
             _eventManager.TaskUpdated += OnTasksUpdate;
@@ -32,6 +35,11 @@ namespace WPFUI.ViewModels.Tabs
 
         private void GetHelpTask()
         {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = discordUrl,
+                UseShellExecute = true
+            });
         }
 
         private void OnTasksUpdate(int accountId)

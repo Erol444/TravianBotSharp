@@ -20,7 +20,7 @@
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <Button x:Name="ReportButton" Content="Button" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <Button x:Name="ReportButton" Content="If there is something wrong, go to discord server by clicking this button" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
         <TextBlock x:Name="TaskTableLabel" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Task table" VerticalAlignment="Center" TextAlignment="Center" />
         <TextBlock x:Name="LogTableLabel" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Log table" VerticalAlignment="Center" TextAlignment="Center" />
         <ListView x:Name="TaskGird" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,1,0">
