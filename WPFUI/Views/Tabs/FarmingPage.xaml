@@ -3,6 +3,7 @@
         x:TypeArguments="vms:FarmingViewModel"
         xmlns:rxui="http://reactiveui.net"
         xmlns:vms="clr-namespace:WPFUI.ViewModels.Tabs"
+        xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
         xmlns:uc="clr-namespace:WPFUI.Views.Uc"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -34,7 +35,7 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" />
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}"   Behaviours:GridViewColumnResize.Width="*" />
                     </GridView>
                 </ListView.View>
             </ListView>

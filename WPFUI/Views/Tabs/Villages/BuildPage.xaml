@@ -2,6 +2,7 @@
       x:Class="WPFUI.Views.Tabs.Villages.BuildPage"
       x:TypeArguments="local:BuildViewModel"
       xmlns:local="clr-namespace:WPFUI.ViewModels.Tabs.Villages"
+      xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
       xmlns:reactiveui="http://reactiveui.net"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -30,9 +31,9 @@
             <ListView x:Name="CurrentGrid" Margin="0,2,0,0" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=3}">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Buildings" DisplayMemberBinding="{Binding Name}" />
-                        <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" />
-                        <GridViewColumn Header="Complete at" DisplayMemberBinding="{Binding CompleteTime}" />
+                        <GridViewColumn Header="Buildings" DisplayMemberBinding="{Binding Name}"   Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}"   Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Complete at" DisplayMemberBinding="{Binding CompleteTime}"   Behaviours:GridViewColumnResize.Width="*" />
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -46,9 +47,9 @@
                 </ListView.ItemContainerStyle>
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Location" DisplayMemberBinding="{Binding Location}" />
-                        <GridViewColumn Header="Buildings" DisplayMemberBinding="{Binding Name}" />
-                        <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" />
+                        <GridViewColumn Header="Location" DisplayMemberBinding="{Binding Location}"   Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Buildings" DisplayMemberBinding="{Binding Name}"   Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}"   Behaviours:GridViewColumnResize.Width="*" />
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -86,7 +87,7 @@
             <ListView x:Name="QueueGrid" Grid.ColumnSpan="4" Grid.Row="3" d:ItemsSource="{d:SampleData ItemCount=5}" SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Queue" DisplayMemberBinding="{Binding Content}" />
+                        <GridViewColumn Header="Queue" DisplayMemberBinding="{Binding Content}"   Behaviours:GridViewColumnResize.Width="*" />
                     </GridView>
                 </ListView.View>
             </ListView>

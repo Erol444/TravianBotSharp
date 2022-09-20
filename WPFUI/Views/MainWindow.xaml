@@ -8,6 +8,7 @@
         xmlns:uc="clr-namespace:WPFUI.Views.Uc"
         xmlns:vms="clr-namespace:WPFUI.ViewModels"
         xmlns:tabs="clr-namespace:WPFUI.Views.Tabs"
+        xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
         xmlns:reactiveui="http://reactiveui.net"
         mc:Ignorable="d"
         Title="TravianBotSharp" Height="510" Width="1024">
@@ -25,8 +26,8 @@
             <ListView x:Name="AccountGrid" Grid.Row="1" SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Account" DisplayMemberBinding="{Binding Username}" />
-                        <GridViewColumn Header="Server" DisplayMemberBinding="{Binding Server}" />
+                        <GridViewColumn Header="Account" DisplayMemberBinding="{Binding Username}"   Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Server" DisplayMemberBinding="{Binding Server}"   Behaviours:GridViewColumnResize.Width="*" />
                     </GridView>
                 </ListView.View>
             </ListView>

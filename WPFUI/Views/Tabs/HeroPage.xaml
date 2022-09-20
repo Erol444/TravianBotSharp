@@ -3,6 +3,7 @@
       x:TypeArguments="vms:HeroViewModel"
       xmlns:rxui="http://reactiveui.net"
       xmlns:vms="clr-namespace:WPFUI.ViewModels.Tabs"
+      xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -29,8 +30,8 @@
             <ListView x:Name="AdventuresGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="5,0,5,0">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Coordinates" DisplayMemberBinding="{Binding Coordinates}" />
-                        <GridViewColumn Header="Difficulty" DisplayMemberBinding="{Binding Difficulty}" />
+                        <GridViewColumn Header="Coordinates" DisplayMemberBinding="{Binding Coordinates}"  Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Difficulty" DisplayMemberBinding="{Binding Difficulty}"  Behaviours:GridViewColumnResize.Width="*" />
                     </GridView>
                 </ListView.View>
             </ListView>
@@ -65,18 +66,18 @@
             <ListView x:Name="ItemsGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}"  Margin="5,0,5,0">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}" />
-                        <GridViewColumn Header="Tier" DisplayMemberBinding="{Binding Tier}" />
-                        <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}" />
+                        <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}"   Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Tier" DisplayMemberBinding="{Binding Tier}"   Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}"   Behaviours:GridViewColumnResize.Width="*" />
                     </GridView>
                 </ListView.View>
             </ListView>
             <ListView x:Name="EquiptGrid" Grid.Row="4" d:ItemsSource="{d:SampleData ItemCount=5}"  Margin="5,0,5,0" IsEnabled="False">
                 <ListView.View>
                     <GridView>
-                        <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}" />
-                        <GridViewColumn Header="Tier" DisplayMemberBinding="{Binding Tier}" />
-                        <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}" />
+                        <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}"   Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Tier" DisplayMemberBinding="{Binding Tier}"   Behaviours:GridViewColumnResize.Width="*" />
+                        <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}"   Behaviours:GridViewColumnResize.Width="*" />
                     </GridView>
                 </ListView.View>
             </ListView>
