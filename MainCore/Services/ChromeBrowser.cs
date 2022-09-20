@@ -65,7 +65,7 @@ namespace MainCore.Services
             if (setting.IsMinimized) _driver.Manage().Window.Minimize();
 
             _driver.Manage().Timeouts().PageLoad = TimeSpan.FromMinutes(1);
-            _wait = new WebDriverWait(_driver, TimeSpan.FromMinutes(1));
+            _wait = new WebDriverWait(_driver, TimeSpan.FromMinutes(3));
         }
 
         public ChromeDriver GetChrome() => _driver;

@@ -49,9 +49,9 @@ namespace MainCore.Tasks.Sim
         public override void Execute()
         {
             using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId);
+            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
             if (Cts.IsCancellationRequested) return;
-            NavigateHelper.GoRandomDorf(_chromeBrowser);
+            NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
             if (Cts.IsCancellationRequested) return;
             ClickHelper.ClickCompleteNow(_chromeBrowser);
             if (Cts.IsCancellationRequested) return;

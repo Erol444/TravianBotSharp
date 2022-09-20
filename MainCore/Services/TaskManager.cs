@@ -1,5 +1,9 @@
 ﻿using MainCore.Enums;
+using MainCore.Exceptions;
+using MainCore.Helper;
+using MainCore.Models.Database;
 using MainCore.Tasks;
+using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -37,12 +41,10 @@ namespace MainCore.Services
                     {
                         task.ExecuteAt = DateTime.Now;
                     }
-                    ReOrder(index);
                 }
             }
             if (task.ExecuteAt == default) task.ExecuteAt = DateTime.Now;
             task.SetService(_contextFactory, _chromeManager.Get(index), this, _eventManager, _logManager, _planManager, _restClientManager);
-
             _tasksDict[index].Add(task);
             ReOrder(index);
         }
@@ -83,7 +85,6 @@ namespace MainCore.Services
         public List<BotTask> GetList(int index)
         {
             Check(index);
-
             return _tasksDict[index].ToList();
         }
 
@@ -108,13 +109,71 @@ namespace MainCore.Services
             _eventManager.OnTaskUpdated(index);
             _logManager.Information(index, $"{task.Name} is started");
             var cacheExecuteTime = task.ExecuteAt;
+
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.AccountsSettings.Find(index);
+
             try
             {
                 task.Execute();
             }
-            catch (Exception e)
+            catch (ChromeMissingException)
             {
-                _logManager.Error(index, e.Message, e);
+                _logManager.Warning(index, $"Chrome is missing when doing {task.Name}. Bot will open and re-execute {task.Name}");
+                var accesses = context.Accesses.Where(x => x.AccountId == index).OrderBy(x => x.LastUsed);
+                var currentAccess = accesses.Last();
+
+                Access selectedAccess = null;
+                foreach (var access in accesses)
+                {
+                    if (string.IsNullOrEmpty(access.ProxyHost))
+                    {
+                        selectedAccess = access;
+                        break;
+                    }
+
+                    var result = AccessHelper.CheckAccess(_restClientManager.Get(new(access)));
+                    if (result)
+                    {
+                        selectedAccess = access;
+                        access.LastUsed = DateTime.Now;
+                        context.SaveChanges();
+                        break;
+                    }
+                    else
+                    {
+                        _logManager.Information(index, $"Proxy {access.ProxyHost} is not working");
+                    }
+                }
+                if (selectedAccess is null)
+                {
+                    UpdateAccountStatus(index, AccountStatus.Offline);
+                    _logManager.Information(index, "All proxy of this account is not working");
+                    return;
+                }
+                var chromeBrowser = _chromeManager.Get(index);
+                var account = context.Accounts.Find(index);
+                chromeBrowser.Setup(selectedAccess, setting);
+
+                chromeBrowser.Navigate(account.Server);
+                Add(index, new LoginTask(index), true);
+                task.Cts.Cancel();
+            }
+            catch (LoginNeedException)
+            {
+                _logManager.Warning(index, "Login page is showing, stop current task and login");
+                Add(index, new LoginTask(index), true);
+                task.Cts.Cancel();
+            }
+            catch (StopNowException ex)
+            {
+                UpdateAccountStatus(index, AccountStatus.Paused);
+                _logManager.Error(index, "There is something wrong. Bot is paused", ex);
+                task.Cts.Cancel();
+            }
+            catch (Exception ex)
+            {
+                _logManager.Error(index, ex.Message, ex);
                 if (task.RetryCounter > 3)
                 {
                     _logManager.Information(index, $"{task.Name} was excuted 3 times. Bot is paused");
@@ -148,9 +207,6 @@ namespace MainCore.Services
 
             _eventManager.OnTaskUpdated(index);
             _taskExecuting[index] = false;
-
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.AccountsSettings.Find(index);
 
             Thread.Sleep(_rand.Next(setting.TaskDelayMin, setting.TaskDelayMax));
         }

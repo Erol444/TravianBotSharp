@@ -80,7 +80,7 @@ namespace MainCore.Tasks.Sim
 
                 {
                     using var context = _contextFactory.CreateDbContext();
-                    NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId);
+                    NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
                     if (Cts.IsCancellationRequested) return;
                     UpdateHelper.UpdateResource(context, _chromeBrowser, VillageId);
                     if (Cts.IsCancellationRequested) return;
@@ -308,8 +308,8 @@ namespace MainCore.Tasks.Sim
                     return null;
                 }
 
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId);
-                NavigateHelper.GoRandomDorf(_chromeBrowser);
+                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
+                NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
                 UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
 
                 var firstComplete = context.VillagesCurrentlyBuildings.Find(VillageId, 0);
@@ -376,14 +376,14 @@ namespace MainCore.Tasks.Sim
                 case 1:
                     if (!url.Contains("dorf1"))
                     {
-                        NavigateHelper.ToDorf1(_chromeBrowser, true);
+                        NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId, true);
                     }
                     else
                     {
                         var updateTime = context.VillagesUpdateTime.Find(VillageId);
                         if (updateTime.Dorf1 - DateTime.Now > TimeSpan.FromMinutes(5))
                         {
-                            NavigateHelper.ToDorf1(_chromeBrowser, true);
+                            NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId, true);
                         }
                     }
                     UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
@@ -393,14 +393,14 @@ namespace MainCore.Tasks.Sim
                 case 2:
                     if (!url.Contains("dorf2"))
                     {
-                        NavigateHelper.ToDorf2(_chromeBrowser, true);
+                        NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId, true);
                     }
                     else
                     {
                         var updateTime = context.VillagesUpdateTime.Find(VillageId);
                         if (updateTime.Dorf2 - DateTime.Now > TimeSpan.FromMinutes(1))
                         {
-                            NavigateHelper.ToDorf2(_chromeBrowser, true);
+                            NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId, true);
                         }
                     }
                     UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
@@ -425,9 +425,10 @@ namespace MainCore.Tasks.Sim
 
         private bool GotoBuilding(PlanTask buildingTask)
         {
-            NavigateHelper.GoToBuilding(_chromeBrowser, buildingTask.Location);
-
             using var context = _contextFactory.CreateDbContext();
+
+            NavigateHelper.GoToBuilding(_chromeBrowser, buildingTask.Location, context, AccountId);
+
             var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
 
             bool isNewBuilding = false;
@@ -435,13 +436,13 @@ namespace MainCore.Tasks.Sim
             {
                 isNewBuilding = true;
                 var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
-                NavigateHelper.SwitchTab(_chromeBrowser, tab);
+                NavigateHelper.SwitchTab(_chromeBrowser, tab, context, AccountId);
             }
             else
             {
                 if (BuildingsData.HasMultipleTabs(buildingTask.Building))
                 {
-                    NavigateHelper.SwitchTab(_chromeBrowser, 0);
+                    NavigateHelper.SwitchTab(_chromeBrowser, 0, context, AccountId);
                 }
             }
             return isNewBuilding;

@@ -45,7 +45,10 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            NavigateHelper.ToDorf2(_chromeBrowser);
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
+            }
             base.Execute();
         }
     }

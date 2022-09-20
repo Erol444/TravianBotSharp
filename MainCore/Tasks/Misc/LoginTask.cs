@@ -51,19 +51,24 @@ namespace MainCore.Tasks.Misc
             var html = _chromeBrowser.GetHtml();
 
             var usernameNode = LoginPage.GetUsernameNode(html);
+
+            var passwordNode = LoginPage.GetPasswordNode(html);
+
+            var buttonNode = LoginPage.GetLoginButton(html);
+            if (buttonNode is null)
+            {
+                _logManager.Information(AccountId, "Account is already logged in. Skip login task");
+                return;
+            }
+
             if (usernameNode is null)
             {
                 throw new Exception("Cannot find username box");
             }
-            var passwordNode = LoginPage.GetPasswordNode(html);
+
             if (passwordNode is null)
             {
                 throw new Exception("Cannot find password box");
-            }
-            var buttonNode = LoginPage.GetLoginButton(html);
-            if (buttonNode is null)
-            {
-                throw new Exception("Cannot find login button");
             }
 
             using var context = _contextFactory.CreateDbContext();

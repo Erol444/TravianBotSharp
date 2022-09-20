@@ -60,7 +60,7 @@ namespace MainCore.Tasks.Update
         private void Navigate()
         {
             using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId);
+            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
         }
 
         private void Update()

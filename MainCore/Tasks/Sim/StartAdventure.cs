@@ -24,11 +24,11 @@ namespace MainCore.Tasks.Sim
             ClickHelper.ClickStartAdventure(_chromeBrowser, x, y);
             if (DateTime.Now.Millisecond % 2 == 0)
             {
-                NavigateHelper.ToDorf1(_chromeBrowser);
+                NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
             }
             else
             {
-                NavigateHelper.ToDorf2(_chromeBrowser);
+                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
             }
         }
     }

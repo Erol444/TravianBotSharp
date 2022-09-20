@@ -40,10 +40,10 @@ namespace WPFUI.ViewModels.Uc
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
             EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
-            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
+            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm.IsAccountSelected, (a, b) => a && b));
 
-            LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAccountNotRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
-            LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAccountRunning, vm => vm.IsAccountSelected, (a, b) => a && b));
+            LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm.IsAccountSelected, (a, b) => a && b));
+            LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAllowLogout, vm => vm.IsAccountSelected, (a, b) => a && b));
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
             LogoutAllCommand = ReactiveCommand.CreateFromTask(LogoutAllTask);
 
@@ -60,33 +60,33 @@ namespace WPFUI.ViewModels.Uc
                     switch (status)
                     {
                         case AccountStatus.Offline:
-                            IsAccountNotRunning = true;
-                            IsAccountRunning = false;
+                            IsAllowLogin = true;
+                            IsAllowLogout = false;
                             break;
 
                         case AccountStatus.Starting:
-                            IsAccountNotRunning = false;
-                            IsAccountRunning = false;
+                            IsAllowLogin = false;
+                            IsAllowLogout = false;
                             break;
 
                         case AccountStatus.Online:
-                            IsAccountNotRunning = false;
-                            IsAccountRunning = true;
+                            IsAllowLogin = false;
+                            IsAllowLogout = true;
                             break;
 
                         case AccountStatus.Pausing:
-                            IsAccountNotRunning = false;
-                            IsAccountRunning = false;
+                            IsAllowLogin = false;
+                            IsAllowLogout = false;
                             break;
 
                         case AccountStatus.Paused:
-                            IsAccountNotRunning = false;
-                            IsAccountRunning = true;
+                            IsAllowLogin = false;
+                            IsAllowLogout = true;
                             break;
 
                         case AccountStatus.Stopping:
-                            IsAccountNotRunning = false;
-                            IsAccountRunning = false;
+                            IsAllowLogin = false;
+                            IsAllowLogout = false;
                             break;
                     }
                 }
@@ -255,20 +255,20 @@ namespace WPFUI.ViewModels.Uc
             get => _isAccountNotSelected.Value;
         }
 
-        private bool _isAccountRunning;
+        private bool _isAllowLogout;
 
-        public bool IsAccountRunning
+        public bool IsAllowLogout
         {
-            get => _isAccountRunning;
-            set => this.RaiseAndSetIfChanged(ref _isAccountRunning, value);
+            get => _isAllowLogout;
+            set => this.RaiseAndSetIfChanged(ref _isAllowLogout, value);
         }
 
-        private bool _isAccountNotRunning;
+        private bool _isAllowLogin;
 
-        public bool IsAccountNotRunning
+        public bool IsAllowLogin
         {
-            get => _isAccountNotRunning;
-            set => this.RaiseAndSetIfChanged(ref _isAccountNotRunning, value);
+            get => _isAllowLogin;
+            set => this.RaiseAndSetIfChanged(ref _isAllowLogin, value);
         }
 
         private int _accountId;

@@ -24,7 +24,7 @@ namespace MainCore.Tasks.Update
             }
             {
                 using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, village);
+                NavigateHelper.SwitchVillage(context, _chromeBrowser, village, AccountId);
                 if (Cts.IsCancellationRequested) return;
             }
             {
@@ -74,7 +74,7 @@ namespace MainCore.Tasks.Update
                 var url = _chromeBrowser.GetCurrentUrl();
                 if (!url.Contains("dorf2"))
                 {
-                    NavigateHelper.ToDorf2(_chromeBrowser, true);
+                    NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId, true);
                     UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, village);
                     UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, village);
                 }
@@ -83,16 +83,16 @@ namespace MainCore.Tasks.Update
                     var updateTime = context.VillagesUpdateTime.Find(village);
                     if (updateTime.Dorf2 - DateTime.Now > TimeSpan.FromMinutes(1))
                     {
-                        NavigateHelper.ToDorf2(_chromeBrowser, true);
+                        NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId, true);
                         UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, village);
                         UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, village);
                     }
                 }
                 if (Cts.IsCancellationRequested) return false;
 
-                NavigateHelper.GoToBuilding(_chromeBrowser, 39);
+                NavigateHelper.GoToBuilding(_chromeBrowser, 39, context, AccountId);
                 if (Cts.IsCancellationRequested) return false;
-                NavigateHelper.SwitchTab(_chromeBrowser, 4);
+                NavigateHelper.SwitchTab(_chromeBrowser, 4, context, AccountId);
             }
 
             return true;

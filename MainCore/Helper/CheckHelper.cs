@@ -6,14 +6,17 @@ using System.Linq;
 #if TRAVIAN_OFFICIAL
 
 using TravianOfficialCore.Parsers;
+using TravianOfficialCore.FindElements;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
 using TravianOfficialNewHeroUICore.Parsers;
+using TravianOfficialNewHeroUICore.FindElements;
 
 #elif TTWARS
 
 using TTWarsCore.Parsers;
+using TTWarsCore.FindElements;
 
 #endif
 
@@ -87,5 +90,34 @@ namespace MainCore.Helper
             //check tab
             return IsCorrectTab(chromeBrowser, 4);
         }
+
+        public static bool IsWWMsg(HtmlDocument doc) => doc.DocumentNode.Descendants("img").FirstOrDefault(x => x.GetAttributeValue("src", "") == "/img/ww100.png") is not null;
+
+        /// <summary>
+        /// TTWars and other old server has ww img in natar profile so we need this one
+        /// </summary>
+        /// <param name="chromeBrowser"></param>
+        /// <returns></returns>
+        public static bool IsWWPage(IChromeBrowser chromeBrowser) => chromeBrowser.GetCurrentUrl().EndsWith("/spieler.php?uid=1");
+
+        public static bool CheckSkipTutorial(HtmlDocument doc) => doc.DocumentNode.Descendants().Any(x => x.HasClass("questButtonSkipTutorial"));
+
+        public static bool CheckContextualHelp(HtmlDocument doc) => doc.GetElementbyId("contextualHelp") is not null;
+
+        public static bool IsBanMsg(HtmlDocument doc) => doc.GetElementbyId("punishmentMsgButtons") is not null;
+
+        public static bool IsMaintanance(HtmlDocument doc) => doc.DocumentNode.Descendants("img").Any(x => x.HasClass("fatalErrorImage"));
+
+        public static bool IsCaptcha(HtmlDocument doc) => doc.GetElementbyId("recaptchaImage") is not null;
+
+        public static bool IsLoginScreen(HtmlDocument doc)
+        {
+            var username = LoginPage.GetUsernameNode(doc);
+            var password = LoginPage.GetPasswordNode(doc);
+            var button = LoginPage.GetLoginButton(doc);
+            return username is not null && password is not null && button is not null;
+        }
+
+        public static bool IsSysMsg(HtmlDocument doc) => doc.GetElementbyId("sysmsg") is not null;
     }
 }
