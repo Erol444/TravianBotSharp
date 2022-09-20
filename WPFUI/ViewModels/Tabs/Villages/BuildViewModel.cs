@@ -31,7 +31,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             UpCommand = ReactiveCommand.Create(UpTask, this.WhenAnyValue(x => x.IsControlActive));
             DownCommand = ReactiveCommand.Create(DownTask, this.WhenAnyValue(x => x.IsControlActive));
             DeleteCommand = ReactiveCommand.Create(DeleteTask, this.WhenAnyValue(x => x.IsControlActive));
-            DeleteAllCommand = ReactiveCommand.Create(DeleteAllTask, this.WhenAnyValue(x => x.IsControlActive));
+            DeleteAllCommand = ReactiveCommand.Create(DeleteAllTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
 

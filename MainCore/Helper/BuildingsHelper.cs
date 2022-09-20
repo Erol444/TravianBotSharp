@@ -69,8 +69,70 @@ namespace MainCore.Helper
         {
             return building switch
             {
-                BuildingEnums.CommandCenter or BuildingEnums.Palace or BuildingEnums.Residence => true,
+                BuildingEnums.CommandCenter => true,
+                BuildingEnums.Palace => true,
+                BuildingEnums.Residence => true,
                 _ => false,
+            };
+        }
+
+        public static bool IsWall(this BuildingEnums building)
+        {
+            return building switch
+            {
+                BuildingEnums.EarthWall => true,
+                BuildingEnums.CityWall => true,
+                BuildingEnums.Palisade => true,
+                BuildingEnums.StoneWall => true,
+                BuildingEnums.MakeshiftWall => true,
+                _ => false,
+            };
+        }
+
+        public static BuildingEnums GetWall(this TribeEnums tribe)
+        {
+            return tribe switch
+            {
+                TribeEnums.Teutons => BuildingEnums.EarthWall,
+                TribeEnums.Romans => BuildingEnums.CityWall,
+                TribeEnums.Gauls => BuildingEnums.Palisade,
+                TribeEnums.Egyptians => BuildingEnums.StoneWall,
+                TribeEnums.Huns => BuildingEnums.MakeshiftWall,
+                _ => BuildingEnums.Site,
+            };
+        }
+
+        public static bool IsMultipleAllow(this BuildingEnums building)
+        {
+            return building switch
+            {
+                BuildingEnums.Warehouse => true,
+                BuildingEnums.Granary => true,
+                BuildingEnums.GreatWarehouse => true,
+                BuildingEnums.GreatGranary => true,
+                BuildingEnums.Trapper => true,
+                BuildingEnums.Cranny => true,
+                _ => false,
+            };
+        }
+
+        public static int GetMaxLevel(this BuildingEnums building)
+        {
+            return building switch
+            {
+#if TTWARS
+                BuildingEnums.Brewery => 10,
+#else
+                BuildingEnums.Brewery => 20,
+#endif
+                BuildingEnums.Bakery => 5,
+                BuildingEnums.Brickyard => 5,
+                BuildingEnums.IronFoundry => 5,
+                BuildingEnums.GrainMill => 5,
+                BuildingEnums.Sawmill => 5,
+
+                BuildingEnums.Cranny => 10,
+                _ => 20,
             };
         }
 
