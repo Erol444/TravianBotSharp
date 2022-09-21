@@ -66,7 +66,14 @@ namespace MainCore.Services
             }
             else
             {
-                if (!task.Building.IsResourceField())
+                if (task.Building.IsResourceField())
+                {
+                    var villageBuilding = context.VillagesBuildings.Where(x => x.VillageId == index).FirstOrDefault(x => x.Id == task.Location);
+                    // different type village ( 4446 import to 3337 for example )
+                    // now i just ignore the different resource field
+                    if (villageBuilding is null || villageBuilding.Type != task.Building) return;
+                }
+                else
                 {
                     var villageBuildings = context.VillagesBuildings.Where(x => x.VillageId == index).ToList();
                     var building = villageBuildings.FirstOrDefault(x => x.Type == task.Building);
