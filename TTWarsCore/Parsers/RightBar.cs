@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using System;
 using System.Linq;
 
 namespace TTWarsCore.Parsers
@@ -25,9 +26,22 @@ namespace TTWarsCore.Parsers
             if (nodeImage is null) return 0;
 
             var tribeStr = nodeImage.GetAttributeValue("alt", "");
-            var valueStr = new string(tribeStr.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(valueStr)) return 0;
-            return int.Parse(valueStr);
+            var result = Enum.TryParse(tribeStr, out TribeEnums tribe);
+            if (!result) return 0;
+
+            return (int)tribe;
+        }
+
+        public enum TribeEnums
+        {
+            Any = 0,
+            Romans,
+            Teutons,
+            Gauls,
+            Nature,
+            Natars,
+            Egyptians,
+            Huns,
         }
     }
 }
