@@ -77,7 +77,6 @@ namespace MainCore.Tasks.Update
                 if (Cts.IsCancellationRequested) return false;
                 NavigateHelper.SwitchTab(_chromeBrowser, 4, context, AccountId);
             }
-
             return true;
         }
     }

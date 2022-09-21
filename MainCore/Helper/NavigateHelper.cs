@@ -1,6 +1,5 @@
 ﻿using MainCore.Services;
 using System;
-using System.Linq;
 using OpenQA.Selenium;
 using MainCore.Exceptions;
 using System.Threading;

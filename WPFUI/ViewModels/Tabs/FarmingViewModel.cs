@@ -67,10 +67,6 @@ namespace WPFUI.ViewModels.Tabs
 
         private async Task StartTask()
         {
-#if TTWARS
-            MessageBox.Show("Bot is not supported this feature in TTWars server yet");
-            return;
-#else
             await Task.Run(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -89,7 +85,6 @@ namespace WPFUI.ViewModels.Tabs
                 }
             });
             MessageBox.Show("Started all active farm");
-#endif
         }
 
         private async Task StopTask()

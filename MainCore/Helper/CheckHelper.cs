@@ -86,7 +86,11 @@ namespace MainCore.Helper
         {
             // check building
             var url = chromeBrowser.GetCurrentUrl();
+#if TTWARS
+            if (!url.Contains("tt=99")) return false;
+#else
             if (!url.Contains("id=39")) return false;
+#endif
             //check tab
             return IsCorrectTab(chromeBrowser, 4);
         }
