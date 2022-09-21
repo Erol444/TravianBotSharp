@@ -131,8 +131,8 @@ namespace MainCore.Tasks.Misc
                 Thread.Sleep(delay);
                 NavigateHelper.WaitPageLoaded(_chromeBrowser);
                 NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-#endif
             }
+#endif
         }
 
         private void AddTask()
