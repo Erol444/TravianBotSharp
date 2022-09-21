@@ -6,6 +6,7 @@ using System.Threading;
 
 #if TRAVIAN_OFFICIAL
 
+using System.Linq;
 using TravianOfficialCore.Parsers;
 using TravianOfficialCore.FindElements;
 
