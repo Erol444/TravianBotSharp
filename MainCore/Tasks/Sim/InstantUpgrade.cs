@@ -1,6 +1,9 @@
 ﻿using MainCore.Helper;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Sim
 {
@@ -15,6 +18,7 @@ namespace MainCore.Tasks.Sim
         public int VillageId => _villageId;
         private string _name;
         public override string Name => _name;
+        private readonly Random rand = new();
 
         public override void CopyFrom(BotTask source)
         {
@@ -49,13 +53,38 @@ namespace MainCore.Tasks.Sim
         public override void Execute()
         {
             using var context = _contextFactory.CreateDbContext();
+            var setting = context.AccountsSettings.Find(AccountId);
             NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
+            var delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
+            Thread.Sleep(delay);
             if (Cts.IsCancellationRequested) return;
-            NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
+            var currentUrl = _chromeBrowser.GetCurrentUrl();
+            if (!currentUrl.Contains("dorf"))
+            {
+                NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
+            }
             if (Cts.IsCancellationRequested) return;
             ClickHelper.ClickCompleteNow(_chromeBrowser);
+            delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
+            Thread.Sleep(delay);
             if (Cts.IsCancellationRequested) return;
             ClickHelper.WaitDialogFinishNow(_chromeBrowser);
+            delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
+            Thread.Sleep(delay);
+            ClickHelper.ClickConfirmFinishNow(_chromeBrowser);
+            delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
+            Thread.Sleep(delay);
+
+            NavigateHelper.WaitPageLoaded(_chromeBrowser);
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+
+            var tasks = _taskManager.GetList(AccountId);
+            var upgradeTask = tasks.Where(x => x.GetType() == typeof(UpgradeBuilding)).OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == VillageId);
+            if (upgradeTask is not null)
+            {
+                upgradeTask.ExecuteAt = DateTime.Now;
+                _taskManager.Update(AccountId);
+            }
         }
     }
 }

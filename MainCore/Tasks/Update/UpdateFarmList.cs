@@ -1,6 +1,5 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper;
-using System;
 using System.Linq;
 
 namespace MainCore.Tasks.Update
@@ -21,11 +20,6 @@ namespace MainCore.Tasks.Update
             {
                 _logManager.Warning(AccountId, "There is no rallypoint in your villages");
                 return;
-            }
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, village, AccountId);
-                if (Cts.IsCancellationRequested) return;
             }
             {
                 var result = GotoFarmListPage(village);
@@ -72,22 +66,11 @@ namespace MainCore.Tasks.Update
             {
                 using var context = _contextFactory.CreateDbContext();
                 var url = _chromeBrowser.GetCurrentUrl();
-                if (!url.Contains("dorf2"))
-                {
-                    NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId, true);
-                    UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, village);
-                    UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, village);
-                }
-                else
-                {
-                    var updateTime = context.VillagesUpdateTime.Find(village);
-                    if (updateTime.Dorf2 - DateTime.Now > TimeSpan.FromMinutes(1))
-                    {
-                        NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId, true);
-                        UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, village);
-                        UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, village);
-                    }
-                }
+
+                var taskUpdate = new UpdateDorf2(village, AccountId);
+                taskUpdate.CopyFrom(this);
+                taskUpdate.Execute();
+
                 if (Cts.IsCancellationRequested) return false;
 
                 NavigateHelper.GoToBuilding(_chromeBrowser, 39, context, AccountId);

@@ -307,13 +307,14 @@ namespace MainCore.Tasks.Sim
                     StopFlag = true;
                     return null;
                 }
-
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
                 NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
-                UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
+
+                var updateTask = new UpdateVillage(VillageId, AccountId);
+                updateTask.CopyFrom(this);
+                updateTask.Execute();
 
                 var firstComplete = context.VillagesCurrentlyBuildings.Find(VillageId, 0);
-                if (firstComplete.CompleteTime == DateTime.MaxValue)
+                if (firstComplete.Level == -1)
                 {
                     return null;
                 }
@@ -374,37 +375,19 @@ namespace MainCore.Tasks.Sim
             switch (dorf)
             {
                 case 1:
-                    if (!url.Contains("dorf1"))
                     {
-                        NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId, true);
+                        var taskUpdate = new UpdateDorf1(VillageId, AccountId);
+                        taskUpdate.CopyFrom(this);
+                        taskUpdate.Execute();
                     }
-                    else
-                    {
-                        var updateTime = context.VillagesUpdateTime.Find(VillageId);
-                        if (updateTime.Dorf1 - DateTime.Now > TimeSpan.FromMinutes(5))
-                        {
-                            NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId, true);
-                        }
-                    }
-                    UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
-                    UpdateHelper.UpdateDorf1(context, _chromeBrowser, VillageId);
                     break;
 
                 case 2:
-                    if (!url.Contains("dorf2"))
                     {
-                        NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId, true);
+                        var taskUpdate = new UpdateDorf2(VillageId, AccountId);
+                        taskUpdate.CopyFrom(this);
+                        taskUpdate.Execute();
                     }
-                    else
-                    {
-                        var updateTime = context.VillagesUpdateTime.Find(VillageId);
-                        if (updateTime.Dorf2 - DateTime.Now > TimeSpan.FromMinutes(1))
-                        {
-                            NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId, true);
-                        }
-                    }
-                    UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
-                    UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, VillageId);
                     break;
             }
 

@@ -1,4 +1,5 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Enums;
+using MainCore.Helper;
 using MainCore.Services;
 using MainCore.Tasks.Sim;
 using Microsoft.EntityFrameworkCore;
@@ -94,8 +95,21 @@ namespace MainCore.Tasks.Update
             var info = context.AccountsInfo.Find(AccountId);
             if (info.Gold < 2) return;
             var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1);
-            if (currentlyBuilding.Count() < (info.HasPlusAccount ? 2 : 1)) return;
-            if (currentlyBuilding.Last().CompleteTime < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
+#if TTWARS
+            if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
+#else
+            var tribe = context.AccountsInfo.Find(AccountId).Tribe;
+            if (tribe == TribeEnums.Romans)
+            {
+                if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 3 : 2)) return;
+            }
+            else
+            {
+                if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
+            }
+
+#endif
+            if (currentlyBuilding.Max(x => x.CompleteTime) < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.Where(x => x.GetType() == typeof(InstantUpgrade)).OfType<InstantUpgrade>().Where(x => x.VillageId == VillageId);
             if (tasks.Any()) return;

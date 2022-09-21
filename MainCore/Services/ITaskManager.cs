@@ -8,6 +8,8 @@ namespace MainCore.Services
     {
         public void Add(int index, BotTask task, bool first = false);
 
+        public void Update(int index);
+
         public void Remove(int index, BotTask task);
 
         public void Clear(int index);

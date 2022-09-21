@@ -49,6 +49,12 @@ namespace MainCore.Services
             ReOrder(index);
         }
 
+        public void Update(int index)
+        {
+            Check(index);
+            ReOrder(index);
+        }
+
         public void Remove(int index, BotTask task)
         {
             Check(index);

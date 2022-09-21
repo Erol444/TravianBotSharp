@@ -141,7 +141,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 if (!tasks.Any())
                 {
-                    _taskManager.Add(accountId, new InstantUpgrade(villageId, accountId));
+                    using var context = _contextFactory.CreateDbContext();
+                    var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
+                    var count = currentBuildings.Count(x => x.Level != -1);
+                    if (count > 0)
+                    {
+                        _taskManager.Add(accountId, new InstantUpgrade(villageId, accountId));
+                    }
                 }
             }
             else
