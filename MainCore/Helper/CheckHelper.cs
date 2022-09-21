@@ -100,9 +100,9 @@ namespace MainCore.Helper
         /// <returns></returns>
         public static bool IsWWPage(IChromeBrowser chromeBrowser) => chromeBrowser.GetCurrentUrl().EndsWith("/spieler.php?uid=1");
 
-        public static bool CheckSkipTutorial(HtmlDocument doc) => doc.DocumentNode.Descendants().Any(x => x.HasClass("questButtonSkipTutorial"));
+        public static bool IsSkipTutorial(HtmlDocument doc) => doc.DocumentNode.Descendants().Any(x => x.HasClass("questButtonSkipTutorial"));
 
-        public static bool CheckContextualHelp(HtmlDocument doc) => doc.GetElementbyId("contextualHelp") is not null;
+        public static bool IsContextualHelp(HtmlDocument doc) => doc.GetElementbyId("contextualHelp") is not null;
 
         public static bool IsBanMsg(HtmlDocument doc) => doc.GetElementbyId("punishmentMsgButtons") is not null;
 

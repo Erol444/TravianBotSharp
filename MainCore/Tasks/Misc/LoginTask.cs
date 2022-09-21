@@ -1,8 +1,10 @@
-﻿using MainCore.Tasks.Sim;
+﻿using MainCore.Helper;
+using MainCore.Tasks.Sim;
 using MainCore.Tasks.Update;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
+using System.Threading;
 
 #if TRAVIAN_OFFICIAL
 
@@ -25,6 +27,8 @@ namespace MainCore.Tasks.Misc
         public LoginTask(int accountId) : base(accountId)
         {
         }
+
+        private readonly Random rand = new();
 
         public override void Execute()
         {
@@ -102,9 +106,33 @@ namespace MainCore.Tasks.Misc
 
             buttonElements[0].Click();
 
-            var wait = _chromeBrowser.GetWait();
-            wait.Until(driver => driver.Url.Contains("dorf"));
-            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            var setting = context.AccountsSettings.Find(AccountId);
+            var delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
+            Thread.Sleep(delay);
+            NavigateHelper.WaitPageLoaded(_chromeBrowser);
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+
+#if TTWARS
+            html = _chromeBrowser.GetHtml();
+            if (CheckHelper.IsSkipTutorial(html))
+            {
+                var skipButton = html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("questButtonSkipTutorial"));
+                if (skipButton is null)
+                {
+                    throw new Exception("Cannot find skip quest button");
+                }
+                var skipButtons = chrome.FindElements(By.XPath(skipButton.XPath));
+                if (skipButtons.Count == 0)
+                {
+                    throw new Exception("Cannot find skip quest button");
+                }
+                skipButtons[0].Click();
+                delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
+                Thread.Sleep(delay);
+                NavigateHelper.WaitPageLoaded(_chromeBrowser);
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+#endif
+            }
         }
 
         private void AddTask()
