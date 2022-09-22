@@ -46,7 +46,7 @@
                     </Frame.Content>
                 </Frame>
             </TabItem>
-            <TabItem x:Name="InfoTab" Header="Info">
+            <TabItem x:Name="InfoTab" Header="Info" Visibility="Collapsed">
                 <Frame>
                     <Frame.Content>
                         <tabs:InfoPage x:Name="InfoPage" />
