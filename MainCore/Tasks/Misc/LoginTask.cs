@@ -109,6 +109,7 @@ namespace MainCore.Tasks.Misc
             var setting = context.AccountsSettings.Find(AccountId);
             var delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
             Thread.Sleep(delay);
+            NavigateHelper.WaitPageChanged(_chromeBrowser, "dorf");
             NavigateHelper.WaitPageLoaded(_chromeBrowser);
             NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
 
