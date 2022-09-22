@@ -106,21 +106,21 @@ namespace MainCore.Tasks.Sim
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
                     using var context = _contextFactory.CreateDbContext();
                     var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
-
-                    if (buildingTask.Building.IsResourceField() && building.Level == 0) Upgrade(buildingTask);
-                    else if (buildingTask.Building.IsNotAdsUpgrade()) Upgrade(buildingTask);
-                    else
+                    var setting = context.VillagesSettings.Find(VillageId);
+                    if (setting.IsAdsUpgrade)
                     {
-                        var setting = context.VillagesSettings.Find(VillageId);
-                        if (setting.IsAdsUpgrade)
+                        if (buildingTask.Building.IsResourceField() && building.Level == 0) Upgrade(buildingTask);
+                        else if (buildingTask.Building.IsNotAdsUpgrade()) Upgrade(buildingTask);
+                        else
                         {
                             UpgradeAds(buildingTask);
                         }
-                        else
-                        {
-                            Upgrade(buildingTask);
-                        }
                     }
+                    else
+                    {
+                        Upgrade(buildingTask);
+                    }
+
 #else
                     Upgrade(buildingTask);
 #endif
@@ -283,11 +283,11 @@ namespace MainCore.Tasks.Sim
 
         private void Update()
         {
-            var wait = _chromeBrowser.GetWait();
-
-            wait.Until(driver => driver.Url.Contains("dorf"));
-            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
-
+            {
+                NavigateHelper.WaitPageLoaded(_chromeBrowser);
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
             var taskUpdateVillage = new UpdateVillage(VillageId, AccountId);
             taskUpdateVillage.CopyFrom(this);
             taskUpdateVillage.Execute();

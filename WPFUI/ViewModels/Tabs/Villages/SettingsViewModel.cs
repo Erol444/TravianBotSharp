@@ -142,6 +142,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 if (!tasks.Any())
                 {
                     using var context = _contextFactory.CreateDbContext();
+                    UpgradeBuildingHelper.RemoveFinishedCB(context, VillageId);
                     var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
                     var count = currentBuildings.Count(x => x.Level != -1);
                     if (count > 0)

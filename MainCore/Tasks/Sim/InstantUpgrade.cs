@@ -1,5 +1,6 @@
 ﻿using MainCore.Helper;
 using MainCore.Services;
+using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
@@ -85,6 +86,11 @@ namespace MainCore.Tasks.Sim
                 upgradeTask.ExecuteAt = DateTime.Now;
                 _taskManager.Update(AccountId);
             }
+
+            var updateTask = new UpdateVillage(VillageId, AccountId);
+            updateTask.CopyFrom(this);
+            updateTask.Execute();
+
         }
     }
 }
