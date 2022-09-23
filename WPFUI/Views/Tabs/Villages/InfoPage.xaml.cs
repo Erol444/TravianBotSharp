@@ -15,27 +15,10 @@ namespace WPFUI.Views.Tabs.Villages
             InitializeComponent();
             this.WhenActivated(d =>
             {
-                this.BindCommand(ViewModel,
-                    vm => vm.BothDorfCommand,
-                    v => v.UpdateDorfButton)
-                .DisposeWith(d);
-                this.BindCommand(ViewModel,
-                    vm => vm.Dorf1Command,
-                    v => v.UpdateDorf1Button)
-                .DisposeWith(d);
-                this.BindCommand(ViewModel,
-                    vm => vm.Dorf2Command,
-                    v => v.UpdateDorf2Button)
-                .DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.BothDorfCommand, v => v.UpdateDorfButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.Dorf1Command, v => v.UpdateDorf1Button).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.Dorf2Command, v => v.UpdateDorf2Button).DisposeWith(d);
 
-                this.OneWayBind(ViewModel,
-                    vm => vm.AccountId,
-                    v => v.AccountIdText.Text)
-                .DisposeWith(d);
-                this.OneWayBind(ViewModel,
-                    vm => vm.VillageId,
-                    v => v.VillageIdText.Text)
-                .DisposeWith(d);
                 ViewModel.OnActived();
             });
         }

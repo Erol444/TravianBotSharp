@@ -1,6 +1,7 @@
-﻿using MainCore.Tasks.Sim;
-using MainCore.Tasks.Update;
+﻿using MainCore.Tasks.Update;
 using ReactiveUI;
+using System;
+using System.Linq;
 using System.Reactive;
 using WPFUI.Interfaces;
 using WPFUI.ViewModels.Abstract;
@@ -22,17 +23,47 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void BothDorf()
         {
-            _taskManager.Add(AccountId, new UpgradeBuilding(VillageId, AccountId));
+            var tasks = _taskManager.GetList(AccountId);
+            var updateTask = tasks.Where(x => x.GetType() == typeof(UpdateBothDorf)).OfType<UpdateBothDorf>().FirstOrDefault(x => x.VillageId == VillageId);
+            if (updateTask is null)
+            {
+                _taskManager.Add(AccountId, new UpdateBothDorf(VillageId, AccountId));
+            }
+            else
+            {
+                updateTask.ExecuteAt = DateTime.Now;
+                _taskManager.Update(AccountId);
+            }
         }
 
         private void Dorf1()
         {
-            _taskManager.Add(AccountId, new UpdateDorf1(VillageId, AccountId));
+            var tasks = _taskManager.GetList(AccountId);
+            var updateTask = tasks.Where(x => x.GetType() == typeof(UpdateDorf1)).OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == VillageId);
+            if (updateTask is null)
+            {
+                _taskManager.Add(AccountId, new UpdateDorf1(VillageId, AccountId));
+            }
+            else
+            {
+                updateTask.ExecuteAt = DateTime.Now;
+                _taskManager.Update(AccountId);
+            }
         }
 
         private void Dorf2()
         {
-            _taskManager.Add(AccountId, new UpdateDorf2(VillageId, AccountId));
+            var tasks = _taskManager.GetList(AccountId);
+            var updateTask = tasks.Where(x => x.GetType() == typeof(UpdateDorf2)).OfType<UpdateDorf2>().FirstOrDefault(x => x.VillageId == VillageId);
+            if (updateTask is null)
+            {
+                _taskManager.Add(AccountId, new UpdateDorf2(VillageId, AccountId));
+            }
+            else
+            {
+                updateTask.ExecuteAt = DateTime.Now;
+                _taskManager.Update(AccountId);
+            }
         }
 
         protected override void LoadData(int index)
