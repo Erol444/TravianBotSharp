@@ -126,6 +126,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 QueueBuildings.Add(building);
             }
+            _planManager.Save();
         }
 
         private void LoadBuildingCombo(int villageId)
@@ -141,7 +142,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             if (CurrentBuilding.Type != BuildingEnums.Site)
             {
                 ComboBuildings.Add(new() { Building = CurrentBuilding.Type });
-                NormalLevel = CurrentBuilding.Level.ToString();
+                NormalLevel = CurrentBuilding.Type.GetMaxLevel().ToString();
                 SelectedBuildingIndex = 0;
                 IsComboActive = false;
                 IsLevelActive = true;
@@ -154,7 +155,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             if (plannedBuilding is not null)
             {
                 ComboBuildings.Add(new() { Building = plannedBuilding.Building });
-                NormalLevel = plannedBuilding.Level.ToString();
+                NormalLevel = plannedBuilding.Building.GetMaxLevel().ToString();
                 SelectedBuildingIndex = 0;
 
                 IsComboActive = false;
