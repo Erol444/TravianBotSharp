@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WPFUI.Views.Uc"
              mc:Ignorable="d"
              d:DesignHeight="75" d:DesignWidth="250">
-    <Grid Background="#FFE3E3E3">
+    <Grid Background="#FFABABAB">
         <Grid.RowDefinitions>
             <RowDefinition Height="4*" />
             <RowDefinition Height="4*" />

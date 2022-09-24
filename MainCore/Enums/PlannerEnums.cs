@@ -15,7 +15,7 @@
 
     public enum BuildingStrategyEnums
     {
-        BasedOnStorage,
         BasedOnLevel,
+        BasedOnStorage,
     }
 }

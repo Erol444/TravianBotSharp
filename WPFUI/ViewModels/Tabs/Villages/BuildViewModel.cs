@@ -141,8 +141,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
             if (CurrentBuilding.Type != BuildingEnums.Site)
             {
                 ComboBuildings.Add(new() { Building = CurrentBuilding.Type });
+                NormalLevel = CurrentBuilding.Level.ToString();
                 SelectedBuildingIndex = 0;
-
                 IsComboActive = false;
                 IsLevelActive = true;
                 return;
@@ -154,6 +154,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             if (plannedBuilding is not null)
             {
                 ComboBuildings.Add(new() { Building = plannedBuilding.Building });
+                NormalLevel = plannedBuilding.Level.ToString();
                 SelectedBuildingIndex = 0;
 
                 IsComboActive = false;
@@ -168,6 +169,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     ComboBuildings.Add(new() { Building = building });
                 }
+                NormalLevel = "1";
                 SelectedBuildingIndex = 0;
             }
             IsComboActive = true;

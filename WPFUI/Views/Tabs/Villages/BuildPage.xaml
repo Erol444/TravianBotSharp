@@ -60,8 +60,8 @@
                 <RowDefinition Height="54*" />
                 <RowDefinition Height="131*" />
             </Grid.RowDefinitions>
-            <controls:NormalBuildUc x:Name="NormalBuild" />
-            <controls:ResBuildUc Grid.Row="1" x:Name="ResBuild" />
+            <controls:NormalBuildUc x:Name="NormalBuild" Margin="2,5,2,5" />
+            <controls:ResBuildUc Grid.Row="1" x:Name="ResBuild" Margin="2,5,2,5" />
         </Grid>
 
         <Grid x:Name="RightGrid" Grid.Column="2" Margin="2,2,2,2">
