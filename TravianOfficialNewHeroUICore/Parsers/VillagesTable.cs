@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -24,20 +23,10 @@ namespace TravianOfficialNewHeroUICore.Parsers
             return node.HasClass("active");
         }
 
-        private static string Href(HtmlNode node)
-        {
-            var hrefNode = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
-            if (hrefNode is null) return "";
-            return System.Net.WebUtility.HtmlDecode(hrefNode.GetAttributeValue("href", ""));
-        }
-
         public static int GetId(HtmlNode node)
         {
-            var hrefNode = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
-            if (hrefNode is null) return -1;
-            var href = System.Net.WebUtility.HtmlDecode(hrefNode.GetAttributeValue("href", ""));
-            if (string.IsNullOrEmpty(href)) return -1;
-            return Convert.ToInt32(href.Split('=')[1].Split('&')[0]);
+            var dataDid = node.GetAttributeValue("data-did", 0);
+            return dataDid;
         }
 
         public static string GetName(HtmlNode node)
