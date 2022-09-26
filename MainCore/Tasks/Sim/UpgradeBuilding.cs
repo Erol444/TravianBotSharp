@@ -72,7 +72,7 @@ namespace MainCore.Tasks.Sim
 
                 var buildingTask = SelectBuilding();
                 if (Cts.IsCancellationRequested) return;
-                if (StopFlag) return;
+                if (StopFlag) return; k
                 if (buildingTask is null) continue;
 
                 if (IsAutoBuilding(buildingTask)) continue;
@@ -327,6 +327,15 @@ namespace MainCore.Tasks.Sim
                 _logManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
                 StopFlag = true;
                 return null;
+            }
+
+            if (buildingTask.Type == PlanTypeEnums.General)
+            {
+                _logManager.Information(AccountId, $"Next building will be contructed: {buildingTask.Building} - level {buildingTask.Level}.");
+            }
+            else if (buildingTask.Type == PlanTypeEnums.ResFields)
+            {
+                _logManager.Information(AccountId, $"Next building will be contructed: {buildingTask.ResourceType} - {buildingTask.BuildingStrategy} - level {buildingTask.Level}.");
             }
             return buildingTask;
         }
