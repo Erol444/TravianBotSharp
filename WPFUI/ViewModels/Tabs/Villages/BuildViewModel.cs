@@ -79,6 +79,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 var plannedBuild = queueBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
                 if (plannedBuild is not null)
                 {
+                    if (plannedBuild.Type == PlanTypeEnums.ResFields) continue;
                     Buildings.Add(new()
                     {
                         Location = building.Id,
