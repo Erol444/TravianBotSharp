@@ -6,6 +6,7 @@ using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -91,6 +92,9 @@ namespace WPFUI.ViewModels
             await Task.Run(() =>
             {
                 _planManager.Save();
+
+                var path = Path.Combine(AppContext.BaseDirectory, "Plugins");
+                if (Directory.Exists(path)) Directory.Delete(path, true);
             });
 
             var mainWindow = App.GetService<MainWindow>();
