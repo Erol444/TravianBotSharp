@@ -296,6 +296,7 @@ namespace MainCore.Tasks.Sim
         private PlanTask SelectBuilding()
         {
             using var context = _contextFactory.CreateDbContext();
+            UpgradeBuildingHelper.RemoveFinishedCB(context, VillageId);
 
             var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, _planManager, _logManager, AccountId, VillageId);
             if (buildingTask is null)
@@ -307,7 +308,10 @@ namespace MainCore.Tasks.Sim
                     StopFlag = true;
                     return null;
                 }
-                NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
+                if (!_chromeBrowser.GetCurrentUrl().Contains("dorf"))
+                {
+                    NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
+                }
 
                 var updateTask = new UpdateVillage(VillageId, AccountId);
                 updateTask.CopyFrom(this);

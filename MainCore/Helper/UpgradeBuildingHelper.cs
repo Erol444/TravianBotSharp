@@ -19,8 +19,6 @@ namespace MainCore.Helper
                 return null;
             }
 
-            RemoveFinishedCB(context, villageId);
-
             var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
             var totalBuild = currentList.Count(x => x.Level != -1);
 
