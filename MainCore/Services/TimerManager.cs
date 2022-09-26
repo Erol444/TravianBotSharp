@@ -25,8 +25,15 @@ namespace MainCore.Services
                 var timer = new Timer(100) { AutoReset = false };
                 timer.Elapsed += (object sender, ElapsedEventArgs e) =>
                 {
-                    _databaseEvent.OnTaskExecuted(index);
-                    timer.Start();
+                    try
+                    {
+                        _databaseEvent.OnTaskExecuted(index);
+                        timer.Start();
+                    }
+                    catch
+                    {
+                        return;
+                    }
                 };
                 _dictTimer.Add(index, timer);
                 _dictTimer[index].Start();

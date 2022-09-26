@@ -83,16 +83,15 @@ namespace MainCore.Helper
                     break;
             }
 
-            buildings = buildings.Where(b =>
+            buildings.ForEach(b =>
             {
-                var level = b.Level;
                 if (b.IsUnderConstruction)
                 {
                     var levelUpgrading = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).Count(x => x.Location == b.Id);
-                    level += (byte)levelUpgrading;
+                    b.Level += (byte)levelUpgrading;
                 }
-                return buildingTask.Level > level;
-            }).ToList();
+            });
+            buildings = buildings.Where(b => b.Level < buildingTask.Level).ToList();
 
             if (buildings.Count == 0) return null;
 
