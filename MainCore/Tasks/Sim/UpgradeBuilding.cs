@@ -72,7 +72,7 @@ namespace MainCore.Tasks.Sim
 
                 var buildingTask = SelectBuilding();
                 if (Cts.IsCancellationRequested) return;
-                if (StopFlag) return; k
+                if (StopFlag) return;
                 if (buildingTask is null) continue;
 
                 if (IsAutoBuilding(buildingTask)) continue;
