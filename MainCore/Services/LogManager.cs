@@ -93,7 +93,7 @@ namespace MainCore.Services
                 Level = LevelEnum.Error,
                 Message = $"{message}\n{error}",
             });
-            _loggers[accountId].Error(message);
+            _loggers[accountId].Error(message, error);
         }
 
         private readonly object objLock = new();
