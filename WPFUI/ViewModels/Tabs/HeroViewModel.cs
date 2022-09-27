@@ -1,6 +1,7 @@
 ﻿using MainCore.Helper;
 using MainCore.Tasks.Update;
 using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -25,16 +26,19 @@ namespace WPFUI.ViewModels.Tabs
 
         private void OnheroInventoryUpdate(int accountId)
         {
+            if (accountId != AccountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadInventory(accountId));
         }
 
         private void OnHeroAdventuresUpdate(int accountId)
         {
+            if (accountId != AccountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadAdventures(accountId));
         }
 
         private void OnHeroInfoUpdate(int accountId)
         {
+            if (accountId != AccountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadInfo(accountId));
         }
 
@@ -49,12 +53,9 @@ namespace WPFUI.ViewModels.Tabs
                 using var context = _contextFactory.CreateDbContext();
                 if (context.Accounts.Find(accountId) is null) return;
             }
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                LoadAdventures(accountId);
-                LoadInventory(accountId);
-                LoadInfo(accountId);
-            });
+            LoadAdventures(accountId);
+            LoadInventory(accountId);
+            LoadInfo(accountId);
         }
 
         private void LoadAdventures(int accountId)
@@ -105,12 +106,32 @@ namespace WPFUI.ViewModels.Tabs
 
         private void AdventuresTask()
         {
-            _taskManager.Add(AccountId, new UpdateAdventures(AccountId));
+            var tasks = _taskManager.GetList(AccountId);
+            var task = tasks.FirstOrDefault(x => x is UpdateAdventures);
+            if (task is null)
+            {
+                _taskManager.Add(AccountId, new UpdateAdventures(AccountId));
+            }
+            else
+            {
+                task.ExecuteAt = DateTime.Now;
+                _taskManager.Update(AccountId);
+            }
         }
 
         private void InventoryTask()
         {
-            _taskManager.Add(AccountId, new UpdateHeroItems(AccountId));
+            var tasks = _taskManager.GetList(AccountId);
+            var task = tasks.FirstOrDefault(x => x is UpdateHeroItems);
+            if (task is null)
+            {
+                _taskManager.Add(AccountId, new UpdateHeroItems(AccountId));
+            }
+            else
+            {
+                task.ExecuteAt = DateTime.Now;
+                _taskManager.Update(AccountId);
+            }
         }
 
         public ObservableCollection<AdventureInfo> Adventures { get; } = new();
