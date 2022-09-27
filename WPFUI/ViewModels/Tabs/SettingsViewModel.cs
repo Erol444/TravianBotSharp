@@ -167,21 +167,23 @@ namespace WPFUI.ViewModels.Tabs
 
         private void TaskBasedSetting(int index)
         {
-            var list = _taskManager.GetList(index);
-            var tasks = list.Where(x => x.GetType() == typeof(UpdateAdventures));
+            var tasks = _taskManager.GetList(index);
+            var task = tasks.FirstOrDefault(x => x is UpdateAdventures);
             if (Settings.IsAutoStartAdventure)
             {
-                if (!tasks.Any())
+                if (task is null)
                 {
                     _taskManager.Add(index, new UpdateAdventures(index));
+                }
+                else
+                {
+                    task.ExecuteAt = DateTime.Now;
+                    _taskManager.Update(AccountId);
                 }
             }
             else
             {
-                foreach (var item in tasks)
-                {
-                    _taskManager.Remove(index, item);
-                }
+                if (task is not null) _taskManager.Remove(index, task);
             }
         }
 
