@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace MainCore.Helper
 {
@@ -29,6 +30,24 @@ namespace MainCore.Helper
                 }
             }
             return value;
+        }
+
+        public static TimeSpan ToDuration(this string value)
+        {
+            //00:00:02 (+332 ms), TTWars, milliseconds matter
+            int ms = 0;
+            if (value.Contains("(+"))
+            {
+                var parts = value.Split('(');
+                ms = parts[1].ToNumeric();
+                value = parts[0];
+            }
+            // h:m:s
+            var arr = value.Split(':');
+            var h = arr[0].ToNumeric();
+            var m = arr[1].ToNumeric();
+            var s = arr[2].ToNumeric();
+            return new TimeSpan(0, h, m, s, ms);
         }
     }
 }

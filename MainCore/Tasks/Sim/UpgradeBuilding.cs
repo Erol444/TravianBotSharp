@@ -105,16 +105,9 @@ namespace MainCore.Tasks.Sim
                 {
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
                     using var context = _contextFactory.CreateDbContext();
-                    var building = context.VillagesBuildings.Find(VillageId, buildingTask.Location);
-                    var setting = context.VillagesSettings.Find(VillageId);
-                    if (setting.IsAdsUpgrade)
+                    if (CheckHelper.IsNeedAdsUpgrade(_chromeBrowser, context, VillageId, buildingTask))
                     {
-                        if (buildingTask.Building.IsResourceField() && building.Level == 0) Upgrade(buildingTask);
-                        else if (buildingTask.Building.IsNotAdsUpgrade()) Upgrade(buildingTask);
-                        else
-                        {
-                            UpgradeAds(buildingTask);
-                        }
+                        UpgradeAds(buildingTask);
                     }
                     else
                     {

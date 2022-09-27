@@ -2,6 +2,8 @@
 using MainCore.Enums;
 using MainCore.Services;
 using System.Linq;
+using System;
+using MainCore.Models.Runtime;
 
 #if TRAVIAN_OFFICIAL
 
@@ -86,6 +88,38 @@ namespace MainCore.Helper
             }
             return resNeed;
         }
+
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+        public static bool IsNeedAdsUpgrade(IChromeBrowser chromeBrowser, AppDbContext context, int villageId, PlanTask buildingTask)
+        {
+            var setting = context.VillagesSettings.Find(villageId);
+            if (!setting.IsAdsUpgrade) return false;
+
+            var building = context.VillagesBuildings.Find(villageId, buildingTask.Location);
+
+            if (buildingTask.Building.IsResourceField() && building.Level == 0) return false;
+            if (buildingTask.Building.IsNotAdsUpgrade()) return false;
+
+            var html = chromeBrowser.GetHtml();
+            var container = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
+
+            var durationNode = container.Descendants("div").FirstOrDefault(x => x.HasClass("duration"));
+            if (durationNode is null)
+            {
+                throw new Exception("Cannot found duration in build page. (div)");
+            }
+            var dur = durationNode.Descendants("span").FirstOrDefault(x => x.HasClass("value"));
+            if (dur is null)
+            {
+                throw new Exception("Cannot found duration in build page. (span)");
+            }
+            var duration = dur.InnerText.ToDuration();
+            if (setting.AdsUpgradeTime > duration.TotalMinutes) return false;
+            return true;
+        }
+
+#endif
 
         public static bool IsFarmListPage(IChromeBrowser chromeBrowser)
         {
