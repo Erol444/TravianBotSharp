@@ -28,14 +28,17 @@ namespace MainCore.Services
         {
             if (_logs.TryGetValue(accountId, out var logs))
             {
-                return new LinkedList<LogMessage>(logs);
+                lock (_objLocks[accountId])
+                {
+                    return new LinkedList<LogMessage>(logs);
+                }
             }
             return new LinkedList<LogMessage>();
         }
 
         private void Add(int accountId, LogMessage log)
         {
-            lock (objLock)
+            lock (_objLocks[accountId])
             {
                 _logs[accountId].AddFirst(log);
                 // keeps 200 message
@@ -44,7 +47,7 @@ namespace MainCore.Services
                     _logs[accountId].RemoveLast();
                 }
 
-                _databaseEvent.OnLogUpdated(accountId);
+                _databaseEvent.OnLogUpdated(accountId, log);
             }
         }
 
@@ -55,6 +58,7 @@ namespace MainCore.Services
                 using var context = _contextFactory.CreateDbContext();
                 var account = context.Accounts.Find(accountId);
                 _loggers.Add(accountId, Log.ForContext("Account", account.Username));
+                _objLocks.Add(accountId, new());
             }
         }
 
@@ -96,8 +100,8 @@ namespace MainCore.Services
             _loggers[accountId].Error(message, error);
         }
 
-        private readonly object objLock = new();
         private readonly Dictionary<int, LinkedList<LogMessage>> _logs = new();
+        private readonly Dictionary<int, object> _objLocks = new();
         private readonly Dictionary<int, ILogger> _loggers = new();
 
         private readonly IEventManager _databaseEvent;

@@ -33,7 +33,13 @@ namespace WPFUI.ViewModels.Tabs
         protected override void LoadData(int accountId)
         {
             OnTasksUpdate(accountId);
-            OnLogsUpdate(accountId);
+
+            Logs.Clear();
+            var logs = _logManager.GetLog(accountId);
+            foreach (var log in logs)
+            {
+                Logs.Add(log);
+            }
         }
 
         private void GetHelpTask()
@@ -76,16 +82,12 @@ namespace WPFUI.ViewModels.Tabs
             });
         }
 
-        private void OnLogsUpdate(int accountId)
+        private void OnLogsUpdate(int accountId, LogMessage logMessage)
         {
             if (accountId != AccountId) return;
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                Logs.Clear();
-                foreach (var item in _logManager.GetLog(accountId))
-                {
-                    Logs.Add(item);
-                }
+                Logs.Insert(0, logMessage);
             });
         }
 

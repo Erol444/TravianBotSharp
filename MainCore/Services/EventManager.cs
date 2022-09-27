@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MainCore.Models.Runtime;
+using System;
 
 namespace MainCore.Services
 {
@@ -12,9 +13,9 @@ namespace MainCore.Services
 
         public void OnAccountStatusUpdate() => AccountStatusUpdate?.Invoke();
 
-        public event Action<int> LogUpdated;
+        public event Action<int, LogMessage> LogUpdated;
 
-        public void OnLogUpdated(int accountId) => LogUpdated?.Invoke(accountId);
+        public void OnLogUpdated(int accountId, LogMessage logMessage) => LogUpdated?.Invoke(accountId, logMessage);
 
         public event Action<int> TaskUpdated;
 
