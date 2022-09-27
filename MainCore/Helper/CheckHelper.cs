@@ -60,6 +60,7 @@ namespace MainCore.Helper
         public static int[] GetResourceNeed(IChromeBrowser chromeBrowser, BuildingEnums building, bool multiple = false)
         {
             var html = chromeBrowser.GetHtml();
+
             HtmlNode contractNode;
             if (multiple && !building.IsResourceField())
             {
@@ -67,9 +68,13 @@ namespace MainCore.Helper
             }
             else
             {
+#if TTWARS
+                contractNode = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.Id.Equals("contract"));
+#else
                 contractNode = html.GetElementbyId("contract");
+#endif
             }
-            var resWrapper = contractNode.Descendants().FirstOrDefault(x => x.HasClass("resourceWrapper"));
+            var resWrapper = contractNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
             var resNodes = resWrapper.ChildNodes.Where(x => x.HasClass("resource") || x.HasClass("resources")).ToList();
             var resNeed = new int[4];
             for (var i = 0; i < 4; i++)
