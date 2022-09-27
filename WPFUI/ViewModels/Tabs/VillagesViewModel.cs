@@ -13,7 +13,7 @@ namespace WPFUI.ViewModels.Tabs
     {
         public VillagesViewModel() : base()
         {
-            _eventManager.VillagesUpdated += LoadData;
+            _eventManager.VillagesUpdated += OnVillagesUpdate;
 
             _isVillageSelected = this.WhenAnyValue(x => x.CurrentVillage).Select(x => x is not null).ToProperty(this, x => x.IsVillageSelected);
             _isVillageNotSelected = this.WhenAnyValue(x => x.CurrentVillage).Select(x => x is null).ToProperty(this, x => x.IsVillageNotSelected);
@@ -24,15 +24,15 @@ namespace WPFUI.ViewModels.Tabs
             LoadData(AccountId);
         }
 
-        public void OnVillagesUpdate()
+        public void OnVillagesUpdate(int accountId)
         {
+            if (accountId != AccountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadData(AccountId));
         }
 
         protected override void LoadData(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            if (context.Accounts.Find(accountId) is null) return;
             var villages = context.Villages.Where(x => x.AccountId == accountId);
             Villages.Clear();
             foreach (var village in villages)
