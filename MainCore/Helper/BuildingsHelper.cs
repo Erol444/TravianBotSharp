@@ -148,5 +148,46 @@ namespace MainCore.Helper
                 _ => "LawnGreen",
             };
         }
+
+        public static BuildingEnums GetTribesWall(this TribeEnums tribe) => tribe switch
+        {
+            TribeEnums.Teutons => BuildingEnums.EarthWall,
+            TribeEnums.Romans => BuildingEnums.CityWall,
+            TribeEnums.Gauls => BuildingEnums.Palisade,
+            TribeEnums.Egyptians => BuildingEnums.StoneWall,
+            TribeEnums.Huns => BuildingEnums.MakeshiftWall,
+            _ => BuildingEnums.Site,
+        };
+
+        public static bool HasMultipleTabs(this BuildingEnums building) => building switch
+        {
+            BuildingEnums.RallyPoint => true,
+            BuildingEnums.CommandCenter => true,
+            BuildingEnums.Residence => true,
+            BuildingEnums.Palace => true,
+            BuildingEnums.Marketplace => true,
+            BuildingEnums.Treasury => true,
+            _ => false,
+        };
+
+        public static int GetBuildingsCategory(this BuildingEnums building) => building switch
+        {
+            BuildingEnums.GrainMill => 2,
+            BuildingEnums.Sawmill => 2,
+            BuildingEnums.Brickyard => 2,
+            BuildingEnums.IronFoundry => 2,
+            BuildingEnums.Bakery => 2,
+            BuildingEnums.Barracks => 1,
+            BuildingEnums.HerosMansion => 1,
+            BuildingEnums.Academy => 1,
+            BuildingEnums.Smithy => 1,
+            BuildingEnums.Stable => 1,
+            BuildingEnums.GreatBarracks => 1,
+            BuildingEnums.GreatStable => 1,
+            BuildingEnums.Workshop => 1,
+            BuildingEnums.TournamentSquare => 1,
+            BuildingEnums.Trapper => 1,
+            _ => 0,
+        };
     }
 }

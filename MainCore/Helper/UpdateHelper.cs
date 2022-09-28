@@ -1,7 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Models.Database;
 using MainCore.Services;
-using MainCore.TravianData;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -154,9 +153,12 @@ namespace MainCore.Helper
                 var type = VillageInfrastructure.GetType(buildingNode);
                 switch (id)
                 {
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
                     case 26:
                         type = (int)BuildingEnums.MainBuilding;
                         break;
+#endif
 
                     case 39:
                         type = (int)BuildingEnums.RallyPoint;
@@ -166,7 +168,7 @@ namespace MainCore.Helper
                         {
                             var tribe = context.AccountsInfo.Find(accountId).Tribe;
 
-                            var wall = BuildingsData.GetTribesWall(tribe);
+                            var wall = tribe.GetTribesWall();
                             type = (int)wall;
                         }
                         break;

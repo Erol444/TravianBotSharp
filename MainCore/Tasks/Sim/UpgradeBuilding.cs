@@ -3,7 +3,6 @@ using MainCore.Helper;
 using MainCore.Models.Runtime;
 using MainCore.Services;
 using MainCore.Tasks.Update;
-using MainCore.TravianData;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
@@ -424,14 +423,21 @@ namespace MainCore.Tasks.Sim
             if (building.Type == BuildingEnums.Site)
             {
                 isNewBuilding = true;
-                var tab = BuildingsData.GetBuildingsCategory(buildingTask.Building);
+                var tab = buildingTask.Building.GetBuildingsCategory();
                 NavigateHelper.SwitchTab(_chromeBrowser, tab, context, AccountId);
             }
             else
             {
-                if (BuildingsData.HasMultipleTabs(buildingTask.Building))
+                if (building.Level == -1)
                 {
-                    NavigateHelper.SwitchTab(_chromeBrowser, 0, context, AccountId);
+                    isNewBuilding = true;
+                }
+                else
+                {
+                    if (buildingTask.Building.HasMultipleTabs())
+                    {
+                        NavigateHelper.SwitchTab(_chromeBrowser, 0, context, AccountId);
+                    }
                 }
             }
             return isNewBuilding;

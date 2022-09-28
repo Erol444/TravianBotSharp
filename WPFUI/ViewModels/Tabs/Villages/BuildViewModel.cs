@@ -2,7 +2,6 @@
 using MainCore.Helper;
 using MainCore.Models.Runtime;
 using MainCore.Tasks.Sim;
-using MainCore.TravianData;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;
@@ -208,7 +207,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 MessageBox.Show("Level must be positive");
                 return;
             }
-            var maxLevel = BuildingsData.MaxBuildingLevel(SelectedBuilding.Building);
+            var maxLevel = SelectedBuilding.Building.GetMaxLevel();
             if (level > maxLevel)
             {
                 level = maxLevel;

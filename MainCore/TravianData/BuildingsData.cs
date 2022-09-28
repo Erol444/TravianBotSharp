@@ -203,37 +203,5 @@ namespace MainCore.TravianData
             }
             return (tribe, ret);
         }
-
-        public static int MaxBuildingLevel(BuildingEnums building) => building switch
-        {
-            BuildingEnums.Brewery => 20,
-            BuildingEnums.Bakery or BuildingEnums.Brickyard or BuildingEnums.IronFoundry or BuildingEnums.GrainMill or BuildingEnums.Sawmill => 5,
-            BuildingEnums.Cranny => 10,
-            _ => 20,
-        };
-
-        public static BuildingEnums GetTribesWall(TribeEnums tribe) => tribe switch
-        {
-            TribeEnums.Teutons => BuildingEnums.EarthWall,
-            TribeEnums.Romans => BuildingEnums.CityWall,
-            TribeEnums.Gauls => BuildingEnums.Palisade,
-            TribeEnums.Egyptians => BuildingEnums.StoneWall,
-            TribeEnums.Huns => BuildingEnums.MakeshiftWall,
-            _ => BuildingEnums.Site,
-        };
-
-        public static bool HasMultipleTabs(BuildingEnums building) => building switch
-        {
-            BuildingEnums.RallyPoint or BuildingEnums.CommandCenter or BuildingEnums.Residence or BuildingEnums.Palace or BuildingEnums.Marketplace or BuildingEnums.Treasury => true,
-            _ => false,
-        };
-
-        public static int GetBuildingsCategory(BuildingEnums building) => building switch
-        {
-            BuildingEnums.GrainMill or BuildingEnums.Sawmill or BuildingEnums.Brickyard or BuildingEnums.IronFoundry or BuildingEnums.Bakery => 2,
-            BuildingEnums.RallyPoint or BuildingEnums.EarthWall or BuildingEnums.CityWall or BuildingEnums.MakeshiftWall or BuildingEnums.StoneWall or BuildingEnums.Palisade or BuildingEnums.Barracks or BuildingEnums.HerosMansion or BuildingEnums.Academy or BuildingEnums.Smithy or BuildingEnums.Stable or BuildingEnums.GreatBarracks or BuildingEnums.GreatStable or BuildingEnums.Workshop or BuildingEnums.TournamentSquare or BuildingEnums.Trapper => 1,
-            _ => 0,
-        };
-
     }
 }
