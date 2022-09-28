@@ -55,7 +55,8 @@ namespace MainCore.Helper
 
         public static bool IsCorrectTab(IChromeBrowser chromeBrowser, int tab)
         {
-            var tabs = BuildingTab.GetBuildingTabNodes(chromeBrowser.GetHtml());
+            var html = chromeBrowser.GetHtml();
+            var tabs = BuildingTab.GetBuildingTabNodes(html);
             return BuildingTab.IsCurrentTab(tabs[tab]);
         }
 
