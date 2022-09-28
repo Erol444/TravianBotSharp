@@ -34,6 +34,7 @@ namespace WPFUI.Views.Tabs
 
                 this.Bind(ViewModel, vm => vm.Settings.IsAutoStartAdventure, v => v.AutoStartAdventureCheckBox.IsChecked).DisposeWith(d);
 
+                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
             });
         }

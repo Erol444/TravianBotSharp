@@ -13,7 +13,7 @@ using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class GeneralViewModel : AccountTabBaseViewModel, IMainTabPage
+    public class GeneralViewModel : AccountTabBaseViewModel, ITabPage
     {
         public GeneralViewModel() : base()
         {
@@ -23,25 +23,33 @@ namespace WPFUI.ViewModels.Tabs
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
         }
 
-        private void OnAccountStatusUpdate()
+        private void OnAccountStatusUpdate(int accountId)
         {
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(AccountId));
+            if (!IsActive) return;
+            if (CurrentAccount is null) return;
+            if (CurrentAccount.Id != accountId) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
+
+        public bool IsActive { get; set; }
 
         public void OnActived()
         {
-            LoadData(AccountId);
+            IsActive = true;
+            if (CurrentAccount is not null)
+            {
+                LoadData(CurrentAccount.Id);
+            }
         }
 
-        public async Task PauseTask()
+        public void OnDeactived()
         {
-            await Pause(AccountId);
+            IsActive = false;
         }
 
-        public void RestartTask()
-        {
-            Restart(AccountId);
-        }
+        public Task PauseTask() => Pause(CurrentAccount.Id);
+
+        public void RestartTask() => Restart(CurrentAccount.Id);
 
         protected override void LoadData(int index)
         {
@@ -92,10 +100,10 @@ namespace WPFUI.ViewModels.Tabs
                 {
                     current.Cts.Cancel();
                     _waitingWindow.ViewModel.Show("waiting current task stops");
-                    await Observable.Start(() =>
+                    await Task.Run(() =>
                     {
                         while (current.Stage != TaskStage.Waiting) { }
-                    }, RxApp.TaskpoolScheduler);
+                    });
                     _waitingWindow.ViewModel.Close();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
@@ -105,9 +113,9 @@ namespace WPFUI.ViewModels.Tabs
 
         private void Restart(int index)
         {
+            _taskManager.Clear(index);
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == index);
-            _taskManager.Clear(index);
 
             foreach (var village in villages)
             {

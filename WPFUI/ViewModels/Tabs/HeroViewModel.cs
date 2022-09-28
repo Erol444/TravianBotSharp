@@ -12,7 +12,7 @@ using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class HeroViewModel : AccountTabBaseViewModel, IMainTabPage
+    public class HeroViewModel : AccountTabBaseViewModel, ITabPage
     {
         public HeroViewModel() : base()
         {
@@ -26,25 +26,42 @@ namespace WPFUI.ViewModels.Tabs
 
         private void OnheroInventoryUpdate(int accountId)
         {
-            if (accountId != AccountId) return;
+            if (!IsActive) return;
+            if (CurrentAccount is null) return;
+            if (CurrentAccount.Id != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadInventory(accountId));
         }
 
         private void OnHeroAdventuresUpdate(int accountId)
         {
-            if (accountId != AccountId) return;
+            if (!IsActive) return;
+            if (CurrentAccount is null) return;
+            if (CurrentAccount.Id != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadAdventures(accountId));
         }
 
         private void OnHeroInfoUpdate(int accountId)
         {
-            if (accountId != AccountId) return;
+            if (!IsActive) return;
+            if (CurrentAccount is null) return;
+            if (CurrentAccount.Id != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadInfo(accountId));
         }
 
+        public bool IsActive { get; set; }
+
         public void OnActived()
         {
-            LoadData(AccountId);
+            IsActive = true;
+            if (CurrentAccount is not null)
+            {
+                LoadData(CurrentAccount.Id);
+            }
+        }
+
+        public void OnDeactived()
+        {
+            IsActive = false;
         }
 
         protected override void LoadData(int accountId)
@@ -99,38 +116,39 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var info = context.Heroes.Find(accountId);
-            if (info is null) return;
             Health = info.Health.ToString();
             Status = info.Status.ToString().EnumStrToString();
         }
 
         private void AdventuresTask()
         {
-            var tasks = _taskManager.GetList(AccountId);
+            var accountId = CurrentAccount.Id;
+            var tasks = _taskManager.GetList(accountId);
             var task = tasks.FirstOrDefault(x => x is UpdateAdventures);
             if (task is null)
             {
-                _taskManager.Add(AccountId, new UpdateAdventures(AccountId));
+                _taskManager.Add(accountId, new UpdateAdventures(accountId));
             }
             else
             {
                 task.ExecuteAt = DateTime.Now;
-                _taskManager.Update(AccountId);
+                _taskManager.Update(accountId);
             }
         }
 
         private void InventoryTask()
         {
-            var tasks = _taskManager.GetList(AccountId);
+            var accountId = CurrentAccount.Id;
+            var tasks = _taskManager.GetList(accountId);
             var task = tasks.FirstOrDefault(x => x is UpdateHeroItems);
             if (task is null)
             {
-                _taskManager.Add(AccountId, new UpdateHeroItems(AccountId));
+                _taskManager.Add(accountId, new UpdateHeroItems(accountId));
             }
             else
             {
                 task.ExecuteAt = DateTime.Now;
-                _taskManager.Update(AccountId);
+                _taskManager.Update(accountId);
             }
         }
 

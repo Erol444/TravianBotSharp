@@ -9,9 +9,9 @@ namespace MainCore.Services
 
         public void OnAccountsTableUpdate() => AccountsTableUpdate?.Invoke();
 
-        public event Action AccountStatusUpdate;
+        public event Action<int> AccountStatusUpdate;
 
-        public void OnAccountStatusUpdate() => AccountStatusUpdate?.Invoke();
+        public void OnAccountStatusUpdate(int accountId) => AccountStatusUpdate?.Invoke(accountId);
 
         public event Action<int, LogMessage> LogUpdated;
 

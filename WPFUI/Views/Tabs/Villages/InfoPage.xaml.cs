@@ -18,8 +18,6 @@ namespace WPFUI.Views.Tabs.Villages
                 this.BindCommand(ViewModel, vm => vm.BothDorfCommand, v => v.UpdateDorfButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.Dorf1Command, v => v.UpdateDorf1Button).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.Dorf2Command, v => v.UpdateDorf2Button).DisposeWith(d);
-
-                ViewModel.OnActived();
             });
         }
     }

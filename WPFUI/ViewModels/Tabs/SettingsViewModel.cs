@@ -16,7 +16,7 @@ using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class SettingsViewModel : AccountTabBaseViewModel, IMainTabPage
+    public class SettingsViewModel : AccountTabBaseViewModel, ITabPage
     {
         public SettingsViewModel() : base()
         {
@@ -25,16 +25,25 @@ namespace WPFUI.ViewModels.Tabs
             ImportCommand = ReactiveCommand.Create(ImportTask);
         }
 
+        public bool IsActive { get; set; }
+
         public void OnActived()
         {
-            LoadData(AccountId);
+            IsActive = true;
+            if (CurrentAccount is not null)
+            {
+                LoadData(CurrentAccount.Id);
+            }
+        }
+
+        public void OnDeactived()
+        {
+            IsActive = false;
         }
 
         protected override void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
-            if (context.Accounts.Find(index) is null) return;
-
             var settings = context.AccountsSettings.Find(index);
             Settings.CopyFrom(settings);
         }
@@ -44,11 +53,12 @@ namespace WPFUI.ViewModels.Tabs
             if (!CheckInput()) return;
             _waitingWindow.ViewModel.Show("saving account's settings");
 
-            await Observable.Start(() =>
+            await Task.Run(() =>
             {
-                Save(AccountId);
-                TaskBasedSetting(AccountId);
-            }, RxApp.TaskpoolScheduler);
+                var accountId = CurrentAccount.Id;
+                Save(accountId);
+                TaskBasedSetting(accountId);
+            });
             _waitingWindow.ViewModel.Close();
 
             MessageBox.Show("Saved.");
@@ -59,7 +69,7 @@ namespace WPFUI.ViewModels.Tabs
             if (!CheckInput()) return;
 
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(AccountId);
+            var account = context.Accounts.Find(CurrentAccount);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
@@ -75,11 +85,12 @@ namespace WPFUI.ViewModels.Tabs
                 try
                 {
                     var setting = JsonSerializer.Deserialize<MainCore.Models.Database.AccountSetting>(jsonString);
-                    setting.AccountId = AccountId;
+                    var accountId = CurrentAccount.Id;
+                    setting.AccountId = accountId;
                     context.Update(setting);
                     context.SaveChanges();
-                    LoadData(AccountId);
-                    TaskBasedSetting(AccountId);
+                    LoadData(accountId);
+                    TaskBasedSetting(accountId);
                 }
                 catch
                 {
@@ -92,7 +103,7 @@ namespace WPFUI.ViewModels.Tabs
         private void ExportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(AccountId);
+            var account = context.Accounts.Find(CurrentAccount);
             if (account is null) return;
             var svd = new SaveFileDialog
             {
@@ -103,7 +114,7 @@ namespace WPFUI.ViewModels.Tabs
                 FileName = $"{account.Username}_settings.tbs",
             };
 
-            var accountSetting = context.AccountsSettings.Find(AccountId);
+            var accountSetting = context.AccountsSettings.Find(CurrentAccount);
             var jsonString = JsonSerializer.Serialize(accountSetting);
             if (svd.ShowDialog() == true)
             {
@@ -178,7 +189,7 @@ namespace WPFUI.ViewModels.Tabs
                 else
                 {
                     task.ExecuteAt = DateTime.Now;
-                    _taskManager.Update(AccountId);
+                    _taskManager.Update(index);
                 }
             }
             else

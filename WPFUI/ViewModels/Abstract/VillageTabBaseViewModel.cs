@@ -7,25 +7,31 @@ namespace WPFUI.ViewModels.Abstract
     {
         public VillageTabBaseViewModel() : base()
         {
-            this.WhenAnyValue(x => x.VillageId).Subscribe(LoadData);
+            this.WhenAnyValue(x => x.CurrentVillage).Subscribe((x) =>
+            {
+                if (x is not null)
+                {
+                    LoadData(x.Id);
+                }
+            });
         }
 
         protected abstract void LoadData(int index);
 
-        private int _accountId;
+        private MainCore.Models.Database.Account _currentAccount;
 
-        public int AccountId
+        public MainCore.Models.Database.Account CurrentAccount
         {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
+            get => _currentAccount;
+            set => this.RaiseAndSetIfChanged(ref _currentAccount, value);
         }
 
-        private int _villageId;
+        private Models.Village _currentVillage;
 
-        public int VillageId
+        public Models.Village CurrentVillage
         {
-            get => _villageId;
-            set => this.RaiseAndSetIfChanged(ref _villageId, value);
+            get => _currentVillage;
+            set => this.RaiseAndSetIfChanged(ref _currentVillage, value);
         }
     }
 }

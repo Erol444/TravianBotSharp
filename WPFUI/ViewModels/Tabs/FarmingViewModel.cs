@@ -1,7 +1,6 @@
 ﻿using MainCore.Tasks.Attack;
 using MainCore.Tasks.Update;
 using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
@@ -14,7 +13,7 @@ using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class FarmingViewModel : AccountTabBaseViewModel, IMainTabPage
+    public class FarmingViewModel : AccountTabBaseViewModel, ITabPage
     {
         public FarmingViewModel() : base()
         {
@@ -23,19 +22,30 @@ namespace WPFUI.ViewModels.Tabs
             StopCommand = ReactiveCommand.CreateFromTask(StopTask);
 
             _eventManager.FarmListUpdated += OnFarmListUpdate;
-            this.WhenAnyValue(x => x.IsActiveChange).Subscribe(ChangeColor);
         }
+
+        public bool IsActive { get; set; }
 
         public void OnActived()
         {
-            LoadData(AccountId);
+            IsActive = true;
+            if (CurrentAccount is not null)
+            {
+                LoadData(CurrentAccount.Id);
+            }
         }
 
-        private void OnFarmListUpdate(int index) => RxApp.MainThreadScheduler.Schedule(() => LoadData(index));
-
-        public void ChangeColor(bool value)
+        public void OnDeactived()
         {
-            if (CurrentFarm is not null) CurrentFarm.Color = value ? "Green" : "Red";
+            IsActive = false;
+        }
+
+        private void OnFarmListUpdate(int index)
+        {
+            if (!IsActive) return;
+            if (CurrentAccount is null) return;
+            if (CurrentAccount.Id != index) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadData(index));
         }
 
         protected override void LoadData(int index)
@@ -56,7 +66,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             await Task.Run(() =>
             {
-                var accountId = AccountId;
+                var accountId = CurrentAccount.Id;
                 var tasks = _taskManager.GetList(accountId);
                 if (!tasks.Any(x => x.GetType() == typeof(UpdateFarmList)))
                 {
@@ -69,17 +79,19 @@ namespace WPFUI.ViewModels.Tabs
         {
             await Task.Run(() =>
             {
+                var accountId = CurrentAccount.Id;
                 using var context = _contextFactory.CreateDbContext();
-                var farms = context.Farms.Where(x => x.AccountId == AccountId);
+                var farms = context.Farms.Where(x => x.AccountId == accountId);
                 foreach (var farm in farms)
                 {
                     var farmSetting = context.FarmsSettings.Find(farm.Id);
                     if (farmSetting.IsActive)
                     {
-                        var tasks = _taskManager.GetList(AccountId);
-                        if (!tasks.Any(x => x.GetType() == typeof(StartFarmList) && (x as StartFarmList).FarmId == farm.Id))
+                        var tasks = _taskManager.GetList(accountId);
+                        var task = tasks.Where(x => x is StartFarmList).OfType<StartFarmList>().FirstOrDefault(x => x.FarmId == farm.Id);
+                        if (task is null)
                         {
-                            _taskManager.Add(AccountId, new StartFarmList(AccountId, farm.Id));
+                            _taskManager.Add(accountId, new StartFarmList(accountId, farm.Id));
                         }
                     }
                 }
@@ -91,11 +103,12 @@ namespace WPFUI.ViewModels.Tabs
         {
             await Task.Run(() =>
             {
-                var tasks = _taskManager.GetList(AccountId);
+                var accountId = CurrentAccount.Id;
+                var tasks = _taskManager.GetList(accountId);
                 var farmLists = tasks.Where(x => x.GetType() == typeof(StartFarmList));
                 foreach (var farm in farmLists)
                 {
-                    _taskManager.Remove(AccountId, farm);
+                    _taskManager.Remove(accountId, farm);
                 }
             });
 
@@ -113,14 +126,6 @@ namespace WPFUI.ViewModels.Tabs
         {
             get => _currentFarm;
             set => this.RaiseAndSetIfChanged(ref _currentFarm, value);
-        }
-
-        private bool _isActiveChange;
-
-        public bool IsActiveChange
-        {
-            get => _isActiveChange;
-            set => this.RaiseAndSetIfChanged(ref _isActiveChange, value);
         }
     }
 }

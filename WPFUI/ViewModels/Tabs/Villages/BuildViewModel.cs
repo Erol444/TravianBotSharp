@@ -19,7 +19,7 @@ using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class BuildViewModel : VillageTabBaseViewModel, IVillageTabPage
+    public class BuildViewModel : VillageTabBaseViewModel, ITabPage
     {
         public BuildViewModel() : base()
         {
@@ -51,12 +51,29 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 });
             }
 
-            this.WhenAnyValue(x => x.CurrentBuilding).Subscribe(_ => LoadBuildingCombo(VillageId));
+            this.WhenAnyValue(x => x.CurrentBuilding).Subscribe(_ =>
+            {
+                if (CurrentVillage is not null)
+                {
+                    LoadBuildingCombo(CurrentVillage.Id);
+                }
+            });
         }
+
+        public bool IsActive { get; set; }
 
         public void OnActived()
         {
-            LoadData(VillageId);
+            IsActive = true;
+            if (CurrentVillage is not null)
+            {
+                LoadData(CurrentVillage.Id);
+            }
+        }
+
+        public void OnDeactived()
+        {
+            IsActive = false;
         }
 
         protected override void LoadData(int villageId)
@@ -164,7 +181,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 return;
             }
 
-            var buildings = BuildingsHelper.GetCanBuild(context, _planManager, AccountId, villageId);
+            var buildings = BuildingsHelper.GetCanBuild(context, _planManager, CurrentAccount.Id, villageId);
             if (buildings.Count > 0)
             {
                 foreach (var building in buildings)
@@ -196,22 +213,29 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 level = maxLevel;
             }
-            var task = new PlanTask()
+            var planTask = new PlanTask()
             {
                 Level = level,
                 Type = PlanTypeEnums.General,
                 Building = SelectedBuilding.Building,
                 Location = CurrentBuilding.Location,
             };
-            _planManager.Add(VillageId, task);
-            LoadQueue(VillageId);
-            LoadBuildings(VillageId);
+            var villageId = CurrentVillage.Id;
+            _planManager.Add(villageId, planTask);
+            LoadQueue(villageId);
+            LoadBuildings(villageId);
 
-            var listTask = _taskManager.GetList(AccountId);
-            var tasks = listTask.Where(x => x.AccountId == AccountId).OfType<UpgradeBuilding>().Where(x => x.VillageId == VillageId);
-            if (!tasks.Any())
+            var accountId = CurrentAccount.Id;
+            var tasks = _taskManager.GetList(accountId);
+            var task = tasks.Where(x => x.AccountId == accountId).OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
+            if (task is null)
             {
-                _taskManager.Add(AccountId, new UpgradeBuilding(VillageId, AccountId));
+                _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
+            }
+            else
+            {
+                task.ExecuteAt = DateTime.Now;
+                _taskManager.Update(accountId);
             }
         }
 
@@ -232,23 +256,29 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 level = 20;
             }
-            var task = new PlanTask()
+            var planTask = new PlanTask()
             {
                 Level = level,
                 Type = PlanTypeEnums.ResFields,
                 ResourceType = SelectedResType.Type,
                 BuildingStrategy = SelectedBuildingStrategy.Strategy,
             };
-            _planManager.Add(VillageId, task);
-            LoadQueue(VillageId);
-            LoadBuildings(VillageId);
+            var villageId = CurrentVillage.Id;
+            _planManager.Add(villageId, planTask);
+            LoadQueue(villageId);
+            LoadBuildings(villageId);
 
-            var listTask = _taskManager.GetList(AccountId);
-
-            var tasks = listTask.Where(x => x.AccountId == AccountId).OfType<UpgradeBuilding>().Where(x => x.VillageId == VillageId);
-            if (!tasks.Any())
+            var accountId = CurrentAccount.Id;
+            var tasks = _taskManager.GetList(accountId);
+            var task = tasks.Where(x => x.AccountId == accountId).OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
+            if (task is null)
             {
-                _taskManager.Add(AccountId, new UpgradeBuilding(VillageId, AccountId));
+                _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
+            }
+            else
+            {
+                task.ExecuteAt = DateTime.Now;
+                _taskManager.Update(accountId);
             }
         }
 
@@ -256,57 +286,65 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             var index = QueueBuildings.IndexOf(CurrentQueueBuilding);
             if (index == 0) return;
-            _planManager.Remove(VillageId, CurrentQueueBuilding);
-            _planManager.Insert(VillageId, 0, CurrentQueueBuilding);
-            LoadQueue(VillageId);
+            var villageId = CurrentVillage.Id;
+            _planManager.Remove(villageId, CurrentQueueBuilding);
+            _planManager.Insert(villageId, 0, CurrentQueueBuilding);
+            LoadQueue(villageId);
         }
 
         private void BottomTask()
         {
             var index = QueueBuildings.IndexOf(CurrentQueueBuilding);
             if (index == QueueBuildings.Count - 1) return;
-            _planManager.Remove(VillageId, CurrentQueueBuilding);
-            _planManager.Add(VillageId, CurrentQueueBuilding);
-            LoadQueue(VillageId);
+            var villageId = CurrentVillage.Id;
+            _planManager.Remove(villageId, CurrentQueueBuilding);
+            _planManager.Add(villageId, CurrentQueueBuilding);
+            LoadQueue(villageId);
         }
 
         private void UpTask()
         {
             var index = QueueBuildings.IndexOf(CurrentQueueBuilding);
             if (index == 0) return;
-            _planManager.Remove(VillageId, CurrentQueueBuilding);
-            _planManager.Insert(VillageId, index - 1, CurrentQueueBuilding);
-            LoadQueue(VillageId);
+            var villageId = CurrentVillage.Id;
+            _planManager.Remove(villageId, CurrentQueueBuilding);
+            _planManager.Insert(villageId, index - 1, CurrentQueueBuilding);
+            LoadQueue(villageId);
         }
 
         private void DownTask()
         {
             var index = QueueBuildings.IndexOf(CurrentQueueBuilding);
             if (index == QueueBuildings.Count - 1) return;
-            _planManager.Remove(VillageId, CurrentQueueBuilding);
-            _planManager.Insert(VillageId, index + 1, CurrentQueueBuilding);
-            LoadQueue(VillageId);
+            var villageId = CurrentVillage.Id;
+            _planManager.Remove(villageId, CurrentQueueBuilding);
+            _planManager.Insert(villageId, index + 1, CurrentQueueBuilding);
+            LoadQueue(villageId);
         }
 
         private void DeleteTask()
         {
-            _planManager.Remove(VillageId, CurrentQueueBuilding);
-            LoadQueue(VillageId);
-            LoadBuildings(VillageId);
+            var villageId = CurrentVillage.Id;
+            _planManager.Remove(villageId, CurrentQueueBuilding);
+            LoadQueue(villageId);
+            LoadBuildings(villageId);
         }
 
         private void DeleteAllTask()
         {
-            _planManager.Clear(VillageId);
-            LoadQueue(VillageId);
-            LoadBuildings(VillageId);
+            var villageId = CurrentVillage.Id;
+            _planManager.Clear(villageId);
+            LoadQueue(villageId);
+            LoadBuildings(villageId);
         }
 
         private void ImportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(AccountId);
-            var village = context.Villages.Find(VillageId);
+            var accountId = CurrentAccount.Id;
+            var account = context.Accounts.Find(accountId);
+            var villageId = CurrentVillage.Id;
+            var village = context.Villages.Find(villageId);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
@@ -324,9 +362,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
                     var queue = JsonSerializer.Deserialize<List<PlanTask>>(jsonString);
                     foreach (var item in queue)
                     {
-                        _planManager.Add(VillageId, item);
+                        _planManager.Add(villageId, item);
                     }
-                    LoadQueue(VillageId);
+                    LoadQueue(villageId);
                 }
                 catch
                 {
@@ -339,9 +377,11 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void ExportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var queueBuildings = _planManager.GetList(VillageId);
-            var account = context.Accounts.Find(AccountId);
-            var village = context.Villages.Find(VillageId);
+            var villageId = CurrentVillage.Id;
+            var queueBuildings = _planManager.GetList(villageId);
+            var accountId = CurrentAccount.Id;
+            var account = context.Accounts.Find(accountId);
+            var village = context.Villages.Find(villageId);
             var jsonString = JsonSerializer.Serialize(queueBuildings);
             var svd = new SaveFileDialog
             {

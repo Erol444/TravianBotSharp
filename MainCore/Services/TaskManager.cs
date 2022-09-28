@@ -235,7 +235,7 @@ namespace MainCore.Services
             Check(index);
 
             _botStatus[index] = status;
-            _eventManager.OnAccountStatusUpdate();
+            _eventManager.OnAccountStatusUpdate(index);
         }
 
         private readonly Dictionary<int, List<BotTask>> _tasksDict = new();

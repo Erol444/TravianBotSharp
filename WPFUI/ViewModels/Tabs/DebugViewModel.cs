@@ -12,7 +12,7 @@ using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class DebugViewModel : AccountTabBaseViewModel, IMainTabPage
+    public class DebugViewModel : AccountTabBaseViewModel, ITabPage
     {
         private readonly string discordUrl = "https://discord.gg/DVPV4gesCz";
 
@@ -25,9 +25,20 @@ namespace WPFUI.ViewModels.Tabs
             LogFolderCommand = ReactiveCommand.Create(LogFolderTask);
         }
 
+        public bool IsActive { get; set; }
+
         public void OnActived()
         {
-            LoadData(AccountId);
+            IsActive = true;
+            if (CurrentAccount is not null)
+            {
+                LoadData(CurrentAccount.Id);
+            }
+        }
+
+        public void OnDeactived()
+        {
+            IsActive = false;
         }
 
         protected override void LoadData(int accountId)
@@ -54,7 +65,7 @@ namespace WPFUI.ViewModels.Tabs
         private void LogFolderTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var info = context.Accounts.Find(AccountId);
+            var info = context.Accounts.Find(CurrentAccount);
             var name = info.Username;
             Process.Start(new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, "logs"))
             {
@@ -64,7 +75,8 @@ namespace WPFUI.ViewModels.Tabs
 
         private void OnTasksUpdate(int accountId)
         {
-            if (accountId != AccountId) return;
+            if (CurrentAccount is null) return;
+            if (CurrentAccount.Id != accountId) return;
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
@@ -84,7 +96,8 @@ namespace WPFUI.ViewModels.Tabs
 
         private void OnLogsUpdate(int accountId, LogMessage logMessage)
         {
-            if (accountId != AccountId) return;
+            if (CurrentAccount is null) return;
+            if (CurrentAccount.Id != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Logs.Insert(0, logMessage);

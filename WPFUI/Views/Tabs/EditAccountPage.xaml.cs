@@ -22,6 +22,7 @@ namespace WPFUI.Views.Tabs
                 this.Bind(ViewModel, vm => vm.Username, v => v.UsernameTextBox.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Accessess, v => v.ProxiesDataGrid.ItemsSource).DisposeWith(d);
 
+                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
             });
         }

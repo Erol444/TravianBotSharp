@@ -25,6 +25,7 @@ namespace WPFUI.Views.Tabs.Villages
                 this.Bind(ViewModel, vm => vm.Settings.IsAdsUpgrade, v => v.WatchAdsCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AdsUpgradeTime, v => v.WatchAdsTextBox.Text).DisposeWith(d);
 
+                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
             });
         }

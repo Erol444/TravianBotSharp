@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using MainCore.Models.Database;
+using ReactiveUI;
 using System;
 
 namespace WPFUI.ViewModels.Abstract
@@ -7,17 +8,23 @@ namespace WPFUI.ViewModels.Abstract
     {
         public AccountTabBaseViewModel() : base()
         {
-            this.WhenAnyValue(x => x.AccountId).Subscribe(LoadData);
+            this.WhenAnyValue(x => x.CurrentAccount).Subscribe(x =>
+            {
+                if (x is not null)
+                {
+                    LoadData(x.Id);
+                }
+            });
         }
 
         protected abstract void LoadData(int index);
 
-        private int _accountId;
+        private Account _currentAccount;
 
-        public int AccountId
+        public Account CurrentAccount
         {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
+            get => _currentAccount;
+            set => this.RaiseAndSetIfChanged(ref _currentAccount, value);
         }
     }
 }

@@ -24,7 +24,8 @@ namespace WPFUI.Views.Tabs
                 this.Bind(ViewModel, vm => vm.CurrentFarm, v => v.FarmListViewer.SelectedItem).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.CurrentFarm, v => v.FarmListController.ViewModel.CurrentFarm).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.IsActiveChange, v => v.FarmListController.ActiveCheckBox.IsChecked).DisposeWith(d);
+
+                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
             });
         }

@@ -23,18 +23,19 @@ namespace WPFUI.Views.Tabs
 
                 this.OneWayBind(ViewModel, vm => vm.IsVillageNotSelected, v => v.NoVillageTab.Visibility).DisposeWith(d);
 
-                this.OneWayBind(ViewModel, vm => vm.AccountId, v => v.BuildPage.ViewModel.AccountId).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentVillage.Id, v => v.BuildPage.ViewModel.VillageId).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.BuildPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.BuildPage.ViewModel.CurrentVillage).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.BuildTab.Visibility).DisposeWith(d);
 
-                this.OneWayBind(ViewModel, vm => vm.AccountId, v => v.InfoPage.ViewModel.AccountId).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentVillage.Id, v => v.InfoPage.ViewModel.VillageId).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.InfoPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.InfoPage.ViewModel.CurrentVillage).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.InfoTab.Visibility).DisposeWith(d);
 
-                this.OneWayBind(ViewModel, vm => vm.AccountId, v => v.SettingsPage.ViewModel.AccountId).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentVillage.Id, v => v.SettingsPage.ViewModel.VillageId).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.SettingsPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.SettingsPage.ViewModel.CurrentVillage).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.SettingsTab.Visibility).DisposeWith(d);
 
+                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
             });
         }

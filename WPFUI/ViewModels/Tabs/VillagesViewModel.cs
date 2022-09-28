@@ -9,7 +9,7 @@ using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class VillagesViewModel : AccountTabBaseViewModel, IMainTabPage
+    public class VillagesViewModel : AccountTabBaseViewModel, ITabPage
     {
         public VillagesViewModel() : base()
         {
@@ -19,15 +19,28 @@ namespace WPFUI.ViewModels.Tabs
             _isVillageNotSelected = this.WhenAnyValue(x => x.CurrentVillage).Select(x => x is null).ToProperty(this, x => x.IsVillageNotSelected);
         }
 
+        public bool IsActive { get; set; }
+
         public void OnActived()
         {
-            LoadData(AccountId);
+            IsActive = true;
+            if (CurrentAccount is not null)
+            {
+                LoadData(CurrentAccount.Id);
+            }
+        }
+
+        public void OnDeactived()
+        {
+            IsActive = false;
         }
 
         public void OnVillagesUpdate(int accountId)
         {
-            if (accountId != AccountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(AccountId));
+            if (!IsActive) return;
+            if (CurrentAccount is null) return;
+            if (CurrentAccount.Id != accountId) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
 
         protected override void LoadData(int accountId)
@@ -46,11 +59,11 @@ namespace WPFUI.ViewModels.Tabs
             }
         }
 
-        public ObservableCollection<VillageInfo> Villages { get; } = new();
+        public ObservableCollection<Village> Villages { get; } = new();
 
-        private VillageInfo _currentVillage;
+        private Village _currentVillage;
 
-        public VillageInfo CurrentVillage
+        public Village CurrentVillage
         {
             get => _currentVillage;
             set => this.RaiseAndSetIfChanged(ref _currentVillage, value);

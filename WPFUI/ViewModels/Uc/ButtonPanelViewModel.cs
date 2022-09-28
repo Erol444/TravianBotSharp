@@ -1,6 +1,7 @@
 ﻿using MainCore;
 using MainCore.Enums;
 using MainCore.Helper;
+using MainCore.Models.Database;
 using MainCore.Services;
 using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
@@ -12,14 +13,13 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.Views;
 using Access = MainCore.Models.Database.Access;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class ButtonPanelViewModel : ReactiveObject, IMainTabPage
+    public class ButtonPanelViewModel : ReactiveObject
     {
         public ButtonPanelViewModel()
         {
@@ -28,11 +28,12 @@ namespace WPFUI.ViewModels.Uc
             _chromeManager = App.GetService<IChromeManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = App.GetService<IEventManager>();
-            _eventManager.AccountStatusUpdate += OnAccountUpdate;
             _taskManager = App.GetService<ITaskManager>();
             _logManager = App.GetService<ILogManager>();
             _timeManager = App.GetService<ITimerManager>();
             _restClientManager = App.GetService<IRestClientManager>();
+
+            _eventManager.AccountStatusUpdate += OnAccountUpdate;
 
             _isAccountNotSelected = this.WhenAnyValue(x => x.IsAccountSelected).Select(x => !x).ToProperty(this, x => x.IsAccountNotSelected);
 
@@ -47,50 +48,55 @@ namespace WPFUI.ViewModels.Uc
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
             LogoutAllCommand = ReactiveCommand.CreateFromTask(LogoutAllTask);
 
-            this.WhenAnyValue(x => x.AccountId).Subscribe(_ => OnAccountUpdate());
+            this.WhenAnyValue(x => x.CurrentAccount).Subscribe((x) =>
+            {
+                if (x is null) return;
+                LoadData(CurrentAccount.Id);
+            });
         }
 
-        private void OnAccountUpdate()
+        private void LoadData(int accountId)
         {
-            RxApp.MainThreadScheduler.Schedule(() =>
+            var status = _taskManager.GetAccountStatus(accountId);
+            switch (status)
             {
-                if (IsAccountSelected)
-                {
-                    var status = _taskManager.GetAccountStatus(AccountId);
-                    switch (status)
-                    {
-                        case AccountStatus.Offline:
-                            IsAllowLogin = true;
-                            IsAllowLogout = false;
-                            break;
+                case AccountStatus.Offline:
+                    IsAllowLogin = true;
+                    IsAllowLogout = false;
+                    break;
 
-                        case AccountStatus.Starting:
-                            IsAllowLogin = false;
-                            IsAllowLogout = false;
-                            break;
+                case AccountStatus.Starting:
+                    IsAllowLogin = false;
+                    IsAllowLogout = false;
+                    break;
 
-                        case AccountStatus.Online:
-                            IsAllowLogin = false;
-                            IsAllowLogout = true;
-                            break;
+                case AccountStatus.Online:
+                    IsAllowLogin = false;
+                    IsAllowLogout = true;
+                    break;
 
-                        case AccountStatus.Pausing:
-                            IsAllowLogin = false;
-                            IsAllowLogout = false;
-                            break;
+                case AccountStatus.Pausing:
+                    IsAllowLogin = false;
+                    IsAllowLogout = false;
+                    break;
 
-                        case AccountStatus.Paused:
-                            IsAllowLogin = false;
-                            IsAllowLogout = true;
-                            break;
+                case AccountStatus.Paused:
+                    IsAllowLogin = false;
+                    IsAllowLogout = true;
+                    break;
 
-                        case AccountStatus.Stopping:
-                            IsAllowLogin = false;
-                            IsAllowLogout = false;
-                            break;
-                    }
-                }
-            });
+                case AccountStatus.Stopping:
+                    IsAllowLogin = false;
+                    IsAllowLogout = false;
+                    break;
+            }
+        }
+
+        private void OnAccountUpdate(int accountId)
+        {
+            if (CurrentAccount is null) return;
+            if (CurrentAccount.Id != accountId) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
 
         private void CheckVersionTask()
@@ -108,9 +114,9 @@ namespace WPFUI.ViewModels.Uc
             TabSelector = TabType.AddAccounts;
         }
 
-        private Task LoginTask() => Task.Run(() => LoginAccount(AccountId));
+        private Task LoginTask() => Task.Run(() => LoginAccount(CurrentAccount.Id));
 
-        private Task LogoutTask() => Task.Run(() => LogoutAccount(AccountId));
+        private Task LogoutTask() => Task.Run(() => LogoutAccount(CurrentAccount.Id));
 
         private async Task LoginAllTask()
         {
@@ -140,7 +146,7 @@ namespace WPFUI.ViewModels.Uc
         private void DeleteAccountTask()
         {
             _waitingWindow.ViewModel.Show("saving data");
-            DeleteAccount(AccountId);
+            DeleteAccount(CurrentAccount.Id);
             _eventManager.OnAccountsTableUpdate();
             _waitingWindow.ViewModel.Close();
         }
@@ -226,10 +232,6 @@ namespace WPFUI.ViewModels.Uc
             context.SaveChanges();
         }
 
-        public void OnActived()
-        {
-        }
-
         public ReactiveCommand<Unit, Unit> CheckVersionCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }
@@ -271,20 +273,20 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _isAllowLogin, value);
         }
 
-        private int _accountId;
-
-        public int AccountId
-        {
-            get => _accountId;
-            set => this.RaiseAndSetIfChanged(ref _accountId, value);
-        }
-
         private TabType _tabSelector;
 
         public TabType TabSelector
         {
             get => _tabSelector;
             set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
+        }
+
+        private Account _currentAccount;
+
+        public Account CurrentAccount
+        {
+            get => _currentAccount;
+            set => this.RaiseAndSetIfChanged(ref _currentAccount, value);
         }
 
         private readonly IChromeManager _chromeManager;

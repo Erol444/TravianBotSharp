@@ -16,7 +16,7 @@ using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class SettingsViewModel : VillageTabBaseViewModel, IVillageTabPage
+    public class SettingsViewModel : VillageTabBaseViewModel, ITabPage
     {
         public SettingsViewModel()
         {
@@ -25,16 +25,25 @@ namespace WPFUI.ViewModels.Tabs.Villages
             ImportCommand = ReactiveCommand.Create(ImportTask);
         }
 
+        public bool IsActive { get; set; }
+
         public void OnActived()
         {
-            LoadData(VillageId);
+            IsActive = true;
+            if (CurrentVillage is not null)
+            {
+                LoadData(CurrentVillage.Id);
+            }
+        }
+
+        public void OnDeactived()
+        {
+            IsActive = false;
         }
 
         protected override void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
-            if (context.Villages.Find(index) is null) return;
-
             var settings = context.VillagesSettings.Find(index);
             Settings.CopyFrom(settings);
         }
@@ -44,11 +53,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
             if (!CheckInput()) return;
             _waitingWindow.ViewModel.Show("saving village's settings");
 
-            await Observable.Start(() =>
+            await Task.Run(() =>
             {
-                Save(VillageId);
-                TaskBasedSetting(VillageId, AccountId);
-            }, RxApp.TaskpoolScheduler);
+                var villageId = CurrentVillage.Id;
+                Save(villageId);
+                var accountId = CurrentAccount.Id;
+                TaskBasedSetting(villageId, accountId);
+            });
             _waitingWindow.ViewModel.Close();
 
             MessageBox.Show("Saved.");
@@ -59,7 +70,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             if (!CheckInput()) return;
 
             using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
+            var village = context.Villages.Find(CurrentVillage);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
@@ -75,11 +86,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 try
                 {
                     var setting = JsonSerializer.Deserialize<MainCore.Models.Database.VillageSetting>(jsonString);
-                    setting.VillageId = VillageId;
+                    var villageId = CurrentVillage.Id;
+                    setting.VillageId = villageId;
                     context.Update(setting);
                     context.SaveChanges();
-                    LoadData(VillageId);
-                    TaskBasedSetting(VillageId, AccountId);
+                    LoadData(villageId);
+                    var accountId = CurrentAccount.Id;
+                    TaskBasedSetting(villageId, accountId);
                 }
                 catch
                 {
@@ -91,9 +104,10 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void ExportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.Find(VillageId);
+            var villageId = CurrentVillage.Id;
+            var setting = context.VillagesSettings.Find(villageId);
             var jsonString = JsonSerializer.Serialize(setting);
-            var village = context.Villages.Find(VillageId);
+            var village = context.Villages.Find(villageId);
             var svd = new SaveFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
@@ -136,13 +150,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void TaskBasedSetting(int villageId, int accountId)
         {
             var list = _taskManager.GetList(accountId);
-            var tasks = list.Where(x => x.GetType() == typeof(InstantUpgrade));
+            var tasks = list.Where(x => x is InstantUpgrade);
             if (Settings.IsInstantComplete)
             {
                 if (!tasks.Any())
                 {
                     using var context = _contextFactory.CreateDbContext();
-                    UpgradeBuildingHelper.RemoveFinishedCB(context, VillageId);
+                    UpgradeBuildingHelper.RemoveFinishedCB(context, villageId);
                     var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
                     var count = currentBuildings.Count(x => x.Level != -1);
                     if (count > 0)

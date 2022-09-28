@@ -1,6 +1,6 @@
 ﻿namespace WPFUI.Models
 {
-    public class VillageInfo
+    public class Village
     {
         public int Id { get; set; }
         public string Name { get; set; }

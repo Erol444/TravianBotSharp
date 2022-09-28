@@ -22,9 +22,20 @@ namespace WPFUI.ViewModels.Tabs
             CancelCommand = ReactiveCommand.Create(CancelTask);
         }
 
+        public bool IsActive { get; set; }
+
         public void OnActived()
         {
-            LoadData(AccountId);
+            IsActive = true;
+            if (CurrentAccount is not null)
+            {
+                LoadData(CurrentAccount.Id);
+            }
+        }
+
+        public void OnDeactived()
+        {
+            IsActive = false;
         }
 
         protected override void LoadData(int index)
@@ -36,7 +47,7 @@ namespace WPFUI.ViewModels.Tabs
             Username = account.Username;
             Server = account.Server;
 
-            var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
+            var accesses = context.Accesses.Where(x => x.AccountId == index);
             Accessess.Clear();
             foreach (var item in accesses)
             {
@@ -56,7 +67,7 @@ namespace WPFUI.ViewModels.Tabs
             if (!CheckInput()) return;
 
             _waitingWindow.ViewModel.Show("testing proxies");
-            await Observable.Start(() =>
+            await Task.Run(() =>
             {
                 for (int i = 0; i < Accessess.Count; i++)
                 {
@@ -76,17 +87,17 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!CheckInput()) return;
             _waitingWindow.ViewModel.Show("saving account");
-            await Observable.Start(() =>
+            await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
-
-                var account = context.Accounts.FirstOrDefault(x => x.Id == AccountId);
+                var accountId = CurrentAccount.Id;
+                var account = context.Accounts.FirstOrDefault(x => x.Id == accountId);
                 if (account is null) return;
                 Uri.TryCreate(Server, UriKind.Absolute, out var url);
                 account.Server = url.AbsoluteUri;
                 account.Username = Username;
 
-                var accesses = context.Accesses.Where(x => x.AccountId == AccountId);
+                var accesses = context.Accesses.Where(x => x.AccountId == accountId);
 
                 context.Accesses.RemoveRange(accesses);
                 context.SaveChanges();
@@ -95,7 +106,7 @@ namespace WPFUI.ViewModels.Tabs
                 {
                     context.Accesses.Add(new()
                     {
-                        AccountId = AccountId,
+                        AccountId = accountId,
                         Password = access.Password,
                         ProxyHost = access.ProxyHost,
                         ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
@@ -105,7 +116,7 @@ namespace WPFUI.ViewModels.Tabs
                     });
                 }
                 context.SaveChanges();
-            }, RxApp.TaskpoolScheduler);
+            });
 
             _eventManager.OnAccountsTableUpdate();
             Clean();

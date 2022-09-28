@@ -160,7 +160,13 @@ namespace WPFUI.ViewModels
 
         public void OnActived()
         {
+            IsActive = true;
             LoadData();
+        }
+
+        public void OnDeactived()
+        {
+            IsActive = false;
         }
 
         private void LoadData()
@@ -303,5 +309,6 @@ namespace WPFUI.ViewModels
         }
 
         public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
+        public bool IsActive { get; set; }
     }
 }

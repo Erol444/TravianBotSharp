@@ -25,20 +25,20 @@ namespace WPFUI.Views
                 this.Bind(ViewModel, vm => vm.CurrentIndex, v => v.AccountGrid.SelectedIndex).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.IsAccountSelected, v => v.ButtonPanel.ViewModel.IsAccountSelected).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.ButtonPanel.ViewModel.AccountId).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.ButtonPanel.ViewModel.CurrentAccount).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.TabSelector, v => v.ButtonPanel.ViewModel.TabSelector).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.TabSelector, v => v.AddAccountPage.ViewModel.TabSelector).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.TabSelector, v => v.AddAccountsPage.ViewModel.TabSelector).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.TabSelector, v => v.EditAccountPage.ViewModel.TabSelector).DisposeWith(d);
 
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.GeneralPage.ViewModel.AccountId).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.SettingsPage.ViewModel.AccountId).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.HeroPage.ViewModel.AccountId).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.VillagesPage.ViewModel.AccountId).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.FarmingPage.ViewModel.AccountId).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.DebugPage.ViewModel.AccountId).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount.Id, v => v.EditAccountPage.ViewModel.AccountId).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.GeneralPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.SettingsPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.HeroPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.VillagesPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.FarmingPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.DebugPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.EditAccountPage.ViewModel.CurrentAccount).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.SelectedNoAccount, v => v.NoAccountTab.IsSelected).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.SelectedNormal, v => v.DebugTab.IsSelected).DisposeWith(d);
@@ -57,6 +57,7 @@ namespace WPFUI.Views
                 this.OneWayBind(ViewModel, vm => vm.ShowAddAccountsTab, v => v.AddAccountsTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.ShowEditAccountTab, v => v.EditAccountTab.Visibility).DisposeWith(d);
 
+                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
             });
         }
