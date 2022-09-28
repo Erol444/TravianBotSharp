@@ -61,7 +61,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
 
             foreach (var itemSlot in heroItemDivs)
             {
-                if (itemSlot.ChildNodes.Count != 2) continue;
+                if (itemSlot.ChildNodes.Count < 2) continue;
                 var itemNode = itemSlot.ChildNodes[1];
                 var classes = itemNode.GetClasses();
                 if (classes.Count() != 2) continue;
@@ -74,7 +74,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
 
                 if (itemSlot.GetAttributeValue("data-tier", "").Contains("consumable"))
                 {
-                    if (itemSlot.ChildNodes.Count != 3)
+                    if (itemSlot.ChildNodes.Count < 3)
                     {
                         heroItems.Add((int.Parse(itemValueStr), 1));
                         continue;

@@ -33,7 +33,7 @@ namespace TravianOfficialNewHeroUICore.FindElements
 
             foreach (var itemSlot in heroItemDivs)
             {
-                if (itemSlot.ChildNodes.Count != 2) continue;
+                if (itemSlot.ChildNodes.Count < 2) continue;
                 var itemNode = itemSlot.ChildNodes[1];
                 var classes = itemNode.GetClasses();
                 if (classes.Count() != 2) continue;
@@ -43,7 +43,7 @@ namespace TravianOfficialNewHeroUICore.FindElements
                 var itemValueStr = new string(itemValue.Where(c => char.IsDigit(c)).ToArray());
                 if (string.IsNullOrEmpty(itemValueStr)) continue;
 
-                if (int.Parse(itemValueStr) == type) return itemNode;
+                if (int.Parse(itemValueStr) == type) return itemSlot;
             }
             return null;
         }

@@ -175,7 +175,7 @@ namespace MainCore.Tasks.Sim
                 var nodeNotShowAgainConfirm = html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']");
                 if (nodeNotShowAgainConfirm is not null)
                 {
-                    var elements = chrome.FindElements(By.XPath(nodeNotShowAgainConfirm.XPath));
+                    var elements = chrome.FindElements(By.XPath(nodeNotShowAgainConfirm.ParentNode.XPath));
                     elements[0].Click();
                     chrome.ExecuteScript("jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
                 }
@@ -229,23 +229,19 @@ namespace MainCore.Tasks.Sim
 
             {
                 var wait = _chromeBrowser.GetWait();
-                try
+                wait.Until(driver => driver.Url.Contains("dorf"));
+                wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+
+                html = _chromeBrowser.GetHtml();
+                if (html.GetElementbyId("dontShowThisAgain") is not null)
                 {
-                    wait.Until(driver => driver.Url.Contains("dorf"));
-                    wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+                    var dontshowthisagain = chrome.FindElements(By.Id("dontShowThisAgain"));
+                    dontshowthisagain[0].Click();
+                    Thread.Sleep(800);
+                    var dialogbuttonok = chrome.FindElements(By.ClassName("dialogButtonOk"));
+                    dialogbuttonok[0].Click();
                 }
-                catch
-                {
-                    html = _chromeBrowser.GetHtml();
-                    if (html.GetElementbyId("dontShowThisAgain") is not null)
-                    {
-                        var dontshowthisagain = chrome.FindElements(By.Id("dontShowThisAgain"));
-                        dontshowthisagain[0].Click();
-                        Thread.Sleep(800);
-                        var dialogbuttonok = chrome.FindElements(By.ClassName("dialogButtonOk"));
-                        dialogbuttonok[0].Click();
-                    }
-                }
+
             }
         }
 
