@@ -22,6 +22,6 @@
         </Grid.ColumnDefinitions>
         <Button x:Name="UpdateDorfButton" Grid.Column="1" Content="Update 2 page" Margin="10,10,10,10" />
         <Button x:Name="UpdateDorf1Button" Content="Update resource page" Margin="10,10,10,10" />
-        <Button x:Name="UpdateDorf2Button" Grid.Column="2" Content="Update resource page" Margin="10,10,10,10" />
+        <Button x:Name="UpdateDorf2Button" Grid.Column="2" Content="Update building page" Margin="10,10,10,10" />
     </Grid>
 </reactiveui:ReactivePage>
