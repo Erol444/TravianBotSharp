@@ -69,7 +69,7 @@ namespace WPFUI.ViewModels.Tabs
             if (!CheckInput()) return;
 
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(CurrentAccount);
+            var account = context.Accounts.Find(CurrentAccount.Id);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
@@ -103,7 +103,7 @@ namespace WPFUI.ViewModels.Tabs
         private void ExportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(CurrentAccount);
+            var account = context.Accounts.Find(CurrentAccount.Id);
             if (account is null) return;
             var svd = new SaveFileDialog
             {
@@ -114,7 +114,7 @@ namespace WPFUI.ViewModels.Tabs
                 FileName = $"{account.Username}_settings.tbs",
             };
 
-            var accountSetting = context.AccountsSettings.Find(CurrentAccount);
+            var accountSetting = context.AccountsSettings.Find(CurrentAccount.Id);
             var jsonString = JsonSerializer.Serialize(accountSetting);
             if (svd.ShowDialog() == true)
             {

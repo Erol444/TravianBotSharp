@@ -70,7 +70,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             if (!CheckInput()) return;
 
             using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(CurrentVillage);
+            var village = context.Villages.Find(CurrentVillage.Id);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,

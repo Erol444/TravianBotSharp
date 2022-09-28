@@ -65,7 +65,7 @@ namespace WPFUI.ViewModels.Tabs
         private void LogFolderTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var info = context.Accounts.Find(CurrentAccount);
+            var info = context.Accounts.Find(CurrentAccount.Id);
             var name = info.Username;
             Process.Start(new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, "logs"))
             {
