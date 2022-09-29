@@ -295,8 +295,13 @@ namespace MainCore.Helper
         public static void UpdateAdventures(AppDbContext context, IChromeBrowser chromeBrowser, int accountId)
         {
             var foundAdventures = HeroInfo.GetAdventures(chromeBrowser.GetHtml());
-            if (foundAdventures.Count == 0) return;
             var heroAdventures = context.Adventures.Where(x => x.AccountId == accountId).ToList();
+            if (foundAdventures.Count == 0)
+            {
+                context.Adventures.RemoveRange(heroAdventures);
+                context.SaveChanges();
+                return;
+            }
             var addedAdventures = new List<Models.Database.Adventure>();
             foreach (var adventure in foundAdventures)
             {

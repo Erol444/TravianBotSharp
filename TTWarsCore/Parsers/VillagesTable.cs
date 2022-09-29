@@ -30,7 +30,12 @@ namespace TTWarsCore.Parsers
             var href = System.Net.WebUtility.HtmlDecode(hrefNode.GetAttributeValue("href", ""));
             if (string.IsNullOrEmpty(href)) return -1;
             if (!href.Contains('=')) return -1;
-            return int.Parse(href.Split('=')[1]);
+            var value = href.Split('=')[1];
+            if (value.Contains('&'))
+            {
+                value = value.Split('&')[0];
+            }
+            return int.Parse(value);
         }
 
         public static string GetName(HtmlNode node)

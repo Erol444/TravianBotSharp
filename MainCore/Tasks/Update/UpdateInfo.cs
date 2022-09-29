@@ -159,7 +159,14 @@ namespace MainCore.Tasks.Update
             context.SaveChanges();
 
             var adventures = context.Adventures.Count(x => x.AccountId == AccountId);
-            if (adventures != numberAdventure)
+            if (numberAdventure == 0)
+            {
+                var heroAdventures = context.Adventures.Where(x => x.AccountId == AccountId).ToList();
+
+                context.Adventures.RemoveRange(heroAdventures);
+                context.SaveChanges();
+            }
+            else if (adventures != numberAdventure)
             {
                 var listTask = _taskManager.GetList(AccountId);
                 var task = listTask.FirstOrDefault(x => x.GetType() == typeof(UpdateAdventures));

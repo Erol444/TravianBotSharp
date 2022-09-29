@@ -122,6 +122,11 @@ namespace MainCore.Helper
             {
 #if TTWARS
                 BuildingEnums.Brewery => 10,
+                BuildingEnums.Woodcutter => 25,
+                BuildingEnums.ClayPit => 25,
+                BuildingEnums.IronMine => 25,
+                BuildingEnums.Cropland => 25,
+
 #else
                 BuildingEnums.Brewery => 20,
 #endif
