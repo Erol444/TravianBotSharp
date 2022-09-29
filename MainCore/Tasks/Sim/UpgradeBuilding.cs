@@ -241,7 +241,6 @@ namespace MainCore.Tasks.Sim
                     var dialogbuttonok = chrome.FindElements(By.ClassName("dialogButtonOk"));
                     dialogbuttonok[0].Click();
                 }
-
             }
         }
 
@@ -310,8 +309,11 @@ namespace MainCore.Tasks.Sim
                 {
                     return null;
                 }
-
+#if TTWARS
+                ExecuteAt = firstComplete.CompleteTime;
+#else
                 ExecuteAt = firstComplete.CompleteTime.AddSeconds(10);
+#endif
                 _logManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
                 StopFlag = true;
                 return null;
