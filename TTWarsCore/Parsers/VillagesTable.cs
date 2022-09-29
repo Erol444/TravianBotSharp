@@ -1,5 +1,4 @@
 ﻿using HtmlAgilityPack;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -30,8 +29,8 @@ namespace TTWarsCore.Parsers
             if (hrefNode is null) return -1;
             var href = System.Net.WebUtility.HtmlDecode(hrefNode.GetAttributeValue("href", ""));
             if (string.IsNullOrEmpty(href)) return -1;
-            if (!href.Contains('=') || !href.Contains('&')) return -1;
-            return Convert.ToInt32(href.Split('=')[1].Split('&')[0]);
+            if (!href.Contains('=')) return -1;
+            return int.Parse(href.Split('=')[1]);
         }
 
         public static string GetName(HtmlNode node)

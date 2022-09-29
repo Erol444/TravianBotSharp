@@ -283,6 +283,7 @@ namespace MainCore.Tasks.Sim
         private PlanTask SelectBuilding()
         {
             using var context = _contextFactory.CreateDbContext();
+
             UpgradeBuildingHelper.RemoveFinishedCB(context, VillageId);
 
             var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, _planManager, _logManager, AccountId, VillageId);
@@ -299,7 +300,9 @@ namespace MainCore.Tasks.Sim
                 {
                     NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
                 }
-
+#if TTWARS
+                Refresh();
+#endif
                 var updateTask = new UpdateVillage(VillageId, AccountId);
                 updateTask.CopyFrom(this);
                 updateTask.Execute();
@@ -310,7 +313,7 @@ namespace MainCore.Tasks.Sim
                     return null;
                 }
 #if TTWARS
-                ExecuteAt = firstComplete.CompleteTime;
+                ExecuteAt = firstComplete.CompleteTime.AddSeconds(1);
 #else
                 ExecuteAt = firstComplete.CompleteTime.AddSeconds(10);
 #endif
