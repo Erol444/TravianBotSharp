@@ -95,7 +95,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 var plannedBuild = queueBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
                 if (plannedBuild is not null)
                 {
-                    if (plannedBuild.Type == PlanTypeEnums.ResFields) continue;
                     Buildings.Add(new()
                     {
                         Location = building.Id,
@@ -251,20 +250,31 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 MessageBox.Show("Level must be positive");
                 return;
             }
+#if TTWARS
+            if (level > 25)
+            {
+                level = 25;
+            }
+#else
             if (level > 20)
             {
                 level = 20;
             }
+#endif
             var planTask = new PlanTask()
             {
+                Location = -1,
                 Level = level,
                 Type = PlanTypeEnums.ResFields,
                 ResourceType = SelectedResType.Type,
                 BuildingStrategy = SelectedBuildingStrategy.Strategy,
             };
+
             var villageId = CurrentVillage.Id;
             _planManager.Add(villageId, planTask);
+
             LoadQueue(villageId);
+
             LoadBuildings(villageId);
 
             var accountId = CurrentAccount.Id;
