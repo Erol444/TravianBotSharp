@@ -11,13 +11,16 @@ namespace TTWarsCore.Parsers
         {
             var villageContentNode = doc.GetElementbyId("village_map");
             if (villageContentNode is null) return new();
-            return villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
+            var list = villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
+            if (list.Count == 22) return list;
+            list.RemoveAt(22);
+            return list;
         }
 
         public static int GetId(HtmlNode node)
         {
             var classess = node.GetClasses();
-            var needClass = classess.FirstOrDefault(x => x.StartsWith("aid"));
+            var needClass = classess.FirstOrDefault(x => x.StartsWith("a"));
             if (string.IsNullOrEmpty(needClass)) return -1;
             var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
             if (string.IsNullOrEmpty(strResult)) return -1;
