@@ -1,0 +1,1368 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0048)https://nor7.ttwars.com/build.php?id=39&fastUP=0 -->
+<html xmlns="http://www.w3.org/1999/xhtml" slick-uniqueid="3"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css" media="screen" id="jScroll.css">.jScroll {overflow: hidden; width: 100%; height: 100%;position:relative;}
+.jScroll .jScroll-content {position: absolute; top: 0px; left: 0px;}
+.jScroll .jScroll-scroll {cursor:pointer; position: absolute; height: 100%; right: 0px; top: 0px;}
+.jScroll .jScroll-scroll-up {position: absolute; width: 100%;}
+.jScroll .jScroll-scroll-slider {position: absolute; width: 100%;}
+.jScroll .jScroll-scroll-down {position: absolute; width: 100%;}
+.jScroll .jScroll-scroll-between {position: absolute; width: 100%;}
+.jScroll .jScroll-scroll-slider {top: 10px; height: 50px;}
+.jScroll .jScroll-scroll-slider .top {width: 100%;}
+.jScroll .jScroll-scroll-slider .center {width: 100%;}
+.jScroll .jScroll-scroll-slider .bottom {width: 100%;}
+.jScroll .jScroll-scroll-down {bottom: 0px;}
+.jScroll .jScroll-element-scroll {width: 15px;}
+.jScroll .jScroll-element-down {background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/down.gif) no-repeat center bottom; height: 6px;}
+.jScroll .jScroll-element-down:hover {background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/down-hover.gif);}
+.jScroll .jScroll-element-up {background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/up.gif) no-repeat center top; height: 6px;}
+.jScroll .jScroll-element-up:hover {background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/up-hover.gif);}
+.jScroll .jScroll-element-between {margin-left: 4px; width: 7px; opacity: 0; background-color: #000000; filter: alpha(opacity=0);}
+.jScroll .jScroll-element-between:hover {opacity: 0.25; filter: alpha(opacity=25);}
+.jScroll .jScroll-element-between.clicked {opacity: 0.5; filter: alpha(opacity=50);}
+.jScroll .jScroll-element-slider .top {background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-top.gif) no-repeat center top; height: 1px;}
+.jScroll .jScroll-element-slider:hover .top {background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-top-hover.gif);}
+.jScroll .jScroll-element-slider .center {background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-center.gif) repeat-y center top;}
+.jScroll .jScroll-element-slider:hover .center {background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-center-hover.gif);}
+.jScroll .jScroll-element-slider .bottom {background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-bottom.gif) no-repeat center bottom; height: 1px;}
+.jScroll .jScroll-element-slider:hover .bottom {background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-bottom-hover.gif);}
+</style>
+    <title>TTwars nor7</title>
+    <meta http-equiv="cache-control" content="max-age=0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="imagetoolbar" content="no">
+    
+    <meta name="content-language" content="en">
+    <link href="./TTwars nor7_files/compact.css" rel="stylesheet" type="text/css">
+    <link href="./TTwars nor7_files/lang.css" rel="stylesheet" type="text/css">
+        <link href="./TTwars nor7_files/travian_basics.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+        window.TravianDefaults = {
+            Map: { Size: { width: 201, height: 201, left: -100, right: 100, bottom: -100, top: 100 } }
+        };
+        function getMapSize() {return 100;}
+        function getAutoReloadStatus(){return 6;}
+    </script>
+    <script type="text/javascript" src="./TTwars nor7_files/crypt.js.download"></script>
+    <link rel="icon" href="https://nor7.ttwars.com/favicon.ico" type="image/x-icon">
+    <script type="text/javascript">
+        Travian.Translation.add({
+            'allgemein.anleitung': 'instructions',
+            'allgemein.cancel': 'cancel',
+            'allgemein.ok': 'ok',
+            'allgemein.close': 'close',
+            'cropfinder.keine_ergebnisse': 'no results found.'
+        });
+        Travian.applicationId = 'T4.4 Game';
+        Travian.Game.version = '4.4';
+        Travian.Game.worldId = 'nor7';
+        Travian.Game.speed = 20000;
+        Travian.Templates = {};
+        Travian.Templates.ButtonTemplate = "<button >\n\t<div class=\"button-container addHoverClick\">\n\t\t<div class=\"button-background\">\n\t\t\t<div class=\"buttonStart\">\n\t\t\t\t<div class=\"buttonEnd\">\n\t\t\t\t\t<div class=\"buttonMiddle\"><\/div>\n\t\t\t\t<\/div>\n\t\t\t<\/div>\n\t\t<\/div>\n\t\t<div class=\"button-content\"><\/div>\n\t<\/div>\n<\/button>\n";
+    </script>
+    <script type="text/javascript">
+        Travian.Game.eventJamHtml = '&lt;a href=&quot;http://t4.answers.travian.ir/index.php?aid=249#go2answer&quot; target=&quot;blank&quot; title=&quot;پاسخ&zwnj;های تراوین&quot;&gt;&lt;span class=&quot;c0 t&quot;&gt;0:00:0&lt;/span&gt;?&lt;/a&gt;'.unescapeHtml();
+                Travian.Game.eventJamHtml = '&lt;a href=&quot;javascript:void&quot; onclick=&quot;document.location.reload();&quot;&gt;&lt;img src=&quot;img/refresh.png&quot;&gt;&lt;/a&gt;'.unescapeHtml();
+            </script>
+    </head>
+<body class="v35 webkit chrome build  perspectiveBuildings ltr buildingsV1" data-new-gr-c-s-check-loaded="14.1073.0" data-gr-ext-installed="">
+<script type="text/javascript">
+    window.ajaxToken = '8c2c0e6122821ca497db7e4f09d76b8d472f4d1f';
+    window._player_uuid = '';
+        Travian.Game.Preferences.initialize({"highlightsToggle":true,"travian_toggle_hero":"expanded","travian_toggle_infobox":"expanded","travian_toggle_villagelist":"collapsed","travian_toggle_alliance":"expanded","WMBlueprints":"[]"});
+    Travian.Game.Quest.init();
+</script>
+
+<div id="background">
+    <div id="headerBar"></div>    <div id="bodyWrapper">
+        <img style="filter:chroma();" src="./TTwars nor7_files/x.gif" id="msfilter" alt="">
+
+        <div id="header">
+            <a id="logo" href="http://www.ttwars.com/" target="_blank"></a>
+            
+                <ul id="navigation">
+                    <li id="n1" class="villageResources">
+                        <a class="inactive" href="https://nor7.ttwars.com/dorf1.php" accesskey="1"></a>
+                    </li>
+                    <li id="n2" class="villageBuildings">
+                        <a class="active" href="https://nor7.ttwars.com/dorf2.php" accesskey="2"></a>
+                    </li>
+                    <li id="n3" class="map">
+                        <a href="https://nor7.ttwars.com/karte.php" accesskey="3"></a>
+                    </li>
+                    <li id="n4" class="statistics">
+                        <a href="https://nor7.ttwars.com/statistiken.php" accesskey="4"></a>
+                    </li>
+                    <li id="n5" class="reports">
+                        <a href="https://nor7.ttwars.com/reports.php" accesskey="5"></a>
+                                            </li>
+                    <li id="n6" class="messages">
+                        <a href="https://nor7.ttwars.com/messages.php" accesskey="6"></a>
+                                                    <div class="speechBubbleContainer ">
+                                <div class="speechBubbleBackground">
+                                    <div class="start">
+                                        <div class="end">
+                                            <div class="middle"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="speechBubbleContent">1</div>
+                            </div>
+                            <div class="clear"></div>
+                                            </li>
+                    <li id="n7" class="gold">
+                        <a href="https://nor7.ttwars.com/build.php?id=39&amp;fastUP=0#" accesskey="7" onclick="window.fireEvent(&#39;startPaymentWizard&#39;, {}); this.blur(); return false;" class=""></a>
+                    </li>
+                    <li class="clear">&nbsp;</li>
+                </ul>
+                <script type="text/javascript">
+                    window.addEvent('domready', function () {
+                        Travian.Game.Layout.goldButtonAnimation(true);
+                    });
+                </script>
+                <div id="goldSilver">
+                    <div class="gold">
+                        <img src="./TTwars nor7_files/x.gif" alt="Gold" class="gold" onclick="window.fireEvent(&#39;startPaymentWizard&#39;, {data:{activeTab: &#39;pros&#39;}}); return false;">
+                        <span class="ajaxReplaceableGoldAmount">
+                            100                    </span>
+                    </div>
+                    <div class="silver">
+                        <img src="./TTwars nor7_files/x.gif" alt="Silver" class="silver" onclick="window.fireEvent(&#39;startPaymentWizard&#39;, {data:{activeTab: &#39;pros&#39;}}); return false;">
+                        <span class="ajaxReplaceableSilverAmount">0</span>
+                    </div>
+                </div>
+                <ul id="outOfGame" class="LTR">
+                    <li class="profile">
+                        <a href="https://nor7.ttwars.com/spieler.php">
+                            <img src="./TTwars nor7_files/x.gif" alt="Profile">
+                        </a>
+                    </li>
+                    <li class="options">
+                                                    <a href="https://nor7.ttwars.com/options.php">
+                                <img src="./TTwars nor7_files/x.gif" alt="Options">
+                            </a>
+                                            </li>
+                                        <li class="chat">
+                        <a target="_blank" href="http://t.me/ttwarss">
+                            <img src="./TTwars nor7_files/x.gif" alt="Chat">
+                        </a>
+                    </li>
+                    
+                    <li class="help">
+                        <a href="https://nor7.ttwars.com/help.php">
+                            <img src="./TTwars nor7_files/x.gif" alt="Help">
+                        </a>
+                    </li>
+                    <li class="logout ">
+                        <a href="https://nor7.ttwars.com/logout.php">
+                            <img src="./TTwars nor7_files/x.gif" alt="Logout">
+                        </a>
+                    </li>
+                    <li class="clear">&nbsp;</li>
+                </ul>
+                <script type="text/javascript">
+                    $$('#outOfGame li.logout a').addEvent('click', function () {
+                        Travian.WindowManager.getWindows().each(function ($dialog) {
+                            Travian.WindowManager.unregister($dialog);
+                        });
+                    });
+                </script>
+
+                    </div>
+        <div id="center">
+            <div id="sidebarBeforeContent" class="sidebar beforeContent">
+                <div id="sidebarBoxHero" class="sidebarBox toggleable expanded ">
+	<div class="sidebarBoxBaseBox">
+		<div class="baseBox baseBoxTop">
+			<div class="baseBox baseBoxBottom">
+				<div class="baseBox baseBoxCenter"></div>
+			</div>
+		</div>
+	</div>
+	<div class="sidebarBoxInnerBox">
+		<div class="innerBox header ">
+			<button id="heroImageButton" onclick="window.location.href=&#39;hero.php&#39;;" class="heroImageButton" type="button">
+				<img class="heroImage" src="./TTwars nor7_files/hero_image.php" alt="Hero">
+			</button>
+			
+			<div class="playerName">
+				<img src="./TTwars nor7_files/x.gif" class="nation nationBig nation2" alt="Teutons">
+				<a href="https://nor7.ttwars.com/spieler.php">vinaghost</a>
+			</div>
+			<button type="button" id="buttonB9gXtaF0kMw8c" class="layoutButton auctionWhite green  " onclick="return false;">
+				<div class="button-container addHoverClick">
+					<img src="./TTwars nor7_files/x.gif" alt="">
+				</div>
+			</button>
+
+			<script type="text/javascript">
+				window.addEvent('domready', function () {
+					var button = $('buttonB9gXtaF0kMw8c');
+					if (button) {
+						var titleFunction = function () {
+							button.removeEvent('mouseenter', titleFunction);
+							Travian.Game.Layout.loadLayoutButtonTitle(button, 'hero', 'auctionWhite');
+						};
+						button.addEvent('mouseenter', titleFunction);
+					}
+				});
+
+				if ($('buttonB9gXtaF0kMw8c')) {
+					$('buttonB9gXtaF0kMw8c').addEvent('click', function () {
+						window.fireEvent('buttonClicked', [this, {
+							"type": "green",
+							"onclick": "return false;",
+							"loadTitle": true,
+							"boxId": "hero",
+							"disabled": false,
+							"speechBubble": "",
+							"class": "",
+							"id": "buttonB9gXtaF0kMw8c",
+							"redirectUrl": "hero.php?t=4",
+							"redirectUrlExternal": ""
+						}]);
+					});
+				}
+			</script>
+			<button type="button" id="buttonAzeQGXOtY6DWN" class="layoutButton adventureWhite green " onclick="return false;">
+				<div class="button-container addHoverClick">
+					<img src="./TTwars nor7_files/x.gif" alt="">
+				</div>
+									<div class="speechBubbleContainer ">
+						<div class="speechBubbleBackground">
+							<div class="start">
+								<div class="end">
+									<div class="middle"></div>
+								</div>
+							</div>
+						</div>
+						<div class="speechBubbleContent">3</div>
+					</div>
+								<div class="clear"></div>
+			</button>
+
+			<script type="text/javascript">
+				window.addEvent('domready', function () {
+					var button = $('buttonAzeQGXOtY6DWN');
+					if (button) {
+						var titleFunction = function () {
+							button.removeEvent('mouseenter', titleFunction);
+							Travian.Game.Layout.loadLayoutButtonTitle(button, 'hero', 'adventureWhite');
+						};
+						button.addEvent('mouseenter', titleFunction);
+					}
+				});
+
+				if ($('buttonAzeQGXOtY6DWN')) {
+					$('buttonAzeQGXOtY6DWN').addEvent('click', function () {
+						window.fireEvent('buttonClicked', [this, {
+							"type": "green",
+							"onclick": "return false;",
+							"loadTitle": true,
+							"boxId": "hero",
+							"disabled": false,
+							"speechBubble": "3",
+							"class": "",
+							"id": "buttonAzeQGXOtY6DWN",
+							"redirectUrl": "hero.php?t=3",
+							"redirectUrlExternal": ""
+						}]);
+					});
+				}
+			</script>
+		</div>
+		<div class="innerBox content">
+			<div class="heroStatusMessage">
+				<img alt="	in home village" src="./TTwars nor7_files/x.gif" class="heroStatus100">
+					in home village</div>
+
+			<div class="progressBars"> 
+				<div class="heroHealthBarBox 
+								     
+					alive
+															">
+                    <a href="https://nor7.ttwars.com/hero.php?t=1">
+                        <img src="./TTwars nor7_files/x.gif" class="injury" alt="Health">
+                    </a>
+					<div class="bar" style="width:100%"></div>
+				</div>
+
+				<div class="heroXpBarBox">
+                    <a href="https://nor7.ttwars.com/hero.php?t=1">
+                        <img src="./TTwars nor7_files/x.gif" class="iExperience" alt="Experience">
+                    </a>
+					<div class="bar" style="width:0%">
+						&nbsp;</div>
+				</div>
+			</div>
+		</div>
+		<div class="innerBox footer">
+			<button type="button" class="toggle" onclick="">
+                <div class="button-container addHoverClick">
+                                        <svg class="toggle-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 32.9">
+                        <style>
+                            .caret{fill:url(#caret_to_bottom_fill); stroke:url(#caret_to_bottom_stroke);}
+                        </style>
+                        <lineargradient id="caret_to_bottom_fill" x1="22.4983" x2="22.4983" y1="26.6416" y2="8.0344" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 33.833)">
+                            <stop offset=".1147" stop-color="#DADED4"></stop>
+                            <stop offset=".1452" stop-color="#F9FBF7"></stop>
+                            <stop offset=".1551" stop-color="#FFFFFF"></stop>
+                        </lineargradient>
+
+                        <lineargradient id="caret_to_bottom_stroke" x1="22.4983" x2="22.4983" y1="26.6416" y2="8.0344" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 33.833)">
+                            <stop offset="0" stop-color="#7C9A58"></stop>
+                            <stop offset=".2" stop-color="#60A200"></stop>
+                            <stop offset=".4" stop-color="#63A500"></stop>
+                            <stop offset="1" stop-color="#7DB211"></stop>
+                        </lineargradient>
+                        <path class="down_glow" d="M39 5.9c-.4-.5-1-.8-1.5-.9H7.4c-.6 0-1.1.2-1.5.9C5.5 6.3 5 7.7 5 9c0 .7 0 2.5.5 3.1l15.1 15.1c.4.5 1.3.7 1.9.7.6 0 1.5-.2 2-.7l14.9-15c.4-.5.6-2 .6-2.7.1-1.2-.5-3.4-1-3.6z"></path>
+                        <path class="up_glow" d="M39.2,8.2c-0.4-0.5-1.6-1-2.1-1.1l-29.2,0c-0.6,0-1.6,0.4-2.1,1C5.4,8.6,5,9.7,5,11 c0,0.7,0.1,3.3,1.3,4.8l13,13.1c0.4,0.5,2.5,1,3.1,1c0.6,0,2.7-0.5,3.8-1.5L38.4,16c1.4-1.4,1.6-3.8,1.6-4.5 C40.1,10.3,39.9,8.7,39.2,8.2z"></path>
+                        <path class="topshadow" d="M39.8 10.8c.5-1.7.1-5.7-2.5-5.8H7.2c-2.4.1-2.4 4.6-2.1 5.6 0 .1.2.1.2.1.8-.2.9-2 3.4-2.1 6.8-.1 22.1 0 28.5.1 2.6.1 2.1 1.9 2.6 2.1z"></path>
+                        <path class="bottomshadow" d="M39.4,8.9C39,8.5,38.5,8.3,38,8.2L7.1,8.3C6.5,8.3,6,8.5,5.6,9C5.2,9.4,5,9.9,5,10.5 c0,0.6-0.2,3.6,1.7,5.6l12.7,12.8c1,0.7,2,1,3.1,1c1.1,0,2.7-0.6,3.8-1.5L38.4,16c1.9-2.1,1.6-5.1,1.6-5.7 C40.1,9.8,39.9,9.3,39.4,8.9z"></path>
+                        <path class="caret" d="M38.3 8.8c-.4-.4-.9-.6-1.4-.7H8.1c-.6 0-1.1.2-1.5.7-.4.4-.6.9-.6 1.5s.2 1 .6 1.5L21 26.2c.4.4.9.6 1.5.6s1-.2 1.5-.6l14.3-14.5c.4-.4.6-.9.6-1.5.1-.5-.1-1-.6-1.4z"></path>
+                    </svg>
+                                    </div>
+			</button>
+
+			<script type="text/javascript">
+				window.addEvent('domready', function () {
+					Travian.Translation.add(
+						{
+							'hero_collapsed': 'Show information',
+							'hero_expanded': 'Hide information'
+						});
+
+					var box = $('sidebarBoxHero');
+					box.down('button.toggle').addEvent('click', function (e) {
+						Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'hero');
+					});
+				});
+			</script>
+		</div>
+	</div>
+</div><div id="sidebarBoxInfobox" class="sidebarBox toggleable expanded">
+	<div class="sidebarBoxBaseBox">
+		<div class="baseBox baseBoxTop">
+			<div class="baseBox baseBoxBottom">
+				<div class="baseBox baseBoxCenter"></div>
+			</div>
+		</div>
+	</div>
+	<div class="sidebarBoxInnerBox">
+		<div class="innerBox header ">
+			<div class="boxTitle">Info Box</div>
+        <span class="messageShortInfo">
+           ‎‭‭1‬×‬‎‏‏<img class="messages unreaded" src="./TTwars nor7_files/x.gif" alt="Messages: 3&lt;br /&gt;Unread messages: 1">
+        </span>
+		</div>
+		<div class="innerBox content">
+			<ul>
+				<li id="infoID_221" class="firstElement active unreaded"><p>You still have <span class="timer" counting="down" value="13789">3:49:49</span> hours of beginner's protection left.</p></li><li id="infoID_2" class="unreaded"><p><a class="infoboxDeleteButton" href="https://nor7.ttwars.com/build.php?id=39&amp;fastUP=0#" data-id="2"><img src="./TTwars nor7_files/x.gif" class="del" alt="del"></a>Artifacts will be released in <span class="timer" counting="down" value="81612">22:40:12</span> hours.</p></li><li id="infoID_3" class="unreaded"><p><a class="infoboxDeleteButton" href="https://nor7.ttwars.com/build.php?id=39&amp;fastUP=0#" data-id="3"><img src="./TTwars nor7_files/x.gif" class="del" alt="del"></a>Construction plans will appear in <span class="timer" counting="down" value="168012">46:40:12</span> hours.</p></li>			</ul>
+		</div>
+		<div class="innerBox footer">
+							<button type="button" class="toggle" onclick="">
+                    <div class="button-container addHoverClick">
+                                                <svg class="toggle-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 32.9">
+                            <style>
+                                .caret{fill:url(#caret_to_bottom_fill); stroke:url(#caret_to_bottom_stroke);}
+                            </style>
+                            <lineargradient id="caret_to_bottom_fill" x1="22.4983" x2="22.4983" y1="26.6416" y2="8.0344" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 33.833)">
+                                <stop offset=".1147" stop-color="#DADED4"></stop>
+                                <stop offset=".1452" stop-color="#F9FBF7"></stop>
+                                <stop offset=".1551" stop-color="#FFFFFF"></stop>
+                            </lineargradient>
+
+                            <lineargradient id="caret_to_bottom_stroke" x1="22.4983" x2="22.4983" y1="26.6416" y2="8.0344" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 33.833)">
+                                <stop offset="0" stop-color="#7C9A58"></stop>
+                                <stop offset=".2" stop-color="#60A200"></stop>
+                                <stop offset=".4" stop-color="#63A500"></stop>
+                                <stop offset="1" stop-color="#7DB211"></stop>
+                            </lineargradient>
+                            <path class="down_glow" d="M39 5.9c-.4-.5-1-.8-1.5-.9H7.4c-.6 0-1.1.2-1.5.9C5.5 6.3 5 7.7 5 9c0 .7 0 2.5.5 3.1l15.1 15.1c.4.5 1.3.7 1.9.7.6 0 1.5-.2 2-.7l14.9-15c.4-.5.6-2 .6-2.7.1-1.2-.5-3.4-1-3.6z"></path>
+                            <path class="up_glow" d="M39.2,8.2c-0.4-0.5-1.6-1-2.1-1.1l-29.2,0c-0.6,0-1.6,0.4-2.1,1C5.4,8.6,5,9.7,5,11 c0,0.7,0.1,3.3,1.3,4.8l13,13.1c0.4,0.5,2.5,1,3.1,1c0.6,0,2.7-0.5,3.8-1.5L38.4,16c1.4-1.4,1.6-3.8,1.6-4.5 C40.1,10.3,39.9,8.7,39.2,8.2z"></path>
+                            <path class="topshadow" d="M39.8 10.8c.5-1.7.1-5.7-2.5-5.8H7.2c-2.4.1-2.4 4.6-2.1 5.6 0 .1.2.1.2.1.8-.2.9-2 3.4-2.1 6.8-.1 22.1 0 28.5.1 2.6.1 2.1 1.9 2.6 2.1z"></path>
+                            <path class="bottomshadow" d="M39.4,8.9C39,8.5,38.5,8.3,38,8.2L7.1,8.3C6.5,8.3,6,8.5,5.6,9C5.2,9.4,5,9.9,5,10.5 c0,0.6-0.2,3.6,1.7,5.6l12.7,12.8c1,0.7,2,1,3.1,1c1.1,0,2.7-0.6,3.8-1.5L38.4,16c1.9-2.1,1.6-5.1,1.6-5.7 C40.1,9.8,39.9,9.3,39.4,8.9z"></path>
+                            <path class="caret" d="M38.3 8.8c-.4-.4-.9-.6-1.4-.7H8.1c-.6 0-1.1.2-1.5.7-.4.4-.6.9-.6 1.5s.2 1 .6 1.5L21 26.2c.4.4.9.6 1.5.6s1-.2 1.5-.6l14.3-14.5c.4-.4.6-.9.6-1.5.1-.5-.1-1-.6-1.4z"></path>
+                        </svg>
+                                            </div>
+				</button>
+				<script type="text/javascript">
+					window.addEvent('domready', function () {
+						Travian.Translation.add(
+							{
+								'infobox_collapsed': 'Display more messages',
+								'infobox_expanded': 'Hide messages'
+							});
+
+						var box = $('sidebarBoxInfobox');
+						box.down('button.toggle').addEvent('click', function (e) {
+							Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'infobox');
+						});
+					});
+				</script>
+						<script type="text/javascript">
+				window.addEvent('domready', function () {
+					Travian.Game.Layout.setInfoboxItemsRead();
+					Travian.Game.Layout.setupInfoboxItemsDeletionWithMessage('Delete this message permanently?', 'Confirm');
+				});
+			</script>
+		</div>
+	</div>
+</div><div id="sidebarBoxLinklist" class="sidebarBox   ">
+    <div class="sidebarBoxBaseBox">
+        <div class="baseBox baseBoxTop">
+            <div class="baseBox baseBoxBottom">
+                <div class="baseBox baseBoxCenter"></div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebarBoxInnerBox">
+        <div class="innerBox header ">
+            <button type="button" id="buttonBPHR9gouaNfpr" class="layoutButton editBlack gold" onclick="return false;">
+                <div class="button-container addHoverClick">
+                    <img src="./TTwars nor7_files/x.gif" alt="">
+                </div>
+            </button>
+
+            <script type="text/javascript">
+
+                if ($('buttonBPHR9gouaNfpr')) {
+                    $('buttonBPHR9gouaNfpr').addEvent('click', function () {
+                        window.fireEvent('buttonClicked', [this, {
+                            "type": "gold",
+                            "onclick": "return false;",
+                            "loadTitle": false,
+                            "boxId": "",
+                            "disabled": false,
+                            "speechBubble": "",
+                            "class": "",
+                            "id": "buttonBPHR9gouaNfpr",
+                            "redirectUrl": "",
+                            "redirectUrlExternal": "",
+                            "plusDialog":{"featureKey":"linkList","infoIcon":"http:\/\/t4.answers.travian.us\/index.php?aid=Help#go2answer"},"title": "Link list || Travian Plus allows you to make a link list."
+                        }]);
+                    });
+                }
+            </script>
+            <div class="clear"></div>
+            <div class="boxTitle">Link list</div>
+        </div>
+        <div class="innerBox content">
+                            <ul><li class=""><a href="https://nor7.ttwars.com/voucher.php">Gold Bank (Vouchers)</a></li><li class=""><a href="https://nor7.ttwars.com/build.php?tt=99&amp;id=39">Farmlist System</a></li><li class="newTab"><a target="_blank" style="color: orange; font-weight: bold" href="https://nor7.ttwars.com/messages.php?t=1&amp;id=2"><img src="./TTwars nor7_files/x.gif" alt="">Contact Support</a></li></ul>                <div class="linklistNotice">Travian Plus allows you to make a link list.</div>
+                    </div>
+        <div class="innerBox footer">
+        </div>
+    </div>
+</div>                <div class="clear"></div>
+            </div>
+            <div id="contentOuterContainer" class="size1">
+                                    <ul id="stockBar">
+                        <li id="stockBarWarehouseWrapper" class="stock">
+                           <i class="warehouse" alt="Warehouse"> </i>
+                                
+                            <span class="value" id="stockBarWarehouse" style="">6,000,000</span>
+                        </li>
+                        <li id="stockBarResource1" class="stockBarButton">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r1" alt="Lumber"></i>
+                                                                <span id="l1" class="value" style="">4,638,200</span>
+
+                                <div class="barBox">
+                                    <div id="lbar1" class="bar stock" style="width: 77%;"></div>
+                                </div>
+                                <a href="https://nor7.ttwars.com/production.php?t=1"><img src="./TTwars nor7_files/x.gif" alt=""></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+                        <li id="stockBarResource2" class="stockBarButton">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r2" alt="Clay"></i>
+                                                                <span id="l2" class="value" style="">4,638,177</span>
+
+                                <div class="barBox">
+                                    <div id="lbar2" class="bar stock" style="width: 77%;"></div>
+                                </div>
+                                <a href="https://nor7.ttwars.com/production.php?t=2"><img src="./TTwars nor7_files/x.gif" alt=""></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+                        <li id="stockBarResource3" class="stockBarButton">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r3" alt="Iron"></i>
+                                                                <span id="l3" class="value" style="">4,638,262</span>
+
+                                <div class="barBox">
+                                    <div id="lbar3" class="bar stock" style="width: 77%;"></div>
+                                </div>
+                                <a href="https://nor7.ttwars.com/production.php?t=3"><img src="./TTwars nor7_files/x.gif" alt=""></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+
+                        <li id="stockBarGranaryWrapper" class="stock">
+                            <i class="granary" alt="Granary"></i>
+                            <span class="value" id="stockBarGranary" style="">6,000,000</span>
+                        </li>
+
+
+                        <li id="stockBarResource4" class="stockBarButton">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r4" alt="Crop"></i>
+                                                                <span id="l4" class="value" style="">5,064,891</span>
+
+                                <div class="barBox">
+                                    <div id="lbar4" class="bar stock" style="width: 84%;"></div>
+                                </div>
+                                <a href="https://nor7.ttwars.com/production.php?t=4"><img src="./TTwars nor7_files/x.gif" alt=""></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+
+                        <li id="stockBarFreeCropWrapper" class="stockBarButton r5">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r5" alt="Free Crop"></i>
+                                <span id="stockBarFreeCrop" class="value" style="">17,279,813</span>
+                                <a href="https://nor7.ttwars.com/production.php?t=5"><img src="./TTwars nor7_files/x.gif" alt=""></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+                        <li class="clear">&nbsp;</li>
+                    </ul>
+
+                    <script type="text/javascript">
+                        var resources = {};
+
+                        resources.production = {
+                            "l1": 11680000,
+                            "l2": 11680000,
+                            "l3": 11680000,
+                            "l4": 17279813,
+                            "l5": 17279813                        };
+                        resources.storage = {
+                            "l1": 4338280.5000,
+                            "l2": 4338257.5000,
+                            "l3": 4338346.0000,
+                            "l4": 4620939.5000                        };
+                        resources.maxStorage = {
+                            "l1": 6000000,
+                            "l2": 6000000,
+                            "l3": 6000000,
+                            "l4": 6000000                        };
+
+                        $$('li.stockBarButton').each(function (element) {
+                            Travian.addMouseEvents(element, element);
+                        });
+
+                        var stockBarWarehouse = $('stockBarWarehouse');
+                        var stockBarGranary = $('stockBarGranary');
+                        var stockBarFreeCrop = $('stockBarFreeCrop');
+                        var numberFormatter = new Travian.Formatter({forceDecimal: false});
+
+                        stockBarWarehouse.set('html', numberFormatter.getFormattedNumber(parseInt(stockBarWarehouse.get('html'))));
+                        stockBarGranary.set('html', numberFormatter.getFormattedNumber(parseInt(stockBarGranary.get('html'))));
+                        stockBarFreeCrop.set('html', numberFormatter.getFormattedNumber(parseInt(stockBarFreeCrop.get('html'))));
+
+                    </script>
+                                <div class="contentTitle">
+                                            <a id="closeContentButton" class="contentTitleButton" href="https://nor7.ttwars.com/dorf2.php">
+                            &nbsp;</a>
+                                                                <a id="answersButton" class="contentTitleButton" href="http://t4.answers.ttwars.com/?lang=en&amp;aid=1#go2answer" target="_blank">&nbsp;</a>
+                                    </div>
+                <div class="contentContainer">
+                    <div id="content" class="build">
+                        <h1 class="titleInHeader">Rally Point <span class="level">level 1</span></h1><div id="build" class="gid16 level1">
+    <a id="tabFavorButton" class="contentTitleButton" onclick="
+           Travian.ajax(
+           {
+           data:
+           {
+           cmd: &#39;tabFavorite&#39;,
+           name: &#39;buildingRallyPoint&#39;,
+           number: &#39;0&#39;
+           },
+           onSuccess: function(data)
+           {
+           if (data.success)
+           {
+           $$(&#39;.favor&#39;).removeClass(&#39;favorActive&#39;);
+           $$(&#39;.favor.favorKey0&#39;).addClass(&#39;favorActive&#39;);
+           }
+           }
+           });
+           return false;
+           ">&nbsp;</a>
+
+<div class="contentNavi subNavi ">
+    <div class="container active">
+        <div class="background-start">&nbsp;</div>
+        <div class="background-end">&nbsp;</div>
+        <div class="content favor favorActive favorKey0">
+
+            <a id="buttonDSoefTufSj6Qp" href="https://nor7.ttwars.com/build.php?tt=0&amp;id=39" class="tabItem">
+                Management <img src="./TTwars nor7_files/x.gif" class="favorIcon" alt="This tab is set as favourite">
+            </a>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        if ($('buttonDSoefTufSj6Qp')) {
+            $('buttonDSoefTufSj6Qp').addEvent('click', function () {
+                window.fireEvent('tabClicked', [this, {
+                    "class": "active",
+                    "title": "Management",
+                    "target": false,
+                    "id": "buttonDSoefTufSj6Qp",
+                    "href": "build.php?tt=0&amp;id=39",
+                    "onclick": false,
+                    "enabled": true,
+                    "['text']": "Management",
+                    "dialog": false,
+                    "plusDialog": false,
+                    "goldclubDialog": false,
+                    "containerId": "",
+                    "buttonIdentifier": "buttonDSoefTufSj6Qp"
+                }]);
+
+            });
+        }
+    </script>
+            <div class="container normal" style="height: 31px; margin-top: 8px;">
+            <div class="background-start">&nbsp;</div>
+            <div class="background-end">&nbsp;</div>
+            <div id="OverviewRallyPoint" class="content favor  favorKey1">
+
+                <a id="buttonuWFAVpB1TCznw" href="https://nor7.ttwars.com/build.php?tt=1&amp;id=39" class="tabItem">
+                    Overview <img src="./TTwars nor7_files/x.gif" class="favorIcon" alt="This tab is set as favourite">
+                </a>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            if ($('buttonuWFAVpB1TCznw')) {
+                $('buttonuWFAVpB1TCznw').addEvent('click', function () {
+                    window.fireEvent('tabClicked', [this, {
+                        "class": "normal",
+                        "title": "Overview",
+                        "target": false,
+                        "id": "buttonuWFAVpB1TCznw",
+                        "href": "build.php?tt=1&amp;id=39",
+                        "onclick": false,
+                        "enabled": true,
+                        "['text']": "Overview",
+                        "dialog": false,
+                        "plusDialog": false,
+                        "goldclubDialog": false,
+                        "containerId": "OverviewRallyPoint",
+                        "buttonIdentifier": "buttonuWFAVpB1TCznw"
+                    }]);
+
+                });
+            }
+        </script>
+
+        <div class="container normal" style="height: 31px; margin-top: 8px;">
+            <div class="background-start">&nbsp;</div>
+            <div class="background-end">&nbsp;</div>
+            <div class="content favor  favorKey2">
+
+                <a id="buttonvb7thfwHiQLpV" href="https://nor7.ttwars.com/build.php?tt=2&amp;id=39" class="tabItem">
+                    Send Troops <img src="./TTwars nor7_files/x.gif" class="favorIcon" alt="This tab is set as favourite">
+                </a>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            if ($('buttonvb7thfwHiQLpV')) {
+                $('buttonvb7thfwHiQLpV').addEvent('click', function () {
+                    window.fireEvent('tabClicked', [this, {
+                        "class": "normal",
+                        "title": "Send Troops",
+                        "target": false,
+                        "id": "buttonvb7thfwHiQLpV",
+                        "href": "build.php?tt=2&amp;id=39",
+                        "onclick": false,
+                        "enabled": true,
+                        "['text']": "Send Troops",
+                        "dialog": false,
+                        "plusDialog": false,
+                        "goldclubDialog": false,
+                        "containerId": "",
+                        "buttonIdentifier": "buttonvb7thfwHiQLpV"
+                    }]);
+
+                });
+            }
+        </script>
+
+        <div class="container normal" style="height: 31px; margin-top: 8px;">
+            <div class="background-start">&nbsp;</div>
+            <div class="background-end">&nbsp;</div>
+            <div class="content favor  favorKey3">
+
+                <a id="buttonS6RolNtMpWfVB" href="https://nor7.ttwars.com/build.php?tt=3&amp;id=39" class="tabItem">
+                    Combat Simulator <img src="./TTwars nor7_files/x.gif" class="favorIcon" alt="This tab is set as favourite">
+                </a>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            if ($('buttonS6RolNtMpWfVB')) {
+                $('buttonS6RolNtMpWfVB').addEvent('click', function () {
+                    window.fireEvent('tabClicked', [this, {
+                        "class": "normal",
+                        "title": "Combat Simulator",
+                        "target": false,
+                        "id": "buttonS6RolNtMpWfVB",
+                        "href": "build.php?tt=3&amp;id=39",
+                        "onclick": false,
+                        "enabled": true,
+                        "['text']": "Combat Simulator",
+                        "dialog": false,
+                        "plusDialog": false,
+                        "goldclubDialog": false,
+                        "containerId": "",
+                        "buttonIdentifier": "buttonS6RolNtMpWfVB"
+                    }]);
+
+                });
+            }
+        </script>
+        <div class="container gold normal">
+        <div class="background-start">&nbsp;</div>
+        <div class="background-end">&nbsp;</div>
+        <div class="content favor  favorKey99">
+
+            <a id="buttonXx9CyqdVL2r1h" href="https://nor7.ttwars.com/build.php?id=39&amp;fastUP=0#" class="tabItem">
+                Farm list                <img src="./TTwars nor7_files/x.gif" class="favorIcon" alt="This tab is set as favourite">
+            </a>
+        </div>
+    </div>
+
+            <script type="text/javascript">
+            if ($('buttonXx9CyqdVL2r1h')) {
+                $('buttonXx9CyqdVL2r1h').addEvent('click', function () {
+                    window.fireEvent('tabClicked', [this, {
+                        "class": "gold normal",
+                        "title": "Farm list||For this feature you need the Gold club activated.",
+                        "target": false,
+                        "id": "buttonXx9CyqdVL2r1h",
+                        "href": "#",
+                        "onclick": false,
+                        "enabled": true,
+                        "text": "Farm list",
+                        "dialog": false,
+                        "plusDialog": false,
+                        "goldclubDialog": {
+                            "featureKey": "raidList",
+                            "infoIcon": "http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer"
+                        },
+                        "containerId": "",
+                        "buttonIdentifier": "buttonXx9CyqdVL2r1h"
+                    }]);
+
+                });
+            }
+        </script>
+
+    
+    <div class="clear"></div>
+</div>
+
+<script type="text/javascript">
+    window.addEvent('domready', function () {
+        $$('.subNavi').each(function (element) {
+            new Travian.Game.Menu(element);
+        });
+    });
+</script>
+
+    <div id="descriptionAndInfo">
+        <div class="build_desc">
+            Your village's troops gather here.  From here, you can send them out to conquer, raid or reinforce other villages. <br><br>The rally point can only be built on the green grassland below and to the right of your main building.<br><br>If there are less attacking units than the level of the rally point, you can see the type of unit attacking.         </div>
+        <div class="clear"></div>
+            </div>
+            <script type="text/javascript">
+            function getGidX() {
+                return {additionalData: {gid: 39}};
+            }
+        </script>
+                <div class="roundedCornersBox big">
+            <div class="stickyImage">
+                <a class="build_logo" onclick="return Travian.Game.iPopup(16, 4);" href="https://nor7.ttwars.com/build.php?id=39&amp;fastUP=0#">
+                    <img class="big black g16" alt="Rally Point" src="./TTwars nor7_files/x.gif">
+                </a>
+            </div>
+            <h4>Rally Point</h4>
+            <div id="contractSpacer"></div>
+           
+                
+                    <div id="contract" class="contractWrapper">
+                    <div class="inlineIconList resourceWrapper">
+                    <div class="inlineIcon resource"><i class="r1Big" alt="Lumber"></i>140</div>
+                            <div class="inlineIcon resource"><i class="r2Big" alt="Clay"></i>205</div>
+                            <div class="inlineIcon resource"><i class="r3Big" alt="Iron"></i>115</div>
+                            <div class="inlineIcon resource"><i class="r4Big" alt="Crop"></i>90</div>
+                            <div class="inlineIcon resource"><i class="r5Big" alt="Free Crop"></i>1</div>
+										
+								</div> </div>
+                            <div class="sections">
+                                <div class="section1">
+                                                                    </div>
+                                <div class="section2">
+                                                                    </div>
+                            </div>
+                            <div class="clear"></div>
+                      
+                   
+               
+            
+                        <div class="upgradeButtonsContainer section2Enabled">
+                                <div class="section1">
+                                        <button type="button" class="green build" onclick="window.location.href = &#39;dorf2.php?a=39&amp;c=cec1ab531&#39;; return false;" id="buttonRmpGunqPZLssH"><div class="button-container addHoverClick">
+		<div class="button-background">
+			<div class="buttonStart">
+				<div class="buttonEnd">
+					<div class="buttonMiddle"></div>
+				</div>
+			</div>
+		</div>
+		<div class="button-content">Upgrade to level 2</div></div></button>
+    <script type="text/javascript" id="buttonRmpGunqPZLssH_script">
+    window.addEvent('domready', function()
+        {
+        if($('buttonRmpGunqPZLssH'))
+        {
+          $('buttonRmpGunqPZLssH').addEvent('click', function ()
+          {
+            window.fireEvent('buttonClicked', [this, {"class":"green build","onclick":"window.location.href = 'dorf2.php?a=39&c=cec1ab531'; return false;","id":"buttonRmpGunqPZLssH"}]);
+          });
+        }
+        });
+    </script>                    <br>
+                                                                                <div class="clear"></div>
+                    <div class="inlineIcon duration">
+                        <i class="clock_medium" alt="duration"></i>
+                        0:00:00                    </div>
+                                    </div>
+                                                <div class="section2">
+                        <button type="button" class="gold upgradeToMaxLevel" coins="5" id="buttonymzgAMV7KN5C0"><div class="button-container addHoverClick">
+		<div class="button-background">
+			<div class="buttonStart">
+				<div class="buttonEnd">
+					<div class="buttonMiddle"></div>
+				</div>
+			</div>
+		</div>
+		<div class="button-content">Upgrade to max level<img src="./TTwars nor7_files/x.gif" class="goldIcon" alt=""><span class="goldValue">5</span></div></div></button>
+    <script type="text/javascript" id="buttonymzgAMV7KN5C0_script">
+    window.addEvent('domready', function()
+        {
+        if($('buttonymzgAMV7KN5C0'))
+        {
+          $('buttonymzgAMV7KN5C0').addEvent('click', function ()
+          {
+            window.fireEvent('buttonClicked', [this, {"type":"button","value":"Upgrade to max level","confirm":"","onclick":"","wayOfPayment":{"featureKey":"upgradeToMaxLevel","context":"ExtraModules","dataCallback":"getGidX"},"onClick":"","title":"Upgrade to max level","coins":5,"id":"buttonymzgAMV7KN5C0"}]);
+          });
+        }
+        });
+    </script>                        <div class="clear"></div>
+                    </div>
+                                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+    
+                    <div class="clear"></div>
+<br>
+<a name="troopEscape"></a>
+<h4 class="round">Evasion settings</h4>
+    <div class="build_desc"><p>With the Gold club you can order the troops in your capital village to flee from attacks.</p>
+        <button type="button" class="gold builder " id="buttonfJBnZA9YsceWU"><div class="button-container addHoverClick">
+		<div class="button-background">
+			<div class="buttonStart">
+				<div class="buttonEnd">
+					<div class="buttonMiddle"></div>
+				</div>
+			</div>
+		</div>
+		<div class="button-content">Gold club</div></div></button>
+    <script type="text/javascript" id="buttonfJBnZA9YsceWU_script">
+    window.addEvent('domready', function()
+        {
+        if($('buttonfJBnZA9YsceWU'))
+        {
+          $('buttonfJBnZA9YsceWU').addEvent('click', function ()
+          {
+            window.fireEvent('buttonClicked', [this, {"type":"button","class":"gold builder ","value":"Gold club","goldclubDialog":{"featureKey":"troopEscape","infoIcon":"http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer"},"title":"Evasion in capital||For this feature you need the Gold club activated.","id":"buttonfJBnZA9YsceWU"}]);
+          });
+        }
+        });
+    </script>    </div>
+</div>                        <div class="clear"></div>
+                    </div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+                <div class="contentFooter"></div>
+            </div>
+            <div id="sidebarAfterContent" class="sidebar afterContent">
+                <div id="sidebarBoxActiveVillage" class="sidebarBox   ">
+	<div class="sidebarBoxBaseBox">
+		<div class="baseBox baseBoxTop">
+			<div class="baseBox baseBoxBottom">
+				<div class="baseBox baseBoxCenter"></div>
+			</div>
+		</div>
+	</div>
+	<div class="sidebarBoxInnerBox">
+		<div class="innerBox header ">
+			<button id="buttonSKdzVVlDoQT2w" type="button" class="layoutButton workshopBlack gold disabled" onclick="if($(this).hasClass(&#39;disabled&#39;)){(new DOMEvent(event)).stop(); return false;} else {}" onfocus="$$(&#39;button&#39;, &#39;input[type!=hidden]&#39;, &#39;select&#39;).set(&#39;focus&#39;, true); (new DOMEvent(event)).stop(); return false;"><div class="button-container addHoverClick">
+		<img src="./TTwars nor7_files/x.gif" alt="">
+	</div></button>
+    <script type="text/javascript" id="buttonSKdzVVlDoQT2w_script">
+    window.addEvent('domready', function()
+        {
+        if($('buttonSKdzVVlDoQT2w'))
+        {
+          $('buttonSKdzVVlDoQT2w').addEvent('click', function ()
+          {
+            window.fireEvent('buttonClicked', [this, {"class":"","type":"gold","loadTitle":false,"boxId":"activeVillage","disabled":true,"speechBubble":"","plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer"},"redirectUrl":"","title":"Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;&lt;span class=&quot;warning&quot;&gt;There is no workshop in this village.&lt;\/span&gt;","onclick":"if($(this).hasClass('disabled')){(new DOMEvent(event)).stop(); return false;} else {}","onfocus":"$$('button', 'input[type!=hidden]', 'select').set('focus', true); (new DOMEvent(event)).stop(); return false;","id":"buttonSKdzVVlDoQT2w"}]);
+          });
+        }
+        });
+    </script>						<button id="buttonUxtqEEnSupp8s" type="button" class="layoutButton stableBlack gold disabled" onclick="if($(this).hasClass(&#39;disabled&#39;)){(new DOMEvent(event)).stop(); return false;} else {}" onfocus="$$(&#39;button&#39;, &#39;input[type!=hidden]&#39;, &#39;select&#39;).set(&#39;focus&#39;, true); (new DOMEvent(event)).stop(); return false;"><div class="button-container addHoverClick">
+		<img src="./TTwars nor7_files/x.gif" alt="">
+	</div></button>
+    <script type="text/javascript" id="buttonUxtqEEnSupp8s_script">
+    window.addEvent('domready', function()
+        {
+        if($('buttonUxtqEEnSupp8s'))
+        {
+          $('buttonUxtqEEnSupp8s').addEvent('click', function ()
+          {
+            window.fireEvent('buttonClicked', [this, {"class":"","type":"gold","loadTitle":false,"boxId":"activeVillage","disabled":true,"speechBubble":"","plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer"},"redirectUrl":"","title":"Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;&lt;span class=&quot;warning&quot;&gt;There is no stable in this village.&lt;\/span&gt;","onclick":"if($(this).hasClass('disabled')){(new DOMEvent(event)).stop(); return false;} else {}","onfocus":"$$('button', 'input[type!=hidden]', 'select').set('focus', true); (new DOMEvent(event)).stop(); return false;","id":"buttonUxtqEEnSupp8s"}]);
+          });
+        }
+        });
+    </script>						<button id="buttonLG5RPDv5Og76q" type="button" class="layoutButton barracksBlack gold disabled" onclick="if($(this).hasClass(&#39;disabled&#39;)){(new DOMEvent(event)).stop(); return false;} else {}" onfocus="$$(&#39;button&#39;, &#39;input[type!=hidden]&#39;, &#39;select&#39;).set(&#39;focus&#39;, true); (new DOMEvent(event)).stop(); return false;"><div class="button-container addHoverClick">
+		<img src="./TTwars nor7_files/x.gif" alt="">
+	</div></button>
+    <script type="text/javascript" id="buttonLG5RPDv5Og76q_script">
+    window.addEvent('domready', function()
+        {
+        if($('buttonLG5RPDv5Og76q'))
+        {
+          $('buttonLG5RPDv5Og76q').addEvent('click', function ()
+          {
+            window.fireEvent('buttonClicked', [this, {"class":"","type":"gold","loadTitle":false,"boxId":"activeVillage","disabled":true,"speechBubble":"","plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer"},"redirectUrl":"","title":"Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;&lt;span class=&quot;warning&quot;&gt;There is no barracks in this village.&lt;\/span&gt;","onclick":"if($(this).hasClass('disabled')){(new DOMEvent(event)).stop(); return false;} else {}","onfocus":"$$('button', 'input[type!=hidden]', 'select').set('focus', true); (new DOMEvent(event)).stop(); return false;","id":"buttonLG5RPDv5Og76q"}]);
+          });
+        }
+        });
+    </script>						<button id="button7ZOcg6QHaPJjL" type="button" class="layoutButton marketBlack gold" onclick="return false;"><div class="button-container addHoverClick">
+		<img src="./TTwars nor7_files/x.gif" alt="">
+	</div></button>
+    <script type="text/javascript" id="button7ZOcg6QHaPJjL_script">
+    window.addEvent('domready', function()
+        {
+        if($('button7ZOcg6QHaPJjL'))
+        {
+          $('button7ZOcg6QHaPJjL').addEvent('click', function ()
+          {
+            window.fireEvent('buttonClicked', [this, {"class":"","type":"gold","loadTitle":false,"boxId":"activeVillage","disabled":false,"speechBubble":"","plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer"},"redirectUrl":"build.php?id=20","title":"Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;","onclick":"return false;","id":"button7ZOcg6QHaPJjL"}]);
+          });
+        }
+        });
+    </script>						<div class="clear"></div>
+			<div id="villageNameField" class="boxTitle">vinaghost`s village</div>
+		</div>
+		<div class="innerBox content">
+			<div class="loyalty medium">
+				Loyalty:
+				<span>‎‭‭100‬%‬‎</span>
+			</div>
+		</div>
+		<div class="innerBox footer">
+			<button type="button" class="layoutButton editWhite green " onclick="return false;" id="buttonhDkLwV3nJcmiL"><div class="button-container addHoverClick">
+		<img src="./TTwars nor7_files/x.gif" alt="">
+	</div></button>
+    <script type="text/javascript" id="buttonhDkLwV3nJcmiL_script">
+    window.addEvent('domready', function()
+        {
+        if($('buttonhDkLwV3nJcmiL'))
+        {
+          $('buttonhDkLwV3nJcmiL').addEvent('click', function ()
+          {
+            window.fireEvent('buttonClicked', [this, {"type":"green","title":"change Village Name.","loadTitle":false,"boxId":"activeVillage","disabled":true,"speechBubble":"","villageDialog":{"title":"change Village Name.","description":"new Village Name:","saveText":"save","villageId":"22791"},"onclick":"return false;","id":"buttonhDkLwV3nJcmiL"}]);
+          });
+        }
+        });
+    </script>		</div>
+	</div>
+</div><div id="sidebarBoxVillagelist" class="sidebarBox toggleable collapsed ">
+    <div class="sidebarBoxBaseBox">
+        <div class="baseBox baseBoxTop">
+            <div class="baseBox baseBoxBottom">
+                <div class="baseBox baseBoxCenter"></div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebarBoxInnerBox">
+        <div class="innerBox header ">
+            <button type="button" id="buttontqsOv9AyEpjzg" class="layoutButton toggleCoordsWhite green  toggle" onclick="return false;">
+                <div class="button-container addHoverClick">
+                    <img src="./TTwars nor7_files/x.gif" alt="">
+                </div>
+
+            </button>
+
+            <script type="text/javascript">
+
+                if ($('buttontqsOv9AyEpjzg')) {
+                    $('buttontqsOv9AyEpjzg').addEvent('click', function () {
+                        window.fireEvent('buttonClicked', [this, {
+                            "type": "green",
+                            "onclick": "return false;",
+                            "loadTitle": false,
+                            "boxId": "",
+                            "disabled": false,
+                            "speechBubble": "",
+                            "class": "toggle",
+                            "id": "buttontqsOv9AyEpjzg",
+                            "redirectUrl": "",
+                            "redirectUrlExternal": ""
+                        }]);
+                    });
+                }
+            </script>
+            <button type="button" id="buttonZFw24FFo29Ru0" class="layoutButton overviewWhite green  " onclick="return false;">
+                <div class="button-container addHoverClick">
+                    <img src="./TTwars nor7_files/x.gif" alt="">
+                </div>
+            </button>
+            <script type="text/javascript">
+                if ($('buttonZFw24FFo29Ru0')) {
+                    $('buttonZFw24FFo29Ru0').addEvent('click', function () {
+                        window.fireEvent('buttonClicked', [this, {
+                            "type": "green",
+                            "onclick": "return false;",
+                            "loadTitle": false,
+                            "boxId": "",
+                            "disabled": false,
+                            "speechBubble": "",
+                            "class": "",
+                            "id": "buttonZFw24FFo29Ru0",
+                            "redirectUrl": "dorf3.php",
+                            "redirectUrlExternal": ""
+                        }]);
+                    });
+                }
+            </script>
+                            <style type="text/css">
+                    button.layoutButton.buildOff div.button-container img {
+                        background-position: left -758px;
+                    }
+
+                    button.layoutButton.buildOn div.button-container img {
+                        background-position: left -800px;
+                    }
+                </style>
+                            <button type="button" id="buttonBuild" class="layoutButton buildOff green" onclick="return false;">
+                    <div class="button-container addHoverClick ">
+                        <img src="./TTwars nor7_files/x.gif" alt="">
+                    </div>
+                </button>
+                <script type="text/javascript">
+
+                    if ($('buttonBuild')) {
+                        $('buttonBuild').addEvent('click', function () {
+                            window.fireEvent('buttonClicked', [this, {
+                                "type": "green",
+                                "onclick": "return false;",
+                                "loadTitle": false,
+                                "boxId": "",
+                                "disabled": false,
+                                "speechBubble": "",
+                                "class": "",
+                                "id": "buttonBuild",
+                                "redirectUrl": "?toggleFastUp",
+                                "redirectUrlExternal": ""
+                            }]);
+                        });
+                    }
+                </script>
+                        <div class="clear"></div>
+            <div class="expansionSlotInfo">
+                <div class="boxTitleAdditional">‭‭‭1‬‬/‭‭1                    ‬‬‬‎
+                </div>
+                <div class="boxTitle">Villages</div>
+                <div class="villageListBarBox">
+                    <div class="bar" style="width:1.6%">
+                        &nbsp;
+                    </div>
+                </div>
+            </div>
+
+            <script type="text/javascript">
+                window.addEvent('domready', function () {
+                    Travian.Translation.add(
+                        {
+                            'villagelist_collapsed': 'show Coordinates',
+                            'villagelist_expanded': 'hide Coordinates'
+                        });
+
+                    var box = $('sidebarBoxVillagelist');
+                    box.down('button.toggle').addEvent('click', function (e) {
+                        Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'villagelist');
+                    });
+                });
+            </script>
+        </div>
+        <div class="innerBox content">
+            <ul>
+                <li class="active"><a href="https://nor7.ttwars.com/build.php?newdid=22791&amp;id=39&amp;gid=16&amp;tt=0" accesskey="b" class="active"><img src="./TTwars nor7_files/x.gif" alt=""><div class="name">vinaghost`s village</div>‎<span class="coordinates coordinatesWrapper coordinatesAligned coordinatesLTR"><span class="coordinateX">(-23</span><span class="coordinatePipe">|</span><span class="coordinateY">-13)</span></span>;</a> </li>            </ul>
+        </div>
+        <div class="innerBox footer">
+        </div>
+    </div>
+</div><div id="sidebarBoxDailyquests" class="sidebarBox   ">
+	<div class="sidebarBoxBaseBox">
+		<div class="baseBox baseBoxTop">
+			<div class="baseBox baseBoxBottom">
+				<div class="baseBox baseBoxCenter"></div>
+			</div>
+		</div>
+	</div>
+	<div class="sidebarBoxInnerBox">
+		<div class="innerBox header ">
+            <div class="travianBirthdayRibbon" id="travianBirthdayRibbon">
+                <div class="headline">Daily Quests </div>
+            </div>
+			<div class="boxTitle">Collect daily rewards</div>
+		</div>
+		<div class="innerBox content">
+			<form>
+				<div class="questAchievementContainer">
+					<button type="submit" value="Click for details" id="buttonKh7bgtGPVWNSA" class="green questButtonOverviewAchievements" questbuttonoverviewachievements="1" onclick="return false;">
+						<div class="button-container addHoverClick ">
+							<div class="button-background">
+								<div class="buttonStart">
+									<div class="buttonEnd">
+										<div class="buttonMiddle"></div>
+									</div>
+								</div>
+							</div>
+							<div class="button-content">Click for details</div>
+						</div>
+					</button>
+					<script type="text/javascript">
+						window.addEvent('domready', function () {
+							if ($('buttonKh7bgtGPVWNSA')) {
+								$('buttonKh7bgtGPVWNSA').addEvent('click', function () {
+									window.fireEvent('buttonClicked', [this, {
+										"type": "submit",
+										"value": "Click for details",
+										"name": "",
+										"id": "buttonKh7bgtGPVWNSA",
+										"class": "green questButtonOverviewAchievements",
+										"title": "",
+										"confirm": "",
+										"onclick": "",
+										"questButtonOverviewAchievements": true,
+										"onClick": "return false;"
+									}]);
+								});
+							}
+						});
+					</script>
+				</div>
+			</form>
+			<script type="text/javascript">
+								window.addEvent('domready', function () {
+					Travian.Game.Quest.addListData({"achievementquests":{"questsTotal":10,"questsCompleted":2,"name":"Achievement Quests","quests":{"AchievementQuest_01":{"id":"AchievementQuest_01","name":"achievementQuests.achQuest_01_name","category":"achievementquests","stepType":"achievementtask","currentStep":"0","stepCount":1,"steps":[{"stepId":0,"type":"achievementtask","stepDescription":null}],"answersLink":"http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_01_answer (en)%%#go2answer"},"AchievementQuest_02":{"id":"AchievementQuest_02","name":"achievementQuests.achQuest_02_name","category":"achievementquests","stepType":"achievementtask","currentStep":"0","stepCount":3,"steps":[{"stepId":0,"type":"achievementtask","stepDescription":null},{"stepId":1,"type":"achievementtask","stepDescription":null},{"stepId":2,"type":"achievementtask","stepDescription":null}],"answersLink":"http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_02_answer (en)%%#go2answer"},"AchievementQuest_03":{"id":"AchievementQuest_03","name":"achievementQuests.achQuest_03_name","category":"achievementquests","stepType":"achievementtask","currentStep":"0","stepCount":3,"steps":[{"stepId":0,"type":"achievementtask","stepDescription":null},{"stepId":1,"type":"achievementtask","stepDescription":null},{"stepId":2,"type":"achievementtask","stepDescription":null}],"answersLink":"http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_03_answer (en)%%#go2answer"},"AchievementQuest_04":{"id":"AchievementQuest_04","name":"achievementQuests.achQuest_04_name","category":"achievementquests","stepType":"achievementtask","currentStep":"0","stepCount":1,"steps":[{"stepId":0,"type":"achievementtask","stepDescription":null}],"answersLink":"http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_04_answer (en)%%#go2answer"},"AchievementQuest_05":{"id":"AchievementQuest_05","name":"achievementQuests.achQuest_05_name","category":"achievementquests","stepType":"achievementtask","currentStep":"0","stepCount":3,"steps":[{"stepId":0,"type":"achievementtask","stepDescription":null},{"stepId":1,"type":"achievementtask","stepDescription":null},{"stepId":2,"type":"achievementtask","stepDescription":null}],"answersLink":"http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_05_answer (en)%%#go2answer"},"AchievementQuest_08":{"id":"AchievementQuest_08","name":"achievementQuests.achQuest_08_name","category":"achievementquests","stepType":"achievementtask","currentStep":"0","stepCount":3,"steps":[{"stepId":0,"type":"achievementtask","stepDescription":null},{"stepId":1,"type":"achievementtask","stepDescription":null},{"stepId":2,"type":"achievementtask","stepDescription":null}],"answersLink":"http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_08_answer (en)%%#go2answer"},"AchievementQuest_09":{"id":"AchievementQuest_09","name":"achievementQuests.achQuest_09_name","category":"achievementquests","stepType":"achievementtask","currentStep":"0","stepCount":3,"steps":[{"stepId":0,"type":"achievementtask","stepDescription":null},{"stepId":1,"type":"achievementtask","stepDescription":null},{"stepId":2,"type":"achievementtask","stepDescription":null}],"answersLink":"http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_09_answer (en)%%#go2answer"},"AchievementQuest_10":{"id":"AchievementQuest_10","name":"achievementQuests.achQuest_10_name","category":"achievementquests","stepType":"achievementtask","currentStep":"0","stepCount":3,"steps":[{"stepId":0,"type":"achievementtask","stepDescription":null},{"stepId":1,"type":"achievementtask","stepDescription":null},{"stepId":2,"type":"achievementtask","stepDescription":null}],"answersLink":"http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_10_answer (en)%%#go2answer"}}},"achievementrewards":{"questsTotal":4,"questsCompleted":0,"name":"Achievement Rewards","quests":{"AchievementQuestReward_01":{"id":"AchievementQuestReward_01","name":"achievementQuests.achQuestReward_01_name","category":"achievementrewards","stepType":"reward","currentStep":0,"stepCount":1,"steps":{"stepId":0,"type":"reward"},"answersLink":"http:\/\/t4.answers.travian.com\/index.php?aid=%%achievementQuests.achQuestReward_01_answer (en)%%#go2answer"}}}});
+				});
+			</script>
+		</div>
+		<div class="innerBox footer">
+		</div>
+	</div>
+</div><div id="sidebarBoxDailyquests" class="sidebarBox   ">
+	<div class="sidebarBoxBaseBox">
+		<div class="baseBox baseBoxTop">
+			<div class="baseBox baseBoxBottom">
+				<div class="baseBox baseBoxCenter"></div>
+			</div>
+		</div>
+	</div>
+	<div class="sidebarBoxInnerBox">
+		<div class="innerBox header ">
+                <div class="travianBirthdayRibbon" id="travianBirthdayRibbon">
+                    <div class="headline">Earn free gold!</div>
+                </div>
+                <div class="boxTitle">Earn free gold!</div>
+            </div>
+		<div class="innerBox content">
+			<form>
+				<div class="questAchievementContainer">
+					<button type="submit" value="Click for details" id="buttonvMzneSFRICP5R" class="green questButtonOverviewAchievements" onclick="openVoting(); return false;">
+						<div class="button-container addHoverClick">
+							<div class="button-background">
+								<div class="buttonStart">
+									<div class="buttonEnd">
+										<div class="buttonMiddle"></div>
+									</div>
+								</div>
+							</div>
+							<div class="button-content">Click for details</div>
+						</div>
+					</button>
+				</div>
+			</form>
+            <script type="text/javascript">
+                function openVoting(){
+                    Travian.ajax({
+                        data: {cmd: "Voting", action: "showVotes"}, onSuccess: function (a) {
+                            (a.html).dialog({buttonOk: false})
+                        }
+                    })
+                }
+            </script>
+		</div>
+		<div class="innerBox footer">
+		</div>
+	</div>
+</div><div id="sidebarBoxQuestmaster" class="sidebarBox   ">
+	<div class="sidebarBoxBaseBox">
+		<div class="baseBox baseBoxTop">
+			<div class="baseBox baseBoxBottom">
+				<div class="baseBox baseBoxCenter"></div>
+			</div>
+		</div>
+	</div>
+	<div class="sidebarBoxInnerBox">
+		<div class="innerBox header ">
+			<button id="questmasterButton" title="" class="forceDisplayElement vid_2 highlighted on " type="button">
+				<img class="border" alt="" src="./TTwars nor7_files/x.gif">
+				<img class="animation" alt="" src="./TTwars nor7_files/x.gif">
+				<img class="mentor" alt="" src="./TTwars nor7_files/x.gif">
+									<div class="bigSpeechBubble newQuestSpeechBubble" title="">
+						<img src="./TTwars nor7_files/x.gif" alt="">
+					</div>
+							</button>
+
+			<button type="button" id="buttonYoW7V0YV6B3FQ" class="layoutButton bulbWhite green  " onclick="return false;">
+				<div class="button-container addHoverClick">
+					<img src="./TTwars nor7_files/x.gif" alt="">
+				</div>
+			</button>
+
+			<script type="text/javascript">
+
+				if ($('buttonYoW7V0YV6B3FQ')) {
+					$('buttonYoW7V0YV6B3FQ').addEvent('click', function () {
+						window.fireEvent('buttonClicked', [this, {
+							"type": "green",
+							"onclick": "return false;",
+							"loadTitle": false,
+							"boxId": "",
+							"disabled": false,
+							"speechBubble": "",
+							"class": "",
+							"id": "buttonYoW7V0YV6B3FQ",
+							"redirectUrl": "",
+							"redirectUrlExternal": "",
+							"overlay": []
+						}]);
+					});
+				}
+			</script>
+			<div class="clear"></div>
+			<div class="boxTitle">Avoid tasks</div>
+
+			<script type="text/javascript">
+				window.addEvent('domready', function () {
+					Travian.Game.Quest.setOptions({
+						isTutorial: true					});
+										// Dialog an den Questmaster binden
+					$('questmasterButton').addEvent('click', function () {
+						Travian.Game.Quest.mentorClick('Tutorial_15a');
+					});
+				});
+			</script>
+			<div>
+				<script type="text/javascript">
+					Travian.Game.Quest.createHighlights();
+					Travian.Game.Quest.toggleHighlights(true);
+					$$('.questInformation .iconButton.small.cancel').addEvent('click', function () {
+						setTimeout(function () {
+							Travian.Game.Quest.createHighlights();
+							Travian.Game.Quest.toggleHighlights(true);
+						}, 500);
+					});
+
+				</script>
+			</div>
+		</div>
+		<div class="innerBox content">
+			<ul id="mentorTaskList" class="notClickable">
+				<li>Skip tutorial</li>				<script type="text/javascript">
+					Travian.Translation.add('answers.tutorial_01_title', "Travian Answers");
+				</script>
+							</ul>
+			<script type="text/javascript">
+				window.addEvent('domready', function () {
+					Travian.Game.Quest.setOptions(
+						{tipsTurnoffAjaxTrigger: 1,tutorialData: {"id":"Tutorial_15a","name":"questV2.tutorial_15a_name","category":"tutorial","stepType":"reward","currentStep":"0","stepCount":1,"steps":[{"stepId":0,"type":"reward"}],"answersLink":"http:\/\/t4.answers.travian.com\/index.php?aid=332#go2answer"},highlightSelectors: []}					);
+					Travian.Game.Quest.addListData([]);
+
+					Travian.Game.Quest.bindListDelegation();
+					Travian.Game.Quest.createHighlights();
+					Travian.Game.Quest.initializeQuests();
+				});
+			</script>
+
+		</div>
+		<div class="innerBox footer">
+		</div>
+	</div>
+</div>                <div class="clear"></div>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+        <div id="footer">
+            
+            <div id="pageLinks">
+                <a href="http://www.ttwars.com/" target="_blank">Homepage</a>
+                <a href="https://t.me/ttwarsGames" target="_blank">Forum</a>
+                <a href="http://www.ttwars.com/links.php" target="_blank">Links</a>
+                <a href="http://t4.answers.ttwars.com/?lang=en&amp;" target="_blank">FAQ - Answers</a>
+                <a href="http://www.ttwars.com/agb.php" target="_blank">Terms</a>
+                <a href="http://www.ttwars.com/impressum.php" target="_blank">Imprint</a>
+                <div class="clear"></div>
+            </div>
+            <br>
+            <p class="copyright" style="direction:ltr;">© 2011 - 2022 Travian Games GmbH</p>
+                        
+            <div id="pageLinks">
+               
+                <div class="clear"></div>
+            </div>
+                        
+            <br>
+        </div>
+                    <div id="servertime" class="stime">
+                Server time:&nbsp;
+                <span class="timer" counting="up" value="1659795496">15:19:48</span>                            </div>
+            </div>
+    <div id="ce"></div>
+</div>
+<script type="text/javascript">
+    var T4_feature_flags = {"aeu": false, "vacationMode": true, "territory": false};
+</script>
+
+<div style="position: absolute; top: 274px; left: 815px; opacity: 0; z-index: 10000; visibility: hidden;"><div class="tip"><div class="tip-container"><div class="tl"></div><div class="tr"></div><div class="tc"></div><div class="ml"></div><div class="mr"></div><div class="mc"></div><div class="bl"></div><div class="br"></div><div class="bc"></div><div class="tip-contents" style="word-break: normal; overflow-wrap: normal; white-space: normal; width: 54px;"><div class="title elementTitle" style="display: none;"></div><div class="text elementText">Rally Point</div></div></div></div></div></body><grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration></html>

@@ -1,0 +1,1673 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0048)https://vip9.ttwars.com/dorf2.php?a=30&c=5a326dc -->
+<html xmlns="http://www.w3.org/1999/xhtml" slick-uniqueid="3">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style type="text/css" media="screen" id="jScroll.css">
+        .jScroll {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+            .jScroll .jScroll-content {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+            }
+
+            .jScroll .jScroll-scroll {
+                cursor: pointer;
+                position: absolute;
+                height: 100%;
+                right: 0px;
+                top: 0px;
+            }
+
+            .jScroll .jScroll-scroll-up {
+                position: absolute;
+                width: 100%;
+            }
+
+            .jScroll .jScroll-scroll-slider {
+                position: absolute;
+                width: 100%;
+            }
+
+            .jScroll .jScroll-scroll-down {
+                position: absolute;
+                width: 100%;
+            }
+
+            .jScroll .jScroll-scroll-between {
+                position: absolute;
+                width: 100%;
+            }
+
+            .jScroll .jScroll-scroll-slider {
+                top: 10px;
+                height: 50px;
+            }
+
+                .jScroll .jScroll-scroll-slider .top {
+                    width: 100%;
+                }
+
+                .jScroll .jScroll-scroll-slider .center {
+                    width: 100%;
+                }
+
+                .jScroll .jScroll-scroll-slider .bottom {
+                    width: 100%;
+                }
+
+            .jScroll .jScroll-scroll-down {
+                bottom: 0px;
+            }
+
+            .jScroll .jScroll-element-scroll {
+                width: 15px;
+            }
+
+            .jScroll .jScroll-element-down {
+                background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/down.gif) no-repeat center bottom;
+                height: 6px;
+            }
+
+                .jScroll .jScroll-element-down:hover {
+                    background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/down-hover.gif);
+                }
+
+            .jScroll .jScroll-element-up {
+                background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/up.gif) no-repeat center top;
+                height: 6px;
+            }
+
+                .jScroll .jScroll-element-up:hover {
+                    background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/up-hover.gif);
+                }
+
+            .jScroll .jScroll-element-between {
+                margin-left: 4px;
+                width: 7px;
+                opacity: 0;
+                background-color: #000000;
+                filter: alpha(opacity=0);
+            }
+
+                .jScroll .jScroll-element-between:hover {
+                    opacity: 0.25;
+                    filter: alpha(opacity=25);
+                }
+
+                .jScroll .jScroll-element-between.clicked {
+                    opacity: 0.5;
+                    filter: alpha(opacity=50);
+                }
+
+            .jScroll .jScroll-element-slider .top {
+                background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-top.gif) no-repeat center top;
+                height: 1px;
+            }
+
+            .jScroll .jScroll-element-slider:hover .top {
+                background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-top-hover.gif);
+            }
+
+            .jScroll .jScroll-element-slider .center {
+                background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-center.gif) repeat-y center top;
+            }
+
+            .jScroll .jScroll-element-slider:hover .center {
+                background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-center-hover.gif);
+            }
+
+            .jScroll .jScroll-element-slider .bottom {
+                background: transparent url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-bottom.gif) no-repeat center bottom;
+                height: 1px;
+            }
+
+            .jScroll .jScroll-element-slider:hover .bottom {
+                background-image: url(https://gpack.ttwars.com/7d7b3f937e/js/crypt.jsimages/slider-bottom-hover.gif);
+            }
+    </style>
+    <title>TTwars vip9</title>
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="imagetoolbar" content="no" />
+
+    <meta name="content-language" content="en" />
+    <link href="./TTwars vip9_files/compact.css" rel="stylesheet" type="text/css" />
+    <link href="./TTwars vip9_files/lang.css" rel="stylesheet" type="text/css" />
+    <link href="./TTwars vip9_files/travian_basics.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript">
+        window.TravianDefaults = {
+            Map: { Size: { width: 201, height: 201, left: -100, right: 100, bottom: -100, top: 100 } }
+        };
+        function getMapSize() { return 100; }
+        function getAutoReloadStatus() { return 6; }
+    </script>
+    <script type="text/javascript" src="./TTwars vip9_files/crypt.js.download"></script>
+    <link rel="icon" href="https://vip9.ttwars.com/favicon.ico" type="image/x-icon" />
+    <script type="text/javascript">
+        Travian.Translation.add({
+            'allgemein.anleitung': 'instructions',
+            'allgemein.cancel': 'cancel',
+            'allgemein.ok': 'ok',
+            'allgemein.close': 'close',
+            'cropfinder.keine_ergebnisse': 'no results found.'
+        });
+        Travian.applicationId = 'T4.4 Game';
+        Travian.Game.version = '4.4';
+        Travian.Game.worldId = 'vip9';
+        Travian.Game.speed = 80000;
+        Travian.Templates = {};
+        Travian.Templates.ButtonTemplate = "<button >\n\t<div class=\"button-container addHoverClick\">\n\t\t<div class=\"button-background\">\n\t\t\t<div class=\"buttonStart\">\n\t\t\t\t<div class=\"buttonEnd\">\n\t\t\t\t\t<div class=\"buttonMiddle\"><\/div>\n\t\t\t\t<\/div>\n\t\t\t<\/div>\n\t\t<\/div>\n\t\t<div class=\"button-content\"><\/div>\n\t<\/div>\n<\/button>\n";
+    </script>
+    <script type="text/javascript">
+        Travian.Game.eventJamHtml = '&lt;a href=&quot;http://t4.answers.travian.ir/index.php?aid=249#go2answer&quot; target=&quot;blank&quot; title=&quot;پاسخ&zwnj;های تراوین&quot;&gt;&lt;span class=&quot;c0 t&quot;&gt;0:00:0&lt;/span&gt;?&lt;/a&gt;'.unescapeHtml();
+        Travian.Game.eventJamHtml = '&lt;a href=&quot;javascript:void&quot; onclick=&quot;document.location.reload();&quot;&gt;&lt;img src=&quot;img/refresh.png&quot;&gt;&lt;/a&gt;'.unescapeHtml();
+    </script>
+</head>
+<body class="v35 webkit chrome village2  perspectiveBuildings ltr buildingsV1" data-new-gr-c-s-check-loaded="14.1067.0" data-gr-ext-installed="">
+    <script type="text/javascript">
+        window.ajaxToken = '8f84ce79f18695039078fa0ea947c2a23538473f';
+        window._player_uuid = '';
+        Travian.Game.Preferences.initialize({ "highlightsToggle": true, "travian_toggle_hero": "expanded", "travian_toggle_infobox": "expanded", "travian_toggle_villagelist": "collapsed", "travian_toggle_alliance": "expanded", "WMBlueprints": "[]" });
+        Travian.Game.Quest.init();
+    </script>
+
+    <div id="background">
+        <div id="headerBar"></div>    <div id="bodyWrapper">
+            <img style="filter:chroma();" src="./TTwars vip9_files/x.gif" id="msfilter" alt="" />
+
+            <div id="header">
+                <a id="logo" href="http://www.ttwars.com/" target="_blank"></a>
+
+                <ul id="navigation">
+                    <li id="n1" class="villageResources">
+                        <a class="inactive" href="https://vip9.ttwars.com/dorf1.php" accesskey="1"></a>
+                    </li>
+                    <li id="n2" class="villageBuildings">
+                        <a class="active" href="https://vip9.ttwars.com/dorf2.php" accesskey="2"></a>
+                    </li>
+                    <li id="n3" class="map">
+                        <a href="https://vip9.ttwars.com/karte.php" accesskey="3"></a>
+                    </li>
+                    <li id="n4" class="statistics">
+                        <a href="https://vip9.ttwars.com/statistiken.php" accesskey="4"></a>
+                    </li>
+                    <li id="n5" class="reports">
+                        <a href="https://vip9.ttwars.com/reports.php" accesskey="5"></a>
+                    </li>
+                    <li id="n6" class="messages">
+                        <a href="https://vip9.ttwars.com/messages.php" accesskey="6"></a>
+                        <div class="speechBubbleContainer ">
+                            <div class="speechBubbleBackground">
+                                <div class="start">
+                                    <div class="end">
+                                        <div class="middle"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="speechBubbleContent">1</div>
+                        </div>
+                        <div class="clear"></div>
+                    </li>
+                    <li id="n7" class="gold">
+                        <a href="https://vip9.ttwars.com/dorf2.php?a=30&amp;c=5a326dc#" accesskey="7" onclick="window.fireEvent(&#39;startPaymentWizard&#39;, {}); this.blur(); return false;"></a>
+                    </li>
+                    <li class="clear">&nbsp;</li>
+                </ul>
+                <script type="text/javascript">
+                    window.addEvent('domready', function () {
+                        Travian.Game.Layout.goldButtonAnimation(true);
+                    });
+                </script>
+                <div id="goldSilver">
+                    <div class="gold">
+                        <img src="./TTwars vip9_files/x.gif" alt="Gold" class="gold" onclick="window.fireEvent(&#39;startPaymentWizard&#39;, {data:{activeTab: &#39;pros&#39;}}); return false;" />
+                        <span class="ajaxReplaceableGoldAmount">
+                            250
+                        </span>
+                    </div>
+                    <div class="silver">
+                        <img src="./TTwars vip9_files/x.gif" alt="Silver" class="silver" onclick="window.fireEvent(&#39;startPaymentWizard&#39;, {data:{activeTab: &#39;pros&#39;}}); return false;" />
+                        <span class="ajaxReplaceableSilverAmount">0</span>
+                    </div>
+                </div>
+                <ul id="outOfGame" class="LTR">
+                    <li class="profile">
+                        <a href="https://vip9.ttwars.com/spieler.php">
+                            <img src="./TTwars vip9_files/x.gif" alt="Profile" />
+                        </a>
+                    </li>
+                    <li class="options">
+                        <a href="https://vip9.ttwars.com/options.php">
+                            <img src="./TTwars vip9_files/x.gif" alt="Options" />
+                        </a>
+                    </li>
+                    <li class="chat">
+                        <a target="_blank" href="http://t.me/ttwarss">
+                            <img src="./TTwars vip9_files/x.gif" alt="Chat" />
+                        </a>
+                    </li>
+
+                    <li class="help">
+                        <a href="https://vip9.ttwars.com/help.php">
+                            <img src="./TTwars vip9_files/x.gif" alt="Help" />
+                        </a>
+                    </li>
+                    <li class="logout ">
+                        <a href="https://vip9.ttwars.com/logout.php">
+                            <img src="./TTwars vip9_files/x.gif" alt="Logout" />
+                        </a>
+                    </li>
+                    <li class="clear">&nbsp;</li>
+                </ul>
+                <script type="text/javascript">
+                    $$('#outOfGame li.logout a').addEvent('click', function () {
+                        Travian.WindowManager.getWindows().each(function ($dialog) {
+                            Travian.WindowManager.unregister($dialog);
+                        });
+                    });
+                </script>
+            </div>
+            <div id="center">
+                <div id="sidebarBeforeContent" class="sidebar beforeContent">
+                    <div id="sidebarBoxHero" class="sidebarBox toggleable expanded ">
+                        <div class="sidebarBoxBaseBox">
+                            <div class="baseBox baseBoxTop">
+                                <div class="baseBox baseBoxBottom">
+                                    <div class="baseBox baseBoxCenter"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebarBoxInnerBox">
+                            <div class="innerBox header ">
+                                <button id="heroImageButton" onclick="window.location.href=&#39;hero.php&#39;;" class="heroImageButton" type="button">
+                                    <img class="heroImage" src="./TTwars vip9_files/hero_image.php" alt="Hero" />
+                                </button>
+
+                                <div class="playerName">
+                                    <img src="./TTwars vip9_files/x.gif" class="nation nationBig nation3" alt="Gauls" />
+                                    <a href="https://vip9.ttwars.com/spieler.php">vinaghost</a>
+                                </div>
+                                <button type="button" id="buttonGp1tHj4xB1e4A" class="layoutButton auctionWhite green  " onclick="return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+
+                                <script type="text/javascript">
+                                    window.addEvent('domready', function () {
+                                        var button = $('buttonGp1tHj4xB1e4A');
+                                        if (button) {
+                                            var titleFunction = function () {
+                                                button.removeEvent('mouseenter', titleFunction);
+                                                Travian.Game.Layout.loadLayoutButtonTitle(button, 'hero', 'auctionWhite');
+                                            };
+                                            button.addEvent('mouseenter', titleFunction);
+                                        }
+                                    });
+
+                                    if ($('buttonGp1tHj4xB1e4A')) {
+                                        $('buttonGp1tHj4xB1e4A').addEvent('click', function () {
+                                            window.fireEvent('buttonClicked', [this, {
+                                                "type": "green",
+                                                "onclick": "return false;",
+                                                "loadTitle": true,
+                                                "boxId": "hero",
+                                                "disabled": false,
+                                                "speechBubble": "",
+                                                "class": "",
+                                                "id": "buttonGp1tHj4xB1e4A",
+                                                "redirectUrl": "hero.php?t=4",
+                                                "redirectUrlExternal": ""
+                                            }]);
+                                        });
+                                    }
+                                </script>
+                                <button type="button" id="buttonYfPrgXrmIgXOM" class="layoutButton adventureWhite green " onclick="return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                    <div class="speechBubbleContainer ">
+                                        <div class="speechBubbleBackground">
+                                            <div class="start">
+                                                <div class="end">
+                                                    <div class="middle"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="speechBubbleContent">3</div>
+                                    </div>
+                                    <div class="clear"></div>
+                                </button>
+
+                                <script type="text/javascript">
+                                    window.addEvent('domready', function () {
+                                        var button = $('buttonYfPrgXrmIgXOM');
+                                        if (button) {
+                                            var titleFunction = function () {
+                                                button.removeEvent('mouseenter', titleFunction);
+                                                Travian.Game.Layout.loadLayoutButtonTitle(button, 'hero', 'adventureWhite');
+                                            };
+                                            button.addEvent('mouseenter', titleFunction);
+                                        }
+                                    });
+
+                                    if ($('buttonYfPrgXrmIgXOM')) {
+                                        $('buttonYfPrgXrmIgXOM').addEvent('click', function () {
+                                            window.fireEvent('buttonClicked', [this, {
+                                                "type": "green",
+                                                "onclick": "return false;",
+                                                "loadTitle": true,
+                                                "boxId": "hero",
+                                                "disabled": false,
+                                                "speechBubble": "3",
+                                                "class": "",
+                                                "id": "buttonYfPrgXrmIgXOM",
+                                                "redirectUrl": "hero.php?t=3",
+                                                "redirectUrlExternal": ""
+                                            }]);
+                                        });
+                                    }
+                                </script>
+                            </div>
+                            <div class="innerBox content">
+                                <div class="heroStatusMessage">
+                                    <img alt="	in home village" src="./TTwars vip9_files/x.gif" class="heroStatus100" />
+                                    in home village
+                                </div>
+
+                                <div class="progressBars">
+                                    <div class="heroHealthBarBox
+
+					alive
+															">
+                                        <a href="https://vip9.ttwars.com/hero.php?t=1">
+                                            <img src="./TTwars vip9_files/x.gif" class="injury" alt="Health" />
+                                        </a>
+                                        <div class="bar" style="width:100%"></div>
+                                    </div>
+
+                                    <div class="heroXpBarBox">
+                                        <a href="https://vip9.ttwars.com/hero.php?t=1">
+                                            <img src="./TTwars vip9_files/x.gif" class="iExperience" alt="Experience" />
+                                        </a>
+                                        <div class="bar" style="width:0%">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="innerBox footer">
+                                <button type="button" class="toggle" onclick="">
+                                    <div class="button-container addHoverClick">
+                                        <svg class="toggle-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 32.9">
+                                            <style>
+                                                .caret {
+                                                    fill: url(#caret_to_bottom_fill);
+                                                    stroke: url(#caret_to_bottom_stroke);
+                                                }
+                                            </style>
+                                            <lineargradient id="caret_to_bottom_fill" x1="22.4983" x2="22.4983" y1="26.6416" y2="8.0344" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 33.833)">
+                                                <stop offset=".1147" stop-color="#DADED4"></stop>
+                                                <stop offset=".1452" stop-color="#F9FBF7"></stop>
+                                                <stop offset=".1551" stop-color="#FFFFFF"></stop>
+                                            </lineargradient>
+
+                                            <lineargradient id="caret_to_bottom_stroke" x1="22.4983" x2="22.4983" y1="26.6416" y2="8.0344" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 33.833)">
+                                                <stop offset="0" stop-color="#7C9A58"></stop>
+                                                <stop offset=".2" stop-color="#60A200"></stop>
+                                                <stop offset=".4" stop-color="#63A500"></stop>
+                                                <stop offset="1" stop-color="#7DB211"></stop>
+                                            </lineargradient>
+                                            <path class="down_glow" d="M39 5.9c-.4-.5-1-.8-1.5-.9H7.4c-.6 0-1.1.2-1.5.9C5.5 6.3 5 7.7 5 9c0 .7 0 2.5.5 3.1l15.1 15.1c.4.5 1.3.7 1.9.7.6 0 1.5-.2 2-.7l14.9-15c.4-.5.6-2 .6-2.7.1-1.2-.5-3.4-1-3.6z"></path>
+                                            <path class="up_glow" d="M39.2,8.2c-0.4-0.5-1.6-1-2.1-1.1l-29.2,0c-0.6,0-1.6,0.4-2.1,1C5.4,8.6,5,9.7,5,11 c0,0.7,0.1,3.3,1.3,4.8l13,13.1c0.4,0.5,2.5,1,3.1,1c0.6,0,2.7-0.5,3.8-1.5L38.4,16c1.4-1.4,1.6-3.8,1.6-4.5 C40.1,10.3,39.9,8.7,39.2,8.2z"></path>
+                                            <path class="topshadow" d="M39.8 10.8c.5-1.7.1-5.7-2.5-5.8H7.2c-2.4.1-2.4 4.6-2.1 5.6 0 .1.2.1.2.1.8-.2.9-2 3.4-2.1 6.8-.1 22.1 0 28.5.1 2.6.1 2.1 1.9 2.6 2.1z"></path>
+                                            <path class="bottomshadow" d="M39.4,8.9C39,8.5,38.5,8.3,38,8.2L7.1,8.3C6.5,8.3,6,8.5,5.6,9C5.2,9.4,5,9.9,5,10.5 c0,0.6-0.2,3.6,1.7,5.6l12.7,12.8c1,0.7,2,1,3.1,1c1.1,0,2.7-0.6,3.8-1.5L38.4,16c1.9-2.1,1.6-5.1,1.6-5.7 C40.1,9.8,39.9,9.3,39.4,8.9z"></path>
+                                            <path class="caret" d="M38.3 8.8c-.4-.4-.9-.6-1.4-.7H8.1c-.6 0-1.1.2-1.5.7-.4.4-.6.9-.6 1.5s.2 1 .6 1.5L21 26.2c.4.4.9.6 1.5.6s1-.2 1.5-.6l14.3-14.5c.4-.4.6-.9.6-1.5.1-.5-.1-1-.6-1.4z"></path>
+                                        </svg>
+                                    </div>
+                                </button>
+
+                                <script type="text/javascript">
+                                    window.addEvent('domready', function () {
+                                        Travian.Translation.add(
+                                            {
+                                                'hero_collapsed': 'Show information',
+                                                'hero_expanded': 'Hide information'
+                                            });
+
+                                        var box = $('sidebarBoxHero');
+                                        box.down('button.toggle').addEvent('click', function (e) {
+                                            Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'hero');
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div><div id="sidebarBoxInfobox" class="sidebarBox toggleable expanded">
+                        <div class="sidebarBoxBaseBox">
+                            <div class="baseBox baseBoxTop">
+                                <div class="baseBox baseBoxBottom">
+                                    <div class="baseBox baseBoxCenter"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebarBoxInnerBox">
+                            <div class="innerBox header ">
+                                <div class="boxTitle">Info Box</div>
+                                <span class="messageShortInfo">
+                                    ‎‭‭1‬×‬‎‏‏<img class="messages unreaded" src="./TTwars vip9_files/x.gif" alt="Messages: 3&lt;br /&gt;Unread messages: 1" />
+                                </span>
+                            </div>
+                            <div class="innerBox content">
+                                <ul>
+                                    <li id="infoID_p7" class="firstElement active"><font color="blue" size="2"><b>20% Gold Promo!</b></font><br />From now  Today 11:55 GMT+0 untillToday 14:55 GMT+0 you will get 20% extra <b><font color="red">GOLD!</font></b> when you buy one of the standard gold package.<br /><br />Please note that this promotion is only active if the "+20%" image is displayed.<br /><br />Vouchers, pay by phone and SMS are excluded from the promo. </li>
+                                    <li id="infoID_3" class="unreaded"><p><a class="infoboxDeleteButton" href="https://vip9.ttwars.com/dorf2.php?a=30&amp;c=5a326dc#" data-id="3"><img src="./TTwars vip9_files/x.gif" class="del" alt="del" /></a>Construction plans will appear in <span class="timer" counting="down" value="1239">0:20:39</span> hours.</p></li>
+                                    <li id="infoID_738" class="unreaded"><p>You still have <span class="timer" counting="down" value="19535">5:25:35</span> hours of beginner's protection left.</p></li>
+                                </ul>
+                            </div>
+                            <div class="innerBox footer">
+                                <button type="button" class="toggle" onclick="">
+                                    <div class="button-container addHoverClick">
+                                        <svg class="toggle-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 45 32.9">
+                                            <style>
+                                                .caret {
+                                                    fill: url(#caret_to_bottom_fill);
+                                                    stroke: url(#caret_to_bottom_stroke);
+                                                }
+                                            </style>
+                                            <lineargradient id="caret_to_bottom_fill" x1="22.4983" x2="22.4983" y1="26.6416" y2="8.0344" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 33.833)">
+                                                <stop offset=".1147" stop-color="#DADED4"></stop>
+                                                <stop offset=".1452" stop-color="#F9FBF7"></stop>
+                                                <stop offset=".1551" stop-color="#FFFFFF"></stop>
+                                            </lineargradient>
+
+                                            <lineargradient id="caret_to_bottom_stroke" x1="22.4983" x2="22.4983" y1="26.6416" y2="8.0344" gradientUnits="userSpaceOnUse" gradientTransform="matrix(1 0 0 -1 0 33.833)">
+                                                <stop offset="0" stop-color="#7C9A58"></stop>
+                                                <stop offset=".2" stop-color="#60A200"></stop>
+                                                <stop offset=".4" stop-color="#63A500"></stop>
+                                                <stop offset="1" stop-color="#7DB211"></stop>
+                                            </lineargradient>
+                                            <path class="down_glow" d="M39 5.9c-.4-.5-1-.8-1.5-.9H7.4c-.6 0-1.1.2-1.5.9C5.5 6.3 5 7.7 5 9c0 .7 0 2.5.5 3.1l15.1 15.1c.4.5 1.3.7 1.9.7.6 0 1.5-.2 2-.7l14.9-15c.4-.5.6-2 .6-2.7.1-1.2-.5-3.4-1-3.6z"></path>
+                                            <path class="up_glow" d="M39.2,8.2c-0.4-0.5-1.6-1-2.1-1.1l-29.2,0c-0.6,0-1.6,0.4-2.1,1C5.4,8.6,5,9.7,5,11 c0,0.7,0.1,3.3,1.3,4.8l13,13.1c0.4,0.5,2.5,1,3.1,1c0.6,0,2.7-0.5,3.8-1.5L38.4,16c1.4-1.4,1.6-3.8,1.6-4.5 C40.1,10.3,39.9,8.7,39.2,8.2z"></path>
+                                            <path class="topshadow" d="M39.8 10.8c.5-1.7.1-5.7-2.5-5.8H7.2c-2.4.1-2.4 4.6-2.1 5.6 0 .1.2.1.2.1.8-.2.9-2 3.4-2.1 6.8-.1 22.1 0 28.5.1 2.6.1 2.1 1.9 2.6 2.1z"></path>
+                                            <path class="bottomshadow" d="M39.4,8.9C39,8.5,38.5,8.3,38,8.2L7.1,8.3C6.5,8.3,6,8.5,5.6,9C5.2,9.4,5,9.9,5,10.5 c0,0.6-0.2,3.6,1.7,5.6l12.7,12.8c1,0.7,2,1,3.1,1c1.1,0,2.7-0.6,3.8-1.5L38.4,16c1.9-2.1,1.6-5.1,1.6-5.7 C40.1,9.8,39.9,9.3,39.4,8.9z"></path>
+                                            <path class="caret" d="M38.3 8.8c-.4-.4-.9-.6-1.4-.7H8.1c-.6 0-1.1.2-1.5.7-.4.4-.6.9-.6 1.5s.2 1 .6 1.5L21 26.2c.4.4.9.6 1.5.6s1-.2 1.5-.6l14.3-14.5c.4-.4.6-.9.6-1.5.1-.5-.1-1-.6-1.4z"></path>
+                                        </svg>
+                                    </div>
+                                </button>
+                                <script type="text/javascript">
+                                    window.addEvent('domready', function () {
+                                        Travian.Translation.add(
+                                            {
+                                                'infobox_collapsed': 'Display more messages',
+                                                'infobox_expanded': 'Hide messages'
+                                            });
+
+                                        var box = $('sidebarBoxInfobox');
+                                        box.down('button.toggle').addEvent('click', function (e) {
+                                            Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'infobox');
+                                        });
+                                    });
+                                </script>
+                                <script type="text/javascript">
+                                    window.addEvent('domready', function () {
+                                        Travian.Game.Layout.setInfoboxItemsRead();
+                                        Travian.Game.Layout.setupInfoboxItemsDeletionWithMessage('Delete this message permanently?', 'Confirm');
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div><div id="sidebarBoxLinklist" class="sidebarBox   ">
+                        <div class="sidebarBoxBaseBox">
+                            <div class="baseBox baseBoxTop">
+                                <div class="baseBox baseBoxBottom">
+                                    <div class="baseBox baseBoxCenter"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebarBoxInnerBox">
+                            <div class="innerBox header ">
+                                <button type="button" id="buttonzdQ8uaswMWzrh" class="layoutButton editBlack gold" onclick="return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+
+                                <script type="text/javascript">
+
+                                    if ($('buttonzdQ8uaswMWzrh')) {
+                                        $('buttonzdQ8uaswMWzrh').addEvent('click', function () {
+                                            window.fireEvent('buttonClicked', [this, {
+                                                "type": "gold",
+                                                "onclick": "return false;",
+                                                "loadTitle": false,
+                                                "boxId": "",
+                                                "disabled": false,
+                                                "speechBubble": "",
+                                                "class": "",
+                                                "id": "buttonzdQ8uaswMWzrh",
+                                                "redirectUrl": "",
+                                                "redirectUrlExternal": "",
+                                                "plusDialog": { "featureKey": "linkList", "infoIcon": "http:\/\/t4.answers.travian.us\/index.php?aid=Help#go2answer" }, "title": "Link list || Travian Plus allows you to make a link list."
+                                            }]);
+                                        });
+                                    }
+                                </script>
+                                <div class="clear"></div>
+                                <div class="boxTitle">Link list</div>
+                            </div>
+                            <div class="innerBox content">
+                                <ul><li class=""><a href="https://vip9.ttwars.com/voucher.php">Gold Bank (Vouchers)</a></li><li class=""><a href="https://vip9.ttwars.com/build.php?tt=99&amp;id=39">Farmlist System</a></li><li class="newTab"><a target="_blank" style="color: orange; font-weight: bold" href="https://vip9.ttwars.com/messages.php?t=1&amp;id=2"><img src="./TTwars vip9_files/x.gif" alt="" />Contact Support</a></li></ul>                <div class="linklistNotice">Travian Plus allows you to make a link list.</div>
+                            </div>
+                            <div class="innerBox footer">
+                            </div>
+                        </div>
+                    </div>                <div class="clear"></div>
+                </div>
+                <div id="contentOuterContainer" class="size1">
+                    <ul id="stockBar">
+                        <li id="stockBarWarehouseWrapper" class="stock">
+                            <i class="warehouse" alt="Warehouse"> </i>
+
+                            <span class="value" id="stockBarWarehouse" style="font-size: 9px;">13,800,000</span>
+                        </li>
+                        <li id="stockBarResource1" class="stockBarButton">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r1" alt="Lumber"></i>
+                                <span id="l1" class="value" style="font-size: 9px;">10,368,665</span>
+
+                                <div class="barBox">
+                                    <div id="lbar1" class="bar stock" style="width: 75%;"></div>
+                                </div>
+                                <a href="https://vip9.ttwars.com/production.php?t=1"><img src="./TTwars vip9_files/x.gif" alt="" /></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+                        <li id="stockBarResource2" class="stockBarButton">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r2" alt="Clay"></i>
+                                <span id="l2" class="value" style="font-size: 9px;">10,368,611</span>
+
+                                <div class="barBox">
+                                    <div id="lbar2" class="bar stock" style="width: 75%;"></div>
+                                </div>
+                                <a href="https://vip9.ttwars.com/production.php?t=2"><img src="./TTwars vip9_files/x.gif" alt="" /></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+                        <li id="stockBarResource3" class="stockBarButton">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r3" alt="Iron"></i>
+                                <span id="l3" class="value" style="font-size: 9px;">10,368,867</span>
+
+                                <div class="barBox">
+                                    <div id="lbar3" class="bar stock" style="width: 75%;"></div>
+                                </div>
+                                <a href="https://vip9.ttwars.com/production.php?t=3"><img src="./TTwars vip9_files/x.gif" alt="" /></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+
+                        <li id="stockBarGranaryWrapper" class="stock">
+                            <i class="granary" alt="Granary"></i>
+                            <span class="value" id="stockBarGranary" style="font-size: 9px;">13,800,000</span>
+                        </li>
+
+                        <li id="stockBarResource4" class="stockBarButton">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r4" alt="Crop"></i>
+                                <span id="l4" class="value" style="font-size: 9px;">10,819,466</span>
+
+                                <div class="barBox">
+                                    <div id="lbar4" class="bar stock" style="width: 78%;"></div>
+                                </div>
+                                <a href="https://vip9.ttwars.com/production.php?t=4"><img src="./TTwars vip9_files/x.gif" alt="" /></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+
+                        <li id="stockBarFreeCropWrapper" class="stockBarButton r5">
+                            <div class="begin"></div>
+                            <div class="middle">
+                                <i class="r5" alt="Free Crop"></i>
+                                <span id="stockBarFreeCrop" class="value" style="font-size: 8px;">136,319,759</span>
+                                <a href="https://vip9.ttwars.com/production.php?t=5"><img src="./TTwars vip9_files/x.gif" alt="" /></a>
+                            </div>
+                            <div class="end"></div>
+                        </li>
+                        <li class="clear">&nbsp;</li>
+                    </ul>
+
+                    <script type="text/javascript">
+                        var resources = {};
+
+                        resources.production = {
+                            "l1": 91520000,
+                            "l2": 91520000,
+                            "l3": 91520000,
+                            "l4": 136319759,
+                            "l5": 136319759
+                        };
+                        resources.storage = {
+                            "l1": 9625091.0000,
+                            "l2": 9625011.0000,
+                            "l3": 9625166.0000,
+                            "l4": 9712550.0000
+                        };
+                        resources.maxStorage = {
+                            "l1": 13800000,
+                            "l2": 13800000,
+                            "l3": 13800000,
+                            "l4": 13800000
+                        };
+
+                        $$('li.stockBarButton').each(function (element) {
+                            Travian.addMouseEvents(element, element);
+                        });
+
+                        var stockBarWarehouse = $('stockBarWarehouse');
+                        var stockBarGranary = $('stockBarGranary');
+                        var stockBarFreeCrop = $('stockBarFreeCrop');
+                        var numberFormatter = new Travian.Formatter({ forceDecimal: false });
+
+                        stockBarWarehouse.set('html', numberFormatter.getFormattedNumber(parseInt(stockBarWarehouse.get('html'))));
+                        stockBarGranary.set('html', numberFormatter.getFormattedNumber(parseInt(stockBarGranary.get('html'))));
+                        stockBarFreeCrop.set('html', numberFormatter.getFormattedNumber(parseInt(stockBarFreeCrop.get('html'))));
+                    </script>
+                    <div class="contentTitle">
+                        <a id="closeContentButton" class="contentTitleButton" href="https://vip9.ttwars.com/dorf2.php">
+                            &nbsp;
+                        </a>
+                        <a id="answersButton" class="contentTitleButton" href="http://t4.answers.ttwars.com/?lang=en&amp;aid=1#go2answer" target="_blank">&nbsp;</a>
+                    </div>
+                    <div class="contentContainer">
+                        <div id="content" class="village2">
+
+                            <div class="villageMapWrapper">
+                                <div id="village_map" class="tribeSpecific">
+                                    <div class="buildingSlot a19 g11 aid19">
+                                        <!-- level !-->
+                                        <div class="level colorLayer good aid19" onclick="window.location.href=&#39;build.php?id=19&amp;fastUP=0&#39;">
+                                            <div class="labelLayer">1</div>
+                                        </div>
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building g11" />
+
+                                        <svg class="buildingShape g11" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M51.5 22.5c-3.3 2.5-7.9 5.8-10.2 7.5-3.3 2.4-4.3 3.7-4.3 5.9 0 1.6.7 3.4 1.5 4.1.8.7 1.5 2.3 1.5 3.7 0 2.2-.9 3-4.2 3.7-7.8 1.8-7.9 1.8-7.2 4 .3 1.1 1.3 2.8 2 3.7.8.8 1.4 2.2 1.4 3 0 .8.7 2.3 1.5 3.3.8 1.1 1.5 2.5 1.5 3 0 .6-.4.5-.9-.3-.6-.9-1.1-1-1.5-.2-.8 1.2 2.1 2.8 3.1 1.7.4-.4.8-1.4 1-2.4 1.5-9 3.3-12 3.3-5.5 0 2.1.2 6.8.5 10.5.4 6.7.3 6.8-2.1 6.8-2.1 0-2.4.4-2.4 4 0 3.9-.1 4-2.3 2.8-1.2-.7-2.5-1.8-2.9-2.3-.5-.6-1.4-.4-2.4.7-1.6 1.5-1.6 1.9-.1 4.1.9 1.4 1.3 3.4 1 4.5-.6 2.5 2.7 4.6 7.2 4.4 2.3-.1 3.3.5 4.2 2.5.7 1.4 1 2.9.7 3.4-1 1.7 5.9 4.1 10.3 3.6 3.9-.4 4.5-.2 5.3 1.9 1.6 4.1 11.9 5.8 16.1 2.6 1.3-1 5.7-3.8 9.7-6.2 8.6-5.1 10.9-7.8 9.2-11-1.1-2-1-5.2.2-11.3.2-1.4-1.3-2.4-7.1-4.7-4.1-1.6-7.9-3.4-8.4-3.9-.6-.6-1.2-7.1-1.3-14.8-.2-10.5.1-14.1 1.2-15.7 2.7-3.9 1.8-7.3-2.8-10.6-2.2-1.6-4.6-3-5.3-3-.7 0-3.3-1.8-5.8-4s-4.7-4-4.9-3.9c-.1 0-3 2-6.3 4.4z" onclick="window.location.href=&#39;build.php?id=19&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M51.5 22.5c-3.3 2.5-7.9 5.8-10.2 7.5-3.3 2.4-4.3 3.7-4.3 5.9 0 1.6.7 3.4 1.5 4.1.8.7 1.5 2.3 1.5 3.7 0 2.2-.9 3-4.2 3.7-7.8 1.8-7.9 1.8-7.2 4 .3 1.1 1.3 2.8 2 3.7.8.8 1.4 2.2 1.4 3 0 .8.7 2.3 1.5 3.3.8 1.1 1.5 2.5 1.5 3 0 .6-.4.5-.9-.3-.6-.9-1.1-1-1.5-.2-.8 1.2 2.1 2.8 3.1 1.7.4-.4.8-1.4 1-2.4 1.5-9 3.3-12 3.3-5.5 0 2.1.2 6.8.5 10.5.4 6.7.3 6.8-2.1 6.8-2.1 0-2.4.4-2.4 4 0 3.9-.1 4-2.3 2.8-1.2-.7-2.5-1.8-2.9-2.3-.5-.6-1.4-.4-2.4.7-1.6 1.5-1.6 1.9-.1 4.1.9 1.4 1.3 3.4 1 4.5-.6 2.5 2.7 4.6 7.2 4.4 2.3-.1 3.3.5 4.2 2.5.7 1.4 1 2.9.7 3.4-1 1.7 5.9 4.1 10.3 3.6 3.9-.4 4.5-.2 5.3 1.9 1.6 4.1 11.9 5.8 16.1 2.6 1.3-1 5.7-3.8 9.7-6.2 8.6-5.1 10.9-7.8 9.2-11-1.1-2-1-5.2.2-11.3.2-1.4-1.3-2.4-7.1-4.7-4.1-1.6-7.9-3.4-8.4-3.9-.6-.6-1.2-7.1-1.3-14.8-.2-10.5.1-14.1 1.2-15.7 2.7-3.9 1.8-7.3-2.8-10.6-2.2-1.6-4.6-3-5.3-3-.7 0-3.3-1.8-5.8-4s-4.7-4-4.9-3.9c-.1 0-3 2-6.3 4.4z" onclick="window.location.href=&#39;build.php?id=19&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M51.5 22.5c-3.3 2.5-7.9 5.8-10.2 7.5-3.3 2.4-4.3 3.7-4.3 5.9 0 1.6.7 3.4 1.5 4.1.8.7 1.5 2.3 1.5 3.7 0 2.2-.9 3-4.2 3.7-7.8 1.8-7.9 1.8-7.2 4 .3 1.1 1.3 2.8 2 3.7.8.8 1.4 2.2 1.4 3 0 .8.7 2.3 1.5 3.3.8 1.1 1.5 2.5 1.5 3 0 .6-.4.5-.9-.3-.6-.9-1.1-1-1.5-.2-.8 1.2 2.1 2.8 3.1 1.7.4-.4.8-1.4 1-2.4 1.5-9 3.3-12 3.3-5.5 0 2.1.2 6.8.5 10.5.4 6.7.3 6.8-2.1 6.8-2.1 0-2.4.4-2.4 4 0 3.9-.1 4-2.3 2.8-1.2-.7-2.5-1.8-2.9-2.3-.5-.6-1.4-.4-2.4.7-1.6 1.5-1.6 1.9-.1 4.1.9 1.4 1.3 3.4 1 4.5-.6 2.5 2.7 4.6 7.2 4.4 2.3-.1 3.3.5 4.2 2.5.7 1.4 1 2.9.7 3.4-1 1.7 5.9 4.1 10.3 3.6 3.9-.4 4.5-.2 5.3 1.9 1.6 4.1 11.9 5.8 16.1 2.6 1.3-1 5.7-3.8 9.7-6.2 8.6-5.1 10.9-7.8 9.2-11-1.1-2-1-5.2.2-11.3.2-1.4-1.3-2.4-7.1-4.7-4.1-1.6-7.9-3.4-8.4-3.9-.6-.6-1.2-7.1-1.3-14.8-.2-10.5.1-14.1 1.2-15.7 2.7-3.9 1.8-7.3-2.8-10.6-2.2-1.6-4.6-3-5.3-3-.7 0-3.3-1.8-5.8-4s-4.7-4-4.9-3.9c-.1 0-3 2-6.3 4.4z" onclick="window.location.href=&#39;build.php?id=19&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M51.5 22.5c-3.3 2.5-7.9 5.8-10.2 7.5-3.3 2.4-4.3 3.7-4.3 5.9 0 1.6.7 3.4 1.5 4.1.8.7 1.5 2.3 1.5 3.7 0 2.2-.9 3-4.2 3.7-7.8 1.8-7.9 1.8-7.2 4 .3 1.1 1.3 2.8 2 3.7.8.8 1.4 2.2 1.4 3 0 .8.7 2.3 1.5 3.3.8 1.1 1.5 2.5 1.5 3 0 .6-.4.5-.9-.3-.6-.9-1.1-1-1.5-.2-.8 1.2 2.1 2.8 3.1 1.7.4-.4.8-1.4 1-2.4 1.5-9 3.3-12 3.3-5.5 0 2.1.2 6.8.5 10.5.4 6.7.3 6.8-2.1 6.8-2.1 0-2.4.4-2.4 4 0 3.9-.1 4-2.3 2.8-1.2-.7-2.5-1.8-2.9-2.3-.5-.6-1.4-.4-2.4.7-1.6 1.5-1.6 1.9-.1 4.1.9 1.4 1.3 3.4 1 4.5-.6 2.5 2.7 4.6 7.2 4.4 2.3-.1 3.3.5 4.2 2.5.7 1.4 1 2.9.7 3.4-1 1.7 5.9 4.1 10.3 3.6 3.9-.4 4.5-.2 5.3 1.9 1.6 4.1 11.9 5.8 16.1 2.6 1.3-1 5.7-3.8 9.7-6.2 8.6-5.1 10.9-7.8 9.2-11-1.1-2-1-5.2.2-11.3.2-1.4-1.3-2.4-7.1-4.7-4.1-1.6-7.9-3.4-8.4-3.9-.6-.6-1.2-7.1-1.3-14.8-.2-10.5.1-14.1 1.2-15.7 2.7-3.9 1.8-7.3-2.8-10.6-2.2-1.6-4.6-3-5.3-3-.7 0-3.3-1.8-5.8-4s-4.7-4-4.9-3.9c-.1 0-3 2-6.3 4.4z" onclick="window.location.href=&#39;build.php?id=19&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a20 g0 aid20 ">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=20&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=20&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=20&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=20&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a21 g0 aid21">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=21&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=21&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=21&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=21&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a22 g0 aid22">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=22&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=22&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=22&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=22&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a23 g0 aid23">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=23&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=23&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=23&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=23&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a24 g0 aid24">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=24&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=24&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=24&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=24&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a25 g0 aid25">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=25&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=25&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=25&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=25&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a26 g15 aid26">
+                                        <!-- level !-->
+                                        <div class="level colorLayer good aid26" onclick="window.location.href=&#39;build.php?id=26&amp;fastUP=0&#39;">
+                                            <div class="labelLayer">1</div>
+                                        </div>
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building g15" />
+
+                                        <svg class="buildingShape g15" width="120" height="120" viewBox="0 0 120 120">
+
+                                            <g class="clickShape">
+                                                <path d="M66.8 27.7c-1.1.3-1.8 1.4-1.8 2.9v2.5l-3.7-2.6c-3.1-2-5-2.5-10.1-2.5-6.2 0-6.4.1-5.8 2.3.6 2.7-.5 7.6-1.9 7.9-.5.2-.9 1.1-.8 2.1.4 2.7-1.5 5.7-3.7 5.7s-3.5 1.6-2 2.5c2.2 1.4.9 2.6-2 2-2.2-.5-3-.3-3 .7 0 1.7-7.1 8.8-8.8 8.8-.7 0-1.2.6-1.2 1.4 0 .7-1 2-2.1 2.8-1.8 1.2-2 1.7-1 3.5.6 1.2 1.1 4.4 1.1 7.1 0 5.5 1.6 7.5 9 11.2 2.5 1.3 4.8 2.7 5.2 3.3.3.6 1.9 1.2 3.5 1.4 4.4.6 15.3 6 15.3 7.7 0 2.5 3 4.6 6.6 4.6 2 0 5.7 1 8.4 2.1 6.1 2.6 7.4 2.3 17.2-3.9 10-6.4 10.8-7 10.8-9.7 0-2.5 2.4-4.9 5.8-5.9 2.6-.9 3-4.7.7-6.6-.8-.7-1.5-1.9-1.5-2.6 0-.8.7-1.4 1.5-1.4 3 0 1.4-2.6-3-5-4.3-2.3-5.7-4-3.5-4 1.5 0 .9-7.9-.8-11.2-1.8-3.8-2.4-7.6-1.2-8.3 1.5-1 1.2-3.5-.5-3.5-.8 0-1.5-.7-1.5-1.5s-1.2-2.2-2.6-3.1c-1.9-1.3-2.4-2.3-1.9-4.1.6-2.6-2.1-4.5-3.5-2.4-.5 1-.9.9-1.3-.3-.4-.9-1.6-1.6-2.8-1.6-1.9 0-2.1.4-1.5 3.5.6 3.1.4 3.5-1.4 3.5-1.7 0-2-.6-2-3.8 0-5.6-2.3-7.1-8.2-5.5z" onclick="window.location.href=&#39;build.php?id=26&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M66.8 27.7c-1.1.3-1.8 1.4-1.8 2.9v2.5l-3.7-2.6c-3.1-2-5-2.5-10.1-2.5-6.2 0-6.4.1-5.8 2.3.6 2.7-.5 7.6-1.9 7.9-.5.2-.9 1.1-.8 2.1.4 2.7-1.5 5.7-3.7 5.7s-3.5 1.6-2 2.5c2.2 1.4.9 2.6-2 2-2.2-.5-3-.3-3 .7 0 1.7-7.1 8.8-8.8 8.8-.7 0-1.2.6-1.2 1.4 0 .7-1 2-2.1 2.8-1.8 1.2-2 1.7-1 3.5.6 1.2 1.1 4.4 1.1 7.1 0 5.5 1.6 7.5 9 11.2 2.5 1.3 4.8 2.7 5.2 3.3.3.6 1.9 1.2 3.5 1.4 4.4.6 15.3 6 15.3 7.7 0 2.5 3 4.6 6.6 4.6 2 0 5.7 1 8.4 2.1 6.1 2.6 7.4 2.3 17.2-3.9 10-6.4 10.8-7 10.8-9.7 0-2.5 2.4-4.9 5.8-5.9 2.6-.9 3-4.7.7-6.6-.8-.7-1.5-1.9-1.5-2.6 0-.8.7-1.4 1.5-1.4 3 0 1.4-2.6-3-5-4.3-2.3-5.7-4-3.5-4 1.5 0 .9-7.9-.8-11.2-1.8-3.8-2.4-7.6-1.2-8.3 1.5-1 1.2-3.5-.5-3.5-.8 0-1.5-.7-1.5-1.5s-1.2-2.2-2.6-3.1c-1.9-1.3-2.4-2.3-1.9-4.1.6-2.6-2.1-4.5-3.5-2.4-.5 1-.9.9-1.3-.3-.4-.9-1.6-1.6-2.8-1.6-1.9 0-2.1.4-1.5 3.5.6 3.1.4 3.5-1.4 3.5-1.7 0-2-.6-2-3.8 0-5.6-2.3-7.1-8.2-5.5z" onclick="window.location.href=&#39;build.php?id=26&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M66.8 27.7c-1.1.3-1.8 1.4-1.8 2.9v2.5l-3.7-2.6c-3.1-2-5-2.5-10.1-2.5-6.2 0-6.4.1-5.8 2.3.6 2.7-.5 7.6-1.9 7.9-.5.2-.9 1.1-.8 2.1.4 2.7-1.5 5.7-3.7 5.7s-3.5 1.6-2 2.5c2.2 1.4.9 2.6-2 2-2.2-.5-3-.3-3 .7 0 1.7-7.1 8.8-8.8 8.8-.7 0-1.2.6-1.2 1.4 0 .7-1 2-2.1 2.8-1.8 1.2-2 1.7-1 3.5.6 1.2 1.1 4.4 1.1 7.1 0 5.5 1.6 7.5 9 11.2 2.5 1.3 4.8 2.7 5.2 3.3.3.6 1.9 1.2 3.5 1.4 4.4.6 15.3 6 15.3 7.7 0 2.5 3 4.6 6.6 4.6 2 0 5.7 1 8.4 2.1 6.1 2.6 7.4 2.3 17.2-3.9 10-6.4 10.8-7 10.8-9.7 0-2.5 2.4-4.9 5.8-5.9 2.6-.9 3-4.7.7-6.6-.8-.7-1.5-1.9-1.5-2.6 0-.8.7-1.4 1.5-1.4 3 0 1.4-2.6-3-5-4.3-2.3-5.7-4-3.5-4 1.5 0 .9-7.9-.8-11.2-1.8-3.8-2.4-7.6-1.2-8.3 1.5-1 1.2-3.5-.5-3.5-.8 0-1.5-.7-1.5-1.5s-1.2-2.2-2.6-3.1c-1.9-1.3-2.4-2.3-1.9-4.1.6-2.6-2.1-4.5-3.5-2.4-.5 1-.9.9-1.3-.3-.4-.9-1.6-1.6-2.8-1.6-1.9 0-2.1.4-1.5 3.5.6 3.1.4 3.5-1.4 3.5-1.7 0-2-.6-2-3.8 0-5.6-2.3-7.1-8.2-5.5z" onclick="window.location.href=&#39;build.php?id=26&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M66.8 27.7c-1.1.3-1.8 1.4-1.8 2.9v2.5l-3.7-2.6c-3.1-2-5-2.5-10.1-2.5-6.2 0-6.4.1-5.8 2.3.6 2.7-.5 7.6-1.9 7.9-.5.2-.9 1.1-.8 2.1.4 2.7-1.5 5.7-3.7 5.7s-3.5 1.6-2 2.5c2.2 1.4.9 2.6-2 2-2.2-.5-3-.3-3 .7 0 1.7-7.1 8.8-8.8 8.8-.7 0-1.2.6-1.2 1.4 0 .7-1 2-2.1 2.8-1.8 1.2-2 1.7-1 3.5.6 1.2 1.1 4.4 1.1 7.1 0 5.5 1.6 7.5 9 11.2 2.5 1.3 4.8 2.7 5.2 3.3.3.6 1.9 1.2 3.5 1.4 4.4.6 15.3 6 15.3 7.7 0 2.5 3 4.6 6.6 4.6 2 0 5.7 1 8.4 2.1 6.1 2.6 7.4 2.3 17.2-3.9 10-6.4 10.8-7 10.8-9.7 0-2.5 2.4-4.9 5.8-5.9 2.6-.9 3-4.7.7-6.6-.8-.7-1.5-1.9-1.5-2.6 0-.8.7-1.4 1.5-1.4 3 0 1.4-2.6-3-5-4.3-2.3-5.7-4-3.5-4 1.5 0 .9-7.9-.8-11.2-1.8-3.8-2.4-7.6-1.2-8.3 1.5-1 1.2-3.5-.5-3.5-.8 0-1.5-.7-1.5-1.5s-1.2-2.2-2.6-3.1c-1.9-1.3-2.4-2.3-1.9-4.1.6-2.6-2.1-4.5-3.5-2.4-.5 1-.9.9-1.3-.3-.4-.9-1.6-1.6-2.8-1.6-1.9 0-2.1.4-1.5 3.5.6 3.1.4 3.5-1.4 3.5-1.7 0-2-.6-2-3.8 0-5.6-2.3-7.1-8.2-5.5z" onclick="window.location.href=&#39;build.php?id=26&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a27 g0 aid27">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=27&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=27&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=27&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=27&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a28 g0 aid28">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=28&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=28&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=28&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=28&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a29 g0 aid29">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=29&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=29&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=29&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=29&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a30 g23 aid30">
+                                        <!-- level !-->
+                                        <div class="level colorLayer good aid30" onclick="window.location.href=&#39;build.php?id=30&amp;fastUP=0&#39;">
+                                            <div class="labelLayer">3</div>
+                                        </div>
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building g23" />
+
+                                        <svg class="buildingShape g23" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M90.5 20c.3.5 1.1 1 1.6 1 .6 0 .7-.5.4-1-.3-.6-1.1-1-1.6-1-.6 0-.7.4-.4 1zM85.8 20.7c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zM72 23.6c-1.4.8-1.8 1.4-1 1.4.8-.1 2.4-.7 3.4-1.5 2.4-1.9 1-1.8-2.4.1zM77 26c-1.9 1.1-4.3 1.9-5.3 2-.9 0-3.5.6-5.7 1.2-4.2 1.4-5.5 3.3-5.2 8.1.1 1.5-.4 4.1-1.3 5.7-2.1 4-1.9 5.4 1.1 8.9C62.7 54.4 64 55 67 55c2.1 0 4.1-.4 4.4-.8.3-.4 2-.6 3.9-.4 2.7.3 3.7 1.1 5.1 3.8 2.2 4.7 2 8-.6 10.6-1.7 1.7-2.3 1.9-2.6.7-.3-.8-1.6-2.4-2.9-3.6-1.2-1.2-2.3-3.1-2.3-4.1 0-1.5-1.2-2.2-5.2-3.2C53.6 54.7 38 58 38 64c0 1-1.9 2.5-5.1 3.8-4.2 1.9-4.9 2.6-4.4 4.3.5 1.5.1 2.5-1.4 3.5-1.2.9-2.1 2.6-2.1 4.2-.1 2.7-4 8.2-6 8.2-1.7 0-1.1 2 .8 2.7.9.3 2.5 1.4 3.5 2.5 1 1 3.1 1.8 4.7 1.8 2 0 3 .5 3 1.5 0 2.4 7.9 7.5 11.7 7.5 3.7 0 8.2-1.9 10.2-4.4 1.4-1.7 3.6-2.3 2.7-.7-.3.4.4 1.7 1.5 2.7 1.6 1.4 3.6 1.9 8 1.9 5.4 0 6.2-.3 9-3.3 2-2.1 3.9-3.2 5.8-3.2 1.6 0 4-.9 5.4-2 1.5-1.2 4.1-2 6.4-2 2.2 0 4.8-.9 6.3-1.9l2.4-1.9-2-5.9C96 76.8 94 75.7 90.5 79l-2.2 2.1-2.2-4.1c-2.7-5.2-2.7-5.8.6-7.1 1.5-.6 3.4-1.5 4.1-2.2.8-.6 2.6-1.2 4.1-1.3 1.4-.1 2.7-.3 2.9-.4.1-.1.6-.3 1.1-.4.5 0 1.3-.4 1.7-.9.4-.4 2-.7 3.5-.7 1.9 0 3.4-.9 4.8-2.8 1.9-2.8 1.9-3 .3-6.2-.9-1.8-2.6-3.8-3.7-4.4-1.1-.6-2.4-1.7-3.1-2.5-1.1-1.4-7.1-1.2-10.8.4-1.4.6-1.7.5-1.2-.3.4-.6 2.4-1.6 4.5-2.2 3.1-.8 4.2-1.7 5-4.2.6-1.7 1.1-3.9 1.1-4.8 0-2.6-5.6-9.7-8.9-11.5-4-2-10.8-1.8-15.1.5zm9 24.1c0 2.1-2.8 3.3-4.6 1.8-1.9-1.6-.6-3.9 2.2-3.7 1.5.2 2.4.9 2.4 1.9zm3.7 15.6c.2.6-.5 1.4-1.7 1.8-2.6.8-3.3.3-2.4-1.9.7-1.9 3.5-1.8 4.1.1z" onclick="window.location.href=&#39;build.php?id=30&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M90.5 20c.3.5 1.1 1 1.6 1 .6 0 .7-.5.4-1-.3-.6-1.1-1-1.6-1-.6 0-.7.4-.4 1zM85.8 20.7c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zM72 23.6c-1.4.8-1.8 1.4-1 1.4.8-.1 2.4-.7 3.4-1.5 2.4-1.9 1-1.8-2.4.1zM77 26c-1.9 1.1-4.3 1.9-5.3 2-.9 0-3.5.6-5.7 1.2-4.2 1.4-5.5 3.3-5.2 8.1.1 1.5-.4 4.1-1.3 5.7-2.1 4-1.9 5.4 1.1 8.9C62.7 54.4 64 55 67 55c2.1 0 4.1-.4 4.4-.8.3-.4 2-.6 3.9-.4 2.7.3 3.7 1.1 5.1 3.8 2.2 4.7 2 8-.6 10.6-1.7 1.7-2.3 1.9-2.6.7-.3-.8-1.6-2.4-2.9-3.6-1.2-1.2-2.3-3.1-2.3-4.1 0-1.5-1.2-2.2-5.2-3.2C53.6 54.7 38 58 38 64c0 1-1.9 2.5-5.1 3.8-4.2 1.9-4.9 2.6-4.4 4.3.5 1.5.1 2.5-1.4 3.5-1.2.9-2.1 2.6-2.1 4.2-.1 2.7-4 8.2-6 8.2-1.7 0-1.1 2 .8 2.7.9.3 2.5 1.4 3.5 2.5 1 1 3.1 1.8 4.7 1.8 2 0 3 .5 3 1.5 0 2.4 7.9 7.5 11.7 7.5 3.7 0 8.2-1.9 10.2-4.4 1.4-1.7 3.6-2.3 2.7-.7-.3.4.4 1.7 1.5 2.7 1.6 1.4 3.6 1.9 8 1.9 5.4 0 6.2-.3 9-3.3 2-2.1 3.9-3.2 5.8-3.2 1.6 0 4-.9 5.4-2 1.5-1.2 4.1-2 6.4-2 2.2 0 4.8-.9 6.3-1.9l2.4-1.9-2-5.9C96 76.8 94 75.7 90.5 79l-2.2 2.1-2.2-4.1c-2.7-5.2-2.7-5.8.6-7.1 1.5-.6 3.4-1.5 4.1-2.2.8-.6 2.6-1.2 4.1-1.3 1.4-.1 2.7-.3 2.9-.4.1-.1.6-.3 1.1-.4.5 0 1.3-.4 1.7-.9.4-.4 2-.7 3.5-.7 1.9 0 3.4-.9 4.8-2.8 1.9-2.8 1.9-3 .3-6.2-.9-1.8-2.6-3.8-3.7-4.4-1.1-.6-2.4-1.7-3.1-2.5-1.1-1.4-7.1-1.2-10.8.4-1.4.6-1.7.5-1.2-.3.4-.6 2.4-1.6 4.5-2.2 3.1-.8 4.2-1.7 5-4.2.6-1.7 1.1-3.9 1.1-4.8 0-2.6-5.6-9.7-8.9-11.5-4-2-10.8-1.8-15.1.5zm9 24.1c0 2.1-2.8 3.3-4.6 1.8-1.9-1.6-.6-3.9 2.2-3.7 1.5.2 2.4.9 2.4 1.9zm3.7 15.6c.2.6-.5 1.4-1.7 1.8-2.6.8-3.3.3-2.4-1.9.7-1.9 3.5-1.8 4.1.1z" onclick="window.location.href=&#39;build.php?id=30&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M90.5 20c.3.5 1.1 1 1.6 1 .6 0 .7-.5.4-1-.3-.6-1.1-1-1.6-1-.6 0-.7.4-.4 1zM85.8 20.7c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zM72 23.6c-1.4.8-1.8 1.4-1 1.4.8-.1 2.4-.7 3.4-1.5 2.4-1.9 1-1.8-2.4.1zM77 26c-1.9 1.1-4.3 1.9-5.3 2-.9 0-3.5.6-5.7 1.2-4.2 1.4-5.5 3.3-5.2 8.1.1 1.5-.4 4.1-1.3 5.7-2.1 4-1.9 5.4 1.1 8.9C62.7 54.4 64 55 67 55c2.1 0 4.1-.4 4.4-.8.3-.4 2-.6 3.9-.4 2.7.3 3.7 1.1 5.1 3.8 2.2 4.7 2 8-.6 10.6-1.7 1.7-2.3 1.9-2.6.7-.3-.8-1.6-2.4-2.9-3.6-1.2-1.2-2.3-3.1-2.3-4.1 0-1.5-1.2-2.2-5.2-3.2C53.6 54.7 38 58 38 64c0 1-1.9 2.5-5.1 3.8-4.2 1.9-4.9 2.6-4.4 4.3.5 1.5.1 2.5-1.4 3.5-1.2.9-2.1 2.6-2.1 4.2-.1 2.7-4 8.2-6 8.2-1.7 0-1.1 2 .8 2.7.9.3 2.5 1.4 3.5 2.5 1 1 3.1 1.8 4.7 1.8 2 0 3 .5 3 1.5 0 2.4 7.9 7.5 11.7 7.5 3.7 0 8.2-1.9 10.2-4.4 1.4-1.7 3.6-2.3 2.7-.7-.3.4.4 1.7 1.5 2.7 1.6 1.4 3.6 1.9 8 1.9 5.4 0 6.2-.3 9-3.3 2-2.1 3.9-3.2 5.8-3.2 1.6 0 4-.9 5.4-2 1.5-1.2 4.1-2 6.4-2 2.2 0 4.8-.9 6.3-1.9l2.4-1.9-2-5.9C96 76.8 94 75.7 90.5 79l-2.2 2.1-2.2-4.1c-2.7-5.2-2.7-5.8.6-7.1 1.5-.6 3.4-1.5 4.1-2.2.8-.6 2.6-1.2 4.1-1.3 1.4-.1 2.7-.3 2.9-.4.1-.1.6-.3 1.1-.4.5 0 1.3-.4 1.7-.9.4-.4 2-.7 3.5-.7 1.9 0 3.4-.9 4.8-2.8 1.9-2.8 1.9-3 .3-6.2-.9-1.8-2.6-3.8-3.7-4.4-1.1-.6-2.4-1.7-3.1-2.5-1.1-1.4-7.1-1.2-10.8.4-1.4.6-1.7.5-1.2-.3.4-.6 2.4-1.6 4.5-2.2 3.1-.8 4.2-1.7 5-4.2.6-1.7 1.1-3.9 1.1-4.8 0-2.6-5.6-9.7-8.9-11.5-4-2-10.8-1.8-15.1.5zm9 24.1c0 2.1-2.8 3.3-4.6 1.8-1.9-1.6-.6-3.9 2.2-3.7 1.5.2 2.4.9 2.4 1.9zm3.7 15.6c.2.6-.5 1.4-1.7 1.8-2.6.8-3.3.3-2.4-1.9.7-1.9 3.5-1.8 4.1.1z" onclick="window.location.href=&#39;build.php?id=30&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M90.5 20c.3.5 1.1 1 1.6 1 .6 0 .7-.5.4-1-.3-.6-1.1-1-1.6-1-.6 0-.7.4-.4 1zM85.8 20.7c.7.3 1.6.2 1.9-.1.4-.3-.2-.6-1.3-.5-1.1 0-1.4.3-.6.6zM72 23.6c-1.4.8-1.8 1.4-1 1.4.8-.1 2.4-.7 3.4-1.5 2.4-1.9 1-1.8-2.4.1zM77 26c-1.9 1.1-4.3 1.9-5.3 2-.9 0-3.5.6-5.7 1.2-4.2 1.4-5.5 3.3-5.2 8.1.1 1.5-.4 4.1-1.3 5.7-2.1 4-1.9 5.4 1.1 8.9C62.7 54.4 64 55 67 55c2.1 0 4.1-.4 4.4-.8.3-.4 2-.6 3.9-.4 2.7.3 3.7 1.1 5.1 3.8 2.2 4.7 2 8-.6 10.6-1.7 1.7-2.3 1.9-2.6.7-.3-.8-1.6-2.4-2.9-3.6-1.2-1.2-2.3-3.1-2.3-4.1 0-1.5-1.2-2.2-5.2-3.2C53.6 54.7 38 58 38 64c0 1-1.9 2.5-5.1 3.8-4.2 1.9-4.9 2.6-4.4 4.3.5 1.5.1 2.5-1.4 3.5-1.2.9-2.1 2.6-2.1 4.2-.1 2.7-4 8.2-6 8.2-1.7 0-1.1 2 .8 2.7.9.3 2.5 1.4 3.5 2.5 1 1 3.1 1.8 4.7 1.8 2 0 3 .5 3 1.5 0 2.4 7.9 7.5 11.7 7.5 3.7 0 8.2-1.9 10.2-4.4 1.4-1.7 3.6-2.3 2.7-.7-.3.4.4 1.7 1.5 2.7 1.6 1.4 3.6 1.9 8 1.9 5.4 0 6.2-.3 9-3.3 2-2.1 3.9-3.2 5.8-3.2 1.6 0 4-.9 5.4-2 1.5-1.2 4.1-2 6.4-2 2.2 0 4.8-.9 6.3-1.9l2.4-1.9-2-5.9C96 76.8 94 75.7 90.5 79l-2.2 2.1-2.2-4.1c-2.7-5.2-2.7-5.8.6-7.1 1.5-.6 3.4-1.5 4.1-2.2.8-.6 2.6-1.2 4.1-1.3 1.4-.1 2.7-.3 2.9-.4.1-.1.6-.3 1.1-.4.5 0 1.3-.4 1.7-.9.4-.4 2-.7 3.5-.7 1.9 0 3.4-.9 4.8-2.8 1.9-2.8 1.9-3 .3-6.2-.9-1.8-2.6-3.8-3.7-4.4-1.1-.6-2.4-1.7-3.1-2.5-1.1-1.4-7.1-1.2-10.8.4-1.4.6-1.7.5-1.2-.3.4-.6 2.4-1.6 4.5-2.2 3.1-.8 4.2-1.7 5-4.2.6-1.7 1.1-3.9 1.1-4.8 0-2.6-5.6-9.7-8.9-11.5-4-2-10.8-1.8-15.1.5zm9 24.1c0 2.1-2.8 3.3-4.6 1.8-1.9-1.6-.6-3.9 2.2-3.7 1.5.2 2.4.9 2.4 1.9zm3.7 15.6c.2.6-.5 1.4-1.7 1.8-2.6.8-3.3.3-2.4-1.9.7-1.9 3.5-1.8 4.1.1z" onclick="window.location.href=&#39;build.php?id=30&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a31 g10 aid31">
+                                        <!-- level !-->
+                                        <div class="level colorLayer good aid31" onclick="window.location.href=&#39;build.php?id=31&amp;fastUP=0&#39;">
+                                            <div class="labelLayer">1</div>
+                                        </div>
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building g10" />
+
+                                        <svg class="buildingShape g10" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M80 37.9c-.8.6-1.7.8-2.1.5-.4-.2-1.2.3-1.9 1.1S74.4 41 73.9 41s-3.4 1.2-6.6 2.6c-3.2 1.5-6.7 2.7-7.8 2.9-9.9 1-11.1 1.6-18.8 9.1-4.2 4-7.5 7.9-7.2 8.6.2.7-1.2 2.5-3.3 3.9-3.6 2.5-3.7 2.6-3.4 8.2.3 4.7.8 5.9 2.9 7.2 2.2 1.5 2.5 2.2 2 6.1-.3 3.2 0 4.7 1.1 5.6.8.7 1.7 1.2 1.9 1 .2-.1 2.5.7 5.1 1.8 3.5 1.6 5.7 2 8.7 1.5 14-2.3 33.1-4.6 41.5-4.8l4.5-.2-.3-17.8C94 65.1 94.3 59 95 59c1.6 0 1.2-2.2-.9-4.4-1.1-1.2-2.7-3.5-3.8-5.1-4.1-7-7.8-12.4-8.3-12.5-.3 0-1.2.4-2 .9z" onclick="window.location.href=&#39;build.php?id=31&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M80 37.9c-.8.6-1.7.8-2.1.5-.4-.2-1.2.3-1.9 1.1S74.4 41 73.9 41s-3.4 1.2-6.6 2.6c-3.2 1.5-6.7 2.7-7.8 2.9-9.9 1-11.1 1.6-18.8 9.1-4.2 4-7.5 7.9-7.2 8.6.2.7-1.2 2.5-3.3 3.9-3.6 2.5-3.7 2.6-3.4 8.2.3 4.7.8 5.9 2.9 7.2 2.2 1.5 2.5 2.2 2 6.1-.3 3.2 0 4.7 1.1 5.6.8.7 1.7 1.2 1.9 1 .2-.1 2.5.7 5.1 1.8 3.5 1.6 5.7 2 8.7 1.5 14-2.3 33.1-4.6 41.5-4.8l4.5-.2-.3-17.8C94 65.1 94.3 59 95 59c1.6 0 1.2-2.2-.9-4.4-1.1-1.2-2.7-3.5-3.8-5.1-4.1-7-7.8-12.4-8.3-12.5-.3 0-1.2.4-2 .9z" onclick="window.location.href=&#39;build.php?id=31&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M80 37.9c-.8.6-1.7.8-2.1.5-.4-.2-1.2.3-1.9 1.1S74.4 41 73.9 41s-3.4 1.2-6.6 2.6c-3.2 1.5-6.7 2.7-7.8 2.9-9.9 1-11.1 1.6-18.8 9.1-4.2 4-7.5 7.9-7.2 8.6.2.7-1.2 2.5-3.3 3.9-3.6 2.5-3.7 2.6-3.4 8.2.3 4.7.8 5.9 2.9 7.2 2.2 1.5 2.5 2.2 2 6.1-.3 3.2 0 4.7 1.1 5.6.8.7 1.7 1.2 1.9 1 .2-.1 2.5.7 5.1 1.8 3.5 1.6 5.7 2 8.7 1.5 14-2.3 33.1-4.6 41.5-4.8l4.5-.2-.3-17.8C94 65.1 94.3 59 95 59c1.6 0 1.2-2.2-.9-4.4-1.1-1.2-2.7-3.5-3.8-5.1-4.1-7-7.8-12.4-8.3-12.5-.3 0-1.2.4-2 .9z" onclick="window.location.href=&#39;build.php?id=31&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M80 37.9c-.8.6-1.7.8-2.1.5-.4-.2-1.2.3-1.9 1.1S74.4 41 73.9 41s-3.4 1.2-6.6 2.6c-3.2 1.5-6.7 2.7-7.8 2.9-9.9 1-11.1 1.6-18.8 9.1-4.2 4-7.5 7.9-7.2 8.6.2.7-1.2 2.5-3.3 3.9-3.6 2.5-3.7 2.6-3.4 8.2.3 4.7.8 5.9 2.9 7.2 2.2 1.5 2.5 2.2 2 6.1-.3 3.2 0 4.7 1.1 5.6.8.7 1.7 1.2 1.9 1 .2-.1 2.5.7 5.1 1.8 3.5 1.6 5.7 2 8.7 1.5 14-2.3 33.1-4.6 41.5-4.8l4.5-.2-.3-17.8C94 65.1 94.3 59 95 59c1.6 0 1.2-2.2-.9-4.4-1.1-1.2-2.7-3.5-3.8-5.1-4.1-7-7.8-12.4-8.3-12.5-.3 0-1.2.4-2 .9z" onclick="window.location.href=&#39;build.php?id=31&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a32 g0 aid32">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=32&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=32&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=32&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=32&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a33 g0 aid33">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=33&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=33&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=33&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=33&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a34 g0 aid34">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=34&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=34&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=34&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=34&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a35 g0 aid35">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=35&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=35&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=35&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=35&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a36 g0 aid36">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=36&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=36&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=36&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=36&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a37 g0 aid37">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=37&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=37&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=37&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=37&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a38 g0 aid38">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building iso" />
+
+                                        <svg class="buildingShape iso" width="120" height="120" viewBox="0 0 120 120">
+                                            <g class="clickShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=38&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=38&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=38&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M49.4 70.4c-7.8 1.8-13.5 4.7-16.8 8.6-3.5 4.3-4.1 7.2-2.1 11.3 3.3 7.1 13.9 11.7 28.5 12.4 19.8 1.1 35-6.5 35-17.5 0-4.9-5.8-10.2-14.2-13.1-8.1-2.8-22-3.6-30.4-1.7z" onclick="window.location.href=&#39;build.php?id=38&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a39 g16 aid39">
+                                        <!-- level !-->
+                                        <div class="level colorLayer good aid39 underConstruction" onclick="window.location.href=&#39;build.php?id=39&amp;fastUP=0&#39;">
+                                            <div class="labelLayer">1</div>
+                                        </div>
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <img src="./TTwars vip9_files/x.gif" class="building g16" />
+
+                                        <svg class="buildingShape g16" width="120" height="160" viewBox="0 0 120 160">
+                                            <g class="clickShape">
+                                                <path d="M55 3.1c-3.2 2.7-3.4 3-1.7 4.3 2.5 2 2.1 3-2.3 6-4.1 2.7-5.3 5.6-2.4 5.6 2.5 0-.1 2.7-4.8 5.1-2.1 1.1-3.8 2.4-3.8 3 0 .6-.8.8-1.7.5-2.6-.8-4.7 1.4-5.8 5.9-.9 3.4-.7 4.2 1 6 3.1 3.3 5.5 6.4 5.5 7.2 0 .4 1.2 1.9 2.6 3.4 1.4 1.5 2.7 3.9 2.9 5.5.1 1.5 1 3.3 1.9 3.9 1 .8 1.6 2.7 1.6 5.3 0 2.2.5 4.2 1.2 4.4.9.3.9 1.2-.1 3.6-.7 1.8-1.1 4.1-.8 5.2.3 1.1-.1 2.7-.9 3.4-.8.8-1.4 2.6-1.4 3.9 0 1.4-.7 3-1.5 3.7-.8.7-1.5 2.3-1.5 3.5 0 1.2-.7 2.8-1.5 3.5-.8.7-1.5 1.8-1.5 2.5 0 .6-1.2 1.8-2.6 2.5-1.4.8-3 2.3-3.5 3.3-.8 1.4-1.7 1.7-3.9 1.2-3.2-.7-8 2.6-8 5.5 0 2.7-4.1 4-6.7 2.2-3.3-2.1-7.3-.8-7.3 2.4 0 1.4-.4 2.3-.9 2-.5-.3-1.9.2-3.2 1.3l-2.3 1.8 5.2 4.8c2.9 2.6 5.2 5.4 5.2 6.1 0 .8.5 1.4 1.2 1.4.6 0 2.8 1.7 4.8 3.7 5.7 5.9 11 10.5 16.7 14.6 3.2 2.4 5 4.3 4.7 5.2-.4.9.6 1.7 3.2 2.4 3.5 1 4.1.8 10.6-3.7 3.8-2.6 7.9-5.2 9.1-5.9 3.8-2 25.2-23.6 26.5-26.8 1.4-3.2 5.9-10.1 7.9-12.3.7-.7 1.3-2.2 1.3-3.3 0-1.5 2.7-11 4.7-16.9.3-.8.7-3.8.8-6.6.2-2.8 1-6.4 1.8-8.1 1.7-3.2 1.4-5.7-1.1-11.3-.9-1.9-1.6-4.2-1.7-5-.5-4.6-2-11.2-3.7-16.5-2.2-6.7-3.1-18-1.6-20.9.7-1.2.6-2.2-.1-2.9-1.8-1.8-1.3-4.7.8-4.7 2.3 0 3.4-2.5 1.8-3.8C98.1 8.9 88.3 5 86.6 5c-.8 0-3.1-.8-5.2-1.7-2.2-.9-4.2-1.6-4.6-1.5-.5.1-.8-.2-.8-.6 0-.5-3.9-.9-8.7-1-8.4-.1-9 0-12.3 2.9zm5.4 2.6c-1.3 1.4-2.7 2.3-3.1 1.9-.4-.4.3-1.6 1.7-2.6 3.6-2.8 4.3-2.4 1.4.7zM87 10.6c0 2-.7 1.7-2-.6-.9-1.6-.8-1.8.5-1.4.8.4 1.5 1.2 1.5 2zm6.8 3.7c.3 2.6.2 2.7-1.7 1.5-2.6-1.6-2.8-5.1-.3-4.6 1 .2 1.8 1.4 2 3.1zm-39.6 2.9c-.7.7-1.2.8-1.2.2 0-1.4 1.2-2.6 1.9-1.9.2.3-.1 1.1-.7 1.7z" onclick="window.location.href=&#39;build.php?id=39&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M55 3.1c-3.2 2.7-3.4 3-1.7 4.3 2.5 2 2.1 3-2.3 6-4.1 2.7-5.3 5.6-2.4 5.6 2.5 0-.1 2.7-4.8 5.1-2.1 1.1-3.8 2.4-3.8 3 0 .6-.8.8-1.7.5-2.6-.8-4.7 1.4-5.8 5.9-.9 3.4-.7 4.2 1 6 3.1 3.3 5.5 6.4 5.5 7.2 0 .4 1.2 1.9 2.6 3.4 1.4 1.5 2.7 3.9 2.9 5.5.1 1.5 1 3.3 1.9 3.9 1 .8 1.6 2.7 1.6 5.3 0 2.2.5 4.2 1.2 4.4.9.3.9 1.2-.1 3.6-.7 1.8-1.1 4.1-.8 5.2.3 1.1-.1 2.7-.9 3.4-.8.8-1.4 2.6-1.4 3.9 0 1.4-.7 3-1.5 3.7-.8.7-1.5 2.3-1.5 3.5 0 1.2-.7 2.8-1.5 3.5-.8.7-1.5 1.8-1.5 2.5 0 .6-1.2 1.8-2.6 2.5-1.4.8-3 2.3-3.5 3.3-.8 1.4-1.7 1.7-3.9 1.2-3.2-.7-8 2.6-8 5.5 0 2.7-4.1 4-6.7 2.2-3.3-2.1-7.3-.8-7.3 2.4 0 1.4-.4 2.3-.9 2-.5-.3-1.9.2-3.2 1.3l-2.3 1.8 5.2 4.8c2.9 2.6 5.2 5.4 5.2 6.1 0 .8.5 1.4 1.2 1.4.6 0 2.8 1.7 4.8 3.7 5.7 5.9 11 10.5 16.7 14.6 3.2 2.4 5 4.3 4.7 5.2-.4.9.6 1.7 3.2 2.4 3.5 1 4.1.8 10.6-3.7 3.8-2.6 7.9-5.2 9.1-5.9 3.8-2 25.2-23.6 26.5-26.8 1.4-3.2 5.9-10.1 7.9-12.3.7-.7 1.3-2.2 1.3-3.3 0-1.5 2.7-11 4.7-16.9.3-.8.7-3.8.8-6.6.2-2.8 1-6.4 1.8-8.1 1.7-3.2 1.4-5.7-1.1-11.3-.9-1.9-1.6-4.2-1.7-5-.5-4.6-2-11.2-3.7-16.5-2.2-6.7-3.1-18-1.6-20.9.7-1.2.6-2.2-.1-2.9-1.8-1.8-1.3-4.7.8-4.7 2.3 0 3.4-2.5 1.8-3.8C98.1 8.9 88.3 5 86.6 5c-.8 0-3.1-.8-5.2-1.7-2.2-.9-4.2-1.6-4.6-1.5-.5.1-.8-.2-.8-.6 0-.5-3.9-.9-8.7-1-8.4-.1-9 0-12.3 2.9zm5.4 2.6c-1.3 1.4-2.7 2.3-3.1 1.9-.4-.4.3-1.6 1.7-2.6 3.6-2.8 4.3-2.4 1.4.7zM87 10.6c0 2-.7 1.7-2-.6-.9-1.6-.8-1.8.5-1.4.8.4 1.5 1.2 1.5 2zm6.8 3.7c.3 2.6.2 2.7-1.7 1.5-2.6-1.6-2.8-5.1-.3-4.6 1 .2 1.8 1.4 2 3.1zm-39.6 2.9c-.7.7-1.2.8-1.2.2 0-1.4 1.2-2.6 1.9-1.9.2.3-.1 1.1-.7 1.7z" onclick="window.location.href=&#39;build.php?id=39&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M55 3.1c-3.2 2.7-3.4 3-1.7 4.3 2.5 2 2.1 3-2.3 6-4.1 2.7-5.3 5.6-2.4 5.6 2.5 0-.1 2.7-4.8 5.1-2.1 1.1-3.8 2.4-3.8 3 0 .6-.8.8-1.7.5-2.6-.8-4.7 1.4-5.8 5.9-.9 3.4-.7 4.2 1 6 3.1 3.3 5.5 6.4 5.5 7.2 0 .4 1.2 1.9 2.6 3.4 1.4 1.5 2.7 3.9 2.9 5.5.1 1.5 1 3.3 1.9 3.9 1 .8 1.6 2.7 1.6 5.3 0 2.2.5 4.2 1.2 4.4.9.3.9 1.2-.1 3.6-.7 1.8-1.1 4.1-.8 5.2.3 1.1-.1 2.7-.9 3.4-.8.8-1.4 2.6-1.4 3.9 0 1.4-.7 3-1.5 3.7-.8.7-1.5 2.3-1.5 3.5 0 1.2-.7 2.8-1.5 3.5-.8.7-1.5 1.8-1.5 2.5 0 .6-1.2 1.8-2.6 2.5-1.4.8-3 2.3-3.5 3.3-.8 1.4-1.7 1.7-3.9 1.2-3.2-.7-8 2.6-8 5.5 0 2.7-4.1 4-6.7 2.2-3.3-2.1-7.3-.8-7.3 2.4 0 1.4-.4 2.3-.9 2-.5-.3-1.9.2-3.2 1.3l-2.3 1.8 5.2 4.8c2.9 2.6 5.2 5.4 5.2 6.1 0 .8.5 1.4 1.2 1.4.6 0 2.8 1.7 4.8 3.7 5.7 5.9 11 10.5 16.7 14.6 3.2 2.4 5 4.3 4.7 5.2-.4.9.6 1.7 3.2 2.4 3.5 1 4.1.8 10.6-3.7 3.8-2.6 7.9-5.2 9.1-5.9 3.8-2 25.2-23.6 26.5-26.8 1.4-3.2 5.9-10.1 7.9-12.3.7-.7 1.3-2.2 1.3-3.3 0-1.5 2.7-11 4.7-16.9.3-.8.7-3.8.8-6.6.2-2.8 1-6.4 1.8-8.1 1.7-3.2 1.4-5.7-1.1-11.3-.9-1.9-1.6-4.2-1.7-5-.5-4.6-2-11.2-3.7-16.5-2.2-6.7-3.1-18-1.6-20.9.7-1.2.6-2.2-.1-2.9-1.8-1.8-1.3-4.7.8-4.7 2.3 0 3.4-2.5 1.8-3.8C98.1 8.9 88.3 5 86.6 5c-.8 0-3.1-.8-5.2-1.7-2.2-.9-4.2-1.6-4.6-1.5-.5.1-.8-.2-.8-.6 0-.5-3.9-.9-8.7-1-8.4-.1-9 0-12.3 2.9zm5.4 2.6c-1.3 1.4-2.7 2.3-3.1 1.9-.4-.4.3-1.6 1.7-2.6 3.6-2.8 4.3-2.4 1.4.7zM87 10.6c0 2-.7 1.7-2-.6-.9-1.6-.8-1.8.5-1.4.8.4 1.5 1.2 1.5 2zm6.8 3.7c.3 2.6.2 2.7-1.7 1.5-2.6-1.6-2.8-5.1-.3-4.6 1 .2 1.8 1.4 2 3.1zm-39.6 2.9c-.7.7-1.2.8-1.2.2 0-1.4 1.2-2.6 1.9-1.9.2.3-.1 1.1-.7 1.7z" onclick="window.location.href=&#39;build.php?id=39&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M55 3.1c-3.2 2.7-3.4 3-1.7 4.3 2.5 2 2.1 3-2.3 6-4.1 2.7-5.3 5.6-2.4 5.6 2.5 0-.1 2.7-4.8 5.1-2.1 1.1-3.8 2.4-3.8 3 0 .6-.8.8-1.7.5-2.6-.8-4.7 1.4-5.8 5.9-.9 3.4-.7 4.2 1 6 3.1 3.3 5.5 6.4 5.5 7.2 0 .4 1.2 1.9 2.6 3.4 1.4 1.5 2.7 3.9 2.9 5.5.1 1.5 1 3.3 1.9 3.9 1 .8 1.6 2.7 1.6 5.3 0 2.2.5 4.2 1.2 4.4.9.3.9 1.2-.1 3.6-.7 1.8-1.1 4.1-.8 5.2.3 1.1-.1 2.7-.9 3.4-.8.8-1.4 2.6-1.4 3.9 0 1.4-.7 3-1.5 3.7-.8.7-1.5 2.3-1.5 3.5 0 1.2-.7 2.8-1.5 3.5-.8.7-1.5 1.8-1.5 2.5 0 .6-1.2 1.8-2.6 2.5-1.4.8-3 2.3-3.5 3.3-.8 1.4-1.7 1.7-3.9 1.2-3.2-.7-8 2.6-8 5.5 0 2.7-4.1 4-6.7 2.2-3.3-2.1-7.3-.8-7.3 2.4 0 1.4-.4 2.3-.9 2-.5-.3-1.9.2-3.2 1.3l-2.3 1.8 5.2 4.8c2.9 2.6 5.2 5.4 5.2 6.1 0 .8.5 1.4 1.2 1.4.6 0 2.8 1.7 4.8 3.7 5.7 5.9 11 10.5 16.7 14.6 3.2 2.4 5 4.3 4.7 5.2-.4.9.6 1.7 3.2 2.4 3.5 1 4.1.8 10.6-3.7 3.8-2.6 7.9-5.2 9.1-5.9 3.8-2 25.2-23.6 26.5-26.8 1.4-3.2 5.9-10.1 7.9-12.3.7-.7 1.3-2.2 1.3-3.3 0-1.5 2.7-11 4.7-16.9.3-.8.7-3.8.8-6.6.2-2.8 1-6.4 1.8-8.1 1.7-3.2 1.4-5.7-1.1-11.3-.9-1.9-1.6-4.2-1.7-5-.5-4.6-2-11.2-3.7-16.5-2.2-6.7-3.1-18-1.6-20.9.7-1.2.6-2.2-.1-2.9-1.8-1.8-1.3-4.7.8-4.7 2.3 0 3.4-2.5 1.8-3.8C98.1 8.9 88.3 5 86.6 5c-.8 0-3.1-.8-5.2-1.7-2.2-.9-4.2-1.6-4.6-1.5-.5.1-.8-.2-.8-.6 0-.5-3.9-.9-8.7-1-8.4-.1-9 0-12.3 2.9zm5.4 2.6c-1.3 1.4-2.7 2.3-3.1 1.9-.4-.4.3-1.6 1.7-2.6 3.6-2.8 4.3-2.4 1.4.7zM87 10.6c0 2-.7 1.7-2-.6-.9-1.6-.8-1.8.5-1.4.8.4 1.5 1.2 1.5 2zm6.8 3.7c.3 2.6.2 2.7-1.7 1.5-2.6-1.6-2.8-5.1-.3-4.6 1 .2 1.8 1.4 2 3.1zm-39.6 2.9c-.7.7-1.2.8-1.2.2 0-1.4 1.2-2.6 1.9-1.9.2.3-.1 1.1-.7 1.7z" onclick="window.location.href=&#39;build.php?id=39&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                    </div>
+                                    <div class="buildingSlot a40 g0 aid40">
+                                        <!-- level !-->
+                                        <!-- tribe buildings different < ?=$vars['tribeClass'];?> !-->
+
+                                        <svg class="buildingShape a40 wallBottom" width="628" height="464" viewBox="0 0 628 464">
+                                            <g class="clickShape">
+                                                <path d="M623.57 239.09c0-2.94.26-5.46.28-7.92 0-2.7-.94-5.49-1.87-8.1-.54-1.52-.38-2.28 1-2.75-1.58-4.19 1.47-7.18 2.1-10.48-.56-3-2.85-5.68-1.16-8.81.14-1.07-1.23-.81-1.26-1.68.95-1.92.95-1.92.22-3.3.73-6 1.44-12 2.62-17.88a1.74 1.74 0 0 0 .24-.91 1.94 1.94 0 0 0 0-.22c.2-1 .4-1.88.55-2.46.28-1.09.57-2.17.76-2.73a4.29 4.29 0 0 0 .15-.54 6.29 6.29 0 0 0 .1-.62c-.14.48-.25 1-.38 1.44a1.74 1.74 0 0 1-1.72 1H624.55a2 2 0 0 1-.79-.58 1.24 1.24 0 0 1-.21-.41 1.35 1.35 0 0 1 0-.51c.27-2.71-.87-5.1-1.59-7.59.22-.77.89-1.58.5-2.32-2-3.84-1.62-8.57-4.54-12.08L616 150a4.94 4.94 0 0 1-.73-.88 2.06 2.06 0 0 1-.21-.46 1.76 1.76 0 0 1 0-1l2-1.33a9.05 9.05 0 0 1-1.84-4.13 12.06 12.06 0 0 0-3.54-7.39 39 39 0 0 1-6.2-8.28 44.64 44.64 0 0 0-7.54-10.45 11.27 11.27 0 0 1-2.55-4.5 7.42 7.42 0 0 0-3.5-4.29 21 21 0 0 1-5-4c-3.51-3.76-5.76-8.53-9.7-11.91a12.21 12.21 0 0 1-2.34-2.87 4.82 4.82 0 0 0-1.49-1.51 2.81 2.81 0 0 0-1.06-.39h-.14a3.56 3.56 0 0 0-2.15.54 4 4 0 0 1-1-.36 1.14 1.14 0 0 1-.6-.72 3 3 0 0 0-3.08-2.52.92.92 0 0 1-.55-.35c-.18-.19-.35-.42-.53-.58s-.06-.47-.08-.72c0-.42-.08-.81-.27-.9-3.13-1.52-4.51-4.68-6.75-7l-.26-.27c-.64-.64-1.43-1.25-2.44-.27a2.6 2.6 0 0 1-2.5-2.25v-.13a3.14 3.14 0 0 0 .24-1.14 1.72 1.72 0 0 0-1.19-1.68 6.15 6.15 0 0 0-1.4-.34c-4-.57-6.11-4.61-10-5.21-.3 0-.5-.63-.79-.93s-.68-.82-.87-.76c-2.22.72-3.09-1.12-4.32-2.24a6.39 6.39 0 0 0-3.65-1.88 6 6 0 0 1-1-.13 7.39 7.39 0 0 1-1.16-.37c-1.65-.66-3.07-1.78-4.78-2.25-.3-.27-.6-.57-.89-.87l-.05-.05-.63-.65c-.23-.23-.45-.45-.69-.66a5.55 5.55 0 0 0-1-.7 3.46 3.46 0 0 0-.52-.24c-2.8-1-5.37-2.37-8-3.59-4.9-2.23-10-4.17-14.05-7.85a4.43 4.43 0 0 0-.53-.41 4.26 4.26 0 0 0-2.25-.68 11 11 0 0 0-1.81.11 11.89 11.89 0 0 0-3.88-2 4.82 4.82 0 0 0-.65-.08 2.5 2.5 0 0 0-2-2 34.2 34.2 0 0 1-4.52-1.75c-2.27-1-4.72-1.49-7.06-2.28a16.5 16.5 0 0 1-4-1.9 2.09 2.09 0 0 0-.21-.46 1.49 1.49 0 0 0-1.18-.7c-2.16-.71-3.64-3.22-5.65-3.31-3-.13-5.3-1.36-7.7-2.8-3.63-2.18-8.08-1.71-11.84-3.56a6.6 6.6 0 0 0-4.82-.59 6.88 6.88 0 0 1-4.92-.85c-4-2.25-8.52-2.38-12.67-3.89-6-2.2-12.74-1.17-18.77-3.6a5.77 5.77 0 0 0-1.93-.24c-3.67-.14-7.3.65-11-.52-2.32-.72-4.7-1.29-7-2.09-5.2-1.78-10.78-2.18-16.18-2.95-6.54-.93-13.4-.32-20-.82a39.92 39.92 0 0 0-9.14.41c-2.31.36-3.95.31-5.63-1a5.25 5.25 0 0 0-4.41-1.1A12.39 12.39 0 0 1 324 .7c-3.1-.33-6.69-1.23-9.57 0-3.58 1.49-7.3 1.65-11 2a72.31 72.31 0 0 1-7.37.11c-5.12 0-10.28.35-15.35-.15-2.53-.25-4.41 1.06-6.66 1.36-2.79.37-5.64.43-8.36 1-2.07.43-4.42-.43-6 .58-2.15 1.38-4.26 1.12-6.45 1.25a13 13 0 0 0-2.93.37c-3.74 1.07-7.35 3.15-11.47 1.69-.29-.1-.89-.1-1 0-.84 1.76-2.59.85-3.84 1.37s-3.14.16-4.24 1.26c-1.61 1.62-3.55 1.47-5.36 1.1a5.55 5.55 0 0 0-4.28.58 6.75 6.75 0 0 1-1.87.6c-3.59.87-7.52.55-10.7 2.84-2 1.45-4.25 1.09-6.49 1.2a12.62 12.62 0 0 0-2.18.28 8.51 8.51 0 0 0-1.69.58A6.7 6.7 0 0 0 194 22l-1 .31-.6-.31c0 .19-.1.38-.15.56-2.95-.86-5.81-1.2-8.33.89q-.25.21-.5.45a12.84 12.84 0 0 1-6.05 3.51c-1.83.43-3.82.28-5.41 1.54-.82 0-1.78-.26-2.44.08-2.32 1.19-4.77 1.31-7.26 1.76a9.08 9.08 0 0 0-2.09.67 17.24 17.24 0 0 0-1.75.93l-1 .59-.49.31c-.6.39-1.19.78-1.79 1.15-.33.2-.67.4-1 .59l-2.09 1.67c-.62-.3-1-.25-1.23 0-.42.35-.5 1.14-.86 1.57l-1.4-.14h-.2l-.32.06a21.1 21.1 0 0 0-3.4 1.64h-.11a4.69 4.69 0 0 1-1.89.49 3.34 3.34 0 0 1-1.08-.16 4.41 4.41 0 0 1-1.16-.59c-.79 2-1.06 2.77-3.06 3.67-6.68 3-13 7.36-20.88 6.5a9.38 9.38 0 0 0-1-.06 3 3 0 0 0-2.58 1.32h-3.66l.75 4.63a5.53 5.53 0 0 1-.94.17c-2.14.19-3.84-1-5.52-2.23A18.4 18.4 0 0 1 105 55.7c.61 1.17.13 1.69-1.41 3.34a11.13 11.13 0 0 1-.92.72.6.6 0 0 1-.3.08c-2.81-.14-4.1 2-5.94 3.52-3.09 2.57-6.34 5.21-10 6.77-2.68 1.14-5.08 2.14-6 4.87-.81 2.33-3.16 2.14-4.59 3.44-2 1.83-2.92 4.56-4.91 6.16-3.14 2.53-6.14 5.24-9.38 7.62a16.84 16.84 0 0 0-3.69 4.28c-1.64 2.42-4.16 4.19-5.12 7.19a12.16 12.16 0 0 1-4.3 6c-2 1.53-3.05 4.13-5.51 5.24-.47.21-.35.9-.56 1.31-1.5 3-2.3 6.54-5.36 8.45-3.54 2.22-5 6-6.86 9.27-2.18 3.82-4.74 7.38-6.62 11.47-2.69 5.85-7 10.94-9.55 17-.16.37-.39.88-.71 1-2.14.73-2 2.61-2.25 4.3a19.48 19.48 0 0 1-1 3.83c-.54 1.69-.27.84-.77 2.69l31.91 1.56c1.5-3.37 4.14-6.22 5.21-8.61 3.19-7.12 7.25-13.82 10-21.19a37.88 37.88 0 0 1 10.34-15.31c4-3.58 6.56-8.31 9.78-12.46 2.94-3.79 5.46-7.62 10.48-9.78l-2.3-.45c.15-.43.16-.83.37-1 1.85-1.69 4-3 5.62-5 .35-.42 1.09-.84 1.56-.42 1 .91 1.45 0 2-.5 2.43-2.4 4.91-4.75 7.23-7.25.89-1 2.45-1.08 2.9-2.57.6-2 2.36-3 4.07-3.69a9.81 9.81 0 0 0 2.68-1.65c4.32-3.62 9.52-5.89 14.14-9.06 1.55-1.06 3.55-1.51 5-2.67 4.61-3.64 10-5.7 15.22-8.23l2.51-.51.91-.26a3 3 0 0 0 2.17-1.65 1.56 1.56 0 0 0 .42-.12c.38-.13.87-.14 1.12-.4a9.35 9.35 0 0 1 5.55-2.94 3.73 3.73 0 0 0 1.23-.39 3.58 3.58 0 0 0 1.75-3.06l1.38-.18c.11.15.21.28.32.4.72.8 1.27.72 1.57-.74 3-1.07 6-2.41 9.23-2.78.46-.05.93-.09 1.4-.1a2.84 2.84 0 0 0 1.82-.88c2.87-3.34 7.26-3.09 10.84-4.72 3.24-1.47 6.82-1.89 10-3.65 1.9-1.06 3.87-2.41 6.24-2.27a9.84 9.84 0 0 0 5.23-1.33c3.18-1.65 6.64-2.22 10.15-3 4.08-.84 8.24-1.4 12.27-2.44 2-.51 3.82-1.42 6-1.39a5.12 5.12 0 0 0 2.8-.92 7.58 7.58 0 0 1 4.27-1c5.42-.29 10.54-2.73 16.08-2.33a3 3 0 0 0 1.62-.59 9.21 9.21 0 0 1 5-1.1c2.73-.05 5.64.73 8.13-.6s5.24-1.4 8-1.38h9.75c.7 0 1.45.24 2.08-.46 1.4-1.55 3.56-1.21 5-.94a42.92 42.92 0 0 0 12.32.19 109.38 109.38 0 0 1 20.1-.3c2.9.24 5.82.41 8.73.59 4.85.29 9.71.59 14.53 1.25a1.9 1.9 0 0 0 1.14 1.22 5.12 5.12 0 0 0 1.69.22c3.22.06 6.59-.66 9.61.78a11.64 11.64 0 0 0 5.51 1.19c2.66-.07 5.35-.2 7.83 1 3.24 1.56 7 .42 10.21 2a11.15 11.15 0 0 0 3.05 1 82.79 82.79 0 0 1 11.22 2.8c3.77 1.19 7.76 1.35 11.44 3 1.81.82 3.76 1.94 5.8 2.08 5.17.36 9.81 2.29 14.33 4.52a59 59 0 0 0 9.57 3.39c4.84 1.42 9.11 4.21 14.21 5.11 3.67.65 7 2.91 10.63 4.18l2 .7 2.78 1q.88.35 1.74.73a26.41 26.41 0 0 1 8.42 5.5 3.57 3.57 0 0 0 2.3 1.66l.79.25a10.7 10.7 0 0 1 1.5.66 274.62 274.62 0 0 1 29 18.53 238.77 238.77 0 0 1 20.7 16.51c7.43 6.68 13.73 14.42 19.66 22.46a181 181 0 0 1 14 22.34c3.1 5.81 5.41 11.92 8 17.91.83 1.9 2.11 3.54 2.81 5.55 3.45 10 6.43 20.05 7.81 30.55.45 3.44 1.51 7 1.11 10.31a93.5 93.5 0 0 0-.55 10.17 43.1 43.1 0 0 1-.83 9.65 45.82 45.82 0 0 0-.86 6.16" onclick="window.location.href=&#39;build.php?id=40&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M623.57 239.09c0-2.94.26-5.46.28-7.92 0-2.7-.94-5.49-1.87-8.1-.54-1.52-.38-2.28 1-2.75-1.58-4.19 1.47-7.18 2.1-10.48-.56-3-2.85-5.68-1.16-8.81.14-1.07-1.23-.81-1.26-1.68.95-1.92.95-1.92.22-3.3.73-6 1.44-12 2.62-17.88a1.74 1.74 0 0 0 .24-.91 1.94 1.94 0 0 0 0-.22c.2-1 .4-1.88.55-2.46.28-1.09.57-2.17.76-2.73a4.29 4.29 0 0 0 .15-.54 6.29 6.29 0 0 0 .1-.62c-.14.48-.25 1-.38 1.44a1.74 1.74 0 0 1-1.72 1H624.55a2 2 0 0 1-.79-.58 1.24 1.24 0 0 1-.21-.41 1.35 1.35 0 0 1 0-.51c.27-2.71-.87-5.1-1.59-7.59.22-.77.89-1.58.5-2.32-2-3.84-1.62-8.57-4.54-12.08L616 150a4.94 4.94 0 0 1-.73-.88 2.06 2.06 0 0 1-.21-.46 1.76 1.76 0 0 1 0-1l2-1.33a9.05 9.05 0 0 1-1.84-4.13 12.06 12.06 0 0 0-3.54-7.39 39 39 0 0 1-6.2-8.28 44.64 44.64 0 0 0-7.54-10.45 11.27 11.27 0 0 1-2.55-4.5 7.42 7.42 0 0 0-3.5-4.29 21 21 0 0 1-5-4c-3.51-3.76-5.76-8.53-9.7-11.91a12.21 12.21 0 0 1-2.34-2.87 4.82 4.82 0 0 0-1.49-1.51 2.81 2.81 0 0 0-1.06-.39h-.14a3.56 3.56 0 0 0-2.15.54 4 4 0 0 1-1-.36 1.14 1.14 0 0 1-.6-.72 3 3 0 0 0-3.08-2.52.92.92 0 0 1-.55-.35c-.18-.19-.35-.42-.53-.58s-.06-.47-.08-.72c0-.42-.08-.81-.27-.9-3.13-1.52-4.51-4.68-6.75-7l-.26-.27c-.64-.64-1.43-1.25-2.44-.27a2.6 2.6 0 0 1-2.5-2.25v-.13a3.14 3.14 0 0 0 .24-1.14 1.72 1.72 0 0 0-1.19-1.68 6.15 6.15 0 0 0-1.4-.34c-4-.57-6.11-4.61-10-5.21-.3 0-.5-.63-.79-.93s-.68-.82-.87-.76c-2.22.72-3.09-1.12-4.32-2.24a6.39 6.39 0 0 0-3.65-1.88 6 6 0 0 1-1-.13 7.39 7.39 0 0 1-1.16-.37c-1.65-.66-3.07-1.78-4.78-2.25-.3-.27-.6-.57-.89-.87l-.05-.05-.63-.65c-.23-.23-.45-.45-.69-.66a5.55 5.55 0 0 0-1-.7 3.46 3.46 0 0 0-.52-.24c-2.8-1-5.37-2.37-8-3.59-4.9-2.23-10-4.17-14.05-7.85a4.43 4.43 0 0 0-.53-.41 4.26 4.26 0 0 0-2.25-.68 11 11 0 0 0-1.81.11 11.89 11.89 0 0 0-3.88-2 4.82 4.82 0 0 0-.65-.08 2.5 2.5 0 0 0-2-2 34.2 34.2 0 0 1-4.52-1.75c-2.27-1-4.72-1.49-7.06-2.28a16.5 16.5 0 0 1-4-1.9 2.09 2.09 0 0 0-.21-.46 1.49 1.49 0 0 0-1.18-.7c-2.16-.71-3.64-3.22-5.65-3.31-3-.13-5.3-1.36-7.7-2.8-3.63-2.18-8.08-1.71-11.84-3.56a6.6 6.6 0 0 0-4.82-.59 6.88 6.88 0 0 1-4.92-.85c-4-2.25-8.52-2.38-12.67-3.89-6-2.2-12.74-1.17-18.77-3.6a5.77 5.77 0 0 0-1.93-.24c-3.67-.14-7.3.65-11-.52-2.32-.72-4.7-1.29-7-2.09-5.2-1.78-10.78-2.18-16.18-2.95-6.54-.93-13.4-.32-20-.82a39.92 39.92 0 0 0-9.14.41c-2.31.36-3.95.31-5.63-1a5.25 5.25 0 0 0-4.41-1.1A12.39 12.39 0 0 1 324 .7c-3.1-.33-6.69-1.23-9.57 0-3.58 1.49-7.3 1.65-11 2a72.31 72.31 0 0 1-7.37.11c-5.12 0-10.28.35-15.35-.15-2.53-.25-4.41 1.06-6.66 1.36-2.79.37-5.64.43-8.36 1-2.07.43-4.42-.43-6 .58-2.15 1.38-4.26 1.12-6.45 1.25a13 13 0 0 0-2.93.37c-3.74 1.07-7.35 3.15-11.47 1.69-.29-.1-.89-.1-1 0-.84 1.76-2.59.85-3.84 1.37s-3.14.16-4.24 1.26c-1.61 1.62-3.55 1.47-5.36 1.1a5.55 5.55 0 0 0-4.28.58 6.75 6.75 0 0 1-1.87.6c-3.59.87-7.52.55-10.7 2.84-2 1.45-4.25 1.09-6.49 1.2a12.62 12.62 0 0 0-2.18.28 8.51 8.51 0 0 0-1.69.58A6.7 6.7 0 0 0 194 22l-1 .31-.6-.31c0 .19-.1.38-.15.56-2.95-.86-5.81-1.2-8.33.89q-.25.21-.5.45a12.84 12.84 0 0 1-6.05 3.51c-1.83.43-3.82.28-5.41 1.54-.82 0-1.78-.26-2.44.08-2.32 1.19-4.77 1.31-7.26 1.76a9.08 9.08 0 0 0-2.09.67 17.24 17.24 0 0 0-1.75.93l-1 .59-.49.31c-.6.39-1.19.78-1.79 1.15-.33.2-.67.4-1 .59l-2.09 1.67c-.62-.3-1-.25-1.23 0-.42.35-.5 1.14-.86 1.57l-1.4-.14h-.2l-.32.06a21.1 21.1 0 0 0-3.4 1.64h-.11a4.69 4.69 0 0 1-1.89.49 3.34 3.34 0 0 1-1.08-.16 4.41 4.41 0 0 1-1.16-.59c-.79 2-1.06 2.77-3.06 3.67-6.68 3-13 7.36-20.88 6.5a9.38 9.38 0 0 0-1-.06 3 3 0 0 0-2.58 1.32h-3.66l.75 4.63a5.53 5.53 0 0 1-.94.17c-2.14.19-3.84-1-5.52-2.23A18.4 18.4 0 0 1 105 55.7c.61 1.17.13 1.69-1.41 3.34a11.13 11.13 0 0 1-.92.72.6.6 0 0 1-.3.08c-2.81-.14-4.1 2-5.94 3.52-3.09 2.57-6.34 5.21-10 6.77-2.68 1.14-5.08 2.14-6 4.87-.81 2.33-3.16 2.14-4.59 3.44-2 1.83-2.92 4.56-4.91 6.16-3.14 2.53-6.14 5.24-9.38 7.62a16.84 16.84 0 0 0-3.69 4.28c-1.64 2.42-4.16 4.19-5.12 7.19a12.16 12.16 0 0 1-4.3 6c-2 1.53-3.05 4.13-5.51 5.24-.47.21-.35.9-.56 1.31-1.5 3-2.3 6.54-5.36 8.45-3.54 2.22-5 6-6.86 9.27-2.18 3.82-4.74 7.38-6.62 11.47-2.69 5.85-7 10.94-9.55 17-.16.37-.39.88-.71 1-2.14.73-2 2.61-2.25 4.3a19.48 19.48 0 0 1-1 3.83c-.54 1.69-.27.84-.77 2.69l31.91 1.56c1.5-3.37 4.14-6.22 5.21-8.61 3.19-7.12 7.25-13.82 10-21.19a37.88 37.88 0 0 1 10.34-15.31c4-3.58 6.56-8.31 9.78-12.46 2.94-3.79 5.46-7.62 10.48-9.78l-2.3-.45c.15-.43.16-.83.37-1 1.85-1.69 4-3 5.62-5 .35-.42 1.09-.84 1.56-.42 1 .91 1.45 0 2-.5 2.43-2.4 4.91-4.75 7.23-7.25.89-1 2.45-1.08 2.9-2.57.6-2 2.36-3 4.07-3.69a9.81 9.81 0 0 0 2.68-1.65c4.32-3.62 9.52-5.89 14.14-9.06 1.55-1.06 3.55-1.51 5-2.67 4.61-3.64 10-5.7 15.22-8.23l2.51-.51.91-.26a3 3 0 0 0 2.17-1.65 1.56 1.56 0 0 0 .42-.12c.38-.13.87-.14 1.12-.4a9.35 9.35 0 0 1 5.55-2.94 3.73 3.73 0 0 0 1.23-.39 3.58 3.58 0 0 0 1.75-3.06l1.38-.18c.11.15.21.28.32.4.72.8 1.27.72 1.57-.74 3-1.07 6-2.41 9.23-2.78.46-.05.93-.09 1.4-.1a2.84 2.84 0 0 0 1.82-.88c2.87-3.34 7.26-3.09 10.84-4.72 3.24-1.47 6.82-1.89 10-3.65 1.9-1.06 3.87-2.41 6.24-2.27a9.84 9.84 0 0 0 5.23-1.33c3.18-1.65 6.64-2.22 10.15-3 4.08-.84 8.24-1.4 12.27-2.44 2-.51 3.82-1.42 6-1.39a5.12 5.12 0 0 0 2.8-.92 7.58 7.58 0 0 1 4.27-1c5.42-.29 10.54-2.73 16.08-2.33a3 3 0 0 0 1.62-.59 9.21 9.21 0 0 1 5-1.1c2.73-.05 5.64.73 8.13-.6s5.24-1.4 8-1.38h9.75c.7 0 1.45.24 2.08-.46 1.4-1.55 3.56-1.21 5-.94a42.92 42.92 0 0 0 12.32.19 109.38 109.38 0 0 1 20.1-.3c2.9.24 5.82.41 8.73.59 4.85.29 9.71.59 14.53 1.25a1.9 1.9 0 0 0 1.14 1.22 5.12 5.12 0 0 0 1.69.22c3.22.06 6.59-.66 9.61.78a11.64 11.64 0 0 0 5.51 1.19c2.66-.07 5.35-.2 7.83 1 3.24 1.56 7 .42 10.21 2a11.15 11.15 0 0 0 3.05 1 82.79 82.79 0 0 1 11.22 2.8c3.77 1.19 7.76 1.35 11.44 3 1.81.82 3.76 1.94 5.8 2.08 5.17.36 9.81 2.29 14.33 4.52a59 59 0 0 0 9.57 3.39c4.84 1.42 9.11 4.21 14.21 5.11 3.67.65 7 2.91 10.63 4.18l2 .7 2.78 1q.88.35 1.74.73a26.41 26.41 0 0 1 8.42 5.5 3.57 3.57 0 0 0 2.3 1.66l.79.25a10.7 10.7 0 0 1 1.5.66 274.62 274.62 0 0 1 29 18.53 238.77 238.77 0 0 1 20.7 16.51c7.43 6.68 13.73 14.42 19.66 22.46a181 181 0 0 1 14 22.34c3.1 5.81 5.41 11.92 8 17.91.83 1.9 2.11 3.54 2.81 5.55 3.45 10 6.43 20.05 7.81 30.55.45 3.44 1.51 7 1.11 10.31a93.5 93.5 0 0 0-.55 10.17 43.1 43.1 0 0 1-.83 9.65 45.82 45.82 0 0 0-.86 6.16" onclick="window.location.href=&#39;build.php?id=40&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M623.57 239.09c0-2.94.26-5.46.28-7.92 0-2.7-.94-5.49-1.87-8.1-.54-1.52-.38-2.28 1-2.75-1.58-4.19 1.47-7.18 2.1-10.48-.56-3-2.85-5.68-1.16-8.81.14-1.07-1.23-.81-1.26-1.68.95-1.92.95-1.92.22-3.3.73-6 1.44-12 2.62-17.88a1.74 1.74 0 0 0 .24-.91 1.94 1.94 0 0 0 0-.22c.2-1 .4-1.88.55-2.46.28-1.09.57-2.17.76-2.73a4.29 4.29 0 0 0 .15-.54 6.29 6.29 0 0 0 .1-.62c-.14.48-.25 1-.38 1.44a1.74 1.74 0 0 1-1.72 1H624.55a2 2 0 0 1-.79-.58 1.24 1.24 0 0 1-.21-.41 1.35 1.35 0 0 1 0-.51c.27-2.71-.87-5.1-1.59-7.59.22-.77.89-1.58.5-2.32-2-3.84-1.62-8.57-4.54-12.08L616 150a4.94 4.94 0 0 1-.73-.88 2.06 2.06 0 0 1-.21-.46 1.76 1.76 0 0 1 0-1l2-1.33a9.05 9.05 0 0 1-1.84-4.13 12.06 12.06 0 0 0-3.54-7.39 39 39 0 0 1-6.2-8.28 44.64 44.64 0 0 0-7.54-10.45 11.27 11.27 0 0 1-2.55-4.5 7.42 7.42 0 0 0-3.5-4.29 21 21 0 0 1-5-4c-3.51-3.76-5.76-8.53-9.7-11.91a12.21 12.21 0 0 1-2.34-2.87 4.82 4.82 0 0 0-1.49-1.51 2.81 2.81 0 0 0-1.06-.39h-.14a3.56 3.56 0 0 0-2.15.54 4 4 0 0 1-1-.36 1.14 1.14 0 0 1-.6-.72 3 3 0 0 0-3.08-2.52.92.92 0 0 1-.55-.35c-.18-.19-.35-.42-.53-.58s-.06-.47-.08-.72c0-.42-.08-.81-.27-.9-3.13-1.52-4.51-4.68-6.75-7l-.26-.27c-.64-.64-1.43-1.25-2.44-.27a2.6 2.6 0 0 1-2.5-2.25v-.13a3.14 3.14 0 0 0 .24-1.14 1.72 1.72 0 0 0-1.19-1.68 6.15 6.15 0 0 0-1.4-.34c-4-.57-6.11-4.61-10-5.21-.3 0-.5-.63-.79-.93s-.68-.82-.87-.76c-2.22.72-3.09-1.12-4.32-2.24a6.39 6.39 0 0 0-3.65-1.88 6 6 0 0 1-1-.13 7.39 7.39 0 0 1-1.16-.37c-1.65-.66-3.07-1.78-4.78-2.25-.3-.27-.6-.57-.89-.87l-.05-.05-.63-.65c-.23-.23-.45-.45-.69-.66a5.55 5.55 0 0 0-1-.7 3.46 3.46 0 0 0-.52-.24c-2.8-1-5.37-2.37-8-3.59-4.9-2.23-10-4.17-14.05-7.85a4.43 4.43 0 0 0-.53-.41 4.26 4.26 0 0 0-2.25-.68 11 11 0 0 0-1.81.11 11.89 11.89 0 0 0-3.88-2 4.82 4.82 0 0 0-.65-.08 2.5 2.5 0 0 0-2-2 34.2 34.2 0 0 1-4.52-1.75c-2.27-1-4.72-1.49-7.06-2.28a16.5 16.5 0 0 1-4-1.9 2.09 2.09 0 0 0-.21-.46 1.49 1.49 0 0 0-1.18-.7c-2.16-.71-3.64-3.22-5.65-3.31-3-.13-5.3-1.36-7.7-2.8-3.63-2.18-8.08-1.71-11.84-3.56a6.6 6.6 0 0 0-4.82-.59 6.88 6.88 0 0 1-4.92-.85c-4-2.25-8.52-2.38-12.67-3.89-6-2.2-12.74-1.17-18.77-3.6a5.77 5.77 0 0 0-1.93-.24c-3.67-.14-7.3.65-11-.52-2.32-.72-4.7-1.29-7-2.09-5.2-1.78-10.78-2.18-16.18-2.95-6.54-.93-13.4-.32-20-.82a39.92 39.92 0 0 0-9.14.41c-2.31.36-3.95.31-5.63-1a5.25 5.25 0 0 0-4.41-1.1A12.39 12.39 0 0 1 324 .7c-3.1-.33-6.69-1.23-9.57 0-3.58 1.49-7.3 1.65-11 2a72.31 72.31 0 0 1-7.37.11c-5.12 0-10.28.35-15.35-.15-2.53-.25-4.41 1.06-6.66 1.36-2.79.37-5.64.43-8.36 1-2.07.43-4.42-.43-6 .58-2.15 1.38-4.26 1.12-6.45 1.25a13 13 0 0 0-2.93.37c-3.74 1.07-7.35 3.15-11.47 1.69-.29-.1-.89-.1-1 0-.84 1.76-2.59.85-3.84 1.37s-3.14.16-4.24 1.26c-1.61 1.62-3.55 1.47-5.36 1.1a5.55 5.55 0 0 0-4.28.58 6.75 6.75 0 0 1-1.87.6c-3.59.87-7.52.55-10.7 2.84-2 1.45-4.25 1.09-6.49 1.2a12.62 12.62 0 0 0-2.18.28 8.51 8.51 0 0 0-1.69.58A6.7 6.7 0 0 0 194 22l-1 .31-.6-.31c0 .19-.1.38-.15.56-2.95-.86-5.81-1.2-8.33.89q-.25.21-.5.45a12.84 12.84 0 0 1-6.05 3.51c-1.83.43-3.82.28-5.41 1.54-.82 0-1.78-.26-2.44.08-2.32 1.19-4.77 1.31-7.26 1.76a9.08 9.08 0 0 0-2.09.67 17.24 17.24 0 0 0-1.75.93l-1 .59-.49.31c-.6.39-1.19.78-1.79 1.15-.33.2-.67.4-1 .59l-2.09 1.67c-.62-.3-1-.25-1.23 0-.42.35-.5 1.14-.86 1.57l-1.4-.14h-.2l-.32.06a21.1 21.1 0 0 0-3.4 1.64h-.11a4.69 4.69 0 0 1-1.89.49 3.34 3.34 0 0 1-1.08-.16 4.41 4.41 0 0 1-1.16-.59c-.79 2-1.06 2.77-3.06 3.67-6.68 3-13 7.36-20.88 6.5a9.38 9.38 0 0 0-1-.06 3 3 0 0 0-2.58 1.32h-3.66l.75 4.63a5.53 5.53 0 0 1-.94.17c-2.14.19-3.84-1-5.52-2.23A18.4 18.4 0 0 1 105 55.7c.61 1.17.13 1.69-1.41 3.34a11.13 11.13 0 0 1-.92.72.6.6 0 0 1-.3.08c-2.81-.14-4.1 2-5.94 3.52-3.09 2.57-6.34 5.21-10 6.77-2.68 1.14-5.08 2.14-6 4.87-.81 2.33-3.16 2.14-4.59 3.44-2 1.83-2.92 4.56-4.91 6.16-3.14 2.53-6.14 5.24-9.38 7.62a16.84 16.84 0 0 0-3.69 4.28c-1.64 2.42-4.16 4.19-5.12 7.19a12.16 12.16 0 0 1-4.3 6c-2 1.53-3.05 4.13-5.51 5.24-.47.21-.35.9-.56 1.31-1.5 3-2.3 6.54-5.36 8.45-3.54 2.22-5 6-6.86 9.27-2.18 3.82-4.74 7.38-6.62 11.47-2.69 5.85-7 10.94-9.55 17-.16.37-.39.88-.71 1-2.14.73-2 2.61-2.25 4.3a19.48 19.48 0 0 1-1 3.83c-.54 1.69-.27.84-.77 2.69l31.91 1.56c1.5-3.37 4.14-6.22 5.21-8.61 3.19-7.12 7.25-13.82 10-21.19a37.88 37.88 0 0 1 10.34-15.31c4-3.58 6.56-8.31 9.78-12.46 2.94-3.79 5.46-7.62 10.48-9.78l-2.3-.45c.15-.43.16-.83.37-1 1.85-1.69 4-3 5.62-5 .35-.42 1.09-.84 1.56-.42 1 .91 1.45 0 2-.5 2.43-2.4 4.91-4.75 7.23-7.25.89-1 2.45-1.08 2.9-2.57.6-2 2.36-3 4.07-3.69a9.81 9.81 0 0 0 2.68-1.65c4.32-3.62 9.52-5.89 14.14-9.06 1.55-1.06 3.55-1.51 5-2.67 4.61-3.64 10-5.7 15.22-8.23l2.51-.51.91-.26a3 3 0 0 0 2.17-1.65 1.56 1.56 0 0 0 .42-.12c.38-.13.87-.14 1.12-.4a9.35 9.35 0 0 1 5.55-2.94 3.73 3.73 0 0 0 1.23-.39 3.58 3.58 0 0 0 1.75-3.06l1.38-.18c.11.15.21.28.32.4.72.8 1.27.72 1.57-.74 3-1.07 6-2.41 9.23-2.78.46-.05.93-.09 1.4-.1a2.84 2.84 0 0 0 1.82-.88c2.87-3.34 7.26-3.09 10.84-4.72 3.24-1.47 6.82-1.89 10-3.65 1.9-1.06 3.87-2.41 6.24-2.27a9.84 9.84 0 0 0 5.23-1.33c3.18-1.65 6.64-2.22 10.15-3 4.08-.84 8.24-1.4 12.27-2.44 2-.51 3.82-1.42 6-1.39a5.12 5.12 0 0 0 2.8-.92 7.58 7.58 0 0 1 4.27-1c5.42-.29 10.54-2.73 16.08-2.33a3 3 0 0 0 1.62-.59 9.21 9.21 0 0 1 5-1.1c2.73-.05 5.64.73 8.13-.6s5.24-1.4 8-1.38h9.75c.7 0 1.45.24 2.08-.46 1.4-1.55 3.56-1.21 5-.94a42.92 42.92 0 0 0 12.32.19 109.38 109.38 0 0 1 20.1-.3c2.9.24 5.82.41 8.73.59 4.85.29 9.71.59 14.53 1.25a1.9 1.9 0 0 0 1.14 1.22 5.12 5.12 0 0 0 1.69.22c3.22.06 6.59-.66 9.61.78a11.64 11.64 0 0 0 5.51 1.19c2.66-.07 5.35-.2 7.83 1 3.24 1.56 7 .42 10.21 2a11.15 11.15 0 0 0 3.05 1 82.79 82.79 0 0 1 11.22 2.8c3.77 1.19 7.76 1.35 11.44 3 1.81.82 3.76 1.94 5.8 2.08 5.17.36 9.81 2.29 14.33 4.52a59 59 0 0 0 9.57 3.39c4.84 1.42 9.11 4.21 14.21 5.11 3.67.65 7 2.91 10.63 4.18l2 .7 2.78 1q.88.35 1.74.73a26.41 26.41 0 0 1 8.42 5.5 3.57 3.57 0 0 0 2.3 1.66l.79.25a10.7 10.7 0 0 1 1.5.66 274.62 274.62 0 0 1 29 18.53 238.77 238.77 0 0 1 20.7 16.51c7.43 6.68 13.73 14.42 19.66 22.46a181 181 0 0 1 14 22.34c3.1 5.81 5.41 11.92 8 17.91.83 1.9 2.11 3.54 2.81 5.55 3.45 10 6.43 20.05 7.81 30.55.45 3.44 1.51 7 1.11 10.31a93.5 93.5 0 0 0-.55 10.17 43.1 43.1 0 0 1-.83 9.65 45.82 45.82 0 0 0-.86 6.16" onclick="window.location.href=&#39;build.php?id=40&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M623.57 239.09c0-2.94.26-5.46.28-7.92 0-2.7-.94-5.49-1.87-8.1-.54-1.52-.38-2.28 1-2.75-1.58-4.19 1.47-7.18 2.1-10.48-.56-3-2.85-5.68-1.16-8.81.14-1.07-1.23-.81-1.26-1.68.95-1.92.95-1.92.22-3.3.73-6 1.44-12 2.62-17.88a1.74 1.74 0 0 0 .24-.91 1.94 1.94 0 0 0 0-.22c.2-1 .4-1.88.55-2.46.28-1.09.57-2.17.76-2.73a4.29 4.29 0 0 0 .15-.54 6.29 6.29 0 0 0 .1-.62c-.14.48-.25 1-.38 1.44a1.74 1.74 0 0 1-1.72 1H624.55a2 2 0 0 1-.79-.58 1.24 1.24 0 0 1-.21-.41 1.35 1.35 0 0 1 0-.51c.27-2.71-.87-5.1-1.59-7.59.22-.77.89-1.58.5-2.32-2-3.84-1.62-8.57-4.54-12.08L616 150a4.94 4.94 0 0 1-.73-.88 2.06 2.06 0 0 1-.21-.46 1.76 1.76 0 0 1 0-1l2-1.33a9.05 9.05 0 0 1-1.84-4.13 12.06 12.06 0 0 0-3.54-7.39 39 39 0 0 1-6.2-8.28 44.64 44.64 0 0 0-7.54-10.45 11.27 11.27 0 0 1-2.55-4.5 7.42 7.42 0 0 0-3.5-4.29 21 21 0 0 1-5-4c-3.51-3.76-5.76-8.53-9.7-11.91a12.21 12.21 0 0 1-2.34-2.87 4.82 4.82 0 0 0-1.49-1.51 2.81 2.81 0 0 0-1.06-.39h-.14a3.56 3.56 0 0 0-2.15.54 4 4 0 0 1-1-.36 1.14 1.14 0 0 1-.6-.72 3 3 0 0 0-3.08-2.52.92.92 0 0 1-.55-.35c-.18-.19-.35-.42-.53-.58s-.06-.47-.08-.72c0-.42-.08-.81-.27-.9-3.13-1.52-4.51-4.68-6.75-7l-.26-.27c-.64-.64-1.43-1.25-2.44-.27a2.6 2.6 0 0 1-2.5-2.25v-.13a3.14 3.14 0 0 0 .24-1.14 1.72 1.72 0 0 0-1.19-1.68 6.15 6.15 0 0 0-1.4-.34c-4-.57-6.11-4.61-10-5.21-.3 0-.5-.63-.79-.93s-.68-.82-.87-.76c-2.22.72-3.09-1.12-4.32-2.24a6.39 6.39 0 0 0-3.65-1.88 6 6 0 0 1-1-.13 7.39 7.39 0 0 1-1.16-.37c-1.65-.66-3.07-1.78-4.78-2.25-.3-.27-.6-.57-.89-.87l-.05-.05-.63-.65c-.23-.23-.45-.45-.69-.66a5.55 5.55 0 0 0-1-.7 3.46 3.46 0 0 0-.52-.24c-2.8-1-5.37-2.37-8-3.59-4.9-2.23-10-4.17-14.05-7.85a4.43 4.43 0 0 0-.53-.41 4.26 4.26 0 0 0-2.25-.68 11 11 0 0 0-1.81.11 11.89 11.89 0 0 0-3.88-2 4.82 4.82 0 0 0-.65-.08 2.5 2.5 0 0 0-2-2 34.2 34.2 0 0 1-4.52-1.75c-2.27-1-4.72-1.49-7.06-2.28a16.5 16.5 0 0 1-4-1.9 2.09 2.09 0 0 0-.21-.46 1.49 1.49 0 0 0-1.18-.7c-2.16-.71-3.64-3.22-5.65-3.31-3-.13-5.3-1.36-7.7-2.8-3.63-2.18-8.08-1.71-11.84-3.56a6.6 6.6 0 0 0-4.82-.59 6.88 6.88 0 0 1-4.92-.85c-4-2.25-8.52-2.38-12.67-3.89-6-2.2-12.74-1.17-18.77-3.6a5.77 5.77 0 0 0-1.93-.24c-3.67-.14-7.3.65-11-.52-2.32-.72-4.7-1.29-7-2.09-5.2-1.78-10.78-2.18-16.18-2.95-6.54-.93-13.4-.32-20-.82a39.92 39.92 0 0 0-9.14.41c-2.31.36-3.95.31-5.63-1a5.25 5.25 0 0 0-4.41-1.1A12.39 12.39 0 0 1 324 .7c-3.1-.33-6.69-1.23-9.57 0-3.58 1.49-7.3 1.65-11 2a72.31 72.31 0 0 1-7.37.11c-5.12 0-10.28.35-15.35-.15-2.53-.25-4.41 1.06-6.66 1.36-2.79.37-5.64.43-8.36 1-2.07.43-4.42-.43-6 .58-2.15 1.38-4.26 1.12-6.45 1.25a13 13 0 0 0-2.93.37c-3.74 1.07-7.35 3.15-11.47 1.69-.29-.1-.89-.1-1 0-.84 1.76-2.59.85-3.84 1.37s-3.14.16-4.24 1.26c-1.61 1.62-3.55 1.47-5.36 1.1a5.55 5.55 0 0 0-4.28.58 6.75 6.75 0 0 1-1.87.6c-3.59.87-7.52.55-10.7 2.84-2 1.45-4.25 1.09-6.49 1.2a12.62 12.62 0 0 0-2.18.28 8.51 8.51 0 0 0-1.69.58A6.7 6.7 0 0 0 194 22l-1 .31-.6-.31c0 .19-.1.38-.15.56-2.95-.86-5.81-1.2-8.33.89q-.25.21-.5.45a12.84 12.84 0 0 1-6.05 3.51c-1.83.43-3.82.28-5.41 1.54-.82 0-1.78-.26-2.44.08-2.32 1.19-4.77 1.31-7.26 1.76a9.08 9.08 0 0 0-2.09.67 17.24 17.24 0 0 0-1.75.93l-1 .59-.49.31c-.6.39-1.19.78-1.79 1.15-.33.2-.67.4-1 .59l-2.09 1.67c-.62-.3-1-.25-1.23 0-.42.35-.5 1.14-.86 1.57l-1.4-.14h-.2l-.32.06a21.1 21.1 0 0 0-3.4 1.64h-.11a4.69 4.69 0 0 1-1.89.49 3.34 3.34 0 0 1-1.08-.16 4.41 4.41 0 0 1-1.16-.59c-.79 2-1.06 2.77-3.06 3.67-6.68 3-13 7.36-20.88 6.5a9.38 9.38 0 0 0-1-.06 3 3 0 0 0-2.58 1.32h-3.66l.75 4.63a5.53 5.53 0 0 1-.94.17c-2.14.19-3.84-1-5.52-2.23A18.4 18.4 0 0 1 105 55.7c.61 1.17.13 1.69-1.41 3.34a11.13 11.13 0 0 1-.92.72.6.6 0 0 1-.3.08c-2.81-.14-4.1 2-5.94 3.52-3.09 2.57-6.34 5.21-10 6.77-2.68 1.14-5.08 2.14-6 4.87-.81 2.33-3.16 2.14-4.59 3.44-2 1.83-2.92 4.56-4.91 6.16-3.14 2.53-6.14 5.24-9.38 7.62a16.84 16.84 0 0 0-3.69 4.28c-1.64 2.42-4.16 4.19-5.12 7.19a12.16 12.16 0 0 1-4.3 6c-2 1.53-3.05 4.13-5.51 5.24-.47.21-.35.9-.56 1.31-1.5 3-2.3 6.54-5.36 8.45-3.54 2.22-5 6-6.86 9.27-2.18 3.82-4.74 7.38-6.62 11.47-2.69 5.85-7 10.94-9.55 17-.16.37-.39.88-.71 1-2.14.73-2 2.61-2.25 4.3a19.48 19.48 0 0 1-1 3.83c-.54 1.69-.27.84-.77 2.69l31.91 1.56c1.5-3.37 4.14-6.22 5.21-8.61 3.19-7.12 7.25-13.82 10-21.19a37.88 37.88 0 0 1 10.34-15.31c4-3.58 6.56-8.31 9.78-12.46 2.94-3.79 5.46-7.62 10.48-9.78l-2.3-.45c.15-.43.16-.83.37-1 1.85-1.69 4-3 5.62-5 .35-.42 1.09-.84 1.56-.42 1 .91 1.45 0 2-.5 2.43-2.4 4.91-4.75 7.23-7.25.89-1 2.45-1.08 2.9-2.57.6-2 2.36-3 4.07-3.69a9.81 9.81 0 0 0 2.68-1.65c4.32-3.62 9.52-5.89 14.14-9.06 1.55-1.06 3.55-1.51 5-2.67 4.61-3.64 10-5.7 15.22-8.23l2.51-.51.91-.26a3 3 0 0 0 2.17-1.65 1.56 1.56 0 0 0 .42-.12c.38-.13.87-.14 1.12-.4a9.35 9.35 0 0 1 5.55-2.94 3.73 3.73 0 0 0 1.23-.39 3.58 3.58 0 0 0 1.75-3.06l1.38-.18c.11.15.21.28.32.4.72.8 1.27.72 1.57-.74 3-1.07 6-2.41 9.23-2.78.46-.05.93-.09 1.4-.1a2.84 2.84 0 0 0 1.82-.88c2.87-3.34 7.26-3.09 10.84-4.72 3.24-1.47 6.82-1.89 10-3.65 1.9-1.06 3.87-2.41 6.24-2.27a9.84 9.84 0 0 0 5.23-1.33c3.18-1.65 6.64-2.22 10.15-3 4.08-.84 8.24-1.4 12.27-2.44 2-.51 3.82-1.42 6-1.39a5.12 5.12 0 0 0 2.8-.92 7.58 7.58 0 0 1 4.27-1c5.42-.29 10.54-2.73 16.08-2.33a3 3 0 0 0 1.62-.59 9.21 9.21 0 0 1 5-1.1c2.73-.05 5.64.73 8.13-.6s5.24-1.4 8-1.38h9.75c.7 0 1.45.24 2.08-.46 1.4-1.55 3.56-1.21 5-.94a42.92 42.92 0 0 0 12.32.19 109.38 109.38 0 0 1 20.1-.3c2.9.24 5.82.41 8.73.59 4.85.29 9.71.59 14.53 1.25a1.9 1.9 0 0 0 1.14 1.22 5.12 5.12 0 0 0 1.69.22c3.22.06 6.59-.66 9.61.78a11.64 11.64 0 0 0 5.51 1.19c2.66-.07 5.35-.2 7.83 1 3.24 1.56 7 .42 10.21 2a11.15 11.15 0 0 0 3.05 1 82.79 82.79 0 0 1 11.22 2.8c3.77 1.19 7.76 1.35 11.44 3 1.81.82 3.76 1.94 5.8 2.08 5.17.36 9.81 2.29 14.33 4.52a59 59 0 0 0 9.57 3.39c4.84 1.42 9.11 4.21 14.21 5.11 3.67.65 7 2.91 10.63 4.18l2 .7 2.78 1q.88.35 1.74.73a26.41 26.41 0 0 1 8.42 5.5 3.57 3.57 0 0 0 2.3 1.66l.79.25a10.7 10.7 0 0 1 1.5.66 274.62 274.62 0 0 1 29 18.53 238.77 238.77 0 0 1 20.7 16.51c7.43 6.68 13.73 14.42 19.66 22.46a181 181 0 0 1 14 22.34c3.1 5.81 5.41 11.92 8 17.91.83 1.9 2.11 3.54 2.81 5.55 3.45 10 6.43 20.05 7.81 30.55.45 3.44 1.51 7 1.11 10.31a93.5 93.5 0 0 0-.55 10.17 43.1 43.1 0 0 1-.83 9.65 45.82 45.82 0 0 0-.86 6.16" onclick="window.location.href=&#39;build.php?id=40&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                        <svg class="buildingShape a40 wallTop" width="628" height="464" viewBox="0 0 628 464">
+                                            <g class="clickShape">
+                                                <path d="M9.25 174.12c-.14.08-.26.68-.3.73a2 2 0 0 0-.39 1.65l-2.1.66c-.12.66.43 1.56-.44 2-2 1-1.69 2.28-.66 3.66l-.24.73-2.67 1.8c1.17 1.09 1.59 2.19.38 3.52a1.41 1.41 0 0 0-.13 1.83 2.57 2.57 0 0 1 .57.65v.83c-.28.39-.89.67-1.26 1 .25.74 1.64 1.19.9 2-1.37 1.55-.29 3.67-1.43 5.17a2.08 2.08 0 0 0 0 2.45 2.11 2.11 0 0 1-.71 3.07c-.19 1.12 1.38 1.1 1.08 1.58-1.29 2 .37 4.22-.45 6.15-.46 1.08 0 1.64.57 2.31A2.16 2.16 0 0 1 0 218.36c.9.81 1.75 1.36 1.36 2.86-.14.54-1.07 2.65 1.11 2.86 1.1.82-.42 1.74.08 2.58l-.46.08h.48l.42.28c-.63.91-1.89 1.36-1.92 2.69 2.25 1.54 2.39 2.16 1 5.09 1.41-1.1 1.71.12 1.86.72.28 1.12.92 2.41.24 3.46-1 1.47-1 4 .29 5.12v1.45l-.46.48c-2.31 2.3-2.67 4.87-.93 7.8-1.48.33-1.6 1.1-1.25 2.42.29 1.13 1.28 2.43.42 3.56-1.77 2.33-1.1 5-.93 7.4.1 1.46-.27 3.69 2.41 4.45-1.34.52-1.25 1.41-1.25 2.33 0 1.49.16 3 .16 4.44a9.32 9.32 0 0 0 .3 3.28c.86 2.43 1.81 4.76.64 7.55-1.5 3.55-.49 6.53 2.26 8.3a3.26 3.26 0 0 0 .35 3 6 6 0 0 0 1.35 2.29 13.09 13.09 0 0 1 4.22 6.15c1 3 4.35 3.78 5.25 6.66a4.48 4.48 0 0 0 1.56 2.15 11.72 11.72 0 0 1 4 5c.64.47 2-.17 2 .52 0 3 3.25 2.81 4.41 4.79a10.45 10.45 0 0 0 3 3.25c1.82 1.21 2.83 3.69 4.68 4.8s2.26 3.75 4.75 3.84c1.39 2.67 2.27 5.83 6 6.23a.29.29 0 0 0 .28.31 11.5 11.5 0 0 0 1.84 2.88c1.4 2.06 3.5 3.13 5.39 4.53l.22 1.48c.19 2.26 2.11 3.26 3.49 4.58 5 4.79 9.52 10.11 14.95 14.46v2a56.44 56.44 0 0 1-1 9.54c-.46 1.22 0 1.57 1.24 1.56h11.13l3 .39c1.49 1 3.26.93 4.92 1.25a4.5 4.5 0 0 0 2.52.81l.49.5A9 9 0 0 0 99 393a2.87 2.87 0 0 0 1.81 1.81c1.14.33.54 1.77 1.57 2.34 1.37.76 1.06-2.17 2.47-.88.26.33.08.71 0 1.11-1.09 4.75.62 6.36 5.51 8.08a2.78 2.78 0 0 1 1.43 1.23c1.74 2.48 4 4.06 7.14 3.89a1.56 1.56 0 0 1 1.55.6c1.82 3.08 4.85 4.08 8.06 4.81l.48.48c.52 1 1.45 1.19 2.46 1.6 2.3.94 4.92-1.05 7 .94.19 1.34-2.72.89-1.47 3 1-.28 2.12-.56 3 .49a7.19 7.19 0 0 0 2.58 1.48c.76 1 2.11 1.08 3 2a11.77 11.77 0 0 0 7.64 3.45c2.34.22 5 .19 7.07.78 3 .89 5.85-.22 8.78.47 3.33.78 6.37 2.94 10 2.34a.51.51 0 0 1 .39.25c1 2 3.19 1.72 4.91 2.23 2 .6 4.41 1.73 6.21 1.19a19.22 19.22 0 0 1 11.2-.4c4 1.19 7.94.52 11.92.32.58 0 1.17-.24 1.68.15 1.72 1.29 3.28.53 4.74-.45a3.77 3.77 0 0 1 1.95-.91c3.45-.21 6.95-1 10.34-.64 3.66.34 7.19 2.49 10.75-.37.88 2.4-.11 4.37.76 6.15.17 2.49 2 4.21 2.91 6.28 1.48 3.36 4 2 6.2 2.58.24.06.49.06.73.1 3.39.7 6.17 3.17 10.13 2.54 2.61-.42 5.42.92 8.32.65 1.26-.12 3.2-.35 4.28 1.2 2.78 2.49 6.15 3.8 9.66 4.86 4.26 1.3 8.4 3.09 13 3.2 1.59 0 3.11-.41 4.79.11a19.63 19.63 0 0 0 10.75.33c1.93 1.1 3.88 2 6 .51h.91c1.6-.14 3.14.38 4.82.21a27.53 27.53 0 0 1 4.85-.31 27.58 27.58 0 0 0 6.89-.19 41.85 41.85 0 0 1 8.36-.58c4.57.05 8.15-2 11.64-4.55.41-.45 1.47-.71.49-1.59 0-.43-.08-.86.46-1a193.24 193.24 0 0 0 28-4.53c2.2 1.48 2.2 1.48 4-.83a4.22 4.22 0 0 0 4.16.33c3.32-1.44 7-1.72 10.3-3.25 2.46-1.72 5.51-2.06 8.22-2.67 5-1.14 10.07-2.55 15.25-3.13 3.15-.36 6.19-.85 8.64-3.46a5.89 5.89 0 0 1 3.57-1.61c3.62.22 6.2-2.51 9.67-3 2.32-.35 4.93-.86 7.28-1.19a8.22 8.22 0 0 0 4.79-2.15 11.45 11.45 0 0 1 5.07-2.73c2.05-.38 3.71-1.51 5.64-2s3.84-1.71 5.85-2.43c1.5-.53 3.06.5 4.41-.77a11 11 0 0 1 6-2.67 4.47 4.47 0 0 0 2.78-1.41c1.69-1.62 4.08-2.52 6.19-3.68a.78.78 0 0 1 .71.09c1.7 1.48 3.12.73 4.67-.37a6.16 6.16 0 0 1 3.55-.88 6 6 0 0 0 4.42-1.93 3.45 3.45 0 0 1 1.4-1 28.5 28.5 0 0 0 12.06-6.52c1.46-1.33 3.36-2.42 4.26-4.06a7.31 7.31 0 0 1 5.6-4.24 2.14 2.14 0 0 0 1.39-.8l1.54-1a1.8 1.8 0 0 0 1.46-.58c5.09-2.29 10.58-2.78 16-3.28.06-1.19.16-2-.44-2.7-1.43-3.2-4.37-5.67-4.56-9.47v-.5l8-8c2.05-2 4.16-4 6.16-6.09 1-1.05 1.19-2.05-.71-2.35-1.14-.18-2.26-.44-3.39-.67l-.54-.41v-1c1.36-.75 1.12-3 3-3.23s2-1.6 2.27-3c.47-2.8 1.75-4.86 4.59-5.92a7.44 7.44 0 0 0 3.67-2.51c2.35-3.82 5.29-7.18 7.84-10.83 1.7-2.43 3.95-4.69 4.9-7.39 1.8-5.09 5.2-9.21 8.69-12.73 2.72-2.74 3.5-6.93 7.3-8.77 1.38-.67.6-3 1.29-4.5 1.74-.71 2.17-2.63 3.4-3.86 2.66-2.65 6.79-4.6 6.13-9.39.73-.28 1.55.06 1.95-.63 1.14-2-2-2.77-1.31-4.61 2.24-.6 2.94-1.68 1.86-2.87-2-2.15-1.6-3.48 1.25-4.15 1.14-.27 2.24-.67 2.44-1.77.44-2.39 1.69-4.52 1.73-7.09.08-6.34 2.66-12.49 1.4-19-.38-1.95.6-4.51.68-6.7h-31c-.31.39-.42.82-.67 1-2.35 5.44-3.43 11.28-5.34 16.86-4.18 12.16-10 23.52-16.5 34.57a174.48 174.48 0 0 1-25.85 33.75c-5.76 5.91-12.41 10.76-18.73 16-2.95 2.44-6.8 3.94-8.54 7.73a3.69 3.69 0 0 0-3.22.5c-5.22 3.8-10.39 7.72-16.32 10.43a2.4 2.4 0 0 0-1.49 2.1l-.89.6a5.52 5.52 0 0 0-3.29.81c-3.66 2.14-7.4 4.16-11.17 6.09-17.49 9-35.81 16-54.45 22.14a307.49 307.49 0 0 1-32.72 8.42c-6.56 1.39-13.1 2.93-19.73 3.86-6.13.86-12.39 1.29-18.45 2.37s-12.16-.17-18 1.75c-21.16-.44-42.35 1.06-63.48-1.81-8.18-1.11-16.38-2.26-24.56-3.36-6.87-.92-13.62-2.83-20.41-4.35a334.15 334.15 0 0 1-46.13-14c-5.74-2.18-11.37-4.57-17-7-9-3.88-17.69-8.46-26.37-13-3.72-2-7.24-4.29-10.86-6.45a7.89 7.89 0 0 0-5.87-3.25c-1.61-1.81-4.13-1.79-6.08-3.11-5.19-3.54-9.92-7.72-15.37-10.88l-.53-.39a1.16 1.16 0 0 0-.12-.47c0-1.09-.89-1.48-1.59-2.06-3.44-2.83-7.23-5.27-10.58-8.13a129.67 129.67 0 0 1-19.75-21.75C52.69 286.66 41.57 263.12 36.17 237a95.51 95.51 0 0 1-1.59-31.2 187 187 0 0 1 6-27.94c0-.07.13-.68.37-1.53.06-.27.2-.59.19-.61" onclick="window.location.href=&#39;build.php?id=40&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShape">
+                                                <path d="M9.25 174.12c-.14.08-.26.68-.3.73a2 2 0 0 0-.39 1.65l-2.1.66c-.12.66.43 1.56-.44 2-2 1-1.69 2.28-.66 3.66l-.24.73-2.67 1.8c1.17 1.09 1.59 2.19.38 3.52a1.41 1.41 0 0 0-.13 1.83 2.57 2.57 0 0 1 .57.65v.83c-.28.39-.89.67-1.26 1 .25.74 1.64 1.19.9 2-1.37 1.55-.29 3.67-1.43 5.17a2.08 2.08 0 0 0 0 2.45 2.11 2.11 0 0 1-.71 3.07c-.19 1.12 1.38 1.1 1.08 1.58-1.29 2 .37 4.22-.45 6.15-.46 1.08 0 1.64.57 2.31A2.16 2.16 0 0 1 0 218.36c.9.81 1.75 1.36 1.36 2.86-.14.54-1.07 2.65 1.11 2.86 1.1.82-.42 1.74.08 2.58l-.46.08h.48l.42.28c-.63.91-1.89 1.36-1.92 2.69 2.25 1.54 2.39 2.16 1 5.09 1.41-1.1 1.71.12 1.86.72.28 1.12.92 2.41.24 3.46-1 1.47-1 4 .29 5.12v1.45l-.46.48c-2.31 2.3-2.67 4.87-.93 7.8-1.48.33-1.6 1.1-1.25 2.42.29 1.13 1.28 2.43.42 3.56-1.77 2.33-1.1 5-.93 7.4.1 1.46-.27 3.69 2.41 4.45-1.34.52-1.25 1.41-1.25 2.33 0 1.49.16 3 .16 4.44a9.32 9.32 0 0 0 .3 3.28c.86 2.43 1.81 4.76.64 7.55-1.5 3.55-.49 6.53 2.26 8.3a3.26 3.26 0 0 0 .35 3 6 6 0 0 0 1.35 2.29 13.09 13.09 0 0 1 4.22 6.15c1 3 4.35 3.78 5.25 6.66a4.48 4.48 0 0 0 1.56 2.15 11.72 11.72 0 0 1 4 5c.64.47 2-.17 2 .52 0 3 3.25 2.81 4.41 4.79a10.45 10.45 0 0 0 3 3.25c1.82 1.21 2.83 3.69 4.68 4.8s2.26 3.75 4.75 3.84c1.39 2.67 2.27 5.83 6 6.23a.29.29 0 0 0 .28.31 11.5 11.5 0 0 0 1.84 2.88c1.4 2.06 3.5 3.13 5.39 4.53l.22 1.48c.19 2.26 2.11 3.26 3.49 4.58 5 4.79 9.52 10.11 14.95 14.46v2a56.44 56.44 0 0 1-1 9.54c-.46 1.22 0 1.57 1.24 1.56h11.13l3 .39c1.49 1 3.26.93 4.92 1.25a4.5 4.5 0 0 0 2.52.81l.49.5A9 9 0 0 0 99 393a2.87 2.87 0 0 0 1.81 1.81c1.14.33.54 1.77 1.57 2.34 1.37.76 1.06-2.17 2.47-.88.26.33.08.71 0 1.11-1.09 4.75.62 6.36 5.51 8.08a2.78 2.78 0 0 1 1.43 1.23c1.74 2.48 4 4.06 7.14 3.89a1.56 1.56 0 0 1 1.55.6c1.82 3.08 4.85 4.08 8.06 4.81l.48.48c.52 1 1.45 1.19 2.46 1.6 2.3.94 4.92-1.05 7 .94.19 1.34-2.72.89-1.47 3 1-.28 2.12-.56 3 .49a7.19 7.19 0 0 0 2.58 1.48c.76 1 2.11 1.08 3 2a11.77 11.77 0 0 0 7.64 3.45c2.34.22 5 .19 7.07.78 3 .89 5.85-.22 8.78.47 3.33.78 6.37 2.94 10 2.34a.51.51 0 0 1 .39.25c1 2 3.19 1.72 4.91 2.23 2 .6 4.41 1.73 6.21 1.19a19.22 19.22 0 0 1 11.2-.4c4 1.19 7.94.52 11.92.32.58 0 1.17-.24 1.68.15 1.72 1.29 3.28.53 4.74-.45a3.77 3.77 0 0 1 1.95-.91c3.45-.21 6.95-1 10.34-.64 3.66.34 7.19 2.49 10.75-.37.88 2.4-.11 4.37.76 6.15.17 2.49 2 4.21 2.91 6.28 1.48 3.36 4 2 6.2 2.58.24.06.49.06.73.1 3.39.7 6.17 3.17 10.13 2.54 2.61-.42 5.42.92 8.32.65 1.26-.12 3.2-.35 4.28 1.2 2.78 2.49 6.15 3.8 9.66 4.86 4.26 1.3 8.4 3.09 13 3.2 1.59 0 3.11-.41 4.79.11a19.63 19.63 0 0 0 10.75.33c1.93 1.1 3.88 2 6 .51h.91c1.6-.14 3.14.38 4.82.21a27.53 27.53 0 0 1 4.85-.31 27.58 27.58 0 0 0 6.89-.19 41.85 41.85 0 0 1 8.36-.58c4.57.05 8.15-2 11.64-4.55.41-.45 1.47-.71.49-1.59 0-.43-.08-.86.46-1a193.24 193.24 0 0 0 28-4.53c2.2 1.48 2.2 1.48 4-.83a4.22 4.22 0 0 0 4.16.33c3.32-1.44 7-1.72 10.3-3.25 2.46-1.72 5.51-2.06 8.22-2.67 5-1.14 10.07-2.55 15.25-3.13 3.15-.36 6.19-.85 8.64-3.46a5.89 5.89 0 0 1 3.57-1.61c3.62.22 6.2-2.51 9.67-3 2.32-.35 4.93-.86 7.28-1.19a8.22 8.22 0 0 0 4.79-2.15 11.45 11.45 0 0 1 5.07-2.73c2.05-.38 3.71-1.51 5.64-2s3.84-1.71 5.85-2.43c1.5-.53 3.06.5 4.41-.77a11 11 0 0 1 6-2.67 4.47 4.47 0 0 0 2.78-1.41c1.69-1.62 4.08-2.52 6.19-3.68a.78.78 0 0 1 .71.09c1.7 1.48 3.12.73 4.67-.37a6.16 6.16 0 0 1 3.55-.88 6 6 0 0 0 4.42-1.93 3.45 3.45 0 0 1 1.4-1 28.5 28.5 0 0 0 12.06-6.52c1.46-1.33 3.36-2.42 4.26-4.06a7.31 7.31 0 0 1 5.6-4.24 2.14 2.14 0 0 0 1.39-.8l1.54-1a1.8 1.8 0 0 0 1.46-.58c5.09-2.29 10.58-2.78 16-3.28.06-1.19.16-2-.44-2.7-1.43-3.2-4.37-5.67-4.56-9.47v-.5l8-8c2.05-2 4.16-4 6.16-6.09 1-1.05 1.19-2.05-.71-2.35-1.14-.18-2.26-.44-3.39-.67l-.54-.41v-1c1.36-.75 1.12-3 3-3.23s2-1.6 2.27-3c.47-2.8 1.75-4.86 4.59-5.92a7.44 7.44 0 0 0 3.67-2.51c2.35-3.82 5.29-7.18 7.84-10.83 1.7-2.43 3.95-4.69 4.9-7.39 1.8-5.09 5.2-9.21 8.69-12.73 2.72-2.74 3.5-6.93 7.3-8.77 1.38-.67.6-3 1.29-4.5 1.74-.71 2.17-2.63 3.4-3.86 2.66-2.65 6.79-4.6 6.13-9.39.73-.28 1.55.06 1.95-.63 1.14-2-2-2.77-1.31-4.61 2.24-.6 2.94-1.68 1.86-2.87-2-2.15-1.6-3.48 1.25-4.15 1.14-.27 2.24-.67 2.44-1.77.44-2.39 1.69-4.52 1.73-7.09.08-6.34 2.66-12.49 1.4-19-.38-1.95.6-4.51.68-6.7h-31c-.31.39-.42.82-.67 1-2.35 5.44-3.43 11.28-5.34 16.86-4.18 12.16-10 23.52-16.5 34.57a174.48 174.48 0 0 1-25.85 33.75c-5.76 5.91-12.41 10.76-18.73 16-2.95 2.44-6.8 3.94-8.54 7.73a3.69 3.69 0 0 0-3.22.5c-5.22 3.8-10.39 7.72-16.32 10.43a2.4 2.4 0 0 0-1.49 2.1l-.89.6a5.52 5.52 0 0 0-3.29.81c-3.66 2.14-7.4 4.16-11.17 6.09-17.49 9-35.81 16-54.45 22.14a307.49 307.49 0 0 1-32.72 8.42c-6.56 1.39-13.1 2.93-19.73 3.86-6.13.86-12.39 1.29-18.45 2.37s-12.16-.17-18 1.75c-21.16-.44-42.35 1.06-63.48-1.81-8.18-1.11-16.38-2.26-24.56-3.36-6.87-.92-13.62-2.83-20.41-4.35a334.15 334.15 0 0 1-46.13-14c-5.74-2.18-11.37-4.57-17-7-9-3.88-17.69-8.46-26.37-13-3.72-2-7.24-4.29-10.86-6.45a7.89 7.89 0 0 0-5.87-3.25c-1.61-1.81-4.13-1.79-6.08-3.11-5.19-3.54-9.92-7.72-15.37-10.88l-.53-.39a1.16 1.16 0 0 0-.12-.47c0-1.09-.89-1.48-1.59-2.06-3.44-2.83-7.23-5.27-10.58-8.13a129.67 129.67 0 0 1-19.75-21.75C52.69 286.66 41.57 263.12 36.17 237a95.51 95.51 0 0 1-1.59-31.2 187 187 0 0 1 6-27.94c0-.07.13-.68.37-1.53.06-.27.2-.59.19-.61" onclick="window.location.href=&#39;build.php?id=40&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="clickShapeWinter">
+                                                <path d="M9.25 174.12c-.14.08-.26.68-.3.73a2 2 0 0 0-.39 1.65l-2.1.66c-.12.66.43 1.56-.44 2-2 1-1.69 2.28-.66 3.66l-.24.73-2.67 1.8c1.17 1.09 1.59 2.19.38 3.52a1.41 1.41 0 0 0-.13 1.83 2.57 2.57 0 0 1 .57.65v.83c-.28.39-.89.67-1.26 1 .25.74 1.64 1.19.9 2-1.37 1.55-.29 3.67-1.43 5.17a2.08 2.08 0 0 0 0 2.45 2.11 2.11 0 0 1-.71 3.07c-.19 1.12 1.38 1.1 1.08 1.58-1.29 2 .37 4.22-.45 6.15-.46 1.08 0 1.64.57 2.31A2.16 2.16 0 0 1 0 218.36c.9.81 1.75 1.36 1.36 2.86-.14.54-1.07 2.65 1.11 2.86 1.1.82-.42 1.74.08 2.58l-.46.08h.48l.42.28c-.63.91-1.89 1.36-1.92 2.69 2.25 1.54 2.39 2.16 1 5.09 1.41-1.1 1.71.12 1.86.72.28 1.12.92 2.41.24 3.46-1 1.47-1 4 .29 5.12v1.45l-.46.48c-2.31 2.3-2.67 4.87-.93 7.8-1.48.33-1.6 1.1-1.25 2.42.29 1.13 1.28 2.43.42 3.56-1.77 2.33-1.1 5-.93 7.4.1 1.46-.27 3.69 2.41 4.45-1.34.52-1.25 1.41-1.25 2.33 0 1.49.16 3 .16 4.44a9.32 9.32 0 0 0 .3 3.28c.86 2.43 1.81 4.76.64 7.55-1.5 3.55-.49 6.53 2.26 8.3a3.26 3.26 0 0 0 .35 3 6 6 0 0 0 1.35 2.29 13.09 13.09 0 0 1 4.22 6.15c1 3 4.35 3.78 5.25 6.66a4.48 4.48 0 0 0 1.56 2.15 11.72 11.72 0 0 1 4 5c.64.47 2-.17 2 .52 0 3 3.25 2.81 4.41 4.79a10.45 10.45 0 0 0 3 3.25c1.82 1.21 2.83 3.69 4.68 4.8s2.26 3.75 4.75 3.84c1.39 2.67 2.27 5.83 6 6.23a.29.29 0 0 0 .28.31 11.5 11.5 0 0 0 1.84 2.88c1.4 2.06 3.5 3.13 5.39 4.53l.22 1.48c.19 2.26 2.11 3.26 3.49 4.58 5 4.79 9.52 10.11 14.95 14.46v2a56.44 56.44 0 0 1-1 9.54c-.46 1.22 0 1.57 1.24 1.56h11.13l3 .39c1.49 1 3.26.93 4.92 1.25a4.5 4.5 0 0 0 2.52.81l.49.5A9 9 0 0 0 99 393a2.87 2.87 0 0 0 1.81 1.81c1.14.33.54 1.77 1.57 2.34 1.37.76 1.06-2.17 2.47-.88.26.33.08.71 0 1.11-1.09 4.75.62 6.36 5.51 8.08a2.78 2.78 0 0 1 1.43 1.23c1.74 2.48 4 4.06 7.14 3.89a1.56 1.56 0 0 1 1.55.6c1.82 3.08 4.85 4.08 8.06 4.81l.48.48c.52 1 1.45 1.19 2.46 1.6 2.3.94 4.92-1.05 7 .94.19 1.34-2.72.89-1.47 3 1-.28 2.12-.56 3 .49a7.19 7.19 0 0 0 2.58 1.48c.76 1 2.11 1.08 3 2a11.77 11.77 0 0 0 7.64 3.45c2.34.22 5 .19 7.07.78 3 .89 5.85-.22 8.78.47 3.33.78 6.37 2.94 10 2.34a.51.51 0 0 1 .39.25c1 2 3.19 1.72 4.91 2.23 2 .6 4.41 1.73 6.21 1.19a19.22 19.22 0 0 1 11.2-.4c4 1.19 7.94.52 11.92.32.58 0 1.17-.24 1.68.15 1.72 1.29 3.28.53 4.74-.45a3.77 3.77 0 0 1 1.95-.91c3.45-.21 6.95-1 10.34-.64 3.66.34 7.19 2.49 10.75-.37.88 2.4-.11 4.37.76 6.15.17 2.49 2 4.21 2.91 6.28 1.48 3.36 4 2 6.2 2.58.24.06.49.06.73.1 3.39.7 6.17 3.17 10.13 2.54 2.61-.42 5.42.92 8.32.65 1.26-.12 3.2-.35 4.28 1.2 2.78 2.49 6.15 3.8 9.66 4.86 4.26 1.3 8.4 3.09 13 3.2 1.59 0 3.11-.41 4.79.11a19.63 19.63 0 0 0 10.75.33c1.93 1.1 3.88 2 6 .51h.91c1.6-.14 3.14.38 4.82.21a27.53 27.53 0 0 1 4.85-.31 27.58 27.58 0 0 0 6.89-.19 41.85 41.85 0 0 1 8.36-.58c4.57.05 8.15-2 11.64-4.55.41-.45 1.47-.71.49-1.59 0-.43-.08-.86.46-1a193.24 193.24 0 0 0 28-4.53c2.2 1.48 2.2 1.48 4-.83a4.22 4.22 0 0 0 4.16.33c3.32-1.44 7-1.72 10.3-3.25 2.46-1.72 5.51-2.06 8.22-2.67 5-1.14 10.07-2.55 15.25-3.13 3.15-.36 6.19-.85 8.64-3.46a5.89 5.89 0 0 1 3.57-1.61c3.62.22 6.2-2.51 9.67-3 2.32-.35 4.93-.86 7.28-1.19a8.22 8.22 0 0 0 4.79-2.15 11.45 11.45 0 0 1 5.07-2.73c2.05-.38 3.71-1.51 5.64-2s3.84-1.71 5.85-2.43c1.5-.53 3.06.5 4.41-.77a11 11 0 0 1 6-2.67 4.47 4.47 0 0 0 2.78-1.41c1.69-1.62 4.08-2.52 6.19-3.68a.78.78 0 0 1 .71.09c1.7 1.48 3.12.73 4.67-.37a6.16 6.16 0 0 1 3.55-.88 6 6 0 0 0 4.42-1.93 3.45 3.45 0 0 1 1.4-1 28.5 28.5 0 0 0 12.06-6.52c1.46-1.33 3.36-2.42 4.26-4.06a7.31 7.31 0 0 1 5.6-4.24 2.14 2.14 0 0 0 1.39-.8l1.54-1a1.8 1.8 0 0 0 1.46-.58c5.09-2.29 10.58-2.78 16-3.28.06-1.19.16-2-.44-2.7-1.43-3.2-4.37-5.67-4.56-9.47v-.5l8-8c2.05-2 4.16-4 6.16-6.09 1-1.05 1.19-2.05-.71-2.35-1.14-.18-2.26-.44-3.39-.67l-.54-.41v-1c1.36-.75 1.12-3 3-3.23s2-1.6 2.27-3c.47-2.8 1.75-4.86 4.59-5.92a7.44 7.44 0 0 0 3.67-2.51c2.35-3.82 5.29-7.18 7.84-10.83 1.7-2.43 3.95-4.69 4.9-7.39 1.8-5.09 5.2-9.21 8.69-12.73 2.72-2.74 3.5-6.93 7.3-8.77 1.38-.67.6-3 1.29-4.5 1.74-.71 2.17-2.63 3.4-3.86 2.66-2.65 6.79-4.6 6.13-9.39.73-.28 1.55.06 1.95-.63 1.14-2-2-2.77-1.31-4.61 2.24-.6 2.94-1.68 1.86-2.87-2-2.15-1.6-3.48 1.25-4.15 1.14-.27 2.24-.67 2.44-1.77.44-2.39 1.69-4.52 1.73-7.09.08-6.34 2.66-12.49 1.4-19-.38-1.95.6-4.51.68-6.7h-31c-.31.39-.42.82-.67 1-2.35 5.44-3.43 11.28-5.34 16.86-4.18 12.16-10 23.52-16.5 34.57a174.48 174.48 0 0 1-25.85 33.75c-5.76 5.91-12.41 10.76-18.73 16-2.95 2.44-6.8 3.94-8.54 7.73a3.69 3.69 0 0 0-3.22.5c-5.22 3.8-10.39 7.72-16.32 10.43a2.4 2.4 0 0 0-1.49 2.1l-.89.6a5.52 5.52 0 0 0-3.29.81c-3.66 2.14-7.4 4.16-11.17 6.09-17.49 9-35.81 16-54.45 22.14a307.49 307.49 0 0 1-32.72 8.42c-6.56 1.39-13.1 2.93-19.73 3.86-6.13.86-12.39 1.29-18.45 2.37s-12.16-.17-18 1.75c-21.16-.44-42.35 1.06-63.48-1.81-8.18-1.11-16.38-2.26-24.56-3.36-6.87-.92-13.62-2.83-20.41-4.35a334.15 334.15 0 0 1-46.13-14c-5.74-2.18-11.37-4.57-17-7-9-3.88-17.69-8.46-26.37-13-3.72-2-7.24-4.29-10.86-6.45a7.89 7.89 0 0 0-5.87-3.25c-1.61-1.81-4.13-1.79-6.08-3.11-5.19-3.54-9.92-7.72-15.37-10.88l-.53-.39a1.16 1.16 0 0 0-.12-.47c0-1.09-.89-1.48-1.59-2.06-3.44-2.83-7.23-5.27-10.58-8.13a129.67 129.67 0 0 1-19.75-21.75C52.69 286.66 41.57 263.12 36.17 237a95.51 95.51 0 0 1-1.59-31.2 187 187 0 0 1 6-27.94c0-.07.13-.68.37-1.53.06-.27.2-.59.19-.61" onclick="window.location.href=&#39;build.php?id=40&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                            <g class="hoverShapeWinter">
+                                                <path d="M9.25 174.12c-.14.08-.26.68-.3.73a2 2 0 0 0-.39 1.65l-2.1.66c-.12.66.43 1.56-.44 2-2 1-1.69 2.28-.66 3.66l-.24.73-2.67 1.8c1.17 1.09 1.59 2.19.38 3.52a1.41 1.41 0 0 0-.13 1.83 2.57 2.57 0 0 1 .57.65v.83c-.28.39-.89.67-1.26 1 .25.74 1.64 1.19.9 2-1.37 1.55-.29 3.67-1.43 5.17a2.08 2.08 0 0 0 0 2.45 2.11 2.11 0 0 1-.71 3.07c-.19 1.12 1.38 1.1 1.08 1.58-1.29 2 .37 4.22-.45 6.15-.46 1.08 0 1.64.57 2.31A2.16 2.16 0 0 1 0 218.36c.9.81 1.75 1.36 1.36 2.86-.14.54-1.07 2.65 1.11 2.86 1.1.82-.42 1.74.08 2.58l-.46.08h.48l.42.28c-.63.91-1.89 1.36-1.92 2.69 2.25 1.54 2.39 2.16 1 5.09 1.41-1.1 1.71.12 1.86.72.28 1.12.92 2.41.24 3.46-1 1.47-1 4 .29 5.12v1.45l-.46.48c-2.31 2.3-2.67 4.87-.93 7.8-1.48.33-1.6 1.1-1.25 2.42.29 1.13 1.28 2.43.42 3.56-1.77 2.33-1.1 5-.93 7.4.1 1.46-.27 3.69 2.41 4.45-1.34.52-1.25 1.41-1.25 2.33 0 1.49.16 3 .16 4.44a9.32 9.32 0 0 0 .3 3.28c.86 2.43 1.81 4.76.64 7.55-1.5 3.55-.49 6.53 2.26 8.3a3.26 3.26 0 0 0 .35 3 6 6 0 0 0 1.35 2.29 13.09 13.09 0 0 1 4.22 6.15c1 3 4.35 3.78 5.25 6.66a4.48 4.48 0 0 0 1.56 2.15 11.72 11.72 0 0 1 4 5c.64.47 2-.17 2 .52 0 3 3.25 2.81 4.41 4.79a10.45 10.45 0 0 0 3 3.25c1.82 1.21 2.83 3.69 4.68 4.8s2.26 3.75 4.75 3.84c1.39 2.67 2.27 5.83 6 6.23a.29.29 0 0 0 .28.31 11.5 11.5 0 0 0 1.84 2.88c1.4 2.06 3.5 3.13 5.39 4.53l.22 1.48c.19 2.26 2.11 3.26 3.49 4.58 5 4.79 9.52 10.11 14.95 14.46v2a56.44 56.44 0 0 1-1 9.54c-.46 1.22 0 1.57 1.24 1.56h11.13l3 .39c1.49 1 3.26.93 4.92 1.25a4.5 4.5 0 0 0 2.52.81l.49.5A9 9 0 0 0 99 393a2.87 2.87 0 0 0 1.81 1.81c1.14.33.54 1.77 1.57 2.34 1.37.76 1.06-2.17 2.47-.88.26.33.08.71 0 1.11-1.09 4.75.62 6.36 5.51 8.08a2.78 2.78 0 0 1 1.43 1.23c1.74 2.48 4 4.06 7.14 3.89a1.56 1.56 0 0 1 1.55.6c1.82 3.08 4.85 4.08 8.06 4.81l.48.48c.52 1 1.45 1.19 2.46 1.6 2.3.94 4.92-1.05 7 .94.19 1.34-2.72.89-1.47 3 1-.28 2.12-.56 3 .49a7.19 7.19 0 0 0 2.58 1.48c.76 1 2.11 1.08 3 2a11.77 11.77 0 0 0 7.64 3.45c2.34.22 5 .19 7.07.78 3 .89 5.85-.22 8.78.47 3.33.78 6.37 2.94 10 2.34a.51.51 0 0 1 .39.25c1 2 3.19 1.72 4.91 2.23 2 .6 4.41 1.73 6.21 1.19a19.22 19.22 0 0 1 11.2-.4c4 1.19 7.94.52 11.92.32.58 0 1.17-.24 1.68.15 1.72 1.29 3.28.53 4.74-.45a3.77 3.77 0 0 1 1.95-.91c3.45-.21 6.95-1 10.34-.64 3.66.34 7.19 2.49 10.75-.37.88 2.4-.11 4.37.76 6.15.17 2.49 2 4.21 2.91 6.28 1.48 3.36 4 2 6.2 2.58.24.06.49.06.73.1 3.39.7 6.17 3.17 10.13 2.54 2.61-.42 5.42.92 8.32.65 1.26-.12 3.2-.35 4.28 1.2 2.78 2.49 6.15 3.8 9.66 4.86 4.26 1.3 8.4 3.09 13 3.2 1.59 0 3.11-.41 4.79.11a19.63 19.63 0 0 0 10.75.33c1.93 1.1 3.88 2 6 .51h.91c1.6-.14 3.14.38 4.82.21a27.53 27.53 0 0 1 4.85-.31 27.58 27.58 0 0 0 6.89-.19 41.85 41.85 0 0 1 8.36-.58c4.57.05 8.15-2 11.64-4.55.41-.45 1.47-.71.49-1.59 0-.43-.08-.86.46-1a193.24 193.24 0 0 0 28-4.53c2.2 1.48 2.2 1.48 4-.83a4.22 4.22 0 0 0 4.16.33c3.32-1.44 7-1.72 10.3-3.25 2.46-1.72 5.51-2.06 8.22-2.67 5-1.14 10.07-2.55 15.25-3.13 3.15-.36 6.19-.85 8.64-3.46a5.89 5.89 0 0 1 3.57-1.61c3.62.22 6.2-2.51 9.67-3 2.32-.35 4.93-.86 7.28-1.19a8.22 8.22 0 0 0 4.79-2.15 11.45 11.45 0 0 1 5.07-2.73c2.05-.38 3.71-1.51 5.64-2s3.84-1.71 5.85-2.43c1.5-.53 3.06.5 4.41-.77a11 11 0 0 1 6-2.67 4.47 4.47 0 0 0 2.78-1.41c1.69-1.62 4.08-2.52 6.19-3.68a.78.78 0 0 1 .71.09c1.7 1.48 3.12.73 4.67-.37a6.16 6.16 0 0 1 3.55-.88 6 6 0 0 0 4.42-1.93 3.45 3.45 0 0 1 1.4-1 28.5 28.5 0 0 0 12.06-6.52c1.46-1.33 3.36-2.42 4.26-4.06a7.31 7.31 0 0 1 5.6-4.24 2.14 2.14 0 0 0 1.39-.8l1.54-1a1.8 1.8 0 0 0 1.46-.58c5.09-2.29 10.58-2.78 16-3.28.06-1.19.16-2-.44-2.7-1.43-3.2-4.37-5.67-4.56-9.47v-.5l8-8c2.05-2 4.16-4 6.16-6.09 1-1.05 1.19-2.05-.71-2.35-1.14-.18-2.26-.44-3.39-.67l-.54-.41v-1c1.36-.75 1.12-3 3-3.23s2-1.6 2.27-3c.47-2.8 1.75-4.86 4.59-5.92a7.44 7.44 0 0 0 3.67-2.51c2.35-3.82 5.29-7.18 7.84-10.83 1.7-2.43 3.95-4.69 4.9-7.39 1.8-5.09 5.2-9.21 8.69-12.73 2.72-2.74 3.5-6.93 7.3-8.77 1.38-.67.6-3 1.29-4.5 1.74-.71 2.17-2.63 3.4-3.86 2.66-2.65 6.79-4.6 6.13-9.39.73-.28 1.55.06 1.95-.63 1.14-2-2-2.77-1.31-4.61 2.24-.6 2.94-1.68 1.86-2.87-2-2.15-1.6-3.48 1.25-4.15 1.14-.27 2.24-.67 2.44-1.77.44-2.39 1.69-4.52 1.73-7.09.08-6.34 2.66-12.49 1.4-19-.38-1.95.6-4.51.68-6.7h-31c-.31.39-.42.82-.67 1-2.35 5.44-3.43 11.28-5.34 16.86-4.18 12.16-10 23.52-16.5 34.57a174.48 174.48 0 0 1-25.85 33.75c-5.76 5.91-12.41 10.76-18.73 16-2.95 2.44-6.8 3.94-8.54 7.73a3.69 3.69 0 0 0-3.22.5c-5.22 3.8-10.39 7.72-16.32 10.43a2.4 2.4 0 0 0-1.49 2.1l-.89.6a5.52 5.52 0 0 0-3.29.81c-3.66 2.14-7.4 4.16-11.17 6.09-17.49 9-35.81 16-54.45 22.14a307.49 307.49 0 0 1-32.72 8.42c-6.56 1.39-13.1 2.93-19.73 3.86-6.13.86-12.39 1.29-18.45 2.37s-12.16-.17-18 1.75c-21.16-.44-42.35 1.06-63.48-1.81-8.18-1.11-16.38-2.26-24.56-3.36-6.87-.92-13.62-2.83-20.41-4.35a334.15 334.15 0 0 1-46.13-14c-5.74-2.18-11.37-4.57-17-7-9-3.88-17.69-8.46-26.37-13-3.72-2-7.24-4.29-10.86-6.45a7.89 7.89 0 0 0-5.87-3.25c-1.61-1.81-4.13-1.79-6.08-3.11-5.19-3.54-9.92-7.72-15.37-10.88l-.53-.39a1.16 1.16 0 0 0-.12-.47c0-1.09-.89-1.48-1.59-2.06-3.44-2.83-7.23-5.27-10.58-8.13a129.67 129.67 0 0 1-19.75-21.75C52.69 286.66 41.57 263.12 36.17 237a95.51 95.51 0 0 1-1.59-31.2 187 187 0 0 1 6-27.94c0-.07.13-.68.37-1.53.06-.27.2-.59.19-.61" onclick="window.location.href=&#39;build.php?id=40&amp;fastUP=0&#39;"></path>
+                                            </g>
+                                        </svg>
+                                        <!--           Main Building              -->
+                                    </div>
+
+                                    <img id="lswitch" class="lswitchMinus" src="./TTwars vip9_files/x.gif" alt="" onclick="window.location.href=&#39;build.php?id=40&amp;fastUP=0&#39;" />
+                                </div>
+                            </div>
+                            <div class="clear">&nbsp;</div>
+                            <script>
+
+                                window.addEvent('domready', function () {
+                                    var b = $$(".a40 svg");
+                                    var a = $$(b.getElements("path"));
+
+                                    a.addEvents({
+                                        'mouseenter': function () { b.addClass('hover'); },
+                                        'mouseleave': function () { b.removeClass('hover'); },
+                                        'mousedown touchstart': function () { b.addClass("active"); },
+                                        'mouseup mouseleave blur touchend': function () { b.removeClass("active"); }
+                                    });
+
+                                });
+                            </script>
+                            <div class="clear"></div>
+                        </div>
+                        <div class="clear">&nbsp;</div>
+                    </div>
+                    <div class="contentFooter"></div>
+                </div>
+                <div id="sidebarAfterContent" class="sidebar afterContent">
+                    <div id="sidebarBoxActiveVillage" class="sidebarBox   ">
+                        <div class="sidebarBoxBaseBox">
+                            <div class="baseBox baseBoxTop">
+                                <div class="baseBox baseBoxBottom">
+                                    <div class="baseBox baseBoxCenter"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebarBoxInnerBox">
+                            <div class="innerBox header ">
+                                <button id="buttonyeVzd28asEYEl" type="button" class="layoutButton workshopBlack gold disabled" onclick="if($(this).hasClass(&#39;disabled&#39;)){(new DOMEvent(event)).stop(); return false;} else {}" onfocus="$$(&#39;button&#39;, &#39;input[type!=hidden]&#39;, &#39;select&#39;).set(&#39;focus&#39;, true); (new DOMEvent(event)).stop(); return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+                                <script type="text/javascript" id="buttonyeVzd28asEYEl_script">
+                                    window.addEvent('domready', function () {
+                                        if ($('buttonyeVzd28asEYEl')) {
+                                            $('buttonyeVzd28asEYEl').addEvent('click', function () {
+                                                window.fireEvent('buttonClicked', [this, { "class": "", "type": "gold", "loadTitle": false, "boxId": "activeVillage", "disabled": true, "speechBubble": "", "plusDialog": { "featureKey": "directLinks", "infoIcon": "http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer" }, "redirectUrl": "", "title": "Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;&lt;span class=&quot;warning&quot;&gt;There is no workshop in this village.&lt;\/span&gt;", "onclick": "if($(this).hasClass('disabled')){(new DOMEvent(event)).stop(); return false;} else {}", "onfocus": "$$('button', 'input[type!=hidden]', 'select').set('focus', true); (new DOMEvent(event)).stop(); return false;", "id": "buttonyeVzd28asEYEl" }]);
+                                            });
+                                        }
+                                    });
+                                </script>						<button id="buttonLOVGvJiyY3zw9" type="button" class="layoutButton stableBlack gold disabled" onclick="if($(this).hasClass(&#39;disabled&#39;)){(new DOMEvent(event)).stop(); return false;} else {}" onfocus="$$(&#39;button&#39;, &#39;input[type!=hidden]&#39;, &#39;select&#39;).set(&#39;focus&#39;, true); (new DOMEvent(event)).stop(); return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+                                <script type="text/javascript" id="buttonLOVGvJiyY3zw9_script">
+                                    window.addEvent('domready', function () {
+                                        if ($('buttonLOVGvJiyY3zw9')) {
+                                            $('buttonLOVGvJiyY3zw9').addEvent('click', function () {
+                                                window.fireEvent('buttonClicked', [this, { "class": "", "type": "gold", "loadTitle": false, "boxId": "activeVillage", "disabled": true, "speechBubble": "", "plusDialog": { "featureKey": "directLinks", "infoIcon": "http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer" }, "redirectUrl": "", "title": "Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;&lt;span class=&quot;warning&quot;&gt;There is no stable in this village.&lt;\/span&gt;", "onclick": "if($(this).hasClass('disabled')){(new DOMEvent(event)).stop(); return false;} else {}", "onfocus": "$$('button', 'input[type!=hidden]', 'select').set('focus', true); (new DOMEvent(event)).stop(); return false;", "id": "buttonLOVGvJiyY3zw9" }]);
+                                            });
+                                        }
+                                    });
+                                </script>						<button id="buttonsDNGjdvrL6a6H" type="button" class="layoutButton barracksBlack gold disabled" onclick="if($(this).hasClass(&#39;disabled&#39;)){(new DOMEvent(event)).stop(); return false;} else {}" onfocus="$$(&#39;button&#39;, &#39;input[type!=hidden]&#39;, &#39;select&#39;).set(&#39;focus&#39;, true); (new DOMEvent(event)).stop(); return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+                                <script type="text/javascript" id="buttonsDNGjdvrL6a6H_script">
+                                    window.addEvent('domready', function () {
+                                        if ($('buttonsDNGjdvrL6a6H')) {
+                                            $('buttonsDNGjdvrL6a6H').addEvent('click', function () {
+                                                window.fireEvent('buttonClicked', [this, { "class": "", "type": "gold", "loadTitle": false, "boxId": "activeVillage", "disabled": true, "speechBubble": "", "plusDialog": { "featureKey": "directLinks", "infoIcon": "http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer" }, "redirectUrl": "", "title": "Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;&lt;span class=&quot;warning&quot;&gt;There is no barracks in this village.&lt;\/span&gt;", "onclick": "if($(this).hasClass('disabled')){(new DOMEvent(event)).stop(); return false;} else {}", "onfocus": "$$('button', 'input[type!=hidden]', 'select').set('focus', true); (new DOMEvent(event)).stop(); return false;", "id": "buttonsDNGjdvrL6a6H" }]);
+                                            });
+                                        }
+                                    });
+                                </script>						<button id="buttonBqA9QZKAjrVL8" type="button" class="layoutButton marketBlack gold disabled" onclick="if($(this).hasClass(&#39;disabled&#39;)){(new DOMEvent(event)).stop(); return false;} else {}" onfocus="$$(&#39;button&#39;, &#39;input[type!=hidden]&#39;, &#39;select&#39;).set(&#39;focus&#39;, true); (new DOMEvent(event)).stop(); return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+                                <script type="text/javascript" id="buttonBqA9QZKAjrVL8_script">
+                                    window.addEvent('domready', function () {
+                                        if ($('buttonBqA9QZKAjrVL8')) {
+                                            $('buttonBqA9QZKAjrVL8').addEvent('click', function () {
+                                                window.fireEvent('buttonClicked', [this, { "class": "", "type": "gold", "loadTitle": false, "boxId": "activeVillage", "disabled": true, "speechBubble": "", "plusDialog": { "featureKey": "directLinks", "infoIcon": "http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer" }, "redirectUrl": "", "title": "Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;&lt;span class=&quot;warning&quot;&gt;There is no marketplace in this village.&lt;\/span&gt;", "onclick": "if($(this).hasClass('disabled')){(new DOMEvent(event)).stop(); return false;} else {}", "onfocus": "$$('button', 'input[type!=hidden]', 'select').set('focus', true); (new DOMEvent(event)).stop(); return false;", "id": "buttonBqA9QZKAjrVL8" }]);
+                                            });
+                                        }
+                                    });
+                                </script>						<div class="clear"></div>
+                                <div id="villageNameField" class="boxTitle">vinaghost`s village</div>
+                            </div>
+                            <div class="innerBox content">
+                                <div class="loyalty medium">
+                                    Loyalty:
+                                    <span>‎‭‭100‬%‬‎</span>
+                                </div>
+                            </div>
+                            <div class="innerBox footer">
+                                <button type="button" class="layoutButton editWhite green " onclick="return false;" id="buttontRGFELkPi04p6">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+                                <script type="text/javascript" id="buttontRGFELkPi04p6_script">
+                                    window.addEvent('domready', function () {
+                                        if ($('buttontRGFELkPi04p6')) {
+                                            $('buttontRGFELkPi04p6').addEvent('click', function () {
+                                                window.fireEvent('buttonClicked', [this, { "type": "green", "title": "change Village Name.", "loadTitle": false, "boxId": "activeVillage", "disabled": true, "speechBubble": "", "villageDialog": { "title": "change Village Name.", "description": "new Village Name:", "saveText": "save", "villageId": "22385" }, "onclick": "return false;", "id": "buttontRGFELkPi04p6" }]);
+                                            });
+                                        }
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                    </div><div id="sidebarBoxVillagelist" class="sidebarBox toggleable collapsed ">
+                        <div class="sidebarBoxBaseBox">
+                            <div class="baseBox baseBoxTop">
+                                <div class="baseBox baseBoxBottom">
+                                    <div class="baseBox baseBoxCenter"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebarBoxInnerBox">
+                            <div class="innerBox header ">
+                                <button type="button" id="buttonPTT3RWWJS5CPi" class="layoutButton toggleCoordsWhite green  toggle" onclick="return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+
+                                <script type="text/javascript">
+
+                                    if ($('buttonPTT3RWWJS5CPi')) {
+                                        $('buttonPTT3RWWJS5CPi').addEvent('click', function () {
+                                            window.fireEvent('buttonClicked', [this, {
+                                                "type": "green",
+                                                "onclick": "return false;",
+                                                "loadTitle": false,
+                                                "boxId": "",
+                                                "disabled": false,
+                                                "speechBubble": "",
+                                                "class": "toggle",
+                                                "id": "buttonPTT3RWWJS5CPi",
+                                                "redirectUrl": "",
+                                                "redirectUrlExternal": ""
+                                            }]);
+                                        });
+                                    }
+                                </script>
+                                <button type="button" id="buttonK0yzmVdF9siQP" class="layoutButton overviewWhite green  " onclick="return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+                                <script type="text/javascript">
+                                    if ($('buttonK0yzmVdF9siQP')) {
+                                        $('buttonK0yzmVdF9siQP').addEvent('click', function () {
+                                            window.fireEvent('buttonClicked', [this, {
+                                                "type": "green",
+                                                "onclick": "return false;",
+                                                "loadTitle": false,
+                                                "boxId": "",
+                                                "disabled": false,
+                                                "speechBubble": "",
+                                                "class": "",
+                                                "id": "buttonK0yzmVdF9siQP",
+                                                "redirectUrl": "dorf3.php",
+                                                "redirectUrlExternal": ""
+                                            }]);
+                                        });
+                                    }
+                                </script>
+                                <style type="text/css">
+                                    button.layoutButton.buildOff div.button-container img {
+                                        background-position: left -758px;
+                                    }
+
+                                    button.layoutButton.buildOn div.button-container img {
+                                        background-position: left -800px;
+                                    }
+                                </style>
+                                <button type="button" id="buttonBuild" class="layoutButton buildOff green" onclick="return false;">
+                                    <div class="button-container addHoverClick ">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+                                <script type="text/javascript">
+
+                                    if ($('buttonBuild')) {
+                                        $('buttonBuild').addEvent('click', function () {
+                                            window.fireEvent('buttonClicked', [this, {
+                                                "type": "green",
+                                                "onclick": "return false;",
+                                                "loadTitle": false,
+                                                "boxId": "",
+                                                "disabled": false,
+                                                "speechBubble": "",
+                                                "class": "",
+                                                "id": "buttonBuild",
+                                                "redirectUrl": "?toggleFastUp",
+                                                "redirectUrlExternal": ""
+                                            }]);
+                                        });
+                                    }
+                                </script>
+                                <div class="clear"></div>
+                                <div class="expansionSlotInfo">
+                                    <div class="boxTitleAdditional">
+                                        ‭‭‭1‬‬/‭‭1                    ‬‬‬‎
+                                    </div>
+                                    <div class="boxTitle">Villages</div>
+                                    <div class="villageListBarBox">
+                                        <div class="bar" style="width:0.4%">
+                                            &nbsp;
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script type="text/javascript">
+                                    window.addEvent('domready', function () {
+                                        Travian.Translation.add(
+                                            {
+                                                'villagelist_collapsed': 'show Coordinates',
+                                                'villagelist_expanded': 'hide Coordinates'
+                                            });
+
+                                        var box = $('sidebarBoxVillagelist');
+                                        box.down('button.toggle').addEvent('click', function (e) {
+                                            Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'villagelist');
+                                        });
+                                    });
+                                </script>
+                            </div>
+                            <div class="innerBox content">
+                                <ul>
+                                    <li class="active"><a href="https://vip9.ttwars.com/dorf2.php?newdid=22385" accesskey="b" class="active"><img src="./TTwars vip9_files/x.gif" alt="" /><div class="name">vinaghost`s village</div>‎<span class="coordinates coordinatesWrapper coordinatesAligned coordinatesLTR"><span class="coordinateX">(-27</span><span class="coordinatePipe">|</span><span class="coordinateY">-11)</span></span>;</a> </li>
+                                </ul>
+                            </div>
+                            <div class="innerBox footer">
+                            </div>
+                        </div>
+                    </div><div id="sidebarBoxDailyquests" class="sidebarBox   ">
+                        <div class="sidebarBoxBaseBox">
+                            <div class="baseBox baseBoxTop">
+                                <div class="baseBox baseBoxBottom">
+                                    <div class="baseBox baseBoxCenter"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebarBoxInnerBox">
+                            <div class="innerBox header ">
+                                <div class="travianBirthdayRibbon" id="travianBirthdayRibbon">
+                                    <div class="headline">Daily Quests </div>
+                                </div>
+                                <div class="boxTitle">Collect daily rewards</div>
+                            </div>
+                            <div class="innerBox content">
+                                <form>
+                                    <div class="questAchievementContainer">
+                                        <button type="submit" value="Click for details" id="buttong0AmNAcjfQ1gJ" class="green questButtonOverviewAchievements" questbuttonoverviewachievements="1" onclick="return false;">
+                                            <div class="button-container addHoverClick ">
+                                                <div class="button-background">
+                                                    <div class="buttonStart">
+                                                        <div class="buttonEnd">
+                                                            <div class="buttonMiddle"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="button-content">Click for details</div>
+                                            </div>
+                                        </button>
+                                        <script type="text/javascript">
+                                            window.addEvent('domready', function () {
+                                                if ($('buttong0AmNAcjfQ1gJ')) {
+                                                    $('buttong0AmNAcjfQ1gJ').addEvent('click', function () {
+                                                        window.fireEvent('buttonClicked', [this, {
+                                                            "type": "submit",
+                                                            "value": "Click for details",
+                                                            "name": "",
+                                                            "id": "buttong0AmNAcjfQ1gJ",
+                                                            "class": "green questButtonOverviewAchievements",
+                                                            "title": "",
+                                                            "confirm": "",
+                                                            "onclick": "",
+                                                            "questButtonOverviewAchievements": true,
+                                                            "onClick": "return false;"
+                                                        }]);
+                                                    });
+                                                }
+                                            });
+                                        </script>
+                                    </div>
+                                </form>
+                                <script type="text/javascript">
+                                    window.addEvent('domready', function () {
+                                        Travian.Game.Quest.addListData({ "achievementquests": { "questsTotal": 10, "questsCompleted": 2, "name": "Achievement Quests", "quests": { "AchievementQuest_01": { "id": "AchievementQuest_01", "name": "achievementQuests.achQuest_01_name", "category": "achievementquests", "stepType": "achievementtask", "currentStep": "0", "stepCount": 1, "steps": [{ "stepId": 0, "type": "achievementtask", "stepDescription": null }], "answersLink": "http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_01_answer (en)%%#go2answer" }, "AchievementQuest_02": { "id": "AchievementQuest_02", "name": "achievementQuests.achQuest_02_name", "category": "achievementquests", "stepType": "achievementtask", "currentStep": "0", "stepCount": 3, "steps": [{ "stepId": 0, "type": "achievementtask", "stepDescription": null }, { "stepId": 1, "type": "achievementtask", "stepDescription": null }, { "stepId": 2, "type": "achievementtask", "stepDescription": null }], "answersLink": "http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_02_answer (en)%%#go2answer" }, "AchievementQuest_03": { "id": "AchievementQuest_03", "name": "achievementQuests.achQuest_03_name", "category": "achievementquests", "stepType": "achievementtask", "currentStep": "0", "stepCount": 3, "steps": [{ "stepId": 0, "type": "achievementtask", "stepDescription": null }, { "stepId": 1, "type": "achievementtask", "stepDescription": null }, { "stepId": 2, "type": "achievementtask", "stepDescription": null }], "answersLink": "http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_03_answer (en)%%#go2answer" }, "AchievementQuest_04": { "id": "AchievementQuest_04", "name": "achievementQuests.achQuest_04_name", "category": "achievementquests", "stepType": "achievementtask", "currentStep": "0", "stepCount": 1, "steps": [{ "stepId": 0, "type": "achievementtask", "stepDescription": null }], "answersLink": "http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_04_answer (en)%%#go2answer" }, "AchievementQuest_05": { "id": "AchievementQuest_05", "name": "achievementQuests.achQuest_05_name", "category": "achievementquests", "stepType": "achievementtask", "currentStep": "0", "stepCount": 3, "steps": [{ "stepId": 0, "type": "achievementtask", "stepDescription": null }, { "stepId": 1, "type": "achievementtask", "stepDescription": null }, { "stepId": 2, "type": "achievementtask", "stepDescription": null }], "answersLink": "http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_05_answer (en)%%#go2answer" }, "AchievementQuest_08": { "id": "AchievementQuest_08", "name": "achievementQuests.achQuest_08_name", "category": "achievementquests", "stepType": "achievementtask", "currentStep": "0", "stepCount": 3, "steps": [{ "stepId": 0, "type": "achievementtask", "stepDescription": null }, { "stepId": 1, "type": "achievementtask", "stepDescription": null }, { "stepId": 2, "type": "achievementtask", "stepDescription": null }], "answersLink": "http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_08_answer (en)%%#go2answer" }, "AchievementQuest_09": { "id": "AchievementQuest_09", "name": "achievementQuests.achQuest_09_name", "category": "achievementquests", "stepType": "achievementtask", "currentStep": "0", "stepCount": 3, "steps": [{ "stepId": 0, "type": "achievementtask", "stepDescription": null }, { "stepId": 1, "type": "achievementtask", "stepDescription": null }, { "stepId": 2, "type": "achievementtask", "stepDescription": null }], "answersLink": "http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_09_answer (en)%%#go2answer" }, "AchievementQuest_10": { "id": "AchievementQuest_10", "name": "achievementQuests.achQuest_10_name", "category": "achievementquests", "stepType": "achievementtask", "currentStep": "0", "stepCount": 3, "steps": [{ "stepId": 0, "type": "achievementtask", "stepDescription": null }, { "stepId": 1, "type": "achievementtask", "stepDescription": null }, { "stepId": 2, "type": "achievementtask", "stepDescription": null }], "answersLink": "http:\\\/\\\/t4.answers.travian.com\\\/index.php?aid=%%achievementQuests.achQuest_10_answer (en)%%#go2answer" } } }, "achievementrewards": { "questsTotal": 4, "questsCompleted": 0, "name": "Achievement Rewards", "quests": { "AchievementQuestReward_01": { "id": "AchievementQuestReward_01", "name": "achievementQuests.achQuestReward_01_name", "category": "achievementrewards", "stepType": "reward", "currentStep": 0, "stepCount": 1, "steps": { "stepId": 0, "type": "reward" }, "answersLink": "http:\/\/t4.answers.travian.com\/index.php?aid=%%achievementQuests.achQuestReward_01_answer (en)%%#go2answer" } } } });
+                                    });
+                                </script>
+                            </div>
+                            <div class="innerBox footer">
+                            </div>
+                        </div>
+                    </div><div id="sidebarBoxDailyquests" class="sidebarBox   ">
+                        <div class="sidebarBoxBaseBox">
+                            <div class="baseBox baseBoxTop">
+                                <div class="baseBox baseBoxBottom">
+                                    <div class="baseBox baseBoxCenter"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebarBoxInnerBox">
+                            <div class="innerBox header ">
+                                <div class="travianBirthdayRibbon" id="travianBirthdayRibbon">
+                                    <div class="headline">Earn free gold!</div>
+                                </div>
+                                <div class="boxTitle">Earn free gold!</div>
+                            </div>
+                            <div class="innerBox content">
+                                <form>
+                                    <div class="questAchievementContainer">
+                                        <button type="submit" value="Click for details" id="buttonsTV4SQuiNR2p2" class="green questButtonOverviewAchievements" onclick="openVoting(); return false;">
+                                            <div class="button-container addHoverClick ">
+                                                <div class="button-background">
+                                                    <div class="buttonStart">
+                                                        <div class="buttonEnd">
+                                                            <div class="buttonMiddle"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="button-content">Click for details</div>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </form>
+                                <script type="text/javascript">
+                                    function openVoting() {
+                                        Travian.ajax({
+                                            data: { cmd: "Voting", action: "showVotes" }, onSuccess: function (a) {
+                                                (a.html).dialog({ buttonOk: false })
+                                            }
+                                        })
+                                    }
+                                </script>
+                            </div>
+                            <div class="innerBox footer">
+                            </div>
+                        </div>
+                    </div><div id="sidebarBoxQuestmaster" class="sidebarBox   ">
+                        <div class="sidebarBoxBaseBox">
+                            <div class="baseBox baseBoxTop">
+                                <div class="baseBox baseBoxBottom">
+                                    <div class="baseBox baseBoxCenter"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sidebarBoxInnerBox">
+                            <div class="innerBox header ">
+                                <button id="questmasterButton" title="" class="forceDisplayElement vid_3 highlighted on " type="button">
+                                    <img class="border" alt="" src="./TTwars vip9_files/x.gif" />
+                                    <img class="animation" alt="" src="./TTwars vip9_files/x.gif" />
+                                    <img class="mentor" alt="" src="./TTwars vip9_files/x.gif" />
+                                    <div class="bigSpeechBubble newQuestSpeechBubble" title="">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+
+                                <button type="button" id="buttonOsyXzmHDiWtLb" class="layoutButton bulbWhite green  " onclick="return false;">
+                                    <div class="button-container addHoverClick">
+                                        <img src="./TTwars vip9_files/x.gif" alt="" />
+                                    </div>
+                                </button>
+
+                                <script type="text/javascript">
+
+                                    if ($('buttonOsyXzmHDiWtLb')) {
+                                        $('buttonOsyXzmHDiWtLb').addEvent('click', function () {
+                                            window.fireEvent('buttonClicked', [this, {
+                                                "type": "green",
+                                                "onclick": "return false;",
+                                                "loadTitle": false,
+                                                "boxId": "",
+                                                "disabled": false,
+                                                "speechBubble": "",
+                                                "class": "",
+                                                "id": "buttonOsyXzmHDiWtLb",
+                                                "redirectUrl": "",
+                                                "redirectUrlExternal": "",
+                                                "overlay": []
+                                            }]);
+                                        });
+                                    }
+                                </script>
+                                <div class="clear"></div>
+                                <div class="boxTitle">Avoid tasks</div>
+
+                                <script type="text/javascript">
+                                    window.addEvent('domready', function () {
+                                        Travian.Game.Quest.setOptions({
+                                            isTutorial: true
+                                        });
+                                        // Dialog an den Questmaster binden
+                                        $('questmasterButton').addEvent('click', function () {
+                                            Travian.Game.Quest.mentorClick('Tutorial_15a');
+                                        });
+                                    });
+                                </script>
+                                <div>
+                                    <script type="text/javascript">
+                                        Travian.Game.Quest.createHighlights();
+                                        Travian.Game.Quest.toggleHighlights(true);
+                                        $$('.questInformation .iconButton.small.cancel').addEvent('click', function () {
+                                            setTimeout(function () {
+                                                Travian.Game.Quest.createHighlights();
+                                                Travian.Game.Quest.toggleHighlights(true);
+                                            }, 500);
+                                        });
+                                    </script>
+                                </div>
+                            </div>
+                            <div class="innerBox content">
+                                <ul id="mentorTaskList" class="notClickable">
+                                    <li>Skip tutorial</li>
+                                    <script type="text/javascript">
+                                        Travian.Translation.add('answers.tutorial_01_title', "Travian Answers");
+                                    </script>
+                                </ul>
+                                <script type="text/javascript">
+                                    window.addEvent('domready', function () {
+                                        Travian.Game.Quest.setOptions(
+                                            { tipsTurnoffAjaxTrigger: 1, tutorialData: { "id": "Tutorial_15a", "name": "questV2.tutorial_15a_name", "category": "tutorial", "stepType": "reward", "currentStep": "0", "stepCount": 1, "steps": [{ "stepId": 0, "type": "reward" }], "answersLink": "http:\/\/t4.answers.travian.com\/index.php?aid=332#go2answer" }, highlightSelectors: [] });
+                                        Travian.Game.Quest.addListData([]);
+
+                                        Travian.Game.Quest.bindListDelegation();
+                                        Travian.Game.Quest.createHighlights();
+                                        Travian.Game.Quest.initializeQuests();
+                                    });
+                                </script>
+                            </div>
+                            <div class="innerBox footer">
+                            </div>
+                        </div>
+                    </div>                <div class="clear"></div>
+                </div>
+
+                <div class="clear"></div>
+            </div>
+            <div id="footer">
+
+                <div id="pageLinks">
+                    <a href="http://www.ttwars.com/" target="_blank">Homepage</a>
+                    <a href="https://t.me/ttwarsGames" target="_blank">Forum</a>
+                    <a href="http://www.ttwars.com/links.php" target="_blank">Links</a>
+                    <a href="http://t4.answers.ttwars.com/?lang=en&amp;" target="_blank">FAQ - Answers</a>
+                    <a href="http://www.ttwars.com/agb.php" target="_blank">Terms</a>
+                    <a href="http://www.ttwars.com/impressum.php" target="_blank">Imprint</a>
+                    <div class="clear"></div>
+                </div>
+                <br />
+                <p class="copyright" style="direction:ltr;">© 2011 - 2022 Travian Games GmbH</p>
+
+                <div id="pageLinks">
+
+                    <div class="clear"></div>
+                </div>
+
+                <br />
+            </div>
+            <div id="servertime" class="stime">
+                Server time:&nbsp;
+                <span class="timer" counting="up" value="1657111132">13:39:21</span>
+            </div>
+        </div>
+        <div id="ce"></div>
+    </div>
+    <script type="text/javascript">
+        var T4_feature_flags = { "aeu": false, "vacationMode": true, "territory": false };
+    </script>
+
+    <div style="position: absolute; top: 0px; left: 0px; opacity: 0; z-index: 10000;"><div class="tip"><div class="tip-container"><div class="tl"></div><div class="tr"></div><div class="tc"></div><div class="ml"></div><div class="mr"></div><div class="mc"></div><div class="bl"></div><div class="br"></div><div class="bc"></div><div class="tip-contents"><div class="title elementTitle"></div><div class="text elementText"></div></div></div></div></div>
+</body>
+<grammarly-desktop-integration data-grammarly-shadow-root="true"></grammarly-desktop-integration>
+</html>

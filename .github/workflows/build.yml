@@ -8,65 +8,39 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
     runs-on: windows-2019
     steps:
-      - name: setup-msbuild
-        uses: microsoft/setup-msbuild@v1     
-
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.0.5
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+            dotnet-version: 6.0.x
       
       - name: 'Checkout repo' 
         uses: actions/checkout@v2
 
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
-        
-      - name: Get cache
-        uses: actions/cache@v2
-        with:
-          path: |
-              packages
-              TbsCore/obj/project.assets.json
-              TbsCore/TbsCore.csproj.nuget.g.targets
-              TbsCore/TbsCore.csproj.nuget.g.props.              
-          key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
-          restore-keys: |
-              ${{ runner.os }}-nuget-
-              
-      - name: Restore Packages
-        run: |
-          nuget restore TbsCore/TbsCore.csproj -PackagesDirectory packages
-          nuget restore TravBotSharp/TbsWinForms.csproj -PackagesDirectory packages
 
       - name: Build Bot
-        run: |
-          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true /p:BUILD_NUMBER=30.4.1975.0
+        run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }}
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: TBS-Build-${{ github.sha }}
-          path: TravBotSharp\bin\Release
+          name: TBS-Build-${{ matrix.server }}-${{ github.run_id }}
+          path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
-
-      - name: Comment on PR when success
-        uses: actions/github-script@0.3.0
-        if: |
-          github.event_name == 'pull_request' && success()
+  commentor:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v1.4.1
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-            github.issues.createComment({ issue_number, owner, repo, body: "Congratulation this commit was built successfully. Check detail [here](https://github.com/Erol444/TravianBotSharp/actions/runs/${{ github.run_id }}?check_suite_focus=true)" });
+          message: Click [here](https://nightly.link/Erol444/TravianBotSharp/actions/runs/${{ github.run_id }}) to check the build          
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Comment on PR when fail
-        uses: actions/github-script@0.3.0
-        if: |
-          github.event_name == 'pull_request' && failure()
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { issue: { number: issue_number }, repo: { owner, repo }  } = context;
-            github.issues.createComment({ issue_number, owner, repo, body: "There is error while building this commit. Check detail [here](https://github.com/Erol444/TravianBotSharp/actions/runs/${{ github.run_id }}?check_suite_focus=true)" });
-
+    

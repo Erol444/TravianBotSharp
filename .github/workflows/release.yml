@@ -1,125 +1,68 @@
 name: ReleaseFlow
 
 on:
-  pull_request:
-    branches: [master]
-    types: [closed]
   workflow_dispatch:
-  
+    inputs: 
+      version:
+        required: true
+
 jobs:
-  version:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    outputs:
-      version: ${{ steps.semvers.outputs.minor }}
-      changelog: ${{ steps.Changelog.outputs.changelog }}
-    steps:
-      - uses: docker://agilepathway/pull-request-label-checker:latest
-        with:
-          one_of: release
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: 'Checkout repo' 
-        uses: actions/checkout@v2    
-
-      - name: 'Update tag'
-        run: git fetch --prune --unshallow --tags
-
-      - name: 'Get latest tag'
-        id: latesttag
-        uses: pozetroninc/github-action-get-latest-release@master        
-        with:
-          repository: ${{ github.repository }}
-        
-      - name: 'Get next version'
-        id: semvers
-        uses: "WyriHaximus/github-action-next-semvers@v1"
-        with:
-          version: ${{ steps.latesttag.outputs.release }}
-            
-      - name: 'Create changelog'
-        id: Changelog
-        run: |
-          changelog="${{github.event.pull_request.body}}"
-          changelog="${changelog//'%'/'%25'}"
-          changelog="${changelog//$'\n'/'%0A'}"
-          changelog="${changelog//$'\r'/'%0D'}"
-          echo "::set-output name=changelog::$changelog"
   build:
     runs-on: windows-2019
-    needs: version
+    strategy:
+      matrix:
+        server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
     steps:
-      - name: setup-msbuild
-        uses: microsoft/setup-msbuild@v1     
-
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.0.5
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v2
+        with:
+            dotnet-version: 6.0.x
       
       - name: 'Checkout repo' 
         uses: actions/checkout@v2
 
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
-        
-      - name: Get cache
-        uses: actions/cache@v2
-        with:
-          path: |
-              packages
-              TbsCore/obj/project.assets.json
-              TbsCore/TbsCore.csproj.nuget.g.targets
-              TbsCore/TbsCore.csproj.nuget.g.props.              
-          key: ${{ runner.os }}-nuget-${{ hashFiles('TbsCore/packages.lock.json') }}
-          restore-keys: |
-              ${{ runner.os }}-nuget-
-              
-      - name: Restore Packages
-        run: |
-          nuget restore TbsCore/TbsCore.csproj -PackagesDirectory packages
-          nuget restore TravBotSharp/TbsWinForms.csproj -PackagesDirectory packages
 
       - name: Build Bot
-        run: |
-          msbuild.exe TravBotSharp.sln /t:TbsWinForms /nologo /nr:false /p:DeleteExistingFiles=True /p:platform="Any CPU" /p:configuration="Release" /m /p:BuildProjectReferences=true /p:BUILD_NUMBER=${{needs.version.outputs.version}}.0
+        run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }} -p:AssemblyVersion=${{github.event.inputs.version}}.0
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
         with:
-          name: TBS-release
-          path: TravBotSharp\bin\Release
+          name: TBS-${{ matrix.server }}
+          path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
 
   release:
     runs-on: ubuntu-latest
-    needs: [build, version]
-    steps:    
-        
+    needs: build
+    steps:        
       - name: Download artifact
-        uses: actions/download-artifact@master
+        uses: actions/download-artifact@v3
         with:
-          name: TBS-release
-          path: TBS-${{needs.version.outputs.version}}
-
-      - name: Archive Release
-        uses: montudor/action-zip@v1
-        with:
-            args: zip -qq -r TBS-${{needs.version.outputs.version}}.zip TBS-${{needs.version.outputs.version}}
-
+          path: TBS
+      
+      - name: Archive release
+        run: |
+          cd TBS; zip -r "TBS-${{github.event.inputs.version}}-TravianOfficial-OldHeroUI.zip" TBS-TRAVIAN_OFFICIAL; cp -R "TBS-${{github.event.inputs.version}}-TravianOfficial-OldHeroUI.zip" ../; cd ..
+          cd TBS; zip -r "TBS-${{github.event.inputs.version}}-TravianOfficial-NewHeroUI.zip" TBS-TRAVIAN_OFFICIAL_HEROUI; cp -R "TBS-${{github.event.inputs.version}}-TravianOfficial-NewHeroUI.zip" ../; cd ..
+          cd TBS; zip -r "TBS-${{github.event.inputs.version}}-TTWars.zip" TBS-TTWARS; cp -R "TBS-${{github.event.inputs.version}}-TTWars.zip" ../; cd ..
 
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          name: TBS-${{needs.version.outputs.version}}
-          tag: ${{needs.version.outputs.version}}
-          commit: master
-          body: |
-            **Changelog**: 
-            ${{needs.version.outputs.changelog}}
-          artifacts: TBS-${{needs.version.outputs.version}}.zip
+          name: TBS-${{github.event.inputs.version}}
+          tag: ${{github.event.inputs.version}}
+          commit: master          
+          artifacts: "TBS-${{github.event.inputs.version}}-TravianOfficial-OldHeroUI.zip, TBS-${{github.event.inputs.version}}-TravianOfficial-NewHeroUI.zip, TBS-${{github.event.inputs.version}}-TTWars.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            Please join our Discord server for more information: [https://discord.gg/mBa4f2K](https://discord.gg/mBa4f2K)
+
   Discord:
     runs-on: ubuntu-latest
-    needs: [release, version]
+    needs: release
     steps:
       - name: Ping @everyone
         run: |
@@ -131,16 +74,16 @@ jobs:
           title: New release
           nodetail: true
           description: |
-              Version `TBS-${{needs.version.outputs.version}}`
-              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
-              
-              **Changelog**:
-              ${{needs.version.outputs.changelog}}
+              Version `TBS-${{github.event.inputs.version}}`
+              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{github.event.inputs.version}}) to download!
   Clear:
     runs-on: ubuntu-latest
     needs: release
+    strategy:
+      matrix:
+        server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
     steps:
       - name: Delete artifact
         uses: geekyeggo/delete-artifact@v1
         with:
-          name: TBS-release
+          name: TBS-${{ matrix.server }}
