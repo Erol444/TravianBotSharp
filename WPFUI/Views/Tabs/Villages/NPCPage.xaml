@@ -1,0 +1,15 @@
+﻿<reactiveui:ReactivePage
+      x:Class="WPFUI.Views.Tabs.Villages.NPCPage"
+      x:TypeArguments="vms:NPCViewModel"
+      xmlns:vms="clr-namespace:WPFUI.ViewModels.Tabs.Villages"
+      xmlns:reactiveui="http://reactiveui.net"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Background="#FFE5E5E5" Margin="0,2,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+    </Grid>
+</reactiveui:ReactivePage>
