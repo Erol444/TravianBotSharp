@@ -16,6 +16,7 @@
         public int AutoRefreshTimeMax { get; set; }
 
         public bool IsAutoNPC { get; set; }
+        public int AutoNPCPercent { get; set; }
         public int AutoNPCWood { get; set; }
         public int AutoNPCClay { get; set; }
         public int AutoNPCIron { get; set; }
