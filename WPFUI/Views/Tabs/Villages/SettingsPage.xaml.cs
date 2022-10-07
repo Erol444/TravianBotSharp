@@ -17,6 +17,7 @@ namespace WPFUI.Views.Tabs.Villages
             WatchAds.ViewModel = new("Using ads upgrade button when building time is longer than", "min(s)");
             Refresh.ViewModel = new("Refresh interval", "min(s)");
             AutoNPC.ViewModel = new("Auto NPC when any resource is more than", "% of storage");
+            AutoNPCValue.ViewModel = new();
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel, vm => vm.ExportCommand, v => v.ExportButton).DisposeWith(d);
@@ -34,7 +35,10 @@ namespace WPFUI.Views.Tabs.Villages
 
                 this.Bind(ViewModel, vm => vm.Settings.IsAutoNPC, v => v.AutoNPC.ViewModel.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCPercent, v => v.AutoNPC.ViewModel.Value).DisposeWith(d);
-
+                this.Bind(ViewModel, vm => vm.Settings.AutoNPCWood, v => v.AutoNPCValue.ViewModel.Wood).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.AutoNPCClay, v => v.AutoNPCValue.ViewModel.Clay).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.AutoNPCIron, v => v.AutoNPCValue.ViewModel.Iron).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.AutoNPCCrop, v => v.AutoNPCValue.ViewModel.Crop).DisposeWith(d);
                 Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
             });
