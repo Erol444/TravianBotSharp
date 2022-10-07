@@ -50,7 +50,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private async Task SaveTask()
         {
-            if (!CheckInput()) return;
+            if (!Settings.IsValidate()) return;
             _waitingWindow.ViewModel.Show("saving village's settings");
 
             await Task.Run(() =>
@@ -67,8 +67,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void ImportTask()
         {
-            if (!CheckInput()) return;
-
             using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(CurrentVillage.Id);
             var ofd = new OpenFileDialog
@@ -121,21 +119,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 File.WriteAllText(svd.FileName, jsonString);
             }
-        }
-
-        private bool CheckInput()
-        {
-            if (!Settings.InstantCompleteTime.IsNumeric())
-            {
-                MessageBox.Show("Instant complete time is non-numeric.", "Warning");
-                return false;
-            }
-            if (!Settings.AdsUpgradeTime.IsNumeric())
-            {
-                MessageBox.Show("Ads upgrade time is non-numeric.", "Warning");
-                return false;
-            }
-            return true;
         }
 
         private void Save(int index)
