@@ -4,6 +4,19 @@ namespace WPFUI.ViewModels.Uc
 {
     public class ResourcesViewModel : ReactiveObject
     {
+        public ResourcesViewModel(string text) : base()
+        {
+            Text = text;
+        }
+
+        private string _text;
+
+        public string Text
+        {
+            get => $"{_text}: ";
+            set => this.RaiseAndSetIfChanged(ref _text, value);
+        }
+
         private string _wood;
 
         public string Wood
@@ -28,12 +41,12 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _iron, value);
         }
 
-        private readonly string _crop;
+        private string _crop;
 
         public string Crop
         {
-            get => _iron;
-            set => this.RaiseAndSetIfChanged(ref _iron, value);
+            get => _crop;
+            set => this.RaiseAndSetIfChanged(ref _crop, value);
         }
     }
 }

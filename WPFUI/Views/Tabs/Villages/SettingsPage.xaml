@@ -38,7 +38,7 @@
             <StackPanel>
                 <TextBlock x:Name="AutoNPCLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="NPC settings" VerticalAlignment="Center" FontWeight="Bold" />
                 <controls:CheckBoxWithInputUc x:Name="AutoNPC" />
-                <controls:ResourcesUc x:Name="AutoNPCValue" />
+                <controls:ResourcesUc x:Name="AutoNPCRatio" />
             </StackPanel>
         </StackPanel>
     </Grid>
