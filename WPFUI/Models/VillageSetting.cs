@@ -52,47 +52,47 @@ namespace WPFUI.Models
         {
             if (!InstantCompleteTime.IsNumeric())
             {
-                MessageBox.Show("Instant complete time is non-numeric.", "Warning");
+                MessageBox.Show("Instant complete time is not a number.", "Warning");
                 return false;
             }
             if (!AdsUpgradeTime.IsNumeric())
             {
-                MessageBox.Show("Ads upgrade time is non-numeric.", "Warning");
+                MessageBox.Show("Ads upgrade time is not a number.", "Warning");
                 return false;
             }
             if (!AutoRefreshTime.IsNumeric())
             {
-                MessageBox.Show("Auto refresh time is non-numeric.", "Warning");
+                MessageBox.Show("Auto refresh time is not a number.", "Warning");
                 return false;
             }
             if (!AutoRefreshTimeTolerance.IsNumeric())
             {
-                MessageBox.Show("Auto refresh time tolerance is non-numeric.", "Warning");
+                MessageBox.Show("Auto refresh time tolerance is not a number.", "Warning");
                 return false;
             }
             if (!AutoNPCPercent.IsNumeric())
             {
-                MessageBox.Show("Auto NPC percent is non-numeric.", "Warning");
+                MessageBox.Show("Auto NPC percent is not a number.", "Warning");
                 return false;
             }
             if (!AutoNPCWood.IsNumeric())
             {
-                MessageBox.Show("Auto NPC wood is non-numeric.", "Warning");
+                MessageBox.Show("Auto NPC wood is not a number.", "Warning");
                 return false;
             }
             if (!AutoNPCClay.IsNumeric())
             {
-                MessageBox.Show("Auto NPC clay is non-numeric.", "Warning");
+                MessageBox.Show("Auto NPC clay is not a number.", "Warning");
                 return false;
             }
             if (!AutoNPCIron.IsNumeric())
             {
-                MessageBox.Show("Auto NPC iron is non-numeric.", "Warning");
+                MessageBox.Show("Auto NPC iron is not a number.", "Warning");
                 return false;
             }
             if (!AutoNPCCrop.IsNumeric())
             {
-                MessageBox.Show("Auto NPC crop is non-numeric.", "Warning");
+                MessageBox.Show("Auto NPC crop is not a number.", "Warning");
                 return false;
             }
 

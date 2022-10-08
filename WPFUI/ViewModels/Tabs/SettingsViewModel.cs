@@ -126,42 +126,42 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!Settings.ClickDelay.IsNumeric())
             {
-                MessageBox.Show("Click delay is non-numeric.", "Warning");
+                MessageBox.Show("Click delay is not a number.", "Warning");
                 return false;
             }
             if (!Settings.ClickDelayRange.IsNumeric())
             {
-                MessageBox.Show("Click delay range is non-numeric.", "Warning");
+                MessageBox.Show("Click delay range is not a number.", "Warning");
                 return false;
             }
             if (!Settings.TaskDelay.IsNumeric())
             {
-                MessageBox.Show("Task delay is non-numeric.", "Warning");
+                MessageBox.Show("Task delay is not a number.", "Warning");
                 return false;
             }
             if (!Settings.TaskDelayRange.IsNumeric())
             {
-                MessageBox.Show("Task delay range is non-numeric.", "Warning");
+                MessageBox.Show("Task delay range is not a number.", "Warning");
                 return false;
             }
             if (!Settings.WorkTime.IsNumeric())
             {
-                MessageBox.Show("Work time is non-numeric.", "Warning");
+                MessageBox.Show("Work time is not a number.", "Warning");
                 return false;
             }
             if (!Settings.WorkTimeRange.IsNumeric())
             {
-                MessageBox.Show("Work time range is non-numeric.", "Warning");
+                MessageBox.Show("Work time range is not a number.", "Warning");
                 return false;
             }
             if (!Settings.SleepTime.IsNumeric())
             {
-                MessageBox.Show("Sleep time is non-numeric.", "Warning");
+                MessageBox.Show("Sleep time is not a number.", "Warning");
                 return false;
             }
             if (!Settings.SleepTimeRange.IsNumeric())
             {
-                MessageBox.Show("Sleep time range is non-numeric.", "Warning");
+                MessageBox.Show("Sleep time range is not a number.", "Warning");
                 return false;
             }
             return true;
