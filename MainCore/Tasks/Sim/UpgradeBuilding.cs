@@ -1,9 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper;
 using MainCore.Models.Runtime;
-using MainCore.Services;
 using MainCore.Tasks.Update;
-using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
@@ -18,48 +16,10 @@ using System.Threading;
 
 namespace MainCore.Tasks.Sim
 {
-    public class UpgradeBuilding : BotTask
+    public class UpgradeBuilding : VillageBotTask
     {
-        public UpgradeBuilding(int villageId, int accountId) : base(accountId)
+        public UpgradeBuilding(int villageId, int accountId) : base(villageId, accountId, "Upgrade building")
         {
-            _villageId = villageId;
-        }
-
-        private readonly Random rand = new();
-        private string _name;
-        public override string Name => _name;
-
-        private readonly int _villageId;
-        public int VillageId => _villageId;
-
-        public override void CopyFrom(BotTask source)
-        {
-            base.CopyFrom(source);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Upgrade building in {VillageId}";
-            }
-            else
-            {
-                _name = $"Upgrade building in {village.Name}";
-            }
-        }
-
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Upgrade building in {VillageId}";
-            }
-            else
-            {
-                _name = $"Upgrade building in {village.Name}";
-            }
         }
 
         public override void Execute()

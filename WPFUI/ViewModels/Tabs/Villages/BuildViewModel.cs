@@ -225,7 +225,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             var accountId = CurrentAccount.Id;
             var tasks = _taskManager.GetList(accountId);
-            var task = tasks.Where(x => x.AccountId == accountId).OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
+            var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
                 _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
@@ -279,7 +279,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             var accountId = CurrentAccount.Id;
             var tasks = _taskManager.GetList(accountId);
-            var task = tasks.Where(x => x.AccountId == accountId).OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
+            var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
                 _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));

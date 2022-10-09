@@ -1,61 +1,25 @@
-﻿using MainCore.Enums;
-using MainCore.Helper;
-using MainCore.Services;
+﻿using MainCore.Helper;
 using MainCore.Tasks.Sim;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 
 namespace MainCore.Tasks.Update
 {
-    public class UpdateVillage : UpdateInfo
+    public class UpdateVillage : VillageBotTask
     {
-        public UpdateVillage(int villageId, int accountId) : base(accountId)
+        public UpdateVillage(int villageId, int accountId) : base(villageId, accountId, "Update village")
         {
-            _villageId = villageId;
         }
 
-        private string _name;
-        public override string Name => _name;
-
-        public override void CopyFrom(BotTask source)
+        public UpdateVillage(int villageId, int accountId, string name) : base(villageId, accountId, name)
         {
-            base.CopyFrom(source);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Update village in {VillageId}";
-            }
-            else
-            {
-                _name = $"Update village in {village.Name}";
-            }
         }
-
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Update village in {VillageId}";
-            }
-            else
-            {
-                _name = $"Update village in {village.Name}";
-            }
-        }
-
-        private readonly int _villageId;
-        public int VillageId => _villageId;
 
         public override void Execute()
         {
             Navigate();
-            base.Execute();
-            Update();
+            UpdateAccountInfo();
+            UpdateVillageInfo();
         }
 
         private void Navigate()
@@ -64,7 +28,14 @@ namespace MainCore.Tasks.Update
             NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
         }
 
-        private void Update()
+        private void UpdateAccountInfo()
+        {
+            var updateTask = new UpdateInfo(AccountId);
+            updateTask.CopyFrom(this);
+            updateTask.Execute();
+        }
+
+        private void UpdateVillageInfo()
         {
             using var context = _contextFactory.CreateDbContext();
             var currentUrl = _chromeBrowser.GetCurrentUrl();

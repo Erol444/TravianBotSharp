@@ -2,9 +2,9 @@
 using System;
 using OpenQA.Selenium;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using MainCore.Services;
 using MainCore.Helper;
+using MainCore.Services;
+using Microsoft.EntityFrameworkCore;
 
 #if TTWARS
 
@@ -17,7 +17,7 @@ namespace MainCore.Tasks.Attack
 {
     public class StartFarmList : UpdateFarmList
     {
-        public StartFarmList(int accountId, int farmId) : base(accountId)
+        public StartFarmList(int accountId, int farmId) : base(accountId, "Start farmlist")
         {
             _farmId = farmId;
         }
@@ -25,7 +25,6 @@ namespace MainCore.Tasks.Attack
         private readonly int _farmId;
         public int FarmId => _farmId;
         private string _nameFarm;
-        public override string Name => $"Start farmlist {_nameFarm}";
 
         private readonly Random rand = new();
 
@@ -36,6 +35,8 @@ namespace MainCore.Tasks.Attack
             var farm = context.Farms.Find(FarmId);
             if (farm is not null) _nameFarm = farm.Name;
             else _nameFarm = "unknow";
+
+            Name = $"{Name} {_nameFarm}";
         }
 
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
@@ -45,6 +46,8 @@ namespace MainCore.Tasks.Attack
             var farm = context.Farms.Find(FarmId);
             if (farm is not null) _nameFarm = farm.Name;
             else _nameFarm = "unknow";
+
+            Name = $"{Name} {_nameFarm}";
         }
 
         public override void Execute()
@@ -139,7 +142,6 @@ namespace MainCore.Tasks.Attack
             buttonStartFarms[0].Click();
 
             NavigateHelper.SwitchTab(_chromeBrowser, 1, context, AccountId);
-
         }
 
 #else

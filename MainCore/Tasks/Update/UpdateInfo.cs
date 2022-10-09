@@ -20,13 +20,11 @@ using TTWarsCore.Parsers;
 
 namespace MainCore.Tasks.Update
 {
-    public class UpdateInfo : BotTask
+    public class UpdateInfo : AccountBotTask
     {
-        public UpdateInfo(int accountId) : base(accountId)
+        public UpdateInfo(int accountId) : base(accountId, "Update info")
         {
         }
-
-        public override string Name => "Update Info";
 
         public override void Execute()
         {

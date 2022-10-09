@@ -2,13 +2,11 @@
 
 namespace MainCore.Tasks.Update
 {
-    public class UpdateHeroItems : BotTask
+    public class UpdateHeroItems : AccountBotTask
     {
-        public UpdateHeroItems(int accountId) : base(accountId)
+        public UpdateHeroItems(int accountId) : base(accountId, "Update hero's items")
         {
         }
-
-        public override string Name => "Update hero's items";
 
         public override void Execute()
         {

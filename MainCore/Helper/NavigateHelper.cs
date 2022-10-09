@@ -30,6 +30,8 @@ namespace MainCore.Helper
     {
         private static readonly Random rand = new();
 
+        public static void Sleep(int min, int max) => Thread.Sleep(rand.Next(min, max));
+
         public static void WaitPageLoaded(IChromeBrowser chromeBrowser)
         {
             var wait = chromeBrowser.GetWait();
