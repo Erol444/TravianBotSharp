@@ -17,6 +17,10 @@ using TravianOfficialNewHeroUICore.FindElements;
 
 using TTWarsCore.FindElements;
 
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Tasks.Misc
@@ -106,8 +110,9 @@ namespace MainCore.Tasks.Misc
             NavigateHelper.WaitPageChanged(_chromeBrowser, "dorf");
             NavigateHelper.WaitPageLoaded(_chromeBrowser);
             NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
-#if TTWARS
+#elif TTWARS
             html = _chromeBrowser.GetHtml();
             if (CheckHelper.IsSkipTutorial(html))
             {
@@ -127,6 +132,10 @@ namespace MainCore.Tasks.Misc
                 NavigateHelper.WaitPageLoaded(_chromeBrowser);
                 NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             }
+#else
+
+#error You forgot to define Travian version here
+
 #endif
         }
 

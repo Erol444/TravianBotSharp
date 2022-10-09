@@ -22,6 +22,10 @@ using TravianOfficialNewHeroUICore.FindElements;
 using TTWarsCore.Parsers;
 using TTWarsCore.FindElements;
 
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Helper
@@ -75,10 +79,14 @@ namespace MainCore.Helper
             {
                 throw new StopNowException("Captcha found! Bot must be stopped.");
             }
-#if TTWAR
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+            if (CheckHelper.IsWWMsg(html))
+#elif TTWARS
             if (CheckHelper.IsWWMsg(html) && CheckHelper.IsWWPage(chromeBrowser))
 #else
-            if (CheckHelper.IsWWMsg(html))
+
+#error You forgot to define Travian version here
+
 #endif
             {
                 throw new StopNowException("WW complete page found! Bot must be stopped.");
@@ -236,12 +244,7 @@ namespace MainCore.Helper
         public static bool GoToBuilding(IChromeBrowser chromeBrowser, int index, AppDbContext context, int accountId)
         {
             var currentUrl = chromeBrowser.GetCurrentUrl();
-#if TTWARS
-            var uri = new Uri(currentUrl);
-            var serverUrl = $"{uri.Scheme}://{uri.Host}";
-            var url = $"{serverUrl}/build.php?id={index}";
-            chromeBrowser.Navigate(url);
-#else
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
             var dorf = BuildingsHelper.GetDorf(index);
             var html = chromeBrowser.GetHtml();
             var chrome = chromeBrowser.GetChrome();
@@ -284,6 +287,14 @@ namespace MainCore.Helper
                 default:
                     break;
             }
+#elif TTWARS
+            var uri = new Uri(currentUrl);
+            var serverUrl = $"{uri.Scheme}://{uri.Host}";
+            var url = $"{serverUrl}/build.php?id={index}";
+            chromeBrowser.Navigate(url);
+#else
+
+#error You forgot to define Travian version here
 
 #endif
             var delay = GetDelayClick(context, accountId);
@@ -351,8 +362,8 @@ namespace MainCore.Helper
                 if (tab is null) return false;
                 return tab.IsCurrentTab();
             });
+#elif TRAVIAN_OFFICIAL || TTWARS
 
-#else
             var inventory = HeroPage.GetHeroInventory(html);
             if (inventory is null)
             {
@@ -368,6 +379,10 @@ namespace MainCore.Helper
 
             var wait = chromeBrowser.GetWait();
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+#else
+
+#error You forgot to define Travian version here
+
 #endif
         }
 
@@ -401,7 +416,7 @@ namespace MainCore.Helper
                 if (heroState is null) return false;
                 return driver.FindElements(By.XPath(heroState.XPath)).Count > 0;
             });
-#else
+#elif TTWARS || TRAVIAN_OFFICIAL
             var inventory = HeroPage.GetAdventuresButton(html);
             if (inventory is null)
             {
@@ -416,6 +431,10 @@ namespace MainCore.Helper
             elements[0].Click();
             var wait = chromeBrowser.GetWait();
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+#else
+
+#error You forgot to define Travian version here
+
 #endif
         }
     }

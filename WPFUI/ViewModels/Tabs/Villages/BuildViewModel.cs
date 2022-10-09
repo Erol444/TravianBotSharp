@@ -250,17 +250,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 MessageBox.Show("Level must be positive");
                 return;
             }
-#if TTWARS
-            if (level > 25)
+
+            var levelMax = BuildingEnums.Woodcutter.GetMaxLevel();
+            if (level > levelMax)
             {
-                level = 25;
+                level = levelMax;
             }
-#else
-            if (level > 20)
-            {
-                level = 20;
-            }
-#endif
             var planTask = new PlanTask()
             {
                 Location = -1,

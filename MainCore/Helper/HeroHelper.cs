@@ -18,6 +18,10 @@ using TravianOfficialNewHeroUICore.FindElements;
 
 using TTWarsCore.FindElements;
 
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Helper
@@ -71,8 +75,12 @@ namespace MainCore.Helper
                     var inventoryPageWrapper = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("inventoryPageWrapper"));
                     return !inventoryPageWrapper.HasClass("loading");
                 });
-#else
+#elif TTWARS || TRAVIAN_OFFICIAL
                 wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+#else
+
+#error You forgot to define Travian version here
+
 #endif
             }
         }
@@ -120,9 +128,13 @@ namespace MainCore.Helper
                 var inventoryPageWrapper = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("inventoryPageWrapper"));
                 return !inventoryPageWrapper.HasClass("loading");
             });
-#else
+#elif TTWARS || TRAVIAN_OFFICIAL
             Thread.Sleep(3000);
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+#else
+
+#error You forgot to define Travian version here
+
 #endif
         }
     }

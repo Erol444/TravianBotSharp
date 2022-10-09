@@ -6,10 +6,16 @@ using MainCore.Helper;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 
-#if TTWARS
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+#elif TTWARS
 
 using HtmlAgilityPack;
 using System.Threading;
+
+#else
+
+#error You forgot to define Travian version here
 
 #endif
 
@@ -93,7 +99,19 @@ namespace MainCore.Tasks.Attack
             return false;
         }
 
-#if TTWARS
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+        private void ClickStartFarm()
+        {
+            var html = _chromeBrowser.GetHtml();
+            var farmNode = html.GetElementbyId($"raidList{FarmId}");
+            if (farmNode is null) throw new Exception("Cannot found farm node");
+            var startNode = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
+            if (startNode is null) throw new Exception("Cannot found start button");
+            var startElements = _chromeBrowser.GetChrome().FindElements(By.XPath(startNode.XPath));
+            if (startElements.Count == 0) throw new Exception("Cannot found start button");
+            startElements[0].Click();
+        }
+#elif TTWARS
 
         private void ClickStartFarm()
         {
@@ -145,17 +163,9 @@ namespace MainCore.Tasks.Attack
         }
 
 #else
-        private void ClickStartFarm()
-        {
-            var html = _chromeBrowser.GetHtml();
-            var farmNode = html.GetElementbyId($"raidList{FarmId}");
-            if (farmNode is null) throw new Exception("Cannot found farm node");
-            var startNode = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
-            if (startNode is null) throw new Exception("Cannot found start button");
-            var startElements = _chromeBrowser.GetChrome().FindElements(By.XPath(startNode.XPath));
-            if (startElements.Count == 0) throw new Exception("Cannot found start button");
-            startElements[0].Click();
-        }
+
+#error You forgot to define Travian version here
+
 #endif
     }
 }

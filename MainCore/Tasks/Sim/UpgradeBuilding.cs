@@ -12,6 +12,12 @@ using MainCore.Tasks.Misc;
 using System.Collections.Generic;
 using System.Threading;
 
+#elif TTWARS
+
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Tasks.Sim
@@ -73,8 +79,12 @@ namespace MainCore.Tasks.Sim
                         Upgrade(buildingTask);
                     }
 
-#else
+#elif TTWARS
                     Upgrade(buildingTask);
+#else
+
+#error You forgot to define Travian version here
+
 #endif
                 }
 
@@ -204,6 +214,12 @@ namespace MainCore.Tasks.Sim
             }
         }
 
+#elif TTWARS
+
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
         private void Upgrade(PlanTask buildingTask)
@@ -262,6 +278,12 @@ namespace MainCore.Tasks.Sim
                 }
 #if TTWARS
                 Refresh();
+#elif TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+#else
+
+#error You forgot to define Travian version here
+
 #endif
                 var updateTask = new UpdateVillage(VillageId, AccountId);
                 updateTask.CopyFrom(this);
@@ -274,8 +296,12 @@ namespace MainCore.Tasks.Sim
                 }
 #if TTWARS
                 ExecuteAt = firstComplete.CompleteTime.AddSeconds(1);
-#else
+#elif TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
                 ExecuteAt = firstComplete.CompleteTime.AddSeconds(10);
+#else
+
+#error You forgot to define Travian version here
+
 #endif
                 _logManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
                 StopFlag = true;
@@ -458,13 +484,17 @@ namespace MainCore.Tasks.Sim
                 taskEquip.Execute();
                 if (IsThereCompleteBuilding(buildingTask)) return false;
                 GotoBuilding(buildingTask);
-#else
+#elif TTWARS
                 _logManager.Information(AccountId, "Don't have enough resources.");
                 var production = context.VillagesProduction.Find(VillageId);
                 var timeEnough = production.GetTimeWhenEnough(resMissing);
                 ExecuteAt = timeEnough;
                 StopFlag = true;
                 return false;
+#else
+
+#error You forgot to define Travian version here
+
 #endif
             }
             return true;

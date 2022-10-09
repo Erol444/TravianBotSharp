@@ -15,6 +15,10 @@ using TravianOfficialNewHeroUICore.FindElements;
 
 using TTWarsCore.FindElements;
 
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Helper

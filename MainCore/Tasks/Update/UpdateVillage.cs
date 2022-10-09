@@ -66,9 +66,7 @@ namespace MainCore.Tasks.Update
             var info = context.AccountsInfo.Find(AccountId);
             if (info.Gold < 2) return;
             var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1);
-#if TTWARS
-            if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
-#else
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
             var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             if (tribe == TribeEnums.Romans)
             {
@@ -78,6 +76,11 @@ namespace MainCore.Tasks.Update
             {
                 if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
             }
+#elif TTWARS
+            if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
+#else
+
+#error You forgot to define Travian version here
 
 #endif
             if (currentlyBuilding.Max(x => x.CompleteTime) < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;

@@ -2,8 +2,6 @@
 using MainCore.Enums;
 using MainCore.Services;
 using System.Linq;
-using System;
-using MainCore.Models.Runtime;
 
 #if TRAVIAN_OFFICIAL
 
@@ -19,6 +17,10 @@ using TravianOfficialNewHeroUICore.FindElements;
 
 using TTWarsCore.Parsers;
 using TTWarsCore.FindElements;
+
+#else
+
+#error You forgot to define Travian version here
 
 #endif
 
@@ -71,10 +73,14 @@ namespace MainCore.Helper
             }
             else
             {
-#if TTWARS
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+                contractNode = html.GetElementbyId("contract");
+#elif TTWARS
                 contractNode = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.Id.Equals("contract"));
 #else
-                contractNode = html.GetElementbyId("contract");
+
+#error You forgot to define Travian version here
+
 #endif
             }
             var resWrapper = contractNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
@@ -119,6 +125,11 @@ namespace MainCore.Helper
             if (setting.AdsUpgradeTime > duration.TotalMinutes) return false;
             return true;
         }
+#elif TTWARS
+
+#else
+
+#error You forgot to define Travian version here
 
 #endif
 
@@ -126,10 +137,14 @@ namespace MainCore.Helper
         {
             // check building
             var url = chromeBrowser.GetCurrentUrl();
-#if TTWARS
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+            if (!url.Contains("id=39")) return false;
+#elif TTWARS
             if (!url.Contains("tt=99")) return false;
 #else
-            if (!url.Contains("id=39")) return false;
+
+#error You forgot to define Travian version here
+
 #endif
             //check tab
             return IsCorrectTab(chromeBrowser, 4);

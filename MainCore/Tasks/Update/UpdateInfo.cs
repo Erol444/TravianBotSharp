@@ -16,6 +16,10 @@ using TravianOfficialNewHeroUICore.Parsers;
 
 using TTWarsCore.Parsers;
 
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Tasks.Update

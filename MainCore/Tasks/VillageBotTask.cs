@@ -8,9 +8,9 @@ namespace MainCore.Tasks
         private readonly int _villageId;
         public int VillageId => _villageId;
 
-        public VillageBotTask(int villaegId, int accountId, string name) : base(accountId, name)
+        public VillageBotTask(int villageID, int accountId, string name) : base(accountId, name)
         {
-            _villageId = villaegId;
+            _villageId = villageID;
         }
 
         public override void CopyFrom(BotTask source)
