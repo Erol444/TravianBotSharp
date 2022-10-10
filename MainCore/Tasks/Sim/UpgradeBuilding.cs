@@ -5,10 +5,10 @@ using MainCore.Tasks.Update;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
+using MainCore.Tasks.Misc;
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
-using MainCore.Tasks.Misc;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -139,6 +139,8 @@ namespace MainCore.Tasks.Sim
                 }
                 elements[0].Click();
             }
+            var rand = new Random(DateTime.Now.Second);
+
             Thread.Sleep(rand.Next(2400, 5300));
             html = _chromeBrowser.GetHtml();
             {
@@ -479,7 +481,7 @@ namespace MainCore.Tasks.Sim
                         (HeroItemEnums.Iron, (int)resMissing[2]),
                         (HeroItemEnums.Crop, (int)resMissing[3]),
                     };
-                var taskEquip = new HeroEquip(VillageId, AccountId, items);
+                var taskEquip = new UseHeroResources(VillageId, AccountId, items);
                 taskEquip.CopyFrom(this);
                 taskEquip.Execute();
                 if (IsThereCompleteBuilding(buildingTask)) return false;

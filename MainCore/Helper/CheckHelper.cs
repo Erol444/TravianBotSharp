@@ -5,6 +5,8 @@ using System.Linq;
 
 #if TRAVIAN_OFFICIAL
 
+using System;
+using MainCore.Models.Runtime;
 using TravianOfficialCore.Parsers;
 using TravianOfficialCore.FindElements;
 
@@ -125,6 +127,7 @@ namespace MainCore.Helper
             if (setting.AdsUpgradeTime > duration.TotalMinutes) return false;
             return true;
         }
+
 #elif TTWARS
 
 #else

@@ -3,6 +3,18 @@ using MainCore.Tasks.Sim;
 using System;
 using System.Linq;
 
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+using MainCore.Enums;
+
+#elif TTWARS
+
+#else
+
+#error You forgot to define Travian version here
+
+#endif
+
 namespace MainCore.Tasks.Update
 {
     public class UpdateVillage : VillageBotTask
