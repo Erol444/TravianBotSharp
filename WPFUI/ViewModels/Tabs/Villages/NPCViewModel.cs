@@ -1,6 +1,10 @@
 ﻿using MainCore.Models.Database;
+using MainCore.Tasks.Misc;
+using MainCore.Tasks.Update;
 using ReactiveUI;
+using System;
 using System.Reactive;
+using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
@@ -17,36 +21,38 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         protected override void LoadData(int index)
         {
-            Resources = new()
-            {
-                Warehouse = 0,
-                Wood = 1000000000000000000,
-                Clay = 1000,
-                Iron = 1000,
-                Granary = 0,
-                Crop = 0,
-            };
-            Ratio = new()
-            {
-                Wood = "1000",
-                Clay = "1000",
-                Iron = "1000",
-                Crop = "1000",
-            };
+            using var context = _contextFactory.CreateDbContext();
+            Resources = context.VillagesResources.Find(index);
+            var updateTime = context.VillagesUpdateTime.Find(index);
+            var dorf1 = updateTime.Dorf1;
+            var dorf2 = updateTime.Dorf2;
+            LastUpdate = dorf1 > dorf2 ? dorf1 : dorf2;
         }
 
         private void RefreshTask()
         {
+            _taskManager.Add(CurrentAccount.Id, new UpdateVillage(CurrentVillage.Id, CurrentAccount.Id));
+            MessageBox.Show("Added Refresh resources task to queue");
         }
 
         private void NPCTask()
         {
+            _taskManager.Add(CurrentAccount.Id, new NPCTask(CurrentVillage.Id, CurrentAccount.Id));
+            MessageBox.Show("Added NPC task to queue");
         }
 
         public void OnActived()
         {
             if (CurrentVillage is null) return;
             LoadData(CurrentVillage.Id);
+            {
+                using var context = _contextFactory.CreateDbContext();
+                var setting = context.VillagesSettings.Find(CurrentVillage.Id);
+                Ratio.Wood = setting.AutoNPCWood.ToString();
+                Ratio.Clay = setting.AutoNPCClay.ToString();
+                Ratio.Iron = setting.AutoNPCIron.ToString();
+                Ratio.Crop = setting.AutoNPCCrop.ToString();
+            }
         }
 
         public void OnDeactived()
@@ -61,12 +67,20 @@ namespace WPFUI.ViewModels.Tabs.Villages
             set => this.RaiseAndSetIfChanged(ref _resources, value);
         }
 
-        private Resources _ratio;
+        private Resources _ratio = new();
 
         public Resources Ratio
         {
             get => _ratio;
             set => this.RaiseAndSetIfChanged(ref _ratio, value);
+        }
+
+        private DateTime _lastUpdate;
+
+        public DateTime LastUpdate
+        {
+            get => _lastUpdate;
+            set => this.RaiseAndSetIfChanged(ref _lastUpdate, value);
         }
 
         public ReactiveCommand<Unit, Unit> RefreshCommand { get; set; }

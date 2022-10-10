@@ -21,6 +21,8 @@ namespace WPFUI.Views.Tabs.Villages
                 this.BindCommand(ViewModel, vm => vm.RefreshCommand, v => v.UpdateResource).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.NPCCommand, v => v.NPC).DisposeWith(d);
 
+                this.Bind(ViewModel, vm => vm.LastUpdate, v => v.UpdateTime.Text).DisposeWith(d);
+
                 this.Bind(ViewModel, vm => vm.Resources.Warehouse, v => v.Storage.ViewModel.Warehouse).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Resources.Wood, v => v.Storage.ViewModel.Wood).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Resources.Clay, v => v.Storage.ViewModel.Clay).DisposeWith(d);
