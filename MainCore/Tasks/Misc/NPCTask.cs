@@ -1,6 +1,7 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Helper;
+using MainCore.Models.Runtime;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
@@ -12,6 +13,13 @@ namespace MainCore.Tasks.Misc
         public NPCTask(int villageId, int accountId) : base(villageId, accountId, "NPC Task")
         {
         }
+
+        public NPCTask(int villageId, int accountId, Resources ratio) : base(villageId, accountId, "NPC Task")
+        {
+            _ratio = ratio;
+        }
+
+        private readonly Resources _ratio;
 
         public override void Execute()
         {
@@ -131,10 +139,20 @@ namespace MainCore.Tasks.Misc
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
             var ratio = new int[4];
-            ratio[0] = setting.AutoNPCWood;
-            ratio[1] = setting.AutoNPCClay;
-            ratio[2] = setting.AutoNPCIron;
-            ratio[3] = setting.AutoNPCCrop;
+            if (_ratio is null)
+            {
+                ratio[0] = setting.AutoNPCWood;
+                ratio[1] = setting.AutoNPCClay;
+                ratio[2] = setting.AutoNPCIron;
+                ratio[3] = setting.AutoNPCCrop;
+            }
+            else
+            {
+                ratio[0] = _ratio.Wood;
+                ratio[1] = _ratio.Clay;
+                ratio[2] = _ratio.Iron;
+                ratio[3] = _ratio.Crop;
+            }
             var ratioSum = ratio.Sum();
 
             if (ratioSum == 0)

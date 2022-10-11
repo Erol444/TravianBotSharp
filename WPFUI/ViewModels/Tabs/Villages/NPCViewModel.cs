@@ -37,13 +37,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void NPCTask()
         {
-            _taskManager.Add(CurrentAccount.Id, new NPCTask(CurrentVillage.Id, CurrentAccount.Id));
+            _taskManager.Add(CurrentAccount.Id, new NPCTask(CurrentVillage.Id, CurrentAccount.Id, Ratio.GetResources()));
             MessageBox.Show("Added NPC task to queue");
         }
 
         public void OnActived()
         {
             if (CurrentVillage is null) return;
+            IsActive = true;
             LoadData(CurrentVillage.Id);
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -57,6 +58,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         public void OnDeactived()
         {
+            IsActive = false;
         }
 
         private VillageResources _resources;
@@ -85,6 +87,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         public ReactiveCommand<Unit, Unit> RefreshCommand { get; set; }
         public ReactiveCommand<Unit, Unit> NPCCommand { get; set; }
-        public bool IsActive { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        public bool IsActive { get; set; }
     }
 }
