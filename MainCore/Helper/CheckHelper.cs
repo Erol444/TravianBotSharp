@@ -12,6 +12,8 @@ using TravianOfficialCore.FindElements;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
+using System;
+using MainCore.Models.Runtime;
 using TravianOfficialNewHeroUICore.Parsers;
 using TravianOfficialNewHeroUICore.FindElements;
 
