@@ -1,5 +1,5 @@
 ﻿using MainCore.Helper;
-using System;
+using MainCore.Models.Database;
 using System.Linq;
 
 namespace MainCore.Tasks.Sim
@@ -14,22 +14,27 @@ namespace MainCore.Tasks.Sim
 
         public override void Execute()
         {
+            var adventure = GetAdventures();
+            if (StopFlag) return;
+            if (Cts.IsCancellationRequested) return;
+            if (adventure is null) return;
+            StartAdventures(adventure);
+            if (StopFlag) return;
+            if (Cts.IsCancellationRequested) return;
+        }
+
+        private Adventure GetAdventures()
+        {
             using var context = _contextFactory.CreateDbContext();
             var adventures = context.Adventures.Where(a => a.AccountId == AccountId);
-            if (!adventures.Any()) return;
-            var adventure = adventures.First();
+            return adventures.FirstOrDefault();
+        }
+
+        private void StartAdventures(Adventure adventure)
+        {
             var x = adventure.X;
             var y = adventure.Y;
-            if (Cts.IsCancellationRequested) return;
             ClickHelper.ClickStartAdventure(_chromeBrowser, x, y);
-            if (DateTime.Now.Millisecond % 2 == 0)
-            {
-                NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
-            }
-            else
-            {
-                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
-            }
         }
     }
 }
