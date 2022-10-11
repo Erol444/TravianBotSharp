@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace MainCore.Miragations
+namespace MainCore.Migrations
 {
     [Migration(202210061322)]
     public class NPCMiragation : Migration

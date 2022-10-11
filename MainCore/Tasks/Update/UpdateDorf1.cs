@@ -1,4 +1,6 @@
 ﻿using MainCore.Helper;
+using System;
+using System.Linq;
 
 namespace MainCore.Tasks.Update
 {
@@ -10,11 +12,30 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
-            }
+            ToDorf1();
             base.Execute();
+            NextExcute();
+        }
+
+        private void ToDorf1()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
+        }
+
+        private void NextExcute()
+        {
+            var tasks = _taskManager.GetList(AccountId);
+            var updateTasks = tasks.OfType<UpdateDorf1>().OrderByDescending(x => x.ExecuteAt);
+            var updateTask = updateTasks.FirstOrDefault();
+
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.Find(VillageId);
+            var rand = new Random(DateTime.Now.Second);
+            var delay = rand.Next(setting.AutoRefreshTimeMin, setting.AutoRefreshTimeMax);
+
+            updateTask.ExecuteAt = DateTime.Now.AddMinutes(delay);
+            _taskManager.Update(AccountId);
         }
     }
 }
