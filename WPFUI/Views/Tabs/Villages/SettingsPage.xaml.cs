@@ -16,7 +16,7 @@ namespace WPFUI.Views.Tabs.Villages
             Complete.ViewModel = new("Auto complete upgrade when queue is longer than", "min(s)");
             WatchAds.ViewModel = new("Using ads upgrade button when building time is longer than", "min(s)");
             Refresh.ViewModel = new("Refresh interval", "min(s)");
-            AutoNPC.ViewModel = new("Auto NPC when any resource is more than", "% of storage");
+            AutoNPC.ViewModel = new("Auto NPC when crop is more than", "% of granary");
             AutoNPCRatio.ViewModel = new("Ratio");
             this.WhenActivated(d =>
             {
