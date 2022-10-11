@@ -2,6 +2,7 @@
 using MainCore.Tasks.Sim;
 using System;
 using System.Linq;
+using MainCore.Tasks.Misc;
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
@@ -54,7 +55,7 @@ namespace MainCore.Tasks.Update
             if (currentUrl.Contains("dorf"))
             {
                 UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
-                InstantUpgrade();
+                InstantUpgrade(context);
             }
             if (currentUrl.Contains("dorf1"))
             {
@@ -67,12 +68,11 @@ namespace MainCore.Tasks.Update
             }
 
             UpdateHelper.UpdateResource(context, _chromeBrowser, VillageId);
+            AutoNPC(context);
         }
 
-        private void InstantUpgrade()
+        private void InstantUpgrade(AppDbContext context)
         {
-            using var context = _contextFactory.CreateDbContext();
-
             var setting = context.VillagesSettings.Find(VillageId);
             if (!setting.IsInstantComplete) return;
             var info = context.AccountsInfo.Find(AccountId);
@@ -97,9 +97,37 @@ namespace MainCore.Tasks.Update
 #endif
             if (currentlyBuilding.Max(x => x.CompleteTime) < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
             var listTask = _taskManager.GetList(AccountId);
-            var tasks = listTask.Where(x => x.GetType() == typeof(InstantUpgrade)).OfType<InstantUpgrade>().Where(x => x.VillageId == VillageId);
-            if (tasks.Any()) return;
+            var tasks = listTask.OfType<InstantUpgrade>();
+            if (tasks.Any(x => x.VillageId == VillageId)) return;
             _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
+        }
+
+        private void AutoNPC(AppDbContext context)
+        {
+            var info = context.AccountsInfo.Find(AccountId);
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+            if (info.Gold < 3) return;
+#elif TTWARS
+            if (info.Gold < 5) return;
+
+#else
+
+#error You forgot to define Travian version here
+
+#endif
+
+            var setting = context.VillagesSettings.Find(VillageId);
+            if (!setting.IsAutoNPC) return;
+            if (setting.AutoNPCPercent == 0) return;
+
+            var resource = context.VillagesResources.Find(VillageId);
+            var ratio = resource.Crop * 100.0f / resource.Granary;
+            if (ratio > setting.AutoNPCPercent) return;
+
+            var npcTasks = _taskManager.GetList(AccountId).OfType<NPCTask>();
+            if (npcTasks.Any(x => x.VillageId == VillageId)) return;
+
+            _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
         }
     }
 }
