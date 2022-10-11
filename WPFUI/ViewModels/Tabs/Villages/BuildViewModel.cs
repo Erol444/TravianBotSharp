@@ -225,7 +225,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             var accountId = CurrentAccount.Id;
             var tasks = _taskManager.GetList(accountId);
-            var task = tasks.Where(x => x.AccountId == accountId).OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
+            var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
                 _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
@@ -250,17 +250,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 MessageBox.Show("Level must be positive");
                 return;
             }
-#if TTWARS
-            if (level > 25)
+
+            var levelMax = BuildingEnums.Woodcutter.GetMaxLevel();
+            if (level > levelMax)
             {
-                level = 25;
+                level = levelMax;
             }
-#else
-            if (level > 20)
-            {
-                level = 20;
-            }
-#endif
             var planTask = new PlanTask()
             {
                 Location = -1,
@@ -279,7 +274,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             var accountId = CurrentAccount.Id;
             var tasks = _taskManager.GetList(accountId);
-            var task = tasks.Where(x => x.AccountId == accountId).OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
+            var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
                 _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));

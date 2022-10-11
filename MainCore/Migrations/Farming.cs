@@ -1,6 +1,6 @@
 ﻿using FluentMigrator;
 
-namespace MainCore.Miragations
+namespace MainCore.Migrations
 {
     [Migration(202209131759)]
     public class Farming : Migration

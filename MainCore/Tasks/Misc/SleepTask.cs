@@ -6,15 +6,13 @@ using System.Threading.Tasks;
 
 namespace MainCore.Tasks.Misc
 {
-    public class SleepTask : BotTask
+    public class SleepTask : AccountBotTask
     {
         private readonly Random random = new();
 
-        public SleepTask(int accountId) : base(accountId)
+        public SleepTask(int accountId) : base(accountId, "Sleep task")
         {
         }
-
-        public override string Name => "Sleep";
 
         public override void Execute()
         {

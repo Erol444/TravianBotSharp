@@ -1,0 +1,46 @@
+﻿<rxui:ReactiveUserControl
+        x:Class="WPFUI.Views.Uc.ResourcesWithStorageUc"
+        x:TypeArguments="vms:ResourcesWithStorageViewModel"
+        xmlns:rxui="http://reactiveui.net"
+        xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Orientation="Horizontal">
+        <Image Margin="0,0,5,0">
+            <Image.Source>
+                <BitmapImage UriSource="pack://application:,,,/Resources/warehouse.png" />
+            </Image.Source>
+        </Image>
+        <TextBox x:Name="Warehouse" TextWrapping="Wrap" VerticalAlignment="Center"  TextAlignment="Center" Width="40" IsReadOnly="True"/>
+        <Image Margin="20,0,5,0">
+            <Image.Source>
+                <BitmapImage UriSource="pack://application:,,,/Resources/wood.png" />
+            </Image.Source>
+        </Image>
+        <TextBox x:Name="Wood" TextWrapping="Wrap" VerticalAlignment="Center"  TextAlignment="Center" Width="40" IsReadOnly="True" />
+        <Image Margin="20,0,5,0">
+            <Image.Source>
+                <BitmapImage UriSource="pack://application:,,,/Resources/clay.png" />
+            </Image.Source>
+        </Image>
+        <TextBox x:Name="Clay" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" IsReadOnly="True"  />
+        <Image  Margin="20,0,5,0">
+            <Image.Source>
+                <BitmapImage UriSource="pack://application:,,,/Resources/iron.png" />
+            </Image.Source>
+        </Image>
+        <TextBox x:Name="Iron" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" IsReadOnly="True" />
+        <Image  Margin="50,0,5,0">
+            <Image.Source>
+                <BitmapImage UriSource="pack://application:,,,/Resources/granary.png" />
+            </Image.Source>
+        </Image>
+        <TextBox x:Name="Granary" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" IsReadOnly="True"  />
+        <Image Margin="20,0,5,0">
+            <Image.Source>
+                <BitmapImage UriSource="pack://application:,,,/Resources/crop.png" />
+            </Image.Source>
+        </Image>
+        <TextBox x:Name="Crop" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" IsReadOnly="True"  />
+    </StackPanel>
+</rxui:ReactiveUserControl>

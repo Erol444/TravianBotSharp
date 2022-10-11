@@ -1,5 +1,6 @@
 ﻿using MainCore.Helper;
 using MainCore.Tasks.Sim;
+using MainCore.Tasks.Update;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;
@@ -50,7 +51,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private async Task SaveTask()
         {
-            if (!CheckInput()) return;
+            if (!Settings.IsValidate()) return;
             _waitingWindow.ViewModel.Show("saving village's settings");
 
             await Task.Run(() =>
@@ -67,8 +68,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void ImportTask()
         {
-            if (!CheckInput()) return;
-
             using var context = _contextFactory.CreateDbContext();
             var village = context.Villages.Find(CurrentVillage.Id);
             var ofd = new OpenFileDialog
@@ -123,21 +122,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
             }
         }
 
-        private bool CheckInput()
-        {
-            if (!Settings.InstantCompleteTime.IsNumeric())
-            {
-                MessageBox.Show("Instant complete time is non-numeric.", "Warning");
-                return false;
-            }
-            if (!Settings.AdsUpgradeTime.IsNumeric())
-            {
-                MessageBox.Show("Ads upgrade time is non-numeric.", "Warning");
-                return false;
-            }
-            return true;
-        }
-
         private void Save(int index)
         {
             using var context = _contextFactory.CreateDbContext();
@@ -150,26 +134,46 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void TaskBasedSetting(int villageId, int accountId)
         {
             var list = _taskManager.GetList(accountId);
-            var tasks = list.Where(x => x is InstantUpgrade);
-            if (Settings.IsInstantComplete)
             {
-                if (!tasks.Any())
+                var tasks = list.Where(x => x is InstantUpgrade);
+                if (Settings.IsInstantComplete)
                 {
-                    using var context = _contextFactory.CreateDbContext();
-                    UpgradeBuildingHelper.RemoveFinishedCB(context, villageId);
-                    var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-                    var count = currentBuildings.Count(x => x.Level != -1);
-                    if (count > 0)
+                    if (!tasks.Any())
                     {
-                        _taskManager.Add(accountId, new InstantUpgrade(villageId, accountId));
+                        using var context = _contextFactory.CreateDbContext();
+                        UpgradeBuildingHelper.RemoveFinishedCB(context, villageId);
+                        var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
+                        var count = currentBuildings.Count(x => x.Level != -1);
+                        if (count > 0)
+                        {
+                            _taskManager.Add(accountId, new InstantUpgrade(villageId, accountId));
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var item in tasks)
+                    {
+                        _taskManager.Remove(accountId, item);
                     }
                 }
             }
-            else
             {
-                foreach (var item in tasks)
+                var tasks = list.OfType<UpdateDorf1>();
+                if (Settings.IsAutoRefresh)
                 {
-                    _taskManager.Remove(accountId, item);
+                    if (!tasks.Any(x => x.VillageId == villageId))
+                    {
+                        _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
+                    }
+                }
+                else
+                {
+                    var updateTasks = tasks.Where(x => x.VillageId == villageId);
+                    foreach (var item in updateTasks)
+                    {
+                        _taskManager.Remove(accountId, item);
+                    }
                 }
             }
         }

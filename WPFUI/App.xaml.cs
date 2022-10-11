@@ -1,6 +1,6 @@
 ﻿using FluentMigrator.Runner;
 using MainCore;
-using MainCore.Miragations;
+using MainCore.Migrations;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

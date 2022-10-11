@@ -120,15 +120,18 @@ namespace MainCore.Helper
         {
             return building switch
             {
-#if TTWARS
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+                BuildingEnums.Brewery => 20,
+#elif TTWARS
                 BuildingEnums.Brewery => 10,
                 BuildingEnums.Woodcutter => 25,
                 BuildingEnums.ClayPit => 25,
                 BuildingEnums.IronMine => 25,
                 BuildingEnums.Cropland => 25,
-
 #else
-                BuildingEnums.Brewery => 20,
+
+#error You forgot to define Travian version here
+
 #endif
                 BuildingEnums.Bakery => 5,
                 BuildingEnums.Brickyard => 5,

@@ -1,0 +1,13 @@
+﻿<rxui:ReactiveUserControl
+        x:Class="WPFUI.Views.Uc.CheckBoxWithInputUc"
+        x:TypeArguments="vms:CheckBoxWithInputViewModel"
+        xmlns:rxui="http://reactiveui.net"
+        xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Orientation="Horizontal">
+        <CheckBox x:Name="IsChecked" VerticalAlignment="Center" Width="NaN" />
+        <TextBox x:Name="Value" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" />
+        <Label x:Name="UnitLabel" Width="NaN" />
+    </StackPanel>
+</rxui:ReactiveUserControl>

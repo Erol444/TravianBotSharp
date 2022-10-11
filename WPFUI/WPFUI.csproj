@@ -10,7 +10,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\clay.png" />
+    <None Remove="Resources\crop.png" />
+    <None Remove="Resources\granary.png" />
+    <None Remove="Resources\iron.png" />
+    <None Remove="Resources\warehouse.png" />
+    <None Remove="Resources\wood.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="favicon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\clay.png" />
+    <Resource Include="Resources\crop.png" />
+    <Resource Include="Resources\granary.png" />
+    <Resource Include="Resources\iron.png" />
+    <Resource Include="Resources\warehouse.png" />
+    <Resource Include="Resources\wood.png" />
   </ItemGroup>
 
   <ItemGroup>

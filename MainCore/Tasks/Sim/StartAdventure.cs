@@ -4,13 +4,11 @@ using System.Linq;
 
 namespace MainCore.Tasks.Sim
 {
-    public class StartAdventure : BotTask
+    public class StartAdventure : AccountBotTask
     {
-        public StartAdventure(int accountId) : base(accountId)
+        public StartAdventure(int accountId) : base(accountId, "Start adventure")
         {
         }
-
-        public override string Name => "Start adventure";
 
         public override void Execute()
         {

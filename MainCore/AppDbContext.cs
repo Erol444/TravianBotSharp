@@ -243,9 +243,22 @@ namespace MainCore
                 VillageId = villageId,
                 IsAdsUpgrade = false,
                 AdsUpgradeTime = 5,
+
                 IsUseHeroRes = false,
+
                 IsInstantComplete = false,
-                InstantCompleteTime = 30
+                InstantCompleteTime = 30,
+
+                IsAutoRefresh = false,
+                AutoRefreshTimeMin = 25,
+                AutoRefreshTimeMax = 35,
+
+                IsAutoNPC = false,
+                AutoNPCPercent = 90,
+                AutoNPCWood = 1,
+                AutoNPCClay = 1,
+                AutoNPCIron = 1,
+                AutoNPCCrop = 0,
             });
 
             //VillagesQueueBuildings

@@ -1,55 +1,41 @@
 ﻿using MainCore.Helper;
-using MainCore.Services;
-using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateDorf1 : UpdateVillage
     {
-        public UpdateDorf1(int villageId, int accountId) : base(villageId, accountId)
+        public UpdateDorf1(int villageId, int accountId) : base(villageId, accountId, "Update Resources page")
         {
-        }
-
-        private string _name;
-        public override string Name => _name;
-
-        public override void CopyFrom(BotTask source)
-        {
-            base.CopyFrom(source);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Update dorf 1 in {VillageId}";
-            }
-            else
-            {
-                _name = $"Update dorf 1 in {village.Name}";
-            }
-        }
-
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Update dorf 1 in {VillageId}";
-            }
-            else
-            {
-                _name = $"Update dorf 1 in {village.Name}";
-            }
         }
 
         public override void Execute()
         {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
-            }
+            ToDorf1();
             base.Execute();
+            NextExcute();
+        }
+
+        private void ToDorf1()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
+        }
+
+        private void NextExcute()
+        {
+            var tasks = _taskManager.GetList(AccountId);
+            var updateTasks = tasks.OfType<UpdateDorf1>().OrderByDescending(x => x.ExecuteAt);
+            var updateTask = updateTasks.FirstOrDefault();
+
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.Find(VillageId);
+            var rand = new Random(DateTime.Now.Second);
+            var delay = rand.Next(setting.AutoRefreshTimeMin, setting.AutoRefreshTimeMax);
+
+            updateTask.ExecuteAt = DateTime.Now.AddMinutes(delay);
+            _taskManager.Update(AccountId);
         }
     }
 }

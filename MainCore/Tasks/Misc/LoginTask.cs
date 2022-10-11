@@ -4,7 +4,6 @@ using MainCore.Tasks.Update;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
-using System.Threading;
 
 #if TRAVIAN_OFFICIAL
 
@@ -18,17 +17,19 @@ using TravianOfficialNewHeroUICore.FindElements;
 
 using TTWarsCore.FindElements;
 
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Tasks.Misc
 {
-    public class LoginTask : BotTask
+    public class LoginTask : AccountBotTask
     {
-        public LoginTask(int accountId) : base(accountId)
+        public LoginTask(int accountId) : base(accountId, "Login task")
         {
         }
-
-        private readonly Random rand = new();
 
         public override void Execute()
         {
@@ -36,8 +37,6 @@ namespace MainCore.Tasks.Misc
             Login();
             AddTask();
         }
-
-        public override string Name => "Login Task";
 
         private void AcceptCookie()
         {
@@ -107,13 +106,13 @@ namespace MainCore.Tasks.Misc
             buttonElements[0].Click();
 
             var setting = context.AccountsSettings.Find(AccountId);
-            var delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
-            Thread.Sleep(delay);
+            NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
             NavigateHelper.WaitPageChanged(_chromeBrowser, "dorf");
             NavigateHelper.WaitPageLoaded(_chromeBrowser);
             NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
-#if TTWARS
+#elif TTWARS
             html = _chromeBrowser.GetHtml();
             if (CheckHelper.IsSkipTutorial(html))
             {
@@ -128,11 +127,15 @@ namespace MainCore.Tasks.Misc
                     throw new Exception("Cannot find skip quest button");
                 }
                 skipButtons[0].Click();
-                delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
-                Thread.Sleep(delay);
+
+                NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
                 NavigateHelper.WaitPageLoaded(_chromeBrowser);
                 NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             }
+#else
+
+#error You forgot to define Travian version here
+
 #endif
         }
 

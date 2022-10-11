@@ -1,61 +1,38 @@
-﻿using MainCore.Enums;
-using MainCore.Helper;
-using MainCore.Services;
+﻿using MainCore.Helper;
 using MainCore.Tasks.Sim;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using MainCore.Tasks.Misc;
+
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+using MainCore.Enums;
+
+#elif TTWARS
+
+#else
+
+#error You forgot to define Travian version here
+
+#endif
 
 namespace MainCore.Tasks.Update
 {
-    public class UpdateVillage : UpdateInfo
+    public class UpdateVillage : VillageBotTask
     {
-        public UpdateVillage(int villageId, int accountId) : base(accountId)
+        public UpdateVillage(int villageId, int accountId) : base(villageId, accountId, "Update village")
         {
-            _villageId = villageId;
         }
 
-        private string _name;
-        public override string Name => _name;
-
-        public override void CopyFrom(BotTask source)
+        public UpdateVillage(int villageId, int accountId, string name) : base(villageId, accountId, name)
         {
-            base.CopyFrom(source);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Update village in {VillageId}";
-            }
-            else
-            {
-                _name = $"Update village in {village.Name}";
-            }
         }
-
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Update village in {VillageId}";
-            }
-            else
-            {
-                _name = $"Update village in {village.Name}";
-            }
-        }
-
-        private readonly int _villageId;
-        public int VillageId => _villageId;
 
         public override void Execute()
         {
             Navigate();
-            base.Execute();
-            Update();
+            UpdateAccountInfo();
+            UpdateVillageInfo();
         }
 
         private void Navigate()
@@ -64,14 +41,21 @@ namespace MainCore.Tasks.Update
             NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
         }
 
-        private void Update()
+        private void UpdateAccountInfo()
+        {
+            var updateTask = new UpdateInfo(AccountId);
+            updateTask.CopyFrom(this);
+            updateTask.Execute();
+        }
+
+        private void UpdateVillageInfo()
         {
             using var context = _contextFactory.CreateDbContext();
             var currentUrl = _chromeBrowser.GetCurrentUrl();
             if (currentUrl.Contains("dorf"))
             {
                 UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
-                InstantUpgrade();
+                InstantUpgrade(context);
             }
             if (currentUrl.Contains("dorf1"))
             {
@@ -84,20 +68,17 @@ namespace MainCore.Tasks.Update
             }
 
             UpdateHelper.UpdateResource(context, _chromeBrowser, VillageId);
+            AutoNPC(context);
         }
 
-        private void InstantUpgrade()
+        private void InstantUpgrade(AppDbContext context)
         {
-            using var context = _contextFactory.CreateDbContext();
-
             var setting = context.VillagesSettings.Find(VillageId);
             if (!setting.IsInstantComplete) return;
             var info = context.AccountsInfo.Find(AccountId);
             if (info.Gold < 2) return;
             var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1);
-#if TTWARS
-            if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
-#else
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
             var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             if (tribe == TribeEnums.Romans)
             {
@@ -107,13 +88,46 @@ namespace MainCore.Tasks.Update
             {
                 if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
             }
+#elif TTWARS
+            if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
+#else
+
+#error You forgot to define Travian version here
 
 #endif
             if (currentlyBuilding.Max(x => x.CompleteTime) < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
             var listTask = _taskManager.GetList(AccountId);
-            var tasks = listTask.Where(x => x.GetType() == typeof(InstantUpgrade)).OfType<InstantUpgrade>().Where(x => x.VillageId == VillageId);
-            if (tasks.Any()) return;
+            var tasks = listTask.OfType<InstantUpgrade>();
+            if (tasks.Any(x => x.VillageId == VillageId)) return;
             _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
+        }
+
+        private void AutoNPC(AppDbContext context)
+        {
+            var info = context.AccountsInfo.Find(AccountId);
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+            if (info.Gold < 3) return;
+#elif TTWARS
+            if (info.Gold < 5) return;
+
+#else
+
+#error You forgot to define Travian version here
+
+#endif
+
+            var setting = context.VillagesSettings.Find(VillageId);
+            if (!setting.IsAutoNPC) return;
+            if (setting.AutoNPCPercent == 0) return;
+
+            var resource = context.VillagesResources.Find(VillageId);
+            var ratio = resource.Crop * 100.0f / resource.Granary;
+            if (ratio > setting.AutoNPCPercent) return;
+
+            var npcTasks = _taskManager.GetList(AccountId).OfType<NPCTask>();
+            if (npcTasks.Any(x => x.VillageId == VillageId)) return;
+
+            _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
         }
     }
 }

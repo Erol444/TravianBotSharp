@@ -5,13 +5,11 @@ using System.Linq;
 
 namespace MainCore.Tasks.Update
 {
-    public class UpdateAdventures : BotTask
+    public class UpdateAdventures : AccountBotTask
     {
-        public UpdateAdventures(int accountId) : base(accountId)
+        public UpdateAdventures(int accountId) : base(accountId, "Update hero's adventures")
         {
         }
-
-        public override string Name => "Update hero's adventures";
 
         public override void Execute()
         {

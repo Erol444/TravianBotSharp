@@ -2,14 +2,20 @@
 using System;
 using OpenQA.Selenium;
 using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using MainCore.Services;
 using MainCore.Helper;
+using MainCore.Services;
+using Microsoft.EntityFrameworkCore;
 
-#if TTWARS
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+#elif TTWARS
 
 using HtmlAgilityPack;
 using System.Threading;
+
+#else
+
+#error You forgot to define Travian version here
 
 #endif
 
@@ -17,7 +23,7 @@ namespace MainCore.Tasks.Attack
 {
     public class StartFarmList : UpdateFarmList
     {
-        public StartFarmList(int accountId, int farmId) : base(accountId)
+        public StartFarmList(int accountId, int farmId) : base(accountId, "Start farmlist")
         {
             _farmId = farmId;
         }
@@ -25,7 +31,6 @@ namespace MainCore.Tasks.Attack
         private readonly int _farmId;
         public int FarmId => _farmId;
         private string _nameFarm;
-        public override string Name => $"Start farmlist {_nameFarm}";
 
         private readonly Random rand = new();
 
@@ -36,6 +41,8 @@ namespace MainCore.Tasks.Attack
             var farm = context.Farms.Find(FarmId);
             if (farm is not null) _nameFarm = farm.Name;
             else _nameFarm = "unknow";
+
+            Name = $"{Name} {_nameFarm}";
         }
 
         public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
@@ -45,6 +52,8 @@ namespace MainCore.Tasks.Attack
             var farm = context.Farms.Find(FarmId);
             if (farm is not null) _nameFarm = farm.Name;
             else _nameFarm = "unknow";
+
+            Name = $"{Name} {_nameFarm}";
         }
 
         public override void Execute()
@@ -90,7 +99,19 @@ namespace MainCore.Tasks.Attack
             return false;
         }
 
-#if TTWARS
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+        private void ClickStartFarm()
+        {
+            var html = _chromeBrowser.GetHtml();
+            var farmNode = html.GetElementbyId($"raidList{FarmId}");
+            if (farmNode is null) throw new Exception("Cannot found farm node");
+            var startNode = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
+            if (startNode is null) throw new Exception("Cannot found start button");
+            var startElements = _chromeBrowser.GetChrome().FindElements(By.XPath(startNode.XPath));
+            if (startElements.Count == 0) throw new Exception("Cannot found start button");
+            startElements[0].Click();
+        }
+#elif TTWARS
 
         private void ClickStartFarm()
         {
@@ -139,21 +160,12 @@ namespace MainCore.Tasks.Attack
             buttonStartFarms[0].Click();
 
             NavigateHelper.SwitchTab(_chromeBrowser, 1, context, AccountId);
-
         }
 
 #else
-        private void ClickStartFarm()
-        {
-            var html = _chromeBrowser.GetHtml();
-            var farmNode = html.GetElementbyId($"raidList{FarmId}");
-            if (farmNode is null) throw new Exception("Cannot found farm node");
-            var startNode = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
-            if (startNode is null) throw new Exception("Cannot found start button");
-            var startElements = _chromeBrowser.GetChrome().FindElements(By.XPath(startNode.XPath));
-            if (startElements.Count == 0) throw new Exception("Cannot found start button");
-            startElements[0].Click();
-        }
+
+#error You forgot to define Travian version here
+
 #endif
     }
 }

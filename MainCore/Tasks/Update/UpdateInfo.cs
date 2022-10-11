@@ -16,17 +16,19 @@ using TravianOfficialNewHeroUICore.Parsers;
 
 using TTWarsCore.Parsers;
 
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Tasks.Update
 {
-    public class UpdateInfo : BotTask
+    public class UpdateInfo : AccountBotTask
     {
-        public UpdateInfo(int accountId) : base(accountId)
+        public UpdateInfo(int accountId) : base(accountId, "Update info")
         {
         }
-
-        public override string Name => "Update Info";
 
         public override void Execute()
         {

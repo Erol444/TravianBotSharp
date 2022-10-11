@@ -175,7 +175,7 @@ namespace WPFUI.ViewModels.Tabs
                     }
                     if (!int.TryParse(access.ProxyPort, out _))
                     {
-                        MessageBox.Show("There is non-numeric proxy's port.", "Warning");
+                        MessageBox.Show("There is not a number proxy's port.", "Warning");
                         return false;
                     }
                 }
