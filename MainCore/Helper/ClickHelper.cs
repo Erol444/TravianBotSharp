@@ -82,6 +82,32 @@ namespace MainCore.Helper
                 throw new Exception("Cannot find start adventure button");
             }
             finishElements[0].Click();
+
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#elif TTWARS
+            var wait = chromeBrowser.GetWait();
+            wait.Until(driver =>
+            {
+                var elements = driver.FindElements(By.Id("start"));
+                if (elements.Count == 0) return false;
+                return elements[0].Enabled && elements[0].Displayed;
+            });
+
+
+            var elements = chrome.FindElements(By.Id("start"));
+            elements[0].Click();
+
+            wait.Until(driver =>
+            {
+                var elements = driver.FindElements(By.Id("ok"));
+                if (elements.Count == 0) return false;
+                return elements[0].Enabled && elements[0].Displayed;
+            });
+#else
+
+#error You forgot to define Travian version here
+
+#endif
         }
     }
 }
