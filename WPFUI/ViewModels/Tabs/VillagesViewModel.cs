@@ -48,6 +48,8 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == accountId);
+            OldVillage ??= CurrentVillage;
+
             Villages.Clear();
 
             if (villages.Any())
@@ -66,6 +68,7 @@ namespace WPFUI.ViewModels.Tabs
 
                 if (vill is not null) CurrentIndex = Villages.IndexOf(vill);
                 else CurrentIndex = 0;
+                OldVillage = null;
             }
         }
 

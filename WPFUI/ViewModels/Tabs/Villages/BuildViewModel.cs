@@ -57,6 +57,10 @@ namespace WPFUI.ViewModels.Tabs.Villages
                     LoadBuildingCombo(CurrentVillage.Id);
                 }
             });
+
+            _eventManager.VillageBuildsUpdate += LoadBuildings;
+            _eventManager.VillageBuildQueueUpdate += LoadQueue;
+            _eventManager.VillageCurrentUpdate += LoadCurrent;
         }
 
         public bool IsActive { get; set; }
@@ -73,6 +77,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public void OnDeactived()
         {
             IsActive = false;
+            OldBuilding = CurrentBuilding;
+            OldQueueBuilding = CurrentQueueBuilding;
         }
 
         protected override void LoadData(int villageId)
@@ -87,32 +93,42 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             using var context = _contextFactory.CreateDbContext();
             var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).OrderBy(x => x.Id);
-            Buildings.Clear();
-            var queueBuildings = _planManager.GetList(villageId);
 
-            foreach (var building in buildings)
+            OldBuilding ??= CurrentBuilding;
+            Buildings.Clear();
+
+            if (buildings.Any())
             {
-                var plannedBuild = queueBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
-                if (plannedBuild is not null)
+                var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0);
+                var queueBuildings = _planManager.GetList(villageId);
+                foreach (var building in buildings)
                 {
-                    Buildings.Add(new()
+                    if (building.Id < 1 || building.Id > 40) continue;
+                    var plannedBuild = queueBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
+                    var currentBuild = currentlyBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
+
+                    var level = building.Level.ToString();
+                    if (currentBuild is not null)
                     {
-                        Location = building.Id,
-                        Type = plannedBuild.Building,
-                        Level = $"{building.Level} -> {plannedBuild.Level}",
-                        Color = plannedBuild.Building.GetColor()
-                    });
-                }
-                else
-                {
+                        level = $"{level} => ({currentBuild.Level})";
+                    }
+                    if (plannedBuild is not null)
+                    {
+                        level = $"{level} => ({plannedBuild.Level})";
+                    }
                     Buildings.Add(new()
                     {
                         Location = building.Id,
                         Type = building.Type,
-                        Level = building.Level.ToString(),
+                        Level = level,
                         Color = building.Type.GetColor()
                     });
                 }
+
+                var b = Buildings.FirstOrDefault(x => x.Location == OldBuilding?.Location);
+                if (b is not null) CurrentIndexBuilding = Buildings.IndexOf(b);
+                else CurrentIndexBuilding = 0;
+                OldBuilding = null;
             }
         }
 
@@ -136,13 +152,21 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadQueue(int villageId)
         {
+            OldQueueBuilding ??= CurrentQueueBuilding;
             QueueBuildings.Clear();
             var queueBuildings = _planManager.GetList(villageId);
-            foreach (var building in queueBuildings)
+            if (queueBuildings.Any())
             {
-                QueueBuildings.Add(building);
+                foreach (var building in queueBuildings)
+                {
+                    QueueBuildings.Add(building);
+                }
+                _planManager.Save();
+
+                if (OldQueueBuilding is not null) CurrentIndexQueue = QueueBuildings.IndexOf(OldQueueBuilding);
+                else CurrentIndexQueue = 0;
+                OldQueueBuilding = null;
             }
-            _planManager.Save();
         }
 
         private void LoadBuildingCombo(int villageId)
@@ -420,12 +444,28 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public ObservableCollection<ResTypeComboBox> ComboResTypes { get; } = new();
         public ObservableCollection<BuildingStrategyComboBox> ComboStrategy { get; } = new();
 
+        private BuildingInfo _oldBuilding;
+
+        public BuildingInfo OldBuilding
+        {
+            get => _oldBuilding;
+            set => this.RaiseAndSetIfChanged(ref _oldBuilding, value);
+        }
+
         private BuildingInfo _currentBuilding;
 
         public BuildingInfo CurrentBuilding
         {
             get => _currentBuilding;
             set => this.RaiseAndSetIfChanged(ref _currentBuilding, value);
+        }
+
+        private PlanTask _oldQueueBuilding;
+
+        public PlanTask OldQueueBuilding
+        {
+            get => _oldQueueBuilding;
+            set => this.RaiseAndSetIfChanged(ref _oldQueueBuilding, value);
         }
 
         private PlanTask _currentQueueBuilding;
@@ -510,6 +550,22 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             get => _resLevel;
             set => this.RaiseAndSetIfChanged(ref _resLevel, value);
+        }
+
+        private int _currentIndexBuilding;
+
+        public int CurrentIndexBuilding
+        {
+            get => _currentIndexBuilding;
+            set => this.RaiseAndSetIfChanged(ref _currentIndexBuilding, value);
+        }
+
+        private int _currentIndexQueue;
+
+        public int CurrentIndexQueue
+        {
+            get => _currentIndexQueue;
+            set => this.RaiseAndSetIfChanged(ref _currentIndexQueue, value);
         }
     }
 }

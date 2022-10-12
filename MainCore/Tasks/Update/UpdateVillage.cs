@@ -56,15 +56,19 @@ namespace MainCore.Tasks.Update
             {
                 UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
                 InstantUpgrade(context);
+                _eventManager.OnVillageCurrentUpdate(VillageId);
             }
             if (currentUrl.Contains("dorf1"))
             {
                 UpdateHelper.UpdateDorf1(context, _chromeBrowser, VillageId);
+                _eventManager.OnVillageBuildsUpdate(VillageId);
+
                 UpdateHelper.UpdateProduction(context, _chromeBrowser, VillageId);
             }
             else if (currentUrl.Contains("dorf2"))
             {
                 UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, VillageId);
+                _eventManager.OnVillageBuildsUpdate(VillageId);
             }
 
             UpdateHelper.UpdateResource(context, _chromeBrowser, VillageId);

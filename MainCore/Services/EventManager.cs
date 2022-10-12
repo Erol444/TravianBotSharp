@@ -13,6 +13,18 @@ namespace MainCore.Services
 
         public void OnAccountStatusUpdate(int accountId) => AccountStatusUpdate?.Invoke(accountId);
 
+        public event Action<int> VillageBuildQueueUpdate;
+
+        public void OnVillageBuildQueueUpdate(int villageId) => VillageBuildQueueUpdate?.Invoke(villageId);
+
+        public event Action<int> VillageBuildsUpdate;
+
+        public void OnVillageBuildsUpdate(int villageId) => VillageBuildsUpdate?.Invoke(villageId);
+
+        public event Action<int> VillageCurrentUpdate;
+
+        public void OnVillageCurrentUpdate(int villageId) => VillageCurrentUpdate?.Invoke(villageId);
+
         public event Action<int, LogMessage> LogUpdated;
 
         public void OnLogUpdated(int accountId, LogMessage logMessage) => LogUpdated?.Invoke(accountId, logMessage);
