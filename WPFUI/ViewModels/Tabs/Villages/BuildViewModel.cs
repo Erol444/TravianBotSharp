@@ -130,20 +130,23 @@ namespace WPFUI.ViewModels.Tabs.Villages
                     var currentBuild = currentlyBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
 
                     var level = building.Level.ToString();
+                    var type = building.Type;
                     if (currentBuild is not null)
                     {
-                        level = $"{level} => ({currentBuild.Level})";
+                        level = $"{level} -> ({currentBuild.Level})";
+                        type = currentBuild.Type;
                     }
                     if (plannedBuild is not null)
                     {
-                        level = $"{level} => ({plannedBuild.Level})";
+                        level = $"{level} -> [{plannedBuild.Level}]";
+                        type = plannedBuild.Building;
                     }
                     Buildings.Add(new()
                     {
                         Location = building.Id,
-                        Type = building.Type,
+                        Type = type,
                         Level = level,
-                        Color = building.Type.GetColor()
+                        Color = type.GetColor()
                     });
                 }
 
