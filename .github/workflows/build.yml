@@ -2,7 +2,6 @@ name: BuildFlow
 
 on:
   pull_request:
-    branches-ignore: [master]
     types: [opened, reopened, synchronize]
   workflow_dispatch:
 
