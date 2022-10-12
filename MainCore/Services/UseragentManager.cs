@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MainCore.Services
 {
-    public class UseragentManager : IUseragentManager
+    public sealed class UseragentManager : IUseragentManager
     {
         public UseragentManager(IRestClientManager restClientManager)
         {

@@ -21,11 +21,22 @@ namespace WPFUI
         private static ServiceProvider _provider;
         public static IServiceProvider Provider => _provider;
 
-        public static T GetService<T>() => Provider.GetRequiredService<T>();
+        private static WaitingWindow _waitingWindow;
+        private static MainWindow _mainWindow;
+
+        public static T GetService<T>()
+        {
+            if (typeof(T) == typeof(WaitingWindow)) return (T)Convert.ChangeType(_waitingWindow, typeof(T));
+            if (typeof(T) == typeof(MainWindow)) return (T)Convert.ChangeType(_mainWindow, typeof(T));
+
+            return Provider.GetRequiredService<T>();
+        }
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
             _provider = new ServiceCollection().ConfigureServices().BuildServiceProvider();
+            _waitingWindow = new();
+            _mainWindow = new();
 
             var waitingWindow = GetService<WaitingWindow>();
             waitingWindow.ViewModel.Show("loading data");
@@ -89,14 +100,11 @@ namespace WPFUI
 
         public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            services.AddSingleton<MainWindow>();
-            services.AddSingleton<WaitingWindow>();
-
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(_connectionString));
             services.AddSingleton<IChromeManager, ChromeManager>();
             services.AddSingleton<IRestClientManager, RestClientManager>();
             services.AddSingleton<IUseragentManager, UseragentManager>();
-            services.AddSingleton<IEventManager, EventManager>();
+            services.AddSingleton<EventManager>();
             services.AddSingleton<ITimerManager, TimerManager>();
             services.AddSingleton<ITaskManager, TaskManager>();
             services.AddSingleton<IPlanManager, PlanManager>();

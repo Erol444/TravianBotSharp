@@ -5,9 +5,9 @@ namespace MainCore.Services
 {
     public sealed class TimerManager : ITimerManager
     {
-        public TimerManager(IEventManager databaseEvent)
+        public TimerManager(EventManager EventManager)
         {
-            _databaseEvent = databaseEvent;
+            _eventManager = EventManager;
         }
 
         public void Dispose()
@@ -27,7 +27,7 @@ namespace MainCore.Services
                 {
                     try
                     {
-                        _databaseEvent.OnTaskExecuted(index);
+                        _eventManager.OnTaskExecuted(index);
                         timer.Start();
                     }
                     catch
@@ -41,6 +41,6 @@ namespace MainCore.Services
         }
 
         private readonly Dictionary<int, Timer> _dictTimer = new();
-        private readonly IEventManager _databaseEvent;
+        private readonly EventManager _eventManager;
     }
 }

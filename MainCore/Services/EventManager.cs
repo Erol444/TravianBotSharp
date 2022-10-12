@@ -3,7 +3,7 @@ using System;
 
 namespace MainCore.Services
 {
-    public class EventManager : IEventManager
+    public sealed class EventManager
     {
         public event Action AccountsTableUpdate;
 

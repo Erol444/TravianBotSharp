@@ -1,10 +1,9 @@
-﻿using MainCore.Tasks.Update;
-using System;
-using OpenQA.Selenium;
-using System.Linq;
-using MainCore.Helper;
-using MainCore.Services;
+﻿using MainCore.Services;
+using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium;
+using System;
+using System.Linq;
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
@@ -45,9 +44,9 @@ namespace MainCore.Tasks.Attack
             Name = $"{Name} {_nameFarm}";
         }
 
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, EventManager EventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
-            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
+            base.SetService(contextFactory, chromeBrowser, taskManager, EventManager, logManager, planManager, restClientManager);
             using var context = _contextFactory.CreateDbContext();
             var farm = context.Farms.Find(FarmId);
             if (farm is not null) _nameFarm = farm.Name;
@@ -100,6 +99,7 @@ namespace MainCore.Tasks.Attack
         }
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
         private void ClickStartFarm()
         {
             var html = _chromeBrowser.GetHtml();
@@ -111,6 +111,7 @@ namespace MainCore.Tasks.Attack
             if (startElements.Count == 0) throw new Exception("Cannot found start button");
             startElements[0].Click();
         }
+
 #elif TTWARS
 
         private void ClickStartFarm()

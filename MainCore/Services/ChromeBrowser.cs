@@ -9,7 +9,7 @@ using System.IO;
 
 namespace MainCore.Services
 {
-    public class ChromeBrowser : IChromeBrowser
+    public sealed class ChromeBrowser : IChromeBrowser
     {
         private ChromeDriver _driver;
         private readonly ChromeDriverService _chromeService;
