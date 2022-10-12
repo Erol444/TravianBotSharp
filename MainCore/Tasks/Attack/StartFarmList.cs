@@ -1,4 +1,4 @@
-﻿using MainCore.Services;
+using MainCore.Services;
 using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
@@ -9,6 +9,7 @@ using System.Linq;
 
 #elif TTWARS
 
+using MainCore.Helper;
 using HtmlAgilityPack;
 using System.Threading;
 
