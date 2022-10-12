@@ -7,6 +7,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -33,27 +34,30 @@ namespace WPFUI.ViewModels
 
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
 
+            ShowDecider = new();
+            Selector = new();
+
             this.WhenAnyValue(x => x.IsAccountSelected).Subscribe(x =>
             {
-                if (x) ShowNormalTab = true;
+                if (x) ShowDecider.ShowNormalTab = true;
             });
-            this.WhenAnyValue(x => x.ShowNoAccountTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowNoAccountTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.NoAccount);
             });
-            this.WhenAnyValue(x => x.ShowNormalTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowNormalTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.Normal);
             });
-            this.WhenAnyValue(x => x.ShowAddAccountTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowAddAccountTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.AddAccount);
             });
-            this.WhenAnyValue(x => x.ShowAddAccountsTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowAddAccountsTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.AddAccounts);
             });
-            this.WhenAnyValue(x => x.ShowEditAccountTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowEditAccountTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.EditAccount);
             });
@@ -62,23 +66,23 @@ namespace WPFUI.ViewModels
                 switch (x)
                 {
                     case TabType.NoAccount:
-                        ShowNoAccountTab = true;
+                        ShowDecider.ShowNoAccountTab = true;
                         break;
 
                     case TabType.Normal:
-                        ShowNormalTab = true;
+                        ShowDecider.ShowNormalTab = true;
                         break;
 
                     case TabType.AddAccount:
-                        ShowAddAccountTab = true;
+                        ShowDecider.ShowAddAccountTab = true;
                         break;
 
                     case TabType.AddAccounts:
-                        ShowAddAccountsTab = true;
+                        ShowDecider.ShowAddAccountsTab = true;
                         break;
 
                     case TabType.EditAccount:
-                        ShowEditAccountTab = true;
+                        ShowDecider.ShowEditAccountTab = true;
                         break;
                 }
             });
@@ -110,45 +114,45 @@ namespace WPFUI.ViewModels
             {
                 case TabType.NoAccount:
                     CurrentIndex = -1;
-                    ShowNormalTab = false;
-                    ShowAddAccountTab = false;
-                    ShowAddAccountsTab = false;
-                    ShowEditAccountTab = false;
-                    SelectedNoAccount = true;
+                    ShowDecider.ShowNormalTab = false;
+                    ShowDecider.ShowAddAccountTab = false;
+                    ShowDecider.ShowAddAccountsTab = false;
+                    ShowDecider.ShowEditAccountTab = false;
+                    Selector.SelectedNoAccount = true;
                     break;
 
                 case TabType.Normal:
-                    ShowNoAccountTab = false;
-                    ShowAddAccountTab = false;
-                    ShowAddAccountsTab = false;
-                    ShowEditAccountTab = false;
-                    SelectedNormal = true;
+                    ShowDecider.ShowNoAccountTab = false;
+                    ShowDecider.ShowAddAccountTab = false;
+                    ShowDecider.ShowAddAccountsTab = false;
+                    ShowDecider.ShowEditAccountTab = false;
+                    Selector.SelectedNormal = true;
                     break;
 
                 case TabType.AddAccount:
                     CurrentIndex = -1;
-                    ShowNoAccountTab = false;
-                    ShowNormalTab = false;
-                    ShowAddAccountsTab = false;
-                    ShowEditAccountTab = false;
-                    SelectedAddAccount = true;
+                    ShowDecider.ShowNoAccountTab = false;
+                    ShowDecider.ShowNormalTab = false;
+                    ShowDecider.ShowAddAccountsTab = false;
+                    ShowDecider.ShowEditAccountTab = false;
+                    Selector.SelectedAddAccount = true;
                     break;
 
                 case TabType.AddAccounts:
                     CurrentIndex = -1;
-                    ShowNoAccountTab = false;
-                    ShowNormalTab = false;
-                    ShowAddAccountTab = false;
-                    ShowEditAccountTab = false;
-                    SelectedAddAccounts = true;
+                    ShowDecider.ShowNoAccountTab = false;
+                    ShowDecider.ShowNormalTab = false;
+                    ShowDecider.ShowAddAccountTab = false;
+                    ShowDecider.ShowEditAccountTab = false;
+                    Selector.SelectedAddAccounts = true;
                     break;
 
                 case TabType.EditAccount:
-                    ShowNoAccountTab = false;
-                    ShowNormalTab = false;
-                    ShowAddAccountTab = false;
-                    ShowAddAccountsTab = false;
-                    SelectedEditAccount = true;
+                    ShowDecider.ShowNoAccountTab = false;
+                    ShowDecider.ShowNormalTab = false;
+                    ShowDecider.ShowAddAccountTab = false;
+                    ShowDecider.ShowAddAccountsTab = false;
+                    Selector.SelectedEditAccount = true;
                     break;
             }
         }
@@ -172,12 +176,32 @@ namespace WPFUI.ViewModels
         private void LoadData()
         {
             using var context = _contextFactory.CreateDbContext();
-            Accounts.Clear();
-            foreach (var item in context.Accounts)
+            Account oldAccount = null;
+            if (CurrentIndex > -1)
             {
-                Accounts.Add(item);
+                oldAccount = Accounts[CurrentIndex];
             }
-            ShowNoAccountTab = true;
+
+            Accounts.Clear();
+
+            if (context.Accounts.Any())
+            {
+                foreach (var item in context.Accounts)
+                {
+                    Accounts.Add(item);
+                }
+
+                var account = context.Accounts.Find(oldAccount?.Id);
+                if (!ShowDecider.IsShowSubTab())
+                {
+                    if (account is not null) CurrentIndex = Accounts.IndexOf(account);
+                    else CurrentIndex = 0;
+                }
+            }
+            else
+            {
+                ShowDecider.ShowNoAccountTab = true;
+            }
         }
 
         private readonly IPlanManager _planManager;
@@ -220,46 +244,36 @@ namespace WPFUI.ViewModels
             get => _isAccountNotSelected.Value;
         }
 
-        private bool _showNoAccountTab;
+        private ShowDecider _showDecider;
 
-        public bool ShowNoAccountTab
+        public ShowDecider ShowDecider
         {
-            get => _showNoAccountTab;
-            set => this.RaiseAndSetIfChanged(ref _showNoAccountTab, value);
+            get => _showDecider;
+            set => this.RaiseAndSetIfChanged(ref _showDecider, value);
         }
 
-        private bool _showNormalTab;
+        private Selector _selector;
 
-        public bool ShowNormalTab
+        public Selector Selector
         {
-            get => _showNormalTab;
-            set => this.RaiseAndSetIfChanged(ref _showNormalTab, value);
+            get => _selector;
+            set => this.RaiseAndSetIfChanged(ref _selector, value);
         }
 
-        private bool _showAddAccountTab;
+        private TabType _tabSelector;
 
-        public bool ShowAddAccountTab
+        public TabType TabSelector
         {
-            get => _showAddAccountTab;
-            set => this.RaiseAndSetIfChanged(ref _showAddAccountTab, value);
+            get => _tabSelector;
+            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
         }
 
-        private bool _showAddAccountsTab;
+        public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
+        public bool IsActive { get; set; }
+    }
 
-        public bool ShowAddAccountsTab
-        {
-            get => _showAddAccountsTab;
-            set => this.RaiseAndSetIfChanged(ref _showAddAccountsTab, value);
-        }
-
-        private bool _showEditAccountTab;
-
-        public bool ShowEditAccountTab
-        {
-            get => _showEditAccountTab;
-            set => this.RaiseAndSetIfChanged(ref _showEditAccountTab, value);
-        }
-
+    public class Selector : ReactiveObject
+    {
         private bool _selectedNoAccount;
 
         public bool SelectedNoAccount
@@ -299,16 +313,53 @@ namespace WPFUI.ViewModels
             get => _selectedEditAccount;
             set => this.RaiseAndSetIfChanged(ref _selectedEditAccount, value);
         }
+    }
 
-        private TabType _tabSelector;
-
-        public TabType TabSelector
+    public class ShowDecider : ReactiveObject
+    {
+        public bool IsShowSubTab()
         {
-            get => _tabSelector;
-            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
+            return ShowAddAccountTab && ShowAddAccountsTab && ShowEditAccountTab;
         }
 
-        public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
-        public bool IsActive { get; set; }
+        private bool _showNoAccountTab;
+
+        public bool ShowNoAccountTab
+        {
+            get => _showNoAccountTab;
+            set => this.RaiseAndSetIfChanged(ref _showNoAccountTab, value);
+        }
+
+        private bool _showNormalTab;
+
+        public bool ShowNormalTab
+        {
+            get => _showNormalTab;
+            set => this.RaiseAndSetIfChanged(ref _showNormalTab, value);
+        }
+
+        private bool _showAddAccountTab;
+
+        public bool ShowAddAccountTab
+        {
+            get => _showAddAccountTab;
+            set => this.RaiseAndSetIfChanged(ref _showAddAccountTab, value);
+        }
+
+        private bool _showAddAccountsTab;
+
+        public bool ShowAddAccountsTab
+        {
+            get => _showAddAccountsTab;
+            set => this.RaiseAndSetIfChanged(ref _showAddAccountsTab, value);
+        }
+
+        private bool _showEditAccountTab;
+
+        public bool ShowEditAccountTab
+        {
+            get => _showEditAccountTab;
+            set => this.RaiseAndSetIfChanged(ref _showEditAccountTab, value);
+        }
     }
 }
