@@ -56,7 +56,6 @@ namespace MainCore.Tasks.Update
             {
                 UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
                 InstantUpgrade(context);
-                _eventManager.OnVillageCurrentUpdate(VillageId);
             }
             if (currentUrl.Contains("dorf1"))
             {

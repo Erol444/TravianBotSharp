@@ -1,105 +1,10 @@
-﻿using MainCore.Services;
-using MainCore.Tasks.Update;
-using Microsoft.EntityFrameworkCore;
-using OpenQA.Selenium;
-using System;
-using System.Linq;
-
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-
-#elif TTWARS
-
-using HtmlAgilityPack;
-using System.Threading;
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
-
-namespace MainCore.Tasks.Attack
-{
-    public class StartFarmList : UpdateFarmList
-    {
-        public StartFarmList(int accountId, int farmId) : base(accountId, "Start farmlist")
-        {
-            _farmId = farmId;
-        }
-
-        private readonly int _farmId;
-        public int FarmId => _farmId;
-        private string _nameFarm;
-
-        private readonly Random rand = new();
-
-        public override void CopyFrom(BotTask source)
-        {
-            base.CopyFrom(source);
-            using var context = _contextFactory.CreateDbContext();
-            var farm = context.Farms.Find(FarmId);
-            if (farm is not null) _nameFarm = farm.Name;
-            else _nameFarm = "unknow";
-
-            Name = $"{Name} {_nameFarm}";
-        }
-
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, EventManager EventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            base.SetService(contextFactory, chromeBrowser, taskManager, EventManager, logManager, planManager, restClientManager);
-            using var context = _contextFactory.CreateDbContext();
-            var farm = context.Farms.Find(FarmId);
-            if (farm is not null) _nameFarm = farm.Name;
-            else _nameFarm = "unknow";
-
-            Name = $"{Name} {_nameFarm}";
-        }
-
-        public override void Execute()
-        {
-            base.Execute();
-
-            if (!IsFarmExist())
-            {
-                _logManager.Warning(AccountId, $"Farm {FarmId} is missing. Remove this farm from queue");
-                return;
-            }
-            if (IsFarmDeactive())
-            {
-                _logManager.Warning(AccountId, $"Farm {FarmId} is deactive. Remove this farm from queue");
-                return;
-            }
-            if (Cts.IsCancellationRequested) return;
-
-            ClickStartFarm();
-            if (Cts.IsCancellationRequested) return;
-
-            {
-                using var context = _contextFactory.CreateDbContext();
-                var setting = context.FarmsSettings.Find(FarmId);
-                var time = rand.Next(setting.IntervalMin, setting.IntervalMax);
-                ExecuteAt = DateTime.Now.AddSeconds(time);
-                _logManager.Information(AccountId, $"Farmlist {_nameFarm} was sent.");
-            }
-        }
-
-        private bool IsFarmExist()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var farm = context.Farms.Find(FarmId);
-            return farm is not null;
-        }
-
-        private bool IsFarmDeactive()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.FarmsSettings.Find(FarmId);
-            if (!setting.IsActive) return true;
             return false;
         }
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+<<<<<<< HEAD
 
+=======
         private void ClickStartFarm()
         {
             var html = _chromeBrowser.GetHtml();
@@ -111,7 +16,10 @@ namespace MainCore.Tasks.Attack
             if (startElements.Count == 0) throw new Exception("Cannot found start button");
             startElements[0].Click();
         }
+<<<<<<< HEAD
 
+=======
+>>>>>>> release/2.1.0
 #elif TTWARS
 
         private void ClickStartFarm()

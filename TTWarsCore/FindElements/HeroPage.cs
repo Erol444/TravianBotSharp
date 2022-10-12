@@ -52,7 +52,7 @@ namespace TTWarsCore.FindElements
             foreach (var adventure in adventures)
             {
                 (var X, var Y) = HeroInfo.GetAdventureCoordinates(adventure);
-                if (X == x && Y == y) return adventure.ChildNodes.Last();
+                if (X == x && Y == y) return adventure.ChildNodes.Descendants("a").Last();
             }
             return null;
         }

@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:WPFUI.ViewModels.Tabs.Villages"
       xmlns:reactiveui="http://reactiveui.net"
       xmlns:controls="clr-namespace:WPFUI.Views.Uc">
-    <Grid Background="#FFE5E5E5" Margin="0,2,0,0">
+    <Grid  Background="#FFE5E5E5" Margin="0,2,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="8*" />

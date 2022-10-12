@@ -329,7 +329,8 @@ namespace MainCore.Tasks.Sim
                 var task = UpgradeBuildingHelper.ExtractResField(context, VillageId, buildingTask);
                 if (task is null)
                 {
-                    _planManager.Remove(VillageId, task);
+                    _planManager.Remove(VillageId, buildingTask);
+                    return true;
                 }
                 else
                 {
