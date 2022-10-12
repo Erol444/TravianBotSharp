@@ -1,9 +1,11 @@
 ﻿using MainCore;
+using MainCore.Enums;
 using MainCore.Models.Database;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -23,6 +25,7 @@ namespace WPFUI.ViewModels
         {
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _planManager = App.GetService<IPlanManager>();
+            _taskManager = App.GetService<ITaskManager>();
 
             _waitingWindow = App.GetService<WaitingWindow>();
 
@@ -93,20 +96,63 @@ namespace WPFUI.ViewModels
             if (_closed) return;
             e.Cancel = true;
             _waitingWindow.ViewModel.Show("saving data");
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
+                using var context = _contextFactory.CreateDbContext();
+                var accounts = context.Accounts.ToList();
+
+                if (accounts.Any())
+                {
+                    var pauseTasks = new List<Task>();
+                    foreach (var account in accounts)
+                    {
+                        pauseTasks.Add(Pause(account.Id));
+                    }
+                    await Task.WhenAll(pauseTasks);
+                }
+
                 _planManager.Save();
 
                 var path = Path.Combine(AppContext.BaseDirectory, "Plugins");
                 if (Directory.Exists(path)) Directory.Delete(path, true);
+
+                App.Provider.Dispose();
             });
 
             var mainWindow = App.GetService<MainWindow>();
             mainWindow.Hide();
-            App.Provider.Dispose();
+
             _closed = true;
             _waitingWindow.ViewModel.Close();
             mainWindow.Close();
+        }
+
+        private async Task Pause(int index)
+        {
+            var status = _taskManager.GetAccountStatus(index);
+            if (status == AccountStatus.Paused)
+            {
+                _taskManager.UpdateAccountStatus(index, AccountStatus.Online);
+                return;
+            }
+
+            if (status == AccountStatus.Online)
+            {
+                var current = _taskManager.GetCurrentTask(index);
+                _taskManager.UpdateAccountStatus(index, AccountStatus.Pausing);
+                if (current is not null)
+                {
+                    current.Cts.Cancel();
+                    _waitingWindow.ViewModel.Show("waiting current task stops");
+                    await Task.Run(() =>
+                    {
+                        while (current.Stage != TaskStage.Waiting) { }
+                    });
+                    _waitingWindow.ViewModel.Close();
+                }
+                _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
+                return;
+            }
         }
 
         private void SetTab(TabType tab)
@@ -208,6 +254,7 @@ namespace WPFUI.ViewModels
         private readonly IPlanManager _planManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly EventManager _eventManager;
+        private readonly ITaskManager _taskManager;
 
         private readonly WaitingWindow _waitingWindow;
 
