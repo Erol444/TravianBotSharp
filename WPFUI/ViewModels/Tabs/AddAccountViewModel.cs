@@ -24,7 +24,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!CheckInput()) return;
             _waitingWindow.ViewModel.Show("saving account");
-            await Observable.Start(() =>
+            await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
                 if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
@@ -60,7 +60,7 @@ namespace WPFUI.ViewModels.Tabs
                     });
                 }
                 context.SaveChanges();
-            }, RxApp.TaskpoolScheduler);
+            });
             Clean();
             _eventManager.OnAccountsTableUpdate();
             _waitingWindow.ViewModel.Close();
@@ -69,6 +69,7 @@ namespace WPFUI.ViewModels.Tabs
         private void CancelTask()
         {
             Clean();
+            TabSelector = TabType.NoAccount;
         }
 
         private void Clean()
@@ -76,7 +77,6 @@ namespace WPFUI.ViewModels.Tabs
             Server = "";
             Username = "";
             Accessess.Clear();
-            TabSelector = TabType.NoAccount;
         }
 
         private bool CheckInput()

@@ -319,7 +319,7 @@ namespace WPFUI.ViewModels
     {
         public bool IsShowSubTab()
         {
-            return ShowAddAccountTab && ShowAddAccountsTab && ShowEditAccountTab;
+            return ShowAddAccountTab || ShowAddAccountsTab || ShowEditAccountTab;
         }
 
         private bool _showNoAccountTab;
