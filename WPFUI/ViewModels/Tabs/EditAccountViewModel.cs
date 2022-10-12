@@ -121,11 +121,13 @@ namespace WPFUI.ViewModels.Tabs
             _eventManager.OnAccountsTableUpdate();
             Clean();
             _waitingWindow.ViewModel.Close();
+            MessageBox.Show("Account saved successfully");
         }
 
         private void CancelTask()
         {
             Clean();
+            TabSelector = TabType.NoAccount;
         }
 
         private void Clean()
@@ -133,7 +135,6 @@ namespace WPFUI.ViewModels.Tabs
             Server = "";
             Username = "";
             Accessess.Clear();
-            TabSelector = TabType.NoAccount;
         }
 
         private bool CheckInput()
