@@ -33,6 +33,7 @@ namespace WPFUI.ViewModels.Tabs
         public void OnDeactived()
         {
             IsActive = false;
+            OldVillage = CurrentVillage;
         }
 
         public void OnVillagesUpdate(int accountId)
@@ -48,14 +49,23 @@ namespace WPFUI.ViewModels.Tabs
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == accountId);
             Villages.Clear();
-            foreach (var village in villages)
+
+            if (villages.Any())
             {
-                Villages.Add(new()
+                foreach (var village in villages)
                 {
-                    Id = village.Id,
-                    Name = village.Name,
-                    Coords = $"{village.X}|{village.Y}",
-                });
+                    Villages.Add(new()
+                    {
+                        Id = village.Id,
+                        Name = village.Name,
+                        Coords = $"{village.X}|{village.Y}",
+                    });
+                }
+
+                var vill = Villages.FirstOrDefault(x => x.Id == OldVillage?.Id);
+
+                if (vill is not null) CurrentIndex = Villages.IndexOf(vill);
+                else CurrentIndex = 0;
             }
         }
 
@@ -68,6 +78,16 @@ namespace WPFUI.ViewModels.Tabs
             get => _currentVillage;
             set => this.RaiseAndSetIfChanged(ref _currentVillage, value);
         }
+
+        private int _currentIndex;
+
+        public int CurrentIndex
+        {
+            get => _currentIndex;
+            set => this.RaiseAndSetIfChanged(ref _currentIndex, value);
+        }
+
+        public Village OldVillage { get; set; }
 
         private readonly ObservableAsPropertyHelper<bool> _isVillageSelected;
 
