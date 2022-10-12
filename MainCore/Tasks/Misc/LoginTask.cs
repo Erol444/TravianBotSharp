@@ -146,7 +146,8 @@ namespace MainCore.Tasks.Misc
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == AccountId);
             var listTask = _taskManager.GetList(AccountId);
-            var upgradeBuildingList = listTask.Where(x => x.GetType() == typeof(UpgradeBuilding)).OfType<UpgradeBuilding>();
+            var upgradeBuildingList = listTask.OfType<UpgradeBuilding>();
+            var updateList = listTask.OfType<UpdateDorf1>();
             foreach (var village in villages)
             {
                 var queue = _planManager.GetList(village.Id);
@@ -156,6 +157,15 @@ namespace MainCore.Tasks.Misc
                     if (upgradeBuilding is null)
                     {
                         _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
+                    }
+                }
+                var setting = context.VillagesSettings.Find(village.Id);
+                if (setting.IsAutoRefresh)
+                {
+                    var update = updateList.FirstOrDefault(x => x.VillageId == village.Id);
+                    if (update is null)
+                    {
+                        _taskManager.Add(AccountId, new UpdateDorf1(village.Id, AccountId));
                     }
                 }
             }

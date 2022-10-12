@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Text.Json;
 using System.Windows;
 using WPFUI.Interfaces;
@@ -58,9 +59,30 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 }
             });
 
-            _eventManager.VillageBuildsUpdate += LoadBuildings;
-            _eventManager.VillageBuildQueueUpdate += LoadQueue;
-            _eventManager.VillageCurrentUpdate += LoadCurrent;
+            _eventManager.VillageBuildsUpdate += OnVillageBuildsUpdate;
+            _eventManager.VillageBuildQueueUpdate += OnVillageBuildQueueUpdate;
+            _eventManager.VillageCurrentUpdate += OnVillageCurrentUpdate;
+        }
+
+        private void OnVillageBuildsUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (CurrentVillage.Id != villageId) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadBuildings(villageId));
+        }
+
+        private void OnVillageBuildQueueUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (CurrentVillage.Id != villageId) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadQueue(villageId));
+        }
+
+        private void OnVillageCurrentUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (CurrentVillage.Id != villageId) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadCurrent(villageId));
         }
 
         public bool IsActive { get; set; }

@@ -28,7 +28,7 @@ namespace MainCore.Tasks.Update
             var tasks = _taskManager.GetList(AccountId);
             var updateTasks = tasks.OfType<UpdateDorf1>().OrderByDescending(x => x.ExecuteAt);
             var updateTask = updateTasks.FirstOrDefault();
-
+            if (updateTask is null) return;
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
             var rand = new Random(DateTime.Now.Second);
