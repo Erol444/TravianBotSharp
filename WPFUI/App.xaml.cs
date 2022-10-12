@@ -19,7 +19,7 @@ namespace WPFUI
     public partial class App : Application
     {
         private static ServiceProvider _provider;
-        public static IServiceProvider Provider => _provider;
+        public static ServiceProvider Provider => _provider;
 
         private static WaitingWindow _waitingWindow;
         private static MainWindow _mainWindow;
@@ -86,11 +86,6 @@ namespace WPFUI
             var mainWindow = GetService<MainWindow>();
             mainWindow.Show();
             waitingWindow.ViewModel.Close();
-        }
-
-        private void Application_Exit(object sender, ExitEventArgs e)
-        {
-            _provider.Dispose();
         }
     }
 

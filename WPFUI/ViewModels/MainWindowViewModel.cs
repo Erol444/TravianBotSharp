@@ -103,6 +103,7 @@ namespace WPFUI.ViewModels
 
             var mainWindow = App.GetService<MainWindow>();
             mainWindow.Hide();
+            App.Provider.Dispose();
             _closed = true;
             _waitingWindow.ViewModel.Close();
             mainWindow.Close();
