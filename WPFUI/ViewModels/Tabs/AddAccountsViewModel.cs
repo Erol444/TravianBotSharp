@@ -28,7 +28,7 @@ namespace WPFUI.ViewModels.Tabs
 
             _waitingWindow.ViewModel.Show("adding accounts");
 
-            await Observable.Start(() =>
+            await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
 
@@ -60,22 +60,23 @@ namespace WPFUI.ViewModels.Tabs
                     });
                 }
                 context.SaveChanges();
-            }, RxApp.TaskpoolScheduler);
+            });
             Clean();
             _eventManager.OnAccountsTableUpdate();
             _waitingWindow.ViewModel.Close();
+            MessageBox.Show($"Added account to TBS's database", "Success");
         }
 
         private void CancelTask()
         {
             Clean();
+            TabSelector = TabType.NoAccount;
         }
 
         private void Clean()
         {
             InputText = "";
             Accounts.Clear();
-            TabSelector = TabType.NoAccount;
         }
 
         private bool CheckInput()

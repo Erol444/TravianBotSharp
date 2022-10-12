@@ -3,7 +3,7 @@ using System;
 
 namespace MainCore.Services
 {
-    public class EventManager : IEventManager
+    public sealed class EventManager
     {
         public event Action AccountsTableUpdate;
 
@@ -12,6 +12,18 @@ namespace MainCore.Services
         public event Action<int> AccountStatusUpdate;
 
         public void OnAccountStatusUpdate(int accountId) => AccountStatusUpdate?.Invoke(accountId);
+
+        public event Action<int> VillageBuildQueueUpdate;
+
+        public void OnVillageBuildQueueUpdate(int villageId) => VillageBuildQueueUpdate?.Invoke(villageId);
+
+        public event Action<int> VillageBuildsUpdate;
+
+        public void OnVillageBuildsUpdate(int villageId) => VillageBuildsUpdate?.Invoke(villageId);
+
+        public event Action<int> VillageCurrentUpdate;
+
+        public void OnVillageCurrentUpdate(int villageId) => VillageCurrentUpdate?.Invoke(villageId);
 
         public event Action<int, LogMessage> LogUpdated;
 

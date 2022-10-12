@@ -16,6 +16,7 @@ using System.Windows;
 using WPFUI.Models;
 using WPFUI.Views;
 using Access = MainCore.Models.Database.Access;
+using EventManager = MainCore.Services.EventManager;
 
 namespace WPFUI.ViewModels.Uc
 {
@@ -27,7 +28,7 @@ namespace WPFUI.ViewModels.Uc
             _versionWindow = new VersionWindow();
             _chromeManager = App.GetService<IChromeManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _eventManager = App.GetService<IEventManager>();
+            _eventManager = App.GetService<EventManager>();
             _taskManager = App.GetService<ITaskManager>();
             _logManager = App.GetService<ILogManager>();
             _timeManager = App.GetService<ITimerManager>();
@@ -291,7 +292,7 @@ namespace WPFUI.ViewModels.Uc
 
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _eventManager;
+        private readonly EventManager _eventManager;
         private readonly ITaskManager _taskManager;
         private readonly ILogManager _logManager;
         private readonly ITimerManager _timeManager;

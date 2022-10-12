@@ -116,6 +116,7 @@ namespace MainCore.Tasks.Sim
             if (buildingTask.Level == 1)
             {
                 _planManager.Remove(VillageId, buildingTask);
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
             }
         }
 
@@ -263,7 +264,6 @@ namespace MainCore.Tasks.Sim
             using var context = _contextFactory.CreateDbContext();
 
             UpgradeBuildingHelper.RemoveFinishedCB(context, VillageId);
-
             var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, _planManager, _logManager, AccountId, VillageId);
             if (buildingTask is null)
             {
@@ -330,13 +330,13 @@ namespace MainCore.Tasks.Sim
                 if (task is null)
                 {
                     _planManager.Remove(VillageId, buildingTask);
-                    return true;
                 }
                 else
                 {
                     _planManager.Insert(VillageId, 0, task);
-                    return true;
                 }
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
+                return true;
             }
             return false;
         }
@@ -355,6 +355,8 @@ namespace MainCore.Tasks.Sim
                     Location = cropland.Id,
                 };
                 _planManager.Insert(VillageId, 0, task);
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
+
                 return false;
             }
             return true;
@@ -389,12 +391,14 @@ namespace MainCore.Tasks.Sim
             if (building.Level >= buildingTask.Level)
             {
                 _planManager.Remove(VillageId, buildingTask);
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
                 return true;
             }
             var currently = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == buildingTask.Location);
             if (currently is not null && currently.Level >= buildingTask.Level)
             {
                 _planManager.Remove(VillageId, buildingTask);
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
                 return true;
             }
             return false;
