@@ -77,7 +77,7 @@ namespace MainCore.Tasks.Update
                 });
                 context.AddVillage(newVill.Id);
 
-                var tasks = _taskManager.GetList(AccountId).Where(x => x.GetType() == typeof(UpdateBothDorf)).Cast<UpdateVillage>().ToList();
+                var tasks = _taskManager.GetList(AccountId).OfType<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
                 if (task is null)
                 {

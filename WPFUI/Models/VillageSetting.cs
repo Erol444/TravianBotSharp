@@ -31,17 +31,21 @@ namespace WPFUI.Models
             settings.IsUseHeroRes = IsUseHeroRes;
             settings.IsInstantComplete = IsInstantComplete;
             settings.InstantCompleteTime = int.Parse(InstantCompleteTime);
+            if (settings.InstantCompleteTime < 0) settings.InstantCompleteTime = 0;
             settings.IsAdsUpgrade = IsAdsUpgrade;
             settings.AdsUpgradeTime = int.Parse(AdsUpgradeTime);
+            if (settings.AdsUpgradeTime < 0) settings.AdsUpgradeTime = 0;
 
             settings.IsAutoRefresh = IsAutoRefresh;
             var autoRefreshTime = int.Parse(AutoRefreshTime);
             var autoRefreshTimeTolerance = int.Parse(AutoRefreshTimeTolerance);
             settings.AutoRefreshTimeMin = autoRefreshTime - autoRefreshTimeTolerance;
+            if (settings.AutoRefreshTimeMin < 0) settings.AutoRefreshTimeMin = 0;
             settings.AutoRefreshTimeMax = autoRefreshTime + autoRefreshTimeTolerance;
 
             settings.IsAutoNPC = IsAutoNPC;
             settings.AutoNPCPercent = int.Parse(AutoNPCPercent);
+            if (settings.AutoRefreshTimeMin < 4) settings.AutoRefreshTimeMin = 4;
             settings.AutoNPCWood = int.Parse(AutoNPCWood);
             settings.AutoNPCClay = int.Parse(AutoNPCClay);
             settings.AutoNPCIron = int.Parse(AutoNPCIron);

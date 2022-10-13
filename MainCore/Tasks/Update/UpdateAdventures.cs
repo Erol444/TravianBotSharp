@@ -26,6 +26,12 @@ namespace MainCore.Tasks.Update
             var setting = context.AccountsSettings.Find(AccountId);
             if (setting.IsAutoAdventure)
             {
+                var hero = context.Heroes.Find(AccountId);
+                if (hero.Status != Enums.HeroStatusEnums.Home)
+                {
+                    _logManager.Warning(AccountId, "Hero is not at home. Cannot start adventures");
+                    return;
+                }
                 var adventures = context.Adventures.Where(a => a.AccountId == AccountId);
                 if (adventures.Any())
                 {

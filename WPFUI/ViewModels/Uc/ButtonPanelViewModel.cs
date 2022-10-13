@@ -25,7 +25,7 @@ namespace WPFUI.ViewModels.Uc
         public ButtonPanelViewModel()
         {
             _waitingWindow = App.GetService<WaitingWindow>();
-            _versionWindow = new VersionWindow();
+            _versionWindow = App.GetService<VersionWindow>();
             _chromeManager = App.GetService<IChromeManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = App.GetService<EventManager>();
@@ -194,9 +194,17 @@ namespace WPFUI.ViewModels.Uc
             var chromeBrowser = _chromeManager.Get(index);
             var setting = context.AccountsSettings.Find(index);
             var account = context.Accounts.Find(index);
-            chromeBrowser.Setup(selectedAccess, setting);
+            try
+            {
+                chromeBrowser.Setup(selectedAccess, setting);
 
-            chromeBrowser.Navigate(account.Server);
+                chromeBrowser.Navigate(account.Server);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+                return;
+            }
             _taskManager.Add(index, new LoginTask(index), true);
 
             var sleepExist = _taskManager.GetList(index).FirstOrDefault(x => x.GetType() == typeof(SleepTask));

@@ -38,7 +38,7 @@ namespace MainCore.Tasks.Sim
             NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
 
             var tasks = _taskManager.GetList(AccountId);
-            var upgradeTask = tasks.Where(x => x.GetType() == typeof(UpgradeBuilding)).OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == VillageId);
+            var upgradeTask = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == VillageId);
             if (upgradeTask is not null)
             {
                 upgradeTask.ExecuteAt = DateTime.Now;

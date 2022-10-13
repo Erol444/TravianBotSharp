@@ -19,14 +19,16 @@ namespace WPFUI
     public partial class App : Application
     {
         private static ServiceProvider _provider;
-        public static IServiceProvider Provider => _provider;
+        public static ServiceProvider Provider => _provider;
 
         private static WaitingWindow _waitingWindow;
         private static MainWindow _mainWindow;
+        private static VersionWindow _versionWindow;
 
         public static T GetService<T>()
         {
             if (typeof(T) == typeof(WaitingWindow)) return (T)Convert.ChangeType(_waitingWindow, typeof(T));
+            if (typeof(T) == typeof(VersionWindow)) return (T)Convert.ChangeType(_versionWindow, typeof(T));
             if (typeof(T) == typeof(MainWindow)) return (T)Convert.ChangeType(_mainWindow, typeof(T));
 
             return Provider.GetRequiredService<T>();
@@ -35,15 +37,23 @@ namespace WPFUI
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
             _provider = new ServiceCollection().ConfigureServices().BuildServiceProvider();
+            _versionWindow = new();
             _waitingWindow = new();
             _mainWindow = new();
 
             var waitingWindow = GetService<WaitingWindow>();
             waitingWindow.ViewModel.Show("loading data");
+            try
+            {
+                await ChromeDriverInstaller.Install();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
 
             var tasks = new List<Task>
             {
-                ChromeDriverInstaller.Install(),
                 Task.Run(() =>
                 {
                     var chromeManager = GetService<IChromeManager>();
@@ -79,18 +89,15 @@ namespace WPFUI
 
             await Task.WhenAll(tasks);
 
-            var versionWindow = new VersionWindow();
+            var versionWindow = GetService<VersionWindow>();
+
             await versionWindow.ViewModel.Load();
-            if (versionWindow.ViewModel.IsNewVersion) versionWindow.Show();
 
             var mainWindow = GetService<MainWindow>();
             mainWindow.Show();
             waitingWindow.ViewModel.Close();
-        }
 
-        private void Application_Exit(object sender, ExitEventArgs e)
-        {
-            _provider.Dispose();
+            if (versionWindow.ViewModel.IsNewVersion) versionWindow.Show();
         }
     }
 

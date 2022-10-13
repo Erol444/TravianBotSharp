@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Text.Json;
 using System.Windows;
 using WPFUI.Interfaces;
@@ -58,9 +59,30 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 }
             });
 
-            _eventManager.VillageBuildsUpdate += LoadBuildings;
-            _eventManager.VillageBuildQueueUpdate += LoadQueue;
-            _eventManager.VillageCurrentUpdate += LoadCurrent;
+            _eventManager.VillageBuildsUpdate += OnVillageBuildsUpdate;
+            _eventManager.VillageBuildQueueUpdate += OnVillageBuildQueueUpdate;
+            _eventManager.VillageCurrentUpdate += OnVillageCurrentUpdate;
+        }
+
+        private void OnVillageBuildsUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (CurrentVillage.Id != villageId) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadBuildings(villageId));
+        }
+
+        private void OnVillageBuildQueueUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (CurrentVillage.Id != villageId) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadQueue(villageId));
+        }
+
+        private void OnVillageCurrentUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (CurrentVillage.Id != villageId) return;
+            RxApp.MainThreadScheduler.Schedule(() => LoadCurrent(villageId));
         }
 
         public bool IsActive { get; set; }
@@ -108,20 +130,23 @@ namespace WPFUI.ViewModels.Tabs.Villages
                     var currentBuild = currentlyBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
 
                     var level = building.Level.ToString();
+                    var type = building.Type;
                     if (currentBuild is not null)
                     {
-                        level = $"{level} => ({currentBuild.Level})";
+                        level = $"{level} -> ({currentBuild.Level})";
+                        type = currentBuild.Type;
                     }
                     if (plannedBuild is not null)
                     {
-                        level = $"{level} => ({plannedBuild.Level})";
+                        level = $"{level} -> [{plannedBuild.Level}]";
+                        type = plannedBuild.Building;
                     }
                     Buildings.Add(new()
                     {
                         Location = building.Id,
-                        Type = building.Type,
+                        Type = type,
                         Level = level,
-                        Color = building.Type.GetColor()
+                        Color = type.GetColor()
                     });
                 }
 

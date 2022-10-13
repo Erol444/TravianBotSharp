@@ -1,6 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
+using MainCore.Tasks.Update;
 using ReactiveUI;
 using System;
 using System.Linq;
@@ -113,10 +114,9 @@ namespace WPFUI.ViewModels.Tabs
 
         private void Restart(int index)
         {
-            _taskManager.Clear(index);
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == index);
-
+            _taskManager.Clear(index);
             foreach (var village in villages)
             {
                 var queue = _planManager.GetList(village.Id);
@@ -124,7 +124,13 @@ namespace WPFUI.ViewModels.Tabs
                 {
                     _taskManager.Add(index, new UpgradeBuilding(village.Id, index));
                 }
+                var villageSetting = context.VillagesSettings.Find(village.Id);
+                if (villageSetting.IsAutoRefresh)
+                {
+                    _taskManager.Add(index, new UpdateDorf1(village.Id, index));
+                }
             }
+
             var setting = context.AccountsSettings.Find(index);
             (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
 

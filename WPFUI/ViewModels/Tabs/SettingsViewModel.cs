@@ -1,5 +1,4 @@
-﻿using MainCore.Helper;
-using MainCore.Tasks.Update;
+﻿using MainCore.Tasks.Update;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;
@@ -50,7 +49,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private async Task SaveTask()
         {
-            if (!CheckInput()) return;
+            if (!Settings.IsVaild()) return;
             _waitingWindow.ViewModel.Show("saving account's settings");
 
             await Task.Run(() =>
@@ -66,7 +65,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private void ImportTask()
         {
-            if (!CheckInput()) return;
+            if (!Settings.IsVaild()) return;
 
             using var context = _contextFactory.CreateDbContext();
             var account = context.Accounts.Find(CurrentAccount.Id);
@@ -122,56 +121,12 @@ namespace WPFUI.ViewModels.Tabs
             }
         }
 
-        private bool CheckInput()
-        {
-            if (!Settings.ClickDelay.IsNumeric())
-            {
-                MessageBox.Show("Click delay is not a number.", "Warning");
-                return false;
-            }
-            if (!Settings.ClickDelayRange.IsNumeric())
-            {
-                MessageBox.Show("Click delay range is not a number.", "Warning");
-                return false;
-            }
-            if (!Settings.TaskDelay.IsNumeric())
-            {
-                MessageBox.Show("Task delay is not a number.", "Warning");
-                return false;
-            }
-            if (!Settings.TaskDelayRange.IsNumeric())
-            {
-                MessageBox.Show("Task delay range is not a number.", "Warning");
-                return false;
-            }
-            if (!Settings.WorkTime.IsNumeric())
-            {
-                MessageBox.Show("Work time is not a number.", "Warning");
-                return false;
-            }
-            if (!Settings.WorkTimeRange.IsNumeric())
-            {
-                MessageBox.Show("Work time range is not a number.", "Warning");
-                return false;
-            }
-            if (!Settings.SleepTime.IsNumeric())
-            {
-                MessageBox.Show("Sleep time is not a number.", "Warning");
-                return false;
-            }
-            if (!Settings.SleepTimeRange.IsNumeric())
-            {
-                MessageBox.Show("Sleep time range is not a number.", "Warning");
-                return false;
-            }
-            return true;
-        }
-
         private void Save(int index)
         {
             using var context = _contextFactory.CreateDbContext();
             var accountSetting = context.AccountsSettings.Find(index);
             Settings.CopyTo(accountSetting);
+            Settings.CopyFrom(accountSetting);
             context.Update(accountSetting);
             context.SaveChanges();
         }
