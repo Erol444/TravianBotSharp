@@ -25,7 +25,7 @@ namespace WPFUI.ViewModels.Uc
         public ButtonPanelViewModel()
         {
             _waitingWindow = App.GetService<WaitingWindow>();
-            _versionWindow = new VersionWindow();
+            _versionWindow = App.GetService<VersionWindow>();
             _chromeManager = App.GetService<IChromeManager>();
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = App.GetService<EventManager>();
