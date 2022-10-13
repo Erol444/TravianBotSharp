@@ -45,6 +45,7 @@ jobs:
           echo "::set-output name=changelog::$changelog"
   build:
     runs-on: windows-2019
+    needs: version
     strategy:
       matrix:
         server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
@@ -61,7 +62,7 @@ jobs:
         run: cd $GITHUB_WORKSPACE
 
       - name: Build Bot
-        run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }} -p:AssemblyVersion=${{github.event.inputs.version}}.0
+        run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }} -p:AssemblyVersion=${{needs.version.outputs.version}}.0
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v2
@@ -81,17 +82,17 @@ jobs:
       
       - name: Archive release
         run: |
-          cd TBS; zip -r "TBS-${{github.event.inputs.version}}-TravianOfficial-OldHeroUI.zip" TBS-TRAVIAN_OFFICIAL; cp -R "TBS-${{github.event.inputs.version}}-TravianOfficial-OldHeroUI.zip" ../; cd ..
-          cd TBS; zip -r "TBS-${{github.event.inputs.version}}-TravianOfficial-NewHeroUI.zip" TBS-TRAVIAN_OFFICIAL_HEROUI; cp -R "TBS-${{github.event.inputs.version}}-TravianOfficial-NewHeroUI.zip" ../; cd ..
-          cd TBS; zip -r "TBS-${{github.event.inputs.version}}-TTWars.zip" TBS-TTWARS; cp -R "TBS-${{github.event.inputs.version}}-TTWars.zip" ../; cd ..
+          cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TravianOfficial-OldHeroUI.zip" TBS-TRAVIAN_OFFICIAL; cp -R "TBS-${{needs.version.outputs.version}}-TravianOfficial-OldHeroUI.zip" ../; cd ..
+          cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TravianOfficial-NewHeroUI.zip" TBS-TRAVIAN_OFFICIAL_HEROUI; cp -R "TBS-${{needs.version.outputs.version}}-TravianOfficial-NewHeroUI.zip" ../; cd ..
+          cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TTWars.zip" TBS-TTWARS; cp -R "TBS-${{needs.version.outputs.version}}-TTWars.zip" ../; cd ..
 
       - name: Create release
         uses: ncipollo/release-action@v1
         with:
-          name: TBS-${{github.event.inputs.version}}
-          tag: ${{github.event.inputs.version}}
+          name: TBS-${{needs.version.outputs.version}}
+          tag: ${{needs.version.outputs.version}}
           commit: master          
-          artifacts: "TBS-${{github.event.inputs.version}}-TravianOfficial-OldHeroUI.zip, TBS-${{github.event.inputs.version}}-TravianOfficial-NewHeroUI.zip, TBS-${{github.event.inputs.version}}-TTWars.zip"
+          artifacts: "TBS-${{needs.version.outputs.version}}-TravianOfficial-OldHeroUI.zip, TBS-${{needs.version.outputs.version}}-TravianOfficial-NewHeroUI.zip, TBS-${{needs.version.outputs.version}}-TTWars.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             Please join our Discord server for more information: [https://discord.gg/mBa4f2K](https://discord.gg/mBa4f2K)
@@ -112,7 +113,7 @@ jobs:
           title: New release
           nodetail: true
           description: |
-              Version `TBS-${{github.event.inputs.version}}`
+              Version `TBS-${{needs.version.outputs.version}}`
               Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
               
               **Changelog**:
