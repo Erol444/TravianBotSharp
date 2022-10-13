@@ -32,7 +32,7 @@ namespace WPFUI
             return Provider.GetRequiredService<T>();
         }
 
-        private async void Application_Startup(object sender, StartupEventArgs e)
+        private async void Application_Startup(object sender, StartupEventArgs e, MessageBox messageBox)
         {
             _provider = new ServiceCollection().ConfigureServices().BuildServiceProvider();
             _waitingWindow = new();
@@ -40,10 +40,17 @@ namespace WPFUI
 
             var waitingWindow = GetService<WaitingWindow>();
             waitingWindow.ViewModel.Show("loading data");
+            try
+            {
+                await ChromeDriverInstaller.Install();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
 
             var tasks = new List<Task>
             {
-                ChromeDriverInstaller.Install(),
                 Task.Run(() =>
                 {
                     var chromeManager = GetService<IChromeManager>();
