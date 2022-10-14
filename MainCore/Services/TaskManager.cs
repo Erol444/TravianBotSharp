@@ -12,12 +12,12 @@ using System.Threading;
 
 namespace MainCore.Services
 {
-    public class TaskManager : ITaskManager
+    public sealed class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IEventManager databaseEvent, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, EventManager EventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             _contextFactory = contextFactory;
-            _eventManager = databaseEvent;
+            _eventManager = EventManager;
             _chromeManager = chromeManager;
             _logManager = logManager;
             _planManager = planManager;
@@ -244,7 +244,7 @@ namespace MainCore.Services
         private readonly Random _rand = new();
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _eventManager;
+        private readonly EventManager _eventManager;
         private readonly IChromeManager _chromeManager;
         private readonly ILogManager _logManager;
         private readonly IPlanManager _planManager;

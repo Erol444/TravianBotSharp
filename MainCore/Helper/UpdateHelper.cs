@@ -17,6 +17,10 @@ using TravianOfficialNewHeroUICore.Parsers;
 
 using TTWarsCore.Parsers;
 
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Helper
@@ -154,10 +158,15 @@ namespace MainCore.Helper
                 switch (id)
                 {
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-
                     case 26:
                         type = (int)BuildingEnums.MainBuilding;
                         break;
+#elif TTWARS
+
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
                     case 39:

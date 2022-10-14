@@ -14,7 +14,8 @@ namespace MainCore.Helper
 
         public static List<BuildingEnums> GetCanBuild(AppDbContext context, IPlanManager planManager, int accountId, int villageId)
         {
-            var result = new List<BuildingEnums>(); var tribe = context.AccountsInfo.Find(accountId).Tribe;
+            var result = new List<BuildingEnums>();
+            var tribe = context.AccountsInfo.Find(accountId).Tribe;
             for (var i = BuildingEnums.Sawmill; i <= BuildingEnums.Hospital; i++)
             {
                 if (CanBuild(context, planManager, villageId, tribe, i))
@@ -27,8 +28,7 @@ namespace MainCore.Helper
 
         public static bool CanBuild(AppDbContext context, IPlanManager planManager, int villageId, TribeEnums tribe, BuildingEnums building)
         {
-            bool exists = (context.VillagesBuildings.Where(x => x.VillageId == villageId).FirstOrDefault(x => x.Type == building) is not null); //there is already a building of this type in the vill
-            if (exists)
+            if (IsExists(context, planManager, villageId, building))
             {
                 //check cranny/warehouse/grannary/trapper/GG/GW
                 return building switch
@@ -47,15 +47,52 @@ namespace MainCore.Helper
             if (reqTribe != TribeEnums.Any && reqTribe != tribe) return false;
             foreach (var prerequisite in prerequisites)
             {
+                if (prerequisite.Building.IsResourceField())
+                {
+                    if (prerequisite.Building == BuildingEnums.Cropland)
+                    {
+                        if (IsAutoCropFieldAboveLevel(planManager, villageId, prerequisite.Level)) return true;
+                    }
+                    else
+                    {
+                        if (IsAutoResourceFieldAboveLevel(planManager, villageId, prerequisite.Level)) return true;
+                    }
+                }
                 if (!IsBuildingAboveLevel(context, planManager, villageId, prerequisite.Building, prerequisite.Level)) return false;
             }
             return true;
         }
 
-        public static bool IsBuildingAboveLevel(AppDbContext context, IPlanManager planManager, int villageId, BuildingEnums building, int lvl)
+        private static bool IsExists(AppDbContext context, IPlanManager planManager, int villageId, BuildingEnums building)
         {
-            return (context.VillagesBuildings.Where(x => x.VillageId == villageId).Any(x => x.Type == building && lvl <= x.Level) ||
-                    planManager.GetList(villageId).Any(x => x.Building == building && lvl <= x.Level));
+            var b = context.VillagesBuildings.Where(x => x.VillageId == villageId).FirstOrDefault(x => x.Type == building);
+            if (b is not null) return true;
+            var c = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).FirstOrDefault(x => x.Type == building);
+            if (c is not null) return true;
+            var q = planManager.GetList(villageId).FirstOrDefault(x => x.Building == building);
+            if (q is not null) return true;
+            return false;
+        }
+
+        private static bool IsBuildingAboveLevel(AppDbContext context, IPlanManager planManager, int villageId, BuildingEnums building, int lvl)
+        {
+            var b = context.VillagesBuildings.Where(x => x.VillageId == villageId).Any(x => x.Type == building && lvl <= x.Level);
+            if (b) return true;
+            var c = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).Any(x => x.Type == building && lvl <= x.Level);
+            if (c) return true;
+            var q = planManager.GetList(villageId).Any(x => x.Building == building && lvl <= x.Level);
+            if (q) return true;
+            return false;
+        }
+
+        private static bool IsAutoResourceFieldAboveLevel(IPlanManager planManager, int villageId, int lvl)
+        {
+            return planManager.GetList(villageId).Any(x => (x.ResourceType == ResTypeEnums.AllResources || x.ResourceType == ResTypeEnums.ExcludeCrop) && lvl <= x.Level);
+        }
+
+        private static bool IsAutoCropFieldAboveLevel(IPlanManager planManager, int villageId, int lvl)
+        {
+            return planManager.GetList(villageId).Any(x => (x.ResourceType == ResTypeEnums.AllResources || x.ResourceType == ResTypeEnums.OnlyCrop) && lvl <= x.Level);
         }
 
         public static bool IsResourceField(this BuildingEnums building)
@@ -120,15 +157,18 @@ namespace MainCore.Helper
         {
             return building switch
             {
-#if TTWARS
+#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+                BuildingEnums.Brewery => 20,
+#elif TTWARS
                 BuildingEnums.Brewery => 10,
                 BuildingEnums.Woodcutter => 25,
                 BuildingEnums.ClayPit => 25,
                 BuildingEnums.IronMine => 25,
                 BuildingEnums.Cropland => 25,
-
 #else
-                BuildingEnums.Brewery => 20,
+
+#error You forgot to define Travian version here
+
 #endif
                 BuildingEnums.Bakery => 5,
                 BuildingEnums.Brickyard => 5,

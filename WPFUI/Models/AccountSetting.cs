@@ -1,4 +1,6 @@
-﻿using ReactiveUI;
+﻿using MainCore.Helper;
+using ReactiveUI;
+using System.Windows;
 
 namespace WPFUI.Models
 {
@@ -25,27 +27,76 @@ namespace WPFUI.Models
             var clickDelay = int.Parse(ClickDelay);
             var clickDelayRange = int.Parse(ClickDelayRange);
             settings.ClickDelayMin = clickDelay - clickDelayRange;
+            if (settings.ClickDelayMin < 0) settings.ClickDelayMin = 0;
             settings.ClickDelayMax = clickDelay + clickDelayRange;
 
             var taskDelay = int.Parse(TaskDelay);
             var taskDelayRange = int.Parse(TaskDelayRange);
             settings.TaskDelayMin = taskDelay - taskDelayRange;
+            if (settings.TaskDelayMin < 0) settings.TaskDelayMin = 0;
             settings.TaskDelayMax = taskDelay + taskDelayRange;
 
             var workTime = int.Parse(WorkTime);
             var workTimeRange = int.Parse(WorkTimeRange);
             settings.WorkTimeMin = workTime - workTimeRange;
+            if (settings.WorkTimeMin < 0) settings.WorkTimeMin = 0;
             settings.WorkTimeMax = workTime + workTimeRange;
 
             var sleepTime = int.Parse(SleepTime);
             var sleepTimeRange = int.Parse(SleepTimeRange);
             settings.SleepTimeMin = sleepTime - sleepTimeRange;
+            if (settings.SleepTimeMin < 0) settings.SleepTimeMin = 0;
             settings.SleepTimeMax = sleepTime + sleepTimeRange;
 
             settings.IsDontLoadImage = IsDontLoadImage;
             settings.IsClosedIfNoTask = IsClosedIfNoTask;
             settings.IsMinimized = IsMinimized;
             settings.IsAutoAdventure = IsAutoStartAdventure;
+        }
+
+        public bool IsVaild()
+        {
+            if (!ClickDelay.IsNumeric())
+            {
+                MessageBox.Show("Click delay is not a number.", "Warning");
+                return false;
+            }
+            if (!ClickDelayRange.IsNumeric())
+            {
+                MessageBox.Show("Click delay range is not a number.", "Warning");
+                return false;
+            }
+            if (!TaskDelay.IsNumeric())
+            {
+                MessageBox.Show("Task delay is not a number.", "Warning");
+                return false;
+            }
+            if (!TaskDelayRange.IsNumeric())
+            {
+                MessageBox.Show("Task delay range is not a number.", "Warning");
+                return false;
+            }
+            if (!WorkTime.IsNumeric())
+            {
+                MessageBox.Show("Work time is not a number.", "Warning");
+                return false;
+            }
+            if (!WorkTimeRange.IsNumeric())
+            {
+                MessageBox.Show("Work time range is not a number.", "Warning");
+                return false;
+            }
+            if (!SleepTime.IsNumeric())
+            {
+                MessageBox.Show("Sleep time is not a number.", "Warning");
+                return false;
+            }
+            if (!SleepTimeRange.IsNumeric())
+            {
+                MessageBox.Show("Sleep time range is not a number.", "Warning");
+                return false;
+            }
+            return true;
         }
 
         private string _clickDelay;

@@ -46,6 +46,13 @@
                     </Frame.Content>
                 </Frame>
             </TabItem>
+            <TabItem x:Name="NPCTab" Header="NPC">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:NPCPage x:Name="NPCPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
             <TabItem x:Name="InfoTab" Header="Info">
                 <Frame>
                     <Frame.Content>

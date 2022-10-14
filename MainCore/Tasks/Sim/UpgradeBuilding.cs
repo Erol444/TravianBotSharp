@@ -1,65 +1,31 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper;
 using MainCore.Models.Runtime;
-using MainCore.Services;
 using MainCore.Tasks.Update;
-using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
+using MainCore.Tasks.Misc;
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
-using MainCore.Tasks.Misc;
 using System.Collections.Generic;
 using System.Threading;
+
+#elif TTWARS
+
+#else
+
+#error You forgot to define Travian version here
 
 #endif
 
 namespace MainCore.Tasks.Sim
 {
-    public class UpgradeBuilding : BotTask
+    public class UpgradeBuilding : VillageBotTask
     {
-        public UpgradeBuilding(int villageId, int accountId) : base(accountId)
+        public UpgradeBuilding(int villageId, int accountId) : base(villageId, accountId, "Upgrade building")
         {
-            _villageId = villageId;
-        }
-
-        private readonly Random rand = new();
-        private string _name;
-        public override string Name => _name;
-
-        private readonly int _villageId;
-        public int VillageId => _villageId;
-
-        public override void CopyFrom(BotTask source)
-        {
-            base.CopyFrom(source);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Upgrade building in {VillageId}";
-            }
-            else
-            {
-                _name = $"Upgrade building in {village.Name}";
-            }
-        }
-
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                _name = $"Upgrade building in {VillageId}";
-            }
-            else
-            {
-                _name = $"Upgrade building in {village.Name}";
-            }
         }
 
         public override void Execute()
@@ -113,8 +79,12 @@ namespace MainCore.Tasks.Sim
                         Upgrade(buildingTask);
                     }
 
-#else
+#elif TTWARS
                     Upgrade(buildingTask);
+#else
+
+#error You forgot to define Travian version here
+
 #endif
                 }
 
@@ -146,6 +116,7 @@ namespace MainCore.Tasks.Sim
             if (buildingTask.Level == 1)
             {
                 _planManager.Remove(VillageId, buildingTask);
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
             }
         }
 
@@ -169,6 +140,8 @@ namespace MainCore.Tasks.Sim
                 }
                 elements[0].Click();
             }
+            var rand = new Random(DateTime.Now.Second);
+
             Thread.Sleep(rand.Next(2400, 5300));
             html = _chromeBrowser.GetHtml();
             {
@@ -244,6 +217,12 @@ namespace MainCore.Tasks.Sim
             }
         }
 
+#elif TTWARS
+
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
         private void Upgrade(PlanTask buildingTask)
@@ -285,7 +264,6 @@ namespace MainCore.Tasks.Sim
             using var context = _contextFactory.CreateDbContext();
 
             UpgradeBuildingHelper.RemoveFinishedCB(context, VillageId);
-
             var buildingTask = UpgradeBuildingHelper.NextBuildingTask(context, _planManager, _logManager, AccountId, VillageId);
             if (buildingTask is null)
             {
@@ -302,6 +280,12 @@ namespace MainCore.Tasks.Sim
                 }
 #if TTWARS
                 Refresh();
+#elif TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
+#else
+
+#error You forgot to define Travian version here
+
 #endif
                 var updateTask = new UpdateVillage(VillageId, AccountId);
                 updateTask.CopyFrom(this);
@@ -314,8 +298,12 @@ namespace MainCore.Tasks.Sim
                 }
 #if TTWARS
                 ExecuteAt = firstComplete.CompleteTime.AddSeconds(1);
-#else
+#elif TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
                 ExecuteAt = firstComplete.CompleteTime.AddSeconds(10);
+#else
+
+#error You forgot to define Travian version here
+
 #endif
                 _logManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
                 StopFlag = true;
@@ -341,14 +329,14 @@ namespace MainCore.Tasks.Sim
                 var task = UpgradeBuildingHelper.ExtractResField(context, VillageId, buildingTask);
                 if (task is null)
                 {
-                    _planManager.Remove(VillageId, task);
-                    return true;
+                    _planManager.Remove(VillageId, buildingTask);
                 }
                 else
                 {
                     _planManager.Insert(VillageId, 0, task);
-                    return true;
                 }
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
+                return true;
             }
             return false;
         }
@@ -367,6 +355,8 @@ namespace MainCore.Tasks.Sim
                     Location = cropland.Id,
                 };
                 _planManager.Insert(VillageId, 0, task);
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
+
                 return false;
             }
             return true;
@@ -401,12 +391,14 @@ namespace MainCore.Tasks.Sim
             if (building.Level >= buildingTask.Level)
             {
                 _planManager.Remove(VillageId, buildingTask);
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
                 return true;
             }
             var currently = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Location == buildingTask.Location);
             if (currently is not null && currently.Level >= buildingTask.Level)
             {
                 _planManager.Remove(VillageId, buildingTask);
+                _eventManager.OnVillageBuildQueueUpdate(VillageId);
                 return true;
             }
             return false;
@@ -493,18 +485,22 @@ namespace MainCore.Tasks.Sim
                         (HeroItemEnums.Iron, (int)resMissing[2]),
                         (HeroItemEnums.Crop, (int)resMissing[3]),
                     };
-                var taskEquip = new HeroEquip(VillageId, AccountId, items);
+                var taskEquip = new UseHeroResources(VillageId, AccountId, items);
                 taskEquip.CopyFrom(this);
                 taskEquip.Execute();
                 if (IsThereCompleteBuilding(buildingTask)) return false;
                 GotoBuilding(buildingTask);
-#else
+#elif TTWARS
                 _logManager.Information(AccountId, "Don't have enough resources.");
                 var production = context.VillagesProduction.Find(VillageId);
                 var timeEnough = production.GetTimeWhenEnough(resMissing);
                 ExecuteAt = timeEnough;
                 StopFlag = true;
                 return false;
+#else
+
+#error You forgot to define Travian version here
+
 #endif
             }
             return true;

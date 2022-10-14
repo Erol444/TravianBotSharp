@@ -1,12 +1,15 @@
 ﻿using MainCore;
+using MainCore.Enums;
 using MainCore.Models.Database;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -22,10 +25,11 @@ namespace WPFUI.ViewModels
         {
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
             _planManager = App.GetService<IPlanManager>();
+            _taskManager = App.GetService<ITaskManager>();
 
             _waitingWindow = App.GetService<WaitingWindow>();
 
-            _eventManager = App.GetService<IEventManager>();
+            _eventManager = App.GetService<EventManager>();
             _eventManager.AccountsTableUpdate += OnAccountTableUpdate;
 
             _isAccountSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is not null).ToProperty(this, x => x.IsAccountSelected);
@@ -33,27 +37,30 @@ namespace WPFUI.ViewModels
 
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
 
+            ShowDecider = new();
+            Selector = new();
+
             this.WhenAnyValue(x => x.IsAccountSelected).Subscribe(x =>
             {
-                if (x) ShowNormalTab = true;
+                if (x) ShowDecider.ShowNormalTab = true;
             });
-            this.WhenAnyValue(x => x.ShowNoAccountTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowNoAccountTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.NoAccount);
             });
-            this.WhenAnyValue(x => x.ShowNormalTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowNormalTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.Normal);
             });
-            this.WhenAnyValue(x => x.ShowAddAccountTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowAddAccountTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.AddAccount);
             });
-            this.WhenAnyValue(x => x.ShowAddAccountsTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowAddAccountsTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.AddAccounts);
             });
-            this.WhenAnyValue(x => x.ShowEditAccountTab).Subscribe(x =>
+            this.WhenAnyValue(x => x.ShowDecider.ShowEditAccountTab).Subscribe(x =>
             {
                 if (x) SetTab(TabType.EditAccount);
             });
@@ -62,23 +69,23 @@ namespace WPFUI.ViewModels
                 switch (x)
                 {
                     case TabType.NoAccount:
-                        ShowNoAccountTab = true;
+                        ShowDecider.ShowNoAccountTab = true;
                         break;
 
                     case TabType.Normal:
-                        ShowNormalTab = true;
+                        ShowDecider.ShowNormalTab = true;
                         break;
 
                     case TabType.AddAccount:
-                        ShowAddAccountTab = true;
+                        ShowDecider.ShowAddAccountTab = true;
                         break;
 
                     case TabType.AddAccounts:
-                        ShowAddAccountsTab = true;
+                        ShowDecider.ShowAddAccountsTab = true;
                         break;
 
                     case TabType.EditAccount:
-                        ShowEditAccountTab = true;
+                        ShowDecider.ShowEditAccountTab = true;
                         break;
                 }
             });
@@ -89,19 +96,63 @@ namespace WPFUI.ViewModels
             if (_closed) return;
             e.Cancel = true;
             _waitingWindow.ViewModel.Show("saving data");
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
+                using var context = _contextFactory.CreateDbContext();
+                var accounts = context.Accounts.ToList();
+
+                if (accounts.Any())
+                {
+                    var pauseTasks = new List<Task>();
+                    foreach (var account in accounts)
+                    {
+                        pauseTasks.Add(Pause(account.Id));
+                    }
+                    await Task.WhenAll(pauseTasks);
+                }
+
                 _planManager.Save();
 
                 var path = Path.Combine(AppContext.BaseDirectory, "Plugins");
                 if (Directory.Exists(path)) Directory.Delete(path, true);
+
+                App.Provider.Dispose();
             });
 
             var mainWindow = App.GetService<MainWindow>();
             mainWindow.Hide();
+
             _closed = true;
             _waitingWindow.ViewModel.Close();
             mainWindow.Close();
+        }
+
+        private async Task Pause(int index)
+        {
+            var status = _taskManager.GetAccountStatus(index);
+            if (status == AccountStatus.Paused)
+            {
+                _taskManager.UpdateAccountStatus(index, AccountStatus.Online);
+                return;
+            }
+
+            if (status == AccountStatus.Online)
+            {
+                var current = _taskManager.GetCurrentTask(index);
+                _taskManager.UpdateAccountStatus(index, AccountStatus.Pausing);
+                if (current is not null)
+                {
+                    current.Cts.Cancel();
+                    _waitingWindow.ViewModel.Show("waiting current task stops");
+                    await Task.Run(() =>
+                    {
+                        while (current.Stage != TaskStage.Waiting) { }
+                    });
+                    _waitingWindow.ViewModel.Close();
+                }
+                _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
+                return;
+            }
         }
 
         private void SetTab(TabType tab)
@@ -110,45 +161,45 @@ namespace WPFUI.ViewModels
             {
                 case TabType.NoAccount:
                     CurrentIndex = -1;
-                    ShowNormalTab = false;
-                    ShowAddAccountTab = false;
-                    ShowAddAccountsTab = false;
-                    ShowEditAccountTab = false;
-                    SelectedNoAccount = true;
+                    ShowDecider.ShowNormalTab = false;
+                    ShowDecider.ShowAddAccountTab = false;
+                    ShowDecider.ShowAddAccountsTab = false;
+                    ShowDecider.ShowEditAccountTab = false;
+                    Selector.SelectedNoAccount = true;
                     break;
 
                 case TabType.Normal:
-                    ShowNoAccountTab = false;
-                    ShowAddAccountTab = false;
-                    ShowAddAccountsTab = false;
-                    ShowEditAccountTab = false;
-                    SelectedNormal = true;
+                    ShowDecider.ShowNoAccountTab = false;
+                    ShowDecider.ShowAddAccountTab = false;
+                    ShowDecider.ShowAddAccountsTab = false;
+                    ShowDecider.ShowEditAccountTab = false;
+                    Selector.SelectedNormal = true;
                     break;
 
                 case TabType.AddAccount:
                     CurrentIndex = -1;
-                    ShowNoAccountTab = false;
-                    ShowNormalTab = false;
-                    ShowAddAccountsTab = false;
-                    ShowEditAccountTab = false;
-                    SelectedAddAccount = true;
+                    ShowDecider.ShowNoAccountTab = false;
+                    ShowDecider.ShowNormalTab = false;
+                    ShowDecider.ShowAddAccountsTab = false;
+                    ShowDecider.ShowEditAccountTab = false;
+                    Selector.SelectedAddAccount = true;
                     break;
 
                 case TabType.AddAccounts:
                     CurrentIndex = -1;
-                    ShowNoAccountTab = false;
-                    ShowNormalTab = false;
-                    ShowAddAccountTab = false;
-                    ShowEditAccountTab = false;
-                    SelectedAddAccounts = true;
+                    ShowDecider.ShowNoAccountTab = false;
+                    ShowDecider.ShowNormalTab = false;
+                    ShowDecider.ShowAddAccountTab = false;
+                    ShowDecider.ShowEditAccountTab = false;
+                    Selector.SelectedAddAccounts = true;
                     break;
 
                 case TabType.EditAccount:
-                    ShowNoAccountTab = false;
-                    ShowNormalTab = false;
-                    ShowAddAccountTab = false;
-                    ShowAddAccountsTab = false;
-                    SelectedEditAccount = true;
+                    ShowDecider.ShowNoAccountTab = false;
+                    ShowDecider.ShowNormalTab = false;
+                    ShowDecider.ShowAddAccountTab = false;
+                    ShowDecider.ShowAddAccountsTab = false;
+                    Selector.SelectedEditAccount = true;
                     break;
             }
         }
@@ -172,17 +223,38 @@ namespace WPFUI.ViewModels
         private void LoadData()
         {
             using var context = _contextFactory.CreateDbContext();
-            Accounts.Clear();
-            foreach (var item in context.Accounts)
+            Account oldAccount = null;
+            if (CurrentIndex > -1)
             {
-                Accounts.Add(item);
+                oldAccount = Accounts[CurrentIndex];
             }
-            ShowNoAccountTab = true;
+
+            Accounts.Clear();
+
+            if (context.Accounts.Any())
+            {
+                foreach (var item in context.Accounts)
+                {
+                    Accounts.Add(item);
+                }
+
+                var account = context.Accounts.Find(oldAccount?.Id);
+                if (!ShowDecider.IsShowSubTab())
+                {
+                    if (account is not null) CurrentIndex = Accounts.IndexOf(account);
+                    else CurrentIndex = 0;
+                }
+            }
+            else
+            {
+                ShowDecider.ShowNoAccountTab = true;
+            }
         }
 
         private readonly IPlanManager _planManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _eventManager;
+        private readonly EventManager _eventManager;
+        private readonly ITaskManager _taskManager;
 
         private readonly WaitingWindow _waitingWindow;
 
@@ -218,6 +290,84 @@ namespace WPFUI.ViewModels
         public bool IsAccountNotSelected
         {
             get => _isAccountNotSelected.Value;
+        }
+
+        private ShowDecider _showDecider;
+
+        public ShowDecider ShowDecider
+        {
+            get => _showDecider;
+            set => this.RaiseAndSetIfChanged(ref _showDecider, value);
+        }
+
+        private Selector _selector;
+
+        public Selector Selector
+        {
+            get => _selector;
+            set => this.RaiseAndSetIfChanged(ref _selector, value);
+        }
+
+        private TabType _tabSelector;
+
+        public TabType TabSelector
+        {
+            get => _tabSelector;
+            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
+        }
+
+        public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
+        public bool IsActive { get; set; }
+    }
+
+    public class Selector : ReactiveObject
+    {
+        private bool _selectedNoAccount;
+
+        public bool SelectedNoAccount
+        {
+            get => _selectedNoAccount;
+            set => this.RaiseAndSetIfChanged(ref _selectedNoAccount, value);
+        }
+
+        private bool _selectedNormal;
+
+        public bool SelectedNormal
+        {
+            get => _selectedNormal;
+            set => this.RaiseAndSetIfChanged(ref _selectedNormal, value);
+        }
+
+        private bool _selectedAddAccount;
+
+        public bool SelectedAddAccount
+        {
+            get => _selectedAddAccount;
+            set => this.RaiseAndSetIfChanged(ref _selectedAddAccount, value);
+        }
+
+        private bool _selectedAddAccounts;
+
+        public bool SelectedAddAccounts
+        {
+            get => _selectedAddAccounts;
+            set => this.RaiseAndSetIfChanged(ref _selectedAddAccounts, value);
+        }
+
+        private bool _selectedEditAccount;
+
+        public bool SelectedEditAccount
+        {
+            get => _selectedEditAccount;
+            set => this.RaiseAndSetIfChanged(ref _selectedEditAccount, value);
+        }
+    }
+
+    public class ShowDecider : ReactiveObject
+    {
+        public bool IsShowSubTab()
+        {
+            return ShowAddAccountTab || ShowAddAccountsTab || ShowEditAccountTab;
         }
 
         private bool _showNoAccountTab;
@@ -259,56 +409,5 @@ namespace WPFUI.ViewModels
             get => _showEditAccountTab;
             set => this.RaiseAndSetIfChanged(ref _showEditAccountTab, value);
         }
-
-        private bool _selectedNoAccount;
-
-        public bool SelectedNoAccount
-        {
-            get => _selectedNoAccount;
-            set => this.RaiseAndSetIfChanged(ref _selectedNoAccount, value);
-        }
-
-        private bool _selectedNormal;
-
-        public bool SelectedNormal
-        {
-            get => _selectedNormal;
-            set => this.RaiseAndSetIfChanged(ref _selectedNormal, value);
-        }
-
-        private bool _selectedAddAccount;
-
-        public bool SelectedAddAccount
-        {
-            get => _selectedAddAccount;
-            set => this.RaiseAndSetIfChanged(ref _selectedAddAccount, value);
-        }
-
-        private bool _selectedAddAccounts;
-
-        public bool SelectedAddAccounts
-        {
-            get => _selectedAddAccounts;
-            set => this.RaiseAndSetIfChanged(ref _selectedAddAccounts, value);
-        }
-
-        private bool _selectedEditAccount;
-
-        public bool SelectedEditAccount
-        {
-            get => _selectedEditAccount;
-            set => this.RaiseAndSetIfChanged(ref _selectedEditAccount, value);
-        }
-
-        private TabType _tabSelector;
-
-        public TabType TabSelector
-        {
-            get => _tabSelector;
-            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
-        }
-
-        public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
-        public bool IsActive { get; set; }
     }
 }

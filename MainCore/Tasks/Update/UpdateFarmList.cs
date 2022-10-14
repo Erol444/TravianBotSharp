@@ -4,13 +4,15 @@ using System.Linq;
 
 namespace MainCore.Tasks.Update
 {
-    public class UpdateFarmList : BotTask
+    public class UpdateFarmList : AccountBotTask
     {
-        public UpdateFarmList(int accountId) : base(accountId)
+        public UpdateFarmList(int accountId) : base(accountId, "Update farmlist")
         {
         }
 
-        public override string Name => "Update farmlist";
+        public UpdateFarmList(int accountId, string name) : base(accountId, name)
+        {
+        }
 
         public override void Execute()
         {

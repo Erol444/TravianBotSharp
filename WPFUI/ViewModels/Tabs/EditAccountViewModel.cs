@@ -121,11 +121,13 @@ namespace WPFUI.ViewModels.Tabs
             _eventManager.OnAccountsTableUpdate();
             Clean();
             _waitingWindow.ViewModel.Close();
+            MessageBox.Show("Account saved successfully");
         }
 
         private void CancelTask()
         {
             Clean();
+            TabSelector = TabType.NoAccount;
         }
 
         private void Clean()
@@ -133,7 +135,6 @@ namespace WPFUI.ViewModels.Tabs
             Server = "";
             Username = "";
             Accessess.Clear();
-            TabSelector = TabType.NoAccount;
         }
 
         private bool CheckInput()
@@ -175,7 +176,7 @@ namespace WPFUI.ViewModels.Tabs
                     }
                     if (!int.TryParse(access.ProxyPort, out _))
                     {
-                        MessageBox.Show("There is non-numeric proxy's port.", "Warning");
+                        MessageBox.Show("There is not a number proxy's port.", "Warning");
                         return false;
                     }
                 }

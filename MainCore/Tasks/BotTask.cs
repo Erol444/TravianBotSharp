@@ -9,14 +9,6 @@ namespace MainCore.Tasks
 {
     public abstract class BotTask
     {
-        private readonly int _accountId;
-        public int AccountId => _accountId;
-
-        public BotTask(int accountId)
-        {
-            _accountId = accountId;
-        }
-
         public TaskStage Stage { get; set; }
         public DateTime ExecuteAt { get; set; }
         public int RetryCounter { get; set; }
@@ -26,12 +18,12 @@ namespace MainCore.Tasks
         protected IDbContextFactory<AppDbContext> _contextFactory;
         protected IChromeBrowser _chromeBrowser;
         protected ITaskManager _taskManager;
-        protected IEventManager _eventManager;
+        protected EventManager _eventManager;
         protected ILogManager _logManager;
         protected IPlanManager _planManager;
         protected IRestClientManager _restClientManager;
 
-        public abstract string Name { get; }
+        public string Name { protected set; get; }
 
         public abstract void Execute();
 
@@ -47,10 +39,10 @@ namespace MainCore.Tasks
             Cts = source.Cts;
         }
 
-        public virtual void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        public virtual void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, EventManager EventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             _contextFactory = contextFactory;
-            _eventManager = eventManager;
+            _eventManager = EventManager;
             _taskManager = taskManager;
             _logManager = logManager;
             _chromeBrowser = chromeBrowser;

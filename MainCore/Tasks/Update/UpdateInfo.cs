@@ -16,17 +16,19 @@ using TravianOfficialNewHeroUICore.Parsers;
 
 using TTWarsCore.Parsers;
 
+#else
+
+#error You forgot to define Travian version here
+
 #endif
 
 namespace MainCore.Tasks.Update
 {
-    public class UpdateInfo : BotTask
+    public class UpdateInfo : AccountBotTask
     {
-        public UpdateInfo(int accountId) : base(accountId)
+        public UpdateInfo(int accountId) : base(accountId, "Update info")
         {
         }
-
-        public override string Name => "Update Info";
 
         public override void Execute()
         {
@@ -75,7 +77,7 @@ namespace MainCore.Tasks.Update
                 });
                 context.AddVillage(newVill.Id);
 
-                var tasks = _taskManager.GetList(AccountId).Where(x => x.GetType() == typeof(UpdateBothDorf)).Cast<UpdateVillage>().ToList();
+                var tasks = _taskManager.GetList(AccountId).OfType<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
                 if (task is null)
                 {
@@ -131,30 +133,14 @@ namespace MainCore.Tasks.Update
         {
             var html = _chromeBrowser.GetHtml();
             var health = HeroInfo.GetHealth(html);
-            if (health == -1) throw new Exception("Cannot read hero's health.");
             var status = HeroInfo.GetStatus(html);
-            if (status == 0) throw new Exception("Cannot read hero's status.");
             var numberAdventure = HeroInfo.GetAdventureNum(html);
-            if (numberAdventure == -1) throw new Exception("Cannot read hero's adventure number.");
 
             using var context = _contextFactory.CreateDbContext();
             var account = context.Heroes.Find(AccountId);
-            if (account is null)
-            {
-                account = new()
-                {
-                    AccountId = AccountId,
-                    Health = health,
-                    Status = (HeroStatusEnums)status,
-                };
-
-                context.Heroes.Add(account);
-            }
-            else
-            {
-                account.Health = health;
-                account.Status = (HeroStatusEnums)status;
-            }
+            account.Health = health;
+            account.Status = (HeroStatusEnums)status;
+            context.Update(account);
 
             context.SaveChanges();
 
@@ -168,11 +154,15 @@ namespace MainCore.Tasks.Update
             }
             else if (adventures != numberAdventure)
             {
-                var listTask = _taskManager.GetList(AccountId);
-                var task = listTask.FirstOrDefault(x => x.GetType() == typeof(UpdateAdventures));
-                if (task is null)
+                var setting = context.AccountsSettings.Find(AccountId);
+                if (setting.IsAutoAdventure)
                 {
-                    _taskManager.Add(AccountId, new UpdateAdventures(AccountId));
+                    var listTask = _taskManager.GetList(AccountId);
+                    var task = listTask.OfType<UpdateAdventures>();
+                    if (!task.Any())
+                    {
+                        _taskManager.Add(AccountId, new UpdateAdventures(AccountId));
+                    }
                 }
             }
         }
