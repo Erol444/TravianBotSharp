@@ -22,3 +22,4 @@ namespace WPFUI.Models
             set => this.RaiseAndSetIfChanged(ref _num, value);
         }
     }
+}
