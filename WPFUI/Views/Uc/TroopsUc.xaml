@@ -5,19 +5,22 @@
         xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <ItemsControl>
-        <ItemsControl.ItemsPanel>
-            <ItemsPanelTemplate>
-                <StackPanel Orientation="Horizontal" />
-            </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <StackPanel>
-                    <Image Source="{Binding Image}" />
-                    <TextBox TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" Text="{Binding Num}" />
-                </StackPanel>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
+    <StackPanel>
+        <TextBlock x:Name="Text" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,0,5" />
+        <ItemsControl x:Name="Troops">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="0,0,5,0">
+                        <Image Source="{Binding Image}" Margin="0,0,0,5" />
+                        <TextBox x:Name="textbox" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" Text="{Binding Num}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </StackPanel>
 </rxui:ReactiveUserControl>

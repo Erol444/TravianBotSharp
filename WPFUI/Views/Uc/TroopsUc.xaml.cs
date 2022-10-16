@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using System.Reactive.Disposables;
 using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.Views.Uc
@@ -11,6 +12,12 @@ namespace WPFUI.Views.Uc
         public TroopsUc()
         {
             InitializeComponent();
+            this.WhenActivated(d =>
+            {
+                this.Bind(ViewModel, vm => vm.Text, v => v.Text.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsReadOnly, v => v.Troops.IsEnabled).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.Troops, v => v.Troops.ItemsSource).DisposeWith(d);
+            });
         }
     }
 }
