@@ -1,5 +1,9 @@
 ﻿using MainCore.Enums;
+using MainCore.Tasks.Misc;
+using ReactiveUI;
 using System.Collections.ObjectModel;
+using System.Reactive;
+using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
@@ -10,14 +14,25 @@ namespace WPFUI.ViewModels.Tabs.Villages
     {
         public TroopsViewModel() : base()
         {
+            ApplyCommand = ReactiveCommand.Create(ApplyTask);
         }
 
         protected override void LoadData(int index)
         {
-            Level.Clear();
+            CurrentLevel.Clear();
             for (var i = TroopEnums.Legionnaire; i < TroopEnums.RomanSettler; i++)
             {
-                Level.Add(new TroopInfo
+                CurrentLevel.Add(new TroopInfo
+                {
+                    Troop = i,
+                    Num = "0"
+                });
+            }
+
+            WantLevel.Clear();
+            for (var i = TroopEnums.Legionnaire; i < TroopEnums.RomanSettler; i++)
+            {
+                WantLevel.Add(new TroopInfo
                 {
                     Troop = i,
                     Num = "0"
@@ -37,7 +52,24 @@ namespace WPFUI.ViewModels.Tabs.Villages
             IsActive = false;
         }
 
-        public ObservableCollection<TroopInfo> Level { get; } = new();
+        private void ApplyTask()
+        {
+            foreach (var item in WantLevel)
+            {
+                if (item.Num != "0")
+                {
+                    _taskManager.Add(CurrentAccount.Id, new ImproveTroopsTask(item.Troop, CurrentVillage.Id, CurrentAccount.Id));
+                    MessageBox.Show("Apply");
+                    return;
+                }
+            }
+            MessageBox.Show("NO troop selected");
+        }
+
+        public ObservableCollection<TroopInfo> CurrentLevel { get; } = new();
+        public ObservableCollection<TroopInfo> WantLevel { get; } = new();
+        public ReactiveCommand<Unit, Unit> ApplyCommand { get; }
+
         public bool IsActive { get; set; }
     }
 }
