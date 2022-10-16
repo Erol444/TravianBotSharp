@@ -3,7 +3,7 @@
 namespace MainCore.Migrations
 {
     [Migration(202210061322)]
-    public class NPCMiragation : Migration
+    public class NPCMigrations : Migration
     {
         public override void Down()
         {
