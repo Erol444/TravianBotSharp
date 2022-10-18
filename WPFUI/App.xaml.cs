@@ -76,6 +76,10 @@ namespace WPFUI
                         migrationRunner.MigrateUp();
                         context.UpdateDatabase();
                     }
+                    else
+                    {
+                        context.AddVersionInfo();
+                    }
                     var planManager = GetService<IPlanManager>();
                     planManager.Load();
                 }),

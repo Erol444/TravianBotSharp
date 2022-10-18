@@ -2,6 +2,7 @@
 using MainCore.Helper;
 using MainCore.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MainCore
@@ -494,6 +495,23 @@ namespace MainCore
             FarmsSettings.Remove(setting);
             var farm = Farms.Find(farmId);
             Farms.Remove(farm);
+        }
+
+        public void AddVersionInfo()
+        {
+            Database.ExecuteSqlRaw("CREATE TABLE \"VersionInfo\" (\"Version\" INTEGER NOT NULL, \"AppliedOn\" DATETIME, \"Description\" TEXT)");
+
+            var migrations = new List<KeyValuePair<long, string>>()
+            {
+                KeyValuePair.Create(202209131759,"Farming"),
+                KeyValuePair.Create(202210061322,"NPCMigrations"),
+                KeyValuePair.Create(202210162304,"TroopsMigrations"),
+                KeyValuePair.Create(202210181120,"UpgradeTroopMigrations"),
+            };
+            foreach (var migration in migrations)
+            {
+                Database.ExecuteSqlRaw($"INSERT INTO VersionInfo (Version, Description) VALUES ('{migration.Key}','{migration.Value}')");
+            }
         }
 
         public DbSet<Account> Accounts { get; set; }

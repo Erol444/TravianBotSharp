@@ -7,8 +7,6 @@ namespace MainCore.Migrations
     {
         public override void Down()
         {
-            if (!Schema.Table("VillagesSettings").Column("IsAutoRefresh").Exists())
-                return;
             Delete
                 .Column("IsAutoRefresh")
                 .Column("AutoRefreshTimeMin")
@@ -23,8 +21,6 @@ namespace MainCore.Migrations
 
         public override void Up()
         {
-            if (Schema.Table("VillagesSettings").Column("IsAutoRefresh").Exists())
-                return;
             Alter.Table("VillagesSettings")
                 .AddColumn("IsAutoRefresh").AsBoolean().WithDefaultValue(false)
                 .AddColumn("AutoRefreshTimeMin").AsInt32().WithDefaultValue(25)
