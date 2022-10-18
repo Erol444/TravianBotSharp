@@ -48,5 +48,7 @@ namespace MainCore.Tasks
             _planManager = planManager;
             _restClientManager = restClientManager;
         }
+
+        public abstract void Refresh();
     }
 }

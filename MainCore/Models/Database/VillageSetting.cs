@@ -1,4 +1,6 @@
-﻿namespace MainCore.Models.Database
+﻿using System.Text;
+
+namespace MainCore.Models.Database
 {
     public class VillageSetting
     {
@@ -21,5 +23,33 @@
         public int AutoNPCClay { get; set; }
         public int AutoNPCIron { get; set; }
         public int AutoNPCCrop { get; set; }
+
+        public bool IsUpgradeTroop { get; set; }
+        public string UpgradeTroop { get; set; }
+
+        public bool[] GetTroopUpgrade()
+        {
+            var result = new bool[10];
+            if (string.IsNullOrEmpty(UpgradeTroop))
+                return result;
+            var arr = UpgradeTroop.Split(',');
+            for (int i = 0; i < arr.Length; i++)
+            {
+                result[i] = arr[i] == "1";
+            }
+            return result;
+        }
+
+        public void SetTroopUpgrade(bool[] arr)
+        {
+            var result = new StringBuilder();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                result.Append(arr[i] ? "1" : "0");
+                if (i < arr.Length - 1)
+                    result.Append(',');
+            }
+            UpgradeTroop = result.ToString();
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace MainCore.Tasks
             Name = name;
         }
 
-        public void Refresh()
+        public override void Refresh()
         {
             _chromeBrowser.GetChrome().Navigate().Refresh();
             using var context = _contextFactory.CreateDbContext();
