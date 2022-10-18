@@ -1,4 +1,6 @@
-﻿namespace MainCore.Tasks
+﻿using MainCore.Helper;
+
+namespace MainCore.Tasks
 {
     public abstract class AccountBotTask : BotTask
     {
@@ -9,6 +11,25 @@
         {
             _accountId = accountId;
             Name = name;
+        }
+
+        public void Refresh()
+        {
+            _chromeBrowser.GetChrome().Navigate().Refresh();
+            using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.WaitPageLoaded(_chromeBrowser);
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+        }
+
+        protected bool IsStop()
+        {
+            if (Cts.IsCancellationRequested) return true;
+            if (StopFlag)
+            {
+                StopFlag = false;
+                return true;
+            }
+            return false;
         }
     }
 }

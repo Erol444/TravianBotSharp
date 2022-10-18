@@ -32,8 +32,8 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            UpdateVillageList();
             UpdateAccountInfo();
+            UpdateVillageList();
             UpdateHeroInfo();
         }
 

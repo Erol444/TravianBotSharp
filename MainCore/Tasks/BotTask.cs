@@ -1,7 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
-using OpenQA.Selenium;
 using System;
 using System.Threading;
 
@@ -48,13 +47,6 @@ namespace MainCore.Tasks
             _chromeBrowser = chromeBrowser;
             _planManager = planManager;
             _restClientManager = restClientManager;
-        }
-
-        public void Refresh()
-        {
-            _chromeBrowser.GetChrome().Navigate().Refresh();
-            var wait = _chromeBrowser.GetWait();
-            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
     }
 }
