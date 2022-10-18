@@ -18,6 +18,7 @@ namespace WPFUI.Views.Tabs.Villages
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel, vm => vm.ApplyCommand, v => v.Apply).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.UpdateCommand, v => v.Update).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.CurrentLevel, v => v.CurrentLevel.ViewModel.Troops).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.WantLevel, v => v.WantLevel.ViewModel.Troops).DisposeWith(d);
                 Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);

@@ -1,7 +1,9 @@
 ﻿using MainCore.Enums;
 using MainCore.Tasks.Misc;
+using MainCore.Tasks.Update;
 using ReactiveUI;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Windows;
 using WPFUI.Interfaces;
@@ -15,26 +17,26 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public TroopsViewModel() : base()
         {
             ApplyCommand = ReactiveCommand.Create(ApplyTask);
+            UpdateCommand = ReactiveCommand.Create(UpdateTask);
         }
 
         protected override void LoadData(int index)
         {
             CurrentLevel.Clear();
-            for (var i = TroopEnums.Legionnaire; i < TroopEnums.RomanSettler; i++)
+            WantLevel.Clear();
+            using var context = _contextFactory.CreateDbContext();
+            var troops = context.VillagesTroops.Where(x => x.VillageId == CurrentVillage.Id).ToArray();
+            for (var i = 0; i < troops.Length; i++)
             {
+                var troop = troops[i];
                 CurrentLevel.Add(new TroopInfo
                 {
-                    Troop = i,
-                    Num = "0"
+                    Troop = (TroopEnums)troop.Id,
+                    Num = troop.Level.ToString()
                 });
-            }
-
-            WantLevel.Clear();
-            for (var i = TroopEnums.Legionnaire; i < TroopEnums.RomanSettler; i++)
-            {
                 WantLevel.Add(new TroopInfo
                 {
-                    Troop = i,
+                    Troop = (TroopEnums)troop.Id,
                     Num = "0"
                 });
             }
@@ -66,9 +68,16 @@ namespace WPFUI.ViewModels.Tabs.Villages
             MessageBox.Show("NO troop selected");
         }
 
+        private void UpdateTask()
+        {
+            _taskManager.Add(CurrentAccount.Id, new UpdateTroopLevel(CurrentVillage.Id, CurrentAccount.Id));
+            MessageBox.Show("Update");
+        }
+
         public ObservableCollection<TroopInfo> CurrentLevel { get; } = new();
         public ObservableCollection<TroopInfo> WantLevel { get; } = new();
         public ReactiveCommand<Unit, Unit> ApplyCommand { get; }
+        public ReactiveCommand<Unit, Unit> UpdateCommand { get; }
 
         public bool IsActive { get; set; }
     }
