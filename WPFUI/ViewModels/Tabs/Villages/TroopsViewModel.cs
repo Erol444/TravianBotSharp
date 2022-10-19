@@ -23,21 +23,21 @@ namespace WPFUI.ViewModels.Tabs.Villages
         protected override void LoadData(int index)
         {
             CurrentLevel.Clear();
-            WantLevel.Clear();
+            WantUpgrade.Clear();
             using var context = _contextFactory.CreateDbContext();
             var troops = context.VillagesTroops.Where(x => x.VillageId == CurrentVillage.Id).ToArray();
             for (var i = 0; i < troops.Length; i++)
             {
                 var troop = troops[i];
-                CurrentLevel.Add(new TroopInfo
+                CurrentLevel.Add(new TroopInfoText
                 {
                     Troop = (TroopEnums)troop.Id,
-                    Num = troop.Level.ToString()
+                    Text = troop.Level.ToString()
                 });
-                WantLevel.Add(new TroopInfo
+                WantUpgrade.Add(new TroopInfoCheckBox
                 {
                     Troop = (TroopEnums)troop.Id,
-                    Num = "0"
+                    IsChecked = false,
                 });
             }
         }
@@ -56,9 +56,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void ApplyTask()
         {
-            foreach (var item in WantLevel)
+            foreach (var item in WantUpgrade)
             {
-                if (item.Num != "0")
+                if (item.IsChecked)
                 {
                     _taskManager.Add(CurrentAccount.Id, new ImproveTroopsTask(item.Troop, CurrentVillage.Id, CurrentAccount.Id));
                     MessageBox.Show("Apply");
@@ -74,8 +74,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
             MessageBox.Show("Update");
         }
 
-        public ObservableCollection<TroopInfo> CurrentLevel { get; } = new();
-        public ObservableCollection<TroopInfo> WantLevel { get; } = new();
+        public ObservableCollection<TroopInfoText> CurrentLevel { get; } = new();
+        public ObservableCollection<TroopInfoCheckBox> WantUpgrade { get; } = new();
         public ReactiveCommand<Unit, Unit> ApplyCommand { get; }
         public ReactiveCommand<Unit, Unit> UpdateCommand { get; }
 

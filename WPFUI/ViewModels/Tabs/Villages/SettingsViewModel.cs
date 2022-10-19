@@ -1,12 +1,15 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Enums;
+using MainCore.Helper;
 using MainCore.Tasks.Sim;
 using MainCore.Tasks.Update;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -24,6 +27,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
+
+            this.WhenAnyValue(x => x.Settings.UpgradeTroop).Subscribe(LoadUpgradeTroop);
         }
 
         public bool IsActive { get; set; }
@@ -124,6 +129,11 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void Save(int index)
         {
+            for (var i = 0; i < TroopUpgrade.Count; i++)
+            {
+                var troop = TroopUpgrade[i];
+                Settings.UpgradeTroop[i] = troop.IsChecked;
+            }
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(index);
             Settings.CopyTo(setting);
@@ -179,10 +189,32 @@ namespace WPFUI.ViewModels.Tabs.Villages
             }
         }
 
+        private void LoadUpgradeTroop(bool[] upgradeTroop)
+        {
+            if (CurrentVillage is null) return;
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                using var context = _contextFactory.CreateDbContext();
+                var troops = context.VillagesTroops.Where(x => x.VillageId == CurrentVillage.Id).ToArray();
+                TroopUpgrade.Clear();
+                for (var i = 0; i < troops.Length; i++)
+                {
+                    var troop = troops[i];
+                    TroopUpgrade.Add(new TroopInfoCheckBox
+                    {
+                        Troop = (TroopEnums)troop.Id,
+                        IsChecked = upgradeTroop[i],
+                    });
+                }
+            });
+        }
+
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> ExportCommand { get; }
         public ReactiveCommand<Unit, Unit> ImportCommand { get; }
 
         public VillageSetting Settings { get; } = new();
+        public ObservableCollection<TroopInfoCheckBox> TroopUpgrade { get; } = new();
     }
 }

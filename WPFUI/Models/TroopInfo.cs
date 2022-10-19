@@ -8,6 +8,28 @@ using System.Windows.Media.Imaging;
 
 namespace WPFUI.Models
 {
+    public class TroopInfoCheckBox : TroopInfo
+    {
+        private bool _isChecked;
+
+        public bool IsChecked
+        {
+            get => _isChecked;
+            set => this.RaiseAndSetIfChanged(ref _isChecked, value);
+        }
+    }
+
+    public class TroopInfoText : TroopInfo
+    {
+        private string _text;
+
+        public string Text
+        {
+            get => _text;
+            set => this.RaiseAndSetIfChanged(ref _text, value);
+        }
+    }
+
     public class TroopInfo : ReactiveObject
     {
         private TroopEnums _troop;
@@ -23,14 +45,6 @@ namespace WPFUI.Models
         }
 
         public CroppedBitmap Image => this.GetBitmap();
-
-        private string _num;
-
-        public string Num
-        {
-            get => _num;
-            set => this.RaiseAndSetIfChanged(ref _num, value);
-        }
     }
 
     public static class TroopInfoExtensions

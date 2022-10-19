@@ -1,6 +1,6 @@
 ﻿<rxui:ReactiveUserControl
-        x:Class="WPFUI.Views.Uc.TroopsUc"
-        x:TypeArguments="vms:TroopsViewModel"
+        x:Class="WPFUI.Views.Uc.TroopsWithCheckBoxUc"
+        x:TypeArguments="vms:TroopsWithCheckBoxViewModel"
         xmlns:rxui="http://reactiveui.net"
         xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -16,12 +16,12 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Margin="0,0,5,0">
-                        <Image Source="{Binding Image}" Margin="0,0,0,5">
+                        <Image Source="{Binding Image}" Margin="10,0,10,5" >
                             <Image.ToolTip>
-                                <TextBlock Text="{Binding Troop}" />
+                                <TextBlock Text="{Binding Troop}"/>
                             </Image.ToolTip>
                         </Image>
-                        <TextBox x:Name="textbox" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" Text="{Binding Num}" IsReadOnly="True" />
+                        <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsChecked}" Margin="10,0,10,0"/>
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

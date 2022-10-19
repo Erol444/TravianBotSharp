@@ -5,11 +5,11 @@ using WPFUI.ViewModels.Uc;
 namespace WPFUI.Views.Uc
 {
     /// <summary>
-    /// Interaction logic for TroopsUc.xaml
+    /// Interaction logic for TroopsWithCheckBoxUc.xaml
     /// </summary>
-    public partial class TroopsUc : ReactiveUserControl<TroopsViewModel>
+    public partial class TroopsWithCheckBoxUc : ReactiveUserControl<TroopsWithCheckBoxViewModel>
     {
-        public TroopsUc()
+        public TroopsWithCheckBoxUc()
         {
             InitializeComponent();
             this.WhenActivated(d =>

@@ -13,14 +13,14 @@ namespace WPFUI.Views.Tabs.Villages
         {
             ViewModel = new();
             InitializeComponent();
-            CurrentLevel.ViewModel = new("Current troops's level: ", true);
-            WantLevel.ViewModel = new("I want to this level: ");
+            CurrentLevel.ViewModel = new("Current troops's level: ");
+            WantUpgrade.ViewModel = new("Select troop for upgrading: ");
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel, vm => vm.ApplyCommand, v => v.Apply).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.UpdateCommand, v => v.Update).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.CurrentLevel, v => v.CurrentLevel.ViewModel.Troops).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.WantLevel, v => v.WantLevel.ViewModel.Troops).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.WantUpgrade, v => v.WantUpgrade.ViewModel.Troops).DisposeWith(d);
                 Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
             });

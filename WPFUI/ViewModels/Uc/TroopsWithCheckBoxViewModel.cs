@@ -4,9 +4,9 @@ using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class TroopsViewModel : ReactiveObject
+    public class TroopsWithCheckBoxViewModel : ReactiveObject
     {
-        public TroopsViewModel(string text) : base()
+        public TroopsWithCheckBoxViewModel(string text) : base()
         {
             Text = text;
         }
@@ -19,9 +19,9 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _text, value);
         }
 
-        private ObservableCollection<TroopInfoText> _troops;
+        private ObservableCollection<TroopInfoCheckBox> _troops;
 
-        public ObservableCollection<TroopInfoText> Troops
+        public ObservableCollection<TroopInfoCheckBox> Troops
         {
             get => _troops;
             set => this.RaiseAndSetIfChanged(ref _troops, value);
