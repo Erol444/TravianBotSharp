@@ -10,25 +10,60 @@ namespace MainCore.Tasks.Misc
 {
     public class ImproveTroopsTask : VillageBotTask
     {
-        private readonly TroopEnums _troop;
+        private TroopEnums _troop;
         public TroopEnums Troop => _troop;
 
-        public ImproveTroopsTask(TroopEnums troop, int villageId, int accountId) : base(villageId, accountId, $"Improve {troop}")
+        public ImproveTroopsTask(int villageId, int accountId) : base(villageId, accountId, $"Improve troops")
         {
-            _troop = troop;
         }
 
         public override void Execute()
         {
+            _troop = GetTroop();
+            if (!IsVaild()) return;
+
             Update();
             if (!IsStop()) return;
-            if (!IsVaild()) return;
+
+            if (!IsTroopVaild()) return;
             if (!IsEnoughResource()) return;
+            if (IsTroopImproving())
+            {
+                NextExecute();
+                return;
+            }
 
             Upgrade();
             if (!IsStop()) return;
 
             NextExecute();
+        }
+
+        private TroopEnums GetTroop()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var settings = context.VillagesSettings.Find(VillageId);
+            var boolean = settings.GetTroopUpgrade();
+            for (int i = 0; i < boolean.Length; i++)
+            {
+                if (boolean[i] == true)
+                {
+                    var tribe = context.AccountsInfo.Find(AccountId).Tribe;
+                    var troops = tribe.GetTroops();
+                    return troops[i];
+                }
+            }
+            return TroopEnums.None;
+        }
+
+        private bool IsVaild()
+        {
+            if (Troop == TroopEnums.None)
+            {
+                _logManager.Information(AccountId, "There isn't any troop to upgrade.");
+                return false;
+            }
+            return true;
         }
 
         private void Update()
@@ -38,7 +73,7 @@ namespace MainCore.Tasks.Misc
             taskUpdate.Execute();
         }
 
-        private bool IsVaild()
+        private bool IsTroopVaild()
         {
             using var context = _contextFactory.CreateDbContext();
             var troops = context.VillagesTroops.Where(x => x.VillageId == VillageId);
@@ -60,9 +95,14 @@ namespace MainCore.Tasks.Misc
                 _logManager.Warning(AccountId, $"{Troop} is same level with smithy");
                 return false;
             }
+            return true;
+        }
+
+        private bool IsTroopImproving()
+        {
             var html = _chromeBrowser.GetHtml();
             var table = html.DocumentNode.Descendants("table").FirstOrDefault(x => x.HasClass("under_progress"));
-            if (table is null) return true;
+            if (table is null) return false;
 
             var rows = table.Descendants("tbody").FirstOrDefault().Descendants("tr");
 
@@ -73,7 +113,7 @@ namespace MainCore.Tasks.Misc
                 var hasPlus = accountInfo.HasPlusAccount;
                 if (hasPlus)
                 {
-                    return true;
+                    return false;
                 }
             }
 #elif TTWARS
@@ -87,7 +127,7 @@ namespace MainCore.Tasks.Misc
             if (time < 0) ExecuteAt = DateTime.Now;
             else ExecuteAt = DateTime.Now.AddSeconds(time);
             _logManager.Warning(AccountId, $"Smithy is upgrading another troops");
-            return false;
+            return true;
         }
 
         private bool IsEnoughResource()

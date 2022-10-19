@@ -60,7 +60,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 if (item.IsChecked)
                 {
-                    _taskManager.Add(CurrentAccount.Id, new ImproveTroopsTask(item.Troop, CurrentVillage.Id, CurrentAccount.Id));
+                    _taskManager.Add(CurrentAccount.Id, new ImproveTroopsTask(CurrentVillage.Id, CurrentAccount.Id));
                     MessageBox.Show("Apply");
                     return;
                 }
