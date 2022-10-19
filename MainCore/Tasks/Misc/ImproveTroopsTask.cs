@@ -109,6 +109,7 @@ namespace MainCore.Tasks.Misc
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
             if (rows.Count() == 1)
             {
+                using var context = _contextFactory.CreateDbContext();
                 var accountInfo = context.AccountsInfo.Find(AccountId);
                 var hasPlus = accountInfo.HasPlusAccount;
                 if (hasPlus)
