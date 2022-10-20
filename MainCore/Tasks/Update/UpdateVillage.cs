@@ -146,6 +146,7 @@ namespace MainCore.Tasks.Update
             for (int i = 0; i < troops.Length; i++)
             {
                 if (!troopsUpgrade[i]) continue;
+                if (troops[i].Level == -1) continue;
                 if (troops[i].Level >= smithy.Level) continue;
                 _taskManager.Add(AccountId, new ImproveTroopsTask(VillageId, AccountId));
             }

@@ -23,7 +23,7 @@ namespace MainCore.Tasks.Misc
             if (!IsVaild()) return;
 
             Update();
-            if (!IsStop()) return;
+            if (IsStop()) return;
 
             if (!IsTroopVaild()) return;
             if (!IsEnoughResource()) return;
@@ -34,7 +34,7 @@ namespace MainCore.Tasks.Misc
             }
 
             Upgrade();
-            if (!IsStop()) return;
+            if (IsStop()) return;
 
             NextExecute();
         }
