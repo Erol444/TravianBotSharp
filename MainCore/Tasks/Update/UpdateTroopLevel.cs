@@ -68,16 +68,19 @@ namespace MainCore.Tasks.Update
                     return;
                 }
                 var lvl = research.Descendants("span").FirstOrDefault(x => x.HasClass("level")).InnerText;
-                if (lvl.Contains('+')) //troop is currently being improved. Only get current level
+                var isProgressing = false;
+                if (lvl.Contains('+'))
                 {
                     lvl = lvl.Split('+')[0];
+                    isProgressing = true;
                 }
                 var troopId = GetTroop(research);
                 var troop = troops.FirstOrDefault(x => x.Id == troopId);
-                troop.Level = lvl.ToNumeric();
+                troop.Level = lvl.ToNumeric() + (isProgressing ? 1 : 0);
                 context.Update(troop);
             }
             context.SaveChanges();
+            _eventManager.OnTroopLevelUpdate(VillageId);
         }
 
         private static int GetTroop(HtmlNode node)

@@ -81,11 +81,23 @@ namespace MainCore.Tasks.Misc
             if (troop.Level == -1)
             {
                 _logManager.Warning(AccountId, $"{Troop} is not researched");
+                var settings = context.VillagesSettings.Find(VillageId);
+                var boolean = settings.GetTroopUpgrade();
+                boolean[(int)Troop % 10 + 1] = false;
+                settings.SetTroopUpgrade(boolean);
+                context.Update(settings);
+                context.SaveChanges();
                 return false;
             }
             if (troop.Level == 20)
             {
                 _logManager.Warning(AccountId, $"{Troop} is max level");
+                var settings = context.VillagesSettings.Find(VillageId);
+                var boolean = settings.GetTroopUpgrade();
+                boolean[(int)Troop % 10 + 1] = false;
+                settings.SetTroopUpgrade(boolean);
+                context.Update(settings);
+                context.SaveChanges();
                 return false;
             }
             var buildings = context.VillagesBuildings.Where(x => x.VillageId == VillageId);

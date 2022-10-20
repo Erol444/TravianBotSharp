@@ -21,7 +21,7 @@
                                 <TextBlock Text="{Binding Troop}" />
                             </Image.ToolTip>
                         </Image>
-                        <TextBox x:Name="textbox" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" Text="{Binding Num}" IsReadOnly="True" />
+                        <TextBox x:Name="textbox" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" Text="{Binding Text}" IsReadOnly="True" />
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
