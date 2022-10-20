@@ -1,4 +1,5 @@
 ﻿using MainCore.Enums;
+using MainCore.Models.Runtime;
 using System.Collections.Generic;
 
 namespace MainCore.Helper
@@ -118,5 +119,213 @@ namespace MainCore.Helper
                 _ => null,
             };
         }
+
+        public static List<PrerequisiteBuilding> GetPrerequisiteBuilding(this TroopEnums troop)
+        {
+            var ret = new List<PrerequisiteBuilding>();
+            switch (troop)
+            {
+                //romans
+                case TroopEnums.Praetorian:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 1 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Smithy, Level = 1 });
+                    return ret;
+
+                case TroopEnums.Imperian:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Smithy, Level = 1 });
+                    return ret;
+
+                case TroopEnums.EquitesLegati:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 1 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    return ret;
+
+                case TroopEnums.EquitesImperatoris:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    return ret;
+
+                case TroopEnums.EquitesCaesaris:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 10 });
+                    return ret;
+
+                case TroopEnums.RomanRam:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 10 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 1 });
+                    return ret;
+
+                case TroopEnums.RomanCatapult:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 10 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 15 });
+                    return ret;
+
+                case TroopEnums.RomanChief:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.RallyPoint, Level = 10 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 20 });
+                    return ret;
+                //Teutons
+                case TroopEnums.Spearman:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 1 });
+                    return ret;
+
+                case TroopEnums.Axeman:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 3 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Smithy, Level = 1 });
+                    return ret;
+
+                case TroopEnums.Scout:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 1 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.MainBuilding, Level = 5 });
+                    return ret;
+
+                case TroopEnums.Paladin:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 3 });
+                    return ret;
+
+                case TroopEnums.TeutonicKnight:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 15 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 10 });
+                    return ret;
+
+                case TroopEnums.TeutonRam:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 10 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 1 });
+                    return ret;
+
+                case TroopEnums.TeutonCatapult:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 15 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 10 });
+                    return ret;
+
+                case TroopEnums.TeutonChief:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 20 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.RallyPoint, Level = 5 });
+                    return ret;
+                //Gauls
+                case TroopEnums.Swordsman:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 1 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Smithy, Level = 1 });
+                    return ret;
+
+                case TroopEnums.Pathfinder:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 1 });
+                    return ret;
+
+                case TroopEnums.TheutatesThunder:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 3 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    return ret;
+
+                case TroopEnums.Druidrider:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 5 });
+                    return ret;
+
+                case TroopEnums.Haeduan:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 15 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 10 });
+                    return ret;
+
+                case TroopEnums.GaulRam:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 10 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 1 });
+                    return ret;
+
+                case TroopEnums.GaulCatapult:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 15 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 10 });
+                    return ret;
+
+                case TroopEnums.GaulChief:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 20 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.RallyPoint, Level = 10 });
+                    return ret;
+                //Egyptians
+                case TroopEnums.AshWarden:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Barracks, Level = 1 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Smithy, Level = 1 });
+                    return ret;
+
+                case TroopEnums.KhopeshWarrior:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Smithy, Level = 1 });
+                    return ret;
+
+                case TroopEnums.SopduExplorer:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 1 });
+                    return ret;
+
+                case TroopEnums.AnhurGuard:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 5 });
+                    return ret;
+
+                case TroopEnums.ReshephChariot:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 10 });
+                    return ret;
+
+                case TroopEnums.EgyptianRam:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 10 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 5 });
+                    return ret;
+
+                case TroopEnums.EgyptianCatapult:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 15 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 10 });
+                    return ret;
+
+                case TroopEnums.EgyptianChief:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 20 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.RallyPoint, Level = 10 });
+                    return ret;
+                //Huns
+                case TroopEnums.Bowman:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 3 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Smithy, Level = 1 });
+                    return ret;
+
+                case TroopEnums.Spotter:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 1 });
+                    return ret;
+
+                case TroopEnums.SteppeRider:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 3 });
+                    return ret;
+
+                case TroopEnums.Marksman:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 5 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 5 });
+                    return ret;
+
+                case TroopEnums.Marauder:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 15 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Stable, Level = 10 });
+                    return ret;
+
+                case TroopEnums.HunRam:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 10 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 1 });
+                    return ret;
+
+                case TroopEnums.HunCatapult:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 15 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Workshop, Level = 10 });
+                    return ret;
+
+                case TroopEnums.HunChief:
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.Academy, Level = 20 });
+                    ret.Add(new PrerequisiteBuilding() { Building = BuildingEnums.RallyPoint, Level = 10 });
+                    return ret;
+
+                default: return ret;
+            }
+        }
     }
-}
