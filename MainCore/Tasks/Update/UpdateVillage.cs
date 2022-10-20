@@ -1,20 +1,9 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Enums;
+using MainCore.Helper;
+using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
 using System;
 using System.Linq;
-using MainCore.Tasks.Misc;
-
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-
-using MainCore.Enums;
-
-#elif TTWARS
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
 
 namespace MainCore.Tasks.Update
 {
