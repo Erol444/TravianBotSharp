@@ -427,7 +427,7 @@ namespace MainCore.Tasks.Sim
                 }
                 else
                 {
-                    if (buildingTask.Building.HasMultipleTabs())
+                    if (buildingTask.Building.HasMultipleTabs() && building.Level != 0)
                     {
                         NavigateHelper.SwitchTab(_chromeBrowser, 0, context, AccountId);
                     }

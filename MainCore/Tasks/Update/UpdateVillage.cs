@@ -74,25 +74,32 @@ namespace MainCore.Tasks.Update
             if (!setting.IsInstantComplete) return;
             var info = context.AccountsInfo.Find(AccountId);
             if (info.Gold < 2) return;
-            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1);
+            var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1).ToList();
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
             var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             if (tribe == TribeEnums.Romans)
             {
-                if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 3 : 2)) return;
+                if (currentlyBuildings.Count(x => x.Level != -1) < (info.HasPlusAccount ? 3 : 2)) return;
             }
             else
             {
-                if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
+                if (currentlyBuildings.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
             }
 #elif TTWARS
-            if (currentlyBuilding.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
+            if (currentlyBuildings.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
 #else
 
 #error You forgot to define Travian version here
 
 #endif
-            if (currentlyBuilding.Max(x => x.CompleteTime) < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
+            var notInstantBuildings = currentlyBuildings.Where(x => x.Type.IsNotAdsUpgrade());
+            foreach (var building in notInstantBuildings)
+            {
+                currentlyBuildings.Remove(building);
+            }
+            if (!currentlyBuildings.Any()) return;
+
+            if (currentlyBuildings.Max(x => x.CompleteTime) < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
 
             _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
         }
