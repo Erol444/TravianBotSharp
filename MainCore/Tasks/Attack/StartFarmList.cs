@@ -1,9 +1,9 @@
 using MainCore.Services;
-using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
+using MainCore.Tasks.Update;
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
@@ -21,7 +21,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.Attack
 {
-    public class StartFarmList : UpdateFarmList
+    public class StartFarmList : AccountBotTask
     {
         public StartFarmList(int accountId, int farmId) : base(accountId, "Start farmlist")
         {
@@ -58,7 +58,10 @@ namespace MainCore.Tasks.Attack
 
         public override void Execute()
         {
-            base.Execute();
+            if (!IsUpdateFail())
+            {
+                return;
+            }
 
             if (!IsFarmExist())
             {
@@ -82,6 +85,14 @@ namespace MainCore.Tasks.Attack
                 ExecuteAt = DateTime.Now.AddSeconds(time);
                 _logManager.Information(AccountId, $"Farmlist {_nameFarm} was sent.");
             }
+        }
+
+        private bool IsUpdateFail()
+        {
+            var updateTask = new UpdateFarmList(AccountId);
+            updateTask.CopyFrom(this);
+            updateTask.Execute();
+            return updateTask.IsFail;
         }
 
         private bool IsFarmExist()

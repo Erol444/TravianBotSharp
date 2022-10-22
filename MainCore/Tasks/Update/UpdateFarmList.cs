@@ -10,14 +10,11 @@ namespace MainCore.Tasks.Update
         {
         }
 
-        public UpdateFarmList(int accountId, string name) : base(accountId, name)
-        {
-        }
-
         public override void Execute()
         {
+            IsFail = true;
             var village = GetVillageHasRallyPoint();
-            if (Cts.IsCancellationRequested) return;
+            if (IsStop()) return;
             if (village == -1)
             {
                 _logManager.Warning(AccountId, "There is no rallypoint in your villages");
@@ -25,7 +22,7 @@ namespace MainCore.Tasks.Update
             }
             {
                 var result = GotoFarmListPage(village);
-                if (Cts.IsCancellationRequested) return;
+                if (IsStop()) return;
                 if (!result) return;
             }
             {
@@ -33,6 +30,7 @@ namespace MainCore.Tasks.Update
                 UpdateHelper.UpdateFarmList(context, _chromeBrowser, AccountId);
                 _eventManager.OnFarmListUpdated(AccountId);
             }
+            IsFail = false;
         }
 
         private int GetVillageHasRallyPoint()
@@ -72,6 +70,7 @@ namespace MainCore.Tasks.Update
                 var taskUpdate = new UpdateDorf2(village, AccountId);
                 taskUpdate.CopyFrom(this);
                 taskUpdate.Execute();
+                if (taskUpdate.IsFail) return false;
 
                 if (Cts.IsCancellationRequested) return false;
 

@@ -13,15 +13,13 @@ namespace MainCore.Tasks.Update
         {
         }
 
-        public UpdateVillage(int villageId, int accountId, string name) : base(villageId, accountId, name)
-        {
-        }
-
         public override void Execute()
         {
+            IsFail = true;
             Navigate();
-            UpdateAccountInfo();
+            if (IsUpdateAccountInfoFail()) return;
             UpdateVillageInfo();
+            IsFail = false;
         }
 
         private void Navigate()
@@ -30,11 +28,12 @@ namespace MainCore.Tasks.Update
             NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
         }
 
-        private void UpdateAccountInfo()
+        private bool IsUpdateAccountInfoFail()
         {
             var updateTask = new UpdateInfo(AccountId);
             updateTask.CopyFrom(this);
             updateTask.Execute();
+            return updateTask.IsFail;
         }
 
         private void UpdateVillageInfo()
