@@ -1,7 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper;
+using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
-using MainCore.Tasks.Update;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;
@@ -170,12 +170,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 }
             }
             {
-                var tasks = list.OfType<UpdateDorf1>();
+                var tasks = list.OfType<RefreshVillage>();
                 if (Settings.IsAutoRefresh)
                 {
                     if (!tasks.Any(x => x.VillageId == villageId))
                     {
-                        _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
+                        _taskManager.Add(accountId, new RefreshVillage(villageId, accountId));
                     }
                 }
                 else
