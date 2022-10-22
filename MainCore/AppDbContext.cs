@@ -1,5 +1,8 @@
-﻿using MainCore.Models.Database;
+﻿using MainCore.Enums;
+using MainCore.Helper;
+using MainCore.Models.Database;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MainCore
@@ -204,6 +207,17 @@ namespace MainCore
             });
 
             #endregion Farm settings
+
+            #region Village troops
+
+            modelBuilder.Entity<VillageTroops>(entity =>
+            {
+                entity.ToTable("VillagesTroops");
+                entity.HasKey(e => new { e.VillageId, e.Id })
+                    .HasName("PK_VILLAGESTROOPS");
+            });
+
+            #endregion Village troops
         }
 
         public void AddAccount(int accountId)
@@ -264,6 +278,22 @@ namespace MainCore
             //VillagesQueueBuildings
             //VillagesCurrentlyBuildings
             //VillagesBuildings
+        }
+
+        public void AddTroop(int villageId, TribeEnums tribe)
+        {
+            var troops = tribe.GetTroops();
+            for (int i = 0; i < troops.Count; i++)
+            {
+                var level = -1;
+                if (i == 0) level = 0;
+                VillagesTroops.Add(new VillageTroops
+                {
+                    Id = (int)troops[i],
+                    VillageId = villageId,
+                    Level = level,
+                });
+            }
         }
 
         public void AddFarm(int farmId)
@@ -377,6 +407,30 @@ namespace MainCore
                     });
                 }
             }
+
+            if (!VillagesTroops.Any())
+            {
+                foreach (var account in Accounts)
+                {
+                    var tribe = AccountsInfo.Find(account.Id).Tribe;
+                    var troops = tribe.GetTroops();
+                    var villages = Villages.Where(x => x.AccountId == account.Id).ToList();
+                    foreach (var village in villages)
+                    {
+                        for (int i = 0; i < troops.Count; i++)
+                        {
+                            var level = -1;
+                            if (i == 0) level = 0;
+                            VillagesTroops.Add(new VillageTroops
+                            {
+                                Id = (int)troops[i],
+                                VillageId = village.Id,
+                                Level = level,
+                            });
+                        }
+                    }
+                }
+            }
         }
 
         public void DeleteAccount(int accountId)
@@ -428,6 +482,8 @@ namespace MainCore
             VillagesQueueBuildings.RemoveRange(queue);
             var buildings = VillagesBuildings.Where(x => x.VillageId == villageId);
             VillagesBuildings.RemoveRange(buildings);
+            var troops = VillagesTroops.Where(x => x.VillageId == villageId);
+            VillagesTroops.RemoveRange(troops);
 
             var village = Villages.Find(villageId);
             Villages.Remove(village);
@@ -439,6 +495,23 @@ namespace MainCore
             FarmsSettings.Remove(setting);
             var farm = Farms.Find(farmId);
             Farms.Remove(farm);
+        }
+
+        public void AddVersionInfo()
+        {
+            Database.ExecuteSqlRaw("CREATE TABLE \"VersionInfo\" (\"Version\" INTEGER NOT NULL, \"AppliedOn\" DATETIME, \"Description\" TEXT)");
+
+            var migrations = new List<KeyValuePair<long, string>>()
+            {
+                KeyValuePair.Create(202209131759,"Farming"),
+                KeyValuePair.Create(202210061322,"NPCMigrations"),
+                KeyValuePair.Create(202210162304,"TroopsMigrations"),
+                KeyValuePair.Create(202210181120,"UpgradeTroopMigrations"),
+            };
+            foreach (var migration in migrations)
+            {
+                Database.ExecuteSqlRaw($"INSERT INTO VersionInfo (Version, Description) VALUES ('{migration.Key}','{migration.Value}')");
+            }
         }
 
         public DbSet<Account> Accounts { get; set; }
@@ -458,5 +531,6 @@ namespace MainCore
         public DbSet<VillageProduction> VillagesProduction { get; set; }
         public DbSet<Farm> Farms { get; set; }
         public DbSet<FarmSetting> FarmsSettings { get; set; }
+        public DbSet<VillageTroops> VillagesTroops { get; set; }
     }
 }

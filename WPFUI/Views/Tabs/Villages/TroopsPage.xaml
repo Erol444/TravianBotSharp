@@ -1,0 +1,15 @@
+﻿<reactiveui:ReactivePage
+      x:Class="WPFUI.Views.Tabs.Villages.TroopsPage"
+      x:TypeArguments="vms:TroopsViewModel"
+      xmlns:vms="clr-namespace:WPFUI.ViewModels.Tabs.Villages"
+      xmlns:controls="clr-namespace:WPFUI.Views.Uc"
+      xmlns:reactiveui="http://reactiveui.net"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <StackPanel Background="#FFE5E5E5" Margin="0,2,0,0">
+        <Button x:Name="Update" Content="Update" Padding="120,20,120,20" HorizontalAlignment="Center" Margin="10,20,10,0" />
+        <controls:TroopsUc x:Name="CurrentLevel" Margin="10,10,10,0" />
+        <controls:TroopsWithCheckBoxUc x:Name="WantUpgrade" Margin="10,10,10,0" />
+        <Button x:Name="Apply" Content="Upgrade" Padding="120,20,120,20" HorizontalAlignment="Center" Margin="10,20,10,0" />
+    </StackPanel>
+</reactiveui:ReactivePage>

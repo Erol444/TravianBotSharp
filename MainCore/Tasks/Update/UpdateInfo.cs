@@ -32,8 +32,8 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            UpdateVillageList();
             UpdateAccountInfo();
+            UpdateVillageList();
             UpdateHeroInfo();
         }
 
@@ -65,6 +65,7 @@ namespace MainCore.Tasks.Update
                 context.DeleteVillage(item.Id);
             }
 
+            var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             foreach (var newVill in foundVills)
             {
                 context.Villages.Add(new Village()
@@ -76,6 +77,7 @@ namespace MainCore.Tasks.Update
                     Y = newVill.Y,
                 });
                 context.AddVillage(newVill.Id);
+                context.AddTroop(newVill.Id, tribe);
 
                 var tasks = _taskManager.GetList(AccountId).OfType<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);

@@ -3,12 +3,10 @@
 namespace MainCore.Migrations
 {
     [Migration(202210061322)]
-    public class NPCMiragation : Migration
+    public class NPCMigrations : Migration
     {
         public override void Down()
         {
-            if (!Schema.Table("VillagesSettings").Column("IsAutoRefresh").Exists())
-                return;
             Delete
                 .Column("IsAutoRefresh")
                 .Column("AutoRefreshTimeMin")
@@ -23,8 +21,6 @@ namespace MainCore.Migrations
 
         public override void Up()
         {
-            if (Schema.Table("VillagesSettings").Column("IsAutoRefresh").Exists())
-                return;
             Alter.Table("VillagesSettings")
                 .AddColumn("IsAutoRefresh").AsBoolean().WithDefaultValue(false)
                 .AddColumn("AutoRefreshTimeMin").AsInt32().WithDefaultValue(25)

@@ -1,7 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
-using OpenQA.Selenium;
 using System;
 using System.Threading;
 
@@ -13,6 +12,7 @@ namespace MainCore.Tasks
         public DateTime ExecuteAt { get; set; }
         public int RetryCounter { get; set; }
         protected bool StopFlag { get; set; }
+        public bool IsFail { get; set; }
         public CancellationTokenSource Cts { get; set; }
 
         protected IDbContextFactory<AppDbContext> _contextFactory;
@@ -50,11 +50,6 @@ namespace MainCore.Tasks
             _restClientManager = restClientManager;
         }
 
-        public void Refresh()
-        {
-            _chromeBrowser.GetChrome().Navigate().Refresh();
-            var wait = _chromeBrowser.GetWait();
-            wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
-        }
+        public abstract void Refresh();
     }
 }

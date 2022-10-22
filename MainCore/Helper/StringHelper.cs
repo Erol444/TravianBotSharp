@@ -12,8 +12,8 @@ namespace MainCore.Helper
 
         public static int ToNumeric(this string value)
         {
-            var valueStr = new string(value.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(valueStr)) return 1;
+            var valueStr = new string(value.Where(c => char.IsDigit(c) || c == '-').ToArray());
+            if (string.IsNullOrEmpty(valueStr)) return 0;
             return int.Parse(valueStr);
         }
 
