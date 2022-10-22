@@ -165,7 +165,7 @@ namespace MainCore.Tasks.Misc
                     var update = updateList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (update is null)
                     {
-                        _taskManager.Add(AccountId, new UpdateDorf1(village.Id, AccountId));
+                        _taskManager.Add(AccountId, new RefreshVillage(village.Id, AccountId));
                     }
                 }
             }

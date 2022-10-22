@@ -32,9 +32,11 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
+            IsFail = true;
             UpdateAccountInfo();
             UpdateVillageList();
             UpdateHeroInfo();
+            IsFail = false;
         }
 
         private void UpdateVillageList()

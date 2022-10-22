@@ -10,11 +10,23 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
-            }
-            base.Execute();
+            IsFail = true;
+            ToDorf2();
+            Update();
+            IsFail = false;
+        }
+
+        private void ToDorf2()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
+        }
+
+        private void Update()
+        {
+            var taskUpdate = new UpdateVillage(VillageId, AccountId);
+            taskUpdate.CopyFrom(this);
+            taskUpdate.Execute();
         }
     }
 }

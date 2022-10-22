@@ -13,6 +13,7 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
+            IsFail = true;
             using var context = _contextFactory.CreateDbContext();
 
             NavigateHelper.ToAdventure(_chromeBrowser);
@@ -42,6 +43,7 @@ namespace MainCore.Tasks.Update
                     NextExecute();
                 }
             }
+            IsFail = false;
         }
 
         private void NextExecute()

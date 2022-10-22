@@ -24,6 +24,7 @@ namespace MainCore.Tasks.Misc
             }
             taskUpdate.CopyFrom(this);
             taskUpdate.Execute();
+            if (taskUpdate.IsFail) return;
 
             NextExecute();
         }
