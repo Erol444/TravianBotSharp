@@ -12,6 +12,7 @@ namespace MainCore.Tasks
         public DateTime ExecuteAt { get; set; }
         public int RetryCounter { get; set; }
         protected bool StopFlag { get; set; }
+        public bool IsFail { get; set; }
         public CancellationTokenSource Cts { get; set; }
 
         protected IDbContextFactory<AppDbContext> _contextFactory;

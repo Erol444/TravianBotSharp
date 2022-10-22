@@ -19,13 +19,12 @@ namespace MainCore.Tasks.Misc
 
         public override void Execute()
         {
+            if (IsUpdateFail()) return;
+            if (IsStop()) return;
+
             _troop = GetTroop();
             if (!IsVaild()) return;
 
-            Update();
-            if (IsStop()) return;
-
-            if (!IsTroopVaild()) return;
             if (!IsEnoughResource()) return;
             if (IsTroopImproving())
             {
@@ -39,20 +38,54 @@ namespace MainCore.Tasks.Misc
             NextExecute();
         }
 
+        private bool IsUpdateFail()
+        {
+            var taskUpdate = new UpdateTroopLevel(VillageId, AccountId);
+            taskUpdate.CopyFrom(this);
+            taskUpdate.Execute();
+            return taskUpdate.IsFail;
+        }
+
         private TroopEnums GetTroop()
         {
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesSettings.Find(VillageId);
             var boolean = settings.GetTroopUpgrade();
+            var troops = context.VillagesTroops.Where(x => x.VillageId == VillageId).ToArray();
+
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == VillageId);
+            var smithy = buildings.FirstOrDefault(x => x.Type == BuildingEnums.Smithy);
+
             for (int i = 0; i < boolean.Length; i++)
             {
-                if (boolean[i] == true)
+                if (!boolean[i]) continue;
+                var troop = troops[i];
+                if (troop.Level == -1)
                 {
-                    var tribe = context.AccountsInfo.Find(AccountId).Tribe;
-                    var troops = tribe.GetTroops();
-                    return troops[i];
+                    _logManager.Warning(AccountId, $"{(TroopEnums)troop.Id} is not researched");
+                    boolean[troop.Id % 10 - 1] = false;
+                    settings.SetTroopUpgrade(boolean);
+                    context.Update(settings);
+                    continue;
                 }
+                if (troop.Level == 20)
+                {
+                    _logManager.Warning(AccountId, $"{(TroopEnums)troop.Id} is max level");
+                    boolean[(int)Troop % 10 + 1] = false;
+                    settings.SetTroopUpgrade(boolean);
+                    context.Update(settings);
+                    continue;
+                }
+
+                if (smithy.Level == troop.Level)
+                {
+                    continue;
+                }
+
+                context.SaveChanges();
+                return (TroopEnums)troop.Id;
             }
+            context.SaveChanges();
             return TroopEnums.None;
         }
 
@@ -61,50 +94,6 @@ namespace MainCore.Tasks.Misc
             if (Troop == TroopEnums.None)
             {
                 _logManager.Information(AccountId, "There isn't any troop to upgrade.");
-                return false;
-            }
-            return true;
-        }
-
-        private void Update()
-        {
-            var taskUpdate = new UpdateTroopLevel(VillageId, AccountId);
-            taskUpdate.CopyFrom(this);
-            taskUpdate.Execute();
-        }
-
-        private bool IsTroopVaild()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var troops = context.VillagesTroops.Where(x => x.VillageId == VillageId);
-            var troop = troops.FirstOrDefault(x => x.Id == (int)Troop);
-            if (troop.Level == -1)
-            {
-                _logManager.Warning(AccountId, $"{Troop} is not researched");
-                var settings = context.VillagesSettings.Find(VillageId);
-                var boolean = settings.GetTroopUpgrade();
-                boolean[(int)Troop % 10 + 1] = false;
-                settings.SetTroopUpgrade(boolean);
-                context.Update(settings);
-                context.SaveChanges();
-                return false;
-            }
-            if (troop.Level == 20)
-            {
-                _logManager.Warning(AccountId, $"{Troop} is max level");
-                var settings = context.VillagesSettings.Find(VillageId);
-                var boolean = settings.GetTroopUpgrade();
-                boolean[(int)Troop % 10 + 1] = false;
-                settings.SetTroopUpgrade(boolean);
-                context.Update(settings);
-                context.SaveChanges();
-                return false;
-            }
-            var buildings = context.VillagesBuildings.Where(x => x.VillageId == VillageId);
-            var smithy = buildings.FirstOrDefault(x => x.Type == BuildingEnums.Smithy);
-            if (smithy.Level == troop.Level)
-            {
-                _logManager.Warning(AccountId, $"{Troop} is same level with smithy");
                 return false;
             }
             return true;
@@ -184,7 +173,7 @@ namespace MainCore.Tasks.Misc
         private void Upgrade()
         {
             var html = _chromeBrowser.GetHtml();
-            var researches = html.DocumentNode.Descendants("div").Where(x => x.HasClass("research"));
+            var researches = html.DocumentNode.Descendants("div").Where(x => x.HasClass("research")).ToList();
             foreach (var research in researches)
             {
                 if (GetTroop(research) != (int)Troop) continue;
@@ -211,7 +200,8 @@ namespace MainCore.Tasks.Misc
 
         private static int GetTroop(HtmlNode node)
         {
-            var img = node.Descendants("img").First(x => x.HasClass("unit"));
+            var img = node.Descendants("img").FirstOrDefault(x => x.HasClass("unit"));
+            if (img is null) return 0;
             var troopNum = img.GetClasses().FirstOrDefault(x => x != "unit");
             var value = troopNum.ToNumeric();
             return value;

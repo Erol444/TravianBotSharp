@@ -13,6 +13,7 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
+            IsFail = true;
             Navigate();
             if (IsStop()) return;
             Update();
@@ -21,6 +22,7 @@ namespace MainCore.Tasks.Update
             Enter();
             if (IsStop()) return;
             GetTroopLevel();
+            IsFail = false;
         }
 
         private void Navigate()
