@@ -50,7 +50,7 @@ namespace MainCore.Helper
                             logManager.Information(accountId, "Cannot build because of lack of freecrop");
                             return null;
                         }
-                        return GetFirstInfrastructureTask(planManager, villageId);
+                        return GetFirstInfrastructureTask(context, planManager, villageId);
                     }
                     else if (numInfra > numRes)
                     {
@@ -137,10 +137,10 @@ namespace MainCore.Helper
             return task;
         }
 
-        private static PlanTask GetFirstInfrastructureTask(IPlanManager planManager, int villageId)
+        private static PlanTask GetFirstInfrastructureTask(AppDbContext context, IPlanManager planManager, int villageId)
         {
             var tasks = planManager.GetList(villageId);
-            var task = tasks.FirstOrDefault(x => x.Type == PlanTypeEnums.General && !x.Building.IsResourceField());
+            var task = tasks.FirstOrDefault(x => x.Type == PlanTypeEnums.General && !x.Building.IsResourceField() && IsInfrastructureTaskVaild(context, villageId, x));
             return task;
         }
 
@@ -149,6 +149,19 @@ namespace MainCore.Helper
             var tasks = planManager.GetList(villageId);
             var task = tasks.FirstOrDefault();
             return task;
+        }
+
+        private static bool IsInfrastructureTaskVaild(AppDbContext context, int villageId, PlanTask planTask)
+        {
+            (_, var prerequisiteBuildings) = planTask.Building.GetPrerequisiteBuildings();
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
+            foreach (var prerequisiteBuilding in prerequisiteBuildings)
+            {
+                var building = buildings.FirstOrDefault(x => x.Type == prerequisiteBuilding.Building);
+                if (building is null) return false;
+                if (building.Level < prerequisiteBuilding.Level) return false;
+            }
+            return true;
         }
 
         public static DateTime GetTimeWhenEnough(this VillageProduction production, long[] resRequired)
