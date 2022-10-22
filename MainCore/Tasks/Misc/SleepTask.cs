@@ -63,6 +63,9 @@ namespace MainCore.Tasks.Misc
             var currentAccount = context.Accounts.Find(AccountId);
             _chromeBrowser.Navigate(currentAccount.Server);
             _taskManager.Add(AccountId, new LoginTask(AccountId), true);
+
+            var nextExecute = Random.Shared.Next(setting.WorkTimeMin, setting.SleepTimeMax);
+            ExecuteAt = DateTime.Now.AddMinutes(nextExecute);
         }
     }
 }
