@@ -31,6 +31,7 @@ namespace WPFUI.Views.Tabs.Villages
                 this.Bind(ViewModel, vm => vm.Settings.IsAdsUpgrade, v => v.WatchAds.ViewModel.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AdsUpgradeTime, v => v.WatchAds.ViewModel.Value).DisposeWith(d);
 
+                this.Bind(ViewModel, vm => vm.Settings.IsAutoRefresh, v => v.RefreshCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoRefreshTime, v => v.Refresh.ViewModel.MainValue).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoRefreshTimeTolerance, v => v.Refresh.ViewModel.ToleranceValue).DisposeWith(d);
 
