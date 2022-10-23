@@ -72,7 +72,7 @@ namespace MainCore.Tasks.Update
 
             int sec = int.Parse(timer.GetAttributeValue("value", "0"));
             if (sec < 0) sec = 0;
-            ExecuteAt = DateTime.Now.AddSeconds(sec * 2);
+            ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + Random.Shared.Next(20, 40));
         }
     }
 }
