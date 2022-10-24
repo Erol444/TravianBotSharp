@@ -11,8 +11,10 @@ namespace MainCore.Tasks.Update
         public override void Execute()
         {
             IsFail = true;
-            NavigateHelper.ToHeroInventory(_chromeBrowser);
             using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.ToHeroInventory(_chromeBrowser, context, AccountId);
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+
             UpdateHelper.UpdateHeroInventory(context, _chromeBrowser, AccountId);
             IsFail = false;
         }

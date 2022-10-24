@@ -12,6 +12,10 @@ namespace MainCore.Tasks.Sim
 
         public override void Execute()
         {
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
             var adventure = GetAdventures();
             if (StopFlag) return;
             if (Cts.IsCancellationRequested) return;
@@ -32,7 +36,8 @@ namespace MainCore.Tasks.Sim
         {
             var x = adventure.X;
             var y = adventure.Y;
-            ClickHelper.ClickStartAdventure(_chromeBrowser, x, y);
+            using var context = _contextFactory.CreateDbContext();
+            ClickHelper.ClickStartAdventure(_chromeBrowser, x, y, context, AccountId);
         }
     }
 }

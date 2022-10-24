@@ -3,11 +3,11 @@ using MainCore.Enums;
 using MainCore.Services;
 using OpenQA.Selenium;
 using System;
-using System.Threading;
 
 #if TRAVIAN_OFFICIAL
 
 using TravianOfficialCore.FindElements;
+using System.Threading;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
@@ -17,6 +17,7 @@ using TravianOfficialNewHeroUICore.FindElements;
 #elif TTWARS
 
 using TTWarsCore.FindElements;
+using System.Threading;
 
 #else
 
@@ -37,7 +38,7 @@ namespace MainCore.Helper
             };
         }
 
-        public static void ClickItem(IChromeBrowser chromeBrowser, HeroItemEnums item)
+        public static void ClickItem(IChromeBrowser chromeBrowser, HeroItemEnums item, AppDbContext context, int accountId)
         {
             var doc = chromeBrowser.GetHtml();
             var node = HeroPage.GetItemSlot(doc, (int)item);
@@ -53,7 +54,7 @@ namespace MainCore.Helper
                 throw new Exception($"Cannot find item {item}");
             }
 
-            elements[0].Click();
+            elements.Click(chromeBrowser, context, accountId);
             var wait = chromeBrowser.GetWait();
             if (item.IsUsableWhenHeroAway())
             {
@@ -104,7 +105,7 @@ namespace MainCore.Helper
             amountInputs[0].SendKeys(amount.ToString());
         }
 
-        public static void Confirm(IChromeBrowser chromeBrowser)
+        public static void Confirm(IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
         {
             var doc = chromeBrowser.GetHtml();
             var confirmButton = HeroPage.GetConfirmButton(doc);
@@ -118,7 +119,7 @@ namespace MainCore.Helper
             {
                 throw new Exception("Cannot find confirm button");
             }
-            elements[0].Click();
+            elements.Click(chromeBrowser, context, accountId);
             var wait = chromeBrowser.GetWait();
 #if TRAVIAN_OFFICIAL_HEROUI
             wait.Until(driver =>

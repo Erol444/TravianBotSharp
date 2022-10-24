@@ -1,4 +1,5 @@
-﻿using MainCore.Tasks.Update;
+﻿using MainCore.Helper;
+using MainCore.Tasks.Update;
 using System;
 
 namespace MainCore.Tasks.Misc
@@ -13,6 +14,10 @@ namespace MainCore.Tasks.Misc
 
         public override void Execute()
         {
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
             BotTask taskUpdate;
             if (IsNeedDorf2())
             {

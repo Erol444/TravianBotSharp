@@ -17,6 +17,7 @@ namespace MainCore.Tasks.Misc
         public override void Execute()
         {
             var context = _contextFactory.CreateDbContext();
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             var accesses = context.Accesses.Where(x => x.AccountId == AccountId).OrderBy(x => x.LastUsed);
             var currentAccess = accesses.Last();
             var setting = context.AccountsSettings.Find(AccountId);

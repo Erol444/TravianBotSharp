@@ -3,8 +3,8 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <!--<Server>TRAVIAN_OFFICIAL</Server>-->
-    <Server>TRAVIAN_OFFICIAL_HEROUI</Server>
-    <!--<Server>TTWARS</Server>-->
+    <!--<Server>TRAVIAN_OFFICIAL_HEROUI</Server>-->
+    <Server>TTWARS</Server>
     
     <DefineConstants Condition="'$(Server)' != ''">$(DefineConstants);$(Server)</DefineConstants>
   </PropertyGroup>

@@ -19,6 +19,7 @@ namespace MainCore.Tasks.Misc
         public override void Execute()
         {
             using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             if (VillageId != -1) NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
             var heroStatus = context.Heroes.Find(AccountId).Status;
             var setting = context.AccountsSettings.Find(AccountId);
@@ -31,7 +32,7 @@ namespace MainCore.Tasks.Misc
                     return;
                 }
                 if (amount < 0) continue;
-                HeroHelper.ClickItem(_chromeBrowser, item);
+                HeroHelper.ClickItem(_chromeBrowser, item, context, AccountId);
 
                 if (amount <= 1)
                 {
@@ -41,7 +42,7 @@ namespace MainCore.Tasks.Misc
                 {
                     Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
                     HeroHelper.EnterAmount(_chromeBrowser, RoundUpTo100(amount));
-                    HeroHelper.Confirm(_chromeBrowser);
+                    HeroHelper.Confirm(_chromeBrowser, context, AccountId);
                     Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
                 }
                 Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
