@@ -53,6 +53,13 @@
                     </Frame.Content>
                 </Frame>
             </TabItem>
+            <TabItem x:Name="TroopsTab" Header="Troop">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:TroopsPage x:Name="TroopsPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
             <TabItem x:Name="InfoTab" Header="Info">
                 <Frame>
                     <Frame.Content>

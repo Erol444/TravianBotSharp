@@ -17,6 +17,7 @@ namespace MainCore.Tasks.Misc
         public override void Execute()
         {
             var context = _contextFactory.CreateDbContext();
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             var accesses = context.Accesses.Where(x => x.AccountId == AccountId).OrderBy(x => x.LastUsed);
             var currentAccess = accesses.Last();
             var setting = context.AccountsSettings.Find(AccountId);
@@ -63,6 +64,9 @@ namespace MainCore.Tasks.Misc
             var currentAccount = context.Accounts.Find(AccountId);
             _chromeBrowser.Navigate(currentAccount.Server);
             _taskManager.Add(AccountId, new LoginTask(AccountId), true);
+
+            var nextExecute = Random.Shared.Next(setting.WorkTimeMin, setting.SleepTimeMax);
+            ExecuteAt = DateTime.Now.AddMinutes(nextExecute);
         }
     }
 }

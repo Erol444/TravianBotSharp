@@ -24,21 +24,28 @@
 
         <StackPanel Grid.Row="1" Margin="10,0,10,0">
             <StackPanel>
-                <TextBlock x:Name="BuildingLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Build settings" VerticalAlignment="Center" FontWeight="Bold" />
+                <TextBlock TextWrapping="Wrap" Text="Build settings" VerticalAlignment="Center" FontWeight="Bold" />
                 <CheckBox x:Name="UseHeroResCheckBox" Content="Use resource from hero inventory" />
                 <controls:CheckBoxWithInputUc x:Name="Complete" />
                 <controls:CheckBoxWithInputUc x:Name="WatchAds" />
             </StackPanel>
 
             <StackPanel>
-                <TextBlock x:Name="RefreshLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Refresh settings" VerticalAlignment="Center" FontWeight="Bold" />
+                <TextBlock TextWrapping="Wrap" Text="Refresh settings" VerticalAlignment="Center" FontWeight="Bold" />
+                <CheckBox x:Name="RefreshCheckBox" Content="Auto refresh village" />
                 <controls:ToleranceUc x:Name="Refresh" />
             </StackPanel>
 
             <StackPanel>
-                <TextBlock x:Name="AutoNPCLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="NPC settings" VerticalAlignment="Center" FontWeight="Bold" />
+                <TextBlock TextWrapping="Wrap" Text="NPC settings" VerticalAlignment="Center" FontWeight="Bold" />
                 <controls:CheckBoxWithInputUc x:Name="AutoNPC" />
                 <controls:ResourcesUc x:Name="AutoNPCRatio" />
+            </StackPanel>
+
+            <StackPanel>
+                <TextBlock TextWrapping="Wrap" Text="Troop settings" VerticalAlignment="Center" FontWeight="Bold" />
+                <CheckBox x:Name="TroopUpgradeCheckBox" Content="Auto improve troop" />
+                <controls:TroopsWithCheckBoxUc x:Name="TroopUpgrade" />
             </StackPanel>
         </StackPanel>
     </Grid>

@@ -40,6 +40,10 @@ namespace WPFUI.Views.Tabs
                 this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.SettingsPage.ViewModel.CurrentVillage).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.SettingsTab.Visibility).DisposeWith(d);
 
+                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.TroopsPage.ViewModel.CurrentAccount).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.TroopsPage.ViewModel.CurrentVillage).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.TroopsTab.Visibility).DisposeWith(d);
+
                 Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
             });

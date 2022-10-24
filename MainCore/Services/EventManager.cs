@@ -56,5 +56,9 @@ namespace MainCore.Services
         public event Action<int> FarmListUpdated;
 
         public void OnFarmListUpdated(int accountId) => FarmListUpdated?.Invoke(accountId);
+
+        public event Action<int> TroopLevelUpdate;
+
+        public void OnTroopLevelUpdate(int villageId) => TroopLevelUpdate?.Invoke(villageId);
     }
 }

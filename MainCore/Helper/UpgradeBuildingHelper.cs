@@ -50,7 +50,7 @@ namespace MainCore.Helper
                             logManager.Information(accountId, "Cannot build because of lack of freecrop");
                             return null;
                         }
-                        return GetFirstInfrastructureTask(planManager, villageId);
+                        return GetFirstInfrastructureTask(context, planManager, villageId);
                     }
                     else if (numInfra > numRes)
                     {
@@ -62,7 +62,7 @@ namespace MainCore.Helper
                 }
             }
 
-            return GetFirstTask(planManager, villageId);
+            return GetFirstTask(context, planManager, villageId);
         }
 
         public static PlanTask ExtractResField(AppDbContext context, int villageId, PlanTask buildingTask)
@@ -83,14 +83,14 @@ namespace MainCore.Helper
                     break;
             }
 
-            buildings.ForEach(b =>
+            foreach (var b in buildings)
             {
                 if (b.IsUnderConstruction)
                 {
                     var levelUpgrading = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).Count(x => x.Location == b.Id);
                     b.Level += (byte)levelUpgrading;
                 }
-            });
+            }
             buildings = buildings.Where(b => b.Level < buildingTask.Level).ToList();
 
             if (buildings.Count == 0) return null;
@@ -137,18 +137,37 @@ namespace MainCore.Helper
             return task;
         }
 
-        private static PlanTask GetFirstInfrastructureTask(IPlanManager planManager, int villageId)
+        private static PlanTask GetFirstInfrastructureTask(AppDbContext context, IPlanManager planManager, int villageId)
         {
             var tasks = planManager.GetList(villageId);
-            var task = tasks.FirstOrDefault(x => x.Type == PlanTypeEnums.General && !x.Building.IsResourceField());
+            var infrastructureTasks = tasks.Where(x => x.Type == PlanTypeEnums.General && !x.Building.IsResourceField());
+            var task = infrastructureTasks.FirstOrDefault(x => IsInfrastructureTaskVaild(context, villageId, x));
             return task;
         }
 
-        private static PlanTask GetFirstTask(IPlanManager planManager, int villageId)
+        private static PlanTask GetFirstTask(AppDbContext context, IPlanManager planManager, int villageId)
         {
             var tasks = planManager.GetList(villageId);
-            var task = tasks.FirstOrDefault();
-            return task;
+            foreach (var task in tasks)
+            {
+                if (task.Type != PlanTypeEnums.General) return task;
+                if (task.Building.IsResourceField()) return task;
+                if (IsInfrastructureTaskVaild(context, villageId, task)) return task;
+            }
+            return null;
+        }
+
+        private static bool IsInfrastructureTaskVaild(AppDbContext context, int villageId, PlanTask planTask)
+        {
+            (_, var prerequisiteBuildings) = planTask.Building.GetPrerequisiteBuildings();
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
+            foreach (var prerequisiteBuilding in prerequisiteBuildings)
+            {
+                var building = buildings.FirstOrDefault(x => x.Type == prerequisiteBuilding.Building);
+                if (building is null) return false;
+                if (building.Level < prerequisiteBuilding.Level) return false;
+            }
+            return true;
         }
 
         public static DateTime GetTimeWhenEnough(this VillageProduction production, long[] resRequired)

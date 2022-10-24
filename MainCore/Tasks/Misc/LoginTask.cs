@@ -45,7 +45,8 @@ namespace MainCore.Tasks.Misc
             {
                 var driver = _chromeBrowser.GetChrome();
                 var acceptCookie = driver.FindElements(By.ClassName("cmpboxbtnyes"));
-                acceptCookie[0].Click();
+                using var context = _contextFactory.CreateDbContext();
+                acceptCookie.Click(_chromeBrowser, context, AccountId);
             }
         }
 
@@ -103,7 +104,7 @@ namespace MainCore.Tasks.Misc
             passwordElement[0].SendKeys(Keys.Shift + Keys.End);
             passwordElement[0].SendKeys(access.Password);
 
-            buttonElements[0].Click();
+            buttonElements.Click(_chromeBrowser, context, AccountId);
 
             var setting = context.AccountsSettings.Find(AccountId);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
@@ -126,7 +127,7 @@ namespace MainCore.Tasks.Misc
                 {
                     throw new Exception("Cannot find skip quest button");
                 }
-                skipButtons[0].Click();
+                skipButtons.Click(_chromeBrowser, context, AccountId);
 
                 NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
                 NavigateHelper.WaitPageLoaded(_chromeBrowser);
@@ -165,7 +166,7 @@ namespace MainCore.Tasks.Misc
                     var update = updateList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (update is null)
                     {
-                        _taskManager.Add(AccountId, new UpdateDorf1(village.Id, AccountId));
+                        _taskManager.Add(AccountId, new RefreshVillage(village.Id, AccountId));
                     }
                 }
             }

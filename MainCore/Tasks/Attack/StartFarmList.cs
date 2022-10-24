@@ -1,3 +1,4 @@
+using MainCore.Helper;
 using MainCore.Services;
 using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,6 @@ using System.Linq;
 
 #elif TTWARS
 
-using MainCore.Helper;
 using HtmlAgilityPack;
 using System.Threading;
 
@@ -21,7 +21,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.Attack
 {
-    public class StartFarmList : UpdateFarmList
+    public class StartFarmList : AccountBotTask
     {
         public StartFarmList(int accountId, int farmId) : base(accountId, "Start farmlist")
         {
@@ -58,7 +58,14 @@ namespace MainCore.Tasks.Attack
 
         public override void Execute()
         {
-            base.Execute();
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
+            if (!IsUpdateFail())
+            {
+                return;
+            }
 
             if (!IsFarmExist())
             {
@@ -71,8 +78,10 @@ namespace MainCore.Tasks.Attack
                 return;
             }
             if (Cts.IsCancellationRequested) return;
-
-            ClickStartFarm();
+            {
+                using var context = _contextFactory.CreateDbContext();
+                ClickStartFarm(context, AccountId);
+            }
             if (Cts.IsCancellationRequested) return;
 
             {
@@ -82,6 +91,14 @@ namespace MainCore.Tasks.Attack
                 ExecuteAt = DateTime.Now.AddSeconds(time);
                 _logManager.Information(AccountId, $"Farmlist {_nameFarm} was sent.");
             }
+        }
+
+        private bool IsUpdateFail()
+        {
+            var updateTask = new UpdateFarmList(AccountId);
+            updateTask.CopyFrom(this);
+            updateTask.Execute();
+            return updateTask.IsFail;
         }
 
         private bool IsFarmExist()
@@ -101,7 +118,7 @@ namespace MainCore.Tasks.Attack
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
-        private void ClickStartFarm()
+        private void ClickStartFarm(AppDbContext context, int accountId)
         {
             var html = _chromeBrowser.GetHtml();
             var farmNode = html.GetElementbyId($"raidList{FarmId}");
@@ -110,14 +127,13 @@ namespace MainCore.Tasks.Attack
             if (startNode is null) throw new Exception("Cannot found start button");
             var startElements = _chromeBrowser.GetChrome().FindElements(By.XPath(startNode.XPath));
             if (startElements.Count == 0) throw new Exception("Cannot found start button");
-            startElements[0].Click();
+            startElements.Click(_chromeBrowser, context, accountId);
         }
 
 #elif TTWARS
 
-        private void ClickStartFarm()
+        private void ClickStartFarm(AppDbContext context, int accountId)
         {
-            using var context = _contextFactory.CreateDbContext();
             var setting = context.AccountsSettings.Find(AccountId);
 
             var chrome = _chromeBrowser.GetChrome();
@@ -142,7 +158,7 @@ namespace MainCore.Tasks.Attack
             {
                 throw new Exception("Cannot find check all check box");
             }
-            checkboxAlls[0].Click();
+            checkboxAlls.Click(_chromeBrowser, context, accountId);
 
             delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
             Thread.Sleep(delay);
@@ -159,7 +175,7 @@ namespace MainCore.Tasks.Attack
             {
                 throw new Exception("Cannot find button start farmlist");
             }
-            buttonStartFarms[0].Click();
+            buttonStartFarms.Click(_chromeBrowser, context, accountId);
 
             NavigateHelper.SwitchTab(_chromeBrowser, 1, context, AccountId);
         }

@@ -12,10 +12,22 @@
   <ItemGroup>
     <None Remove="Resources\clay.png" />
     <None Remove="Resources\crop.png" />
+    <None Remove="Resources\egyptian.png" />
+    <None Remove="Resources\gaul.png" />
     <None Remove="Resources\granary.png" />
+    <None Remove="Resources\hun.png" />
     <None Remove="Resources\iron.png" />
+    <None Remove="Resources\natar.png" />
+    <None Remove="Resources\nature.png" />
+    <None Remove="Resources\roman.png" />
+    <None Remove="Resources\spartan.png" />
+    <None Remove="Resources\teuton.png" />
     <None Remove="Resources\warehouse.png" />
     <None Remove="Resources\wood.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\gaul.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,8 +37,15 @@
   <ItemGroup>
     <Resource Include="Resources\clay.png" />
     <Resource Include="Resources\crop.png" />
+    <Resource Include="Resources\egyptian.png" />
     <Resource Include="Resources\granary.png" />
+    <Resource Include="Resources\hun.png" />
     <Resource Include="Resources\iron.png" />
+    <Resource Include="Resources\natar.png" />
+    <Resource Include="Resources\nature.png" />
+    <Resource Include="Resources\roman.png" />
+    <Resource Include="Resources\spartan.png" />
+    <Resource Include="Resources\teuton.png" />
     <Resource Include="Resources\warehouse.png" />
     <Resource Include="Resources\wood.png" />
   </ItemGroup>

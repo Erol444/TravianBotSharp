@@ -24,6 +24,9 @@ namespace WPFUI.Models
             AutoNPCClay = settings.AutoNPCClay.ToString();
             AutoNPCIron = settings.AutoNPCIron.ToString();
             AutoNPCCrop = settings.AutoNPCCrop.ToString();
+
+            IsUpgradeTroop = settings.IsUpgradeTroop;
+            UpgradeTroop = settings.GetTroopUpgrade();
         }
 
         public void CopyTo(MainCore.Models.Database.VillageSetting settings)
@@ -50,6 +53,9 @@ namespace WPFUI.Models
             settings.AutoNPCClay = int.Parse(AutoNPCClay);
             settings.AutoNPCIron = int.Parse(AutoNPCIron);
             settings.AutoNPCCrop = int.Parse(AutoNPCCrop);
+
+            settings.IsUpgradeTroop = IsUpgradeTroop;
+            settings.SetTroopUpgrade(UpgradeTroop);
         }
 
         public bool IsValidate()
@@ -213,6 +219,22 @@ namespace WPFUI.Models
         {
             get => _autoNPCCrop;
             set => this.RaiseAndSetIfChanged(ref _autoNPCCrop, value);
+        }
+
+        private bool _isUpgradeTroop;
+
+        public bool IsUpgradeTroop
+        {
+            get => _isUpgradeTroop;
+            set => this.RaiseAndSetIfChanged(ref _isUpgradeTroop, value);
+        }
+
+        private bool[] _upgradeTroop;
+
+        public bool[] UpgradeTroop
+        {
+            get => _upgradeTroop;
+            set => this.RaiseAndSetIfChanged(ref _upgradeTroop, value);
         }
     }
 }

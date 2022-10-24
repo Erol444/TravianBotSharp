@@ -32,6 +32,10 @@ namespace MainCore.Tasks.Sim
         {
             do
             {
+                {
+                    using var context = _contextFactory.CreateDbContext();
+                    NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                }
                 StopFlag = false;
                 if (Cts.IsCancellationRequested) return;
 
@@ -111,7 +115,8 @@ namespace MainCore.Tasks.Sim
             {
                 throw new Exception($"Cannot find Build button for {buildingTask.Building}");
             }
-            elements[0].Click();
+            using var context = _contextFactory.CreateDbContext();
+            elements.Click(_chromeBrowser, context, AccountId);
 
             if (buildingTask.Level == 1)
             {
@@ -138,7 +143,9 @@ namespace MainCore.Tasks.Sim
                 {
                     throw new Exception($"Cannot find fast upgrade button for {buildingTask.Building}");
                 }
-                elements[0].Click();
+
+                using var context = _contextFactory.CreateDbContext();
+                elements.Click(_chromeBrowser, context, AccountId);
             }
             var rand = new Random(DateTime.Now.Second);
 
@@ -149,8 +156,9 @@ namespace MainCore.Tasks.Sim
                 if (nodeNotShowAgainConfirm is not null)
                 {
                     var elements = chrome.FindElements(By.XPath(nodeNotShowAgainConfirm.ParentNode.XPath));
-                    elements[0].Click();
-                    chrome.ExecuteScript("jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
+
+                    using var context = _contextFactory.CreateDbContext();
+                    elements.Click(_chromeBrowser, context, AccountId); chrome.ExecuteScript("jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
                 }
             }
             {
@@ -177,7 +185,9 @@ namespace MainCore.Tasks.Sim
                 {
                     throw new Exception($"Cannot find iframe for {buildingTask.Building}");
                 }
-                elementsIframe[0].Click();
+
+                using var context = _contextFactory.CreateDbContext();
+                elementsIframe.Click(_chromeBrowser, context, AccountId);
                 chrome.SwitchTo().DefaultContent();
 
                 Thread.Sleep(rand.Next(1300, 2000));
@@ -194,7 +204,8 @@ namespace MainCore.Tasks.Sim
                     chrome.SwitchTo().Window(other);
                     chrome.Close();
                     chrome.SwitchTo().Window(current);
-                    elementsIframe[0].Click();
+
+                    elementsIframe.Click(_chromeBrowser, context, AccountId);
                     chrome.SwitchTo().DefaultContent();
                 }
                 while (true);
@@ -209,10 +220,12 @@ namespace MainCore.Tasks.Sim
                 if (html.GetElementbyId("dontShowThisAgain") is not null)
                 {
                     var dontshowthisagain = chrome.FindElements(By.Id("dontShowThisAgain"));
-                    dontshowthisagain[0].Click();
+
+                    using var context = _contextFactory.CreateDbContext();
+                    dontshowthisagain.Click(_chromeBrowser, context, AccountId);
                     Thread.Sleep(800);
                     var dialogbuttonok = chrome.FindElements(By.ClassName("dialogButtonOk"));
-                    dialogbuttonok[0].Click();
+                    dialogbuttonok.Click(_chromeBrowser, context, AccountId);
                 }
             }
         }
@@ -243,8 +256,8 @@ namespace MainCore.Tasks.Sim
             {
                 throw new Exception($"Cannot find upgrade button for {buildingTask.Building}");
             }
-
-            elements[0].Click();
+            using var context = _contextFactory.CreateDbContext();
+            elements.Click(_chromeBrowser, context, AccountId);
         }
 
         private void Update()
@@ -427,7 +440,7 @@ namespace MainCore.Tasks.Sim
                 }
                 else
                 {
-                    if (buildingTask.Building.HasMultipleTabs())
+                    if (buildingTask.Building.HasMultipleTabs() && building.Level != 0)
                     {
                         NavigateHelper.SwitchTab(_chromeBrowser, 0, context, AccountId);
                     }

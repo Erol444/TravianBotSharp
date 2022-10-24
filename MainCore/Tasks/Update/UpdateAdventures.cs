@@ -13,9 +13,10 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
+            IsFail = true;
             using var context = _contextFactory.CreateDbContext();
-
-            NavigateHelper.ToAdventure(_chromeBrowser);
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            NavigateHelper.ToAdventure(_chromeBrowser, context, AccountId);
             if (Cts.IsCancellationRequested) return;
             UpdateHelper.UpdateAdventures(context, _chromeBrowser, AccountId);
 
@@ -42,6 +43,7 @@ namespace MainCore.Tasks.Update
                     NextExecute();
                 }
             }
+            IsFail = false;
         }
 
         private void NextExecute()
@@ -70,7 +72,16 @@ namespace MainCore.Tasks.Update
 
             int sec = int.Parse(timer.GetAttributeValue("value", "0"));
             if (sec < 0) sec = 0;
-            ExecuteAt = DateTime.Now.AddSeconds(sec * 2);
+#if TRAVIAN_OFFICIAL_HEROUI || TRAVIAN_OFFICIAL
+            ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + Random.Shared.Next(20, 40));
+
+#elif TTWARS
+            ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + 1);
+#else
+
+#error You forgot to define Travian version here
+
+#endif
         }
     }
 }

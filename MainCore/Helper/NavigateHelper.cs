@@ -3,6 +3,7 @@ using System;
 using OpenQA.Selenium;
 using MainCore.Exceptions;
 using System.Threading;
+using System.Collections.ObjectModel;
 
 #if TRAVIAN_OFFICIAL
 
@@ -133,13 +134,19 @@ namespace MainCore.Helper
 
                     var chrome = chromeBrowser.GetChrome();
                     var elements = chrome.FindElements(By.XPath(node.XPath));
-                    elements[0].Click();
-                    var delay = GetDelayClick(context, accountId);
-                    Thread.Sleep(delay);
-                    WaitPageLoaded(chromeBrowser);
-                    AfterClicking(chromeBrowser, context, accountId);
+                    elements.Click(chromeBrowser, context, accountId);
+                    break;
                 }
             }
+        }
+
+        public static void Click(this ReadOnlyCollection<IWebElement> elements, IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
+        {
+            elements[0].Click();
+            var delay = GetDelayClick(context, accountId);
+            Thread.Sleep(delay);
+            WaitPageLoaded(chromeBrowser);
+            AfterClicking(chromeBrowser, context, accountId);
         }
 
         public static bool ToDorf1(IChromeBrowser chromeBrowser, AppDbContext context, int accountId, bool isForce = false)
@@ -176,7 +183,7 @@ namespace MainCore.Helper
                 throw new Exception("Cannot find Resources button");
             }
 
-            elements[0].Click();
+            elements.Click(chromeBrowser, context, accountId);
 
             Thread.Sleep(delay);
             WaitPageChanged(chromeBrowser, "dorf1");
@@ -218,7 +225,7 @@ namespace MainCore.Helper
                 throw new Exception("Cannot find Buildings button");
             }
 
-            elements[0].Click();
+            elements.Click(chromeBrowser, context, accountId);
 
             Thread.Sleep(delay);
             WaitPageChanged(chromeBrowser, "dorf2");
@@ -262,7 +269,7 @@ namespace MainCore.Helper
                         {
                             throw new Exception($"Cannot find resource field at {index}");
                         }
-                        elements[0].Click();
+                        elements.Click(chromeBrowser, context, accountId);
                     }
                     break;
 
@@ -327,7 +334,7 @@ namespace MainCore.Helper
                 {
                     throw new Exception("Cannot find building tabs");
                 }
-                elements[0].Click();
+                elements.Click(chromeBrowser, context, accountId);
 
                 var delay = GetDelayClick(context, accountId);
                 Thread.Sleep(delay);
@@ -336,7 +343,7 @@ namespace MainCore.Helper
             }
         }
 
-        public static void ToHeroInventory(IChromeBrowser chromeBrowser)
+        public static void ToHeroInventory(IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
         {
             var html = chromeBrowser.GetHtml();
 #if TRAVIAN_OFFICIAL_HEROUI
@@ -351,7 +358,8 @@ namespace MainCore.Helper
             {
                 throw new Exception("Cannot find hero avatar");
             }
-            elements[0].Click();
+
+            elements.Click(chromeBrowser, context, accountId);
             var wait = chromeBrowser.GetWait();
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
             wait.Until(driver =>
@@ -375,7 +383,7 @@ namespace MainCore.Helper
             {
                 throw new Exception("Cannot find hero inventory button");
             }
-            elements[0].Click();
+            elements.Click(chromeBrowser, context, accountId);
 
             var wait = chromeBrowser.GetWait();
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
@@ -386,7 +394,7 @@ namespace MainCore.Helper
 #endif
         }
 
-        public static void ToAdventure(IChromeBrowser chromeBrowser)
+        public static void ToAdventure(IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
         {
             var html = chromeBrowser.GetHtml();
 #if TRAVIAN_OFFICIAL_HEROUI
@@ -403,7 +411,7 @@ namespace MainCore.Helper
                 throw new Exception("Cannot find adventures button");
             }
 
-            elements[0].Click();
+            elements.Click(chromeBrowser, context, accountId);
             var wait = chromeBrowser.GetWait();
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
             wait.Until(driver =>
@@ -428,7 +436,7 @@ namespace MainCore.Helper
             {
                 throw new Exception("Cannot find adventures button");
             }
-            elements[0].Click();
+            elements.Click(chromeBrowser, context, accountId);
             var wait = chromeBrowser.GetWait();
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 #else

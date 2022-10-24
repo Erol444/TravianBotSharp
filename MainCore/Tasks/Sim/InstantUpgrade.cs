@@ -1,4 +1,5 @@
 ﻿using MainCore.Helper;
+using MainCore.Tasks.Misc;
 using MainCore.Tasks.Update;
 using System;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace MainCore.Tasks.Sim
         public override void Execute()
         {
             using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             var setting = context.AccountsSettings.Find(AccountId);
             NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
@@ -24,20 +26,26 @@ namespace MainCore.Tasks.Sim
                 NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
             }
             if (Cts.IsCancellationRequested) return;
-            ClickHelper.ClickCompleteNow(_chromeBrowser);
+            ClickHelper.ClickCompleteNow(_chromeBrowser, context, AccountId);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
 
             if (Cts.IsCancellationRequested) return;
             ClickHelper.WaitDialogFinishNow(_chromeBrowser);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
 
-            ClickHelper.ClickConfirmFinishNow(_chromeBrowser);
+            ClickHelper.ClickConfirmFinishNow(_chromeBrowser, context, AccountId);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
 
             NavigateHelper.WaitPageLoaded(_chromeBrowser);
             NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
 
             var tasks = _taskManager.GetList(AccountId);
+            var improveTroopTask = tasks.OfType<ImproveTroopsTask>().FirstOrDefault(x => x.VillageId == VillageId);
+            if (improveTroopTask is not null)
+            {
+                improveTroopTask.ExecuteAt = DateTime.Now;
+                _taskManager.Update(AccountId);
+            }
             var upgradeTask = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == VillageId);
             if (upgradeTask is not null)
             {

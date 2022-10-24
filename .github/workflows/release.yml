@@ -101,7 +101,7 @@ jobs:
             ${{needs.version.outputs.changelog}}
   Discord:
     runs-on: ubuntu-latest
-    needs: release
+    needs: [release, version] 
     steps:
       - name: Ping @everyone
         run: |

@@ -1,4 +1,5 @@
 ﻿using MainCore.Enums;
+using MainCore.Helper;
 using MainCore.Models.Database;
 using System;
 using System.Collections.Generic;
@@ -32,9 +33,15 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
-            UpdateVillageList();
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
+            IsFail = true;
             UpdateAccountInfo();
+            UpdateVillageList();
             UpdateHeroInfo();
+            IsFail = false;
         }
 
         private void UpdateVillageList()
@@ -65,6 +72,7 @@ namespace MainCore.Tasks.Update
                 context.DeleteVillage(item.Id);
             }
 
+            var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             foreach (var newVill in foundVills)
             {
                 context.Villages.Add(new Village()
@@ -76,6 +84,7 @@ namespace MainCore.Tasks.Update
                     Y = newVill.Y,
                 });
                 context.AddVillage(newVill.Id);
+                context.AddTroop(newVill.Id, tribe);
 
                 var tasks = _taskManager.GetList(AccountId).OfType<UpdateVillage>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
@@ -147,10 +156,13 @@ namespace MainCore.Tasks.Update
             var adventures = context.Adventures.Count(x => x.AccountId == AccountId);
             if (numberAdventure == 0)
             {
-                var heroAdventures = context.Adventures.Where(x => x.AccountId == AccountId).ToList();
+                if (adventures != 0)
+                {
+                    var heroAdventures = context.Adventures.Where(x => x.AccountId == AccountId).ToList();
 
-                context.Adventures.RemoveRange(heroAdventures);
-                context.SaveChanges();
+                    context.Adventures.RemoveRange(heroAdventures);
+                    context.SaveChanges();
+                }
             }
             else if (adventures != numberAdventure)
             {

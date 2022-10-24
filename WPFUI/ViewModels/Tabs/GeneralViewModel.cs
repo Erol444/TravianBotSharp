@@ -1,7 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
-using MainCore.Tasks.Update;
 using ReactiveUI;
 using System;
 using System.Linq;
@@ -127,7 +126,7 @@ namespace WPFUI.ViewModels.Tabs
                 var villageSetting = context.VillagesSettings.Find(village.Id);
                 if (villageSetting.IsAutoRefresh)
                 {
-                    _taskManager.Add(index, new UpdateDorf1(village.Id, index));
+                    _taskManager.Add(index, new RefreshVillage(village.Id, index));
                 }
             }
 
