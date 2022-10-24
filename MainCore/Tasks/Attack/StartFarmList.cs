@@ -1,9 +1,10 @@
+using MainCore.Helper;
 using MainCore.Services;
+using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
-using MainCore.Tasks.Update;
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
@@ -74,8 +75,10 @@ namespace MainCore.Tasks.Attack
                 return;
             }
             if (Cts.IsCancellationRequested) return;
-
-            ClickStartFarm();
+            {
+                using var context = _contextFactory.CreateDbContext();
+                ClickStartFarm(context, AccountId);
+            }
             if (Cts.IsCancellationRequested) return;
 
             {
@@ -112,7 +115,7 @@ namespace MainCore.Tasks.Attack
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
-        private void ClickStartFarm()
+        private void ClickStartFarm(AppDbContext context, int accountId)
         {
             var html = _chromeBrowser.GetHtml();
             var farmNode = html.GetElementbyId($"raidList{FarmId}");
@@ -121,7 +124,7 @@ namespace MainCore.Tasks.Attack
             if (startNode is null) throw new Exception("Cannot found start button");
             var startElements = _chromeBrowser.GetChrome().FindElements(By.XPath(startNode.XPath));
             if (startElements.Count == 0) throw new Exception("Cannot found start button");
-            startElements[0].Click();
+            startElements.Click(_chromeBrowser, context, accountId);
         }
 
 #elif TTWARS
@@ -153,7 +156,7 @@ namespace MainCore.Tasks.Attack
             {
                 throw new Exception("Cannot find check all check box");
             }
-            checkboxAlls[0].Click();
+            checkboxAlls.Click(chromeBrowser, context, accountId);
 
             delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
             Thread.Sleep(delay);
@@ -170,7 +173,7 @@ namespace MainCore.Tasks.Attack
             {
                 throw new Exception("Cannot find button start farmlist");
             }
-            buttonStartFarms[0].Click();
+            buttonStartFarms.Click(chromeBrowser, context, accountId);
 
             NavigateHelper.SwitchTab(_chromeBrowser, 1, context, AccountId);
         }

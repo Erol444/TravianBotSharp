@@ -32,7 +32,8 @@ namespace MainCore.Tasks.Sim
         {
             var x = adventure.X;
             var y = adventure.Y;
-            ClickHelper.ClickStartAdventure(_chromeBrowser, x, y);
+            using var context = _contextFactory.CreateDbContext();
+            ClickHelper.ClickStartAdventure(_chromeBrowser, x, y, context, AccountId);
         }
     }
 }

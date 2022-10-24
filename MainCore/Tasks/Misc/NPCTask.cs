@@ -121,8 +121,8 @@ namespace MainCore.Tasks.Misc
             {
                 throw new Exception("NPC button is not found");
             }
-
-            npcButtonElements[0].Click();
+            using var context = _contextFactory.CreateDbContext();
+            npcButtonElements.Click(_chromeBrowser, context, AccountId);
 
             var wait = _chromeBrowser.GetWait();
             wait.Until(driver =>
@@ -209,7 +209,8 @@ namespace MainCore.Tasks.Misc
             {
                 throw new Exception("NPC submit button is not found");
             }
-            distributeElements[0].Click();
+            using var context = _contextFactory.CreateDbContext();
+            distributeElements.Click(_chromeBrowser, context, AccountId);
 
             var wait = _chromeBrowser.GetWait();
             wait.Until(driver =>
@@ -224,7 +225,7 @@ namespace MainCore.Tasks.Misc
             {
                 throw new Exception("NPC submit button is not found");
             }
-            submitElements[0].Click();
+            submitElements.Click(_chromeBrowser, context, AccountId);
         }
     }
 }

@@ -25,14 +25,14 @@ namespace MainCore.Tasks.Sim
                 NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
             }
             if (Cts.IsCancellationRequested) return;
-            ClickHelper.ClickCompleteNow(_chromeBrowser);
+            ClickHelper.ClickCompleteNow(_chromeBrowser, context, AccountId);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
 
             if (Cts.IsCancellationRequested) return;
             ClickHelper.WaitDialogFinishNow(_chromeBrowser);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
 
-            ClickHelper.ClickConfirmFinishNow(_chromeBrowser);
+            ClickHelper.ClickConfirmFinishNow(_chromeBrowser, context, AccountId);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
 
             NavigateHelper.WaitPageLoaded(_chromeBrowser);

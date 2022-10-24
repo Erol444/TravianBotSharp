@@ -25,7 +25,7 @@ namespace MainCore.Helper
 {
     public static class ClickHelper
     {
-        public static void ClickCompleteNow(IChromeBrowser chromeBrowser)
+        public static void ClickCompleteNow(IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
         {
             var html = chromeBrowser.GetHtml();
             var finishButton = InstantComplete.GetFinishButton(html);
@@ -39,7 +39,7 @@ namespace MainCore.Helper
             {
                 throw new Exception("Cannot find finish button");
             }
-            finishElements[0].Click();
+            finishElements.Click(chromeBrowser, context, accountId);
         }
 
         public static void WaitDialogFinishNow(IChromeBrowser chromeBrowser)
@@ -54,7 +54,7 @@ namespace MainCore.Helper
             });
         }
 
-        public static void ClickConfirmFinishNow(IChromeBrowser chromeBrowser)
+        public static void ClickConfirmFinishNow(IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
         {
             var html = chromeBrowser.GetHtml();
             var finishButton = InstantComplete.GetConfirmButton(html);
@@ -68,10 +68,10 @@ namespace MainCore.Helper
             {
                 throw new Exception("Cannot find confirm button");
             }
-            finishElements[0].Click();
+            finishElements.Click(chromeBrowser, context, accountId);
         }
 
-        public static void ClickStartAdventure(IChromeBrowser chromeBrowser, int x, int y)
+        public static void ClickStartAdventure(IChromeBrowser chromeBrowser, int x, int y, AppDbContext context, int accountId)
         {
             var html = chromeBrowser.GetHtml();
             var finishButton = HeroPage.GetStartAdventureButton(html, x, y);
@@ -85,7 +85,7 @@ namespace MainCore.Helper
             {
                 throw new Exception("Cannot find start adventure button");
             }
-            finishElements[0].Click();
+            finishElements.Click(chromeBrowser, context, accountId);
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 #elif TTWARS
@@ -97,9 +97,8 @@ namespace MainCore.Helper
                 return elements[0].Enabled && elements[0].Displayed;
             });
 
-
             var elements = chrome.FindElements(By.Id("start"));
-            elements[0].Click();
+            elements.Click(chromeBrowser, context, accountId);
 
             wait.Until(driver =>
             {

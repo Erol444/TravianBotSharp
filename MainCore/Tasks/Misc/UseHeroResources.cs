@@ -31,7 +31,7 @@ namespace MainCore.Tasks.Misc
                     return;
                 }
                 if (amount < 0) continue;
-                HeroHelper.ClickItem(_chromeBrowser, item);
+                HeroHelper.ClickItem(_chromeBrowser, item, context, AccountId);
 
                 if (amount <= 1)
                 {
@@ -41,7 +41,7 @@ namespace MainCore.Tasks.Misc
                 {
                     Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
                     HeroHelper.EnterAmount(_chromeBrowser, RoundUpTo100(amount));
-                    HeroHelper.Confirm(_chromeBrowser);
+                    HeroHelper.Confirm(_chromeBrowser, context, AccountId);
                     Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));
                 }
                 Thread.Sleep(_rand.Next(setting.ClickDelayMin, setting.ClickDelayMax));

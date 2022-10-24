@@ -182,9 +182,8 @@ namespace MainCore.Tasks.Misc
                 var chrome = _chromeBrowser.GetChrome();
                 var upgradeElements = chrome.FindElements(By.XPath(upgradeButton.XPath));
                 if (upgradeElements.Count == 0) throw new Exception("Cannot found upgrade button");
-                upgradeElements[0].Click();
                 using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                upgradeElements.Click(_chromeBrowser, context, AccountId);
             }
         }
 
