@@ -72,7 +72,16 @@ namespace MainCore.Tasks.Update
 
             int sec = int.Parse(timer.GetAttributeValue("value", "0"));
             if (sec < 0) sec = 0;
+#if TRAVIAN_OFFICIAL_HEROUI || TRAVIAN_OFFICIAL
             ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + Random.Shared.Next(20, 40));
+
+#elif TTWARS
+            ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + 1);
+#else
+
+#error You forgot to define Travian version here
+
+#endif
         }
     }
 }
