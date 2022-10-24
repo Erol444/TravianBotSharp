@@ -1,4 +1,5 @@
 ﻿using MainCore.Enums;
+using MainCore.Helper;
 using MainCore.Models.Database;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,10 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
             IsFail = true;
             UpdateAccountInfo();
             UpdateVillageList();

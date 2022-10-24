@@ -15,6 +15,7 @@ namespace MainCore.Tasks.Sim
         public override void Execute()
         {
             using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             var setting = context.AccountsSettings.Find(AccountId);
             NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);

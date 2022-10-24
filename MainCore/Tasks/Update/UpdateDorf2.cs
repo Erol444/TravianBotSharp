@@ -10,6 +10,10 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
             IsFail = true;
             ToDorf2();
             if (IsUpdateFail()) return;

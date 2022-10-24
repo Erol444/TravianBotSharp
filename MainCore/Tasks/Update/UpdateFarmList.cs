@@ -12,6 +12,10 @@ namespace MainCore.Tasks.Update
 
         public override void Execute()
         {
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
             IsFail = true;
             var village = GetVillageHasRallyPoint();
             if (IsStop()) return;

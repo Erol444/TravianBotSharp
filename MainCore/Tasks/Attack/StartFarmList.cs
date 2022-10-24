@@ -59,6 +59,10 @@ namespace MainCore.Tasks.Attack
 
         public override void Execute()
         {
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
             if (!IsUpdateFail())
             {
                 return;

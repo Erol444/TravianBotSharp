@@ -15,7 +15,7 @@ namespace MainCore.Tasks.Update
         {
             IsFail = true;
             using var context = _contextFactory.CreateDbContext();
-
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             NavigateHelper.ToAdventure(_chromeBrowser, context, AccountId);
             if (Cts.IsCancellationRequested) return;
             UpdateHelper.UpdateAdventures(context, _chromeBrowser, AccountId);

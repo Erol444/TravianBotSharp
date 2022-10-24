@@ -19,6 +19,7 @@ namespace MainCore.Tasks.Misc
         public override void Execute()
         {
             using var context = _contextFactory.CreateDbContext();
+            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             if (VillageId != -1) NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
             var heroStatus = context.Heroes.Find(AccountId).Status;
             var setting = context.AccountsSettings.Find(AccountId);

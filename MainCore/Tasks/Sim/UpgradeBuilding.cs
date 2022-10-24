@@ -32,6 +32,10 @@ namespace MainCore.Tasks.Sim
         {
             do
             {
+                {
+                    using var context = _contextFactory.CreateDbContext();
+                    NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                }
                 StopFlag = false;
                 if (Cts.IsCancellationRequested) return;
 

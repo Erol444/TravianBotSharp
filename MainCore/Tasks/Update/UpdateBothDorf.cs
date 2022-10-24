@@ -12,6 +12,10 @@ namespace MainCore.Tasks.Update
         public override void Execute()
         {
             IsFail = true;
+            {
+                using var context = _contextFactory.CreateDbContext();
+                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            }
             var url = _chromeBrowser.GetCurrentUrl();
             if (url.Contains("dorf2"))
             {
