@@ -127,7 +127,7 @@ namespace MainCore.Tasks.Misc
                 {
                     throw new Exception("Cannot find skip quest button");
                 }
-                skipButtons.Click(chromeBrowser, context, accountId);
+                skipButtons.Click(_chromeBrowser, context, AccountId);
 
                 NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
                 NavigateHelper.WaitPageLoaded(_chromeBrowser);

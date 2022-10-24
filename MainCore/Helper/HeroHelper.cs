@@ -7,6 +7,7 @@ using System;
 #if TRAVIAN_OFFICIAL
 
 using TravianOfficialCore.FindElements;
+using System.Threading;
 
 #elif TRAVIAN_OFFICIAL_HEROUI
 
@@ -16,6 +17,7 @@ using TravianOfficialNewHeroUICore.FindElements;
 #elif TTWARS
 
 using TTWarsCore.FindElements;
+using System.Threading;
 
 #else
 

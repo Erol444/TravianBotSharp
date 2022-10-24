@@ -10,7 +10,6 @@ using System.Linq;
 
 #elif TTWARS
 
-using MainCore.Helper;
 using HtmlAgilityPack;
 using System.Threading;
 
@@ -133,9 +132,8 @@ namespace MainCore.Tasks.Attack
 
 #elif TTWARS
 
-        private void ClickStartFarm()
+        private void ClickStartFarm(AppDbContext context, int accountId)
         {
-            using var context = _contextFactory.CreateDbContext();
             var setting = context.AccountsSettings.Find(AccountId);
 
             var chrome = _chromeBrowser.GetChrome();
@@ -160,7 +158,7 @@ namespace MainCore.Tasks.Attack
             {
                 throw new Exception("Cannot find check all check box");
             }
-            checkboxAlls.Click(chromeBrowser, context, accountId);
+            checkboxAlls.Click(_chromeBrowser, context, accountId);
 
             delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
             Thread.Sleep(delay);
@@ -177,7 +175,7 @@ namespace MainCore.Tasks.Attack
             {
                 throw new Exception("Cannot find button start farmlist");
             }
-            buttonStartFarms.Click(chromeBrowser, context, accountId);
+            buttonStartFarms.Click(_chromeBrowser, context, accountId);
 
             NavigateHelper.SwitchTab(_chromeBrowser, 1, context, AccountId);
         }
