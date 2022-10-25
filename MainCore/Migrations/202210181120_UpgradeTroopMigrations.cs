@@ -16,7 +16,7 @@ namespace MainCore.Migrations
         {
             Alter.Table("VillagesSettings")
                 .AddColumn("IsUpgradeTroop").AsBoolean().WithDefaultValue(false)
-                .AddColumn("UpgradeTroop").AsString();
+                .AddColumn("UpgradeTroop").AsString().Nullable();
         }
     }
 }
