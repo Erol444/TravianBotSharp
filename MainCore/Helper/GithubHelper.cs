@@ -30,18 +30,5 @@ namespace MainCore.Helper
             }
             return null;
         }
-
-        public static async Task<Version> CheckGitHublatestBuild()
-        {
-            try
-            {
-                var releases = await _client.Repository.Release.GetAll(_username, _repo);
-                if (releases.Count > 0) return new Version(releases[0].TagName);
-            }
-            catch
-            {
-            }
-            return null;
-        }
     }
 }

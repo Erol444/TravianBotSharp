@@ -13,7 +13,6 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="2*" />
@@ -31,15 +30,8 @@
         <Border x:Name="LastVersionBorder" BorderBrush="Black" BorderThickness="1" Grid.Column="1" Margin="20,10,20,0" Grid.Row="2">
             <TextBlock x:Name="LastVersionLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" />
         </Border>
-        <Border x:Name="LastBuildBorder" BorderBrush="Black" BorderThickness="1" Grid.Column="2" Margin="20,10,20,0" Grid.Row="2">
-            <TextBlock x:Name="LastBuildLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" />
-        </Border>
-        <Border x:Name="NoteBorder" BorderBrush="Black" BorderThickness="1" Grid.ColumnSpan="3" Margin="20,5,20,5" Grid.Row="3">
-            <TextBlock x:Name="NoteLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="Latest version is stable (we hope) while latest build is unstable and maybe for tester only" VerticalAlignment="Center" />
-        </Border>
         <Button x:Name="DiscordButton" Content="Discord" HorizontalAlignment="Stretch" Margin="20,0,20,0" Grid.Row="1" VerticalAlignment="Stretch" />
         <Button x:Name="LastVersionButton" Grid.Column="1" Content="Download latest version" HorizontalAlignment="Stretch" Margin="20,0,20,0" Grid.Row="1" VerticalAlignment="Stretch" />
-        <Button x:Name="LastBuildButton" Grid.Column="2" Content="Download latest build" HorizontalAlignment="Stretch" Margin="20,0,20,0" Grid.Row="1" VerticalAlignment="Stretch" />
         <Button x:Name="CloseButton" Content="Close" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Margin="20,0,20,10" Grid.Row="4" VerticalAlignment="Stretch" />
     </Grid>
 </reactiveui:ReactiveWindow>
