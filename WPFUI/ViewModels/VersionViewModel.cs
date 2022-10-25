@@ -18,16 +18,14 @@ namespace WPFUI.ViewModels
 
             DiscordCommand = ReactiveCommand.Create(DiscordTask);
             LatestVersionCommand = ReactiveCommand.Create(LatestVersionTask, this.WhenAnyValue(x => x.IsNewVersion));
-            LatestBuildCommand = ReactiveCommand.Create(LatestBuildTask, this.WhenAnyValue(x => x.IsNewBuild));
             CloseCommand = ReactiveCommand.Create(CloseTask);
         }
 
         public async Task Load()
         {
-            var result = await Task.WhenAll(GithubHelper.CheckGitHubLatestVersion(), GithubHelper.CheckGitHublatestBuild());
+            var result = await GithubHelper.CheckGitHubLatestVersion();
 
-            LatestVersion = result[0].ToString();
-            LatestBuild = result[1].ToString();
+            LatestVersion = result.ToString();
         }
 
         private void DiscordTask()
@@ -49,16 +47,6 @@ namespace WPFUI.ViewModels
             CloseTask();
         }
 
-        private void LatestBuildTask()
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = GithubHelper.GetLink(_latestBuild),
-                UseShellExecute = true
-            });
-            CloseTask();
-        }
-
         private void CloseTask()
         {
             CloseWindow?.Invoke();
@@ -68,7 +56,7 @@ namespace WPFUI.ViewModels
 
         public string CurrentVersion
         {
-            get => $"Current: {_currentVersion}";
+            get => $"Current version: {_currentVersion}";
             set => this.RaiseAndSetIfChanged(ref _currentVersion, value);
         }
 
@@ -85,29 +73,7 @@ namespace WPFUI.ViewModels
             }
         }
 
-        private string _latestBuild;
-
-        public string LatestBuild
-        {
-            get => $"Latest build: {_latestBuild}";
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _latestBuild, value);
-                this.RaisePropertyChanged(nameof(IsNewBuild));
-            }
-        }
-
         public bool IsNewVersion
-        {
-            get
-            {
-                var current = new Version($"{_currentVersion}.0");
-                var last = new Version($"{_latestVersion}.0");
-                return current.CompareTo(last) < 0;
-            }
-        }
-
-        public bool IsNewBuild
         {
             get
             {
@@ -131,7 +97,6 @@ namespace WPFUI.ViewModels
 
         public ReactiveCommand<Unit, Unit> DiscordCommand { get; }
         public ReactiveCommand<Unit, Unit> LatestVersionCommand { get; }
-        public ReactiveCommand<Unit, Unit> LatestBuildCommand { get; }
         public ReactiveCommand<Unit, Unit> CloseCommand { get; }
 
         public event Action CloseWindow;
