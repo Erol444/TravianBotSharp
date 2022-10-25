@@ -1,11 +1,9 @@
-name: PreReleaseFlow
+name: HotfixFlow
 
 on:
   pull_request:
-    branches: 
-      - 'releases/**'
+    branches: [master]
     types: [closed]
-  workflow_dispatch:
     
 jobs:
   version:
@@ -13,10 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.semvers.outputs.patch }}
+      changelog: ${{ steps.Changelog.outputs.changelog }}
+
     steps:
       - uses: docker://agilepathway/pull-request-label-checker:latest
         with:
-          one_of: pre-release
+          one_of: hotfix
           repo_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: 'Checkout repo' 
@@ -34,6 +34,15 @@ jobs:
         uses: "WyriHaximus/github-action-next-semvers@v1"
         with:
           version: ${{ steps.previoustag.outputs.tag }}  
+      
+      - name: 'Create changelog'
+        id: Changelog
+        run: |
+          changelog="${{github.event.pull_request.body}}"
+          changelog="${changelog//'%'/'%25'}"
+          changelog="${changelog//$'\n'/'%0A'}"
+          changelog="${changelog//$'\r'/'%0D'}"
+          echo "::set-output name=changelog::$changelog"
 
   build:
     runs-on: windows-2019
@@ -63,7 +72,7 @@ jobs:
           path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
 
-  prerelease:
+  release:
     runs-on: ubuntu-latest
     needs: [build, version]
     steps:        
@@ -72,42 +81,48 @@ jobs:
         with:
           path: TBS
       
-      - name: Archive pre release
+      - name: Archive release
         run: |
           cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TravianOfficial-OldHeroUI.zip" TBS-TRAVIAN_OFFICIAL; cp -R "TBS-${{needs.version.outputs.version}}-TravianOfficial-OldHeroUI.zip" ../; cd ..
           cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TravianOfficial-NewHeroUI.zip" TBS-TRAVIAN_OFFICIAL_HEROUI; cp -R "TBS-${{needs.version.outputs.version}}-TravianOfficial-NewHeroUI.zip" ../; cd ..
           cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TTWars.zip" TBS-TTWARS; cp -R "TBS-${{needs.version.outputs.version}}-TTWars.zip" ../; cd ..
 
-      - name: Create pre release
+      - name: Create release
         uses: ncipollo/release-action@v1
         with:
           name: TBS-${{needs.version.outputs.version}}
-          prerelease: true
           tag: ${{needs.version.outputs.version}}
-          commit: develop          
+          commit: master          
           artifacts: "TBS-${{needs.version.outputs.version}}-TravianOfficial-OldHeroUI.zip, TBS-${{needs.version.outputs.version}}-TravianOfficial-NewHeroUI.zip, TBS-${{needs.version.outputs.version}}-TTWars.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
-            This is pre-release version of TBS. Please report any bugs you found.
             Please join our Discord server for more information: [https://discord.gg/mBa4f2K](https://discord.gg/mBa4f2K)
-
-      
+            
+            **Changelog**: 
+            ${{needs.version.outputs.changelog}}
+            
   Discord:
     runs-on: ubuntu-latest
-    needs: [prerelease, version]
-    steps: 
+    needs: [release, version] 
+    steps:
+      - name: Ping @everyone
+        run: |
+          curl --header "Content-Type: application/json" --data "{\"content\": \"@everyone\"}" "${{ secrets.DISCORD_BOT }}"
       - name: Send to discord server
         uses: sarisia/actions-status-discord@v1
         with:
-          webhook: ${{ secrets.DISCORD_PRE_BOT }}
-          title: New pre-release
-          nodetail: true          
+          webhook: ${{ secrets.DISCORD_BOT }}
+          title: New hotfix
+          nodetail: true
           description: |
               Version `TBS-${{needs.version.outputs.version}}`
-              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download
+              Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
+              
+              **Changelog**:
+              ${{needs.version.outputs.changelog}}
   Clear:
     runs-on: ubuntu-latest
-    needs: prerelease
+    needs: release
     strategy:
       matrix:
         server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
