@@ -32,8 +32,6 @@ namespace MainCore.Tasks.Attack
         public int FarmId => _farmId;
         private string _nameFarm;
 
-        private readonly Random rand = new();
-
         public override void CopyFrom(BotTask source)
         {
             base.CopyFrom(source);
@@ -62,7 +60,7 @@ namespace MainCore.Tasks.Attack
                 using var context = _contextFactory.CreateDbContext();
                 NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             }
-            if (!IsUpdateFail())
+            if (IsUpdateFail())
             {
                 return;
             }
@@ -87,7 +85,7 @@ namespace MainCore.Tasks.Attack
             {
                 using var context = _contextFactory.CreateDbContext();
                 var setting = context.FarmsSettings.Find(FarmId);
-                var time = rand.Next(setting.IntervalMin, setting.IntervalMax);
+                var time = Random.Shared.Next(setting.IntervalMin, setting.IntervalMax);
                 ExecuteAt = DateTime.Now.AddSeconds(time);
                 _logManager.Information(AccountId, $"Farmlist {_nameFarm} was sent.");
             }
@@ -150,7 +148,7 @@ namespace MainCore.Tasks.Attack
                 return !table.HasClass("hide");
             });
 
-            var delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
+            var delay = Random.Shared.Next(setting.ClickDelayMin, setting.ClickDelayMax);
             Thread.Sleep(delay);
 
             var checkboxAlls = chrome.FindElements(By.Id($"raidListMarkAll{FarmId}"));
@@ -160,7 +158,7 @@ namespace MainCore.Tasks.Attack
             }
             checkboxAlls.Click(_chromeBrowser, context, accountId);
 
-            delay = rand.Next(setting.ClickDelayMin, setting.ClickDelayMax);
+            delay = Random.Shared.Next(setting.ClickDelayMin, setting.ClickDelayMax);
             Thread.Sleep(delay);
 
             var html = _chromeBrowser.GetHtml();
