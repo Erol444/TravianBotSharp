@@ -40,6 +40,7 @@ namespace MainCore.Tasks.Update
                     taskAutoSend.CopyFrom(this);
                     taskAutoSend.Execute();
                     taskUpdate.Execute();
+                    NavigateHelper.Sleep(800, 1500);
                     NextExecute();
                 }
             }
@@ -62,12 +63,14 @@ namespace MainCore.Tasks.Update
 #endif
             if (tileDetails is null)
             {
-                throw new Exception("Cannot find timer");
+                ExecuteAt = DateTime.Now.AddMinutes(Random.Shared.Next(5, 10));
+                return;
             }
             var timer = tileDetails.Descendants("span").FirstOrDefault(x => x.HasClass("timer"));
             if (timer is null)
             {
-                throw new Exception("Cannot find timer");
+                ExecuteAt = DateTime.Now.AddMinutes(Random.Shared.Next(5, 10));
+                return;
             }
 
             int sec = int.Parse(timer.GetAttributeValue("value", "0"));
