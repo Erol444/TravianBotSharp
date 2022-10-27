@@ -26,6 +26,7 @@
                 <StackPanel>
                     <TextBlock TextWrapping="Wrap" Text="Build settings" VerticalAlignment="Center" FontWeight="Bold" />
                     <CheckBox x:Name="UseHeroResCheckBox" Content="Use resource from hero inventory" />
+                    <CheckBox x:Name="IgnoreRomanAdvantageCheckBox" Content="Ignore Roman tribe's advantage" />
                     <controls:CheckBoxWithInputUc x:Name="Complete" />
                     <controls:CheckBoxWithInputUc x:Name="WatchAds" />
                 </StackPanel>

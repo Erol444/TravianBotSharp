@@ -508,6 +508,7 @@ namespace MainCore
                 KeyValuePair.Create(202210162304,"TroopsMigrations"),
                 KeyValuePair.Create(202210181120,"UpgradeTroopMigrations"),
                 KeyValuePair.Create(202210271504,"NPCForWarhouse"),
+                KeyValuePair.Create(2022102716038,"IgnoreRomanAdvantage"),
             };
             foreach (var migration in migrations)
             {

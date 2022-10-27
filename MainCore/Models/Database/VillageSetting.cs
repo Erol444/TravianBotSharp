@@ -6,7 +6,7 @@ namespace MainCore.Models.Database
     {
         public int VillageId { get; set; }
         public bool IsUseHeroRes { get; set; }
-
+        public bool IsIgnoreRomanAdvantage { get; set; }
         public bool IsInstantComplete { get; set; }
         public int InstantCompleteTime { get; set; }
 

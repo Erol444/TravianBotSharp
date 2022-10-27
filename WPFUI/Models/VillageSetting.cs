@@ -9,6 +9,7 @@ namespace WPFUI.Models
         public void CopyFrom(MainCore.Models.Database.VillageSetting settings)
         {
             IsUseHeroRes = settings.IsUseHeroRes;
+            IsIgnoreRomanAdvantage = settings.IsIgnoreRomanAdvantage;
             IsInstantComplete = settings.IsInstantComplete;
             InstantCompleteTime = settings.InstantCompleteTime.ToString();
             IsAdsUpgrade = settings.IsAdsUpgrade;
@@ -35,6 +36,7 @@ namespace WPFUI.Models
         public void CopyTo(MainCore.Models.Database.VillageSetting settings)
         {
             settings.IsUseHeroRes = IsUseHeroRes;
+            settings.IsIgnoreRomanAdvantage = IsIgnoreRomanAdvantage;
             settings.IsInstantComplete = IsInstantComplete;
             settings.InstantCompleteTime = int.Parse(InstantCompleteTime);
             if (settings.InstantCompleteTime < 0) settings.InstantCompleteTime = 0;
@@ -120,6 +122,14 @@ namespace WPFUI.Models
         {
             get => _isUseHeroRes;
             set => this.RaiseAndSetIfChanged(ref _isUseHeroRes, value);
+        }
+
+        private bool _isIgnoreRomanAdvantage;
+
+        public bool IsIgnoreRomanAdvantage
+        {
+            get => _isIgnoreRomanAdvantage;
+            set => this.RaiseAndSetIfChanged(ref _isIgnoreRomanAdvantage, value);
         }
 
         private bool _isInstantComplete;

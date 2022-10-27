@@ -27,6 +27,7 @@ namespace WPFUI.Views.Tabs.Villages
                 this.BindCommand(ViewModel, vm => vm.SaveCommand, v => v.SaveButton).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.Settings.IsUseHeroRes, v => v.UseHeroResCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.IsIgnoreRomanAdvantage, v => v.IgnoreRomanAdvantageCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.IsInstantComplete, v => v.Complete.ViewModel.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.InstantCompleteTime, v => v.Complete.ViewModel.Value).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.IsAdsUpgrade, v => v.WatchAds.ViewModel.IsChecked).DisposeWith(d);

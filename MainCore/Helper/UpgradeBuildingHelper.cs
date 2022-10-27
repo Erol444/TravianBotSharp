@@ -27,17 +27,18 @@ namespace MainCore.Helper
                 var accountInfo = context.AccountsInfo.Find(accountId);
                 var tribe = accountInfo.Tribe;
                 var hasPlusAccount = accountInfo.HasPlusAccount;
+                var setting = context.VillagesSettings.Find(villageId);
 
                 var maxBuild = 1;
                 if (hasPlusAccount) maxBuild++;
-                if (tribe == TribeEnums.Romans) maxBuild++;
+                if (tribe == TribeEnums.Romans && !setting.IsIgnoreRomanAdvantage) maxBuild++;
                 if (totalBuild == maxBuild)
                 {
                     logManager.Information(accountId, "Amount of currently building is equal with maximum building can build in same time");
                     return null;
                 }
 
-                if (tribe == TribeEnums.Romans && maxBuild - totalBuild == 1)
+                if (tribe == TribeEnums.Romans && !setting.IsIgnoreRomanAdvantage && maxBuild - totalBuild == 1)
                 {
                     var numRes = currentList.Count(x => x.Type.IsResourceField());
                     var numInfra = totalBuild - numRes;
