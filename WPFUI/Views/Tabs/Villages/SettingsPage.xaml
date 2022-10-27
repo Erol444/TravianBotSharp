@@ -38,7 +38,9 @@
 
             <StackPanel>
                 <TextBlock TextWrapping="Wrap" Text="NPC settings" VerticalAlignment="Center" FontWeight="Bold" />
+                <CheckBox x:Name="NPCCheckBox" Content="NPC even if after NPC resource is overflow (this may make TBS stuck)" />
                 <controls:CheckBoxWithInputUc x:Name="AutoNPC" />
+                <controls:CheckBoxWithInputUc x:Name="AutoNPCWarehouse" />
                 <controls:ResourcesUc x:Name="AutoNPCRatio" />
             </StackPanel>
 

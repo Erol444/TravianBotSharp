@@ -17,6 +17,7 @@ namespace WPFUI.Views.Tabs.Villages
             WatchAds.ViewModel = new("Using ads upgrade button when building time is longer than", "min(s)");
             Refresh.ViewModel = new("Refresh interval", "min(s)");
             AutoNPC.ViewModel = new("Auto NPC when crop is more than", "% of granary");
+            AutoNPCWarehouse.ViewModel = new("Auto NPC when any resource is more than", "% of warehouse");
             AutoNPCRatio.ViewModel = new("Ratio");
             TroopUpgrade.ViewModel = new("Troop will be upgraded");
             this.WhenActivated(d =>
@@ -36,7 +37,9 @@ namespace WPFUI.Views.Tabs.Villages
                 this.Bind(ViewModel, vm => vm.Settings.AutoRefreshTimeTolerance, v => v.Refresh.ViewModel.ToleranceValue).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.Settings.IsAutoNPC, v => v.AutoNPC.ViewModel.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.IsNPCOverflow, v => v.NPCCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCPercent, v => v.AutoNPC.ViewModel.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.AutoNPCWarehousePercent, v => v.AutoNPCWarehouse.ViewModel.Value).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCWood, v => v.AutoNPCRatio.ViewModel.Wood).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCClay, v => v.AutoNPCRatio.ViewModel.Clay).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCIron, v => v.AutoNPCRatio.ViewModel.Iron).DisposeWith(d);

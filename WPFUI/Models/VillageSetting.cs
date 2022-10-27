@@ -19,7 +19,10 @@ namespace WPFUI.Models
             AutoRefreshTimeTolerance = $"{(settings.AutoRefreshTimeMax - settings.AutoRefreshTimeMin) / 2}";
 
             IsAutoNPC = settings.IsAutoNPC;
+            IsNPCOverflow = settings.IsNPCOverflow;
+
             AutoNPCPercent = settings.AutoNPCPercent.ToString();
+            AutoNPCWarehousePercent = settings.AutoNPCWarehousePercent.ToString();
             AutoNPCWood = settings.AutoNPCWood.ToString();
             AutoNPCClay = settings.AutoNPCClay.ToString();
             AutoNPCIron = settings.AutoNPCIron.ToString();
@@ -47,7 +50,9 @@ namespace WPFUI.Models
             settings.AutoRefreshTimeMax = autoRefreshTime + autoRefreshTimeTolerance;
 
             settings.IsAutoNPC = IsAutoNPC;
+            settings.IsNPCOverflow = IsNPCOverflow;
             settings.AutoNPCPercent = int.Parse(AutoNPCPercent);
+            settings.AutoNPCWarehousePercent = int.Parse(AutoNPCWarehousePercent);
             if (settings.AutoRefreshTimeMin < 4) settings.AutoRefreshTimeMin = 4;
             settings.AutoNPCWood = int.Parse(AutoNPCWood);
             settings.AutoNPCClay = int.Parse(AutoNPCClay);
@@ -181,12 +186,28 @@ namespace WPFUI.Models
             set => this.RaiseAndSetIfChanged(ref _isAutoNPC, value);
         }
 
+        private bool _isNPCOverflow;
+
+        public bool IsNPCOverflow
+        {
+            get => _isNPCOverflow;
+            set => this.RaiseAndSetIfChanged(ref _isNPCOverflow, value);
+        }
+
         private string _autoNPCPercent;
 
         public string AutoNPCPercent
         {
             get => _autoNPCPercent;
             set => this.RaiseAndSetIfChanged(ref _autoNPCPercent, value);
+        }
+
+        private string _autoNPCWarehousePercent;
+
+        public string AutoNPCWarehousePercent
+        {
+            get => _autoNPCWarehousePercent;
+            set => this.RaiseAndSetIfChanged(ref _autoNPCWarehousePercent, value);
         }
 
         private string _autoNPCWood;
