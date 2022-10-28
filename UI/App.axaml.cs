@@ -1,7 +1,7 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using UI.ViewModels;
+using Splat;
 using UI.Views;
 
 namespace UI
@@ -17,12 +17,10 @@ namespace UI
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                desktop.MainWindow = new MainWindow
-                {
-                    DataContext = new MainWindowViewModel(),
-                };
+                desktop.MainWindow = new MainWindow();
             }
 
+            AppBootstrapper.Register(Locator.CurrentMutable, Locator.Current);
             base.OnFrameworkInitializationCompleted();
         }
     }
