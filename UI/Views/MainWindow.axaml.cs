@@ -9,7 +9,6 @@ namespace UI.Views
     {
         public MainWindow()
         {
-            ViewModel = new MainWindowViewModel();
             InitializeComponent();
             this.WhenActivated(d =>
             {

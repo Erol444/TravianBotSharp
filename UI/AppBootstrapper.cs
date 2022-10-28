@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Splat;
 using System;
+using UI.ViewModels;
 using ILogManager = MainCore.Services.ILogManager;
 
 namespace UI
@@ -14,10 +15,11 @@ namespace UI
 
         public static void Register(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
         {
-            RegisterService(services, resolver);
+            RegisterServices(services, resolver);
+            RegisterViewModels(services, resolver);
         }
 
-        private static void RegisterService(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        private static void RegisterServices(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
         {
             var options = new DbContextOptionsBuilder<AppDbContext>()
                .UseSqlite(_connectionString)
@@ -56,6 +58,11 @@ namespace UI
                resolver.GetRequiredService<IPlanManager>(),
                resolver.GetRequiredService<IRestClientManager>()
             ));
+        }
+
+        private static void RegisterViewModels(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        {
+            services.Register(() => new MainWindowViewModel());
         }
 
         public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver)
