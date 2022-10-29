@@ -1,5 +1,4 @@
 ﻿using MainCore;
-using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
@@ -12,7 +11,7 @@ namespace WPFUI.ViewModels.Abstract
         public TabBaseViewModel()
         {
             _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _eventManager = App.GetService<EventManager>();
+            _eventManager = App.GetService<IEventManager>();
             _taskManager = App.GetService<ITaskManager>();
             _planManager = App.GetService<IPlanManager>();
             _waitingWindow = App.GetService<WaitingWindow>();
@@ -23,7 +22,7 @@ namespace WPFUI.ViewModels.Abstract
         }
 
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
-        protected readonly EventManager _eventManager;
+        protected readonly IEventManager _eventManager;
         protected readonly ITaskManager _taskManager;
         protected readonly IPlanManager _planManager;
         protected readonly IUseragentManager _useragentManager;

@@ -116,7 +116,7 @@ namespace WPFUI
             services.AddSingleton<IChromeManager, ChromeManager>();
             services.AddSingleton<IRestClientManager, RestClientManager>();
             services.AddSingleton<IUseragentManager, UseragentManager>();
-            services.AddSingleton<EventManager>();
+            services.AddSingleton<IEventManager, EventManager>();
             services.AddSingleton<ITimerManager, TimerManager>();
             services.AddSingleton<ITaskManager, TaskManager>();
             services.AddSingleton<IPlanManager, PlanManager>();

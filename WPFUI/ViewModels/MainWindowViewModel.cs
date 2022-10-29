@@ -2,7 +2,6 @@
 using MainCore;
 using MainCore.Enums;
 using MainCore.Models.Database;
-using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
@@ -34,7 +33,7 @@ namespace WPFUI.ViewModels
 
             _waitingWindow = App.GetService<WaitingWindow>();
 
-            _eventManager = App.GetService<EventManager>();
+            _eventManager = App.GetService<IEventManager>();
             _eventManager.AccountsTableUpdate += OnAccountTableUpdate;
 
             _isAccountSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is not null).ToProperty(this, x => x.IsAccountSelected);
@@ -216,7 +215,7 @@ namespace WPFUI.ViewModels
 
         private readonly IPlanManager _planManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly EventManager _eventManager;
+        private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
 
         private readonly WaitingWindow _waitingWindow;

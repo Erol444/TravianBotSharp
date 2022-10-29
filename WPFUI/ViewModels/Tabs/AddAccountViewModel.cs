@@ -62,7 +62,7 @@ namespace WPFUI.ViewModels.Tabs
                 context.SaveChanges();
             });
             Clean();
-            _eventManager.OnAccountsTableUpdate();
+            _eventManager.OnAccountsUpdate();
             _waitingWindow.ViewModel.Close();
         }
 

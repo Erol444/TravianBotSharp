@@ -15,15 +15,15 @@ namespace MainCore.Services.Implementations
 {
     public sealed class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, EventManager EventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             _contextFactory = contextFactory;
-            _eventManager = EventManager;
+            _eventManager = eventManager;
             _chromeManager = chromeManager;
             _logManager = logManager;
             _planManager = planManager;
             _restClientManager = restClientManager;
-            _eventManager.TaskExecuted += Loop;
+            _eventManager.TaskExecute += Loop;
         }
 
         public void Add(int index, BotTask task, bool first = false)
@@ -74,7 +74,7 @@ namespace MainCore.Services.Implementations
         {
             Check(index);
             _tasksDict[index].Sort((x, y) => DateTime.Compare(x.ExecuteAt, y.ExecuteAt));
-            _eventManager.OnTaskUpdated(index);
+            _eventManager.OnTaskUpdate(index);
         }
 
         public int Count(int index)
@@ -113,7 +113,7 @@ namespace MainCore.Services.Implementations
             _taskExecuting[index] = true;
             task.Stage = TaskStage.Executing;
             task.Cts = new();
-            _eventManager.OnTaskUpdated(index);
+            _eventManager.OnTaskUpdate(index);
             _logManager.Information(index, $"{task.Name} is started");
             var cacheExecuteTime = task.ExecuteAt;
 
@@ -212,7 +212,7 @@ namespace MainCore.Services.Implementations
                 }
             }
 
-            _eventManager.OnTaskUpdated(index);
+            _eventManager.OnTaskUpdate(index);
             _taskExecuting[index] = false;
 
             Thread.Sleep(_rand.Next(setting.TaskDelayMin, setting.TaskDelayMax));
@@ -236,7 +236,7 @@ namespace MainCore.Services.Implementations
             Check(index);
 
             _botStatus[index] = status;
-            _eventManager.OnAccountStatusUpdate(index);
+            _eventManager.OnStatusUpdate(index);
         }
 
         private readonly Dictionary<int, List<BotTask>> _tasksDict = new();
@@ -245,7 +245,7 @@ namespace MainCore.Services.Implementations
         private readonly Random _rand = new();
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly EventManager _eventManager;
+        private readonly IEventManager _eventManager;
         private readonly IChromeManager _chromeManager;
         private readonly ILogManager _logManager;
         private readonly IPlanManager _planManager;
