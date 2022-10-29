@@ -18,8 +18,8 @@ namespace WPFUI.ViewModels.Tabs
 
         public DebugViewModel()
         {
-            _eventManager.TaskUpdated += OnTasksUpdate;
-            _eventManager.LogUpdated += OnLogsUpdate;
+            _eventManager.TaskUpdate += OnTasksUpdate;
+            _eventManager.LogUpdate += OnLogsUpdate;
 
             GetHelpCommand = ReactiveCommand.Create(GetHelpTask);
             LogFolderCommand = ReactiveCommand.Create(LogFolderTask);

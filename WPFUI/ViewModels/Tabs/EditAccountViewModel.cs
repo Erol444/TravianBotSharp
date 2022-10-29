@@ -118,7 +118,7 @@ namespace WPFUI.ViewModels.Tabs
                 context.SaveChanges();
             });
 
-            _eventManager.OnAccountsTableUpdate();
+            _eventManager.OnAccountsUpdate();
             Clean();
             _waitingWindow.ViewModel.Close();
             MessageBox.Show("Account saved successfully");

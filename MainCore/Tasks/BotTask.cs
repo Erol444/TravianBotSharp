@@ -1,5 +1,4 @@
 ﻿using MainCore.Enums;
-using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,7 +18,7 @@ namespace MainCore.Tasks
         protected IDbContextFactory<AppDbContext> _contextFactory;
         protected IChromeBrowser _chromeBrowser;
         protected ITaskManager _taskManager;
-        protected EventManager _eventManager;
+        protected IEventManager _eventManager;
         protected ILogManager _logManager;
         protected IPlanManager _planManager;
         protected IRestClientManager _restClientManager;
@@ -40,10 +39,10 @@ namespace MainCore.Tasks
             Cts = source.Cts;
         }
 
-        public virtual void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, EventManager EventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        public virtual void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
             _contextFactory = contextFactory;
-            _eventManager = EventManager;
+            _eventManager = eventManager;
             _taskManager = taskManager;
             _logManager = logManager;
             _chromeBrowser = chromeBrowser;

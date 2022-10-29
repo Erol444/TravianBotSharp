@@ -254,7 +254,7 @@ namespace WPFUI.ViewModels
 
         private readonly IPlanManager _planManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly EventManager _eventManager;
+        private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
 
         private readonly WaitingWindow _waitingWindow;
