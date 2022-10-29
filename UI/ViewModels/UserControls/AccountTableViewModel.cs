@@ -6,6 +6,7 @@ using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace UI.ViewModels.UserControls
@@ -18,6 +19,9 @@ namespace UI.ViewModels.UserControls
             _loadingOverlayViewModel = loadingOverlayViewModel;
 
             LoadCommand = ReactiveCommand.CreateFromTask(LoadTask);
+
+            _isAccountSelected = this.WhenAnyValue(vm => vm.CurrentIndex).Select(x => x != -1).ToProperty(this, nameof(IsAccountSelected));
+            _isAccountNotSelected = this.WhenAnyValue(vm => vm.IsAccountSelected).Select(x => !x).ToProperty(this, nameof(IsAccountNotSelected));
         }
 
         protected override void OnActived()
@@ -50,7 +54,37 @@ namespace UI.ViewModels.UserControls
             }
         }
 
+        private Account _currentAccount;
+
+        public Account CurrentAccount
+        {
+            get => _currentAccount;
+            set => this.RaiseAndSetIfChanged(ref _currentAccount, value);
+        }
+
+        private int _currentIndex;
+
+        public int CurrentIndex
+        {
+            get => _currentIndex;
+            set => this.RaiseAndSetIfChanged(ref _currentIndex, value);
+        }
+
         public ObservableCollection<Account> Accounts { get; } = new();
+
+        private readonly ObservableAsPropertyHelper<bool> _isAccountSelected;
+
+        public bool IsAccountSelected
+        {
+            get => _isAccountSelected.Value;
+        }
+
+        private readonly ObservableAsPropertyHelper<bool> _isAccountNotSelected;
+
+        public bool IsAccountNotSelected
+        {
+            get => _isAccountNotSelected.Value;
+        }
 
         public ReactiveCommand<Unit, Unit> LoadCommand { get; }
 
