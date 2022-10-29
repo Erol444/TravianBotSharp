@@ -1,4 +1,5 @@
-﻿using MainCore.Services;
+﻿using MainCore.Services.Implementations;
+using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace MainCore.Tasks

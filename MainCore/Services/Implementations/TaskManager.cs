@@ -2,6 +2,7 @@
 using MainCore.Exceptions;
 using MainCore.Helper;
 using MainCore.Models.Database;
+using MainCore.Services.Interface;
 using MainCore.Tasks;
 using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Services
+namespace MainCore.Services.Implementations
 {
     public sealed class TaskManager : ITaskManager
     {

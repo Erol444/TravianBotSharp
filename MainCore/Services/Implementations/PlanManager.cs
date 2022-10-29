@@ -1,11 +1,12 @@
 ﻿using MainCore.Helper;
 using MainCore.Models.Runtime;
+using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 
-namespace MainCore.Services
+namespace MainCore.Services.Implementations
 {
     public sealed class PlanManager : IPlanManager
     {

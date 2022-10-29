@@ -1,14 +1,15 @@
 ﻿using FluentMigrator.Runner;
 using MainCore;
 using MainCore.Migrations;
-using MainCore.Services;
+using MainCore.Services.Implementations;
+using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using UI.ViewModels;
 using UI.ViewModels.UserControls;
-using ILogManager = MainCore.Services.ILogManager;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace UI
 {
@@ -61,8 +62,11 @@ namespace UI
 
         public static IServiceCollection ConfigureUcViewModel(this IServiceCollection services)
         {
+            // no dependency
             services.AddSingleton<LoadingOverlayViewModel>();
             services.AddSingleton<AccountTableViewModel>();
+
+            // has dependency
             services.AddSingleton<ButtonsPanelViewModel>();
             return services;
         }

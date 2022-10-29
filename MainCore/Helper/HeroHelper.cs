@@ -1,8 +1,8 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Services;
 using OpenQA.Selenium;
 using System;
+using MainCore.Services.Interface;
 
 #if TRAVIAN_OFFICIAL
 

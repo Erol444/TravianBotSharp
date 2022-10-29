@@ -1,10 +1,11 @@
 using MainCore.Helper;
-using MainCore.Services;
 using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
+using MainCore.Services.Implementations;
+using MainCore.Services.Interface;
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 

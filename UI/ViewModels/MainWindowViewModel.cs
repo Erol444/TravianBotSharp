@@ -1,6 +1,7 @@
 using FluentMigrator.Runner;
 using MainCore;
-using MainCore.Services;
+using MainCore.Services.Implementations;
+using MainCore.Services.Interface;
 using MessageBox.Avalonia;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

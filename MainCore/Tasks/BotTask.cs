@@ -1,5 +1,6 @@
 ﻿using MainCore.Enums;
-using MainCore.Services;
+using MainCore.Services.Implementations;
+using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;

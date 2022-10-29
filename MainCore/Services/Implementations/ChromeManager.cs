@@ -3,8 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using MainCore.Services.Interface;
 
-namespace MainCore.Services
+namespace MainCore.Services.Implementations
 {
     public sealed class ChromeManager : IChromeManager
     {
