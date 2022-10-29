@@ -50,14 +50,6 @@ namespace UI.ViewModels.UserControls
             }
         }
 
-        private bool _isLoading;
-
-        public bool IsLoading
-        {
-            get => _isLoading;
-            set => this.RaiseAndSetIfChanged(ref _isLoading, value);
-        }
-
         public ObservableCollection<Account> Accounts { get; } = new();
 
         public ReactiveCommand<Unit, Unit> LoadCommand { get; }

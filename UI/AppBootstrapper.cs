@@ -61,8 +61,9 @@ namespace UI
 
         public static IServiceCollection ConfigureUcViewModel(this IServiceCollection services)
         {
-            services.AddSingleton<AccountTableViewModel>();
             services.AddSingleton<LoadingOverlayViewModel>();
+            services.AddSingleton<AccountTableViewModel>();
+            services.AddSingleton<ButtonsPanelViewModel>();
             return services;
         }
     }

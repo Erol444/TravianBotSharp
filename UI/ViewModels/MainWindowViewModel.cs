@@ -14,10 +14,11 @@ namespace UI.ViewModels
 {
     public sealed class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel(AccountTableViewModel accountTableViewModel, LoadingOverlayViewModel loadingOverlayViewModel, IChromeManager chromeManager, IUseragentManager useragentManager, IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager) : base()
+        public MainWindowViewModel(AccountTableViewModel accountTableViewModel, LoadingOverlayViewModel loadingOverlayViewModel, ButtonsPanelViewModel buttonsPanelViewModel, IChromeManager chromeManager, IUseragentManager useragentManager, IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager) : base()
         {
             AccountTableViewModel = accountTableViewModel;
             LoadingOverlayViewModel = loadingOverlayViewModel;
+            ButtonsPanelViewModel = buttonsPanelViewModel;
             _chromeManager = chromeManager;
             _useragentManager = useragentManager;
             _planManager = planManager;
@@ -80,6 +81,8 @@ namespace UI.ViewModels
 
         public AccountTableViewModel AccountTableViewModel { get; }
         public LoadingOverlayViewModel LoadingOverlayViewModel { get; }
+        public ButtonsPanelViewModel ButtonsPanelViewModel { get; }
+
         private readonly IChromeManager _chromeManager;
         private readonly IUseragentManager _useragentManager;
         private readonly IPlanManager _planManager;

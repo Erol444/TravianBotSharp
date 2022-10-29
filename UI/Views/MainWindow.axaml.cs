@@ -13,8 +13,9 @@ namespace UI.Views
             InitializeComponent();
             this.WhenActivated(d =>
             {
-                this.Bind(ViewModel, vm => vm.AccountTableViewModel, v => v.AccountTable.ViewModel).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.LoadingOverlayViewModel, v => v.LoadingOverlay.ViewModel).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ButtonsPanelViewModel, v => v.ButtonPanel.ViewModel).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.AccountTableViewModel, v => v.AccountTable.ViewModel).DisposeWith(d);
             });
 
             Opened += OnOpened; ;
