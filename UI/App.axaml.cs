@@ -1,7 +1,8 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Splat;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using UI.ViewModels;
 using UI.Views;
 
@@ -9,6 +10,8 @@ namespace UI
 {
     public partial class App : Application
     {
+        public static IServiceProvider Container { get; private set; }
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -16,11 +19,11 @@ namespace UI
 
         public override void OnFrameworkInitializationCompleted()
         {
-            AppBootstrapper.Register(Locator.CurrentMutable, Locator.Current);
+            Container = AppBootstrapper.Init();
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var viewModel = Locator.Current.GetService<MainWindowViewModel>();
+                var viewModel = Container.GetRequiredService<MainWindowViewModel>();
 
                 desktop.MainWindow = new MainWindow()
                 {

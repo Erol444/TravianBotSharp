@@ -1,79 +1,69 @@
-﻿using MainCore;
+﻿using FluentMigrator.Runner;
+using MainCore;
+using MainCore.Migrations;
 using MainCore.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Splat;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using System;
 using UI.ViewModels;
+using UI.ViewModels.UserControls;
 using ILogManager = MainCore.Services.ILogManager;
 
 namespace UI
 {
     public static class AppBootstrapper
     {
+        public static IServiceProvider Init()
+        {
+            var host = Host
+                .CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.ConfigureServices();
+                    services.ConfigureUcViewModel();
+                    services.ConfigureViewModel();
+                })
+                .Build();
+            return host.Services;
+        }
+    }
+
+    public static class DependencyInjectionContainer
+    {
         private const string _connectionString = "DataSource=TBS.db;Cache=Shared";
 
-        public static void Register(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
-            RegisterServices(services, resolver);
-            RegisterViewModels(services, resolver);
+            services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(_connectionString));
+            services.AddSingleton<IChromeManager, ChromeManager>();
+            services.AddSingleton<IRestClientManager, RestClientManager>();
+            services.AddSingleton<IUseragentManager, UseragentManager>();
+            services.AddSingleton<EventManager>();
+            services.AddSingleton<ITimerManager, TimerManager>();
+            services.AddSingleton<ITaskManager, TaskManager>();
+            services.AddSingleton<IPlanManager, PlanManager>();
+            services.AddSingleton<ILogManager, LogManager>();
+
+            services.AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                    .AddSQLite()
+                    .WithGlobalConnectionString(_connectionString)
+                    .ScanIn(typeof(Farming).Assembly).For.Migrations());
+            return services;
         }
 
-        private static void RegisterServices(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        public static IServiceCollection ConfigureViewModel(this IServiceCollection services)
         {
-            var options = new DbContextOptionsBuilder<AppDbContext>()
-               .UseSqlite(_connectionString)
-               .Options;
-            services.RegisterLazySingleton<IDbContextFactory<AppDbContext>>(() => new PooledDbContextFactory<AppDbContext>(options));
-
-            services.RegisterLazySingleton<IChromeManager>(() => new ChromeManager());
-
-            services.RegisterLazySingleton<IRestClientManager>(() => new RestClientManager(
-                resolver.GetRequiredService<IDbContextFactory<AppDbContext>>()
-            ));
-
-            services.RegisterLazySingleton<IUseragentManager>(() => new UseragentManager(
-                resolver.GetRequiredService<IRestClientManager>()
-            ));
-
-            services.RegisterLazySingleton(() => new EventManager());
-
-            services.RegisterLazySingleton<ITimerManager>(() => new TimerManager(
-                resolver.GetRequiredService<EventManager>()
-            ));
-
-            services.RegisterLazySingleton<IPlanManager>(() => new PlanManager(
-                resolver.GetRequiredService<IDbContextFactory<AppDbContext>>()
-            ));
-            services.RegisterLazySingleton<ILogManager>(() => new LogManager(
-                resolver.GetRequiredService<EventManager>(),
-                resolver.GetRequiredService<IDbContextFactory<AppDbContext>>()
-            ));
-
-            services.RegisterLazySingleton<ITaskManager>(() => new TaskManager(
-               resolver.GetRequiredService<IDbContextFactory<AppDbContext>>(),
-               resolver.GetRequiredService<IChromeManager>(),
-               resolver.GetRequiredService<EventManager>(),
-               resolver.GetRequiredService<ILogManager>(),
-               resolver.GetRequiredService<IPlanManager>(),
-               resolver.GetRequiredService<IRestClientManager>()
-            ));
+            services.AddSingleton<MainWindowViewModel>();
+            return services;
         }
 
-        private static void RegisterViewModels(IMutableDependencyResolver services, IReadonlyDependencyResolver resolver)
+        public static IServiceCollection ConfigureUcViewModel(this IServiceCollection services)
         {
-            services.Register(() => new MainWindowViewModel());
-        }
-
-        public static TService GetRequiredService<TService>(this IReadonlyDependencyResolver resolver)
-        {
-            var service = resolver.GetService<TService>();
-            if (service is null)
-            {
-                throw new InvalidOperationException($"Failed to resolve object of type {typeof(TService)}");
-            }
-
-            return service;
+            services.AddSingleton<AccountTableViewModel>();
+            services.AddSingleton<LoadingOverlayViewModel>();
+            return services;
         }
     }
 }
