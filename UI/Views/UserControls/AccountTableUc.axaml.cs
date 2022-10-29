@@ -1,5 +1,6 @@
 using Avalonia.ReactiveUI;
 using ReactiveUI;
+using System.Reactive.Disposables;
 using UI.ViewModels.UserControls;
 
 namespace UI.Views.UserControls
@@ -11,7 +12,7 @@ namespace UI.Views.UserControls
             InitializeComponent();
             this.WhenActivated(d =>
             {
-                this.Bind(ViewModel, vm => vm.IsLoading, v => v.Overlay.IsVisible);
+                this.OneWayBind(ViewModel, vm => vm.Accounts, v => v.Accounts.Items).DisposeWith(d);
             });
         }
     }

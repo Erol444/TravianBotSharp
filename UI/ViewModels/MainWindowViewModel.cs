@@ -40,7 +40,7 @@ namespace UI.ViewModels
                 await messageBoxStandardWindow.Show();
             }
             {
-                LoadingOverlayViewModel.LoadingText = "Loading chrome's extension files ...";
+                LoadingOverlayViewModel.LoadingText = "Loading Chrome's extension ...";
                 await Task.Run(() => _chromeManager.LoadExtension());
             }
             {
@@ -71,6 +71,9 @@ namespace UI.ViewModels
             }
             {
                 // checking new version
+            }
+            {
+                await AccountTableViewModel.LoadData();
             }
             LoadingOverlayViewModel.Unload();
         }
