@@ -21,7 +21,7 @@ namespace WPFUI.ViewModels.Tabs
             StartCommand = ReactiveCommand.CreateFromTask(StartTask);
             StopCommand = ReactiveCommand.CreateFromTask(StopTask);
 
-            _eventManager.FarmListUpdated += OnFarmListUpdate;
+            _eventManager.FarmListUpdate += OnFarmListUpdate;
         }
 
         public bool IsActive { get; set; }

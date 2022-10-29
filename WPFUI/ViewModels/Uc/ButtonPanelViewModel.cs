@@ -148,7 +148,7 @@ namespace WPFUI.ViewModels.Uc
         {
             _waitingWindow.ViewModel.Show("saving data");
             DeleteAccount(CurrentAccount.Id);
-            _eventManager.OnAccountsTableUpdate();
+            _eventManager.OnAccountsUpdate();
             _waitingWindow.ViewModel.Close();
         }
 
@@ -300,7 +300,7 @@ namespace WPFUI.ViewModels.Uc
 
         private readonly IChromeManager _chromeManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly EventManager _eventManager;
+        private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
         private readonly ILogManager _logManager;
         private readonly ITimerManager _timeManager;

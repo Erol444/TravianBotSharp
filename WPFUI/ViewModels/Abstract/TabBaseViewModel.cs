@@ -23,7 +23,7 @@ namespace WPFUI.ViewModels.Abstract
         }
 
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
-        protected readonly EventManager _eventManager;
+        protected readonly IEventManager _eventManager;
         protected readonly ITaskManager _taskManager;
         protected readonly IPlanManager _planManager;
         protected readonly IUseragentManager _useragentManager;

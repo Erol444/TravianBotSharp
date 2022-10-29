@@ -10,9 +10,9 @@ namespace MainCore.Services.Implementations
 {
     public sealed class LogManager : ILogManager
     {
-        public LogManager(EventManager EventManager, IDbContextFactory<AppDbContext> contextFactory)
+        public LogManager(IEventManager eventManager, IDbContextFactory<AppDbContext> contextFactory)
         {
-            _eventManager = EventManager;
+            _eventManager = eventManager;
             _contextFactory = contextFactory;
         }
 
@@ -48,7 +48,7 @@ namespace MainCore.Services.Implementations
                     _logs[accountId].RemoveLast();
                 }
 
-                _eventManager.OnLogUpdated(accountId, log);
+                _eventManager.OnLogUpdate(accountId, log);
             }
         }
 
@@ -105,7 +105,7 @@ namespace MainCore.Services.Implementations
         private readonly Dictionary<int, object> _objLocks = new();
         private readonly Dictionary<int, ILogger> _loggers = new();
 
-        private readonly EventManager _eventManager;
+        private readonly IEventManager _eventManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
     }
 }
