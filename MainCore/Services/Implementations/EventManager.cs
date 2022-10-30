@@ -1,4 +1,5 @@
-﻿using MainCore.Models.Runtime;
+﻿using MainCore.Enums;
+using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
 using System;
 
@@ -8,7 +9,7 @@ namespace MainCore.Services.Implementations
     {
         public event Action AccountsTableUpdate;
 
-        public event Action<int> AccountStatusUpdate;
+        public event Action<int, AccountStatus> AccountStatusUpdate;
 
         public event Action<int> VillageBuildQueueUpdate;
 
@@ -36,7 +37,7 @@ namespace MainCore.Services.Implementations
 
         public void OnAccountsUpdate() => AccountsTableUpdate?.Invoke();
 
-        public void OnStatusUpdate(int accountId) => AccountStatusUpdate?.Invoke(accountId);
+        public void OnStatusUpdate(int accountId, AccountStatus status) => AccountStatusUpdate?.Invoke(accountId, status);
 
         public void OnFarmListUpdate(int accountId) => FarmListUpdate?.Invoke(accountId);
 
