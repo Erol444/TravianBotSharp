@@ -5,6 +5,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="UI.Views.VersionWindow"
         Title="Version" Height="300" Width="600"
+        Icon="/Assets/favicon.ico"
         WindowStartupLocation="CenterScreen">
   <Grid  Margin="20" ColumnDefinitions="1*,1*" RowDefinitions="2*,1*,1*">
     <Border BorderBrush="Black" BorderThickness="1,1,1,1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,10">

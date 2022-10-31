@@ -6,10 +6,13 @@ using MessageBox.Avalonia;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Reactive;
+using System.Reflection;
 using System.Threading.Tasks;
 using UI.ViewModels.UserControls;
+using UI.Views;
 
 namespace UI.ViewModels
 {
@@ -73,7 +76,11 @@ namespace UI.ViewModels
                 await Task.Run(() => _planManager.Load());
             }
             {
-                // checking new version
+                LoadingOverlayViewModel.LoadingText = "Checking new version ...";
+                var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                currentVersion = new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build);
+                var result = await _githubService.IsNewVersion(currentVersion);
+                if (result) Locator.Current.GetService<VersionWindow>().Show();
             }
             {
                 await AccountTableViewModel.LoadData();
