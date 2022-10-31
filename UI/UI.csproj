@@ -32,12 +32,16 @@
     <PackageReference Include="MessageBox.Avalonia" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="14.4.1" />
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MainCore\MainCore.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="Views\VersionWindow.axaml.cs">
+      <DependentUpon>VersionWindow.axaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\UserControls\LoadingOverlayUc.axaml.cs">
       <DependentUpon>LoadingOverlayUc.axaml</DependentUpon>
     </Compile>

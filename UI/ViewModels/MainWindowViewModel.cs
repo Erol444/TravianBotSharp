@@ -15,7 +15,7 @@ namespace UI.ViewModels
 {
     public sealed class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel(AccountTableViewModel accountTableViewModel, LoadingOverlayViewModel loadingOverlayViewModel, ButtonsPanelViewModel buttonsPanelViewModel, IChromeManager chromeManager, IUseragentManager useragentManager, IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager) : base()
+        public MainWindowViewModel(AccountTableViewModel accountTableViewModel, LoadingOverlayViewModel loadingOverlayViewModel, ButtonsPanelViewModel buttonsPanelViewModel, IChromeManager chromeManager, IUseragentManager useragentManager, IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IGithubService githubService) : base()
         {
             AccountTableViewModel = accountTableViewModel;
             LoadingOverlayViewModel = loadingOverlayViewModel;
@@ -24,6 +24,7 @@ namespace UI.ViewModels
             _useragentManager = useragentManager;
             _planManager = planManager;
             _contextFactory = contextFactory;
+            _githubService = githubService;
 
             InitServicesCommand = ReactiveCommand.CreateFromTask(InitServicesTask);
         }
@@ -88,6 +89,7 @@ namespace UI.ViewModels
         private readonly IUseragentManager _useragentManager;
         private readonly IPlanManager _planManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IGithubService _githubService;
 
         public ReactiveCommand<Unit, Unit> InitServicesCommand { get; }
     }

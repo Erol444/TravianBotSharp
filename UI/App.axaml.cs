@@ -1,7 +1,11 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
+using Splat;
+using Splat.Microsoft.Extensions.DependencyInjection;
 using System;
 using UI.ViewModels;
 using UI.Views;
@@ -20,10 +24,13 @@ namespace UI
         public override void OnFrameworkInitializationCompleted()
         {
             Container = AppBootstrapper.Init();
+            Container.UseMicrosoftDependencyResolver();
+
+            RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var viewModel = Container.GetRequiredService<MainWindowViewModel>();
+                var viewModel = Locator.Current.GetService<MainWindowViewModel>();
 
                 desktop.MainWindow = new MainWindow()
                 {

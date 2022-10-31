@@ -6,9 +6,13 @@ using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using ReactiveUI;
+using Splat;
+using Splat.Microsoft.Extensions.DependencyInjection;
 using System;
 using UI.ViewModels;
 using UI.ViewModels.UserControls;
+using UI.Views;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace UI
@@ -21,11 +25,18 @@ namespace UI
                 .CreateDefaultBuilder()
                 .ConfigureServices(services =>
                 {
+                    services.UseMicrosoftDependencyResolver();
+                    var resolver = Locator.CurrentMutable;
+                    resolver.InitializeSplat();
+                    resolver.InitializeReactiveUI();
+
                     services.ConfigureServices();
                     services.ConfigureUcViewModel();
                     services.ConfigureViewModel();
+                    services.ConfigureView();
                 })
                 .Build();
+
             return host.Services;
         }
     }
@@ -46,11 +57,13 @@ namespace UI
             services.AddSingleton<IPlanManager, PlanManager>();
             services.AddSingleton<ILogManager, LogManager>();
 
+            services.AddSingleton<IGithubService, GithubService>();
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
                     .AddSQLite()
                     .WithGlobalConnectionString(_connectionString)
                     .ScanIn(typeof(Farming).Assembly).For.Migrations());
+
             return services;
         }
 
@@ -58,6 +71,7 @@ namespace UI
         {
             services.AddSingleton<AccountViewModel>();
             services.AddSingleton<MainWindowViewModel>();
+            services.AddTransient<VersionViewModel>();
             return services;
         }
 
@@ -66,6 +80,13 @@ namespace UI
             services.AddSingleton<LoadingOverlayViewModel>();
             services.AddSingleton<AccountTableViewModel>();
             services.AddSingleton<ButtonsPanelViewModel>();
+            return services;
+        }
+
+        public static IServiceCollection ConfigureView(this IServiceCollection services)
+        {
+            services.AddTransient<VersionWindow>();
+
             return services;
         }
     }

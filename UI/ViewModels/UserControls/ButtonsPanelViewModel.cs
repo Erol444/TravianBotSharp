@@ -1,7 +1,10 @@
-﻿using MainCore.Enums;
+﻿using Avalonia.Threading;
+using MainCore.Enums;
 using ReactiveUI;
+using Splat;
 using System.Reactive;
 using System.Threading.Tasks;
+using UI.Views;
 
 namespace UI.ViewModels.UserControls
 {
@@ -60,9 +63,13 @@ namespace UI.ViewModels.UserControls
             }
         }
 
-        private Task CheckVersionTask()
+        private async Task CheckVersionTask()
         {
-            return Task.CompletedTask;
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var versionWindow = Locator.Current.GetService<VersionWindow>();
+                versionWindow.Show();
+            });
         }
 
         private Task AddAccountTask()

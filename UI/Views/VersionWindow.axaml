@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="UI.Views.VersionWindow"
+        Title="Version" Height="300" Width="600"
+        WindowStartupLocation="CenterScreen">
+  <Grid  Margin="20" ColumnDefinitions="1*,1*" RowDefinitions="2*,1*,1*">
+    <Border BorderBrush="Black" BorderThickness="1,1,1,1" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,0,10">
+      <TextBlock x:Name="StatusLabel" FontSize="40" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" Foreground="Black" />
+    </Border>
+
+    <Button x:Name="DiscordButton" Content="Discord" HorizontalAlignment="Stretch" Margin="0,0,10,0" Grid.Row="1" VerticalAlignment="Stretch"  VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
+    <Button x:Name="LastVersionButton" Grid.Column="1" Content="Download latest version" HorizontalAlignment="Stretch" Margin="10,0,0,0" Grid.Row="1" VerticalAlignment="Stretch" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" />
+    <Border BorderBrush="Black" BorderThickness="1" Grid.Row="2" Margin="0,10,10,0">
+      <TextBlock x:Name="CurrentLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" />
+    </Border>
+    <Border BorderBrush="Black" BorderThickness="1" Grid.Column="1" Margin="10,10,0,0" Grid.Row="2">
+      <TextBlock x:Name="LastVersionLabel" HorizontalAlignment="Center" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Center" />
+    </Border>
+  </Grid>
+</Window>

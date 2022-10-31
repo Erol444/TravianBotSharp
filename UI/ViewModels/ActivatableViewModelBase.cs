@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using System;
 using System.Reactive.Disposables;
 
 namespace UI.ViewModels
@@ -23,7 +22,7 @@ namespace UI.ViewModels
 
         protected bool IsActive { get; private set; }
 
-        protected virtual void OnActived(IDisposable disposable)
+        protected virtual void OnActived(CompositeDisposable disposable)
         {
             IsActive = true;
         }
