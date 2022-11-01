@@ -14,14 +14,7 @@
         <uc:ButtonsPanelUc x:Name="ButtonPanel" DockPanel.Dock="Top" />
         <uc:AccountTableUc x:Name="AccountTable" DockPanel.Dock="Bottom" />
       </DockPanel>
-
-      <TabControl Grid.Column="1" Margin="5,0,0,0">
-        <TabItem x:Name="NoAccountTab" Header="No account">
-          <Grid Background="#FFE5E5E5">
-            <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="NO ACCOUNT IS SELECTED" VerticalAlignment="Center" TextAlignment="Center" LineHeight="11" />
-          </Grid>
-        </TabItem>
-      </TabControl>
+      <uc:TabPanelUc Grid.Column="1" Margin="5,0,0,0" />
     </Grid>
     <uc:LoadingOverlayUc x:Name="LoadingOverlay" />
   </Grid>

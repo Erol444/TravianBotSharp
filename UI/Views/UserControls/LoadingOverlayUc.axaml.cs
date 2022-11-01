@@ -1,5 +1,6 @@
 using Avalonia.ReactiveUI;
 using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using UI.ViewModels.UserControls;
 
@@ -9,6 +10,7 @@ namespace UI.Views.UserControls
     {
         public LoadingOverlayUc()
         {
+            ViewModel = Locator.Current.GetService<LoadingOverlayViewModel>();
             InitializeComponent();
             this.WhenActivated(d =>
             {

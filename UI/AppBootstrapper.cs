@@ -13,6 +13,7 @@ using System;
 using UI.ViewModels;
 using UI.ViewModels.UserControls;
 using UI.Views;
+using UI.Views.Tabs;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace UI
@@ -80,12 +81,16 @@ namespace UI
             services.AddSingleton<LoadingOverlayViewModel>();
             services.AddSingleton<AccountTableViewModel>();
             services.AddSingleton<ButtonsPanelViewModel>();
+            services.AddSingleton<TabPanelViewModel>();
             return services;
         }
 
         public static IServiceCollection ConfigureView(this IServiceCollection services)
         {
+            services.AddTransient<MainWindow>();
             services.AddTransient<VersionWindow>();
+            services.AddSingleton<NoAccountTab>();
+            services.AddSingleton<AddAccountTab>();
 
             return services;
         }

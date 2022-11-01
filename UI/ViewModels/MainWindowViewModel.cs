@@ -18,11 +18,10 @@ namespace UI.ViewModels
 {
     public sealed class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel(AccountTableViewModel accountTableViewModel, LoadingOverlayViewModel loadingOverlayViewModel, ButtonsPanelViewModel buttonsPanelViewModel, IChromeManager chromeManager, IUseragentManager useragentManager, IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IGithubService githubService) : base()
+        public MainWindowViewModel(AccountTableViewModel accountTableViewModel, LoadingOverlayViewModel loadingOverlayViewModel, IChromeManager chromeManager, IUseragentManager useragentManager, IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IGithubService githubService) : base()
         {
-            AccountTableViewModel = accountTableViewModel;
-            LoadingOverlayViewModel = loadingOverlayViewModel;
-            ButtonsPanelViewModel = buttonsPanelViewModel;
+            _accountTableViewModel = accountTableViewModel;
+            _loadingOverlayViewModel = loadingOverlayViewModel;
             _chromeManager = chromeManager;
             _useragentManager = useragentManager;
             _planManager = planManager;
@@ -34,10 +33,10 @@ namespace UI.ViewModels
 
         private async Task InitServicesTask()
         {
-            LoadingOverlayViewModel.Load();
+            _loadingOverlayViewModel.Load();
             try
             {
-                LoadingOverlayViewModel.LoadingText = "Checking chromedriver.exe ...";
+                _loadingOverlayViewModel.LoadingText = "Checking chromedriver.exe ...";
                 await ChromeDriverInstaller.Install();
             }
             catch (Exception e)
@@ -46,15 +45,15 @@ namespace UI.ViewModels
                 await messageBoxStandardWindow.Show();
             }
             {
-                LoadingOverlayViewModel.LoadingText = "Loading Chrome's extension ...";
+                _loadingOverlayViewModel.LoadingText = "Loading Chrome's extension ...";
                 await Task.Run(() => _chromeManager.LoadExtension());
             }
             {
-                LoadingOverlayViewModel.LoadingText = "Loading useragents file ...";
+                _loadingOverlayViewModel.LoadingText = "Loading useragents file ...";
                 await _useragentManager.Load();
             }
             {
-                LoadingOverlayViewModel.LoadingText = "Loading database file ...";
+                _loadingOverlayViewModel.LoadingText = "Loading database file ...";
                 await Task.Run(() =>
                 {
                     using var context = _contextFactory.CreateDbContext();
@@ -72,25 +71,24 @@ namespace UI.ViewModels
                 });
             }
             {
-                LoadingOverlayViewModel.LoadingText = "Loading buidings queue ...";
+                _loadingOverlayViewModel.LoadingText = "Loading buidings queue ...";
                 await Task.Run(() => _planManager.Load());
             }
             {
-                LoadingOverlayViewModel.LoadingText = "Checking new version ...";
+                _loadingOverlayViewModel.LoadingText = "Checking new version ...";
                 var currentVersion = Assembly.GetExecutingAssembly().GetName().Version;
                 currentVersion = new Version(currentVersion.Major, currentVersion.Minor, currentVersion.Build);
                 var result = await _githubService.IsNewVersion(currentVersion);
                 if (result) Locator.Current.GetService<VersionWindow>().Show();
             }
             {
-                await AccountTableViewModel.LoadData();
+                await _accountTableViewModel.LoadData();
             }
-            LoadingOverlayViewModel.Unload();
+            _loadingOverlayViewModel.Unload();
         }
 
-        public AccountTableViewModel AccountTableViewModel { get; }
-        public LoadingOverlayViewModel LoadingOverlayViewModel { get; }
-        public ButtonsPanelViewModel ButtonsPanelViewModel { get; }
+        private readonly AccountTableViewModel _accountTableViewModel;
+        private readonly LoadingOverlayViewModel _loadingOverlayViewModel;
 
         private readonly IChromeManager _chromeManager;
         private readonly IUseragentManager _useragentManager;

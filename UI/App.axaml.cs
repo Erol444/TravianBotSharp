@@ -2,12 +2,9 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
-using Splat;
 using Splat.Microsoft.Extensions.DependencyInjection;
 using System;
-using UI.ViewModels;
 using UI.Views;
 
 namespace UI
@@ -30,12 +27,7 @@ namespace UI
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
-                var viewModel = Locator.Current.GetService<MainWindowViewModel>();
-
-                desktop.MainWindow = new MainWindow()
-                {
-                    ViewModel = viewModel,
-                };
+                desktop.MainWindow = new MainWindow();
             }
 
             base.OnFrameworkInitializationCompleted();

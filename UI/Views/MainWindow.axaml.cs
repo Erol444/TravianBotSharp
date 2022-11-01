@@ -1,7 +1,6 @@
 using Avalonia.ReactiveUI;
-using ReactiveUI;
+using Splat;
 using System;
-using System.Reactive.Disposables;
 using UI.ViewModels;
 
 namespace UI.Views
@@ -10,14 +9,8 @@ namespace UI.Views
     {
         public MainWindow()
         {
+            ViewModel = Locator.Current.GetService<MainWindowViewModel>();
             InitializeComponent();
-            this.WhenActivated(d =>
-            {
-                this.Bind(ViewModel, vm => vm.LoadingOverlayViewModel, v => v.LoadingOverlay.ViewModel).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.ButtonsPanelViewModel, v => v.ButtonPanel.ViewModel).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.AccountTableViewModel, v => v.AccountTable.ViewModel).DisposeWith(d);
-            });
-
             Opened += OnOpened; ;
         }
 
