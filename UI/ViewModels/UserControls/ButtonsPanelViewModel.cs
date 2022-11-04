@@ -10,10 +10,11 @@ namespace UI.ViewModels.UserControls
 {
     public class ButtonsPanelViewModel : ViewModelBase
     {
-        public ButtonsPanelViewModel(AccountViewModel accountViewModel) : base()
+        public ButtonsPanelViewModel(AccountViewModel accountViewModel, TabPanelViewModel tabPanelViewModel) : base()
         {
             _accountViewModel = accountViewModel;
             _accountViewModel.StatusChanged += OnStatusChanged;
+            _tabPanelViewModel = tabPanelViewModel;
 
             CheckVersionCommand = ReactiveCommand.CreateFromTask(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.CreateFromTask(AddAccountTask);
@@ -74,6 +75,7 @@ namespace UI.ViewModels.UserControls
 
         private Task AddAccountTask()
         {
+            _tabPanelViewModel.SetTab(TabType.AddAccount);
             return Task.CompletedTask;
         }
 
@@ -94,6 +96,7 @@ namespace UI.ViewModels.UserControls
 
         private Task EditAccountTask()
         {
+            _tabPanelViewModel.SetTab(TabType.EditAccount);
             return Task.CompletedTask;
         }
 
@@ -139,5 +142,6 @@ namespace UI.ViewModels.UserControls
         public ReactiveCommand<Unit, Unit> LogoutAllCommand { get; }
 
         private readonly AccountViewModel _accountViewModel;
+        private readonly TabPanelViewModel _tabPanelViewModel;
     }
 }

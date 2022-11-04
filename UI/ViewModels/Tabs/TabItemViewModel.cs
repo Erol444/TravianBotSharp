@@ -20,5 +20,13 @@ namespace UI.ViewModels.Tabs
             get => _isVisible;
             set => this.RaiseAndSetIfChanged(ref _isVisible, value);
         }
+
+        private bool _isSelected;
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => this.RaiseAndSetIfChanged(ref _isSelected, value);
+        }
     }
 }
