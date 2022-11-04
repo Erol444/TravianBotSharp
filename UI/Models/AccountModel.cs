@@ -4,7 +4,7 @@ using System;
 
 namespace UI.Models
 {
-    public class NewAccountModel : ReactiveObject
+    public class AccountModel : ReactiveObject
     {
         public Result IsValid()
         {

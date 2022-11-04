@@ -80,13 +80,9 @@ namespace UI.ViewModels.Tabs
             await messageSuccess.Show();
         }
 
-        private NewAccountModel _account = new();
+        private readonly AccountModel _account = new();
 
-        public NewAccountModel Account
-        {
-            get => _account;
-            set => this.RaiseAndSetIfChanged(ref _account, value);
-        }
+        public AccountModel Account => _account;
 
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
 

@@ -12,6 +12,7 @@ namespace UI.ViewModels.UserControls
             {
                 new ("No account", Locator.Current.GetService<NoAccountTab>()),
                 new ("Add account", Locator.Current.GetService<AddAccountTab>()),
+                new ("Edit account", Locator.Current.GetService<EditAccountTab>()),
             };
         }
 

@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UI.Views.Tabs.EditAccountTab">
+  <Grid Background="#FFE5E5E5" RowDefinitions="40*, 10*">
+    <Grid RowDefinitions="*,*,*,*,*,*,*" ColumnDefinitions="Auto,5*" Margin="10,10, 40, 10">
+      <TextBlock Classes="Center" Text="Server" Margin="0,0,10,0" />
+      <TextBox x:Name="Server" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" IsReadOnly="True" />
+      <TextBlock Classes="Center" Grid.Row="1" Text="Username" Margin="0,0,10,0" />
+      <TextBox x:Name="Username" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" IsReadOnly="True" />
+      <TextBlock Classes="Center" Grid.Row="2" Text="Password" Margin="0,0,10,0" />
+      <TextBox x:Name="Password" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" />
+      <TextBlock Classes="Center" Grid.Row="3" Text="Proxy's host" Margin="0,0,10,0" />
+      <TextBox x:Name="ProxyHost" Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" />
+      <TextBlock Classes="Center" Grid.Row="4" Text="Proxy's port" Margin="0,0,10,0" />
+      <NumericUpDown x:Name="ProxyPort" Grid.Row="4" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Minimum="0" />
+      <TextBlock Classes="Center" Grid.Row="5" Text="Proxy's username" Margin="0,0,10,0" />
+      <TextBox x:Name="ProxyUsername" Grid.Row="5" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" />
+      <TextBlock Classes="Center" Grid.Row="6" Text="Proxy's password" Margin="0,0,10,0" />
+      <TextBox x:Name="ProxyPassword" Grid.Row="6" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" />
+    </Grid>
+    <Button x:Name="SaveButton" Classes="Stretch" Content="Save" Margin="0,1,1,0" Grid.Row="1" />
+  </Grid>
+</UserControl>
