@@ -30,6 +30,7 @@
     <PackageReference Include="FluentMigrator" Version="3.3.2" />
     <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
     <PackageReference Include="FluentMigrator.Runner.SQLite" Version="3.3.2" />
+    <PackageReference Include="FluentResults" Version="3.14.0" />
     <PackageReference Include="MessageBox.Avalonia" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
@@ -46,8 +47,5 @@
     <Compile Update="Views\UserControls\LoadingOverlayUc.axaml.cs">
       <DependentUpon>LoadingOverlayUc.axaml</DependentUpon>
     </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
   </ItemGroup>
 </Project>

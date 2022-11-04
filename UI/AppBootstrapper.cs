@@ -11,6 +11,7 @@ using Splat;
 using Splat.Microsoft.Extensions.DependencyInjection;
 using System;
 using UI.ViewModels;
+using UI.ViewModels.Tabs;
 using UI.ViewModels.UserControls;
 using UI.Views;
 using UI.Views.Tabs;
@@ -32,6 +33,7 @@ namespace UI
                     resolver.InitializeReactiveUI();
 
                     services.ConfigureServices();
+                    services.ConfigureTabViewModel();
                     services.ConfigureUcViewModel();
                     services.ConfigureViewModel();
                     services.ConfigureView();
@@ -82,6 +84,12 @@ namespace UI
             services.AddSingleton<AccountTableViewModel>();
             services.AddSingleton<ButtonsPanelViewModel>();
             services.AddSingleton<TabPanelViewModel>();
+            return services;
+        }
+
+        public static IServiceCollection ConfigureTabViewModel(this IServiceCollection services)
+        {
+            services.AddSingleton<AddAccountViewModel>();
             return services;
         }
 
