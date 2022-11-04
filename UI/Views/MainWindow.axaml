@@ -9,7 +9,7 @@
         Icon="/Assets/favicon.ico"
         Title="TravianBotSharp">
   <Grid>
-    <Grid x:Name="MainGrid" Margin="5,5,5,5" ColumnDefinitions="100*,410*">
+    <Grid x:Name="MainGrid" Margin="5,5,5,5" ColumnDefinitions="2*,5*">
       <DockPanel>
         <uc:ButtonsPanelUc x:Name="ButtonPanel" DockPanel.Dock="Top" />
         <uc:AccountTableUc x:Name="AccountTable" DockPanel.Dock="Bottom" />
