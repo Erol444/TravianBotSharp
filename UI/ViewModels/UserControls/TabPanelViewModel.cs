@@ -1,11 +1,9 @@
 ﻿using AvaloniaEdit.Utils;
 using ReactiveUI;
 using Splat;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using UI.ViewModels.Tabs;
 using UI.Views.Tabs;
 
@@ -32,6 +30,12 @@ namespace UI.ViewModels.UserControls
                     }
                 },
                 {
+                    TabType.AddAccounts, new TabItemViewModel[]
+                    {
+                        new("Add accounts", Locator.Current.GetService<AddAccountsTab>()),
+                    }
+                },
+                {
                     TabType.EditAccount, new TabItemViewModel[]
                     {
                         new("Edit account", Locator.Current.GetService<EditAccountTab>()),
@@ -43,11 +47,6 @@ namespace UI.ViewModels.UserControls
             {
                 _tabsHolder[TabType.NoAccount][0],
             };
-
-            this.WhenAnyValue(vm => vm._accountViewModel.IsAccountNotSelected).Subscribe(x =>
-            {
-                if (x) SetTab(TabType.AddAccount);
-            });
         }
 
         public void SetTab(TabType type)

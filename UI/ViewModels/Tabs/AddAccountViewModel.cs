@@ -78,11 +78,16 @@ namespace UI.ViewModels.Tabs
 
             var messageSuccess = MessageBoxManager.GetMessageBoxStandardWindow("Success", "Account is added");
             await messageSuccess.Show();
+            Account = new() { Server = url.AbsoluteUri };
         }
 
-        private readonly AccountModel _account = new();
+        private AccountModel _account = new();
 
-        public AccountModel Account => _account;
+        public AccountModel Account
+        {
+            get => _account;
+            set => this.RaiseAndSetIfChanged(ref _account, value);
+        }
 
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
 

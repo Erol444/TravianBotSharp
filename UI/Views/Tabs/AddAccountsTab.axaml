@@ -1,0 +1,23 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UI.Views.Tabs.AddAccountsTab">
+  <Grid Background="#FFE5E5E5" RowDefinitions="50*,50*,10*" Margin="0,2,0,0">
+    <TextBox x:Name="Input" AcceptsReturn="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+    <DataGrid x:Name="Accounts" Grid.Row="1">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Server" Binding="{Binding Server}" />
+        <DataGridTextColumn Header="Username" Binding="{Binding Username}" />
+        <DataGridTextColumn Header="Password" Binding="{Binding Password}" />
+        <DataGridTextColumn Header="ProxyHost" Binding="{Binding ProxyHost}" />
+        <DataGridTextColumn Header="ProxyPort" Binding="{Binding ProxyPort}" />
+        <DataGridTextColumn Header="ProxyUsername" Binding="{Binding ProxyUsername}" />
+        <DataGridTextColumn Header="ProxyPassword" Binding="{Binding ProxyPassword}" />
+      </DataGrid.Columns>
+    </DataGrid>
+
+    <Button  x:Name="AddButton" Grid.Row="2" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,1,0" />
+  </Grid>
+</UserControl>

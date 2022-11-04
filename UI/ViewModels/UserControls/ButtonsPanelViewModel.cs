@@ -81,6 +81,7 @@ namespace UI.ViewModels.UserControls
 
         private Task AddAccountsTask()
         {
+            _tabPanelViewModel.SetTab(TabType.AddAccounts);
             return Task.CompletedTask;
         }
 

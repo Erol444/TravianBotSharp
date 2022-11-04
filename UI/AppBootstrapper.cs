@@ -90,6 +90,7 @@ namespace UI
         public static IServiceCollection ConfigureTabViewModel(this IServiceCollection services)
         {
             services.AddSingleton<AddAccountViewModel>();
+            services.AddSingleton<AddAccountsViewModel>();
             services.AddSingleton<EditAccountViewModel>();
             return services;
         }
@@ -100,6 +101,7 @@ namespace UI
             services.AddTransient<VersionWindow>();
             services.AddSingleton<NoAccountTab>();
             services.AddSingleton<AddAccountTab>();
+            services.AddSingleton<AddAccountsTab>();
             services.AddSingleton<EditAccountTab>();
 
             return services;
