@@ -1,0 +1,22 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UI.Views.UserControls.ResourceWithStorageUc">
+  <StackPanel Orientation="Horizontal" Height="25">
+    <Label x:Name="Text" />
+    <Image Margin="20,0,5,0" Source="/Assets/warehouse.png" Stretch="None" />
+    <NumericUpDown x:Name="Warehouse" ShowButtonSpinner="False" />
+    <Image Margin="20,0,5,0" Source="/Assets/wood.png" Stretch="None" />
+    <NumericUpDown x:Name="Wood" ShowButtonSpinner="False" />
+    <Image Margin="20,0,5,0"  Source="/Assets/clay.png" Stretch="None" />
+    <NumericUpDown x:Name="Clay" ShowButtonSpinner="False" />
+    <Image  Margin="20,0,5,0" Source="/Assets/iron.png" Stretch="None" />
+    <NumericUpDown x:Name="Iron" ShowButtonSpinner="False" />
+    <Image Margin="20,0,5,0" Source="/Assets/granary.png" Stretch="None" />
+    <NumericUpDown x:Name="Granary" ShowButtonSpinner="False" />
+    <Image Margin="20,0,5,0" Source="/Assets/crop.png" Stretch="None" />
+    <NumericUpDown x:Name="Crop" ShowButtonSpinner="False" />
+  </StackPanel>
+</UserControl>
