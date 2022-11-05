@@ -84,6 +84,9 @@ namespace UI
             services.AddSingleton<AccountTableViewModel>();
             services.AddSingleton<ButtonsPanelViewModel>();
             services.AddSingleton<TabPanelViewModel>();
+
+            services.AddTransient<ToleranceViewModel>();
+            services.AddTransient<CheckBoxWithInputViewModel>();
             return services;
         }
 
