@@ -87,6 +87,7 @@ namespace UI
 
             services.AddTransient<ToleranceViewModel>();
             services.AddTransient<CheckBoxWithInputViewModel>();
+            services.AddTransient<ResourceViewModel>();
             return services;
         }
 

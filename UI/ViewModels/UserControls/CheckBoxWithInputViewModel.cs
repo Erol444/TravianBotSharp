@@ -4,12 +4,6 @@ namespace UI.ViewModels.UserControls
 {
     public class CheckBoxWithInputViewModel : ReactiveObject
     {
-        public CheckBoxWithInputViewModel(string text, string unit) : base()
-        {
-            Text = text;
-            Unit = unit;
-        }
-
         private string _text;
 
         public string Text

@@ -4,13 +4,6 @@ namespace UI.ViewModels.UserControls
 {
     public class ToleranceViewModel : ReactiveObject
     {
-        public ToleranceViewModel(string text, string unit, bool allowNegative = false) : base()
-        {
-            Text = text;
-            Unit = unit;
-            Min = allowNegative ? int.MinValue : 0;
-        }
-
         private int _min;
 
         public int Min
