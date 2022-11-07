@@ -13,8 +13,7 @@ namespace UI.ViewModels.UserControls
     {
         public TabPanelViewModel(AccountViewModel accountViewModel)
         {
-            _accountViewModel = accountViewModel;
-
+            accountViewModel.AccountChanged += OnAccountChanged;
             _tabsHolder = new Dictionary<TabType, TabItemViewModel[]>()
             {
                 {
@@ -40,6 +39,12 @@ namespace UI.ViewModels.UserControls
                     {
                         new("Edit account", Locator.Current.GetService<EditAccountTab>()),
                     }
+                },
+                {
+                    TabType.Normal, new TabItemViewModel[]
+                    {
+                        new("Settings", Locator.Current.GetService<SettingsTab>()),
+                    }
                 }
             };
 
@@ -49,19 +54,26 @@ namespace UI.ViewModels.UserControls
             };
         }
 
+        private void OnAccountChanged(int obj)
+        {
+            if (_current == TabType.EditAccount) return;
+            SetTab(TabType.Normal);
+        }
+
         public void SetTab(TabType type)
         {
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Tabs.Clear();
                 Tabs.AddRange(_tabsHolder[type]);
+                _current = type;
             });
         }
 
         private readonly Dictionary<TabType, TabItemViewModel[]> _tabsHolder;
+        private TabType _current;
 
         public ObservableCollection<TabItemViewModel> Tabs { get; }
-        private readonly AccountViewModel _accountViewModel;
     }
 
     public enum TabType

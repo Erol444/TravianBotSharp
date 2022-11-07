@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:uc="clr-namespace:UI.Views.UserControls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UI.Views.Tabs.SettingsTab">
+  <Grid Background="#FFE5E5E5" Margin="0,2,0,0" RowDefinitions="1*,8*">
+    <Grid Margin="10,10,10,10" ColumnDefinitions="1*,1*,3*">
+      <Button x:Name="ImportButton" Classes="Stretch" Content="Import" Margin="0,0,5,0" />
+      <Button x:Name="ExportButton" Classes="Stretch" Grid.Column="1" Content="Export" Margin="5,0,5,0" />
+      <Button x:Name="SaveButton" Classes="Stretch" Grid.Column="2" Content="Save" Margin="5,0,5,0" />
+    </Grid>
+    <ScrollViewer Grid.Row="1" Margin="10,0,10,0">
+      <Grid RowDefinitions="Auto, Auto, Auto, Auto">
+
+        <StackPanel Spacing="10">
+          <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Delay settings" VerticalAlignment="Center" FontWeight="Bold" />
+          <uc:ToleranceUc x:Name="ClickDelay" />
+          <uc:ToleranceUc x:Name="TaskDelay" />
+        </StackPanel>
+
+        <StackPanel Spacing="10" Grid.Row="1">
+          <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Activity settings" VerticalAlignment="Center" FontWeight="Bold" />
+          <uc:ToleranceUc x:Name="WorkTime" />
+          <uc:ToleranceUc x:Name="SleepTime" />
+        </StackPanel>
+
+        <StackPanel Spacing="10" Grid.Row="2">
+          <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Chrome settings" VerticalAlignment="Center" FontWeight="Bold" />
+          <CheckBox x:Name="DisableImageCheckBox" Content="Don't load images" />
+          <CheckBox x:Name="MinimizedCheckBox" Content="Minimized when opening" />
+          <CheckBox x:Name="CloseCheckBox" Content="Close if no task" />
+        </StackPanel>
+
+        <StackPanel Spacing="10" Grid.Row="3">
+          <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Hero settings" VerticalAlignment="Center" FontWeight="Bold" />
+          <CheckBox x:Name="AutoStartAdventureCheckBox" Content="Auto start adventures" />
+        </StackPanel>
+      </Grid>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

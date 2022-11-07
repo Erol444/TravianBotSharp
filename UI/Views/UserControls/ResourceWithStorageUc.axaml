@@ -2,11 +2,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             Height="35"
              x:Class="UI.Views.UserControls.ResourceWithStorageUc">
-  <StackPanel Orientation="Horizontal" Height="25">
+  <StackPanel Orientation="Horizontal" Height="25" Margin="5,0,5,0">
     <Label x:Name="Text" />
-    <Image Margin="20,0,5,0" Source="/Assets/warehouse.png" Stretch="None" />
+    <Image Margin="0,0,5,0" Source="/Assets/warehouse.png" Stretch="None" />
     <NumericUpDown x:Name="Warehouse" ShowButtonSpinner="False" />
     <Image Margin="20,0,5,0" Source="/Assets/wood.png" Stretch="None" />
     <NumericUpDown x:Name="Wood" ShowButtonSpinner="False" />

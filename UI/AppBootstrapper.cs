@@ -96,6 +96,7 @@ namespace UI
             services.AddSingleton<AddAccountViewModel>();
             services.AddSingleton<AddAccountsViewModel>();
             services.AddSingleton<EditAccountViewModel>();
+            services.AddSingleton<SettingsViewModel>();
             return services;
         }
 
@@ -103,10 +104,12 @@ namespace UI
         {
             services.AddTransient<MainWindow>();
             services.AddTransient<VersionWindow>();
+
             services.AddSingleton<NoAccountTab>();
             services.AddSingleton<AddAccountTab>();
             services.AddSingleton<AddAccountsTab>();
             services.AddSingleton<EditAccountTab>();
+            services.AddSingleton<SettingsTab>();
 
             return services;
         }
