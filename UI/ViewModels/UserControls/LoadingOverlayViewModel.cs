@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using System.Collections.Concurrent;
+using System.Reactive.Concurrency;
 
 namespace UI.ViewModels.UserControls
 {
@@ -10,14 +11,14 @@ namespace UI.ViewModels.UserControls
         public void Load()
         {
             _loadingStates.Enqueue(true);
-            this.RaisePropertyChanged(nameof(IsLoading));
+            RxApp.MainThreadScheduler.Schedule(() => this.RaisePropertyChanged(nameof(IsLoading)));
         }
 
         public void Unload()
         {
             if (_loadingStates.IsEmpty) return;
             _loadingStates.TryDequeue(out _);
-            this.RaisePropertyChanged(nameof(IsLoading));
+            RxApp.MainThreadScheduler.Schedule(() => this.RaisePropertyChanged(nameof(IsLoading)));
         }
 
         public bool IsLoading => !_loadingStates.IsEmpty;
@@ -27,7 +28,7 @@ namespace UI.ViewModels.UserControls
         public string LoadingText
         {
             get => _loadingText;
-            set => this.RaiseAndSetIfChanged(ref _loadingText, value);
+            set => RxApp.MainThreadScheduler.Schedule(() => this.RaiseAndSetIfChanged(ref _loadingText, value));
         }
     }
 }

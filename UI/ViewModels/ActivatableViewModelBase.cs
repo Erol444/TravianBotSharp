@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using System.Reactive.Disposables;
+using System.Threading;
 
 namespace UI.ViewModels
 {
@@ -24,14 +25,17 @@ namespace UI.ViewModels
 
         protected virtual void OnActived(CompositeDisposable disposable)
         {
+            _cancellationTokenSource = new();
             IsActive = true;
         }
 
         protected virtual void OnDeactived()
         {
             IsActive = false;
+            _cancellationTokenSource.Cancel();
         }
 
         public ViewModelActivator Activator { get; } = new();
+        protected CancellationTokenSource _cancellationTokenSource;
     }
 }

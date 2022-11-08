@@ -34,14 +34,12 @@ namespace UI.ViewModels.Tabs
         protected override void OnActived(CompositeDisposable disposable)
         {
             base.OnActived(disposable);
-            _cancellationTokenSource = new();
             RxApp.MainThreadScheduler.Schedule(async () => await LoadData(_cancellationTokenSource.Token));
         }
 
         protected override void OnDeactived()
         {
             base.OnDeactived();
-            _cancellationTokenSource.Cancel();
             _loadingOverlayViewModel.Unload();
         }
 
@@ -143,7 +141,6 @@ namespace UI.ViewModels.Tabs
         }
 
         public AccountSettingsModel Settings { get; } = new();
-        private CancellationTokenSource _cancellationTokenSource;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly AccountViewModel _accountViewModel;
         private readonly LoadingOverlayViewModel _loadingOverlayViewModel;

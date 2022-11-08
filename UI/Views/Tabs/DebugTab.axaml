@@ -1,0 +1,20 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UI.Views.Tabs.DebugTab">
+  <Grid Background="#FFE5E5E5" Margin="0,2,0,0" RowDefinitions="2*, 1*, 10*" ColumnDefinitions="*,*">
+    <Button x:Name="ReportButton" Classes="Stretch" Grid.ColumnSpan="2" Content="Go to TBS's Discord server" Margin="5,5,5,5" />
+    <TextBlock x:Name="TaskTableLabel" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Task table" VerticalAlignment="Center" TextAlignment="Center" />
+    <TextBlock x:Name="LogTableLabel" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Log table" VerticalAlignment="Center" TextAlignment="Center" />
+    <DataGrid x:Name="TaskGird" Grid.Row="2" Margin="0,0,1,0">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Task"  Binding="{Binding Task}" />
+        <DataGridTextColumn Header="Execute" Binding="{Binding ExecuteAt}" />
+        <DataGridTextColumn Header="Stage" Binding="{Binding Stage}" />
+      </DataGrid.Columns>
+    </DataGrid>
+    <TextBox x:Name="LogGrid" Grid.Column="1" Grid.Row="2" IsReadOnly="True" AcceptsReturn="True" Margin="1,0,0,0" />
+  </Grid>
+</UserControl>

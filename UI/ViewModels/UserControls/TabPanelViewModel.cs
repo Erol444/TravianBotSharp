@@ -44,6 +44,7 @@ namespace UI.ViewModels.UserControls
                     TabType.Normal, new TabItemViewModel[]
                     {
                         new("Settings", Locator.Current.GetService<SettingsTab>()),
+                        new("Debug", Locator.Current.GetService<DebugTab>()),
                     }
                 }
             };

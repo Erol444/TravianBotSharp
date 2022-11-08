@@ -2,12 +2,14 @@
 using MainCore.Services.Interface;
 using MessageBox.Avalonia;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using UI.Views;
 
 namespace UI.ViewModels
 {
@@ -51,7 +53,7 @@ namespace UI.ViewModels
                 if (result is null)
                 {
                     var messageBoxStandardWindow = MessageBoxManager.GetMessageBoxStandardWindow("Error", "It seems like you press this button too much. Github denied your request. You still press the button to get the latest");
-                    await messageBoxStandardWindow.Show();
+                    await messageBoxStandardWindow.ShowDialog(Locator.Current.GetService<VersionWindow>());
                     return;
                 }
 
@@ -66,14 +68,14 @@ namespace UI.ViewModels
         {
             await Avalonia.Application.Current.Clipboard.SetTextAsync(discordUrl);
             var messageBoxStandardWindow = MessageBoxManager.GetMessageBoxStandardWindow("Information", "Copied url to clipboard");
-            await messageBoxStandardWindow.Show();
+            await messageBoxStandardWindow.ShowDialog(Locator.Current.GetService<VersionWindow>());
         }
 
         private async Task LatestVersionTask()
         {
             await Avalonia.Application.Current.Clipboard.SetTextAsync(_githubService.GetLink(_latestVersion));
             var messageBoxStandardWindow = MessageBoxManager.GetMessageBoxStandardWindow("Information", "Copied url to clipboard");
-            await messageBoxStandardWindow.Show();
+            await messageBoxStandardWindow.ShowDialog(Locator.Current.GetService<VersionWindow>());
         }
 
         private string _currentVersion;
