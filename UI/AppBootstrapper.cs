@@ -15,6 +15,7 @@ using UI.ViewModels.Tabs;
 using UI.ViewModels.UserControls;
 using UI.Views;
 using UI.Views.Tabs;
+using UI.Views.Tabs.Villages;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace UI
@@ -73,6 +74,8 @@ namespace UI
         public static IServiceCollection ConfigureViewModel(this IServiceCollection services)
         {
             services.AddSingleton<AccountViewModel>();
+            services.AddSingleton<VillageViewModel>();
+
             services.AddSingleton<MainWindowViewModel>();
             services.AddTransient<VersionViewModel>();
             return services;
@@ -81,9 +84,13 @@ namespace UI
         public static IServiceCollection ConfigureUcViewModel(this IServiceCollection services)
         {
             services.AddSingleton<LoadingOverlayViewModel>();
+
             services.AddSingleton<AccountTableViewModel>();
             services.AddSingleton<ButtonsPanelViewModel>();
             services.AddSingleton<TabPanelViewModel>();
+
+            services.AddSingleton<VillageTabPanelViewModel>();
+            services.AddSingleton<VillagesTableViewModel>();
 
             services.AddTransient<ToleranceViewModel>();
             services.AddTransient<CheckBoxWithInputViewModel>();
@@ -97,6 +104,7 @@ namespace UI
             services.AddSingleton<AddAccountsViewModel>();
             services.AddSingleton<EditAccountViewModel>();
             services.AddSingleton<SettingsViewModel>();
+            services.AddSingleton<VillagesViewModel>();
             services.AddSingleton<DebugViewModel>();
             return services;
         }
@@ -111,7 +119,11 @@ namespace UI
             services.AddSingleton<AddAccountsTab>();
             services.AddSingleton<EditAccountTab>();
             services.AddSingleton<SettingsTab>();
+            services.AddSingleton<VillagesTab>();
             services.AddSingleton<DebugTab>();
+
+            services.AddSingleton<NoVillageTab>();
+            services.AddSingleton<BuildTab>();
 
             return services;
         }

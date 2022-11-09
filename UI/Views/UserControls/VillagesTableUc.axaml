@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="UI.Views.UserControls.VillagesTableUc">
+  <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <ListBox x:Name="Villages" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <StackPanel>
+            <TextBlock Text="{Binding Name}" />
+            <TextBlock Text="{Binding Coords}" />
+          </StackPanel>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+  </Border>
+</UserControl>

@@ -20,8 +20,8 @@ namespace UI.ViewModels
                 OnStatusChanged(Status);
             });
 
-            _isAccountSelected = this.WhenAnyValue(vm => vm.Account).Select(x => x is not null).ToProperty(this, vm => vm.IsAccountSelected);
-            _isAccountNotSelected = this.WhenAnyValue(vm => vm.IsAccountSelected).Select(x => !x).ToProperty(this, vm => vm.IsAccountNotSelected);
+            this.WhenAnyValue(vm => vm.Account).Select(x => x is not null).ToProperty(this, vm => vm.IsAccountSelected, out _isAccountSelected);
+            this.WhenAnyValue(vm => vm.IsAccountSelected).Select(x => !x).ToProperty(this, vm => vm.IsAccountNotSelected, out _isAccountNotSelected);
 
             eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
         }

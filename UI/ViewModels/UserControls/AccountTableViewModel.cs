@@ -6,7 +6,6 @@ using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 
@@ -20,12 +19,9 @@ namespace UI.ViewModels.UserControls
             _accountViewModel = accountViewModel;
             _loadingOverlayViewModel = loadingOverlayViewModel;
             this.WhenAnyValue(vm => vm.CurrentAccount).Subscribe(x => _accountViewModel.Account = x);
-            LoadCommand = ReactiveCommand.CreateFromTask(LoadTask);
         }
 
-        public Task LoadData() => LoadTask();
-
-        private async Task LoadTask()
+        public async Task LoadTask()
         {
             _loadingOverlayViewModel.Load();
             _loadingOverlayViewModel.LoadingText = "Loading accounts ...";
@@ -65,8 +61,6 @@ namespace UI.ViewModels.UserControls
         }
 
         public ObservableCollection<Account> Accounts { get; } = new();
-
-        public ReactiveCommand<Unit, Unit> LoadCommand { get; }
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly LoadingOverlayViewModel _loadingOverlayViewModel;

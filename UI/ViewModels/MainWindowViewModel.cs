@@ -91,7 +91,7 @@ namespace UI.ViewModels
                 if (result) Locator.Current.GetService<VersionWindow>().Show();
             }
             {
-                await _accountTableViewModel.LoadData();
+                await _accountTableViewModel.LoadTask();
             }
             _loadingOverlayViewModel.Unload();
         }
