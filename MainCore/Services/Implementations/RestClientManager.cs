@@ -53,7 +53,6 @@ namespace MainCore.Services.Implementations
             var clientOptions = new RestClientOptions
             {
                 MaxTimeout = 10000,
-                BaseUrl = new Uri("https://api.ipify.org"),
                 Proxy = proxy,
             };
 
@@ -62,7 +61,7 @@ namespace MainCore.Services.Implementations
             return client;
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
             foreach (var item in _database.Values)
             {

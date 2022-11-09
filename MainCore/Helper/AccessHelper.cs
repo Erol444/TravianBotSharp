@@ -6,7 +6,7 @@ namespace MainCore.Helper
     {
         public static bool CheckAccess(RestClient client)
         {
-            var request = new RestRequest
+            var request = new RestRequest("https://api.ipify.org")
             {
                 Method = Method.Get,
             };

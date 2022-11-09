@@ -63,7 +63,7 @@ namespace MainCore.Services.Implementations
             }
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
             Log.CloseAndFlush();
         }

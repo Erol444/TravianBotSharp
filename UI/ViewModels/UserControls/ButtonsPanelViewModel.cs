@@ -1,21 +1,35 @@
 ﻿using Avalonia.Threading;
+using MainCore;
 using MainCore.Enums;
+using MainCore.Helper;
+using MainCore.Services.Interface;
+using MainCore.Tasks.Misc;
+using MessageBox.Avalonia;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using Splat;
+using System;
+using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
 using UI.Views;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace UI.ViewModels.UserControls
 {
     public class ButtonsPanelViewModel : ViewModelBase
     {
-        public ButtonsPanelViewModel(AccountViewModel accountViewModel, TabPanelViewModel tabPanelViewModel) : base()
+        public ButtonsPanelViewModel(AccountViewModel accountViewModel, TabPanelViewModel tabPanelViewModel, ITaskManager taskManager, ILogManager logManager, IDbContextFactory<AppDbContext> contextFactory, IRestClientManager restClientManager, IChromeManager chromeManager, ITimerManager timerManager) : base()
         {
             _accountViewModel = accountViewModel;
             _accountViewModel.StatusChanged += OnStatusChanged;
             _tabPanelViewModel = tabPanelViewModel;
-
+            _taskManager = taskManager;
+            _logManager = logManager;
+            _contextFactory = contextFactory;
+            _restClientManager = restClientManager;
+            _chromeManager = chromeManager;
+            _timerManager = timerManager;
             CheckVersionCommand = ReactiveCommand.CreateFromTask(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.CreateFromTask(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.CreateFromTask(AddAccountsTask);
@@ -85,14 +99,14 @@ namespace UI.ViewModels.UserControls
             return Task.CompletedTask;
         }
 
-        private Task LoginTask()
+        private async Task LoginTask()
         {
-            return Task.CompletedTask;
+            await Login(_accountViewModel.Account.Id);
         }
 
-        private Task LogoutTask()
+        private async Task LogoutTask()
         {
-            return Task.CompletedTask;
+            await Logout(_accountViewModel.Account.Id);
         }
 
         private Task EditAccountTask()
@@ -114,6 +128,72 @@ namespace UI.ViewModels.UserControls
         private Task LoginAllTask()
         {
             return Task.CompletedTask;
+        }
+
+        private async Task Login(int accountId)
+        {
+            _taskManager.UpdateAccountStatus(accountId, AccountStatus.Starting);
+            _logManager.AddAccount(accountId);
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var access = await context.Accesses.FirstOrDefaultAsync(x => x.AccountId == accountId);
+            var account = await context.Accounts.FindAsync(accountId);
+
+            _logManager.Information(accountId, $"Checking proxy [{access.ProxyHost ?? "no proxy"}]");
+            var result = AccessHelper.CheckAccess(_restClientManager.Get(new(access)));
+            if (result)
+            {
+                _logManager.Information(accountId, $"Proxy [{access.ProxyHost ?? "no proxy"}] is working");
+            }
+            else
+            {
+                _taskManager.UpdateAccountStatus(accountId, AccountStatus.Offline);
+                _logManager.Information(accountId, $"Proxy [{access.ProxyHost ?? "no proxy"}] is not working");
+
+                var message = MessageBoxManager.GetMessageBoxStandardWindow("Warning", $"{account.Username} is failed to login. Proxy [{access.ProxyHost ?? "no proxy"}] is not working");
+                await message.Show();
+                return;
+            }
+
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var setting = await context.AccountsSettings.FindAsync(accountId);
+            try
+            {
+                chromeBrowser.Setup(access, setting);
+                chromeBrowser.Navigate(account.Server);
+            }
+            catch (Exception ex)
+            {
+                var message = MessageBoxManager.GetMessageBoxStandardWindow("Warning", $"{ex.Message}");
+                await message.Show();
+                return;
+            }
+            _taskManager.Add(accountId, new LoginTask(accountId), true);
+
+            var sleepExist = _taskManager.GetList(accountId).FirstOrDefault(x => x.GetType() == typeof(SleepTask));
+            if (sleepExist is null)
+            {
+                (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
+                var time = TimeSpan.FromMinutes(Random.Shared.Next(min, max));
+                _taskManager.Add(accountId, new SleepTask(accountId) { ExecuteAt = DateTime.Now.Add(time) });
+            }
+
+            _timerManager.Start(accountId);
+            _taskManager.UpdateAccountStatus(accountId, AccountStatus.Paused);
+        }
+
+        private async Task Logout(int accountId)
+        {
+            _taskManager.UpdateAccountStatus(accountId, AccountStatus.Stopping);
+
+            var current = _taskManager.GetCurrentTask(accountId);
+            if (current is not null)
+            {
+                current.Cts.Cancel();
+                await Task.Run(() => { while (current.Stage != TaskStage.Waiting) { } });
+            }
+
+            _chromeManager.Get(accountId).Close();
+            _taskManager.UpdateAccountStatus(accountId, AccountStatus.Offline);
         }
 
         private bool _isAllowLogout;
@@ -144,5 +224,11 @@ namespace UI.ViewModels.UserControls
 
         private readonly AccountViewModel _accountViewModel;
         private readonly TabPanelViewModel _tabPanelViewModel;
+        private readonly ITaskManager _taskManager;
+        private readonly ILogManager _logManager;
+        private readonly IRestClientManager _restClientManager;
+        private readonly IChromeManager _chromeManager;
+        private readonly ITimerManager _timerManager;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
     }
 }

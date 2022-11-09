@@ -125,7 +125,10 @@ namespace UI.ViewModels.Tabs
                 }
             });
 
-            Logs = sb.ToString();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Logs = sb.ToString();
+            });
         }
 
         private async Task AddLog(LogMessage log)
@@ -136,7 +139,10 @@ namespace UI.ViewModels.Tabs
                 sb.Append(log);
                 sb.AppendLine();
             });
-            Logs = sb.ToString();
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Logs = sb.ToString();
+            });
         }
 
         public ReactiveCommand<Unit, Unit> GetHelpCommand { get; }
