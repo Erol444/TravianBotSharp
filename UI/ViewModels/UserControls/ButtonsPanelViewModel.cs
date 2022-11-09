@@ -11,6 +11,7 @@ using Splat;
 using System;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using UI.Views;
 using ILogManager = MainCore.Services.Interface.ILogManager;
@@ -44,38 +45,41 @@ namespace UI.ViewModels.UserControls
 
         private void OnStatusChanged(AccountStatus status)
         {
-            switch (status)
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                case AccountStatus.Offline:
-                    IsAllowLogin = true;
-                    IsAllowLogout = false;
-                    break;
+                switch (status)
+                {
+                    case AccountStatus.Offline:
+                        IsAllowLogin = true;
+                        IsAllowLogout = false;
+                        break;
 
-                case AccountStatus.Starting:
-                    IsAllowLogin = false;
-                    IsAllowLogout = false;
-                    break;
+                    case AccountStatus.Starting:
+                        IsAllowLogin = false;
+                        IsAllowLogout = false;
+                        break;
 
-                case AccountStatus.Online:
-                    IsAllowLogin = false;
-                    IsAllowLogout = true;
-                    break;
+                    case AccountStatus.Online:
+                        IsAllowLogin = false;
+                        IsAllowLogout = true;
+                        break;
 
-                case AccountStatus.Pausing:
-                    IsAllowLogin = false;
-                    IsAllowLogout = false;
-                    break;
+                    case AccountStatus.Pausing:
+                        IsAllowLogin = false;
+                        IsAllowLogout = false;
+                        break;
 
-                case AccountStatus.Paused:
-                    IsAllowLogin = false;
-                    IsAllowLogout = true;
-                    break;
+                    case AccountStatus.Paused:
+                        IsAllowLogin = false;
+                        IsAllowLogout = true;
+                        break;
 
-                case AccountStatus.Stopping:
-                    IsAllowLogin = false;
-                    IsAllowLogout = false;
-                    break;
-            }
+                    case AccountStatus.Stopping:
+                        IsAllowLogin = false;
+                        IsAllowLogout = false;
+                        break;
+                }
+            });
         }
 
         private async Task CheckVersionTask()
@@ -99,14 +103,16 @@ namespace UI.ViewModels.UserControls
             return Task.CompletedTask;
         }
 
-        private async Task LoginTask()
+        private Task LoginTask()
         {
-            await Login(_accountViewModel.Account.Id);
+            RxApp.TaskpoolScheduler.Schedule(async () => await Login(_accountViewModel.Account.Id));
+            return Task.CompletedTask;
         }
 
-        private async Task LogoutTask()
+        private Task LogoutTask()
         {
-            await Logout(_accountViewModel.Account.Id);
+            RxApp.TaskpoolScheduler.Schedule(async () => await Logout(_accountViewModel.Account.Id));
+            return Task.CompletedTask;
         }
 
         private Task EditAccountTask()
