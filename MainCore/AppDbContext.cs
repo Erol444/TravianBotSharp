@@ -218,6 +218,17 @@ namespace MainCore
             });
 
             #endregion Village troops
+
+            #region Village market
+
+            modelBuilder.Entity<VillageMarket>(entity =>
+            {
+                entity.ToTable("VillageMarket");
+                entity.HasKey(e => e.VillageId)
+                    .HasName("PK_VILLAGESMARKET");
+            });
+
+            #endregion Village market
         }
 
         public void AddAccount(int accountId)
