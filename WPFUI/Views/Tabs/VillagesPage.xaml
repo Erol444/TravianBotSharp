@@ -67,6 +67,13 @@
                     </Frame.Content>
                 </Frame>
             </TabItem>
+            <TabItem x:Name="MarketTab" Header="Market">
+                <Frame>
+                    <Frame.Content>
+                        <tabs:MarketPage x:Name="MarketPage" />
+                    </Frame.Content>
+                </Frame>
+            </TabItem>
         </TabControl>
     </Grid>
 </reactiveui:ReactivePage>

@@ -285,6 +285,16 @@ namespace MainCore
                 AutoNPCIron = 1,
                 AutoNPCCrop = 0,
             });
+            VillagesMarket.Add(new VillageMarket
+            {
+                VillageId = villageId,
+                IsSendExcessResources = false,
+                SendExcessWood = 5000,
+                SendExcessClay = 5000,
+                SendExcessIron = 5000,
+                SendExcessCrop = 5000,
+            });
+
 
             //VillagesQueueBuildings
             //VillagesCurrentlyBuildings
@@ -442,6 +452,14 @@ namespace MainCore
                     }
                 }
             }
+            if (!VillagesMarket.Any())
+            {
+                foreach (var village in Villages)
+                {
+                    var villageId = village.Id;
+                    VillagesMarket.Add(new VillageMarket { VillageId = villageId });
+                }
+            }
         }
 
         public void DeleteAccount(int accountId)
@@ -543,5 +561,6 @@ namespace MainCore
         public DbSet<Farm> Farms { get; set; }
         public DbSet<FarmSetting> FarmsSettings { get; set; }
         public DbSet<VillageTroops> VillagesTroops { get; set; }
+        public DbSet<VillageMarket> VillagesMarket { get; set; }
     }
 }
