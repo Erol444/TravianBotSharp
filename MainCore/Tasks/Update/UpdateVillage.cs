@@ -66,6 +66,8 @@ namespace MainCore.Tasks.Update
 
             UpdateHelper.UpdateResource(context, _chromeBrowser, VillageId);
             AutoNPC(context);
+
+            AutoSendResourcesOut(context);
         }
 
         private void InstantUpgrade(AppDbContext context)
@@ -160,6 +162,20 @@ namespace MainCore.Tasks.Update
                 if (troops[i].Level >= smithy.Level) continue;
                 _taskManager.Add(AccountId, new ImproveTroopsTask(VillageId, AccountId));
             }
+        }
+
+        private void AutoSendResourcesOut(AppDbContext context)
+        {
+            var listTask = _taskManager.GetList(AccountId);
+            var tasks = listTask.OfType<SendResourcesTask>();
+            if (tasks.Any(x => x.VillageId == VillageId)) return;
+
+            var setting = context.VillagesMarket.Find(VillageId);
+            if (!setting.IsSendExcessResources) return;
+            // TODO: Add check here if resources have to be sent away, if possible. So it wont click on marketplace all the time.
+            Console.WriteLine("AutoSendResourcesOut function in UpdateVillage callied and is added to tasks.");
+
+            _taskManager.Add(AccountId, new SendResourcesTask(VillageId, AccountId));
         }
     }
 }

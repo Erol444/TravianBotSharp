@@ -293,6 +293,8 @@ namespace MainCore
                 SendExcessClay = 5000,
                 SendExcessIron = 5000,
                 SendExcessCrop = 5000,
+                SendExcessToX = 0,
+                SendExcessToY = 0,
             });
 
 

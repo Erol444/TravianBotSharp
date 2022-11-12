@@ -20,8 +20,10 @@
                 <Button x:Name="SaveButton" Grid.Column="2" Content="Save" FontSize="15" FontWeight="Normal" Margin="5,0,5,0" />
         </Grid>
         <StackPanel Grid.Row="1" Background="#FFE5E5E5" Margin="0,2,0,0">    
-            <CheckBox x:Name="IsSendExcessResources" Content="Send out resources automatically" />
-            <controls:ResourcesUc x:Name="SendOutLimit" Margin="10,0,10,0"/>
+            <CheckBox x:Name="IsSendExcessResources" Content="Send out resources automaticaly:" />
+            <controls:ResourcesUc x:Name="SendOutLimit" Margin="10,0,10,0"/>                
+            <TextBlock TextWrapping="Wrap" Text="Send to:" VerticalAlignment="Center" FontWeight="Bold" />
+            <controls:CoordinatesUc x:Name="SendTo" />
         </StackPanel>
     </Grid>
-</reactiveui:ReactivePage>
+</reactiveui:ReactivePage>      

@@ -10,6 +10,8 @@ namespace MainCore.Models.Database
         public int SendExcessClay { get; set; }
         public int SendExcessIron { get; set; }
         public int SendExcessCrop { get; set; }
+        public int SendExcessToX { get; set; }
+        public int SendExcessToY { get; set; }
 
         public bool IsGetMissingResources { get; set; }
         public int GetMissingWood { get; set; }

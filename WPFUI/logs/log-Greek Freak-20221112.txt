@@ -1,0 +1,104 @@
+09:43:20 [INF] Login task is started
+09:43:21 [INF] Login task is finished
+09:43:23 [INF] Update info is started
+09:43:23 [INF] Update info is finished
+09:45:10 [INF] Refresh village in 002 is started
+09:45:12 [INF] Refresh village in 002 is finished
+09:45:13 [INF] Send Resources Task in 002 is started
+09:46:05 [ERR] Cannot find building at 31
+09:46:05 [INF] Send Resources Task in 002 is failed. Retry counter is increased (0)
+09:46:05 [INF] Send Resources Task in 002 is stopped and reset.
+09:46:07 [INF] Send Resources Task in 002 is started
+09:47:22 [ERR] Cannot find building at 31
+09:47:22 [INF] Send Resources Task in 002 is failed. Retry counter is increased (1)
+09:47:22 [INF] Send Resources Task in 002 is stopped and reset.
+09:47:23 [INF] Send Resources Task in 002 is started
+09:47:26 [INF] Send Resources Task in 002 is finished
+09:49:43 [INF] Refresh village in 002 is started
+09:49:43 [INF] Refresh village in 002 is finished
+09:49:45 [INF] Send Resources Task in 002 is started
+09:51:02 [ERR] Cannot find building at 31
+09:51:02 [INF] Send Resources Task in 002 is failed. Retry counter is increased (0)
+09:51:03 [INF] Send Resources Task in 002 is stopped and reset.
+09:51:04 [INF] Send Resources Task in 002 is started
+09:51:30 [INF] Login task is started
+09:51:31 [INF] Account is already logged in. Skip login task
+09:51:31 [INF] Login task is finished
+09:51:32 [INF] Update info is started
+09:51:32 [INF] Update info is finished
+09:51:34 [INF] Refresh village in 002 is started
+09:51:34 [INF] Refresh village in 002 is finished
+09:51:35 [INF] Send Resources Task in 002 is started
+09:54:06 [INF] Login task is started
+09:54:07 [INF] Account is already logged in. Skip login task
+09:54:07 [INF] Login task is finished
+09:54:08 [INF] Update info is started
+09:54:08 [INF] Update info is finished
+09:54:10 [INF] Refresh village in 002 is started
+09:54:10 [INF] Refresh village in 002 is finished
+09:54:11 [INF] Send Resources Task in 002 is started
+09:54:15 [INF] Send Resources Task in 002 is finished
+10:02:20 [INF] Login task is started
+10:02:20 [INF] Account is already logged in. Skip login task
+10:02:20 [INF] Login task is finished
+10:02:21 [INF] Update info is started
+10:02:21 [INF] Update info is finished
+10:10:06 [INF] Login task is started
+10:10:06 [INF] Account is already logged in. Skip login task
+10:10:06 [INF] Login task is finished
+10:10:07 [INF] Update info is started
+10:10:07 [INF] Update info is finished
+10:14:38 [INF] Login task is started
+10:14:38 [INF] Account is already logged in. Skip login task
+10:14:38 [INF] Login task is finished
+10:14:39 [INF] Update info is started
+10:14:39 [INF] Update info is finished
+10:26:16 [INF] Login task is started
+10:26:16 [INF] Account is already logged in. Skip login task
+10:26:16 [INF] Login task is finished
+10:26:17 [INF] Update info is started
+10:26:17 [INF] Update info is finished
+10:27:04 [INF] Refresh village in 002 is started
+10:27:04 [INF] Refresh village in 002 is finished
+10:27:05 [INF] Send Resources Task in 002 is started
+10:27:09 [INF] Send Resources Task in 002 is finished
+10:28:22 [INF] Login task is started
+10:28:22 [INF] Account is already logged in. Skip login task
+10:28:22 [INF] Login task is finished
+10:28:23 [INF] Update info is started
+10:28:23 [INF] Update info is finished
+10:28:25 [INF] Refresh village in 002 is started
+10:28:25 [INF] Refresh village in 002 is finished
+10:28:27 [INF] Send Resources Task in 002 is started
+10:28:29 [INF] Send Resources Task in 002 is finished
+10:29:58 [INF] Login task is started
+10:29:58 [INF] Account is already logged in. Skip login task
+10:29:58 [INF] Login task is finished
+10:29:59 [INF] Update info is started
+10:29:59 [INF] Update info is finished
+10:30:01 [INF] Refresh village in 002 is started
+10:30:03 [INF] Refresh village in 002 is finished
+10:30:05 [INF] Send Resources Task in 002 is started
+10:30:07 [INF] Send Resources Task in 002 is finished
+10:30:28 [INF] Login task is started
+10:30:28 [INF] Account is already logged in. Skip login task
+10:30:28 [INF] Login task is finished
+10:30:30 [INF] Update info is started
+10:30:30 [INF] Update info is finished
+10:30:31 [INF] Refresh village in 002 is started
+10:30:33 [INF] Refresh village in 002 is finished
+10:30:34 [INF] Send Resources Task in 002 is started
+10:30:36 [INF] Send Resources Task in 002 is finished
+10:34:22 [INF] Login task is started
+10:34:22 [INF] Account is already logged in. Skip login task
+10:34:22 [INF] Login task is finished
+10:34:23 [INF] Update info is started
+10:34:24 [INF] Update info is finished
+10:34:25 [INF] Refresh village in 002 is started
+10:34:26 [INF] Refresh village in 002 is finished
+10:34:27 [INF] Send Resources Task in 002 is started
+10:34:30 [INF] Send Resources Task in 002 is finished
+10:34:44 [INF] Refresh village in 002 is started
+10:34:46 [INF] Refresh village in 002 is finished
+10:34:47 [INF] Send Resources Task in 002 is started
+10:34:50 [INF] Send Resources Task in 002 is finished

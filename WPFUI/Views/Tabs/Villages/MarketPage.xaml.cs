@@ -2,6 +2,8 @@ using ReactiveUI;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs.Villages;
 
+using System.Diagnostics;
+
 namespace WPFUI.Views.Tabs.Villages
 {
     /// <summary>
@@ -15,7 +17,8 @@ namespace WPFUI.Views.Tabs.Villages
             InitializeComponent();
 
             SendOutLimit.ViewModel = new("SendOutLimit");
-
+            SendTo.ViewModel = new("SendCoordinates");
+            // Bote
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel, vm => vm.SaveCommand, v => v.SaveButton).DisposeWith(d);
@@ -25,6 +28,9 @@ namespace WPFUI.Views.Tabs.Villages
                 this.Bind(ViewModel, vm => vm.Settings.SendExcessClay, v => v.SendOutLimit.ViewModel.Clay).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.SendExcessIron, v => v.SendOutLimit.ViewModel.Iron).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.SendExcessCrop, v => v.SendOutLimit.ViewModel.Crop).DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.Settings.SendExcessToX, v => v.SendTo.ViewModel.XCoordinate).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.SendExcessToY, v => v.SendTo.ViewModel.YCoordinate).DisposeWith(d);
 
                 Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
 

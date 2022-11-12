@@ -17,6 +17,7 @@ using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
+using System.Diagnostics;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
@@ -32,6 +33,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesMarket.Find(index);
             Settings.CopyFrom(settings);
+
             // using var context = _contextFactory.CreateDbContext();
             // var updateTime = context.VillagesUpdateTime.Find(index);
             // var dorf1 = updateTime.Dorf1;
@@ -103,24 +105,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 }
             }
         }
-
-
-        private Resources _ratio = new();
-
-        public Resources SendOutLimit
-        {
-            get => _ratio;
-            set => this.RaiseAndSetIfChanged(ref _ratio, value);
-        }
-
-        private bool _isSendExcessResources = new();
-
-        public bool IsSendExcessResources
-        {
-            get => _isSendExcessResources;
-            set => this.RaiseAndSetIfChanged(ref _isSendExcessResources, value);
-        }
-
 
         private DateTime _lastUpdate;
 
