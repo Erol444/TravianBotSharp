@@ -7,9 +7,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <StackPanel Orientation="Horizontal" Height="25">
         <Label x:Name="TextLabel" Width="NaN" />
-        <Label x:Name="XCoordinateLabel" Content="X" />
+        <Label x:Name="XCoordinateLabel" Content="X:" />
         <TextBox x:Name="XCoordinate" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" />
-        <Label x:Name="YCoordinateLabel" Content="Y" />
+        <Label x:Name="YCoordinateLabel" Content="Y:" />
         <TextBox x:Name="YCoordinate" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Center" Width="40" />
     </StackPanel>
 </rxui:ReactiveUserControl>

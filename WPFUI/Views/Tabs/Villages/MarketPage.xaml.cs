@@ -16,8 +16,10 @@ namespace WPFUI.Views.Tabs.Villages
             ViewModel = new();
             InitializeComponent();
 
-            SendOutLimit.ViewModel = new("SendOutLimit");
-            SendTo.ViewModel = new("SendCoordinates");
+            SendOutLimit.ViewModel = new("Upper Limit:");
+            SendTo.ViewModel = new("Send resources to:");
+            SendInLimit.ViewModel = new("Lower Limit:");
+            SendFrom.ViewModel = new("Get resources from:");
             // Bote
             this.WhenActivated(d =>
             {
@@ -31,6 +33,15 @@ namespace WPFUI.Views.Tabs.Villages
 
                 this.Bind(ViewModel, vm => vm.Settings.SendExcessToX, v => v.SendTo.ViewModel.XCoordinate).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.SendExcessToY, v => v.SendTo.ViewModel.YCoordinate).DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.Settings.IsGetMissingResources, v => v.IsGetMissingResources.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.GetMissingWood, v => v.SendInLimit.ViewModel.Wood).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.GetMissingClay, v => v.SendInLimit.ViewModel.Clay).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.GetMissingIron, v => v.SendInLimit.ViewModel.Iron).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.GetMissingCrop, v => v.SendInLimit.ViewModel.Crop).DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.Settings.SendFromX, v => v.SendFrom.ViewModel.XCoordinate).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.SendFromY, v => v.SendFrom.ViewModel.YCoordinate).DisposeWith(d);
 
                 Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
 

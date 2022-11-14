@@ -4,6 +4,7 @@ using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
 using System;
 using System.Linq;
+using System.Diagnostics;
 
 namespace MainCore.Tasks.Update
 {
@@ -11,6 +12,7 @@ namespace MainCore.Tasks.Update
     {
         public UpdateVillage(int villageId, int accountId) : base(villageId, accountId, "Update village")
         {
+            Debug.WriteLine($"UpdateVillage for {villageId}");
         }
 
         public override void Execute()
@@ -68,6 +70,7 @@ namespace MainCore.Tasks.Update
             AutoNPC(context);
 
             AutoSendResourcesOut(context);
+            AutoSendResourcesIn(context);
         }
 
         private void InstantUpgrade(AppDbContext context)
@@ -167,15 +170,28 @@ namespace MainCore.Tasks.Update
         private void AutoSendResourcesOut(AppDbContext context)
         {
             var listTask = _taskManager.GetList(AccountId);
-            var tasks = listTask.OfType<SendResourcesTask>();
+            var tasks = listTask.OfType<SendResourcesOutTask>();
             if (tasks.Any(x => x.VillageId == VillageId)) return;
 
             var setting = context.VillagesMarket.Find(VillageId);
             if (!setting.IsSendExcessResources) return;
             // TODO: Add check here if resources have to be sent away, if possible. So it wont click on marketplace all the time.
-            Console.WriteLine("AutoSendResourcesOut function in UpdateVillage callied and is added to tasks.");
+            Console.WriteLine("AutoSendResources OUT function in UpdateVillage called and is added to tasks.");
 
-            _taskManager.Add(AccountId, new SendResourcesTask(VillageId, AccountId));
+            _taskManager.Add(AccountId, new SendResourcesOutTask(VillageId, AccountId));
+        }
+
+        private void AutoSendResourcesIn(AppDbContext context)
+        {
+            var listTask = _taskManager.GetList(AccountId);
+            var tasks = listTask.OfType<SendResourcesInTask>();
+            if (tasks.Any(x => x.VillageId == VillageId)) return;
+
+            var setting = context.VillagesMarket.Find(VillageId);
+            if (!setting.IsGetMissingResources) return;
+            Console.WriteLine("AutoSendResources IN function in UpdateVillage called and is added to tasks.");
+
+            _taskManager.Add(AccountId, new SendResourcesInTask(VillageId, AccountId));
         }
     }
 }

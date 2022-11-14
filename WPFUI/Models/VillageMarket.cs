@@ -17,6 +17,14 @@ namespace WPFUI.Models
             SendExcessToX = settings.SendExcessToX.ToString();
             SendExcessToY = settings.SendExcessToY.ToString();
 
+            IsGetMissingResources = settings.IsGetMissingResources;
+            GetMissingWood = settings.GetMissingWood.ToString();
+            GetMissingClay = settings.GetMissingClay.ToString();
+            GetMissingIron = settings.GetMissingIron.ToString();
+            GetMissingCrop = settings.GetMissingCrop.ToString();
+            SendFromX = settings.SendFromX.ToString();
+            SendFromY = settings.SendFromY.ToString();
+
         }
 
         public void CopyTo(MainCore.Models.Database.VillageMarket settings)
@@ -28,6 +36,14 @@ namespace WPFUI.Models
             settings.SendExcessCrop = int.Parse(SendExcessCrop);
             settings.SendExcessToX = int.Parse(SendExcessToX);
             settings.SendExcessToY = int.Parse(SendExcessToY);
+
+            settings.IsGetMissingResources = IsGetMissingResources;
+            settings.GetMissingWood = int.Parse(GetMissingWood);
+            settings.GetMissingClay = int.Parse(GetMissingClay);
+            settings.GetMissingIron = int.Parse(GetMissingIron);
+            settings.GetMissingCrop = int.Parse(GetMissingCrop);
+            settings.SendFromX = int.Parse(SendFromX);
+            settings.SendFromY = int.Parse(SendFromY);
 
         }
 
@@ -144,6 +160,60 @@ namespace WPFUI.Models
         {
             get => _sendExcessToY;
             set => this.RaiseAndSetIfChanged(ref _sendExcessToY, value);
+        }
+        private bool _isGetMissingResources;
+
+        public bool IsGetMissingResources
+        {
+            get => _isGetMissingResources;
+            set => this.RaiseAndSetIfChanged(ref _isGetMissingResources, value);
+        }
+
+        private string _getMissingWood;
+
+        public string GetMissingWood
+        {
+            get => _getMissingWood;
+            set => this.RaiseAndSetIfChanged(ref _getMissingWood, value);
+        }
+
+        private string _getMissingClay;
+
+        public string GetMissingClay
+        {
+            get => _getMissingClay;
+            set => this.RaiseAndSetIfChanged(ref _getMissingClay, value);
+        }
+
+        private string _getMissingIron;
+
+        public string GetMissingIron
+        {
+            get => _getMissingIron;
+            set => this.RaiseAndSetIfChanged(ref _getMissingIron, value);
+        }
+
+        private string _getMissingCrop;
+
+        public string GetMissingCrop
+        {
+            get => _getMissingCrop;
+            set => this.RaiseAndSetIfChanged(ref _getMissingCrop, value);
+        }
+        private string _sendFromX;
+
+        public string SendFromX
+        {
+            get => _sendFromX;
+            set => this.RaiseAndSetIfChanged(ref _sendFromX, value);
+        }
+
+        private string _sendFromY;
+
+        public string SendFromY
+        {
+            get => _sendFromY;
+            set => this.RaiseAndSetIfChanged(ref _sendFromY, value);
         }
     }
 }
