@@ -23,7 +23,7 @@ namespace MainCore.Tasks.Misc
         private long[] toSend = new long[4];
         private long[] toGet = new long[4];
         private long toSendSum;
-        private float minMerchants;
+        private float minMerchants = 1;
         private string oneMerchantSize;
         private string merchantsAvailable;
         private int sendFromVillageId;
@@ -50,10 +50,16 @@ namespace MainCore.Tasks.Misc
             if (Cts.IsCancellationRequested) return;
             if (StopFlag) return;
 
-            // TODO: Add resource updater for capital village!!
-            // TODO: MUST be added checker if traders are alreadz on the way so it wont send multiple times!!
+            // TODO: Add resource updater for capital village and check if there is enough resources. If not lower values!!!!
+            // todo: Chech if enough traders is available. Optimize if not. Or return if none is available.
+
+            // TODO: Place duplicated methods to MarketHelper class
 
             ToMarketPlace();
+            if (Cts.IsCancellationRequested) return;
+            if (StopFlag) return;
+
+            CheckAndFillMerchants();
             if (Cts.IsCancellationRequested) return;
             if (StopFlag) return;
 
@@ -168,7 +174,7 @@ namespace MainCore.Tasks.Misc
         }
 
 
-        private bool CheckAndFillMerchants()
+        private void CheckAndFillMerchants()
         {
             var html = _chromeBrowser.GetHtml();
             var merchantInfo = html.GetElementbyId("build");
@@ -182,48 +188,62 @@ namespace MainCore.Tasks.Misc
 
             if (Int16.Parse(this.merchantsAvailable) == 0)
             {
-                Debug.WriteLine("Zero merchants available at the moment. Will try again later.");
-                return false;
+                Debug.WriteLine("Zero merchants available at the moment. Will try again later on next village refresh.");
+                StopFlag = true;
+
+                return;
             }
 
             if (this.minMerchants * Int16.Parse(this.oneMerchantSize) > this.toSendSum)
             {
-                Debug.WriteLine($"Resources overflowing {this.toSendSum} are less than 1 merchant {this.oneMerchantSize}");
-                return false;
+                Debug.WriteLine($"Resources needed to be send {this.toSendSum} are less than 1 merchant {this.oneMerchantSize} so will not send now.");
+                StopFlag = true;
+                return;
             }
 
             OptimizeMerchants();
-
-            return true;
 
         }
 
         private void OptimizeMerchants()
         {
+
+            // Refresh sending village resources
+            using var context = _contextFactory.CreateDbContext();
+            UpdateHelper.UpdateResource(context, _chromeBrowser, this.sendFromVillageId);
+            var currentResources = context.VillagesResources.Find(this.sendFromVillageId);
+
+            if (this.toSend[0] > currentResources.Wood) this.toSend[0] = currentResources.Wood;
+            if (this.toSend[1] > currentResources.Clay) this.toSend[1] = currentResources.Clay;
+            if (this.toSend[2] > currentResources.Iron) this.toSend[2] = currentResources.Iron;
+            if (this.toSend[3] > currentResources.Crop) this.toSend[3] = currentResources.Crop;
+            this.toSendSum = this.toSend.Sum();
+
             int toSendSumInt = (int)toSendSum;
             var merchantsNeeded = toSendSumInt / Int64.Parse(this.oneMerchantSize);
             if (merchantsNeeded > Int64.Parse(this.merchantsAvailable)) merchantsNeeded = Int64.Parse(this.merchantsAvailable);
 
+
             while (this.toSendSum != Int64.Parse(this.oneMerchantSize) * merchantsNeeded)
             {
 
-                if (this.toSend[0] > 0)
+                if (this.toSend[3] > 0)
                 {
-                    this.toSend[0]--;
-                }
-                else if (this.toSend[1] > 0)
-                {
-                    this.toSend[1]--;
-
+                    this.toSend[3]--;
                 }
                 else if (this.toSend[2] > 0)
                 {
                     this.toSend[2]--;
 
                 }
-                else if (this.toSend[3] > 0)
+                else if (this.toSend[1] > 0)
                 {
-                    this.toSend[3]--;
+                    this.toSend[1]--;
+
+                }
+                else if (this.toSend[0] > 0)
+                {
+                    this.toSend[0]--;
 
                 }
                 this.toSendSum = this.toSend.Sum();
@@ -287,17 +307,8 @@ namespace MainCore.Tasks.Misc
             this.toSendSum = this.toSend.Sum();
             if (this.toSendSum == 0)
             {
-                Array.ForEach(this.toSend, x => x = 1);
-                this.toSendSum = 4;
-            }
-
-            // TODO: This number 1500 will be set by user
-            if (this.toSendSum < 2000)
-            {
-                // Dont switch to village that should send resources
                 StopFlag = true;
             }
-
         }
 
         private void SwitchToSendingVillage()
