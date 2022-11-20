@@ -39,4 +39,7 @@
       <Setter Property="VerticalAlignment" Value="Center" />
     </Style>
   </Application.Styles>
+  <Application.Resources>
+    <x:Double x:Key="ControlContentThemeFontSize">12</x:Double>
+  </Application.Resources>
 </Application>

@@ -2,7 +2,46 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d" d:DesignWidth="477" d:DesignHeight="416"
+             xmlns:uc="using:UI.Views.UserControls"
              x:Class="UI.Views.Tabs.Villages.BuildTab">
-  Welcome to Avalonia!
+  <Grid Background="#FFE5E5E5" Margin="0,2,0,0" ColumnDefinitions="3*,3*,4*">
+    <Grid Margin="2" RowDefinitions="1*,8*,1*,15*">
+      <TextBlock Text="Currently Buildings" />
+      <DataGrid x:Name="Current" Margin="0,2,0,0" Grid.Row="1" IsReadOnly="True" AutoGenerateColumns="False">
+        <DataGrid.Columns>
+          <DataGridTextColumn Header="Buildings" Binding="{Binding Name}" />
+          <DataGridTextColumn Header="Level" Binding="{Binding Level}" />
+          <DataGridTextColumn Header="Complete at" Binding="{Binding CompleteTime}" />
+        </DataGrid.Columns>
+      </DataGrid>
+      <TextBlock Grid.Row="2" TextWrapping="Wrap" Text="Buildings" />
+      <ListBox x:Name="Buildings" Grid.Row="3" Margin="2,2,2,2" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.ItemsPanel>
+          <ItemsPanelTemplate>
+            <StackPanel Spacing="10" />
+          </ItemsPanelTemplate>
+        </ListBox.ItemsPanel>
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding Content}" Background="Black" Foreground="{Binding Color}" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
+    <StackPanel Grid.Column="1">
+      <uc:NormalBuildUc x:Name="NormalBuild" Margin="2,5,2,5" />
+      <uc:ResourcesBuildUc Grid.Row="1" x:Name="ResBuild" Margin="2,5,2,5" />
+    </StackPanel>
+    <Grid x:Name="RightGrid" Grid.Column="2" Margin="2,2,2,2" RowDefinitions="2*,13*">
+      <uc:BuildButtonsPanelUc />
+      <ListBox x:Name="Queue" Grid.Row="1" Margin="2,2,2,2" SelectionMode="Single" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <ListBox.ItemTemplate>
+          <DataTemplate>
+            <TextBlock Text="{Binding Content}" />
+          </DataTemplate>
+        </ListBox.ItemTemplate>
+      </ListBox>
+    </Grid>
+  </Grid>
 </UserControl>

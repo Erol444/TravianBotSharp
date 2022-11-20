@@ -15,10 +15,10 @@ namespace MainCore.Services.Implementations
             _contextFactory = contextFactory;
         }
 
-        public void Add(int index, PlanTask task)
+        public void Add(int villageId, PlanTask task)
         {
-            Check(index);
-            lock (_objLocks[index])
+            Check(villageId);
+            lock (_objLocks[villageId])
             {
                 if (task.Type == Enums.PlanTypeEnums.General)
                 {
@@ -26,7 +26,7 @@ namespace MainCore.Services.Implementations
                     // check wall
                     if (task.Building.IsWall())
                     {
-                        var village = context.Villages.Find(index);
+                        var village = context.Villages.Find(villageId);
                         var tribe = context.AccountsInfo.Find(village.AccountId).Tribe;
                         var wall = tribe.GetWall();
                         if (task.Building != wall) task.Building = wall;
@@ -35,15 +35,15 @@ namespace MainCore.Services.Implementations
                     // check building can build muiltiple times (warehouse, ganary, ...)
                     if (task.Building.IsMultipleAllow())
                     {
-                        var villageBuildings = context.VillagesBuildings.Where(x => x.VillageId == index).ToList();
+                        var villageBuildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
                         var building = villageBuildings.Where(x => x.Type == task.Building).OrderByDescending(x => x.Level).FirstOrDefault();
                         if (building is null)
                         {
-                            var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == index).ToList();
+                            var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
                             var currentBuilding = currentBuildings.Where(x => x.Type == task.Building).OrderByDescending(x => x.Level).FirstOrDefault();
                             if (currentBuilding is null)
                             {
-                                var planTasks = GetList(index);
+                                var planTasks = GetList(villageId);
                                 var planTask = planTasks.Where(x => x.Building == task.Building).OrderByDescending(x => x.Level).FirstOrDefault();
                                 if (planTask is not null)
                                 {
@@ -73,22 +73,22 @@ namespace MainCore.Services.Implementations
                     {
                         if (task.Building.IsResourceField())
                         {
-                            var villageBuilding = context.VillagesBuildings.Where(x => x.VillageId == index).FirstOrDefault(x => x.Id == task.Location);
+                            var villageBuilding = context.VillagesBuildings.Where(x => x.VillageId == villageId).FirstOrDefault(x => x.Id == task.Location);
                             // different type village ( 4446 import to 3337 for example )
                             // now i just ignore the different resource field
                             if (villageBuilding is null || villageBuilding.Type != task.Building) return;
                         }
                         else
                         {
-                            var villageBuildings = context.VillagesBuildings.Where(x => x.VillageId == index).ToList();
+                            var villageBuildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
                             var building = villageBuildings.FirstOrDefault(x => x.Type == task.Building);
                             if (building is null)
                             {
-                                var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == index).ToList();
+                                var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
                                 var currentBuilding = currentBuildings.FirstOrDefault(x => x.Type == task.Building);
                                 if (currentBuilding is null)
                                 {
-                                    var planTasks = GetList(index);
+                                    var planTasks = GetList(villageId);
                                     var planTask = planTasks.FirstOrDefault(x => x.Building == task.Building);
                                     if (planTask is not null)
                                     {
@@ -117,50 +117,59 @@ namespace MainCore.Services.Implementations
                     }
                 }
 
-                _tasksDict[index].Add(task);
+                _tasksDict[villageId].Add(task);
             }
         }
 
-        public void Insert(int index, int location, PlanTask task)
+        public void Insert(int villageId, int location, PlanTask task)
         {
-            Check(index);
-            lock (_objLocks[index])
+            Check(villageId);
+            lock (_objLocks[villageId])
             {
-                _tasksDict[index].Insert(location, task);
+                _tasksDict[villageId].Insert(location, task);
             }
         }
 
-        public void Remove(int index, PlanTask task)
+        public void Remove(int villageId, int location)
         {
-            Check(index);
-            lock (_objLocks[index])
+            Check(villageId);
+            lock (_objLocks[villageId])
             {
-                _tasksDict[index].Remove(task);
+                _tasksDict[villageId].RemoveAt(location);
             }
         }
 
-        public void Clear(int index)
+        public void Remove(int villageId, PlanTask planTask)
         {
-            Check(index);
-            lock (_objLocks[index])
+            Check(villageId);
+            lock (_objLocks[villageId])
             {
-                _tasksDict[index].Clear();
+                _tasksDict[villageId].Remove(planTask);
             }
         }
 
-        public List<PlanTask> GetList(int index)
+        public void Clear(int villageId)
         {
-            Check(index);
-            lock (_objLocks[index])
+            Check(villageId);
+            lock (_objLocks[villageId])
             {
-                return _tasksDict[index].ToList();
+                _tasksDict[villageId].Clear();
             }
         }
 
-        private void Check(int index)
+        public List<PlanTask> GetList(int villageId)
         {
-            _tasksDict.TryAdd(index, new());
-            _objLocks.TryAdd(index, new());
+            Check(villageId);
+            lock (_objLocks[villageId])
+            {
+                return _tasksDict[villageId].ToList();
+            }
+        }
+
+        private void Check(int villageId)
+        {
+            _tasksDict.TryAdd(villageId, new());
+            _objLocks.TryAdd(villageId, new());
         }
 
         public void Save()

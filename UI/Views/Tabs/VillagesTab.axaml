@@ -5,7 +5,7 @@
              xmlns:uc="using:UI.Views.UserControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="UI.Views.Tabs.VillagesTab">
-  <Grid Margin="5,5,5,5" ColumnDefinitions="2*,5*">
+  <Grid Margin="5,5,5,5" ColumnDefinitions="1*,5*">
     <uc:VillagesTableUc x:Name="VillagesTable" />
     <uc:VillageTabPanelUc Grid.Column="1" Margin="5,0,0,0" />
   </Grid>

@@ -12,6 +12,7 @@ using Splat.Microsoft.Extensions.DependencyInjection;
 using System;
 using UI.ViewModels;
 using UI.ViewModels.Tabs;
+using UI.ViewModels.Tabs.Villages;
 using UI.ViewModels.UserControls;
 using UI.Views;
 using UI.Views.Tabs;
@@ -95,6 +96,11 @@ namespace UI
             services.AddTransient<ToleranceViewModel>();
             services.AddTransient<CheckBoxWithInputViewModel>();
             services.AddTransient<ResourceViewModel>();
+
+            services.AddSingleton<NormalBuildViewModel>();
+            services.AddSingleton<ResourcesBuildViewModel>();
+            services.AddSingleton<BuildButtonPanelViewModel>();
+
             return services;
         }
 
@@ -106,6 +112,8 @@ namespace UI
             services.AddSingleton<SettingsViewModel>();
             services.AddSingleton<VillagesViewModel>();
             services.AddSingleton<DebugViewModel>();
+
+            services.AddSingleton<BuildViewModel>();
             return services;
         }
 

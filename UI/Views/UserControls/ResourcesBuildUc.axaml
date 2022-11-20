@@ -1,0 +1,35 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             x:Class="UI.Views.UserControls.ResourcesBuildUc">
+  <Border BorderThickness="2" BorderBrush="Black" Padding="10">
+    <StackPanel Spacing="10">
+      <StackPanel Orientation="Horizontal" Spacing="20">
+        <TextBlock Classes="Center" Text="Type" />
+        <ComboBox x:Name="Type">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" Spacing="20">
+        <TextBlock Classes="Center" Text="Strategy" />
+        <ComboBox x:Name="Strategy">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Name}" />
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </StackPanel>
+      <StackPanel Orientation="Horizontal" Spacing="20" Height="25">
+        <TextBlock Classes="Center" Text="Level" />
+        <NumericUpDown x:Name="Level" ShowButtonSpinner="False" />
+      </StackPanel>
+      <Button x:Name="Build" Classes="Stretch" Content="Build" />
+    </StackPanel>
+  </Border>
+</UserControl>

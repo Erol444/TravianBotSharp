@@ -5,18 +5,20 @@ namespace MainCore.Services.Interface
 {
     public interface IPlanManager
     {
-        public void Add(int index, PlanTask task);
+        public void Add(int villageId, PlanTask task);
 
-        public void Insert(int index, int location, PlanTask task);
+        public void Insert(int villageId, int location, PlanTask task);
 
-        public void Remove(int index, PlanTask task);
+        public void Remove(int villageId, int location);
 
-        public void Clear(int index);
+        public void Remove(int villageId, PlanTask task);
+
+        public void Clear(int villageId);
 
         public void Save();
 
         public void Load();
 
-        public List<PlanTask> GetList(int index);
+        public List<PlanTask> GetList(int villageId);
     }
 }
