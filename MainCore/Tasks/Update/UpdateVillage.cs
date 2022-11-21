@@ -132,7 +132,7 @@ namespace MainCore.Tasks.Update
 
             var resource = context.VillagesResources.Find(VillageId);
             var ratio = resource.Crop * 100.0f / resource.Granary;
-            if (ratio > setting.AutoNPCPercent) return;
+            if (ratio < setting.AutoNPCPercent) return;
 
             _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
         }
