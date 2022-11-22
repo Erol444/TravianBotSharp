@@ -59,7 +59,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 CurrentLevel.Add(new TroopInfoText
                 {
                     Troop = (TroopEnums)troop.Id,
-                    Text = troop.Level.ToString()
+                    Text = troop.Level,
                 });
             }
         }

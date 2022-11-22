@@ -23,3 +23,7 @@ You can read our docs from this [link](https://tbs-docs.readthedocs.io/)
 ## Tech specification
 
 Currently, TBS only runs on Windows. It will be cross-platform in the future.
+
+## Credits
+
+- [Xceed Extended WPF Toolkit™](https://github.com/xceedsoftware/wpftoolkit)

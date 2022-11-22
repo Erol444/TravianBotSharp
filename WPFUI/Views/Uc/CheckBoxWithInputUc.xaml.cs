@@ -16,7 +16,7 @@ namespace WPFUI.Views.Uc
             {
                 this.Bind(ViewModel, vm => vm.IsChecked, v => v.IsChecked.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Text, v => v.IsChecked.Content).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Value, v => v.Value.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Value, v => v.Value.Value).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Unit, v => v.UnitLabel.Content).DisposeWith(d);
             });
         }
