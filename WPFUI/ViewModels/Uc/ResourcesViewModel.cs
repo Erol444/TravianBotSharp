@@ -17,33 +17,33 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _text, value);
         }
 
-        private string _wood;
+        private int _wood;
 
-        public string Wood
+        public int Wood
         {
             get => _wood;
             set => this.RaiseAndSetIfChanged(ref _wood, value);
         }
 
-        private string _clay;
+        private int _clay;
 
-        public string Clay
+        public int Clay
         {
             get => _clay;
             set => this.RaiseAndSetIfChanged(ref _clay, value);
         }
 
-        private string _iron;
+        private int _iron;
 
-        public string Iron
+        public int Iron
         {
             get => _iron;
             set => this.RaiseAndSetIfChanged(ref _iron, value);
         }
 
-        private string _crop;
+        private int _crop;
 
-        public string Crop
+        public int Crop
         {
             get => _crop;
             set => this.RaiseAndSetIfChanged(ref _crop, value);

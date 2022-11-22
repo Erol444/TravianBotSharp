@@ -15,10 +15,10 @@ namespace WPFUI.Views.Uc
             this.WhenActivated(d =>
             {
                 this.Bind(ViewModel, vm => vm.Text, v => v.Text.Content).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Wood, v => v.Wood.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Clay, v => v.Clay.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Iron, v => v.Iron.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Crop, v => v.Crop.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Wood, v => v.Wood.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Clay, v => v.Clay.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Iron, v => v.Iron.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Crop, v => v.Crop.Value).DisposeWith(d);
             });
         }
     }
