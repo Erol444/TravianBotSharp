@@ -65,7 +65,7 @@ namespace MainCore.Tasks.Misc
             _chromeBrowser.Navigate(currentAccount.Server);
             _taskManager.Add(AccountId, new LoginTask(AccountId), true);
 
-            var nextExecute = Random.Shared.Next(setting.WorkTimeMin, setting.SleepTimeMax);
+            var nextExecute = Random.Shared.Next(setting.SleepTimeMin, setting.SleepTimeMax);
             ExecuteAt = DateTime.Now.AddMinutes(nextExecute);
         }
     }
