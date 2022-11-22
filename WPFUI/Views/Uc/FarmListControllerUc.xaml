@@ -7,8 +7,10 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+          xmlns:controls="clr-namespace:WPFUI.Views.Uc">
     <Grid Background="#FFE3E3E3">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
@@ -19,12 +21,7 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <CheckBox x:Name="ActiveCheckBox" Content="Active this farm list" HorizontalAlignment="Center"  VerticalAlignment="Center" />
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Label x:Name="IntervalTimeLabel" Content="Interval (seconds):" />
-            <TextBox x:Name="IntervalTimeText" TextWrapping="Wrap" d:Text="50" Margin="5,0,5,0" Width="50" />
-            <Label x:Name="SignLabel" Content="±" />
-            <TextBox x:Name="IntervalTimeDiffText" TextWrapping="Wrap" d:Text="50" Width="50" Background="White" Margin="5,0,0,0" />
-        </StackPanel>
+        <controls:ToleranceUc x:Name="Interval" Grid.Row="1" />
         <Button x:Name="SaveButton" Content="Save" Grid.Row="2" Margin="5,5,5,5" />
     </Grid>
 </rxui:ReactiveUserControl>
