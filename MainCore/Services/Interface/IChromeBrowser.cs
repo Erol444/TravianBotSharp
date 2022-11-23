@@ -3,7 +3,7 @@ using MainCore.Models.Database;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
-namespace MainCore.Services
+namespace MainCore.Services.Interface
 {
     public interface IChromeBrowser
     {

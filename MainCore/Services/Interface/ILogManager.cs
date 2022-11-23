@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MainCore.Services
+namespace MainCore.Services.Interface
 {
     public interface ILogManager : IDisposable
     {

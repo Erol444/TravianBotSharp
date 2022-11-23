@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MainCore.Services
+namespace MainCore.Services.Interface
 {
     public interface ITimerManager : IDisposable
     {
