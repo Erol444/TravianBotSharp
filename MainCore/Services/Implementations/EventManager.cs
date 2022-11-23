@@ -1,7 +1,7 @@
 ﻿using MainCore.Models.Runtime;
 using System;
 
-namespace MainCore.Services
+namespace MainCore.Services.Implementations
 {
     public sealed class EventManager
     {

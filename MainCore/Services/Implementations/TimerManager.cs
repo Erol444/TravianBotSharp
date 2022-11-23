@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Timers;
+using MainCore.Services.Interface;
 
-namespace MainCore.Services
+namespace MainCore.Services.Implementations
 {
     public sealed class TimerManager : ITimerManager
     {
@@ -23,7 +24,7 @@ namespace MainCore.Services
             if (!_dictTimer.ContainsKey(index))
             {
                 var timer = new Timer(100) { AutoReset = false };
-                timer.Elapsed += (object sender, ElapsedEventArgs e) =>
+                timer.Elapsed += (sender, e) =>
                 {
                     try
                     {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace MainCore.Services
+namespace MainCore.Services.Interface
 {
     public interface IUseragentManager
     {

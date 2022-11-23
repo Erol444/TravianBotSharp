@@ -1,11 +1,12 @@
 ﻿using MainCore.Enums;
 using MainCore.Models.Runtime;
+using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
 using System.Collections.Generic;
 
-namespace MainCore.Services
+namespace MainCore.Services.Implementations
 {
     public sealed class LogManager : ILogManager
     {
