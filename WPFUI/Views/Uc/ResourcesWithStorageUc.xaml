@@ -1,4 +1,4 @@
-﻿<rxui:ReactiveUserControl
+<rxui:ReactiveUserControl
         x:Class="WPFUI.Views.Uc.ResourcesWithStorageUc"
         x:TypeArguments="vms:ResourcesWithStorageViewModel"
         xmlns:rxui="http://reactiveui.net"
@@ -12,36 +12,36 @@
                 <BitmapImage UriSource="pack://application:,,,/Resources/warehouse.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Warehouse" Minimum="0" />
+        <xctk:IntegerUpDown x:Name="Warehouse" ShowButtonSpinner="False" IsReadOnly="True" />
         <Image Margin="20,0,5,0">
             <Image.Source>
                 <BitmapImage UriSource="pack://application:,,,/Resources/wood.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Wood" Minimum="0" />
+        <xctk:IntegerUpDown x:Name="Wood" ShowButtonSpinner="False" IsReadOnly="True" />
         <Image Margin="20,0,5,0">
             <Image.Source>
                 <BitmapImage UriSource="pack://application:,,,/Resources/clay.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Clay" Minimum="0" />
+        <xctk:IntegerUpDown x:Name="Clay" ShowButtonSpinner="False" IsReadOnly="True" />
         <Image  Margin="20,0,5,0">
             <Image.Source>
                 <BitmapImage UriSource="pack://application:,,,/Resources/iron.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Iron" Minimum="0" />
+        <xctk:IntegerUpDown x:Name="Iron" ShowButtonSpinner="False" IsReadOnly="True" />
         <Image  Margin="50,0,5,0">
             <Image.Source>
                 <BitmapImage UriSource="pack://application:,,,/Resources/granary.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Granary" Minimum="0" />
+        <xctk:IntegerUpDown x:Name="Granary" ShowButtonSpinner="False" IsReadOnly="True" />
         <Image Margin="20,0,5,0">
             <Image.Source>
                 <BitmapImage UriSource="pack://application:,,,/Resources/crop.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Crop" Minimum="0" />
+        <xctk:IntegerUpDown x:Name="Crop" ShowButtonSpinner="False" IsReadOnly="True" />
     </StackPanel>
 </rxui:ReactiveUserControl>
