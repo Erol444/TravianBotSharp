@@ -129,10 +129,13 @@ namespace MainCore.Tasks.Update
             var setting = context.VillagesSettings.Find(VillageId);
             if (!setting.IsAutoNPC) return;
             if (setting.AutoNPCPercent == 0) return;
+            if (setting.AutoNPCWarehousePercent == 0) return;
 
             var resource = context.VillagesResources.Find(VillageId);
-            var ratio = resource.Crop * 100.0f / resource.Granary;
-            if (ratio < setting.AutoNPCPercent) return;
+            var ratioGranary = resource.Crop * 100.0f / resource.Granary;
+            var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
+            var ratioWarehouse = maxResource * 100.0f / resource.Warehouse;
+            if (ratioGranary < setting.AutoNPCPercent && ratioWarehouse < setting.AutoNPCWarehousePercent) return;
 
             _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
         }
