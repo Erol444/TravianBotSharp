@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using System;
 
 namespace WPFUI.ViewModels.Uc
 {
@@ -8,6 +9,11 @@ namespace WPFUI.ViewModels.Uc
         {
             Text = text;
             Unit = unit;
+            this.WhenAnyValue(vm => vm.MainValue).Subscribe(x =>
+            {
+                ToleranceMax = x;
+                if (ToleranceValue > x) ToleranceValue = x;
+            });
         }
 
         private string _text;
@@ -26,20 +32,28 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _unit, value);
         }
 
-        private string _mainValue;
+        private int _mainValue;
 
-        public string MainValue
+        public int MainValue
         {
             get => _mainValue;
             set => this.RaiseAndSetIfChanged(ref _mainValue, value);
         }
 
-        private string _toleranceValue;
+        private int _toleranceValue;
 
-        public string ToleranceValue
+        public int ToleranceValue
         {
             get => _toleranceValue;
             set => this.RaiseAndSetIfChanged(ref _toleranceValue, value);
+        }
+
+        private int _toleranceMax;
+
+        public int ToleranceMax
+        {
+            get => _toleranceMax;
+            set => this.RaiseAndSetIfChanged(ref _toleranceMax, value);
         }
     }
 }

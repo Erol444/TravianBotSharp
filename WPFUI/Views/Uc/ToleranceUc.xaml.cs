@@ -16,8 +16,9 @@ namespace WPFUI.Views.Uc
             {
                 this.OneWayBind(ViewModel, vm => vm.Text, v => v.TextLabel.Content).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Unit, v => v.UnitLabel.Content).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.MainValue, v => v.MainValue.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.ToleranceValue, v => v.Tolerance.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.MainValue, v => v.MainValue.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ToleranceValue, v => v.Tolerance.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ToleranceMax, v => v.Tolerance.Maximum).DisposeWith(d);
             });
         }
     }

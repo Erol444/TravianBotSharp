@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-namespace MainCore.Services
+namespace MainCore.Services.Implementations
 {
     public static class ChromeDriverInstaller
     {

@@ -2,7 +2,7 @@
 using MainCore.Enums;
 using MainCore.Helper;
 using MainCore.Models.Database;
-using MainCore.Services;
+using MainCore.Services.Interface;
 using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
@@ -16,7 +16,7 @@ using System.Windows;
 using WPFUI.Models;
 using WPFUI.Views;
 using Access = MainCore.Models.Database.Access;
-using EventManager = MainCore.Services.EventManager;
+using EventManager = MainCore.Services.Implementations.EventManager;
 
 namespace WPFUI.ViewModels.Uc
 {
