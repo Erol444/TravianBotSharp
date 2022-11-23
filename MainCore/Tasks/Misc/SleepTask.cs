@@ -51,21 +51,35 @@ namespace MainCore.Tasks.Misc
                 var time = TimeSpan.FromMinutes(random.Next(min, max));
                 _chromeBrowser.Close();
                 _logManager.Information(AccountId, $"Bot is sleeping in {time} minute(s)");
-                Task.Delay(time, Cts.Token).Wait();
+                try
+                {
+                    Task.Delay(time, Cts.Token).Wait();
+                }
+                catch
+                {
+                    return;
+                }
                 if (Cts.IsCancellationRequested) return;
             }
             else
             {
                 _chromeBrowser.Close();
                 _logManager.Information(AccountId, $"Bot is sleeping in {3} minute(s)");
-                Task.Delay(TimeSpan.FromMinutes(3), Cts.Token).Wait();
+                try
+                {
+                    Task.Delay(TimeSpan.FromMinutes(3), Cts.Token).Wait();
+                }
+                catch
+                {
+                    return;
+                }
             }
             _chromeBrowser.Setup(selectedAccess, setting);
             var currentAccount = context.Accounts.Find(AccountId);
             _chromeBrowser.Navigate(currentAccount.Server);
             _taskManager.Add(AccountId, new LoginTask(AccountId), true);
 
-            var nextExecute = Random.Shared.Next(setting.WorkTimeMin, setting.SleepTimeMax);
+            var nextExecute = Random.Shared.Next(setting.SleepTimeMin, setting.SleepTimeMax);
             ExecuteAt = DateTime.Now.AddMinutes(nextExecute);
         }
     }

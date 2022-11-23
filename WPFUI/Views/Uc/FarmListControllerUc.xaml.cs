@@ -13,17 +13,17 @@ namespace WPFUI.Views.Uc
         {
             ViewModel = new();
             InitializeComponent();
+            Interval.ViewModel = new("Time for next send", "sec(s)");
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel, vm => vm.SaveCommand, v => v.SaveButton).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.FarmSetting.IsActive, v => v.ActiveCheckBox.IsChecked).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.FarmSetting.IntervalTime, v => v.IntervalTimeText.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.FarmSetting.IntervalDiffTime, v => v.IntervalTimeDiffText.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.FarmSetting.IntervalTime, v => v.Interval.ViewModel.MainValue).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.FarmSetting.IntervalDiffTime, v => v.Interval.ViewModel.ToleranceValue).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.IsActive, v => v.ActiveCheckBox.IsEnabled).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.IsActive, v => v.IntervalTimeText.IsEnabled).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.IsActive, v => v.IntervalTimeDiffText.IsEnabled).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsActive, v => v.Interval.IsEnabled).DisposeWith(d);
             });
         }
     }

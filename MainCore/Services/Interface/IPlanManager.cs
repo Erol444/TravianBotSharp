@@ -1,7 +1,7 @@
 ﻿using MainCore.Models.Runtime;
 using System.Collections.Generic;
 
-namespace MainCore.Services
+namespace MainCore.Services.Interface
 {
     public interface IPlanManager
     {

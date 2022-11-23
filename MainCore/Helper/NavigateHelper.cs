@@ -1,9 +1,9 @@
-﻿using MainCore.Services;
-using System;
+﻿using System;
 using OpenQA.Selenium;
 using MainCore.Exceptions;
 using System.Threading;
 using System.Collections.ObjectModel;
+using MainCore.Services.Interface;
 
 #if TRAVIAN_OFFICIAL
 

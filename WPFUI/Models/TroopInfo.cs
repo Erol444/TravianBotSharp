@@ -21,9 +21,9 @@ namespace WPFUI.Models
 
     public class TroopInfoText : TroopInfo
     {
-        private string _text;
+        private int _text;
 
-        public string Text
+        public int Text
         {
             get => _text;
             set => this.RaiseAndSetIfChanged(ref _text, value);

@@ -1,7 +1,8 @@
 ﻿using FluentMigrator.Runner;
 using MainCore;
 using MainCore.Migrations;
-using MainCore.Services;
+using MainCore.Services.Implementations;
+using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -9,7 +10,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Views;
-using EventManager = MainCore.Services.EventManager;
+using EventManager = MainCore.Services.Implementations.EventManager;
 
 namespace WPFUI
 {

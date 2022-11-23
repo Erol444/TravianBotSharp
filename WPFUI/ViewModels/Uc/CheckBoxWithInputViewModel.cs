@@ -26,9 +26,9 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _isChecked, value);
         }
 
-        private string _value;
+        private int _value;
 
-        public string Value
+        public int Value
         {
             get => _value;
             set => this.RaiseAndSetIfChanged(ref _value, value);
