@@ -1,13 +1,14 @@
 ﻿using HtmlAgilityPack;
+using ParserCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TravianOfficialNewHeroUICore.Parsers
 {
-    public static class VillageFields
+    public class VillageFieldParser : IVillageFieldParser
     {
-        public static List<HtmlNode> GetResourceNodes(HtmlDocument doc)
+        public List<HtmlNode> GetNodes(HtmlDocument doc)
         {
             var resourceFieldContainerNode = doc.GetElementbyId("resourceFieldContainer");
             if (resourceFieldContainerNode is null) return new();
@@ -15,7 +16,12 @@ namespace TravianOfficialNewHeroUICore.Parsers
             return resourceFieldContainerNode.ChildNodes.Where(x => x.HasClass("level")).ToList();
         }
 
-        public static int GetId(HtmlNode node)
+        public HtmlNode GetNode(HtmlDocument doc, int index)
+        {
+            return doc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass($"buildingSlot{index}"));
+        }
+
+        public int GetId(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("buildingSlot"));
@@ -26,7 +32,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
             return int.Parse(strResult);
         }
 
-        public static int GetType(HtmlNode node)
+        public int GetBuildingType(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("gid"));
@@ -37,7 +43,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
             return int.Parse(strResult);
         }
 
-        public static int GetLevel(HtmlNode node)
+        public int GetLevel(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("level") && !x.Equals("level"));
@@ -48,7 +54,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
             return int.Parse(strResult);
         }
 
-        public static bool IsUnderConstruction(HtmlNode node)
+        public bool IsUnderConstruction(HtmlNode node)
         {
             return node.GetClasses().Contains("underConstruction");
         }

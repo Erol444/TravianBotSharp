@@ -1,12 +1,13 @@
 ﻿using HtmlAgilityPack;
+using ParserCore;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TravianOfficialCore.Parsers
 {
-    public class VillageInfrastructure
+    public class VillageInfrastructureParser : IVillageInfrastructureParser
     {
-        public static List<HtmlNode> GetBuildingNodes(HtmlDocument doc)
+        public List<HtmlNode> GetNodes(HtmlDocument doc)
         {
             var villageContentNode = doc.GetElementbyId("villageContent");
             if (villageContentNode is null) return new();
@@ -19,24 +20,30 @@ namespace TravianOfficialCore.Parsers
             return list;
         }
 
-        public static int GetId(HtmlNode node)
+        public HtmlNode GetNode(HtmlDocument doc, int index)
+        {
+            var location = index - 18; // - 19 + 1
+            return doc.DocumentNode.SelectSingleNode($"//*[@id='villageContent']/div[{location}]");
+        }
+
+        public int GetId(HtmlNode node)
         {
             return node.GetAttributeValue<int>("data-aid", -1);
         }
 
-        public static int GetType(HtmlNode node)
+        public int GetBuildingType(HtmlNode node)
         {
             return node.GetAttributeValue<int>("data-gid", -1);
         }
 
-        public static int GetLevel(HtmlNode node)
+        public int GetLevel(HtmlNode node)
         {
             var aNode = node.Descendants("a").FirstOrDefault();
             if (aNode is null) return -1;
             return aNode.GetAttributeValue<int>("data-level", -1);
         }
 
-        public static bool IsUnderConstruction(HtmlNode node)
+        public bool IsUnderConstruction(HtmlNode node)
         {
             return node.Descendants("a").Any(x => x.HasClass("underConstruction"));
         }

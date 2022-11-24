@@ -1,20 +1,21 @@
 ﻿using HtmlAgilityPack;
+using ParserCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
 namespace TravianOfficialNewHeroUICore.Parsers
 {
-    public static class SubTab
+    public class SubTabParser : ISubTabParser
     {
-        public static List<HtmlNode> GetProductionNum(HtmlDocument doc)
+        public List<HtmlNode> GetProductions(HtmlDocument doc)
         {
             var table = doc.GetElementbyId("production");
             if (table is null) return null;
             return table.Descendants("td").Where(x => x.HasClass("num")).ToList();
         }
 
-        public static long GetNum(HtmlNode node)
+        public long GetProduction(HtmlNode node)
         {
             var valueStrFixed = WebUtility.HtmlDecode(node.InnerText);
             if (string.IsNullOrEmpty(valueStrFixed)) return -1;

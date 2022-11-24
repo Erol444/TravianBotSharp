@@ -33,7 +33,7 @@ namespace TestProject.FindElements
         [TestMethod]
         public void TravianOfficialHeroGetUsernameNode()
         {
-            var node = TravianOfficialNewHeroUICore.FindElements.LoginPage.GetUsernameNode(_travianDoc);
+            var node = TravianOfficialCore.FindElements.LoginPage.GetUsernameNode(_travianDoc);
             Assert.IsNotNull(node);
         }
 
@@ -54,7 +54,7 @@ namespace TestProject.FindElements
         [TestMethod]
         public void TravianOfficiaHeroGetPasswordNode()
         {
-            var node = TravianOfficialNewHeroUICore.FindElements.LoginPage.GetPasswordNode(_travianDoc);
+            var node = TravianOfficialCore.FindElements.LoginPage.GetPasswordNode(_travianDoc);
             Assert.IsNotNull(node);
         }
 
@@ -75,7 +75,7 @@ namespace TestProject.FindElements
         [TestMethod]
         public void TravianOfficialHeroGetLoginButton()
         {
-            var node = TravianOfficialNewHeroUICore.FindElements.LoginPage.GetLoginButton(_travianDoc);
+            var node = TravianOfficialCore.FindElements.LoginPage.GetLoginButton(_travianDoc);
             Assert.IsNotNull(node);
         }
     }

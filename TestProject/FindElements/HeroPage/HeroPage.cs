@@ -29,7 +29,7 @@ namespace TestProject.FindElements
         {
             var doc = new HtmlDocument();
             doc.Load("FindElements/HeroPage/inventory/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetHeroAvatar(doc);
+            var value = TravianOfficialCore.FindElements.HeroPage.GetHeroAvatar(doc);
             Assert.IsNotNull(value);
         }
 
@@ -56,7 +56,7 @@ namespace TestProject.FindElements
         {
             var doc = new HtmlDocument();
             doc.Load("FindElements/HeroPage/inventory/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetAdventuresButton(doc);
+            var value = TravianOfficialCore.FindElements.HeroPage.GetAdventuresButton(doc);
             Assert.IsNotNull(value);
         }
 
@@ -83,7 +83,7 @@ namespace TestProject.FindElements
         {
             var doc = new HtmlDocument();
             doc.Load("FindElements/HeroPage/inventory/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetItemSlot(doc, 58);
+            var value = TravianOfficialCore.FindElements.HeroPage.GetItemSlot(doc, 58);
             Assert.IsNotNull(value);
         }
 
@@ -110,7 +110,7 @@ namespace TestProject.FindElements
         {
             var doc = new HtmlDocument();
             doc.Load("FindElements/HeroPage/dialog/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetAmountBox(doc);
+            var value = TravianOfficialCore.FindElements.HeroPage.GetAmountBox(doc);
             Assert.IsNotNull(value);
         }
 
@@ -137,7 +137,7 @@ namespace TestProject.FindElements
         {
             var doc = new HtmlDocument();
             doc.Load("FindElements/HeroPage/dialog/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetConfirmButton(doc);
+            var value = TravianOfficialCore.FindElements.HeroPage.GetConfirmButton(doc);
             Assert.IsNotNull(value);
         }
 
@@ -164,7 +164,7 @@ namespace TestProject.FindElements
         {
             var doc = new HtmlDocument();
             doc.Load("FindElements/HeroPage/adventure/TravianHeroUI.html");
-            var value = TravianOfficialNewHeroUICore.FindElements.HeroPage.GetStartAdventureButton(doc, -49, -36);
+            var value = TravianOfficialCore.FindElements.HeroPage.GetStartAdventureButton(doc, -49, -36);
             Assert.IsNotNull(value);
         }
     }

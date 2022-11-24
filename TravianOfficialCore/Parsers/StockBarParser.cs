@@ -1,67 +1,34 @@
 ﻿using HtmlAgilityPack;
+using ParserCore;
 using System.Linq;
 using System.Net;
 
-namespace TravianOfficialNewHeroUICore.Parsers
+namespace TravianOfficialCore.Parsers
 {
-    public static class StockBar
+    public class StockBarParser : IStockBarParser
     {
-        public static long GetWood(HtmlDocument doc)
+        private static long GetResource(HtmlDocument doc, string id)
         {
-            var woodNode = doc.GetElementbyId("l1");
-            if (woodNode is null) return -1;
-            var valueStrFixed = WebUtility.HtmlDecode(woodNode.InnerText);
+            var node = doc.GetElementbyId(id);
+            if (node is null) return -1;
+            var valueStrFixed = WebUtility.HtmlDecode(node.InnerText);
             if (string.IsNullOrEmpty(valueStrFixed)) return -1;
             var valueStr = new string(valueStrFixed.Where(c => char.IsDigit(c)).ToArray());
             if (string.IsNullOrEmpty(valueStr)) return -1;
             return long.Parse(valueStr);
         }
 
-        public static long GetClay(HtmlDocument doc)
-        {
-            var clayNode = doc.GetElementbyId("l2");
-            if (clayNode is null) return -1;
-            var valueStrFixed = WebUtility.HtmlDecode(clayNode.InnerText);
-            if (string.IsNullOrEmpty(valueStrFixed)) return -1;
-            var valueStr = new string(valueStrFixed.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(valueStr)) return -1;
-            return long.Parse(valueStr);
-        }
+        public long GetWood(HtmlDocument doc) => GetResource(doc, "l1");
 
-        public static int GetIron(HtmlDocument doc)
-        {
-            var ironNode = doc.GetElementbyId("l3");
-            if (ironNode is null) return -1;
-            var valueStrFixed = WebUtility.HtmlDecode(ironNode.InnerText);
-            if (string.IsNullOrEmpty(valueStrFixed)) return -1;
-            var valueStr = new string(valueStrFixed.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(valueStr)) return -1;
-            return int.Parse(valueStr);
-        }
+        public long GetClay(HtmlDocument doc) => GetResource(doc, "l2");
 
-        public static long GetCrop(HtmlDocument doc)
-        {
-            var cropNode = doc.GetElementbyId("l4");
-            if (cropNode is null) return -1;
-            var valueStrFixed = WebUtility.HtmlDecode(cropNode.InnerText);
-            if (string.IsNullOrEmpty(valueStrFixed)) return -1;
-            var valueStr = new string(valueStrFixed.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(valueStr)) return -1;
-            return long.Parse(valueStr);
-        }
+        public long GetIron(HtmlDocument doc) => GetResource(doc, "l3");
 
-        public static long GetFreeCrop(HtmlDocument doc)
-        {
-            var freecropNode = doc.GetElementbyId("stockBarFreeCrop");
-            if (freecropNode is null) return -1;
-            var valueStrFixed = WebUtility.HtmlDecode(freecropNode.InnerText);
-            if (string.IsNullOrEmpty(valueStrFixed)) return -1;
-            var valueStr = new string(valueStrFixed.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(valueStr)) return -1;
-            return long.Parse(valueStr);
-        }
+        public long GetCrop(HtmlDocument doc) => GetResource(doc, "l3");
 
-        public static long GetWarehouseCapacity(HtmlDocument doc)
+        public long GetFreeCrop(HtmlDocument doc) => GetResource(doc, "stockBarFreeCrop");
+
+        public long GetWarehouseCapacity(HtmlDocument doc)
         {
             var stockBarNode = doc.GetElementbyId("stockBar");
             if (stockBarNode is null) return -1;
@@ -78,7 +45,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
             return long.Parse(valueStr);
         }
 
-        public static long GetGranaryCapacity(HtmlDocument doc)
+        public long GetGranaryCapacity(HtmlDocument doc)
         {
             var stockBarNode = doc.GetElementbyId("stockBar");
             if (stockBarNode is null) return -1;
@@ -95,7 +62,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
             return long.Parse(valueStr);
         }
 
-        public static int GetGold(HtmlDocument doc)
+        public int GetGold(HtmlDocument doc)
         {
             var goldNode = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("ajaxReplaceableGoldAmount"));
             if (goldNode is null) return -1;
@@ -106,7 +73,7 @@ namespace TravianOfficialNewHeroUICore.Parsers
             return int.Parse(valueStr);
         }
 
-        public static int GetSilver(HtmlDocument doc)
+        public int GetSilver(HtmlDocument doc)
         {
             var silverNode = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("ajaxReplaceableSilverAmount"));
             if (silverNode is null) return -1;

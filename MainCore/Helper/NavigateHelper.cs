@@ -319,7 +319,7 @@ namespace MainCore.Helper
             while (!CheckHelper.IsCorrectTab(chromeBrowser, index))
             {
                 var html = chromeBrowser.GetHtml();
-                var listNode = BuildingTab.GetBuildingTabNodes(html);
+                var listNode = BuildingTabParser.GetBuildingTabNodes(html);
                 if (listNode.Count == 0)
                 {
                     throw new Exception("Cannot find building tabs");

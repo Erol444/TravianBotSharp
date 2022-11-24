@@ -1,21 +1,22 @@
 ﻿using HtmlAgilityPack;
+using ParserCore;
 using System.Linq;
 
-namespace TravianOfficialCore.FindElements
+namespace TravianOfficialCore.Parsers
 {
-    public static class LoginPage
+    public class SystemPageParser : ISystemPageParser
     {
-        public static HtmlNode GetUsernameNode(HtmlDocument doc)
+        public HtmlNode GetUsernameNode(HtmlDocument doc)
         {
             return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("name"));
         }
 
-        public static HtmlNode GetPasswordNode(HtmlDocument doc)
+        public HtmlNode GetPasswordNode(HtmlDocument doc)
         {
             return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("password"));
         }
 
-        public static HtmlNode GetLoginButton(HtmlDocument doc)
+        public HtmlNode GetLoginButton(HtmlDocument doc)
         {
             var trNode = doc.DocumentNode.Descendants("tr").FirstOrDefault(x => x.HasClass("loginButtonRow"));
             if (trNode == null) return null;

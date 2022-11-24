@@ -103,13 +103,13 @@ namespace MainCore.Tasks.Update
         private void UpdateAccountInfo()
         {
             var html = _chromeBrowser.GetHtml();
-            var tribe = RightBar.GetTribe(html);
+            var tribe = RightBarParser.GetTribe(html);
             if (tribe == 0) throw new Exception("Cannot read account's tribe.");
-            var hasPlusAccount = RightBar.HasPlusAccount(html);
+            var hasPlusAccount = RightBarParser.HasPlusAccount(html);
             if (hasPlusAccount is null) throw new Exception("Cannot detect account has plus or not.");
-            var gold = StockBar.GetGold(html);
+            var gold = StockBarParser.GetGold(html);
             if (gold == -1) throw new Exception("Cannot read account's gold.");
-            var silver = StockBar.GetSilver(html);
+            var silver = StockBarParser.GetSilver(html);
             if (silver == -1) throw new Exception("Cannot read account's silver.");
 
             using var context = _contextFactory.CreateDbContext();
@@ -141,9 +141,9 @@ namespace MainCore.Tasks.Update
         private void UpdateHeroInfo()
         {
             var html = _chromeBrowser.GetHtml();
-            var health = HeroInfo.GetHealth(html);
-            var status = HeroInfo.GetStatus(html);
-            var numberAdventure = HeroInfo.GetAdventureNum(html);
+            var health = HeroSectionParser.GetHealth(html);
+            var status = HeroSectionParser.GetStatus(html);
+            var numberAdventure = HeroSectionParser.GetAdventureNum(html);
 
             using var context = _contextFactory.CreateDbContext();
             var account = context.Heroes.Find(AccountId);

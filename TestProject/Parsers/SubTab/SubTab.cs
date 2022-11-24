@@ -58,8 +58,8 @@ namespace TestProject.Parsers.SubTab
         [TestMethod]
         public void TravianOfficialHeroGetNum()
         {
-            var value = TravianOfficialNewHeroUICore.Parsers.SubTab.GetProductionNum(_travianHeroDoc);
-            var result = TravianOfficialNewHeroUICore.Parsers.SubTab.GetNum(value[2]);
+            var value = TravianOfficialCore.Parsers.SubTabParser.GetProductionNum(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.SubTabParser.GetNum(value[2]);
             Assert.AreEqual(48, result);
         }
     }

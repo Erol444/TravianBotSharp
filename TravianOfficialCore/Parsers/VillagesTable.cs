@@ -1,35 +1,36 @@
 ﻿using HtmlAgilityPack;
+using ParserCore;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TravianOfficialCore.Parsers
 {
-    public static class VillagesTable
+    public class VillagesTable : IVillagesTableParser
     {
-        public static List<HtmlNode> GetVillageNodes(HtmlDocument doc)
+        public List<HtmlNode> GetVillages(HtmlDocument doc)
         {
             var villsNode = doc.GetElementbyId("sidebarBoxVillagelist");
-            if (villsNode is null) return new();
+            if (villsNode is null) return null;
             return villsNode.Descendants("div").Where(x => x.HasClass("listEntry")).ToList();
         }
 
-        public static bool IsUnderAttack(HtmlNode node)
+        public bool IsUnderAttack(HtmlNode node)
         {
             return node.HasClass("attack");
         }
 
-        public static bool IsActive(HtmlNode node)
+        public bool IsActive(HtmlNode node)
         {
             return node.HasClass("active");
         }
 
-        public static int GetId(HtmlNode node)
+        public int GetId(HtmlNode node)
         {
             var dataDid = node.GetAttributeValue("data-did", 0);
             return dataDid;
         }
 
-        public static string GetName(HtmlNode node)
+        public string GetName(HtmlNode node)
         {
             var textNode = node.Descendants("a").FirstOrDefault();
             if (textNode is null) return "";
@@ -38,7 +39,7 @@ namespace TravianOfficialCore.Parsers
             return nameNode.InnerText;
         }
 
-        public static int GetX(HtmlNode node)
+        public int GetX(HtmlNode node)
         {
             var xNode = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateX"));
             if (xNode is null) return 0;
@@ -49,7 +50,7 @@ namespace TravianOfficialCore.Parsers
             return int.Parse(xStr);
         }
 
-        public static int GetY(HtmlNode node)
+        public int GetY(HtmlNode node)
         {
             var yNode = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateY"));
             if (yNode is null) return 0;

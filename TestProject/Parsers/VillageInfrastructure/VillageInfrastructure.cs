@@ -35,7 +35,7 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetBuildingNodes()
         {
-            var value = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetBuildingNodes(_travianHeroDoc);
+            var value = TravianOfficialCore.Parsers.VillageInfrastructureParser.GetBuildingNodes(_travianHeroDoc);
             Assert.AreEqual(22, value.Count);
         }
 
@@ -58,8 +58,8 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetId()
         {
-            var nodes = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetBuildingNodes(_travianHeroDoc);
-            var result = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetId(nodes[1]);
+            var nodes = TravianOfficialCore.Parsers.VillageInfrastructureParser.GetBuildingNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillageInfrastructureParser.GetId(nodes[1]);
             Assert.AreEqual(20, result);
         }
 
@@ -82,8 +82,8 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetLevel()
         {
-            var nodes = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetBuildingNodes(_travianHeroDoc);
-            var result = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetLevel(nodes[1]);
+            var nodes = TravianOfficialCore.Parsers.VillageInfrastructureParser.GetBuildingNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillageInfrastructureParser.GetLevel(nodes[1]);
             Assert.AreEqual(1, result);
         }
 
@@ -106,8 +106,8 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroGetType()
         {
-            var nodes = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetBuildingNodes(_travianHeroDoc);
-            var result = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetLevel(nodes[1]);
+            var nodes = TravianOfficialCore.Parsers.VillageInfrastructureParser.GetBuildingNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillageInfrastructureParser.GetLevel(nodes[1]);
             Assert.AreEqual(1, result);
         }
 
@@ -130,8 +130,8 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialHeroIsUnderConstruction()
         {
-            var nodes = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.GetBuildingNodes(_travianHeroDoc);
-            var result = TravianOfficialNewHeroUICore.Parsers.VillageInfrastructure.IsUnderConstruction(nodes[1]);
+            var nodes = TravianOfficialCore.Parsers.VillageInfrastructureParser.GetBuildingNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillageInfrastructureParser.IsUnderConstruction(nodes[1]);
             Assert.IsFalse(result);
         }
     }

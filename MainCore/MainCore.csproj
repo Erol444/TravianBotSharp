@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <!--<Server>TRAVIAN_OFFICIAL</Server>-->
-    <Server>TRAVIAN_OFFICIAL_HEROUI</Server>
+    <Server>TRAVIAN_OFFICIAL</Server>
     <!--<Server>TTWARS</Server>-->
     
     <DefineConstants Condition="'$(Server)' != ''">$(DefineConstants);$(Server)</DefineConstants>
@@ -35,7 +34,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentMigrator" Version="3.3.2" />
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.43" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.6" />
     <PackageReference Include="Octokit" Version="0.52.0" />
     <PackageReference Include="OpenQA.Selenium.Chrome.ChromeDriverExtensions" Version="1.2.0" />
@@ -49,7 +48,6 @@
 
   <ItemGroup>
     <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL'" Include="..\TravianOfficialCore\TravianOfficialCore.csproj" />
-    <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL_HEROUI'" Include="..\TravianOfficialNewHeroUICore\TravianOfficialNewHeroUICore.csproj" />
     <ProjectReference Condition="'$(Server)' == 'TTWARS'" Include="..\TTWarsCore\TTWarsCore.csproj" />
   </ItemGroup>
 

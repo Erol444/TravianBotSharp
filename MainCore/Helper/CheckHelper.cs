@@ -62,8 +62,8 @@ namespace MainCore.Helper
         public static bool IsCorrectTab(IChromeBrowser chromeBrowser, int tab)
         {
             var html = chromeBrowser.GetHtml();
-            var tabs = BuildingTab.GetBuildingTabNodes(html);
-            return BuildingTab.IsCurrentTab(tabs[tab]);
+            var tabs = BuildingTabParser.GetBuildingTabNodes(html);
+            return BuildingTabParser.IsCurrentTab(tabs[tab]);
         }
 
         public static int[] GetResourceNeed(IChromeBrowser chromeBrowser, BuildingEnums building, bool multiple = false)

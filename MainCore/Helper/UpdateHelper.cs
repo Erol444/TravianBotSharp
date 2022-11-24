@@ -30,15 +30,15 @@ namespace MainCore.Helper
         public static void UpdateCurrentlyBuilding(AppDbContext context, IChromeBrowser chromeBrowser, int villageId)
         {
             var html = chromeBrowser.GetHtml();
-            var nodes = VillageCurrentlyBuilding.GetNodes(html);
+            var nodes = VillageCurrentlyBuildingParser.GetNodes(html);
             for (int i = 0; i < nodes.Count; i++)
             {
                 var node = nodes[i];
                 var building = context.VillagesCurrentlyBuildings.Find(villageId, i);
 
-                var strType = VillageCurrentlyBuilding.GetType(node);
-                var level = VillageCurrentlyBuilding.GetLevel(node);
-                var duration = VillageCurrentlyBuilding.GetDuration(node);
+                var strType = VillageCurrentlyBuildingParser.GetType(node);
+                var level = VillageCurrentlyBuildingParser.GetLevel(node);
+                var duration = VillageCurrentlyBuildingParser.GetDuration(node);
 
                 var type = (BuildingEnums)Enum.Parse(typeof(BuildingEnums), strType);
 
@@ -87,14 +87,14 @@ namespace MainCore.Helper
         public static void UpdateDorf1(AppDbContext context, IChromeBrowser chromeBrowser, int villageId)
         {
             var html = chromeBrowser.GetHtml();
-            var resFields = VillageFields.GetResourceNodes(html);
+            var resFields = VillageFieldParser.GetResourceNodes(html);
             foreach (var fieldNode in resFields)
             {
-                var id = VillageFields.GetId(fieldNode);
+                var id = VillageFieldParser.GetId(fieldNode);
                 var resource = context.VillagesBuildings.Find(villageId, id);
-                var level = VillageFields.GetLevel(fieldNode);
-                var type = VillageFields.GetType(fieldNode);
-                var isUnderConstruction = VillageFields.IsUnderConstruction(fieldNode);
+                var level = VillageFieldParser.GetLevel(fieldNode);
+                var type = VillageFieldParser.GetType(fieldNode);
+                var isUnderConstruction = VillageFieldParser.IsUnderConstruction(fieldNode);
                 if (resource is null)
                 {
                     context.VillagesBuildings.Add(new()
@@ -148,13 +148,13 @@ namespace MainCore.Helper
         public static void UpdateDorf2(AppDbContext context, IChromeBrowser chromeBrowser, int accountId, int villageId)
         {
             var html = chromeBrowser.GetHtml();
-            var buildingNodes = VillageInfrastructure.GetBuildingNodes(html);
+            var buildingNodes = VillageInfrastructureParser.GetBuildingNodes(html);
             foreach (var buildingNode in buildingNodes)
             {
-                var id = VillageInfrastructure.GetId(buildingNode);
+                var id = VillageInfrastructureParser.GetId(buildingNode);
                 var building = context.VillagesBuildings.Find(villageId, id);
-                var level = VillageInfrastructure.GetLevel(buildingNode);
-                var type = VillageInfrastructure.GetType(buildingNode);
+                var level = VillageInfrastructureParser.GetLevel(buildingNode);
+                var type = VillageInfrastructureParser.GetType(buildingNode);
                 switch (id)
                 {
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
@@ -185,7 +185,7 @@ namespace MainCore.Helper
                     default:
                         break;
                 }
-                var isUnderConstruction = VillageInfrastructure.IsUnderConstruction(buildingNode);
+                var isUnderConstruction = VillageInfrastructureParser.IsUnderConstruction(buildingNode);
                 if (building is null)
                 {
                     context.VillagesBuildings.Add(new()
@@ -245,31 +245,31 @@ namespace MainCore.Helper
                 context.VillagesResources.Add(new()
                 {
                     VillageId = villageId,
-                    Wood = StockBar.GetWood(html),
-                    Clay = StockBar.GetClay(html),
-                    Iron = StockBar.GetIron(html),
-                    Crop = StockBar.GetCrop(html),
-                    Warehouse = StockBar.GetWarehouseCapacity(html),
-                    Granary = StockBar.GetGranaryCapacity(html),
-                    FreeCrop = StockBar.GetFreeCrop(html),
+                    Wood = StockBarParser.GetWood(html),
+                    Clay = StockBarParser.GetClay(html),
+                    Iron = StockBarParser.GetIron(html),
+                    Crop = StockBarParser.GetCrop(html),
+                    Warehouse = StockBarParser.GetWarehouseCapacity(html),
+                    Granary = StockBarParser.GetGranaryCapacity(html),
+                    FreeCrop = StockBarParser.GetFreeCrop(html),
                 });
             }
             else
             {
-                resource.Wood = StockBar.GetWood(html);
-                resource.Clay = StockBar.GetClay(html);
-                resource.Iron = StockBar.GetIron(html);
-                resource.Crop = StockBar.GetCrop(html);
-                resource.Warehouse = StockBar.GetWarehouseCapacity(html);
-                resource.Granary = StockBar.GetGranaryCapacity(html);
-                resource.FreeCrop = StockBar.GetFreeCrop(html);
+                resource.Wood = StockBarParser.GetWood(html);
+                resource.Clay = StockBarParser.GetClay(html);
+                resource.Iron = StockBarParser.GetIron(html);
+                resource.Crop = StockBarParser.GetCrop(html);
+                resource.Warehouse = StockBarParser.GetWarehouseCapacity(html);
+                resource.Granary = StockBarParser.GetGranaryCapacity(html);
+                resource.FreeCrop = StockBarParser.GetFreeCrop(html);
             }
             context.SaveChanges();
         }
 
         public static void UpdateHeroInventory(AppDbContext context, IChromeBrowser chromeBrowser, int accountId)
         {
-            var foundItems = HeroInfo.GetItems(chromeBrowser.GetHtml());
+            var foundItems = HeroSectionParser.GetItems(chromeBrowser.GetHtml());
             if (foundItems.Count == 0) return;
             var heroItems = context.HeroesItems.Where(x => x.AccountId == accountId).ToList();
             var addedItems = new List<Models.Database.HeroItem>();
@@ -303,7 +303,7 @@ namespace MainCore.Helper
 
         public static void UpdateAdventures(AppDbContext context, IChromeBrowser chromeBrowser, int accountId)
         {
-            var foundAdventures = HeroInfo.GetAdventures(chromeBrowser.GetHtml());
+            var foundAdventures = HeroSectionParser.GetAdventures(chromeBrowser.GetHtml());
             var heroAdventures = context.Adventures.Where(x => x.AccountId == accountId).ToList();
             if (foundAdventures.Count == 0)
             {
@@ -314,8 +314,8 @@ namespace MainCore.Helper
             var addedAdventures = new List<Models.Database.Adventure>();
             foreach (var adventure in foundAdventures)
             {
-                (var x, var y) = HeroInfo.GetAdventureCoordinates(adventure);
-                var difficulty = HeroInfo.GetAdventureDifficult(adventure);
+                (var x, var y) = HeroSectionParser.GetAdventureCoordinates(adventure);
+                var difficulty = HeroSectionParser.GetAdventureDifficult(adventure);
                 var existItem = heroAdventures.FirstOrDefault(a => a.X == x && a.Y == y);
                 if (existItem is null)
                 {
@@ -346,11 +346,11 @@ namespace MainCore.Helper
             var html = chromeBrowser.GetHtml();
             var production = context.VillagesProduction.Find(villageId);
 
-            var productionList = SubTab.GetProductionNum(html);
-            var wood = SubTab.GetNum(productionList[0]);
-            var clay = SubTab.GetNum(productionList[1]);
-            var iron = SubTab.GetNum(productionList[2]);
-            var crop = SubTab.GetNum(productionList[3]);
+            var productionList = SubTabParser.GetProductionNum(html);
+            var wood = SubTabParser.GetNum(productionList[0]);
+            var clay = SubTabParser.GetNum(productionList[1]);
+            var iron = SubTabParser.GetNum(productionList[2]);
+            var crop = SubTabParser.GetNum(productionList[3]);
 
             if (production is null)
             {
@@ -377,13 +377,13 @@ namespace MainCore.Helper
         {
             var html = chromeBrowser.GetHtml();
 
-            var farmNodes = FarmList.GetFarmNodes(html);
+            var farmNodes = FarmListParser.GetFarmNodes(html);
             var farms = new List<Farm>();
             foreach (var farmNode in farmNodes)
             {
-                var name = FarmList.GetName(farmNode);
-                var id = FarmList.GetId(farmNode);
-                var count = FarmList.GetNumOfFarms(farmNode);
+                var name = FarmListParser.GetName(farmNode);
+                var id = FarmListParser.GetId(farmNode);
+                var count = FarmListParser.GetNumOfFarms(farmNode);
                 var farm = new Farm()
                 {
                     AccountId = accountId,

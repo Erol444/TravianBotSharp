@@ -1,21 +1,22 @@
 ﻿using HtmlAgilityPack;
+using ParserCore;
 using System.Linq;
 
 namespace TravianOfficialCore.Parsers
 {
-    public static class RightBar
+    public class RightBarParser : IRightBarParser
     {
-        public static bool? HasPlusAccount(HtmlDocument doc)
+        public bool HasPlusAccount(HtmlDocument doc)
         {
             var market = doc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("market") && x.HasClass("round"));
-            if (market is null) return null;
+            if (market is null) return false;
 
             if (market.HasClass("green")) return true;
             if (market.HasClass("gold")) return false;
-            return null;
+            return false;
         }
 
-        public static int GetTribe(HtmlDocument doc)
+        public int GetTribe(HtmlDocument doc)
         {
             var questMaster = doc.GetElementbyId("questmasterButton");
             if (questMaster is null) return 0;
