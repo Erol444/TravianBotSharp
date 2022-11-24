@@ -36,12 +36,12 @@ namespace MainCore.Helper
         {
             var html = chromeBrowser.GetHtml();
 
-            var listNode = VillagesTable.GetVillageNodes(html);
+            var listNode = VillagesTableParser.GetVillageNodes(html);
             foreach (var node in listNode)
             {
-                var id = VillagesTable.GetId(node);
+                var id = VillagesTableParser.GetId(node);
                 if (id != villageId) continue;
-                return VillagesTable.IsActive(node);
+                return VillagesTableParser.IsActive(node);
             }
             return false;
         }
@@ -50,11 +50,11 @@ namespace MainCore.Helper
         {
             var html = chromeBrowser.GetHtml();
 
-            var listNode = VillagesTable.GetVillageNodes(html);
+            var listNode = VillagesTableParser.GetVillageNodes(html);
             foreach (var node in listNode)
             {
-                if (!VillagesTable.IsActive(node)) continue;
-                return VillagesTable.GetId(node);
+                if (!VillagesTableParser.IsActive(node)) continue;
+                return VillagesTableParser.GetId(node);
             }
             return -1;
         }

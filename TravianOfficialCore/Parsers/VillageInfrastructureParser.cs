@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
-using ParserCore;
+using ServerModuleCore.Parser;
 using System.Collections.Generic;
 using System.Linq;
 

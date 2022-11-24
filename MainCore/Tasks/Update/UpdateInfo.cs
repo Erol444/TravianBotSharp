@@ -183,14 +183,14 @@ namespace MainCore.Tasks.Update
         {
             var html = _chromeBrowser.GetHtml();
 
-            var listNode = VillagesTable.GetVillageNodes(html);
+            var listNode = VillagesTableParser.GetVillageNodes(html);
             var listVillage = new List<Village>();
             foreach (var node in listNode)
             {
-                var id = VillagesTable.GetId(node);
-                var name = VillagesTable.GetName(node);
-                var x = VillagesTable.GetX(node);
-                var y = VillagesTable.GetY(node);
+                var id = VillagesTableParser.GetId(node);
+                var name = VillagesTableParser.GetName(node);
+                var x = VillagesTableParser.GetX(node);
+                var y = VillagesTableParser.GetY(node);
                 listVillage.Add(new()
                 {
                     AccountId = AccountId,

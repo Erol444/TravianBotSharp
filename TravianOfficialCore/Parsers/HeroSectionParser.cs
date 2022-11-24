@@ -1,5 +1,5 @@
 ﻿using HtmlAgilityPack;
-using ParserCore;
+using ServerModuleCore.Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -103,6 +103,11 @@ namespace TravianOfficialCore.Parsers
             return tabNode.HasClass("active");
         }
 
+        public HtmlNode GetAdventuresButton(HtmlDocument doc)
+        {
+            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventure"));
+        }
+
         public List<HtmlNode> GetAdventures(HtmlDocument doc)
         {
             var adventures = doc.GetElementbyId("heroAdventure");
@@ -148,11 +153,6 @@ namespace TravianOfficialCore.Parsers
             if (heroDiv is null) return null;
             var aNode = heroDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == index);
             return aNode;
-        }
-
-        public HtmlNode GetAdventuresButton(HtmlDocument doc)
-        {
-            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventure"));
         }
 
         public HtmlNode GetItemSlot(HtmlDocument doc, int type)

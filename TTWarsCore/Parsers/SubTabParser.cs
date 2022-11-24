@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace TravianOfficialCore.Parsers
+namespace TravianOfficialNewHeroUICore.Parsers
 {
     public class SubTabParser : ISubTabParser
     {

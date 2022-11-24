@@ -126,10 +126,10 @@ namespace MainCore.Helper
             {
                 var html = chromeBrowser.GetHtml();
 
-                var listNode = VillagesTable.GetVillageNodes(html);
+                var listNode = VillagesTableParser.GetVillageNodes(html);
                 foreach (var node in listNode)
                 {
-                    var id = VillagesTable.GetId(node);
+                    var id = VillagesTableParser.GetId(node);
                     if (id != villageId) continue;
 
                     var chrome = chromeBrowser.GetChrome();

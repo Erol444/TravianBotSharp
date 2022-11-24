@@ -3,7 +3,7 @@ using ServerModuleCore.Parser;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TravianOfficialCore.Parsers
+namespace TravianOfficialNewHeroUICore.Parsers
 {
     public class FarmListParser : IFarmListParser
     {
@@ -11,21 +11,21 @@ namespace TravianOfficialCore.Parsers
         {
             var raidList = doc.GetElementbyId("raidList");
             if (raidList is null) return new();
-            var fls = raidList.Descendants("div").Where(x => x.HasClass("raidList"));
+            var fls = raidList.ChildNodes.Where(x => x.Id.StartsWith("list"));
 
             return fls.ToList();
         }
 
         public string GetName(HtmlNode node)
         {
-            var flName = node.Descendants("div").FirstOrDefault(x => x.HasClass("listName"));
+            var flName = node.Descendants("div").FirstOrDefault(x => x.HasClass("listTitleText"));
             if (flName is null) return null;
             return flName.InnerText.Trim();
         }
 
         public int GetId(HtmlNode node)
         {
-            var id = node.GetAttributeValue("data-listid", "0");
+            var id = node.Id;
             var value = new string(id.Where(c => char.IsDigit(c)).ToArray());
             return int.Parse(value);
         }

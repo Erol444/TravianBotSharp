@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ParserCore\ParserCore.csproj" />
+    <ProjectReference Include="..\ServerModuleCore\ServerModuleCore.csproj" />
   </ItemGroup>
 
 </Project>

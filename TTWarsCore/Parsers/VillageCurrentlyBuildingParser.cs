@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TravianOfficialCore.Parsers
+namespace TravianOfficialNewHeroUICore.Parsers
 {
     public class VillageCurrentlyBuildingParser : IVillageCurrentlyBuildingParser
     {

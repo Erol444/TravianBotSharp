@@ -4,31 +4,30 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TravianOfficialCore.Parsers
+namespace TravianOfficialNewHeroUICore.Parsers
 {
     public class VillageFieldParser : IVillageFieldParser
     {
         public List<HtmlNode> GetNodes(HtmlDocument doc)
         {
-            var resourceFieldContainerNode = doc.GetElementbyId("resourceFieldContainer");
-            if (resourceFieldContainerNode is null) return new();
+            var villageMapNode = doc.GetElementbyId("village_map");
+            if (villageMapNode is null) return new();
 
-            return resourceFieldContainerNode.ChildNodes.Where(x => x.HasClass("level")).ToList();
+            return villageMapNode.Descendants("div").Where(x => !x.HasClass("labelLayer")).ToList();
         }
 
         public HtmlNode GetNode(HtmlDocument doc, int index)
         {
-            return doc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass($"buildingSlot{index}"));
+            throw new NotSupportedException();
         }
 
         public int GetId(HtmlNode node)
         {
             var classess = node.GetClasses();
-            var needClass = classess.FirstOrDefault(x => x.StartsWith("buildingSlot"));
+            var needClass = classess.FirstOrDefault(x => x.StartsWith("aid"));
             if (string.IsNullOrEmpty(needClass)) return -1;
             var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
             if (string.IsNullOrEmpty(strResult)) return -1;
-
             return int.Parse(strResult);
         }
 
@@ -49,7 +48,6 @@ namespace TravianOfficialCore.Parsers
             var needClass = classess.FirstOrDefault(x => x.StartsWith("level") && !x.Equals("level"));
             if (string.IsNullOrEmpty(needClass)) return -1;
             var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(strResult)) return -1;
 
             return int.Parse(strResult);
         }

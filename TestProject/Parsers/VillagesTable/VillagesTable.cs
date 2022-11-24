@@ -28,14 +28,14 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialGetVillageNodes()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianDoc);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianDoc);
             Assert.AreEqual(4, nodes.Count);
         }
 
         [TestMethod]
         public void TravianOfficialHeroGetVillageNodes()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianHeroDoc);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianHeroDoc);
             Assert.AreEqual(1, nodes.Count);
         }
 
@@ -50,16 +50,16 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialIsUnderAttack()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.IsUnderAttack(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.IsUnderAttack(nodes[0]);
             Assert.IsFalse(result);
         }
 
         [TestMethod]
         public void TravianOfficialHeroIsUnderAttack()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianHeroDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.IsUnderAttack(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.IsUnderAttack(nodes[0]);
             Assert.IsFalse(result);
         }
 
@@ -74,18 +74,18 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialIsActive()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.IsActive(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.IsActive(nodes[0]);
             Assert.IsFalse(result);
-            result = TravianOfficialCore.Parsers.VillagesTable.IsActive(nodes[1]);
+            result = TravianOfficialCore.Parsers.VillagesTableParser.IsActive(nodes[1]);
             Assert.IsTrue(result);
         }
 
         [TestMethod]
         public void TravianOfficialHeroIsActive()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianHeroDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.IsActive(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.IsActive(nodes[0]);
             Assert.IsTrue(result);
         }
 
@@ -100,16 +100,16 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialGetId()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.GetId(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.GetId(nodes[0]);
             Assert.AreEqual(19176, result);
         }
 
         [TestMethod]
         public void TravianOfficialHeroGetId()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianHeroDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.GetId(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.GetId(nodes[0]);
             Assert.AreEqual(20212, result);
         }
 
@@ -124,16 +124,16 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialGetName()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.GetName(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.GetName(nodes[0]);
             Assert.AreEqual("ASOJEN", result);
         }
 
         [TestMethod]
         public void TravianOfficialHeroGetName()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianHeroDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.GetName(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.GetName(nodes[0]);
             Assert.AreEqual("closercry`s village", result);
         }
 
@@ -148,16 +148,16 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialGetX()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.GetX(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.GetX(nodes[0]);
             Assert.AreEqual(30, result);
         }
 
         [TestMethod]
         public void TravianOfficialHeroGetX()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianHeroDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.GetX(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.GetX(nodes[0]);
             Assert.AreEqual(-17, result);
         }
 
@@ -172,16 +172,16 @@ namespace TestProject.Parsers
         [TestMethod]
         public void TravianOfficialGetY()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.GetY(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.GetY(nodes[0]);
             Assert.AreEqual(-57, result);
         }
 
         [TestMethod]
         public void TravianOfficialHeroGetY()
         {
-            var nodes = TravianOfficialCore.Parsers.VillagesTable.GetVillageNodes(_travianHeroDoc);
-            var result = TravianOfficialCore.Parsers.VillagesTable.GetY(nodes[0]);
+            var nodes = TravianOfficialCore.Parsers.VillagesTableParser.GetVillageNodes(_travianHeroDoc);
+            var result = TravianOfficialCore.Parsers.VillagesTableParser.GetY(nodes[0]);
             Assert.AreEqual(-68, result);
         }
     }

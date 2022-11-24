@@ -2,7 +2,7 @@
 using ServerModuleCore.Parser;
 using System.Linq;
 
-namespace TravianOfficialCore.Parsers
+namespace TravianOfficialNewHeroUICore.Parsers
 {
     public class NavigationBarParser : INavigationBarParser
     {
@@ -26,6 +26,10 @@ namespace TravianOfficialCore.Parsers
 
         public HtmlNode GetMessageButton(HtmlDocument doc) => GetButton(doc, 6);
 
-        public HtmlNode GetDailyButton(HtmlDocument doc) => GetButton(doc, 7);
+        public HtmlNode GetDailyButton(HtmlDocument doc)
+        {
+            var buttonNode = doc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("questButtonOverviewAchievements"));
+            return buttonNode;
+        }
     }
 }

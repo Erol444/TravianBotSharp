@@ -3,7 +3,7 @@ using ServerModuleCore.Parser;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TravianOfficialCore.Parsers
+namespace TravianOfficialNewHeroUICore.Parsers
 {
     public class BuildingTabParser : IBuildingTabParser
     {

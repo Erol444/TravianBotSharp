@@ -8,8 +8,4 @@
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\ServerModuleCore\ServerModuleCore.csproj" />
-  </ItemGroup>
-
 </Project>

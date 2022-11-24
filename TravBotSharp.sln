@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravianOfficialCore", "Trav
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestProject", "TestProject\TestProject.csproj", "{6A81A22F-139C-4124-A8D1-B9368270E25A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ParserCore", "ParserCore\ParserCore.csproj", "{9441C491-5F35-44C4-A3C5-5C0E9F29407C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerModuleCore", "ServerModuleCore\ServerModuleCore.csproj", "{9441C491-5F35-44C4-A3C5-5C0E9F29407C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
