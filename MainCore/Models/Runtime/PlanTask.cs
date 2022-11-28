@@ -1,5 +1,5 @@
 ﻿using MainCore.Enums;
-using MainCore.Helper;
+using MainCore.Helper.Implementations;
 
 namespace MainCore.Models.Runtime
 {

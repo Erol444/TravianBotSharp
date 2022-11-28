@@ -1,5 +1,5 @@
 ﻿using MainCore.Enums;
-using MainCore.Helper;
+using MainCore.Helper.Implementations;
 using System.Linq;
 
 namespace MainCore.Tasks.Update

@@ -1,4 +1,4 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Helper.Implementations;
 
 namespace MainCore.Tasks.Update
 {

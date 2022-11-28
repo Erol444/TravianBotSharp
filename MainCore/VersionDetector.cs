@@ -1,4 +1,10 @@
-﻿namespace MainCore
+﻿#if !(TRAVIAN_OFFICIAL || TTWARS)
+
+#error You forgot to define Travian version here
+
+#endif
+
+namespace MainCore
 {
     public static class VersionDetector
     {

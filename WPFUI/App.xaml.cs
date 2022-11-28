@@ -1,6 +1,5 @@
 ﻿using FluentMigrator.Runner;
 using MainCore;
-using MainCore.Migrations;
 using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Views;
-using EventManager = MainCore.Services.Implementations.EventManager;
 
 namespace WPFUI
 {
@@ -103,31 +101,6 @@ namespace WPFUI
             waitingWindow.ViewModel.Close();
 
             if (versionWindow.ViewModel.IsNewVersion) versionWindow.Show();
-        }
-    }
-
-    public static class DependencyInjectionContainer
-    {
-        private const string _connectionString = "DataSource=TBS.db;Cache=Shared";
-
-        public static IServiceCollection ConfigureServices(this IServiceCollection services)
-        {
-            services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(_connectionString));
-            services.AddSingleton<IChromeManager, ChromeManager>();
-            services.AddSingleton<IRestClientManager, RestClientManager>();
-            services.AddSingleton<IUseragentManager, UseragentManager>();
-            services.AddSingleton<EventManager>();
-            services.AddSingleton<ITimerManager, TimerManager>();
-            services.AddSingleton<ITaskManager, TaskManager>();
-            services.AddSingleton<IPlanManager, PlanManager>();
-            services.AddSingleton<ILogManager, LogManager>();
-
-            services.AddFluentMigratorCore()
-                .ConfigureRunner(rb => rb
-                .AddSQLite()
-                .WithGlobalConnectionString(_connectionString)
-                .ScanIn(typeof(Farming).Assembly).For.Migrations());
-            return services;
         }
     }
 }

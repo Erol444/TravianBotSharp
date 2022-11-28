@@ -1,4 +1,4 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Helper.Implementations;
 using MainCore.Tasks.Sim;
 using System;
 using System.Linq;

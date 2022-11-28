@@ -1,11 +1,11 @@
 ﻿using MainCore.Enums;
-using MainCore.Helper;
 using MainCore.Models.Runtime;
 using MainCore.Tasks.Update;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
 using MainCore.Tasks.Misc;
+using MainCore.Helper.Implementations;
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 

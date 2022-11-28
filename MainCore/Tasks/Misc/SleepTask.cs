@@ -1,4 +1,4 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Helper.Implementations;
 using MainCore.Models.Database;
 using System;
 using System.Linq;

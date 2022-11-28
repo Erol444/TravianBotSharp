@@ -1,5 +1,5 @@
 ﻿using MainCore.Enums;
-using MainCore.Helper;
+using MainCore.Helper.Implementations;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
 using Microsoft.Win32;

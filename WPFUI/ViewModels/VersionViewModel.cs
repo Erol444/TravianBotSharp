@@ -1,4 +1,4 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Helper.Implementations;
 using ReactiveUI;
 using System;
 using System.Diagnostics;

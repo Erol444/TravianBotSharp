@@ -1,4 +1,3 @@
-using MainCore.Helper;
 using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using MainCore.Tasks.Update;
@@ -7,6 +6,7 @@ using OpenQA.Selenium;
 using System;
 using System.Linq;
 using MainCore.Services.Interface;
+using MainCore.Helper.Implementations;
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
 
