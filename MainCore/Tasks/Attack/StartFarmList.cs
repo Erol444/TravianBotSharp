@@ -1,57 +1,23 @@
 using MainCore.Helper.Implementations;
-using MainCore.Services.Interface;
 using MainCore.Tasks.Update;
-using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
-
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-
-#elif TTWARS
-
-using HtmlAgilityPack;
-using System.Threading;
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
 
 namespace MainCore.Tasks.Attack
 {
     public class StartFarmList : AccountBotTask
     {
-        public StartFarmList(int accountId, int farmId) : base(accountId, "Start farmlist")
+        public StartFarmList()
+        {
+        }
+
+        private int _farmId;
+        public int FarmId => _farmId;
+
+        public void SetFarmId(int farmId)
         {
             _farmId = farmId;
-        }
-
-        private readonly int _farmId;
-        public int FarmId => _farmId;
-        private string _nameFarm;
-
-        public override void CopyFrom(BotTask source)
-        {
-            base.CopyFrom(source);
-            using var context = _contextFactory.CreateDbContext();
-            var farm = context.Farms.Find(FarmId);
-            if (farm is not null) _nameFarm = farm.Name;
-            else _nameFarm = "unknow";
-
-            Name = $"{Name} {_nameFarm}";
-        }
-
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = _contextFactory.CreateDbContext();
-            var farm = context.Farms.Find(FarmId);
-            if (farm is not null) _nameFarm = farm.Name;
-            else _nameFarm = "unknow";
-
-            Name = $"{Name} {_nameFarm}";
         }
 
         public override void Execute()

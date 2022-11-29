@@ -42,6 +42,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
     <PackageReference Include="Octokit" Version="0.52.0" />
     <PackageReference Include="OpenQA.Selenium.Chrome.ChromeDriverExtensions" Version="1.2.0" />
+    <PackageReference Include="Polly" Version="7.2.3" />
     <PackageReference Include="RestSharp" Version="108.0.1" />
     <PackageReference Include="Selenium.Support" Version="4.3.0" />
     <PackageReference Include="Selenium.WebDriver" Version="4.3.0" />

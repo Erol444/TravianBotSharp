@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ServerModuleCore;
 using ServerModuleCore.Parser;
 using Splat;
+using Splat.Microsoft.Extensions.DependencyInjection;
 using System;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
@@ -20,6 +21,7 @@ namespace TestProject
         public void Init()
         {
             Container = AppBootstrapper.Init();
+            Container.UseMicrosoftDependencyResolver();
         }
 
         [TestMethod]
