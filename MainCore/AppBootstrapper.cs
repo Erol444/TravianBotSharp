@@ -8,6 +8,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ServerModuleCore;
 using ServerModuleCore.Parser;
+using System;
+using Microsoft.Extensions.Hosting;
+using Splat.Microsoft.Extensions.DependencyInjection;
+using Splat;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 #if TRAVIAN_OFFICIAL
 
@@ -30,6 +35,25 @@ namespace MainCore
     public static class AppBootstrapper
     {
         private const string _connectionString = "DataSource=TBS.db;Cache=Shared";
+
+        public static IServiceProvider Init()
+        {
+            var host = Host
+                .CreateDefaultBuilder()
+                .ConfigureServices(services =>
+                {
+                    services.UseMicrosoftDependencyResolver();
+                    var resolver = Locator.CurrentMutable;
+                    resolver.InitializeSplat();
+
+                    services.ConfigureServices();
+                    services.ConfigureParser();
+                    services.ConfigureHelper();
+                })
+                .Build();
+
+            return host.Services;
+        }
 
         public static IServiceCollection ConfigureServices(this IServiceCollection services)
         {
@@ -73,18 +97,16 @@ namespace MainCore
 
         public static IServiceCollection ConfigureHelper(this IServiceCollection services)
         {
-            {
-                services.AddSingleton<IAccessHelper, AccessHelper>();
-                services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
-                services.AddSingleton<ICheckHelper, CheckHelper>();
-                services.AddSingleton<IClickHelper, ClickHelper>();
-                services.AddSingleton<IGithubHelper, GithubHelper>();
-                services.AddSingleton<IHeroHelper, HeroHelper>();
-                services.AddSingleton<INavigateHelper, NavigateHelper>();
-                services.AddSingleton<IUpdateHelper, UpdateHelper>();
-                services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
-                return services;
-            }
+            services.AddSingleton<IAccessHelper, AccessHelper>();
+            services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
+            services.AddSingleton<ICheckHelper, CheckHelper>();
+            services.AddSingleton<IClickHelper, ClickHelper>();
+            services.AddSingleton<IGithubHelper, GithubHelper>();
+            services.AddSingleton<IHeroHelper, HeroHelper>();
+            services.AddSingleton<INavigateHelper, NavigateHelper>();
+            services.AddSingleton<IUpdateHelper, UpdateHelper>();
+            services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
+            return services;
         }
     }
 }

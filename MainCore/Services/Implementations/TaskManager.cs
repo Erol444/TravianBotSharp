@@ -1,5 +1,4 @@
 ﻿using MainCore.Enums;
-using MainCore.Exceptions;
 using MainCore.Helper.Implementations;
 using MainCore.Models.Database;
 using MainCore.Services.Interface;
