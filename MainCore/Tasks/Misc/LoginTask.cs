@@ -7,6 +7,7 @@ using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using ServerModuleCore.Parser;
+using Splat;
 using System.Linq;
 
 namespace MainCore.Tasks.Misc
@@ -41,11 +42,11 @@ namespace MainCore.Tasks.Misc
             _chromeBrowser = _chromeManager.Get(AccountId);
             {
                 var result = AcceptCookie();
-                if (result.IsFailed) return result.WithError("from accept cookie - login task");
+                if (result.IsFailed) return result.WithError("from login task");
             }
             {
                 var result = Login();
-                if (result.IsFailed) return result.WithError("from login - login task");
+                if (result.IsFailed) return result.WithError("from login task");
             }
             AddTask();
             return Result.Ok();
@@ -58,8 +59,8 @@ namespace MainCore.Tasks.Misc
             {
                 var driver = _chromeBrowser.GetChrome();
                 var acceptCookie = driver.FindElements(By.ClassName("cmpboxbtnyes"));
-                using var context = _contextFactory.CreateDbContext();
-                return _navigateHelper.Click(AccountId, acceptCookie[0]);
+                var result = _navigateHelper.Click(AccountId, acceptCookie[0]);
+                if (result.IsFailed) return result.WithError("from accept cookie");
             }
             return Result.Ok();
         }
@@ -130,7 +131,8 @@ namespace MainCore.Tasks.Misc
                 {
                     var skipButton = html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("questButtonSkipTutorial"));
                     var skipButtons = chrome.FindElements(By.XPath(skipButton.XPath));
-                    return _navigateHelper.Click(AccountId, skipButtons[0]);
+                    var result = _navigateHelper.Click(AccountId, skipButtons[0]);
+                    if (result.IsFailed) return result.WithError("from skip tutorial");
                 }
             }
             return Result.Ok();
@@ -138,7 +140,7 @@ namespace MainCore.Tasks.Misc
 
         private void AddTask()
         {
-            _taskManager.Add(AccountId, new UpdateInfo(AccountId));
+            _taskManager.Add(AccountId, Locator.Current.GetService<UpdateInfo>());
 
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == AccountId);
