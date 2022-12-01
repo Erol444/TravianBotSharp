@@ -9,6 +9,7 @@ using OpenQA.Selenium;
 using ServerModuleCore.Parser;
 using Splat;
 using System.Linq;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace MainCore.Tasks.Misc
 {
@@ -140,7 +141,9 @@ namespace MainCore.Tasks.Misc
 
         private void AddTask()
         {
-            _taskManager.Add(AccountId, Locator.Current.GetService<UpdateInfo>());
+            var updateInfoTask = Locator.Current.GetService<UpdateInfo>();
+            updateInfoTask.SetAccountId(AccountId);
+            _taskManager.Add(AccountId, updateInfoTask);
 
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == AccountId);
@@ -155,7 +158,10 @@ namespace MainCore.Tasks.Misc
                     var upgradeBuilding = upgradeBuildingList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (upgradeBuilding is null)
                     {
-                        _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
+                        var upgradeBuildingTask = Locator.Current.GetService<UpgradeBuilding>();
+                        upgradeBuildingTask.SetAccountId(AccountId);
+                        upgradeBuildingTask.SetVillageId(village.Id);
+                        _taskManager.Add(AccountId, upgradeBuildingTask);
                     }
                 }
                 var setting = context.VillagesSettings.Find(village.Id);
@@ -164,7 +170,10 @@ namespace MainCore.Tasks.Misc
                     var update = updateList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (update is null)
                     {
-                        _taskManager.Add(AccountId, new RefreshVillage(village.Id, AccountId));
+                        var refreshVillageTask = Locator.Current.GetService<RefreshVillage>();
+                        refreshVillageTask.SetAccountId(AccountId);
+                        refreshVillageTask.SetVillageId(village.Id);
+                        _taskManager.Add(AccountId, refreshVillageTask);
                     }
                 }
             }

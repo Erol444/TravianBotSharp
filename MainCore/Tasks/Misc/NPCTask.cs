@@ -1,7 +1,11 @@
-﻿using HtmlAgilityPack;
+﻿using FluentResults;
+using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Helper.Implementations;
+using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
@@ -10,30 +14,35 @@ namespace MainCore.Tasks.Misc
 {
     public class NPCTask : VillageBotTask
     {
-        public NPCTask(int villageId, int accountId) : base(villageId, accountId, "NPC Task")
-        {
-        }
+        private Resources _ratio;
+        public Resources Ratio => _ratio;
 
-        public NPCTask(int villageId, int accountId, Resources ratio) : base(villageId, accountId, "NPC Task")
+        public void SetRatio(Resources ratio)
         {
             _ratio = ratio;
         }
 
-        private readonly Resources _ratio;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IUpdateHelper _updateHelper;
+        private readonly ILogManager _logManager;
 
-        public override void Execute()
+        public NPCTask(IDbContextFactory<AppDbContext> contextFactory, INavigateHelper navigateHelper, IUpdateHelper updateHelper, ILogManager logManager)
+        {
+            _contextFactory = contextFactory;
+            _navigateHelper = navigateHelper;
+            _updateHelper = updateHelper;
+            _logManager = logManager;
+        }
+
+        public override Result Execute()
         {
             {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                var result = Update();
+                if (result.IsFailed) return result.WithError("from update");
             }
-            StopFlag = false;
 
-            Update();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
-
-            if (!IsContinue()) return;
+            if (!IsEnoughGold()) return Result.Ok();
 
             ToMarketPlace();
             if (Cts.IsCancellationRequested) return;
@@ -50,7 +59,7 @@ namespace MainCore.Tasks.Misc
             ClickNPC();
         }
 
-        private void Update()
+        private Result Update()
         {
             using var context = _contextFactory.CreateDbContext();
 
@@ -58,33 +67,43 @@ namespace MainCore.Tasks.Misc
 
             if (decider)
             {
-                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
+                {
+                    var result = _navigateHelper.ToDorf2(AccountId);
+                    if (result.IsFailed) return result.WithError("from to dorf2");
+                }
+                {
+                    var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+                    if (result.IsFailed) return result.WithError("from switch village");
+                }
             }
             else
             {
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
-                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
+                {
+                    var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+                    if (result.IsFailed) return result.WithError("from switch village");
+                }
+                {
+                    var result = _navigateHelper.ToDorf2(AccountId);
+                    if (result.IsFailed) return result.WithError("from to dorf2");
+                }
             }
 
-            UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, VillageId);
+            {
+                var result = _updateHelper.UpdateDorf2(AccountId, VillageId);
+                if (result.IsFailed) return result.WithError("from update dorf2");
+            }
+            return Result.Ok();
         }
 
-        private bool IsContinue()
+        private bool IsEnoughGold()
         {
             using var context = _contextFactory.CreateDbContext();
             var info = context.AccountsInfo.Find(AccountId);
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-            var result = info.Gold > 3;
-#elif TTWARS
-            var result = info.Gold > 5;
+            var goldNeeded = 3;
+            if (VersionDetector.IsTTWars()) goldNeeded = 5;
 
-#else
-
-#error You forgot to define Travian version here
-
-#endif
+            var result = info.Gold > goldNeeded;
             if (!result)
             {
                 _logManager.Warning(AccountId, "Not enough gold");
@@ -92,7 +111,7 @@ namespace MainCore.Tasks.Misc
             return result;
         }
 
-        private void ToMarketPlace()
+        private Result ToMarketPlace()
         {
             using var context = _contextFactory.CreateDbContext();
             var marketplace = context.VillagesBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
@@ -103,8 +122,7 @@ namespace MainCore.Tasks.Misc
                 setting.IsAutoNPC = false;
                 context.Update(setting);
                 context.SaveChanges();
-                StopFlag = true;
-                return;
+                return Result.Ok();
             }
             NavigateHelper.GoToBuilding(_chromeBrowser, marketplace.Id, context, AccountId);
             NavigateHelper.SwitchTab(_chromeBrowser, 0, context, AccountId);
