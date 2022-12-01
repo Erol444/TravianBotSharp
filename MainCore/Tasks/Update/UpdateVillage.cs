@@ -79,7 +79,7 @@ namespace MainCore.Tasks.Update
             var info = context.AccountsInfo.Find(AccountId);
             if (info.Gold < 2) return;
             var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1).ToList();
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             if (tribe == TribeEnums.Romans)
             {
@@ -115,7 +115,7 @@ namespace MainCore.Tasks.Update
             if (tasks.Any(x => x.VillageId == VillageId)) return;
 
             var info = context.AccountsInfo.Find(AccountId);
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             if (info.Gold < 3) return;
 #elif TTWARS
             if (info.Gold < 5) return;

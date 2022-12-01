@@ -9,10 +9,6 @@ using System.Linq;
 
 using TravianOfficialCore.Parsers;
 
-#elif TRAVIAN_OFFICIAL_HEROUI
-
-using TravianOfficialNewHeroUICore.Parsers;
-
 #elif TTWARS
 
 using TTWarsCore.Parsers;
@@ -157,7 +153,7 @@ namespace MainCore.Helper
                 var type = VillageInfrastructure.GetType(buildingNode);
                 switch (id)
                 {
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
                     case 26:
                         type = (int)BuildingEnums.MainBuilding;
                         break;

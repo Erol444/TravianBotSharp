@@ -28,7 +28,7 @@ namespace TravianOfficialCore.Parsers
             return long.Parse(valueStr);
         }
 
-        public static long GetIron(HtmlDocument doc)
+        public static int GetIron(HtmlDocument doc)
         {
             var ironNode = doc.GetElementbyId("l3");
             if (ironNode is null) return -1;
@@ -36,7 +36,7 @@ namespace TravianOfficialCore.Parsers
             if (string.IsNullOrEmpty(valueStrFixed)) return -1;
             var valueStr = new string(valueStrFixed.Where(c => char.IsDigit(c)).ToArray());
             if (string.IsNullOrEmpty(valueStr)) return -1;
-            return long.Parse(valueStr);
+            return int.Parse(valueStr);
         }
 
         public static long GetCrop(HtmlDocument doc)

@@ -157,7 +157,7 @@ namespace MainCore.Helper
         {
             return building switch
             {
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
                 BuildingEnums.Brewery => 20,
 #elif TTWARS
                 BuildingEnums.Brewery => 10,

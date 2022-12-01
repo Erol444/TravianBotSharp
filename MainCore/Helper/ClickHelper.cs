@@ -7,10 +7,6 @@ using System;
 
 using TravianOfficialCore.FindElements;
 
-#elif TRAVIAN_OFFICIAL_HEROUI
-
-using TravianOfficialNewHeroUICore.FindElements;
-
 #elif TTWARS
 
 using TTWarsCore.FindElements;
@@ -87,7 +83,7 @@ namespace MainCore.Helper
             }
             finishElements.Click(chromeBrowser, context, accountId);
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 #elif TTWARS
             var wait = chromeBrowser.GetWait();
             wait.Until(driver =>

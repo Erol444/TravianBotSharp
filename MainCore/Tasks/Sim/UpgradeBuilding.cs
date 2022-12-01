@@ -7,7 +7,7 @@ using System;
 using System.Linq;
 using MainCore.Tasks.Misc;
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 
 using System.Collections.Generic;
 using System.Threading;
@@ -72,7 +72,7 @@ namespace MainCore.Tasks.Sim
                 if (isNewBuilding) Construct(buildingTask);
                 else
                 {
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
                     using var context = _contextFactory.CreateDbContext();
                     if (CheckHelper.IsNeedAdsUpgrade(_chromeBrowser, context, VillageId, buildingTask))
                     {
@@ -125,7 +125,7 @@ namespace MainCore.Tasks.Sim
             }
         }
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 
         private void UpgradeAds(PlanTask buildingTask)
         {
@@ -293,7 +293,7 @@ namespace MainCore.Tasks.Sim
                 }
 #if TTWARS
                 Refresh();
-#elif TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#elif TRAVIAN_OFFICIAL
 
 #else
 
@@ -311,7 +311,7 @@ namespace MainCore.Tasks.Sim
                 }
 #if TTWARS
                 ExecuteAt = firstComplete.CompleteTime.AddSeconds(1);
-#elif TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#elif TRAVIAN_OFFICIAL
                 ExecuteAt = firstComplete.CompleteTime.AddSeconds(10);
 #else
 
@@ -457,7 +457,7 @@ namespace MainCore.Tasks.Sim
             if (resNeed[0] > resCurrent.Wood || resNeed[1] > resCurrent.Clay || resNeed[2] > resCurrent.Iron || resNeed[3] > resCurrent.Crop)
             {
                 var resMissing = new long[] { resNeed[0] - resCurrent.Wood, resNeed[1] - resCurrent.Clay, resNeed[2] - resCurrent.Iron, resNeed[3] - resCurrent.Crop };
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 
                 var setting = context.VillagesSettings.Find(VillageId);
                 if (!setting.IsUseHeroRes)

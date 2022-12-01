@@ -9,10 +9,6 @@ using System.Linq;
 
 using TravianOfficialCore.Parsers;
 
-#elif TRAVIAN_OFFICIAL_HEROUI
-
-using TravianOfficialNewHeroUICore.Parsers;
-
 #elif TTWARS
 
 using TTWarsCore.Parsers;
