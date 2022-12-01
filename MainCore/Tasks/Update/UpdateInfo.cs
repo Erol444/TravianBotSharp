@@ -1,47 +1,47 @@
-﻿using MainCore.Enums;
-using MainCore.Helper.Implementations;
+﻿using FluentResults;
+using MainCore.Enums;
 using MainCore.Models.Database;
-using System;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
+using ServerModuleCore.Parser;
 using System.Collections.Generic;
 using System.Linq;
-
-#if TRAVIAN_OFFICIAL
-
-using TravianOfficialCore.Parsers;
-
-#elif TRAVIAN_OFFICIAL_HEROUI
-
-using TravianOfficialNewHeroUICore.Parsers;
-
-#elif TTWARS
-
-using TTWarsCore.Parsers;
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateInfo : AccountBotTask
     {
-        public UpdateInfo(int accountId) : base(accountId, "Update info")
+        private readonly IChromeManager _chromeManager;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private IChromeBrowser _chromeBrowser;
+
+        private readonly ITaskManager _taskManager;
+        private readonly IEventManager _eventManager;
+        private readonly IRightBarParser _rightBarParser;
+        private readonly IStockBarParser _stockBarParser;
+        private readonly IHeroSectionParser _heroSectionParser;
+        private readonly IVillagesTableParser _villagesTableParser;
+
+        public UpdateInfo(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, ITaskManager taskManager, IEventManager eventManager, IVillagesTableParser villagesTableParser)
         {
+            _contextFactory = contextFactory;
+            _chromeManager = chromeManager;
+            _taskManager = taskManager;
+            _eventManager = eventManager;
+            _villagesTableParser = villagesTableParser;
+
+            Name = "Update account's info";
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-            }
-            IsFail = true;
+            _chromeBrowser = _chromeManager.Get(AccountId);
+
             UpdateAccountInfo();
             UpdateVillageList();
             UpdateHeroInfo();
-            IsFail = false;
+
+            return Result.Ok();
         }
 
         private void UpdateVillageList()
@@ -103,14 +103,10 @@ namespace MainCore.Tasks.Update
         private void UpdateAccountInfo()
         {
             var html = _chromeBrowser.GetHtml();
-            var tribe = RightBarParser.GetTribe(html);
-            if (tribe == 0) throw new Exception("Cannot read account's tribe.");
-            var hasPlusAccount = RightBarParser.HasPlusAccount(html);
-            if (hasPlusAccount is null) throw new Exception("Cannot detect account has plus or not.");
-            var gold = StockBarParser.GetGold(html);
-            if (gold == -1) throw new Exception("Cannot read account's gold.");
-            var silver = StockBarParser.GetSilver(html);
-            if (silver == -1) throw new Exception("Cannot read account's silver.");
+            var tribe = _rightBarParser.GetTribe(html);
+            var hasPlusAccount = _rightBarParser.HasPlusAccount(html);
+            var gold = _stockBarParser.GetGold(html);
+            var silver = _stockBarParser.GetSilver(html);
 
             using var context = _contextFactory.CreateDbContext();
             var account = context.AccountsInfo.Find(AccountId);
@@ -119,7 +115,7 @@ namespace MainCore.Tasks.Update
                 account = new()
                 {
                     AccountId = AccountId,
-                    HasPlusAccount = hasPlusAccount.Value,
+                    HasPlusAccount = hasPlusAccount,
                     Gold = gold,
                     Silver = silver,
                     Tribe = (TribeEnums)tribe,
@@ -129,7 +125,7 @@ namespace MainCore.Tasks.Update
             }
             else
             {
-                account.HasPlusAccount = hasPlusAccount.Value;
+                account.HasPlusAccount = hasPlusAccount;
                 account.Gold = gold;
                 account.Silver = silver;
                 account.Tribe = (TribeEnums)tribe;
@@ -141,9 +137,9 @@ namespace MainCore.Tasks.Update
         private void UpdateHeroInfo()
         {
             var html = _chromeBrowser.GetHtml();
-            var health = HeroSectionParser.GetHealth(html);
-            var status = HeroSectionParser.GetStatus(html);
-            var numberAdventure = HeroSectionParser.GetAdventureNum(html);
+            var health = _heroSectionParser.GetHealth(html);
+            var status = _heroSectionParser.GetStatus(html);
+            var numberAdventure = _heroSectionParser.GetAdventureNum(html);
 
             using var context = _contextFactory.CreateDbContext();
             var account = context.Heroes.Find(AccountId);
@@ -183,14 +179,14 @@ namespace MainCore.Tasks.Update
         {
             var html = _chromeBrowser.GetHtml();
 
-            var listNode = VillagesTableParser.GetVillageNodes(html);
+            var listNode = _villagesTableParser.GetVillages(html);
             var listVillage = new List<Village>();
             foreach (var node in listNode)
             {
-                var id = VillagesTableParser.GetId(node);
-                var name = VillagesTableParser.GetName(node);
-                var x = VillagesTableParser.GetX(node);
-                var y = VillagesTableParser.GetY(node);
+                var id = _villagesTableParser.GetId(node);
+                var name = _villagesTableParser.GetName(node);
+                var x = _villagesTableParser.GetX(node);
+                var y = _villagesTableParser.GetY(node);
                 listVillage.Add(new()
                 {
                     AccountId = AccountId,

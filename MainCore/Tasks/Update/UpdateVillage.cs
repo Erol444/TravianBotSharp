@@ -1,7 +1,11 @@
-﻿using MainCore.Enums;
-using MainCore.Helper.Implementations;
+﻿using FluentResults;
+using MainCore.Enums;
+using MainCore.Helper.Interface;
+using MainCore.Services.Interface;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
+using Microsoft.EntityFrameworkCore;
+using Splat;
 using System;
 using System.Linq;
 
@@ -9,67 +13,102 @@ namespace MainCore.Tasks.Update
 {
     public class UpdateVillage : VillageBotTask
     {
-        public UpdateVillage(int villageId, int accountId) : base(villageId, accountId, "Update village")
+        private readonly IChromeManager _chromeManager;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private IChromeBrowser _chromeBrowser;
+
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IUpdateHelper _updateHelper;
+        private readonly IEventManager _eventManager;
+        private readonly ITaskManager _taskManager;
+
+        public UpdateVillage(IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, INavigateHelper navigateHelper, IUpdateHelper updateHelper, IEventManager eventManager, ITaskManager taskManager)
         {
+            _chromeManager = chromeManager;
+            _contextFactory = contextFactory;
+            _chromeBrowser = chromeBrowser;
+            _navigateHelper = navigateHelper;
+            _updateHelper = updateHelper;
+            _eventManager = eventManager;
+            _taskManager = taskManager;
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
+            _chromeBrowser = _chromeManager.Get(AccountId);
             {
                 using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                var village = context.Villages.Find(VillageId);
+                if (village is null) Name = $"Update village {VillageId}";
+                else Name = $"Update village {village.Name}";
             }
-            IsFail = true;
-            Navigate();
-            if (IsUpdateAccountInfoFail()) return;
-            UpdateVillageInfo();
-            IsFail = false;
+            {
+                var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+                if (result.IsFailed) return result.WithError("from Update village");
+            }
+            {
+                var result = UpdateAccountInfo();
+                if (result.IsFailed) return result.WithError("from Update village");
+            }
+            {
+                var result = UpdateVillageInfo();
+                if (result.IsFailed) return result.WithError("from Update village");
+            }
+            return Result.Ok();
         }
 
-        private void Navigate()
+        private Result UpdateAccountInfo()
         {
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
+            var updateTask = Locator.Current.GetService<UpdateInfo>();
+            return updateTask.Execute();
         }
 
-        private bool IsUpdateAccountInfoFail()
-        {
-            var updateTask = new UpdateInfo(AccountId);
-            updateTask.CopyFrom(this);
-            updateTask.Execute();
-            return updateTask.IsFail;
-        }
-
-        private void UpdateVillageInfo()
+        private Result UpdateVillageInfo()
         {
             using var context = _contextFactory.CreateDbContext();
             var currentUrl = _chromeBrowser.GetCurrentUrl();
             if (currentUrl.Contains("dorf"))
             {
-                UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
-                InstantUpgrade(context);
+                {
+                    var result = _updateHelper.UpdateCurrentlyBuilding(AccountId, VillageId);
+                    if (result.IsFailed) return result.WithError("from Update village info");
+                }
+                InstantUpgrade();
                 _eventManager.OnVillageCurrentUpdate(VillageId);
             }
             if (currentUrl.Contains("dorf1"))
             {
-                UpdateHelper.UpdateDorf1(context, _chromeBrowser, VillageId);
+                {
+                    var result = _updateHelper.UpdateDorf1(AccountId, VillageId);
+                    if (result.IsFailed) return result.WithError("from Update village info");
+                }
                 _eventManager.OnVillageBuildsUpdate(VillageId);
-
-                UpdateHelper.UpdateProduction(context, _chromeBrowser, VillageId);
+                {
+                    var result = _updateHelper.UpdateProduction(AccountId, VillageId);
+                    if (result.IsFailed) return result.WithError("from Update village info");
+                }
             }
             else if (currentUrl.Contains("dorf2"))
             {
-                UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, VillageId);
-                AutoImproveTroop(context);
+                {
+                    var result = _updateHelper.UpdateDorf2(AccountId, VillageId);
+                    if (result.IsFailed) return result.WithError("from Update village info");
+                }
+                AutoImproveTroop();
                 _eventManager.OnVillageBuildsUpdate(VillageId);
             }
 
-            UpdateHelper.UpdateResource(context, _chromeBrowser, VillageId);
-            AutoNPC(context);
+            {
+                var result = _updateHelper.UpdateResource(AccountId, VillageId);
+                if (result.IsFailed) return result.WithError("from Update village info");
+            }
+            AutoNPC();
+            return Result.Ok();
         }
 
-        private void InstantUpgrade(AppDbContext context)
+        private void InstantUpgrade()
         {
+            using var context = _contextFactory.CreateDbContext();
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.OfType<InstantUpgrade>();
             if (tasks.Any(x => x.VillageId == VillageId)) return;
@@ -79,7 +118,7 @@ namespace MainCore.Tasks.Update
             var info = context.AccountsInfo.Find(AccountId);
             if (info.Gold < 2) return;
             var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1).ToList();
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+
             var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             if (tribe == TribeEnums.Romans)
             {
@@ -89,13 +128,7 @@ namespace MainCore.Tasks.Update
             {
                 if (currentlyBuildings.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
             }
-#elif TTWARS
-            if (currentlyBuildings.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
-#else
 
-#error You forgot to define Travian version here
-
-#endif
             var notInstantBuildings = currentlyBuildings.Where(x => x.Type.IsNotAdsUpgrade());
             foreach (var building in notInstantBuildings)
             {
@@ -108,23 +141,22 @@ namespace MainCore.Tasks.Update
             _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
         }
 
-        private void AutoNPC(AppDbContext context)
+        private void AutoNPC()
         {
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.OfType<NPCTask>();
             if (tasks.Any(x => x.VillageId == VillageId)) return;
 
+            using var context = _contextFactory.CreateDbContext();
             var info = context.AccountsInfo.Find(AccountId);
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-            if (info.Gold < 3) return;
-#elif TTWARS
-            if (info.Gold < 5) return;
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
+            if (VersionDetector.IsTravianOfficial())
+            {
+                if (info.Gold < 3) return;
+            }
+            else if (VersionDetector.IsTTWars())
+            {
+                if (info.Gold < 5) return;
+            }
 
             var setting = context.VillagesSettings.Find(VillageId);
             if (!setting.IsAutoNPC) return;
@@ -140,12 +172,13 @@ namespace MainCore.Tasks.Update
             _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
         }
 
-        private void AutoImproveTroop(AppDbContext context)
+        private void AutoImproveTroop()
         {
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.OfType<ImproveTroopsTask>();
             if (tasks.Any(x => x.VillageId == VillageId)) return;
 
+            using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
             if (!setting.IsUpgradeTroop) return;
             var troopsUpgrade = setting.GetTroopUpgrade();

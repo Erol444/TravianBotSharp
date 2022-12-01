@@ -1,47 +1,61 @@
-﻿using MainCore.Enums;
-using MainCore.Helper.Implementations;
+﻿using FluentResults;
+using MainCore.Enums;
+using MainCore.Helper.Interface;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
+using Splat;
 using System.Linq;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateFarmList : AccountBotTask
     {
-        public UpdateFarmList(int accountId) : base(accountId, "Update farmlist")
+        private readonly IChromeManager _chromeManager;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private IChromeBrowser _chromeBrowser;
+
+        private readonly ICheckHelper _checkHelper;
+        private readonly INavigateHelper _navigateHelper;
+        private readonly ILogManager _logManager;
+        private readonly IUpdateHelper _updateHelper;
+        private readonly IEventManager _eventManager;
+
+        public UpdateFarmList(IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, ICheckHelper checkHelper, ILogManager logManager)
         {
+            _chromeManager = chromeManager;
+            _contextFactory = contextFactory;
+            _checkHelper = checkHelper;
+            _logManager = logManager;
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-            }
-            IsFail = true;
+            _chromeBrowser = _chromeManager.Get(AccountId);
+
             var village = GetVillageHasRallyPoint();
-            if (IsStop()) return;
             if (village == -1)
             {
                 _logManager.Warning(AccountId, "There is no rallypoint in your villages");
-                return;
+                return Result.Ok();
             }
             {
                 var result = GotoFarmListPage(village);
-                if (IsStop()) return;
-                if (!result) return;
+                if (result.IsFailed) return result.WithError("from GotoFarmListPage");
             }
             {
-                using var context = _contextFactory.CreateDbContext();
-                UpdateHelper.UpdateFarmList(context, _chromeBrowser, AccountId);
+                var result = _updateHelper.UpdateFarmList(AccountId);
+                if (result.IsFailed) return result.WithError("from UpdateFarmList");
                 _eventManager.OnFarmListUpdate(AccountId);
             }
-            IsFail = false;
+            return Result.Ok();
         }
 
         private int GetVillageHasRallyPoint()
         {
             using var context = _contextFactory.CreateDbContext();
 
-            var currentVillage = CheckHelper.GetCurrentVillageId(_chromeBrowser);
+            var currentVillage = _checkHelper.GetCurrentVillageId(AccountId);
             if (currentVillage != -1)
             {
                 var building = context.VillagesBuildings
@@ -54,7 +68,6 @@ namespace MainCore.Tasks.Update
 
             foreach (var village in villages)
             {
-                if (Cts.IsCancellationRequested) return -1;
                 var building = context.VillagesBuildings
                     .Where(x => x.VillageId == village.Id)
                     .FirstOrDefault(x => x.Type == BuildingEnums.RallyPoint && x.Level > 0);
@@ -64,25 +77,29 @@ namespace MainCore.Tasks.Update
             return -1;
         }
 
-        private bool GotoFarmListPage(int village)
+        private Result GotoFarmListPage(int village)
         {
-            if (!CheckHelper.IsFarmListPage(_chromeBrowser))
+            if (!_checkHelper.IsFarmListPage(AccountId))
             {
                 using var context = _contextFactory.CreateDbContext();
                 var url = _chromeBrowser.GetCurrentUrl();
-
-                var taskUpdate = new UpdateDorf2(village, AccountId);
-                taskUpdate.CopyFrom(this);
-                taskUpdate.Execute();
-                if (taskUpdate.IsFail) return false;
-
-                if (Cts.IsCancellationRequested) return false;
-
-                NavigateHelper.GoToBuilding(_chromeBrowser, 39, context, AccountId);
-                if (Cts.IsCancellationRequested) return false;
-                NavigateHelper.SwitchTab(_chromeBrowser, 4, context, AccountId);
+                {
+                    var taskUpdate = Locator.Current.GetService<UpdateDorf2>();
+                    taskUpdate.SetAccountId(AccountId);
+                    taskUpdate.SetVillageId(village);
+                    var result = taskUpdate.Execute();
+                    if (result.IsFailed) return result.WithError("from go to farmlist page");
+                }
+                {
+                    var result = _navigateHelper.GoToBuilding(AccountId, 39);
+                    if (result.IsFailed) return result.WithError("from go to farmlist page");
+                }
+                {
+                    var result = _navigateHelper.SwitchTab(AccountId, 4);
+                    if (result.IsFailed) return result.WithError("from go to farmlist page");
+                }
             }
-            return true;
+            return Result.Ok();
         }
     }
 }

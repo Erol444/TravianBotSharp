@@ -1,37 +1,48 @@
-﻿using MainCore.Helper.Implementations;
+﻿using FluentResults;
+using MainCore.Helper.Interface;
+using Microsoft.EntityFrameworkCore;
+using Splat;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateDorf1 : VillageBotTask
     {
-        public UpdateDorf1(int villageId, int accountId) : base(villageId, accountId, "Update Resources page")
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly INavigateHelper _navigateHelper;
+
+        public UpdateDorf1(INavigateHelper navigateHelper, IDbContextFactory<AppDbContext> contextFactory)
         {
+            _navigateHelper = navigateHelper;
+            _contextFactory = contextFactory;
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
             {
                 using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                var village = context.Villages.Find(VillageId);
+                if (village is null) Name = $"Update dorf1 in {VillageId}";
+                else Name = $"Update dorf1 in {village.Name}";
             }
-            IsFail = true;
-            ToDorf1();
-            if (IsUpdateFail()) return;
-            IsFail = false;
+
+            {
+                var result = _navigateHelper.ToDorf1(AccountId);
+                if (result.IsFailed) return result.WithError("from Update dorf1");
+            }
+            {
+                var result = UpdateVillage();
+                if (result.IsFailed) return result.WithError("from Update dorf1");
+            }
+
+            return Result.Ok();
         }
 
-        private void ToDorf1()
+        private Result UpdateVillage()
         {
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
-        }
-
-        private bool IsUpdateFail()
-        {
-            var taskUpdate = new UpdateVillage(VillageId, AccountId);
-            taskUpdate.CopyFrom(this);
-            taskUpdate.Execute();
-            return taskUpdate.IsFail;
+            var taskUpdate = Locator.Current.GetService<UpdateVillage>();
+            taskUpdate.SetAccountId(AccountId);
+            taskUpdate.SetVillageId(VillageId);
+            return taskUpdate.Execute();
         }
     }
 }
