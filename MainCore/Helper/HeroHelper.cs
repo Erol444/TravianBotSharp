@@ -7,12 +7,7 @@ using System;
 #if TRAVIAN_OFFICIAL
 
 using TravianOfficialCore.FindElements;
-using System.Threading;
-
-#elif TRAVIAN_OFFICIAL_HEROUI
-
 using System.Linq;
-using TravianOfficialNewHeroUICore.FindElements;
 
 #elif TTWARS
 
@@ -68,7 +63,7 @@ namespace MainCore.Helper
             }
             else
             {
-#if TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
                 wait.Until(driver =>
                 {
                     var html = new HtmlDocument();
@@ -76,7 +71,7 @@ namespace MainCore.Helper
                     var inventoryPageWrapper = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("inventoryPageWrapper"));
                     return !inventoryPageWrapper.HasClass("loading");
                 });
-#elif TTWARS || TRAVIAN_OFFICIAL
+#elif TTWARS
                 wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 #else
 
@@ -121,7 +116,7 @@ namespace MainCore.Helper
             }
             elements.Click(chromeBrowser, context, accountId);
             var wait = chromeBrowser.GetWait();
-#if TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             wait.Until(driver =>
             {
                 var html = new HtmlDocument();
@@ -129,7 +124,7 @@ namespace MainCore.Helper
                 var inventoryPageWrapper = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("inventoryPageWrapper"));
                 return !inventoryPageWrapper.HasClass("loading");
             });
-#elif TTWARS || TRAVIAN_OFFICIAL
+#elif TTWARS
             Thread.Sleep(3000);
             wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
 #else

@@ -75,7 +75,7 @@ namespace MainCore.Tasks.Misc
             using var context = _contextFactory.CreateDbContext();
             var info = context.AccountsInfo.Find(AccountId);
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             var result = info.Gold > 3;
 #elif TTWARS
             var result = info.Gold > 5;
@@ -166,7 +166,7 @@ namespace MainCore.Tasks.Misc
             }
 
             var html = _chromeBrowser.GetHtml();
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             var nodeSum = html.GetElementbyId($"sum");
 #elif TTWARS
             var nodeSum = html.GetElementbyId($"org4");
@@ -186,7 +186,7 @@ namespace MainCore.Tasks.Misc
             var chrome = _chromeBrowser.GetChrome();
             for (int i = 0; i < 4; i++)
             {
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
                 var script = $"document.getElementsByName('desired{i}')[0].value = {current[i]};";
 
 #elif TTWARS

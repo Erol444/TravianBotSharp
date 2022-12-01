@@ -2,8 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <!--<Server>TRAVIAN_OFFICIAL</Server>-->
-    <Server>TRAVIAN_OFFICIAL_HEROUI</Server>
+    <Server>TRAVIAN_OFFICIAL</Server>
     <!--<Server>TTWARS</Server>-->
     
     <DefineConstants Condition="'$(Server)' != ''">$(DefineConstants);$(Server)</DefineConstants>
@@ -49,7 +48,6 @@
 
   <ItemGroup>
     <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL'" Include="..\TravianOfficialCore\TravianOfficialCore.csproj" />
-    <ProjectReference Condition="'$(Server)' == 'TRAVIAN_OFFICIAL_HEROUI'" Include="..\TravianOfficialNewHeroUICore\TravianOfficialNewHeroUICore.csproj" />
     <ProjectReference Condition="'$(Server)' == 'TTWARS'" Include="..\TTWarsCore\TTWarsCore.csproj" />
   </ItemGroup>
 

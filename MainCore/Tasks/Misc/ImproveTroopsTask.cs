@@ -111,7 +111,7 @@ namespace MainCore.Tasks.Misc
 
             var rows = table.Descendants("tbody").FirstOrDefault().Descendants("tr");
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             if (rows.Count() == 1)
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -143,7 +143,7 @@ namespace MainCore.Tasks.Misc
             foreach (var research in researches)
             {
                 if (GetTroop(research) != (int)Troop) continue;
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
                 var resourceDiv = research.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
 #elif TTWARS
 

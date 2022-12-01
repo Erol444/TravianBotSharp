@@ -51,10 +51,10 @@ namespace MainCore.Tasks.Update
         {
             var html = _chromeBrowser.GetHtml();
 
-#if TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             var tileDetails = html.GetElementbyId("heroAdventure");
 
-#elif TTWARS || TRAVIAN_OFFICIAL
+#elif TTWARS
             var tileDetails = html.GetElementbyId("tileDetails");
 #else
 
@@ -75,7 +75,7 @@ namespace MainCore.Tasks.Update
 
             int sec = int.Parse(timer.GetAttributeValue("value", "0"));
             if (sec < 0) sec = 0;
-#if TRAVIAN_OFFICIAL_HEROUI || TRAVIAN_OFFICIAL
+#if TRAVIAN_OFFICIAL
             ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + Random.Shared.Next(20, 40));
 
 #elif TTWARS

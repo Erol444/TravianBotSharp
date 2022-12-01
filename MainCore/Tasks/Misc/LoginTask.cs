@@ -9,10 +9,6 @@ using System.Linq;
 
 using TravianOfficialCore.FindElements;
 
-#elif TRAVIAN_OFFICIAL_HEROUI
-
-using TravianOfficialNewHeroUICore.FindElements;
-
 #elif TTWARS
 
 using TTWarsCore.FindElements;
@@ -111,7 +107,7 @@ namespace MainCore.Tasks.Misc
             NavigateHelper.WaitPageChanged(_chromeBrowser, "dorf");
             NavigateHelper.WaitPageLoaded(_chromeBrowser);
             NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 
 #elif TTWARS
             html = _chromeBrowser.GetHtml();

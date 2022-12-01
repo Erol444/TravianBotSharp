@@ -7,16 +7,10 @@ using MainCore.Services.Interface;
 
 #if TRAVIAN_OFFICIAL
 
+using HtmlAgilityPack;
 using System.Linq;
 using TravianOfficialCore.Parsers;
 using TravianOfficialCore.FindElements;
-
-#elif TRAVIAN_OFFICIAL_HEROUI
-
-using HtmlAgilityPack;
-using System.Linq;
-using TravianOfficialNewHeroUICore.Parsers;
-using TravianOfficialNewHeroUICore.FindElements;
 
 #elif TTWARS
 
@@ -80,7 +74,7 @@ namespace MainCore.Helper
             {
                 throw new StopNowException("Captcha found! Bot must be stopped.");
             }
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             if (CheckHelper.IsWWMsg(html))
 #elif TTWARS
             if (CheckHelper.IsWWMsg(html) && CheckHelper.IsWWPage(chromeBrowser))
@@ -251,7 +245,7 @@ namespace MainCore.Helper
         public static bool GoToBuilding(IChromeBrowser chromeBrowser, int index, AppDbContext context, int accountId)
         {
             var currentUrl = chromeBrowser.GetCurrentUrl();
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             var dorf = BuildingsHelper.GetDorf(index);
             var html = chromeBrowser.GetHtml();
             var chrome = chromeBrowser.GetChrome();
@@ -346,7 +340,7 @@ namespace MainCore.Helper
         public static void ToHeroInventory(IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
         {
             var html = chromeBrowser.GetHtml();
-#if TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             var avatar = HeroPage.GetHeroAvatar(html);
             if (avatar is null)
             {
@@ -397,7 +391,7 @@ namespace MainCore.Helper
         public static void ToAdventure(IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
         {
             var html = chromeBrowser.GetHtml();
-#if TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             var node = HeroPage.GetAdventuresButton(html);
             if (node is null)
             {
@@ -424,7 +418,7 @@ namespace MainCore.Helper
                 if (heroState is null) return false;
                 return driver.FindElements(By.XPath(heroState.XPath)).Count > 0;
             });
-#elif TTWARS || TRAVIAN_OFFICIAL
+#elif TTWARS
             var inventory = HeroPage.GetAdventuresButton(html);
             if (inventory is null)
             {

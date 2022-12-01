@@ -7,7 +7,7 @@ using OpenQA.Selenium;
 using System;
 using System.Linq;
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 
 #elif TTWARS
 
@@ -115,7 +115,7 @@ namespace MainCore.Tasks.Attack
             return false;
         }
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 
         private void ClickStartFarm(AppDbContext context, int accountId)
         {
