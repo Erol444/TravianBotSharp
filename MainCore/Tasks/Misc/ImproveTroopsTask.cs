@@ -1,10 +1,16 @@
-﻿using HtmlAgilityPack;
+﻿using FluentResults;
+using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Helper.Implementations;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
+using MainCore.Services.Interface;
 using MainCore.Tasks.Update;
+using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
+using Splat;
 using System;
 using System.Linq;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace MainCore.Tasks.Misc
 {
@@ -13,41 +19,54 @@ namespace MainCore.Tasks.Misc
         private TroopEnums _troop;
         public TroopEnums Troop => _troop;
 
-        public ImproveTroopsTask(int villageId, int accountId) : base(villageId, accountId, $"Improve troops")
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly ILogManager _logManager;
+        private readonly IChromeManager _chromeManager;
+        private readonly INavigateHelper _navigateHelper;
+        private IChromeBrowser _chromeBrowser;
+
+        public ImproveTroopsTask(IDbContextFactory<AppDbContext> contextFactory, ILogManager logManager, IChromeManager chromeManager, INavigateHelper navigateHelper)
         {
+            _contextFactory = contextFactory;
+            _logManager = logManager;
+            _chromeManager = chromeManager;
+            _navigateHelper = navigateHelper;
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
+            _chromeBrowser = _chromeManager.Get(AccountId);
             {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                var result = UpdateDorf2();
+                if (result.IsFailed) return result.WithError("from update dorf2");
             }
-            if (IsUpdateFail()) return;
-            if (IsStop()) return;
 
             _troop = GetTroop();
-            if (!IsVaild()) return;
+            if (!IsVaild()) return Result.Ok();
 
-            if (!IsEnoughResource()) return;
+            if (!IsEnoughResource()) return Result.Ok();
             if (IsTroopImproving())
             {
                 NextExecute();
-                return;
+                return Result.Ok();
             }
 
-            Upgrade();
-            if (IsStop()) return;
+            {
+                var result = Upgrade();
+                if (result.IsFailed) return result.WithError("from upgrade");
+            }
 
             NextExecute();
+            return Result.Ok();
         }
 
-        private bool IsUpdateFail()
+        private Result UpdateDorf2()
         {
-            var taskUpdate = new UpdateTroopLevel(VillageId, AccountId);
-            taskUpdate.CopyFrom(this);
-            taskUpdate.Execute();
-            return taskUpdate.IsFail;
+            var taskUpdate = Locator.Current.GetService<UpdateDorf2>();
+            taskUpdate.SetAccountId(AccountId);
+            var result = taskUpdate.Execute();
+            if (result.IsFailed) return result.WithError("from update dorf2 task");
+            return Result.Ok();
         }
 
         private TroopEnums GetTroop()
@@ -111,23 +130,20 @@ namespace MainCore.Tasks.Misc
 
             var rows = table.Descendants("tbody").FirstOrDefault().Descendants("tr");
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-            if (rows.Count() == 1)
+            if (VersionDetector.IsTravianOfficial())
             {
-                using var context = _contextFactory.CreateDbContext();
-                var accountInfo = context.AccountsInfo.Find(AccountId);
-                var hasPlus = accountInfo.HasPlusAccount;
-                if (hasPlus)
+                if (rows.Count() == 1)
                 {
-                    return false;
+                    using var context = _contextFactory.CreateDbContext();
+                    var accountInfo = context.AccountsInfo.Find(AccountId);
+                    var hasPlus = accountInfo.HasPlusAccount;
+                    if (hasPlus)
+                    {
+                        return false;
+                    }
                 }
             }
-#elif TTWARS
-#else
 
-#error You forgot to define Travian version here
-
-#endif
             var timer = table.Descendants("span").FirstOrDefault(x => x.HasClass("timer"));
             var time = timer.GetAttributeValue("value", 0);
             if (time < 0) ExecuteAt = DateTime.Now;
@@ -143,16 +159,15 @@ namespace MainCore.Tasks.Misc
             foreach (var research in researches)
             {
                 if (GetTroop(research) != (int)Troop) continue;
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-                var resourceDiv = research.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
-#elif TTWARS
-
-                var resourceDiv = research.Descendants("div").FirstOrDefault(x => x.HasClass("showCosts"));
-#else
-
-#error You forgot to define Travian version here
-
-#endif
+                HtmlNode resourceDiv = null;
+                if (VersionDetector.IsTravianOfficial())
+                {
+                    resourceDiv = research.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
+                }
+                else if (VersionDetector.IsTTWars())
+                {
+                    resourceDiv = research.Descendants("div").FirstOrDefault(x => x.HasClass("showCosts"));
+                }
                 var resNodes = resourceDiv.ChildNodes.Where(x => x.HasClass("resource") || x.HasClass("resources")).ToList();
                 var resNeed = new int[4];
                 for (var i = 0; i < 4; i++)
@@ -174,7 +189,7 @@ namespace MainCore.Tasks.Misc
             return true;
         }
 
-        private void Upgrade()
+        private Result Upgrade()
         {
             var html = _chromeBrowser.GetHtml();
             var researches = html.DocumentNode.Descendants("div").Where(x => x.HasClass("research")).ToList();
@@ -182,13 +197,20 @@ namespace MainCore.Tasks.Misc
             {
                 if (GetTroop(research) != (int)Troop) continue;
                 var upgradeButton = research.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
-                if (upgradeButton is null) throw new Exception("Cannot found upgrade button");
+                if (upgradeButton is null)
+                {
+                    return Result.Fail(new MustRetry("Cannot found upgrade button"));
+                }
                 var chrome = _chromeBrowser.GetChrome();
                 var upgradeElements = chrome.FindElements(By.XPath(upgradeButton.XPath));
-                if (upgradeElements.Count == 0) throw new Exception("Cannot found upgrade button");
-                using var context = _contextFactory.CreateDbContext();
-                upgradeElements.Click(_chromeBrowser, context, AccountId);
+                if (upgradeElements.Count == 0)
+                {
+                    return Result.Fail(new MustRetry("Cannot found upgrade button"));
+                }
+                var result = _navigateHelper.Click(AccountId, upgradeElements[0]);
+                if (result.IsFailed) return result.WithError("from clicking upgrade button");
             }
+            return Result.Ok();
         }
 
         private void NextExecute()
