@@ -5,6 +5,7 @@ using MainCore.Models.Database;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,13 +28,13 @@ namespace WPFUI.ViewModels
     {
         public MainWindowViewModel()
         {
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _planManager = App.GetService<IPlanManager>();
-            _taskManager = App.GetService<ITaskManager>();
+            _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
+            _planManager = Locator.Current.GetService<IPlanManager>();
+            _taskManager = Locator.Current.GetService<ITaskManager>();
 
-            _waitingWindow = App.GetService<WaitingWindow>();
+            _waitingWindow = Locator.Current.GetService<WaitingViewModel>();
 
-            _eventManager = App.GetService<IEventManager>();
+            _eventManager = Locator.Current.GetService<IEventManager>();
             _eventManager.AccountsTableUpdate += OnAccountTableUpdate;
 
             _isAccountSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is not null).ToProperty(this, x => x.IsAccountSelected);
@@ -96,7 +97,7 @@ namespace WPFUI.ViewModels
         {
             if (_closed) return;
             e.Cancel = true;
-            _waitingWindow.ViewModel.Show("saving data");
+            _waitingWindow.Show("saving data");
             await Task.Run(async () =>
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -116,15 +117,13 @@ namespace WPFUI.ViewModels
 
                 var path = Path.Combine(AppContext.BaseDirectory, "Plugins");
                 if (Directory.Exists(path)) Directory.Delete(path, true);
-
-                App.Provider.Dispose();
             });
 
-            var mainWindow = App.GetService<MainWindow>();
+            var mainWindow = Locator.Current.GetService<MainWindow>();
             mainWindow.Hide();
 
             _closed = true;
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
             mainWindow.Close();
         }
 
@@ -144,12 +143,12 @@ namespace WPFUI.ViewModels
                 if (current is not null)
                 {
                     current.Cts.Cancel();
-                    _waitingWindow.ViewModel.Show("waiting current task stops");
+                    _waitingWindow.Show("waiting current task stops");
                     await Task.Run(() =>
                     {
                         while (current.Stage != TaskStage.Waiting) { }
                     });
-                    _waitingWindow.ViewModel.Close();
+                    _waitingWindow.Close();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
                 return;
@@ -218,7 +217,7 @@ namespace WPFUI.ViewModels
         private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
 
-        private readonly WaitingWindow _waitingWindow;
+        private readonly WaitingViewModel _waitingWindow;
 
         private bool _closed = false;
 
@@ -261,5 +260,7 @@ namespace WPFUI.ViewModels
         private TabType _current;
 
         public ObservableCollection<TabItemViewModel> Tabs { get; }
+
+        public Action Show;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System;
 using System.Reactive.Disposables;
 using System.Windows;
@@ -13,7 +14,8 @@ namespace WPFUI.Views
     {
         public MainWindow()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<MainWindowViewModel>();
+            ViewModel.Show = Show;
 
             InitializeComponent();
             this.WhenActivated(d =>
@@ -28,14 +30,6 @@ namespace WPFUI.Views
                 this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.ButtonPanel.ViewModel.CurrentAccount).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.Tabs, v => v.Tabs.ItemsSource).DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.GeneralPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.SettingsPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.HeroPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.VillagesPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.FarmingPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.DebugPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.EditAccountPage.ViewModel.CurrentAccount).DisposeWith(d);
 
                 Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
