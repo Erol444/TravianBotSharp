@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels;
 
@@ -11,14 +12,14 @@ namespace WPFUI.Views
     {
         public WaitingWindow()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<WaitingViewModel>();
             InitializeComponent();
-            ViewModel.ShowWindow += Show;
-            ViewModel.CloseWindow += Hide;
+            ViewModel.ShowWindow = Show;
+            ViewModel.CloseWindow = Hide;
 
             this.WhenActivated(d =>
             {
-                this.OneWayBind(ViewModel, vm => vm.Text, v => v.Text.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Text, v => v.Text.Text).DisposeWith(d);
             });
         }
     }
