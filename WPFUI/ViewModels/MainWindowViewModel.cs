@@ -20,6 +20,7 @@ using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.Views.Tabs;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI.ViewModels
 {
@@ -35,6 +36,11 @@ namespace WPFUI.ViewModels
 
             _eventManager = Locator.Current.GetService<IEventManager>();
             _eventManager.AccountsTableUpdate += OnAccountTableUpdate;
+
+            _logManager = Locator.Current.GetService<ILogManager>();
+            _restClientManager = Locator.Current.GetService<IRestClientManager>();
+            _timerManager = Locator.Current.GetService<ITimerManager>();
+            _chromeManager = Locator.Current.GetService<IChromeManager>();
 
             _isAccountSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is not null).ToProperty(this, x => x.IsAccountSelected);
             _isAccountNotSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is null).ToProperty(this, x => x.IsAccountNotSelected);
@@ -92,10 +98,8 @@ namespace WPFUI.ViewModels
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
         }
 
-        private async Task ClosingTask(CancelEventArgs e)
+        public async Task ClosingTask(CancelEventArgs e)
         {
-            if (_closed) return;
-            e.Cancel = true;
             _waitingWindow.Show("saving data");
             await Task.Run(async () =>
             {
@@ -118,12 +122,27 @@ namespace WPFUI.ViewModels
                 if (Directory.Exists(path)) Directory.Delete(path, true);
             });
 
-            var mainWindow = Locator.Current.GetService<MainWindowViewModel>();
-            mainWindow.C();
+            await Task.Run(() =>
+            {
+                _logManager.Shutdown();
+            });
 
-            _closed = true;
+            await Task.Run(() =>
+            {
+                _chromeManager.Shutdown();
+            });
+
+            await Task.Run(() =>
+            {
+                _restClientManager.Shutdown();
+            });
+
+            await Task.Run(() =>
+            {
+                _timerManager.Shutdown();
+            });
+
             _waitingWindow.Close();
-            mainWindow.Close();
         }
 
         private async Task Pause(int index)
@@ -215,10 +234,11 @@ namespace WPFUI.ViewModels
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
-
+        private readonly IChromeManager _chromeManager;
+        private readonly ILogManager _logManager;
+        private readonly ITimerManager _timerManager;
+        private readonly IRestClientManager _restClientManager;
         private readonly WaitingViewModel _waitingWindow;
-
-        private bool _closed = false;
 
         public ObservableCollection<Account> Accounts { get; } = new();
 

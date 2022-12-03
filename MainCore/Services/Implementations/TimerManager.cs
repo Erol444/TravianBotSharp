@@ -11,7 +11,7 @@ namespace MainCore.Services.Implementations
             _eventManager = eventManager;
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
             foreach (var timer in _dictTimer.Values)
             {
