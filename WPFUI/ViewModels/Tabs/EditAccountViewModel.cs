@@ -1,86 +1,61 @@
-﻿using MainCore.Helper;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using WPFUI.Interfaces;
-using WPFUI.Models;
-using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class EditAccountViewModel : AccountTabBaseViewModel, ITabPage
+    public class EditAccountViewModel : ActivatableViewModelBase
     {
-        public EditAccountViewModel() : base()
+        public EditAccountViewModel()
         {
-            TestAllCommand = ReactiveCommand.CreateFromTask(TestAllTask);
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
-            CancelCommand = ReactiveCommand.Create(CancelTask);
+
+            OnActive += ActiveHandler;
+            OnAccountChange += AccountHandler;
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
+        private void AccountHandler(int accountId)
         {
-            IsActive = true;
-            if (CurrentAccount is not null)
-            {
-                LoadData(CurrentAccount.Id);
-            }
+            LoadData(accountId);
         }
 
-        public void OnDeactived()
+        private void ActiveHandler()
         {
-            IsActive = false;
+            if (!_selectorViewModel.IsAccountSelected) return;
+            LoadData(_selectorViewModel.Account.Id);
         }
 
-        protected override void LoadData(int index)
+        private void LoadData(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(index);
+            var account = context.Accounts.Find(accountId);
             if (account is null) return;
 
             Username = account.Username;
             Server = account.Server;
 
-            var accesses = context.Accesses.Where(x => x.AccountId == index);
-            Accessess.Clear();
-            foreach (var item in accesses)
+            var accesses = context.Accesses.Where(x => x.AccountId == accountId);
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                Accessess.Add(new Models.Access()
+                Accessess.Clear();
+                foreach (var item in accesses)
                 {
-                    Password = item.Password,
-                    ProxyHost = item.ProxyHost,
-                    ProxyPort = item.ProxyPort.ToString(),
-                    ProxyUsername = item.ProxyUsername,
-                    ProxyPassword = item.ProxyPassword,
-                });
-            }
-        }
-
-        private async Task TestAllTask()
-        {
-            if (!CheckInput()) return;
-
-            _waitingWindow.Show("testing proxies");
-            await Task.Run(() =>
-            {
-                for (int i = 0; i < Accessess.Count; i++)
-                {
-                    var proxyHost = Accessess[i].ProxyHost;
-                    var proxyPort = Accessess[i].ProxyPort;
-                    var proxyUsername = Accessess[i].ProxyUsername;
-                    var proxyPassword = Accessess[i].ProxyPassword;
-
-                    var result = AccessHelper.CheckAccess(_restClientManager.Get(new(proxyHost, string.IsNullOrEmpty(proxyPort) ? -1 : int.Parse(proxyPort), proxyUsername, proxyPassword)));
-                    Accessess[i].ProxyStatus = result ? "Working" : "Not working";
+                    Accessess.Add(new Models.Access()
+                    {
+                        Password = item.Password,
+                        ProxyHost = item.ProxyHost,
+                        ProxyPort = item.ProxyPort.ToString(),
+                        ProxyUsername = item.ProxyUsername,
+                        ProxyPassword = item.ProxyPassword,
+                    });
                 }
             });
-            _waitingWindow.Close();
         }
 
         private async Task SaveTask()
@@ -90,7 +65,7 @@ namespace WPFUI.ViewModels.Tabs
             await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
-                var accountId = CurrentAccount.Id;
+                var accountId = _selectorViewModel.Account.Id;
                 var account = context.Accounts.FirstOrDefault(x => x.Id == accountId);
                 if (account is null) return;
                 Uri.TryCreate(Server, UriKind.Absolute, out var url);
@@ -122,12 +97,6 @@ namespace WPFUI.ViewModels.Tabs
             Clean();
             _waitingWindow.Close();
             MessageBox.Show("Account saved successfully");
-        }
-
-        private void CancelTask()
-        {
-            Clean();
-            TabSelector = TabType.NoAccount;
         }
 
         private void Clean()
@@ -201,14 +170,6 @@ namespace WPFUI.ViewModels.Tabs
         }
 
         public ObservableCollection<Models.Access> Accessess { get; } = new();
-
-        private TabType _tabSelector;
-
-        public TabType TabSelector
-        {
-            get => _tabSelector;
-            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
-        }
 
         public ReactiveCommand<Unit, Unit> TestAllCommand { get; }
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
