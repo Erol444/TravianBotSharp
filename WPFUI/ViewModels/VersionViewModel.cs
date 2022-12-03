@@ -18,7 +18,6 @@ namespace WPFUI.ViewModels
 
             DiscordCommand = ReactiveCommand.Create(DiscordTask);
             LatestVersionCommand = ReactiveCommand.Create(LatestVersionTask, this.WhenAnyValue(x => x.IsNewVersion));
-            CloseCommand = ReactiveCommand.Create(CloseTask);
         }
 
         public async Task Load()
@@ -44,12 +43,7 @@ namespace WPFUI.ViewModels
                 FileName = GithubHelper.GetLink(_latestVersion),
                 UseShellExecute = true
             });
-            CloseTask();
-        }
-
-        private void CloseTask()
-        {
-            CloseWindow?.Invoke();
+            Close();
         }
 
         private string _currentVersion = "0.0.0";
@@ -97,8 +91,8 @@ namespace WPFUI.ViewModels
 
         public ReactiveCommand<Unit, Unit> DiscordCommand { get; }
         public ReactiveCommand<Unit, Unit> LatestVersionCommand { get; }
-        public ReactiveCommand<Unit, Unit> CloseCommand { get; }
 
-        public event Action CloseWindow;
+        public Action Close;
+        public Action Show;
     }
 }
