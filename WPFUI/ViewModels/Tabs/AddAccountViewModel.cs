@@ -23,13 +23,13 @@ namespace WPFUI.ViewModels.Tabs
         private async Task SaveTask()
         {
             if (!CheckInput()) return;
-            _waitingWindow.ViewModel.Show("saving account");
+            _waitingWindow.Show("saving account");
             await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
                 if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
                 {
-                    _waitingWindow.ViewModel.Close();
+                    _waitingWindow.Close();
                     MessageBox.Show("This account was already in TBS", "Warning");
                     return;
                 }
@@ -63,7 +63,7 @@ namespace WPFUI.ViewModels.Tabs
             });
             Clean();
             _eventManager.OnAccountsUpdate();
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
         }
 
         private void CancelTask()

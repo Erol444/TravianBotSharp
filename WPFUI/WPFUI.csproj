@@ -51,14 +51,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.4.0" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
     <PackageReference Include="FluentMigrator" Version="3.3.2" />
     <PackageReference Include="FluentMigrator.Runner" Version="3.3.2" />
     <PackageReference Include="FluentMigrator.Runner.SQLite" Version="3.3.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
-    <PackageReference Include="ReactiveUI" Version="18.1.8" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+    <PackageReference Include="ReactiveUI" Version="18.4.1" />
     <PackageReference Include="ReactiveUI.Events.WPF" Version="15.1.1" />
-    <PackageReference Include="ReactiveUI.WPF" Version="18.1.8" />
+    <PackageReference Include="ReactiveUI.WPF" Version="18.4.1" />
+    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="14.5.1" />
   </ItemGroup>
 
   <ItemGroup>

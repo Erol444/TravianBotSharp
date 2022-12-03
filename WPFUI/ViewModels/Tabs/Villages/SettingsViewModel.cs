@@ -57,7 +57,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private async Task SaveTask()
         {
             if (!Settings.IsValidate()) return;
-            _waitingWindow.ViewModel.Show("saving village's settings");
+            _waitingWindow.Show("saving village's settings");
 
             await Task.Run(() =>
             {
@@ -66,7 +66,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 var accountId = CurrentAccount.Id;
                 TaskBasedSetting(villageId, accountId);
             });
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
 
             MessageBox.Show("Saved.");
         }

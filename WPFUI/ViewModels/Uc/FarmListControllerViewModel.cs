@@ -41,7 +41,7 @@ namespace WPFUI.ViewModels.Uc
         public async Task SaveData()
         {
             if (CurrentFarm is null) return;
-            _waitingWindow.ViewModel.Show("Saving ...");
+            _waitingWindow.Show("Saving ...");
             await Task.Run(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -50,7 +50,7 @@ namespace WPFUI.ViewModels.Uc
                 context.Update(setting);
                 context.SaveChanges();
             });
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
             MessageBox.Show("Saved");
         }
 

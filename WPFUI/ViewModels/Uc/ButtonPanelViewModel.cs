@@ -6,6 +6,7 @@ using MainCore.Services.Interface;
 using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Linq;
 using System.Reactive;
@@ -14,8 +15,8 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
-using WPFUI.Views;
 using Access = MainCore.Models.Database.Access;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI.ViewModels.Uc
 {
@@ -23,15 +24,15 @@ namespace WPFUI.ViewModels.Uc
     {
         public ButtonPanelViewModel()
         {
-            _waitingWindow = App.GetService<WaitingWindow>();
-            _versionWindow = App.GetService<VersionWindow>();
-            _chromeManager = App.GetService<IChromeManager>();
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _eventManager = App.GetService<IEventManager>();
-            _taskManager = App.GetService<ITaskManager>();
-            _logManager = App.GetService<ILogManager>();
-            _timeManager = App.GetService<ITimerManager>();
-            _restClientManager = App.GetService<IRestClientManager>();
+            _waitingWindow = Locator.Current.GetService<WaitingViewModel>();
+            _versionWindow = Locator.Current.GetService<VersionViewModel>();
+            _chromeManager = Locator.Current.GetService<IChromeManager>();
+            _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
+            _eventManager = Locator.Current.GetService<IEventManager>();
+            _taskManager = Locator.Current.GetService<ITaskManager>();
+            _logManager = Locator.Current.GetService<ILogManager>();
+            _timeManager = Locator.Current.GetService<ITimerManager>();
+            _restClientManager = Locator.Current.GetService<IRestClientManager>();
 
             _eventManager.AccountStatusUpdate += OnAccountUpdate;
 
@@ -145,10 +146,10 @@ namespace WPFUI.ViewModels.Uc
 
         private void DeleteAccountTask()
         {
-            _waitingWindow.ViewModel.Show("saving data");
+            _waitingWindow.Show("saving data");
             DeleteAccount(CurrentAccount.Id);
             _eventManager.OnAccountsUpdate();
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
         }
 
         private void LoginAccount(int index)
@@ -305,8 +306,8 @@ namespace WPFUI.ViewModels.Uc
         private readonly ITimerManager _timeManager;
         private readonly IRestClientManager _restClientManager;
 
-        private readonly WaitingWindow _waitingWindow;
-        private readonly VersionWindow _versionWindow;
+        private readonly WaitingViewModel _waitingWindow;
+        private readonly VersionViewModel _versionWindow;
 
         private readonly Random rand = new();
     }

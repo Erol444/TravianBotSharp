@@ -66,7 +66,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!CheckInput()) return;
 
-            _waitingWindow.ViewModel.Show("testing proxies");
+            _waitingWindow.Show("testing proxies");
             await Task.Run(() =>
             {
                 for (int i = 0; i < Accessess.Count; i++)
@@ -80,13 +80,13 @@ namespace WPFUI.ViewModels.Tabs
                     Accessess[i].ProxyStatus = result ? "Working" : "Not working";
                 }
             });
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
         }
 
         private async Task SaveTask()
         {
             if (!CheckInput()) return;
-            _waitingWindow.ViewModel.Show("saving account");
+            _waitingWindow.Show("saving account");
             await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
@@ -120,7 +120,7 @@ namespace WPFUI.ViewModels.Tabs
 
             _eventManager.OnAccountsUpdate();
             Clean();
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
             MessageBox.Show("Account saved successfully");
         }
 

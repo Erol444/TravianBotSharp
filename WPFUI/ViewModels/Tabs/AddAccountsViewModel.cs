@@ -26,7 +26,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!CheckInput()) return;
 
-            _waitingWindow.ViewModel.Show("adding accounts");
+            _waitingWindow.Show("adding accounts");
 
             await Task.Run(() =>
             {
@@ -63,7 +63,7 @@ namespace WPFUI.ViewModels.Tabs
             });
             Clean();
             _eventManager.OnAccountsUpdate();
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
             MessageBox.Show($"Added account to TBS's database", "Success");
         }
 

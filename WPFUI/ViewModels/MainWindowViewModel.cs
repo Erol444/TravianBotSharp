@@ -19,7 +19,6 @@ using System.Threading.Tasks;
 using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Tabs;
-using WPFUI.Views;
 using WPFUI.Views.Tabs;
 
 namespace WPFUI.ViewModels
@@ -119,8 +118,8 @@ namespace WPFUI.ViewModels
                 if (Directory.Exists(path)) Directory.Delete(path, true);
             });
 
-            var mainWindow = Locator.Current.GetService<MainWindow>();
-            mainWindow.Hide();
+            var mainWindow = Locator.Current.GetService<MainWindowViewModel>();
+            mainWindow.C();
 
             _closed = true;
             _waitingWindow.Close();

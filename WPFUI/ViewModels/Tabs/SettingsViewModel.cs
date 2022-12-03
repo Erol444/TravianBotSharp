@@ -50,7 +50,7 @@ namespace WPFUI.ViewModels.Tabs
         private async Task SaveTask()
         {
             if (!Settings.IsVaild()) return;
-            _waitingWindow.ViewModel.Show("saving account's settings");
+            _waitingWindow.Show("saving account's settings");
 
             await Task.Run(() =>
             {
@@ -58,7 +58,7 @@ namespace WPFUI.ViewModels.Tabs
                 Save(accountId);
                 TaskBasedSetting(accountId);
             });
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
 
             MessageBox.Show("Saved.");
         }

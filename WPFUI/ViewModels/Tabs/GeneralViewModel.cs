@@ -99,12 +99,12 @@ namespace WPFUI.ViewModels.Tabs
                 if (current is not null)
                 {
                     current.Cts.Cancel();
-                    _waitingWindow.ViewModel.Show("waiting current task stops");
+                    _waitingWindow.Show("waiting current task stops");
                     await Task.Run(() =>
                     {
                         while (current.Stage != TaskStage.Waiting) { }
                     });
-                    _waitingWindow.ViewModel.Close();
+                    _waitingWindow.Close();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
                 return;
