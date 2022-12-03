@@ -72,11 +72,11 @@ namespace WPFUI.ViewModels.Tabs
             }
         }
 
-        public ObservableCollection<Village> Villages { get; } = new();
+        public ObservableCollection<VillageModel> Villages { get; } = new();
 
-        private Village _currentVillage;
+        private VillageModel _currentVillage;
 
-        public Village CurrentVillage
+        public VillageModel CurrentVillage
         {
             get => _currentVillage;
             set => this.RaiseAndSetIfChanged(ref _currentVillage, value);
@@ -90,7 +90,7 @@ namespace WPFUI.ViewModels.Tabs
             set => this.RaiseAndSetIfChanged(ref _currentIndex, value);
         }
 
-        public Village OldVillage { get; set; }
+        public VillageModel OldVillage { get; set; }
 
         private readonly ObservableAsPropertyHelper<bool> _isVillageSelected;
 

@@ -6,15 +6,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Reactive;
 using System.Reactive.Concurrency;
-using WPFUI.Interfaces;
 using WPFUI.Models;
-using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class DebugViewModel : AccountTabBaseViewModel, ITabPage
+    public class DebugViewModel : ActivatableViewModelBase
     {
-        private readonly string discordUrl = "https://discord.gg/DVPV4gesCz";
+        private const string discordUrl = "https://discord.gg/DVPV4gesCz";
 
         public DebugViewModel()
         {
@@ -23,25 +21,23 @@ namespace WPFUI.ViewModels.Tabs
 
             GetHelpCommand = ReactiveCommand.Create(GetHelpTask);
             LogFolderCommand = ReactiveCommand.Create(LogFolderTask);
+
+            OnActive += ActiveHandler;
+            OnAccountChange += AccountChangeHandler;
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
+        private void AccountChangeHandler(int accountId)
         {
-            IsActive = true;
-            if (CurrentAccount is not null)
-            {
-                LoadData(CurrentAccount.Id);
-            }
+            LoadData(accountId);
         }
 
-        public void OnDeactived()
+        private void ActiveHandler()
         {
-            IsActive = false;
+            if (!_selectorViewModel.IsAccountSelected) return;
+            LoadData(_selectorViewModel.Account.Id);
         }
 
-        protected override void LoadData(int accountId)
+        private void LoadData(int accountId)
         {
             OnTasksUpdate(accountId);
 
@@ -65,7 +61,7 @@ namespace WPFUI.ViewModels.Tabs
         private void LogFolderTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var info = context.Accounts.Find(CurrentAccount.Id);
+            var info = context.Accounts.Find(_selectorViewModel.Account.Id);
             var name = info.Username;
             Process.Start(new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, "logs"))
             {
@@ -75,13 +71,15 @@ namespace WPFUI.ViewModels.Tabs
 
         private void OnTasksUpdate(int accountId)
         {
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
+            if (!IsActive) return;
+            if (!_selectorViewModel.IsAccountSelected) return;
+            if (_selectorViewModel.Account.Id != accountId) return;
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Tasks.Clear();
-                foreach (var item in _taskManager.GetList(accountId))
+                var tasks = _taskManager.GetList(accountId);
+                foreach (var item in tasks)
                 {
                     if (item is null) continue;
                     Tasks.Add(new TaskModel()
@@ -96,8 +94,9 @@ namespace WPFUI.ViewModels.Tabs
 
         private void OnLogsUpdate(int accountId, LogMessage logMessage)
         {
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
+            if (!IsActive) return;
+            if (!_selectorViewModel.IsAccountSelected) return;
+            if (_selectorViewModel.Account.Id != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Logs.Insert(0, logMessage);

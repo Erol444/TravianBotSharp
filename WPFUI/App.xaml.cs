@@ -172,6 +172,7 @@ namespace WPFUI
             services.AddSingleton<ViewModels.Tabs.Villages.SettingsViewModel>();
             services.AddSingleton<ViewModels.Tabs.Villages.TroopsViewModel>();
 
+            services.AddSingleton<SelectorViewModel>();
             return services;
         }
     }

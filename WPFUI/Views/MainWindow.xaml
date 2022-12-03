@@ -41,7 +41,7 @@
 
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <Frame Content="{Binding Content}" />
+                    <Frame Content="{Binding Content}" NavigationUIVisibility="Hidden" />
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>

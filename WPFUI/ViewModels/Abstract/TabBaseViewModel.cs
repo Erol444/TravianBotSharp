@@ -15,11 +15,14 @@ namespace WPFUI.ViewModels.Abstract
             _eventManager = Locator.Current.GetService<IEventManager>();
             _taskManager = Locator.Current.GetService<ITaskManager>();
             _planManager = Locator.Current.GetService<IPlanManager>();
-            _waitingWindow = Locator.Current.GetService<WaitingViewModel>();
             _useragentManager = Locator.Current.GetService<IUseragentManager>();
             _restClientManager = Locator.Current.GetService<IRestClientManager>();
             _taskManager = Locator.Current.GetService<ITaskManager>();
             _logManager = Locator.Current.GetService<ILogManager>();
+
+            _waitingWindow = Locator.Current.GetService<WaitingViewModel>();
+
+            _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
         }
 
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
@@ -29,6 +32,9 @@ namespace WPFUI.ViewModels.Abstract
         protected readonly IUseragentManager _useragentManager;
         protected readonly IRestClientManager _restClientManager;
         protected readonly ILogManager _logManager;
+
         protected readonly WaitingViewModel _waitingWindow;
+
+        protected readonly SelectorViewModel _selectorViewModel;
     }
 }
