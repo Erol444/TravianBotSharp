@@ -1,7 +1,7 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Services;
 using System.Linq;
+using MainCore.Services.Interface;
 
 #if TRAVIAN_OFFICIAL
 

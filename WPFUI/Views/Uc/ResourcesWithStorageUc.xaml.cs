@@ -14,12 +14,12 @@ namespace WPFUI.Views.Uc
             InitializeComponent();
             this.WhenActivated(d =>
             {
-                this.Bind(ViewModel, vm => vm.Warehouse, v => v.Warehouse.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Wood, v => v.Wood.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Clay, v => v.Clay.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Iron, v => v.Iron.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Granary, v => v.Granary.Text).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Crop, v => v.Crop.Text).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Warehouse, v => v.Warehouse.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Wood, v => v.Wood.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Clay, v => v.Clay.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Iron, v => v.Iron.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Granary, v => v.Granary.Value).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Crop, v => v.Crop.Value).DisposeWith(d);
             });
         }
     }

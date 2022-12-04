@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:WPFUI.Views.Uc"
+             xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d"
              d:DesignHeight="75" d:DesignWidth="250">
     <Grid Background="#FFABABAB">
@@ -26,7 +26,7 @@
                 </LinearGradientBrush>
             </ComboBox.Background>
         </ComboBox>
-        <TextBox x:Name="LevelText" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+        <xctk:IntegerUpDown x:Name="LevelText" Minimum="0" Grid.Column="1" Grid.Row="1" />
         <Button x:Name="BuildButton" Grid.Column="2" Content="Build" Grid.RowSpan="2" Margin="5,20,5,20" Background="White" />
     </Grid>
 </UserControl>

@@ -112,7 +112,7 @@ jobs:
         uses: sarisia/actions-status-discord@v1
         with:
           webhook: ${{ secrets.DISCORD_BOT }}
-          title: New hotfix
+          title: New patch
           nodetail: true
           description: |
               Version `TBS-${{needs.version.outputs.version}}`

@@ -1,5 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Models.Database;
+using MainCore.Services.Interface;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Chrome.ChromeDriverExtensions;
@@ -7,7 +8,7 @@ using OpenQA.Selenium.Support.UI;
 using System;
 using System.IO;
 
-namespace MainCore.Services
+namespace MainCore.Services.Implementations
 {
     public sealed class ChromeBrowser : IChromeBrowser
     {

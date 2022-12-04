@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Services;
+using MainCore.Services.Interface;
 using OpenQA.Selenium;
 using System;
 

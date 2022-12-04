@@ -1,4 +1,5 @@
 ﻿using MainCore.Models.Runtime;
+using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using RestSharp;
 using System;
@@ -7,7 +8,7 @@ using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace MainCore.Services
+namespace MainCore.Services.Implementations
 {
     public sealed class RestClientManager : IRestClientManager
     {
