@@ -1,5 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper;
+using MainCore.Services;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
 using System;
@@ -112,6 +113,7 @@ namespace MainCore.Tasks.Update
 
             _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
         }
+
 
         private void AutoNPC(AppDbContext context)
         {

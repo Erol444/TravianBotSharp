@@ -1,0 +1,464 @@
+00:10:14 [INF] Start farmlist Ide Strelka is started
+00:10:18 [INF] Farmlist Ide Strelka was sent.
+00:10:18 [INF] Start farmlist Ide Strelka is finished
+00:20:05 [INF] Upgrade building in 002 is started
+00:20:05 [INF] Next building will be contructed: IronMine - level 8.
+00:20:07 [INF] Don't have enough resources.
+00:20:07 [INF] Upgrade building in 002 is finished
+00:23:44 [INF] Refresh village in 002 is started
+00:23:46 [INF] Refresh village in 002 is finished
+00:25:05 [INF] Refresh village in 000 is started
+00:25:06 [INF] Refresh village in 000 is finished
+00:35:21 [INF] Start farmlist Ide Strelka is started
+00:35:25 [INF] Farmlist Ide Strelka was sent.
+00:35:25 [INF] Start farmlist Ide Strelka is finished
+00:37:52 [INF] Refresh village in 001 is started
+00:37:54 [INF] Refresh village in 001 is finished
+00:42:57 [INF] Upgrade building in 001 is started
+00:42:57 [INF] Next building will be contructed: TownHall - level 10.
+00:42:58 [INF] Don't have enough resources.
+00:42:58 [INF] Upgrade building in 001 is finished
+00:43:41 [INF] Upgrade building in 000 is started
+00:43:41 [INF] Next building will be contructed: OnlyCrop - BasedOnLevel - level 11.
+00:43:41 [INF] Next building will be contructed: Cropland - level 11.
+00:43:43 [INF] Don't have enough resources.
+00:43:43 [INF] Upgrade building in 000 is finished
+00:59:06 [INF] Refresh village in 000 is started
+00:59:07 [INF] Refresh village in 000 is finished
+01:00:21 [INF] Start farmlist Ide Strelka is started
+01:00:25 [INF] Farmlist Ide Strelka was sent.
+01:00:25 [INF] Start farmlist Ide Strelka is finished
+01:23:54 [INF] Refresh village in 001 is started
+01:23:57 [INF] Refresh village in 001 is finished
+01:25:34 [INF] Start farmlist Ide Strelka is started
+01:25:38 [INF] Farmlist Ide Strelka was sent.
+01:25:38 [INF] Start farmlist Ide Strelka is finished
+01:27:46 [INF] Refresh village in 002 is started
+01:27:48 [INF] Refresh village in 002 is finished
+01:29:07 [INF] Refresh village in 000 is started
+01:29:08 [INF] Refresh village in 000 is finished
+01:50:46 [INF] Start farmlist Ide Strelka is started
+01:50:58 [ERR] Object reference not set to an instance of an object.
+01:50:58 [INF] Start farmlist Ide Strelka is failed. Retry counter is increased (2)
+01:51:09 [INF] Start farmlist Ide Strelka is stopped and reset.
+01:51:10 [INF] Start farmlist Ide Strelka is started
+01:51:10 [ERR] Object reference not set to an instance of an object.
+01:51:10 [INF] Start farmlist Ide Strelka is failed. Retry counter is increased (3)
+01:51:10 [INF] Start farmlist Ide Strelka is stopped and reset.
+01:51:11 [INF] Start farmlist Ide Strelka is started
+01:51:11 [ERR] Object reference not set to an instance of an object.
+01:51:11 [INF] Start farmlist Ide Strelka was excuted 3 times. Bot is paused
+01:51:11 [INF] Start farmlist Ide Strelka is finished
+10:02:42 [INF] Upgrade building in 001 is started
+10:02:42 [WRN] Login page is showing, stop current task and login
+10:02:42 [INF] Upgrade building in 001 is stopped and reset.
+10:02:42 [INF] Login task is started
+10:02:44 [INF] Login task is finished
+10:02:45 [INF] Upgrade building in 001 is started
+10:02:45 [INF] Next building will be contructed: TownHall - level 10.
+10:02:46 [INF] Don't have enough resources.
+10:02:46 [INF] Upgrade building in 001 is finished
+10:02:47 [INF] Refresh village in 000 is started
+10:02:49 [INF] Refresh village in 000 is finished
+10:02:50 [INF] Refresh village in 001 is started
+10:02:51 [INF] Refresh village in 001 is finished
+10:02:52 [INF] Upgrade building in 002 is started
+10:02:52 [INF] Next building will be contructed: IronMine - level 8.
+10:02:55 [INF] Don't have enough resources.
+10:02:55 [INF] Upgrade building in 002 is finished
+10:02:56 [INF] Refresh village in 002 is started
+10:02:57 [INF] Refresh village in 002 is finished
+10:02:58 [INF] Update info is started
+10:02:58 [INF] Update info is finished
+10:02:59 [INF] Refresh village in 001 is started
+10:03:00 [INF] Refresh village in 001 is finished
+10:03:01 [INF] Refresh village in 000 is started
+10:03:02 [INF] Refresh village in 000 is finished
+10:03:03 [INF] Refresh village in 002 is started
+10:03:04 [INF] Refresh village in 002 is finished
+10:03:04 [INF] Start farmlist Ide Strelka is started
+10:03:08 [INF] Farmlist Ide Strelka was sent.
+10:03:08 [INF] Start farmlist Ide Strelka is finished
+10:28:16 [INF] Start farmlist Ide Strelka is started
+10:28:20 [INF] Farmlist Ide Strelka was sent.
+10:28:20 [INF] Start farmlist Ide Strelka is finished
+10:29:02 [INF] Refresh village in 000 is started
+10:29:03 [INF] Refresh village in 000 is finished
+10:29:23 [INF] Upgrade building in 001 is started
+10:29:23 [INF] Amount of currently building is equal with maximum building can build in same time
+10:29:24 [INF] Next building will be contructed after Stable - level 13 complete. (29/11/2022 12:39:14)
+10:29:24 [INF] Upgrade building in 001 is finished
+10:31:50 [INF] Refresh village in 000 is started
+10:31:51 [INF] Refresh village in 000 is finished
+10:42:51 [INF] Refresh village in 001 is started
+10:42:53 [INF] Refresh village in 001 is finished
+10:43:00 [INF] Refresh village in 001 is started
+10:43:00 [INF] Refresh village in 001 is finished
+10:49:22 [INF] Upgrade building in 002 is started
+10:49:22 [INF] Next building will be contructed: IronMine - level 8.
+10:49:25 [INF] Amount of currently building is equal with maximum building can build in same time
+10:49:25 [INF] Next building will be contructed after Warehouse - level 10 complete. (29/11/2022 12:24:46)
+10:49:25 [INF] Upgrade building in 002 is finished
+10:53:25 [INF] Start farmlist Ide Strelka is started
+10:53:29 [INF] Farmlist Ide Strelka was sent.
+10:53:29 [INF] Start farmlist Ide Strelka is finished
+10:56:51 [INF] Refresh village in 000 is started
+10:56:53 [INF] Refresh village in 000 is finished
+10:57:57 [INF] Refresh village in 002 is started
+10:57:58 [INF] Refresh village in 002 is finished
+10:59:03 [INF] Refresh village in 000 is started
+10:59:04 [INF] Refresh village in 000 is finished
+11:01:04 [INF] Refresh village in 002 is started
+11:01:05 [INF] Refresh village in 002 is finished
+11:18:28 [INF] Start farmlist Ide Strelka is started
+11:18:33 [INF] Farmlist Ide Strelka was sent.
+11:18:33 [INF] Start farmlist Ide Strelka is finished
+11:23:53 [INF] Refresh village in 000 is started
+11:23:56 [INF] Refresh village in 000 is finished
+11:24:53 [INF] Refresh village in 001 is started
+11:24:54 [INF] Refresh village in 001 is finished
+11:25:00 [INF] Refresh village in 001 is started
+11:25:00 [INF] Refresh village in 001 is finished
+11:32:04 [INF] Refresh village in 000 is started
+11:32:05 [INF] Refresh village in 000 is finished
+11:43:38 [INF] Start farmlist Ide Strelka is started
+11:43:42 [INF] Farmlist Ide Strelka was sent.
+11:43:42 [INF] Start farmlist Ide Strelka is finished
+11:55:56 [INF] Refresh village in 000 is started
+11:55:58 [INF] Refresh village in 000 is finished
+11:57:58 [INF] Refresh village in 002 is started
+11:57:59 [INF] Refresh village in 002 is finished
+12:00:05 [INF] Refresh village in 002 is started
+12:00:05 [INF] Refresh village in 002 is finished
+12:04:54 [INF] Refresh village in 001 is started
+12:04:55 [INF] Refresh village in 001 is finished
+12:05:05 [INF] Refresh village in 000 is started
+12:05:06 [INF] Refresh village in 000 is finished
+12:07:01 [INF] Refresh village in 001 is started
+12:07:02 [INF] Refresh village in 001 is finished
+12:08:39 [INF] Start farmlist Ide Strelka is started
+12:08:44 [INF] Farmlist Ide Strelka was sent.
+12:08:44 [INF] Start farmlist Ide Strelka is finished
+12:24:46 [INF] Upgrade building in 002 is started
+12:24:46 [INF] Next building will be contructed: IronMine - level 8.
+12:24:49 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 8.
+12:24:49 [INF] Next building will be contructed: IronMine - level 8.
+12:24:50 [INF] Don't have enough resources.
+12:24:50 [INF] Upgrade building in 002 is finished
+12:25:58 [INF] Refresh village in 000 is started
+12:26:00 [INF] Refresh village in 000 is finished
+12:33:38 [INF] Start farmlist Ide Strelka is started
+12:33:42 [INF] Farmlist Ide Strelka was sent.
+12:33:42 [INF] Start farmlist Ide Strelka is finished
+12:36:06 [INF] Refresh village in 000 is started
+12:36:08 [INF] Refresh village in 000 is finished
+12:39:14 [INF] Upgrade building in 001 is started
+12:39:14 [INF] Next building will be contructed: TownHall - level 10.
+12:39:17 [INF] Don't have enough resources.
+12:39:17 [INF] Upgrade building in 001 is finished
+12:52:02 [INF] Refresh village in 001 is started
+12:52:03 [INF] Refresh village in 001 is finished
+12:53:55 [INF] Refresh village in 001 is started
+12:53:56 [INF] Refresh village in 001 is finished
+12:54:00 [INF] Refresh village in 000 is started
+12:54:01 [INF] Refresh village in 000 is finished
+12:55:41 [INF] Upgrade building in 001 is started
+12:55:41 [INF] Next building will be contructed: TownHall - level 10.
+12:55:45 [INF] Next building will be contructed: TownHall - level 10.
+12:55:46 [INF] Don't have enough resources.
+12:55:46 [INF] Upgrade building in 001 is finished
+12:58:44 [INF] Start farmlist Ide Strelka is started
+12:58:48 [INF] Farmlist Ide Strelka was sent.
+12:58:48 [INF] Start farmlist Ide Strelka is finished
+12:58:59 [INF] Refresh village in 002 is started
+12:59:01 [INF] Refresh village in 002 is finished
+13:02:05 [INF] Refresh village in 002 is started
+13:02:05 [INF] Refresh village in 002 is finished
+13:07:08 [INF] Refresh village in 000 is started
+13:07:09 [INF] Refresh village in 000 is finished
+13:21:01 [INF] Refresh village in 000 is started
+13:21:02 [INF] Refresh village in 000 is finished
+13:23:52 [INF] Start farmlist Ide Strelka is started
+13:23:57 [INF] Farmlist Ide Strelka was sent.
+13:23:57 [INF] Start farmlist Ide Strelka is finished
+13:35:56 [INF] Refresh village in 001 is started
+13:35:59 [INF] Refresh village in 001 is finished
+13:36:09 [INF] Refresh village in 000 is started
+13:36:10 [INF] Refresh village in 000 is finished
+13:37:04 [INF] Refresh village in 001 is started
+13:37:05 [INF] Refresh village in 001 is finished
+13:49:02 [INF] Start farmlist Ide Strelka is started
+13:49:06 [INF] Farmlist Ide Strelka was sent.
+13:49:06 [INF] Start farmlist Ide Strelka is finished
+13:52:02 [INF] Refresh village in 000 is started
+13:52:04 [INF] Refresh village in 000 is finished
+13:55:01 [INF] Refresh village in 002 is started
+13:55:02 [INF] Refresh village in 002 is finished
+14:01:05 [INF] Refresh village in 002 is started
+14:01:05 [INF] Refresh village in 002 is finished
+14:07:10 [INF] Refresh village in 000 is started
+14:07:12 [INF] Refresh village in 000 is finished
+14:14:05 [INF] Start farmlist Ide Strelka is started
+14:14:10 [INF] Farmlist Ide Strelka was sent.
+14:14:10 [INF] Start farmlist Ide Strelka is finished
+14:16:59 [INF] Refresh village in 001 is started
+14:17:01 [INF] Refresh village in 001 is finished
+14:18:04 [INF] Refresh village in 000 is started
+14:18:05 [INF] Refresh village in 000 is finished
+14:23:05 [INF] Refresh village in 001 is started
+14:23:06 [INF] Refresh village in 001 is finished
+14:37:12 [INF] Refresh village in 000 is started
+14:37:12 [ERR] Object reference not set to an instance of an object.
+14:37:12 [INF] Refresh village in 000 is failed. Retry counter is increased (0)
+14:37:12 [INF] Refresh village in 000 is stopped and reset.
+14:37:13 [INF] Refresh village in 000 is started
+14:37:13 [ERR] Object reference not set to an instance of an object.
+14:37:13 [INF] Refresh village in 000 is failed. Retry counter is increased (1)
+14:37:13 [INF] Refresh village in 000 is stopped and reset.
+14:37:14 [INF] Refresh village in 000 is started
+14:37:14 [ERR] Object reference not set to an instance of an object.
+14:37:14 [INF] Refresh village in 000 is failed. Retry counter is increased (2)
+14:37:14 [INF] Refresh village in 000 is stopped and reset.
+14:37:15 [INF] Refresh village in 000 is started
+14:37:15 [ERR] Object reference not set to an instance of an object.
+14:37:15 [INF] Refresh village in 000 is failed. Retry counter is increased (3)
+14:37:15 [INF] Refresh village in 000 is stopped and reset.
+14:37:16 [INF] Refresh village in 000 is started
+14:37:16 [ERR] Object reference not set to an instance of an object.
+14:37:16 [INF] Refresh village in 000 was excuted 3 times. Bot is paused
+14:37:16 [INF] Refresh village in 000 is finished
+15:56:48 [INF] Start farmlist Ide Strelka is started
+15:56:52 [INF] Farmlist Ide Strelka was sent.
+15:56:52 [INF] Start farmlist Ide Strelka is finished
+15:56:53 [INF] Upgrade building in 001 is started
+15:56:53 [INF] Next building will be contructed: TownHall - level 10.
+15:56:55 [INF] Don't have enough resources.
+15:56:55 [INF] Upgrade building in 001 is finished
+15:56:56 [INF] Refresh village in 000 is started
+15:56:58 [INF] Refresh village in 000 is finished
+15:56:59 [INF] Refresh village in 002 is started
+15:57:00 [INF] Refresh village in 002 is finished
+15:57:01 [INF] Refresh village in 001 is started
+15:57:02 [INF] Refresh village in 001 is finished
+15:57:03 [INF] Refresh village in 002 is started
+15:57:04 [INF] Refresh village in 002 is finished
+15:57:05 [INF] Refresh village in 001 is started
+15:57:05 [INF] Refresh village in 001 is finished
+15:57:06 [INF] Upgrade building in 000 is started
+15:57:06 [INF] Amount of currently building is equal with maximum building can build in same time
+15:57:07 [INF] Next building will be contructed after Granary - level 16 complete. (29/11/2022 19:24:09)
+15:57:07 [INF] Upgrade building in 000 is finished
+15:57:08 [INF] Upgrade building in 002 is started
+15:57:08 [INF] Amount of currently building is equal with maximum building can build in same time
+15:57:09 [INF] Next building will be contructed after IronMine - level 8 complete. (29/11/2022 16:15:16)
+15:57:09 [INF] Upgrade building in 002 is finished
+16:00:44 [INF] Upgrade building in 001 is started
+16:00:45 [INF] Next building will be contructed: TownHall - level 10.
+16:00:48 [INF] Next building will be contructed: TownHall - level 10.
+16:00:49 [INF] Don't have enough resources.
+16:00:49 [INF] Upgrade building in 001 is finished
+16:15:16 [INF] Upgrade building in 002 is started
+16:15:16 [INF] Next building will be contructed: IronMine - level 8.
+16:15:20 [INF] Don't have enough resources.
+16:15:20 [INF] Upgrade building in 002 is finished
+16:21:45 [INF] Start farmlist Ide Strelka is started
+16:21:50 [INF] Farmlist Ide Strelka was sent.
+16:21:50 [INF] Start farmlist Ide Strelka is finished
+16:21:58 [INF] Refresh village in 000 is started
+16:22:00 [INF] Refresh village in 000 is finished
+16:43:02 [INF] Refresh village in 001 is started
+16:43:03 [INF] Refresh village in 001 is finished
+16:43:05 [INF] Refresh village in 001 is started
+16:43:06 [INF] Refresh village in 001 is finished
+16:46:50 [INF] Start farmlist Ide Strelka is started
+16:46:54 [INF] Farmlist Ide Strelka was sent.
+16:46:54 [INF] Start farmlist Ide Strelka is finished
+16:47:00 [INF] Refresh village in 000 is started
+16:47:03 [INF] Refresh village in 000 is finished
+16:52:00 [INF] Refresh village in 002 is started
+16:52:01 [INF] Refresh village in 002 is finished
+17:00:04 [INF] Refresh village in 002 is started
+17:00:04 [INF] Refresh village in 002 is finished
+17:09:08 [INF] Start farmlist Ide Strelka 2 is started
+17:09:12 [INF] Farmlist Ide Strelka 2 was sent.
+17:09:12 [INF] Start farmlist Ide Strelka 2 is finished
+17:11:53 [INF] Start farmlist Ide Strelka is started
+17:11:57 [INF] Farmlist Ide Strelka was sent.
+17:11:57 [INF] Start farmlist Ide Strelka is finished
+17:20:03 [INF] Refresh village in 000 is started
+17:20:04 [INF] Refresh village in 000 is finished
+17:24:06 [INF] Refresh village in 001 is started
+17:24:07 [INF] Refresh village in 001 is finished
+17:28:03 [INF] Refresh village in 001 is started
+17:28:04 [INF] Refresh village in 001 is finished
+17:35:07 [INF] Start farmlist Ide Strelka 2 is started
+17:35:12 [INF] Farmlist Ide Strelka 2 was sent.
+17:35:12 [INF] Start farmlist Ide Strelka 2 is finished
+17:36:54 [INF] Start farmlist Ide Strelka is started
+17:36:54 [INF] Farmlist Ide Strelka was sent.
+17:36:54 [INF] Start farmlist Ide Strelka is finished
+17:41:23 [INF] Upgrade building in 002 is started
+17:41:23 [INF] Next building will be contructed: IronMine - level 8.
+17:41:27 [INF] Don't have enough resources.
+17:41:27 [INF] Upgrade building in 002 is finished
+17:49:01 [INF] Refresh village in 002 is started
+17:49:03 [INF] Refresh village in 002 is finished
+17:52:04 [INF] Refresh village in 000 is started
+17:52:05 [INF] Refresh village in 000 is finished
+17:59:04 [INF] Refresh village in 002 is started
+17:59:05 [INF] Refresh village in 002 is finished
+18:01:47 [INF] Start farmlist Ide Strelka is started
+18:01:51 [INF] Farmlist Ide Strelka was sent.
+18:01:51 [INF] Start farmlist Ide Strelka is finished
+18:07:07 [INF] Refresh village in 001 is started
+18:07:09 [INF] Refresh village in 001 is finished
+18:08:23 [INF] Start farmlist Ide Strelka 2 is started
+18:08:27 [INF] Farmlist Ide Strelka 2 was sent.
+18:08:27 [INF] Start farmlist Ide Strelka 2 is finished
+18:17:04 [INF] Refresh village in 001 is started
+18:17:06 [INF] Refresh village in 001 is finished
+18:20:05 [INF] Refresh village in 000 is started
+18:20:06 [INF] Refresh village in 000 is finished
+18:26:41 [INF] Start farmlist Ide Strelka is started
+18:26:46 [INF] Farmlist Ide Strelka was sent.
+18:26:46 [INF] Start farmlist Ide Strelka is finished
+18:41:41 [INF] Start farmlist Ide Strelka 2 is started
+18:41:46 [INF] Farmlist Ide Strelka 2 was sent.
+18:41:46 [INF] Start farmlist Ide Strelka 2 is finished
+18:51:40 [INF] Start farmlist Ide Strelka is started
+18:51:40 [INF] Farmlist Ide Strelka was sent.
+18:51:40 [INF] Start farmlist Ide Strelka is finished
+18:52:03 [INF] Refresh village in 002 is started
+18:52:05 [INF] Refresh village in 002 is finished
+18:52:06 [INF] Refresh village in 000 is started
+18:52:07 [INF] Refresh village in 000 is finished
+18:52:09 [INF] Refresh village in 001 is started
+18:52:10 [INF] Refresh village in 001 is finished
+18:58:05 [INF] Refresh village in 002 is started
+18:58:06 [INF] Refresh village in 002 is finished
+19:01:06 [INF] Refresh village in 001 is started
+19:01:07 [INF] Refresh village in 001 is finished
+19:15:00 [INF] Start farmlist Ide Strelka 2 is started
+19:15:04 [INF] Farmlist Ide Strelka 2 was sent.
+19:15:04 [INF] Start farmlist Ide Strelka 2 is finished
+19:16:35 [INF] Start farmlist Ide Strelka is started
+19:16:36 [INF] Farmlist Ide Strelka was sent.
+19:16:36 [INF] Start farmlist Ide Strelka is finished
+19:18:07 [INF] Refresh village in 000 is started
+19:18:09 [INF] Refresh village in 000 is finished
+19:24:09 [INF] Upgrade building in 000 is started
+19:24:09 [INF] Next building will be contructed: Cropland - level 11.
+19:24:11 [INF] Don't have enough resources.
+19:24:11 [INF] Upgrade building in 000 is finished
+19:34:41 [INF] Upgrade building in 001 is started
+19:34:42 [INF] Empty task queue
+19:34:42 [INF] Queue is empty.
+19:34:42 [INF] Upgrade building in 001 is finished
+19:37:10 [INF] Refresh village in 001 is started
+19:37:13 [INF] Refresh village in 001 is finished
+19:41:29 [INF] Start farmlist Ide Strelka is started
+19:41:34 [INF] Farmlist Ide Strelka was sent.
+19:41:34 [INF] Start farmlist Ide Strelka is finished
+19:42:07 [INF] Refresh village in 001 is started
+19:42:09 [INF] Refresh village in 001 is finished
+19:48:14 [INF] Start farmlist Ide Strelka 2 is started
+19:48:18 [INF] Farmlist Ide Strelka 2 was sent.
+19:48:18 [INF] Start farmlist Ide Strelka 2 is finished
+19:52:09 [INF] Refresh village in 000 is started
+19:52:12 [INF] Refresh village in 000 is finished
+19:53:05 [INF] Refresh village in 002 is started
+19:53:06 [INF] Refresh village in 002 is finished
+19:59:06 [INF] Refresh village in 002 is started
+19:59:07 [INF] Refresh village in 002 is finished
+20:06:28 [INF] Start farmlist Ide Strelka is started
+20:06:32 [INF] Farmlist Ide Strelka was sent.
+20:06:32 [INF] Start farmlist Ide Strelka is finished
+20:21:46 [INF] Start farmlist Ide Strelka 2 is started
+20:21:47 [INF] Farmlist Ide Strelka 2 was sent.
+20:21:47 [INF] Start farmlist Ide Strelka 2 is finished
+20:23:13 [INF] Refresh village in 001 is started
+20:23:15 [INF] Refresh village in 001 is finished
+20:24:12 [INF] Refresh village in 000 is started
+20:24:13 [INF] Refresh village in 000 is finished
+20:30:09 [INF] Refresh village in 001 is started
+20:30:10 [INF] Refresh village in 001 is finished
+20:31:37 [INF] Start farmlist Ide Strelka is started
+20:31:42 [INF] Farmlist Ide Strelka was sent.
+20:31:42 [INF] Start farmlist Ide Strelka is finished
+20:49:06 [INF] Refresh village in 002 is started
+20:49:09 [INF] Refresh village in 002 is finished
+20:50:13 [INF] Refresh village in 000 is started
+20:50:23 [ERR] Object reference not set to an instance of an object.
+20:50:23 [INF] Refresh village in 000 is failed. Retry counter is increased (0)
+20:50:23 [INF] Refresh village in 000 is stopped and reset.
+20:50:24 [INF] Refresh village in 000 is started
+20:50:24 [ERR] Object reference not set to an instance of an object.
+20:50:24 [INF] Refresh village in 000 is failed. Retry counter is increased (1)
+20:50:24 [INF] Refresh village in 000 is stopped and reset.
+20:50:25 [INF] Refresh village in 000 is started
+20:50:25 [ERR] Object reference not set to an instance of an object.
+20:50:25 [INF] Refresh village in 000 is failed. Retry counter is increased (2)
+20:50:25 [INF] Refresh village in 000 is stopped and reset.
+20:50:26 [INF] Refresh village in 000 is started
+20:50:26 [ERR] Object reference not set to an instance of an object.
+20:50:26 [INF] Refresh village in 000 is failed. Retry counter is increased (3)
+20:50:33 [INF] Refresh village in 000 is stopped and reset.
+20:50:33 [INF] Refresh village in 000 is started
+20:50:34 [ERR] Object reference not set to an instance of an object.
+20:50:34 [INF] Refresh village in 000 was excuted 3 times. Bot is paused
+20:50:34 [INF] Refresh village in 000 is finished
+22:06:18 [INF] Start farmlist Ide Strelka 2 is started
+22:06:22 [INF] Farmlist Ide Strelka 2 was sent.
+22:06:22 [INF] Start farmlist Ide Strelka 2 is finished
+22:06:23 [INF] Start farmlist Ide Strelka is started
+22:06:23 [INF] Farmlist Ide Strelka was sent.
+22:06:23 [INF] Start farmlist Ide Strelka is finished
+22:06:24 [INF] Refresh village in 002 is started
+22:06:26 [INF] Refresh village in 002 is finished
+22:06:27 [INF] Refresh village in 001 is started
+22:06:28 [INF] Refresh village in 001 is finished
+22:06:29 [INF] Refresh village in 001 is started
+22:06:29 [INF] Refresh village in 001 is finished
+22:06:30 [INF] Upgrade building in 002 is started
+22:06:30 [INF] Next building will be contructed: IronMine - level 8.
+22:06:32 [INF] Don't have enough resources.
+22:06:32 [INF] Upgrade building in 002 is finished
+22:06:33 [INF] Refresh village in 002 is started
+22:06:35 [INF] Refresh village in 002 is finished
+22:31:19 [INF] Start farmlist Ide Strelka is started
+22:31:24 [INF] Farmlist Ide Strelka was sent.
+22:31:24 [INF] Start farmlist Ide Strelka is finished
+22:39:35 [INF] Start farmlist Ide Strelka 2 is started
+22:39:36 [INF] Farmlist Ide Strelka 2 was sent.
+22:39:36 [INF] Start farmlist Ide Strelka 2 is finished
+22:46:28 [INF] Refresh village in 001 is started
+22:46:31 [INF] Refresh village in 001 is finished
+22:54:29 [INF] Refresh village in 001 is started
+22:54:30 [INF] Refresh village in 001 is finished
+22:56:23 [INF] Start farmlist Ide Strelka is started
+22:56:27 [INF] Farmlist Ide Strelka was sent.
+22:56:27 [INF] Start farmlist Ide Strelka is finished
+23:07:35 [INF] Refresh village in 002 is started
+23:07:37 [INF] Refresh village in 002 is finished
+23:09:26 [INF] Refresh village in 002 is started
+23:09:27 [INF] Refresh village in 002 is finished
+23:12:55 [INF] Start farmlist Ide Strelka 2 is started
+23:12:59 [INF] Farmlist Ide Strelka 2 was sent.
+23:12:59 [INF] Start farmlist Ide Strelka 2 is finished
+23:21:20 [INF] Start farmlist Ide Strelka is started
+23:21:21 [INF] Farmlist Ide Strelka was sent.
+23:21:21 [INF] Start farmlist Ide Strelka is finished
+23:25:13 [INF] Upgrade building in 002 is started
+23:25:13 [INF] Next building will be contructed: IronMine - level 8.
+23:25:15 [INF] Don't have enough resources.
+23:25:15 [INF] Upgrade building in 002 is finished
+23:34:31 [INF] Refresh village in 001 is started
+23:34:32 [INF] Refresh village in 001 is finished
+23:42:30 [INF] Refresh village in 001 is started
+23:42:30 [INF] Refresh village in 001 is finished
+23:46:11 [INF] Start farmlist Ide Strelka 2 is started
+23:46:15 [INF] Farmlist Ide Strelka 2 was sent.
+23:46:15 [INF] Start farmlist Ide Strelka 2 is finished
+23:46:25 [INF] Start farmlist Ide Strelka is started
+23:46:26 [INF] Farmlist Ide Strelka was sent.
+23:46:26 [INF] Start farmlist Ide Strelka is finished

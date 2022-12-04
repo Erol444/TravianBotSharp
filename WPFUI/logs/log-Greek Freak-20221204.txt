@@ -1,0 +1,903 @@
+00:01:13 [INF] Upgrade building in 002 is started
+00:01:13 [INF] Amount of currently building is equal with maximum building can build in same time
+00:01:13 [INF] Next building will be contructed after MainBuilding - level 19 complete. (12/4/2022 5:28:59 AM)
+00:01:13 [INF] Upgrade building in 002 is finished
+00:01:14 [INF] Send Resources Out of Village Task in 002 is started
+00:01:18 [INF] Send Resources Out of Village Task in 002 is finished
+00:01:19 [INF] Send Resources to Current Village Task in 002 is started
+00:01:23 [INF] Send Resources to Current Village Task in 002 is finished
+00:02:55 [INF] Update Buildings page in 000 is started
+00:02:55 [INF] Update Buildings page in 000 is finished
+00:03:04 [INF] Upgrade building in 000 is started
+00:03:04 [INF] Next building will be contructed: Granary - level 15.
+00:03:04 [INF] Next building will be contructed: Warehouse - level 20.
+00:03:06 [INF] Amount of currently building is equal with maximum building can build in same time
+00:03:07 [INF] Next building will be contructed after Warehouse - level 1 complete. (12/4/2022 12:19:42 AM)
+00:03:07 [INF] Upgrade building in 000 is finished
+00:16:08 [INF] Start farmlist Ide Strelka is started
+00:16:13 [INF] Farmlist Ide Strelka was sent.
+00:16:13 [INF] Start farmlist Ide Strelka is finished
+00:19:42 [INF] Upgrade building in 000 is started
+00:19:42 [INF] Next building will be contructed: Warehouse - level 20.
+00:19:46 [INF] Amount of currently building is equal with maximum building can build in same time
+00:19:46 [INF] Next building will be contructed after Warehouse - level 2 complete. (12/4/2022 12:41:32 AM)
+00:19:46 [INF] Upgrade building in 000 is finished
+00:20:40 [INF] Refresh village in 002 is started
+00:20:42 [INF] Refresh village in 002 is finished
+00:20:43 [INF] Send Resources Out of Village Task in 002 is started
+00:20:46 [INF] Send Resources Out of Village Task in 002 is finished
+00:20:47 [INF] Send Resources to Current Village Task in 002 is started
+00:20:51 [INF] Send Resources to Current Village Task in 002 is finished
+00:24:48 [INF] Start farmlist Ide Strelka 2 is started
+00:24:52 [INF] Farmlist Ide Strelka 2 was sent.
+00:24:52 [INF] Start farmlist Ide Strelka 2 is finished
+00:32:45 [INF] Refresh village in 001 is started
+00:32:48 [INF] Refresh village in 001 is finished
+00:32:51 [INF] Start farmlist Ide Strelka is started
+00:32:55 [INF] Farmlist Ide Strelka was sent.
+00:32:55 [INF] Start farmlist Ide Strelka is finished
+00:38:07 [INF] Refresh village in 003 is started
+00:38:09 [INF] Refresh village in 003 is finished
+00:38:10 [INF] Send Resources to Current Village Task in 003 is started
+00:38:13 [INF] Send Resources to Current Village Task in 003 is finished
+00:41:32 [INF] Upgrade building in 000 is started
+00:41:32 [INF] Next building will be contructed: Warehouse - level 20.
+00:41:36 [INF] Amount of currently building is equal with maximum building can build in same time
+00:41:36 [INF] Next building will be contructed after Warehouse - level 3 complete. (12/4/2022 1:09:13 AM)
+00:41:36 [INF] Upgrade building in 000 is finished
+00:49:44 [INF] Start farmlist Ide Strelka is started
+00:49:47 [INF] Farmlist Ide Strelka was sent.
+00:49:47 [INF] Start farmlist Ide Strelka is finished
+00:54:45 [INF] Start farmlist Ide Strelka 2 is started
+00:54:46 [INF] Farmlist Ide Strelka 2 was sent.
+00:54:46 [INF] Start farmlist Ide Strelka 2 is finished
+01:06:20 [INF] Start farmlist Ide Strelka is started
+01:06:20 [INF] Farmlist Ide Strelka was sent.
+01:06:20 [INF] Start farmlist Ide Strelka is finished
+01:09:13 [INF] Upgrade building in 000 is started
+01:09:13 [INF] Next building will be contructed: Warehouse - level 20.
+01:09:17 [INF] Amount of currently building is equal with maximum building can build in same time
+01:09:17 [INF] Next building will be contructed after Warehouse - level 4 complete. (12/4/2022 1:43:53 AM)
+01:09:17 [INF] Upgrade building in 000 is finished
+01:18:48 [INF] Refresh village in 001 is started
+01:18:50 [INF] Refresh village in 001 is finished
+01:20:10 [INF] Refresh village in 003 is started
+01:20:11 [INF] Refresh village in 003 is finished
+01:20:12 [INF] Send Resources to Current Village Task in 003 is started
+01:20:13 [INF] Send Resources to Current Village Task in 003 is finished
+01:23:10 [INF] Start farmlist Ide Strelka is started
+01:23:12 [INF] Farmlist Ide Strelka was sent.
+01:23:12 [INF] Start farmlist Ide Strelka is finished
+01:23:13 [INF] Send Resources to Current Village Task in 003 is started
+01:23:15 [INF] Send Resources to Current Village Task in 003 is finished
+01:24:41 [INF] Start farmlist Ide Strelka 2 is started
+01:24:44 [INF] Farmlist Ide Strelka 2 was sent.
+01:24:44 [INF] Start farmlist Ide Strelka 2 is finished
+01:24:44 [INF] Send Resources to Current Village Task in 003 is started
+01:24:46 [INF] Send Resources to Current Village Task in 003 is finished
+01:24:47 [INF] Refresh village in 002 is started
+01:24:49 [INF] Refresh village in 002 is finished
+01:24:50 [INF] Send Resources Out of Village Task in 002 is started
+01:24:53 [INF] Send Resources Out of Village Task in 002 is finished
+01:24:53 [INF] Send Resources to Current Village Task in 002 is started
+01:24:56 [INF] Send Resources to Current Village Task in 002 is finished
+01:40:01 [INF] Start farmlist Ide Strelka is started
+01:40:08 [INF] Farmlist Ide Strelka was sent.
+01:40:08 [INF] Start farmlist Ide Strelka is finished
+01:43:53 [INF] Upgrade building in 000 is started
+01:43:53 [INF] Next building will be contructed: Warehouse - level 20.
+01:43:56 [INF] Amount of currently building is equal with maximum building can build in same time
+01:43:56 [INF] Next building will be contructed after Warehouse - level 5 complete. (12/4/2022 2:26:32 AM)
+01:43:56 [INF] Upgrade building in 000 is finished
+01:44:23 [INF] Upgrade building in 003 is started
+01:44:23 [INF] Next building will be contructed: Cropland - level 6.
+01:44:25 [INF] Amount of currently building is equal with maximum building can build in same time
+01:44:25 [INF] Next building will be contructed after Cropland - level 6 complete. (12/4/2022 2:52:33 AM)
+01:44:25 [INF] Upgrade building in 003 is finished
+01:44:26 [INF] Send Resources to Current Village Task in 003 is started
+01:44:30 [INF] Send Resources to Current Village Task in 003 is finished
+01:54:51 [INF] Start farmlist Ide Strelka 2 is started
+01:54:55 [INF] Farmlist Ide Strelka 2 was sent.
+01:54:55 [INF] Start farmlist Ide Strelka 2 is finished
+01:56:50 [INF] Start farmlist Ide Strelka is started
+01:56:51 [INF] Farmlist Ide Strelka was sent.
+01:56:51 [INF] Start farmlist Ide Strelka is finished
+02:01:50 [INF] Refresh village in 001 is started
+02:01:53 [INF] Refresh village in 001 is finished
+02:06:11 [INF] Refresh village in 003 is started
+02:06:12 [INF] Refresh village in 003 is finished
+02:06:13 [INF] Send Resources to Current Village Task in 003 is started
+02:06:16 [INF] Send Resources to Current Village Task in 003 is finished
+02:13:31 [INF] Start farmlist Ide Strelka is started
+02:13:35 [INF] Farmlist Ide Strelka was sent.
+02:13:35 [INF] Start farmlist Ide Strelka is finished
+02:19:49 [INF] Refresh village in 002 is started
+02:19:51 [INF] Refresh village in 002 is finished
+02:19:52 [INF] Send Resources Out of Village Task in 002 is started
+02:19:55 [INF] Send Resources Out of Village Task in 002 is finished
+02:19:56 [INF] Send Resources to Current Village Task in 002 is started
+02:20:00 [INF] Send Resources to Current Village Task in 002 is finished
+02:24:56 [INF] Start farmlist Ide Strelka 2 is started
+02:25:00 [INF] Farmlist Ide Strelka 2 was sent.
+02:25:00 [INF] Start farmlist Ide Strelka 2 is finished
+02:26:32 [INF] Upgrade building in 000 is started
+02:26:32 [INF] Next building will be contructed: Warehouse - level 20.
+02:26:35 [INF] Amount of currently building is equal with maximum building can build in same time
+02:26:35 [INF] Next building will be contructed after Warehouse - level 6 complete. (12/4/2022 3:18:32 AM)
+02:26:35 [INF] Upgrade building in 000 is finished
+02:30:20 [INF] Start farmlist Ide Strelka is started
+02:30:23 [INF] Farmlist Ide Strelka was sent.
+02:30:23 [INF] Start farmlist Ide Strelka is finished
+02:47:02 [INF] Start farmlist Ide Strelka is started
+02:47:03 [INF] Farmlist Ide Strelka was sent.
+02:47:03 [INF] Start farmlist Ide Strelka is finished
+02:49:53 [INF] Refresh village in 001 is started
+02:49:55 [INF] Refresh village in 001 is finished
+02:52:33 [INF] Upgrade building in 003 is started
+02:52:33 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 7.
+02:52:33 [INF] Next building will be contructed: Cropland - level 6.
+02:52:36 [INF] Amount of currently building is equal with maximum building can build in same time
+02:52:36 [INF] Next building will be contructed after IronMine - level 6 complete. (12/4/2022 4:46:02 AM)
+02:52:36 [INF] Upgrade building in 003 is finished
+02:52:37 [INF] Send Resources to Current Village Task in 003 is started
+02:52:41 [INF] Send Resources to Current Village Task in 003 is finished
+02:54:12 [INF] Refresh village in 003 is started
+02:54:14 [INF] Refresh village in 003 is finished
+02:54:15 [INF] Send Resources to Current Village Task in 003 is started
+02:54:16 [INF] Send Resources to Current Village Task in 003 is finished
+02:55:04 [INF] Start farmlist Ide Strelka 2 is started
+02:55:07 [INF] Farmlist Ide Strelka 2 was sent.
+02:55:07 [INF] Start farmlist Ide Strelka 2 is finished
+02:55:07 [INF] Send Resources to Current Village Task in 003 is started
+02:55:09 [INF] Send Resources to Current Village Task in 003 is finished
+03:03:47 [INF] Start farmlist Ide Strelka is started
+03:03:50 [INF] Farmlist Ide Strelka was sent.
+03:03:50 [INF] Start farmlist Ide Strelka is finished
+03:03:51 [INF] Send Resources to Current Village Task in 003 is started
+03:03:55 [INF] Send Resources to Current Village Task in 003 is finished
+03:16:51 [INF] Refresh village in 002 is started
+03:16:54 [INF] Refresh village in 002 is finished
+03:16:55 [INF] Send Resources Out of Village Task in 002 is started
+03:16:58 [INF] Send Resources Out of Village Task in 002 is finished
+03:16:59 [INF] Send Resources to Current Village Task in 002 is started
+03:17:00 [INF] Send Resources to Current Village Task in 002 is finished
+03:18:32 [INF] Upgrade building in 000 is started
+03:18:32 [INF] Next building will be contructed: Warehouse - level 20.
+03:18:35 [INF] Amount of currently building is equal with maximum building can build in same time
+03:18:35 [INF] Next building will be contructed after Warehouse - level 7 complete. (12/4/2022 4:21:22 AM)
+03:18:35 [INF] Upgrade building in 000 is finished
+03:20:29 [INF] Start farmlist Ide Strelka is started
+03:20:32 [INF] Farmlist Ide Strelka was sent.
+03:20:32 [INF] Start farmlist Ide Strelka is finished
+03:25:05 [INF] Start farmlist Ide Strelka 2 is started
+03:25:05 [INF] Farmlist Ide Strelka 2 was sent.
+03:25:05 [INF] Start farmlist Ide Strelka 2 is finished
+03:34:55 [INF] Refresh village in 001 is started
+03:34:57 [INF] Refresh village in 001 is finished
+03:37:02 [INF] Start farmlist Ide Strelka is started
+03:37:06 [INF] Farmlist Ide Strelka was sent.
+03:37:06 [INF] Start farmlist Ide Strelka is finished
+03:39:14 [INF] Refresh village in 003 is started
+03:39:16 [INF] Refresh village in 003 is finished
+03:39:17 [INF] Send Resources to Current Village Task in 003 is started
+03:39:18 [INF] Send Resources to Current Village Task in 003 is finished
+03:53:38 [INF] Start farmlist Ide Strelka is started
+03:53:41 [INF] Farmlist Ide Strelka was sent.
+03:53:41 [INF] Start farmlist Ide Strelka is finished
+03:53:42 [INF] Send Resources to Current Village Task in 003 is started
+03:53:43 [INF] Send Resources to Current Village Task in 003 is finished
+03:54:55 [INF] Start farmlist Ide Strelka 2 is started
+03:54:58 [INF] Farmlist Ide Strelka 2 was sent.
+03:54:58 [INF] Start farmlist Ide Strelka 2 is finished
+03:54:59 [INF] Send Resources to Current Village Task in 003 is started
+03:55:00 [INF] Send Resources to Current Village Task in 003 is finished
+04:10:23 [INF] Start farmlist Ide Strelka is started
+04:10:27 [INF] Farmlist Ide Strelka was sent.
+04:10:27 [INF] Start farmlist Ide Strelka is finished
+04:10:28 [INF] Send Resources to Current Village Task in 003 is started
+04:10:29 [INF] Send Resources to Current Village Task in 003 is finished
+04:12:54 [INF] Refresh village in 002 is started
+04:12:56 [INF] Refresh village in 002 is finished
+04:12:57 [INF] Send Resources Out of Village Task in 002 is started
+04:13:00 [INF] Send Resources Out of Village Task in 002 is finished
+04:13:01 [INF] Send Resources to Current Village Task in 002 is started
+04:13:02 [INF] Send Resources to Current Village Task in 002 is finished
+04:21:16 [INF] Refresh village in 003 is started
+04:21:19 [INF] Refresh village in 003 is finished
+04:21:20 [INF] Send Resources to Current Village Task in 003 is started
+04:21:21 [INF] Send Resources to Current Village Task in 003 is finished
+04:21:22 [INF] Upgrade building in 000 is started
+04:21:22 [INF] Next building will be contructed: Warehouse - level 20.
+04:21:25 [INF] Amount of currently building is equal with maximum building can build in same time
+04:21:25 [INF] Next building will be contructed after Warehouse - level 8 complete. (12/4/2022 5:36:42 AM)
+04:21:25 [INF] Upgrade building in 000 is finished
+04:23:58 [INF] Refresh village in 001 is started
+04:24:00 [INF] Refresh village in 001 is finished
+04:24:53 [INF] Start farmlist Ide Strelka 2 is started
+04:24:57 [INF] Farmlist Ide Strelka 2 was sent.
+04:24:57 [INF] Start farmlist Ide Strelka 2 is finished
+04:26:59 [INF] Start farmlist Ide Strelka is started
+04:27:00 [INF] Farmlist Ide Strelka was sent.
+04:27:00 [INF] Start farmlist Ide Strelka is finished
+04:43:49 [INF] Start farmlist Ide Strelka is started
+04:43:49 [INF] Farmlist Ide Strelka was sent.
+04:43:49 [INF] Start farmlist Ide Strelka is finished
+04:46:02 [INF] Upgrade building in 003 is started
+04:46:02 [INF] Next building will be contructed: Cropland - level 6.
+04:46:07 [INF] Amount of currently building is equal with maximum building can build in same time
+04:46:07 [INF] Next building will be contructed after Cropland - level 6 complete. (12/4/2022 5:54:12 AM)
+04:46:07 [INF] Upgrade building in 003 is finished
+04:46:08 [INF] Send Resources to Current Village Task in 003 is started
+04:46:12 [INF] Send Resources to Current Village Task in 003 is finished
+04:54:56 [INF] Start farmlist Ide Strelka 2 is started
+04:55:01 [INF] Farmlist Ide Strelka 2 was sent.
+04:55:01 [INF] Start farmlist Ide Strelka 2 is finished
+05:00:20 [INF] Start farmlist Ide Strelka is started
+05:00:21 [INF] Farmlist Ide Strelka was sent.
+05:00:21 [INF] Start farmlist Ide Strelka is finished
+05:01:19 [INF] Refresh village in 003 is started
+05:01:21 [INF] Refresh village in 003 is finished
+05:01:22 [INF] Send Resources to Current Village Task in 003 is started
+05:01:25 [INF] Send Resources to Current Village Task in 003 is finished
+05:06:00 [INF] Refresh village in 001 is started
+05:06:03 [INF] Refresh village in 001 is finished
+05:09:56 [INF] Refresh village in 002 is started
+05:09:57 [INF] Refresh village in 002 is finished
+05:09:58 [INF] Send Resources Out of Village Task in 002 is started
+05:10:01 [INF] Send Resources Out of Village Task in 002 is finished
+05:10:02 [INF] Send Resources to Current Village Task in 002 is started
+05:10:03 [INF] Send Resources to Current Village Task in 002 is finished
+05:16:59 [INF] Start farmlist Ide Strelka is started
+05:17:02 [INF] Farmlist Ide Strelka was sent.
+05:17:02 [INF] Start farmlist Ide Strelka is finished
+05:17:03 [INF] Send Resources Out of Village Task in 002 is started
+05:17:06 [INF] Send Resources Out of Village Task in 002 is finished
+05:17:07 [INF] Send Resources to Current Village Task in 002 is started
+05:17:08 [INF] Send Resources to Current Village Task in 002 is finished
+05:25:00 [INF] Start farmlist Ide Strelka 2 is started
+05:25:03 [INF] Farmlist Ide Strelka 2 was sent.
+05:25:03 [INF] Start farmlist Ide Strelka 2 is finished
+05:25:04 [INF] Send Resources Out of Village Task in 002 is started
+05:25:07 [INF] Send Resources Out of Village Task in 002 is finished
+05:25:08 [INF] Send Resources to Current Village Task in 002 is started
+05:25:10 [INF] Send Resources to Current Village Task in 002 is finished
+05:28:59 [INF] Upgrade building in 002 is started
+05:28:59 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 9.
+05:28:59 [INF] Next building will be contructed: Cropland - level 9.
+05:29:03 [INF] Next building will be contructed: Cropland - level 9.
+05:29:04 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 9.
+05:29:04 [INF] Next building will be contructed: IronMine - level 9.
+05:29:05 [INF] Don't have enough resources.
+05:29:05 [INF] Upgrade building in 002 is finished
+05:29:06 [INF] Send Resources Out of Village Task in 002 is started
+05:29:09 [INF] Send Resources Out of Village Task in 002 is finished
+05:29:10 [INF] Send Resources to Current Village Task in 002 is started
+05:29:14 [INF] Send Resources to Current Village Task in 002 is finished
+05:33:46 [INF] Start farmlist Ide Strelka is started
+05:33:50 [INF] Farmlist Ide Strelka was sent.
+05:33:50 [INF] Start farmlist Ide Strelka is finished
+05:36:42 [INF] Upgrade building in 000 is started
+05:36:42 [INF] Next building will be contructed: Warehouse - level 20.
+05:36:45 [INF] Amount of currently building is equal with maximum building can build in same time
+05:36:46 [INF] Next building will be contructed after Warehouse - level 9 complete. (12/4/2022 7:06:42 AM)
+05:36:46 [INF] Upgrade building in 000 is finished
+05:46:21 [INF] Refresh village in 003 is started
+05:46:24 [INF] Refresh village in 003 is finished
+05:46:25 [INF] Send Resources to Current Village Task in 003 is started
+05:46:28 [INF] Send Resources to Current Village Task in 003 is finished
+05:50:37 [INF] Start farmlist Ide Strelka is started
+05:50:42 [INF] Farmlist Ide Strelka was sent.
+05:50:42 [INF] Start farmlist Ide Strelka is finished
+05:51:03 [INF] Refresh village in 001 is started
+05:51:05 [INF] Refresh village in 001 is finished
+05:54:12 [INF] Upgrade building in 003 is started
+05:54:12 [INF] Next building will be contructed: Cropland - level 6.
+05:54:13 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 7.
+05:54:13 [INF] Next building will be contructed: IronMine - level 6.
+05:54:16 [INF] Amount of currently building is equal with maximum building can build in same time
+05:54:16 [INF] Next building will be contructed after Cropland - level 7 complete. (12/4/2022 7:46:02 AM)
+05:54:16 [INF] Upgrade building in 003 is finished
+05:54:17 [INF] Send Resources to Current Village Task in 003 is started
+05:54:20 [INF] Send Resources to Current Village Task in 003 is finished
+05:54:59 [INF] Start farmlist Ide Strelka 2 is started
+05:55:03 [INF] Farmlist Ide Strelka 2 was sent.
+05:55:03 [INF] Start farmlist Ide Strelka 2 is finished
+06:07:31 [INF] Start farmlist Ide Strelka is started
+06:07:31 [INF] Farmlist Ide Strelka was sent.
+06:07:31 [INF] Start farmlist Ide Strelka is finished
+06:08:57 [INF] Refresh village in 002 is started
+06:08:59 [INF] Refresh village in 002 is finished
+06:09:00 [INF] Send Resources Out of Village Task in 002 is started
+06:09:03 [INF] Send Resources Out of Village Task in 002 is finished
+06:09:04 [INF] Send Resources to Current Village Task in 002 is started
+06:09:06 [INF] Send Resources to Current Village Task in 002 is finished
+06:24:17 [INF] Start farmlist Ide Strelka is started
+06:24:21 [INF] Farmlist Ide Strelka was sent.
+06:24:21 [INF] Start farmlist Ide Strelka is finished
+06:24:21 [INF] Send Resources Out of Village Task in 002 is started
+06:24:25 [INF] Send Resources Out of Village Task in 002 is finished
+06:24:25 [INF] Send Resources to Current Village Task in 002 is started
+06:24:27 [INF] Send Resources to Current Village Task in 002 is finished
+06:24:54 [INF] Start farmlist Ide Strelka 2 is started
+06:24:57 [INF] Farmlist Ide Strelka 2 was sent.
+06:24:57 [INF] Start farmlist Ide Strelka 2 is finished
+06:24:58 [INF] Send Resources Out of Village Task in 002 is started
+06:25:01 [INF] Send Resources Out of Village Task in 002 is finished
+06:25:02 [INF] Send Resources to Current Village Task in 002 is started
+06:25:03 [INF] Send Resources to Current Village Task in 002 is finished
+06:31:24 [INF] Refresh village in 003 is started
+06:31:27 [INF] Refresh village in 003 is finished
+06:31:28 [INF] Send Resources to Current Village Task in 003 is started
+06:31:30 [INF] Send Resources to Current Village Task in 003 is finished
+06:33:05 [INF] Refresh village in 001 is started
+06:33:07 [INF] Refresh village in 001 is finished
+06:41:09 [INF] Start farmlist Ide Strelka is started
+06:41:13 [INF] Farmlist Ide Strelka was sent.
+06:41:13 [INF] Start farmlist Ide Strelka is finished
+06:54:57 [INF] Start farmlist Ide Strelka 2 is started
+06:54:58 [INF] Farmlist Ide Strelka 2 was sent.
+06:54:58 [INF] Start farmlist Ide Strelka 2 is finished
+06:57:57 [INF] Start farmlist Ide Strelka is started
+06:57:58 [INF] Farmlist Ide Strelka was sent.
+06:57:58 [INF] Start farmlist Ide Strelka is finished
+07:06:42 [INF] Upgrade building in 000 is started
+07:06:42 [INF] Next building will be contructed: Warehouse - level 20.
+07:06:47 [INF] Amount of currently building is equal with maximum building can build in same time
+07:06:47 [INF] Next building will be contructed after Warehouse - level 10 complete. (12/4/2022 8:53:32 AM)
+07:06:47 [INF] Upgrade building in 000 is finished
+07:09:00 [INF] Refresh village in 002 is started
+07:09:02 [INF] Refresh village in 002 is finished
+07:09:03 [INF] Send Resources Out of Village Task in 002 is started
+07:09:06 [INF] Send Resources Out of Village Task in 002 is finished
+07:09:07 [INF] Send Resources to Current Village Task in 002 is started
+07:09:08 [INF] Send Resources to Current Village Task in 002 is finished
+07:12:04 [INF] Upgrade building in 002 is started
+07:12:04 [INF] Next building will be contructed: IronMine - level 9.
+07:12:08 [INF] Amount of currently building is equal with maximum building can build in same time
+07:12:08 [INF] Next building will be contructed after Cropland - level 9 complete. (12/4/2022 8:25:12 AM)
+07:12:08 [INF] Upgrade building in 002 is finished
+07:12:09 [INF] Send Resources Out of Village Task in 002 is started
+07:12:12 [INF] Send Resources Out of Village Task in 002 is finished
+07:12:13 [INF] Send Resources to Current Village Task in 002 is started
+07:12:17 [INF] Send Resources to Current Village Task in 002 is finished
+07:14:27 [INF] Refresh village in 003 is started
+07:14:29 [INF] Refresh village in 003 is finished
+07:14:30 [INF] Send Resources to Current Village Task in 003 is started
+07:14:31 [INF] Send Resources to Current Village Task in 003 is finished
+07:14:38 [INF] Start farmlist Ide Strelka is started
+07:14:40 [INF] Farmlist Ide Strelka was sent.
+07:14:40 [INF] Start farmlist Ide Strelka is finished
+07:14:41 [INF] Send Resources to Current Village Task in 003 is started
+07:14:42 [INF] Send Resources to Current Village Task in 003 is finished
+07:19:07 [INF] Refresh village in 001 is started
+07:19:10 [INF] Refresh village in 001 is finished
+07:25:01 [INF] Start farmlist Ide Strelka 2 is started
+07:25:05 [INF] Farmlist Ide Strelka 2 was sent.
+07:25:05 [INF] Start farmlist Ide Strelka 2 is finished
+07:31:18 [INF] Start farmlist Ide Strelka is started
+07:31:19 [INF] Farmlist Ide Strelka was sent.
+07:31:19 [INF] Start farmlist Ide Strelka is finished
+07:46:02 [INF] Upgrade building in 003 is started
+07:46:02 [INF] Next building will be contructed: IronMine - level 6.
+07:46:06 [INF] Amount of currently building is equal with maximum building can build in same time
+07:46:07 [INF] Next building will be contructed after IronMine - level 6 complete. (12/4/2022 9:39:31 AM)
+07:46:07 [INF] Upgrade building in 003 is finished
+07:46:08 [INF] Send Resources to Current Village Task in 003 is started
+07:46:11 [INF] Send Resources to Current Village Task in 003 is finished
+07:47:59 [INF] Start farmlist Ide Strelka is started
+07:48:03 [INF] Farmlist Ide Strelka was sent.
+07:48:03 [INF] Start farmlist Ide Strelka is finished
+07:55:02 [INF] Start farmlist Ide Strelka 2 is started
+07:55:03 [INF] Farmlist Ide Strelka 2 was sent.
+07:55:03 [INF] Start farmlist Ide Strelka 2 is finished
+08:02:29 [INF] Refresh village in 003 is started
+08:02:32 [INF] Refresh village in 003 is finished
+08:02:33 [INF] Send Resources to Current Village Task in 003 is started
+08:02:35 [INF] Send Resources to Current Village Task in 003 is finished
+08:04:52 [INF] Start farmlist Ide Strelka is started
+08:04:56 [INF] Farmlist Ide Strelka was sent.
+08:04:56 [INF] Start farmlist Ide Strelka is finished
+08:05:10 [INF] Refresh village in 001 is started
+08:05:12 [INF] Refresh village in 001 is finished
+08:06:02 [INF] Refresh village in 002 is started
+08:06:03 [INF] Refresh village in 002 is finished
+08:06:04 [INF] Send Resources Out of Village Task in 002 is started
+08:06:07 [INF] Send Resources Out of Village Task in 002 is finished
+08:06:08 [INF] Send Resources to Current Village Task in 002 is started
+08:06:09 [INF] Send Resources to Current Village Task in 002 is finished
+08:21:37 [INF] Start farmlist Ide Strelka is started
+08:21:40 [INF] Farmlist Ide Strelka was sent.
+08:21:40 [INF] Start farmlist Ide Strelka is finished
+08:21:41 [INF] Send Resources Out of Village Task in 002 is started
+08:21:44 [INF] Send Resources Out of Village Task in 002 is finished
+08:21:45 [INF] Send Resources to Current Village Task in 002 is started
+08:21:46 [INF] Send Resources to Current Village Task in 002 is finished
+08:25:00 [INF] Start farmlist Ide Strelka 2 is started
+08:25:03 [INF] Farmlist Ide Strelka 2 was sent.
+08:25:03 [INF] Start farmlist Ide Strelka 2 is finished
+08:25:04 [INF] Send Resources Out of Village Task in 002 is started
+08:25:07 [INF] Send Resources Out of Village Task in 002 is finished
+08:25:08 [INF] Send Resources to Current Village Task in 002 is started
+08:25:09 [INF] Send Resources to Current Village Task in 002 is finished
+08:25:13 [INF] Upgrade building in 002 is started
+08:25:13 [INF] Next building will be contructed: IronMine - level 9.
+08:25:14 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 9.
+08:25:14 [INF] Next building will be contructed: Cropland - level 9.
+08:25:17 [INF] Amount of currently building is equal with maximum building can build in same time
+08:25:17 [INF] Next building will be contructed after IronMine - level 9 complete. (12/4/2022 1:12:12 PM)
+08:25:17 [INF] Upgrade building in 002 is finished
+08:25:18 [INF] Send Resources Out of Village Task in 002 is started
+08:25:21 [INF] Send Resources Out of Village Task in 002 is finished
+08:25:22 [INF] Send Resources to Current Village Task in 002 is started
+08:25:25 [INF] Send Resources to Current Village Task in 002 is finished
+08:38:11 [INF] Start farmlist Ide Strelka is started
+08:38:16 [INF] Farmlist Ide Strelka was sent.
+08:38:16 [INF] Start farmlist Ide Strelka is finished
+08:50:32 [INF] Refresh village in 003 is started
+08:50:34 [INF] Refresh village in 003 is finished
+08:50:35 [INF] Send Resources to Current Village Task in 003 is started
+08:50:38 [INF] Send Resources to Current Village Task in 003 is finished
+08:53:32 [INF] Upgrade building in 000 is started
+08:53:32 [INF] Amount of currently building is equal with maximum building can build in same time
+08:53:33 [INF] Next building will be contructed after Warehouse - level 13 complete. (12/4/2022 11:33:48 AM)
+08:53:33 [INF] Upgrade building in 000 is finished
+08:54:12 [INF] Refresh village in 001 is started
+08:54:15 [INF] Refresh village in 001 is finished
+08:55:04 [INF] Start farmlist Ide Strelka is started
+08:55:08 [INF] Farmlist Ide Strelka was sent.
+08:55:08 [INF] Start farmlist Ide Strelka is finished
+08:55:12 [INF] Start farmlist Ide Strelka 2 is started
+08:55:12 [INF] Farmlist Ide Strelka 2 was sent.
+08:55:12 [INF] Start farmlist Ide Strelka 2 is finished
+09:08:04 [INF] Refresh village in 002 is started
+09:08:06 [INF] Refresh village in 002 is finished
+09:08:07 [INF] Send Resources Out of Village Task in 002 is started
+09:08:10 [INF] Send Resources Out of Village Task in 002 is finished
+09:08:11 [INF] Send Resources to Current Village Task in 002 is started
+09:08:12 [INF] Send Resources to Current Village Task in 002 is finished
+09:11:53 [INF] Start farmlist Ide Strelka is started
+09:11:56 [INF] Farmlist Ide Strelka was sent.
+09:11:56 [INF] Start farmlist Ide Strelka is finished
+09:11:57 [INF] Send Resources Out of Village Task in 002 is started
+09:12:00 [INF] Send Resources Out of Village Task in 002 is finished
+09:12:01 [INF] Send Resources to Current Village Task in 002 is started
+09:12:02 [INF] Send Resources to Current Village Task in 002 is finished
+09:25:02 [INF] Start farmlist Ide Strelka 2 is started
+09:25:05 [INF] Farmlist Ide Strelka 2 was sent.
+09:25:05 [INF] Start farmlist Ide Strelka 2 is finished
+09:25:06 [INF] Send Resources Out of Village Task in 002 is started
+09:25:09 [INF] Send Resources Out of Village Task in 002 is finished
+09:25:10 [INF] Send Resources to Current Village Task in 002 is started
+09:25:11 [INF] Send Resources to Current Village Task in 002 is finished
+09:28:27 [INF] Start farmlist Ide Strelka is started
+09:28:30 [INF] Farmlist Ide Strelka was sent.
+09:28:30 [INF] Start farmlist Ide Strelka is finished
+09:28:31 [INF] Send Resources Out of Village Task in 002 is started
+09:28:34 [INF] Send Resources Out of Village Task in 002 is finished
+09:28:35 [INF] Send Resources to Current Village Task in 002 is started
+09:28:36 [INF] Send Resources to Current Village Task in 002 is finished
+09:39:31 [INF] Upgrade building in 003 is started
+09:39:31 [INF] Next building will be contructed: IronMine - level 6.
+09:39:34 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 7.
+09:39:34 [INF] Next building will be contructed: Cropland - level 6.
+09:39:36 [INF] Amount of currently building is equal with maximum building can build in same time
+09:39:37 [INF] Next building will be contructed after IronMine - level 7 complete. (12/4/2022 12:43:51 PM)
+09:39:37 [INF] Upgrade building in 003 is finished
+09:39:37 [INF] Send Resources to Current Village Task in 003 is started
+09:39:41 [INF] Send Resources to Current Village Task in 003 is finished
+09:39:42 [INF] Refresh village in 003 is started
+09:39:44 [INF] Refresh village in 003 is finished
+09:39:45 [INF] Send Resources to Current Village Task in 003 is started
+09:39:46 [INF] Send Resources to Current Village Task in 003 is finished
+09:41:15 [INF] Refresh village in 001 is started
+09:41:17 [INF] Refresh village in 001 is finished
+09:45:06 [INF] Start farmlist Ide Strelka is started
+09:45:11 [INF] Farmlist Ide Strelka was sent.
+09:45:11 [INF] Start farmlist Ide Strelka is finished
+09:55:09 [INF] Start farmlist Ide Strelka 2 is started
+09:55:10 [INF] Farmlist Ide Strelka 2 was sent.
+09:55:10 [INF] Start farmlist Ide Strelka 2 is finished
+10:01:44 [INF] Start farmlist Ide Strelka is started
+10:01:44 [INF] Farmlist Ide Strelka was sent.
+10:01:44 [INF] Start farmlist Ide Strelka is finished
+10:04:06 [INF] Refresh village in 002 is started
+10:04:08 [INF] Refresh village in 002 is finished
+10:04:09 [INF] Send Resources Out of Village Task in 002 is started
+10:04:12 [INF] Send Resources Out of Village Task in 002 is finished
+10:04:13 [INF] Send Resources to Current Village Task in 002 is started
+10:04:14 [INF] Send Resources to Current Village Task in 002 is finished
+10:18:22 [INF] Start farmlist Ide Strelka is started
+10:18:25 [INF] Farmlist Ide Strelka was sent.
+10:18:25 [INF] Start farmlist Ide Strelka is finished
+10:18:25 [INF] Send Resources Out of Village Task in 002 is started
+10:18:28 [INF] Send Resources Out of Village Task in 002 is finished
+10:18:29 [INF] Send Resources to Current Village Task in 002 is started
+10:18:31 [INF] Send Resources to Current Village Task in 002 is finished
+10:21:44 [INF] Refresh village in 003 is started
+10:21:47 [INF] Refresh village in 003 is finished
+10:21:47 [INF] Send Resources to Current Village Task in 003 is started
+10:21:50 [INF] Send Resources to Current Village Task in 003 is finished
+10:25:05 [INF] Start farmlist Ide Strelka 2 is started
+10:25:09 [INF] Farmlist Ide Strelka 2 was sent.
+10:25:09 [INF] Start farmlist Ide Strelka 2 is finished
+10:25:17 [INF] Refresh village in 001 is started
+10:25:19 [INF] Refresh village in 001 is finished
+10:35:03 [INF] Start farmlist Ide Strelka is started
+10:35:07 [INF] Farmlist Ide Strelka was sent.
+10:35:07 [INF] Start farmlist Ide Strelka is finished
+10:51:38 [INF] Start farmlist Ide Strelka is started
+10:51:38 [INF] Farmlist Ide Strelka was sent.
+10:51:38 [INF] Start farmlist Ide Strelka is finished
+10:55:14 [INF] Start farmlist Ide Strelka 2 is started
+10:55:15 [INF] Farmlist Ide Strelka 2 was sent.
+10:55:15 [INF] Start farmlist Ide Strelka 2 is finished
+11:06:08 [INF] Refresh village in 002 is started
+11:06:11 [INF] Refresh village in 002 is finished
+11:06:12 [INF] Send Resources Out of Village Task in 002 is started
+11:06:15 [INF] Send Resources Out of Village Task in 002 is finished
+11:06:16 [INF] Send Resources to Current Village Task in 002 is started
+11:06:20 [INF] Send Resources to Current Village Task in 002 is finished
+11:07:47 [INF] Refresh village in 003 is started
+11:07:49 [INF] Refresh village in 003 is finished
+11:07:50 [INF] Send Resources to Current Village Task in 003 is started
+11:07:51 [INF] Send Resources to Current Village Task in 003 is finished
+11:08:11 [INF] Start farmlist Ide Strelka is started
+11:08:14 [INF] Farmlist Ide Strelka was sent.
+11:08:14 [INF] Start farmlist Ide Strelka is finished
+11:08:15 [INF] Send Resources to Current Village Task in 003 is started
+11:08:16 [INF] Send Resources to Current Village Task in 003 is finished
+11:12:19 [INF] Refresh village in 001 is started
+11:12:21 [INF] Refresh village in 001 is finished
+11:24:53 [INF] Start farmlist Ide Strelka is started
+11:24:58 [INF] Farmlist Ide Strelka was sent.
+11:24:58 [INF] Start farmlist Ide Strelka is finished
+11:25:17 [INF] Start farmlist Ide Strelka 2 is started
+11:25:17 [INF] Farmlist Ide Strelka 2 was sent.
+11:25:17 [INF] Start farmlist Ide Strelka 2 is finished
+11:33:48 [INF] Upgrade building in 000 is started
+11:33:48 [INF] Next building will be contructed: Warehouse - level 20.
+11:33:52 [INF] Don't have enough resources.
+11:33:52 [INF] Upgrade building in 000 is finished
+11:41:44 [INF] Start farmlist Ide Strelka is started
+11:41:50 [INF] Farmlist Ide Strelka was sent.
+11:41:50 [INF] Start farmlist Ide Strelka is finished
+11:53:22 [INF] Refresh village in 001 is started
+11:53:24 [INF] Refresh village in 001 is finished
+11:53:49 [INF] Refresh village in 003 is started
+11:53:50 [INF] Refresh village in 003 is finished
+11:53:51 [INF] Send Resources to Current Village Task in 003 is started
+11:53:52 [INF] Send Resources to Current Village Task in 003 is finished
+11:55:13 [INF] Start farmlist Ide Strelka 2 is started
+11:55:15 [INF] Farmlist Ide Strelka 2 was sent.
+11:55:15 [INF] Start farmlist Ide Strelka 2 is finished
+11:55:16 [INF] Send Resources to Current Village Task in 003 is started
+11:55:17 [INF] Send Resources to Current Village Task in 003 is finished
+11:58:37 [INF] Start farmlist Ide Strelka is started
+11:58:40 [INF] Farmlist Ide Strelka was sent.
+11:58:40 [INF] Start farmlist Ide Strelka is finished
+11:58:41 [INF] Send Resources to Current Village Task in 003 is started
+11:58:42 [INF] Send Resources to Current Village Task in 003 is finished
+12:02:11 [INF] Refresh village in 002 is started
+12:02:13 [INF] Refresh village in 002 is finished
+12:02:14 [INF] Send Resources Out of Village Task in 002 is started
+12:02:17 [INF] Send Resources Out of Village Task in 002 is finished
+12:02:18 [INF] Send Resources to Current Village Task in 002 is started
+12:02:20 [INF] Send Resources to Current Village Task in 002 is finished
+12:15:26 [INF] Start farmlist Ide Strelka is started
+12:15:29 [INF] Farmlist Ide Strelka was sent.
+12:15:29 [INF] Start farmlist Ide Strelka is finished
+12:15:30 [INF] Send Resources Out of Village Task in 002 is started
+12:15:33 [INF] Send Resources Out of Village Task in 002 is finished
+12:15:34 [INF] Send Resources to Current Village Task in 002 is started
+12:15:35 [INF] Send Resources to Current Village Task in 002 is finished
+12:25:22 [INF] Start farmlist Ide Strelka 2 is started
+12:25:26 [INF] Farmlist Ide Strelka 2 was sent.
+12:25:26 [INF] Start farmlist Ide Strelka 2 is finished
+12:32:16 [INF] Start farmlist Ide Strelka is started
+12:32:17 [INF] Farmlist Ide Strelka was sent.
+12:32:17 [INF] Start farmlist Ide Strelka is finished
+12:36:24 [INF] Refresh village in 001 is started
+12:36:27 [INF] Refresh village in 001 is finished
+12:42:50 [INF] Refresh village in 003 is started
+12:42:51 [INF] Refresh village in 003 is finished
+12:42:52 [INF] Send Resources to Current Village Task in 003 is started
+12:42:53 [INF] Send Resources to Current Village Task in 003 is finished
+12:43:51 [INF] Upgrade building in 003 is started
+12:43:51 [INF] Next building will be contructed: Cropland - level 6.
+12:43:53 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 7.
+12:43:53 [INF] Next building will be contructed: Cropland - level 6.
+12:43:56 [INF] Amount of currently building is equal with maximum building can build in same time
+12:43:56 [INF] Next building will be contructed after Cropland - level 6 complete. (12/4/2022 1:52:01 PM)
+12:43:56 [INF] Upgrade building in 003 is finished
+12:43:57 [INF] Send Resources to Current Village Task in 003 is started
+12:44:00 [INF] Send Resources to Current Village Task in 003 is finished
+12:48:57 [INF] Start farmlist Ide Strelka is started
+12:49:02 [INF] Farmlist Ide Strelka was sent.
+12:49:02 [INF] Start farmlist Ide Strelka is finished
+12:55:32 [INF] Start farmlist Ide Strelka 2 is started
+12:55:36 [INF] Farmlist Ide Strelka 2 was sent.
+12:55:36 [INF] Start farmlist Ide Strelka 2 is finished
+13:01:13 [INF] Refresh village in 002 is started
+13:01:16 [INF] Refresh village in 002 is finished
+13:01:17 [INF] Send Resources Out of Village Task in 002 is started
+13:01:20 [INF] Send Resources Out of Village Task in 002 is finished
+13:01:21 [INF] Send Resources to Current Village Task in 002 is started
+13:01:22 [INF] Send Resources to Current Village Task in 002 is finished
+13:05:48 [INF] Start farmlist Ide Strelka is started
+13:05:51 [INF] Farmlist Ide Strelka was sent.
+13:05:51 [INF] Start farmlist Ide Strelka is finished
+13:05:52 [INF] Send Resources Out of Village Task in 002 is started
+13:05:55 [INF] Send Resources Out of Village Task in 002 is finished
+13:05:56 [INF] Send Resources to Current Village Task in 002 is started
+13:05:58 [INF] Send Resources to Current Village Task in 002 is finished
+13:12:13 [INF] Upgrade building in 002 is started
+13:12:13 [INF] Next building will be contructed: Cropland - level 9.
+13:12:14 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 9.
+13:12:15 [INF] Next building will be contructed: Cropland - level 9.
+13:12:17 [INF] Next building will be contructed: Cropland - level 9.
+13:12:18 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 9.
+13:12:18 [INF] Next building will be contructed: IronMine - level 9.
+13:12:20 [INF] Amount of currently building is equal with maximum building can build in same time
+13:12:21 [INF] Next building will be contructed after Cropland - level 9 complete. (12/4/2022 4:08:27 PM)
+13:12:21 [INF] Upgrade building in 002 is finished
+13:12:22 [INF] Send Resources Out of Village Task in 002 is started
+13:12:26 [INF] Send Resources Out of Village Task in 002 is finished
+13:12:27 [INF] Send Resources to Current Village Task in 002 is started
+13:12:30 [INF] Send Resources to Current Village Task in 002 is finished
+13:19:28 [INF] Refresh village in 001 is started
+13:19:30 [INF] Refresh village in 001 is finished
+13:22:27 [INF] Start farmlist Ide Strelka is started
+13:22:32 [INF] Farmlist Ide Strelka was sent.
+13:22:32 [INF] Start farmlist Ide Strelka is finished
+13:25:41 [INF] Start farmlist Ide Strelka 2 is started
+13:25:41 [INF] Farmlist Ide Strelka 2 was sent.
+13:25:41 [INF] Start farmlist Ide Strelka 2 is finished
+13:31:51 [INF] Refresh village in 003 is started
+13:31:53 [INF] Refresh village in 003 is finished
+13:31:54 [INF] Send Resources to Current Village Task in 003 is started
+13:31:57 [INF] Send Resources to Current Village Task in 003 is finished
+13:39:13 [INF] Start farmlist Ide Strelka is started
+13:39:17 [INF] Farmlist Ide Strelka was sent.
+13:39:17 [INF] Start farmlist Ide Strelka is finished
+13:52:01 [INF] Upgrade building in 003 is started
+13:52:01 [INF] Next building will be contructed: Cropland - level 6.
+13:52:06 [INF] Amount of currently building is equal with maximum building can build in same time
+13:52:06 [INF] Next building will be contructed after Cropland - level 6 complete. (12/4/2022 3:00:11 PM)
+13:52:06 [INF] Upgrade building in 003 is finished
+13:52:07 [INF] Send Resources to Current Village Task in 003 is started
+13:52:11 [INF] Send Resources to Current Village Task in 003 is finished
+13:55:42 [INF] Start farmlist Ide Strelka 2 is started
+13:55:46 [INF] Farmlist Ide Strelka 2 was sent.
+13:55:46 [INF] Start farmlist Ide Strelka 2 is finished
+13:55:59 [INF] Start farmlist Ide Strelka is started
+13:56:00 [INF] Farmlist Ide Strelka was sent.
+13:56:00 [INF] Start farmlist Ide Strelka is finished
+14:02:16 [INF] Refresh village in 002 is started
+14:02:19 [INF] Refresh village in 002 is finished
+14:02:20 [INF] Send Resources Out of Village Task in 002 is started
+14:02:23 [INF] Send Resources Out of Village Task in 002 is finished
+14:02:24 [INF] Send Resources to Current Village Task in 002 is started
+14:02:28 [ERR] Object reference not set to an instance of an object.
+14:02:28 [INF] Send Resources to Current Village Task in 002 is failed. Retry counter is increased (0)
+14:02:28 [INF] Send Resources to Current Village Task in 002 is stopped and reset.
+14:02:29 [INF] Send Resources to Current Village Task in 002 is started
+14:02:33 [ERR] Object reference not set to an instance of an object.
+14:02:33 [INF] Send Resources to Current Village Task in 002 is failed. Retry counter is increased (1)
+14:02:34 [INF] Send Resources to Current Village Task in 002 is stopped and reset.
+14:02:35 [INF] Send Resources to Current Village Task in 002 is started
+14:02:39 [ERR] Object reference not set to an instance of an object.
+14:02:39 [INF] Send Resources to Current Village Task in 002 is failed. Retry counter is increased (2)
+14:02:39 [INF] Send Resources to Current Village Task in 002 is stopped and reset.
+14:02:40 [INF] Send Resources to Current Village Task in 002 is started
+14:02:44 [ERR] Object reference not set to an instance of an object.
+14:02:44 [INF] Send Resources to Current Village Task in 002 is failed. Retry counter is increased (3)
+14:02:44 [INF] Send Resources to Current Village Task in 002 is stopped and reset.
+14:02:45 [INF] Send Resources to Current Village Task in 002 is started
+14:02:49 [ERR] Object reference not set to an instance of an object.
+14:02:49 [INF] Send Resources to Current Village Task in 002 was excuted 3 times. Bot is paused
+14:02:49 [INF] Send Resources to Current Village Task in 002 is finished
+14:17:50 [INF] Refresh village in 001 is started
+14:17:54 [INF] Refresh village in 001 is finished
+14:17:55 [INF] Start farmlist Ide Strelka is started
+14:18:00 [INF] Farmlist Ide Strelka was sent.
+14:18:00 [INF] Start farmlist Ide Strelka is finished
+14:20:53 [INF] Refresh village in 003 is started
+14:20:56 [INF] Refresh village in 003 is finished
+14:20:57 [INF] Send Resources to Current Village Task in 003 is started
+14:21:01 [INF] Send Resources to Current Village Task in 003 is finished
+14:25:22 [INF] Upgrade building in 000 is started
+14:25:22 [INF] Next building will be contructed: Warehouse - level 20.
+14:25:26 [INF] Don't have enough resources.
+14:25:26 [INF] Upgrade building in 000 is finished
+14:25:52 [INF] Start farmlist Ide Strelka 2 is started
+14:25:56 [INF] Farmlist Ide Strelka 2 was sent.
+14:25:56 [INF] Start farmlist Ide Strelka 2 is finished
+14:34:48 [INF] Start farmlist Ide Strelka is started
+14:34:53 [INF] Farmlist Ide Strelka was sent.
+14:34:53 [INF] Start farmlist Ide Strelka is finished
+14:51:42 [INF] Start farmlist Ide Strelka is started
+14:51:43 [INF] Farmlist Ide Strelka was sent.
+14:51:43 [INF] Start farmlist Ide Strelka is finished
+14:56:05 [INF] Start farmlist Ide Strelka 2 is started
+14:56:06 [INF] Farmlist Ide Strelka 2 was sent.
+14:56:06 [INF] Start farmlist Ide Strelka 2 is finished
+14:59:54 [INF] Refresh village in 001 is started
+14:59:56 [INF] Refresh village in 001 is finished
+15:00:11 [INF] Upgrade building in 003 is started
+15:00:11 [INF] Next building will be contructed: Cropland - level 6.
+15:00:12 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 7.
+15:00:12 [INF] Next building will be contructed: Woodcutter - level 6.
+15:00:15 [INF] Amount of currently building is equal with maximum building can build in same time
+15:00:15 [INF] Next building will be contructed after Cropland - level 7 complete. (12/4/2022 4:52:01 PM)
+15:00:15 [INF] Upgrade building in 003 is finished
+15:00:16 [INF] Send Resources to Current Village Task in 003 is started
+15:00:19 [INF] Send Resources to Current Village Task in 003 is finished
+15:02:19 [INF] Refresh village in 002 is started
+15:02:22 [INF] Refresh village in 002 is finished
+15:02:22 [INF] Send Resources Out of Village Task in 002 is started
+15:02:26 [INF] Send Resources Out of Village Task in 002 is finished
+15:02:27 [INF] Send Resources to Current Village Task in 002 is started
+15:02:30 [INF] Send Resources to Current Village Task in 002 is finished
+15:03:56 [INF] Refresh village in 003 is started
+15:03:58 [INF] Refresh village in 003 is finished
+15:03:59 [INF] Send Resources to Current Village Task in 003 is started
+15:04:00 [INF] Send Resources to Current Village Task in 003 is finished
+15:08:30 [INF] Start farmlist Ide Strelka is started
+15:08:33 [INF] Farmlist Ide Strelka was sent.
+15:08:33 [INF] Start farmlist Ide Strelka is finished
+15:08:34 [INF] Send Resources to Current Village Task in 003 is started
+15:08:35 [INF] Send Resources to Current Village Task in 003 is finished
+15:25:05 [INF] Start farmlist Ide Strelka is started
+15:25:08 [INF] Farmlist Ide Strelka was sent.
+15:25:08 [INF] Start farmlist Ide Strelka is finished
+15:25:09 [INF] Send Resources to Current Village Task in 003 is started
+15:25:13 [INF] Send Resources to Current Village Task in 003 is finished
+15:26:03 [INF] Start farmlist Ide Strelka 2 is started
+15:26:07 [INF] Farmlist Ide Strelka 2 was sent.
+15:26:07 [INF] Start farmlist Ide Strelka 2 is finished
+15:35:43 [INF] Upgrade building in 000 is started
+15:35:43 [INF] Next building will be contructed: Warehouse - level 20.
+15:35:46 [INF] Don't have enough resources.
+15:35:46 [INF] Upgrade building in 000 is finished
+15:41:46 [INF] Start farmlist Ide Strelka is started
+15:41:51 [INF] Farmlist Ide Strelka was sent.
+15:41:51 [INF] Start farmlist Ide Strelka is finished
+15:45:58 [INF] Refresh village in 003 is started
+15:46:01 [INF] Refresh village in 003 is finished
+15:46:01 [INF] Send Resources to Current Village Task in 003 is started
+15:46:06 [INF] Send Resources to Current Village Task in 003 is finished
+15:48:56 [INF] Refresh village in 001 is started
+15:48:59 [INF] Refresh village in 001 is finished
+15:55:58 [INF] Start farmlist Ide Strelka 2 is started
+15:59:00 [ERR] Timed out after 180 seconds
+15:59:00 [INF] Start farmlist Ide Strelka 2 is failed. Retry counter is increased (0)
+15:59:00 [INF] Start farmlist Ide Strelka 2 is stopped and reset.
+15:59:01 [INF] Start farmlist Ide Strelka 2 is started
+15:59:05 [INF] Farmlist Ide Strelka 2 was sent.
+15:59:05 [INF] Start farmlist Ide Strelka 2 is finished
+15:59:06 [INF] Start farmlist Ide Strelka is started
+15:59:07 [INF] Farmlist Ide Strelka was sent.
+15:59:07 [INF] Start farmlist Ide Strelka is finished
+16:04:22 [INF] Refresh village in 002 is started
+16:04:24 [INF] Refresh village in 002 is finished
+16:04:25 [INF] Send Resources Out of Village Task in 002 is started
+16:04:28 [INF] Send Resources Out of Village Task in 002 is finished
+16:04:29 [INF] Send Resources to Current Village Task in 002 is started
+16:04:30 [INF] Send Resources to Current Village Task in 002 is finished
+16:08:27 [INF] Upgrade building in 002 is started
+16:08:27 [INF] Next building will be contructed: IronMine - level 9.
+16:08:30 [INF] Don't have enough resources.
+16:08:30 [INF] Upgrade building in 002 is finished
+16:08:31 [INF] Send Resources Out of Village Task in 002 is started
+16:08:34 [INF] Send Resources Out of Village Task in 002 is finished
+16:08:35 [INF] Send Resources to Current Village Task in 002 is started
+16:08:36 [INF] Send Resources to Current Village Task in 002 is finished
+16:15:41 [INF] Start farmlist Ide Strelka is started
+16:15:44 [INF] Farmlist Ide Strelka was sent.
+16:15:44 [INF] Start farmlist Ide Strelka is finished
+16:15:45 [INF] Send Resources Out of Village Task in 002 is started
+16:15:48 [INF] Send Resources Out of Village Task in 002 is finished
+16:15:49 [INF] Send Resources to Current Village Task in 002 is started
+16:15:50 [INF] Send Resources to Current Village Task in 002 is finished
+16:20:41 [INF] Upgrade building in 002 is started
+16:20:41 [INF] Next building will be contructed: IronMine - level 9.
+16:20:45 [INF] Amount of currently building is equal with maximum building can build in same time
+16:20:45 [INF] Next building will be contructed after ClayPit - level 9 complete. (12/4/2022 6:47:29 PM)
+16:20:45 [INF] Upgrade building in 002 is finished
+16:20:46 [INF] Send Resources Out of Village Task in 002 is started
+16:20:49 [INF] Send Resources Out of Village Task in 002 is finished
+16:20:50 [INF] Send Resources to Current Village Task in 002 is started
+16:20:54 [INF] Send Resources to Current Village Task in 002 is finished
+16:26:01 [INF] Refresh village in 003 is started
+16:26:03 [INF] Refresh village in 003 is finished
+16:26:04 [INF] Send Resources to Current Village Task in 003 is started
+16:26:05 [INF] Send Resources to Current Village Task in 003 is finished
+16:29:02 [INF] Start farmlist Ide Strelka 2 is started
+16:29:05 [INF] Farmlist Ide Strelka 2 was sent.
+16:29:05 [INF] Start farmlist Ide Strelka 2 is finished
+16:29:06 [INF] Send Resources to Current Village Task in 003 is started
+16:29:07 [INF] Send Resources to Current Village Task in 003 is finished
+16:32:32 [INF] Start farmlist Ide Strelka is started
+16:32:35 [INF] Farmlist Ide Strelka was sent.
+16:32:35 [INF] Start farmlist Ide Strelka is finished
+16:32:36 [INF] Send Resources to Current Village Task in 003 is started
+16:32:37 [INF] Send Resources to Current Village Task in 003 is finished
+16:36:59 [INF] Refresh village in 001 is started
+16:37:01 [INF] Refresh village in 001 is finished
+16:49:22 [INF] Start farmlist Ide Strelka is started
+16:49:30 [INF] Farmlist Ide Strelka was sent.
+16:49:30 [INF] Start farmlist Ide Strelka is finished
+16:52:01 [INF] Upgrade building in 003 is started
+16:52:02 [INF] Next building will be contructed: Woodcutter - level 6.
+16:52:04 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 7.
+16:52:04 [INF] Next building will be contructed: Cropland - level 6.
+16:52:06 [INF] Amount of currently building is equal with maximum building can build in same time
+16:52:07 [INF] Next building will be contructed after Woodcutter - level 6 complete. (12/4/2022 6:16:50 PM)
+16:52:07 [INF] Upgrade building in 003 is finished
+16:52:08 [INF] Send Resources to Current Village Task in 003 is started
+16:52:10 [INF] Send Resources to Current Village Task in 003 is finished
+16:59:14 [INF] Start farmlist Ide Strelka 2 is started
+16:59:19 [INF] Farmlist Ide Strelka 2 was sent.
+16:59:19 [INF] Start farmlist Ide Strelka 2 is finished
+17:02:24 [INF] Refresh village in 002 is started
+17:02:26 [INF] Refresh village in 002 is finished
+17:02:26 [INF] Send Resources Out of Village Task in 002 is started
+17:02:30 [INF] Send Resources Out of Village Task in 002 is finished
+17:02:30 [INF] Send Resources to Current Village Task in 002 is started
+17:02:32 [INF] Send Resources to Current Village Task in 002 is finished
+17:06:13 [INF] Start farmlist Ide Strelka is started
+17:06:16 [INF] Farmlist Ide Strelka was sent.
+17:06:16 [INF] Start farmlist Ide Strelka is finished
+17:06:17 [INF] Send Resources Out of Village Task in 002 is started
+17:06:20 [INF] Send Resources Out of Village Task in 002 is finished
+17:06:20 [INF] Send Resources to Current Village Task in 002 is started
+17:06:22 [INF] Send Resources to Current Village Task in 002 is finished
+17:09:03 [INF] Refresh village in 003 is started
+17:09:05 [INF] Refresh village in 003 is finished
+17:09:06 [INF] Send Resources to Current Village Task in 003 is started
+17:09:09 [INF] Send Resources to Current Village Task in 003 is finished
+17:11:52 [INF] Upgrade building in 000 is started
+17:11:52 [INF] Next building will be contructed: Warehouse - level 20.
+17:11:54 [INF] Don't have enough resources.
+17:11:54 [INF] Upgrade building in 000 is finished
+17:22:50 [INF] Start farmlist Ide Strelka is started
+17:22:54 [INF] Farmlist Ide Strelka was sent.
+17:22:54 [INF] Start farmlist Ide Strelka is finished
+17:25:01 [INF] Refresh village in 001 is started
+17:25:03 [INF] Refresh village in 001 is finished
+17:29:14 [INF] Start farmlist Ide Strelka 2 is started
+17:29:18 [INF] Farmlist Ide Strelka 2 was sent.
+17:29:18 [INF] Start farmlist Ide Strelka 2 is finished
+17:39:35 [INF] Start farmlist Ide Strelka is started
+17:39:36 [INF] Farmlist Ide Strelka was sent.
+17:39:36 [INF] Start farmlist Ide Strelka is finished
+17:52:05 [INF] Refresh village in 003 is started
+17:52:08 [INF] Refresh village in 003 is finished
+17:52:09 [INF] Send Resources to Current Village Task in 003 is started
+17:52:11 [INF] Send Resources to Current Village Task in 003 is finished
+17:56:14 [INF] Start farmlist Ide Strelka is started
+17:56:18 [INF] Farmlist Ide Strelka was sent.
+17:56:18 [INF] Start farmlist Ide Strelka is finished
+17:59:22 [INF] Start farmlist Ide Strelka 2 is started
+17:59:23 [INF] Farmlist Ide Strelka 2 was sent.
+17:59:23 [INF] Start farmlist Ide Strelka 2 is finished
+18:05:26 [INF] Refresh village in 002 is started
+18:05:28 [INF] Refresh village in 002 is finished
+18:05:29 [INF] Send Resources Out of Village Task in 002 is started
+18:05:32 [INF] Send Resources Out of Village Task in 002 is finished
+18:05:33 [INF] Send Resources to Current Village Task in 002 is started
+18:05:34 [INF] Send Resources to Current Village Task in 002 is finished
+18:13:02 [INF] Start farmlist Ide Strelka is started
+18:13:20 [INF] Farmlist Ide Strelka was sent.
+18:13:20 [INF] Start farmlist Ide Strelka is finished
+18:14:03 [INF] Refresh village in 001 is started
+18:14:06 [INF] Refresh village in 001 is finished
+18:16:50 [INF] Upgrade building in 003 is started
+18:16:50 [INF] Next building will be contructed: Cropland - level 6.
+18:16:51 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 7.
+18:16:51 [INF] Next building will be contructed: ClayPit - level 6.
+18:16:54 [INF] Amount of currently building is equal with maximum building can build in same time
+18:16:54 [INF] Next building will be contructed after Cropland - level 6 complete. (12/4/2022 7:25:01 PM)
+18:16:54 [INF] Upgrade building in 003 is finished
+18:16:55 [INF] Send Resources to Current Village Task in 003 is started
+18:16:58 [INF] Send Resources to Current Village Task in 003 is finished

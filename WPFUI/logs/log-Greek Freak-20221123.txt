@@ -1,0 +1,79 @@
+23:44:16 [INF] Login task is started
+23:44:17 [INF] Login task is finished
+23:44:18 [INF] Update info is started
+23:44:18 [INF] Update info is finished
+23:44:19 [INF] Refresh village in 001 is started
+23:44:19 [ERR] Object reference not set to an instance of an object.
+23:44:19 [INF] Refresh village in 001 is failed. Retry counter is increased (0)
+23:44:19 [INF] Refresh village in 001 is stopped and reset.
+23:44:20 [INF] Refresh village in 001 is started
+23:44:20 [ERR] Object reference not set to an instance of an object.
+23:44:20 [INF] Refresh village in 001 is failed. Retry counter is increased (1)
+23:44:20 [INF] Refresh village in 001 is stopped and reset.
+23:44:21 [INF] Refresh village in 001 is started
+23:44:21 [ERR] Object reference not set to an instance of an object.
+23:44:21 [INF] Refresh village in 001 is failed. Retry counter is increased (2)
+23:44:21 [INF] Refresh village in 001 is stopped and reset.
+23:44:22 [INF] Refresh village in 001 is started
+23:44:22 [ERR] Object reference not set to an instance of an object.
+23:44:22 [INF] Refresh village in 001 is failed. Retry counter is increased (3)
+23:44:22 [INF] Refresh village in 001 is stopped and reset.
+23:44:23 [INF] Refresh village in 001 is started
+23:44:23 [ERR] Object reference not set to an instance of an object.
+23:44:23 [INF] Refresh village in 001 was excuted 3 times. Bot is paused
+23:44:23 [INF] Refresh village in 001 is finished
+23:45:10 [INF] Login task is started
+23:45:11 [INF] Login task is finished
+23:45:13 [INF] Update info is started
+23:45:13 [ERR] An error occurred while saving the entity changes. See the inner exception for details.
+23:45:13 [INF] Update info is failed. Retry counter is increased (0)
+23:45:13 [INF] Update info is stopped and reset.
+23:45:15 [INF] Update info is started
+23:45:15 [ERR] An error occurred while saving the entity changes. See the inner exception for details.
+23:45:15 [INF] Update info is failed. Retry counter is increased (1)
+23:45:15 [INF] Update info is stopped and reset.
+23:45:17 [INF] Update info is started
+23:45:17 [ERR] An error occurred while saving the entity changes. See the inner exception for details.
+23:45:17 [INF] Update info is failed. Retry counter is increased (2)
+23:45:17 [INF] Update info is stopped and reset.
+23:45:18 [INF] Update info is started
+23:45:18 [ERR] An error occurred while saving the entity changes. See the inner exception for details.
+23:45:18 [INF] Update info is failed. Retry counter is increased (3)
+23:45:19 [INF] Update info is stopped and reset.
+23:45:20 [INF] Update info is started
+23:45:20 [ERR] An error occurred while saving the entity changes. See the inner exception for details.
+23:45:20 [INF] Update info was excuted 3 times. Bot is paused
+23:45:20 [INF] Update info is finished
+23:46:11 [INF] Login task is started
+23:46:13 [INF] Login task is finished
+23:46:14 [INF] Update info is started
+23:46:15 [INF] Update info is finished
+23:46:16 [INF] Update All page in 18920 is started
+23:46:20 [INF] Update All page in 18920 is finished
+23:46:21 [INF] Update All page in 23538 is started
+23:46:25 [INF] Update All page in 23538 is finished
+23:46:26 [INF] Update All page in 26657 is started
+23:46:30 [INF] Update All page in 26657 is finished
+23:46:31 [INF] Update farmlist is started
+23:46:35 [INF] Update farmlist is finished
+23:46:42 [INF] Start farmlist Ide Strelka is started
+23:46:43 [INF] Farmlist Ide Strelka was sent.
+23:46:43 [INF] Start farmlist Ide Strelka is finished
+23:55:57 [INF] Refresh village in 000 is started
+23:55:59 [INF] Refresh village in 000 is finished
+23:56:02 [INF] Refresh village in 001 is started
+23:56:03 [INF] Refresh village in 001 is finished
+23:56:05 [INF] Refresh village in 002 is started
+23:56:07 [INF] Refresh village in 002 is finished
+23:56:13 [INF] Upgrade building in 002 is started
+23:56:13 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 5.
+23:56:13 [INF] Next building will be contructed: Woodcutter - level 4.
+23:56:18 [INF] Next building will be contructed: Woodcutter - level 4.
+23:56:18 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 5.
+23:56:18 [INF] Next building will be contructed: Cropland - level 4.
+23:56:21 [INF] Amount of currently building is equal with maximum building can build in same time
+23:56:22 [INF] Next building will be contructed after Woodcutter - level 4 complete. (24/11/2022 00:26:36)
+23:56:22 [INF] Upgrade building in 002 is finished
+23:56:33 [INF] Start farmlist Ide Strelka is started
+23:56:40 [INF] Farmlist Ide Strelka was sent.
+23:56:40 [INF] Start farmlist Ide Strelka is finished
