@@ -8,16 +8,15 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using WPFUI.Interfaces;
-using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class GeneralViewModel : AccountTabBaseViewModel, ITabPage
+    public class GeneralViewModel : ActivatableViewModelBase
     {
-        public GeneralViewModel() : base()
+        public GeneralViewModel()
         {
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
+            OnActive += OnActived;
 
             PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsValidStatus));
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
@@ -26,8 +25,7 @@ namespace WPFUI.ViewModels.Tabs
         private void OnAccountStatusUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
+            if (AccountId != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
 
@@ -35,21 +33,12 @@ namespace WPFUI.ViewModels.Tabs
 
         public void OnActived()
         {
-            IsActive = true;
-            if (CurrentAccount is not null)
-            {
-                LoadData(CurrentAccount.Id);
-            }
+            LoadData(AccountId);
         }
 
-        public void OnDeactived()
-        {
-            IsActive = false;
-        }
+        public Task PauseTask() => Pause(AccountId);
 
-        public Task PauseTask() => Pause(CurrentAccount.Id);
-
-        public void RestartTask() => Restart(CurrentAccount.Id);
+        public void RestartTask() => Restart(AccountId);
 
         protected override void LoadData(int index)
         {
