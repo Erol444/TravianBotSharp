@@ -36,7 +36,7 @@ namespace WPFUI.ViewModels
 
         public event Action<int> AccountChanged;
 
-        private void OnAccountChanged(int account) => VillageChanged?.Invoke(account);
+        private void OnAccountChanged(int account) => AccountChanged?.Invoke(account);
 
         public event Action<int> VillageChanged;
 

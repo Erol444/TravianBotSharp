@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs;
 
@@ -11,7 +12,7 @@ namespace WPFUI.Views.Tabs
     {
         public FarmingPage()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<FarmingViewModel>();
             InitializeComponent();
             this.WhenActivated(d =>
             {
@@ -24,9 +25,6 @@ namespace WPFUI.Views.Tabs
                 this.Bind(ViewModel, vm => vm.CurrentFarm, v => v.FarmListViewer.SelectedItem).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.CurrentFarm, v => v.FarmListController.ViewModel.CurrentFarm).DisposeWith(d);
-
-                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
-                ViewModel.OnActived();
             });
         }
     }

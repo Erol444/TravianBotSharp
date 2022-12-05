@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs;
 
@@ -11,7 +12,7 @@ namespace WPFUI.Views.Tabs
     {
         public SettingsPage()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<SettingsViewModel>();
             InitializeComponent();
 
             ClickDelay.ViewModel = new("Click delay", "ms");
@@ -39,9 +40,6 @@ namespace WPFUI.Views.Tabs
                 this.Bind(ViewModel, vm => vm.Settings.IsClosedIfNoTask, v => v.CloseCheckBox.IsChecked).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.Settings.IsAutoStartAdventure, v => v.AutoStartAdventureCheckBox.IsChecked).DisposeWith(d);
-
-                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
-                ViewModel.OnActived();
             });
         }
     }

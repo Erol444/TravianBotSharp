@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs.Villages;
 
@@ -11,7 +12,7 @@ namespace WPFUI.Views.Tabs.Villages
     {
         public SettingsPage()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<SettingsViewModel>();
             InitializeComponent();
             Complete.ViewModel = new("Auto complete upgrade when queue is longer than", "min(s)");
             WatchAds.ViewModel = new("Using ads upgrade button when building time is longer than", "min(s)");
@@ -48,9 +49,6 @@ namespace WPFUI.Views.Tabs.Villages
 
                 this.Bind(ViewModel, vm => vm.Settings.IsUpgradeTroop, v => v.TroopUpgradeCheckBox.IsChecked).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.TroopUpgrade, v => v.TroopUpgrade.ViewModel.Troops).DisposeWith(d);
-
-                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
-                ViewModel.OnActived();
             });
         }
     }

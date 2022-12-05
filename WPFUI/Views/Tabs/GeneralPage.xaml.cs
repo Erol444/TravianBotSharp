@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs;
 
@@ -11,7 +12,7 @@ namespace WPFUI.Views.Tabs
     {
         public GeneralPage()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<GeneralViewModel>();
             InitializeComponent();
             this.WhenActivated(d =>
             {
@@ -19,9 +20,6 @@ namespace WPFUI.Views.Tabs
                 this.BindCommand(ViewModel, vm => vm.RestartCommand, v => v.RestartButton).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Status, v => v.StatusText.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.PauseText, v => v.PauseButton.Content).DisposeWith(d);
-
-                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
-                ViewModel.OnActived();
             });
         }
     }

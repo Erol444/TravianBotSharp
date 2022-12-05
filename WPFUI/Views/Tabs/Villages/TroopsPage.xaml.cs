@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs.Villages;
 
@@ -11,7 +12,7 @@ namespace WPFUI.Views.Tabs.Villages
     {
         public TroopsPage()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<TroopsViewModel>();
             InitializeComponent();
             CurrentLevel.ViewModel = new("Current troops's level: ");
             WantUpgrade.ViewModel = new("Select troop for upgrading: ");
@@ -21,8 +22,6 @@ namespace WPFUI.Views.Tabs.Villages
                 this.BindCommand(ViewModel, vm => vm.UpdateCommand, v => v.Update).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.CurrentLevel, v => v.CurrentLevel.ViewModel.Troops).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.WantUpgrade, v => v.WantUpgrade.ViewModel.Troops).DisposeWith(d);
-                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
-                ViewModel.OnActived();
             });
         }
     }

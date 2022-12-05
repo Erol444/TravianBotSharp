@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs.Villages;
 
@@ -11,7 +12,7 @@ namespace WPFUI.Views.Tabs.Villages
     {
         public BuildPage()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<BuildViewModel>();
             InitializeComponent();
 
             this.WhenActivated(d =>
@@ -47,9 +48,6 @@ namespace WPFUI.Views.Tabs.Villages
                 this.OneWayBind(ViewModel, vm => vm.ComboResTypes, v => v.ResBuild.Type.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.ResLevel, v => v.ResBuild.LevelText.Text).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.ComboStrategy, v => v.ResBuild.Strategy.ItemsSource).DisposeWith(d);
-
-                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
-                ViewModel.OnActived();
             });
         }
     }
