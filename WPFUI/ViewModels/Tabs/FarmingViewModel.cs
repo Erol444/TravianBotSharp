@@ -32,15 +32,13 @@ namespace WPFUI.ViewModels.Tabs
 
         private void ActiveHandler()
         {
-            if (!_selectorViewModel.IsAccountSelected) return;
-            LoadData(_selectorViewModel.Account.Id);
+            LoadData(AccountId);
         }
 
         private void OnFarmListUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (!_selectorViewModel.IsAccountSelected) return;
-            if (_selectorViewModel.Account.Id != accountId) return;
+            if (AccountId != accountId) return;
 
             RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
@@ -76,7 +74,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             await Task.Run(() =>
             {
-                var accountId = CurrentAccount.Id;
+                var accountId = AccountId;
                 using var context = _contextFactory.CreateDbContext();
                 var farms = context.Farms.Where(x => x.AccountId == accountId);
                 foreach (var farm in farms)
@@ -100,7 +98,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             await Task.Run(() =>
             {
-                var accountId = CurrentAccount.Id;
+                var accountId = AccountId;
                 var tasks = _taskManager.GetList(accountId);
                 var farmLists = tasks.Where(x => x.GetType() == typeof(StartFarmList));
                 foreach (var farm in farmLists)
