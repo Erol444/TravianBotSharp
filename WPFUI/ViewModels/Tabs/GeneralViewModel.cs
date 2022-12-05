@@ -11,15 +11,24 @@ using System.Threading.Tasks;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class GeneralViewModel : ActivatableViewModelBase
+    public class GeneralViewModel : AccountTabViewModelBase
     {
         public GeneralViewModel()
         {
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
-            Active += OnActived;
 
             PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsValidStatus));
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
+        }
+
+        protected override void Init(int accountId)
+        {
+            LoadData(accountId);
+        }
+
+        protected override void Reload(int accountId)
+        {
+            LoadData(accountId);
         }
 
         private void OnAccountStatusUpdate(int accountId)
@@ -29,16 +38,11 @@ namespace WPFUI.ViewModels.Tabs
             RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
 
-        public void OnActived()
-        {
-            LoadData(AccountId);
-        }
-
         public Task PauseTask() => Pause(AccountId);
 
         public void RestartTask() => Restart(AccountId);
 
-        protected override void LoadData(int index)
+        private void LoadData(int index)
         {
             var status = _taskManager.GetAccountStatus(index);
             switch (status)
