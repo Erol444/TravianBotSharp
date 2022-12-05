@@ -25,7 +25,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private void OnAccountChanged(int accountId)
         {
-            RxApp.TaskpoolScheduler.Schedule(() => Reload(accountId));
+            RxApp.TaskpoolScheduler.Schedule(() => Init(accountId));
         }
 
         private readonly ObservableAsPropertyHelper<int> _accountId;

@@ -22,8 +22,6 @@ namespace WPFUI.ViewModels
 
         protected abstract void Init(int id);
 
-        protected abstract void Reload(int id);
-
         protected event Action Active;
 
         protected event Action Deactive;

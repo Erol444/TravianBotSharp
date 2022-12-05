@@ -27,11 +27,6 @@ namespace WPFUI.ViewModels.Tabs
             LoadData(accountId);
         }
 
-        protected override void Reload(int accountId)
-        {
-            LoadData(accountId);
-        }
-
         private void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
