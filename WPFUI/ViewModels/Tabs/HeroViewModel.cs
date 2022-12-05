@@ -10,7 +10,7 @@ using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class HeroViewModel : ActivatableViewModelBase
+    public class HeroViewModel : AccountTabViewModelBase
     {
         public HeroViewModel()
         {
@@ -18,44 +18,43 @@ namespace WPFUI.ViewModels.Tabs
             _eventManager.HeroAdventuresUpdate += OnHeroAdventuresUpdate;
             _eventManager.HeroInventoryUpdate += OnheroInventoryUpdate;
 
-            Active += HeroViewModel_OnActive; ;
-
             AdventuresCommand = ReactiveCommand.Create(AdventuresTask);
             InventoryCommand = ReactiveCommand.Create(InventoryTask);
         }
 
-        private void HeroViewModel_OnActive()
+        protected override void Init(int accountId)
         {
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(AccountId));
+            LoadData(accountId);
+        }
+
+        protected override void Reload(int accountId)
+        {
+            LoadData(accountId);
         }
 
         private void OnheroInventoryUpdate(int accountId)
         {
             if (!IsActive) return;
             if (AccountId != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadInventory(accountId));
+            LoadInventory(accountId);
         }
 
         private void OnHeroAdventuresUpdate(int accountId)
         {
             if (!IsActive) return;
             if (AccountId != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadAdventures(accountId));
+            LoadAdventures(accountId);
         }
 
         private void OnHeroInfoUpdate(int accountId)
         {
             if (!IsActive) return;
             if (AccountId != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadInfo(accountId));
+            LoadInfo(accountId);
         }
 
         private void LoadData(int accountId)
         {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                if (context.Accounts.Find(accountId) is null) return;
-            }
             LoadAdventures(accountId);
             LoadInventory(accountId);
             LoadInfo(accountId);
@@ -65,16 +64,19 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var adventures = context.Adventures.Where(x => x.AccountId == accountId);
-            Adventures.Clear();
-            foreach (var adventure in adventures)
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                Adventures.Add(new()
+                Adventures.Clear();
+                foreach (var adventure in adventures)
                 {
-                    Difficulty = adventure.Difficulty.ToString(),
-                    X = adventure.X,
-                    Y = adventure.Y,
-                });
-            }
+                    Adventures.Add(new()
+                    {
+                        Difficulty = adventure.Difficulty.ToString(),
+                        X = adventure.X,
+                        Y = adventure.Y,
+                    });
+                }
+            });
             AdventureNum = Adventures.Count.ToString();
         }
 
@@ -82,20 +84,23 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var inventory = context.HeroesItems.Where(x => x.AccountId == accountId);
-            Inventory.Clear();
-            foreach (var item in inventory)
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                var itemStr = item.Item.ToString();
-                var itemName = new string(itemStr.Where(x => char.IsLetter(x)).ToArray());
-                var lastChar = itemStr[^1];
-                var tier = char.IsDigit(lastChar) ? int.Parse(lastChar.ToString()) : 0;
-                Inventory.Add(new()
+                Inventory.Clear();
+                foreach (var item in inventory)
                 {
-                    Item = itemName.EnumStrToString(),
-                    Amount = item.Count,
-                    Tier = tier,
-                });
-            }
+                    var itemStr = item.Item.ToString();
+                    var itemName = new string(itemStr.Where(x => char.IsLetter(x)).ToArray());
+                    var lastChar = itemStr[^1];
+                    var tier = char.IsDigit(lastChar) ? int.Parse(lastChar.ToString()) : 0;
+                    Inventory.Add(new()
+                    {
+                        Item = itemName.EnumStrToString(),
+                        Amount = item.Count,
+                        Tier = tier,
+                    });
+                }
+            });
         }
 
         private void LoadInfo(int accountId)
