@@ -38,7 +38,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             IsActive = true;
             if (CurrentVillage is not null)
             {
-                LoadData(CurrentVillage.Id);
+                LoadData(VillageId);
             }
         }
 
@@ -61,7 +61,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             await Task.Run(() =>
             {
-                var villageId = CurrentVillage.Id;
+                var villageId = VillageId;
                 Save(villageId);
                 var accountId = AccountId;
                 TaskBasedSetting(villageId, accountId);
@@ -74,7 +74,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void ImportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(CurrentVillage.Id);
+            var village = context.Villages.Find(VillageId);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
@@ -90,7 +90,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 try
                 {
                     var setting = JsonSerializer.Deserialize<MainCore.Models.Database.VillageSetting>(jsonString);
-                    var villageId = CurrentVillage.Id;
+                    var villageId = VillageId;
                     setting.VillageId = villageId;
                     context.Update(setting);
                     context.SaveChanges();
@@ -108,7 +108,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void ExportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var villageId = CurrentVillage.Id;
+            var villageId = VillageId;
             var setting = context.VillagesSettings.Find(villageId);
             var jsonString = JsonSerializer.Serialize(setting);
             var village = context.Villages.Find(villageId);
@@ -196,7 +196,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
-                var troops = context.VillagesTroops.Where(x => x.VillageId == CurrentVillage.Id).ToArray();
+                var troops = context.VillagesTroops.Where(x => x.VillageId == VillageId).ToArray();
                 TroopUpgrade.Clear();
                 for (var i = 0; i < troops.Length; i++)
                 {

@@ -26,7 +26,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void OnTroopLevelUpdate(int villageId)
         {
             if (CurrentVillage is null) return;
-            if (villageId != CurrentVillage.Id) return;
+            if (villageId != VillageId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadData(villageId));
         }
 
@@ -40,7 +40,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             IsActive = true;
             if (CurrentVillage is null) return;
-            LoadData(CurrentVillage.Id);
+            LoadData(VillageId);
         }
 
         public void OnDeactived()
@@ -89,7 +89,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 if (item.IsChecked)
                 {
-                    _taskManager.Add(AccountId, new ImproveTroopsTask(CurrentVillage.Id, AccountId));
+                    _taskManager.Add(AccountId, new ImproveTroopsTask(VillageId, AccountId));
                     MessageBox.Show("Apply");
                     return;
                 }
@@ -99,7 +99,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void UpdateTask()
         {
-            _taskManager.Add(AccountId, new UpdateTroopLevel(CurrentVillage.Id, AccountId));
+            _taskManager.Add(AccountId, new UpdateTroopLevel(VillageId, AccountId));
             MessageBox.Show("Update");
         }
 
