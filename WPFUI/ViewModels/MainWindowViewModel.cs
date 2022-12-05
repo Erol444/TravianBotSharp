@@ -173,7 +173,7 @@ namespace WPFUI.ViewModels
             }
         }
 
-        private void SetTab(TabType tab)
+        public void SetTab(TabType tab)
         {
             RxApp.MainThreadScheduler.Schedule(() =>
             {

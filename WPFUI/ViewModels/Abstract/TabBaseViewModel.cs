@@ -19,10 +19,14 @@ namespace WPFUI.ViewModels.Abstract
             _restClientManager = Locator.Current.GetService<IRestClientManager>();
             _taskManager = Locator.Current.GetService<ITaskManager>();
             _logManager = Locator.Current.GetService<ILogManager>();
+            _timeManager = Locator.Current.GetService<ITimerManager>();
+            _chromeManager = Locator.Current.GetService<IChromeManager>();
 
             _waitingWindow = Locator.Current.GetService<WaitingViewModel>();
+            _versionWindow = Locator.Current.GetService<VersionViewModel>();
 
             _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
+            _mainWindow = Locator.Current.GetService<MainWindowViewModel>();
         }
 
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
@@ -32,9 +36,13 @@ namespace WPFUI.ViewModels.Abstract
         protected readonly IUseragentManager _useragentManager;
         protected readonly IRestClientManager _restClientManager;
         protected readonly ILogManager _logManager;
+        protected readonly ITimerManager _timeManager;
+        protected readonly IChromeManager _chromeManager;
 
         protected readonly WaitingViewModel _waitingWindow;
+        protected readonly VersionViewModel _versionWindow;
 
         protected readonly SelectorViewModel _selectorViewModel;
+        protected readonly MainWindowViewModel _mainWindow;
     }
 }
