@@ -29,11 +29,9 @@ namespace WPFUI.ViewModels.Tabs
             RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
 
-        public bool IsActive { get; set; }
-
         public void OnActived()
         {
-            LoadData(AccountId);
+            RxApp.MainThreadScheduler.Schedule(() => LoadData(AccountId));
         }
 
         public Task PauseTask() => Pause(AccountId);

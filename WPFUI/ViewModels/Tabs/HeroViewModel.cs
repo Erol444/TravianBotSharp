@@ -6,65 +6,51 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
-using WPFUI.Interfaces;
 using WPFUI.Models;
-using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class HeroViewModel : AccountTabBaseViewModel, ITabPage
+    public class HeroViewModel : ActivatableViewModelBase
     {
-        public HeroViewModel() : base()
+        public HeroViewModel()
         {
             _eventManager.HeroInfoUpdate += OnHeroInfoUpdate;
             _eventManager.HeroAdventuresUpdate += OnHeroAdventuresUpdate;
             _eventManager.HeroInventoryUpdate += OnheroInventoryUpdate;
 
+            OnActive += HeroViewModel_OnActive; ;
+
             AdventuresCommand = ReactiveCommand.Create(AdventuresTask);
             InventoryCommand = ReactiveCommand.Create(InventoryTask);
+        }
+
+        private void HeroViewModel_OnActive()
+        {
+            RxApp.MainThreadScheduler.Schedule(() => LoadData(AccountId));
         }
 
         private void OnheroInventoryUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
+            if (AccountId != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadInventory(accountId));
         }
 
         private void OnHeroAdventuresUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
+            if (AccountId != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadAdventures(accountId));
         }
 
         private void OnHeroInfoUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
+            if (AccountId != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadInfo(accountId));
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
-        {
-            IsActive = true;
-            if (CurrentAccount is not null)
-            {
-                LoadData(CurrentAccount.Id);
-            }
-        }
-
-        public void OnDeactived()
-        {
-            IsActive = false;
-        }
-
-        protected override void LoadData(int accountId)
+        private void LoadData(int accountId)
         {
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -122,7 +108,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private void AdventuresTask()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var task = tasks.FirstOrDefault(x => x is UpdateAdventures);
             if (task is null)
@@ -138,7 +124,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private void InventoryTask()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var task = tasks.FirstOrDefault(x => x is UpdateHeroItems);
             if (task is null)
