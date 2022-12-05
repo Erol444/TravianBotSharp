@@ -10,24 +10,21 @@ using System.Windows;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class EditAccountViewModel : ActivatableViewModelBase
+    public class EditAccountViewModel : AccountTabViewModelBase
     {
         public EditAccountViewModel()
         {
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
-
-            Active += ActiveHandler;
-            OnAccountChange += AccountHandler;
         }
 
-        private void AccountHandler(int accountId)
+        protected override void Init(int accountId)
         {
             LoadData(accountId);
         }
 
-        private void ActiveHandler()
+        protected override void Reload(int accountId)
         {
-            LoadData(AccountId);
+            LoadData(accountId);
         }
 
         private void LoadData(int accountId)
@@ -169,9 +166,6 @@ namespace WPFUI.ViewModels.Tabs
         }
 
         public ObservableCollection<Models.Access> Accessess { get; } = new();
-
-        public ReactiveCommand<Unit, Unit> TestAllCommand { get; }
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
-        public ReactiveCommand<Unit, Unit> CancelCommand { get; }
     }
 }
