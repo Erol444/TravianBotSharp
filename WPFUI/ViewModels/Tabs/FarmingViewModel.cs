@@ -11,7 +11,7 @@ using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class FarmingViewModel : ActivatableViewModelBase
+    public class FarmingViewModel : AccountTabViewModelBase
     {
         public FarmingViewModel()
         {
@@ -20,19 +20,16 @@ namespace WPFUI.ViewModels.Tabs
             StopCommand = ReactiveCommand.CreateFromTask(StopTask);
 
             _eventManager.FarmListUpdate += OnFarmListUpdate;
-
-            Active += ActiveHandler;
-            OnAccountChange += AccountChangeHandler;
         }
 
-        private void AccountChangeHandler(int accountId)
+        protected override void Init(int accountId)
         {
             LoadData(accountId);
         }
 
-        private void ActiveHandler()
+        protected override void Reload(int accountId)
         {
-            LoadData(AccountId);
+            LoadData(accountId);
         }
 
         private void OnFarmListUpdate(int accountId)
@@ -47,14 +44,17 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var farms = context.Farms.Where(x => x.AccountId == index);
-            FarmList.Clear();
-            foreach (var farm in farms)
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                var farmSetting = context.FarmsSettings.Find(farm.Id);
-                var color = farmSetting.IsActive ? "Green" : "Red";
-                var f = new FarmInfo() { Id = farm.Id, Name = farm.Name, Color = color };
-                FarmList.Add(f);
-            }
+                FarmList.Clear();
+                foreach (var farm in farms)
+                {
+                    var farmSetting = context.FarmsSettings.Find(farm.Id);
+                    var color = farmSetting.IsActive ? "Green" : "Red";
+                    var f = new FarmInfo() { Id = farm.Id, Name = farm.Name, Color = color };
+                    FarmList.Add(f);
+                }
+            });
         }
 
         private async Task RefreshTask()
