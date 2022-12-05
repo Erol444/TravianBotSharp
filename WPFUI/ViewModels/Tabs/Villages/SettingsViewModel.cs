@@ -14,13 +14,11 @@ using System.Reactive.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
-using WPFUI.Interfaces;
 using WPFUI.Models;
-using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class SettingsViewModel : VillageTabBaseViewModel, ITabPage
+    public class SettingsViewModel : VillageTabViewModelBase
     {
         public SettingsViewModel()
         {
@@ -31,26 +29,15 @@ namespace WPFUI.ViewModels.Tabs.Villages
             this.WhenAnyValue(x => x.Settings.UpgradeTroop).Subscribe(LoadUpgradeTroop);
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
+        protected override void Init(int villageId)
         {
-            IsActive = true;
-            if (CurrentVillage is not null)
-            {
-                LoadData(VillageId);
-            }
+            LoadData(villageId);
         }
 
-        public void OnDeactived()
-        {
-            IsActive = false;
-        }
-
-        protected override void LoadData(int index)
+        private void LoadData(int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var settings = context.VillagesSettings.Find(index);
+            var settings = context.VillagesSettings.Find(villageId);
             Settings.CopyFrom(settings);
         }
 
@@ -191,8 +178,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadUpgradeTroop(bool[] upgradeTroop)
         {
-            if (CurrentVillage is null) return;
-
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
