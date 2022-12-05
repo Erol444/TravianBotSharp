@@ -27,8 +27,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private void ActiveHandler()
         {
-            if (!_selectorViewModel.IsAccountSelected) return;
-            LoadData(_selectorViewModel.Account.Id);
+            LoadData(AccountId);
         }
 
         private void LoadData(int accountId)

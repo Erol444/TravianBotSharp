@@ -12,24 +12,26 @@ namespace WPFUI.ViewModels
     {
         public SelectorViewModel()
         {
-            this.WhenAnyValue(vm => vm.Account).Subscribe(x =>
-            {
-                if (x is null) return;
+            this.WhenAnyValue(vm => vm.Account)
+                .Where(x => x is not null)
+                .Subscribe(x => RxApp.TaskpoolScheduler.Schedule(() => OnAccountChanged(x.Id)));
+            this.WhenAnyValue(vm => vm.Village)
+               .Where(x => x is not null)
+               .Subscribe(x => RxApp.TaskpoolScheduler.Schedule(() => OnVillageChanged(x.Id)));
 
-                RxApp.TaskpoolScheduler.Schedule(() => OnAccountChanged(x.Id));
-            });
-            this.WhenAnyValue(vm => vm.Village).Subscribe(x =>
-            {
-                if (x is null) return;
+            this.WhenAnyValue(vm => vm.Account)
+                .Select(x => x is not null)
+                .ToProperty(this, vm => vm.IsAccountSelected, out _isAccountSelected);
+            this.WhenAnyValue(vm => vm.Account)
+                .Select(x => x is null)
+                .ToProperty(this, vm => vm.IsAccountNotSelected, out _isAccountNotSelected);
 
-                RxApp.TaskpoolScheduler.Schedule(() => OnVillageChanged(x.Id));
-            });
-
-            this.WhenAnyValue(vm => vm.Account).Select(x => x is not null).ToProperty(this, vm => vm.IsAccountSelected, out _isAccountSelected);
-            this.WhenAnyValue(vm => vm.IsAccountSelected).Select(x => !x).ToProperty(this, vm => vm.IsAccountNotSelected, out _isAccountNotSelected);
-
-            this.WhenAnyValue(vm => vm.Village).Select(x => x is not null).ToProperty(this, vm => vm.IsVillageSelected, out _isVillageSelected);
-            this.WhenAnyValue(vm => vm.IsVillageSelected).Select(x => !x).ToProperty(this, vm => vm.IsVillageNotSelected, out _isVillageNotSelected);
+            this.WhenAnyValue(vm => vm.Village)
+                .Select(x => x is not null)
+                .ToProperty(this, vm => vm.IsVillageSelected, out _isVillageSelected);
+            this.WhenAnyValue(vm => vm.Village)
+                .Select(x => x is not null)
+                .ToProperty(this, vm => vm.IsVillageNotSelected, out _isVillageNotSelected);
         }
 
         public event Action<int> AccountChanged;

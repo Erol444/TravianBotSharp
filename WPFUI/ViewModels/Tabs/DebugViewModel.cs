@@ -33,8 +33,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private void ActiveHandler()
         {
-            if (!_selectorViewModel.IsAccountSelected) return;
-            LoadData(_selectorViewModel.Account.Id);
+            LoadData(AccountId);
         }
 
         private void LoadData(int accountId)
@@ -72,8 +71,7 @@ namespace WPFUI.ViewModels.Tabs
         private void OnTasksUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (!_selectorViewModel.IsAccountSelected) return;
-            if (_selectorViewModel.Account.Id != accountId) return;
+            if (AccountId != accountId) return;
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
@@ -95,8 +93,7 @@ namespace WPFUI.ViewModels.Tabs
         private void OnLogsUpdate(int accountId, LogMessage logMessage)
         {
             if (!IsActive) return;
-            if (!_selectorViewModel.IsAccountSelected) return;
-            if (_selectorViewModel.Account.Id != accountId) return;
+            if (AccountId != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Logs.Insert(0, logMessage);

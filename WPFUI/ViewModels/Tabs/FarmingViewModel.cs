@@ -7,48 +7,45 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using System.Windows;
-using WPFUI.Interfaces;
 using WPFUI.Models;
-using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class FarmingViewModel : AccountTabBaseViewModel, ITabPage
+    public class FarmingViewModel : ActivatableViewModelBase
     {
-        public FarmingViewModel() : base()
+        public FarmingViewModel()
         {
             RefreshCommand = ReactiveCommand.CreateFromTask(RefreshTask);
             StartCommand = ReactiveCommand.CreateFromTask(StartTask);
             StopCommand = ReactiveCommand.CreateFromTask(StopTask);
 
             _eventManager.FarmListUpdate += OnFarmListUpdate;
+
+            OnActive += ActiveHandler;
+            OnAccountChange += AccountChangeHandler;
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
+        private void AccountChangeHandler(int accountId)
         {
-            IsActive = true;
-            if (CurrentAccount is not null)
-            {
-                LoadData(CurrentAccount.Id);
-            }
+            LoadData(accountId);
         }
 
-        public void OnDeactived()
+        private void ActiveHandler()
         {
-            IsActive = false;
+            if (!_selectorViewModel.IsAccountSelected) return;
+            LoadData(_selectorViewModel.Account.Id);
         }
 
-        private void OnFarmListUpdate(int index)
+        private void OnFarmListUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != index) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(index));
+            if (!_selectorViewModel.IsAccountSelected) return;
+            if (_selectorViewModel.Account.Id != accountId) return;
+
+            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
 
-        protected override void LoadData(int index)
+        private void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
             var farms = context.Farms.Where(x => x.AccountId == index);
@@ -66,7 +63,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             await Task.Run(() =>
             {
-                var accountId = CurrentAccount.Id;
+                var accountId = _selectorViewModel.Account.Id;
                 var tasks = _taskManager.GetList(accountId);
                 if (!tasks.Any(x => x.GetType() == typeof(UpdateFarmList)))
                 {
