@@ -31,13 +31,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void RefreshTask()
         {
-            _taskManager.Add(CurrentAccount.Id, new UpdateVillage(CurrentVillage.Id, CurrentAccount.Id));
+            _taskManager.Add(AccountId, new UpdateVillage(CurrentVillage.Id, AccountId));
             MessageBox.Show("Added Refresh resources task to queue");
         }
 
         private void NPCTask()
         {
-            _taskManager.Add(CurrentAccount.Id, new NPCTask(CurrentVillage.Id, CurrentAccount.Id, Ratio.GetResources()));
+            _taskManager.Add(AccountId, new NPCTask(CurrentVillage.Id, AccountId, Ratio.GetResources()));
             MessageBox.Show("Added NPC task to queue");
         }
 

@@ -20,7 +20,7 @@ namespace WPFUI.ViewModels.Tabs
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
-            OnActive += OnActived;
+            Active += OnActived;
         }
 
         private void OnActived()

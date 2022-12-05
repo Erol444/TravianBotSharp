@@ -228,7 +228,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 return;
             }
 
-            var buildings = BuildingsHelper.GetCanBuild(context, _planManager, CurrentAccount.Id, villageId);
+            var buildings = BuildingsHelper.GetCanBuild(context, _planManager, AccountId, villageId);
             if (buildings.Count > 0)
             {
                 foreach (var building in buildings)
@@ -272,7 +272,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             LoadQueue(villageId);
             LoadBuildings(villageId);
 
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
@@ -321,7 +321,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             LoadBuildings(villageId);
 
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
@@ -394,7 +394,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void ImportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var account = context.Accounts.Find(accountId);
             var villageId = CurrentVillage.Id;
             var village = context.Villages.Find(villageId);
@@ -432,7 +432,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             using var context = _contextFactory.CreateDbContext();
             var villageId = CurrentVillage.Id;
             var queueBuildings = _planManager.GetList(villageId);
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var account = context.Accounts.Find(accountId);
             var village = context.Villages.Find(villageId);
             var jsonString = JsonSerializer.Serialize(queueBuildings);

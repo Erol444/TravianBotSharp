@@ -16,7 +16,7 @@ namespace WPFUI.ViewModels.Tabs
         public GeneralViewModel()
         {
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
-            OnActive += OnActived;
+            Active += OnActived;
 
             PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsValidStatus));
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
@@ -31,7 +31,7 @@ namespace WPFUI.ViewModels.Tabs
 
         public void OnActived()
         {
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(AccountId));
+            LoadData(AccountId);
         }
 
         public Task PauseTask() => Pause(AccountId);

@@ -21,7 +21,7 @@ namespace WPFUI.ViewModels.Tabs
 
             _eventManager.FarmListUpdate += OnFarmListUpdate;
 
-            OnActive += ActiveHandler;
+            Active += ActiveHandler;
             OnAccountChange += AccountChangeHandler;
         }
 

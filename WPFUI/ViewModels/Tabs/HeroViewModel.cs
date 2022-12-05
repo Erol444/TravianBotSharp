@@ -18,7 +18,7 @@ namespace WPFUI.ViewModels.Tabs
             _eventManager.HeroAdventuresUpdate += OnHeroAdventuresUpdate;
             _eventManager.HeroInventoryUpdate += OnheroInventoryUpdate;
 
-            OnActive += HeroViewModel_OnActive; ;
+            Active += HeroViewModel_OnActive; ;
 
             AdventuresCommand = ReactiveCommand.Create(AdventuresTask);
             InventoryCommand = ReactiveCommand.Create(InventoryTask);

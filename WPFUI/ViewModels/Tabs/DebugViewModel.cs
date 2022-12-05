@@ -22,7 +22,7 @@ namespace WPFUI.ViewModels.Tabs
             GetHelpCommand = ReactiveCommand.Create(GetHelpTask);
             LogFolderCommand = ReactiveCommand.Create(LogFolderTask);
 
-            OnActive += ActiveHandler;
+            Active += ActiveHandler;
             OnAccountChange += AccountChangeHandler;
         }
 

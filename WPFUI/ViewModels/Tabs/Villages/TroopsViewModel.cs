@@ -70,7 +70,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesSettings.Find(villageId);
             var boolean = settings.GetTroopUpgrade();
-            var tribe = context.AccountsInfo.Find(CurrentAccount.Id).Tribe;
+            var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             var troops = tribe.GetTroops();
             for (var i = 0; i < troops.Count; i++)
             {
@@ -89,7 +89,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 if (item.IsChecked)
                 {
-                    _taskManager.Add(CurrentAccount.Id, new ImproveTroopsTask(CurrentVillage.Id, CurrentAccount.Id));
+                    _taskManager.Add(AccountId, new ImproveTroopsTask(CurrentVillage.Id, AccountId));
                     MessageBox.Show("Apply");
                     return;
                 }
@@ -99,7 +99,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void UpdateTask()
         {
-            _taskManager.Add(CurrentAccount.Id, new UpdateTroopLevel(CurrentVillage.Id, CurrentAccount.Id));
+            _taskManager.Add(AccountId, new UpdateTroopLevel(CurrentVillage.Id, AccountId));
             MessageBox.Show("Update");
         }
 

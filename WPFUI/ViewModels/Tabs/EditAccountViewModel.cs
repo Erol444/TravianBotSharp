@@ -16,7 +16,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
 
-            OnActive += ActiveHandler;
+            Active += ActiveHandler;
             OnAccountChange += AccountHandler;
         }
 

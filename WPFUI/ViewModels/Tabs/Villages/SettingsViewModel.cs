@@ -63,7 +63,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 var villageId = CurrentVillage.Id;
                 Save(villageId);
-                var accountId = CurrentAccount.Id;
+                var accountId = AccountId;
                 TaskBasedSetting(villageId, accountId);
             });
             _waitingWindow.Close();
@@ -95,7 +95,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                     context.Update(setting);
                     context.SaveChanges();
                     LoadData(villageId);
-                    var accountId = CurrentAccount.Id;
+                    var accountId = AccountId;
                     TaskBasedSetting(villageId, accountId);
                 }
                 catch

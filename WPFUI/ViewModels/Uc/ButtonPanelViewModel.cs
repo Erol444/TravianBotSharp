@@ -52,7 +52,7 @@ namespace WPFUI.ViewModels.Uc
             this.WhenAnyValue(x => x.CurrentAccount).Subscribe((x) =>
             {
                 if (x is null) return;
-                LoadData(CurrentAccount.Id);
+                LoadData(AccountId);
             });
         }
 
@@ -96,7 +96,7 @@ namespace WPFUI.ViewModels.Uc
         private void OnAccountUpdate(int accountId)
         {
             if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
+            if (AccountId != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
 
@@ -115,9 +115,9 @@ namespace WPFUI.ViewModels.Uc
             TabSelector = TabType.AddAccounts;
         }
 
-        private Task LoginTask() => Task.Run(() => LoginAccount(CurrentAccount.Id));
+        private Task LoginTask() => Task.Run(() => LoginAccount(AccountId));
 
-        private Task LogoutTask() => Task.Run(() => LogoutAccount(CurrentAccount.Id));
+        private Task LogoutTask() => Task.Run(() => LogoutAccount(AccountId));
 
         private async Task LoginAllTask()
         {
@@ -147,7 +147,7 @@ namespace WPFUI.ViewModels.Uc
         private void DeleteAccountTask()
         {
             _waitingWindow.Show("saving data");
-            DeleteAccount(CurrentAccount.Id);
+            DeleteAccount(AccountId);
             _eventManager.OnAccountsUpdate();
             _waitingWindow.Close();
         }

@@ -5,18 +5,14 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using WPFUI.Interfaces;
 using WPFUI.Models;
-using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class VillagesViewModel : AccountTabBaseViewModel, ITabPage
+    public class VillagesViewModel : ActivatableViewModelBase, ITabPage
     {
         public VillagesViewModel() : base()
         {
             _eventManager.VillagesUpdated += OnVillagesUpdate;
-
-            _isVillageSelected = this.WhenAnyValue(x => x.CurrentVillage).Select(x => x is not null).ToProperty(this, x => x.IsVillageSelected);
-            _isVillageNotSelected = this.WhenAnyValue(x => x.CurrentVillage).Select(x => x is null).ToProperty(this, x => x.IsVillageNotSelected);
         }
 
         public bool IsActive { get; set; }
@@ -26,7 +22,7 @@ namespace WPFUI.ViewModels.Tabs
             IsActive = true;
             if (CurrentAccount is not null)
             {
-                LoadData(CurrentAccount.Id);
+                LoadData(AccountId);
             }
         }
 
@@ -40,7 +36,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!IsActive) return;
             if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
+            if (AccountId != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
         }
 

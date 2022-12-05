@@ -18,7 +18,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void BothDorf()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var villageId = CurrentVillage.Id;
             var updateTask = tasks.OfType<UpdateBothDorf>().FirstOrDefault(x => x.VillageId == villageId);
@@ -35,7 +35,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void Dorf1()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var villageId = CurrentVillage.Id;
             var updateTask = tasks.OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == villageId);
@@ -52,7 +52,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void Dorf2()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var villageId = CurrentVillage.Id;
             var updateTask = tasks.OfType<UpdateDorf2>().FirstOrDefault(x => x.VillageId == villageId);

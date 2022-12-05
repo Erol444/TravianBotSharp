@@ -2,12 +2,11 @@
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels
 {
-    public class ActivatableViewModelBase : TabBaseViewModel, IActivatableViewModel
+    public abstract class ActivatableViewModelBase : TabBaseViewModel, IActivatableViewModel
     {
         public ActivatableViewModelBase()
         {
@@ -19,58 +18,28 @@ namespace WPFUI.ViewModels
                     .Create(() => OnDeactived())
                     .DisposeWith(disposables);
             });
-
-            _selectorViewModel.AccountChanged += AccountChange;
-            _selectorViewModel.VillageChanged += VillageChange;
-
-            this.WhenAnyValue(vm => vm._selectorViewModel.Account)
-                .Where(x => x is not null)
-                .Select(x => x.Id)
-                .ToProperty(this, vm => vm.AccountId, out _accountId);
-            this.WhenAnyValue(vm => vm._selectorViewModel.Village)
-                .Where(x => x is not null)
-                .Select(x => x.Id)
-                .ToProperty(this, vm => vm.VillageId, out _villageId);
         }
 
-        protected event Action OnActive;
+        protected abstract void Init(int id);
 
-        protected event Action OnDeactive;
+        protected abstract void Reload(int id);
 
-        protected event Action<int> OnAccountChange;
+        protected event Action Active;
 
-        private void AccountChange(int accountId) => OnAccountChange?.Invoke(accountId);
-
-        protected event Action<int> OnVillageChange;
-
-        private void VillageChange(int villageId) => OnVillageChange?.Invoke(villageId);
+        protected event Action Deactive;
 
         protected bool IsActive { get; private set; }
 
         private void OnActived()
         {
             IsActive = true;
-            RxApp.MainThreadScheduler.Schedule(() => OnActive?.Invoke());
+            RxApp.TaskpoolScheduler.Schedule(() => Active?.Invoke());
         }
 
         private void OnDeactived()
         {
             IsActive = false;
-            RxApp.MainThreadScheduler.Schedule(() => OnDeactive?.Invoke());
-        }
-
-        private readonly ObservableAsPropertyHelper<int> _accountId;
-
-        public int AccountId
-        {
-            get => _accountId.Value;
-        }
-
-        private readonly ObservableAsPropertyHelper<int> _villageId;
-
-        public int VillageId
-        {
-            get => _villageId.Value;
+            RxApp.TaskpoolScheduler.Schedule(() => Deactive?.Invoke());
         }
 
         public ViewModelActivator Activator { get; } = new();
