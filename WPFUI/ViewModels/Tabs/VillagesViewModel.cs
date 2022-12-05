@@ -1,71 +1,59 @@
 ﻿using ReactiveUI;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using WPFUI.Interfaces;
 using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class VillagesViewModel : ActivatableViewModelBase, ITabPage
+    public class VillagesViewModel : AccountTabViewModelBase
     {
-        public VillagesViewModel() : base()
+        public VillagesViewModel()
         {
-            _eventManager.VillagesUpdated += OnVillagesUpdate;
+            this.WhenAnyValue(vm => vm.CurrentVillage).Subscribe(x => _selectorViewModel.Village = x);
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
+        protected override void Init(int accountId)
         {
-            IsActive = true;
-            if (CurrentAccount is not null)
-            {
-                LoadData(AccountId);
-            }
+            LoadData(accountId);
         }
 
-        public void OnDeactived()
+        protected override void Reload(int accountId)
         {
-            IsActive = false;
-            OldVillage = CurrentVillage;
+            LoadData(accountId);
         }
 
-        public void OnVillagesUpdate(int accountId)
-        {
-            if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (AccountId != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
-        }
-
-        protected override void LoadData(int accountId)
+        private void LoadData(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == accountId);
             OldVillage ??= CurrentVillage;
 
-            Villages.Clear();
-
-            if (villages.Any())
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                foreach (var village in villages)
+                Villages.Clear();
+
+                if (villages.Any())
                 {
-                    Villages.Add(new()
+                    foreach (var village in villages)
                     {
-                        Id = village.Id,
-                        Name = village.Name,
-                        Coords = $"{village.X}|{village.Y}",
-                    });
+                        Villages.Add(new()
+                        {
+                            Id = village.Id,
+                            Name = village.Name,
+                            Coords = $"{village.X}|{village.Y}",
+                        });
+                    }
+
+                    var vill = Villages.FirstOrDefault(x => x.Id == OldVillage?.Id);
+
+                    if (vill is not null) CurrentIndex = Villages.IndexOf(vill);
+                    else CurrentIndex = 0;
+                    OldVillage = null;
                 }
-
-                var vill = Villages.FirstOrDefault(x => x.Id == OldVillage?.Id);
-
-                if (vill is not null) CurrentIndex = Villages.IndexOf(vill);
-                else CurrentIndex = 0;
-                OldVillage = null;
-            }
+            });
         }
 
         public ObservableCollection<VillageModel> Villages { get; } = new();
@@ -87,19 +75,5 @@ namespace WPFUI.ViewModels.Tabs
         }
 
         public VillageModel OldVillage { get; set; }
-
-        private readonly ObservableAsPropertyHelper<bool> _isVillageSelected;
-
-        public bool IsVillageSelected
-        {
-            get => _isVillageSelected.Value;
-        }
-
-        private readonly ObservableAsPropertyHelper<bool> _isVillageNotSelected;
-
-        public bool IsVillageNotSelected
-        {
-            get => _isVillageNotSelected.Value;
-        }
     }
 }
