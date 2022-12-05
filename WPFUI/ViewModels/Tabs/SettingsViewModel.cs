@@ -13,19 +13,23 @@ using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class SettingsViewModel : ActivatableViewModelBase
+    public class SettingsViewModel : AccountTabViewModelBase
     {
         public SettingsViewModel()
         {
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
-            Active += OnActived;
         }
 
-        private void OnActived()
+        protected override void Init(int accountId)
         {
-            LoadData(AccountId);
+            LoadData(accountId);
+        }
+
+        protected override void Reload(int accountId)
+        {
+            LoadData(accountId);
         }
 
         private void LoadData(int index)
