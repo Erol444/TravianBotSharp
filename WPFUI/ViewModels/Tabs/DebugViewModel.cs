@@ -10,7 +10,7 @@ using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class DebugViewModel : ActivatableViewModelBase
+    public class DebugViewModel : AccountTabViewModelBase
     {
         private const string discordUrl = "https://discord.gg/DVPV4gesCz";
 
@@ -21,19 +21,16 @@ namespace WPFUI.ViewModels.Tabs
 
             GetHelpCommand = ReactiveCommand.Create(GetHelpTask);
             LogFolderCommand = ReactiveCommand.Create(LogFolderTask);
-
-            Active += ActiveHandler;
-            OnAccountChange += AccountChangeHandler;
         }
 
-        private void AccountChangeHandler(int accountId)
+        protected override void Init(int accountId)
         {
             LoadData(accountId);
         }
 
-        private void ActiveHandler()
+        protected override void Reload(int accountId)
         {
-            LoadData(AccountId);
+            LoadData(accountId);
         }
 
         private void LoadData(int accountId)
