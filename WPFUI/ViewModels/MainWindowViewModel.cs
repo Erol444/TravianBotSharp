@@ -12,7 +12,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -40,9 +39,11 @@ namespace WPFUI.ViewModels
             _restClientManager = Locator.Current.GetService<IRestClientManager>();
             _timerManager = Locator.Current.GetService<ITimerManager>();
             _chromeManager = Locator.Current.GetService<IChromeManager>();
+            _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
 
             _isAccountSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is not null).ToProperty(this, x => x.IsAccountSelected);
             _isAccountNotSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is null).ToProperty(this, x => x.IsAccountNotSelected);
+            this.WhenAnyValue(x => x.CurrentAccount).Subscribe(x => _selectorViewModel.Account = x);
             this.WhenAnyValue(x => x.CurrentIndex).Subscribe(x =>
             {
                 if (x == -1) return;
@@ -51,7 +52,6 @@ namespace WPFUI.ViewModels
             });
 
             Tabs = new();
-            ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
         }
 
         public async Task ClosingTask(CancelEventArgs e)
@@ -237,6 +237,7 @@ namespace WPFUI.ViewModels
         private readonly ITimerManager _timerManager;
         private readonly IRestClientManager _restClientManager;
         private readonly WaitingViewModel _waitingWindow;
+        private readonly SelectorViewModel _selectorViewModel;
 
         public ObservableCollection<Account> Accounts { get; } = new();
 
@@ -270,7 +271,6 @@ namespace WPFUI.ViewModels
             get => _isAccountNotSelected.Value;
         }
 
-        public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
         public bool IsActive { get; set; }
 
         private Dictionary<TabType, TabItemModel[]> _tabsHolder;
