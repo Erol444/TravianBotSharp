@@ -50,50 +50,7 @@ namespace WPFUI.ViewModels
                 SetTab(TabType.Normal);
             });
 
-            _tabsHolder = new()
-            {
-                {
-                    TabType.NoAccount, new TabItemModel[]
-                    {
-                        new("No account", new NoAccountPage()) ,
-                    }
-                },
-                {
-                    TabType.AddAccount, new TabItemModel[]
-                    {
-                        new("Add account", new AddAccountPage()),
-                    }
-                },
-                {
-                    TabType.AddAccounts, new TabItemModel[]
-                    {
-                        new("Add accounts", new AddAccountsPage()),
-                    }
-                },
-                {
-                    TabType.EditAccount, new TabItemModel[]
-                    {
-                        new("Edit account", new EditAccountPage()),
-                    }
-                },
-                {
-                    TabType.Normal, new TabItemModel[]
-                    {
-                        new("General", new GeneralPage()),
-                        new("Settings", new SettingsPage()),
-                        new("Hero", new HeroPage()),
-                        new("Villages", new VillagesPage()),
-                        new("Farming", new FarmingPage()),
-                        new("Debug", new DebugPage()),
-                    }
-                }
-            };
-
-            Tabs = new()
-            {
-                _tabsHolder[TabType.NoAccount][0],
-            };
-
+            Tabs = new();
             ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
         }
 
@@ -174,6 +131,7 @@ namespace WPFUI.ViewModels
 
         public void SetTab(TabType tab)
         {
+            if (!IsActive) return;
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Tabs.Clear();
@@ -191,6 +149,47 @@ namespace WPFUI.ViewModels
         {
             IsActive = true;
             LoadData();
+
+            _tabsHolder = new()
+            {
+                {
+                    TabType.NoAccount, new TabItemModel[]
+                    {
+                        new("No account", new NoAccountPage()) ,
+                    }
+                },
+                {
+                    TabType.AddAccount, new TabItemModel[]
+                    {
+                        new("Add account", new AddAccountPage()),
+                    }
+                },
+                {
+                    TabType.AddAccounts, new TabItemModel[]
+                    {
+                        new("Add accounts", new AddAccountsPage()),
+                    }
+                },
+                {
+                    TabType.EditAccount, new TabItemModel[]
+                    {
+                        new("Edit account", new EditAccountPage()),
+                    }
+                },
+                {
+                    TabType.Normal, new TabItemModel[]
+                    {
+                        new("General", new GeneralPage()),
+                        new("Settings", new SettingsPage()),
+                        new("Hero", new HeroPage()),
+                        new("Villages", new VillagesPage()),
+                        new("Farming", new FarmingPage()),
+                        new("Debug", new DebugPage()),
+                    }
+                }
+            };
+
+            Tabs.Add(_tabsHolder[TabType.NoAccount]);
         }
 
         public void OnDeactived()
@@ -274,7 +273,7 @@ namespace WPFUI.ViewModels
         public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
         public bool IsActive { get; set; }
 
-        private readonly Dictionary<TabType, TabItemModel[]> _tabsHolder;
+        private Dictionary<TabType, TabItemModel[]> _tabsHolder;
         private TabType _current;
 
         public ObservableCollection<TabItemModel> Tabs { get; }

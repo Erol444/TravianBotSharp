@@ -178,6 +178,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadUpgradeTroop(bool[] upgradeTroop)
         {
+            if (!IsActive) return;
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
