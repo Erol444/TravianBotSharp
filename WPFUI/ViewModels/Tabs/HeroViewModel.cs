@@ -58,9 +58,11 @@ namespace WPFUI.ViewModels.Tabs
         private void LoadAdventures(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var adventures = context.Adventures.Where(x => x.AccountId == accountId);
+            var adventures = context.Adventures.Where(x => x.AccountId == accountId).ToList();
+
             RxApp.MainThreadScheduler.Schedule(() =>
             {
+                AdventureNum = Adventures.Count.ToString();
                 Adventures.Clear();
                 foreach (var adventure in adventures)
                 {
@@ -72,13 +74,12 @@ namespace WPFUI.ViewModels.Tabs
                     });
                 }
             });
-            AdventureNum = Adventures.Count.ToString();
         }
 
         private void LoadInventory(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var inventory = context.HeroesItems.Where(x => x.AccountId == accountId);
+            var inventory = context.HeroesItems.Where(x => x.AccountId == accountId).ToList();
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Inventory.Clear();
@@ -102,8 +103,11 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var info = context.Heroes.Find(accountId);
-            Health = info.Health.ToString();
-            Status = info.Status.ToString().EnumStrToString();
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Health = info.Health.ToString();
+                Status = info.Status.ToString().EnumStrToString();
+            });
         }
 
         private void AdventuresTask()
