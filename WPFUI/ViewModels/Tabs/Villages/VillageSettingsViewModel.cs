@@ -18,9 +18,9 @@ using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class SettingsViewModel : VillageTabViewModelBase
+    public class VillageSettingsViewModel : VillageTabViewModelBase
     {
-        public SettingsViewModel()
+        public VillageSettingsViewModel()
         {
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);

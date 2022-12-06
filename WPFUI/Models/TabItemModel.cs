@@ -1,11 +1,11 @@
 ﻿using ReactiveUI;
 using System.Windows.Controls;
 
-namespace WPFUI.ViewModels.Tabs
+namespace WPFUI.Models
 {
-    public sealed class TabItemViewModel : ReactiveObject
+    public sealed class TabItemModel : ReactiveObject
     {
-        public TabItemViewModel(string header, Page content)
+        public TabItemModel(string header, Page content)
         {
             Header = header;
             Content = content;

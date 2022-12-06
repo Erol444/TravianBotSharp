@@ -18,7 +18,6 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using WPFUI.Interfaces;
 using WPFUI.Models;
-using WPFUI.ViewModels.Tabs;
 using WPFUI.Views.Tabs;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
@@ -54,31 +53,31 @@ namespace WPFUI.ViewModels
             _tabsHolder = new()
             {
                 {
-                    TabType.NoAccount, new TabItemViewModel[]
+                    TabType.NoAccount, new TabItemModel[]
                     {
                         new("No account", new NoAccountPage()) ,
                     }
                 },
                 {
-                    TabType.AddAccount, new TabItemViewModel[]
+                    TabType.AddAccount, new TabItemModel[]
                     {
                         new("Add account", new AddAccountPage()),
                     }
                 },
                 {
-                    TabType.AddAccounts, new TabItemViewModel[]
+                    TabType.AddAccounts, new TabItemModel[]
                     {
                         new("Add accounts", new AddAccountsPage()),
                     }
                 },
                 {
-                    TabType.EditAccount, new TabItemViewModel[]
+                    TabType.EditAccount, new TabItemModel[]
                     {
                         new("Edit account", new EditAccountPage()),
                     }
                 },
                 {
-                    TabType.Normal, new TabItemViewModel[]
+                    TabType.Normal, new TabItemModel[]
                     {
                         new("General", new GeneralPage()),
                         new("Settings", new SettingsPage()),
@@ -275,10 +274,10 @@ namespace WPFUI.ViewModels
         public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
         public bool IsActive { get; set; }
 
-        private readonly Dictionary<TabType, TabItemViewModel[]> _tabsHolder;
+        private readonly Dictionary<TabType, TabItemModel[]> _tabsHolder;
         private TabType _current;
 
-        public ObservableCollection<TabItemViewModel> Tabs { get; }
+        public ObservableCollection<TabItemModel> Tabs { get; }
 
         public Action Show;
     }

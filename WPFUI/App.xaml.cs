@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using WPFUI.Models;
 using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
@@ -162,15 +163,15 @@ namespace WPFUI
             services.AddSingleton<FarmingViewModel>();
             services.AddSingleton<GeneralViewModel>();
             services.AddSingleton<HeroViewModel>();
-            services.AddSingleton<ViewModels.Tabs.SettingsViewModel>();
-            services.AddSingleton<TabItemViewModel>();
+            services.AddSingleton<SettingsViewModel>();
+            services.AddSingleton<TabItemModel>();
             services.AddSingleton<VillagesViewModel>();
 
             services.AddSingleton<BuildViewModel>();
             services.AddSingleton<InfoViewModel>();
             services.AddSingleton<NPCViewModel>();
-            services.AddSingleton<ViewModels.Tabs.Villages.SettingsViewModel>();
-            services.AddSingleton<ViewModels.Tabs.Villages.TroopsViewModel>();
+            services.AddSingleton<VillageSettingsViewModel>();
+            services.AddSingleton<VillageTroopsViewModel>();
 
             services.AddSingleton<SelectorViewModel>();
             return services;

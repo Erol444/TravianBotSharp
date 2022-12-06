@@ -8,11 +8,11 @@ namespace WPFUI.Views.Tabs.Villages
     /// <summary>
     /// Interaction logic for TroopsPage.xaml
     /// </summary>
-    public partial class TroopsPage : ReactivePage<TroopsViewModel>
+    public partial class TroopsPage : ReactivePage<VillageTroopsViewModel>
     {
         public TroopsPage()
         {
-            ViewModel = Locator.Current.GetService<TroopsViewModel>();
+            ViewModel = Locator.Current.GetService<VillageTroopsViewModel>();
             InitializeComponent();
             CurrentLevel.ViewModel = new("Current troops's level: ");
             WantUpgrade.ViewModel = new("Select troop for upgrading: ");

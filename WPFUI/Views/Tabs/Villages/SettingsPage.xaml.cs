@@ -8,11 +8,11 @@ namespace WPFUI.Views.Tabs.Villages
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
     /// </summary>
-    public partial class SettingsPage : ReactivePage<SettingsViewModel>
+    public partial class SettingsPage : ReactivePage<VillageSettingsViewModel>
     {
         public SettingsPage()
         {
-            ViewModel = Locator.Current.GetService<SettingsViewModel>();
+            ViewModel = Locator.Current.GetService<VillageSettingsViewModel>();
             InitializeComponent();
             Complete.ViewModel = new("Auto complete upgrade when queue is longer than", "min(s)");
             WatchAds.ViewModel = new("Using ads upgrade button when building time is longer than", "min(s)");

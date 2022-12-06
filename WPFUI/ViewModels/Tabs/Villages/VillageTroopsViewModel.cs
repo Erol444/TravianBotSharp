@@ -12,9 +12,9 @@ using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class TroopsViewModel : VillageTabViewModelBase
+    public class VillageTroopsViewModel : VillageTabViewModelBase
     {
-        public TroopsViewModel()
+        public VillageTroopsViewModel()
         {
             ApplyCommand = ReactiveCommand.Create(ApplyTask);
             UpdateCommand = ReactiveCommand.Create(UpdateTask);
