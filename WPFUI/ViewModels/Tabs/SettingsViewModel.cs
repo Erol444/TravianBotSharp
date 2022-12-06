@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -31,12 +32,11 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var settings = context.AccountsSettings.Find(index);
-            Settings.CopyFrom(settings);
+            RxApp.MainThreadScheduler.Schedule(() => Settings.CopyFrom(settings));
         }
 
         private async Task SaveTask()
         {
-            if (!Settings.IsVaild()) return;
             _waitingWindow.Show("saving account's settings");
 
             await Task.Run(() =>
@@ -52,8 +52,6 @@ namespace WPFUI.ViewModels.Tabs
 
         private void ImportTask()
         {
-            if (!Settings.IsVaild()) return;
-
             using var context = _contextFactory.CreateDbContext();
             var account = context.Accounts.Find(AccountId);
             var ofd = new OpenFileDialog
