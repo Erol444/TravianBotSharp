@@ -136,6 +136,7 @@ namespace WPFUI.ViewModels
             {
                 Tabs.Clear();
                 Tabs.AddRange(_tabsHolder[tab]);
+                TabIndex = 0;
                 _current = tab;
             });
         }
@@ -275,6 +276,14 @@ namespace WPFUI.ViewModels
 
         private Dictionary<TabType, TabItemModel[]> _tabsHolder;
         private TabType _current;
+
+        private int _tabIndex;
+
+        public int TabIndex
+        {
+            get => _tabIndex;
+            set => this.RaiseAndSetIfChanged(ref _tabIndex, value);
+        }
 
         public ObservableCollection<TabItemModel> Tabs { get; }
 

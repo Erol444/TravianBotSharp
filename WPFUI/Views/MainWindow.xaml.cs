@@ -29,6 +29,7 @@ namespace WPFUI.Views
                 this.Bind(ViewModel, vm => vm.CurrentAccount, v => v.AccountGrid.SelectedItem).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.CurrentIndex, v => v.AccountGrid.SelectedIndex).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.Tabs, v => v.Tabs.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.TabIndex, v => v.Tabs.SelectedIndex).DisposeWith(d);
 
                 Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
