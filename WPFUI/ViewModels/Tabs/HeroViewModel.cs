@@ -91,7 +91,7 @@ namespace WPFUI.ViewModels.Tabs
                     var itemName = new string(itemStr.Where(x => char.IsLetter(x)).ToArray());
                     var lastChar = itemStr[^1];
                     var tier = char.IsDigit(lastChar) ? int.Parse(lastChar.ToString()) : 0;
-                    return new()
+                    return new ItemInfo()
                     {
                         Item = itemName.EnumStrToString(),
                         Amount = item.Count,
