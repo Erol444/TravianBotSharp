@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -22,26 +23,24 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int accountId)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var villages = context.Villages.Where(x => x.AccountId == accountId).ToList();
             OldVillage ??= CurrentVillage;
+            using var context = _contextFactory.CreateDbContext();
+            var villages = context.Villages
+                .Where(x => x.AccountId == accountId)
+                .Select(village => new VillageModel()
+                {
+                    Id = village.Id,
+                    Name = village.Name,
+                    Coords = $"{village.X}|{village.Y}",
+                })
+                .ToList();
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Villages.Clear();
-
                 if (villages.Any())
                 {
-                    foreach (var village in villages)
-                    {
-                        Villages.Add(new()
-                        {
-                            Id = village.Id,
-                            Name = village.Name,
-                            Coords = $"{village.X}|{village.Y}",
-                        });
-                    }
-
+                    Villages.AddRange(villages);
                     var vill = Villages.FirstOrDefault(x => x.Id == OldVillage?.Id);
 
                     if (vill is not null) CurrentIndex = Villages.IndexOf(vill);
