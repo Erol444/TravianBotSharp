@@ -41,13 +41,12 @@ namespace WPFUI.ViewModels
             _chromeManager = Locator.Current.GetService<IChromeManager>();
             _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
 
-            _isAccountSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is not null).ToProperty(this, x => x.IsAccountSelected);
-            _isAccountNotSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is null).ToProperty(this, x => x.IsAccountNotSelected);
-            this.WhenAnyValue(x => x.CurrentAccount).Subscribe(x => _selectorViewModel.Account = x);
+            this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is not null).ToProperty(this, x => x.IsAccountSelected, out _isAccountSelected);
+            this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is null).ToProperty(this, x => x.IsAccountNotSelected, out _isAccountNotSelected);
+            this.WhenAnyValue(x => x.CurrentAccount).BindTo(this, vm => vm._selectorViewModel.Account);
             this.WhenAnyValue(x => x.CurrentIndex).Subscribe(x =>
             {
                 if (x == -1) return;
-                if (_current == TabType.EditAccount) return;
                 SetTab(TabType.Normal);
             });
 
@@ -172,12 +171,6 @@ namespace WPFUI.ViewModels
                     }
                 },
                 {
-                    TabType.EditAccount, new TabItemModel[]
-                    {
-                        new("Edit account", new EditAccountPage()),
-                    }
-                },
-                {
                     TabType.Normal, new TabItemModel[]
                     {
                         new("General", new GeneralPage()),
@@ -186,6 +179,7 @@ namespace WPFUI.ViewModels
                         new("Villages", new VillagesPage()),
                         new("Farming", new FarmingPage()),
                         new("Debug", new DebugPage()),
+                        new("Edit account", new EditAccountPage()),
                     }
                 }
             };
@@ -217,7 +211,7 @@ namespace WPFUI.ViewModels
                 }
 
                 var account = context.Accounts.Find(oldAccount?.Id);
-                if (_current == TabType.AddAccount || _current == TabType.AddAccounts || _current == TabType.EditAccount)
+                if (_current == TabType.AddAccount || _current == TabType.AddAccounts)
                 {
                     if (account is not null) CurrentIndex = Accounts.IndexOf(account);
                     else CurrentIndex = 0;

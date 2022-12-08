@@ -1,13 +1,12 @@
 ﻿using MainCore;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
-using ReactiveUI;
 using Splat;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class TabBaseViewModel : ReactiveObject
+    public abstract class TabBaseViewModel : ActivatableViewModelBase
     {
         public TabBaseViewModel()
         {

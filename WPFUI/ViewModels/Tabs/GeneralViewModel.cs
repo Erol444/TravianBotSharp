@@ -8,10 +8,11 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class GeneralViewModel : AccountTabViewModelBase
+    public class GeneralViewModel : AccountTabBaseViewModel
     {
         public GeneralViewModel()
         {

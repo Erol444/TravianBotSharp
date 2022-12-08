@@ -9,12 +9,12 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
-using WPFUI.ViewModels.Tabs;
+using WPFUI.ViewModels.Abstract;
 using Access = MainCore.Models.Database.Access;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class ButtonPanelViewModel : AccountTabViewModelBase
+    public class ButtonPanelViewModel : AccountTabBaseViewModel
     {
         public ButtonPanelViewModel()
         {
@@ -23,7 +23,6 @@ namespace WPFUI.ViewModels.Uc
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
-            EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm._selectorViewModel.IsAccountSelected));
             DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
 
             LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
@@ -118,11 +117,6 @@ namespace WPFUI.ViewModels.Uc
             {
                 await Task.Run(() => LogoutAccount(account.Id));
             }
-        }
-
-        private void EditAccountTask()
-        {
-            _mainWindow.SetTab(TabType.EditAccount);
         }
 
         private void DeleteAccountTask()
@@ -225,7 +219,6 @@ namespace WPFUI.ViewModels.Uc
         public ReactiveCommand<Unit, Unit> CheckVersionCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }
-        public ReactiveCommand<Unit, Unit> EditAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> DeleteAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> LoginCommand { get; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; }

@@ -7,10 +7,11 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class EditAccountViewModel : AccountTabViewModelBase
+    public class EditAccountViewModel : AccountTabBaseViewModel
     {
         public EditAccountViewModel()
         {

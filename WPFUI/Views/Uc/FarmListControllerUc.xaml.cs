@@ -21,9 +21,6 @@ namespace WPFUI.Views.Uc
                 this.Bind(ViewModel, vm => vm.FarmSetting.IsActive, v => v.ActiveCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.FarmSetting.IntervalTime, v => v.Interval.ViewModel.MainValue).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.FarmSetting.IntervalDiffTime, v => v.Interval.ViewModel.ToleranceValue).DisposeWith(d);
-
-                this.Bind(ViewModel, vm => vm.IsActive, v => v.ActiveCheckBox.IsEnabled).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.IsActive, v => v.Interval.IsEnabled).DisposeWith(d);
             });
         }
     }

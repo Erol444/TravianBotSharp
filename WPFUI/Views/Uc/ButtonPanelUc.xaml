@@ -26,8 +26,7 @@
         <Button x:Name="AddAccountsButton" Grid.Column="1" Content="Add accounts" Grid.Row="1" Margin="1,0,0,2" />
         <Button x:Name="LoginButton" Content="Login" Grid.Row="2" Margin="0,0,1,2" />
         <Button x:Name="LogoutButton" Grid.Column="1" Content="Logout" Grid.Row="2" Margin="1,0,0,2" />
-        <Button x:Name="EditButton" Content="Edit" Grid.Row="3" Margin="0,0,1,2" />
-        <Button x:Name="DeleteButton" Grid.Column="1" Content="Delete" Grid.Row="3" Margin="1,0,0,2" />
+        <Button x:Name="DeleteButton" Grid.ColumnSpan="2" Content="Delete" Grid.Row="3" Margin="1,0,0,2" />
         <Button x:Name="LoginAllButton" Content="Login all" Grid.Row="4" Margin="0,0,1,2" IsEnabled="False" />
         <Button x:Name="LogoutAllButton" Grid.Column="1" Content="Logout all" Grid.Row="4" Margin="1,0,0,2" IsEnabled="False" />
     </Grid>

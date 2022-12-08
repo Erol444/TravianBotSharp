@@ -14,10 +14,11 @@ using System.Reactive.Concurrency;
 using System.Text.Json;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class BuildViewModel : VillageTabViewModelBase
+    public class BuildViewModel : VillageTabBaseViewModel
     {
         public BuildViewModel()
         {

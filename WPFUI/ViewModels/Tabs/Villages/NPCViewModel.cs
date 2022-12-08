@@ -6,10 +6,11 @@ using System;
 using System.Reactive;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class NPCViewModel : VillageTabViewModelBase
+    public class NPCViewModel : VillageTabBaseViewModel
     {
         public NPCViewModel()
         {

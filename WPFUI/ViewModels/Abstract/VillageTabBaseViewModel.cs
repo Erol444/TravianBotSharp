@@ -3,11 +3,11 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
-namespace WPFUI.ViewModels.Tabs.Villages
+namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class VillageTabViewModelBase : ActivatableViewModelBase
+    public abstract class VillageTabBaseViewModel : TabBaseViewModel
     {
-        public VillageTabViewModelBase()
+        public VillageTabBaseViewModel()
         {
             this.WhenAnyValue(vm => vm._selectorViewModel.Account)
                 .Where(x => x is not null)
@@ -22,6 +22,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
             _selectorViewModel.VillageChanged += OnVillageChanged;
             Active += OnActive;
         }
+
+        protected abstract void Init(int id);
 
         private void OnActive()
         {

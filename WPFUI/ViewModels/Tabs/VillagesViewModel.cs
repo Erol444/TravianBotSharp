@@ -1,18 +1,18 @@
 ﻿using ReactiveUI;
-using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class VillagesViewModel : AccountTabViewModelBase
+    public class VillagesViewModel : AccountTabBaseViewModel
     {
         public VillagesViewModel()
         {
-            this.WhenAnyValue(vm => vm.CurrentVillage).Subscribe(x => _selectorViewModel.Village = x);
+            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(this, vm => vm._selectorViewModel.Village);
         }
 
         protected override void Init(int accountId)

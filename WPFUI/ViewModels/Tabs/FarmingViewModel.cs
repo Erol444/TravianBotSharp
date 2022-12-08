@@ -8,10 +8,11 @@ using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class FarmingViewModel : AccountTabViewModelBase
+    public class FarmingViewModel : AccountTabBaseViewModel
     {
         public FarmingViewModel()
         {

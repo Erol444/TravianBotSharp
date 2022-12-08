@@ -7,10 +7,11 @@ using System.IO;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class DebugViewModel : AccountTabViewModelBase
+    public class DebugViewModel : AccountTabBaseViewModel
     {
         private const string discordUrl = "https://discord.gg/DVPV4gesCz";
 

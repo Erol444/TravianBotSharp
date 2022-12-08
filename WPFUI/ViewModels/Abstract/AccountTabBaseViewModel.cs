@@ -3,11 +3,11 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 
-namespace WPFUI.ViewModels.Tabs
+namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class AccountTabViewModelBase : ActivatableViewModelBase
+    public abstract class AccountTabBaseViewModel : TabBaseViewModel
     {
-        public AccountTabViewModelBase()
+        public AccountTabBaseViewModel()
         {
             this.WhenAnyValue(vm => vm._selectorViewModel.Account)
                 .Where(x => x is not null)
@@ -17,6 +17,8 @@ namespace WPFUI.ViewModels.Tabs
             _selectorViewModel.AccountChanged += OnAccountChanged;
             Active += OnActive;
         }
+
+        protected abstract void Init(int id);
 
         private void OnActive()
         {

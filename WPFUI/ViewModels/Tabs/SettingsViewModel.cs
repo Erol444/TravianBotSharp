@@ -11,10 +11,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class SettingsViewModel : AccountTabViewModelBase
+    public class SettingsViewModel : AccountTabBaseViewModel
     {
         public SettingsViewModel()
         {

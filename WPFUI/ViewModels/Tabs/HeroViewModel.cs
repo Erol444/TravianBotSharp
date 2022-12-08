@@ -7,10 +7,11 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class HeroViewModel : AccountTabViewModelBase
+    public class HeroViewModel : AccountTabBaseViewModel
     {
         public HeroViewModel()
         {

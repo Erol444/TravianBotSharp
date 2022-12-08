@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -70,6 +71,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private async Task UpdateTableTask(string input)
         {
+            if (!IsActive) return;
             if (string.IsNullOrWhiteSpace(input))
             {
                 if (Accounts.Count > 0) Accounts.Clear();
@@ -91,8 +93,11 @@ namespace WPFUI.ViewModels.Tabs
 
         private void Clean()
         {
-            InputText = "";
-            Accounts.Clear();
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                InputText = "";
+                Accounts.Clear();
+            });
         }
 
         private bool IsVaildInput()

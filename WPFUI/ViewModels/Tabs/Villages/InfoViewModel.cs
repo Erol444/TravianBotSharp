@@ -3,10 +3,11 @@ using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class InfoViewModel : VillageTabViewModelBase
+    public class InfoViewModel : VillageTabBaseViewModel
     {
         public InfoViewModel() : base()
         {

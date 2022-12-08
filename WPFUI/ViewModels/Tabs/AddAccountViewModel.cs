@@ -4,10 +4,10 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
@@ -17,7 +17,6 @@ namespace WPFUI.ViewModels.Tabs
         public AddAccountViewModel()
         {
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
-            CancelCommand = ReactiveCommand.Create(CancelTask);
         }
 
         private async Task SaveTask()
@@ -66,17 +65,14 @@ namespace WPFUI.ViewModels.Tabs
             _waitingWindow.Close();
         }
 
-        private void CancelTask()
-        {
-            Clean();
-            TabSelector = TabType.NoAccount;
-        }
-
         private void Clean()
         {
-            Server = "";
-            Username = "";
-            Accessess.Clear();
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Server = "";
+                Username = "";
+                Accessess.Clear();
+            });
         }
 
         private bool CheckInput()
@@ -144,15 +140,6 @@ namespace WPFUI.ViewModels.Tabs
 
         public ObservableCollection<Models.Access> Accessess { get; } = new();
 
-        private TabType _tabSelector;
-
-        public TabType TabSelector
-        {
-            get => _tabSelector;
-            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
-        }
-
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
-        public ReactiveCommand<Unit, Unit> CancelCommand { get; }
     }
 }

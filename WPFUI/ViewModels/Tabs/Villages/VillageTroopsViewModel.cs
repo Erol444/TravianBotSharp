@@ -9,10 +9,11 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class VillageTroopsViewModel : VillageTabViewModelBase
+    public class VillageTroopsViewModel : VillageTabBaseViewModel
     {
         public VillageTroopsViewModel()
         {

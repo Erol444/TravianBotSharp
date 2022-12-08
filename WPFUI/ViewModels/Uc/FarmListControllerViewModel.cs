@@ -22,7 +22,6 @@ namespace WPFUI.ViewModels.Uc
             {
                 FarmName = "Not selected";
                 FarmCount = "~";
-                IsActive = true;
                 FarmSetting.IsActive = false;
                 FarmSetting.IntervalTime = "0";
                 FarmSetting.IntervalDiffTime = "0";
@@ -79,14 +78,6 @@ namespace WPFUI.ViewModels.Uc
         }
 
         public FarmSettingInfo FarmSetting { get; } = new();
-
-        private bool _isActive;
-
-        public bool IsActive
-        {
-            get => _isActive;
-            set => this.RaiseAndSetIfChanged(ref _isActive, value);
-        }
 
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
     }

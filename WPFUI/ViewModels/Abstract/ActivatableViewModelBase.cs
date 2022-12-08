@@ -2,11 +2,10 @@
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
-using WPFUI.ViewModels.Abstract;
 
-namespace WPFUI.ViewModels
+namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class ActivatableViewModelBase : TabBaseViewModel, IActivatableViewModel
+    public abstract class ActivatableViewModelBase : ReactiveObject, IActivatableViewModel
     {
         public ActivatableViewModelBase()
         {
@@ -19,8 +18,6 @@ namespace WPFUI.ViewModels
                     .DisposeWith(disposables);
             });
         }
-
-        protected abstract void Init(int id);
 
         protected event Action Active;
 

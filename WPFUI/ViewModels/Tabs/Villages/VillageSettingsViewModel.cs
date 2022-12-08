@@ -15,10 +15,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class VillageSettingsViewModel : VillageTabViewModelBase
+    public class VillageSettingsViewModel : VillageTabBaseViewModel
     {
         public VillageSettingsViewModel()
         {

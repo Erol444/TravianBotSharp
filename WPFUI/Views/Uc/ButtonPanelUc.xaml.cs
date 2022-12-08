@@ -20,7 +20,6 @@ namespace WPFUI.Views.Uc
                 this.BindCommand(ViewModel, vm => vm.AddAccountsCommand, v => v.AddAccountsButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.LoginCommand, v => v.LoginButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.LogoutCommand, v => v.LogoutButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.EditAccountCommand, v => v.EditButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.DeleteAccountCommand, v => v.DeleteButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.LoginAllCommand, v => v.LoginAllButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.LogoutAllCommand, v => v.LogoutAllButton).DisposeWith(d);
