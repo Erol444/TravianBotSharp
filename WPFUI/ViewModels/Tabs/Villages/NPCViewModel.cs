@@ -4,6 +4,7 @@ using MainCore.Tasks.Update;
 using ReactiveUI;
 using System;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
@@ -26,17 +27,23 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void LoadData(int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            Resources = context.VillagesResources.Find(villageId);
+            var resources = context.VillagesResources.Find(villageId);
             var updateTime = context.VillagesUpdateTime.Find(villageId);
+            var setting = context.VillagesSettings.Find(VillageId);
+
             var dorf1 = updateTime.Dorf1;
             var dorf2 = updateTime.Dorf2;
-            LastUpdate = dorf1 > dorf2 ? dorf1 : dorf2;
 
-            var setting = context.VillagesSettings.Find(VillageId);
-            Ratio.Wood = setting.AutoNPCWood.ToString();
-            Ratio.Clay = setting.AutoNPCClay.ToString();
-            Ratio.Iron = setting.AutoNPCIron.ToString();
-            Ratio.Crop = setting.AutoNPCCrop.ToString();
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Resources = resources;
+                LastUpdate = dorf1 > dorf2 ? dorf1 : dorf2;
+
+                Ratio.Wood = setting.AutoNPCWood.ToString();
+                Ratio.Clay = setting.AutoNPCClay.ToString();
+                Ratio.Iron = setting.AutoNPCIron.ToString();
+                Ratio.Crop = setting.AutoNPCCrop.ToString();
+            });
         }
 
         private void RefreshTask()
