@@ -1,4 +1,6 @@
-﻿using MainCore.Enums;
+﻿using DynamicData;
+using DynamicData.Kernel;
+using MainCore.Enums;
 using MainCore.Helper;
 using MainCore.Models.Runtime;
 using MainCore.Tasks.Sim;
@@ -94,9 +96,38 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void LoadBuildings(int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).OrderBy(x => x.Id).ToList();
             var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0).ToList();
             var queueBuildings = _planManager.GetList(villageId);
+            var buildings = context.VillagesBuildings
+                .Where(x => x.VillageId == villageId)
+                .OrderBy(x => x.Id)
+                .AsList()
+                .Select(building =>
+                {
+                    var plannedBuild = queueBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
+                    var currentBuild = currentlyBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
+
+                    var level = building.Level.ToString();
+                    var type = building.Type;
+                    if (currentBuild is not null)
+                    {
+                        level = $"{level} -> ({currentBuild.Level})";
+                        type = currentBuild.Type;
+                    }
+                    if (plannedBuild is not null)
+                    {
+                        level = $"{level} -> [{plannedBuild.Level}]";
+                        type = plannedBuild.Building;
+                    }
+                    return new BuildingInfo()
+                    {
+                        Location = building.Id,
+                        Type = type,
+                        Level = level,
+                        Color = type.GetColor()
+                    };
+                })
+                .ToList();
 
             OldBuilding ??= CurrentBuilding;
             RxApp.MainThreadScheduler.Schedule(() =>
@@ -105,32 +136,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
                 if (buildings.Any())
                 {
-                    foreach (var building in buildings)
-                    {
-                        if (building.Id < 1 || building.Id > 40) continue;
-                        var plannedBuild = queueBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
-                        var currentBuild = currentlyBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
-
-                        var level = building.Level.ToString();
-                        var type = building.Type;
-                        if (currentBuild is not null)
-                        {
-                            level = $"{level} -> ({currentBuild.Level})";
-                            type = currentBuild.Type;
-                        }
-                        if (plannedBuild is not null)
-                        {
-                            level = $"{level} -> [{plannedBuild.Level}]";
-                            type = plannedBuild.Building;
-                        }
-                        Buildings.Add(new()
-                        {
-                            Location = building.Id,
-                            Type = type,
-                            Level = level,
-                            Color = type.GetColor()
-                        });
-                    }
+                    Buildings.AddRange(buildings);
 
                     var b = Buildings.FirstOrDefault(x => x.Location == OldBuilding?.Location);
                     if (b is not null) CurrentIndexBuilding = Buildings.IndexOf(b);
@@ -143,37 +149,35 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void LoadCurrent(int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var buildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).OrderBy(x => x.Id);
+            var buildings = context.VillagesCurrentlyBuildings
+                .Where(x => x.CompleteTime != DateTime.MaxValue && x.VillageId == villageId)
+                .OrderBy(x => x.Id)
+                .Select(building => new CurrentlyBuildingInfo()
+                {
+                    Location = building.Id,
+                    Type = building.Type,
+                    Level = building.Level,
+                    CompleteTime = building.CompleteTime,
+                })
+                .ToList();
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 CurrentlyBuildings.Clear();
-                foreach (var building in buildings)
-                {
-                    if (building.CompleteTime == DateTime.MaxValue) continue;
-                    CurrentlyBuildings.Add(new()
-                    {
-                        Location = building.Id,
-                        Type = building.Type,
-                        Level = building.Level,
-                        CompleteTime = building.CompleteTime,
-                    });
-                }
+                CurrentlyBuildings.AddRange(buildings);
             });
         }
 
         private void LoadQueue(int villageId)
         {
             OldQueueBuilding ??= CurrentQueueBuilding;
+            var queueBuildings = _planManager.GetList(villageId);
+
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 QueueBuildings.Clear();
-                var queueBuildings = _planManager.GetList(villageId);
                 if (queueBuildings.Any())
                 {
-                    foreach (var building in queueBuildings)
-                    {
-                        QueueBuildings.Add(building);
-                    }
+                    QueueBuildings.AddRange(queueBuildings);
                     _planManager.Save();
 
                     if (OldQueueBuilding is not null) CurrentIndexQueue = QueueBuildings.IndexOf(OldQueueBuilding);
