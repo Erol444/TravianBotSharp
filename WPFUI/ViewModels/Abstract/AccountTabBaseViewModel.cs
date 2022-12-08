@@ -27,6 +27,7 @@ namespace WPFUI.ViewModels.Abstract
 
         private void OnAccountChanged(int accountId)
         {
+            if (!IsActive) return;
             RxApp.TaskpoolScheduler.Schedule(() => Init(accountId));
         }
 

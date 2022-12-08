@@ -47,6 +47,7 @@ namespace WPFUI.ViewModels
             this.WhenAnyValue(x => x.CurrentIndex).Subscribe(x =>
             {
                 if (x == -1) return;
+                if (_current == TabType.Normal) return;
                 SetTab(TabType.Normal);
             });
 

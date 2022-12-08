@@ -23,7 +23,7 @@ namespace WPFUI.ViewModels.Tabs
         private void LoadData(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var villages = context.Villages.Where(x => x.AccountId == accountId);
+            var villages = context.Villages.Where(x => x.AccountId == accountId).ToList();
             OldVillage ??= CurrentVillage;
 
             RxApp.MainThreadScheduler.Schedule(() =>

@@ -75,6 +75,7 @@ namespace WPFUI
 
             services.AddSingleton<AddAccountsViewModel>();
             services.AddSingleton<AddAccountViewModel>();
+            services.AddSingleton<EditAccountViewModel>();
             services.AddSingleton<DebugViewModel>();
             services.AddSingleton<FarmingViewModel>();
             services.AddSingleton<GeneralViewModel>();

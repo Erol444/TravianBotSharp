@@ -39,6 +39,7 @@ namespace TestProject.Services
 
                 new object[] {typeof(AddAccountsViewModel) },
                 new object[] {typeof(AddAccountViewModel) },
+                new object[] {typeof(EditAccountViewModel) },
                 new object[] {typeof(DebugViewModel) },
                 new object[] {typeof(FarmingViewModel) },
                 new object[] {typeof(GeneralViewModel) },

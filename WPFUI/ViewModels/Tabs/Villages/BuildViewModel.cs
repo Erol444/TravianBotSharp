@@ -94,7 +94,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void LoadBuildings(int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).OrderBy(x => x.Id);
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).OrderBy(x => x.Id).ToList();
+            var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0).ToList();
+            var queueBuildings = _planManager.GetList(villageId);
 
             OldBuilding ??= CurrentBuilding;
             RxApp.MainThreadScheduler.Schedule(() =>
@@ -103,8 +105,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
                 if (buildings.Any())
                 {
-                    var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0);
-                    var queueBuildings = _planManager.GetList(villageId);
                     foreach (var building in buildings)
                     {
                         if (building.Id < 1 || building.Id > 40) continue;

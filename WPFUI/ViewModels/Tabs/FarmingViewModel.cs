@@ -38,10 +38,10 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int index)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var farms = context.Farms.Where(x => x.AccountId == index);
             RxApp.MainThreadScheduler.Schedule(() =>
             {
+                using var context = _contextFactory.CreateDbContext();
+                var farms = context.Farms.Where(x => x.AccountId == index).ToList();
                 FarmList.Clear();
                 foreach (var farm in farms)
                 {

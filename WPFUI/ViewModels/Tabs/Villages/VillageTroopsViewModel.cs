@@ -42,11 +42,11 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadCurrent(int villageId)
         {
+            using var context = _contextFactory.CreateDbContext();
+            var troops = context.VillagesTroops.Where(x => x.VillageId == villageId).ToArray();
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 CurrentLevel.Clear();
-                using var context = _contextFactory.CreateDbContext();
-                var troops = context.VillagesTroops.Where(x => x.VillageId == villageId).ToArray();
                 for (var i = 0; i < troops.Length; i++)
                 {
                     var troop = troops[i];
@@ -61,14 +61,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadWant(int villageId)
         {
+            using var context = _contextFactory.CreateDbContext();
+            var settings = context.VillagesSettings.Find(villageId);
+            var boolean = settings.GetTroopUpgrade();
+            var tribe = context.AccountsInfo.Find(AccountId).Tribe;
+            var troops = tribe.GetTroops();
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 WantUpgrade.Clear();
-                using var context = _contextFactory.CreateDbContext();
-                var settings = context.VillagesSettings.Find(villageId);
-                var boolean = settings.GetTroopUpgrade();
-                var tribe = context.AccountsInfo.Find(AccountId).Tribe;
-                var troops = tribe.GetTroops();
                 for (var i = 0; i < troops.Count; i++)
                 {
                     var troop = troops[i];
