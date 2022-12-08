@@ -31,7 +31,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!IsActive) return;
             if (AccountId != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
+            LoadData(accountId);
         }
 
         public Task PauseTask() => Pause(AccountId);
@@ -40,34 +40,37 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int index)
         {
-            var status = _taskManager.GetAccountStatus(index);
-            switch (status)
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                case AccountStatus.Offline:
-                case AccountStatus.Starting:
-                case AccountStatus.Pausing:
-                case AccountStatus.Stopping:
-                    IsValidStatus = false;
-                    PauseText = "~";
-                    break;
+                var status = _taskManager.GetAccountStatus(index);
+                switch (status)
+                {
+                    case AccountStatus.Offline:
+                    case AccountStatus.Starting:
+                    case AccountStatus.Pausing:
+                    case AccountStatus.Stopping:
+                        IsValidStatus = false;
+                        PauseText = "~";
+                        break;
 
-                case AccountStatus.Online:
-                    IsValidStatus = true;
-                    PauseText = "Pause";
-                    break;
+                    case AccountStatus.Online:
+                        IsValidStatus = true;
+                        PauseText = "Pause";
+                        break;
 
-                case AccountStatus.Paused:
-                    IsValidStatus = true;
-                    PauseText = "Resume";
-                    break;
+                    case AccountStatus.Paused:
+                        IsValidStatus = true;
+                        PauseText = "Resume";
+                        break;
 
-                default:
-                    break;
-            }
+                    default:
+                        break;
+                }
 
-            IsValidRestart = status == AccountStatus.Paused;
+                IsValidRestart = status == AccountStatus.Paused;
 
-            Status = status.ToString();
+                Status = status.ToString();
+            });
         }
 
         private async Task Pause(int index)
