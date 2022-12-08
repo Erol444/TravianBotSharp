@@ -1,9 +1,11 @@
-﻿using MainCore.Models.Runtime;
+﻿using DynamicData;
+using MainCore.Models.Runtime;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using WPFUI.Models;
@@ -31,14 +33,8 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int accountId)
         {
-            OnTasksUpdate(accountId);
-
-            Logs.Clear();
-            var logs = _logManager.GetLog(accountId);
-            foreach (var log in logs)
-            {
-                Logs.Add(log);
-            }
+            LoadTask(accountId);
+            LoadLogs(accountId);
         }
 
         private void GetHelpTask()
@@ -65,22 +61,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!IsActive) return;
             if (AccountId != accountId) return;
-
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                Tasks.Clear();
-                var tasks = _taskManager.GetList(accountId);
-                foreach (var item in tasks)
-                {
-                    if (item is null) continue;
-                    Tasks.Add(new TaskModel()
-                    {
-                        Task = item.Name,
-                        ExecuteAt = item.ExecuteAt,
-                        Stage = item.Stage,
-                    });
-                }
-            });
+            LoadTask(accountId);
         }
 
         private void OnLogsUpdate(int accountId, LogMessage logMessage)
@@ -90,6 +71,34 @@ namespace WPFUI.ViewModels.Tabs
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Logs.Insert(0, logMessage);
+            });
+        }
+
+        private void LoadLogs(int accountId)
+        {
+            var logs = _logManager.GetLog(accountId);
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Logs.Clear();
+                Logs.AddRange(logs);
+            });
+        }
+
+        private void LoadTask(int accountId)
+        {
+            var tasks = _taskManager.GetList(accountId);
+            var listItem = tasks.Select(item => new TaskModel()
+            {
+                Task = item.Name,
+                ExecuteAt = item.ExecuteAt,
+                Stage = item.Stage,
+            }).ToList();
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Tasks.Clear();
+                Tasks.AddRange(listItem);
             });
         }
 
