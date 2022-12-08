@@ -39,7 +39,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesSettings.Find(villageId);
-            Settings.CopyFrom(settings);
+            RxApp.MainThreadScheduler.Schedule(() => Settings.CopyFrom(settings));
         }
 
         private async Task SaveTask()
