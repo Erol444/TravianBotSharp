@@ -1,4 +1,6 @@
-﻿using MainCore.Tasks.Attack;
+﻿using DynamicData;
+using DynamicData.Kernel;
+using MainCore.Tasks.Attack;
 using MainCore.Tasks.Update;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -33,37 +35,38 @@ namespace WPFUI.ViewModels.Tabs
             if (!IsActive) return;
             if (AccountId != accountId) return;
 
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
+            LoadData(accountId);
         }
 
         private void LoadData(int index)
         {
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                using var context = _contextFactory.CreateDbContext();
-                var farms = context.Farms.Where(x => x.AccountId == index).ToList();
-                FarmList.Clear();
-                foreach (var farm in farms)
+            using var context = _contextFactory.CreateDbContext();
+            var farms = context.Farms
+                .Where(x => x.AccountId == index)
+                .AsList()
+                .Select(farm =>
                 {
                     var farmSetting = context.FarmsSettings.Find(farm.Id);
                     var color = farmSetting.IsActive ? "Green" : "Red";
-                    var f = new FarmInfo() { Id = farm.Id, Name = farm.Name, Color = color };
-                    FarmList.Add(f);
-                }
+                    return new FarmInfo() { Id = farm.Id, Name = farm.Name, Color = color };
+                }).ToList();
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                FarmList.Clear();
+                FarmList.AddRange(farms);
             });
         }
 
-        private async Task RefreshTask()
+        private Task RefreshTask()
         {
-            await Task.Run(() =>
+            var accountId = _selectorViewModel.Account.Id;
+            var tasks = _taskManager.GetList(accountId);
+            if (!tasks.Any(x => x.GetType() == typeof(UpdateFarmList)))
             {
-                var accountId = _selectorViewModel.Account.Id;
-                var tasks = _taskManager.GetList(accountId);
-                if (!tasks.Any(x => x.GetType() == typeof(UpdateFarmList)))
-                {
-                    _taskManager.Add(accountId, new UpdateFarmList(accountId));
-                }
-            });
+                _taskManager.Add(accountId, new UpdateFarmList(accountId));
+            }
+            return Task.CompletedTask;
         }
 
         private async Task StartTask()
