@@ -1,4 +1,6 @@
-﻿using MainCore.Helper;
+﻿using DynamicData;
+using DynamicData.Kernel;
+using MainCore.Helper;
 using MainCore.Tasks.Update;
 using ReactiveUI;
 using System;
@@ -59,44 +61,49 @@ namespace WPFUI.ViewModels.Tabs
         private void LoadAdventures(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var adventures = context.Adventures.Where(x => x.AccountId == accountId).ToList();
+            var adventures = context.Adventures
+                .Where(x => x.AccountId == accountId)
+                .Select(adventure => new AdventureInfo
+                {
+                    Difficulty = adventure.Difficulty.ToString(),
+                    X = adventure.X,
+                    Y = adventure.Y,
+                })
+                .ToList();
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 AdventureNum = Adventures.Count.ToString();
                 Adventures.Clear();
-                foreach (var adventure in adventures)
-                {
-                    Adventures.Add(new()
-                    {
-                        Difficulty = adventure.Difficulty.ToString(),
-                        X = adventure.X,
-                        Y = adventure.Y,
-                    });
-                }
+                Adventures.AddRange(adventures);
             });
         }
 
         private void LoadInventory(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var inventory = context.HeroesItems.Where(x => x.AccountId == accountId).ToList();
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                Inventory.Clear();
-                foreach (var item in inventory)
+            var inventory = context.HeroesItems
+                .Where(x => x.AccountId == accountId)
+                .AsList()
+                .Select(item =>
                 {
                     var itemStr = item.Item.ToString();
                     var itemName = new string(itemStr.Where(x => char.IsLetter(x)).ToArray());
                     var lastChar = itemStr[^1];
                     var tier = char.IsDigit(lastChar) ? int.Parse(lastChar.ToString()) : 0;
-                    Inventory.Add(new()
+                    return new()
                     {
                         Item = itemName.EnumStrToString(),
                         Amount = item.Count,
                         Tier = tier,
-                    });
-                }
+                    };
+                })
+                .ToList();
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Inventory.Clear();
+                Inventory.AddRange(inventory);
             });
         }
 
