@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -27,26 +28,26 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var account = context.Accounts.Find(accountId);
-            if (account is null) return;
 
-            Username = account.Username;
-            Server = account.Server;
+            var accesses = context.Accesses
+                .Where(x => x.AccountId == accountId)
+                .Select(item => new Models.Access()
+                {
+                    Password = item.Password,
+                    ProxyHost = item.ProxyHost,
+                    ProxyPort = item.ProxyPort.ToString(),
+                    ProxyUsername = item.ProxyUsername,
+                    ProxyPassword = item.ProxyPassword,
+                })
+                .ToList();
 
-            var accesses = context.Accesses.Where(x => x.AccountId == accountId);
             RxApp.MainThreadScheduler.Schedule(() =>
             {
+                Username = account.Username;
+                Server = account.Server;
+
                 Accessess.Clear();
-                foreach (var item in accesses)
-                {
-                    Accessess.Add(new Models.Access()
-                    {
-                        Password = item.Password,
-                        ProxyHost = item.ProxyHost,
-                        ProxyPort = item.ProxyPort.ToString(),
-                        ProxyUsername = item.ProxyUsername,
-                        ProxyPassword = item.ProxyPassword,
-                    });
-                }
+                Accessess.AddRange(accesses);
             });
         }
 
@@ -93,9 +94,12 @@ namespace WPFUI.ViewModels.Tabs
 
         private void Clean()
         {
-            Server = "";
-            Username = "";
-            Accessess.Clear();
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Server = "";
+                Username = "";
+                Accessess.Clear();
+            });
         }
 
         private bool CheckInput()
