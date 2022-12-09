@@ -14,6 +14,7 @@ using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
 using WPFUI.ViewModels.Uc;
+using WPFUI.ViewModels.Uc.MainView;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI
@@ -31,6 +32,7 @@ namespace WPFUI
                     resolver.InitializeSplat();
                     resolver.InitializeReactiveUI();
                     services.ConfigureServices();
+                    services.ConfigureUcViewModel();
                     services.ConfigureViewModel();
                 })
                 .Build();
@@ -90,6 +92,12 @@ namespace WPFUI
             services.AddSingleton<VillageTroopsViewModel>();
 
             services.AddSingleton<SelectorViewModel>();
+            return services;
+        }
+
+        public static IServiceCollection ConfigureUcViewModel(this IServiceCollection services)
+        {
+            services.AddSingleton<MainTabPanelViewModel>();
             return services;
         }
     }

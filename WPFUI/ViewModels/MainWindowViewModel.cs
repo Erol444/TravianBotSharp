@@ -1,5 +1,4 @@
-﻿using DynamicData;
-using MainCore;
+﻿using MainCore;
 using MainCore.Enums;
 using MainCore.Models.Database;
 using MainCore.Services.Interface;
@@ -12,12 +11,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using WPFUI.Interfaces;
 using WPFUI.Models;
-using WPFUI.Views.Tabs;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI.ViewModels
@@ -129,18 +126,6 @@ namespace WPFUI.ViewModels
             }
         }
 
-        public void SetTab(TabType tab)
-        {
-            if (!IsActive) return;
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                Tabs.Clear();
-                Tabs.AddRange(_tabsHolder[tab]);
-                TabIndex = 0;
-                _current = tab;
-            });
-        }
-
         private void OnAccountTableUpdate()
         {
             LoadData();
@@ -150,42 +135,6 @@ namespace WPFUI.ViewModels
         {
             IsActive = true;
             LoadData();
-
-            _tabsHolder = new()
-            {
-                {
-                    TabType.NoAccount, new TabItemModel[]
-                    {
-                        new("No account", new NoAccountPage()) ,
-                    }
-                },
-                {
-                    TabType.AddAccount, new TabItemModel[]
-                    {
-                        new("Add account", new AddAccountPage()),
-                    }
-                },
-                {
-                    TabType.AddAccounts, new TabItemModel[]
-                    {
-                        new("Add accounts", new AddAccountsPage()),
-                    }
-                },
-                {
-                    TabType.Normal, new TabItemModel[]
-                    {
-                        new("General", new GeneralPage()),
-                        new("Settings", new SettingsPage()),
-                        new("Hero", new HeroPage()),
-                        new("Villages", new VillagesPage()),
-                        new("Farming", new FarmingPage()),
-                        new("Debug", new DebugPage()),
-                        new("Edit account", new EditAccountPage()),
-                    }
-                }
-            };
-
-            Tabs.Add(_tabsHolder[TabType.NoAccount]);
         }
 
         public void OnDeactived()
@@ -268,19 +217,6 @@ namespace WPFUI.ViewModels
         }
 
         public bool IsActive { get; set; }
-
-        private Dictionary<TabType, TabItemModel[]> _tabsHolder;
-        private TabType _current;
-
-        private int _tabIndex;
-
-        public int TabIndex
-        {
-            get => _tabIndex;
-            set => this.RaiseAndSetIfChanged(ref _tabIndex, value);
-        }
-
-        public ObservableCollection<TabItemModel> Tabs { get; }
 
         public Action Show;
     }

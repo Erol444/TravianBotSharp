@@ -6,8 +6,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:uc="clr-namespace:WPFUI.Views.Uc"
+        xmlns:ucmain="clr-namespace:WPFUI.Views.Uc.MainView"
         xmlns:vms="clr-namespace:WPFUI.ViewModels"
-        xmlns:tabs="clr-namespace:WPFUI.Views.Tabs"
         xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
         xmlns:reactiveui="http://reactiveui.net"
         mc:Ignorable="d"
@@ -32,18 +32,6 @@
                 </ListView.View>
             </ListView>
         </Grid>
-        <TabControl x:Name="Tabs" Grid.Column="1" Margin="5,0,0,0">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Header}" />
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-
-            <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <Frame Content="{Binding Content}" NavigationUIVisibility="Hidden" />
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-        </TabControl>
+        <ucmain:MainTabPanelUc Grid.Column="1" />
     </Grid>
 </reactiveui:ReactiveWindow>
