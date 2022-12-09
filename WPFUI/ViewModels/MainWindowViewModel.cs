@@ -1,22 +1,24 @@
-﻿using MainCore;
+﻿using DynamicData;
+using MainCore;
 using MainCore.Enums;
 using MainCore.Models.Database;
-using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using WPFUI.Interfaces;
 using WPFUI.Models;
-using WPFUI.Views;
+using WPFUI.Views.Tabs;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI.ViewModels
 {
@@ -24,79 +26,37 @@ namespace WPFUI.ViewModels
     {
         public MainWindowViewModel()
         {
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _planManager = App.GetService<IPlanManager>();
-            _taskManager = App.GetService<ITaskManager>();
+            _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
+            _planManager = Locator.Current.GetService<IPlanManager>();
+            _taskManager = Locator.Current.GetService<ITaskManager>();
 
-            _waitingWindow = App.GetService<WaitingWindow>();
+            _waitingWindow = Locator.Current.GetService<WaitingViewModel>();
 
-            _eventManager = App.GetService<EventManager>();
+            _eventManager = Locator.Current.GetService<IEventManager>();
             _eventManager.AccountsTableUpdate += OnAccountTableUpdate;
 
-            _isAccountSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is not null).ToProperty(this, x => x.IsAccountSelected);
-            _isAccountNotSelected = this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is null).ToProperty(this, x => x.IsAccountNotSelected);
+            _logManager = Locator.Current.GetService<ILogManager>();
+            _restClientManager = Locator.Current.GetService<IRestClientManager>();
+            _timerManager = Locator.Current.GetService<ITimerManager>();
+            _chromeManager = Locator.Current.GetService<IChromeManager>();
+            _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
 
-            ClosingCommand = ReactiveCommand.CreateFromTask<CancelEventArgs>(ClosingTask);
+            this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is not null).ToProperty(this, x => x.IsAccountSelected, out _isAccountSelected);
+            this.WhenAnyValue(x => x.CurrentAccount).Select(x => x is null).ToProperty(this, x => x.IsAccountNotSelected, out _isAccountNotSelected);
+            this.WhenAnyValue(x => x.CurrentAccount).BindTo(this, vm => vm._selectorViewModel.Account);
+            this.WhenAnyValue(x => x.CurrentIndex).Subscribe(x =>
+            {
+                if (x == -1) return;
+                if (_current == TabType.Normal) return;
+                SetTab(TabType.Normal);
+            });
 
-            ShowDecider = new();
-            Selector = new();
-
-            this.WhenAnyValue(x => x.IsAccountSelected).Subscribe(x =>
-            {
-                if (x) ShowDecider.ShowNormalTab = true;
-            });
-            this.WhenAnyValue(x => x.ShowDecider.ShowNoAccountTab).Subscribe(x =>
-            {
-                if (x) SetTab(TabType.NoAccount);
-            });
-            this.WhenAnyValue(x => x.ShowDecider.ShowNormalTab).Subscribe(x =>
-            {
-                if (x) SetTab(TabType.Normal);
-            });
-            this.WhenAnyValue(x => x.ShowDecider.ShowAddAccountTab).Subscribe(x =>
-            {
-                if (x) SetTab(TabType.AddAccount);
-            });
-            this.WhenAnyValue(x => x.ShowDecider.ShowAddAccountsTab).Subscribe(x =>
-            {
-                if (x) SetTab(TabType.AddAccounts);
-            });
-            this.WhenAnyValue(x => x.ShowDecider.ShowEditAccountTab).Subscribe(x =>
-            {
-                if (x) SetTab(TabType.EditAccount);
-            });
-            this.WhenAnyValue(x => x.TabSelector).Subscribe(x =>
-            {
-                switch (x)
-                {
-                    case TabType.NoAccount:
-                        ShowDecider.ShowNoAccountTab = true;
-                        break;
-
-                    case TabType.Normal:
-                        ShowDecider.ShowNormalTab = true;
-                        break;
-
-                    case TabType.AddAccount:
-                        ShowDecider.ShowAddAccountTab = true;
-                        break;
-
-                    case TabType.AddAccounts:
-                        ShowDecider.ShowAddAccountsTab = true;
-                        break;
-
-                    case TabType.EditAccount:
-                        ShowDecider.ShowEditAccountTab = true;
-                        break;
-                }
-            });
+            Tabs = new();
         }
 
-        private async Task ClosingTask(CancelEventArgs e)
+        public async Task ClosingTask(CancelEventArgs e)
         {
-            if (_closed) return;
-            e.Cancel = true;
-            _waitingWindow.ViewModel.Show("saving data");
+            _waitingWindow.Show("saving data");
             await Task.Run(async () =>
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -116,16 +76,29 @@ namespace WPFUI.ViewModels
 
                 var path = Path.Combine(AppContext.BaseDirectory, "Plugins");
                 if (Directory.Exists(path)) Directory.Delete(path, true);
-
-                App.Provider.Dispose();
             });
 
-            var mainWindow = App.GetService<MainWindow>();
-            mainWindow.Hide();
+            await Task.Run(() =>
+            {
+                _logManager.Shutdown();
+            });
 
-            _closed = true;
-            _waitingWindow.ViewModel.Close();
-            mainWindow.Close();
+            await Task.Run(() =>
+            {
+                _chromeManager.Shutdown();
+            });
+
+            await Task.Run(() =>
+            {
+                _restClientManager.Shutdown();
+            });
+
+            await Task.Run(() =>
+            {
+                _timerManager.Shutdown();
+            });
+
+            _waitingWindow.Close();
         }
 
         private async Task Pause(int index)
@@ -144,65 +117,28 @@ namespace WPFUI.ViewModels
                 if (current is not null)
                 {
                     current.Cts.Cancel();
-                    _waitingWindow.ViewModel.Show("waiting current task stops");
+                    _waitingWindow.Show("waiting current task stops");
                     await Task.Run(() =>
                     {
                         while (current.Stage != TaskStage.Waiting) { }
                     });
-                    _waitingWindow.ViewModel.Close();
+                    _waitingWindow.Close();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
                 return;
             }
         }
 
-        private void SetTab(TabType tab)
+        public void SetTab(TabType tab)
         {
-            switch (tab)
+            if (!IsActive) return;
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                case TabType.NoAccount:
-                    CurrentIndex = -1;
-                    ShowDecider.ShowNormalTab = false;
-                    ShowDecider.ShowAddAccountTab = false;
-                    ShowDecider.ShowAddAccountsTab = false;
-                    ShowDecider.ShowEditAccountTab = false;
-                    Selector.SelectedNoAccount = true;
-                    break;
-
-                case TabType.Normal:
-                    ShowDecider.ShowNoAccountTab = false;
-                    ShowDecider.ShowAddAccountTab = false;
-                    ShowDecider.ShowAddAccountsTab = false;
-                    ShowDecider.ShowEditAccountTab = false;
-                    Selector.SelectedNormal = true;
-                    break;
-
-                case TabType.AddAccount:
-                    CurrentIndex = -1;
-                    ShowDecider.ShowNoAccountTab = false;
-                    ShowDecider.ShowNormalTab = false;
-                    ShowDecider.ShowAddAccountsTab = false;
-                    ShowDecider.ShowEditAccountTab = false;
-                    Selector.SelectedAddAccount = true;
-                    break;
-
-                case TabType.AddAccounts:
-                    CurrentIndex = -1;
-                    ShowDecider.ShowNoAccountTab = false;
-                    ShowDecider.ShowNormalTab = false;
-                    ShowDecider.ShowAddAccountTab = false;
-                    ShowDecider.ShowEditAccountTab = false;
-                    Selector.SelectedAddAccounts = true;
-                    break;
-
-                case TabType.EditAccount:
-                    ShowDecider.ShowNoAccountTab = false;
-                    ShowDecider.ShowNormalTab = false;
-                    ShowDecider.ShowAddAccountTab = false;
-                    ShowDecider.ShowAddAccountsTab = false;
-                    Selector.SelectedEditAccount = true;
-                    break;
-            }
+                Tabs.Clear();
+                Tabs.AddRange(_tabsHolder[tab]);
+                TabIndex = 0;
+                _current = tab;
+            });
         }
 
         private void OnAccountTableUpdate()
@@ -214,6 +150,42 @@ namespace WPFUI.ViewModels
         {
             IsActive = true;
             LoadData();
+
+            _tabsHolder = new()
+            {
+                {
+                    TabType.NoAccount, new TabItemModel[]
+                    {
+                        new("No account", new NoAccountPage()) ,
+                    }
+                },
+                {
+                    TabType.AddAccount, new TabItemModel[]
+                    {
+                        new("Add account", new AddAccountPage()),
+                    }
+                },
+                {
+                    TabType.AddAccounts, new TabItemModel[]
+                    {
+                        new("Add accounts", new AddAccountsPage()),
+                    }
+                },
+                {
+                    TabType.Normal, new TabItemModel[]
+                    {
+                        new("General", new GeneralPage()),
+                        new("Settings", new SettingsPage()),
+                        new("Hero", new HeroPage()),
+                        new("Villages", new VillagesPage()),
+                        new("Farming", new FarmingPage()),
+                        new("Debug", new DebugPage()),
+                        new("Edit account", new EditAccountPage()),
+                    }
+                }
+            };
+
+            Tabs.Add(_tabsHolder[TabType.NoAccount]);
         }
 
         public void OnDeactived()
@@ -240,7 +212,7 @@ namespace WPFUI.ViewModels
                 }
 
                 var account = context.Accounts.Find(oldAccount?.Id);
-                if (!ShowDecider.IsShowSubTab())
+                if (_current == TabType.AddAccount || _current == TabType.AddAccounts)
                 {
                     if (account is not null) CurrentIndex = Accounts.IndexOf(account);
                     else CurrentIndex = 0;
@@ -248,18 +220,20 @@ namespace WPFUI.ViewModels
             }
             else
             {
-                ShowDecider.ShowNoAccountTab = true;
+                SetTab(TabType.NoAccount);
             }
         }
 
         private readonly IPlanManager _planManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly EventManager _eventManager;
+        private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
-
-        private readonly WaitingWindow _waitingWindow;
-
-        private bool _closed = false;
+        private readonly IChromeManager _chromeManager;
+        private readonly ILogManager _logManager;
+        private readonly ITimerManager _timerManager;
+        private readonly IRestClientManager _restClientManager;
+        private readonly WaitingViewModel _waitingWindow;
+        private readonly SelectorViewModel _selectorViewModel;
 
         public ObservableCollection<Account> Accounts { get; } = new();
 
@@ -293,122 +267,21 @@ namespace WPFUI.ViewModels
             get => _isAccountNotSelected.Value;
         }
 
-        private ShowDecider _showDecider;
-
-        public ShowDecider ShowDecider
-        {
-            get => _showDecider;
-            set => this.RaiseAndSetIfChanged(ref _showDecider, value);
-        }
-
-        private Selector _selector;
-
-        public Selector Selector
-        {
-            get => _selector;
-            set => this.RaiseAndSetIfChanged(ref _selector, value);
-        }
-
-        private TabType _tabSelector;
-
-        public TabType TabSelector
-        {
-            get => _tabSelector;
-            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
-        }
-
-        public ReactiveCommand<CancelEventArgs, Unit> ClosingCommand { get; }
         public bool IsActive { get; set; }
-    }
 
-    public class Selector : ReactiveObject
-    {
-        private bool _selectedNoAccount;
+        private Dictionary<TabType, TabItemModel[]> _tabsHolder;
+        private TabType _current;
 
-        public bool SelectedNoAccount
+        private int _tabIndex;
+
+        public int TabIndex
         {
-            get => _selectedNoAccount;
-            set => this.RaiseAndSetIfChanged(ref _selectedNoAccount, value);
+            get => _tabIndex;
+            set => this.RaiseAndSetIfChanged(ref _tabIndex, value);
         }
 
-        private bool _selectedNormal;
+        public ObservableCollection<TabItemModel> Tabs { get; }
 
-        public bool SelectedNormal
-        {
-            get => _selectedNormal;
-            set => this.RaiseAndSetIfChanged(ref _selectedNormal, value);
-        }
-
-        private bool _selectedAddAccount;
-
-        public bool SelectedAddAccount
-        {
-            get => _selectedAddAccount;
-            set => this.RaiseAndSetIfChanged(ref _selectedAddAccount, value);
-        }
-
-        private bool _selectedAddAccounts;
-
-        public bool SelectedAddAccounts
-        {
-            get => _selectedAddAccounts;
-            set => this.RaiseAndSetIfChanged(ref _selectedAddAccounts, value);
-        }
-
-        private bool _selectedEditAccount;
-
-        public bool SelectedEditAccount
-        {
-            get => _selectedEditAccount;
-            set => this.RaiseAndSetIfChanged(ref _selectedEditAccount, value);
-        }
-    }
-
-    public class ShowDecider : ReactiveObject
-    {
-        public bool IsShowSubTab()
-        {
-            return ShowAddAccountTab || ShowAddAccountsTab || ShowEditAccountTab;
-        }
-
-        private bool _showNoAccountTab;
-
-        public bool ShowNoAccountTab
-        {
-            get => _showNoAccountTab;
-            set => this.RaiseAndSetIfChanged(ref _showNoAccountTab, value);
-        }
-
-        private bool _showNormalTab;
-
-        public bool ShowNormalTab
-        {
-            get => _showNormalTab;
-            set => this.RaiseAndSetIfChanged(ref _showNormalTab, value);
-        }
-
-        private bool _showAddAccountTab;
-
-        public bool ShowAddAccountTab
-        {
-            get => _showAddAccountTab;
-            set => this.RaiseAndSetIfChanged(ref _showAddAccountTab, value);
-        }
-
-        private bool _showAddAccountsTab;
-
-        public bool ShowAddAccountsTab
-        {
-            get => _showAddAccountsTab;
-            set => this.RaiseAndSetIfChanged(ref _showAddAccountsTab, value);
-        }
-
-        private bool _showEditAccountTab;
-
-        public bool ShowEditAccountTab
-        {
-            get => _showEditAccountTab;
-            set => this.RaiseAndSetIfChanged(ref _showEditAccountTab, value);
-        }
+        public Action Show;
     }
 }

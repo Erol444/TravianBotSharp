@@ -1,4 +1,6 @@
-﻿using MainCore.Tasks.Attack;
+﻿using DynamicData;
+using DynamicData.Kernel;
+using MainCore.Tasks.Attack;
 using MainCore.Tasks.Update;
 using ReactiveUI;
 using System.Collections.ObjectModel;
@@ -7,79 +9,71 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
 using System.Windows;
-using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class FarmingViewModel : AccountTabBaseViewModel, ITabPage
+    public class FarmingViewModel : AccountTabBaseViewModel
     {
-        public FarmingViewModel() : base()
+        public FarmingViewModel()
         {
             RefreshCommand = ReactiveCommand.CreateFromTask(RefreshTask);
             StartCommand = ReactiveCommand.CreateFromTask(StartTask);
             StopCommand = ReactiveCommand.CreateFromTask(StopTask);
 
-            _eventManager.FarmListUpdated += OnFarmListUpdate;
+            _eventManager.FarmListUpdate += OnFarmListUpdate;
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
+        protected override void Init(int accountId)
         {
-            IsActive = true;
-            if (CurrentAccount is not null)
-            {
-                LoadData(CurrentAccount.Id);
-            }
+            LoadData(accountId);
         }
 
-        public void OnDeactived()
-        {
-            IsActive = false;
-        }
-
-        private void OnFarmListUpdate(int index)
+        private void OnFarmListUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != index) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(index));
+            if (AccountId != accountId) return;
+
+            LoadData(accountId);
         }
 
-        protected override void LoadData(int index)
+        private void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
-            var farms = context.Farms.Where(x => x.AccountId == index);
-            FarmList.Clear();
-            foreach (var farm in farms)
+            var farms = context.Farms
+                .Where(x => x.AccountId == index)
+                .AsList()
+                .Select(farm =>
+                {
+                    var farmSetting = context.FarmsSettings.Find(farm.Id);
+                    var color = farmSetting.IsActive ? "Green" : "Red";
+                    return new FarmInfo() { Id = farm.Id, Name = farm.Name, Color = color };
+                }).ToList();
+
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                var farmSetting = context.FarmsSettings.Find(farm.Id);
-                var color = farmSetting.IsActive ? "Green" : "Red";
-                var f = new FarmInfo() { Id = farm.Id, Name = farm.Name, Color = color };
-                FarmList.Add(f);
-            }
+                FarmList.Clear();
+                FarmList.AddRange(farms);
+            });
         }
 
-        private async Task RefreshTask()
+        private Task RefreshTask()
         {
-            await Task.Run(() =>
+            var accountId = _selectorViewModel.Account.Id;
+            var tasks = _taskManager.GetList(accountId);
+            if (!tasks.Any(x => x.GetType() == typeof(UpdateFarmList)))
             {
-                var accountId = CurrentAccount.Id;
-                var tasks = _taskManager.GetList(accountId);
-                if (!tasks.Any(x => x.GetType() == typeof(UpdateFarmList)))
-                {
-                    _taskManager.Add(accountId, new UpdateFarmList(accountId));
-                }
-            });
+                _taskManager.Add(accountId, new UpdateFarmList(accountId));
+            }
+            return Task.CompletedTask;
         }
 
         private async Task StartTask()
         {
             await Task.Run(() =>
             {
-                var accountId = CurrentAccount.Id;
+                var accountId = AccountId;
                 using var context = _contextFactory.CreateDbContext();
                 var farms = context.Farms.Where(x => x.AccountId == accountId);
                 foreach (var farm in farms)
@@ -103,7 +97,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             await Task.Run(() =>
             {
-                var accountId = CurrentAccount.Id;
+                var accountId = AccountId;
                 var tasks = _taskManager.GetList(accountId);
                 var farmLists = tasks.Where(x => x.GetType() == typeof(StartFarmList));
                 foreach (var farm in farmLists)

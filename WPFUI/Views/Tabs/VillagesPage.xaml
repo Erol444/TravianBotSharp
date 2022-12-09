@@ -26,47 +26,18 @@
                 </GridView>
             </ListView.View>
         </ListView>
-        <TabControl Grid.Column="1" Margin="1,0,0,0">
-            <TabItem x:Name="NoVillageTab" Header="No village">
-                <Grid Background="#FFE5E5E5">
-                    <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="NO VILLAGE IS SELECTED" VerticalAlignment="Center" TextAlignment="Center" LineHeight="11" />
-                </Grid>
-            </TabItem>
-            <TabItem x:Name="BuildTab" Header="Build">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:BuildPage x:Name="BuildPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="SettingsTab" Header="Settings">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:SettingsPage x:Name="SettingsPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="NPCTab" Header="NPC">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:NPCPage x:Name="NPCPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="TroopsTab" Header="Troop">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:TroopsPage x:Name="TroopsPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="InfoTab" Header="Info">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:InfoPage x:Name="InfoPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
+        <TabControl x:Name="Tabs" Grid.Column="1" Margin="1,0,0,0">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Header}" />
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <Frame Content="{Binding Content}" NavigationUIVisibility="Hidden" />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
         </TabControl>
     </Grid>
 </reactiveui:ReactivePage>

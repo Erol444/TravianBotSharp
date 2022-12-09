@@ -6,6 +6,5 @@
         Normal,
         AddAccount,
         AddAccounts,
-        EditAccount
     }
 }

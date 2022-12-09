@@ -1,9 +1,12 @@
-﻿using MainCore.Models.Database;
+﻿using DynamicData;
+using MainCore.Models.Database;
 using ReactiveUI;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -17,20 +20,19 @@ namespace WPFUI.ViewModels.Tabs
         public AddAccountsViewModel()
         {
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
-            CancelCommand = ReactiveCommand.Create(CancelTask);
+            UpdateTable = ReactiveCommand.CreateFromTask<string>(UpdateTableTask);
 
-            this.WhenAnyValue(x => x.InputText).Subscribe(UpdateData);
+            this.WhenAnyValue(x => x.InputText).InvokeCommand(UpdateTable);
         }
 
         private async Task SaveTask()
         {
-            if (!CheckInput()) return;
-
-            _waitingWindow.ViewModel.Show("adding accounts");
+            if (!IsVaildInput()) return;
+            _waitingWindow.Show("adding accounts");
 
             await Task.Run(() =>
             {
-                var context = _contextFactory.CreateDbContext();
+                using var context = _contextFactory.CreateDbContext();
 
                 foreach (var acc in Accounts)
                 {
@@ -62,24 +64,43 @@ namespace WPFUI.ViewModels.Tabs
                 context.SaveChanges();
             });
             Clean();
-            _eventManager.OnAccountsTableUpdate();
-            _waitingWindow.ViewModel.Close();
+            _eventManager.OnAccountsUpdate();
+            _waitingWindow.Close();
             MessageBox.Show($"Added account to TBS's database", "Success");
         }
 
-        private void CancelTask()
+        private async Task UpdateTableTask(string input)
         {
-            Clean();
-            TabSelector = TabType.NoAccount;
+            if (!IsActive) return;
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                if (Accounts.Count > 0) Accounts.Clear();
+                return;
+            }
+            var strArr = input.Trim().Split('\n');
+            var listTasks = new List<Task<AccountMulti>>();
+            foreach (var str in strArr)
+            {
+                listTasks.Add(Task.Run(() => AccountParser(str)));
+            }
+
+            var listResult = await Task.WhenAll(listTasks);
+            listResult = listResult.Where(x => x is not null).ToArray();
+
+            Accounts.Clear();
+            Accounts.AddRange(listResult);
         }
 
         private void Clean()
         {
-            InputText = "";
-            Accounts.Clear();
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                InputText = "";
+                Accounts.Clear();
+            });
         }
 
-        private bool CheckInput()
+        private bool IsVaildInput()
         {
             if (Accounts.Count == 0)
             {
@@ -111,58 +132,45 @@ namespace WPFUI.ViewModels.Tabs
             return true;
         }
 
-        private void UpdateData(string text)
+        private static AccountMulti AccountParser(string input)
         {
-            if (string.IsNullOrEmpty(text)) return;
-            var strArr = text.Trim().Split('\n');
-            Accounts.Clear();
-            foreach (var str in strArr)
+            var strAccount = input.Trim().Split(' ');
+            Uri url = null;
+            if (strAccount.Length > 0)
             {
-                var strAccount = str.Trim().Split(' ');
-                Uri url = null;
-                if (strAccount.Length > 0)
+                if (!Uri.TryCreate(strAccount[0], UriKind.Absolute, out url))
                 {
-                    if (!Uri.TryCreate(strAccount[0], UriKind.Absolute, out url))
-                    {
-                        continue;
-                    };
-                }
-                switch (strAccount.Length)
-                {
-                    case 3:
-                        Accounts.Add(new AccountMulti()
-                        {
-                            Server = url.AbsoluteUri,
-                            Username = strAccount[1],
-                            Password = strAccount[2],
-                        });
-                        break;
-
-                    case 5:
-                        Accounts.Add(new AccountMulti()
-                        {
-                            Server = url.AbsoluteUri,
-                            Username = strAccount[1],
-                            Password = strAccount[2],
-                            ProxyHost = strAccount[3],
-                            ProxyPort = strAccount[4],
-                        });
-                        break;
-
-                    case 7:
-                        Accounts.Add(new AccountMulti()
-                        {
-                            Server = url.AbsoluteUri,
-                            Username = strAccount[1],
-                            Password = strAccount[2],
-                            ProxyHost = strAccount[3],
-                            ProxyPort = strAccount[4],
-                            ProxyUsername = strAccount[5],
-                            ProxyPassword = strAccount[6],
-                        });
-                        break;
-                }
+                    return null;
+                };
             }
+            return strAccount.Length switch
+            {
+                3 => new AccountMulti()
+                {
+                    Server = url.AbsoluteUri,
+                    Username = strAccount[1],
+                    Password = strAccount[2],
+                },
+                5 => new AccountMulti()
+                {
+                    Server = url.AbsoluteUri,
+                    Username = strAccount[1],
+                    Password = strAccount[2],
+                    ProxyHost = strAccount[3],
+                    ProxyPort = strAccount[4],
+                },
+                7 => new AccountMulti()
+                {
+                    Server = url.AbsoluteUri,
+                    Username = strAccount[1],
+                    Password = strAccount[2],
+                    ProxyHost = strAccount[3],
+                    ProxyPort = strAccount[4],
+                    ProxyUsername = strAccount[5],
+                    ProxyPassword = strAccount[6],
+                },
+                _ => null,
+            };
         }
 
         private string _inputText;
@@ -173,16 +181,8 @@ namespace WPFUI.ViewModels.Tabs
             set => this.RaiseAndSetIfChanged(ref _inputText, value);
         }
 
-        private TabType _tabSelector;
-
-        public TabType TabSelector
-        {
-            get => _tabSelector;
-            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
-        }
-
         public ObservableCollection<AccountMulti> Accounts { get; } = new();
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
-        public ReactiveCommand<Unit, Unit> CancelCommand { get; }
+        public ReactiveCommand<string, Unit> UpdateTable { get; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿<reactiveui:ReactivePage
       x:Class="WPFUI.Views.Tabs.Villages.SettingsPage"
-      x:TypeArguments="local:SettingsViewModel"
+      x:TypeArguments="local:VillageSettingsViewModel"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="clr-namespace:WPFUI.ViewModels.Tabs.Villages"

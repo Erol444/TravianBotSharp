@@ -16,11 +16,15 @@ namespace WPFUI.ViewModels.Tabs.Villages
             Dorf2Command = ReactiveCommand.Create(Dorf2);
         }
 
+        protected override void Init(int id)
+        {
+        }
+
         private void BothDorf()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
-            var villageId = CurrentVillage.Id;
+            var villageId = VillageId;
             var updateTask = tasks.OfType<UpdateBothDorf>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
@@ -35,9 +39,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void Dorf1()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
-            var villageId = CurrentVillage.Id;
+            var villageId = VillageId;
             var updateTask = tasks.OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
@@ -52,9 +56,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void Dorf2()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
-            var villageId = CurrentVillage.Id;
+            var villageId = VillageId;
             var updateTask = tasks.OfType<UpdateDorf2>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
@@ -65,10 +69,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 updateTask.ExecuteAt = DateTime.Now;
                 _taskManager.Update(accountId);
             }
-        }
-
-        protected override void LoadData(int index)
-        {
         }
 
         public ReactiveCommand<Unit, Unit> BothDorfCommand;

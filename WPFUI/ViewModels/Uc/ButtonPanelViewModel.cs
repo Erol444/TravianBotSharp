@@ -1,59 +1,39 @@
-﻿using MainCore;
-using MainCore.Enums;
+﻿using MainCore.Enums;
 using MainCore.Helper;
-using MainCore.Models.Database;
-using MainCore.Services.Interface;
 using MainCore.Tasks.Misc;
-using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
-using WPFUI.Views;
+using WPFUI.ViewModels.Abstract;
 using Access = MainCore.Models.Database.Access;
-using EventManager = MainCore.Services.Implementations.EventManager;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class ButtonPanelViewModel : ReactiveObject
+    public class ButtonPanelViewModel : AccountTabBaseViewModel
     {
         public ButtonPanelViewModel()
         {
-            _waitingWindow = App.GetService<WaitingWindow>();
-            _versionWindow = App.GetService<VersionWindow>();
-            _chromeManager = App.GetService<IChromeManager>();
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _eventManager = App.GetService<EventManager>();
-            _taskManager = App.GetService<ITaskManager>();
-            _logManager = App.GetService<ILogManager>();
-            _timeManager = App.GetService<ITimerManager>();
-            _restClientManager = App.GetService<IRestClientManager>();
-
             _eventManager.AccountStatusUpdate += OnAccountUpdate;
-
-            _isAccountNotSelected = this.WhenAnyValue(x => x.IsAccountSelected).Select(x => !x).ToProperty(this, x => x.IsAccountNotSelected);
 
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
-            EditAccountCommand = ReactiveCommand.Create(EditAccountTask, this.WhenAnyValue(vm => vm.IsAccountSelected));
-            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm.IsAccountSelected, (a, b) => a && b));
+            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
 
-            LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm.IsAccountSelected, (a, b) => a && b));
-            LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAllowLogout, vm => vm.IsAccountSelected, (a, b) => a && b));
+            LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
+            LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAllowLogout, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
             LoginAllCommand = ReactiveCommand.CreateFromTask(LoginAllTask);
             LogoutAllCommand = ReactiveCommand.CreateFromTask(LogoutAllTask);
+        }
 
-            this.WhenAnyValue(x => x.CurrentAccount).Subscribe((x) =>
-            {
-                if (x is null) return;
-                LoadData(CurrentAccount.Id);
-            });
+        protected override void Init(int accountId)
+        {
+            LoadData(accountId);
         }
 
         private void LoadData(int accountId)
@@ -95,9 +75,9 @@ namespace WPFUI.ViewModels.Uc
 
         private void OnAccountUpdate(int accountId)
         {
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
+            if (!IsActive) return;
+            if (AccountId != accountId) return;
+            LoadData(accountId);
         }
 
         private void CheckVersionTask()
@@ -107,17 +87,17 @@ namespace WPFUI.ViewModels.Uc
 
         private void AddAccountTask()
         {
-            TabSelector = TabType.AddAccount;
+            _mainWindow.SetTab(TabType.AddAccount);
         }
 
         private void AddAccountsTask()
         {
-            TabSelector = TabType.AddAccounts;
+            _mainWindow.SetTab(TabType.AddAccounts);
         }
 
-        private Task LoginTask() => Task.Run(() => LoginAccount(CurrentAccount.Id));
+        private Task LoginTask() => Task.Run(() => LoginAccount(AccountId));
 
-        private Task LogoutTask() => Task.Run(() => LogoutAccount(CurrentAccount.Id));
+        private Task LogoutTask() => Task.Run(() => LogoutAccount(AccountId));
 
         private async Task LoginAllTask()
         {
@@ -139,17 +119,12 @@ namespace WPFUI.ViewModels.Uc
             }
         }
 
-        private void EditAccountTask()
-        {
-            TabSelector = TabType.EditAccount;
-        }
-
         private void DeleteAccountTask()
         {
-            _waitingWindow.ViewModel.Show("saving data");
-            DeleteAccount(CurrentAccount.Id);
-            _eventManager.OnAccountsTableUpdate();
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Show("saving data");
+            DeleteAccount(AccountId);
+            _eventManager.OnAccountsUpdate();
+            _waitingWindow.Close();
         }
 
         private void LoginAccount(int index)
@@ -244,27 +219,11 @@ namespace WPFUI.ViewModels.Uc
         public ReactiveCommand<Unit, Unit> CheckVersionCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> AddAccountsCommand { get; }
-        public ReactiveCommand<Unit, Unit> EditAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> DeleteAccountCommand { get; }
         public ReactiveCommand<Unit, Unit> LoginCommand { get; }
         public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
         public ReactiveCommand<Unit, Unit> LoginAllCommand { get; }
         public ReactiveCommand<Unit, Unit> LogoutAllCommand { get; }
-
-        private bool _isAccountSelected = false;
-
-        public bool IsAccountSelected
-        {
-            get => _isAccountSelected;
-            set => this.RaiseAndSetIfChanged(ref _isAccountSelected, value);
-        }
-
-        private readonly ObservableAsPropertyHelper<bool> _isAccountNotSelected;
-
-        public bool IsAccountNotSelected
-        {
-            get => _isAccountNotSelected.Value;
-        }
 
         private bool _isAllowLogout;
 
@@ -281,33 +240,6 @@ namespace WPFUI.ViewModels.Uc
             get => _isAllowLogin;
             set => this.RaiseAndSetIfChanged(ref _isAllowLogin, value);
         }
-
-        private TabType _tabSelector;
-
-        public TabType TabSelector
-        {
-            get => _tabSelector;
-            set => this.RaiseAndSetIfChanged(ref _tabSelector, value);
-        }
-
-        private Account _currentAccount;
-
-        public Account CurrentAccount
-        {
-            get => _currentAccount;
-            set => this.RaiseAndSetIfChanged(ref _currentAccount, value);
-        }
-
-        private readonly IChromeManager _chromeManager;
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly EventManager _eventManager;
-        private readonly ITaskManager _taskManager;
-        private readonly ILogManager _logManager;
-        private readonly ITimerManager _timeManager;
-        private readonly IRestClientManager _restClientManager;
-
-        private readonly WaitingWindow _waitingWindow;
-        private readonly VersionWindow _versionWindow;
 
         private readonly Random rand = new();
     }

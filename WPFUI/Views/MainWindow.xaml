@@ -32,77 +32,18 @@
                 </ListView.View>
             </ListView>
         </Grid>
-        <TabControl Grid.Column="1" Margin="5,0,0,0">
-            <TabItem x:Name="NoAccountTab" Header="No account" Visibility="Visible">
-                <Grid Background="#FFE5E5E5">
-                    <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="NO ACCOUNT IS SELECTED" VerticalAlignment="Center" TextAlignment="Center" LineHeight="11" />
-                </Grid>
-            </TabItem>
+        <TabControl x:Name="Tabs" Grid.Column="1" Margin="5,0,0,0">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Header}" />
+                </DataTemplate>
+            </TabControl.ItemTemplate>
 
-            <TabItem x:Name="GeneralTab" Header="General">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:GeneralPage x:Name="GeneralPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="SettingsTab" Header="Settings">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:SettingsPage x:Name="SettingsPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="HeroTab" Header="Hero">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:HeroPage x:Name="HeroPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="VillagesTab" Header="Villages">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:VillagesPage x:Name="VillagesPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="FarmingTab" Header="Farming">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:FarmingPage x:Name="FarmingPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="DebugTab" Header="Debug">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:DebugPage x:Name="DebugPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-
-            <TabItem x:Name="AddAccountTab" Header="Add account">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:AddAccountPage x:Name="AddAccountPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="AddAccountsTab" Header="Add accounts">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:AddAccountsPage x:Name="AddAccountsPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
-            <TabItem x:Name="EditAccountTab" Header="Edit account">
-                <Frame>
-                    <Frame.Content>
-                        <tabs:EditAccountPage x:Name="EditAccountPage" />
-                    </Frame.Content>
-                </Frame>
-            </TabItem>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <Frame Content="{Binding Content}" NavigationUIVisibility="Hidden" />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
         </TabControl>
     </Grid>
 </reactiveui:ReactiveWindow>

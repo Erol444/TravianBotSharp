@@ -14,15 +14,14 @@ using System.Reactive.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
-using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class SettingsViewModel : VillageTabBaseViewModel, ITabPage
+    public class VillageSettingsViewModel : VillageTabBaseViewModel
     {
-        public SettingsViewModel()
+        public VillageSettingsViewModel()
         {
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
@@ -31,42 +30,31 @@ namespace WPFUI.ViewModels.Tabs.Villages
             this.WhenAnyValue(x => x.Settings.UpgradeTroop).Subscribe(LoadUpgradeTroop);
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
+        protected override void Init(int villageId)
         {
-            IsActive = true;
-            if (CurrentVillage is not null)
-            {
-                LoadData(CurrentVillage.Id);
-            }
+            LoadData(villageId);
         }
 
-        public void OnDeactived()
-        {
-            IsActive = false;
-        }
-
-        protected override void LoadData(int index)
+        private void LoadData(int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var settings = context.VillagesSettings.Find(index);
-            Settings.CopyFrom(settings);
+            var settings = context.VillagesSettings.Find(villageId);
+            RxApp.MainThreadScheduler.Schedule(() => Settings.CopyFrom(settings));
         }
 
         private async Task SaveTask()
         {
             if (!Settings.IsValidate()) return;
-            _waitingWindow.ViewModel.Show("saving village's settings");
+            _waitingWindow.Show("saving village's settings");
 
             await Task.Run(() =>
             {
-                var villageId = CurrentVillage.Id;
+                var villageId = VillageId;
                 Save(villageId);
-                var accountId = CurrentAccount.Id;
+                var accountId = AccountId;
                 TaskBasedSetting(villageId, accountId);
             });
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
 
             MessageBox.Show("Saved.");
         }
@@ -74,7 +62,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void ImportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(CurrentVillage.Id);
+            var village = context.Villages.Find(VillageId);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
@@ -90,12 +78,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 try
                 {
                     var setting = JsonSerializer.Deserialize<MainCore.Models.Database.VillageSetting>(jsonString);
-                    var villageId = CurrentVillage.Id;
+                    var villageId = VillageId;
                     setting.VillageId = villageId;
                     context.Update(setting);
                     context.SaveChanges();
                     LoadData(villageId);
-                    var accountId = CurrentAccount.Id;
+                    var accountId = AccountId;
                     TaskBasedSetting(villageId, accountId);
                 }
                 catch
@@ -108,7 +96,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void ExportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var villageId = CurrentVillage.Id;
+            var villageId = VillageId;
             var setting = context.VillagesSettings.Find(villageId);
             var jsonString = JsonSerializer.Serialize(setting);
             var village = context.Villages.Find(villageId);
@@ -191,12 +179,11 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadUpgradeTroop(bool[] upgradeTroop)
         {
-            if (CurrentVillage is null) return;
-
+            if (!IsActive) return;
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
-                var troops = context.VillagesTroops.Where(x => x.VillageId == CurrentVillage.Id).ToArray();
+                var troops = context.VillagesTroops.Where(x => x.VillageId == VillageId).ToArray();
                 TroopUpgrade.Clear();
                 for (var i = 0; i < troops.Length; i++)
                 {

@@ -8,14 +8,13 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
-using WPFUI.Interfaces;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class GeneralViewModel : AccountTabBaseViewModel, ITabPage
+    public class GeneralViewModel : AccountTabBaseViewModel
     {
-        public GeneralViewModel() : base()
+        public GeneralViewModel()
         {
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
 
@@ -23,64 +22,55 @@ namespace WPFUI.ViewModels.Tabs
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
         }
 
+        protected override void Init(int accountId)
+        {
+            LoadData(accountId);
+        }
+
         private void OnAccountStatusUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
+            if (AccountId != accountId) return;
+            LoadData(accountId);
         }
 
-        public bool IsActive { get; set; }
+        public Task PauseTask() => Pause(AccountId);
 
-        public void OnActived()
+        public void RestartTask() => Restart(AccountId);
+
+        private void LoadData(int index)
         {
-            IsActive = true;
-            if (CurrentAccount is not null)
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                LoadData(CurrentAccount.Id);
-            }
-        }
+                var status = _taskManager.GetAccountStatus(index);
+                switch (status)
+                {
+                    case AccountStatus.Offline:
+                    case AccountStatus.Starting:
+                    case AccountStatus.Pausing:
+                    case AccountStatus.Stopping:
+                        IsValidStatus = false;
+                        PauseText = "~";
+                        break;
 
-        public void OnDeactived()
-        {
-            IsActive = false;
-        }
+                    case AccountStatus.Online:
+                        IsValidStatus = true;
+                        PauseText = "Pause";
+                        break;
 
-        public Task PauseTask() => Pause(CurrentAccount.Id);
+                    case AccountStatus.Paused:
+                        IsValidStatus = true;
+                        PauseText = "Resume";
+                        break;
 
-        public void RestartTask() => Restart(CurrentAccount.Id);
+                    default:
+                        break;
+                }
 
-        protected override void LoadData(int index)
-        {
-            var status = _taskManager.GetAccountStatus(index);
-            switch (status)
-            {
-                case AccountStatus.Offline:
-                case AccountStatus.Starting:
-                case AccountStatus.Pausing:
-                case AccountStatus.Stopping:
-                    IsValidStatus = false;
-                    PauseText = "~";
-                    break;
+                IsValidRestart = status == AccountStatus.Paused;
 
-                case AccountStatus.Online:
-                    IsValidStatus = true;
-                    PauseText = "Pause";
-                    break;
-
-                case AccountStatus.Paused:
-                    IsValidStatus = true;
-                    PauseText = "Resume";
-                    break;
-
-                default:
-                    break;
-            }
-
-            IsValidRestart = status == AccountStatus.Paused;
-
-            Status = status.ToString();
+                Status = status.ToString();
+            });
         }
 
         private async Task Pause(int index)
@@ -99,12 +89,12 @@ namespace WPFUI.ViewModels.Tabs
                 if (current is not null)
                 {
                     current.Cts.Cancel();
-                    _waitingWindow.ViewModel.Show("waiting current task stops");
+                    _waitingWindow.Show("waiting current task stops");
                     await Task.Run(() =>
                     {
                         while (current.Stage != TaskStage.Waiting) { }
                     });
-                    _waitingWindow.ViewModel.Close();
+                    _waitingWindow.Close();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
                 return;

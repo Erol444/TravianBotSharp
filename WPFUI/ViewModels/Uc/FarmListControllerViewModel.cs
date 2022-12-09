@@ -22,7 +22,6 @@ namespace WPFUI.ViewModels.Uc
             {
                 FarmName = "Not selected";
                 FarmCount = "~";
-                IsActive = true;
                 FarmSetting.IsActive = false;
                 FarmSetting.IntervalTime = "0";
                 FarmSetting.IntervalDiffTime = "0";
@@ -41,7 +40,7 @@ namespace WPFUI.ViewModels.Uc
         public async Task SaveData()
         {
             if (CurrentFarm is null) return;
-            _waitingWindow.ViewModel.Show("Saving ...");
+            _waitingWindow.Show("Saving ...");
             await Task.Run(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -50,7 +49,7 @@ namespace WPFUI.ViewModels.Uc
                 context.Update(setting);
                 context.SaveChanges();
             });
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
             MessageBox.Show("Saved");
         }
 
@@ -79,14 +78,6 @@ namespace WPFUI.ViewModels.Uc
         }
 
         public FarmSettingInfo FarmSetting { get; } = new();
-
-        private bool _isActive;
-
-        public bool IsActive
-        {
-            get => _isActive;
-            set => this.RaiseAndSetIfChanged(ref _isActive, value);
-        }
 
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
     }

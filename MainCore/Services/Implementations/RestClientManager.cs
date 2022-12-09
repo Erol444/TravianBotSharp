@@ -62,7 +62,7 @@ namespace MainCore.Services.Implementations
             return client;
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
             foreach (var item in _database.Values)
             {
