@@ -1,11 +1,14 @@
 ﻿using DynamicData;
 using ReactiveUI;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.Views.Tabs.Villages;
 
 namespace WPFUI.ViewModels.Tabs
 {
@@ -14,6 +17,35 @@ namespace WPFUI.ViewModels.Tabs
         public VillagesViewModel()
         {
             this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(this, vm => vm._selectorViewModel.Village);
+            this.WhenAnyValue(x => x.CurrentIndex).Subscribe(x =>
+            {
+                if (x == -1) return;
+                if (_current == TabType.Normal) return;
+                SetTab(TabType.Normal);
+            });
+            _tabsHolder = new()
+            {
+                {
+                    TabType.NoAccount, new TabItemModel[]
+                    {
+                        new("No account", new NoVillagePage()) ,
+                    }
+                },
+                {
+                    TabType.Normal, new TabItemModel[]
+                    {
+                        new("Build", new BuildPage()),
+                        new("Settings", new SettingsPage()),
+                        new("NPC", new NPCPage()),
+                        new("Troop", new TroopsPage()),
+                        new("Info", new InfoPage()),
+                    }
+                }
+            };
+            Tabs = new()
+            {
+                _tabsHolder[TabType.NoAccount]
+            };
         }
 
         protected override void Init(int accountId)
@@ -50,6 +82,18 @@ namespace WPFUI.ViewModels.Tabs
             });
         }
 
+        public void SetTab(TabType tab)
+        {
+            if (!IsActive) return;
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Tabs.Clear();
+                Tabs.AddRange(_tabsHolder[tab]);
+                TabIndex = 0;
+                _current = tab;
+            });
+        }
+
         public ObservableCollection<VillageModel> Villages { get; } = new();
 
         private VillageModel _currentVillage;
@@ -69,5 +113,17 @@ namespace WPFUI.ViewModels.Tabs
         }
 
         public VillageModel OldVillage { get; set; }
+
+        public ObservableCollection<TabItemModel> Tabs { get; }
+        private readonly Dictionary<TabType, TabItemModel[]> _tabsHolder;
+        private TabType _current;
+
+        private int _tabIndex;
+
+        public int TabIndex
+        {
+            get => _tabIndex;
+            set => this.RaiseAndSetIfChanged(ref _tabIndex, value);
+        }
     }
 }

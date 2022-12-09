@@ -22,7 +22,7 @@
                                 <TextBlock Text="{Binding Troop}" />
                             </Image.ToolTip>
                         </Image>
-                        <xctk:IntegerUpDown Value="{Binding Text}" Minimum="0" />
+                        <xctk:IntegerUpDown Value="{Binding Text}" Minimum="-1" />
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
