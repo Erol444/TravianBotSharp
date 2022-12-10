@@ -1,14 +1,10 @@
 ﻿<rxui:ReactiveUserControl
-        x:Class="WPFUI.Views.Uc.ButtonPanelUc"
-        x:TypeArguments="vms:ButtonPanelViewModel"
+        x:Class="WPFUI.Views.Uc.MainView.MainButtonPanelUc"
+        x:TypeArguments="vms:MainButtonPanelViewModel"
         xmlns:rxui="http://reactiveui.net"
-        xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc"
+        xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc.MainView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        mc:Ignorable="d">
-
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -27,7 +23,7 @@
         <Button x:Name="LoginButton" Content="Login" Grid.Row="2" Margin="0,0,1,2" />
         <Button x:Name="LogoutButton" Grid.Column="1" Content="Logout" Grid.Row="2" Margin="1,0,0,2" />
         <Button x:Name="DeleteButton" Grid.ColumnSpan="2" Content="Delete" Grid.Row="3" Margin="1,0,0,2" />
-        <Button x:Name="LoginAllButton" Content="Login all" Grid.Row="4" Margin="0,0,1,2" IsEnabled="False" />
-        <Button x:Name="LogoutAllButton" Grid.Column="1" Content="Logout all" Grid.Row="4" Margin="1,0,0,2" IsEnabled="False" />
+        <Button x:Name="PauseButton" Content="Pause" Grid.Row="4" Margin="0,0,1,2" />
+        <Button x:Name="RestartButton" Grid.Column="1" Content="Restart" Grid.Row="4" Margin="1,0,0,2" />
     </Grid>
 </rxui:ReactiveUserControl>

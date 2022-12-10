@@ -72,7 +72,7 @@ namespace WPFUI
             services.AddSingleton<VersionViewModel>();
             services.AddSingleton<WaitingViewModel>();
 
-            services.AddSingleton<ButtonPanelViewModel>();
+            services.AddSingleton<MainButtonPanelViewModel>();
             services.AddSingleton<FarmListControllerViewModel>();
 
             services.AddSingleton<AddAccountsViewModel>();
@@ -80,7 +80,6 @@ namespace WPFUI
             services.AddSingleton<EditAccountViewModel>();
             services.AddSingleton<DebugViewModel>();
             services.AddSingleton<FarmingViewModel>();
-            services.AddSingleton<GeneralViewModel>();
             services.AddSingleton<HeroViewModel>();
             services.AddSingleton<SettingsViewModel>();
             services.AddSingleton<VillagesViewModel>();

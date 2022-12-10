@@ -5,7 +5,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:uc="clr-namespace:WPFUI.Views.Uc"
         xmlns:ucmain="clr-namespace:WPFUI.Views.Uc.MainView"
         xmlns:vms="clr-namespace:WPFUI.ViewModels"
         xmlns:reactiveui="http://reactiveui.net"
@@ -21,7 +20,7 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="2*" />
             </Grid.RowDefinitions>
-            <uc:ButtonPanelUc x:Name="ButtonPanel" />
+            <ucmain:MainButtonPanelUc x:Name="ButtonPanel" />
             <ucmain:AccountListUc Grid.Row="1" />
         </Grid>
         <ucmain:MainTabPanelUc Grid.Column="1" />

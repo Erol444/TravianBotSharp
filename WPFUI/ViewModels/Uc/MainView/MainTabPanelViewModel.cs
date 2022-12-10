@@ -45,7 +45,6 @@ namespace WPFUI.ViewModels.Uc.MainView
                 {
                     TabType.Normal, new TabItemModel[]
                     {
-                        new("General", new GeneralPage()),
                         new("Settings", new SettingsPage()),
                         new("Hero", new HeroPage()),
                         new("Villages", new VillagesPage()),

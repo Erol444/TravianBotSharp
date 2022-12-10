@@ -1,17 +1,18 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
-using WPFUI.ViewModels.Uc;
+using WPFUI.ViewModels.Uc.MainView;
 
-namespace WPFUI.Views.Uc
+namespace WPFUI.Views.Uc.MainView
 {
     /// <summary>
-    /// Interaction logic for ButtonPanelUc.xaml
+    /// Interaction logic for MainButtonPanelUc.xaml
     /// </summary>
-    public partial class ButtonPanelUc : ReactiveUserControl<ButtonPanelViewModel>
+    public partial class MainButtonPanelUc : ReactiveUserControl<MainButtonPanelViewModel>
     {
-        public ButtonPanelUc()
+        public MainButtonPanelUc()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<MainButtonPanelViewModel>();
             InitializeComponent();
             this.WhenActivated(d =>
             {
@@ -21,8 +22,8 @@ namespace WPFUI.Views.Uc
                 this.BindCommand(ViewModel, vm => vm.LoginCommand, v => v.LoginButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.LogoutCommand, v => v.LogoutButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.DeleteAccountCommand, v => v.DeleteButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.LoginAllCommand, v => v.LoginAllButton).DisposeWith(d);
-                this.BindCommand(ViewModel, vm => vm.LogoutAllCommand, v => v.LogoutAllButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.PauseCommand, v => v.PauseButton).DisposeWith(d);
+                this.BindCommand(ViewModel, vm => vm.RestartCommand, v => v.RestartButton).DisposeWith(d);
             });
         }
     }

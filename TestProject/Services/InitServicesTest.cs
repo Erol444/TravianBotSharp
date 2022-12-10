@@ -7,6 +7,7 @@ using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
 using WPFUI.ViewModels.Uc;
+using WPFUI.ViewModels.Uc.MainView;
 
 namespace TestProject.Services
 {
@@ -34,7 +35,7 @@ namespace TestProject.Services
                 new object[] {typeof(MainWindowViewModel)},
                 new object[] {typeof(VersionViewModel) },
                 new object[] {typeof(WaitingViewModel) },
-                new object[] {typeof(ButtonPanelViewModel) },
+                new object[] {typeof(MainButtonPanelViewModel) },
                 new object[] {typeof(FarmListControllerViewModel) },
 
                 new object[] {typeof(AddAccountsViewModel) },
@@ -42,7 +43,6 @@ namespace TestProject.Services
                 new object[] {typeof(EditAccountViewModel) },
                 new object[] {typeof(DebugViewModel) },
                 new object[] {typeof(FarmingViewModel) },
-                new object[] {typeof(GeneralViewModel) },
                 new object[] {typeof(HeroViewModel) },
                 new object[] {typeof(SettingsViewModel) },
                 new object[] {typeof(VillagesViewModel) },
