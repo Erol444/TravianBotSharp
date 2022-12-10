@@ -66,4 +66,8 @@
     <ProjectReference Include="..\MainCore\MainCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Uc\BuildVIew\" />
+  </ItemGroup>
+
 </Project>
