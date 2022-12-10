@@ -1,21 +1,23 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
-using WPFUI.ViewModels.Uc;
+using WPFUI.ViewModels.Uc.FarmingView;
 
-namespace WPFUI.Views.Uc
+namespace WPFUI.Views.Uc.FarmingView
 {
     /// <summary>
-    /// Interaction logic for FarmListController.xaml
+    /// Interaction logic for FarmContentUc.xaml
     /// </summary>
-    public partial class FarmListControllerUc : ReactiveUserControl<FarmListControllerViewModel>
+    public partial class FarmContentUc : ReactiveUserControl<FarmContentViewModel>
     {
-        public FarmListControllerUc()
+        public FarmContentUc()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<FarmContentViewModel>();
             InitializeComponent();
             Interval.ViewModel = new("Time for next send", "sec(s)");
             this.WhenActivated(d =>
             {
+                this.Bind(ViewModel, vm => vm.IsEnable, v => v.MainGrid.IsEnabled).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.SaveCommand, v => v.SaveButton).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.FarmSetting.IsActive, v => v.ActiveCheckBox.IsChecked).DisposeWith(d);

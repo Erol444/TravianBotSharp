@@ -13,7 +13,7 @@ using System;
 using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
-using WPFUI.ViewModels.Uc;
+using WPFUI.ViewModels.Uc.FarmingView;
 using WPFUI.ViewModels.Uc.MainView;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
@@ -72,9 +72,6 @@ namespace WPFUI
             services.AddSingleton<VersionViewModel>();
             services.AddSingleton<WaitingViewModel>();
 
-            services.AddSingleton<MainButtonPanelViewModel>();
-            services.AddSingleton<FarmListControllerViewModel>();
-
             services.AddSingleton<AddAccountsViewModel>();
             services.AddSingleton<AddAccountViewModel>();
             services.AddSingleton<EditAccountViewModel>();
@@ -96,8 +93,14 @@ namespace WPFUI
 
         public static IServiceCollection ConfigureUcViewModel(this IServiceCollection services)
         {
+            // main view
             services.AddSingleton<MainTabPanelViewModel>();
+            services.AddSingleton<MainButtonPanelViewModel>();
             services.AddSingleton<AccountListViewModel>();
+
+            // farming view
+            services.AddSingleton<FarmListViewModel>();
+            services.AddSingleton<FarmContentViewModel>();
             return services;
         }
     }

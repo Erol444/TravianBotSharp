@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MainCore.Enums;
+using System;
 
 namespace MainCore.Services.Interface.EventManager
 {
@@ -8,8 +9,8 @@ namespace MainCore.Services.Interface.EventManager
 
         public void OnAccountsUpdate();
 
-        public event Action<int> AccountStatusUpdate;
+        public event Action<int, AccountStatus> AccountStatusUpdate;
 
-        public void OnStatusUpdate(int accountId);
+        public void OnStatusUpdate(int accountId, AccountStatus status);
     }
 }

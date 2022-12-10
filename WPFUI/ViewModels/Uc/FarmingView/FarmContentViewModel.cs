@@ -1,23 +1,27 @@
 ﻿using ReactiveUI;
-using System;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
-namespace WPFUI.ViewModels.Uc
+namespace WPFUI.ViewModels.Uc.FarmingView
 {
-    public class FarmListControllerViewModel : TabBaseViewModel
+    public class FarmContentViewModel : TabBaseViewModel
     {
-        public FarmListControllerViewModel() : base()
+        public FarmContentViewModel()
         {
-            this.WhenAnyValue(x => x.CurrentFarm).Subscribe(LoadData);
-            SaveCommand = ReactiveCommand.CreateFromTask(SaveData, this.WhenAnyValue(x => x.IsActive));
+            SaveCommand = ReactiveCommand.CreateFromTask(SaveData);
+            LoadCommand = ReactiveCommand.Create<ListBoxItem>(LoadData);
+
+            this.WhenAnyValue(vm => vm._selectorViewModel.Farm).InvokeCommand(LoadCommand);
+            this.WhenAnyValue(vm => vm._selectorViewModel.IsFarmSelected).ToProperty(this, vm => vm.IsEnable, out _isEnable);
         }
 
-        public void LoadData(FarmInfo farm)
+        public void LoadData(ListBoxItem farm)
         {
+            if (!IsActive) return;
             if (farm is null)
             {
                 FarmName = "Not selected";
@@ -28,7 +32,7 @@ namespace WPFUI.ViewModels.Uc
             }
             else
             {
-                FarmName = farm.Name;
+                FarmName = farm.Content;
                 using var context = _contextFactory.CreateDbContext();
                 var count = context.Farms.Find(farm.Id).FarmCount;
                 FarmCount = count.ToString();
@@ -39,26 +43,18 @@ namespace WPFUI.ViewModels.Uc
 
         public async Task SaveData()
         {
-            if (CurrentFarm is null) return;
+            if (_selectorViewModel.Farm is null) return;
             _waitingWindow.Show("Saving ...");
             await Task.Run(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
-                var setting = context.FarmsSettings.Find(CurrentFarm.Id);
+                var setting = context.FarmsSettings.Find(_selectorViewModel.Farm.Id);
                 FarmSetting.CopyTo(setting);
                 context.Update(setting);
                 context.SaveChanges();
             });
             _waitingWindow.Close();
             MessageBox.Show("Saved");
-        }
-
-        private FarmInfo _currentFarm;
-
-        public FarmInfo CurrentFarm
-        {
-            get => _currentFarm;
-            set => this.RaiseAndSetIfChanged(ref _currentFarm, value);
         }
 
         private string _farmName;
@@ -77,8 +73,16 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _farmCount, value);
         }
 
+        private readonly ObservableAsPropertyHelper<bool> _isEnable;
+
+        public bool IsEnable
+        {
+            get => _isEnable.Value;
+        }
+
         public FarmSettingInfo FarmSetting { get; } = new();
 
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
+        public ReactiveCommand<ListBoxItem, Unit> LoadCommand { get; }
     }
 }

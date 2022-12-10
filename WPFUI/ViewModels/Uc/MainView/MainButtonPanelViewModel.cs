@@ -40,20 +40,19 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         protected override void Init(int accountId)
         {
-            LoadData(accountId);
+            var status = _taskManager.GetAccountStatus(accountId);
+            LoadData(status);
         }
 
-        private void OnAccountUpdate(int accountId)
+        private void OnAccountUpdate(int accountId, AccountStatus status)
         {
             if (!IsActive) return;
             if (AccountId != accountId) return;
-            LoadData(accountId);
+            LoadData(status);
         }
 
-        private void LoadData(int accountId)
+        private void LoadData(AccountStatus status)
         {
-            var status = _taskManager.GetAccountStatus(accountId);
-
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 switch (status)

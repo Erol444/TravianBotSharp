@@ -6,7 +6,6 @@ using WPFUI;
 using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
-using WPFUI.ViewModels.Uc;
 using WPFUI.ViewModels.Uc.MainView;
 
 namespace TestProject.Services
@@ -36,7 +35,6 @@ namespace TestProject.Services
                 new object[] {typeof(VersionViewModel) },
                 new object[] {typeof(WaitingViewModel) },
                 new object[] {typeof(MainButtonPanelViewModel) },
-                new object[] {typeof(FarmListControllerViewModel) },
 
                 new object[] {typeof(AddAccountsViewModel) },
                 new object[] {typeof(AddAccountViewModel) },
