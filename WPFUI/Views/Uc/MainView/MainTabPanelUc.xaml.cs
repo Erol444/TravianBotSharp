@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using Splat;
+using System.Reactive.Disposables;
 using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.Views.Uc.MainView

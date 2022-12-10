@@ -98,6 +98,7 @@ namespace WPFUI
         public static IServiceCollection ConfigureUcViewModel(this IServiceCollection services)
         {
             services.AddSingleton<MainTabPanelViewModel>();
+            services.AddSingleton<AccountListViewModel>();
             return services;
         }
     }

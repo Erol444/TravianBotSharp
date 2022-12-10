@@ -1,7 +1,11 @@
 ﻿using DynamicData;
 using ReactiveUI;
+using Splat;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.Views.Tabs;
@@ -10,8 +14,14 @@ namespace WPFUI.ViewModels.Uc.MainView
 {
     public class MainTabPanelViewModel : ActivatableViewModelBase
     {
+        private readonly SelectorViewModel _selectorViewModel;
+
         public MainTabPanelViewModel()
         {
+            _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
+            this.WhenAnyValue(vm => vm._selectorViewModel.IsAccountSelected)
+                .Where(x => x)
+                .Subscribe(_ => SetTab(TabType.Normal));
             _tabsHolder = new()
             {
                 {
@@ -67,6 +77,7 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private readonly Dictionary<TabType, TabItemModel[]> _tabsHolder;
         private TabType _current;
+        public TabType Current => _current;
 
         private int _tabIndex;
 

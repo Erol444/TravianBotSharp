@@ -8,7 +8,6 @@
         xmlns:uc="clr-namespace:WPFUI.Views.Uc"
         xmlns:ucmain="clr-namespace:WPFUI.Views.Uc.MainView"
         xmlns:vms="clr-namespace:WPFUI.ViewModels"
-        xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
         xmlns:reactiveui="http://reactiveui.net"
         mc:Ignorable="d"
         Title="TravianBotSharp" Height="510" Width="1024">
@@ -23,14 +22,7 @@
                 <RowDefinition Height="2*" />
             </Grid.RowDefinitions>
             <uc:ButtonPanelUc x:Name="ButtonPanel" />
-            <ListView x:Name="AccountGrid" Grid.Row="1" SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Account" DisplayMemberBinding="{Binding Username}"   Behaviours:GridViewColumnResize.Width="*" />
-                        <GridViewColumn Header="Server" DisplayMemberBinding="{Binding Server}"   Behaviours:GridViewColumnResize.Width="*" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
+            <ucmain:AccountListUc Grid.Row="1" />
         </Grid>
         <ucmain:MainTabPanelUc Grid.Column="1" />
     </Grid>

@@ -2,6 +2,7 @@
 using MainCore.Helper;
 using MainCore.Tasks.Misc;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Linq;
 using System.Reactive;
@@ -10,15 +11,19 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc.MainView;
 using Access = MainCore.Models.Database.Access;
 
 namespace WPFUI.ViewModels.Uc
 {
     public class ButtonPanelViewModel : AccountTabBaseViewModel
     {
+        private readonly MainTabPanelViewModel _mainTabPanelViewModel;
+
         public ButtonPanelViewModel()
         {
             _eventManager.AccountStatusUpdate += OnAccountUpdate;
+            _mainTabPanelViewModel = Locator.Current.GetService<MainTabPanelViewModel>();
 
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
@@ -87,12 +92,12 @@ namespace WPFUI.ViewModels.Uc
 
         private void AddAccountTask()
         {
-            _mainWindow.SetTab(TabType.AddAccount);
+            _mainTabPanelViewModel.SetTab(TabType.AddAccount);
         }
 
         private void AddAccountsTask()
         {
-            _mainWindow.SetTab(TabType.AddAccounts);
+            _mainTabPanelViewModel.SetTab(TabType.AddAccounts);
         }
 
         private Task LoginTask() => Task.Run(() => LoginAccount(AccountId));
