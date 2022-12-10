@@ -1,6 +1,4 @@
-﻿using ReactiveUI;
-using System;
-using System.Windows.Media;
+﻿using System;
 
 namespace WPFUI.Models
 {
