@@ -1,5 +1,4 @@
-﻿using MainCore.Models.Database;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -42,9 +41,9 @@ namespace WPFUI.ViewModels
 
         private void OnVillageChanged(int village) => VillageChanged?.Invoke(village);
 
-        private Account _account;
+        private ListBoxItem _account;
 
-        public Account Account
+        public ListBoxItem Account
         {
             get => _account;
             set => this.RaiseAndSetIfChanged(ref _account, value);

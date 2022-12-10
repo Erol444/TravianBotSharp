@@ -1,6 +1,7 @@
 ﻿using DynamicData;
+using DynamicData.Kernel;
 using MainCore;
-using MainCore.Models.Database;
+using MainCore.Enums;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
@@ -9,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Windows.Media;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
@@ -30,9 +32,45 @@ namespace WPFUI.ViewModels.Uc.MainView
 
             _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = Locator.Current.GetService<IEventManager>();
-            _eventManager.AccountsTableUpdate += EventManager_AccountsTableUpdate; ;
+            _eventManager.AccountsTableUpdate += EventManager_AccountsTableUpdate;
+            _eventManager.AccountStatusUpdate += EventManager_AccountStatusUpdate;
 
             Active += AccountListViewModel_Active;
+        }
+
+        private void EventManager_AccountStatusUpdate(int accountId, AccountStatus status)
+        {
+            if (!IsActive) return;
+
+            var account = Accounts.FirstOrDefault(x => x.Id == accountId);
+            if (account is null) return;
+
+            switch (status)
+            {
+                case AccountStatus.Offline:
+                    account.Color = Color.FromRgb(0, 0, 0); // black
+                    break;
+
+                case AccountStatus.Starting:
+                    account.Color = Color.FromRgb(255, 165, 0); // orange
+                    break;
+
+                case AccountStatus.Online:
+                    account.Color = Color.FromRgb(0, 255, 0); // green
+                    break;
+
+                case AccountStatus.Pausing:
+                    account.Color = Color.FromRgb(255, 165, 0); // orange
+                    break;
+
+                case AccountStatus.Paused:
+                    account.Color = Color.FromRgb(255, 0, 0); // red
+                    break;
+
+                case AccountStatus.Stopping:
+                    account.Color = Color.FromRgb(255, 165, 0); // orange
+                    break;
+            }
         }
 
         private void EventManager_AccountsTableUpdate()
@@ -48,7 +86,10 @@ namespace WPFUI.ViewModels.Uc.MainView
         private void LoadData()
         {
             using var context = _contextFactory.CreateDbContext();
-            var accounts = context.Accounts.ToList();
+            var accounts = context.Accounts
+                .AsList()
+                .Select(x => new ListBoxItem(x.Id, x.Username, x.Server))
+                .ToList();
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
@@ -74,11 +115,11 @@ namespace WPFUI.ViewModels.Uc.MainView
             });
         }
 
-        public ObservableCollection<Account> Accounts { get; } = new();
+        public ObservableCollection<ListBoxItem> Accounts { get; } = new();
 
-        private Account _currentAccount;
+        private ListBoxItem _currentAccount;
 
-        public Account CurrentAccount
+        public ListBoxItem CurrentAccount
         {
             get => _currentAccount;
             set => this.RaiseAndSetIfChanged(ref _currentAccount, value);
