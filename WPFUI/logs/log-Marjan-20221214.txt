@@ -1,0 +1,77 @@
+16:20:45 [INF] Login task is started
+16:20:47 [INF] Login task is finished
+16:20:49 [INF] Update info is started
+16:20:49 [INF] Update info is finished
+16:20:50 [INF] Update All page in 32780 is started
+16:20:52 [INF] Update All page in 32780 is finished
+16:23:42 [INF] Login task is started
+16:23:43 [INF] Login task is finished
+16:23:44 [INF] Update info is started
+16:23:44 [INF] Update info is finished
+16:25:53 [INF] Login task is started
+16:25:55 [INF] Login task is finished
+16:25:56 [INF] Update info is started
+16:25:56 [INF] Update info is finished
+16:27:46 [INF] Login task is started
+16:27:47 [INF] Login task is finished
+16:27:48 [INF] Update info is started
+16:27:49 [INF] Update info is finished
+16:49:20 [INF] Login task is started
+16:49:23 [INF] Login task is finished
+16:49:24 [INF] Update info is started
+16:49:25 [INF] Update info is finished
+16:49:29 [INF] Update Resources page in 000 is started
+16:49:29 [INF] Update Resources page in 000 is finished
+16:49:31 [INF] Send Resources Out of Village Task in 000 is started
+16:49:32 [INF] Marketplace is missing. Turn off auto Sending Resources to prevent bot detector.
+16:49:32 [INF] Send Resources Out of Village Task in 000 is finished
+17:18:13 [INF] Login task is started
+17:18:15 [INF] Login task is finished
+17:18:17 [INF] Update info is started
+17:18:17 [INF] Update info is finished
+17:20:06 [INF] Update Resources page in 000 is started
+17:20:06 [INF] Update Resources page in 000 is finished
+17:20:07 [INF] Send Resources Out of Village Task in 000 is started
+17:20:07 [ERR] Object reference not set to an instance of an object.
+17:20:07 [INF] Send Resources Out of Village Task in 000 is failed. Retry counter is increased (0)
+17:20:07 [INF] Send Resources Out of Village Task in 000 is stopped and reset.
+17:20:09 [INF] Send Resources Out of Village Task in 000 is started
+17:20:09 [ERR] Object reference not set to an instance of an object.
+17:20:09 [INF] Send Resources Out of Village Task in 000 is failed. Retry counter is increased (1)
+17:20:09 [INF] Send Resources Out of Village Task in 000 is stopped and reset.
+17:20:11 [INF] Send Resources Out of Village Task in 000 is started
+17:20:11 [ERR] Object reference not set to an instance of an object.
+17:20:11 [INF] Send Resources Out of Village Task in 000 is failed. Retry counter is increased (2)
+17:20:11 [INF] Send Resources Out of Village Task in 000 is stopped and reset.
+17:20:12 [INF] Send Resources Out of Village Task in 000 is started
+17:20:12 [ERR] Object reference not set to an instance of an object.
+17:20:12 [INF] Send Resources Out of Village Task in 000 is failed. Retry counter is increased (3)
+17:20:13 [INF] Send Resources Out of Village Task in 000 is stopped and reset.
+17:20:14 [INF] Send Resources Out of Village Task in 000 is started
+17:20:14 [ERR] Object reference not set to an instance of an object.
+17:20:14 [INF] Send Resources Out of Village Task in 000 was excuted 3 times. Bot is paused
+17:20:14 [INF] Send Resources Out of Village Task in 000 is finished
+17:21:14 [INF] Update Resources page in 000 is started
+17:21:14 [INF] Update Resources page in 000 is finished
+17:21:15 [INF] Send Resources Out of Village Task in 000 is started
+17:21:42 [ERR] Object reference not set to an instance of an object.
+17:21:42 [INF] Send Resources Out of Village Task in 000 is failed. Retry counter is increased (0)
+17:21:42 [INF] Send Resources Out of Village Task in 000 is stopped and reset.
+17:21:44 [INF] Send Resources Out of Village Task in 000 is started
+17:21:57 [ERR] Object reference not set to an instance of an object.
+17:21:57 [INF] Send Resources Out of Village Task in 000 is failed. Retry counter is increased (1)
+17:21:58 [INF] Send Resources Out of Village Task in 000 is stopped and reset.
+17:21:59 [INF] Send Resources Out of Village Task in 000 is started
+17:22:43 [INF] Login task is started
+17:22:44 [INF] Login task is finished
+17:22:45 [INF] Update info is started
+17:22:45 [INF] Update info is finished
+17:22:57 [INF] Update Resources page in 000 is started
+17:22:57 [INF] Update Resources page in 000 is finished
+17:22:58 [INF] Send Resources Out of Village Task in 000 is started
+17:22:58 [INF] Village to send resoures to is not found. Turning send resources out of village off.
+17:22:58 [INF] Send Resources Out of Village Task in 000 is finished
+17:23:21 [INF] Update Resources page in 000 is started
+17:23:21 [INF] Update Resources page in 000 is finished
+17:23:22 [INF] Send Resources Out of Village Task in 000 is started
+17:23:29 [INF] Send Resources Out of Village Task in 000 is finished

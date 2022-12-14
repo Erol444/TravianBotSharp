@@ -1,8 +1,6 @@
 using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Helper;
-using MainCore.Models.Runtime;
-using MainCore.Tasks.Update;
 
 using OpenQA.Selenium;
 using System;
@@ -37,6 +35,9 @@ namespace MainCore.Tasks.Misc
                 NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             }
             StopFlag = false;
+            CheckIfVillageExists();
+            if (Cts.IsCancellationRequested) return;
+            if (StopFlag) return;
 
             Update();
             if (Cts.IsCancellationRequested) return;
@@ -49,11 +50,6 @@ namespace MainCore.Tasks.Misc
             SwitchToSendingVillage();
             if (Cts.IsCancellationRequested) return;
             if (StopFlag) return;
-
-            // TODO: Add resource updater for capital village and check if there is enough resources. If not lower values!!!!
-            // todo: Chech if enough traders is available. Optimize if not. Or return if none is available.
-
-            // TODO: Place duplicated methods to MarketHelper class
 
             ToMarketPlace();
             if (Cts.IsCancellationRequested) return;
@@ -73,7 +69,7 @@ namespace MainCore.Tasks.Misc
 
             ClickSendResources();
             ClickSend();
-            // TODO: Should wschedule nextRefresh for village when resources arrive?
+            // TODO: Could schedule village refresh when resources arrive. Optional.
         }
 
         private void Update()
@@ -102,8 +98,8 @@ namespace MainCore.Tasks.Misc
             if (marketplace is null)
             {
                 _logManager.Information(AccountId, "Marketplace is missing. Turn off auto Sending Resources to prevent bot detector.");
-                var setting = context.VillagesSettings.Find(VillageId);
-                setting.IsAutoNPC = false;
+                var setting = context.VillagesMarket.Find(VillageId);
+                setting.IsGetMissingResources = false;
                 context.Update(setting);
                 context.SaveChanges();
                 StopFlag = true;
@@ -151,7 +147,7 @@ namespace MainCore.Tasks.Misc
             var script_x = $"document.getElementsByName('x')[0].value = {coordinateX};";
 
 #elif TTWARS
-                // var script = $"document.getElementById('m2[{i}]').value = {current[i]};";
+#error Sending resources does not work for TTWARS
 #else
 #error You forgot to define Travian version here
 #endif
@@ -166,7 +162,7 @@ namespace MainCore.Tasks.Misc
             var script_y = $"document.getElementsByName('y')[0].value = {coordinateY};";
 
 #elif TTWARS
-                // var script = $"document.getElementById('m2[{i}]').value = {current[i]};";
+#error Sending resources does not work for TTWARS
 #else
 #error You forgot to define Travian version here
 #endif
@@ -188,7 +184,6 @@ namespace MainCore.Tasks.Misc
 
             if (Int16.Parse(this.merchantsAvailable) == 0)
             {
-                Debug.WriteLine("Zero merchants available at the moment. Will try again later on next village refresh.");
                 StopFlag = true;
 
                 return;
@@ -196,7 +191,6 @@ namespace MainCore.Tasks.Misc
 
             if (this.minMerchants * Int16.Parse(this.oneMerchantSize) > this.toSendSum)
             {
-                Debug.WriteLine($"Resources needed to be send {this.toSendSum} are less than 1 merchant {this.oneMerchantSize} so will not send now.");
                 StopFlag = true;
                 return;
             }
@@ -261,7 +255,7 @@ namespace MainCore.Tasks.Misc
                 var script = $"document.getElementsByName('r{i + 1}')[0].value = {toSend[i]};";
 
 #elif TTWARS
-                            var script = $"document.getElementById('m2[{i}]').value = {current[i]};";
+#error Sending resources does not work for TTWARS
 #else
 #error You forgot to define Travian version here
 #endif
@@ -275,21 +269,16 @@ namespace MainCore.Tasks.Misc
             var marketSettings = context.VillagesMarket.Find(VillageId);
             var currentResources = context.VillagesResources.Find(VillageId);
 
-            Debug.WriteLine("Checking arrival time");
-            Debug.WriteLine(marketSettings.ArrivalTime);
-            Debug.WriteLine(DateTime.Now);
 
 
             // Check arrivalTime
             if (marketSettings.ArrivalTime > DateTime.Now)
             {
-                Debug.WriteLine("Arrival time is greater than current time so will send resources later.");
                 StopFlag = true;
                 return;
             }
             else
             {
-                Debug.WriteLine("Arrival time is not greater than current time.");
 
             };
 
@@ -320,12 +309,9 @@ namespace MainCore.Tasks.Misc
             var searchY = marketSettings.SendFromY;
 
             var sendFromVillage = context.Villages.Where(village => (village.X == searchX && village.Y == searchY)).FirstOrDefault();
-            Debug.WriteLine($"Searcing for send from village: {sendFromVillage.Id} as {sendFromVillage.Name}");
-            Debug.WriteLine(this.sendFromVillageId);
 
             this.sendFromVillageId = sendFromVillage.Id;
 
-            Debug.WriteLine($"Resources will be sent from {sendFromVillage.Name}");
 
             // Go to village
             NavigateHelper.SwitchVillage(context, _chromeBrowser, this.sendFromVillageId, AccountId);
@@ -339,6 +325,27 @@ namespace MainCore.Tasks.Misc
             var container = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("incomingMerchants"));
             var upgradeButton = container.Descendants("button").FirstOrDefault(x => x.HasClass("build"));
 
+        }
+
+        private void CheckIfVillageExists()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var marketSettings = context.VillagesMarket.Find(VillageId);
+
+            var searchX = marketSettings.SendFromX;
+            var searchY = marketSettings.SendFromY;
+            var sendFromVillage = context.Villages.Where(village => (village.X == searchX && village.Y == searchY)).FirstOrDefault();
+
+            if (sendFromVillage is null)
+            {
+                _logManager.Information(AccountId, "Village to send resoures from is not found. Turning send resources in to village off.");
+                var setting = context.VillagesMarket.Find(VillageId);
+                setting.IsGetMissingResources = false;
+                context.Update(setting);
+                context.SaveChanges();
+                StopFlag = true;
+                return;
+            }
         }
 
         private void ClickSendResources()

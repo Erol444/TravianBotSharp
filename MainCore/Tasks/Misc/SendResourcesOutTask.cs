@@ -35,6 +35,9 @@ namespace MainCore.Tasks.Misc
                 NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             }
             StopFlag = false;
+            CheckIfVillageExists();
+            if (Cts.IsCancellationRequested) return;
+            if (StopFlag) return;
 
             Update();
             if (Cts.IsCancellationRequested) return;
@@ -88,8 +91,8 @@ namespace MainCore.Tasks.Misc
             if (marketplace is null)
             {
                 _logManager.Information(AccountId, "Marketplace is missing. Turn off auto Sending Resources to prevent bot detector.");
-                var setting = context.VillagesSettings.Find(VillageId);
-                setting.IsAutoNPC = false;
+                var setting = context.VillagesMarket.Find(VillageId);
+                setting.IsSendExcessResources = false;
                 context.Update(setting);
                 context.SaveChanges();
                 StopFlag = true;
@@ -126,18 +129,17 @@ namespace MainCore.Tasks.Misc
             using var context = _contextFactory.CreateDbContext();
             var villageMarketInfo = context.VillagesMarket.Where(x => x.VillageId == VillageId).FirstOrDefault();
 
-            int coordinateX;
-            int coordinateY;
+            var coordinateX = villageMarketInfo.SendExcessToX;
+            var coordinateY = villageMarketInfo.SendExcessToY;
 
-            coordinateX = villageMarketInfo.SendExcessToX;
-            coordinateY = villageMarketInfo.SendExcessToY;
+
 
 
 #if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
             var script_x = $"document.getElementsByName('x')[0].value = {coordinateX};";
 
 #elif TTWARS
-                // var script = $"document.getElementById('m2[{i}]').value = {current[i]};";
+#error Sending resources does not work for TTWARS
 #else
 #error You forgot to define Travian version here
 #endif
@@ -152,7 +154,7 @@ namespace MainCore.Tasks.Misc
             var script_y = $"document.getElementsByName('y')[0].value = {coordinateY};";
 
 #elif TTWARS
-                // var script = $"document.getElementById('m2[{i}]').value = {current[i]};";
+#error Sending resources does not work for TTWARS
 #else
 #error You forgot to define Travian version here
 #endif
@@ -174,13 +176,11 @@ namespace MainCore.Tasks.Misc
 
             if (Int16.Parse(this.merchantsAvailable) == 0)
             {
-                Debug.WriteLine("Zero merchants available at the moment. Will try again later.");
                 return false;
             }
 
             if (this.minMerchants * Int16.Parse(this.oneMerchantSize) > this.toSendSum)
             {
-                Debug.WriteLine($"Resources overflowing {this.toSendSum} are less than 1 merchant {this.oneMerchantSize}");
                 return false;
             }
 
@@ -190,6 +190,27 @@ namespace MainCore.Tasks.Misc
 
             return true;
 
+        }
+
+        private void CheckIfVillageExists()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var marketSettings = context.VillagesMarket.Find(VillageId);
+
+            var searchX = marketSettings.SendExcessToX;
+            var searchY = marketSettings.SendExcessToY;
+            var sendTovillage = context.Villages.Where(village => (village.X == searchX && village.Y == searchY)).FirstOrDefault();
+
+            if (sendTovillage is null)
+            {
+                _logManager.Information(AccountId, "Village to send resoures to is not found. Turning send resources out of village off.");
+                var setting = context.VillagesMarket.Find(VillageId);
+                setting.IsSendExcessResources = false;
+                context.Update(setting);
+                context.SaveChanges();
+                StopFlag = true;
+                return;
+            }
         }
 
         private void OptimizeMerchants()
@@ -267,7 +288,7 @@ namespace MainCore.Tasks.Misc
                 var script = $"document.getElementsByName('r{i + 1}')[0].value = {toSend[i]};";
 
 #elif TTWARS
-                            var script = $"document.getElementById('m2[{i}]').value = {current[i]};";
+#error Sending resources does not work for TTWARS
 #else
 #error You forgot to define Travian version here
 #endif

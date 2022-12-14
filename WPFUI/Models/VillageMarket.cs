@@ -49,60 +49,94 @@ namespace WPFUI.Models
 
         public bool IsValidate()
         {
-            // if (!SendExcessWood.IsNumeric())
-            // {
-            //     MessageBox.Show("Auto SendOutResources wood is not a number.", "Warning");
-            //     return false;
-            // }
-            // if (!SendExcessClay.IsNumeric())
-            // {
-            //     MessageBox.Show("Auto NPC clay is not a number.", "Warning");
-            //     return false;
-            // }
-            // if (!SendExcessIron.IsNumeric())
-            // {
-            //     MessageBox.Show("Auto NPC iron is not a number.", "Warning");
-            //     return false;
-            // }
-            // if (!SendExcessCrop.IsNumeric())
-            // {
-            //     MessageBox.Show("Auto NPC crop is not a number.", "Warning");
-            //     return false;
-            // }
-            // if (SendExcessToX[0] == '-')
-            // {
-            //     var positiveString = SendExcessToX.Remove(0);
-            //     if (!positiveString.IsNumeric())
-            //     {
-            //         MessageBox.Show("X coorinate is not a number.", "Warning");
-            //         return false;
-            //     }
-            // }
-            // else
-            // {
-            //     if (!SendExcessToX.IsNumeric())
-            //     {
-            //         MessageBox.Show("X coorinate is not a number.", "Warning");
-            //         return false;
-            //     }
-            // }
-            // if (SendExcessToY[0] == '-')
-            // {
-            //     var positiveString = SendExcessToY.Remove(0, 1);
-            //     if (!positiveString.IsNumeric())
-            //     {
-            //         MessageBox.Show("Y coorinate is not a number.", "Warning");
-            //         return false;
-            //     }
-            // }
-            // else
-            // {
-            //     if (!SendExcessToY.IsNumeric())
-            //     {
-            //         MessageBox.Show("Y coorinate is not a number.", "Warning");
-            //         return false;
-            //     }
-            // }
+            if (!SendExcessWood.IsNumeric())
+            {
+                MessageBox.Show("Auto SendOutResources wood is not a number.", "Warning");
+                return false;
+            }
+            if (!SendExcessClay.IsNumeric())
+            {
+                MessageBox.Show("Auto NPC clay is not a number.", "Warning");
+                return false;
+            }
+            if (!SendExcessIron.IsNumeric())
+            {
+                MessageBox.Show("Auto NPC iron is not a number.", "Warning");
+                return false;
+            }
+            if (!SendExcessCrop.IsNumeric())
+            {
+                MessageBox.Show("Auto NPC crop is not a number.", "Warning");
+                return false;
+            }
+            if (SendExcessToX[0] == '-')
+            {
+                var positiveString = SendExcessToX.Remove(0, 1);
+                if (!positiveString.IsNumeric())
+                {
+                    MessageBox.Show("X coorinate is not a number.", "Warning");
+                    return false;
+                }
+            }
+            else
+            {
+                if (!SendExcessToX.IsNumeric())
+                {
+                    MessageBox.Show("X coorinate is not a number.", "Warning");
+                    return false;
+                }
+            }
+            if (SendExcessToY[0] == '-')
+            {
+                var positiveString = SendExcessToY.Remove(0, 1);
+                if (!positiveString.IsNumeric())
+                {
+                    MessageBox.Show("Y coorinate is not a number.", "Warning");
+                    return false;
+                }
+            }
+            else
+            {
+                if (!SendExcessToY.IsNumeric())
+                {
+                    MessageBox.Show("Y coorinate is not a number.", "Warning");
+                    return false;
+                }
+            }
+            if (SendFromX[0] == '-')
+            {
+                var positiveString = SendFromX.Remove(0, 1);
+                if (!positiveString.IsNumeric())
+                {
+                    MessageBox.Show("X coorinate is not a number.", "Warning");
+                    return false;
+                }
+            }
+            else
+            {
+                if (!SendFromX.IsNumeric())
+                {
+                    MessageBox.Show("X coorinate is not a number.", "Warning");
+                    return false;
+                }
+            }
+            if (SendFromY[0] == '-')
+            {
+                var positiveString = SendFromY.Remove(0, 1);
+                if (!positiveString.IsNumeric())
+                {
+                    MessageBox.Show("Y coorinate is not a number.", "Warning");
+                    return false;
+                }
+            }
+            else
+            {
+                if (!SendFromY.IsNumeric())
+                {
+                    MessageBox.Show("Y coorinate is not a number.", "Warning");
+                    return false;
+                }
+            }
 
             return true;
         }

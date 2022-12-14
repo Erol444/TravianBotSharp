@@ -1,23 +1,15 @@
-using MainCore.Enums;
-using MainCore.Helper;
+using MainCore.Tasks.Update;
 using MainCore.Tasks.Misc;
-using MainCore.Tasks.Sim;
-using Microsoft.Win32;
 using ReactiveUI;
 using System;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
-using System.Diagnostics;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
@@ -33,12 +25,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesMarket.Find(index);
             Settings.CopyFrom(settings);
-
-            // using var context = _contextFactory.CreateDbContext();
-            // var updateTime = context.VillagesUpdateTime.Find(index);
-            // var dorf1 = updateTime.Dorf1;
-            // var dorf2 = updateTime.Dorf2;
-            // LastUpdate = dorf1 > dorf2 ? dorf1 : dorf2;
         }
 
         public void OnActived()
@@ -71,6 +57,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
             _waitingWindow.ViewModel.Close();
 
             MessageBox.Show("Saved.");
+
+            // Update dorf so it will start sending resources immidiately
+            UpdateDorf1();
         }
         private void Save(int index)
         {
@@ -80,6 +69,23 @@ namespace WPFUI.ViewModels.Tabs.Villages
             Settings.CopyFrom(setting);
             context.Update(setting);
             context.SaveChanges();
+        }
+
+        private void UpdateDorf1()
+        {
+            var accountId = CurrentAccount.Id;
+            var tasks = _taskManager.GetList(accountId);
+            var villageId = CurrentVillage.Id;
+            var updateTask = tasks.OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == villageId);
+            if (updateTask is null)
+            {
+                _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
+            }
+            else
+            {
+                updateTask.ExecuteAt = DateTime.Now;
+                _taskManager.Update(accountId);
+            }
         }
 
         private void TaskBasedSetting(int villageId, int accountId)
@@ -104,14 +110,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
                     }
                 }
             }
-        }
-
-        private DateTime _lastUpdate;
-
-        public DateTime LastUpdate
-        {
-            get => _lastUpdate;
-            set => this.RaiseAndSetIfChanged(ref _lastUpdate, value);
         }
 
         public VillageMarket Settings { get; } = new();
