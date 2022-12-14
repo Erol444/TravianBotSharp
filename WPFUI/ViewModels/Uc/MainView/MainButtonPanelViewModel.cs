@@ -29,6 +29,7 @@ namespace WPFUI.ViewModels.Uc.MainView
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
+
             DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
 
             LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));

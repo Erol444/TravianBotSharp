@@ -16,7 +16,7 @@ namespace WPFUI.ViewModels.Tabs
     {
         public VillagesViewModel()
         {
-            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(this, vm => vm._selectorViewModel.Village);
+            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(_selectorViewModel, vm => vm.Village);
             this.WhenAnyValue(x => x.CurrentIndex).Subscribe(x =>
             {
                 if (x == -1) return;

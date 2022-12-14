@@ -18,7 +18,7 @@ namespace WPFUI.ViewModels.Uc.FarmingView
         public FarmListViewModel()
         {
             RefreshCommand = ReactiveCommand.CreateFromTask(RefreshTask);
-            this.WhenAnyValue(vm => vm.CurrentFarm).BindTo(this, vm => vm._selectorViewModel.Farm);
+            this.WhenAnyValue(vm => vm.CurrentFarm).BindTo(_selectorViewModel, vm => vm.Farm);
             _eventManager.FarmListUpdate += OnFarmListUpdate;
         }
 

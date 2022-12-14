@@ -26,7 +26,7 @@ namespace WPFUI.ViewModels.Uc.MainView
         public AccountListViewModel()
         {
             _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
-            this.WhenAnyValue(x => x.CurrentAccount).BindTo(this, vm => vm._selectorViewModel.Account);
+            this.WhenAnyValue(x => x.CurrentAccount).BindTo(_selectorViewModel, vm => vm.Account);
 
             _mainTabPanelViewModel = Locator.Current.GetService<MainTabPanelViewModel>();
 
