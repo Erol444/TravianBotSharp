@@ -44,6 +44,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
             var item = _planManager.GetList(villageId)[index];
             _planManager.Remove(villageId, index);
             _planManager.Insert(villageId, 0, item);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void BottomTask()
@@ -54,6 +55,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
             var item = _planManager.GetList(villageId)[index];
             _planManager.Remove(villageId, index);
             _planManager.Add(villageId, item);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void UpTask()
@@ -65,6 +67,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
 
             _planManager.Remove(villageId, index);
             _planManager.Insert(villageId, index - 1, item);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void DownTask()
@@ -75,6 +78,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
             var item = _planManager.GetList(villageId)[index];
             _planManager.Remove(villageId, index);
             _planManager.Insert(villageId, index + 1, item);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void DeleteTask()
@@ -82,12 +86,14 @@ namespace WPFUI.ViewModels.Uc.BuildView
             var index = _queueListViewModel.CurrentItem.Id;
             var villageId = VillageId;
             _planManager.Remove(villageId, index);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void DeleteAllTask()
         {
             var villageId = VillageId;
             _planManager.Clear(villageId);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void ImportTask()
@@ -116,6 +122,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
                     {
                         _planManager.Add(villageId, item);
                     }
+                    _eventManager.OnVillageBuildQueueUpdate(villageId);
                 }
                 catch
                 {

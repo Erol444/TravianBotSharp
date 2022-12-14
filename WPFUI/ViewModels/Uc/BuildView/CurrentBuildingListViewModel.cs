@@ -12,6 +12,18 @@ namespace WPFUI.ViewModels.Uc.BuildView
 {
     public class CurrentBuildingListViewModel : VillageTabBaseViewModel
     {
+        public CurrentBuildingListViewModel()
+        {
+            _eventManager.VillageCurrentUpdate += EventManager_VillageCurrentUpdate;
+        }
+
+        private void EventManager_VillageCurrentUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (villageId != VillageId) return;
+            LoadBuildings(villageId);
+        }
+
         protected override void Init(int villageId)
         {
             LoadBuildings(villageId);

@@ -14,6 +14,14 @@ namespace WPFUI.ViewModels.Uc.BuildView
         public QueueListViewModel()
         {
             this.WhenAnyValue(vm => vm.CurrentItem).BindTo(_selectorViewModel, vm => vm.Queue);
+            _eventManager.VillageBuildQueueUpdate += EventManager_VillageBuildQueueUpdate;
+        }
+
+        private void EventManager_VillageBuildQueueUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (villageId != VillageId) return;
+            LoadBuildings(villageId);
         }
 
         protected override void Init(int villageId)
