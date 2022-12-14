@@ -51,8 +51,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 var villageId = CurrentVillage.Id;
                 Save(villageId);
-                var accountId = CurrentAccount.Id;
-                TaskBasedSetting(villageId, accountId);
             });
             _waitingWindow.ViewModel.Close();
 
@@ -85,30 +83,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 updateTask.ExecuteAt = DateTime.Now;
                 _taskManager.Update(accountId);
-            }
-        }
-
-        private void TaskBasedSetting(int villageId, int accountId)
-        {
-            var list = _taskManager.GetList(accountId);
-            {
-                var tasks = list.OfType<RefreshVillage>(); // TODO: Rename RefreshVillage to SendReousrcesSomething
-                if (Settings.IsSendExcessResources)
-                {
-                    if (!tasks.Any(x => x.VillageId == villageId))
-                    {
-                        // _taskManager.Add(accountId, new RefreshVillage(villageId, accountId));
-                        // TODO: Execute send resources out task
-                    }
-                }
-                else
-                {
-                    var updateTasks = tasks.Where(x => x.VillageId == villageId);
-                    foreach (var item in updateTasks)
-                    {
-                        _taskManager.Remove(accountId, item);
-                    }
-                }
             }
         }
 
