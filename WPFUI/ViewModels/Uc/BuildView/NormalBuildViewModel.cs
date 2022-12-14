@@ -26,7 +26,8 @@ namespace WPFUI.ViewModels.Uc.BuildView
 
         private void SelectorViewModel_BuildingChanged(int location)
         {
-            LoadData(_selectorViewModel.Village.Id, location);
+            if (_selectorViewModel.IsVillageNotSelected) return;
+            LoadData(VillageId, location);
         }
 
         protected override void Init(int villageid)
