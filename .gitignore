@@ -144,7 +144,6 @@ _TeamCity*
 # Visual Studio Code
 .vscode/*
 !.vscode/settings.json
-
 !.vscode/extensions.json
 
 # NCrunch

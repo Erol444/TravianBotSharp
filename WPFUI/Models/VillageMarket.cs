@@ -1,7 +1,6 @@
 using MainCore.Helper;
 using ReactiveUI;
 using System.Windows;
-using System.Diagnostics;
 
 namespace WPFUI.Models
 {

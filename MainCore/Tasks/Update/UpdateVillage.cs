@@ -13,7 +13,6 @@ namespace MainCore.Tasks.Update
     {
         public UpdateVillage(int villageId, int accountId) : base(villageId, accountId, "Update village")
         {
-            Debug.WriteLine($"UpdateVillage for {villageId}");
         }
 
         public override void Execute()
@@ -181,8 +180,6 @@ namespace MainCore.Tasks.Update
 
             var setting = context.VillagesMarket.Find(VillageId);
             if (!setting.IsSendExcessResources) return;
-            // TODO: Add check here if resources have to be sent away, if possible. So it wont click on marketplace all the time.
-            Console.WriteLine("AutoSendResources OUT function in UpdateVillage called and is added to tasks.");
 
             _taskManager.Add(AccountId, new SendResourcesOutTask(VillageId, AccountId));
         }
@@ -195,7 +192,6 @@ namespace MainCore.Tasks.Update
 
             var setting = context.VillagesMarket.Find(VillageId);
             if (!setting.IsGetMissingResources) return;
-            Console.WriteLine("AutoSendResources IN function in UpdateVillage called and is added to tasks.");
 
             _taskManager.Add(AccountId, new SendResourcesInTask(VillageId, AccountId));
         }

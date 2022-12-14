@@ -2,8 +2,6 @@ using ReactiveUI;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs.Villages;
 
-using System.Diagnostics;
-
 namespace WPFUI.Views.Tabs.Villages
 {
     /// <summary>
@@ -20,7 +18,6 @@ namespace WPFUI.Views.Tabs.Villages
             SendTo.ViewModel = new("Send resources to:");
             SendInLimit.ViewModel = new("Lower Limit:");
             SendFrom.ViewModel = new("Get resources from:");
-            // Bote
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel, vm => vm.SaveCommand, v => v.SaveButton).DisposeWith(d);

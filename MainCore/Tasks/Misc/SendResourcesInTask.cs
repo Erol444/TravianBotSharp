@@ -5,9 +5,6 @@ using MainCore.Helper;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
-using System.Diagnostics;
-
-
 
 namespace MainCore.Tasks.Misc
 {

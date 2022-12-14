@@ -25,7 +25,5 @@ namespace MainCore.Models.Database
         public float MinMerchantsToFillIn { get; set; }
         public DateTime ArrivalTime { get; set; }
 
-        // TODO: NPC section should be mvoed here
-
     }
 }
