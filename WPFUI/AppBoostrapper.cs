@@ -13,6 +13,7 @@ using System;
 using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
+using WPFUI.ViewModels.Uc.BuildView;
 using WPFUI.ViewModels.Uc.FarmingView;
 using WPFUI.ViewModels.Uc.MainView;
 using ILogManager = MainCore.Services.Interface.ILogManager;
@@ -101,6 +102,14 @@ namespace WPFUI
             // farming view
             services.AddSingleton<FarmListViewModel>();
             services.AddSingleton<FarmContentViewModel>();
+
+            // build view
+            services.AddSingleton<BuildingListViewModel>();
+            services.AddSingleton<CurrentBuildingListViewModel>();
+            services.AddSingleton<QueueListViewModel>();
+            services.AddSingleton<BuildButtonPanelViewModel>();
+            services.AddSingleton<NormalBuildViewModel>();
+            services.AddSingleton<ResourcesBuildViewModel>();
             return services;
         }
     }
