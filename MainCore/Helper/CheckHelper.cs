@@ -100,9 +100,11 @@ namespace MainCore.Helper
             var setting = context.VillagesSettings.Find(villageId);
             if (!setting.IsAdsUpgrade) return false;
 
+            var currently = context.VillagesCurrentlyBuildings.OrderByDescending(x => x.Id).FirstOrDefault(x => x.VillageId == villageId && x.Location == buildingTask.Location);
             var building = context.VillagesBuildings.Find(villageId, buildingTask.Location);
+            var level = currently?.Level ?? building.Level;
 
-            if (buildingTask.Building.IsResourceField() && building.Level == 0) return false;
+            if (buildingTask.Building.IsResourceField() && level == 0) return false;
             if (buildingTask.Building.IsNotAdsUpgrade()) return false;
 
             var html = chromeBrowser.GetHtml();
