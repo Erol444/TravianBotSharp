@@ -100,7 +100,7 @@ namespace MainCore.Tasks.Misc
             passwordElement[0].SendKeys(Keys.Shift + Keys.End);
             passwordElement[0].SendKeys(access.Password);
 
-            buttonElements.Click(_chromeBrowser, context, AccountId);
+            buttonElements[0].Click();
 
             var setting = context.AccountsSettings.Find(AccountId);
             NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
