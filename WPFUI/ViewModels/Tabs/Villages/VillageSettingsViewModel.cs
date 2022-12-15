@@ -125,7 +125,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(index);
             Settings.CopyTo(setting);
-            Settings.CopyFrom(setting);
             context.Update(setting);
             context.SaveChanges();
         }

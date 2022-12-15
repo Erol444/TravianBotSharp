@@ -18,6 +18,7 @@ namespace MainCore.Models.Database
         public int AutoRefreshTimeMax { get; set; }
 
         public bool IsAutoNPC { get; set; }
+        public bool IsAutoNPCWarehouse { get; set; }
         public bool IsNPCOverflow { get; set; }
         public int AutoNPCPercent { get; set; }
         public int AutoNPCWarehousePercent { get; set; }

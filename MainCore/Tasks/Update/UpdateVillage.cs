@@ -127,17 +127,21 @@ namespace MainCore.Tasks.Update
 #endif
 
             var setting = context.VillagesSettings.Find(VillageId);
-            if (!setting.IsAutoNPC) return;
-            if (setting.AutoNPCPercent == 0) return;
-            if (setting.AutoNPCWarehousePercent == 0) return;
 
             var resource = context.VillagesResources.Find(VillageId);
-            var ratioGranary = resource.Crop * 100.0f / resource.Granary;
-            var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
-            var ratioWarehouse = maxResource * 100.0f / resource.Warehouse;
-            if (ratioGranary < setting.AutoNPCPercent && ratioWarehouse < setting.AutoNPCWarehousePercent) return;
-
-            _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
+            if (setting.IsAutoNPC && setting.AutoNPCPercent != 0)
+            {
+                var ratio = resource.Crop * 100.0f / resource.Granary;
+                if (ratio < setting.AutoNPCPercent) return;
+                _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
+            }
+            if (setting.IsAutoNPCWarehouse && setting.AutoNPCWarehousePercent != 0)
+            {
+                var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
+                var ratio = maxResource * 100.0f / resource.Warehouse;
+                if (ratio < setting.AutoNPCWarehousePercent) return;
+                _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
+            }
         }
 
         private void AutoImproveTroop(AppDbContext context)

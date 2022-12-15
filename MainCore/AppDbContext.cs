@@ -268,7 +268,9 @@ namespace MainCore
                 AutoRefreshTimeMax = 35,
 
                 IsAutoNPC = false,
+                IsAutoNPCWarehouse = false,
                 AutoNPCPercent = 90,
+                AutoNPCWarehousePercent = 90,
                 AutoNPCWood = 1,
                 AutoNPCClay = 1,
                 AutoNPCIron = 1,
@@ -509,6 +511,7 @@ namespace MainCore
                 KeyValuePair.Create(202210181120,"UpgradeTroopMigrations"),
                 KeyValuePair.Create(202210271504,"NPCForWarhouse"),
                 KeyValuePair.Create(2022102716038,"IgnoreRomanAdvantage"),
+                KeyValuePair.Create(202212152155,"NPCWarehouse"),
             };
             foreach (var migration in migrations)
             {
