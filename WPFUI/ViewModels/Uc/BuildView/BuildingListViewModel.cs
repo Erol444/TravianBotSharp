@@ -18,7 +18,9 @@ namespace WPFUI.ViewModels.Uc.BuildView
         {
             this.WhenAnyValue(vm => vm.CurrentBuilding).BindTo(_selectorViewModel, vm => vm.Building);
             LoadCommand = ReactiveCommand.CreateFromTask(BuildTask, this.WhenAnyValue(vm => vm._selectorViewModel.IsVillageSelected));
-            _eventManager.VillageCurrentUpdate += EventManager_VillageCurrentUpdate;
+            _eventManager.VillageCurrentUpdate += EventManager_VillageUpdate;
+            _eventManager.VillageBuildQueueUpdate += EventManager_VillageUpdate;
+            _eventManager.VillageBuildsUpdate += EventManager_VillageUpdate;
         }
 
         protected override void Init(int villageId)
@@ -26,7 +28,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
             LoadBuildings(villageId);
         }
 
-        private void EventManager_VillageCurrentUpdate(int villageId)
+        private void EventManager_VillageUpdate(int villageId)
         {
             if (!IsActive) return;
             if (villageId != VillageId) return;
