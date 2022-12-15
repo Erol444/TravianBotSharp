@@ -16,10 +16,9 @@ namespace WPFUI.ViewModels.Tabs
     {
         public VillagesViewModel()
         {
-            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(this, vm => vm._selectorViewModel.Village);
-            this.WhenAnyValue(x => x.CurrentIndex).Subscribe(x =>
+            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(_selectorViewModel, vm => vm.Village);
+            this.WhenAnyValue(vm => vm.CurrentVillage).Where(x => x is not null).Subscribe(x =>
             {
-                if (x == -1) return;
                 if (_current == TabType.Normal) return;
                 SetTab(TabType.Normal);
             });
@@ -55,7 +54,12 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int accountId)
         {
-            OldVillage ??= CurrentVillage;
+            var oldIndex = -1;
+            if (CurrentVillage is not null)
+            {
+                oldIndex = CurrentVillage.Id;
+            }
+
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages
                 .Where(x => x.AccountId == accountId)
@@ -70,14 +74,18 @@ namespace WPFUI.ViewModels.Tabs
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Villages.Clear();
+                Villages.AddRange(villages);
                 if (villages.Any())
                 {
-                    Villages.AddRange(villages);
-                    var vill = Villages.FirstOrDefault(x => x.Id == OldVillage?.Id);
-
-                    if (vill is not null) CurrentIndex = Villages.IndexOf(vill);
-                    else CurrentIndex = 0;
-                    OldVillage = null;
+                    if (oldIndex == -1)
+                    {
+                        CurrentVillage = Villages.First();
+                    }
+                    else
+                    {
+                        var build = Villages.FirstOrDefault(x => x.Id == oldIndex);
+                        CurrentVillage = build;
+                    }
                 }
             });
         }
@@ -103,16 +111,6 @@ namespace WPFUI.ViewModels.Tabs
             get => _currentVillage;
             set => this.RaiseAndSetIfChanged(ref _currentVillage, value);
         }
-
-        private int _currentIndex;
-
-        public int CurrentIndex
-        {
-            get => _currentIndex;
-            set => this.RaiseAndSetIfChanged(ref _currentIndex, value);
-        }
-
-        public VillageModel OldVillage { get; set; }
 
         public ObservableCollection<TabItemModel> Tabs { get; }
         private readonly Dictionary<TabType, TabItemModel[]> _tabsHolder;

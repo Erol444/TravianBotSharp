@@ -5,10 +5,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:uc="clr-namespace:WPFUI.Views.Uc"
+        xmlns:ucmain="clr-namespace:WPFUI.Views.Uc.MainView"
         xmlns:vms="clr-namespace:WPFUI.ViewModels"
-        xmlns:tabs="clr-namespace:WPFUI.Views.Tabs"
-        xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
         xmlns:reactiveui="http://reactiveui.net"
         mc:Ignorable="d"
         Title="TravianBotSharp" Height="510" Width="1024">
@@ -22,28 +20,9 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="2*" />
             </Grid.RowDefinitions>
-            <uc:ButtonPanelUc x:Name="ButtonPanel" />
-            <ListView x:Name="AccountGrid" Grid.Row="1" SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Account" DisplayMemberBinding="{Binding Username}"   Behaviours:GridViewColumnResize.Width="*" />
-                        <GridViewColumn Header="Server" DisplayMemberBinding="{Binding Server}"   Behaviours:GridViewColumnResize.Width="*" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
+            <ucmain:MainButtonPanelUc x:Name="ButtonPanel" />
+            <ucmain:AccountListUc Grid.Row="1" />
         </Grid>
-        <TabControl x:Name="Tabs" Grid.Column="1" Margin="5,0,0,0">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Header}" />
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-
-            <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <Frame Content="{Binding Content}" NavigationUIVisibility="Hidden" />
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-        </TabControl>
+        <ucmain:MainTabPanelUc Grid.Column="1" />
     </Grid>
 </reactiveui:ReactiveWindow>

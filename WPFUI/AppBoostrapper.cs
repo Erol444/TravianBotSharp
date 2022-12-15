@@ -13,7 +13,9 @@ using System;
 using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
-using WPFUI.ViewModels.Uc;
+using WPFUI.ViewModels.Uc.BuildView;
+using WPFUI.ViewModels.Uc.FarmingView;
+using WPFUI.ViewModels.Uc.MainView;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI
@@ -31,6 +33,7 @@ namespace WPFUI
                     resolver.InitializeSplat();
                     resolver.InitializeReactiveUI();
                     services.ConfigureServices();
+                    services.ConfigureUcViewModel();
                     services.ConfigureViewModel();
                 })
                 .Build();
@@ -70,15 +73,11 @@ namespace WPFUI
             services.AddSingleton<VersionViewModel>();
             services.AddSingleton<WaitingViewModel>();
 
-            services.AddSingleton<ButtonPanelViewModel>();
-            services.AddSingleton<FarmListControllerViewModel>();
-
             services.AddSingleton<AddAccountsViewModel>();
             services.AddSingleton<AddAccountViewModel>();
             services.AddSingleton<EditAccountViewModel>();
             services.AddSingleton<DebugViewModel>();
             services.AddSingleton<FarmingViewModel>();
-            services.AddSingleton<GeneralViewModel>();
             services.AddSingleton<HeroViewModel>();
             services.AddSingleton<SettingsViewModel>();
             services.AddSingleton<VillagesViewModel>();
@@ -90,6 +89,27 @@ namespace WPFUI
             services.AddSingleton<VillageTroopsViewModel>();
 
             services.AddSingleton<SelectorViewModel>();
+            return services;
+        }
+
+        public static IServiceCollection ConfigureUcViewModel(this IServiceCollection services)
+        {
+            // main view
+            services.AddSingleton<MainTabPanelViewModel>();
+            services.AddSingleton<MainButtonPanelViewModel>();
+            services.AddSingleton<AccountListViewModel>();
+
+            // farming view
+            services.AddSingleton<FarmListViewModel>();
+            services.AddSingleton<FarmContentViewModel>();
+
+            // build view
+            services.AddSingleton<BuildingListViewModel>();
+            services.AddSingleton<CurrentBuildingListViewModel>();
+            services.AddSingleton<QueueListViewModel>();
+            services.AddSingleton<BuildButtonPanelViewModel>();
+            services.AddSingleton<NormalBuildViewModel>();
+            services.AddSingleton<ResourcesBuildViewModel>();
             return services;
         }
     }
