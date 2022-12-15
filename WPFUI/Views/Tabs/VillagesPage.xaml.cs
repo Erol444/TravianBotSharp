@@ -19,37 +19,6 @@ namespace WPFUI.Views.Tabs
                 this.OneWayBind(ViewModel, vm => vm.Villages, v => v.VillagesGrid.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.CurrentVillage, v => v.VillagesGrid.SelectedItem).DisposeWith(d);
 
-                this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.BuildTab.IsSelected).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsVillageNotSelected, v => v.NoVillageTab.IsSelected).DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.IsVillageNotSelected, v => v.NoVillageTab.Visibility).DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.BuildPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.BuildPage.ViewModel.CurrentVillage).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.BuildTab.Visibility).DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.InfoPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.InfoPage.ViewModel.CurrentVillage).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.InfoTab.Visibility).DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.NPCPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.NPCPage.ViewModel.CurrentVillage).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.NPCTab.Visibility).DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.SettingsPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.SettingsPage.ViewModel.CurrentVillage).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.SettingsTab.Visibility).DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.TroopsPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.TroopsPage.ViewModel.CurrentVillage).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.TroopsTab.Visibility).DisposeWith(d);
-
-                this.OneWayBind(ViewModel, vm => vm.CurrentAccount, v => v.MarketPage.ViewModel.CurrentAccount).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.CurrentVillage, v => v.MarketPage.ViewModel.CurrentVillage).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.MarketTab.Visibility).DisposeWith(d);
-
-                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
-                ViewModel.OnActived();
                 this.OneWayBind(ViewModel, vm => vm.Tabs, v => v.Tabs.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.TabIndex, v => v.Tabs.SelectedIndex).DisposeWith(d);
             });

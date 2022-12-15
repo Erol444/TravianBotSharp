@@ -38,6 +38,7 @@ namespace WPFUI.ViewModels.Tabs
                         new("NPC", new NPCPage()),
                         new("Troop", new TroopsPage()),
                         new("Info", new InfoPage()),
+                        new("Market", new MarketPage()),
                     }
                 }
             };

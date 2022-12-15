@@ -1,58 +1,46 @@
 using MainCore.Tasks.Update;
-using MainCore.Tasks.Misc;
 using ReactiveUI;
-using System;
-using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class MarketViewModel : VillageTabBaseViewModel, ITabPage
+    public class MarketViewModel : VillageTabBaseViewModel
     {
-        public MarketViewModel() : base()
+        public MarketViewModel()
         {
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
         }
 
-        protected override void LoadData(int index)
+        protected override void Init(int villageId)
+        {
+            LoadData(villageId);
+        }
+
+        private void LoadData(int index)
         {
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesMarket.Find(index);
-            Settings.CopyFrom(settings);
-        }
+            RxApp.MainThreadScheduler.Schedule(() => Settings.CopyFrom(settings));
 
-        public void OnActived()
-        {
-            IsActive = true;
-            if (CurrentVillage is not null)
-            {
-                LoadData(CurrentVillage.Id);
-            }
         }
-
-        public void OnDeactived()
-        {
-            IsActive = false;
-        }
-
 
         private async Task SaveTask()
         {
             if (!Settings.IsValidate()) return;
-            _waitingWindow.ViewModel.Show("saving village's settings");
+            _waitingWindow.Show("saving village's settings");
 
             await Task.Run(() =>
             {
-                var villageId = CurrentVillage.Id;
+                var villageId = VillageId;
                 Save(villageId);
             });
-            _waitingWindow.ViewModel.Close();
+            _waitingWindow.Close();
 
             MessageBox.Show("Saved.");
 
@@ -71,25 +59,28 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void UpdateDorf1()
         {
-            var accountId = CurrentAccount.Id;
-            var tasks = _taskManager.GetList(accountId);
-            var villageId = CurrentVillage.Id;
-            var updateTask = tasks.OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == villageId);
-            if (updateTask is null)
-            {
-                _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
-            }
-            else
-            {
-                updateTask.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
-            }
+            var accountId = AccountId;
+            // var tasks = _taskManager.GetList(accountId);
+            var villageId = VillageId;
+            // var updateTask = tasks.OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == villageId);
+            // if (updateTask is null)
+            // {
+            //     _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
+            // }
+            // else
+            // {
+            //     updateTask.ExecuteAt = DateTime.Now;
+            //     _taskManager.Update(accountId);
+            // }
+
+            _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
+
         }
 
         public VillageMarket Settings { get; } = new();
 
 
-        public bool IsActive { get; set; }
+        // public bool IsActive { get; set; }
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
 
     }

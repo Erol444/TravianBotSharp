@@ -1,4 +1,5 @@
 using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs.Villages;
 
@@ -11,7 +12,7 @@ namespace WPFUI.Views.Tabs.Villages
     {
         public MarketPage()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<MarketViewModel>();
             InitializeComponent();
 
             SendOutLimit.ViewModel = new("Upper Limit:");
@@ -39,10 +40,6 @@ namespace WPFUI.Views.Tabs.Villages
 
                 this.Bind(ViewModel, vm => vm.Settings.SendFromX, v => v.SendFrom.ViewModel.XCoordinate).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.SendFromY, v => v.SendFrom.ViewModel.YCoordinate).DisposeWith(d);
-
-                Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
-
-                ViewModel.OnActived();
             });
         }
     }
