@@ -156,30 +156,45 @@ namespace MainCore.Helper
 
         public static int GetMaxLevel(this BuildingEnums building)
         {
-            return building switch
+            if (VersionDetector.IsTravianOfficial())
             {
-#if TRAVIAN_OFFICIAL
-                BuildingEnums.Brewery => 20,
-#elif TTWARS
-                BuildingEnums.Brewery => 10,
-                BuildingEnums.Woodcutter => 25,
-                BuildingEnums.ClayPit => 25,
-                BuildingEnums.IronMine => 25,
-                BuildingEnums.Cropland => 25,
-#else
+                return building switch
+                {
+                    BuildingEnums.Brewery => 20,
 
-#error You forgot to define Travian version here
+                    BuildingEnums.Bakery => 5,
+                    BuildingEnums.Brickyard => 5,
+                    BuildingEnums.IronFoundry => 5,
+                    BuildingEnums.GrainMill => 5,
+                    BuildingEnums.Sawmill => 5,
 
-#endif
-                BuildingEnums.Bakery => 5,
-                BuildingEnums.Brickyard => 5,
-                BuildingEnums.IronFoundry => 5,
-                BuildingEnums.GrainMill => 5,
-                BuildingEnums.Sawmill => 5,
+                    BuildingEnums.Cranny => 10,
+                    _ => 20,
+                };
+            }
 
-                BuildingEnums.Cranny => 10,
-                _ => 20,
-            };
+            if (VersionDetector.IsTTWars())
+            {
+                return building switch
+                {
+                    BuildingEnums.Brewery => 10,
+
+                    BuildingEnums.Woodcutter => 25,
+                    BuildingEnums.ClayPit => 25,
+                    BuildingEnums.IronMine => 25,
+                    BuildingEnums.Cropland => 25,
+
+                    BuildingEnums.Bakery => 5,
+                    BuildingEnums.Brickyard => 5,
+                    BuildingEnums.IronFoundry => 5,
+                    BuildingEnums.GrainMill => 5,
+                    BuildingEnums.Sawmill => 5,
+
+                    BuildingEnums.Cranny => 10,
+                    _ => 20,
+                };
+            }
+            return 20;
         }
 
         public static Color GetColor(this BuildingEnums building)
