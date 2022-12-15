@@ -97,7 +97,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
             };
             var villageId = VillageId;
             _planManager.Add(villageId, planTask);
-
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
