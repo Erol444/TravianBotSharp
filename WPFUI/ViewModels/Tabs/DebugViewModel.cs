@@ -1,56 +1,40 @@
-﻿using MainCore.Models.Runtime;
+﻿using DynamicData;
+using MainCore.Models.Runtime;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
-using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class DebugViewModel : AccountTabBaseViewModel, ITabPage
+    public class DebugViewModel : AccountTabBaseViewModel
     {
-        private readonly string discordUrl = "https://discord.gg/DVPV4gesCz";
+        private const string discordUrl = "https://discord.gg/DVPV4gesCz";
 
         public DebugViewModel()
         {
-            _eventManager.TaskUpdated += OnTasksUpdate;
-            _eventManager.LogUpdated += OnLogsUpdate;
+            _eventManager.TaskUpdate += OnTasksUpdate;
+            _eventManager.LogUpdate += OnLogsUpdate;
 
             GetHelpCommand = ReactiveCommand.Create(GetHelpTask);
             LogFolderCommand = ReactiveCommand.Create(LogFolderTask);
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
+        protected override void Init(int accountId)
         {
-            IsActive = true;
-            if (CurrentAccount is not null)
-            {
-                LoadData(CurrentAccount.Id);
-            }
+            LoadData(accountId);
         }
 
-        public void OnDeactived()
+        private void LoadData(int accountId)
         {
-            IsActive = false;
-        }
-
-        protected override void LoadData(int accountId)
-        {
-            OnTasksUpdate(accountId);
-
-            Logs.Clear();
-            var logs = _logManager.GetLog(accountId);
-            foreach (var log in logs)
-            {
-                Logs.Add(log);
-            }
+            LoadTask(accountId);
+            LoadLogs(accountId);
         }
 
         private void GetHelpTask()
@@ -65,7 +49,7 @@ namespace WPFUI.ViewModels.Tabs
         private void LogFolderTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var info = context.Accounts.Find(CurrentAccount.Id);
+            var info = context.Accounts.Find(_selectorViewModel.Account.Id);
             var name = info.Username;
             Process.Start(new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, "logs"))
             {
@@ -75,32 +59,46 @@ namespace WPFUI.ViewModels.Tabs
 
         private void OnTasksUpdate(int accountId)
         {
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
-
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                Tasks.Clear();
-                foreach (var item in _taskManager.GetList(accountId))
-                {
-                    if (item is null) continue;
-                    Tasks.Add(new TaskModel()
-                    {
-                        Task = item.Name,
-                        ExecuteAt = item.ExecuteAt,
-                        Stage = item.Stage,
-                    });
-                }
-            });
+            if (!IsActive) return;
+            if (AccountId != accountId) return;
+            LoadTask(accountId);
         }
 
         private void OnLogsUpdate(int accountId, LogMessage logMessage)
         {
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
+            if (!IsActive) return;
+            if (AccountId != accountId) return;
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Logs.Insert(0, logMessage);
+            });
+        }
+
+        private void LoadLogs(int accountId)
+        {
+            var logs = _logManager.GetLog(accountId);
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Logs.Clear();
+                Logs.AddRange(logs);
+            });
+        }
+
+        private void LoadTask(int accountId)
+        {
+            var tasks = _taskManager.GetList(accountId);
+            var listItem = tasks.Select(item => new TaskModel()
+            {
+                Task = item.Name,
+                ExecuteAt = item.ExecuteAt,
+                Stage = item.Stage,
+            }).ToList();
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Tasks.Clear();
+                Tasks.AddRange(listItem);
             });
         }
 

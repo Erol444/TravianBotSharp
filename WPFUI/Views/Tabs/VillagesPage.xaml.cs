@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs;
 
@@ -11,13 +12,12 @@ namespace WPFUI.Views.Tabs
     {
         public VillagesPage()
         {
-            ViewModel = new();
+            ViewModel = Locator.Current.GetService<VillagesViewModel>();
             InitializeComponent();
             this.WhenActivated(d =>
             {
                 this.OneWayBind(ViewModel, vm => vm.Villages, v => v.VillagesGrid.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.CurrentVillage, v => v.VillagesGrid.SelectedItem).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.CurrentIndex, v => v.VillagesGrid.SelectedIndex).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.IsVillageSelected, v => v.BuildTab.IsSelected).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.IsVillageNotSelected, v => v.NoVillageTab.IsSelected).DisposeWith(d);
@@ -50,6 +50,8 @@ namespace WPFUI.Views.Tabs
 
                 Disposable.Create(() => ViewModel.OnDeactived()).DisposeWith(d);
                 ViewModel.OnActived();
+                this.OneWayBind(ViewModel, vm => vm.Tabs, v => v.Tabs.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.TabIndex, v => v.Tabs.SelectedIndex).DisposeWith(d);
             });
         }
     }

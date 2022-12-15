@@ -32,7 +32,7 @@ namespace MainCore.Tasks.Update
             {
                 using var context = _contextFactory.CreateDbContext();
                 UpdateHelper.UpdateFarmList(context, _chromeBrowser, AccountId);
-                _eventManager.OnFarmListUpdated(AccountId);
+                _eventManager.OnFarmListUpdate(AccountId);
             }
             IsFail = false;
         }

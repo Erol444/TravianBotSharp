@@ -1,34 +1,47 @@
 ﻿using MainCore;
-using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
-using ReactiveUI;
-using WPFUI.Views;
+using Splat;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class TabBaseViewModel : ReactiveObject
+    public abstract class TabBaseViewModel : ActivatableViewModelBase
     {
         public TabBaseViewModel()
         {
-            _contextFactory = App.GetService<IDbContextFactory<AppDbContext>>();
-            _eventManager = App.GetService<EventManager>();
-            _taskManager = App.GetService<ITaskManager>();
-            _planManager = App.GetService<IPlanManager>();
-            _waitingWindow = App.GetService<WaitingWindow>();
-            _useragentManager = App.GetService<IUseragentManager>();
-            _restClientManager = App.GetService<IRestClientManager>();
-            _taskManager = App.GetService<ITaskManager>();
-            _logManager = App.GetService<ILogManager>();
+            _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
+            _eventManager = Locator.Current.GetService<IEventManager>();
+            _taskManager = Locator.Current.GetService<ITaskManager>();
+            _planManager = Locator.Current.GetService<IPlanManager>();
+            _useragentManager = Locator.Current.GetService<IUseragentManager>();
+            _restClientManager = Locator.Current.GetService<IRestClientManager>();
+            _taskManager = Locator.Current.GetService<ITaskManager>();
+            _logManager = Locator.Current.GetService<ILogManager>();
+            _timeManager = Locator.Current.GetService<ITimerManager>();
+            _chromeManager = Locator.Current.GetService<IChromeManager>();
+
+            _waitingWindow = Locator.Current.GetService<WaitingViewModel>();
+            _versionWindow = Locator.Current.GetService<VersionViewModel>();
+
+            _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
+            _mainWindow = Locator.Current.GetService<MainWindowViewModel>();
         }
 
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
-        protected readonly EventManager _eventManager;
+        protected readonly IEventManager _eventManager;
         protected readonly ITaskManager _taskManager;
         protected readonly IPlanManager _planManager;
         protected readonly IUseragentManager _useragentManager;
         protected readonly IRestClientManager _restClientManager;
         protected readonly ILogManager _logManager;
-        protected readonly WaitingWindow _waitingWindow;
+        protected readonly ITimerManager _timeManager;
+        protected readonly IChromeManager _chromeManager;
+
+        protected readonly WaitingViewModel _waitingWindow;
+        protected readonly VersionViewModel _versionWindow;
+
+        protected readonly SelectorViewModel _selectorViewModel;
+        protected readonly MainWindowViewModel _mainWindow;
     }
 }

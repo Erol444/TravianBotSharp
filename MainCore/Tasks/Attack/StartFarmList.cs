@@ -1,5 +1,4 @@
 using MainCore.Helper;
-using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
@@ -7,7 +6,7 @@ using OpenQA.Selenium;
 using System;
 using System.Linq;
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 
 #elif TTWARS
 
@@ -44,9 +43,9 @@ namespace MainCore.Tasks.Attack
             Name = $"{Name} {_nameFarm}";
         }
 
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, EventManager EventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
         {
-            base.SetService(contextFactory, chromeBrowser, taskManager, EventManager, logManager, planManager, restClientManager);
+            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
             using var context = _contextFactory.CreateDbContext();
             var farm = context.Farms.Find(FarmId);
             if (farm is not null) _nameFarm = farm.Name;
@@ -115,7 +114,7 @@ namespace MainCore.Tasks.Attack
             return false;
         }
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 
         private void ClickStartFarm(AppDbContext context, int accountId)
         {

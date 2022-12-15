@@ -74,6 +74,18 @@
                     </Frame.Content>
                 </Frame>
             </TabItem>
+        <TabControl x:Name="Tabs" Grid.Column="1" Margin="1,0,0,0">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Header}" />
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <Frame Content="{Binding Content}" NavigationUIVisibility="Hidden" />
+                </DataTemplate>
+            </TabControl.ContentTemplate>
         </TabControl>
     </Grid>
 </reactiveui:ReactivePage>

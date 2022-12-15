@@ -23,11 +23,11 @@ namespace TravianOfficialCore.Parsers
 
         public static int GetStatus(HtmlDocument doc)
         {
-            var statusNode = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatus"));
-            if (statusNode is null) return 0;
-            var img = statusNode.Descendants().FirstOrDefault(x => x.Name == "svg");
-            if (img is null) return 0;
-            var status = img.GetClasses().FirstOrDefault();
+            var heroStatusDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatus"));
+            if (heroStatusDiv is null) return 0;
+            var iconHeroStatus = heroStatusDiv.Descendants("i").FirstOrDefault();
+            if (iconHeroStatus == null) return 0;
+            var status = iconHeroStatus.GetClasses().FirstOrDefault();
             if (status is null) return 0;
             return status switch
             {
@@ -54,69 +54,85 @@ namespace TravianOfficialCore.Parsers
         public static List<(int, int)> GetItems(HtmlDocument doc)
         {
             var heroItems = new List<(int, int)>();
-            var inventory = doc.GetElementbyId("itemsToSale");
-            if (inventory is null) return null;
+            var heroItemsDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroItems"));
+            if (heroItemsDiv is null) return null;
+            var heroItemDivs = heroItemsDiv.Descendants("div").Where(x => x.HasClass("heroItem") && !x.HasClass("empty"));
+            if (!heroItemDivs.Any()) return null;
 
-            foreach (var itemSlot in inventory.ChildNodes)
+            foreach (var itemSlot in heroItemDivs)
             {
-                var item = itemSlot.ChildNodes.FirstOrDefault(x => x.Id.StartsWith("item_"));
-                if (item is null) continue;
+                if (itemSlot.ChildNodes.Count < 2) continue;
+                var itemNode = itemSlot.ChildNodes[1];
+                var classes = itemNode.GetClasses();
+                if (classes.Count() != 2) continue;
 
-                var itemClass = item.GetClasses().FirstOrDefault(x => x.Contains("_item_"));
-                var itemValue = itemClass.Split('_').LastOrDefault();
+                var itemValue = classes.ElementAt(1);
                 if (itemValue is null) continue;
 
                 var itemValueStr = new string(itemValue.Where(c => char.IsDigit(c)).ToArray());
                 if (string.IsNullOrEmpty(itemValueStr)) continue;
 
-                var amountValue = item.ChildNodes.FirstOrDefault(x => x.HasClass("amount"));
-                if (amountValue is null)
+                if (itemSlot.GetAttributeValue("data-tier", "").Contains("consumable"))
+                {
+                    if (itemSlot.ChildNodes.Count < 3)
+                    {
+                        heroItems.Add((int.Parse(itemValueStr), 1));
+                        continue;
+                    }
+                    var amountNode = itemSlot.ChildNodes[2];
+
+                    var amountValueStr = new string(amountNode.InnerText.Where(c => char.IsDigit(c)).ToArray());
+                    if (string.IsNullOrEmpty(amountValueStr))
+                    {
+                        heroItems.Add((int.Parse(itemValueStr), 1));
+                        continue;
+                    }
+                    heroItems.Add((int.Parse(itemValueStr), int.Parse(amountValueStr)));
+                }
+                else
                 {
                     heroItems.Add((int.Parse(itemValueStr), 1));
-                    continue;
                 }
-
-                var amountValueStr = new string(amountValue.InnerText.Where(c => char.IsDigit(c)).ToArray());
-                if (string.IsNullOrEmpty(itemValueStr))
-                {
-                    heroItems.Add((int.Parse(itemValueStr), 1));
-                    continue;
-                }
-
-                heroItems.Add((int.Parse(itemValueStr), int.Parse(amountValueStr)));
             }
             return heroItems;
         }
 
+        public static bool IsCurrentTab(this HtmlNode tabNode)
+        {
+            return tabNode.HasClass("active");
+        }
+
         public static List<HtmlNode> GetAdventures(HtmlDocument doc)
         {
-            var adventures = doc.GetElementbyId("adventureListForm");
+            var adventures = doc.GetElementbyId("heroAdventure");
             if (adventures is null) return null;
-            var list = adventures.Descendants("tr").ToList();
-            list.RemoveAt(0);
-            return list;
+            var tbody = adventures.Descendants("tbody").FirstOrDefault();
+            if (tbody is null) return null;
+
+            return tbody.Descendants("tr").ToList();
         }
 
         public static int GetAdventureDifficult(HtmlNode node)
         {
-            var img = node.Descendants("img").FirstOrDefault();
-            if (img is null) return 0;
-            if (img.HasClass("adventureDifficulty1")) return 0;
-            return 1;
+            var tdList = node.Descendants("td").ToArray();
+            if (tdList.Length < 3) return 0;
+            var iconDifficulty = tdList[3].FirstChild;
+            if (iconDifficulty.GetAttributeValue("alt", "").Contains("hard")) return 1;
+            return 0;
         }
 
         public static (int, int) GetAdventureCoordinates(HtmlNode node)
         {
-            var coordsNode = node.Descendants("td").FirstOrDefault(x => x.HasClass("coords"));
-            if (coordsNode is null) return (0, 0);
-            var coords = coordsNode.InnerText.Split('|');
+            var tdList = node.Descendants("td").ToArray();
+            if (tdList.Length < 2) return (0, 0);
+            var coords = tdList[1].InnerText.Split('|');
             if (coords.Length < 2) return (0, 0);
-            var valueX = new string(coords[0].Where(c => char.IsDigit(c) || c == '−').ToArray());
+            coords[0] = coords[0].Replace('−', '-');
+            var valueX = new string(coords[0].Where(c => char.IsDigit(c) || c == '-').ToArray());
             if (string.IsNullOrEmpty(valueX)) return (0, 0);
-            var valueY = new string(coords[1].Where(c => char.IsDigit(c) || c == '−').ToArray());
+            coords[1] = coords[1].Replace('−', '-');
+            var valueY = new string(coords[1].Where(c => char.IsDigit(c) || c == '-').ToArray());
             if (string.IsNullOrEmpty(valueY)) return (0, 0);
-            valueX = valueX.Replace('−', '-');
-            valueY = valueY.Replace('−', '-');
             return (int.Parse(valueX), int.Parse(valueY));
         }
     }

@@ -1,37 +1,52 @@
 ﻿using ReactiveUI;
-using System;
+using System.Linq;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 
 namespace WPFUI.ViewModels.Abstract
 {
     public abstract class VillageTabBaseViewModel : TabBaseViewModel
     {
-        public VillageTabBaseViewModel() : base()
+        public VillageTabBaseViewModel()
         {
-            this.WhenAnyValue(x => x.CurrentVillage).Subscribe((x) =>
-            {
-                if (x is not null)
-                {
-                    LoadData(x.Id);
-                }
-            });
+            this.WhenAnyValue(vm => vm._selectorViewModel.Account)
+                .Where(x => x is not null)
+                .Select(x => x.Id)
+                .ToProperty(this, vm => vm.AccountId, out _accountId);
+
+            this.WhenAnyValue(vm => vm._selectorViewModel.Village)
+                .Where(x => x is not null)
+                .Select(x => x.Id)
+                .ToProperty(this, vm => vm.VillageId, out _villageId);
+
+            _selectorViewModel.VillageChanged += OnVillageChanged;
+            Active += OnActive;
         }
 
-        protected abstract void LoadData(int index);
+        protected abstract void Init(int id);
 
-        private MainCore.Models.Database.Account _currentAccount;
-
-        public MainCore.Models.Database.Account CurrentAccount
+        private void OnActive()
         {
-            get => _currentAccount;
-            set => this.RaiseAndSetIfChanged(ref _currentAccount, value);
+            RxApp.TaskpoolScheduler.Schedule(() => Init(VillageId));
         }
 
-        private Models.Village _currentVillage;
-
-        public Models.Village CurrentVillage
+        private void OnVillageChanged(int villageId)
         {
-            get => _currentVillage;
-            set => this.RaiseAndSetIfChanged(ref _currentVillage, value);
+            RxApp.TaskpoolScheduler.Schedule(() => Init(villageId));
+        }
+
+        private readonly ObservableAsPropertyHelper<int> _accountId;
+
+        public int AccountId
+        {
+            get => _accountId.Value;
+        }
+
+        private readonly ObservableAsPropertyHelper<int> _villageId;
+
+        public int VillageId
+        {
+            get => _villageId.Value;
         }
     }
 }

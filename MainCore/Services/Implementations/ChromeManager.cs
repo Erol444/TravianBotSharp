@@ -1,9 +1,9 @@
-﻿using System;
+﻿using MainCore.Services.Interface;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using MainCore.Services.Interface;
 
 namespace MainCore.Services.Implementations
 {
@@ -22,7 +22,7 @@ namespace MainCore.Services.Implementations
             return browser;
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
             foreach (var id in _dictionary.Keys)
             {

@@ -1,9 +1,9 @@
-﻿using System;
-
-namespace MainCore.Services.Interface
+﻿namespace MainCore.Services.Interface
 {
-    public interface ITimerManager : IDisposable
+    public interface ITimerManager
     {
         public void Start(int index);
+
+        public void Shutdown();
     }
 }

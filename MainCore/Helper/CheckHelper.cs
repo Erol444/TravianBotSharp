@@ -10,13 +10,6 @@ using MainCore.Models.Runtime;
 using TravianOfficialCore.Parsers;
 using TravianOfficialCore.FindElements;
 
-#elif TRAVIAN_OFFICIAL_HEROUI
-
-using System;
-using MainCore.Models.Runtime;
-using TravianOfficialNewHeroUICore.Parsers;
-using TravianOfficialNewHeroUICore.FindElements;
-
 #elif TTWARS
 
 using TTWarsCore.Parsers;
@@ -77,7 +70,7 @@ namespace MainCore.Helper
             }
             else
             {
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
                 contractNode = html.GetElementbyId("contract");
 #elif TTWARS
                 contractNode = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.Id.Equals("contract"));
@@ -100,7 +93,7 @@ namespace MainCore.Helper
             return resNeed;
         }
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
 
         public static bool IsNeedAdsUpgrade(IChromeBrowser chromeBrowser, AppDbContext context, int villageId, PlanTask buildingTask)
         {
@@ -142,7 +135,7 @@ namespace MainCore.Helper
         {
             // check building
             var url = chromeBrowser.GetCurrentUrl();
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
+#if TRAVIAN_OFFICIAL
             if (!url.Contains("id=39")) return false;
 #elif TTWARS
             if (!url.Contains("tt=99")) return false;

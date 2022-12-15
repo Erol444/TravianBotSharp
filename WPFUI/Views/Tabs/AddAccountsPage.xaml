@@ -30,14 +30,6 @@
         </ListView>
 
         <TextBox x:Name="AccountsInput" AcceptsReturn="True"  VerticalScrollBarVisibility="Visible" />
-
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="118*" />
-                <ColumnDefinition Width="115*" />
-            </Grid.ColumnDefinitions>
-            <Button x:Name="AddButton" Content="Add" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,1,0" />
-            <Button x:Name="CancelButton" Grid.Column="1" Content="Cancel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1,0,0,0" />
-        </Grid>
+        <Button x:Name="AddButton" Content="Add" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,1,0" />
     </Grid>
 </rxui:ReactivePage>

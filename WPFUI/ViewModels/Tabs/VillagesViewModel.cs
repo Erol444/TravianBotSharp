@@ -1,109 +1,127 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using ReactiveUI;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.Views.Tabs.Villages;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class VillagesViewModel : AccountTabBaseViewModel, ITabPage
+    public class VillagesViewModel : AccountTabBaseViewModel
     {
-        public VillagesViewModel() : base()
+        public VillagesViewModel()
         {
-            _eventManager.VillagesUpdated += OnVillagesUpdate;
-
-            _isVillageSelected = this.WhenAnyValue(x => x.CurrentVillage).Select(x => x is not null).ToProperty(this, x => x.IsVillageSelected);
-            _isVillageNotSelected = this.WhenAnyValue(x => x.CurrentVillage).Select(x => x is null).ToProperty(this, x => x.IsVillageNotSelected);
-        }
-
-        public bool IsActive { get; set; }
-
-        public void OnActived()
-        {
-            IsActive = true;
-            if (CurrentAccount is not null)
+            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(_selectorViewModel, vm => vm.Village);
+            this.WhenAnyValue(vm => vm.CurrentVillage).Where(x => x is not null).Subscribe(x =>
             {
-                LoadData(CurrentAccount.Id);
-            }
+                if (_current == TabType.Normal) return;
+                SetTab(TabType.Normal);
+            });
+            _tabsHolder = new()
+            {
+                {
+                    TabType.NoAccount, new TabItemModel[]
+                    {
+                        new("No account", new NoVillagePage()) ,
+                    }
+                },
+                {
+                    TabType.Normal, new TabItemModel[]
+                    {
+                        new("Build", new BuildPage()),
+                        new("Settings", new SettingsPage()),
+                        new("NPC", new NPCPage()),
+                        new("Troop", new TroopsPage()),
+                        new("Info", new InfoPage()),
+                    }
+                }
+            };
+            Tabs = new()
+            {
+                _tabsHolder[TabType.NoAccount]
+            };
         }
 
-        public void OnDeactived()
+        protected override void Init(int accountId)
         {
-            IsActive = false;
-            OldVillage = CurrentVillage;
+            LoadData(accountId);
         }
 
-        public void OnVillagesUpdate(int accountId)
+        private void LoadData(int accountId)
+        {
+            var oldIndex = -1;
+            if (CurrentVillage is not null)
+            {
+                oldIndex = CurrentVillage.Id;
+            }
+
+            using var context = _contextFactory.CreateDbContext();
+            var villages = context.Villages
+                .Where(x => x.AccountId == accountId)
+                .Select(village => new VillageModel()
+                {
+                    Id = village.Id,
+                    Name = village.Name,
+                    Coords = $"{village.X}|{village.Y}",
+                })
+                .ToList();
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Villages.Clear();
+                Villages.AddRange(villages);
+                if (villages.Any())
+                {
+                    if (oldIndex == -1)
+                    {
+                        CurrentVillage = Villages.First();
+                    }
+                    else
+                    {
+                        var build = Villages.FirstOrDefault(x => x.Id == oldIndex);
+                        CurrentVillage = build;
+                    }
+                }
+            });
+        }
+
+        public void SetTab(TabType tab)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadData(accountId));
-        }
-
-        protected override void LoadData(int accountId)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var villages = context.Villages.Where(x => x.AccountId == accountId);
-            OldVillage ??= CurrentVillage;
-
-            Villages.Clear();
-
-            if (villages.Any())
+            RxApp.MainThreadScheduler.Schedule(() =>
             {
-                foreach (var village in villages)
-                {
-                    Villages.Add(new()
-                    {
-                        Id = village.Id,
-                        Name = village.Name,
-                        Coords = $"{village.X}|{village.Y}",
-                    });
-                }
-
-                var vill = Villages.FirstOrDefault(x => x.Id == OldVillage?.Id);
-
-                if (vill is not null) CurrentIndex = Villages.IndexOf(vill);
-                else CurrentIndex = 0;
-                OldVillage = null;
-            }
+                Tabs.Clear();
+                Tabs.AddRange(_tabsHolder[tab]);
+                TabIndex = 0;
+                _current = tab;
+            });
         }
 
-        public ObservableCollection<Village> Villages { get; } = new();
+        public ObservableCollection<VillageModel> Villages { get; } = new();
 
-        private Village _currentVillage;
+        private VillageModel _currentVillage;
 
-        public Village CurrentVillage
+        public VillageModel CurrentVillage
         {
             get => _currentVillage;
             set => this.RaiseAndSetIfChanged(ref _currentVillage, value);
         }
 
-        private int _currentIndex;
+        public ObservableCollection<TabItemModel> Tabs { get; }
+        private readonly Dictionary<TabType, TabItemModel[]> _tabsHolder;
+        private TabType _current;
 
-        public int CurrentIndex
+        private int _tabIndex;
+
+        public int TabIndex
         {
-            get => _currentIndex;
-            set => this.RaiseAndSetIfChanged(ref _currentIndex, value);
-        }
-
-        public Village OldVillage { get; set; }
-
-        private readonly ObservableAsPropertyHelper<bool> _isVillageSelected;
-
-        public bool IsVillageSelected
-        {
-            get => _isVillageSelected.Value;
-        }
-
-        private readonly ObservableAsPropertyHelper<bool> _isVillageNotSelected;
-
-        public bool IsVillageNotSelected
-        {
-            get => _isVillageNotSelected.Value;
+            get => _tabIndex;
+            set => this.RaiseAndSetIfChanged(ref _tabIndex, value);
         }
     }
 }

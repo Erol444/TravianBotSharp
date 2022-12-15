@@ -2,6 +2,7 @@
 using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace MainCore.Helper
@@ -155,42 +156,57 @@ namespace MainCore.Helper
 
         public static int GetMaxLevel(this BuildingEnums building)
         {
-            return building switch
+            if (VersionDetector.IsTravianOfficial())
             {
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-                BuildingEnums.Brewery => 20,
-#elif TTWARS
-                BuildingEnums.Brewery => 10,
-                BuildingEnums.Woodcutter => 25,
-                BuildingEnums.ClayPit => 25,
-                BuildingEnums.IronMine => 25,
-                BuildingEnums.Cropland => 25,
-#else
+                return building switch
+                {
+                    BuildingEnums.Brewery => 20,
 
-#error You forgot to define Travian version here
+                    BuildingEnums.Bakery => 5,
+                    BuildingEnums.Brickyard => 5,
+                    BuildingEnums.IronFoundry => 5,
+                    BuildingEnums.GrainMill => 5,
+                    BuildingEnums.Sawmill => 5,
 
-#endif
-                BuildingEnums.Bakery => 5,
-                BuildingEnums.Brickyard => 5,
-                BuildingEnums.IronFoundry => 5,
-                BuildingEnums.GrainMill => 5,
-                BuildingEnums.Sawmill => 5,
+                    BuildingEnums.Cranny => 10,
+                    _ => 20,
+                };
+            }
 
-                BuildingEnums.Cranny => 10,
-                _ => 20,
-            };
+            if (VersionDetector.IsTTWars())
+            {
+                return building switch
+                {
+                    BuildingEnums.Brewery => 10,
+
+                    BuildingEnums.Woodcutter => 25,
+                    BuildingEnums.ClayPit => 25,
+                    BuildingEnums.IronMine => 25,
+                    BuildingEnums.Cropland => 25,
+
+                    BuildingEnums.Bakery => 5,
+                    BuildingEnums.Brickyard => 5,
+                    BuildingEnums.IronFoundry => 5,
+                    BuildingEnums.GrainMill => 5,
+                    BuildingEnums.Sawmill => 5,
+
+                    BuildingEnums.Cranny => 10,
+                    _ => 20,
+                };
+            }
+            return 20;
         }
 
-        public static string GetColor(this BuildingEnums building)
+        public static Color GetColor(this BuildingEnums building)
         {
             return building switch
             {
-                BuildingEnums.Site => "White",
-                BuildingEnums.Woodcutter => "ForestGreen",
-                BuildingEnums.ClayPit => "Orange",
-                BuildingEnums.IronMine => "Gray",
-                BuildingEnums.Cropland => "Yellow",
-                _ => "LawnGreen",
+                BuildingEnums.Site => Color.White,
+                BuildingEnums.Woodcutter => Color.ForestGreen,
+                BuildingEnums.ClayPit => Color.Orange,
+                BuildingEnums.IronMine => Color.Gray,
+                BuildingEnums.Cropland => Color.Yellow,
+                _ => Color.YellowGreen,
             };
         }
 

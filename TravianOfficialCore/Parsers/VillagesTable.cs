@@ -9,7 +9,7 @@ namespace TravianOfficialCore.Parsers
         public static List<HtmlNode> GetVillageNodes(HtmlDocument doc)
         {
             var villsNode = doc.GetElementbyId("sidebarBoxVillagelist");
-            if (villsNode is null) return new();
+            if (villsNode is null) return null;
             return villsNode.Descendants("div").Where(x => x.HasClass("listEntry")).ToList();
         }
 

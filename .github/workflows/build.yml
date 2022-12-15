@@ -9,7 +9,7 @@ jobs:
   build:
     strategy:
       matrix:
-        server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
+        server: [TRAVIAN_OFFICIAL, TTWARS]
     runs-on: windows-2019
     steps:
       - name: Setup dotnet

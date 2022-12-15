@@ -1,0 +1,29 @@
+﻿<rxui:ReactiveUserControl
+        x:Class="WPFUI.Views.Uc.MainView.MainButtonPanelUc"
+        x:TypeArguments="vms:MainButtonPanelViewModel"
+        xmlns:rxui="http://reactiveui.net"
+        xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Button x:Name="CheckVersionButton" Content="CHECK NEW VERSION" Grid.ColumnSpan="2" Margin="0,0,0,2" Background="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}" Foreground="White" />
+        <Button x:Name="AddAccountButton" Content="Add account" Grid.Row="1" Margin="0,0,1,2" />
+        <Button x:Name="AddAccountsButton" Grid.Column="1" Content="Add accounts" Grid.Row="1" Margin="1,0,0,2" />
+        <Button x:Name="LoginButton" Content="Login" Grid.Row="2" Margin="0,0,1,2" />
+        <Button x:Name="LogoutButton" Grid.Column="1" Content="Logout" Grid.Row="2" Margin="1,0,0,2" />
+        <Button x:Name="DeleteButton" Grid.ColumnSpan="2" Content="Delete" Grid.Row="3" Margin="1,0,0,2" />
+        <Button x:Name="PauseButton" Content="Pause" Grid.Row="4" Margin="0,0,1,2" />
+        <Button x:Name="RestartButton" Grid.Column="1" Content="Restart" Grid.Row="4" Margin="1,0,0,2" />
+    </Grid>
+</rxui:ReactiveUserControl>

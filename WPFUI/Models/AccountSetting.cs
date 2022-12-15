@@ -1,6 +1,4 @@
-﻿using MainCore.Helper;
-using ReactiveUI;
-using System.Windows;
+﻿using ReactiveUI;
 
 namespace WPFUI.Models
 {
@@ -8,14 +6,14 @@ namespace WPFUI.Models
     {
         public void CopyFrom(MainCore.Models.Database.AccountSetting settings)
         {
-            ClickDelay = $"{(settings.ClickDelayMin + settings.ClickDelayMax) / 2}";
-            ClickDelayRange = $"{(settings.ClickDelayMax - settings.ClickDelayMin) / 2}";
-            TaskDelay = $"{(settings.TaskDelayMin + settings.TaskDelayMax) / 2}";
-            TaskDelayRange = $"{(settings.TaskDelayMax - settings.TaskDelayMin) / 2}";
-            WorkTime = $"{(settings.WorkTimeMax + settings.WorkTimeMin) / 2}";
-            WorkTimeRange = $"{(settings.WorkTimeMax - settings.WorkTimeMin) / 2}";
-            SleepTime = $"{(settings.SleepTimeMax + settings.SleepTimeMin) / 2}";
-            SleepTimeRange = $"{(settings.SleepTimeMax - settings.SleepTimeMin) / 2}";
+            ClickDelay = (settings.ClickDelayMin + settings.ClickDelayMax) / 2;
+            ClickDelayRange = (settings.ClickDelayMax - settings.ClickDelayMin) / 2;
+            TaskDelay = (settings.TaskDelayMin + settings.TaskDelayMax) / 2;
+            TaskDelayRange = (settings.TaskDelayMax - settings.TaskDelayMin) / 2;
+            WorkTime = (settings.WorkTimeMax + settings.WorkTimeMin) / 2;
+            WorkTimeRange = (settings.WorkTimeMax - settings.WorkTimeMin) / 2;
+            SleepTime = (settings.SleepTimeMax + settings.SleepTimeMin) / 2;
+            SleepTimeRange = (settings.SleepTimeMax - settings.SleepTimeMin) / 2;
             IsDontLoadImage = settings.IsDontLoadImage;
             IsClosedIfNoTask = settings.IsClosedIfNoTask;
             IsMinimized = settings.IsMinimized;
@@ -24,29 +22,21 @@ namespace WPFUI.Models
 
         public void CopyTo(MainCore.Models.Database.AccountSetting settings)
         {
-            var clickDelay = int.Parse(ClickDelay);
-            var clickDelayRange = int.Parse(ClickDelayRange);
-            settings.ClickDelayMin = clickDelay - clickDelayRange;
+            settings.ClickDelayMin = ClickDelay - ClickDelayRange;
             if (settings.ClickDelayMin < 0) settings.ClickDelayMin = 0;
-            settings.ClickDelayMax = clickDelay + clickDelayRange;
+            settings.ClickDelayMax = ClickDelay + ClickDelayRange;
 
-            var taskDelay = int.Parse(TaskDelay);
-            var taskDelayRange = int.Parse(TaskDelayRange);
-            settings.TaskDelayMin = taskDelay - taskDelayRange;
+            settings.TaskDelayMin = TaskDelay - TaskDelayRange;
             if (settings.TaskDelayMin < 0) settings.TaskDelayMin = 0;
-            settings.TaskDelayMax = taskDelay + taskDelayRange;
+            settings.TaskDelayMax = TaskDelay + TaskDelayRange;
 
-            var workTime = int.Parse(WorkTime);
-            var workTimeRange = int.Parse(WorkTimeRange);
-            settings.WorkTimeMin = workTime - workTimeRange;
+            settings.WorkTimeMin = WorkTime - WorkTimeRange;
             if (settings.WorkTimeMin < 0) settings.WorkTimeMin = 0;
-            settings.WorkTimeMax = workTime + workTimeRange;
+            settings.WorkTimeMax = WorkTime + WorkTimeRange;
 
-            var sleepTime = int.Parse(SleepTime);
-            var sleepTimeRange = int.Parse(SleepTimeRange);
-            settings.SleepTimeMin = sleepTime - sleepTimeRange;
+            settings.SleepTimeMin = SleepTime - SleepTimeRange;
             if (settings.SleepTimeMin < 0) settings.SleepTimeMin = 0;
-            settings.SleepTimeMax = sleepTime + sleepTimeRange;
+            settings.SleepTimeMax = SleepTime + SleepTimeRange;
 
             settings.IsDontLoadImage = IsDontLoadImage;
             settings.IsClosedIfNoTask = IsClosedIfNoTask;
@@ -54,110 +44,65 @@ namespace WPFUI.Models
             settings.IsAutoAdventure = IsAutoStartAdventure;
         }
 
-        public bool IsVaild()
-        {
-            if (!ClickDelay.IsNumeric())
-            {
-                MessageBox.Show("Click delay is not a number.", "Warning");
-                return false;
-            }
-            if (!ClickDelayRange.IsNumeric())
-            {
-                MessageBox.Show("Click delay range is not a number.", "Warning");
-                return false;
-            }
-            if (!TaskDelay.IsNumeric())
-            {
-                MessageBox.Show("Task delay is not a number.", "Warning");
-                return false;
-            }
-            if (!TaskDelayRange.IsNumeric())
-            {
-                MessageBox.Show("Task delay range is not a number.", "Warning");
-                return false;
-            }
-            if (!WorkTime.IsNumeric())
-            {
-                MessageBox.Show("Work time is not a number.", "Warning");
-                return false;
-            }
-            if (!WorkTimeRange.IsNumeric())
-            {
-                MessageBox.Show("Work time range is not a number.", "Warning");
-                return false;
-            }
-            if (!SleepTime.IsNumeric())
-            {
-                MessageBox.Show("Sleep time is not a number.", "Warning");
-                return false;
-            }
-            if (!SleepTimeRange.IsNumeric())
-            {
-                MessageBox.Show("Sleep time range is not a number.", "Warning");
-                return false;
-            }
-            return true;
-        }
+        private int _clickDelay;
 
-        private string _clickDelay;
-
-        public string ClickDelay
+        public int ClickDelay
         {
             get => _clickDelay;
             set => this.RaiseAndSetIfChanged(ref _clickDelay, value);
         }
 
-        private string _clickDelayRange;
+        private int _clickDelayRange;
 
-        public string ClickDelayRange
+        public int ClickDelayRange
         {
             get => _clickDelayRange;
             set => this.RaiseAndSetIfChanged(ref _clickDelayRange, value);
         }
 
-        private string _taskDelay;
+        private int _taskDelay;
 
-        public string TaskDelay
+        public int TaskDelay
         {
             get => _taskDelay;
             set => this.RaiseAndSetIfChanged(ref _taskDelay, value);
         }
 
-        private string _taskDelayRange;
+        private int _taskDelayRange;
 
-        public string TaskDelayRange
+        public int TaskDelayRange
         {
             get => _taskDelayRange;
             set => this.RaiseAndSetIfChanged(ref _taskDelayRange, value);
         }
 
-        private string _workTime;
+        private int _workTime;
 
-        public string WorkTime
+        public int WorkTime
         {
             get => _workTime;
             set => this.RaiseAndSetIfChanged(ref _workTime, value);
         }
 
-        private string _workTimeRange;
+        private int _workTimeRange;
 
-        public string WorkTimeRange
+        public int WorkTimeRange
         {
             get => _workTimeRange;
             set => this.RaiseAndSetIfChanged(ref _workTimeRange, value);
         }
 
-        private string _sleepTime;
+        private int _sleepTime;
 
-        public string SleepTime
+        public int SleepTime
         {
             get => _sleepTime;
             set => this.RaiseAndSetIfChanged(ref _sleepTime, value);
         }
 
-        private string _sleepTimeRange;
+        private int _sleepTimeRange;
 
-        public string SleepTimeRange
+        public int SleepTimeRange
         {
             get => _sleepTimeRange;
             set => this.RaiseAndSetIfChanged(ref _sleepTimeRange, value);

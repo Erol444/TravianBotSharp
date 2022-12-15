@@ -32,6 +32,5 @@
         </Border>
         <Button x:Name="DiscordButton" Content="Discord" HorizontalAlignment="Stretch" Margin="20,0,20,0" Grid.Row="1" VerticalAlignment="Stretch" />
         <Button x:Name="LastVersionButton" Grid.Column="1" Content="Download latest version" HorizontalAlignment="Stretch" Margin="20,0,20,0" Grid.Row="1" VerticalAlignment="Stretch" />
-        <Button x:Name="CloseButton" Content="Close" Grid.ColumnSpan="3" HorizontalAlignment="Stretch" Margin="20,0,20,10" Grid.Row="4" VerticalAlignment="Stretch" />
     </Grid>
 </reactiveui:ReactiveWindow>
