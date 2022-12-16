@@ -1,13 +1,15 @@
 ﻿using HtmlAgilityPack;
+using ModuleCore.Parser;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
 namespace TTWarsCore.Parsers
 {
-    public class VillageInfrastructure
+    public class VillageInfrastructureParser : IVillageInfrastructureParser
     {
-        public static List<HtmlNode> GetBuildingNodes(HtmlDocument doc)
+        public List<HtmlNode> GetNodes(HtmlDocument doc)
         {
             var villageContentNode = doc.GetElementbyId("village_map");
             if (villageContentNode is null) return new();
@@ -17,7 +19,12 @@ namespace TTWarsCore.Parsers
             return list;
         }
 
-        public static int GetId(HtmlNode node)
+        public HtmlNode GetNode(HtmlDocument doc, int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        public int GetId(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("a"));
@@ -27,7 +34,7 @@ namespace TTWarsCore.Parsers
             return int.Parse(strResult);
         }
 
-        public static int GetType(HtmlNode node)
+        public int GetBuildingType(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("g"));
@@ -38,7 +45,7 @@ namespace TTWarsCore.Parsers
             return int.Parse(strResult);
         }
 
-        public static int GetLevel(HtmlNode node)
+        public int GetLevel(HtmlNode node)
         {
             var labelLayerNode = node.Descendants("div").FirstOrDefault(x => x.HasClass("labelLayer"));
             if (labelLayerNode is null) return -1;
@@ -49,7 +56,7 @@ namespace TTWarsCore.Parsers
             return int.Parse(valueStr);
         }
 
-        public static bool IsUnderConstruction(HtmlNode node)
+        public bool IsUnderConstruction(HtmlNode node)
         {
             return node.Descendants("div").Any(x => x.HasClass("underConstruction"));
         }

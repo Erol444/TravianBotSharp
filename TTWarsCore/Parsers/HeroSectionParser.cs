@@ -1,12 +1,14 @@
 ﻿using HtmlAgilityPack;
+using ModuleCore.Parser;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TTWarsCore.Parsers
 {
-    public static class HeroInfo
+    public class HeroSectionParser : IHeroSectionParser
     {
-        public static int GetHealth(HtmlDocument doc)
+        public int GetHealth(HtmlDocument doc)
         {
             var sidebarBox = doc.GetElementbyId("sidebarBoxHero");
             if (sidebarBox is null) return -1;
@@ -26,7 +28,7 @@ namespace TTWarsCore.Parsers
             }
         }
 
-        public static int GetStatus(HtmlDocument doc)
+        public int GetStatus(HtmlDocument doc)
         {
             var message = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatusMessage"));
             if (message is null) return 0;
@@ -51,7 +53,7 @@ namespace TTWarsCore.Parsers
             return 0;
         }
 
-        public static int GetAdventureNum(HtmlDocument doc)
+        public int GetAdventureNum(HtmlDocument doc)
         {
             var adv45 = doc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("adventureWhite"));
             if (adv45 is null) return 0;
@@ -62,7 +64,7 @@ namespace TTWarsCore.Parsers
             return int.Parse(valueStr);
         }
 
-        public static List<(int, int)> GetItems(HtmlDocument doc)
+        public List<(int, int)> GetItems(HtmlDocument doc)
         {
             var heroItems = new List<(int, int)>();
             var inventory = doc.GetElementbyId("itemsToSale");
@@ -99,7 +101,22 @@ namespace TTWarsCore.Parsers
             return heroItems;
         }
 
-        public static List<HtmlNode> GetAdventures(HtmlDocument doc)
+        public bool IsCurrentTab(HtmlNode tabNode)
+        {
+            throw new NotSupportedException();
+        }
+
+        public HtmlNode GetHeroInventory(HtmlDocument doc)
+        {
+            return doc.GetElementbyId("heroImageButton");
+        }
+
+        public HtmlNode GetAdventuresButton(HtmlDocument doc)
+        {
+            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventureWhite"));
+        }
+
+        public List<HtmlNode> GetAdventures(HtmlDocument doc)
         {
             var adventures = doc.GetElementbyId("adventureListForm");
             if (adventures is null) return null;
@@ -108,7 +125,7 @@ namespace TTWarsCore.Parsers
             return list;
         }
 
-        public static int GetAdventureDifficult(HtmlNode node)
+        public int GetAdventureDifficult(HtmlNode node)
         {
             var img = node.Descendants("img").FirstOrDefault();
             if (img is null) return 0;
@@ -117,7 +134,7 @@ namespace TTWarsCore.Parsers
             return 1;
         }
 
-        public static (int, int) GetAdventureCoordinates(HtmlNode node)
+        public (int, int) GetAdventureCoordinates(HtmlNode node)
         {
             var coordsNode = node.Descendants("td").FirstOrDefault(x => x.HasClass("coords"));
             if (coordsNode is null) return (0, 0);
@@ -130,6 +147,57 @@ namespace TTWarsCore.Parsers
             valueX = valueX.Replace('−', '-');
             valueY = valueY.Replace('−', '-');
             return (int.Parse(valueX), int.Parse(valueY));
+        }
+
+        public HtmlNode GetHeroAvatar(HtmlDocument doc)
+        {
+            return doc.GetElementbyId("heroImageButton");
+        }
+
+        public HtmlNode GetHeroTab(HtmlDocument doc, int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        public HtmlNode GetItemSlot(HtmlDocument doc, int type)
+        {
+            var inventory = doc.GetElementbyId("itemsToSale");
+            foreach (var itemSlot in inventory.ChildNodes)
+            {
+                var item = itemSlot.ChildNodes.FirstOrDefault(x => x.Id.StartsWith("item_"));
+                if (item is null) continue;
+
+                var itemClass = item.GetClasses().FirstOrDefault(x => x.Contains("_item_"));
+                var itemValue = itemClass.Split('_').LastOrDefault();
+                if (itemValue is null) continue;
+
+                var itemValueStr = new string(itemValue.Where(c => char.IsDigit(c)).ToArray());
+                if (string.IsNullOrEmpty(itemValueStr)) continue;
+
+                if (int.Parse(itemValueStr) == type) return item;
+            }
+            return null;
+        }
+
+        public HtmlNode GetAmountBox(HtmlDocument doc)
+        {
+            return doc.GetElementbyId("amount");
+        }
+
+        public HtmlNode GetConfirmButton(HtmlDocument doc)
+        {
+            return doc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("ok"));
+        }
+
+        public HtmlNode GetStartAdventureButton(HtmlDocument doc, int x, int y)
+        {
+            var adventures = GetAdventures(doc);
+            foreach (var adventure in adventures)
+            {
+                (var X, var Y) = GetAdventureCoordinates(adventure);
+                if (X == x && Y == y) return adventure.ChildNodes.Descendants("a").Last();
+            }
+            return null;
         }
     }
 }

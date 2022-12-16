@@ -1,13 +1,14 @@
 ﻿using HtmlAgilityPack;
+using ModuleCore.Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TravianOfficialCore.Parsers
 {
-    public static class HeroInfo
+    public class HeroSectionParser : IHeroSectionParser
     {
-        public static int GetHealth(HtmlDocument doc)
+        public int GetHealth(HtmlDocument doc)
         {
             var healthMask = doc.GetElementbyId("healthMask");
             if (healthMask is null) return -1;
@@ -21,7 +22,7 @@ namespace TravianOfficialCore.Parsers
             return (int)Math.Round(-56.173 * rad + 96.077);
         }
 
-        public static int GetStatus(HtmlDocument doc)
+        public int GetStatus(HtmlDocument doc)
         {
             var heroStatusDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroStatus"));
             if (heroStatusDiv is null) return 0;
@@ -40,7 +41,7 @@ namespace TravianOfficialCore.Parsers
             };
         }
 
-        public static int GetAdventureNum(HtmlDocument doc)
+        public int GetAdventureNum(HtmlDocument doc)
         {
             var adv45 = doc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("adventure"));
             if (adv45 is null) return 0;
@@ -51,7 +52,7 @@ namespace TravianOfficialCore.Parsers
             return int.Parse(valueStr);
         }
 
-        public static List<(int, int)> GetItems(HtmlDocument doc)
+        public List<(int, int)> GetItems(HtmlDocument doc)
         {
             var heroItems = new List<(int, int)>();
             var heroItemsDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroItems"));
@@ -97,12 +98,17 @@ namespace TravianOfficialCore.Parsers
             return heroItems;
         }
 
-        public static bool IsCurrentTab(this HtmlNode tabNode)
+        public bool IsCurrentTab(HtmlNode tabNode)
         {
             return tabNode.HasClass("active");
         }
 
-        public static List<HtmlNode> GetAdventures(HtmlDocument doc)
+        public HtmlNode GetAdventuresButton(HtmlDocument doc)
+        {
+            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventure"));
+        }
+
+        public List<HtmlNode> GetAdventures(HtmlDocument doc)
         {
             var adventures = doc.GetElementbyId("heroAdventure");
             if (adventures is null) return null;
@@ -112,7 +118,7 @@ namespace TravianOfficialCore.Parsers
             return tbody.Descendants("tr").ToList();
         }
 
-        public static int GetAdventureDifficult(HtmlNode node)
+        public int GetAdventureDifficult(HtmlNode node)
         {
             var tdList = node.Descendants("td").ToArray();
             if (tdList.Length < 3) return 0;
@@ -121,7 +127,7 @@ namespace TravianOfficialCore.Parsers
             return 0;
         }
 
-        public static (int, int) GetAdventureCoordinates(HtmlNode node)
+        public (int, int) GetAdventureCoordinates(HtmlNode node)
         {
             var tdList = node.Descendants("td").ToArray();
             if (tdList.Length < 2) return (0, 0);
@@ -134,6 +140,73 @@ namespace TravianOfficialCore.Parsers
             var valueY = new string(coords[1].Where(c => char.IsDigit(c) || c == '-').ToArray());
             if (string.IsNullOrEmpty(valueY)) return (0, 0);
             return (int.Parse(valueX), int.Parse(valueY));
+        }
+
+        public HtmlNode GetHeroAvatar(HtmlDocument doc)
+        {
+            return doc.GetElementbyId("heroImageButton");
+        }
+
+        public HtmlNode GetHeroTab(HtmlDocument doc, int index)
+        {
+            var heroDiv = doc.GetElementbyId("heroV2");
+            if (heroDiv is null) return null;
+            var aNode = heroDiv.Descendants("a").FirstOrDefault(x => x.GetAttributeValue("data-tab", 0) == index);
+            return aNode;
+        }
+
+        public HtmlNode GetItemSlot(HtmlDocument doc, int type)
+        {
+            var heroItemsDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroItems"));
+            if (heroItemsDiv is null) return null;
+            var heroItemDivs = heroItemsDiv.Descendants("div").Where(x => x.HasClass("heroItem") && !x.HasClass("empty"));
+            if (!heroItemDivs.Any()) return null;
+
+            foreach (var itemSlot in heroItemDivs)
+            {
+                if (itemSlot.ChildNodes.Count < 2) continue;
+                var itemNode = itemSlot.ChildNodes[1];
+                var classes = itemNode.GetClasses();
+                if (classes.Count() != 2) continue;
+
+                var itemValue = classes.ElementAt(1);
+
+                var itemValueStr = new string(itemValue.Where(c => char.IsDigit(c)).ToArray());
+                if (string.IsNullOrEmpty(itemValueStr)) continue;
+
+                if (int.Parse(itemValueStr) == type) return itemSlot;
+            }
+            return null;
+        }
+
+        public HtmlNode GetAmountBox(HtmlDocument doc)
+        {
+            var form = doc.GetElementbyId("consumableHeroItem");
+            return form.Descendants("input").FirstOrDefault();
+        }
+
+        public HtmlNode GetConfirmButton(HtmlDocument doc)
+        {
+            var dialog = doc.GetElementbyId("dialogContent");
+            var buttonWrapper = dialog.Descendants("div").FirstOrDefault(x => x.HasClass("buttonsWrapper"));
+            var buttonTransfer = buttonWrapper.Descendants("button");
+            if (buttonTransfer.Count() < 2) return null;
+            return buttonTransfer.ElementAt(1);
+        }
+
+        public HtmlNode GetStartAdventureButton(HtmlDocument doc, int x, int y)
+        {
+            var adventures = GetAdventures(doc);
+            foreach (var adventure in adventures)
+            {
+                (var X, var Y) = GetAdventureCoordinates(adventure);
+                if (X == x && Y == y)
+                {
+                    var last = adventure.ChildNodes.Last();
+                    return last.Descendants("button").FirstOrDefault();
+                }
+            }
+            return null;
         }
     }
 }

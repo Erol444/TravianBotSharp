@@ -1,32 +1,37 @@
 ﻿using HtmlAgilityPack;
+using ModuleCore.Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TravianOfficialCore.Parsers
+namespace TTWarsCore.Parsers
 {
-    public static class VillageFields
+    public class VillageFieldParser : IVillageFieldParser
     {
-        public static List<HtmlNode> GetResourceNodes(HtmlDocument doc)
+        public List<HtmlNode> GetNodes(HtmlDocument doc)
         {
-            var resourceFieldContainerNode = doc.GetElementbyId("resourceFieldContainer");
-            if (resourceFieldContainerNode is null) return new();
+            var villageMapNode = doc.GetElementbyId("village_map");
+            if (villageMapNode is null) return new();
 
-            return resourceFieldContainerNode.ChildNodes.Where(x => x.HasClass("level")).ToList();
+            return villageMapNode.Descendants("div").Where(x => !x.HasClass("labelLayer")).ToList();
         }
 
-        public static int GetId(HtmlNode node)
+        public HtmlNode GetNode(HtmlDocument doc, int index)
+        {
+            throw new NotSupportedException();
+        }
+
+        public int GetId(HtmlNode node)
         {
             var classess = node.GetClasses();
-            var needClass = classess.FirstOrDefault(x => x.StartsWith("buildingSlot"));
+            var needClass = classess.FirstOrDefault(x => x.StartsWith("aid"));
             if (string.IsNullOrEmpty(needClass)) return -1;
             var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
             if (string.IsNullOrEmpty(strResult)) return -1;
-
             return int.Parse(strResult);
         }
 
-        public static int GetType(HtmlNode node)
+        public int GetBuildingType(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("gid"));
@@ -37,18 +42,17 @@ namespace TravianOfficialCore.Parsers
             return int.Parse(strResult);
         }
 
-        public static int GetLevel(HtmlNode node)
+        public int GetLevel(HtmlNode node)
         {
             var classess = node.GetClasses();
             var needClass = classess.FirstOrDefault(x => x.StartsWith("level") && !x.Equals("level"));
             if (string.IsNullOrEmpty(needClass)) return -1;
             var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
-            if (string.IsNullOrEmpty(strResult)) return -1;
 
             return int.Parse(strResult);
         }
 
-        public static bool IsUnderConstruction(HtmlNode node)
+        public bool IsUnderConstruction(HtmlNode node)
         {
             return node.GetClasses().Contains("underConstruction");
         }

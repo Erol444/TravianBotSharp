@@ -1,29 +1,30 @@
 ﻿using HtmlAgilityPack;
+using ModuleCore.Parser;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace TTWarsCore.Parsers
 {
-    public static class VillagesTable
+    public class VillagesTableParser : IVillagesTableParser
     {
-        public static List<HtmlNode> GetVillageNodes(HtmlDocument doc)
+        public List<HtmlNode> GetVillages(HtmlDocument doc)
         {
             var villsNode = doc.GetElementbyId("sidebarBoxVillagelist");
             if (villsNode is null) return null;
             return villsNode.Descendants("li").ToList();
         }
 
-        public static bool IsUnderAttack(HtmlNode node)
+        public bool IsUnderAttack(HtmlNode node)
         {
             return node.HasClass("attack");
         }
 
-        public static bool IsActive(HtmlNode node)
+        public bool IsActive(HtmlNode node)
         {
             return node.HasClass("active");
         }
 
-        public static int GetId(HtmlNode node)
+        public int GetId(HtmlNode node)
         {
             var hrefNode = node.ChildNodes.FirstOrDefault(x => x.Name == "a");
             if (hrefNode is null) return -1;
@@ -38,7 +39,7 @@ namespace TTWarsCore.Parsers
             return int.Parse(value);
         }
 
-        public static string GetName(HtmlNode node)
+        public string GetName(HtmlNode node)
         {
             var textNode = node.Descendants("a").FirstOrDefault();
             if (textNode is null) return "";
@@ -46,7 +47,7 @@ namespace TTWarsCore.Parsers
             return strArr[0];
         }
 
-        public static int GetX(HtmlNode node)
+        public int GetX(HtmlNode node)
         {
             var xNode = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateX"));
             if (xNode is null) return 0;
@@ -55,7 +56,7 @@ namespace TTWarsCore.Parsers
             return int.Parse(xStr);
         }
 
-        public static int GetY(HtmlNode node)
+        public int GetY(HtmlNode node)
         {
             var yNode = node.Descendants("span").FirstOrDefault(x => x.HasClass("coordinateY"));
             if (yNode is null) return 0;

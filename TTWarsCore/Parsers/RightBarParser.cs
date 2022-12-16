@@ -1,12 +1,13 @@
 ﻿using HtmlAgilityPack;
+using ModuleCore.Parser;
 using System;
 using System.Linq;
 
 namespace TTWarsCore.Parsers
 {
-    public static class RightBar
+    public class RightBarParser : IRightBarParser
     {
-        public static bool? HasPlusAccount(HtmlDocument doc)
+        public bool HasPlusAccount(HtmlDocument doc)
         {
             var buttons = doc.DocumentNode.Descendants("button");
             var off = buttons.FirstOrDefault(x => x.HasClass("barracksBlack"));
@@ -14,10 +15,10 @@ namespace TTWarsCore.Parsers
 
             var on = buttons.FirstOrDefault(x => x.HasClass("barracksWhite"));
             if (on is not null) return true;
-            return null;
+            return false;
         }
 
-        public static int GetTribe(HtmlDocument doc)
+        public int GetTribe(HtmlDocument doc)
         {
             var nodeDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("playerName"));
             if (nodeDiv is null) return 0;

@@ -1,21 +1,22 @@
 ﻿using HtmlAgilityPack;
+using ModuleCore.Parser;
 using System.Linq;
 
-namespace TTWarsCore.FindElements
+namespace TTWarsCore.Parsers
 {
-    public static class LoginPage
+    public class SystemPageParser : ISystemPageParser
     {
-        public static HtmlNode GetUsernameNode(HtmlDocument doc)
+        public HtmlNode GetUsernameNode(HtmlDocument doc)
         {
             return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("user"));
         }
 
-        public static HtmlNode GetPasswordNode(HtmlDocument doc)
+        public HtmlNode GetPasswordNode(HtmlDocument doc)
         {
             return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("pw"));
         }
 
-        public static HtmlNode GetLoginButton(HtmlDocument doc)
+        public HtmlNode GetLoginButton(HtmlDocument doc)
         {
             return doc.GetElementbyId("s1");
         }
