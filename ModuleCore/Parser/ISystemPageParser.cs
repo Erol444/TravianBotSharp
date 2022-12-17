@@ -9,5 +9,7 @@ namespace ModuleCore.Parser
         public HtmlNode GetPasswordNode(HtmlDocument doc);
 
         public HtmlNode GetLoginButton(HtmlDocument doc);
+
+        public HtmlNode GetContractNode(HtmlDocument doc);
     }
 }

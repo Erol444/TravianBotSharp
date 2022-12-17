@@ -22,5 +22,10 @@ namespace TravianOfficialCore.Parsers
             if (trNode == null) return null;
             return trNode.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
         }
+
+        public HtmlNode GetContractNode(HtmlDocument doc)
+        {
+            return doc.GetElementbyId("contract");
+        }
     }
 }

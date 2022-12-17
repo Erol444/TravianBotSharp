@@ -1,10 +1,11 @@
-﻿using RestSharp;
+﻿using MainCore.Helper.Interface;
+using RestSharp;
 
-namespace MainCore.Helper
+namespace MainCore.Helper.Implementations
 {
-    public static class AccessHelper
+    public class AccessHelper : IAccessHelper
     {
-        public static bool CheckAccess(RestClient client)
+        public bool IsValid(RestClient client)
         {
             var request = new RestRequest
             {

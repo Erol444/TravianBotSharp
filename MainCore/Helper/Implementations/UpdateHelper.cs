@@ -1,43 +1,61 @@
-﻿using MainCore.Enums;
+﻿using FluentResults;
+using MainCore.Enums;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
+using ModuleCore.Parser;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-#if TRAVIAN_OFFICIAL
-
-using TravianOfficialCore.Parsers;
-
-#elif TTWARS
-
-using TTWarsCore.Parsers;
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
-
-namespace MainCore.Helper
+namespace MainCore.Helper.Implementations
 {
-    public static class UpdateHelper
+    public class UpdateHelper : IUpdateHelper
     {
-        public static void UpdateCurrentlyBuilding(AppDbContext context, IChromeBrowser chromeBrowser, int villageId)
+        private readonly IVillageCurrentlyBuildingParser _villageCurrentlyBuildingParser;
+        private readonly IChromeManager _chromeManager;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IVillageFieldParser _villageFieldParser;
+        private readonly IVillageInfrastructureParser _villageInfrastructureParser;
+        private readonly IStockBarParser _stockBarParser;
+        private readonly IHeroSectionParser _heroSectionParser;
+        private readonly ISubTabParser _subTabParser;
+        private readonly IFarmListParser _farmListParser;
+        private readonly IEventManager _eventManager;
+
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager)
         {
+            _villageCurrentlyBuildingParser = villageCurrentlyBuildingParser;
+            _chromeManager = chromeManager;
+            _contextFactory = contextFactory;
+            _villageFieldParser = villageFieldParser;
+            _villageInfrastructureParser = villageInfrastructureParser;
+            _stockBarParser = stockBarParser;
+            _subTabParser = subTabParser;
+            _heroSectionParser = heroSectionParser;
+            _farmListParser = farmListParser;
+            _eventManager = eventManager;
+        }
+
+        public Result UpdateCurrentlyBuilding(int accountId, int villageId)
+        {
+            var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
-            var nodes = VillageCurrentlyBuilding.GetNodes(html);
+            var nodes = _villageCurrentlyBuildingParser.GetItems(html);
+            using var context = _contextFactory.CreateDbContext();
             for (int i = 0; i < nodes.Count; i++)
             {
                 var node = nodes[i];
                 var building = context.VillagesCurrentlyBuildings.Find(villageId, i);
 
-                var strType = VillageCurrentlyBuilding.GetType(node);
-                var level = VillageCurrentlyBuilding.GetLevel(node);
-                var duration = VillageCurrentlyBuilding.GetDuration(node);
+                var strType = _villageCurrentlyBuildingParser.GetBuildingType(node);
+                var level = _villageCurrentlyBuildingParser.GetLevel(node);
+                var duration = _villageCurrentlyBuildingParser.GetDuration(node);
 
-                var type = (BuildingEnums)Enum.Parse(typeof(BuildingEnums), strType);
-
+                var result = Enum.TryParse(strType, false, out BuildingEnums type);
+                if (!result) return Result.Fail(new MustStop($"Cannot parse {strType}. Is language English ?"));
                 if (building is null)
                 {
                     context.VillagesCurrentlyBuildings.Add(new()
@@ -78,19 +96,23 @@ namespace MainCore.Helper
                 }
             }
             context.SaveChanges();
+            _eventManager.OnVillageCurrentUpdate(villageId);
+            return Result.Ok();
         }
 
-        public static void UpdateDorf1(AppDbContext context, IChromeBrowser chromeBrowser, int villageId)
+        public Result UpdateDorf1(int accountId, int villageId)
         {
+            var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
-            var resFields = VillageFields.GetResourceNodes(html);
+            var resFields = _villageFieldParser.GetNodes(html);
+            using var context = _contextFactory.CreateDbContext();
             foreach (var fieldNode in resFields)
             {
-                var id = VillageFields.GetId(fieldNode);
+                var id = _villageFieldParser.GetId(fieldNode);
                 var resource = context.VillagesBuildings.Find(villageId, id);
-                var level = VillageFields.GetLevel(fieldNode);
-                var type = VillageFields.GetType(fieldNode);
-                var isUnderConstruction = VillageFields.IsUnderConstruction(fieldNode);
+                var level = _villageFieldParser.GetLevel(fieldNode);
+                var type = _villageFieldParser.GetBuildingType(fieldNode);
+                var isUnderConstruction = _villageFieldParser.IsUnderConstruction(fieldNode);
                 if (resource is null)
                 {
                     context.VillagesBuildings.Add(new()
@@ -139,49 +161,44 @@ namespace MainCore.Helper
                 updateTime.Dorf1 = DateTime.Now;
             }
             context.SaveChanges();
+
+            _eventManager.OnVillageCurrentUpdate(villageId);
+            _eventManager.OnVillageBuildsUpdate(villageId);
+            return Result.Ok();
         }
 
-        public static void UpdateDorf2(AppDbContext context, IChromeBrowser chromeBrowser, int accountId, int villageId)
+        public Result UpdateDorf2(int accountId, int villageId)
         {
+            var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
-            var buildingNodes = VillageInfrastructure.GetBuildingNodes(html);
+            var buildingNodes = _villageInfrastructureParser.GetNodes(html);
+            using var context = _contextFactory.CreateDbContext();
             foreach (var buildingNode in buildingNodes)
             {
-                var id = VillageInfrastructure.GetId(buildingNode);
+                var id = _villageInfrastructureParser.GetId(buildingNode);
                 var building = context.VillagesBuildings.Find(villageId, id);
-                var level = VillageInfrastructure.GetLevel(buildingNode);
-                var type = VillageInfrastructure.GetType(buildingNode);
-                switch (id)
+                var level = _villageInfrastructureParser.GetLevel(buildingNode);
+                int type = 0;
+                if (VersionDetector.IsTravianOfficial() && id == 26)
                 {
-#if TRAVIAN_OFFICIAL
-                    case 26:
-                        type = (int)BuildingEnums.MainBuilding;
-                        break;
-#elif TTWARS
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
-
-                    case 39:
-                        type = (int)BuildingEnums.RallyPoint;
-                        break;
-
-                    case 40:
-                        {
-                            var tribe = context.AccountsInfo.Find(accountId).Tribe;
-
-                            var wall = tribe.GetTribesWall();
-                            type = (int)wall;
-                        }
-                        break;
-
-                    default:
-                        break;
+                    type = (int)BuildingEnums.MainBuilding;
                 }
-                var isUnderConstruction = VillageInfrastructure.IsUnderConstruction(buildingNode);
+                else if (id == 39)
+                {
+                    type = (int)BuildingEnums.RallyPoint;
+                }
+                else if (id == 40)
+                {
+                    var tribe = context.AccountsInfo.Find(accountId).Tribe;
+
+                    var wall = tribe.GetTribesWall();
+                    type = (int)wall;
+                }
+                else
+                {
+                    type = _villageInfrastructureParser.GetBuildingType(buildingNode);
+                }
+                var isUnderConstruction = _villageInfrastructureParser.IsUnderConstruction(buildingNode);
                 if (building is null)
                 {
                     context.VillagesBuildings.Add(new()
@@ -229,11 +246,17 @@ namespace MainCore.Helper
                 updateTime.Dorf2 = DateTime.Now;
             }
             context.SaveChanges();
+
+            _eventManager.OnVillageCurrentUpdate(villageId);
+            _eventManager.OnVillageBuildsUpdate(villageId);
+            return Result.Ok();
         }
 
-        public static void UpdateResource(AppDbContext context, IChromeBrowser chromeBrowser, int villageId)
+        public Result UpdateResource(int accountId, int villageId)
         {
+            var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
+            using var context = _contextFactory.CreateDbContext();
             var resource = context.VillagesResources.Find(villageId);
 
             if (resource is null)
@@ -241,34 +264,37 @@ namespace MainCore.Helper
                 context.VillagesResources.Add(new()
                 {
                     VillageId = villageId,
-                    Wood = StockBar.GetWood(html),
-                    Clay = StockBar.GetClay(html),
-                    Iron = StockBar.GetIron(html),
-                    Crop = StockBar.GetCrop(html),
-                    Warehouse = StockBar.GetWarehouseCapacity(html),
-                    Granary = StockBar.GetGranaryCapacity(html),
-                    FreeCrop = StockBar.GetFreeCrop(html),
+                    Wood = _stockBarParser.GetWood(html),
+                    Clay = _stockBarParser.GetClay(html),
+                    Iron = _stockBarParser.GetIron(html),
+                    Crop = _stockBarParser.GetCrop(html),
+                    Warehouse = _stockBarParser.GetWarehouseCapacity(html),
+                    Granary = _stockBarParser.GetGranaryCapacity(html),
+                    FreeCrop = _stockBarParser.GetFreeCrop(html),
                 });
             }
             else
             {
-                resource.Wood = StockBar.GetWood(html);
-                resource.Clay = StockBar.GetClay(html);
-                resource.Iron = StockBar.GetIron(html);
-                resource.Crop = StockBar.GetCrop(html);
-                resource.Warehouse = StockBar.GetWarehouseCapacity(html);
-                resource.Granary = StockBar.GetGranaryCapacity(html);
-                resource.FreeCrop = StockBar.GetFreeCrop(html);
+                resource.Wood = _stockBarParser.GetWood(html);
+                resource.Clay = _stockBarParser.GetClay(html);
+                resource.Iron = _stockBarParser.GetIron(html);
+                resource.Crop = _stockBarParser.GetCrop(html);
+                resource.Warehouse = _stockBarParser.GetWarehouseCapacity(html);
+                resource.Granary = _stockBarParser.GetGranaryCapacity(html);
+                resource.FreeCrop = _stockBarParser.GetFreeCrop(html);
             }
             context.SaveChanges();
+
+            return Result.Ok();
         }
 
-        public static void UpdateHeroInventory(AppDbContext context, IChromeBrowser chromeBrowser, int accountId)
+        public Result UpdateHeroInventory(int accountId)
         {
-            var foundItems = HeroInfo.GetItems(chromeBrowser.GetHtml());
-            if (foundItems.Count == 0) return;
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var foundItems = _heroSectionParser.GetItems(chromeBrowser.GetHtml());
+            using var context = _contextFactory.CreateDbContext();
             var heroItems = context.HeroesItems.Where(x => x.AccountId == accountId).ToList();
-            var addedItems = new List<Models.Database.HeroItem>();
+            var addedItems = new List<HeroItem>();
             foreach (var item in foundItems)
             {
                 (var type, var count) = ((HeroItemEnums)item.Item1, item.Item2);
@@ -295,23 +321,27 @@ namespace MainCore.Helper
             }
             context.HeroesItems.RemoveRange(heroItems);
             context.SaveChanges();
+            _eventManager.OnHeroInventoryUpdate(accountId);
+            return Result.Ok();
         }
 
-        public static void UpdateAdventures(AppDbContext context, IChromeBrowser chromeBrowser, int accountId)
+        public Result UpdateAdventures(int accountId)
         {
-            var foundAdventures = HeroInfo.GetAdventures(chromeBrowser.GetHtml());
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var foundAdventures = _heroSectionParser.GetAdventures(chromeBrowser.GetHtml());
+            using var context = _contextFactory.CreateDbContext();
             var heroAdventures = context.Adventures.Where(x => x.AccountId == accountId).ToList();
             if (foundAdventures.Count == 0)
             {
                 context.Adventures.RemoveRange(heroAdventures);
                 context.SaveChanges();
-                return;
+                return Result.Ok();
             }
-            var addedAdventures = new List<Models.Database.Adventure>();
+            var addedAdventures = new List<Adventure>();
             foreach (var adventure in foundAdventures)
             {
-                (var x, var y) = HeroInfo.GetAdventureCoordinates(adventure);
-                var difficulty = HeroInfo.GetAdventureDifficult(adventure);
+                (var x, var y) = _heroSectionParser.GetAdventureCoordinates(adventure);
+                var difficulty = _heroSectionParser.GetAdventureDifficult(adventure);
                 var existItem = heroAdventures.FirstOrDefault(a => a.X == x && a.Y == y);
                 if (existItem is null)
                 {
@@ -335,18 +365,22 @@ namespace MainCore.Helper
             }
             context.Adventures.RemoveRange(heroAdventures);
             context.SaveChanges();
+            _eventManager.OnHeroAdventuresUpdate(accountId);
+            return Result.Ok();
         }
 
-        public static void UpdateProduction(AppDbContext context, IChromeBrowser chromeBrowser, int villageId)
+        public Result UpdateProduction(int accountId, int villageId)
         {
+            var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
+            using var context = _contextFactory.CreateDbContext();
             var production = context.VillagesProduction.Find(villageId);
 
-            var productionList = SubTab.GetProductionNum(html);
-            var wood = SubTab.GetNum(productionList[0]);
-            var clay = SubTab.GetNum(productionList[1]);
-            var iron = SubTab.GetNum(productionList[2]);
-            var crop = SubTab.GetNum(productionList[3]);
+            var productionList = _subTabParser.GetProductions(html);
+            var wood = _subTabParser.GetProduction(productionList[0]);
+            var clay = _subTabParser.GetProduction(productionList[1]);
+            var iron = _subTabParser.GetProduction(productionList[2]);
+            var crop = _subTabParser.GetProduction(productionList[3]);
 
             if (production is null)
             {
@@ -367,19 +401,21 @@ namespace MainCore.Helper
                 production.Crop = crop;
             }
             context.SaveChanges();
+            return Result.Ok();
         }
 
-        public static void UpdateFarmList(AppDbContext context, IChromeBrowser chromeBrowser, int accountId)
+        public Result UpdateFarmList(int accountId)
         {
+            var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
 
-            var farmNodes = FarmList.GetFarmNodes(html);
+            var farmNodes = _farmListParser.GetFarmNodes(html);
             var farms = new List<Farm>();
             foreach (var farmNode in farmNodes)
             {
-                var name = FarmList.GetName(farmNode);
-                var id = FarmList.GetId(farmNode);
-                var count = FarmList.GetNumOfFarms(farmNode);
+                var name = _farmListParser.GetName(farmNode);
+                var id = _farmListParser.GetId(farmNode);
+                var count = _farmListParser.GetNumOfFarms(farmNode);
                 var farm = new Farm()
                 {
                     AccountId = accountId,
@@ -389,7 +425,7 @@ namespace MainCore.Helper
                 };
                 farms.Add(farm);
             }
-
+            using var context = _contextFactory.CreateDbContext();
             var farmsOld = context.Farms.Where(x => x.AccountId == accountId).ToList();
             foreach (var farm in farms)
             {
@@ -414,6 +450,8 @@ namespace MainCore.Helper
             }
 
             context.SaveChanges();
+            _eventManager.OnFarmListUpdate(accountId);
+            return Result.Ok();
         }
     }
 }

@@ -1,24 +1,35 @@
-﻿using MainCore.Enums;
+﻿using FluentResults;
+using MainCore.Enums;
+using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MainCore.Helper
+namespace MainCore.Helper.Implementations
 {
-    public static class UpgradeBuildingHelper
+    public class UpgradeBuildingHelper : IUpgradeBuildingHelper
     {
-        public static PlanTask NextBuildingTask(AppDbContext context, IPlanManager planManager, ILogManager logManager, int accountId, int villageId)
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IPlanManager _planManager;
+
+        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager)
         {
-            var tasks = planManager.GetList(villageId);
+            _contextFactory = contextFactory;
+            _planManager = planManager;
+        }
+
+        public Result<PlanTask> NextBuildingTask(int accountId, int villageId)
+        {
+            var tasks = _planManager.GetList(villageId);
             if (tasks.Count == 0)
             {
-                logManager.Information(accountId, "Empty task queue");
-                return null;
+                return Result.Fail("Empty task queue");
             }
-
+            using var context = _contextFactory.CreateDbContext();
             var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
             var totalBuild = currentList.Count(x => x.Level != -1);
 
@@ -34,8 +45,7 @@ namespace MainCore.Helper
                 if (tribe == TribeEnums.Romans && !setting.IsIgnoreRomanAdvantage) maxBuild++;
                 if (totalBuild == maxBuild)
                 {
-                    logManager.Information(accountId, "Amount of currently building is equal with maximum building can build in same time");
-                    return null;
+                    return Result.Fail("Amount of currently building is equal with maximum building can build in same time");
                 }
 
                 if (tribe == TribeEnums.Romans && !setting.IsIgnoreRomanAdvantage && maxBuild - totalBuild == 1)
@@ -48,27 +58,27 @@ namespace MainCore.Helper
                         var freeCrop = context.VillagesResources.Find(villageId).FreeCrop;
                         if (freeCrop <= 5)
                         {
-                            logManager.Information(accountId, "Cannot build because of lack of freecrop");
-                            return null;
+                            return Result.Fail("Cannot build because of lack of freecrop ( < 6 )");
                         }
-                        return GetFirstInfrastructureTask(context, planManager, villageId);
+                        return GetFirstInfrastructureTask(villageId);
                     }
                     else if (numInfra > numRes)
                     {
                         // no need check free crop, there is magic make sure this always choose crop
                         // jk, because of how we check free crop later, first res task is always crop
-                        return GetFirstResTask(planManager, villageId);
+                        return GetFirstResTask(villageId);
                     }
                     // if same means 1 R and 1 I already, 1 ANY will be choose below
                 }
             }
 
-            return GetFirstTask(context, planManager, villageId);
+            return GetFirstTask(villageId);
         }
 
-        public static PlanTask ExtractResField(AppDbContext context, int villageId, PlanTask buildingTask)
+        public PlanTask ExtractResField(int villageId, PlanTask buildingTask)
         {
             List<VillageBuilding> buildings = null; // Potential buildings to be upgraded next
+            using var context = _contextFactory.CreateDbContext();
             switch (buildingTask.ResourceType)
             {
                 case ResTypeEnums.AllResources:
@@ -107,8 +117,9 @@ namespace MainCore.Helper
             };
         }
 
-        public static void RemoveFinishedCB(AppDbContext context, int villageId)
+        public void RemoveFinishedCB(int villageId)
         {
+            using var context = _contextFactory.CreateDbContext();
             var tasksDone = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).Where(x => x.CompleteTime <= DateTime.Now);
 
             if (!tasksDone.Any()) return;
@@ -131,36 +142,37 @@ namespace MainCore.Helper
             context.SaveChanges();
         }
 
-        private static PlanTask GetFirstResTask(IPlanManager planManager, int villageId)
+        private PlanTask GetFirstResTask(int villageId)
         {
-            var tasks = planManager.GetList(villageId);
+            var tasks = _planManager.GetList(villageId);
             var task = tasks.FirstOrDefault(x => x.Type == PlanTypeEnums.ResFields || x.Building.IsResourceField());
             return task;
         }
 
-        private static PlanTask GetFirstInfrastructureTask(AppDbContext context, IPlanManager planManager, int villageId)
+        private PlanTask GetFirstInfrastructureTask(int villageId)
         {
-            var tasks = planManager.GetList(villageId);
+            var tasks = _planManager.GetList(villageId);
             var infrastructureTasks = tasks.Where(x => x.Type == PlanTypeEnums.General && !x.Building.IsResourceField());
-            var task = infrastructureTasks.FirstOrDefault(x => IsInfrastructureTaskVaild(context, villageId, x));
+            var task = infrastructureTasks.FirstOrDefault(x => IsInfrastructureTaskVaild(villageId, x));
             return task;
         }
 
-        private static PlanTask GetFirstTask(AppDbContext context, IPlanManager planManager, int villageId)
+        private PlanTask GetFirstTask(int villageId)
         {
-            var tasks = planManager.GetList(villageId);
+            var tasks = _planManager.GetList(villageId);
             foreach (var task in tasks)
             {
                 if (task.Type != PlanTypeEnums.General) return task;
                 if (task.Building.IsResourceField()) return task;
-                if (IsInfrastructureTaskVaild(context, villageId, task)) return task;
+                if (IsInfrastructureTaskVaild(villageId, task)) return task;
             }
             return null;
         }
 
-        private static bool IsInfrastructureTaskVaild(AppDbContext context, int villageId, PlanTask planTask)
+        private bool IsInfrastructureTaskVaild(int villageId, PlanTask planTask)
         {
             (_, var prerequisiteBuildings) = planTask.Building.GetPrerequisiteBuildings();
+            using var context = _contextFactory.CreateDbContext();
             var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
             foreach (var prerequisiteBuilding in prerequisiteBuildings)
             {
@@ -169,31 +181,6 @@ namespace MainCore.Helper
                 if (building.Level < prerequisiteBuilding.Level) return false;
             }
             return true;
-        }
-
-        public static DateTime GetTimeWhenEnough(this VillageProduction production, long[] resRequired)
-        {
-            var productionArr = new long[] { production.Wood, production.Clay, production.Iron, production.Crop };
-
-            var now = DateTime.Now;
-            var ret = now.AddMinutes(2);
-
-            for (int i = 0; i < 4; i++)
-            {
-                DateTime toWaitForThisRes = DateTime.MinValue;
-                if (resRequired[i] > 0)
-                {
-                    // In case of negative crop, we will never have enough crop
-                    if (productionArr[i] <= 0) return DateTime.MaxValue;
-
-                    float hoursToWait = resRequired[i] / (float)productionArr[i];
-                    float secToWait = hoursToWait * 3600;
-                    toWaitForThisRes = now.AddSeconds(secToWait);
-                }
-
-                if (ret < toWaitForThisRes) ret = toWaitForThisRes;
-            }
-            return ret;
         }
     }
 }
