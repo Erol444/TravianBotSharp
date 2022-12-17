@@ -33,7 +33,9 @@ namespace MainCore.Tasks
         protected IPlanManager _planManager;
         protected IRestClientManager _restClientManager;
 
-        public string Name { protected set; get; }
+        protected string _name;
+
+        public abstract string GetName();
 
         public abstract Result Execute();
     }

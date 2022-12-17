@@ -16,7 +16,7 @@ namespace MainCore.Services.Interface
 
         public void Warning(int accountId, string message);
 
-        public void Error(int accountId, string message, Exception error);
+        public void Error(int accountId, string message, Exception error = null);
 
         public void Shutdown();
     }

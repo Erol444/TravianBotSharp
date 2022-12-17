@@ -5,9 +5,28 @@
         private readonly int _villageId;
         public int VillageId => _villageId;
 
-        public VillageBotTask(int villageId, int accountId, string name) : base(accountId, name)
+        public VillageBotTask(int villageId, int accountId) : base(accountId)
         {
             _villageId = villageId;
+        }
+
+        public override string GetName()
+        {
+            if (string.IsNullOrEmpty(_name))
+            {
+                using var context = _contextFactory.CreateDbContext();
+                var village = context.Villages.Find(VillageId);
+                var type = GetType().ToString();
+                if (village is not null)
+                {
+                    _name = $"{type} in {village.Name}";
+                }
+                else
+                {
+                    _name = $"{type} in unknow village [{VillageId}]";
+                }
+            }
+            return _name;
         }
     }
 }

@@ -92,13 +92,26 @@ namespace MainCore.Services.Implementations
 
         public void Error(int accountId, string message, Exception error)
         {
-            Add(accountId, new LogMessage()
+            if (error is null)
             {
-                DateTime = DateTime.Now,
-                Level = LevelEnum.Error,
-                Message = $"{message}\n{error}",
-            });
-            _loggers[accountId].Error(message, error);
+                Add(accountId, new LogMessage()
+                {
+                    DateTime = DateTime.Now,
+                    Level = LevelEnum.Error,
+                    Message = $"{message}",
+                });
+                _loggers[accountId].Error(message);
+            }
+            else
+            {
+                Add(accountId, new LogMessage()
+                {
+                    DateTime = DateTime.Now,
+                    Level = LevelEnum.Error,
+                    Message = $"{message}\n{error}",
+                });
+                _loggers[accountId].Error(message, error);
+            }
         }
 
         private readonly Dictionary<int, LinkedList<LogMessage>> _logs = new();

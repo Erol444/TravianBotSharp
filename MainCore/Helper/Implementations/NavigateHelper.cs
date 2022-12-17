@@ -49,7 +49,7 @@ namespace MainCore.Helper.Implementations
             }
             catch (TimeoutException)
             {
-                return Result.Fail(new NetworkProblem("Page not loaded in 3 mins"));
+                return Result.Fail(new MustStop("Page not loaded in 3 mins"));
             }
             return Result.Ok();
         }
