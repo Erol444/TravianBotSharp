@@ -1,6 +1,4 @@
-﻿using MainCore.Helper;
-
-namespace MainCore.Tasks
+﻿namespace MainCore.Tasks
 {
     public abstract class AccountBotTask : BotTask
     {
@@ -10,26 +8,8 @@ namespace MainCore.Tasks
         public AccountBotTask(int accountId, string name)
         {
             _accountId = accountId;
+            _chromeBrowser = _chromeManager.Get(accountId);
             Name = name;
-        }
-
-        public override void Refresh()
-        {
-            _chromeBrowser.GetChrome().Navigate().Refresh();
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.WaitPageLoaded(_chromeBrowser);
-            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-        }
-
-        protected bool IsStop()
-        {
-            if (Cts.IsCancellationRequested) return true;
-            if (StopFlag)
-            {
-                StopFlag = false;
-                return true;
-            }
-            return false;
         }
     }
 }

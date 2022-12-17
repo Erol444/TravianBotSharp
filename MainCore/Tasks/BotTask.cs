@@ -1,21 +1,31 @@
-﻿using MainCore.Enums;
+﻿using FluentResults;
+using MainCore.Enums;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using Splat;
 using System;
-using System.Threading;
+using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace MainCore.Tasks
 {
     public abstract class BotTask
     {
+        public BotTask()
+        {
+            _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
+            _eventManager = Locator.Current.GetService<IEventManager>();
+            _taskManager = Locator.Current.GetService<ITaskManager>();
+            _logManager = Locator.Current.GetService<ILogManager>();
+            _chromeManager = Locator.Current.GetService<IChromeManager>();
+            _planManager = Locator.Current.GetService<IPlanManager>();
+            _restClientManager = Locator.Current.GetService<IRestClientManager>();
+        }
+
         public TaskStage Stage { get; set; }
         public DateTime ExecuteAt { get; set; }
-        public int RetryCounter { get; set; }
-        protected bool StopFlag { get; set; }
-        public bool IsFail { get; protected set; }
-        public CancellationTokenSource Cts { get; set; }
 
         protected IDbContextFactory<AppDbContext> _contextFactory;
+        protected IChromeManager _chromeManager;
         protected IChromeBrowser _chromeBrowser;
         protected ITaskManager _taskManager;
         protected IEventManager _eventManager;
@@ -25,31 +35,6 @@ namespace MainCore.Tasks
 
         public string Name { protected set; get; }
 
-        public abstract void Execute();
-
-        public virtual void CopyFrom(BotTask source)
-        {
-            _contextFactory = source._contextFactory;
-            _eventManager = source._eventManager;
-            _taskManager = source._taskManager;
-            _logManager = source._logManager;
-            _chromeBrowser = source._chromeBrowser;
-            _planManager = source._planManager;
-            _restClientManager = source._restClientManager;
-            Cts = source.Cts;
-        }
-
-        public virtual void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            _contextFactory = contextFactory;
-            _eventManager = eventManager;
-            _taskManager = taskManager;
-            _logManager = logManager;
-            _chromeBrowser = chromeBrowser;
-            _planManager = planManager;
-            _restClientManager = restClientManager;
-        }
-
-        public abstract void Refresh();
+        public abstract Result Execute();
     }
 }
