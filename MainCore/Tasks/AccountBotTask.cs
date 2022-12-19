@@ -1,9 +1,12 @@
-﻿namespace MainCore.Tasks
+﻿using MainCore.Services.Interface;
+
+namespace MainCore.Tasks
 {
     public abstract class AccountBotTask : BotTask
     {
         private readonly int _accountId;
         public int AccountId => _accountId;
+        protected IChromeBrowser _chromeBrowser;
 
         public AccountBotTask(int accountId)
         {
