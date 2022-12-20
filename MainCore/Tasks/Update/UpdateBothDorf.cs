@@ -1,91 +1,74 @@
-﻿using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Errors;
 using System;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateBothDorf : VillageBotTask
     {
-        public UpdateBothDorf(int villageId, int accountId) : base(villageId, accountId, "Update All page")
+        public UpdateBothDorf(int villageId, int accountId) : base(villageId, accountId)
         {
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            IsFail = true;
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-            }
             var url = _chromeBrowser.GetCurrentUrl();
             if (url.Contains("dorf2"))
             {
                 {
-                    using var context = _contextFactory.CreateDbContext();
-                    NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
+                    var updateDorf2 = new UpdateDorf2(VillageId, AccountId);
+                    var result = updateDorf2.Execute();
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
-                if (IsUpdateFail()) return;
-
                 {
-                    using var context = _contextFactory.CreateDbContext();
-                    NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
+                    var updateDorf1 = new UpdateDorf1(VillageId, AccountId);
+                    var result = updateDorf1.Execute();
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
-                if (IsUpdateFail()) return;
             }
             else if (url.Contains("dorf1"))
             {
                 {
-                    using var context = _contextFactory.CreateDbContext();
-                    NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
+                    var updateDorf1 = new UpdateDorf1(VillageId, AccountId);
+                    var result = updateDorf1.Execute();
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
-                if (IsUpdateFail()) return;
-
                 {
-                    using var context = _contextFactory.CreateDbContext();
-                    NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
+                    var updateDorf2 = new UpdateDorf2(VillageId, AccountId);
+                    var result = updateDorf2.Execute();
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
-                if (IsUpdateFail()) return;
             }
             else
             {
-                var random = new Random(DateTime.Now.Second);
-                if (random.Next(0, 100) > 50)
+                if (Random.Shared.Next(0, 100) > 50)
                 {
                     {
-                        using var context = _contextFactory.CreateDbContext();
-                        NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
+                        var updateDorf1 = new UpdateDorf1(VillageId, AccountId);
+                        var result = updateDorf1.Execute();
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
-                    if (IsUpdateFail()) return;
-
                     {
-                        using var context = _contextFactory.CreateDbContext();
-                        NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
+                        var updateDorf2 = new UpdateDorf2(VillageId, AccountId);
+                        var result = updateDorf2.Execute();
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
-                    if (IsUpdateFail()) return;
                 }
                 else
                 {
                     {
-                        using var context = _contextFactory.CreateDbContext();
-                        NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
+                        var updateDorf2 = new UpdateDorf2(VillageId, AccountId);
+                        var result = updateDorf2.Execute();
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
-                    if (IsUpdateFail()) return;
-
                     {
-                        using var context = _contextFactory.CreateDbContext();
-                        NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
+                        var updateDorf1 = new UpdateDorf1(VillageId, AccountId);
+                        var result = updateDorf1.Execute();
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
-                    if (IsUpdateFail()) return;
                 }
             }
-            IsFail = false;
-        }
-
-        private bool IsUpdateFail()
-        {
-            var taskUpdate = new UpdateVillage(VillageId, AccountId);
-            taskUpdate.CopyFrom(this);
-            taskUpdate.Execute();
-            return taskUpdate.IsFail;
+            return Result.Ok();
         }
     }
 }
