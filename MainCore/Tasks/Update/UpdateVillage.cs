@@ -1,7 +1,10 @@
-﻿using MainCore.Enums;
-using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Enums;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
+using Splat;
 using System;
 using System.Linq;
 
@@ -9,63 +12,74 @@ namespace MainCore.Tasks.Update
 {
     public class UpdateVillage : VillageBotTask
     {
-        public UpdateVillage(int villageId, int accountId) : base(villageId, accountId, "Update village")
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IUpdateHelper _updateHelper;
+
+        public UpdateVillage(int villageId, int accountId) : base(villageId, accountId)
         {
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
             {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            IsFail = true;
-            Navigate();
-            if (IsUpdateAccountInfoFail()) return;
-            UpdateVillageInfo();
-            IsFail = false;
+            {
+                var updateTask = new UpdateInfo(AccountId);
+                var result = updateTask.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            {
+                var result = UpdateVillageInfo();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+
+            return Result.Ok();
         }
 
-        private void Navigate()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
-        }
-
-        private bool IsUpdateAccountInfoFail()
-        {
-            var updateTask = new UpdateInfo(AccountId);
-            updateTask.CopyFrom(this);
-            updateTask.Execute();
-            return updateTask.IsFail;
-        }
-
-        private void UpdateVillageInfo()
+        private Result UpdateVillageInfo()
         {
             using var context = _contextFactory.CreateDbContext();
             var currentUrl = _chromeBrowser.GetCurrentUrl();
             if (currentUrl.Contains("dorf"))
             {
-                UpdateHelper.UpdateCurrentlyBuilding(context, _chromeBrowser, VillageId);
+                var result = _updateHelper.UpdateCurrentlyBuilding(AccountId, VillageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 InstantUpgrade(context);
                 _eventManager.OnVillageCurrentUpdate(VillageId);
             }
             if (currentUrl.Contains("dorf1"))
             {
-                UpdateHelper.UpdateDorf1(context, _chromeBrowser, VillageId);
+                {
+                    var result = _updateHelper.UpdateDorf1(AccountId, VillageId);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                }
                 _eventManager.OnVillageBuildsUpdate(VillageId);
 
-                UpdateHelper.UpdateProduction(context, _chromeBrowser, VillageId);
+                {
+                    var result = _updateHelper.UpdateProduction(AccountId, VillageId);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                }
             }
             else if (currentUrl.Contains("dorf2"))
             {
-                UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, VillageId);
+                {
+                    var result = _updateHelper.UpdateDorf2(AccountId, VillageId);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                }
                 AutoImproveTroop(context);
                 _eventManager.OnVillageBuildsUpdate(VillageId);
             }
 
-            UpdateHelper.UpdateResource(context, _chromeBrowser, VillageId);
+            {
+                var result = _updateHelper.UpdateResource(AccountId, VillageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
             AutoNPC(context);
+            return Result.Ok();
         }
 
         private void InstantUpgrade(AppDbContext context)
@@ -79,7 +93,7 @@ namespace MainCore.Tasks.Update
             var info = context.AccountsInfo.Find(AccountId);
             if (info.Gold < 2) return;
             var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1).ToList();
-#if TRAVIAN_OFFICIAL
+
             var tribe = context.AccountsInfo.Find(AccountId).Tribe;
             if (tribe == TribeEnums.Romans)
             {
@@ -89,13 +103,6 @@ namespace MainCore.Tasks.Update
             {
                 if (currentlyBuildings.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
             }
-#elif TTWARS
-            if (currentlyBuildings.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
-#else
-
-#error You forgot to define Travian version here
-
-#endif
             var notInstantBuildings = currentlyBuildings.Where(x => x.Type.IsNotAdsUpgrade());
             foreach (var building in notInstantBuildings)
             {
@@ -115,16 +122,17 @@ namespace MainCore.Tasks.Update
             if (tasks.Any(x => x.VillageId == VillageId)) return;
 
             var info = context.AccountsInfo.Find(AccountId);
-#if TRAVIAN_OFFICIAL
-            if (info.Gold < 3) return;
-#elif TTWARS
-            if (info.Gold < 5) return;
 
-#else
-
-#error You forgot to define Travian version here
-
-#endif
+            var goldNeed = 0;
+            if (VersionDetector.IsTravianOfficial())
+            {
+                goldNeed = 3;
+            }
+            else if (VersionDetector.IsTTWars())
+            {
+                goldNeed = 5;
+            }
+            if (info.Gold < goldNeed) return;
 
             var setting = context.VillagesSettings.Find(VillageId);
 
