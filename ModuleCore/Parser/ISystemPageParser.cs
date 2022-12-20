@@ -11,5 +11,7 @@ namespace ModuleCore.Parser
         public HtmlNode GetLoginButton(HtmlDocument doc);
 
         public HtmlNode GetContractNode(HtmlDocument doc);
+
+        public HtmlNode GetAdventuresDetail(HtmlDocument doc);
     }
 }

@@ -1,5 +1,9 @@
-﻿using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
 using MainCore.Tasks.Sim;
+using ModuleCore.Parser;
+using Splat;
 using System;
 using System.Linq;
 
@@ -7,60 +11,78 @@ namespace MainCore.Tasks.Update
 {
     public class UpdateAdventures : AccountBotTask
     {
-        public UpdateAdventures(int accountId) : base(accountId, "Update hero's adventures")
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IUpdateHelper _updateHelper;
+
+        private readonly ISystemPageParser _systemPageParser;
+
+        public UpdateAdventures(int accountId) : base(accountId)
         {
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
+            _systemPageParser = Locator.Current.GetService<ISystemPageParser>();
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            IsFail = true;
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-            NavigateHelper.ToAdventure(_chromeBrowser, context, AccountId);
-            if (Cts.IsCancellationRequested) return;
-            UpdateHelper.UpdateAdventures(context, _chromeBrowser, AccountId);
-
-            var taskUpdate = new UpdateInfo(AccountId);
-            taskUpdate.CopyFrom(this);
-            taskUpdate.Execute();
-
-            var setting = context.AccountsSettings.Find(AccountId);
-            if (setting.IsAutoAdventure)
             {
-                var hero = context.Heroes.Find(AccountId);
-                if (hero.Status != Enums.HeroStatusEnums.Home)
-                {
-                    _logManager.Warning(AccountId, "Hero is not at home. Cannot start adventures");
-                    return;
-                }
-                var adventures = context.Adventures.Where(a => a.AccountId == AccountId);
-                if (adventures.Any())
-                {
-                    var taskAutoSend = new StartAdventure(AccountId);
-                    taskAutoSend.CopyFrom(this);
-                    taskAutoSend.Execute();
-                    taskUpdate.Execute();
-                    NavigateHelper.Sleep(800, 1500);
-                    NextExecute();
-                }
+                var result = _navigateHelper.ToAdventure(AccountId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            IsFail = false;
+
+            {
+                var result = _updateHelper.UpdateAdventures(AccountId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            {
+                var updateInfo = new UpdateInfo(AccountId);
+                var result = updateInfo.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            {
+                var result = SendAdventures();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
+        }
+
+        private Result SendAdventures()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.AccountsSettings.Find(AccountId);
+            if (!setting.IsAutoAdventure)
+            {
+                return Result.Ok();
+            }
+            var hero = context.Heroes.Find(AccountId);
+            if (hero.Status != Enums.HeroStatusEnums.Home)
+            {
+                _logManager.Warning(AccountId, "Hero is not at home. Cannot start adventures", this);
+                return Result.Ok();
+            }
+            var adventures = context.Adventures.Where(a => a.AccountId == AccountId);
+            if (!adventures.Any())
+            {
+                return Result.Ok();
+            }
+
+            {
+                var taskAutoSend = new StartAdventure(AccountId);
+                var result = taskAutoSend.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            {
+                var taskUpdate = new UpdateInfo(AccountId);
+                var result = taskUpdate.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
         }
 
         private void NextExecute()
         {
             var html = _chromeBrowser.GetHtml();
-
-#if TRAVIAN_OFFICIAL
-            var tileDetails = html.GetElementbyId("heroAdventure");
-
-#elif TTWARS
-            var tileDetails = html.GetElementbyId("tileDetails");
-#else
-
-#error You forgot to define Travian version here
-
-#endif
+            var tileDetails = _systemPageParser.GetAdventuresDetail(html);
             if (tileDetails is null)
             {
                 ExecuteAt = DateTime.Now.AddMinutes(Random.Shared.Next(5, 10));
@@ -75,16 +97,14 @@ namespace MainCore.Tasks.Update
 
             int sec = int.Parse(timer.GetAttributeValue("value", "0"));
             if (sec < 0) sec = 0;
-#if TRAVIAN_OFFICIAL
-            ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + Random.Shared.Next(20, 40));
-
-#elif TTWARS
-            ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + 1);
-#else
-
-#error You forgot to define Travian version here
-
-#endif
+            if (VersionDetector.IsTravianOfficial())
+            {
+                ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + Random.Shared.Next(20, 40));
+            }
+            else if (VersionDetector.IsTTWars)
+            {
+                ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + 1);
+            }
         }
     }
 }

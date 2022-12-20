@@ -27,5 +27,10 @@ namespace TravianOfficialCore.Parsers
         {
             return doc.GetElementbyId("contract");
         }
+
+        public HtmlNode GetAdventuresDetail(HtmlDocument doc)
+        {
+            return doc.GetElementbyId("heroAdventure");
+        }
     }
 }

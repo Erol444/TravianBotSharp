@@ -411,8 +411,9 @@ namespace MainCore.Helper.Implementations
             return Result.Ok();
         }
 
-        public Result ToAdventure(IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
+        public Result ToAdventure(int accountId)
         {
+            var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
             var node = _heroSectionParser.GetAdventuresButton(html);
             if (node is null)

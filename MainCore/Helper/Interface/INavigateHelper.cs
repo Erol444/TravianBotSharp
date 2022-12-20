@@ -1,5 +1,4 @@
 ﻿using FluentResults;
-using MainCore.Services.Interface;
 using OpenQA.Selenium;
 
 namespace MainCore.Helper.Interface
@@ -22,7 +21,7 @@ namespace MainCore.Helper.Interface
 
         Result SwitchVillage(int accountId, int villageId);
 
-        Result ToAdventure(IChromeBrowser chromeBrowser, AppDbContext context, int accountId);
+        Result ToAdventure(int accountId);
 
         Result ToDorf1(int accountId, bool isForce = false);
 

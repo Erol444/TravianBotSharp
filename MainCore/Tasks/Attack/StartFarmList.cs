@@ -1,60 +1,40 @@
-using MainCore.Helper;
-using MainCore.Services.Interface;
+using FluentResults;
 using MainCore.Tasks.Update;
-using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
-
-#if TRAVIAN_OFFICIAL
-
-#elif TTWARS
-
-using HtmlAgilityPack;
-using System.Threading;
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
 
 namespace MainCore.Tasks.Attack
 {
     public class StartFarmList : AccountBotTask
     {
-        public StartFarmList(int accountId, int farmId) : base(accountId, "Start farmlist")
+        public StartFarmList(int accountId, int farmId) : base(accountId)
         {
             _farmId = farmId;
         }
 
         private readonly int _farmId;
         public int FarmId => _farmId;
-        private string _nameFarm;
 
-        public override void CopyFrom(BotTask source)
+        public override string GetName()
         {
-            base.CopyFrom(source);
-            using var context = _contextFactory.CreateDbContext();
-            var farm = context.Farms.Find(FarmId);
-            if (farm is not null) _nameFarm = farm.Name;
-            else _nameFarm = "unknow";
-
-            Name = $"{Name} {_nameFarm}";
+            if (string.IsNullOrEmpty(_name))
+            {
+                using var context = _contextFactory.CreateDbContext();
+                var farm = context.Farms.Find(FarmId);
+                if (farm is not null)
+                {
+                    _name = $"Start list farm [{farm.Name}]";
+                }
+                else
+                {
+                    _name = $"Start list farm [unknow]";
+                }
+            }
+            return _name;
         }
 
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, IEventManager eventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            base.SetService(contextFactory, chromeBrowser, taskManager, eventManager, logManager, planManager, restClientManager);
-            using var context = _contextFactory.CreateDbContext();
-            var farm = context.Farms.Find(FarmId);
-            if (farm is not null) _nameFarm = farm.Name;
-            else _nameFarm = "unknow";
-
-            Name = $"{Name} {_nameFarm}";
-        }
-
-        public override void Execute()
+        public override Result Execute()
         {
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -91,12 +71,12 @@ namespace MainCore.Tasks.Attack
             }
         }
 
-        private bool IsUpdateFail()
+        private Result IsUpdateFail()
         {
             var updateTask = new UpdateFarmList(AccountId);
-            updateTask.CopyFrom(this);
-            updateTask.Execute();
-            return updateTask.IsFail;
+            var result = updateTask.Execute();
+            if (result.Is)
+                return updateTask.IsFail;
         }
 
         private bool IsFarmExist()

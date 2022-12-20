@@ -25,5 +25,10 @@ namespace TTWarsCore.Parsers
         {
             return doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.Id.Equals("contract"));
         }
+
+        public HtmlNode GetAdventuresDetail(HtmlDocument doc)
+        {
+            return doc.GetElementbyId("tileDetails");
+        }
     }
 }
