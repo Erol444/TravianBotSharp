@@ -1,74 +1,84 @@
-﻿using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
+using MainCore.Services.Interface;
 using MainCore.Tasks.Sim;
 using MainCore.Tasks.Update;
+using ModuleCore.Parser;
 using OpenQA.Selenium;
-using System;
+using Splat;
 using System.Linq;
-
-#if TRAVIAN_OFFICIAL
-
-using TravianOfficialCore.FindElements;
-
-#elif TTWARS
-
-using TTWarsCore.FindElements;
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
 
 namespace MainCore.Tasks.Misc
 {
     public class LoginTask : AccountBotTask
     {
-        public LoginTask(int accountId) : base(accountId, "Login task")
+        private readonly INavigateHelper _navigateHelper;
+        private readonly ICheckHelper _checkHelper;
+
+        private readonly ISystemPageParser _systemPageParser;
+
+        private readonly IPlanManager _planManager;
+
+        public LoginTask(int accountId) : base(accountId)
         {
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _checkHelper = Locator.Current.GetService<ICheckHelper>();
+            _systemPageParser = Locator.Current.GetService<ISystemPageParser>();
+            _planManager = Locator.Current.GetService<IPlanManager>();
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            AcceptCookie();
-            Login();
+            {
+                var result = AcceptCookie();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            {
+                var result = Login();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
             AddTask();
+            return Result.Ok();
         }
 
-        private void AcceptCookie()
+        private Result AcceptCookie()
         {
             var html = _chromeBrowser.GetHtml();
+
             if (html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes")))
             {
                 var driver = _chromeBrowser.GetChrome();
                 var acceptCookie = driver.FindElements(By.ClassName("cmpboxbtnyes"));
-                using var context = _contextFactory.CreateDbContext();
-                acceptCookie.Click(_chromeBrowser, context, AccountId);
+                var result = _navigateHelper.Click(AccountId, acceptCookie[0]);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            return Result.Ok();
         }
 
-        private void Login()
+        private Result Login()
         {
             var html = _chromeBrowser.GetHtml();
 
-            var usernameNode = LoginPage.GetUsernameNode(html);
+            var usernameNode = _systemPageParser.GetUsernameNode(html);
 
-            var passwordNode = LoginPage.GetPasswordNode(html);
+            var passwordNode = _systemPageParser.GetPasswordNode(html);
 
-            var buttonNode = LoginPage.GetLoginButton(html);
+            var buttonNode = _systemPageParser.GetLoginButton(html);
             if (buttonNode is null)
             {
                 _logManager.Information(AccountId, "Account is already logged in. Skip login task");
-                return;
+                return Result.Ok();
             }
 
             if (usernameNode is null)
             {
-                throw new Exception("Cannot find username box");
+                return Result.Fail(new MustRetry("Cannot find username box"));
             }
 
             if (passwordNode is null)
             {
-                throw new Exception("Cannot find password box");
+                return Result.Fail(new MustRetry("Cannot find password box"));
             }
 
             using var context = _contextFactory.CreateDbContext();
@@ -79,17 +89,17 @@ namespace MainCore.Tasks.Misc
             var usernameElement = chrome.FindElements(By.XPath(usernameNode.XPath));
             if (usernameElement.Count == 0)
             {
-                throw new Exception("Cannot find username box");
+                return Result.Fail(new MustRetry("Cannot find username box"));
             }
             var passwordElement = chrome.FindElements(By.XPath(passwordNode.XPath));
             if (passwordElement.Count == 0)
             {
-                throw new Exception("Cannot find password box");
+                return Result.Fail(new MustRetry("Cannot find password box"));
             }
             var buttonElements = chrome.FindElements(By.XPath(buttonNode.XPath));
             if (buttonElements.Count == 0)
             {
-                throw new Exception("Cannot find login button");
+                return Result.Fail(new MustRetry("Cannot find login button"));
             }
 
             usernameElement[0].SendKeys(Keys.Home);
@@ -101,39 +111,26 @@ namespace MainCore.Tasks.Misc
             passwordElement[0].SendKeys(access.Password);
 
             buttonElements[0].Click();
-
-            var setting = context.AccountsSettings.Find(AccountId);
-            NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
-            NavigateHelper.WaitPageChanged(_chromeBrowser, "dorf");
-            NavigateHelper.WaitPageLoaded(_chromeBrowser);
-            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-#if TRAVIAN_OFFICIAL
-
-#elif TTWARS
-            html = _chromeBrowser.GetHtml();
-            if (CheckHelper.IsSkipTutorial(html))
+            if (VersionDetector.IsTTWars())
             {
-                var skipButton = html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("questButtonSkipTutorial"));
-                if (skipButton is null)
+                html = _chromeBrowser.GetHtml();
+                if (_checkHelper.IsSkipTutorial(html))
                 {
-                    throw new Exception("Cannot find skip quest button");
+                    var skipButton = html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("questButtonSkipTutorial"));
+                    if (skipButton is null)
+                    {
+                        return Result.Fail(new MustRetry("Cannot find skip quest button"));
+                    }
+                    var skipButtons = chrome.FindElements(By.XPath(skipButton.XPath));
+                    if (skipButtons.Count == 0)
+                    {
+                        return Result.Fail(new MustRetry("Cannot find skip quest button"));
+                    }
+                    var result = _navigateHelper.Click(AccountId, skipButtons[0]);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
-                var skipButtons = chrome.FindElements(By.XPath(skipButton.XPath));
-                if (skipButtons.Count == 0)
-                {
-                    throw new Exception("Cannot find skip quest button");
-                }
-                skipButtons.Click(_chromeBrowser, context, AccountId);
-
-                NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
-                NavigateHelper.WaitPageLoaded(_chromeBrowser);
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             }
-#else
-
-#error You forgot to define Travian version here
-
-#endif
+            return Result.Ok();
         }
 
         private void AddTask()
