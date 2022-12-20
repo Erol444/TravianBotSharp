@@ -27,7 +27,7 @@ namespace MainCore.Tasks.Update
 
             if (!IsVaild())
             {
-                _logManager.Warning(AccountId, $"[{GetName()}] Missing smithy");
+                _logManager.Warning(AccountId, "Missing smithy", this);
                 return Result.Ok();
             }
 
