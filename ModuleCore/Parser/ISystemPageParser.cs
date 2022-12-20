@@ -13,5 +13,7 @@ namespace ModuleCore.Parser
         public HtmlNode GetContractNode(HtmlDocument doc);
 
         public HtmlNode GetAdventuresDetail(HtmlDocument doc);
+
+        public HtmlNode GetNpcSumNode(HtmlDocument doc);
     }
 }

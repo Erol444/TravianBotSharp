@@ -30,5 +30,10 @@ namespace TTWarsCore.Parsers
         {
             return doc.GetElementbyId("tileDetails");
         }
+
+        public HtmlNode GetNpcSumNode(HtmlDocument doc)
+        {
+            return doc.GetElementbyId($"org4");
+        }
     }
 }

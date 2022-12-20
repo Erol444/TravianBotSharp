@@ -109,7 +109,7 @@ namespace MainCore.Services.Implementations
             _taskExecuting[index] = true;
             task.Stage = TaskStage.Executing;
             _eventManager.OnTaskUpdate(index);
-            _logManager.Information(index, $"{task.Name} is started");
+            _logManager.Information(index, $"{task.GetName()} is started");
             var cacheExecuteTime = task.ExecuteAt;
 
             using var context = _contextFactory.CreateDbContext();
@@ -121,7 +121,7 @@ namespace MainCore.Services.Implementations
                 _logManager.Warning(index, $"There is something wrong.");
                 var errors = error.Result.Reasons.Select(x => x.Message).ToList();
                 _logManager.Error(index, string.Join(Environment.NewLine, errors));
-                _logManager.Warning(index, $"Retry {retryCount} for {task.Name}");
+                _logManager.Warning(index, $"Retry {retryCount} for {task.GetName()}");
             });
 
             var poliResult = retryPolicy.ExecuteAndCapture(task.Execute);
@@ -153,7 +153,7 @@ namespace MainCore.Services.Implementations
                 }
             }
 
-            _logManager.Information(index, $"{task.Name} is finished");
+            _logManager.Information(index, $"{task.GetName()} is finished");
             if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
             else
             {

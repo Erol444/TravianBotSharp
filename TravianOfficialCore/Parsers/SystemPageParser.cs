@@ -32,5 +32,10 @@ namespace TravianOfficialCore.Parsers
         {
             return doc.GetElementbyId("heroAdventure");
         }
+
+        public HtmlNode GetNpcSumNode(HtmlDocument doc)
+        {
+            return doc.GetElementbyId($"sum");
+        }
     }
 }
