@@ -28,7 +28,7 @@ namespace MainCore.Helper.Interface
 
         Result ToDorf2(int accountId, bool isForce = false);
 
-        Result ToHeroInventory(IChromeBrowser chromeBrowser, AppDbContext context, int accountId);
+        Result ToHeroInventory(int accountId);
 
         Result WaitPageChanged(int accountId, string path);
 

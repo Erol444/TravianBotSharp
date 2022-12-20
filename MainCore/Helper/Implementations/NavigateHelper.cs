@@ -376,8 +376,9 @@ namespace MainCore.Helper.Implementations
             return Result.Ok();
         }
 
-        public Result ToHeroInventory(IChromeBrowser chromeBrowser, AppDbContext context, int accountId)
+        public Result ToHeroInventory(int accountId)
         {
+            var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
             var avatar = _heroSectionParser.GetHeroAvatar(html);
             if (avatar is null)
