@@ -1,28 +1,28 @@
-﻿using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
 using MainCore.Models.Database;
+using Splat;
 using System.Linq;
 
 namespace MainCore.Tasks.Sim
 {
     public class StartAdventure : AccountBotTask
     {
-        public StartAdventure(int accountId) : base(accountId, "Start adventure")
+        private readonly IClickHelper _clickHelper;
+
+        public StartAdventure(int accountId) : base(accountId)
         {
+            _clickHelper = Locator.Current.GetService<IClickHelper>();
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-            }
             var adventure = GetAdventures();
-            if (StopFlag) return;
-            if (Cts.IsCancellationRequested) return;
-            if (adventure is null) return;
-            StartAdventures(adventure);
-            if (StopFlag) return;
-            if (Cts.IsCancellationRequested) return;
+            if (adventure is null) return Result.Ok();
+            var result = StartAdventures(adventure);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
         }
 
         private Adventure GetAdventures()
@@ -32,12 +32,13 @@ namespace MainCore.Tasks.Sim
             return adventures.FirstOrDefault();
         }
 
-        private void StartAdventures(Adventure adventure)
+        private Result StartAdventures(Adventure adventure)
         {
             var x = adventure.X;
             var y = adventure.Y;
-            using var context = _contextFactory.CreateDbContext();
-            ClickHelper.ClickStartAdventure(_chromeBrowser, x, y, context, AccountId);
+            var result = _clickHelper.ClickStartAdventure(AccountId, x, y);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
         }
     }
 }
