@@ -1,16 +1,22 @@
 using FluentResults;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
 using MainCore.Tasks.Update;
-using OpenQA.Selenium;
+using Splat;
 using System;
-using System.Linq;
 
 namespace MainCore.Tasks.Attack
 {
     public class StartFarmList : AccountBotTask
     {
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IClickHelper _clickHelper;
+
         public StartFarmList(int accountId, int farmId) : base(accountId)
         {
             _farmId = farmId;
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _clickHelper = Locator.Current.GetService<IClickHelper>();
         }
 
         private readonly int _farmId;
@@ -37,46 +43,32 @@ namespace MainCore.Tasks.Attack
         public override Result Execute()
         {
             {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-            }
-            if (IsUpdateFail())
-            {
-                return;
+                var updateTask = new UpdateFarmList(AccountId);
+                var result = updateTask.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
             if (!IsFarmExist())
             {
                 _logManager.Warning(AccountId, $"Farm {FarmId} is missing. Remove this farm from queue");
-                return;
+                return Result.Ok();
             }
             if (IsFarmDeactive())
             {
                 _logManager.Warning(AccountId, $"Farm {FarmId} is deactive. Remove this farm from queue");
-                return;
+                return Result.Ok();
             }
-            if (Cts.IsCancellationRequested) return;
             {
-                using var context = _contextFactory.CreateDbContext();
-                ClickStartFarm(context, AccountId);
+                var result = _clickHelper.ClickStartFarm(AccountId, FarmId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            if (Cts.IsCancellationRequested) return;
 
             {
                 using var context = _contextFactory.CreateDbContext();
                 var setting = context.FarmsSettings.Find(FarmId);
                 var time = Random.Shared.Next(setting.IntervalMin, setting.IntervalMax);
                 ExecuteAt = DateTime.Now.AddSeconds(time);
-                _logManager.Information(AccountId, $"Farmlist {_nameFarm} was sent.");
             }
-        }
-
-        private Result IsUpdateFail()
-        {
-            var updateTask = new UpdateFarmList(AccountId);
-            var result = updateTask.Execute();
-            if (result.Is)
-                return updateTask.IsFail;
         }
 
         private bool IsFarmExist()
@@ -93,75 +85,5 @@ namespace MainCore.Tasks.Attack
             if (!setting.IsActive) return true;
             return false;
         }
-
-#if TRAVIAN_OFFICIAL
-
-        private void ClickStartFarm(AppDbContext context, int accountId)
-        {
-            var html = _chromeBrowser.GetHtml();
-            var farmNode = html.GetElementbyId($"raidList{FarmId}");
-            if (farmNode is null) throw new Exception("Cannot found farm node");
-            var startNode = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
-            if (startNode is null) throw new Exception("Cannot found start button");
-            var startElements = _chromeBrowser.GetChrome().FindElements(By.XPath(startNode.XPath));
-            if (startElements.Count == 0) throw new Exception("Cannot found start button");
-            startElements.Click(_chromeBrowser, context, accountId);
-        }
-
-#elif TTWARS
-
-        private void ClickStartFarm(AppDbContext context, int accountId)
-        {
-            var setting = context.AccountsSettings.Find(AccountId);
-
-            var chrome = _chromeBrowser.GetChrome();
-            chrome.ExecuteScript($"Travian.Game.RaidList.toggleList({FarmId});");
-
-            var wait = _chromeBrowser.GetWait();
-            wait.Until(driver =>
-            {
-                var waitHtml = new HtmlDocument();
-                waitHtml.LoadHtml(driver.PageSource);
-
-                var waitFarmNode = waitHtml.GetElementbyId($"list{FarmId}");
-                var table = waitFarmNode.Descendants("div").FirstOrDefault(x => x.HasClass("listContent"));
-                return !table.HasClass("hide");
-            });
-
-            var delay = Random.Shared.Next(setting.ClickDelayMin, setting.ClickDelayMax);
-            Thread.Sleep(delay);
-
-            var checkboxAlls = chrome.FindElements(By.Id($"raidListMarkAll{FarmId}"));
-            if (checkboxAlls.Count == 0)
-            {
-                throw new Exception("Cannot find check all check box");
-            }
-            checkboxAlls.Click(_chromeBrowser, context, accountId);
-
-            delay = Random.Shared.Next(setting.ClickDelayMin, setting.ClickDelayMax);
-            Thread.Sleep(delay);
-
-            var html = _chromeBrowser.GetHtml();
-            var farmNode = html.GetElementbyId($"list{FarmId}");
-            var buttonStartFarm = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("green") && x.GetAttributeValue("type", "").Contains("submit"));
-            if (buttonStartFarm is null)
-            {
-                throw new Exception("Cannot find button start farmlist");
-            }
-            var buttonStartFarms = chrome.FindElements(By.XPath(buttonStartFarm.XPath));
-            if (buttonStartFarms.Count == 0)
-            {
-                throw new Exception("Cannot find button start farmlist");
-            }
-            buttonStartFarms.Click(_chromeBrowser, context, accountId);
-
-            NavigateHelper.SwitchTab(_chromeBrowser, 1, context, AccountId);
-        }
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
     }
 }
