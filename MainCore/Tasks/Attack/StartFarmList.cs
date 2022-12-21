@@ -9,13 +9,11 @@ namespace MainCore.Tasks.Attack
 {
     public class StartFarmList : AccountBotTask
     {
-        private readonly INavigateHelper _navigateHelper;
         private readonly IClickHelper _clickHelper;
 
         public StartFarmList(int accountId, int farmId) : base(accountId)
         {
             _farmId = farmId;
-            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _clickHelper = Locator.Current.GetService<IClickHelper>();
         }
 
@@ -69,6 +67,7 @@ namespace MainCore.Tasks.Attack
                 var time = Random.Shared.Next(setting.IntervalMin, setting.IntervalMax);
                 ExecuteAt = DateTime.Now.AddSeconds(time);
             }
+            return Result.Ok();
         }
 
         private bool IsFarmExist()
