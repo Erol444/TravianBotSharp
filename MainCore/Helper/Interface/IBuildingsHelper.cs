@@ -9,6 +9,8 @@ namespace MainCore.Helper.Interface
 
         int GetDorf(int index);
 
+        int GetDorf(BuildingEnums building);
+
         List<BuildingEnums> GetCanBuild(int accountId, int villageId);
     }
 }

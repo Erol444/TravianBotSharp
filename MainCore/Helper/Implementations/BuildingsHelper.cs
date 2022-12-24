@@ -113,5 +113,14 @@ namespace MainCore.Helper.Implementations
         {
             return _planManager.GetList(villageId).Any(x => (x.ResourceType == ResTypeEnums.AllResources || x.ResourceType == ResTypeEnums.OnlyCrop) && lvl <= x.Level);
         }
+
+        public int GetDorf(BuildingEnums building)
+        {
+            return building switch
+            {
+                BuildingEnums.Woodcutter or BuildingEnums.ClayPit or BuildingEnums.IronMine or BuildingEnums.Cropland => 2,
+                _ => 1,
+            };
+        }
     }
 }

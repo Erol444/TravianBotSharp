@@ -1,7 +1,4 @@
-﻿using FluentResults;
-using HtmlAgilityPack;
-using MainCore.Enums;
-using MainCore.Models.Runtime;
+﻿using HtmlAgilityPack;
 using MainCore.Services.Interface;
 
 namespace MainCore.Helper.Interface
@@ -9,8 +6,6 @@ namespace MainCore.Helper.Interface
     public interface ICheckHelper
     {
         int GetCurrentVillageId(int accountId);
-
-        int[] GetResourceNeed(int accountId, BuildingEnums building, bool multiple = false);
 
         bool IsBanMsg(HtmlDocument doc);
 
@@ -27,8 +22,6 @@ namespace MainCore.Helper.Interface
         bool IsLoginScreen(HtmlDocument doc);
 
         bool IsMaintanance(HtmlDocument doc);
-
-        Result<bool> IsNeedAdsUpgrade(int accountId, int villageId, PlanTask buildingTask);
 
         public bool IsWWMsg(HtmlDocument doc);
 

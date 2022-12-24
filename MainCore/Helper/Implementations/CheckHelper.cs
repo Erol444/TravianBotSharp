@@ -1,9 +1,5 @@
-﻿using FluentResults;
-using HtmlAgilityPack;
-using MainCore.Enums;
-using MainCore.Errors;
+﻿using HtmlAgilityPack;
 using MainCore.Helper.Interface;
-using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using ModuleCore.Parser;
@@ -63,63 +59,6 @@ namespace MainCore.Helper.Implementations
             var html = chromeBrowser.GetHtml();
             var tabs = _buildingTabParser.GetBuildingTabNodes(html);
             return _buildingTabParser.IsCurrentTab(tabs[tab]);
-        }
-
-        public int[] GetResourceNeed(int accountId, BuildingEnums building, bool multiple = false)
-        {
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var html = chromeBrowser.GetHtml();
-
-            HtmlNode contractNode;
-            if (multiple && !building.IsResourceField())
-            {
-                contractNode = html.GetElementbyId($"contract_building{(int)building}");
-            }
-            else
-            {
-                contractNode = _systemPageParser.GetContractNode(html);
-            }
-            var resWrapper = contractNode.Descendants("div").FirstOrDefault(x => x.HasClass("resourceWrapper"));
-            var resNodes = resWrapper.ChildNodes.Where(x => x.HasClass("resource") || x.HasClass("resources")).ToList();
-            var resNeed = new int[4];
-            for (var i = 0; i < 4; i++)
-            {
-                var node = resNodes[i];
-                var strResult = new string(node.InnerText.Where(c => char.IsDigit(c)).ToArray());
-                if (string.IsNullOrEmpty(strResult)) resNeed[i] = 0;
-                else resNeed[i] = int.Parse(strResult);
-            }
-            return resNeed;
-        }
-
-        public Result<bool> IsNeedAdsUpgrade(int accountId, int villageId, PlanTask buildingTask)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.Find(villageId);
-            if (!setting.IsAdsUpgrade) return false;
-
-            var building = context.VillagesBuildings.Find(villageId, buildingTask.Location);
-
-            if (buildingTask.Building.IsResourceField() && building.Level == 0) return false;
-            if (buildingTask.Building.IsNotAdsUpgrade()) return false;
-
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var html = chromeBrowser.GetHtml();
-            var container = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
-
-            var durationNode = container.Descendants("div").FirstOrDefault(x => x.HasClass("duration"));
-            if (durationNode is null)
-            {
-                return Result.Fail(new MustRetry("Cannot found duration in build page. (div)"));
-            }
-            var dur = durationNode.Descendants("span").FirstOrDefault(x => x.HasClass("value"));
-            if (dur is null)
-            {
-                return Result.Fail(new MustRetry("Cannot found duration in build page. (span)"));
-            }
-            var duration = dur.InnerText.ToDuration();
-            if (setting.AdsUpgradeTime > duration.TotalMinutes) return false;
-            return true;
         }
 
         public bool IsFarmListPage(int accountId)
