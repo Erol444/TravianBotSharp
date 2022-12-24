@@ -8,13 +8,11 @@ namespace MainCore.Helper.Interface
     {
         Result<bool> IsNeedAdsUpgrade(int accountId, int villageId, PlanTask buildingTask);
 
-        public Result<bool> IsBuildingCompleted(int accountId, int villageId, int buildingId, int buildingLevel)
-
+        public Result<bool> IsBuildingCompleted(int accountId, int villageId, int buildingId, int buildingLevel);
 
         bool IsEnoughFreeCrop(int villageId, BuildingEnums building);
 
-        public Result<bool> GotoBuilding(int accountId, int villageId, PlanTask buildingTask)
-
+        public Result<bool> GotoBuilding(int accountId, int villageId, PlanTask buildingTask);
 
         bool IsEnoughResource(int accountId, int villageId, BuildingEnums building, bool isNewBuilding);
 

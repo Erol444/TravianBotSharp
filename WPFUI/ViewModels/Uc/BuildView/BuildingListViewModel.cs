@@ -1,6 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
-using MainCore.Helper;
+using MainCore;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;

@@ -1,4 +1,4 @@
-﻿using MainCore.Helper;
+﻿using MainCore;
 using ReactiveUI;
 using System;
 using System.Reactive.Linq;

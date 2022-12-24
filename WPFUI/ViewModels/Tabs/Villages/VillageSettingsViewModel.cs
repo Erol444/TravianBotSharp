@@ -1,9 +1,10 @@
 ﻿using MainCore.Enums;
-using MainCore.Helper;
+using MainCore.Helper.Interface;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
 using Microsoft.Win32;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -21,8 +22,11 @@ namespace WPFUI.ViewModels.Tabs.Villages
 {
     public class VillageSettingsViewModel : VillageTabBaseViewModel
     {
+        private readonly IUpgradeBuildingHelper _upgradeBuildingHelper;
+
         public VillageSettingsViewModel()
         {
+            _upgradeBuildingHelper = Locator.Current.GetService<IUpgradeBuildingHelper>();
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
@@ -138,8 +142,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     if (!tasks.Any())
                     {
+                        _upgradeBuildingHelper.RemoveFinishedCB(villageId);
                         using var context = _contextFactory.CreateDbContext();
-                        UpgradeBuildingHelper.RemoveFinishedCB(context, villageId);
                         var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
                         var count = currentBuildings.Count(x => x.Level != -1);
                         if (count > 0)

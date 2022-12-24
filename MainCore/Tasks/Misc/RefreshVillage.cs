@@ -26,6 +26,7 @@ namespace MainCore.Tasks.Misc
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             NextExecute();
+            return Result.Ok();
         }
 
         private bool IsNeedDorf2()

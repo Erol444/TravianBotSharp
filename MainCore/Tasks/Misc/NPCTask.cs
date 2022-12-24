@@ -49,7 +49,10 @@ namespace MainCore.Tasks.Misc
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
-            ClickNPCButton();
+            {
+                var result = ClickNPCButton();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
             EnterNumber();
 
@@ -107,7 +110,7 @@ namespace MainCore.Tasks.Misc
             return Result.Ok();
         }
 
-        private void ClickNPCButton()
+        private Result ClickNPCButton()
         {
             var html = _chromeBrowser.GetHtml();
             var npcMerchant = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
@@ -130,6 +133,7 @@ namespace MainCore.Tasks.Misc
                 waitHtml.LoadHtml(driver.PageSource);
                 return waitHtml.GetElementbyId("npc_market_button") is not null;
             });
+            return Result.Ok();
         }
 
         private void EnterNumber()
@@ -160,7 +164,7 @@ namespace MainCore.Tasks.Misc
             }
 
             var html = _chromeBrowser.GetHtml();
-            var nodeSum = _systemPageParser.GetNpcSumNode();
+            var nodeSum = _systemPageParser.GetNpcSumNode(html);
             var sumCurrent = nodeSum.InnerText.ToNumeric();
             var current = new long[4];
             for (var i = 0; i < 4; i++)
@@ -207,7 +211,7 @@ namespace MainCore.Tasks.Misc
                 return Result.Fail(new MustRetry("NPC submit button is not found"));
             }
             {
-                var result = _navigateHelper.Click(AccountId, distributeElements);
+                var result = _navigateHelper.Click(AccountId, distributeElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -225,9 +229,10 @@ namespace MainCore.Tasks.Misc
                 return Result.Fail(new MustRetry("NPC submit button is not found"));
             }
             {
-                var result = _navigateHelper.Click(AccountId, submitElements);
+                var result = _navigateHelper.Click(AccountId, submitElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            return Result.Ok();
         }
     }
 }

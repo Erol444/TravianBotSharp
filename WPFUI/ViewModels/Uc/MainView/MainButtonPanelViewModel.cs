@@ -1,5 +1,5 @@
 ﻿using MainCore.Enums;
-using MainCore.Helper;
+using MainCore.Helper.Interface;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
 using ReactiveUI;
@@ -20,11 +20,13 @@ namespace WPFUI.ViewModels.Uc.MainView
     public class MainButtonPanelViewModel : AccountTabBaseViewModel
     {
         private readonly MainTabPanelViewModel _mainTabPanelViewModel;
+        private readonly IAccessHelper _accessHelper;
 
         public MainButtonPanelViewModel()
         {
             _eventManager.AccountStatusUpdate += OnAccountUpdate;
             _mainTabPanelViewModel = Locator.Current.GetService<MainTabPanelViewModel>();
+            _accessHelper = Locator.Current.GetService<IAccessHelper>();
 
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
@@ -147,7 +149,7 @@ namespace WPFUI.ViewModels.Uc.MainView
                 }
 
                 _logManager.Information(index, $"Checking proxy {access.ProxyHost}");
-                var result = AccessHelper.CheckAccess(_restClientManager.Get(new(access)));
+                var result = _accessHelper.IsValid(_restClientManager.Get(new(access)));
                 if (result)
                 {
                     _logManager.Information(index, $"Proxy {access.ProxyHost} is working");
@@ -205,7 +207,6 @@ namespace WPFUI.ViewModels.Uc.MainView
             var current = _taskManager.GetCurrentTask(index);
             if (current is not null)
             {
-                current.Cts.Cancel();
                 while (current.Stage != TaskStage.Waiting) { }
             }
 
@@ -235,7 +236,6 @@ namespace WPFUI.ViewModels.Uc.MainView
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Pausing);
                 if (current is not null)
                 {
-                    current.Cts.Cancel();
                     _waitingWindow.Show("waiting current task stops");
                     await Task.Run(() =>
                     {

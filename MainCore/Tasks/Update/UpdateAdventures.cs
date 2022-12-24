@@ -101,7 +101,7 @@ namespace MainCore.Tasks.Update
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + Random.Shared.Next(20, 40));
             }
-            else if (VersionDetector.IsTTWars)
+            else if (VersionDetector.IsTTWars())
             {
                 ExecuteAt = DateTime.Now.AddSeconds(sec * 2 + 1);
             }

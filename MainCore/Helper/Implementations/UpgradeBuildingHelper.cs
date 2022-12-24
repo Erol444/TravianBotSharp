@@ -9,7 +9,6 @@ using MainCore.Services.Interface;
 using MainCore.Tasks.Update;
 using Microsoft.EntityFrameworkCore;
 using ModuleCore.Parser;
-using Octokit;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -409,7 +408,7 @@ namespace MainCore.Helper.Implementations
             }
 
             {
-                var result = _navigateHelper.Click(Account, elements[0]);
+                var result = _navigateHelper.Click(accountId, elements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();

@@ -30,3 +30,4 @@ namespace MainCore.Tasks.Update
             return Result.Ok();
         }
     }
+}
