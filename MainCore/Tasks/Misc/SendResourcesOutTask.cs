@@ -1,11 +1,8 @@
 using FluentResults;
-using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
-using MainCore.Models.Runtime;
 using MainCore.Tasks.Update;
-using ModuleCore.Parser;
 using OpenQA.Selenium;
 using Splat;
 using System;
@@ -24,7 +21,6 @@ namespace MainCore.Tasks.Misc
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
 
-
         private long[] toSend = new long[4];
         private long[] toGet = new long[4];
         private long toSendSum;
@@ -34,14 +30,19 @@ namespace MainCore.Tasks.Misc
 
         public override Result Execute()
         {
-
             {
                 var result = CheckIfVillageExists();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
+            // {
+            //     var result = Update();
+            //     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            // }
+
             {
-                var result = Update();
+                var updateDorf2 = new UpdateDorf2(AccountId, VillageId);
+                var result = updateDorf2.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -104,10 +105,10 @@ namespace MainCore.Tasks.Misc
         private Result ToMarketPlace()
         {
             using var context = _contextFactory.CreateDbContext();
-            var marketplace = context.VillagesBuildings.Where(x => x.VillageId == this.VillageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
+            var marketplace = context.VillagesBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
             if (marketplace is null)
             {
-                _logManager.Information(AccountId, "Marketplace is missing. Turn off auto Sending Resources to prevent bot detector.");
+                _logManager.Information(AccountId, "Marketplace is missing. Turn off auto Sending Resources to prevent bot detector.", this);
                 var setting = context.VillagesMarket.Find(VillageId);
                 setting.IsSendExcessResources = false;
                 context.Update(setting);
@@ -219,15 +220,15 @@ namespace MainCore.Tasks.Misc
             var searchY = marketSettings.SendExcessToY;
             var sendTovillage = context.Villages.Where(village => (village.X == searchX && village.Y == searchY)).FirstOrDefault();
 
-            if (sendTovillage is null)
-            {
-                _logManager.Information(AccountId, "Village to send resoures to is not found. Turning send resources out of village off.");
-                var setting = context.VillagesMarket.Find(VillageId);
-                setting.IsSendExcessResources = false;
-                context.Update(setting);
-                context.SaveChanges();
-                return Result.Fail(new Skip());
-            }
+            // if (sendTovillage is null)
+            // {
+            //     _logManager.Information(AccountId, "Village to send resoures to is not found. Turning send resources out of village off.");
+            //     var setting = context.VillagesMarket.Find(VillageId);
+            //     setting.IsSendExcessResources = false;
+            //     context.Update(setting);
+            //     context.SaveChanges();
+            //     return Result.Fail(new Skip());
+            // }
 
             return Result.Ok();
         }

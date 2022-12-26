@@ -60,21 +60,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private void UpdateDorf1()
         {
             var accountId = AccountId;
-            // var tasks = _taskManager.GetList(accountId);
             var villageId = VillageId;
-            // var updateTask = tasks.OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == villageId);
-            // if (updateTask is null)
-            // {
-            //     _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
-            // }
-            // else
-            // {
-            //     updateTask.ExecuteAt = DateTime.Now;
-            //     _taskManager.Update(accountId);
-            // }
 
             _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
-
         }
 
         public VillageMarket Settings { get; } = new();

@@ -1,0 +1,245 @@
+16:21:32 [INF] LoginTask is started
+16:21:33 [WRN] Login page is showing, stop current task and login
+16:21:33 [INF] LoginTask is finished
+16:21:34 [INF] LoginTask is started
+16:21:35 [INF] LoginTask is finished
+16:21:36 [INF] UpdateInfo is started
+16:21:36 [INF] UpdateInfo is finished
+16:21:38 [INF] UpdateBothDorf in 000 is started
+16:21:41 [INF] UpdateBothDorf in 000 is finished
+16:21:44 [INF] RefreshVillage in 000 is started
+16:21:45 [INF] RefreshVillage in 000 is finished
+16:21:57 [INF] UpgradeBuilding in 000 is started
+16:21:57 [INF] Amount of currently building is equal with maximum building can build in same time
+16:21:57 [INF] Next building will be contructed after Residence - level 3 complete. (12/26/2022 4:24:28 PM)
+16:21:57 [INF] UpgradeBuilding in 000 is finished
+16:24:28 [INF] UpgradeBuilding in 000 is started
+16:24:28 [INF] Next building will be contructed: AllResources - BasedOnLevel - level 10.
+16:24:28 [INF] Next building will be contructed: IronMine - level 8.
+16:24:30 [INF] Amount of currently building is equal with maximum building can build in same time
+16:24:31 [INF] Next building will be contructed after IronMine - level 8 complete. (12/26/2022 5:20:01 PM)
+16:24:31 [INF] UpgradeBuilding in 000 is finished
+16:25:00 [INF] UpgradeBuilding in 000 is started
+16:25:00 [INF] Amount of currently building is equal with maximum building can build in same time
+16:25:00 [INF] UpgradeBuilding in 000 is finished
+16:25:16 [INF] UpgradeBuilding in 000 is started
+16:25:16 [INF] Next building will be contructed: Residence - level 10.
+16:25:18 [INF] Amount of currently building is equal with maximum building can build in same time
+16:25:19 [INF] Next building will be contructed after Residence - level 4 complete. (12/26/2022 4:36:39 PM)
+16:25:19 [INF] UpgradeBuilding in 000 is finished
+16:36:39 [INF] UpgradeBuilding in 000 is started
+16:36:39 [INF] Next building will be contructed: Residence - level 10.
+16:36:43 [INF] Amount of currently building is equal with maximum building can build in same time
+16:36:43 [INF] Next building will be contructed after Residence - level 5 complete. (12/26/2022 4:50:43 PM)
+16:36:43 [INF] UpgradeBuilding in 000 is finished
+16:39:45 [INF] RefreshVillage in 000 is started
+16:39:49 [INF] RefreshVillage in 000 is finished
+16:50:43 [INF] UpgradeBuilding in 000 is started
+16:50:43 [INF] Next building will be contructed: Residence - level 10.
+16:50:45 [INF] Amount of currently building is equal with maximum building can build in same time
+16:50:46 [INF] Next building will be contructed after Residence - level 6 complete. (12/26/2022 5:07:44 PM)
+16:50:46 [INF] UpgradeBuilding in 000 is finished
+17:00:49 [INF] RefreshVillage in 000 is started
+17:00:52 [INF] RefreshVillage in 000 is finished
+17:07:44 [INF] UpgradeBuilding in 000 is started
+17:07:44 [INF] Next building will be contructed: Residence - level 10.
+17:07:47 [INF] Amount of currently building is equal with maximum building can build in same time
+17:07:47 [INF] Next building will be contructed after Residence - level 7 complete. (12/26/2022 5:28:06 PM)
+17:07:47 [INF] UpgradeBuilding in 000 is finished
+17:28:06 [INF] UpgradeBuilding in 000 is started
+17:28:06 [INF] Next building will be contructed: Residence - level 10.
+17:28:07 [INF] Don't have enough resources.
+17:28:07 [INF] UpgradeBuilding in 000 is finished
+17:30:56 [INF] UpgradeBuilding in 000 is started
+17:30:56 [INF] Next building will be contructed: Residence - level 10.
+17:31:03 [INF] Amount of currently building is equal with maximum building can build in same time
+17:31:04 [INF] Next building will be contructed after Residence - level 8 complete. (12/26/2022 5:55:33 PM)
+17:31:04 [INF] UpgradeBuilding in 000 is finished
+17:43:52 [INF] RefreshVillage in 000 is started
+17:43:55 [INF] RefreshVillage in 000 is finished
+17:55:34 [INF] UpgradeBuilding in 000 is started
+17:55:34 [INF] Next building will be contructed: Residence - level 10.
+17:55:35 [INF] Don't have enough resources.
+17:55:35 [INF] UpgradeBuilding in 000 is finished
+18:09:55 [INF] RefreshVillage in 000 is started
+18:09:57 [INF] RefreshVillage in 000 is finished
+18:17:15 [INF] UpgradeBuilding in 000 is started
+18:17:15 [INF] Next building will be contructed: Residence - level 10.
+18:17:18 [INF] Amount of currently building is equal with maximum building can build in same time
+18:17:18 [INF] Next building will be contructed after Residence - level 9 complete. (12/26/2022 6:46:27 PM)
+18:17:18 [INF] UpgradeBuilding in 000 is finished
+18:46:27 [INF] UpgradeBuilding in 000 is started
+18:46:27 [INF] Next building will be contructed: Residence - level 10.
+18:46:30 [INF] Amount of currently building is equal with maximum building can build in same time
+18:46:30 [INF] Next building will be contructed after Residence - level 10 complete. (12/26/2022 7:21:00 PM)
+18:46:30 [INF] UpgradeBuilding in 000 is finished
+18:52:57 [INF] RefreshVillage in 000 is started
+18:53:00 [INF] RefreshVillage in 000 is finished
+19:17:00 [INF] RefreshVillage in 000 is started
+19:17:00 [INF] RefreshVillage in 000 is finished
+19:21:00 [INF] UpgradeBuilding in 000 is started
+19:21:00 [INF] Next building will be contructed: Residence - level 10.
+19:21:01 [INF] Queue is empty.
+19:21:01 [INF] UpgradeBuilding in 000 is finished
+19:48:00 [INF] RefreshVillage in 000 is started
+19:48:01 [INF] RefreshVillage in 000 is finished
+20:31:01 [INF] RefreshVillage in 000 is started
+20:31:02 [INF] RefreshVillage in 000 is finished
+21:06:02 [INF] RefreshVillage in 000 is started
+21:06:02 [INF] RefreshVillage in 000 is finished
+21:46:02 [INF] RefreshVillage in 000 is started
+21:46:02 [INF] RefreshVillage in 000 is finished
+21:50:44 [INF] LoginTask is started
+21:50:44 [INF] Account is already logged in. Skip login task
+21:50:44 [INF] LoginTask is finished
+21:50:46 [INF] UpdateInfo is started
+21:50:46 [INF] UpdateInfo is finished
+21:50:47 [INF] RefreshVillage in 000 is started
+21:50:47 [INF] RefreshVillage in 000 is finished
+21:51:07 [INF] UpdateDorf1 in 000 is started
+21:51:07 [INF] UpdateDorf1 in 000 is finished
+21:51:08 [INF] SendResourcesOutTask in 000 is started
+21:51:29 [INF] LoginTask is started
+21:51:29 [INF] Account is already logged in. Skip login task
+21:51:29 [INF] LoginTask is finished
+21:51:31 [INF] UpdateInfo is started
+21:51:31 [INF] UpdateInfo is finished
+21:51:32 [INF] RefreshVillage in 000 is started
+21:51:32 [INF] RefreshVillage in 000 is finished
+21:51:33 [INF] SendResourcesOutTask in 000 is started
+21:51:34 [ERR] Object reference not set to an instance of an object.
+21:51:34 [INF] SendResourcesOutTask in 000 is finished
+21:52:43 [INF] LoginTask is started
+21:52:43 [INF] Account is already logged in. Skip login task
+21:52:43 [INF] LoginTask is finished
+21:52:44 [INF] UpdateInfo is started
+21:52:45 [INF] UpdateInfo is finished
+21:52:46 [INF] RefreshVillage in 000 is started
+21:52:46 [INF] RefreshVillage in 000 is finished
+21:52:48 [INF] SendResourcesOutTask in 000 is started
+21:58:47 [INF] LoginTask is started
+21:58:47 [INF] Account is already logged in. Skip login task
+21:58:47 [INF] LoginTask is finished
+21:58:48 [INF] UpdateInfo is started
+21:58:48 [INF] UpdateInfo is finished
+21:58:50 [INF] RefreshVillage in 000 is started
+21:58:50 [INF] RefreshVillage in 000 is finished
+21:58:51 [INF] SendResourcesOutTask in 000 is started
+22:25:43 [INF] LoginTask is started
+22:25:43 [INF] Account is already logged in. Skip login task
+22:25:43 [INF] LoginTask is finished
+22:25:44 [INF] UpdateInfo is started
+22:26:12 [INF] LoginTask is started
+22:26:13 [INF] Account is already logged in. Skip login task
+22:26:13 [INF] LoginTask is finished
+22:26:14 [INF] UpdateInfo is started
+22:26:14 [INF] UpdateInfo is finished
+22:26:16 [INF] RefreshVillage in 000 is started
+22:26:16 [INF] RefreshVillage in 000 is finished
+22:26:17 [INF] SendResourcesOutTask in 000 is started
+22:58:49 [INF] LoginTask is started
+22:58:49 [INF] Account is already logged in. Skip login task
+22:58:49 [INF] LoginTask is finished
+22:58:50 [INF] UpdateInfo is started
+22:58:50 [INF] UpdateInfo is finished
+22:58:52 [INF] RefreshVillage in 000 is started
+22:58:52 [INF] RefreshVillage in 000 is finished
+22:58:54 [INF] SendResourcesOutTask in 000 is started
+23:05:32 [INF] LoginTask is started
+23:05:32 [INF] Account is already logged in. Skip login task
+23:05:32 [INF] LoginTask is finished
+23:05:34 [INF] UpdateInfo is started
+23:05:34 [INF] UpdateInfo is finished
+23:05:35 [INF] RefreshVillage in 000 is started
+23:05:35 [INF] RefreshVillage in 000 is finished
+23:05:37 [INF] SendResourcesOutTask in 000 is started
+23:08:05 [INF] LoginTask is started
+23:08:05 [INF] Account is already logged in. Skip login task
+23:08:05 [INF] LoginTask is finished
+23:08:06 [INF] UpdateInfo is started
+23:08:06 [INF] UpdateInfo is finished
+23:08:08 [INF] RefreshVillage in 000 is started
+23:08:08 [INF] RefreshVillage in 000 is finished
+23:08:09 [INF] SendResourcesOutTask in 000 is started
+23:10:46 [INF] LoginTask is started
+23:10:46 [INF] Account is already logged in. Skip login task
+23:10:46 [INF] LoginTask is finished
+23:10:48 [INF] UpdateInfo is started
+23:10:48 [INF] UpdateInfo is finished
+23:10:50 [INF] RefreshVillage in 000 is started
+23:10:50 [INF] RefreshVillage in 000 is finished
+23:10:51 [INF] SendResourcesOutTask in 000 is started
+23:18:05 [INF] LoginTask is started
+23:18:05 [INF] Account is already logged in. Skip login task
+23:18:05 [INF] LoginTask is finished
+23:18:07 [INF] UpdateInfo is started
+23:18:07 [INF] UpdateInfo is finished
+23:18:08 [INF] RefreshVillage in 000 is started
+23:18:09 [INF] RefreshVillage in 000 is finished
+23:18:10 [INF] SendResourcesOutTask in 000 is started
+23:18:45 [INF] LoginTask is started
+23:18:45 [INF] Account is already logged in. Skip login task
+23:18:45 [INF] LoginTask is finished
+23:18:46 [INF] UpdateInfo is started
+23:18:46 [INF] UpdateInfo is finished
+23:18:47 [INF] RefreshVillage in 000 is started
+23:18:48 [INF] RefreshVillage in 000 is finished
+23:18:49 [INF] SendResourcesOutTask in 000 is started
+23:18:49 [ERR] Object reference not set to an instance of an object.
+23:18:49 [INF] SendResourcesOutTask in 000 is finished
+23:25:08 [INF] UpdateBothDorf in 000 is started
+23:25:10 [INF] UpdateBothDorf in 000 is finished
+23:25:11 [INF] SendResourcesOutTask in 000 is started
+23:25:11 [ERR] Object reference not set to an instance of an object.
+23:25:11 [INF] SendResourcesOutTask in 000 is finished
+23:25:12 [INF] UpdateDorf2 in 000 is started
+23:25:13 [INF] UpdateDorf2 in 000 is finished
+23:25:15 [INF] SendResourcesOutTask in 000 is started
+23:25:15 [ERR] Object reference not set to an instance of an object.
+23:25:15 [INF] SendResourcesOutTask in 000 is finished
+23:26:51 [INF] UpdateDorf2 in 000 is started
+23:26:51 [INF] UpdateDorf2 in 000 is finished
+23:26:53 [INF] NPCTask in 000 is started
+23:26:53 [ERR] Object reference not set to an instance of an object.
+23:26:53 [INF] NPCTask in 000 is finished
+23:26:54 [INF] SendResourcesOutTask in 000 is started
+23:26:54 [ERR] Object reference not set to an instance of an object.
+23:26:54 [INF] SendResourcesOutTask in 000 is finished
+23:26:55 [INF] UpdateDorf2 in 000 is started
+23:26:55 [INF] UpdateDorf2 in 000 is finished
+23:26:57 [INF] NPCTask in 000 is started
+23:26:57 [ERR] Object reference not set to an instance of an object.
+23:26:57 [INF] NPCTask in 000 is finished
+23:26:58 [INF] SendResourcesOutTask in 000 is started
+23:26:58 [ERR] Object reference not set to an instance of an object.
+23:26:58 [INF] SendResourcesOutTask in 000 is finished
+23:27:30 [INF] UpdateDorf1 in 000 is started
+23:27:31 [INF] UpdateDorf1 in 000 is finished
+23:27:33 [INF] NPCTask in 000 is started
+23:27:33 [ERR] Object reference not set to an instance of an object.
+23:27:33 [INF] NPCTask in 000 is finished
+23:27:34 [INF] RefreshVillage in 000 is started
+23:27:34 [INF] RefreshVillage in 000 is finished
+23:27:35 [INF] NPCTask in 000 is started
+23:27:35 [ERR] Object reference not set to an instance of an object.
+23:27:35 [INF] NPCTask in 000 is finished
+23:28:52 [INF] LoginTask is started
+23:28:52 [INF] Account is already logged in. Skip login task
+23:28:52 [INF] LoginTask is finished
+23:28:53 [INF] UpdateInfo is started
+23:28:54 [INF] UpdateInfo is finished
+23:28:55 [INF] RefreshVillage in 000 is started
+23:28:55 [INF] RefreshVillage in 000 is finished
+23:29:31 [INF] UpdateDorf2 in 000 is started
+23:29:33 [INF] UpdateDorf2 in 000 is finished
+23:29:34 [INF] NPCTask in 000 is started
+23:29:34 [ERR] Object reference not set to an instance of an object.
+23:29:34 [INF] NPCTask in 000 is finished
+23:30:07 [INF] LoginTask is started
+23:30:07 [INF] Account is already logged in. Skip login task
+23:30:07 [INF] LoginTask is finished
+23:30:08 [INF] UpdateInfo is started
+23:30:08 [INF] UpdateInfo is finished
+23:30:09 [INF] RefreshVillage in 000 is started
+23:30:10 [INF] RefreshVillage in 000 is finished
+23:30:11 [INF] NPCTask in 000 is started

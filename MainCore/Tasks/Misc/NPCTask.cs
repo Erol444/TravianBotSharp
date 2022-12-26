@@ -107,6 +107,7 @@ namespace MainCore.Tasks.Misc
                 var result = _navigateHelper.SwitchTab(AccountId, 0);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+
             return Result.Ok();
         }
 
