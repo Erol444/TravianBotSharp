@@ -7,7 +7,6 @@ using MainCore.Tasks.Sim;
 using Splat;
 using System;
 using System.Linq;
-using System.Diagnostics;
 
 namespace MainCore.Tasks.Update
 {

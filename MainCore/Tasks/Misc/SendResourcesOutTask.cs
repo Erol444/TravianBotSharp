@@ -1,8 +1,13 @@
+using FluentResults;
 using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Helper;
-
+using MainCore.Errors;
+using MainCore.Helper.Interface;
+using MainCore.Models.Runtime;
+using MainCore.Tasks.Update;
+using ModuleCore.Parser;
 using OpenQA.Selenium;
+using Splat;
 using System;
 using System.Linq;
 
@@ -10,9 +15,13 @@ namespace MainCore.Tasks.Misc
 {
     public class SendResourcesOutTask : VillageBotTask
     {
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IUpdateHelper _updateHelper;
 
-        public SendResourcesOutTask(int villageId, int accountId) : base(villageId, accountId, "Send Resources Out of Village Task")
+        public SendResourcesOutTask(int villageId, int accountId) : base(villageId, accountId)
         {
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
 
 
@@ -23,44 +32,54 @@ namespace MainCore.Tasks.Misc
         private string oneMerchantSize;
         private string merchantsAvailable;
 
-        public override void Execute()
+        public override Result Execute()
         {
+
             {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                var result = CheckIfVillageExists();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            StopFlag = false;
-            CheckIfVillageExists();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
 
-            Update();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
+            {
+                var result = Update();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
-            ToMarketPlace();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
+            {
+                var result = ToMarketPlace();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
-            EnterCoordinates();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
+            {
+                var result = EnterCoordinates();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
-            CheckIfVillageWillSendResources();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
+            {
+                var result = CheckIfVillageWillSendResources();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
-            EnterNumbers();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
+            {
+                var result = EnterNumbers();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
-            ClickSendResources();
+            {
+                var result = ClickSendResources();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
-            ClickSend();
+            {
+                var result = ClickSend();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+
+            return Result.Ok();
 
         }
 
-        private void Update()
+        private Result Update()
         {
             using var context = _contextFactory.CreateDbContext();
 
@@ -68,18 +87,21 @@ namespace MainCore.Tasks.Misc
 
             if (decider)
             {
-                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
+                _navigateHelper.ToDorf2(AccountId);
+                _navigateHelper.SwitchVillage(VillageId, AccountId);
             }
             else
             {
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
-                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
+                _navigateHelper.SwitchVillage(VillageId, AccountId);
+                _navigateHelper.ToDorf2(AccountId);
             }
-            UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, VillageId);
+
+            _updateHelper.UpdateDorf2(AccountId, VillageId);
+
+            return Result.Ok();
         }
 
-        private void ToMarketPlace()
+        private Result ToMarketPlace()
         {
             using var context = _contextFactory.CreateDbContext();
             var marketplace = context.VillagesBuildings.Where(x => x.VillageId == this.VillageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
@@ -90,14 +112,21 @@ namespace MainCore.Tasks.Misc
                 setting.IsSendExcessResources = false;
                 context.Update(setting);
                 context.SaveChanges();
-                StopFlag = true;
-                return;
+                return Result.Fail(new Skip());
             }
-            NavigateHelper.GoToBuilding(_chromeBrowser, marketplace.Id, context, AccountId);
-            NavigateHelper.SwitchTab(_chromeBrowser, 1, context, AccountId);
+            {
+                var result = _navigateHelper.GoToBuilding(AccountId, marketplace.Id);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            {
+                var result = _navigateHelper.SwitchTab(AccountId, 1);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+
+            return Result.Ok();
         }
 
-        private void EnterCoordinates()
+        private Result EnterCoordinates()
         {
             var html = _chromeBrowser.GetHtml();
 
@@ -106,11 +135,13 @@ namespace MainCore.Tasks.Misc
 
             if (xCoordinate is null)
             {
-                throw new Exception("Destination village coordinates not found.");
+                return Result.Fail(new MustRetry("Coordinate field is not found"));
+
             }
             if (yCoordinate is null)
             {
-                throw new Exception("Destination village coordinates not found.");
+                return Result.Fail(new MustRetry("Coordinate field is not found"));
+
             }
 
             var chrome = _chromeBrowser.GetChrome();
@@ -118,7 +149,11 @@ namespace MainCore.Tasks.Misc
             var yInput = chrome.FindElements(By.XPath(yCoordinate.XPath));
             if (xInput.Count == 0)
             {
-                throw new Exception("X coordinate not found");
+                return Result.Fail(new Skip());
+            }
+            if (yInput.Count == 0)
+            {
+                return Result.Fail(new Skip());
             }
 
             using var context = _contextFactory.CreateDbContext();
@@ -127,33 +162,21 @@ namespace MainCore.Tasks.Misc
             var coordinateX = villageMarketInfo.SendExcessToX;
             var coordinateY = villageMarketInfo.SendExcessToY;
 
-
-
-
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-            var script_x = $"document.getElementsByName('x')[0].value = {coordinateX};";
-
-#elif TTWARS
-#error Sending resources does not work for TTWARS
-#else
-#error You forgot to define Travian version here
-#endif
-            chrome.ExecuteScript(script_x);
-
-            if (yInput.Count == 0)
+            if (VersionDetector.IsTravianOfficial())
             {
-                throw new Exception("Y coordinate not found");
+                var script_x = $"document.getElementsByName('x')[0].value = {coordinateX};";
+                chrome.ExecuteScript(script_x);
+
+                var script_y = $"document.getElementsByName('y')[0].value = {coordinateY};";
+                chrome.ExecuteScript(script_y);
+            }
+            else if (VersionDetector.IsTTWars())
+            {
+                return Result.Fail(new Skip());
             }
 
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-            var script_y = $"document.getElementsByName('y')[0].value = {coordinateY};";
+            return Result.Ok();
 
-#elif TTWARS
-#error Sending resources does not work for TTWARS
-#else
-#error You forgot to define Travian version here
-#endif
-            chrome.ExecuteScript(script_y);
         }
 
 
@@ -187,7 +210,7 @@ namespace MainCore.Tasks.Misc
 
         }
 
-        private void CheckIfVillageExists()
+        private Result CheckIfVillageExists()
         {
             using var context = _contextFactory.CreateDbContext();
             var marketSettings = context.VillagesMarket.Find(VillageId);
@@ -203,9 +226,10 @@ namespace MainCore.Tasks.Misc
                 setting.IsSendExcessResources = false;
                 context.Update(setting);
                 context.SaveChanges();
-                StopFlag = true;
-                return;
+                return Result.Fail(new Skip());
             }
+
+            return Result.Ok();
         }
 
         private void OptimizeMerchants()
@@ -241,7 +265,7 @@ namespace MainCore.Tasks.Misc
 
         }
 
-        private void CheckIfVillageWillSendResources()
+        private Result CheckIfVillageWillSendResources()
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesMarket.Find(VillageId);
@@ -268,73 +292,86 @@ namespace MainCore.Tasks.Misc
             // Check if at least one merchant is filled 
             if (CheckAndFillMerchants() == false)
             {
-                StopFlag = true;
-                return;
+                return Result.Fail(new Skip());
+
             }
+
+            return Result.Ok();
         }
 
-        private void EnterNumbers()
+        private Result EnterNumbers()
         {
             var html = _chromeBrowser.GetHtml();
             var chrome = _chromeBrowser.GetChrome();
-            for (int i = 0; i < 4; i++)
-            {
-#if TRAVIAN_OFFICIAL || TRAVIAN_OFFICIAL_HEROUI
-                var script = $"document.getElementsByName('r{i + 1}')[0].value = {toSend[i]};";
 
-#elif TTWARS
-#error Sending resources does not work for TTWARS
-#else
-#error You forgot to define Travian version here
-#endif
-                chrome.ExecuteScript(script);
+            if (VersionDetector.IsTravianOfficial())
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    var script = $"document.getElementsByName('r{i + 1}')[0].value = {toSend[i]};";
+                    chrome.ExecuteScript(script);
+                }
             }
+            else if (VersionDetector.IsTTWars())
+            {
+                return Result.Fail(new Skip());
+            }
+            return Result.Ok();
+
         }
-        private void ClickSendResources()
-        {
-            var html = _chromeBrowser.GetHtml();
-            var sendButton = html.GetElementbyId("enabledButton");
-
-            if (sendButton is null)
-            {
-                throw new Exception("Send resources button is not found.");
-            }
-            var chrome = _chromeBrowser.GetChrome();
-            var npcButtonElements = chrome.FindElements(By.XPath(sendButton.XPath));
-            if (npcButtonElements.Count == 0)
-            {
-                throw new Exception("Send resources button is not found.");
-            }
-            using var context = _contextFactory.CreateDbContext();
-            npcButtonElements.Click(_chromeBrowser, context, AccountId);
-
-            var wait = _chromeBrowser.GetWait();
-            wait.Until(driver =>
-            {
-                if (Cts.IsCancellationRequested) return true;
-                var waitHtml = new HtmlDocument();
-                waitHtml.LoadHtml(driver.PageSource);
-                return waitHtml.GetElementbyId("enabledButton") is not null;
-            });
-        }
-
-        private void ClickSend()
+        private Result ClickSendResources()
         {
             var html = _chromeBrowser.GetHtml();
             var sendButton = html.GetElementbyId("enabledButton");
 
             if (sendButton is null)
             {
-                throw new Exception("Send resources button is not found.");
+                return Result.Fail(new MustRetry("Send resources button is not found"));
+            }
+            var chrome = _chromeBrowser.GetChrome();
+            var sendResource = chrome.FindElements(By.XPath(sendButton.XPath));
+            if (sendResource.Count == 0)
+            {
+                return Result.Fail(new MustRetry("Send resources button is not found"));
+            }
+            {
+                var result = _navigateHelper.Click(AccountId, sendResource[0]); //! IS this OKK
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            //! Should wait for next butto to show
+            // var wait = _chromeBrowser.GetWait();
+            // wait.Until(driver =>
+            // {
+            //     if (Cts.IsCancellationRequested) return true;
+            //     var waitHtml = new HtmlDocument();
+            //     waitHtml.LoadHtml(driver.PageSource);
+            //     return waitHtml.GetElementbyId("enabledButton") is not null;
+            // });
+
+            return Result.Ok();
+        }
+
+        private Result ClickSend()
+        {
+            var html = _chromeBrowser.GetHtml();
+            var sendButton = html.GetElementbyId("enabledButton");
+
+            if (sendButton is null)
+            {
+                return Result.Fail(new MustRetry("Send resources button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var npcButtonElements = chrome.FindElements(By.XPath(sendButton.XPath));
             if (npcButtonElements.Count == 0)
             {
-                throw new Exception("Send resources button is not found.");
+                return Result.Fail(new MustRetry("Send resources button is not found"));
             }
-            using var context = _contextFactory.CreateDbContext();
-            npcButtonElements.Click(_chromeBrowser, context, AccountId);
+            {
+                var result = _navigateHelper.Click(AccountId, npcButtonElements[0]);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+
+            return Result.Ok();
         }
     }
 }
