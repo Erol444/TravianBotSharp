@@ -39,6 +39,8 @@ namespace WPFUI.Views.Tabs.Villages
                 this.Bind(ViewModel, vm => vm.Settings.AutoRefreshTimeTolerance, v => v.Refresh.ViewModel.ToleranceValue).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.Settings.IsAutoNPC, v => v.AutoNPC.ViewModel.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.Settings.IsAutoNPCWarehouse, v => v.AutoNPCWarehouse.ViewModel.IsChecked).DisposeWith(d);
+
                 this.Bind(ViewModel, vm => vm.Settings.IsNPCOverflow, v => v.NPCCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCPercent, v => v.AutoNPC.ViewModel.Value).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCWarehousePercent, v => v.AutoNPCWarehouse.ViewModel.Value).DisposeWith(d);

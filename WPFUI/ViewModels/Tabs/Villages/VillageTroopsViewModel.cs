@@ -1,5 +1,5 @@
-﻿using MainCore.Enums;
-using MainCore.Helper;
+﻿using MainCore;
+using MainCore.Enums;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Update;
 using ReactiveUI;

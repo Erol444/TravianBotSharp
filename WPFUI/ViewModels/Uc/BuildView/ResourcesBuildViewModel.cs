@@ -1,5 +1,5 @@
-﻿using MainCore.Enums;
-using MainCore.Helper;
+﻿using MainCore;
+using MainCore.Enums;
 using MainCore.Models.Runtime;
 using MainCore.Tasks.Sim;
 using ReactiveUI;
@@ -61,6 +61,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
 
             var villageId = VillageId;
             _planManager.Add(villageId, planTask);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
 
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);

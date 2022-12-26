@@ -1,6 +1,9 @@
-﻿using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Update;
+using Splat;
 using System;
 using System.Linq;
 
@@ -8,36 +11,33 @@ namespace MainCore.Tasks.Sim
 {
     public class InstantUpgrade : VillageBotTask
     {
-        public InstantUpgrade(int villageId, int accountId) : base(villageId, accountId, "Complete upgrade queue")
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IClickHelper _clickHelper;
+
+        public InstantUpgrade(int villageId, int accountId) : base(villageId, accountId)
         {
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _clickHelper = Locator.Current.GetService<IClickHelper>();
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-            var setting = context.AccountsSettings.Find(AccountId);
-            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
-            NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
-            if (Cts.IsCancellationRequested) return;
+            {
+                var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+
             var currentUrl = _chromeBrowser.GetCurrentUrl();
             if (!currentUrl.Contains("dorf"))
             {
-                NavigateHelper.GoRandomDorf(_chromeBrowser, context, AccountId);
+                var result = _navigateHelper.GoRandomDorf(AccountId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            if (Cts.IsCancellationRequested) return;
-            ClickHelper.ClickCompleteNow(_chromeBrowser, context, AccountId);
-            NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
 
-            if (Cts.IsCancellationRequested) return;
-            ClickHelper.WaitDialogFinishNow(_chromeBrowser);
-            NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
-
-            ClickHelper.ClickConfirmFinishNow(_chromeBrowser, context, AccountId);
-            NavigateHelper.Sleep(setting.ClickDelayMin, setting.ClickDelayMax);
-
-            NavigateHelper.WaitPageLoaded(_chromeBrowser);
-            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            {
+                var result = _clickHelper.ClickCompleteNow(AccountId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
             var tasks = _taskManager.GetList(AccountId);
             var improveTroopTask = tasks.OfType<ImproveTroopsTask>().FirstOrDefault(x => x.VillageId == VillageId);
@@ -52,10 +52,12 @@ namespace MainCore.Tasks.Sim
                 upgradeTask.ExecuteAt = DateTime.Now;
                 _taskManager.Update(AccountId);
             }
-
-            var updateTask = new UpdateVillage(VillageId, AccountId);
-            updateTask.CopyFrom(this);
-            updateTask.Execute();
+            {
+                var updateTask = new UpdateVillage(VillageId, AccountId);
+                var result = updateTask.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
         }
     }
 }

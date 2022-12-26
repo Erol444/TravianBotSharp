@@ -1,4 +1,5 @@
 ﻿using MainCore.Models.Runtime;
+using MainCore.Tasks;
 using System;
 using System.Collections.Generic;
 
@@ -14,9 +15,13 @@ namespace MainCore.Services.Interface
 
         public void Information(int accountId, string message);
 
+        public void Information(int accountId, string message, BotTask task);
+
         public void Warning(int accountId, string message);
 
-        public void Error(int accountId, string message, Exception error);
+        public void Warning(int accountId, string message, BotTask task);
+
+        public void Error(int accountId, string message, Exception error = null);
 
         public void Shutdown();
     }

@@ -1,47 +1,50 @@
-﻿using MainCore.Enums;
-using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Enums;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
+using Splat;
 using System.Linq;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateFarmList : AccountBotTask
     {
-        public UpdateFarmList(int accountId) : base(accountId, "Update farmlist")
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IUpdateHelper _updateHelper;
+        private readonly ICheckHelper _checkHelper;
+
+        public UpdateFarmList(int accountId) : base(accountId)
         {
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
+            _checkHelper = Locator.Current.GetService<ICheckHelper>();
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-            }
-            IsFail = true;
             var village = GetVillageHasRallyPoint();
-            if (IsStop()) return;
             if (village == -1)
             {
-                _logManager.Warning(AccountId, "There is no rallypoint in your villages");
-                return;
+                _logManager.Warning(AccountId, "There is no rallypoint in your villages", this);
+                return Result.Ok();
             }
             {
                 var result = GotoFarmListPage(village);
-                if (IsStop()) return;
-                if (!result) return;
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                using var context = _contextFactory.CreateDbContext();
-                UpdateHelper.UpdateFarmList(context, _chromeBrowser, AccountId);
+                var result = _updateHelper.UpdateFarmList(AccountId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 _eventManager.OnFarmListUpdate(AccountId);
             }
-            IsFail = false;
+            return Result.Ok();
         }
 
         private int GetVillageHasRallyPoint()
         {
             using var context = _contextFactory.CreateDbContext();
 
-            var currentVillage = CheckHelper.GetCurrentVillageId(_chromeBrowser);
+            var currentVillage = _checkHelper.GetCurrentVillageId(AccountId);
             if (currentVillage != -1)
             {
                 var building = context.VillagesBuildings
@@ -54,7 +57,6 @@ namespace MainCore.Tasks.Update
 
             foreach (var village in villages)
             {
-                if (Cts.IsCancellationRequested) return -1;
                 var building = context.VillagesBuildings
                     .Where(x => x.VillageId == village.Id)
                     .FirstOrDefault(x => x.Type == BuildingEnums.RallyPoint && x.Level > 0);
@@ -64,25 +66,20 @@ namespace MainCore.Tasks.Update
             return -1;
         }
 
-        private bool GotoFarmListPage(int village)
+        private Result GotoFarmListPage(int village)
         {
-            if (!CheckHelper.IsFarmListPage(_chromeBrowser))
+            if (_checkHelper.IsFarmListPage(AccountId)) return Result.Ok();
+
             {
-                using var context = _contextFactory.CreateDbContext();
-                var url = _chromeBrowser.GetCurrentUrl();
-
                 var taskUpdate = new UpdateDorf2(village, AccountId);
-                taskUpdate.CopyFrom(this);
-                taskUpdate.Execute();
-                if (taskUpdate.IsFail) return false;
-
-                if (Cts.IsCancellationRequested) return false;
-
-                NavigateHelper.GoToBuilding(_chromeBrowser, 39, context, AccountId);
-                if (Cts.IsCancellationRequested) return false;
-                NavigateHelper.SwitchTab(_chromeBrowser, 4, context, AccountId);
+                var result = taskUpdate.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            return true;
+
+            _navigateHelper.GoToBuilding(AccountId, 39);
+            _navigateHelper.SwitchTab(AccountId, 4);
+
+            return Result.Ok();
         }
     }
 }

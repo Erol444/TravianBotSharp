@@ -1,6 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
-using MainCore.Helper;
+using MainCore;
 using MainCore.Tasks.Update;
 using ReactiveUI;
 using System;

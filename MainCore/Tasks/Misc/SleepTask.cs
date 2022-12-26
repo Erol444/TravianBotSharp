@@ -1,23 +1,30 @@
-﻿using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Helper.Interface;
 using MainCore.Models.Database;
+using MainCore.Services.Interface;
+using Splat;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
     public class SleepTask : AccountBotTask
     {
-        private readonly Random random = new();
+        private readonly IAccessHelper _accessHelper;
 
-        public SleepTask(int accountId) : base(accountId, "Sleep task")
+        private readonly IRestClientManager _restClientManager;
+
+        public SleepTask(int accountId) : base(accountId)
         {
+            _accessHelper = Locator.Current.GetService<IAccessHelper>();
+
+            _restClientManager = Locator.Current.GetService<IRestClientManager>();
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
             var context = _contextFactory.CreateDbContext();
-            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
             var accesses = context.Accesses.Where(x => x.AccountId == AccountId).OrderBy(x => x.LastUsed);
             var currentAccess = accesses.Last();
             var setting = context.AccountsSettings.Find(AccountId);
@@ -31,7 +38,7 @@ namespace MainCore.Tasks.Misc
                     break;
                 }
 
-                var result = AccessHelper.CheckAccess(_restClientManager.Get(new(access)));
+                var result = _accessHelper.IsValid(_restClientManager.Get(new(access)));
                 if (result)
                 {
                     selectedAccess = access;
@@ -48,31 +55,16 @@ namespace MainCore.Tasks.Misc
             {
                 (var min, var max) = (setting.SleepTimeMin, setting.SleepTimeMax);
 
-                var time = TimeSpan.FromMinutes(random.Next(min, max));
+                var time = TimeSpan.FromMinutes(Random.Shared.Next(min, max));
                 _chromeBrowser.Close();
                 _logManager.Information(AccountId, $"Bot is sleeping in {time} minute(s)");
-                try
-                {
-                    Task.Delay(time, Cts.Token).Wait();
-                }
-                catch
-                {
-                    return;
-                }
-                if (Cts.IsCancellationRequested) return;
+                Thread.Sleep(time * 60 * 1000);
             }
             else
             {
                 _chromeBrowser.Close();
                 _logManager.Information(AccountId, $"Bot is sleeping in {3} minute(s)");
-                try
-                {
-                    Task.Delay(TimeSpan.FromMinutes(3), Cts.Token).Wait();
-                }
-                catch
-                {
-                    return;
-                }
+                Thread.Sleep(3 * 60 * 1000);
             }
             _chromeBrowser.Setup(selectedAccess, setting);
             var currentAccount = context.Accounts.Find(AccountId);
@@ -81,6 +73,7 @@ namespace MainCore.Tasks.Misc
 
             var nextExecute = Random.Shared.Next(setting.SleepTimeMin, setting.SleepTimeMax);
             ExecuteAt = DateTime.Now.AddMinutes(nextExecute);
+            return Result.Ok();
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using DynamicData;
-using MainCore.Helper;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
+using System.Windows.Media;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
@@ -32,10 +32,11 @@ namespace WPFUI.ViewModels.Uc.BuildView
         private void LoadBuildings(int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
+            var black = Color.FromRgb(0, 0, 0);
             var buildings = context.VillagesCurrentlyBuildings
                 .Where(x => x.CompleteTime != DateTime.MaxValue && x.VillageId == villageId)
                 .OrderBy(x => x.Id)
-                .Select(building => new ListBoxItem(building.Id, $"[{building.Id}] {building.Type} {building.Level} complete at {building.CompleteTime}", building.Type.GetColor()))
+                .Select(building => new ListBoxItem(building.Id, $"{building.Type} {building.Level} complete at {building.CompleteTime}", black))
                 .ToList();
             RxApp.MainThreadScheduler.Schedule(() =>
             {

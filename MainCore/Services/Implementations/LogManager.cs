@@ -1,6 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
+using MainCore.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
@@ -79,6 +80,8 @@ namespace MainCore.Services.Implementations
             _loggers[accountId].Information(message);
         }
 
+        public void Information(int accountId, string message, BotTask task) => Information(accountId, $"[{task.GetName()}] {message}");
+
         public void Warning(int accountId, string message)
         {
             Add(accountId, new LogMessage()
@@ -90,15 +93,30 @@ namespace MainCore.Services.Implementations
             _loggers[accountId].Warning(message);
         }
 
+        public void Warning(int accountId, string message, BotTask task) => Warning(accountId, $"[{task.GetName()}] {message}");
+
         public void Error(int accountId, string message, Exception error)
         {
-            Add(accountId, new LogMessage()
+            if (error is null)
             {
-                DateTime = DateTime.Now,
-                Level = LevelEnum.Error,
-                Message = $"{message}\n{error}",
-            });
-            _loggers[accountId].Error(message, error);
+                Add(accountId, new LogMessage()
+                {
+                    DateTime = DateTime.Now,
+                    Level = LevelEnum.Error,
+                    Message = $"{message}",
+                });
+                _loggers[accountId].Error(message);
+            }
+            else
+            {
+                Add(accountId, new LogMessage()
+                {
+                    DateTime = DateTime.Now,
+                    Level = LevelEnum.Error,
+                    Message = $"{message}\n{error}",
+                });
+                _loggers[accountId].Error(message, error);
+            }
         }
 
         private readonly Dictionary<int, LinkedList<LogMessage>> _logs = new();

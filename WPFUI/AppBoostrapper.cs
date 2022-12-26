@@ -1,9 +1,4 @@
-﻿using FluentMigrator.Runner;
-using MainCore;
-using MainCore.Migrations;
-using MainCore.Services.Implementations;
-using MainCore.Services.Interface;
-using Microsoft.EntityFrameworkCore;
+﻿using MainCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ReactiveUI;
@@ -16,7 +11,6 @@ using WPFUI.ViewModels.Tabs.Villages;
 using WPFUI.ViewModels.Uc.BuildView;
 using WPFUI.ViewModels.Uc.FarmingView;
 using WPFUI.ViewModels.Uc.MainView;
-using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI
 {
@@ -33,6 +27,8 @@ namespace WPFUI
                     resolver.InitializeSplat();
                     resolver.InitializeReactiveUI();
                     services.ConfigureServices();
+                    services.ConfigureHelper();
+                    services.ConfigureParser();
                     services.ConfigureUcViewModel();
                     services.ConfigureViewModel();
                 })
@@ -43,30 +39,8 @@ namespace WPFUI
         }
     }
 
-    public static class DependencyInjectionContainer
+    public static class DependencyInjectionUIContainer
     {
-        private const string _connectionString = "DataSource=TBS.db;Cache=Shared";
-
-        public static IServiceCollection ConfigureServices(this IServiceCollection services)
-        {
-            services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(_connectionString));
-            services.AddSingleton<IChromeManager, ChromeManager>();
-            services.AddSingleton<IRestClientManager, RestClientManager>();
-            services.AddSingleton<IUseragentManager, UseragentManager>();
-            services.AddSingleton<IEventManager, EventManager>();
-            services.AddSingleton<ITimerManager, TimerManager>();
-            services.AddSingleton<ITaskManager, TaskManager>();
-            services.AddSingleton<IPlanManager, PlanManager>();
-            services.AddSingleton<ILogManager, LogManager>();
-
-            services.AddFluentMigratorCore()
-                .ConfigureRunner(rb => rb
-                .AddSQLite()
-                .WithGlobalConnectionString(_connectionString)
-                .ScanIn(typeof(Farming).Assembly).For.Migrations());
-            return services;
-        }
-
         public static IServiceCollection ConfigureViewModel(this IServiceCollection services)
         {
             services.AddSingleton<MainWindowViewModel>();

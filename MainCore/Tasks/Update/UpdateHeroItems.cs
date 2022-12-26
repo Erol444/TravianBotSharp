@@ -1,22 +1,33 @@
-﻿using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
+using Splat;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateHeroItems : AccountBotTask
     {
-        public UpdateHeroItems(int accountId) : base(accountId, "Update hero's items")
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IUpdateHelper _updateHelper;
+
+        public UpdateHeroItems(int accountId) : base(accountId)
         {
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            IsFail = true;
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.ToHeroInventory(_chromeBrowser, context, AccountId);
-            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+            {
+                var result = _navigateHelper.ToHeroInventory(AccountId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            {
+                var result = _updateHelper.UpdateHeroInventory(AccountId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
-            UpdateHelper.UpdateHeroInventory(context, _chromeBrowser, AccountId);
-            IsFail = false;
+            return Result.Ok();
         }
     }
 }
