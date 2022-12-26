@@ -261,7 +261,7 @@ namespace MainCore.Helper.Implementations
             var resNeed = GetResourceNeed(accountId, building, isNewBuilding);
             using var context = _contextFactory.CreateDbContext();
             var resCurrent = context.VillagesResources.Find(villageId);
-            return resNeed[0] > resCurrent.Wood || resNeed[1] > resCurrent.Clay || resNeed[2] > resCurrent.Iron || resNeed[3] > resCurrent.Crop;
+            return resCurrent.Wood > resNeed[0] && resCurrent.Clay > resNeed[1] && resCurrent.Iron > resNeed[2] && resCurrent.Crop > resNeed[3];
         }
 
         public long[] GetResourceMissing(int accountId, int villageId, BuildingEnums building, bool isNewBuilding)

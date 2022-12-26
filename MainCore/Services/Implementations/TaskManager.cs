@@ -116,7 +116,7 @@ namespace MainCore.Services.Implementations
             var setting = context.AccountsSettings.Find(index);
 
             var retryPolicy = Policy.HandleResult<Result>(x => x.HasError<MustRetry>())
-                .WaitAndRetry(retryCount: 3, sleepDurationProvider: _ => TimeSpan.FromSeconds(5), onRetry: (error, retryCount, context) =>
+                .WaitAndRetry(retryCount: 3, sleepDurationProvider: _ => TimeSpan.FromSeconds(5), onRetry: (error, _, retryCount, _) =>
             {
                 _logManager.Warning(index, $"There is something wrong.");
                 var errors = error.Result.Reasons.Select(x => x.Message).ToList();

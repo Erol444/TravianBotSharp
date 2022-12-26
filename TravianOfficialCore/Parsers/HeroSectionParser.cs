@@ -56,9 +56,9 @@ namespace TravianOfficialCore.Parsers
         {
             var heroItems = new List<(int, int)>();
             var heroItemsDiv = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("heroItems"));
-            if (heroItemsDiv is null) return null;
+            if (heroItemsDiv is null) return heroItems;
             var heroItemDivs = heroItemsDiv.Descendants("div").Where(x => x.HasClass("heroItem") && !x.HasClass("empty"));
-            if (!heroItemDivs.Any()) return null;
+            if (!heroItemDivs.Any()) return heroItems;
 
             foreach (var itemSlot in heroItemDivs)
             {
