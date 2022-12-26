@@ -18,7 +18,7 @@ namespace MainCore.Tasks
         {
             if (string.IsNullOrEmpty(_name))
             {
-                _name = GetType().ToString();
+                _name = GetType().Name;
             }
             return _name;
         }

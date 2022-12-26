@@ -16,7 +16,7 @@
             {
                 using var context = _contextFactory.CreateDbContext();
                 var village = context.Villages.Find(VillageId);
-                var type = GetType().ToString();
+                var type = GetType().Name;
                 if (village is not null)
                 {
                     _name = $"{type} in {village.Name}";
