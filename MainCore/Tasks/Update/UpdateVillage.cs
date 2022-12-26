@@ -80,13 +80,10 @@ namespace MainCore.Tasks.Update
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             AutoNPC(context);
-<<<<<<< HEAD
 
             AutoSendResourcesOut(context);
             AutoSendResourcesIn(context);
-=======
             return Result.Ok();
->>>>>>> release/2.4.0
         }
 
         private void InstantUpgrade(AppDbContext context)
@@ -145,15 +142,7 @@ namespace MainCore.Tasks.Update
             var setting = context.VillagesSettings.Find(VillageId);
 
             var resource = context.VillagesResources.Find(VillageId);
-<<<<<<< HEAD
 
-            var ratioGranary = resource.Crop * 100.0f / resource.Granary;
-            var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
-            var ratioWarehouse = maxResource * 100.0f / resource.Warehouse;
-            if (ratioGranary < setting.AutoNPCPercent && ratioWarehouse < setting.AutoNPCWarehousePercent) return;
-
-            _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
-=======
             if (setting.IsAutoNPC && setting.AutoNPCPercent != 0)
             {
                 var ratio = resource.Crop * 100.0f / resource.Granary;
@@ -167,7 +156,6 @@ namespace MainCore.Tasks.Update
                 if (ratio < setting.AutoNPCWarehousePercent) return;
                 _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
             }
->>>>>>> release/2.4.0
         }
 
         private void AutoImproveTroop(AppDbContext context)
