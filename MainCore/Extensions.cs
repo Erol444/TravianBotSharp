@@ -3,6 +3,7 @@ using MainCore.Models.Database;
 using MainCore.Models.Runtime;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 
 namespace MainCore
@@ -103,16 +104,16 @@ namespace MainCore
             return 0;
         }
 
-        public static string GetColor(this BuildingEnums building)
+        public static Color GetColor(this BuildingEnums building)
         {
             return building switch
             {
-                BuildingEnums.Site => "White",
-                BuildingEnums.Woodcutter => "ForestGreen",
-                BuildingEnums.ClayPit => "Orange",
-                BuildingEnums.IronMine => "Gray",
-                BuildingEnums.Cropland => "Yellow",
-                _ => "LawnGreen",
+                BuildingEnums.Site => Color.White,
+                BuildingEnums.Woodcutter => Color.ForestGreen,
+                BuildingEnums.ClayPit => Color.Orange,
+                BuildingEnums.IronMine => Color.Gray,
+                BuildingEnums.Cropland => Color.Yellow,
+                _ => Color.LawnGreen,
             };
         }
 
