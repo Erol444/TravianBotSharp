@@ -49,8 +49,8 @@ namespace WPFUI.ViewModels.Uc.MainView
                         new("Hero", new HeroPage()),
                         new("Villages", new VillagesPage()),
                         new("Farming", new FarmingPage()),
-                        new("Debug", new DebugPage()),
                         new("Edit account", new EditAccountPage()),
+                        new("Debug", new DebugPage()),
                     }
                 }
             };

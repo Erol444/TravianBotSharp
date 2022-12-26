@@ -1,45 +1,42 @@
-﻿using HtmlAgilityPack;
+﻿using FluentResults;
+using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Helper;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
+using Splat;
 using System.Linq;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateTroopLevel : VillageBotTask
     {
-        public UpdateTroopLevel(int villageId, int accountId) : base(villageId, accountId, "Update troop's level")
+        private readonly INavigateHelper _navigateHelper;
+
+        public UpdateTroopLevel(int villageId, int accountId) : base(villageId, accountId)
         {
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
             {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                var taskUpdate = new UpdateVillage(VillageId, AccountId);
+                var result = taskUpdate.Execute(); ;
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            IsFail = true;
-            Navigate();
-            if (IsStop()) return;
-            Update();
-            if (IsStop()) return;
-            if (!IsVaild()) return;
-            Enter();
-            if (IsStop()) return;
+
+            if (!IsVaild())
+            {
+                _logManager.Warning(AccountId, "Missing smithy", this);
+                return Result.Ok();
+            }
+
+            {
+                var result = Enter();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
             GetTroopLevel();
-            IsFail = false;
-        }
-
-        private void Navigate()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
-        }
-
-        private void Update()
-        {
-            var taskUpdate = new UpdateDorf2(VillageId, AccountId);
-            taskUpdate.CopyFrom(this);
-            taskUpdate.Execute();
+            return Result.Ok();
         }
 
         private bool IsVaild()
@@ -52,12 +49,14 @@ namespace MainCore.Tasks.Update
             return true;
         }
 
-        private void Enter()
+        private Result Enter()
         {
             using var context = _contextFactory.CreateDbContext();
             var villageBuilding = context.VillagesBuildings.Where(x => x.VillageId == VillageId);
             var smithy = villageBuilding.FirstOrDefault(x => x.Type == BuildingEnums.Smithy);
-            NavigateHelper.GoToBuilding(_chromeBrowser, smithy.Id, context, AccountId);
+            var result = _navigateHelper.GoToBuilding(AccountId, smithy.Id);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
         }
 
         private void GetTroopLevel()
@@ -68,11 +67,6 @@ namespace MainCore.Tasks.Update
             var troops = context.VillagesTroops.Where(x => x.VillageId == VillageId);
             foreach (var research in researches)
             {
-                if (Cts.IsCancellationRequested)
-                {
-                    context.SaveChanges();
-                    return;
-                }
                 var lvl = research.Descendants("span").FirstOrDefault(x => x.HasClass("level")).InnerText;
                 var isProgressing = false;
                 if (lvl.Contains('+'))

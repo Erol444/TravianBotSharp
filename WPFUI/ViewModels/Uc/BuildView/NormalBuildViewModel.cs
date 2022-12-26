@@ -1,9 +1,11 @@
 ﻿using DynamicData;
+using MainCore;
 using MainCore.Enums;
-using MainCore.Helper;
+using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
 using MainCore.Tasks.Sim;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,10 +19,12 @@ namespace WPFUI.ViewModels.Uc.BuildView
 {
     public class NormalBuildViewModel : VillageTabBaseViewModel
     {
+        private readonly IBuildingsHelper _buildingsHelper;
+
         public NormalBuildViewModel()
         {
             BuildCommand = ReactiveCommand.Create(BuildTask, this.WhenAnyValue(vm => vm.IsLevelEnable));
-
+            _buildingsHelper = Locator.Current.GetService<IBuildingsHelper>();
             _selectorViewModel.BuildingChanged += SelectorViewModel_BuildingChanged;
         }
 
@@ -72,7 +76,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
                 return (new() { new() { Building = plannedBuilding.Building } }, plannedBuilding.Level + 1);
             }
 
-            var buildings = BuildingsHelper.GetCanBuild(context, _planManager, AccountId, villageId);
+            var buildings = _buildingsHelper.GetCanBuild(AccountId, villageId);
             if (buildings.Count > 0)
             {
                 var list = buildings.Select(x => new BuildingComboBox() { Building = x }).ToList();
@@ -97,7 +101,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
             };
             var villageId = VillageId;
             _planManager.Add(villageId, planTask);
-
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);

@@ -27,7 +27,7 @@ namespace WPFUI.ViewModels.Tabs
                 {
                     TabType.NoAccount, new TabItemModel[]
                     {
-                        new("No account", new NoVillagePage()) ,
+                        new("No village", new NoVillagePage()) ,
                     }
                 },
                 {

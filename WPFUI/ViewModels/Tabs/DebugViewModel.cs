@@ -90,7 +90,7 @@ namespace WPFUI.ViewModels.Tabs
             var tasks = _taskManager.GetList(accountId);
             var listItem = tasks.Select(item => new TaskModel()
             {
-                Task = item.Name,
+                Task = item.GetName(),
                 ExecuteAt = item.ExecuteAt,
                 Stage = item.Stage,
             }).ToList();

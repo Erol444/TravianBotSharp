@@ -1,8 +1,13 @@
-﻿using HtmlAgilityPack;
+﻿using FluentResults;
+using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Helper;
+using MainCore.Errors;
+using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
+using MainCore.Tasks.Update;
+using ModuleCore.Parser;
 using OpenQA.Selenium;
+using Splat;
 using System;
 using System.Linq;
 
@@ -10,64 +15,52 @@ namespace MainCore.Tasks.Misc
 {
     public class NPCTask : VillageBotTask
     {
-        public NPCTask(int villageId, int accountId) : base(villageId, accountId, "NPC Task")
+        private readonly INavigateHelper _navigateHelper;
+        private readonly IUpdateHelper _updateHelper;
+
+        private readonly ISystemPageParser _systemPageParser;
+
+        public NPCTask(int villageId, int accountId) : base(villageId, accountId)
         {
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
+            _systemPageParser = Locator.Current.GetService<ISystemPageParser>();
         }
 
-        public NPCTask(int villageId, int accountId, Resources ratio) : base(villageId, accountId, "NPC Task")
+        public NPCTask(int villageId, int accountId, Resources ratio) : this(villageId, accountId)
         {
             _ratio = ratio;
         }
 
         private readonly Resources _ratio;
 
-        public override void Execute()
+        public override Result Execute()
         {
             {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                var updateDorf2 = new UpdateDorf2(AccountId, VillageId);
+                var result = updateDorf2.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            StopFlag = false;
 
-            Update();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
+            if (!IsContinue()) return Result.Ok();
 
-            if (!IsContinue()) return;
+            {
+                var result = ToMarketPlace();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
-            ToMarketPlace();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
-
-            ClickNPCButton();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
+            {
+                var result = ClickNPCButton();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
             EnterNumber();
-            if (Cts.IsCancellationRequested) return;
-            if (StopFlag) return;
 
-            ClickNPC();
-        }
-
-        private void Update()
-        {
-            using var context = _contextFactory.CreateDbContext();
-
-            var decider = DateTime.Now.Ticks % 2 == 0;
-
-            if (decider)
             {
-                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
+                var result = ClickNPC();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            else
-            {
-                NavigateHelper.SwitchVillage(context, _chromeBrowser, VillageId, AccountId);
-                NavigateHelper.ToDorf2(_chromeBrowser, context, AccountId);
-            }
-
-            UpdateHelper.UpdateDorf2(context, _chromeBrowser, AccountId, VillageId);
+            return Result.Ok();
         }
 
         private bool IsContinue()
@@ -75,67 +68,72 @@ namespace MainCore.Tasks.Misc
             using var context = _contextFactory.CreateDbContext();
             var info = context.AccountsInfo.Find(AccountId);
 
-#if TRAVIAN_OFFICIAL
-            var result = info.Gold > 3;
-#elif TTWARS
-            var result = info.Gold > 5;
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
+            var goldNeed = 0;
+            if (VersionDetector.IsTravianOfficial())
+            {
+                goldNeed = 3;
+            }
+            else if (VersionDetector.IsTTWars())
+            {
+                goldNeed = 5;
+            }
+            var result = info.Gold > goldNeed;
             if (!result)
             {
-                _logManager.Warning(AccountId, "Not enough gold");
+                _logManager.Warning(AccountId, "Not enough gold", this);
             }
             return result;
         }
 
-        private void ToMarketPlace()
+        private Result ToMarketPlace()
         {
             using var context = _contextFactory.CreateDbContext();
             var marketplace = context.VillagesBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
             if (marketplace is null)
             {
-                _logManager.Information(AccountId, "Marketplace is missing. Turn off auto NPC to prevent bot detector");
+                _logManager.Information(AccountId, "Marketplace is missing. Turn off auto NPC to prevent bot detector", this);
                 var setting = context.VillagesSettings.Find(VillageId);
                 setting.IsAutoNPC = false;
                 context.Update(setting);
                 context.SaveChanges();
-                StopFlag = true;
-                return;
+                return Result.Fail(new Skip());
             }
-            NavigateHelper.GoToBuilding(_chromeBrowser, marketplace.Id, context, AccountId);
-            NavigateHelper.SwitchTab(_chromeBrowser, 0, context, AccountId);
+
+            {
+                var result = _navigateHelper.GoToBuilding(AccountId, marketplace.Id);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            {
+                var result = _navigateHelper.SwitchTab(AccountId, 0);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
         }
 
-        private void ClickNPCButton()
+        private Result ClickNPCButton()
         {
             var html = _chromeBrowser.GetHtml();
             var npcMerchant = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
             var npcButton = npcMerchant.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
             if (npcButton is null)
             {
-                throw new Exception("NPC button is not found");
+                return Result.Fail(new MustRetry("NPC button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var npcButtonElements = chrome.FindElements(By.XPath(npcButton.XPath));
             if (npcButtonElements.Count == 0)
             {
-                throw new Exception("NPC button is not found");
+                return Result.Fail(new MustRetry("NPC button is not found"));
             }
-            using var context = _contextFactory.CreateDbContext();
-            npcButtonElements.Click(_chromeBrowser, context, AccountId);
-
+            _navigateHelper.Click(AccountId, npcButtonElements[0]);
             var wait = _chromeBrowser.GetWait();
             wait.Until(driver =>
             {
-                if (Cts.IsCancellationRequested) return true;
                 var waitHtml = new HtmlDocument();
                 waitHtml.LoadHtml(driver.PageSource);
                 return waitHtml.GetElementbyId("npc_market_button") is not null;
             });
+            return Result.Ok();
         }
 
         private void EnterNumber()
@@ -166,13 +164,7 @@ namespace MainCore.Tasks.Misc
             }
 
             var html = _chromeBrowser.GetHtml();
-#if TRAVIAN_OFFICIAL
-            var nodeSum = html.GetElementbyId($"sum");
-#elif TTWARS
-            var nodeSum = html.GetElementbyId($"org4");
-#else
-#error You forgot to define Travian version here
-#endif
+            var nodeSum = _systemPageParser.GetNpcSumNode(html);
             var sumCurrent = nodeSum.InnerText.ToNumeric();
             var current = new long[4];
             for (var i = 0; i < 4; i++)
@@ -184,37 +176,44 @@ namespace MainCore.Tasks.Misc
             current[3] += diff;
 
             var chrome = _chromeBrowser.GetChrome();
-            for (int i = 0; i < 4; i++)
+            var script = "";
+            if (VersionDetector.IsTravianOfficial())
             {
-#if TRAVIAN_OFFICIAL
-                var script = $"document.getElementsByName('desired{i}')[0].value = {current[i]};";
-
-#elif TTWARS
-                var script = $"document.getElementById('m2[{i}]').value = {current[i]};";
-#else
-#error You forgot to define Travian version here
-#endif
-                chrome.ExecuteScript(script);
+                for (int i = 0; i < 4; i++)
+                {
+                    script = $"document.getElementsByName('desired{i}')[0].value = {current[i]};";
+                    chrome.ExecuteScript(script);
+                }
+            }
+            else if (VersionDetector.IsTTWars())
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    script = $"document.getElementById('m2[{i}]').value = {current[i]};";
+                    chrome.ExecuteScript(script);
+                }
             }
         }
 
-        private void ClickNPC()
+        private Result ClickNPC()
         {
             var html = _chromeBrowser.GetHtml();
             var submit = html.GetElementbyId("submitText");
             var distribute = submit.Descendants("button").FirstOrDefault();
             if (distribute is null)
             {
-                throw new Exception("NPC submit button is not found");
+                return Result.Fail(new MustRetry("NPC submit button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var distributeElements = chrome.FindElements(By.XPath(distribute.XPath));
             if (distributeElements.Count == 0)
             {
-                throw new Exception("NPC submit button is not found");
+                return Result.Fail(new MustRetry("NPC submit button is not found"));
             }
-            using var context = _contextFactory.CreateDbContext();
-            distributeElements.Click(_chromeBrowser, context, AccountId);
+            {
+                var result = _navigateHelper.Click(AccountId, distributeElements[0]);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
             var wait = _chromeBrowser.GetWait();
             wait.Until(driver =>
@@ -227,9 +226,13 @@ namespace MainCore.Tasks.Misc
             var submitElements = chrome.FindElements(By.Id("npc_market_button"));
             if (submitElements.Count == 0)
             {
-                throw new Exception("NPC submit button is not found");
+                return Result.Fail(new MustRetry("NPC submit button is not found"));
             }
-            submitElements.Click(_chromeBrowser, context, AccountId);
+            {
+                var result = _navigateHelper.Click(AccountId, submitElements[0]);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
         }
     }
 }

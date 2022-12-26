@@ -1,4 +1,5 @@
-﻿using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Errors;
 using MainCore.Tasks.Update;
 using System;
 
@@ -6,18 +7,12 @@ namespace MainCore.Tasks.Misc
 {
     public class RefreshVillage : VillageBotTask
     {
-        private readonly Random rand = new();
-
-        public RefreshVillage(int villageId, int accountId) : base(villageId, accountId, "Refresh village")
+        public RefreshVillage(int villageId, int accountId) : base(villageId, accountId)
         {
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-            }
             BotTask taskUpdate;
             if (IsNeedDorf2())
             {
@@ -27,11 +22,11 @@ namespace MainCore.Tasks.Misc
             {
                 taskUpdate = new UpdateDorf1(VillageId, AccountId);
             }
-            taskUpdate.CopyFrom(this);
-            taskUpdate.Execute();
-            if (taskUpdate.IsFail) return;
+            var result = taskUpdate.Execute();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             NextExecute();
+            return Result.Ok();
         }
 
         private bool IsNeedDorf2()
@@ -45,7 +40,7 @@ namespace MainCore.Tasks.Misc
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
-            var delay = rand.Next(setting.AutoRefreshTimeMin, setting.AutoRefreshTimeMax);
+            var delay = Random.Shared.Next(setting.AutoRefreshTimeMin, setting.AutoRefreshTimeMax);
             ExecuteAt = DateTime.Now.AddMinutes(delay);
         }
     }

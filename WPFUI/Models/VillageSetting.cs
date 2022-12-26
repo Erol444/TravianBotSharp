@@ -1,11 +1,19 @@
-﻿using MainCore.Helper;
+﻿using MainCore;
 using ReactiveUI;
+using System;
+using System.Reactive.Linq;
 using System.Windows;
 
 namespace WPFUI.Models
 {
     public class VillageSetting : ReactiveObject
     {
+        public VillageSetting()
+        {
+            this.WhenAnyValue(vm => vm.IsAutoNPC).Where(x => x).Subscribe(_ => IsAutoNPCWarehouse = false);
+            this.WhenAnyValue(vm => vm.IsAutoNPCWarehouse).Where(x => x).Subscribe(_ => IsAutoNPC = false);
+        }
+
         public void CopyFrom(MainCore.Models.Database.VillageSetting settings)
         {
             IsUseHeroRes = settings.IsUseHeroRes;
@@ -20,6 +28,7 @@ namespace WPFUI.Models
             AutoRefreshTimeTolerance = $"{(settings.AutoRefreshTimeMax - settings.AutoRefreshTimeMin) / 2}";
 
             IsAutoNPC = settings.IsAutoNPC;
+            IsAutoNPCWarehouse = settings.IsAutoNPCWarehouse;
             IsNPCOverflow = settings.IsNPCOverflow;
 
             AutoNPCPercent = settings.AutoNPCPercent.ToString();
@@ -52,6 +61,7 @@ namespace WPFUI.Models
             settings.AutoRefreshTimeMax = autoRefreshTime + autoRefreshTimeTolerance;
 
             settings.IsAutoNPC = IsAutoNPC;
+            settings.IsAutoNPCWarehouse = IsAutoNPCWarehouse;
             settings.IsNPCOverflow = IsNPCOverflow;
             settings.AutoNPCPercent = int.Parse(AutoNPCPercent);
             settings.AutoNPCWarehousePercent = int.Parse(AutoNPCWarehousePercent);
@@ -194,6 +204,14 @@ namespace WPFUI.Models
         {
             get => _isAutoNPC;
             set => this.RaiseAndSetIfChanged(ref _isAutoNPC, value);
+        }
+
+        private bool _isAutoNPCWarehouse;
+
+        public bool IsAutoNPCWarehouse
+        {
+            get => _isAutoNPCWarehouse;
+            set => this.RaiseAndSetIfChanged(ref _isAutoNPCWarehouse, value);
         }
 
         private bool _isNPCOverflow;
