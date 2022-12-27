@@ -2,12 +2,13 @@
 using MainCore.Errors;
 using MainCore.Tasks.Update;
 using System;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
     public class RefreshVillage : VillageBotTask
     {
-        public RefreshVillage(int villageId, int accountId) : base(villageId, accountId)
+        public RefreshVillage(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }
 

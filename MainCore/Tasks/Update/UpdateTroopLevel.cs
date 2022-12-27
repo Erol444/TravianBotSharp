@@ -5,6 +5,7 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
@@ -12,7 +13,7 @@ namespace MainCore.Tasks.Update
     {
         private readonly INavigateHelper _navigateHelper;
 
-        public UpdateTroopLevel(int villageId, int accountId) : base(villageId, accountId)
+        public UpdateTroopLevel(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
         }

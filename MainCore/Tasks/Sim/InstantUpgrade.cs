@@ -6,6 +6,7 @@ using MainCore.Tasks.Update;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Sim
 {
@@ -14,7 +15,7 @@ namespace MainCore.Tasks.Sim
         private readonly INavigateHelper _navigateHelper;
         private readonly IClickHelper _clickHelper;
 
-        public InstantUpgrade(int villageId, int accountId) : base(villageId, accountId)
+        public InstantUpgrade(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _clickHelper = Locator.Current.GetService<IClickHelper>();

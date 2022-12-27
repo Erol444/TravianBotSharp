@@ -6,6 +6,7 @@ using ModuleCore.Parser;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
@@ -16,7 +17,7 @@ namespace MainCore.Tasks.Update
 
         private readonly ISystemPageParser _systemPageParser;
 
-        public UpdateAdventures(int accountId) : base(accountId)
+        public UpdateAdventures(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();

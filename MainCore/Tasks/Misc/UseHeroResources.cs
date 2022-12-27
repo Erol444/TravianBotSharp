@@ -13,7 +13,7 @@ namespace MainCore.Tasks.Misc
         private readonly INavigateHelper _navigateHelper;
         private readonly IHeroHelper _heroHelper;
 
-        public UseHeroResources(int villageId, int accountId, List<(HeroItemEnums, int)> items) : base(villageId, accountId)
+        public UseHeroResources(int villageId, int accountId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _heroHelper = Locator.Current.GetService<IHeroHelper>();

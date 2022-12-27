@@ -1,12 +1,13 @@
 ﻿using FluentResults;
 using MainCore.Errors;
 using System;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateBothDorf : VillageBotTask
     {
-        public UpdateBothDorf(int villageId, int accountId) : base(villageId, accountId)
+        public UpdateBothDorf(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }
 

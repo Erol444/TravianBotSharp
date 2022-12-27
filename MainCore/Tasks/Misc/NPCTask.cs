@@ -10,24 +10,24 @@ using OpenQA.Selenium;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
     public class NPCTask : VillageBotTask
     {
         private readonly INavigateHelper _navigateHelper;
-        private readonly IUpdateHelper _updateHelper;
 
         private readonly ISystemPageParser _systemPageParser;
 
-        public NPCTask(int villageId, int accountId) : base(villageId, accountId)
+        public NPCTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
-            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
             _systemPageParser = Locator.Current.GetService<ISystemPageParser>();
         }
 
-        public NPCTask(int villageId, int accountId, Resources ratio) : this(villageId, accountId)
+        public NPCTask(int villageId, int accountId, Resources ratio, CancellationToken cancellationToken = default) : this(villageId, accountId, cancellationToken)
+
         {
             _ratio = ratio;
         }

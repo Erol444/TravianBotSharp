@@ -4,6 +4,7 @@ using MainCore.Helper.Interface;
 using MainCore.Tasks.Update;
 using Splat;
 using System;
+using System.Threading;
 
 namespace MainCore.Tasks.Attack
 {
@@ -11,7 +12,7 @@ namespace MainCore.Tasks.Attack
     {
         private readonly IClickHelper _clickHelper;
 
-        public StartFarmList(int accountId, int farmId) : base(accountId)
+        public StartFarmList(int accountId, int farmId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _farmId = farmId;
             _clickHelper = Locator.Current.GetService<IClickHelper>();

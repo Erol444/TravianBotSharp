@@ -2,6 +2,7 @@
 using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
@@ -9,7 +10,7 @@ namespace MainCore.Tasks.Update
     {
         private readonly INavigateHelper _navigateHelper;
 
-        public UpdateDorf2(int villageId, int accountId) : base(villageId, accountId)
+        public UpdateDorf2(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
         }

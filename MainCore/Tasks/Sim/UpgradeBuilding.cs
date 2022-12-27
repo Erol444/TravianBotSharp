@@ -9,6 +9,7 @@ using MainCore.Tasks.Update;
 using Splat;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Sim
 {
@@ -19,9 +20,10 @@ namespace MainCore.Tasks.Sim
         private readonly IUpdateHelper _updateHelper;
         private readonly IPlanManager _planManager;
 
-        public UpgradeBuilding(int villageId, int accountId) : base(villageId, accountId)
+        public UpgradeBuilding(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _upgradeBuildingHelper = Locator.Current.GetService<IUpgradeBuildingHelper>();
+
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
             _planManager = Locator.Current.GetService<IPlanManager>();

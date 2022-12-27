@@ -4,19 +4,21 @@ using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Splat;
 using System;
+using System.Threading;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace MainCore.Tasks
 {
     public abstract class BotTask
     {
-        public BotTask()
+        public BotTask(CancellationToken cancellationToken = default)
         {
             _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = Locator.Current.GetService<IEventManager>();
             _taskManager = Locator.Current.GetService<ITaskManager>();
             _chromeManager = Locator.Current.GetService<IChromeManager>();
             _logManager = Locator.Current.GetService<ILogManager>();
+            CancellationToken = cancellationToken;
         }
 
         public TaskStage Stage { get; set; }
@@ -28,6 +30,8 @@ namespace MainCore.Tasks
         protected IChromeManager _chromeManager;
         protected ILogManager _logManager;
         protected string _name;
+
+        public CancellationToken CancellationToken { get; set; }
 
         public abstract string GetName();
 

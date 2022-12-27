@@ -8,6 +8,7 @@ using OpenQA.Selenium;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
@@ -17,7 +18,7 @@ namespace MainCore.Tasks.Misc
         public TroopEnums Troop => _troop;
         private readonly INavigateHelper _navigateHelper;
 
-        public ImproveTroopsTask(int villageId, int accountId) : base(villageId, accountId)
+        public ImproveTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
         }

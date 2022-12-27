@@ -8,6 +8,7 @@ using ModuleCore.Parser;
 using OpenQA.Selenium;
 using Splat;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
@@ -20,7 +21,7 @@ namespace MainCore.Tasks.Misc
 
         private readonly IPlanManager _planManager;
 
-        public LoginTask(int accountId) : base(accountId)
+        public LoginTask(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _checkHelper = Locator.Current.GetService<ICheckHelper>();

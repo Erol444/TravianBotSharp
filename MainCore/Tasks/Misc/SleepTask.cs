@@ -15,7 +15,7 @@ namespace MainCore.Tasks.Misc
 
         private readonly IRestClientManager _restClientManager;
 
-        public SleepTask(int accountId) : base(accountId)
+        public SleepTask(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _accessHelper = Locator.Current.GetService<IAccessHelper>();
 
