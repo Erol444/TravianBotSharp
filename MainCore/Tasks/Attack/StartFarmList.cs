@@ -52,6 +52,7 @@ namespace MainCore.Tasks.Attack
                 _logManager.Warning(AccountId, $"Farm {FarmId} is missing. Remove this farm from queue");
                 return Result.Ok();
             }
+
             if (IsFarmDeactive())
             {
                 _logManager.Warning(AccountId, $"Farm {FarmId} is deactive. Remove this farm from queue");
@@ -61,6 +62,8 @@ namespace MainCore.Tasks.Attack
                 var result = _clickHelper.ClickStartFarm(AccountId, FarmId);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             {
                 using var context = _contextFactory.CreateDbContext();
