@@ -4,6 +4,7 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
@@ -13,7 +14,7 @@ namespace MainCore.Tasks.Update
         private readonly IUpdateHelper _updateHelper;
         private readonly ICheckHelper _checkHelper;
 
-        public UpdateFarmList(int accountId) : base(accountId)
+        public UpdateFarmList(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
@@ -71,7 +72,7 @@ namespace MainCore.Tasks.Update
             if (_checkHelper.IsFarmListPage(AccountId)) return Result.Ok();
 
             {
-                var taskUpdate = new UpdateDorf2(village, AccountId);
+                var taskUpdate = new UpdateDorf2(village, AccountId, CancellationToken);
                 var result = taskUpdate.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }

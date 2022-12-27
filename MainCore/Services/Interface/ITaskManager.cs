@@ -6,24 +6,26 @@ namespace MainCore.Services.Interface
 {
     public interface ITaskManager
     {
-        public void Add(int index, BotTask task, bool first = false);
+        void Add(int index, BotTask task, bool first = false);
 
-        public void Update(int index);
+        void Update(int index);
 
-        public void Remove(int index, BotTask task);
+        void Remove(int index, BotTask task);
 
-        public void Clear(int index);
+        void Clear(int index);
 
-        public BotTask GetCurrentTask(int index);
+        BotTask GetCurrentTask(int index);
 
-        public int Count(int index);
+        int Count(int index);
 
-        public List<BotTask> GetList(int index);
+        List<BotTask> GetList(int index);
 
-        public bool IsTaskExecuting(int index);
+        bool IsTaskExecuting(int index);
 
-        public AccountStatus GetAccountStatus(int index);
+        AccountStatus GetAccountStatus(int index);
 
-        public void UpdateAccountStatus(int index, AccountStatus status);
+        void UpdateAccountStatus(int index, AccountStatus status);
+
+        void StopCurrentTask(int index);
     }
 }

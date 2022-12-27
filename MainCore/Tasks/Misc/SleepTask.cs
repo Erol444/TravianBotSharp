@@ -1,4 +1,5 @@
 ﻿using FluentResults;
+using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Services.Interface;
@@ -15,7 +16,7 @@ namespace MainCore.Tasks.Misc
 
         private readonly IRestClientManager _restClientManager;
 
-        public SleepTask(int accountId) : base(accountId)
+        public SleepTask(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _accessHelper = Locator.Current.GetService<IAccessHelper>();
 
@@ -57,14 +58,41 @@ namespace MainCore.Tasks.Misc
 
                 var time = TimeSpan.FromMinutes(Random.Shared.Next(min, max));
                 _chromeBrowser.Close();
-                _logManager.Information(AccountId, $"Bot is sleeping in {time} minute(s)");
-                Thread.Sleep(time * 60 * 1000);
+                _logManager.Information(AccountId, $"Bot is sleeping in {time.TotalMinutes} minute(s)");
+                while (time > TimeSpan.Zero)
+                {
+                    if (CancellationToken.IsCancellationRequested)
+                    {
+                        return Result.Fail(new Cancel());
+                    }
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                    time -= TimeSpan.FromSeconds(1);
+
+                    if (time.Seconds == 0)
+                    {
+                        _logManager.Information(AccountId, $"Bot is sleeping in {time.TotalMinutes} minute(s)");
+                    }
+                }
             }
             else
             {
                 _chromeBrowser.Close();
                 _logManager.Information(AccountId, $"Bot is sleeping in {3} minute(s)");
-                Thread.Sleep(3 * 60 * 1000);
+                var time = TimeSpan.FromMinutes(3);
+                while (time > TimeSpan.Zero)
+                {
+                    if (CancellationToken.IsCancellationRequested)
+                    {
+                        return Result.Fail(new Cancel());
+                    }
+                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                    time -= TimeSpan.FromSeconds(1);
+
+                    if (time.Seconds == 0)
+                    {
+                        _logManager.Information(AccountId, $"Bot is sleeping in {time.TotalMinutes} minute(s)");
+                    }
+                }
             }
             _chromeBrowser.Setup(selectedAccess, setting);
             var currentAccount = context.Accounts.Find(AccountId);

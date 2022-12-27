@@ -49,7 +49,7 @@ namespace MainCore.Helper.Implementations
             }
             catch (TimeoutException)
             {
-                return Result.Fail(new MustStop("Page not loaded in 3 mins"));
+                return Result.Fail(new Stop("Page not loaded in 3 mins"));
             }
             return Result.Ok();
         }
@@ -83,27 +83,27 @@ namespace MainCore.Helper.Implementations
             var html = chromeBrowser.GetHtml();
             if (_checkHelper.IsCaptcha(html))
             {
-                return Result.Fail(new MustStop("Captcha found"));
+                return Result.Fail(new Stop("Captcha found"));
             }
             if (_checkHelper.IsWWMsg(html))
             {
-                if (VersionDetector.IsTravianOfficial()) return Result.Fail(new MustStop("WW complete page found"));
-                if (VersionDetector.IsTTWars() && _checkHelper.IsWWPage(chromeBrowser)) return Result.Fail(new MustStop("WW complete page found"));
+                if (VersionDetector.IsTravianOfficial()) return Result.Fail(new Stop("WW complete page found"));
+                if (VersionDetector.IsTTWars() && _checkHelper.IsWWPage(chromeBrowser)) return Result.Fail(new Stop("WW complete page found"));
             }
 
             if (_checkHelper.IsBanMsg(html))
             {
-                return Result.Fail(new MustStop("Ban page found"));
+                return Result.Fail(new Stop("Ban page found"));
             }
 
             if (_checkHelper.IsMaintanance(html))
             {
-                return Result.Fail(new MustStop("Maintanance page found"));
+                return Result.Fail(new Stop("Maintanance page found"));
             }
 
             if (_checkHelper.IsLoginScreen(html))
             {
-                return Result.Fail(new NeedLogin());
+                return Result.Fail(new Login());
             }
             if (_checkHelper.IsSysMsg(html))
             {
@@ -150,7 +150,7 @@ namespace MainCore.Helper.Implementations
 
         public Result Click(int accountId, IWebElement element)
         {
-            if (!element.Displayed || !element.Enabled) return Result.Fail(new MustRetry("Element is not clickable"));
+            if (!element.Displayed || !element.Enabled) return Result.Fail(new Retry("Element is not clickable"));
             element.Click();
             var delay = GetDelayClick(accountId);
             Thread.Sleep(delay);
@@ -197,14 +197,14 @@ namespace MainCore.Helper.Implementations
             var node = _navigationBarParser.GetResourceButton(doc);
             if (node is null)
             {
-                return Result.Fail(new MustRetry("Cannot find Resources button"));
+                return Result.Fail(new Retry("Cannot find Resources button"));
             }
 
             var chrome = chromeBrowser.GetChrome();
             var elements = chrome.FindElements(By.XPath(node.XPath));
             if (elements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find Resources button"));
+                return Result.Fail(new Retry("Cannot find Resources button"));
             }
 
             return Click(accountId, elements[0]);
@@ -239,14 +239,14 @@ namespace MainCore.Helper.Implementations
             var node = _navigationBarParser.GetBuildingButton(doc);
             if (node is null)
             {
-                return Result.Fail(new MustRetry("Cannot find Buildings button"));
+                return Result.Fail(new Retry("Cannot find Buildings button"));
             }
 
             var chrome = chromeBrowser.GetChrome();
             var elements = chrome.FindElements(By.XPath(node.XPath));
             if (elements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find Buildings button"));
+                return Result.Fail(new Retry("Cannot find Buildings button"));
             }
 
             {
@@ -284,12 +284,12 @@ namespace MainCore.Helper.Implementations
                             var node = _villageFieldParser.GetNode(html, index);
                             if (node is null)
                             {
-                                return Result.Fail(new MustRetry($"Cannot find resource field at {index}"));
+                                return Result.Fail(new Retry($"Cannot find resource field at {index}"));
                             }
                             var elements = chrome.FindElements(By.XPath(node.XPath));
                             if (elements.Count == 0)
                             {
-                                return Result.Fail(new MustRetry($"Cannot find resource field at {index}"));
+                                return Result.Fail(new Retry($"Cannot find resource field at {index}"));
                             }
                             var result = Click(accountId, elements[0]);
                             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
@@ -301,12 +301,12 @@ namespace MainCore.Helper.Implementations
                             var node = _villageInfrastructureParser.GetNode(html, index);
                             if (node is null)
                             {
-                                return Result.Fail(new MustRetry($"Cannot find building field at {index}"));
+                                return Result.Fail(new Retry($"Cannot find building field at {index}"));
                             }
                             var pathBuilding = node.Descendants("path").FirstOrDefault();
                             if (pathBuilding is null)
                             {
-                                return Result.Fail(new MustRetry($"Cannot find building field at {index}"));
+                                return Result.Fail(new Retry($"Cannot find building field at {index}"));
                             }
                             var href = pathBuilding.GetAttributeValue("onclick", "");
                             var script = href.Replace("&amp;", "&");
@@ -357,17 +357,17 @@ namespace MainCore.Helper.Implementations
                 var listNode = _buildingTabParser.GetBuildingTabNodes(html);
                 if (listNode.Count == 0)
                 {
-                    return Result.Fail(new MustRetry("Cannot find building tabs"));
+                    return Result.Fail(new Retry("Cannot find building tabs"));
                 }
                 if (index > listNode.Count)
                 {
-                    return Result.Fail(new MustRetry($"Tab {index} is invalid, this building only has {listNode.Count} tabs"));
+                    return Result.Fail(new Retry($"Tab {index} is invalid, this building only has {listNode.Count} tabs"));
                 }
                 var chrome = chromeBrowser.GetChrome();
                 var elements = chrome.FindElements(By.XPath(listNode[index].XPath));
                 if (elements.Count == 0)
                 {
-                    return Result.Fail(new MustRetry("Cannot find building tabs"));
+                    return Result.Fail(new Retry("Cannot find building tabs"));
                 }
                 var result = Click(accountId, elements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
@@ -383,13 +383,13 @@ namespace MainCore.Helper.Implementations
             var avatar = _heroSectionParser.GetHeroAvatar(html);
             if (avatar is null)
             {
-                return Result.Fail(new MustRetry("Cannot find hero avatar"));
+                return Result.Fail(new Retry("Cannot find hero avatar"));
             }
             var chrome = chromeBrowser.GetChrome();
             var elements = chrome.FindElements(By.XPath(avatar.XPath));
             if (elements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find hero avatar"));
+                return Result.Fail(new Retry("Cannot find hero avatar"));
             }
 
             var result = Click(accountId, elements[0]);
@@ -418,14 +418,14 @@ namespace MainCore.Helper.Implementations
             var node = _heroSectionParser.GetAdventuresButton(html);
             if (node is null)
             {
-                return Result.Fail(new MustRetry("Cannot find adventures button"));
+                return Result.Fail(new Retry("Cannot find adventures button"));
             }
             var chrome = chromeBrowser.GetChrome();
             var elements = chrome.FindElements(By.XPath(node.XPath));
 
             if (elements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find adventures button"));
+                return Result.Fail(new Retry("Cannot find adventures button"));
             }
 
             var result = Click(accountId, elements[0]);

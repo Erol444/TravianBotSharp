@@ -1,11 +1,13 @@
-﻿namespace MainCore.Tasks
+﻿using System.Threading;
+
+namespace MainCore.Tasks
 {
     public abstract class VillageBotTask : AccountBotTask
     {
         private readonly int _villageId;
         public int VillageId => _villageId;
 
-        public VillageBotTask(int villageId, int accountId) : base(accountId)
+        public VillageBotTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _villageId = villageId;
         }

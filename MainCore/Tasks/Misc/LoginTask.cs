@@ -8,6 +8,7 @@ using ModuleCore.Parser;
 using OpenQA.Selenium;
 using Splat;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
@@ -20,7 +21,7 @@ namespace MainCore.Tasks.Misc
 
         private readonly IPlanManager _planManager;
 
-        public LoginTask(int accountId) : base(accountId)
+        public LoginTask(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _checkHelper = Locator.Current.GetService<ICheckHelper>();
@@ -73,12 +74,12 @@ namespace MainCore.Tasks.Misc
 
             if (usernameNode is null)
             {
-                return Result.Fail(new MustRetry("Cannot find username box"));
+                return Result.Fail(new Retry("Cannot find username box"));
             }
 
             if (passwordNode is null)
             {
-                return Result.Fail(new MustRetry("Cannot find password box"));
+                return Result.Fail(new Retry("Cannot find password box"));
             }
 
             using var context = _contextFactory.CreateDbContext();
@@ -89,17 +90,17 @@ namespace MainCore.Tasks.Misc
             var usernameElement = chrome.FindElements(By.XPath(usernameNode.XPath));
             if (usernameElement.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find username box"));
+                return Result.Fail(new Retry("Cannot find username box"));
             }
             var passwordElement = chrome.FindElements(By.XPath(passwordNode.XPath));
             if (passwordElement.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find password box"));
+                return Result.Fail(new Retry("Cannot find password box"));
             }
             var buttonElements = chrome.FindElements(By.XPath(buttonNode.XPath));
             if (buttonElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find login button"));
+                return Result.Fail(new Retry("Cannot find login button"));
             }
 
             usernameElement[0].SendKeys(Keys.Home);
@@ -119,12 +120,12 @@ namespace MainCore.Tasks.Misc
                     var skipButton = html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("questButtonSkipTutorial"));
                     if (skipButton is null)
                     {
-                        return Result.Fail(new MustRetry("Cannot find skip quest button"));
+                        return Result.Fail(new Retry("Cannot find skip quest button"));
                     }
                     var skipButtons = chrome.FindElements(By.XPath(skipButton.XPath));
                     if (skipButtons.Count == 0)
                     {
-                        return Result.Fail(new MustRetry("Cannot find skip quest button"));
+                        return Result.Fail(new Retry("Cannot find skip quest button"));
                     }
                     var result = _navigateHelper.Click(AccountId, skipButtons[0]);
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));

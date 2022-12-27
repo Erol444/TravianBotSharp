@@ -10,24 +10,24 @@ using OpenQA.Selenium;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
     public class NPCTask : VillageBotTask
     {
         private readonly INavigateHelper _navigateHelper;
-        private readonly IUpdateHelper _updateHelper;
 
         private readonly ISystemPageParser _systemPageParser;
 
-        public NPCTask(int villageId, int accountId) : base(villageId, accountId)
+        public NPCTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
-            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
             _systemPageParser = Locator.Current.GetService<ISystemPageParser>();
         }
 
-        public NPCTask(int villageId, int accountId, Resources ratio) : this(villageId, accountId)
+        public NPCTask(int villageId, int accountId, Resources ratio, CancellationToken cancellationToken = default) : this(villageId, accountId, cancellationToken)
+
         {
             _ratio = ratio;
         }
@@ -37,7 +37,7 @@ namespace MainCore.Tasks.Misc
         public override Result Execute()
         {
             {
-                var updateDorf2 = new UpdateDorf2(AccountId, VillageId);
+                var updateDorf2 = new UpdateDorf2(AccountId, VillageId, CancellationToken);
                 var result = updateDorf2.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
@@ -48,13 +48,16 @@ namespace MainCore.Tasks.Misc
                 var result = ToMarketPlace();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             {
                 var result = ClickNPCButton();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             EnterNumber();
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             {
                 var result = ClickNPC();
@@ -117,13 +120,13 @@ namespace MainCore.Tasks.Misc
             var npcButton = npcMerchant.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
             if (npcButton is null)
             {
-                return Result.Fail(new MustRetry("NPC button is not found"));
+                return Result.Fail(new Retry("NPC button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var npcButtonElements = chrome.FindElements(By.XPath(npcButton.XPath));
             if (npcButtonElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("NPC button is not found"));
+                return Result.Fail(new Retry("NPC button is not found"));
             }
             _navigateHelper.Click(AccountId, npcButtonElements[0]);
             var wait = _chromeBrowser.GetWait();
@@ -202,13 +205,13 @@ namespace MainCore.Tasks.Misc
             var distribute = submit.Descendants("button").FirstOrDefault();
             if (distribute is null)
             {
-                return Result.Fail(new MustRetry("NPC submit button is not found"));
+                return Result.Fail(new Retry("NPC submit button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var distributeElements = chrome.FindElements(By.XPath(distribute.XPath));
             if (distributeElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("NPC submit button is not found"));
+                return Result.Fail(new Retry("NPC submit button is not found"));
             }
             {
                 var result = _navigateHelper.Click(AccountId, distributeElements[0]);
@@ -226,7 +229,7 @@ namespace MainCore.Tasks.Misc
             var submitElements = chrome.FindElements(By.Id("npc_market_button"));
             if (submitElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("NPC submit button is not found"));
+                return Result.Fail(new Retry("NPC submit button is not found"));
             }
             {
                 var result = _navigateHelper.Click(AccountId, submitElements[0]);

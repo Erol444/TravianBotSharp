@@ -1,4 +1,5 @@
 ﻿using MainCore.Services.Interface;
+using System.Threading;
 
 namespace MainCore.Tasks
 {
@@ -8,7 +9,7 @@ namespace MainCore.Tasks
         public int AccountId => _accountId;
         protected IChromeBrowser _chromeBrowser;
 
-        public AccountBotTask(int accountId)
+        public AccountBotTask(int accountId, CancellationToken cancellationToken = default) : base(cancellationToken)
         {
             _accountId = accountId;
             _chromeBrowser = _chromeManager.Get(accountId);

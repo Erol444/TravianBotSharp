@@ -4,6 +4,7 @@ using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using Splat;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Sim
 {
@@ -11,7 +12,7 @@ namespace MainCore.Tasks.Sim
     {
         private readonly IClickHelper _clickHelper;
 
-        public StartAdventure(int accountId) : base(accountId)
+        public StartAdventure(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _clickHelper = Locator.Current.GetService<IClickHelper>();
         }

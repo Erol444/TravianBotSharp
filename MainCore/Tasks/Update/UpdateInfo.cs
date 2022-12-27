@@ -5,6 +5,7 @@ using ModuleCore.Parser;
 using Splat;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
@@ -15,7 +16,7 @@ namespace MainCore.Tasks.Update
         private readonly IRightBarParser _rightBarParser;
         private readonly IStockBarParser _stockBarParser;
 
-        public UpdateInfo(int accountId) : base(accountId)
+        public UpdateInfo(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _villagesTableParser = Locator.Current.GetService<IVillagesTableParser>();
             _heroSectionParser = Locator.Current.GetService<IHeroSectionParser>();

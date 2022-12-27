@@ -2,6 +2,7 @@
 using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
@@ -10,7 +11,7 @@ namespace MainCore.Tasks.Update
         private readonly INavigateHelper _navigateHelper;
         private readonly IUpdateHelper _updateHelper;
 
-        public UpdateHeroItems(int accountId) : base(accountId)
+        public UpdateHeroItems(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();

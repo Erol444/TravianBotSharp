@@ -55,7 +55,7 @@ namespace MainCore.Helper.Implementations
                 var duration = _villageCurrentlyBuildingParser.GetDuration(node);
 
                 var result = Enum.TryParse(strType, false, out BuildingEnums type);
-                if (!result) return Result.Fail(new MustStop($"Cannot parse {strType}. Is language English ?"));
+                if (!result) return Result.Fail(new Stop($"Cannot parse {strType}. Is language English ?"));
                 if (building is null)
                 {
                     context.VillagesCurrentlyBuildings.Add(new()

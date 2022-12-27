@@ -7,6 +7,7 @@ using MainCore.Tasks.Sim;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
@@ -15,7 +16,7 @@ namespace MainCore.Tasks.Update
         private readonly INavigateHelper _navigateHelper;
         private readonly IUpdateHelper _updateHelper;
 
-        public UpdateVillage(int villageId, int accountId) : base(villageId, accountId)
+        public UpdateVillage(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
@@ -28,7 +29,7 @@ namespace MainCore.Tasks.Update
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var updateTask = new UpdateInfo(AccountId);
+                var updateTask = new UpdateInfo(AccountId, CancellationToken);
                 var result = updateTask.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }

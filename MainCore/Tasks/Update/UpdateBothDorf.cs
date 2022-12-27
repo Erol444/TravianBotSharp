@@ -1,27 +1,28 @@
 ﻿using FluentResults;
 using MainCore.Errors;
 using System;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateBothDorf : VillageBotTask
     {
-        public UpdateBothDorf(int villageId, int accountId) : base(villageId, accountId)
+        public UpdateBothDorf(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }
 
         public override Result Execute()
         {
             var url = _chromeBrowser.GetCurrentUrl();
+            var updateDorf1 = new UpdateDorf1(VillageId, AccountId, CancellationToken);
+            var updateDorf2 = new UpdateDorf2(VillageId, AccountId, CancellationToken);
             if (url.Contains("dorf2"))
             {
                 {
-                    var updateDorf2 = new UpdateDorf2(VillageId, AccountId);
                     var result = updateDorf2.Execute();
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
                 {
-                    var updateDorf1 = new UpdateDorf1(VillageId, AccountId);
                     var result = updateDorf1.Execute();
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
@@ -29,12 +30,10 @@ namespace MainCore.Tasks.Update
             else if (url.Contains("dorf1"))
             {
                 {
-                    var updateDorf1 = new UpdateDorf1(VillageId, AccountId);
                     var result = updateDorf1.Execute();
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
                 {
-                    var updateDorf2 = new UpdateDorf2(VillageId, AccountId);
                     var result = updateDorf2.Execute();
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
@@ -44,12 +43,10 @@ namespace MainCore.Tasks.Update
                 if (Random.Shared.Next(0, 100) > 50)
                 {
                     {
-                        var updateDorf1 = new UpdateDorf1(VillageId, AccountId);
                         var result = updateDorf1.Execute();
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                     {
-                        var updateDorf2 = new UpdateDorf2(VillageId, AccountId);
                         var result = updateDorf2.Execute();
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
@@ -57,12 +54,10 @@ namespace MainCore.Tasks.Update
                 else
                 {
                     {
-                        var updateDorf2 = new UpdateDorf2(VillageId, AccountId);
                         var result = updateDorf2.Execute();
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                     {
-                        var updateDorf1 = new UpdateDorf1(VillageId, AccountId);
                         var result = updateDorf1.Execute();
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
