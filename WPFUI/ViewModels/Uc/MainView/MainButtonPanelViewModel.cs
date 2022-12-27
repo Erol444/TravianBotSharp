@@ -236,6 +236,7 @@ namespace WPFUI.ViewModels.Uc.MainView
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Pausing);
                 if (current is not null)
                 {
+                    _taskManager.StopCurrentTask(index);
                     _waitingWindow.Show("waiting current task stops");
                     await Task.Run(() =>
                     {
