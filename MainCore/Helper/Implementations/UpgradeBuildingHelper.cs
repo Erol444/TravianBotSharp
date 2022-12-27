@@ -217,12 +217,12 @@ namespace MainCore.Helper.Implementations
             var durationNode = container.Descendants("div").FirstOrDefault(x => x.HasClass("duration"));
             if (durationNode is null)
             {
-                return Result.Fail(new MustRetry("Cannot found duration in build page. (div)"));
+                return Result.Fail(new Retry("Cannot found duration in build page. (div)"));
             }
             var dur = durationNode.Descendants("span").FirstOrDefault(x => x.HasClass("value"));
             if (dur is null)
             {
-                return Result.Fail(new MustRetry("Cannot found duration in build page. (span)"));
+                return Result.Fail(new Retry("Cannot found duration in build page. (span)"));
             }
             var duration = dur.InnerText.ToDuration();
             if (setting.AdsUpgradeTime > duration.TotalMinutes) return false;
@@ -359,21 +359,21 @@ namespace MainCore.Helper.Implementations
             var node = html.GetElementbyId($"contract_building{(int)buildingTask.Building}");
             if (node is null)
             {
-                return Result.Fail(new MustRetry("Cannot find building box"));
+                return Result.Fail(new Retry("Cannot find building box"));
             }
             var button = node.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
 
             // Check for prerequisites
             if (button is null)
             {
-                return Result.Fail(new MustRetry($"Cannot find Build button for {buildingTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find Build button for {buildingTask.Building}"));
             }
 
             var chrome = chromeBrowser.GetChrome();
             var elements = chrome.FindElements(By.XPath(button.XPath));
             if (elements.Count == 0)
             {
-                return Result.Fail(new MustRetry($"Cannot find Build button for {buildingTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find Build button for {buildingTask.Building}"));
             }
 
             {
@@ -390,13 +390,13 @@ namespace MainCore.Helper.Implementations
             var container = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
             if (container is null)
             {
-                return Result.Fail(new MustRetry("Cannot find upgrading box"));
+                return Result.Fail(new Retry("Cannot find upgrading box"));
             }
             var upgradeButton = container.Descendants("button").FirstOrDefault(x => x.HasClass("build"));
 
             if (upgradeButton == null)
             {
-                return Result.Fail(new MustRetry($"Cannot find upgrade button for {buildingTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find upgrade button for {buildingTask.Building}"));
             }
 
             var chrome = chromeBrowser.GetChrome();
@@ -404,7 +404,7 @@ namespace MainCore.Helper.Implementations
             var elements = chrome.FindElements(By.XPath(upgradeButton.XPath));
             if (elements.Count == 0)
             {
-                return Result.Fail(new MustRetry($"Cannot find upgrade button for {buildingTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find upgrade button for {buildingTask.Building}"));
             }
 
             {
@@ -422,13 +422,13 @@ namespace MainCore.Helper.Implementations
             var nodeFastUpgrade = html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("videoFeatureButton") && x.HasClass("green"));
             if (nodeFastUpgrade is null)
             {
-                return Result.Fail(new MustRetry($"Cannot find fast upgrade button for {buildingTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find fast upgrade button for {buildingTask.Building}"));
             }
             var chrome = chromeBrowser.GetChrome();
             var elements = chrome.FindElements(By.XPath(nodeFastUpgrade.XPath));
             if (elements.Count == 0)
             {
-                return Result.Fail(new MustRetry($"Cannot find fast upgrade button for {buildingTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find fast upgrade button for {buildingTask.Building}"));
             }
             {
                 var result = _navigateHelper.Click(accountId, elements[0]);
@@ -448,7 +448,7 @@ namespace MainCore.Helper.Implementations
                 var elements = chrome.FindElements(By.XPath(nodeNotShowAgainConfirm.ParentNode.XPath));
                 if (elements.Count == 0)
                 {
-                    return Result.Fail(new MustRetry("Cannot find accept watching ads button"));
+                    return Result.Fail(new Retry("Cannot find accept watching ads button"));
                 }
                 {
                     var result = _navigateHelper.Click(accountId, elements[0]);
@@ -480,13 +480,13 @@ namespace MainCore.Helper.Implementations
             var nodeIframe = html.GetElementbyId("videoFeature");
             if (nodeIframe is null)
             {
-                return Result.Fail(new MustRetry($"Cannot find iframe for {buildingTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find iframe for {buildingTask.Building}"));
             }
             var chrome = chromeBrowser.GetChrome();
             var elementsIframe = chrome.FindElements(By.XPath(nodeIframe.XPath));
             if (elementsIframe.Count == 0)
             {
-                return Result.Fail(new MustRetry($"Cannot find iframe for {buildingTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find iframe for {buildingTask.Building}"));
             }
             {
                 var result = _navigateHelper.Click(accountId, elementsIframe[0]);
@@ -529,7 +529,7 @@ namespace MainCore.Helper.Implementations
                 var dontshowthisagain = chrome.FindElements(By.Id("dontShowThisAgain"));
                 if (dontshowthisagain.Count == 0)
                 {
-                    return Result.Fail(new MustRetry("Cannot find dont show this agian button"));
+                    return Result.Fail(new Retry("Cannot find dont show this agian button"));
                 }
 
                 {

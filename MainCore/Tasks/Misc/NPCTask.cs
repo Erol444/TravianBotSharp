@@ -117,13 +117,13 @@ namespace MainCore.Tasks.Misc
             var npcButton = npcMerchant.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
             if (npcButton is null)
             {
-                return Result.Fail(new MustRetry("NPC button is not found"));
+                return Result.Fail(new Retry("NPC button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var npcButtonElements = chrome.FindElements(By.XPath(npcButton.XPath));
             if (npcButtonElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("NPC button is not found"));
+                return Result.Fail(new Retry("NPC button is not found"));
             }
             _navigateHelper.Click(AccountId, npcButtonElements[0]);
             var wait = _chromeBrowser.GetWait();
@@ -202,13 +202,13 @@ namespace MainCore.Tasks.Misc
             var distribute = submit.Descendants("button").FirstOrDefault();
             if (distribute is null)
             {
-                return Result.Fail(new MustRetry("NPC submit button is not found"));
+                return Result.Fail(new Retry("NPC submit button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var distributeElements = chrome.FindElements(By.XPath(distribute.XPath));
             if (distributeElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("NPC submit button is not found"));
+                return Result.Fail(new Retry("NPC submit button is not found"));
             }
             {
                 var result = _navigateHelper.Click(AccountId, distributeElements[0]);
@@ -226,7 +226,7 @@ namespace MainCore.Tasks.Misc
             var submitElements = chrome.FindElements(By.Id("npc_market_button"));
             if (submitElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("NPC submit button is not found"));
+                return Result.Fail(new Retry("NPC submit button is not found"));
             }
             {
                 var result = _navigateHelper.Click(AccountId, submitElements[0]);

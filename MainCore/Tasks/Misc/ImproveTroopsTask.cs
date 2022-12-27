@@ -175,10 +175,10 @@ namespace MainCore.Tasks.Misc
             {
                 if (GetTroop(research) != (int)Troop) continue;
                 var upgradeButton = research.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
-                if (upgradeButton is null) return Result.Fail(new MustRetry("Cannot found upgrade button"));
+                if (upgradeButton is null) return Result.Fail(new Retry("Cannot found upgrade button"));
                 var chrome = _chromeBrowser.GetChrome();
                 var upgradeElements = chrome.FindElements(By.XPath(upgradeButton.XPath));
-                if (upgradeElements.Count == 0) return Result.Fail(new MustRetry("Cannot found upgrade button"));
+                if (upgradeElements.Count == 0) return Result.Fail(new Retry("Cannot found upgrade button"));
 
                 var result = _navigateHelper.Click(AccountId, upgradeElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));

@@ -42,7 +42,7 @@ namespace MainCore.Helper.Implementations
             }
             catch
             {
-                return Result.Fail(new MustRetry("Cannot find diaglog complete now"));
+                return Result.Fail(new Retry("Cannot find diaglog complete now"));
             }
             {
                 var result = ClickConfirmFinishNowButton(accountId, chromeBrowser);
@@ -57,13 +57,13 @@ namespace MainCore.Helper.Implementations
             var finishButton = _villageCurrentlyBuildingParser.GetFinishButton(html);
             if (finishButton is null)
             {
-                return Result.Fail(new MustRetry("Cannot find complete now button"));
+                return Result.Fail(new Retry("Cannot find complete now button"));
             }
             var chrome = chromeBrowser.GetChrome();
             var finishElements = chrome.FindElements(By.XPath(finishButton.XPath));
             if (finishElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find complete now button"));
+                return Result.Fail(new Retry("Cannot find complete now button"));
             }
             {
                 var result = _navigateHelper.Click(accountId, finishElements[0]);
@@ -90,13 +90,13 @@ namespace MainCore.Helper.Implementations
             var finishButton = _villageCurrentlyBuildingParser.GetConfirmFinishNowButton(html);
             if (finishButton is null)
             {
-                return Result.Fail(new MustRetry("Cannot find confirm button"));
+                return Result.Fail(new Retry("Cannot find confirm button"));
             }
             var chrome = chromeBrowser.GetChrome();
             var finishElements = chrome.FindElements(By.XPath(finishButton.XPath));
             if (finishElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find confirm button"));
+                return Result.Fail(new Retry("Cannot find confirm button"));
             }
             {
                 var result = _navigateHelper.Click(accountId, finishElements[0]);
@@ -112,13 +112,13 @@ namespace MainCore.Helper.Implementations
             var finishButton = _heroSectionParser.GetStartAdventureButton(html, x, y);
             if (finishButton is null)
             {
-                return Result.Fail(new MustRetry("Cannot find start adventure button"));
+                return Result.Fail(new Retry("Cannot find start adventure button"));
             }
             var chrome = chromeBrowser.GetChrome();
             var finishElements = chrome.FindElements(By.XPath(finishButton.XPath));
             if (finishElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Cannot find start adventure button"));
+                return Result.Fail(new Retry("Cannot find start adventure button"));
             }
 
             {
@@ -161,17 +161,17 @@ namespace MainCore.Helper.Implementations
                 var farmNode = html.GetElementbyId($"raidList{farmId}");
                 if (farmNode is null)
                 {
-                    return Result.Fail(new MustRetry("Cannot found farm node"));
+                    return Result.Fail(new Retry("Cannot found farm node"));
                 }
                 var startNode = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
                 if (startNode is null)
                 {
-                    return Result.Fail(new MustRetry("Cannot found start button"));
+                    return Result.Fail(new Retry("Cannot found start button"));
                 }
                 var startElements = chromeBrowser.GetChrome().FindElements(By.XPath(startNode.XPath));
                 if (startElements.Count == 0)
                 {
-                    return Result.Fail(new MustRetry("Cannot found start button"));
+                    return Result.Fail(new Retry("Cannot found start button"));
                 }
                 {
                     var result = _navigateHelper.Click(accountId, startElements[0]);
@@ -203,7 +203,7 @@ namespace MainCore.Helper.Implementations
                 var checkboxAlls = chrome.FindElements(By.Id($"raidListMarkAll{farmId}"));
                 if (checkboxAlls.Count == 0)
                 {
-                    return Result.Fail(new MustRetry("Cannot find check all check box"));
+                    return Result.Fail(new Retry("Cannot find check all check box"));
                 }
 
                 {
@@ -218,12 +218,12 @@ namespace MainCore.Helper.Implementations
                 var buttonStartFarm = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("green") && x.GetAttributeValue("type", "").Contains("submit"));
                 if (buttonStartFarm is null)
                 {
-                    return Result.Fail(new MustRetry("Cannot find button start farmlist"));
+                    return Result.Fail(new Retry("Cannot find button start farmlist"));
                 }
                 var buttonStartFarms = chrome.FindElements(By.XPath(buttonStartFarm.XPath));
                 if (buttonStartFarms.Count == 0)
                 {
-                    return Result.Fail(new MustRetry("Cannot find button start farmlist"));
+                    return Result.Fail(new Retry("Cannot find button start farmlist"));
                 }
 
                 {
