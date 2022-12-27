@@ -21,7 +21,7 @@ namespace MainCore.Tasks.Update
         public override Result Execute()
         {
             {
-                var taskUpdate = new UpdateVillage(VillageId, AccountId);
+                var taskUpdate = new UpdateVillage(VillageId, AccountId, CancellationToken);
                 var result = taskUpdate.Execute(); ;
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }

@@ -39,6 +39,7 @@ namespace MainCore.Tasks.Sim
                     if (result.IsFailed) return Result.Ok();
                     buildingTask = result.Value;
                 };
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
                 if (IsAutoBuilding(buildingTask)) continue;
                 {
@@ -51,6 +52,7 @@ namespace MainCore.Tasks.Sim
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                 }
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
                 if (!_upgradeBuildingHelper.IsEnoughFreeCrop(VillageId, buildingTask.Building))
                 {
@@ -66,6 +68,7 @@ namespace MainCore.Tasks.Sim
                     _planManager.Insert(VillageId, 0, task);
                     _eventManager.OnVillageBuildQueueUpdate(VillageId);
                 }
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
                 {
                     var result = _upgradeBuildingHelper.IsBuildingCompleted(AccountId, VillageId, buildingTask.Location, buildingTask.Level);
                     if (result.IsFailed)
@@ -80,6 +83,7 @@ namespace MainCore.Tasks.Sim
                         continue;
                     }
                 }
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
                 bool isNewBuilding = false;
 
                 {
@@ -92,6 +96,7 @@ namespace MainCore.Tasks.Sim
                     isNewBuilding = result.Value;
                 }
 
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
                 if (!_upgradeBuildingHelper.IsEnoughResource(AccountId, VillageId, buildingTask.Building, isNewBuilding))
                 {
                     var resMissing = _upgradeBuildingHelper.GetResourceMissing(AccountId, VillageId, buildingTask.Building, isNewBuilding);
@@ -110,7 +115,7 @@ namespace MainCore.Tasks.Sim
                             }
                         }
                         {
-                            var taskUpdate = new UpdateHeroItems(AccountId);
+                            var taskUpdate = new UpdateHeroItems(AccountId, CancellationToken);
                             var result = taskUpdate.Execute();
                             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                         }
@@ -143,10 +148,11 @@ namespace MainCore.Tasks.Sim
                                 (HeroItemEnums.Crop, (int)resMissing[3]),
                             };
 
-                            var taskEquip = new UseHeroResources(VillageId, AccountId, items);
+                            var taskEquip = new UseHeroResources(VillageId, AccountId, items, CancellationToken);
                             var result = taskEquip.Execute();
                             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                         }
+                        if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
                         {
                             var result = _upgradeBuildingHelper.GotoBuilding(AccountId, VillageId, buildingTask);
                             if (result.IsFailed)
@@ -167,6 +173,7 @@ namespace MainCore.Tasks.Sim
                     }
                 }
 
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
                 if (isNewBuilding)
                 {
                     var result = Construct(buildingTask);

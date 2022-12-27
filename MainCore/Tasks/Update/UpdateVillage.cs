@@ -29,7 +29,7 @@ namespace MainCore.Tasks.Update
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var updateTask = new UpdateInfo(AccountId);
+                var updateTask = new UpdateInfo(AccountId, CancellationToken);
                 var result = updateTask.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }

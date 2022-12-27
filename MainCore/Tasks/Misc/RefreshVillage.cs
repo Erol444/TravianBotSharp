@@ -17,11 +17,11 @@ namespace MainCore.Tasks.Misc
             BotTask taskUpdate;
             if (IsNeedDorf2())
             {
-                taskUpdate = new UpdateBothDorf(VillageId, AccountId);
+                taskUpdate = new UpdateBothDorf(VillageId, AccountId, CancellationToken);
             }
             else
             {
-                taskUpdate = new UpdateDorf1(VillageId, AccountId);
+                taskUpdate = new UpdateDorf1(VillageId, AccountId, CancellationToken);
             }
             var result = taskUpdate.Execute();
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));

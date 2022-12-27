@@ -37,7 +37,7 @@ namespace MainCore.Tasks.Misc
         public override Result Execute()
         {
             {
-                var updateDorf2 = new UpdateDorf2(AccountId, VillageId);
+                var updateDorf2 = new UpdateDorf2(AccountId, VillageId, CancellationToken);
                 var result = updateDorf2.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
@@ -48,13 +48,16 @@ namespace MainCore.Tasks.Misc
                 var result = ToMarketPlace();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             {
                 var result = ClickNPCButton();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             EnterNumber();
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             {
                 var result = ClickNPC();

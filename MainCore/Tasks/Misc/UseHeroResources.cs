@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MainCore.Enums;
+using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
 using System;
@@ -30,6 +31,10 @@ namespace MainCore.Tasks.Misc
             var setting = context.AccountsSettings.Find(AccountId);
             foreach ((var item, var amount) in _items)
             {
+                if (CancellationToken.IsCancellationRequested)
+                {
+                    return Result.Fail(new Cancel());
+                }
                 if (heroStatus != HeroStatusEnums.Home && !item.IsUsableWhenHeroAway())
                 {
                     return Result.Ok();

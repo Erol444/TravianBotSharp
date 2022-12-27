@@ -68,15 +68,16 @@ namespace MainCore.Tasks.Update
             }
 
             {
-                var taskAutoSend = new StartAdventure(AccountId);
+                var taskAutoSend = new StartAdventure(AccountId, CancellationToken);
                 var result = taskAutoSend.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var taskUpdate = new UpdateInfo(AccountId);
+                var taskUpdate = new UpdateInfo(AccountId, CancellationToken);
                 var result = taskUpdate.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            NextExecute();
             return Result.Ok();
         }
 

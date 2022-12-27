@@ -26,8 +26,7 @@ namespace MainCore.Tasks.Misc
         public override Result Execute()
         {
             {
-                var taskUpdate = new UpdateTroopLevel(VillageId, AccountId);
-
+                var taskUpdate = new UpdateTroopLevel(VillageId, AccountId, CancellationToken);
                 var result = taskUpdate.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }

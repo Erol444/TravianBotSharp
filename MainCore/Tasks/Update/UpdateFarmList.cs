@@ -72,7 +72,7 @@ namespace MainCore.Tasks.Update
             if (_checkHelper.IsFarmListPage(AccountId)) return Result.Ok();
 
             {
-                var taskUpdate = new UpdateDorf2(village, AccountId);
+                var taskUpdate = new UpdateDorf2(village, AccountId, CancellationToken);
                 var result = taskUpdate.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
