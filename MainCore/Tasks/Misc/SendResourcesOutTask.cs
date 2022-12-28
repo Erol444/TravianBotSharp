@@ -7,6 +7,7 @@ using OpenQA.Selenium;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
@@ -35,14 +36,8 @@ namespace MainCore.Tasks.Misc
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
-            // {
-            //     var result = Update();
-            //     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            // }
-
             {
-                var updateDorf2 = new UpdateDorf2(AccountId, VillageId);
-                var result = updateDorf2.Execute();
+                var result = Update();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -89,11 +84,11 @@ namespace MainCore.Tasks.Misc
             if (decider)
             {
                 _navigateHelper.ToDorf2(AccountId);
-                _navigateHelper.SwitchVillage(VillageId, AccountId);
+                _navigateHelper.SwitchVillage(AccountId, VillageId);
             }
             else
             {
-                _navigateHelper.SwitchVillage(VillageId, AccountId);
+                _navigateHelper.SwitchVillage(AccountId, VillageId);
                 _navigateHelper.ToDorf2(AccountId);
             }
 
@@ -136,12 +131,12 @@ namespace MainCore.Tasks.Misc
 
             if (xCoordinate is null)
             {
-                return Result.Fail(new MustRetry("Coordinate field is not found"));
+                return Result.Fail(new Retry("Coordinate field is not found"));
 
             }
             if (yCoordinate is null)
             {
-                return Result.Fail(new MustRetry("Coordinate field is not found"));
+                return Result.Fail(new Retry("Coordinate field is not found"));
 
             }
 
@@ -220,15 +215,15 @@ namespace MainCore.Tasks.Misc
             var searchY = marketSettings.SendExcessToY;
             var sendTovillage = context.Villages.Where(village => (village.X == searchX && village.Y == searchY)).FirstOrDefault();
 
-            // if (sendTovillage is null)
-            // {
-            //     _logManager.Information(AccountId, "Village to send resoures to is not found. Turning send resources out of village off.");
-            //     var setting = context.VillagesMarket.Find(VillageId);
-            //     setting.IsSendExcessResources = false;
-            //     context.Update(setting);
-            //     context.SaveChanges();
-            //     return Result.Fail(new Skip());
-            // }
+            if (sendTovillage is null)
+            {
+                _logManager.Information(AccountId, "Village to send resoures to is not found. Turning send resources out of village off.");
+                var setting = context.VillagesMarket.Find(VillageId);
+                setting.IsSendExcessResources = false;
+                context.Update(setting);
+                context.SaveChanges();
+                return Result.Fail(new Skip());
+            }
 
             return Result.Ok();
         }
@@ -327,27 +322,18 @@ namespace MainCore.Tasks.Misc
 
             if (sendButton is null)
             {
-                return Result.Fail(new MustRetry("Send resources button is not found"));
+                return Result.Fail(new Retry("Send resources button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var sendResource = chrome.FindElements(By.XPath(sendButton.XPath));
             if (sendResource.Count == 0)
             {
-                return Result.Fail(new MustRetry("Send resources button is not found"));
+                return Result.Fail(new Retry("Send resources button is not found"));
             }
             {
-                var result = _navigateHelper.Click(AccountId, sendResource[0]); //! IS this OKK
+                var result = _navigateHelper.Click(AccountId, sendResource[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            //! Should wait for next butto to show
-            // var wait = _chromeBrowser.GetWait();
-            // wait.Until(driver =>
-            // {
-            //     if (Cts.IsCancellationRequested) return true;
-            //     var waitHtml = new HtmlDocument();
-            //     waitHtml.LoadHtml(driver.PageSource);
-            //     return waitHtml.GetElementbyId("enabledButton") is not null;
-            // });
 
             return Result.Ok();
         }
@@ -359,13 +345,13 @@ namespace MainCore.Tasks.Misc
 
             if (sendButton is null)
             {
-                return Result.Fail(new MustRetry("Send resources button is not found"));
+                return Result.Fail(new Retry("Send resources button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var npcButtonElements = chrome.FindElements(By.XPath(sendButton.XPath));
             if (npcButtonElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Send resources button is not found"));
+                return Result.Fail(new Retry("Send resources button is not found"));
             }
             {
                 var result = _navigateHelper.Click(AccountId, npcButtonElements[0]);

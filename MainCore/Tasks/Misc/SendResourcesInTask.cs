@@ -7,6 +7,8 @@ using OpenQA.Selenium;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
+
 
 namespace MainCore.Tasks.Misc
 {
@@ -98,11 +100,11 @@ namespace MainCore.Tasks.Misc
             if (decider)
             {
                 _navigateHelper.ToDorf2(AccountId);
-                _navigateHelper.SwitchVillage(VillageId, AccountId);
+                _navigateHelper.SwitchVillage(AccountId, VillageId);
             }
             else
             {
-                _navigateHelper.SwitchVillage(VillageId, AccountId);
+                _navigateHelper.SwitchVillage(AccountId, VillageId);
                 _navigateHelper.ToDorf2(AccountId);
             }
             {
@@ -343,7 +345,7 @@ namespace MainCore.Tasks.Misc
 
 
             // Go to village
-            _navigateHelper.SwitchVillage(this.sendFromVillageId, AccountId);
+            _navigateHelper.SwitchVillage(AccountId, this.sendFromVillageId);
             _navigateHelper.ToDorf2(AccountId);
 
             return Result.Ok();
@@ -386,27 +388,18 @@ namespace MainCore.Tasks.Misc
 
             if (sendButton is null)
             {
-                return Result.Fail(new MustRetry("Send resources button is not found"));
+                return Result.Fail(new Retry("Send resources button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var sendResource = chrome.FindElements(By.XPath(sendButton.XPath));
             if (sendResource.Count == 0)
             {
-                return Result.Fail(new MustRetry("Send resources button is not found"));
+                return Result.Fail(new Retry("Send resources button is not found"));
             }
             {
-                var result = _navigateHelper.Click(AccountId, sendResource[0]); //! IS this OKK
+                var result = _navigateHelper.Click(AccountId, sendResource[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            //! Should wait for next butto to show
-            // var wait = _chromeBrowser.GetWait();
-            // wait.Until(driver =>
-            // {
-            //     if (Cts.IsCancellationRequested) return true;
-            //     var waitHtml = new HtmlDocument();
-            //     waitHtml.LoadHtml(driver.PageSource);
-            //     return waitHtml.GetElementbyId("enabledButton") is not null;
-            // });
 
             return Result.Ok();
         }
@@ -444,13 +437,13 @@ namespace MainCore.Tasks.Misc
 
             if (sendButton is null)
             {
-                return Result.Fail(new MustRetry("Send resources button is not found"));
+                return Result.Fail(new Retry("Send resources button is not found"));
             }
             var chrome = _chromeBrowser.GetChrome();
             var npcButtonElements = chrome.FindElements(By.XPath(sendButton.XPath));
             if (npcButtonElements.Count == 0)
             {
-                return Result.Fail(new MustRetry("Send resources button is not found"));
+                return Result.Fail(new Retry("Send resources button is not found"));
             }
 
             // Save database changes and click button
