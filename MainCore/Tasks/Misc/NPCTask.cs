@@ -37,7 +37,7 @@ namespace MainCore.Tasks.Misc
         public override Result Execute()
         {
             {
-                var updateDorf2 = new UpdateDorf2(AccountId, VillageId, CancellationToken);
+                var updateDorf2 = new UpdateDorf2(VillageId, AccountId, CancellationToken);
                 var result = updateDorf2.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }

@@ -134,6 +134,7 @@ namespace MainCore.Services.Implementations
             ///===========================================================///
             _logManager.Information(index, $"{task.GetName()} is finished");
 
+
             if (poliResult.FinalException is not null)
             {
                 UpdateAccountStatus(index, AccountStatus.Paused);
@@ -180,13 +181,12 @@ namespace MainCore.Services.Implementations
                     if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
                     else
                     {
-                        task.Stage = TaskStage.Waiting;
                         ReOrder(index);
                         _eventManager.OnTaskUpdate(index);
                     }
                 }
             }
-
+            task.Stage = TaskStage.Waiting;
             _taskExecuting[index] = false;
 
             using var context = _contextFactory.CreateDbContext();

@@ -15,11 +15,18 @@ namespace TravianOfficialCore.Parsers
             var path = healthMask.Descendants("path").FirstOrDefault();
             if (path is null) return -1;
             var commands = path.GetAttributeValue("d", "").Split(' ');
-            var xx = double.Parse(commands[^2], System.Globalization.CultureInfo.InvariantCulture);
-            var yy = double.Parse(commands[^1], System.Globalization.CultureInfo.InvariantCulture);
+            try
+            {
+                var xx = double.Parse(commands[^2], System.Globalization.CultureInfo.InvariantCulture);
+                var yy = double.Parse(commands[^1], System.Globalization.CultureInfo.InvariantCulture);
 
-            var rad = Math.Atan2(yy - 55, xx - 55);
-            return (int)Math.Round(-56.173 * rad + 96.077);
+                var rad = Math.Atan2(yy - 55, xx - 55);
+                return (int)Math.Round(-56.173 * rad + 96.077);
+            }
+            catch
+            {
+                return 0;
+            }
         }
 
         public int GetStatus(HtmlDocument doc)

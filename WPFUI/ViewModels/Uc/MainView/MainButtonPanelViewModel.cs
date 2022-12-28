@@ -63,11 +63,17 @@ namespace WPFUI.ViewModels.Uc.MainView
                     case AccountStatus.Offline:
                         IsAllowLogin = true;
                         IsAllowLogout = false;
+
+                        IsValidStatus = false;
+                        TextPause = "Offline";
                         break;
 
                     case AccountStatus.Starting:
                         IsAllowLogin = false;
                         IsAllowLogout = false;
+
+                        IsValidStatus = false;
+                        TextPause = "Starting";
                         break;
 
                     case AccountStatus.Online:
@@ -75,11 +81,15 @@ namespace WPFUI.ViewModels.Uc.MainView
                         IsAllowLogout = true;
 
                         IsValidStatus = true;
+                        TextPause = "Pause";
                         break;
 
                     case AccountStatus.Pausing:
                         IsAllowLogin = false;
                         IsAllowLogout = false;
+
+                        IsValidStatus = false;
+                        TextPause = "Pausing";
                         break;
 
                     case AccountStatus.Paused:
@@ -87,7 +97,7 @@ namespace WPFUI.ViewModels.Uc.MainView
                         IsAllowLogout = true;
 
                         IsValidStatus = true;
-
+                        TextPause = "Resume";
                         break;
 
                     case AccountStatus.Stopping:
@@ -95,6 +105,7 @@ namespace WPFUI.ViewModels.Uc.MainView
                         IsAllowLogout = false;
 
                         IsValidStatus = false;
+                        TextPause = "Stopping";
                         break;
                 }
 
@@ -315,6 +326,14 @@ namespace WPFUI.ViewModels.Uc.MainView
         {
             get => _isValidRestart;
             set => this.RaiseAndSetIfChanged(ref _isValidRestart, value);
+        }
+
+        private string _textPause;
+
+        public string TextPause
+        {
+            get => _textPause;
+            set => this.RaiseAndSetIfChanged(ref _textPause, value);
         }
     }
 }
