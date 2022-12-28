@@ -96,6 +96,7 @@ namespace MainCore.Services.Implementations
             _tasksDict.TryAdd(index, new());
             _taskExecuting.TryAdd(index, false);
             _botStatus.TryAdd(index, AccountStatus.Offline);
+            _cancellationTokenSources.TryAdd(index, null);
         }
 
         private void Loop(int index)
@@ -106,16 +107,8 @@ namespace MainCore.Services.Implementations
             var task = _tasksDict[index].First();
 
             if (task.ExecuteAt > DateTime.Now) return;
-            _taskExecuting[index] = true;
-            task.Stage = TaskStage.Executing;
-            _eventManager.OnTaskUpdate(index);
-            _logManager.Information(index, $"{task.GetName()} is started");
-            var cacheExecuteTime = task.ExecuteAt;
 
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.AccountsSettings.Find(index);
-
-            var retryPolicy = Policy.HandleResult<Result>(x => x.HasError<MustRetry>())
+            var retryPolicy = Policy.HandleResult<Result>(x => x.HasError<Retry>())
                 .WaitAndRetry(retryCount: 3, sleepDurationProvider: _ => TimeSpan.FromSeconds(5), onRetry: (error, _, retryCount, _) =>
             {
                 _logManager.Warning(index, $"There is something wrong.");
@@ -124,9 +117,27 @@ namespace MainCore.Services.Implementations
                 _logManager.Warning(index, $"Retry {retryCount} for {task.GetName()}");
             });
 
+            _taskExecuting[index] = true;
+            task.Stage = TaskStage.Executing;
+            _eventManager.OnTaskUpdate(index);
+            var cacheExecuteTime = task.ExecuteAt;
+
+            var cts = new CancellationTokenSource();
+            _cancellationTokenSources[index] = cts;
+            task.CancellationToken = cts.Token;
+
+            _cancellationTokenSources[index] = cts;
+
+            _logManager.Information(index, $"{task.GetName()} is started");
+            ///===========================================================///
             var poliResult = retryPolicy.ExecuteAndCapture(task.Execute);
+            ///===========================================================///
+            _logManager.Information(index, $"{task.GetName()} is finished");
+
             if (poliResult.FinalException is not null)
             {
+                UpdateAccountStatus(index, AccountStatus.Paused);
+                _logManager.Warning(index, $"There is something wrong. Bot is pausing", task);
                 var ex = poliResult.FinalException;
                 _logManager.Error(index, ex.Message, ex);
             }
@@ -135,36 +146,55 @@ namespace MainCore.Services.Implementations
                 var result = poliResult.Result;
                 if (result.IsFailed)
                 {
-                    if (result.HasError<NeedLogin>())
+                    task.Stage = TaskStage.Waiting;
+
+                    if (result.HasError<Login>())
                     {
-                        _logManager.Warning(index, "Login page is showing, stop current task and login");
+                        _logManager.Warning(index, "Login page is showing, stop current task and login", task);
                         Add(index, new LoginTask(index), true);
                     }
-                    else if (result.HasError<MustStop>())
+                    else if (result.HasError<Stop>())
                     {
                         UpdateAccountStatus(index, AccountStatus.Paused);
-                        _logManager.Warning(index, $"There is something wrong. Bot is pausing");
+                        _logManager.Warning(index, $"There is something wrong. Bot is pausing", task);
                         var errors = result.Reasons.Select(x => x.Message).ToList();
                         _logManager.Error(index, string.Join(Environment.NewLine, errors));
+                    }
+                    else if (result.HasError<Skip>())
+                    {
+                        if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
+                        else
+                        {
+                            ReOrder(index);
+                            _eventManager.OnTaskUpdate(index);
+                        }
+                    }
+                    else if (result.HasError<Cancel>())
+                    {
+                        UpdateAccountStatus(index, AccountStatus.Paused);
+                        _logManager.Information(index, $"Stop command requested", task);
                     }
                 }
                 else
                 {
+                    if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
+                    else
+                    {
+                        task.Stage = TaskStage.Waiting;
+                        ReOrder(index);
+                        _eventManager.OnTaskUpdate(index);
+                    }
                 }
             }
 
-            _logManager.Information(index, $"{task.GetName()} is finished");
-            if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
-            else
-            {
-                task.Stage = TaskStage.Waiting;
-                ReOrder(index);
-            }
-
-            _eventManager.OnTaskUpdate(index);
             _taskExecuting[index] = false;
 
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.AccountsSettings.Find(index);
             Thread.Sleep(Random.Shared.Next(setting.TaskDelayMin, setting.TaskDelayMax));
+
+            cts.Dispose();
+            _cancellationTokenSources[index] = null;
         }
 
         public bool IsTaskExecuting(int index)
@@ -188,9 +218,18 @@ namespace MainCore.Services.Implementations
             _eventManager.OnStatusUpdate(index, status);
         }
 
+        public void StopCurrentTask(int index)
+        {
+            Check(index);
+            var cts = _cancellationTokenSources[index];
+            if (cts is null) return;
+            cts.Cancel();
+        }
+
         private readonly Dictionary<int, List<BotTask>> _tasksDict = new();
         private readonly Dictionary<int, bool> _taskExecuting = new();
         private readonly Dictionary<int, AccountStatus> _botStatus = new();
+        private readonly Dictionary<int, CancellationTokenSource> _cancellationTokenSources = new();
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;

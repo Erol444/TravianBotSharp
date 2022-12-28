@@ -2,12 +2,13 @@
 using MainCore.Errors;
 using MainCore.Tasks.Update;
 using System;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
     public class RefreshVillage : VillageBotTask
     {
-        public RefreshVillage(int villageId, int accountId) : base(villageId, accountId)
+        public RefreshVillage(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }
 
@@ -16,11 +17,11 @@ namespace MainCore.Tasks.Misc
             BotTask taskUpdate;
             if (IsNeedDorf2())
             {
-                taskUpdate = new UpdateBothDorf(VillageId, AccountId);
+                taskUpdate = new UpdateBothDorf(VillageId, AccountId, CancellationToken);
             }
             else
             {
-                taskUpdate = new UpdateDorf1(VillageId, AccountId);
+                taskUpdate = new UpdateDorf1(VillageId, AccountId, CancellationToken);
             }
             var result = taskUpdate.Execute();
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));

@@ -8,6 +8,7 @@ using OpenQA.Selenium;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Misc
 {
@@ -17,7 +18,7 @@ namespace MainCore.Tasks.Misc
         public TroopEnums Troop => _troop;
         private readonly INavigateHelper _navigateHelper;
 
-        public ImproveTroopsTask(int villageId, int accountId) : base(villageId, accountId)
+        public ImproveTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
         }
@@ -25,8 +26,7 @@ namespace MainCore.Tasks.Misc
         public override Result Execute()
         {
             {
-                var taskUpdate = new UpdateTroopLevel(VillageId, AccountId);
-
+                var taskUpdate = new UpdateTroopLevel(VillageId, AccountId, CancellationToken);
                 var result = taskUpdate.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
@@ -174,10 +174,10 @@ namespace MainCore.Tasks.Misc
             {
                 if (GetTroop(research) != (int)Troop) continue;
                 var upgradeButton = research.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
-                if (upgradeButton is null) return Result.Fail(new MustRetry("Cannot found upgrade button"));
+                if (upgradeButton is null) return Result.Fail(new Retry("Cannot found upgrade button"));
                 var chrome = _chromeBrowser.GetChrome();
                 var upgradeElements = chrome.FindElements(By.XPath(upgradeButton.XPath));
-                if (upgradeElements.Count == 0) return Result.Fail(new MustRetry("Cannot found upgrade button"));
+                if (upgradeElements.Count == 0) return Result.Fail(new Retry("Cannot found upgrade button"));
 
                 var result = _navigateHelper.Click(AccountId, upgradeElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));

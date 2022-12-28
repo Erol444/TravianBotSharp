@@ -4,6 +4,7 @@ using MainCore.Helper.Interface;
 using MainCore.Tasks.Update;
 using Splat;
 using System;
+using System.Threading;
 
 namespace MainCore.Tasks.Attack
 {
@@ -11,7 +12,7 @@ namespace MainCore.Tasks.Attack
     {
         private readonly IClickHelper _clickHelper;
 
-        public StartFarmList(int accountId, int farmId) : base(accountId)
+        public StartFarmList(int accountId, int farmId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _farmId = farmId;
             _clickHelper = Locator.Current.GetService<IClickHelper>();
@@ -51,6 +52,7 @@ namespace MainCore.Tasks.Attack
                 _logManager.Warning(AccountId, $"Farm {FarmId} is missing. Remove this farm from queue");
                 return Result.Ok();
             }
+
             if (IsFarmDeactive())
             {
                 _logManager.Warning(AccountId, $"Farm {FarmId} is deactive. Remove this farm from queue");
@@ -60,6 +62,8 @@ namespace MainCore.Tasks.Attack
                 var result = _clickHelper.ClickStartFarm(AccountId, FarmId);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             {
                 using var context = _contextFactory.CreateDbContext();

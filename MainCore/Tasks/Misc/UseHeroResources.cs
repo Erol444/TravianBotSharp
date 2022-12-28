@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MainCore.Enums;
+using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
 using System;
@@ -13,7 +14,7 @@ namespace MainCore.Tasks.Misc
         private readonly INavigateHelper _navigateHelper;
         private readonly IHeroHelper _heroHelper;
 
-        public UseHeroResources(int villageId, int accountId, List<(HeroItemEnums, int)> items) : base(villageId, accountId)
+        public UseHeroResources(int villageId, int accountId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _heroHelper = Locator.Current.GetService<IHeroHelper>();
@@ -30,6 +31,10 @@ namespace MainCore.Tasks.Misc
             var setting = context.AccountsSettings.Find(AccountId);
             foreach ((var item, var amount) in _items)
             {
+                if (CancellationToken.IsCancellationRequested)
+                {
+                    return Result.Fail(new Cancel());
+                }
                 if (heroStatus != HeroStatusEnums.Home && !item.IsUsableWhenHeroAway())
                 {
                     return Result.Ok();

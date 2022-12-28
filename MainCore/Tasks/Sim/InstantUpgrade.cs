@@ -6,6 +6,7 @@ using MainCore.Tasks.Update;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Sim
 {
@@ -14,7 +15,7 @@ namespace MainCore.Tasks.Sim
         private readonly INavigateHelper _navigateHelper;
         private readonly IClickHelper _clickHelper;
 
-        public InstantUpgrade(int villageId, int accountId) : base(villageId, accountId)
+        public InstantUpgrade(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _clickHelper = Locator.Current.GetService<IClickHelper>();
@@ -33,11 +34,12 @@ namespace MainCore.Tasks.Sim
                 var result = _navigateHelper.GoRandomDorf(AccountId);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             {
                 var result = _clickHelper.ClickCompleteNow(AccountId);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             var tasks = _taskManager.GetList(AccountId);
             var improveTroopTask = tasks.OfType<ImproveTroopsTask>().FirstOrDefault(x => x.VillageId == VillageId);
@@ -53,7 +55,7 @@ namespace MainCore.Tasks.Sim
                 _taskManager.Update(AccountId);
             }
             {
-                var updateTask = new UpdateVillage(VillageId, AccountId);
+                var updateTask = new UpdateVillage(VillageId, AccountId, CancellationToken);
                 var result = updateTask.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }

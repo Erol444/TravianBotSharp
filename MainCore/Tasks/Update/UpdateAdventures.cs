@@ -6,6 +6,7 @@ using ModuleCore.Parser;
 using Splat;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
@@ -16,7 +17,7 @@ namespace MainCore.Tasks.Update
 
         private readonly ISystemPageParser _systemPageParser;
 
-        public UpdateAdventures(int accountId) : base(accountId)
+        public UpdateAdventures(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
@@ -67,15 +68,16 @@ namespace MainCore.Tasks.Update
             }
 
             {
-                var taskAutoSend = new StartAdventure(AccountId);
+                var taskAutoSend = new StartAdventure(AccountId, CancellationToken);
                 var result = taskAutoSend.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var taskUpdate = new UpdateInfo(AccountId);
+                var taskUpdate = new UpdateInfo(AccountId, CancellationToken);
                 var result = taskUpdate.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            NextExecute();
             return Result.Ok();
         }
 
