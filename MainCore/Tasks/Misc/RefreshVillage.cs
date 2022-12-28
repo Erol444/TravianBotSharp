@@ -11,7 +11,7 @@ namespace MainCore.Tasks.Misc
 {
     public class RefreshVillage : VillageBotTask
     {
-        private readonly int _mode;
+        public int Mode { get; set; }
 
         /// <summary>
         ///
@@ -22,13 +22,13 @@ namespace MainCore.Tasks.Misc
         /// <param name="cancellationToken"></param>
         public RefreshVillage(int villageId, int accountId, int mode = 0, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
-            _mode = mode;
+            Mode = mode;
         }
 
         public override Result Execute()
         {
             BotTask taskUpdate;
-            switch (_mode)
+            switch (Mode)
             {
                 case 0:
                     taskUpdate = IsNeedDorf2() ? new UpdateBothDorf(VillageId, AccountId, CancellationToken) : new UpdateDorf1(VillageId, AccountId, CancellationToken);
@@ -54,6 +54,7 @@ namespace MainCore.Tasks.Misc
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             ApplyAutoTask();
             NextExecute();
+            Mode = 0;
             return Result.Ok();
         }
 
