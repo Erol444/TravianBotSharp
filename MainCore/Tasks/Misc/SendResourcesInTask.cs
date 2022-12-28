@@ -18,22 +18,19 @@ namespace MainCore.Tasks.Misc
         private readonly INavigateHelper _navigateHelper;
         private readonly IUpdateHelper _updateHelper;
 
+        private long[] _toSend = new long[4];
+        private long _toSendSum;
+        private float _minMerchants = 1;
+        private string _oneMerchantSize;
+        private string _merchantsAvailable;
+        private int _sendFromVillageId;
+
 
         public SendResourcesInTask(int villageId, int accountId) : base(villageId, accountId)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
-
-        private long[] toSend = new long[4];
-        private long[] toGet = new long[4];
-        private long toSendSum;
-        private float minMerchants = 1;
-        private string oneMerchantSize;
-        private string merchantsAvailable;
-        private int sendFromVillageId;
-        private bool sendingOut = false;
-
 
         public override Result Execute()
         {
@@ -53,7 +50,7 @@ namespace MainCore.Tasks.Misc
             }
 
             {
-                var result = SwitchToSendingVillage();
+                var result = Switch_ToSendingVillage();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -118,7 +115,7 @@ namespace MainCore.Tasks.Misc
         private Result ToMarketPlace()
         {
             using var context = _contextFactory.CreateDbContext();
-            var marketplace = context.VillagesBuildings.Where(x => x.VillageId == this.sendFromVillageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
+            var marketplace = context.VillagesBuildings.Where(x => x.VillageId == this._sendFromVillageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
             if (marketplace is null)
             {
                 _logManager.Information(AccountId, "Marketplace is missing. Turn off auto Sending Resources to prevent bot detector.");
@@ -203,19 +200,19 @@ namespace MainCore.Tasks.Misc
             var merchantInfo = html.GetElementbyId("build");
 
             // Get how much resources can one merchant carry
-            this.oneMerchantSize = merchantInfo.Descendants("div").FirstOrDefault(x => x.HasClass("carry")).Descendants("b").FirstOrDefault().GetDirectInnerText();
+            this._oneMerchantSize = merchantInfo.Descendants("div").FirstOrDefault(x => x.HasClass("carry")).Descendants("b").FirstOrDefault().GetDirectInnerText();
 
             // Get available merchants
             var merchantsAvailable = merchantInfo.Descendants("div").FirstOrDefault(x => x.HasClass("traderCount")).Descendants("span").FirstOrDefault(x => x.HasClass("merchantsAvailable")).GetDirectInnerText();
-            this.merchantsAvailable = new string(merchantsAvailable.Where(c => char.IsLetter(c) || char.IsDigit(c)).ToArray());
+            this._merchantsAvailable = new string(merchantsAvailable.Where(c => char.IsLetter(c) || char.IsDigit(c)).ToArray());
 
-            if (Int16.Parse(this.merchantsAvailable) == 0)
+            if (Int16.Parse(this._merchantsAvailable) == 0)
             {
                 return Result.Fail(new Skip());
 
             }
 
-            if (this.minMerchants * Int16.Parse(this.oneMerchantSize) > this.toSendSum)
+            if (this._minMerchants * Int16.Parse(this._oneMerchantSize) > this._toSendSum)
             {
                 return Result.Fail(new Skip());
 
@@ -232,43 +229,43 @@ namespace MainCore.Tasks.Misc
 
             // Refresh sending village resources
             using var context = _contextFactory.CreateDbContext();
-            _updateHelper.UpdateResource(AccountId, this.sendFromVillageId);
-            var currentResources = context.VillagesResources.Find(this.sendFromVillageId);
+            _updateHelper.UpdateResource(AccountId, this._sendFromVillageId);
+            var currentResources = context.VillagesResources.Find(this._sendFromVillageId);
 
-            if (this.toSend[0] > currentResources.Wood) this.toSend[0] = currentResources.Wood;
-            if (this.toSend[1] > currentResources.Clay) this.toSend[1] = currentResources.Clay;
-            if (this.toSend[2] > currentResources.Iron) this.toSend[2] = currentResources.Iron;
-            if (this.toSend[3] > currentResources.Crop) this.toSend[3] = currentResources.Crop;
-            this.toSendSum = this.toSend.Sum();
+            if (this._toSend[0] > currentResources.Wood) this._toSend[0] = currentResources.Wood;
+            if (this._toSend[1] > currentResources.Clay) this._toSend[1] = currentResources.Clay;
+            if (this._toSend[2] > currentResources.Iron) this._toSend[2] = currentResources.Iron;
+            if (this._toSend[3] > currentResources.Crop) this._toSend[3] = currentResources.Crop;
+            this._toSendSum = this._toSend.Sum();
 
-            int toSendSumInt = (int)toSendSum;
-            var merchantsNeeded = toSendSumInt / Int64.Parse(this.oneMerchantSize);
-            if (merchantsNeeded > Int64.Parse(this.merchantsAvailable)) merchantsNeeded = Int64.Parse(this.merchantsAvailable);
+            int _toSendSumInt = (int)_toSendSum;
+            var merchantsNeeded = _toSendSumInt / Int64.Parse(this._oneMerchantSize);
+            if (merchantsNeeded > Int64.Parse(this._merchantsAvailable)) merchantsNeeded = Int64.Parse(this._merchantsAvailable);
 
 
-            while (this.toSendSum != Int64.Parse(this.oneMerchantSize) * merchantsNeeded)
+            while (this._toSendSum != Int64.Parse(this._oneMerchantSize) * merchantsNeeded)
             {
 
-                if (this.toSend[3] > 0)
+                if (this._toSend[3] > 0)
                 {
-                    this.toSend[3]--;
+                    this._toSend[3]--;
                 }
-                else if (this.toSend[2] > 0)
+                else if (this._toSend[2] > 0)
                 {
-                    this.toSend[2]--;
+                    this._toSend[2]--;
 
                 }
-                else if (this.toSend[1] > 0)
+                else if (this._toSend[1] > 0)
                 {
-                    this.toSend[1]--;
+                    this._toSend[1]--;
 
                 }
-                else if (this.toSend[0] > 0)
+                else if (this._toSend[0] > 0)
                 {
-                    this.toSend[0]--;
+                    this._toSend[0]--;
 
                 }
-                this.toSendSum = this.toSend.Sum();
+                this._toSendSum = this._toSend.Sum();
             }
 
         }
@@ -283,7 +280,7 @@ namespace MainCore.Tasks.Misc
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    var script = $"document.getElementsByName('r{i + 1}')[0].value = {toSend[i]};";
+                    var script = $"document.getElementsByName('r{i + 1}')[0].value = {_toSend[i]};";
 
                     chrome.ExecuteScript(script);
                 }
@@ -311,19 +308,19 @@ namespace MainCore.Tasks.Misc
                 return Result.Fail(new Skip());
             }
 
-            this.toSend[0] = marketSettings.GetMissingWood - currentResources.Wood;
-            this.toSend[1] = marketSettings.GetMissingClay - currentResources.Clay;
-            this.toSend[2] = marketSettings.GetMissingIron - currentResources.Iron;
-            this.toSend[3] = marketSettings.GetMissingCrop - currentResources.Crop;
+            this._toSend[0] = marketSettings.GetMissingWood - currentResources.Wood;
+            this._toSend[1] = marketSettings.GetMissingClay - currentResources.Clay;
+            this._toSend[2] = marketSettings.GetMissingIron - currentResources.Iron;
+            this._toSend[3] = marketSettings.GetMissingCrop - currentResources.Crop;
 
             // Set to 0 if resources is enough
-            if (this.toSend[0] < 0) this.toSend[0] = 0;
-            if (this.toSend[1] < 0) this.toSend[1] = 0;
-            if (this.toSend[2] < 0) this.toSend[2] = 0;
-            if (this.toSend[3] < 0) this.toSend[3] = 0;
+            if (this._toSend[0] < 0) this._toSend[0] = 0;
+            if (this._toSend[1] < 0) this._toSend[1] = 0;
+            if (this._toSend[2] < 0) this._toSend[2] = 0;
+            if (this._toSend[3] < 0) this._toSend[3] = 0;
 
-            this.toSendSum = this.toSend.Sum();
-            if (this.toSendSum == 0)
+            this._toSendSum = this._toSend.Sum();
+            if (this._toSendSum == 0)
             {
                 return Result.Fail(new Skip());
             }
@@ -331,7 +328,7 @@ namespace MainCore.Tasks.Misc
             return Result.Ok();
         }
 
-        private Result SwitchToSendingVillage()
+        private Result Switch_ToSendingVillage()
         {
             using var context = _contextFactory.CreateDbContext();
             var marketSettings = context.VillagesMarket.Find(VillageId);
@@ -341,11 +338,11 @@ namespace MainCore.Tasks.Misc
 
             var sendFromVillage = context.Villages.Where(village => (village.X == searchX && village.Y == searchY)).FirstOrDefault();
 
-            this.sendFromVillageId = sendFromVillage.Id;
+            this._sendFromVillageId = sendFromVillage.Id;
 
 
             // Go to village
-            _navigateHelper.SwitchVillage(AccountId, this.sendFromVillageId);
+            _navigateHelper.SwitchVillage(AccountId, this._sendFromVillageId);
             _navigateHelper.ToDorf2(AccountId);
 
             return Result.Ok();

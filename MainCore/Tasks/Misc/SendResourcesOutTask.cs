@@ -16,18 +16,18 @@ namespace MainCore.Tasks.Misc
         private readonly INavigateHelper _navigateHelper;
         private readonly IUpdateHelper _updateHelper;
 
+        private long[] _toSend = new long[4];
+        private long _toSendSum;
+        private string _oneMerchantSize;
+        private string _merchantsAvailable;
+
         public SendResourcesOutTask(int villageId, int accountId) : base(villageId, accountId)
         {
             _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
 
-        private long[] toSend = new long[4];
-        private long[] toGet = new long[4];
-        private long toSendSum;
-        private float minMerchants;
-        private string oneMerchantSize;
-        private string merchantsAvailable;
+
 
         public override Result Execute()
         {
@@ -182,25 +182,19 @@ namespace MainCore.Tasks.Misc
             var merchantInfo = html.GetElementbyId("build");
 
             // Get how much resources can one merchant carry
-            this.oneMerchantSize = merchantInfo.Descendants("div").FirstOrDefault(x => x.HasClass("carry")).Descendants("b").FirstOrDefault().GetDirectInnerText();
+            this._oneMerchantSize = merchantInfo.Descendants("div").FirstOrDefault(x => x.HasClass("carry")).Descendants("b").FirstOrDefault().GetDirectInnerText();
 
             // Get available merchants
             var merchantsAvailable = merchantInfo.Descendants("div").FirstOrDefault(x => x.HasClass("traderCount")).Descendants("span").FirstOrDefault(x => x.HasClass("merchantsAvailable")).GetDirectInnerText();
-            this.merchantsAvailable = new string(merchantsAvailable.Where(c => char.IsLetter(c) || char.IsDigit(c)).ToArray());
+            this._merchantsAvailable = new string(merchantsAvailable.Where(c => char.IsLetter(c) || char.IsDigit(c)).ToArray());
 
-            if (Int16.Parse(this.merchantsAvailable) == 0)
-            {
-                return false;
-            }
-
-            if (this.minMerchants * Int16.Parse(this.oneMerchantSize) > this.toSendSum)
+            if (Int16.Parse(this._merchantsAvailable) == 0)
             {
                 return false;
             }
 
             // Optimize merchants
             OptimizeMerchants();
-
 
             return true;
 
@@ -230,33 +224,33 @@ namespace MainCore.Tasks.Misc
 
         private void OptimizeMerchants()
         {
-            int toSendSumInt = (int)toSendSum;
-            var merchantsNeeded = toSendSumInt / Int64.Parse(this.oneMerchantSize);
-            if (merchantsNeeded > Int64.Parse(this.merchantsAvailable)) merchantsNeeded = Int64.Parse(this.merchantsAvailable);
+            int _toSendSumInt = (int)_toSendSum;
+            var merchantsNeeded = _toSendSumInt / Int64.Parse(this._oneMerchantSize);
+            if (merchantsNeeded > Int64.Parse(this._merchantsAvailable)) merchantsNeeded = Int64.Parse(this._merchantsAvailable);
 
-            while (this.toSendSum != Int64.Parse(this.oneMerchantSize) * merchantsNeeded)
+            while (this._toSendSum != Int64.Parse(this._oneMerchantSize) * merchantsNeeded)
             {
 
-                if (this.toSend[3] > 0)
+                if (this._toSend[3] > 0)
                 {
-                    this.toSend[3]--;
+                    this._toSend[3]--;
                 }
-                else if (this.toSend[2] > 0)
+                else if (this._toSend[2] > 0)
                 {
-                    this.toSend[2]--;
+                    this._toSend[2]--;
 
                 }
-                else if (this.toSend[1] > 0)
+                else if (this._toSend[1] > 0)
                 {
-                    this.toSend[1]--;
+                    this._toSend[1]--;
 
                 }
-                else if (this.toSend[0] > 0)
+                else if (this._toSend[0] > 0)
                 {
-                    this.toSend[0]--;
+                    this._toSend[0]--;
 
                 }
-                this.toSendSum = this.toSend.Sum();
+                this._toSendSum = this._toSend.Sum();
             }
 
         }
@@ -267,22 +261,22 @@ namespace MainCore.Tasks.Misc
             var setting = context.VillagesMarket.Find(VillageId);
             var currentResources = context.VillagesResources.Find(VillageId);
 
-            this.toSend[0] = currentResources.Wood - setting.SendExcessWood;
-            this.toSend[1] = currentResources.Clay - setting.SendExcessClay;
-            this.toSend[2] = currentResources.Iron - setting.SendExcessIron;
-            this.toSend[3] = currentResources.Crop - setting.SendExcessCrop;
+            this._toSend[0] = currentResources.Wood - setting.SendExcessWood;
+            this._toSend[1] = currentResources.Clay - setting.SendExcessClay;
+            this._toSend[2] = currentResources.Iron - setting.SendExcessIron;
+            this._toSend[3] = currentResources.Crop - setting.SendExcessCrop;
 
             // Set to 0 if limit is not exceeded.
-            if (this.toSend[0] < 0) this.toSend[0] = 0;
-            if (this.toSend[1] < 0) this.toSend[1] = 0;
-            if (this.toSend[2] < 0) this.toSend[2] = 0;
-            if (this.toSend[3] < 0) this.toSend[3] = 0;
+            if (this._toSend[0] < 0) this._toSend[0] = 0;
+            if (this._toSend[1] < 0) this._toSend[1] = 0;
+            if (this._toSend[2] < 0) this._toSend[2] = 0;
+            if (this._toSend[3] < 0) this._toSend[3] = 0;
 
-            this.toSendSum = this.toSend.Sum();
-            if (this.toSendSum == 0)
+            this._toSendSum = this._toSend.Sum();
+            if (this._toSendSum == 0)
             {
-                Array.ForEach(this.toSend, x => x = 1);
-                this.toSendSum = 4;
+                Array.ForEach(this._toSend, x => x = 1);
+                this._toSendSum = 4;
             }
 
             // Check if at least one merchant is filled 
@@ -304,7 +298,7 @@ namespace MainCore.Tasks.Misc
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    var script = $"document.getElementsByName('r{i + 1}')[0].value = {toSend[i]};";
+                    var script = $"document.getElementsByName('r{i + 1}')[0].value = {_toSend[i]};";
                     chrome.ExecuteScript(script);
                 }
             }
