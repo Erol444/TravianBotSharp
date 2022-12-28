@@ -23,6 +23,7 @@ namespace WPFUI.Views.Uc.MainView
                 this.BindCommand(ViewModel, vm => vm.LogoutCommand, v => v.LogoutButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.DeleteAccountCommand, v => v.DeleteButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.PauseCommand, v => v.PauseButton).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.TextPause, v => v.PauseButton.Content).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.RestartCommand, v => v.RestartButton).DisposeWith(d);
             });
         }
