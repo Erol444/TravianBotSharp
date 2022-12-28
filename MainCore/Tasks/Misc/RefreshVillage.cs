@@ -69,6 +69,9 @@ namespace MainCore.Tasks.Misc
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
+
+            if (!setting.IsAutoRefresh) return;
+
             var delay = Random.Shared.Next(setting.AutoRefreshTimeMin, setting.AutoRefreshTimeMax);
             ExecuteAt = DateTime.Now.AddMinutes(delay);
         }
@@ -80,7 +83,7 @@ namespace MainCore.Tasks.Misc
             InstantUpgrade(context);
             AutoNPC(context);
 
-            if (_mode == 2 || IsNeedDorf2()) AutoImproveTroop(context);
+            if (Mode == 2 || (Mode == 0 && IsNeedDorf2())) AutoImproveTroop(context);
         }
 
         private void InstantUpgrade(AppDbContext context)
