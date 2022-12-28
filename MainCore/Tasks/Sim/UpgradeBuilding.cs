@@ -239,7 +239,7 @@ namespace MainCore.Tasks.Sim
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var updateTask = new UpdateVillage(VillageId, AccountId);
+                var updateTask = new RefreshVillage(VillageId, AccountId);
                 var result = updateTask.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
