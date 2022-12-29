@@ -35,6 +35,18 @@ namespace MainCore.Tasks.Misc
         public override Result Execute()
         {
             {
+                using var context = _contextFactory.CreateDbContext();
+                if (VersionDetector.IsTTWars())
+                {
+                    _logManager.Information(AccountId, "Sending resources is not supported for TTWars,", this);
+                    var setting = context.VillagesSettings.Find(VillageId);
+                    setting.IsSendExcessResources = false;
+                    context.Update(setting);
+                    context.SaveChanges();
+                    return Result.Fail(new Skip());
+                }
+            }
+            {
                 var result = CheckIfVillageExists();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
@@ -118,8 +130,8 @@ namespace MainCore.Tasks.Misc
             var marketplace = context.VillagesBuildings.Where(x => x.VillageId == this._sendFromVillageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
             if (marketplace is null)
             {
-                _logManager.Information(AccountId, "Marketplace is missing. Turn off auto Sending Resources to prevent bot detector.");
-                var setting = context.VillagesMarket.Find(VillageId);
+                _logManager.Information(AccountId, "Marketplace is missing. Turn off auto Sending Resources to prevent bot detector.", this);
+                var setting = context.VillagesSettings.Find(VillageId);
                 setting.IsGetMissingResources = false;
                 context.Update(setting);
                 context.SaveChanges();
@@ -146,11 +158,13 @@ namespace MainCore.Tasks.Misc
 
             if (xCoordinate is null)
             {
-                throw new Exception("Destination village coordinates not found.");
+                _logManager.Information(AccountId, $"Cannot found X coordinate to send resources", this);
+                return Result.Fail(new Skip());
             }
             if (yCoordinate is null)
             {
-                throw new Exception("Destination village coordinates not found.");
+                _logManager.Information(AccountId, $"Cannot found Y coordinate to send resources", this);
+                return Result.Fail(new Skip());
             }
 
             var chrome = _chromeBrowser.GetChrome();
@@ -158,16 +172,15 @@ namespace MainCore.Tasks.Misc
             var yInput = chrome.FindElements(By.XPath(yCoordinate.XPath));
             if (xInput.Count == 0)
             {
-                throw new Exception("X coordinate not found");
+                return Result.Fail(new Retry("Cannot find coordinate, will try again."));
             }
-
             if (yInput.Count == 0)
             {
-                throw new Exception("Y coordinate not found");
+                return Result.Fail(new Retry("Cannot find coordinate, will try again."));
             }
 
             using var context = _contextFactory.CreateDbContext();
-            var villageMarketInfo = context.VillagesMarket.Where(x => x.VillageId == VillageId).FirstOrDefault();
+            var villageMarketInfo = context.VillagesSettings.Where(x => x.VillageId == VillageId).FirstOrDefault();
 
             int coordinateX;
             int coordinateY;
@@ -177,18 +190,11 @@ namespace MainCore.Tasks.Misc
             coordinateY = villageCoordinates.Y;
 
 
-            if (VersionDetector.IsTravianOfficial())
-            {
-                var script_x = $"document.getElementsByName('x')[0].value = {coordinateX};";
-                chrome.ExecuteScript(script_x);
+            var script_x = $"document.getElementsByName('x')[0].value = {coordinateX};";
+            chrome.ExecuteScript(script_x);
 
-                var script_y = $"document.getElementsByName('y')[0].value = {coordinateY};";
-                chrome.ExecuteScript(script_y);
-            }
-            else if (VersionDetector.IsTTWars())
-            {
-                return Result.Fail(new Skip());
-            }
+            var script_y = $"document.getElementsByName('y')[0].value = {coordinateY};";
+            chrome.ExecuteScript(script_y);
 
             return Result.Ok();
         }
@@ -208,14 +214,15 @@ namespace MainCore.Tasks.Misc
 
             if (Int16.Parse(this._merchantsAvailable) == 0)
             {
+                _logManager.Information(AccountId, $"No merchant available to send resources. Will Try again later.", this);
                 return Result.Fail(new Skip());
 
             }
 
             if (this._minMerchants * Int16.Parse(this._oneMerchantSize) > this._toSendSum)
             {
+                _logManager.Information(AccountId, $"Resources to send is less than one merchant size or 0 merchants are available. Will try again when at least one merchant is fully loaded.", this);
                 return Result.Fail(new Skip());
-
             }
 
             OptimizeMerchants();
@@ -275,20 +282,11 @@ namespace MainCore.Tasks.Misc
             var html = _chromeBrowser.GetHtml();
             var chrome = _chromeBrowser.GetChrome();
 
-
-            if (VersionDetector.IsTravianOfficial())
+            for (int i = 0; i < 4; i++)
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    var script = $"document.getElementsByName('r{i + 1}')[0].value = {_toSend[i]};";
+                var script = $"document.getElementsByName('r{i + 1}')[0].value = {_toSend[i]};";
 
-                    chrome.ExecuteScript(script);
-                }
-
-            }
-            else if (VersionDetector.IsTTWars())
-            {
-                return Result.Fail(new Skip());
+                chrome.ExecuteScript(script);
             }
 
             return Result.Ok();
@@ -297,7 +295,7 @@ namespace MainCore.Tasks.Misc
         private Result CheckIfVillageNeedsResources()
         {
             using var context = _contextFactory.CreateDbContext();
-            var marketSettings = context.VillagesMarket.Find(VillageId);
+            var marketSettings = context.VillagesSettings.Find(VillageId);
             var currentResources = context.VillagesResources.Find(VillageId);
 
 
@@ -305,6 +303,7 @@ namespace MainCore.Tasks.Misc
             // Check arrivalTime
             if (marketSettings.ArrivalTime > DateTime.Now)
             {
+                _logManager.Information(AccountId, $"Resources were already sent, will try to send again once they arrive.", this);
                 return Result.Fail(new Skip());
             }
 
@@ -322,6 +321,7 @@ namespace MainCore.Tasks.Misc
             this._toSendSum = this._toSend.Sum();
             if (this._toSendSum == 0)
             {
+                _logManager.Information(AccountId, $"Found no resources to be sent.", this);
                 return Result.Fail(new Skip());
             }
 
@@ -331,7 +331,7 @@ namespace MainCore.Tasks.Misc
         private Result Switch_ToSendingVillage()
         {
             using var context = _contextFactory.CreateDbContext();
-            var marketSettings = context.VillagesMarket.Find(VillageId);
+            var marketSettings = context.VillagesSettings.Find(VillageId);
 
             var searchX = marketSettings.SendFromX;
             var searchY = marketSettings.SendFromY;
@@ -360,7 +360,7 @@ namespace MainCore.Tasks.Misc
         private Result CheckIfVillageExists()
         {
             using var context = _contextFactory.CreateDbContext();
-            var marketSettings = context.VillagesMarket.Find(VillageId);
+            var marketSettings = context.VillagesSettings.Find(VillageId);
 
             var searchX = marketSettings.SendFromX;
             var searchY = marketSettings.SendFromY;
@@ -368,8 +368,8 @@ namespace MainCore.Tasks.Misc
 
             if (sendFromVillage is null)
             {
-                _logManager.Information(AccountId, "Village to send resoures from is not found. Turning send resources in to village off.");
-                var setting = context.VillagesMarket.Find(VillageId);
+                _logManager.Information(AccountId, "Village to send resoures from is not found. Turning send resources in to village off.", this);
+                var setting = context.VillagesSettings.Find(VillageId);
                 setting.IsGetMissingResources = false;
                 context.Update(setting);
                 context.SaveChanges();
@@ -407,7 +407,7 @@ namespace MainCore.Tasks.Misc
 
             // Find arrival time
             var context = _contextFactory.CreateDbContext();
-            var marketSettings = context.VillagesMarket.Find(VillageId);
+            var marketSettings = context.VillagesSettings.Find(VillageId);
 
             var tradeInfo = html.GetElementbyId("target_validate");
             var tradeInfoChildren = tradeInfo.Descendants("tbody").FirstOrDefault().Descendants("tr");

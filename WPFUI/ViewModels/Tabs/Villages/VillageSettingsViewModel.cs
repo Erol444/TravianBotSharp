@@ -2,6 +2,7 @@
 using MainCore.Helper.Interface;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
+using MainCore.Tasks.Update;
 using Microsoft.Win32;
 using ReactiveUI;
 using Splat;
@@ -30,6 +31,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
+            StartResourcesCommand = ReactiveCommand.Create(UpdateDorf1);
 
             this.WhenAnyValue(x => x.Settings.UpgradeTroop).Subscribe(LoadUpgradeTroop);
         }
@@ -200,9 +202,18 @@ namespace WPFUI.ViewModels.Tabs.Villages
             });
         }
 
+        private void UpdateDorf1()
+        {
+            var accountId = AccountId;
+            var villageId = VillageId;
+
+            _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
+        }
+
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> ExportCommand { get; }
         public ReactiveCommand<Unit, Unit> ImportCommand { get; }
+        public ReactiveCommand<Unit, Unit> StartResourcesCommand { get; }
 
         public VillageSetting Settings { get; } = new();
         public ObservableCollection<TroopInfoCheckBox> TroopUpgrade { get; } = new();

@@ -218,17 +218,6 @@ namespace MainCore
             });
 
             #endregion Village troops
-
-            #region Village market
-
-            modelBuilder.Entity<VillageMarket>(entity =>
-            {
-                entity.ToTable("VillageMarket");
-                entity.HasKey(e => e.VillageId)
-                    .HasName("PK_VILLAGESMARKET");
-            });
-
-            #endregion Village market
         }
 
         public void AddAccount(int accountId)
@@ -286,10 +275,7 @@ namespace MainCore
                 AutoNPCClay = 1,
                 AutoNPCIron = 1,
                 AutoNPCCrop = 0,
-            });
-            VillagesMarket.Add(new VillageMarket
-            {
-                VillageId = villageId,
+
                 IsSendExcessResources = false,
                 SendExcessWood = 5000,
                 SendExcessClay = 5000,
@@ -297,9 +283,14 @@ namespace MainCore
                 SendExcessCrop = 5000,
                 SendExcessToX = 0,
                 SendExcessToY = 0,
+
+                GetMissingClay = 2000,
+                GetMissingWood = 2000,
+                GetMissingCrop = 2000,
+                GetMissingIron = 2000,
+                SendFromX = 0,
+                SendFromY = 0,
             });
-
-
             //VillagesQueueBuildings
             //VillagesCurrentlyBuildings
             //VillagesBuildings
@@ -456,14 +447,6 @@ namespace MainCore
                     }
                 }
             }
-            if (!VillagesMarket.Any())
-            {
-                foreach (var village in Villages)
-                {
-                    var villageId = village.Id;
-                    VillagesMarket.Add(new VillageMarket { VillageId = villageId });
-                }
-            }
         }
 
         public void DeleteAccount(int accountId)
@@ -568,6 +551,5 @@ namespace MainCore
         public DbSet<Farm> Farms { get; set; }
         public DbSet<FarmSetting> FarmsSettings { get; set; }
         public DbSet<VillageTroops> VillagesTroops { get; set; }
-        public DbSet<VillageMarket> VillagesMarket { get; set; }
     }
 }

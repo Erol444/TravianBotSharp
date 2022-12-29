@@ -46,6 +46,21 @@
                 </StackPanel>
 
                 <StackPanel>
+                    <TextBlock TextWrapping="Wrap" Text="Resources settings" VerticalAlignment="Center" FontWeight="Bold" />
+                    <StackPanel  Background="#FFE5E5E5" >    
+                        <CheckBox x:Name="IsSendExcessResources" Content="Send out resources automaticaly:" />
+                        <controls:ResourcesUc x:Name="SendOutLimit" Margin="10,0,10,0"/>                
+                        <controls:CoordinatesUc x:Name="SendTo" />
+                    </StackPanel>
+                    <StackPanel  Background="#FFE5E5E5">    
+                        <CheckBox x:Name="IsGetMissingResources" Content="Send in resources automaticaly:" />
+                        <controls:ResourcesUc x:Name="SendInLimit" Margin="10,0,10,0"/>                
+                        <controls:CoordinatesUc x:Name="SendFrom" />
+                    </StackPanel>
+                    <Button x:Name="StartSendingResources" Width="100" Content="Start Now" FontSize="12" FontWeight="Normal" />
+                </StackPanel>
+
+                <StackPanel>
                     <TextBlock TextWrapping="Wrap" Text="Troop settings" VerticalAlignment="Center" FontWeight="Bold" />
                     <CheckBox x:Name="TroopUpgradeCheckBox" Content="Auto improve troop" />
                     <controls:TroopsWithCheckBoxUc x:Name="TroopUpgrade" />

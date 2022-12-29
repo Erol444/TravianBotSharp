@@ -27,10 +27,20 @@ namespace MainCore.Tasks.Misc
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
 
-
-
         public override Result Execute()
         {
+            {
+                using var context = _contextFactory.CreateDbContext();
+                if (VersionDetector.IsTTWars())
+                {
+                    _logManager.Information(AccountId, "Sending resources is not supported for TTWars,", this);
+                    var setting = context.VillagesSettings.Find(VillageId);
+                    setting.IsSendExcessResources = false;
+                    context.Update(setting);
+                    context.SaveChanges();
+                    return Result.Fail(new Skip());
+                }
+            }
             {
                 var result = CheckIfVillageExists();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
@@ -104,7 +114,7 @@ namespace MainCore.Tasks.Misc
             if (marketplace is null)
             {
                 _logManager.Information(AccountId, "Marketplace is missing. Turn off auto Sending Resources to prevent bot detector.", this);
-                var setting = context.VillagesMarket.Find(VillageId);
+                var setting = context.VillagesSettings.Find(VillageId);
                 setting.IsSendExcessResources = false;
                 context.Update(setting);
                 context.SaveChanges();
@@ -131,13 +141,13 @@ namespace MainCore.Tasks.Misc
 
             if (xCoordinate is null)
             {
-                return Result.Fail(new Retry("Coordinate field is not found"));
-
+                _logManager.Information(AccountId, $"Cannot found X coordinate to send resources", this);
+                return Result.Fail(new Skip());
             }
             if (yCoordinate is null)
             {
-                return Result.Fail(new Retry("Coordinate field is not found"));
-
+                _logManager.Information(AccountId, $"Cannot found Y coordinate to send resources", this);
+                return Result.Fail(new Skip());
             }
 
             var chrome = _chromeBrowser.GetChrome();
@@ -145,34 +155,26 @@ namespace MainCore.Tasks.Misc
             var yInput = chrome.FindElements(By.XPath(yCoordinate.XPath));
             if (xInput.Count == 0)
             {
-                return Result.Fail(new Skip());
+                return Result.Fail(new Retry("Cannot find coordinate, will try again."));
             }
             if (yInput.Count == 0)
             {
-                return Result.Fail(new Skip());
+                return Result.Fail(new Retry("Cannot find coordinate, will try again."));
             }
 
             using var context = _contextFactory.CreateDbContext();
-            var villageMarketInfo = context.VillagesMarket.Where(x => x.VillageId == VillageId).FirstOrDefault();
+            var villageMarketInfo = context.VillagesSettings.Where(x => x.VillageId == VillageId).FirstOrDefault();
 
             var coordinateX = villageMarketInfo.SendExcessToX;
             var coordinateY = villageMarketInfo.SendExcessToY;
 
-            if (VersionDetector.IsTravianOfficial())
-            {
-                var script_x = $"document.getElementsByName('x')[0].value = {coordinateX};";
-                chrome.ExecuteScript(script_x);
+            var script_x = $"document.getElementsByName('x')[0].value = {coordinateX};";
+            chrome.ExecuteScript(script_x);
 
-                var script_y = $"document.getElementsByName('y')[0].value = {coordinateY};";
-                chrome.ExecuteScript(script_y);
-            }
-            else if (VersionDetector.IsTTWars())
-            {
-                return Result.Fail(new Skip());
-            }
+            var script_y = $"document.getElementsByName('y')[0].value = {coordinateY};";
+            chrome.ExecuteScript(script_y);
 
             return Result.Ok();
-
         }
 
 
@@ -195,15 +197,13 @@ namespace MainCore.Tasks.Misc
 
             // Optimize merchants
             OptimizeMerchants();
-
             return true;
-
         }
 
         private Result CheckIfVillageExists()
         {
             using var context = _contextFactory.CreateDbContext();
-            var marketSettings = context.VillagesMarket.Find(VillageId);
+            var marketSettings = context.VillagesSettings.Find(VillageId);
 
             var searchX = marketSettings.SendExcessToX;
             var searchY = marketSettings.SendExcessToY;
@@ -211,8 +211,8 @@ namespace MainCore.Tasks.Misc
 
             if (sendTovillage is null)
             {
-                _logManager.Information(AccountId, "Village to send resoures to is not found. Turning send resources out of village off.");
-                var setting = context.VillagesMarket.Find(VillageId);
+                _logManager.Information(AccountId, "Village to send resoures to is not found. Turning send resources out of village off.", this);
+                var setting = context.VillagesSettings.Find(VillageId);
                 setting.IsSendExcessResources = false;
                 context.Update(setting);
                 context.SaveChanges();
@@ -258,7 +258,7 @@ namespace MainCore.Tasks.Misc
         private Result CheckIfVillageWillSendResources()
         {
             using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesMarket.Find(VillageId);
+            var setting = context.VillagesSettings.Find(VillageId);
             var currentResources = context.VillagesResources.Find(VillageId);
 
             this._toSend[0] = currentResources.Wood - setting.SendExcessWood;
@@ -282,6 +282,7 @@ namespace MainCore.Tasks.Misc
             // Check if at least one merchant is filled 
             if (CheckAndFillMerchants() == false)
             {
+                _logManager.Information(AccountId, $"Resources to send is less than one merchant size. Will try again when at least one merchant is full.", this);
                 return Result.Fail(new Skip());
 
             }
@@ -294,18 +295,12 @@ namespace MainCore.Tasks.Misc
             var html = _chromeBrowser.GetHtml();
             var chrome = _chromeBrowser.GetChrome();
 
-            if (VersionDetector.IsTravianOfficial())
+            for (int i = 0; i < 4; i++)
             {
-                for (int i = 0; i < 4; i++)
-                {
-                    var script = $"document.getElementsByName('r{i + 1}')[0].value = {_toSend[i]};";
-                    chrome.ExecuteScript(script);
-                }
+                var script = $"document.getElementsByName('r{i + 1}')[0].value = {_toSend[i]};";
+                chrome.ExecuteScript(script);
             }
-            else if (VersionDetector.IsTTWars())
-            {
-                return Result.Fail(new Skip());
-            }
+
             return Result.Ok();
 
         }

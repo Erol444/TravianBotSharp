@@ -50,7 +50,6 @@ namespace TestProject.Services
                 new object[] {typeof(NPCViewModel) },
                 new object[] {typeof(VillageSettingsViewModel) },
                 new object[] {typeof(VillageTroopsViewModel) },
-                new object[] {typeof(MarketViewModel) },
 
                 new object[] {typeof(SelectorViewModel) },
             };

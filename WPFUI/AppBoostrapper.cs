@@ -61,7 +61,6 @@ namespace WPFUI
             services.AddSingleton<NPCViewModel>();
             services.AddSingleton<VillageSettingsViewModel>();
             services.AddSingleton<VillageTroopsViewModel>();
-            services.AddSingleton<MarketViewModel>();
 
             services.AddSingleton<SelectorViewModel>();
             return services;

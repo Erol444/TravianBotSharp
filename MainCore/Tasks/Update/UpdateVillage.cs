@@ -189,7 +189,7 @@ namespace MainCore.Tasks.Update
             var tasks = listTask.OfType<SendResourcesOutTask>();
             if (tasks.Any(x => x.VillageId == VillageId)) return;
 
-            var setting = context.VillagesMarket.Find(VillageId);
+            var setting = context.VillagesSettings.Find(VillageId);
             if (!setting.IsSendExcessResources) return;
 
             _taskManager.Add(AccountId, new SendResourcesOutTask(VillageId, AccountId));
@@ -201,7 +201,7 @@ namespace MainCore.Tasks.Update
             var tasks = listTask.OfType<SendResourcesInTask>();
             if (tasks.Any(x => x.VillageId == VillageId)) return;
 
-            var setting = context.VillagesMarket.Find(VillageId);
+            var setting = context.VillagesSettings.Find(VillageId);
             if (!setting.IsGetMissingResources) return;
 
             _taskManager.Add(AccountId, new SendResourcesInTask(VillageId, AccountId));
