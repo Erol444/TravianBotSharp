@@ -1,6 +1,5 @@
 ﻿using MainCore.Models.Database;
 using MainCore.Tasks.Misc;
-using MainCore.Tasks.Update;
 using ReactiveUI;
 using System;
 using System.Reactive;
@@ -48,7 +47,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void RefreshTask()
         {
-            _taskManager.Add(AccountId, new UpdateVillage(VillageId, AccountId));
+            _taskManager.Add(AccountId, new RefreshVillage(VillageId, AccountId));
             MessageBox.Show("Added Refresh resources task to queue");
         }
 

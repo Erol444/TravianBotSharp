@@ -1,12 +1,7 @@
 using FluentResults;
-using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
-using MainCore.Tasks.Misc;
-using MainCore.Tasks.Sim;
 using Splat;
-using System;
-using System.Linq;
 using System.Threading;
 
 namespace MainCore.Tasks.Update
@@ -43,13 +38,11 @@ namespace MainCore.Tasks.Update
 
         private Result UpdateVillageInfo()
         {
-            using var context = _contextFactory.CreateDbContext();
             var currentUrl = _chromeBrowser.GetCurrentUrl();
             if (currentUrl.Contains("dorf"))
             {
                 var result = _updateHelper.UpdateCurrentlyBuilding(AccountId, VillageId);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                InstantUpgrade(context);
                 _eventManager.OnVillageCurrentUpdate(VillageId);
             }
             if (currentUrl.Contains("dorf1"))
@@ -71,7 +64,6 @@ namespace MainCore.Tasks.Update
                     var result = _updateHelper.UpdateDorf2(AccountId, VillageId);
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
-                AutoImproveTroop(context);
                 _eventManager.OnVillageBuildsUpdate(VillageId);
             }
 
@@ -205,6 +197,8 @@ namespace MainCore.Tasks.Update
             if (!setting.IsGetMissingResources) return;
 
             _taskManager.Add(AccountId, new SendResourcesInTask(VillageId, AccountId));
+        }
+            return Result.Ok();
         }
     }
 }

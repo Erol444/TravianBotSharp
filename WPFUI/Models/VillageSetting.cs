@@ -10,8 +10,19 @@ namespace WPFUI.Models
     {
         public VillageSetting()
         {
-            this.WhenAnyValue(vm => vm.IsAutoNPC).Where(x => x).Subscribe(_ => IsAutoNPCWarehouse = false);
-            this.WhenAnyValue(vm => vm.IsAutoNPCWarehouse).Where(x => x).Subscribe(_ => IsAutoNPC = false);
+            this.WhenAnyValue(vm => vm.IsAutoRefresh).Where(x => !x).Subscribe(_ =>
+            {
+                IsAutoNPC = false;
+                IsAutoNPCWarehouse = false;
+            });
+            this.WhenAnyValue(vm => vm.IsAutoNPC).Where(x => x).Subscribe(_ =>
+            {
+                IsAutoNPCWarehouse = false;
+            });
+            this.WhenAnyValue(vm => vm.IsAutoNPCWarehouse).Where(x => x).Subscribe(_ =>
+            {
+                IsAutoNPC = false;
+            });
         }
 
         public void CopyFrom(MainCore.Models.Database.VillageSetting settings)
