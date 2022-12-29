@@ -207,7 +207,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var accountId = AccountId;
             var villageId = VillageId;
 
-            _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
+            _taskManager.Add(accountId, new RefreshVillage(villageId, accountId));
         }
 
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }

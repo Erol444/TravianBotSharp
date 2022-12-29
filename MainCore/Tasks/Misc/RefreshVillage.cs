@@ -84,6 +84,9 @@ namespace MainCore.Tasks.Misc
             AutoNPC(context);
 
             if (Mode == 2 || (Mode == 0 && IsNeedDorf2())) AutoImproveTroop(context);
+
+            AutoSendResourcesOut(context);
+            AutoSendResourcesIn(context);
         }
 
         private void InstantUpgrade(AppDbContext context)
@@ -179,6 +182,30 @@ namespace MainCore.Tasks.Misc
                 if (troops[i].Level >= smithy.Level) continue;
                 _taskManager.Add(AccountId, new ImproveTroopsTask(VillageId, AccountId));
             }
+        }
+
+        private void AutoSendResourcesOut(AppDbContext context)
+        {
+            var listTask = _taskManager.GetList(AccountId);
+            var tasks = listTask.OfType<SendResourcesOutTask>();
+            if (tasks.Any(x => x.VillageId == VillageId)) return;
+
+            var setting = context.VillagesSettings.Find(VillageId);
+            if (!setting.IsSendExcessResources) return;
+
+            _taskManager.Add(AccountId, new SendResourcesOutTask(VillageId, AccountId));
+        }
+
+        private void AutoSendResourcesIn(AppDbContext context)
+        {
+            var listTask = _taskManager.GetList(AccountId);
+            var tasks = listTask.OfType<SendResourcesInTask>();
+            if (tasks.Any(x => x.VillageId == VillageId)) return;
+
+            var setting = context.VillagesSettings.Find(VillageId);
+            if (!setting.IsGetMissingResources) return;
+
+            _taskManager.Add(AccountId, new SendResourcesInTask(VillageId, AccountId));
         }
     }
 }
