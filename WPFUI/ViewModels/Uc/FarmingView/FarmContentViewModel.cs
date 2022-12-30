@@ -27,8 +27,6 @@ namespace WPFUI.ViewModels.Uc.FarmingView
                 FarmName = "Not selected";
                 FarmCount = "~";
                 FarmSetting.IsActive = false;
-                FarmSetting.IntervalTime = "0";
-                FarmSetting.IntervalDiffTime = "0";
             }
             else
             {
@@ -38,6 +36,10 @@ namespace WPFUI.ViewModels.Uc.FarmingView
                 FarmCount = count.ToString();
                 var setting = context.FarmsSettings.Find(farm.Id);
                 FarmSetting.CopyFrom(setting);
+
+                var settings = context.AccountsSettings.Find(_selectorViewModel.Account.Id);
+                Interval = settings.FarmIntervalMax - settings.FarmIntervalMin;
+                DiffInterval = settings.FarmIntervalMin + settings.FarmIntervalMax;
             }
         }
 
@@ -51,6 +53,12 @@ namespace WPFUI.ViewModels.Uc.FarmingView
                 var setting = context.FarmsSettings.Find(_selectorViewModel.Farm.Id);
                 FarmSetting.CopyTo(setting);
                 context.Update(setting);
+
+                var settings = context.AccountsSettings.Find(_selectorViewModel.Account.Id);
+                settings.FarmIntervalMin = Interval - DiffInterval;
+                if (settings.FarmIntervalMin < 0) settings.FarmIntervalMin = 0;
+                settings.FarmIntervalMax = Interval + DiffInterval;
+                context.Update(settings);
                 context.SaveChanges();
             });
             _waitingWindow.Close();
@@ -71,6 +79,22 @@ namespace WPFUI.ViewModels.Uc.FarmingView
         {
             get => _farmCount;
             set => this.RaiseAndSetIfChanged(ref _farmCount, value);
+        }
+
+        private int _interval;
+
+        public int Interval
+        {
+            get => _interval;
+            set => this.RaiseAndSetIfChanged(ref _interval, value);
+        }
+
+        private int _diffInterval;
+
+        public int DiffInterval
+        {
+            get => _diffInterval;
+            set => this.RaiseAndSetIfChanged(ref _diffInterval, value);
         }
 
         private readonly ObservableAsPropertyHelper<bool> _isEnable;

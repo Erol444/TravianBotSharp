@@ -4,6 +4,7 @@ using MainCore.Helper.Interface;
 using MainCore.Tasks.Update;
 using Splat;
 using System;
+using System.Linq;
 using System.Threading;
 
 namespace MainCore.Tasks.Attack
@@ -25,46 +26,34 @@ namespace MainCore.Tasks.Attack
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
-            if (!IsFarmExist())
             {
-                _logManager.Warning(AccountId, $"Farm {FarmId} is missing. Remove this farm from queue");
-                return Result.Ok();
-            }
-
-            if (IsFarmDeactive())
-            {
-                _logManager.Warning(AccountId, $"Farm {FarmId} is deactive. Remove this farm from queue");
-                return Result.Ok();
-            }
-            {
-                var result = _clickHelper.ClickStartFarm(AccountId, FarmId);
+                var result = ClickStartFarm();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-
             {
                 using var context = _contextFactory.CreateDbContext();
-                var setting = context.FarmsSettings.Find(FarmId);
-                var time = Random.Shared.Next(setting.IntervalMin, setting.IntervalMax);
+                var setting = context.AccountsSettings.Find(AccountId);
+                var time = Random.Shared.Next(setting.FarmIntervalMin, setting.FarmIntervalMax);
                 ExecuteAt = DateTime.Now.AddSeconds(time);
             }
             return Result.Ok();
         }
 
-        private bool IsFarmExist()
+        private Result ClickStartFarm()
         {
             using var context = _contextFactory.CreateDbContext();
-            var farm = context.Farms.Find(FarmId);
-            return farm is not null;
-        }
+            var farms = context.Farms.Where(x => x.AccountId == AccountId).ToList();
+            foreach (var farm in farms)
+            {
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+                var isActive = context.FarmsSettings.Find(farm.Id).IsActive;
+                if (!isActive) continue;
 
-        private bool IsFarmDeactive()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.FarmsSettings.Find(FarmId);
-            if (!setting.IsActive) return true;
-            return false;
+                var result = _clickHelper.ClickStartFarm(AccountId, farm.Id);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
         }
     }
 }
