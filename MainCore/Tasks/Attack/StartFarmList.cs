@@ -12,31 +12,9 @@ namespace MainCore.Tasks.Attack
     {
         private readonly IClickHelper _clickHelper;
 
-        public StartFarmList(int accountId, int farmId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
+        public StartFarmList(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
-            _farmId = farmId;
             _clickHelper = Locator.Current.GetService<IClickHelper>();
-        }
-
-        private readonly int _farmId;
-        public int FarmId => _farmId;
-
-        public override string GetName()
-        {
-            if (string.IsNullOrEmpty(_name))
-            {
-                using var context = _contextFactory.CreateDbContext();
-                var farm = context.Farms.Find(FarmId);
-                if (farm is not null)
-                {
-                    _name = $"Start list farm [{farm.Name}]";
-                }
-                else
-                {
-                    _name = $"Start list farm [unknow]";
-                }
-            }
-            return _name;
         }
 
         public override Result Execute()
