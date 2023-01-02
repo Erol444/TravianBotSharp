@@ -9,7 +9,7 @@ namespace MainCore.Migrations
         {
             Delete
                 .Column("FarmIntervalMin")
-                .Column("FarmIntervalMax").FromTable("VillagesSettings");
+                .Column("FarmIntervalMax").FromTable("AccountsSettings");
             Alter.Table("FarmsSettings")
                 .AddColumn("IntervalMin").AsInt32().WithDefaultValue(590)
                 .AddColumn("IntervalMax").AsInt32().WithDefaultValue(610);
@@ -20,7 +20,7 @@ namespace MainCore.Migrations
             Delete
                .Column("IntervalMin")
                .Column("IntervalMax").FromTable("FarmsSettings");
-            Alter.Table("VillagesSettings")
+            Alter.Table("AccountsSettings")
                 .AddColumn("FarmIntervalMin").AsInt32().WithDefaultValue(590)
                 .AddColumn("FarmIntervalMax").AsInt32().WithDefaultValue(610);
         }
