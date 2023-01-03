@@ -287,7 +287,6 @@ namespace MainCore.Tasks.Misc
             if (this._toSend[3] < 0) this._toSend[3] = 0;
 
             this._toSendSum = this._toSend.Sum();
-            CheckAndFillMerchants();
 
             return Result.Ok();
         }
