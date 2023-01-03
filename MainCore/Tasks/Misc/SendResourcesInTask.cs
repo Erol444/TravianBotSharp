@@ -219,9 +219,9 @@ namespace MainCore.Tasks.Misc
 
             }
 
-            if (this._minMerchants * Int16.Parse(this._oneMerchantSize) > this._toSendSum)
+            if (Int16.Parse(this._oneMerchantSize) > this._toSendSum)
             {
-                _logManager.Information(AccountId, $"Resources to send is less than one merchant size or 0 merchants are available. Will try again when at least one merchant is fully loaded.", this);
+                _logManager.Information(AccountId, $"Resources to send is less than one merchant size. Will try again when at least one merchant is full.", this);
                 return Result.Fail(new Skip());
             }
 
@@ -297,8 +297,6 @@ namespace MainCore.Tasks.Misc
             using var context = _contextFactory.CreateDbContext();
             var marketSettings = context.VillagesSettings.Find(VillageId);
             var currentResources = context.VillagesResources.Find(VillageId);
-
-
 
             // Check arrivalTime
             if (marketSettings.ArrivalTime > DateTime.Now)

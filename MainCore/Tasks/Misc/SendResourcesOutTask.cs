@@ -178,7 +178,7 @@ namespace MainCore.Tasks.Misc
         }
 
 
-        private bool CheckAndFillMerchants()
+        private Result CheckAndFillMerchants()
         {
             var html = _chromeBrowser.GetHtml();
             var merchantInfo = html.GetElementbyId("build");
@@ -190,14 +190,23 @@ namespace MainCore.Tasks.Misc
             var merchantsAvailable = merchantInfo.Descendants("div").FirstOrDefault(x => x.HasClass("traderCount")).Descendants("span").FirstOrDefault(x => x.HasClass("merchantsAvailable")).GetDirectInnerText();
             this._merchantsAvailable = new string(merchantsAvailable.Where(c => char.IsLetter(c) || char.IsDigit(c)).ToArray());
 
+            if (this._toSendSum == 0 || Int16.Parse(this._oneMerchantSize) > this._toSendSum)
+            {
+                _logManager.Information(AccountId, $"Resources to send is less than one merchant size. Will try again when at least one merchant is full.", this);
+                return Result.Fail(new Skip());
+            }
+
             if (Int16.Parse(this._merchantsAvailable) == 0)
             {
-                return false;
+                _logManager.Information(AccountId, $"No merchants available, will try again later.", this);
+                return Result.Fail(new Skip());
             }
 
             // Optimize merchants
             OptimizeMerchants();
-            return true;
+
+            return Result.Ok();
+
         }
 
         private Result CheckIfVillageExists()
@@ -273,18 +282,7 @@ namespace MainCore.Tasks.Misc
             if (this._toSend[3] < 0) this._toSend[3] = 0;
 
             this._toSendSum = this._toSend.Sum();
-
-            if (this._toSendSum == 0 || Int16.Parse(this._oneMerchantSize) > this._toSendSum)
-            {
-                _logManager.Information(AccountId, $"Resources to send is less than one merchant size. Will try again when at least one merchant is full.", this);
-                return Result.Fail(new Skip());
-            }
-
-            if (CheckAndFillMerchants() == false)
-            {
-                _logManager.Information(AccountId, $"Resources to send is less than one merchant size. Will try again when at least one merchant is full.", this);
-                return Result.Fail(new Skip());
-            }
+            CheckAndFillMerchants();
 
             return Result.Ok();
         }
