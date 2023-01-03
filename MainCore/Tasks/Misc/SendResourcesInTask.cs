@@ -20,7 +20,6 @@ namespace MainCore.Tasks.Misc
 
         private long[] _toSend = new long[4];
         private long _toSendSum;
-        private float _minMerchants = 1;
         private string _oneMerchantSize;
         private string _merchantsAvailable;
         private int _sendFromVillageId;
