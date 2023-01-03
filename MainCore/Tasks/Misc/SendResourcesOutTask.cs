@@ -273,18 +273,17 @@ namespace MainCore.Tasks.Misc
             if (this._toSend[3] < 0) this._toSend[3] = 0;
 
             this._toSendSum = this._toSend.Sum();
-            if (this._toSendSum == 0)
+
+            if (this._toSendSum == 0 || Int16.Parse(this._oneMerchantSize) > this._toSendSum)
             {
-                Array.ForEach(this._toSend, x => x = 1);
-                this._toSendSum = 4;
+                _logManager.Information(AccountId, $"Resources to send is less than one merchant size. Will try again when at least one merchant is full.", this);
+                return Result.Fail(new Skip());
             }
 
-            // Check if at least one merchant is filled 
             if (CheckAndFillMerchants() == false)
             {
                 _logManager.Information(AccountId, $"Resources to send is less than one merchant size. Will try again when at least one merchant is full.", this);
                 return Result.Fail(new Skip());
-
             }
 
             return Result.Ok();
@@ -323,6 +322,14 @@ namespace MainCore.Tasks.Misc
                 var result = _navigateHelper.Click(AccountId, sendResource[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+
+            var wait = _chromeBrowser.GetWait();
+            wait.Until(driver =>
+            {
+                var buttons = driver.FindElements(By.ClassName("sendRessources"));
+                if (buttons.Count == 0) return false;
+                return buttons[0].Displayed && buttons[0].Enabled;
+            });
 
             return Result.Ok();
         }

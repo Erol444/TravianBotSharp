@@ -398,6 +398,14 @@ namespace MainCore.Tasks.Misc
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
+            var wait = _chromeBrowser.GetWait();
+            wait.Until(driver =>
+            {
+                var buttons = driver.FindElements(By.ClassName("sendRessources"));
+                if (buttons.Count == 0) return false;
+                return buttons[0].Displayed && buttons[0].Enabled;
+            });
+
             return Result.Ok();
         }
 
