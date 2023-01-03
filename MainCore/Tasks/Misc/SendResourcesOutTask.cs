@@ -67,6 +67,11 @@ namespace MainCore.Tasks.Misc
             }
 
             {
+                var result = CheckAndFillMerchants();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+
+            {
                 var result = EnterNumbers();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
