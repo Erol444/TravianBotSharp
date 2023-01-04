@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using System.Drawing;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -60,6 +61,7 @@ namespace WPFUI.ViewModels.Uc.FarmingView
                 settings.FarmIntervalMax = Interval + DiffInterval;
                 context.Update(settings);
                 context.SaveChanges();
+                _selectorViewModel.Farm.Color = FarmSetting.IsActive ? Color.ForestGreen.ToMediaColor() : Color.Red.ToMediaColor();
             });
             _waitingWindow.Close();
             MessageBox.Show("Saved");

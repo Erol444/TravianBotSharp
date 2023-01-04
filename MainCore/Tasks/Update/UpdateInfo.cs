@@ -102,7 +102,8 @@ namespace MainCore.Tasks.Update
             account.HasPlusAccount = hasPlusAccount;
             account.Gold = gold;
             account.Silver = silver;
-            account.Tribe = (TribeEnums)tribe;
+
+            if (account.Tribe == TribeEnums.Any) account.Tribe = (TribeEnums)tribe;
 
             context.SaveChanges();
         }

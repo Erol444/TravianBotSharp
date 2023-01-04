@@ -3,11 +3,11 @@ using DynamicData.Kernel;
 using MainCore.Tasks.Update;
 using ReactiveUI;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
@@ -44,7 +44,7 @@ namespace WPFUI.ViewModels.Uc.FarmingView
                 .Select(farm =>
                 {
                     var farmSetting = context.FarmsSettings.Find(farm.Id);
-                    var color = farmSetting.IsActive ? Color.FromRgb(0, 255, 00) : Color.FromRgb(255, 0, 0);
+                    var color = farmSetting.IsActive ? Color.ForestGreen.ToMediaColor() : Color.Red.ToMediaColor();
                     return new ListBoxItem(farm.Id, farm.Name, color);
                 }).ToList();
 
