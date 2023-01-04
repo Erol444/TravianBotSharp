@@ -1,4 +1,6 @@
-﻿namespace MainCore.Models.Database
+﻿using System.Text.Json.Serialization;
+
+namespace MainCore.Models.Database
 {
     public class AccountSetting
     {
@@ -15,5 +17,13 @@
         public bool IsMinimized { get; set; }
         public bool IsClosedIfNoTask { get; set; }
         public bool IsAutoAdventure { get; set; }
+
+        // these below will be on farming tab instead of settings tab
+
+        [JsonIgnore]
+        public int FarmIntervalMin { get; set; }
+
+        [JsonIgnore]
+        public int FarmIntervalMax { get; set; }
     }
 }

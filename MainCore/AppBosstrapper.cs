@@ -42,9 +42,9 @@ namespace MainCore
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
-                .AddSQLite()
-                .WithGlobalConnectionString(_connectionString)
-                .ScanIn(typeof(Farming).Assembly).For.Migrations());
+                    .AddSQLite()
+                    .WithGlobalConnectionString(_connectionString)
+                    .WithMigrationsIn(typeof(Farming).Assembly));
             return services;
         }
 

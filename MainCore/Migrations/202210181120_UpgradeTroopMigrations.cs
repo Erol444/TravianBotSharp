@@ -7,9 +7,8 @@ namespace MainCore.Migrations
     {
         public override void Down()
         {
-            Delete
-                .Column("IsUpgradeTroop")
-                .Column("UpgradeTroop").FromTable("VillagesSettings");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'IsUpgradeTroop';");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'UpgradeTroop';");
         }
 
         public override void Up()
