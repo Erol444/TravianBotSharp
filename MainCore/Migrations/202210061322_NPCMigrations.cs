@@ -7,16 +7,15 @@ namespace MainCore.Migrations
     {
         public override void Down()
         {
-            Delete
-                .Column("IsAutoRefresh")
-                .Column("AutoRefreshTimeMin")
-                .Column("AutoRefreshTimeMax")
-                .Column("IsAutoNPC")
-                .Column("AutoNPCPercent")
-                .Column("AutoNPCWood")
-                .Column("AutoNPCClay")
-                .Column("AutoNPCIron")
-                .Column("AutoNPCCrop").FromTable("VillagesSettings");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'IsAutoRefresh';");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'AutoRefreshTimeMin';");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'AutoRefreshTimeMax';");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'IsAutoNPC';");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'AutoNPCPercent';");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'AutoNPCWood';");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'AutoNPCClay';");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'AutoNPCIron';");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'AutoNPCCrop';");
         }
 
         public override void Up()

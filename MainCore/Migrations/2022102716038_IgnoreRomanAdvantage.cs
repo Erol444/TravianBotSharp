@@ -7,8 +7,7 @@ namespace MainCore.Migrations
     {
         public override void Down()
         {
-            Delete
-                .Column("IsIgnoreRomanAdvantage").FromTable("VillagesSettings");
+            Execute.Sql("ALTER TABLE 'VillagesSettings' DROP COLUMN 'IsIgnoreRomanAdvantage';");
         }
 
         public override void Up()
