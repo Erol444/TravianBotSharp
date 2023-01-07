@@ -23,5 +23,10 @@ namespace MainCore.Tasks
             }
             return _name;
         }
+
+        public void RefreshChrome()
+        {
+            _chromeBrowser.Navigate();
+        }
     }
 }

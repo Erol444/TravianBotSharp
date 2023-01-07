@@ -24,11 +24,11 @@ namespace MainCore.Tasks
         public TaskStage Stage { get; set; }
         public DateTime ExecuteAt { get; set; }
 
-        protected IDbContextFactory<AppDbContext> _contextFactory;
-        protected ITaskManager _taskManager;
-        protected IEventManager _eventManager;
-        protected IChromeManager _chromeManager;
-        protected ILogManager _logManager;
+        protected readonly IDbContextFactory<AppDbContext> _contextFactory;
+        protected readonly ITaskManager _taskManager;
+        protected readonly IEventManager _eventManager;
+        protected readonly IChromeManager _chromeManager;
+        protected readonly ILogManager _logManager;
         protected string _name;
 
         public CancellationToken CancellationToken { get; set; }
