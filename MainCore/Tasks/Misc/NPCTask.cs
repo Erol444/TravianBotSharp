@@ -2,7 +2,6 @@
 using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
-using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
 using MainCore.Tasks.Update;
 using ModuleCore.Parser;
@@ -16,13 +15,10 @@ namespace MainCore.Tasks.Misc
 {
     public class NPCTask : VillageBotTask
     {
-        private readonly INavigateHelper _navigateHelper;
-
         private readonly ISystemPageParser _systemPageParser;
 
         public NPCTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
-            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _systemPageParser = Locator.Current.GetService<ISystemPageParser>();
         }
 
