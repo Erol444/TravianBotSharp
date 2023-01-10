@@ -24,7 +24,7 @@ namespace TTWarsCore.Parsers
 
         public long GetIron(HtmlDocument doc) => GetResource(doc, "l3");
 
-        public long GetCrop(HtmlDocument doc) => GetResource(doc, "l3");
+        public long GetCrop(HtmlDocument doc) => GetResource(doc, "l4");
 
         public long GetFreeCrop(HtmlDocument doc) => GetResource(doc, "stockBarFreeCrop");
 

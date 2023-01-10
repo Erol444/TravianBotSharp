@@ -14,7 +14,6 @@ namespace MainCore.Tasks.Misc
 {
     public class LoginTask : AccountBotTask
     {
-        private readonly INavigateHelper _navigateHelper;
         private readonly ICheckHelper _checkHelper;
 
         private readonly ISystemPageParser _systemPageParser;
@@ -23,7 +22,6 @@ namespace MainCore.Tasks.Misc
 
         public LoginTask(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
-            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _checkHelper = Locator.Current.GetService<ICheckHelper>();
             _systemPageParser = Locator.Current.GetService<ISystemPageParser>();
             _planManager = Locator.Current.GetService<IPlanManager>();

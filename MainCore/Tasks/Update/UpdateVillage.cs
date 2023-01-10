@@ -8,12 +8,10 @@ namespace MainCore.Tasks.Update
 {
     public class UpdateVillage : VillageBotTask
     {
-        private readonly INavigateHelper _navigateHelper;
         private readonly IUpdateHelper _updateHelper;
 
         public UpdateVillage(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
-            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
 

@@ -2,8 +2,6 @@
 using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
-using MainCore.Helper.Interface;
-using Splat;
 using System.Linq;
 using System.Threading;
 
@@ -11,11 +9,8 @@ namespace MainCore.Tasks.Update
 {
     public class UpdateTroopLevel : VillageBotTask
     {
-        private readonly INavigateHelper _navigateHelper;
-
         public UpdateTroopLevel(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
-            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
         }
 
         public override Result Execute()

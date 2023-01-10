@@ -108,14 +108,29 @@ namespace MainCore.Services.Implementations
 
             if (task.ExecuteAt > DateTime.Now) return;
 
-            var retryPolicy = Policy.HandleResult<Result>(x => x.HasError<Retry>())
+            var retryPolicy = Policy
+                .Handle<Exception>()
+                .OrResult<Result>(x => x.HasError<Retry>())
                 .WaitAndRetry(retryCount: 3, sleepDurationProvider: _ => TimeSpan.FromSeconds(5), onRetry: (error, _, retryCount, _) =>
-            {
-                _logManager.Warning(index, $"There is something wrong.");
-                var errors = error.Result.Reasons.Select(x => x.Message).ToList();
-                _logManager.Error(index, string.Join(Environment.NewLine, errors));
-                _logManager.Warning(index, $"Retry {retryCount} for {task.GetName()}");
-            });
+                {
+                    _logManager.Warning(index, $"There is something wrong.");
+                    if (error.Exception is null)
+                    {
+                        var errors = error.Result.Reasons.Select(x => x.Message).ToList();
+                        _logManager.Error(index, string.Join(Environment.NewLine, errors));
+                    }
+                    else
+                    {
+                        var exception = error.Exception;
+                        _logManager.Error(index, exception.Message, exception);
+                    }
+                    _logManager.Warning(index, $"Retry {retryCount} for {task.GetName()}");
+
+                    if (task is AccountBotTask accountTask)
+                    {
+                        accountTask.RefreshChrome();
+                    }
+                });
 
             _taskExecuting[index] = true;
             task.Stage = TaskStage.Executing;
@@ -134,11 +149,10 @@ namespace MainCore.Services.Implementations
             ///===========================================================///
             _logManager.Information(index, $"{task.GetName()} is finished");
 
-
             if (poliResult.FinalException is not null)
             {
                 UpdateAccountStatus(index, AccountStatus.Paused);
-                _logManager.Warning(index, $"There is something wrong. Bot is pausing", task);
+                _logManager.Warning(index, $"There is something wrong. Bot is pausing. Last exception is", task);
                 var ex = poliResult.FinalException;
                 _logManager.Error(index, ex.Message, ex);
             }

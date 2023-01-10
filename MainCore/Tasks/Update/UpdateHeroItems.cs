@@ -8,12 +8,10 @@ namespace MainCore.Tasks.Update
 {
     public class UpdateHeroItems : AccountBotTask
     {
-        private readonly INavigateHelper _navigateHelper;
         private readonly IUpdateHelper _updateHelper;
 
         public UpdateHeroItems(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
-            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
             _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
 

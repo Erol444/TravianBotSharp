@@ -121,14 +121,18 @@ namespace MainCore.Services.Implementations
             }
 
             _driver.Navigate().GoToUrl(url);
-            _wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            WaitPageLoaded();
         }
 
         private void UpdateHtml(string source = null)
         {
             if (string.IsNullOrEmpty(source))
             {
-                _htmlDoc.LoadHtml(_driver.PageSource);
+                try
+                {
+                    _htmlDoc.LoadHtml(_driver.PageSource);
+                }
+                catch { }
             }
             else
             {
@@ -138,7 +142,11 @@ namespace MainCore.Services.Implementations
 
         public void WaitPageLoaded()
         {
-            _wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            try
+            {
+                _wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            }
+            catch { }
         }
     }
 }

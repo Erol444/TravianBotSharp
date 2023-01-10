@@ -20,9 +20,10 @@ namespace MainCore.Services.Implementations
         public void Init()
         {
             Log.Logger = new LoggerConfiguration()
-              .WriteTo.Map("Account", "Other", (acc, wt) => wt.File($"./logs/log-{acc}-.txt",
-                                                                        rollingInterval: RollingInterval.Day,
-                                                                        outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
+              .WriteTo.Map("Account", "Other", (acc, wt) =>
+                    wt.File($"./logs/log-{acc}-.txt",
+                            rollingInterval: RollingInterval.Day,
+                            outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
               .CreateLogger();
         }
 
@@ -77,7 +78,7 @@ namespace MainCore.Services.Implementations
                 Level = LevelEnum.Information,
                 Message = message,
             });
-            _loggers[accountId].Information(message);
+            _loggers[accountId].Information("{message}", message);
         }
 
         public void Information(int accountId, string message, BotTask task) => Information(accountId, $"[{task.GetName()}] {message}");
@@ -90,7 +91,7 @@ namespace MainCore.Services.Implementations
                 Level = LevelEnum.Warning,
                 Message = message,
             });
-            _loggers[accountId].Warning(message);
+            _loggers[accountId].Warning("{message}", message);
         }
 
         public void Warning(int accountId, string message, BotTask task) => Warning(accountId, $"[{task.GetName()}] {message}");
@@ -105,7 +106,7 @@ namespace MainCore.Services.Implementations
                     Level = LevelEnum.Error,
                     Message = $"{message}",
                 });
-                _loggers[accountId].Error(message);
+                _loggers[accountId].Error("{message}", message);
             }
             else
             {
@@ -115,7 +116,7 @@ namespace MainCore.Services.Implementations
                     Level = LevelEnum.Error,
                     Message = $"{message}\n{error}",
                 });
-                _loggers[accountId].Error(message, error);
+                _loggers[accountId].Error(error, "{message}", message);
             }
         }
 
