@@ -1,11 +1,11 @@
-﻿using MainCore.Enums;
-using MainCore.Exceptions;
-using MainCore.Helper;
-using MainCore.Models.Database;
+﻿using FluentResults;
+using MainCore.Enums;
+using MainCore.Errors;
 using MainCore.Services.Interface;
 using MainCore.Tasks;
 using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
+using Polly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,15 +15,12 @@ namespace MainCore.Services.Implementations
 {
     public sealed class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, EventManager EventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogManager logManager)
         {
             _contextFactory = contextFactory;
-            _eventManager = EventManager;
-            _chromeManager = chromeManager;
+            _eventManager = eventManager;
             _logManager = logManager;
-            _planManager = planManager;
-            _restClientManager = restClientManager;
-            _eventManager.TaskExecuted += Loop;
+            _eventManager.TaskExecute += Loop;
         }
 
         public void Add(int index, BotTask task, bool first = false)
@@ -45,7 +42,6 @@ namespace MainCore.Services.Implementations
                 }
             }
             if (task.ExecuteAt == default) task.ExecuteAt = DateTime.Now;
-            task.SetService(_contextFactory, _chromeManager.Get(index), this, _eventManager, _logManager, _planManager, _restClientManager);
             _tasksDict[index].Add(task);
             ReOrder(index);
         }
@@ -74,7 +70,7 @@ namespace MainCore.Services.Implementations
         {
             Check(index);
             _tasksDict[index].Sort((x, y) => DateTime.Compare(x.ExecuteAt, y.ExecuteAt));
-            _eventManager.OnTaskUpdated(index);
+            _eventManager.OnTaskUpdate(index);
         }
 
         public int Count(int index)
@@ -100,6 +96,7 @@ namespace MainCore.Services.Implementations
             _tasksDict.TryAdd(index, new());
             _taskExecuting.TryAdd(index, false);
             _botStatus.TryAdd(index, AccountStatus.Offline);
+            _cancellationTokenSources.TryAdd(index, null);
         }
 
         private void Loop(int index)
@@ -110,112 +107,108 @@ namespace MainCore.Services.Implementations
             var task = _tasksDict[index].First();
 
             if (task.ExecuteAt > DateTime.Now) return;
-            _taskExecuting[index] = true;
-            task.Stage = TaskStage.Executing;
-            task.Cts = new();
-            _eventManager.OnTaskUpdated(index);
-            _logManager.Information(index, $"{task.Name} is started");
-            var cacheExecuteTime = task.ExecuteAt;
 
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.AccountsSettings.Find(index);
-
-            try
-            {
-                task.Execute();
-            }
-            catch (ChromeMissingException)
-            {
-                _logManager.Warning(index, $"Chrome is missing when doing {task.Name}. Bot will open and re-execute {task.Name}");
-                var accesses = context.Accesses.Where(x => x.AccountId == index).OrderBy(x => x.LastUsed);
-                var currentAccess = accesses.Last();
-
-                Access selectedAccess = null;
-                foreach (var access in accesses)
+            var retryPolicy = Policy
+                .Handle<Exception>()
+                .OrResult<Result>(x => x.HasError<Retry>())
+                .WaitAndRetry(retryCount: 3, sleepDurationProvider: _ => TimeSpan.FromSeconds(5), onRetry: (error, _, retryCount, _) =>
                 {
-                    if (string.IsNullOrEmpty(access.ProxyHost))
+                    _logManager.Warning(index, $"There is something wrong.");
+                    if (error.Exception is null)
                     {
-                        selectedAccess = access;
-                        break;
-                    }
-
-                    var result = AccessHelper.CheckAccess(_restClientManager.Get(new(access)));
-                    if (result)
-                    {
-                        selectedAccess = access;
-                        access.LastUsed = DateTime.Now;
-                        context.SaveChanges();
-                        break;
+                        var errors = error.Result.Reasons.Select(x => x.Message).ToList();
+                        _logManager.Error(index, string.Join(Environment.NewLine, errors));
                     }
                     else
                     {
-                        _logManager.Information(index, $"Proxy {access.ProxyHost} is not working");
+                        var exception = error.Exception;
+                        _logManager.Error(index, exception.Message, exception);
                     }
-                }
-                if (selectedAccess is null)
-                {
-                    UpdateAccountStatus(index, AccountStatus.Offline);
-                    _logManager.Information(index, "All proxy of this account is not working");
-                    return;
-                }
-                var chromeBrowser = _chromeManager.Get(index);
-                var account = context.Accounts.Find(index);
-                chromeBrowser.Setup(selectedAccess, setting);
+                    _logManager.Warning(index, $"Retry {retryCount} for {task.GetName()}");
 
-                chromeBrowser.Navigate(account.Server);
-                Add(index, new LoginTask(index), true);
-                task.Cts.Cancel();
-            }
-            catch (LoginNeedException)
-            {
-                _logManager.Warning(index, "Login page is showing, stop current task and login");
-                Add(index, new LoginTask(index), true);
-                task.Cts.Cancel();
-            }
-            catch (StopNowException ex)
+                    if (task is AccountBotTask accountTask)
+                    {
+                        accountTask.RefreshChrome();
+                    }
+                });
+
+            _taskExecuting[index] = true;
+            task.Stage = TaskStage.Executing;
+            _eventManager.OnTaskUpdate(index);
+            var cacheExecuteTime = task.ExecuteAt;
+
+            var cts = new CancellationTokenSource();
+            _cancellationTokenSources[index] = cts;
+            task.CancellationToken = cts.Token;
+
+            _cancellationTokenSources[index] = cts;
+
+            _logManager.Information(index, $"{task.GetName()} is started");
+            ///===========================================================///
+            var poliResult = retryPolicy.ExecuteAndCapture(task.Execute);
+            ///===========================================================///
+            _logManager.Information(index, $"{task.GetName()} is finished");
+
+            if (poliResult.FinalException is not null)
             {
                 UpdateAccountStatus(index, AccountStatus.Paused);
-                _logManager.Error(index, "There is something wrong. Bot is paused", ex);
-                task.Cts.Cancel();
-            }
-            catch (Exception ex)
-            {
+                _logManager.Warning(index, $"There is something wrong. Bot is pausing. Last exception is", task);
+                var ex = poliResult.FinalException;
                 _logManager.Error(index, ex.Message, ex);
-                if (task.RetryCounter > 3)
-                {
-                    _logManager.Information(index, $"{task.Name} was excuted 3 times. Bot is paused");
-                    UpdateAccountStatus(index, AccountStatus.Paused);
-                }
-                else
-                {
-                    _logManager.Information(index, $"{task.Name} is failed. Retry counter is increased ({task.RetryCounter})");
-                    task.RetryCounter++;
-                    task.Cts.Cancel();
-                    task.Refresh();
-                }
-            }
-            var isCancellationRequested = task.Cts.IsCancellationRequested;
-            task.Cts.Dispose();
-            if (isCancellationRequested)
-            {
-                _logManager.Information(index, $"{task.Name} is stopped and reset.");
-                task.Stage = TaskStage.Waiting;
             }
             else
             {
-                _logManager.Information(index, $"{task.Name} is finished");
-                if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
-                else
+                var result = poliResult.Result;
+                if (result.IsFailed)
                 {
                     task.Stage = TaskStage.Waiting;
-                    ReOrder(index);
+
+                    if (result.HasError<Login>())
+                    {
+                        _logManager.Warning(index, "Login page is showing, stop current task and login", task);
+                        Add(index, new LoginTask(index), true);
+                    }
+                    else if (result.HasError<Stop>())
+                    {
+                        UpdateAccountStatus(index, AccountStatus.Paused);
+                        _logManager.Warning(index, $"There is something wrong. Bot is pausing", task);
+                        var errors = result.Reasons.Select(x => x.Message).ToList();
+                        _logManager.Error(index, string.Join(Environment.NewLine, errors));
+                    }
+                    else if (result.HasError<Skip>())
+                    {
+                        if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
+                        else
+                        {
+                            ReOrder(index);
+                            _eventManager.OnTaskUpdate(index);
+                        }
+                    }
+                    else if (result.HasError<Cancel>())
+                    {
+                        UpdateAccountStatus(index, AccountStatus.Paused);
+                        _logManager.Information(index, $"Stop command requested", task);
+                    }
+                }
+                else
+                {
+                    if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
+                    else
+                    {
+                        ReOrder(index);
+                        _eventManager.OnTaskUpdate(index);
+                    }
                 }
             }
-
-            _eventManager.OnTaskUpdated(index);
+            task.Stage = TaskStage.Waiting;
             _taskExecuting[index] = false;
 
-            Thread.Sleep(_rand.Next(setting.TaskDelayMin, setting.TaskDelayMax));
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.AccountsSettings.Find(index);
+            Thread.Sleep(Random.Shared.Next(setting.TaskDelayMin, setting.TaskDelayMax));
+
+            cts.Dispose();
+            _cancellationTokenSources[index] = null;
         }
 
         public bool IsTaskExecuting(int index)
@@ -236,19 +229,24 @@ namespace MainCore.Services.Implementations
             Check(index);
 
             _botStatus[index] = status;
-            _eventManager.OnAccountStatusUpdate(index);
+            _eventManager.OnStatusUpdate(index, status);
+        }
+
+        public void StopCurrentTask(int index)
+        {
+            Check(index);
+            var cts = _cancellationTokenSources[index];
+            if (cts is null) return;
+            cts.Cancel();
         }
 
         private readonly Dictionary<int, List<BotTask>> _tasksDict = new();
         private readonly Dictionary<int, bool> _taskExecuting = new();
         private readonly Dictionary<int, AccountStatus> _botStatus = new();
-        private readonly Random _rand = new();
+        private readonly Dictionary<int, CancellationTokenSource> _cancellationTokenSources = new();
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly EventManager _eventManager;
-        private readonly IChromeManager _chromeManager;
+        private readonly IEventManager _eventManager;
         private readonly ILogManager _logManager;
-        private readonly IPlanManager _planManager;
-        private readonly IRestClientManager _restClientManager;
     }
 }

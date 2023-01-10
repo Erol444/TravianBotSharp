@@ -1,6 +1,4 @@
-﻿using MainCore.Services.Implementations;
-using MainCore.Services.Interface;
-using Microsoft.EntityFrameworkCore;
+﻿using System.Threading;
 
 namespace MainCore.Tasks
 {
@@ -9,39 +7,28 @@ namespace MainCore.Tasks
         private readonly int _villageId;
         public int VillageId => _villageId;
 
-        public VillageBotTask(int villageId, int accountId, string name) : base(accountId, name)
+        public VillageBotTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _villageId = villageId;
         }
 
-        public override void CopyFrom(BotTask source)
+        public override string GetName()
         {
-            base.CopyFrom(source);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
+            if (string.IsNullOrEmpty(_name))
             {
-                Name = $"{Name} in {VillageId}";
+                using var context = _contextFactory.CreateDbContext();
+                var village = context.Villages.Find(VillageId);
+                var type = GetType().Name;
+                if (village is not null)
+                {
+                    _name = $"{type} in {village.Name}";
+                }
+                else
+                {
+                    _name = $"{type} in unknow village [{VillageId}]";
+                }
             }
-            else
-            {
-                Name = $"{Name} in {village.Name}";
-            }
-        }
-
-        public override void SetService(IDbContextFactory<AppDbContext> contextFactory, IChromeBrowser chromeBrowser, ITaskManager taskManager, EventManager EventManager, ILogManager logManager, IPlanManager planManager, IRestClientManager restClientManager)
-        {
-            base.SetService(contextFactory, chromeBrowser, taskManager, EventManager, logManager, planManager, restClientManager);
-            using var context = _contextFactory.CreateDbContext();
-            var village = context.Villages.Find(VillageId);
-            if (village is null)
-            {
-                Name = $"{Name} in {VillageId}";
-            }
-            else
-            {
-                Name = $"{Name} in {village.Name}";
-            }
+            return _name;
         }
     }
 }

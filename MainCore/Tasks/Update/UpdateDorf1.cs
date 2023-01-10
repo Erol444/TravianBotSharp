@@ -1,37 +1,27 @@
-﻿using MainCore.Helper;
+﻿using FluentResults;
+using MainCore.Errors;
+using System.Threading;
 
 namespace MainCore.Tasks.Update
 {
     public class UpdateDorf1 : VillageBotTask
     {
-        public UpdateDorf1(int villageId, int accountId) : base(villageId, accountId, "Update Resources page")
+        public UpdateDorf1(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }
 
-        public override void Execute()
+        public override Result Execute()
         {
             {
-                using var context = _contextFactory.CreateDbContext();
-                NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
+                var result = _navigateHelper.ToDorf1(AccountId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
-            IsFail = true;
-            ToDorf1();
-            if (IsUpdateFail()) return;
-            IsFail = false;
-        }
-
-        private void ToDorf1()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.ToDorf1(_chromeBrowser, context, AccountId);
-        }
-
-        private bool IsUpdateFail()
-        {
-            var taskUpdate = new UpdateVillage(VillageId, AccountId);
-            taskUpdate.CopyFrom(this);
-            taskUpdate.Execute();
-            return taskUpdate.IsFail;
+            {
+                var taskUpdate = new UpdateVillage(VillageId, AccountId, CancellationToken);
+                var result = taskUpdate.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Helper.Interface;
+using MainCore.Services.Interface;
+using Splat;
+using System;
+using System.Threading;
 
 namespace MainCore.Tasks
 {
@@ -6,30 +10,36 @@ namespace MainCore.Tasks
     {
         private readonly int _accountId;
         public int AccountId => _accountId;
+        protected readonly IChromeBrowser _chromeBrowser;
+        protected readonly INavigateHelper _navigateHelper;
 
-        public AccountBotTask(int accountId, string name)
+        public AccountBotTask(int accountId, CancellationToken cancellationToken = default) : base(cancellationToken)
         {
             _accountId = accountId;
-            Name = name;
+            _chromeBrowser = _chromeManager.Get(accountId);
+            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
         }
 
-        public override void Refresh()
+        public override string GetName()
         {
-            _chromeBrowser.GetChrome().Navigate().Refresh();
-            using var context = _contextFactory.CreateDbContext();
-            NavigateHelper.WaitPageLoaded(_chromeBrowser);
-            NavigateHelper.AfterClicking(_chromeBrowser, context, AccountId);
-        }
-
-        protected bool IsStop()
-        {
-            if (Cts.IsCancellationRequested) return true;
-            if (StopFlag)
+            if (string.IsNullOrEmpty(_name))
             {
-                StopFlag = false;
-                return true;
+                _name = GetType().Name;
             }
-            return false;
+            return _name;
+        }
+
+        public void RefreshChrome()
+        {
+            _chromeBrowser.Navigate();
+            if (DateTime.Now.Millisecond % 10 > 5)
+            {
+                _navigateHelper.ToDorf1(AccountId);
+            }
+            else
+            {
+                _navigateHelper.ToDorf2(AccountId);
+            }
         }
     }
 }

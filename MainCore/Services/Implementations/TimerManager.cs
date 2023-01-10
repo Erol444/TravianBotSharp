@@ -1,17 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using MainCore.Services.Interface;
+using System.Collections.Generic;
 using System.Timers;
-using MainCore.Services.Interface;
 
 namespace MainCore.Services.Implementations
 {
     public sealed class TimerManager : ITimerManager
     {
-        public TimerManager(EventManager EventManager)
+        public TimerManager(IEventManager eventManager)
         {
-            _eventManager = EventManager;
+            _eventManager = eventManager;
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
             foreach (var timer in _dictTimer.Values)
             {
@@ -28,7 +28,7 @@ namespace MainCore.Services.Implementations
                 {
                     try
                     {
-                        _eventManager.OnTaskExecuted(index);
+                        _eventManager.OnTaskExecute(index);
                         timer.Start();
                     }
                     catch
@@ -42,6 +42,6 @@ namespace MainCore.Services.Implementations
         }
 
         private readonly Dictionary<int, Timer> _dictTimer = new();
-        private readonly EventManager _eventManager;
+        private readonly IEventManager _eventManager;
     }
 }

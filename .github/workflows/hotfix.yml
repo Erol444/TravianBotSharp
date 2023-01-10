@@ -49,7 +49,7 @@ jobs:
     needs: version
     strategy:
       matrix:
-        server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
+        server: [TRAVIAN_OFFICIAL, TTWARS]
     steps:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v2
@@ -83,8 +83,7 @@ jobs:
       
       - name: Archive release
         run: |
-          cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TravianOfficial-OldHeroUI.zip" TBS-TRAVIAN_OFFICIAL; cp -R "TBS-${{needs.version.outputs.version}}-TravianOfficial-OldHeroUI.zip" ../; cd ..
-          cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TravianOfficial-NewHeroUI.zip" TBS-TRAVIAN_OFFICIAL_HEROUI; cp -R "TBS-${{needs.version.outputs.version}}-TravianOfficial-NewHeroUI.zip" ../; cd ..
+          cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TravianOfficial.zip" TBS-TRAVIAN_OFFICIAL; cp -R "TBS-${{needs.version.outputs.version}}-TravianOfficial.zip" ../; cd ..
           cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TTWars.zip" TBS-TTWARS; cp -R "TBS-${{needs.version.outputs.version}}-TTWars.zip" ../; cd ..
 
       - name: Create release
@@ -93,7 +92,7 @@ jobs:
           name: TBS-${{needs.version.outputs.version}}
           tag: ${{needs.version.outputs.version}}
           commit: master          
-          artifacts: "TBS-${{needs.version.outputs.version}}-TravianOfficial-OldHeroUI.zip, TBS-${{needs.version.outputs.version}}-TravianOfficial-NewHeroUI.zip, TBS-${{needs.version.outputs.version}}-TTWars.zip"
+          artifacts: "TBS-${{needs.version.outputs.version}}-TravianOfficial.zip, TBS-${{needs.version.outputs.version}}-TTWars.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
             Please join our Discord server for more information: [https://discord.gg/mBa4f2K](https://discord.gg/mBa4f2K)
@@ -125,7 +124,7 @@ jobs:
     needs: release
     strategy:
       matrix:
-        server: [TRAVIAN_OFFICIAL, TRAVIAN_OFFICIAL_HEROUI, TTWARS]
+        server: [TRAVIAN_OFFICIAL, TTWARS]
     steps:
       - name: Delete artifact
         uses: geekyeggo/delete-artifact@v1

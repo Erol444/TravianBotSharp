@@ -1,6 +1,6 @@
 ﻿<reactiveui:ReactivePage
       x:Class="WPFUI.Views.Tabs.Villages.TroopsPage"
-      x:TypeArguments="vms:TroopsViewModel"
+      x:TypeArguments="vms:VillageTroopsViewModel"
       xmlns:vms="clr-namespace:WPFUI.ViewModels.Tabs.Villages"
       xmlns:controls="clr-namespace:WPFUI.Views.Uc"
       xmlns:reactiveui="http://reactiveui.net"

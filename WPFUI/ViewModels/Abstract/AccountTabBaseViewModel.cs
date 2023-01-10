@@ -1,30 +1,41 @@
-﻿using MainCore.Models.Database;
-using ReactiveUI;
-using System;
+﻿using ReactiveUI;
+using System.Linq;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 
 namespace WPFUI.ViewModels.Abstract
 {
     public abstract class AccountTabBaseViewModel : TabBaseViewModel
     {
-        public AccountTabBaseViewModel() : base()
+        public AccountTabBaseViewModel()
         {
-            this.WhenAnyValue(x => x.CurrentAccount).Subscribe(x =>
-            {
-                if (x is not null)
-                {
-                    LoadData(x.Id);
-                }
-            });
+            this.WhenAnyValue(vm => vm._selectorViewModel.Account)
+                .Where(x => x is not null)
+                .Select(x => x.Id)
+                .ToProperty(this, vm => vm.AccountId, out _accountId);
+
+            _selectorViewModel.AccountChanged += OnAccountChanged;
+            Active += OnActive;
         }
 
-        protected abstract void LoadData(int index);
+        protected abstract void Init(int id);
 
-        private Account _currentAccount;
-
-        public Account CurrentAccount
+        private void OnActive()
         {
-            get => _currentAccount;
-            set => this.RaiseAndSetIfChanged(ref _currentAccount, value);
+            RxApp.TaskpoolScheduler.Schedule(() => Init(AccountId));
+        }
+
+        private void OnAccountChanged(int accountId)
+        {
+            if (!IsActive) return;
+            RxApp.TaskpoolScheduler.Schedule(() => Init(accountId));
+        }
+
+        private readonly ObservableAsPropertyHelper<int> _accountId;
+
+        public int AccountId
+        {
+            get => _accountId.Value;
         }
     }
 }

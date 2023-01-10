@@ -1,11 +1,11 @@
-﻿using System;
-
-namespace MainCore.Services.Interface
+﻿namespace MainCore.Services.Interface
 {
-    public interface IChromeManager : IDisposable
+    public interface IChromeManager
     {
         public void LoadExtension();
 
         public IChromeBrowser Get(int id);
+
+        public void Shutdown();
     }
 }

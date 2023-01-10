@@ -1,6 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
+using MainCore.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;
@@ -10,18 +11,19 @@ namespace MainCore.Services.Implementations
 {
     public sealed class LogManager : ILogManager
     {
-        public LogManager(EventManager EventManager, IDbContextFactory<AppDbContext> contextFactory)
+        public LogManager(IEventManager eventManager, IDbContextFactory<AppDbContext> contextFactory)
         {
-            _eventManager = EventManager;
+            _eventManager = eventManager;
             _contextFactory = contextFactory;
         }
 
         public void Init()
         {
             Log.Logger = new LoggerConfiguration()
-              .WriteTo.Map("Account", "Other", (acc, wt) => wt.File($"./logs/log-{acc}-.txt",
-                                                                        rollingInterval: RollingInterval.Day,
-                                                                        outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
+              .WriteTo.Map("Account", "Other", (acc, wt) =>
+                    wt.File($"./logs/log-{acc}-.txt",
+                            rollingInterval: RollingInterval.Day,
+                            outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"))
               .CreateLogger();
         }
 
@@ -48,7 +50,7 @@ namespace MainCore.Services.Implementations
                     _logs[accountId].RemoveLast();
                 }
 
-                _eventManager.OnLogUpdated(accountId, log);
+                _eventManager.OnLogUpdate(accountId, log);
             }
         }
 
@@ -63,7 +65,7 @@ namespace MainCore.Services.Implementations
             }
         }
 
-        public void Dispose()
+        public void Shutdown()
         {
             Log.CloseAndFlush();
         }
@@ -76,8 +78,10 @@ namespace MainCore.Services.Implementations
                 Level = LevelEnum.Information,
                 Message = message,
             });
-            _loggers[accountId].Information(message);
+            _loggers[accountId].Information("{message}", message);
         }
+
+        public void Information(int accountId, string message, BotTask task) => Information(accountId, $"[{task.GetName()}] {message}");
 
         public void Warning(int accountId, string message)
         {
@@ -87,25 +91,40 @@ namespace MainCore.Services.Implementations
                 Level = LevelEnum.Warning,
                 Message = message,
             });
-            _loggers[accountId].Warning(message);
+            _loggers[accountId].Warning("{message}", message);
         }
+
+        public void Warning(int accountId, string message, BotTask task) => Warning(accountId, $"[{task.GetName()}] {message}");
 
         public void Error(int accountId, string message, Exception error)
         {
-            Add(accountId, new LogMessage()
+            if (error is null)
             {
-                DateTime = DateTime.Now,
-                Level = LevelEnum.Error,
-                Message = $"{message}\n{error}",
-            });
-            _loggers[accountId].Error(message, error);
+                Add(accountId, new LogMessage()
+                {
+                    DateTime = DateTime.Now,
+                    Level = LevelEnum.Error,
+                    Message = $"{message}",
+                });
+                _loggers[accountId].Error("{message}", message);
+            }
+            else
+            {
+                Add(accountId, new LogMessage()
+                {
+                    DateTime = DateTime.Now,
+                    Level = LevelEnum.Error,
+                    Message = $"{message}\n{error}",
+                });
+                _loggers[accountId].Error(error, "{message}", message);
+            }
         }
 
         private readonly Dictionary<int, LinkedList<LogMessage>> _logs = new();
         private readonly Dictionary<int, object> _objLocks = new();
         private readonly Dictionary<int, ILogger> _loggers = new();
 
-        private readonly EventManager _eventManager;
+        private readonly IEventManager _eventManager;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
     }
 }

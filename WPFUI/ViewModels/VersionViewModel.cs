@@ -1,5 +1,6 @@
-﻿using MainCore.Helper;
+﻿using MainCore.Helper.Interface;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Diagnostics;
 using System.Reactive;
@@ -18,12 +19,12 @@ namespace WPFUI.ViewModels
 
             DiscordCommand = ReactiveCommand.Create(DiscordTask);
             LatestVersionCommand = ReactiveCommand.Create(LatestVersionTask, this.WhenAnyValue(x => x.IsNewVersion));
-            CloseCommand = ReactiveCommand.Create(CloseTask);
+            _githubHelper = Locator.Current.GetService<IGithubHelper>();
         }
 
         public async Task Load()
         {
-            var result = await GithubHelper.CheckGitHubLatestVersion();
+            var result = await _githubHelper.GetLatestVersion();
 
             LatestVersion = result.ToString();
         }
@@ -41,15 +42,10 @@ namespace WPFUI.ViewModels
         {
             Process.Start(new ProcessStartInfo
             {
-                FileName = GithubHelper.GetLink(_latestVersion),
+                FileName = _githubHelper.GetLink(_latestVersion),
                 UseShellExecute = true
             });
-            CloseTask();
-        }
-
-        private void CloseTask()
-        {
-            CloseWindow?.Invoke();
+            Close();
         }
 
         private string _currentVersion = "0.0.0";
@@ -97,8 +93,9 @@ namespace WPFUI.ViewModels
 
         public ReactiveCommand<Unit, Unit> DiscordCommand { get; }
         public ReactiveCommand<Unit, Unit> LatestVersionCommand { get; }
-        public ReactiveCommand<Unit, Unit> CloseCommand { get; }
+        private readonly IGithubHelper _githubHelper;
 
-        public event Action CloseWindow;
+        public Action Close;
+        public Action Show;
     }
 }

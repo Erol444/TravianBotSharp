@@ -1,11 +1,12 @@
 ﻿using MainCore.Models.Runtime;
 using RestSharp;
-using System;
 
 namespace MainCore.Services.Interface
 {
-    public interface IRestClientManager : IDisposable
+    public interface IRestClientManager
     {
         public RestClient Get(ProxyInfo proxyInfo);
+
+        public void Shutdown();
     }
 }

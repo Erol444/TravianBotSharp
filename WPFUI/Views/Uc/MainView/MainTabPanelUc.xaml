@@ -1,0 +1,21 @@
+﻿<rxui:ReactiveUserControl
+        x:Class="WPFUI.Views.Uc.MainView.MainTabPanelUc"
+        x:TypeArguments="vms:MainTabPanelViewModel"
+        xmlns:rxui="http://reactiveui.net"
+        xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <TabControl x:Name="Tabs" Margin="5,0,0,0">
+        <TabControl.ItemTemplate>
+            <DataTemplate>
+                <TextBlock Text="{Binding Header}" />
+            </DataTemplate>
+        </TabControl.ItemTemplate>
+
+        <TabControl.ContentTemplate>
+            <DataTemplate>
+                <Frame Content="{Binding Content}" NavigationUIVisibility="Hidden" />
+            </DataTemplate>
+        </TabControl.ContentTemplate>
+    </TabControl>
+</rxui:ReactiveUserControl>

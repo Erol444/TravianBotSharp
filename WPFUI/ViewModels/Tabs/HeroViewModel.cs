@@ -1,4 +1,6 @@
-﻿using MainCore.Helper;
+﻿using DynamicData;
+using DynamicData.Kernel;
+using MainCore;
 using MainCore.Tasks.Update;
 using ReactiveUI;
 using System;
@@ -6,15 +8,14 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
-using WPFUI.Interfaces;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
-    public class HeroViewModel : AccountTabBaseViewModel, ITabPage
+    public class HeroViewModel : AccountTabBaseViewModel
     {
-        public HeroViewModel() : base()
+        public HeroViewModel()
         {
             _eventManager.HeroInfoUpdate += OnHeroInfoUpdate;
             _eventManager.HeroAdventuresUpdate += OnHeroAdventuresUpdate;
@@ -24,52 +25,34 @@ namespace WPFUI.ViewModels.Tabs
             InventoryCommand = ReactiveCommand.Create(InventoryTask);
         }
 
+        protected override void Init(int accountId)
+        {
+            LoadData(accountId);
+        }
+
         private void OnheroInventoryUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadInventory(accountId));
+            if (AccountId != accountId) return;
+            LoadInventory(accountId);
         }
 
         private void OnHeroAdventuresUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadAdventures(accountId));
+            if (AccountId != accountId) return;
+            LoadAdventures(accountId);
         }
 
         private void OnHeroInfoUpdate(int accountId)
         {
             if (!IsActive) return;
-            if (CurrentAccount is null) return;
-            if (CurrentAccount.Id != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() => LoadInfo(accountId));
+            if (AccountId != accountId) return;
+            LoadInfo(accountId);
         }
 
-        public bool IsActive { get; set; }
-
-        public void OnActived()
+        private void LoadData(int accountId)
         {
-            IsActive = true;
-            if (CurrentAccount is not null)
-            {
-                LoadData(CurrentAccount.Id);
-            }
-        }
-
-        public void OnDeactived()
-        {
-            IsActive = false;
-        }
-
-        protected override void LoadData(int accountId)
-        {
-            {
-                using var context = _contextFactory.CreateDbContext();
-                if (context.Accounts.Find(accountId) is null) return;
-            }
             LoadAdventures(accountId);
             LoadInventory(accountId);
             LoadInfo(accountId);
@@ -78,51 +61,66 @@ namespace WPFUI.ViewModels.Tabs
         private void LoadAdventures(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var adventures = context.Adventures.Where(x => x.AccountId == accountId);
-            Adventures.Clear();
-            foreach (var adventure in adventures)
-            {
-                Adventures.Add(new()
+            var adventures = context.Adventures
+                .Where(x => x.AccountId == accountId)
+                .Select(adventure => new AdventureInfo
                 {
                     Difficulty = adventure.Difficulty.ToString(),
                     X = adventure.X,
                     Y = adventure.Y,
-                });
-            }
-            AdventureNum = Adventures.Count.ToString();
+                })
+                .ToList();
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                AdventureNum = Adventures.Count.ToString();
+                Adventures.Clear();
+                Adventures.AddRange(adventures);
+            });
         }
 
         private void LoadInventory(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var inventory = context.HeroesItems.Where(x => x.AccountId == accountId);
-            Inventory.Clear();
-            foreach (var item in inventory)
-            {
-                var itemStr = item.Item.ToString();
-                var itemName = new string(itemStr.Where(x => char.IsLetter(x)).ToArray());
-                var lastChar = itemStr[^1];
-                var tier = char.IsDigit(lastChar) ? int.Parse(lastChar.ToString()) : 0;
-                Inventory.Add(new()
+            var inventory = context.HeroesItems
+                .Where(x => x.AccountId == accountId)
+                .AsList()
+                .Select(item =>
                 {
-                    Item = itemName.EnumStrToString(),
-                    Amount = item.Count,
-                    Tier = tier,
-                });
-            }
+                    var itemStr = item.Item.ToString();
+                    var itemName = new string(itemStr.Where(x => char.IsLetter(x)).ToArray());
+                    var lastChar = itemStr[^1];
+                    var tier = char.IsDigit(lastChar) ? int.Parse(lastChar.ToString()) : 0;
+                    return new ItemInfo()
+                    {
+                        Item = itemName.EnumStrToString(),
+                        Amount = item.Count,
+                        Tier = tier,
+                    };
+                })
+                .ToList();
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Inventory.Clear();
+                Inventory.AddRange(inventory);
+            });
         }
 
         private void LoadInfo(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
             var info = context.Heroes.Find(accountId);
-            Health = info.Health.ToString();
-            Status = info.Status.ToString().EnumStrToString();
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Health = info.Health.ToString();
+                Status = info.Status.ToString().EnumStrToString();
+            });
         }
 
         private void AdventuresTask()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var task = tasks.FirstOrDefault(x => x is UpdateAdventures);
             if (task is null)
@@ -138,7 +136,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private void InventoryTask()
         {
-            var accountId = CurrentAccount.Id;
+            var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var task = tasks.FirstOrDefault(x => x is UpdateHeroItems);
             if (task is null)
