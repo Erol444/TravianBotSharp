@@ -135,6 +135,7 @@ namespace WPFUI.ViewModels.Tabs
             _waitingWindow.Close();
             MessageBox.Show("Done");
             CurrentFarm.Color = active ? Color.ForestGreen.ToMediaColor() : Color.Red.ToMediaColor();
+            ContentButton = active ? "Deactive" : "Active";
         }
 
         private Task RefreshTask()
@@ -191,7 +192,7 @@ namespace WPFUI.ViewModels.Tabs
                 }
 
                 Interval = (settings.FarmIntervalMax + settings.FarmIntervalMin) / 2;
-                DiffInterval = (settings.FarmIntervalMin - settings.FarmIntervalMax) / 2;
+                DiffInterval = (settings.FarmIntervalMax - settings.FarmIntervalMin) / 2;
             });
         }
 
