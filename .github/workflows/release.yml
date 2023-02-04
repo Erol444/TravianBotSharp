@@ -48,7 +48,7 @@ jobs:
     needs: version
     strategy:
       matrix:
-        server: [TRAVIAN_OFFICIAL, TTWARS]
+        server: [TRAVIAN_OFFICIAL]
     steps:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v2
@@ -83,7 +83,6 @@ jobs:
       - name: Archive release
         run: |
           cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TravianOfficial.zip" TBS-TRAVIAN_OFFICIAL; cp -R "TBS-${{needs.version.outputs.version}}-TravianOfficial.zip" ../; cd ..
-          cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TTWars.zip" TBS-TTWARS; cp -R "TBS-${{needs.version.outputs.version}}-TTWars.zip" ../; cd ..
 
       - name: Create release
         uses: ncipollo/release-action@v1
@@ -122,7 +121,7 @@ jobs:
     needs: release
     strategy:
       matrix:
-        server: [TRAVIAN_OFFICIAL, TTWARS]
+        server: [TRAVIAN_OFFICIAL]
     steps:
       - name: Delete artifact
         uses: geekyeggo/delete-artifact@v1
