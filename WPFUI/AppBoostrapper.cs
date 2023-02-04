@@ -9,7 +9,6 @@ using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
 using WPFUI.ViewModels.Uc.BuildView;
-using WPFUI.ViewModels.Uc.FarmingView;
 using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI
@@ -72,10 +71,6 @@ namespace WPFUI
             services.AddSingleton<MainTabPanelViewModel>();
             services.AddSingleton<MainButtonPanelViewModel>();
             services.AddSingleton<AccountListViewModel>();
-
-            // farming view
-            services.AddSingleton<FarmListViewModel>();
-            services.AddSingleton<FarmContentViewModel>();
 
             // build view
             services.AddSingleton<BuildingListViewModel>();

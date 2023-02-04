@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using MainCore.Enums;
+using MainCore.Errors;
 using MainCore.Models.Database;
 using ModuleCore.Parser;
 using Splat;
@@ -26,6 +27,7 @@ namespace MainCore.Tasks.Update
 
         public override Result Execute()
         {
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             UpdateAccountInfo();
             UpdateVillageList();
             UpdateHeroInfo();

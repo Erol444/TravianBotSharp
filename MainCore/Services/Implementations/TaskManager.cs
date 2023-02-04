@@ -159,6 +159,7 @@ namespace MainCore.Services.Implementations
             else
             {
                 var result = poliResult.Result;
+                if (result is null) result = poliResult.FinalHandledResult;
                 if (result.IsFailed)
                 {
                     task.Stage = TaskStage.Waiting;
