@@ -218,6 +218,7 @@ namespace WPFUI.ViewModels.Uc.MainView
             var current = _taskManager.GetCurrentTask(index);
             if (current is not null)
             {
+                _taskManager.StopCurrentTask(index);
                 while (current.Stage != TaskStage.Waiting) { }
             }
 
