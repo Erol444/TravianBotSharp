@@ -95,7 +95,7 @@ namespace MainCore.Tasks.Misc
                 setting.IsAutoNPC = false;
                 context.Update(setting);
                 context.SaveChanges();
-                return Result.Fail(new Skip());
+                return Result.Fail(new Skip("Marketplace is missing"));
             }
 
             {
