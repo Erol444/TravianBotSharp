@@ -7,6 +7,7 @@ using MainCore.Services.Interface;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Update;
 using Splat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -254,7 +255,7 @@ namespace MainCore.Tasks.Sim
                 var tasks = _planManager.GetList(VillageId);
                 if (tasks.Count == 0)
                 {
-                    return Result.Fail(new Skip());
+                    return Result.Fail(new Skip(buildingTask.Reasons[0].Message));
                 }
                 if (!_chromeBrowser.GetCurrentUrl().Contains("dorf"))
                 {
@@ -279,7 +280,13 @@ namespace MainCore.Tasks.Sim
                         _logManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
                     }
                 }
-                return Result.Fail(new Skip());
+                return Result.Fail(new Skip(buildingTask.Reasons[0].Message));
+            }
+            if (buildingTask.Value is null)
+            {
+                ExecuteAt = DateTime.Now.AddSeconds(15);
+                _logManager.Information(AccountId, "There is somthing wrong, bot cannot decide what to build. Let wait bot in 15 secs");
+                return Result.Fail(new Skip("Cannot chose building to build"));
             }
 
             if (buildingTask.Value.Type == PlanTypeEnums.General)
