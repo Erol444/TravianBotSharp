@@ -18,6 +18,7 @@ namespace WPFUI.Models
             IsClosedIfNoTask = settings.IsClosedIfNoTask;
             IsMinimized = settings.IsMinimized;
             IsAutoStartAdventure = settings.IsAutoAdventure;
+            IsSleepBetweenProxyChanging = settings.IsSleepBetweenProxyChanging;
         }
 
         public void CopyTo(MainCore.Models.Database.AccountSetting settings)
@@ -42,6 +43,7 @@ namespace WPFUI.Models
             settings.IsClosedIfNoTask = IsClosedIfNoTask;
             settings.IsMinimized = IsMinimized;
             settings.IsAutoAdventure = IsAutoStartAdventure;
+            settings.IsSleepBetweenProxyChanging = IsSleepBetweenProxyChanging;
         }
 
         private int _clickDelay;
@@ -138,6 +140,14 @@ namespace WPFUI.Models
         {
             get => _isAutoStartAdventure;
             set => this.RaiseAndSetIfChanged(ref _isAutoStartAdventure, value);
+        }
+
+        private bool _isSleepBetweenProxyChanging;
+
+        public bool IsSleepBetweenProxyChanging
+        {
+            get => _isSleepBetweenProxyChanging;
+            set => this.RaiseAndSetIfChanged(ref _isSleepBetweenProxyChanging, value);
         }
     }
 }
