@@ -192,7 +192,7 @@ namespace MainCore.Helper.Implementations
             var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
             foreach (var prerequisiteBuilding in prerequisiteBuildings)
             {
-                var building = buildings.FirstOrDefault(x => x.Type == prerequisiteBuilding.Building);
+                var building = buildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Type == prerequisiteBuilding.Building);
                 if (building is null) return false;
                 if (building.Level < prerequisiteBuilding.Level) return false;
             }
