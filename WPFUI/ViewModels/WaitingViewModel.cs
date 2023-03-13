@@ -12,8 +12,11 @@ namespace WPFUI.ViewModels
 
         public void Show(string message)
         {
-            Text = message;
-            RxApp.MainThreadScheduler.Schedule(ShowWindow);
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Text = message;
+                ShowWindow();
+            });
         }
 
         public void Close()

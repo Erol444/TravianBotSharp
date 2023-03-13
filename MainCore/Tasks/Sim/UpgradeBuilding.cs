@@ -286,7 +286,7 @@ namespace MainCore.Tasks.Sim
             {
                 ExecuteAt = DateTime.Now.AddSeconds(15);
                 _logManager.Information(AccountId, "There is somthing wrong, bot cannot decide what to build. Let wait bot in 15 secs");
-                return Result.Fail(new Skip("Cannot chose building to build"));
+                return Result.Fail(new Retry("Cannot chose building to build"));
             }
 
             if (buildingTask.Value.Type == PlanTypeEnums.General)
