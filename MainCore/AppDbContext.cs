@@ -234,6 +234,7 @@ namespace MainCore
                 WorkTimeMax = 380,
                 SleepTimeMin = 480,
                 SleepTimeMax = 600,
+                IsSleepBetweenProxyChanging = false,
                 IsClosedIfNoTask = false,
                 IsDontLoadImage = false,
                 IsMinimized = false,
@@ -338,6 +339,7 @@ namespace MainCore
                         IsDontLoadImage = false,
                         IsMinimized = false,
                         IsAutoAdventure = false,
+                        IsSleepBetweenProxyChanging = false,
                         FarmIntervalMax = 610,
                         FarmIntervalMin = 590,
                     });
@@ -512,6 +514,7 @@ namespace MainCore
                 KeyValuePair.Create(2022102716038,"IgnoreRomanAdvantage"),
                 KeyValuePair.Create(202212152155,"NPCWarehouse"),
                 KeyValuePair.Create(202212301138,"FarmSettings"),
+                KeyValuePair.Create(202302101011,"SleepWhenChangingProxy"),
             };
             foreach (var migration in migrations)
             {

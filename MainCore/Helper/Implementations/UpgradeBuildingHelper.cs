@@ -43,52 +43,64 @@ namespace MainCore.Helper.Implementations
             var tasks = _planManager.GetList(villageId);
             if (tasks.Count == 0)
             {
-                return Result.Fail("Queue is empty.");
+                return Result.Fail(new Skip("Queue is empty."));
             }
+
             using var context = _contextFactory.CreateDbContext();
-            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-            var totalBuild = currentList.Count(x => x.Level != -1);
+            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level != -1).ToList();
+            var totalBuild = currentList.Count;
 
-            if (totalBuild > 0)
+            if (totalBuild == 0) return GetFirstTask(villageId);
+
+            var accountInfo = context.AccountsInfo.Find(accountId);
+            var tribe = accountInfo.Tribe;
+            var hasPlusAccount = accountInfo.HasPlusAccount;
+            var setting = context.VillagesSettings.Find(villageId);
+
+            var romanAdvantage = tribe == TribeEnums.Romans && !setting.IsIgnoreRomanAdvantage;
+
+            var maxBuild = 1;
+            if (hasPlusAccount) maxBuild++;
+            if (romanAdvantage) maxBuild++;
+            if (totalBuild == maxBuild)
             {
-                var accountInfo = context.AccountsInfo.Find(accountId);
-                var tribe = accountInfo.Tribe;
-                var hasPlusAccount = accountInfo.HasPlusAccount;
-                var setting = context.VillagesSettings.Find(villageId);
-
-                var maxBuild = 1;
-                if (hasPlusAccount) maxBuild++;
-                if (tribe == TribeEnums.Romans && !setting.IsIgnoreRomanAdvantage) maxBuild++;
-                if (totalBuild == maxBuild)
-                {
-                    return Result.Fail("Amount of currently building is equal with maximum building can build in same time");
-                }
-
-                if (tribe == TribeEnums.Romans && !setting.IsIgnoreRomanAdvantage && maxBuild - totalBuild == 1)
-                {
-                    var numRes = currentList.Count(x => x.Type.IsResourceField());
-                    var numInfra = totalBuild - numRes;
-
-                    if (numRes > numInfra)
-                    {
-                        var freeCrop = context.VillagesResources.Find(villageId).FreeCrop;
-                        if (freeCrop <= 5)
-                        {
-                            return Result.Fail("Cannot build because of lack of freecrop ( < 6 )");
-                        }
-                        return GetFirstInfrastructureTask(villageId);
-                    }
-                    else if (numInfra > numRes)
-                    {
-                        // no need check free crop, there is magic make sure this always choose crop
-                        // jk, because of how we check free crop later, first res task is always crop
-                        return GetFirstResTask(villageId);
-                    }
-                    // if same means 1 R and 1 I already, 1 ANY will be choose below
-                }
+                return Result.Fail(new Skip("Amount of currently building is equal with maximum building can build in same time"));
+            }
+            if (romanAdvantage && totalBuild == 2 && currentList.Count(x => x.Id < 19) == 2)
+            {
+                if (GetFirstBuildingTask(villageId) is null) return Result.Fail(new Skip("Amount of currently building is equal with maximum building can build in same time (there is only resource field in queue)"));
             }
 
-            return GetFirstTask(villageId);
+            // roman will have another method to select task
+            if (!romanAdvantage) return GetFirstTask(villageId);
+
+            // there is atleast 2 slot free
+            // roman can build both building or resource field
+            if (maxBuild - totalBuild >= 2) return GetFirstTask(villageId);
+
+            var numRes = currentList.Count(x => x.Type.IsResourceField());
+            var numBuilding = totalBuild - numRes;
+
+            if (numRes > numBuilding)
+            {
+                var freeCrop = context.VillagesResources.Find(villageId).FreeCrop;
+                if (freeCrop < 6)
+                {
+                    return Result.Fail(new Skip("Cannot build because of lack of freecrop ( < 6 )"));
+                }
+                return GetFirstBuildingTask(villageId);
+            }
+            else if (numBuilding > numRes)
+            {
+                // no need check free crop, there is magic make sure this always choose crop
+                // jk, because of how we check free crop later, first res task is always crop
+                return GetFirstResTask(villageId);
+            }
+            // if same means 1 R and 1 I already, 1 ANY will be choose below
+            else
+            {
+                return GetFirstTask(villageId);
+            }
         }
 
         public PlanTask ExtractResField(int villageId, PlanTask buildingTask)
@@ -136,17 +148,17 @@ namespace MainCore.Helper.Implementations
         public void RemoveFinishedCB(int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var tasksDone = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).Where(x => x.CompleteTime <= DateTime.Now);
+            var tasksDone = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.CompleteTime <= DateTime.Now);
 
             if (!tasksDone.Any()) return;
 
             foreach (var taskDone in tasksDone)
             {
                 var building = context.VillagesBuildings.Find(villageId, taskDone.Location);
-                if (building == null)
+                if (building is null)
                 {
-                    building = context.VillagesBuildings.Where(x => x.VillageId == villageId).FirstOrDefault(x => x.Type == taskDone.Type);
-                    if (building == null) continue;
+                    building = context.VillagesBuildings.FirstOrDefault(x => x.VillageId == villageId && x.Type == taskDone.Type);
+                    if (building is null) continue;
                 }
 
                 if (building.Level < taskDone.Level) building.Level = taskDone.Level;
@@ -165,7 +177,7 @@ namespace MainCore.Helper.Implementations
             return task;
         }
 
-        private PlanTask GetFirstInfrastructureTask(int villageId)
+        private PlanTask GetFirstBuildingTask(int villageId)
         {
             var tasks = _planManager.GetList(villageId);
             var infrastructureTasks = tasks.Where(x => x.Type == PlanTypeEnums.General && !x.Building.IsResourceField());
@@ -192,7 +204,7 @@ namespace MainCore.Helper.Implementations
             var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
             foreach (var prerequisiteBuilding in prerequisiteBuildings)
             {
-                var building = buildings.FirstOrDefault(x => x.Type == prerequisiteBuilding.Building);
+                var building = buildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Type == prerequisiteBuilding.Building);
                 if (building is null) return false;
                 if (building.Level < prerequisiteBuilding.Level) return false;
             }

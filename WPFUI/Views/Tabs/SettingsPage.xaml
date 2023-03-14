@@ -36,9 +36,10 @@
 
             <StackPanel>
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Chrome settings" VerticalAlignment="Center" FontWeight="Bold" />
+                <CheckBox x:Name="SleepBetweenChangingProxy" Content="Sleep between changing proxy" />
                 <CheckBox x:Name="DisableImageCheckBox" Content="Don't load images" />
                 <CheckBox x:Name="MinimizedCheckBox" Content="Minimized when opening" />
-                <CheckBox x:Name="CloseCheckBox" Content="Close if no task" />
+                <!--<CheckBox x:Name="CloseCheckBox" Content="Close if no task" />-->
             </StackPanel>
 
             <StackPanel>

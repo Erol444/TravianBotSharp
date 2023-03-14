@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace MainCore.Models.Database
+﻿namespace MainCore.Models.Database
 {
     public class AccountSetting
     {
@@ -13,17 +11,12 @@ namespace MainCore.Models.Database
         public int WorkTimeMax { get; set; }
         public int SleepTimeMin { get; set; }
         public int SleepTimeMax { get; set; }
+        public bool IsSleepBetweenProxyChanging { get; set; }
         public bool IsDontLoadImage { get; set; }
         public bool IsMinimized { get; set; }
         public bool IsClosedIfNoTask { get; set; }
         public bool IsAutoAdventure { get; set; }
-
-        // these below will be on farming tab instead of settings tab
-
-        [JsonIgnore]
         public int FarmIntervalMin { get; set; }
-
-        [JsonIgnore]
         public int FarmIntervalMax { get; set; }
     }
 }
