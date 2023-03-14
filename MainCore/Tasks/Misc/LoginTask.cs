@@ -7,6 +7,8 @@ using MainCore.Tasks.Update;
 using ModuleCore.Parser;
 using OpenQA.Selenium;
 using Splat;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -29,15 +31,20 @@ namespace MainCore.Tasks.Misc
 
         public override Result Execute()
         {
+            var commands = new List<Func<Result>>()
             {
-                var result = AcceptCookie();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
+                AcceptCookie,
+                Login,
+                AddTask,
+            };
+
+            foreach (var command in commands)
             {
-                var result = Login();
+                _logManager.Information(AccountId, $"Execute {command.Method.Name}");
+                var result = command.Invoke();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
-            AddTask();
             return Result.Ok();
         }
 
@@ -132,7 +139,7 @@ namespace MainCore.Tasks.Misc
             return Result.Ok();
         }
 
-        private void AddTask()
+        private Result AddTask()
         {
             _taskManager.Add(AccountId, new UpdateInfo(AccountId));
 
@@ -162,6 +169,7 @@ namespace MainCore.Tasks.Misc
                     }
                 }
             }
+            return Result.Ok();
         }
     }
 }
