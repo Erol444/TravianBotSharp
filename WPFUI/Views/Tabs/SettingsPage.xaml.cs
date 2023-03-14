@@ -38,7 +38,6 @@ namespace WPFUI.Views.Tabs
                 this.Bind(ViewModel, vm => vm.Settings.IsSleepBetweenProxyChanging, v => v.SleepBetweenChangingProxy.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.IsDontLoadImage, v => v.DisableImageCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.IsMinimized, v => v.MinimizedCheckBox.IsChecked).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.IsClosedIfNoTask, v => v.CloseCheckBox.IsChecked).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.Settings.IsAutoStartAdventure, v => v.AutoStartAdventureCheckBox.IsChecked).DisposeWith(d);
             });
