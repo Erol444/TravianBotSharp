@@ -47,8 +47,8 @@ namespace MainCore.Helper.Implementations
             }
 
             using var context = _contextFactory.CreateDbContext();
-            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-            var totalBuild = currentList.Count(x => x.Level != -1);
+            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level != -1).ToList();
+            var totalBuild = currentList.Count;
 
             if (totalBuild == 0) return GetFirstTask(villageId);
 
@@ -65,6 +65,10 @@ namespace MainCore.Helper.Implementations
             if (totalBuild == maxBuild)
             {
                 return Result.Fail(new Skip("Amount of currently building is equal with maximum building can build in same time"));
+            }
+            if (romanAdvantage && totalBuild == 2 && currentList.Count(x => x.Id < 19) == 2)
+            {
+                if (GetFirstBuildingTask(villageId) is null) return Result.Fail(new Skip("Amount of currently building is equal with maximum building can build in same time (there is only resource field in queue)"));
             }
 
             // roman will have another method to select task
