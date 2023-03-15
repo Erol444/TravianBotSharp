@@ -6,7 +6,6 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:local="clr-namespace:WPFUI.ViewModels.Tabs"
-      xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
       xmlns:reactiveui="http://reactiveui.net"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
@@ -36,18 +35,18 @@
         <ListView x:Name="TaskGird" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,1,0">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Task" DisplayMemberBinding="{Binding Task}"   Behaviours:GridViewColumnResize.Width="5*" />
-                    <GridViewColumn Header="Execute at" DisplayMemberBinding="{Binding ExecuteAt}"   Behaviours:GridViewColumnResize.Width="1*" />
-                    <GridViewColumn Header="Stage" DisplayMemberBinding="{Binding Stage}"   Behaviours:GridViewColumnResize.Width="1*" />
+                    <GridViewColumn Header="Task" DisplayMemberBinding="{Binding Task}" Width="200" />
+                    <GridViewColumn Header="Execute at" DisplayMemberBinding="{Binding ExecuteAt}" Width="100" />
+                    <GridViewColumn Header="Stage" DisplayMemberBinding="{Binding Stage}" Width="100" />
                 </GridView>
             </ListView.View>
         </ListView>
         <ListView x:Name="LogGrid" Grid.Column="1" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="1,0,0,0">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}"   Behaviours:GridViewColumnResize.Width="*" />
-                    <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}"   Behaviours:GridViewColumnResize.Width="*" />
-                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}"   Behaviours:GridViewColumnResize.Width="*" />
+                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" Width="130" />
+                    <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" Width="100" />
+                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="900" />
                 </GridView>
             </ListView.View>
         </ListView>
