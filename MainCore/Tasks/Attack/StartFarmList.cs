@@ -4,6 +4,7 @@ using MainCore.Helper.Interface;
 using MainCore.Tasks.Update;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -20,24 +21,29 @@ namespace MainCore.Tasks.Attack
 
         public override Result Execute()
         {
+            var commands = new List<Func<Result>>()
             {
-                var updateTask = new UpdateFarmList(AccountId);
-                var result = updateTask.Execute();
+                Update,
+                ClickStartFarm,
+                SetNextExecute,
+            };
+
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"Execute {command.Method.Name}");
+                var result = command.Invoke();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
 
-            {
-                var result = ClickStartFarm();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-
-            {
-                using var context = _contextFactory.CreateDbContext();
-                var setting = context.AccountsSettings.Find(AccountId);
-                var time = Random.Shared.Next(setting.FarmIntervalMin, setting.FarmIntervalMax);
-                ExecuteAt = DateTime.Now.AddSeconds(time);
-            }
             return Result.Ok();
+        }
+
+        private Result Update()
+        {
+            var updateTask = new UpdateFarmList(AccountId);
+            var result = updateTask.Execute();
+            return result;
         }
 
         private Result ClickStartFarm()
@@ -53,6 +59,15 @@ namespace MainCore.Tasks.Attack
                 var result = _clickHelper.ClickStartFarm(AccountId, farm.Id);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+            return Result.Ok();
+        }
+
+        private Result SetNextExecute()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.AccountsSettings.Find(AccountId);
+            var time = Random.Shared.Next(setting.FarmIntervalMin, setting.FarmIntervalMax);
+            ExecuteAt = DateTime.Now.AddSeconds(time);
             return Result.Ok();
         }
     }
