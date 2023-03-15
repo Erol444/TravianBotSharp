@@ -235,12 +235,6 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private async Task Pause(int index)
         {
-            var taskList = _taskManager.GetList(index);
-            var sleep = taskList.OfType<SleepTask>().FirstOrDefault();
-
-            sleep.ExecuteAt = DateTime.Now;
-            return;
-
             var status = _taskManager.GetAccountStatus(index);
             if (status == AccountStatus.Paused)
             {
