@@ -5,6 +5,7 @@ using MainCore.Errors;
 using MainCore.Tasks.Update;
 using OpenQA.Selenium;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -21,28 +22,85 @@ namespace MainCore.Tasks.Misc
 
         public override Result Execute()
         {
+            var commands = new List<Func<Result>>()
             {
-                var taskUpdate = new UpdateTroopLevel(VillageId, AccountId, CancellationToken);
-                var result = taskUpdate.Execute();
+                Update,
+                ChooseTroop,
+                CheckImproving,
+                CheckResource,
+                Improve,
+                NextExecute,
+            };
+
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"Execute {command.Method.Name}");
+                var result = command.Invoke();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
 
-            _troop = GetTroop();
-            if (!IsVaild()) return Result.Ok();
+            return Result.Ok();
+        }
 
-            if (!IsEnoughResource()) return Result.Ok();
+        private Result Update()
+        {
+            var taskUpdate = new UpdateTroopLevel(VillageId, AccountId, CancellationToken);
+            var result = taskUpdate.Execute();
+            return result;
+        }
+
+        private Result ChooseTroop()
+        {
+            _troop = GetTroop();
+            if (Troop != TroopEnums.None) return Result.Ok();
+            return Result.Fail(new Skip("There isn't any troop to upgrade."));
+        }
+
+        private Result CheckImproving()
+        {
             if (IsTroopImproving())
             {
                 NextExecute();
+                return Result.Fail(new Skip("There is troop in progress"));
+            }
+            return Result.Ok();
+        }
+
+        private Result CheckResource()
+        {
+            if (IsEnoughResource()) return Result.Ok();
+            return Result.Fail(new Skip("There isn't enough resource"));
+        }
+
+        private Result Improve()
+        {
+            var html = _chromeBrowser.GetHtml();
+            var researches = html.DocumentNode.Descendants("div").Where(x => x.HasClass("research")).ToList();
+            foreach (var research in researches)
+            {
+                if (GetTroop(research) != (int)Troop) continue;
+                var upgradeButton = research.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
+                if (upgradeButton is null) return Result.Fail(new Retry("Cannot found upgrade button"));
+                var chrome = _chromeBrowser.GetChrome();
+                var upgradeElements = chrome.FindElements(By.XPath(upgradeButton.XPath));
+                if (upgradeElements.Count == 0) return Result.Fail(new Retry("Cannot found upgrade button"));
+
+                var result = _navigateHelper.Click(AccountId, upgradeElements[0]);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 return Result.Ok();
             }
+            return Result.Ok();
+        }
 
-            {
-                var result = Upgrade();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-
-            NextExecute();
+        private Result NextExecute()
+        {
+            var html = _chromeBrowser.GetHtml();
+            var table = html.DocumentNode.Descendants("table").FirstOrDefault(x => x.HasClass("under_progress"));
+            var timer = table.Descendants("span").FirstOrDefault(x => x.HasClass("timer"));
+            var time = timer.GetAttributeValue("value", 0);
+            if (time < 0) ExecuteAt = DateTime.Now;
+            else ExecuteAt = DateTime.Now.AddSeconds(time);
             return Result.Ok();
         }
 
@@ -87,16 +145,6 @@ namespace MainCore.Tasks.Misc
             }
             context.SaveChanges();
             return TroopEnums.None;
-        }
-
-        private bool IsVaild()
-        {
-            if (Troop == TroopEnums.None)
-            {
-                _logManager.Information(AccountId, "There isn't any troop to upgrade.", this);
-                return false;
-            }
-            return true;
         }
 
         private bool IsTroopImproving()
@@ -160,36 +208,6 @@ namespace MainCore.Tasks.Misc
                 return true;
             }
             return true;
-        }
-
-        private Result Upgrade()
-        {
-            var html = _chromeBrowser.GetHtml();
-            var researches = html.DocumentNode.Descendants("div").Where(x => x.HasClass("research")).ToList();
-            foreach (var research in researches)
-            {
-                if (GetTroop(research) != (int)Troop) continue;
-                var upgradeButton = research.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
-                if (upgradeButton is null) return Result.Fail(new Retry("Cannot found upgrade button"));
-                var chrome = _chromeBrowser.GetChrome();
-                var upgradeElements = chrome.FindElements(By.XPath(upgradeButton.XPath));
-                if (upgradeElements.Count == 0) return Result.Fail(new Retry("Cannot found upgrade button"));
-
-                var result = _navigateHelper.Click(AccountId, upgradeElements[0]);
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                return Result.Ok();
-            }
-            return Result.Ok();
-        }
-
-        private void NextExecute()
-        {
-            var html = _chromeBrowser.GetHtml();
-            var table = html.DocumentNode.Descendants("table").FirstOrDefault(x => x.HasClass("under_progress"));
-            var timer = table.Descendants("span").FirstOrDefault(x => x.HasClass("timer"));
-            var time = timer.GetAttributeValue("value", 0);
-            if (time < 0) ExecuteAt = DateTime.Now;
-            else ExecuteAt = DateTime.Now.AddSeconds(time);
         }
 
         private static int GetTroop(HtmlNode node)
