@@ -3,6 +3,8 @@ using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -12,6 +14,7 @@ namespace MainCore.Tasks.Update
     {
         private readonly IUpdateHelper _updateHelper;
         private readonly ICheckHelper _checkHelper;
+        private int _villageHasRallyPoint;
 
         public UpdateFarmList(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
@@ -21,22 +24,60 @@ namespace MainCore.Tasks.Update
 
         public override Result Execute()
         {
-            var village = GetVillageHasRallyPoint();
-            if (village == -1)
+            var commands = new List<Func<Result>>()
             {
-                _logManager.Warning(AccountId, "There is no rallypoint in your villages", this);
-                return Result.Ok();
-            }
+                CheckRayllyPoint,
+                GotoFarmListPage,
+                Update,
+            };
+
+            foreach (var command in commands)
             {
-                var result = GotoFarmListPage(village);
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            {
-                var result = _updateHelper.UpdateFarmList(AccountId);
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                _eventManager.OnFarmListUpdate(AccountId);
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
             return Result.Ok();
+        }
+
+        private Result CheckRayllyPoint()
+        {
+            _villageHasRallyPoint = GetVillageHasRallyPoint();
+            if (_villageHasRallyPoint == -1)
+            {
+                return Result.Fail(new Skip("There is no rallypoint in your villages");
+            }
+            return Result.Ok();
+        }
+
+        private Result GotoFarmListPage()
+        {
+            if (_checkHelper.IsFarmListPage(AccountId)) return Result.Ok();
+
+            {
+                var taskUpdate = new UpdateDorf2(_villageHasRallyPoint, AccountId, CancellationToken);
+                var result = taskUpdate.Execute();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+
+            {
+                var result = _navigateHelper.GoToBuilding(AccountId, 39);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            {
+                var result = _navigateHelper.SwitchTab(AccountId, 4);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+
+            return Result.Ok();
+        }
+
+        private Result Update()
+        {
+            var result = _updateHelper.UpdateFarmList(AccountId);
+            _eventManager.OnFarmListUpdate(AccountId);
+            return result;
         }
 
         private int GetVillageHasRallyPoint()
@@ -63,22 +104,6 @@ namespace MainCore.Tasks.Update
                 return village.Id;
             }
             return -1;
-        }
-
-        private Result GotoFarmListPage(int village)
-        {
-            if (_checkHelper.IsFarmListPage(AccountId)) return Result.Ok();
-
-            {
-                var taskUpdate = new UpdateDorf2(village, AccountId, CancellationToken);
-                var result = taskUpdate.Execute();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-
-            _navigateHelper.GoToBuilding(AccountId, 39);
-            _navigateHelper.SwitchTab(AccountId, 4);
-
-            return Result.Ok();
         }
     }
 }
