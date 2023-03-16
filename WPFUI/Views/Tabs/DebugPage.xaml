@@ -44,7 +44,7 @@
         <ListView x:Name="LogGrid" Grid.Column="1" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="1,0,0,0">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" Width="130" />
+                    <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" Width="150" />
                     <GridViewColumn Header="Level" DisplayMemberBinding="{Binding Level}" Width="100" />
                     <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Message}" Width="900" />
                 </GridView>
