@@ -46,7 +46,7 @@ namespace MainCore.Tasks.Update
             _villageHasRallyPoint = GetVillageHasRallyPoint();
             if (_villageHasRallyPoint == -1)
             {
-                return Result.Fail(new Skip("There is no rallypoint in your villages");
+                return Result.Fail(new Skip("There is no rallypoint in your villages"));
             }
             return Result.Ok();
         }

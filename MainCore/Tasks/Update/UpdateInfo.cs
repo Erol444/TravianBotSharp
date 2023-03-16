@@ -4,6 +4,7 @@ using MainCore.Errors;
 using MainCore.Models.Database;
 using ModuleCore.Parser;
 using Splat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -27,14 +28,45 @@ namespace MainCore.Tasks.Update
 
         public override Result Execute()
         {
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-            UpdateAccountInfo();
-            UpdateVillageList();
-            UpdateHeroInfo();
+            var commands = new List<Func<Result>>()
+            {
+                UpdateAccountInfo,
+                UpdateVillageList,
+                UpdateHeroInfo,
+            };
+
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            }
             return Result.Ok();
         }
 
-        private void UpdateVillageList()
+        private Result UpdateAccountInfo()
+        {
+            var html = _chromeBrowser.GetHtml();
+            var tribe = _rightBarParser.GetTribe(html);
+            var hasPlusAccount = _rightBarParser.HasPlusAccount(html);
+            var gold = _stockBarParser.GetGold(html);
+            var silver = _stockBarParser.GetSilver(html);
+
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.AccountsInfo.Find(AccountId);
+
+            account.HasPlusAccount = hasPlusAccount;
+            account.Gold = gold;
+            account.Silver = silver;
+
+            if (account.Tribe == TribeEnums.Any) account.Tribe = (TribeEnums)tribe;
+
+            context.SaveChanges();
+            return Result.Ok();
+        }
+
+        private Result UpdateVillageList()
         {
             using var context = _contextFactory.CreateDbContext();
             var currentVills = context.Villages.Where(x => x.AccountId == AccountId).ToList();
@@ -88,29 +120,10 @@ namespace MainCore.Tasks.Update
             {
                 _eventManager.OnVillagesUpdate(AccountId);
             }
+            return Result.Ok();
         }
 
-        private void UpdateAccountInfo()
-        {
-            var html = _chromeBrowser.GetHtml();
-            var tribe = _rightBarParser.GetTribe(html);
-            var hasPlusAccount = _rightBarParser.HasPlusAccount(html);
-            var gold = _stockBarParser.GetGold(html);
-            var silver = _stockBarParser.GetSilver(html);
-
-            using var context = _contextFactory.CreateDbContext();
-            var account = context.AccountsInfo.Find(AccountId);
-
-            account.HasPlusAccount = hasPlusAccount;
-            account.Gold = gold;
-            account.Silver = silver;
-
-            if (account.Tribe == TribeEnums.Any) account.Tribe = (TribeEnums)tribe;
-
-            context.SaveChanges();
-        }
-
-        private void UpdateHeroInfo()
+        private Result UpdateHeroInfo()
         {
             var html = _chromeBrowser.GetHtml();
             var health = _heroSectionParser.GetHealth(html);
@@ -149,6 +162,7 @@ namespace MainCore.Tasks.Update
                     }
                 }
             }
+            return Result.Ok();
         }
 
         private List<Village> UpdateVillageTable()
