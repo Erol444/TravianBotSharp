@@ -66,35 +66,38 @@ namespace MainCore.Helper.Implementations
             {
                 return Result.Fail(new Skip("Amount of currently building is equal with maximum building can build in same time"));
             }
-            if (romanAdvantage && totalBuild == 2 && currentList.Count(x => x.Id < 19) == 2)
-            {
-                if (GetFirstBuildingTask(villageId) is null) return Result.Fail(new Skip("Amount of currently building is equal with maximum building can build in same time (there is only resource field in queue)"));
-            }
 
-            // roman will have another method to select task
+            // roman has special queue
             if (!romanAdvantage) return GetFirstTask(villageId);
 
             // there is atleast 2 slot free
             // roman can build both building or resource field
             if (maxBuild - totalBuild >= 2) return GetFirstTask(villageId);
 
-            var numRes = currentList.Count(x => x.Type.IsResourceField());
-            var numBuilding = totalBuild - numRes;
+            var numQueueRes = tasks.Count(x => x.Building.IsResourceField() || x.Type == PlanTypeEnums.ResFields);
+            var numQueueBuilding = tasks.Count - numQueueRes;
 
-            if (numRes > numBuilding)
+            var numCurrentRes = currentList.Count(x => x.Type.IsResourceField());
+            var numCurrentBuilding = totalBuild - numCurrentRes;
+
+            if (numCurrentRes > numCurrentBuilding)
             {
                 var freeCrop = context.VillagesResources.Find(villageId).FreeCrop;
                 if (freeCrop < 6)
                 {
                     return Result.Fail(new Skip("Cannot build because of lack of freecrop ( < 6 )"));
                 }
-                return GetFirstBuildingTask(villageId);
+                if (numQueueBuilding > 0)
+                    return GetFirstBuildingTask(villageId);
+                return Result.Fail(new Skip("There is no building task in queue"));
             }
-            else if (numBuilding > numRes)
+            else if (numCurrentBuilding > numCurrentRes)
             {
                 // no need check free crop, there is magic make sure this always choose crop
                 // jk, because of how we check free crop later, first res task is always crop
-                return GetFirstResTask(villageId);
+                if (numQueueRes > 0)
+                    return GetFirstResTask(villageId);
+                return Result.Fail(new Skip("There is no res field task in queue"));
             }
             // if same means 1 R and 1 I already, 1 ANY will be choose below
             else
