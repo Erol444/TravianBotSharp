@@ -3,6 +3,8 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using Splat;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -11,6 +13,7 @@ namespace MainCore.Tasks.Sim
     public class StartAdventure : AccountBotTask
     {
         private readonly IClickHelper _clickHelper;
+        private Adventure _adventure;
 
         public StartAdventure(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
@@ -19,10 +22,27 @@ namespace MainCore.Tasks.Sim
 
         public override Result Execute()
         {
-            var adventure = GetAdventures();
-            if (adventure is null) return Result.Ok();
-            var result = StartAdventures(adventure);
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            var commands = new List<Func<Result>>()
+            {
+                ChooseAdventures,
+                StartAdventures,
+            };
+
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            }
+
+            return Result.Ok();
+        }
+
+        private Result ChooseAdventures()
+        {
+            _adventure = GetAdventures();
+            if (_adventure is null) return Result.Fail(new Skip("No adventure available"));
             return Result.Ok();
         }
 
@@ -33,10 +53,10 @@ namespace MainCore.Tasks.Sim
             return adventures.FirstOrDefault();
         }
 
-        private Result StartAdventures(Adventure adventure)
+        private Result StartAdventures()
         {
-            var x = adventure.X;
-            var y = adventure.Y;
+            var x = _adventure.X;
+            var y = _adventure.Y;
             var result = _clickHelper.ClickStartAdventure(AccountId, x, y);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
