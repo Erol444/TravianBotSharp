@@ -163,9 +163,8 @@ namespace MainCore.Services.Implementations
                 {
                     task.Stage = TaskStage.Waiting;
 
-                    _logManager.Warning(index, $"{result.Reasons}", task);
                     var errors = result.Reasons.Select(x => x.Message).ToList();
-                    _logManager.Warning(index, string.Join(Environment.NewLine, errors));
+                    _logManager.Warning(index, string.Join(Environment.NewLine, errors), task);
 
                     if (result.HasError<Login>())
                     {
