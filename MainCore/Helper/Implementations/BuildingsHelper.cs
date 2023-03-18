@@ -118,8 +118,8 @@ namespace MainCore.Helper.Implementations
         {
             return building switch
             {
-                BuildingEnums.Woodcutter or BuildingEnums.ClayPit or BuildingEnums.IronMine or BuildingEnums.Cropland => 2,
-                _ => 1,
+                BuildingEnums.Woodcutter or BuildingEnums.ClayPit or BuildingEnums.IronMine or BuildingEnums.Cropland => 1,
+                _ => 2,
             };
         }
     }
