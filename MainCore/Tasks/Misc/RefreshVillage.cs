@@ -4,6 +4,7 @@ using MainCore.Errors;
 using MainCore.Tasks.Sim;
 using MainCore.Tasks.Update;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -13,19 +14,31 @@ namespace MainCore.Tasks.Misc
     {
         public int Mode { get; set; }
 
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="villageId"></param>
-        /// <param name="accountId"></param>
-        /// <param name="mode"> 0 = auto detect 1 = dorf 1 2 = dorf2 3 = both dorf</param>
-        /// <param name="cancellationToken"></param>
         public RefreshVillage(int villageId, int accountId, int mode = 0, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             Mode = mode;
         }
 
         public override Result Execute()
+        {
+            var commands = new List<Func<Result>>()
+            {
+                Update,
+                ApplyAutoTask,
+                NextExecute,
+            };
+
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            }
+            return Result.Ok();
+        }
+
+        private Result Update()
         {
             BotTask taskUpdate;
             switch (Mode)
@@ -51,10 +64,33 @@ namespace MainCore.Tasks.Misc
             }
 
             var result = taskUpdate.Execute();
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            ApplyAutoTask();
-            NextExecute();
+            return result;
+        }
+
+        private Result ApplyAutoTask()
+        {
+            using var context = _contextFactory.CreateDbContext();
+
+            InstantUpgrade(context);
+            AutoNPC(context);
+
+            if (Mode == 2 || (Mode == 0 && IsNeedDorf2())) AutoImproveTroop(context);
+
+            return Result.Ok();
+        }
+
+        private Result NextExecute()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.Find(VillageId);
+
+            if (!setting.IsAutoRefresh) return Result.Ok();
+
+            // auto refresh should be auto mode
             Mode = 0;
+
+            var delay = Random.Shared.Next(setting.AutoRefreshTimeMin, setting.AutoRefreshTimeMax);
+            ExecuteAt = DateTime.Now.AddMinutes(delay);
             return Result.Ok();
         }
 
@@ -63,27 +99,6 @@ namespace MainCore.Tasks.Misc
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
             return setting.IsUpgradeTroop;
-        }
-
-        private void NextExecute()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.Find(VillageId);
-
-            if (!setting.IsAutoRefresh) return;
-
-            var delay = Random.Shared.Next(setting.AutoRefreshTimeMin, setting.AutoRefreshTimeMax);
-            ExecuteAt = DateTime.Now.AddMinutes(delay);
-        }
-
-        private void ApplyAutoTask()
-        {
-            using var context = _contextFactory.CreateDbContext();
-
-            InstantUpgrade(context);
-            AutoNPC(context);
-
-            if (Mode == 2 || (Mode == 0 && IsNeedDorf2())) AutoImproveTroop(context);
         }
 
         private void InstantUpgrade(AppDbContext context)

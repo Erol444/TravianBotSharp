@@ -2,6 +2,8 @@
 using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -15,23 +17,37 @@ namespace MainCore.Tasks.Update
 
         public override Result Execute()
         {
+            var commands = new List<Func<Result>>()
             {
-                var taskUpdate = new UpdateVillage(VillageId, AccountId, CancellationToken);
-                var result = taskUpdate.Execute(); ;
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
+                Update,
+                CheckSmithy,
+                Enter,
+                GetInfo,
+            };
 
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            }
+            return Result.Ok();
+        }
+
+        private Result Update()
+        {
+            var taskUpdate = new UpdateVillage(VillageId, AccountId, CancellationToken);
+            var result = taskUpdate.Execute();
+            return result;
+        }
+
+        private Result CheckSmithy()
+        {
             if (!IsVaild())
             {
-                _logManager.Warning(AccountId, "Missing smithy", this);
-                return Result.Ok();
+                return Result.Fail(new Skip("Missing smithy"));
             }
-
-            {
-                var result = Enter();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            GetTroopLevel();
             return Result.Ok();
         }
 
@@ -55,7 +71,7 @@ namespace MainCore.Tasks.Update
             return Result.Ok();
         }
 
-        private void GetTroopLevel()
+        private Result GetInfo()
         {
             var html = _chromeBrowser.GetHtml();
             var researches = html.DocumentNode.Descendants("div").Where(x => x.HasClass("research"));
@@ -77,6 +93,7 @@ namespace MainCore.Tasks.Update
             }
             context.SaveChanges();
             _eventManager.OnTroopLevelUpdate(VillageId);
+            return Result.Ok();
         }
 
         private static int GetTroop(HtmlNode node)

@@ -8,6 +8,7 @@ using ModuleCore.Parser;
 using OpenQA.Selenium;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -32,37 +33,35 @@ namespace MainCore.Tasks.Misc
 
         public override Result Execute()
         {
+            var commands = new List<Func<Result>>()
             {
-                var updateDorf2 = new UpdateDorf2(VillageId, AccountId, CancellationToken);
-                var result = updateDorf2.Execute();
+                Update,
+                CheckGold,
+                ToMarketPlace,
+                ClickNPCButton,
+                EnterNumber,
+                ClickNPC,
+            };
+
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
 
-            if (!IsContinue()) return Result.Ok();
-
-            {
-                var result = ToMarketPlace();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-
-            {
-                var result = ClickNPCButton();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-
-            EnterNumber();
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-
-            {
-                var result = ClickNPC();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
             return Result.Ok();
         }
 
-        private bool IsContinue()
+        private Result Update()
+        {
+            var updateDorf2 = new UpdateDorf2(VillageId, AccountId, CancellationToken);
+            var result = updateDorf2.Execute();
+            return result;
+        }
+
+        private Result CheckGold()
         {
             using var context = _contextFactory.CreateDbContext();
             var info = context.AccountsInfo.Find(AccountId);
@@ -77,11 +76,7 @@ namespace MainCore.Tasks.Misc
                 goldNeed = 5;
             }
             var result = info.Gold > goldNeed;
-            if (!result)
-            {
-                _logManager.Warning(AccountId, "Not enough gold", this);
-            }
-            return result;
+            return result ? Result.Ok() : Result.Fail(new Skip("Not enough gold"));
         }
 
         private Result ToMarketPlace()
@@ -135,7 +130,7 @@ namespace MainCore.Tasks.Misc
             return Result.Ok();
         }
 
-        private void EnterNumber()
+        private Result EnterNumber()
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
@@ -192,6 +187,7 @@ namespace MainCore.Tasks.Misc
                     chrome.ExecuteScript(script);
                 }
             }
+            return Result.Ok();
         }
 
         private Result ClickNPC()

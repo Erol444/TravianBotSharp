@@ -23,7 +23,30 @@ namespace MainCore.Tasks.Misc
 
         public override Result Execute()
         {
-            if (VillageId != -1) _navigateHelper.SwitchVillage(AccountId, VillageId);
+            var commands = new List<Func<Result>>()
+            {
+                SwitchVillage,
+                UseItem,
+            };
+
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            }
+            return Result.Ok();
+        }
+
+        private Result SwitchVillage()
+        {
+            if (VillageId != -1) return _navigateHelper.SwitchVillage(AccountId, VillageId);
+            return Result.Ok();
+        }
+
+        private Result UseItem()
+        {
             using var context = _contextFactory.CreateDbContext();
             var heroStatus = context.Heroes.Find(AccountId).Status;
             var setting = context.AccountsSettings.Find(AccountId);

@@ -5,6 +5,7 @@ using MainCore.Tasks.Misc;
 using MainCore.Tasks.Update;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -21,24 +22,51 @@ namespace MainCore.Tasks.Sim
 
         public override Result Execute()
         {
+            var commands = new List<Func<Result>>()
             {
-                var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+                SwitchVillage,
+                GoToDorf,
+                ClickCompleteNow,
+                TriggerTask,
+                Update,
+            };
+
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
 
+            return Result.Ok();
+        }
+
+        private Result SwitchVillage()
+        {
+            var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+            return result;
+        }
+
+        private Result GoToDorf()
+        {
             var currentUrl = _chromeBrowser.GetCurrentUrl();
             if (!currentUrl.Contains("dorf"))
             {
                 var result = _navigateHelper.GoRandomDorf(AccountId);
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                return result;
             }
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-            {
-                var result = _clickHelper.ClickCompleteNow(AccountId);
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            return Result.Ok();
+        }
 
+        private Result ClickCompleteNow()
+        {
+            var result = _clickHelper.ClickCompleteNow(AccountId);
+            return result;
+        }
+
+        private Result TriggerTask()
+        {
             var tasks = _taskManager.GetList(AccountId);
             var improveTroopTask = tasks.OfType<ImproveTroopsTask>().FirstOrDefault(x => x.VillageId == VillageId);
             if (improveTroopTask is not null)
@@ -52,12 +80,14 @@ namespace MainCore.Tasks.Sim
                 upgradeTask.ExecuteAt = DateTime.Now;
                 _taskManager.Update(AccountId);
             }
-            {
-                var updateTask = new UpdateVillage(VillageId, AccountId, CancellationToken);
-                var result = updateTask.Execute();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
             return Result.Ok();
+        }
+
+        private Result Update()
+        {
+            var updateTask = new UpdateVillage(VillageId, AccountId, CancellationToken);
+            var result = updateTask.Execute();
+            return result;
         }
     }
 }

@@ -158,23 +158,21 @@ namespace MainCore.Services.Implementations
             }
             else
             {
-                var result = poliResult.Result;
-                if (result is null) result = poliResult.FinalHandledResult;
+                var result = poliResult.Result ?? poliResult.FinalHandledResult;
                 if (result.IsFailed)
                 {
                     task.Stage = TaskStage.Waiting;
 
+                    var errors = result.Reasons.Select(x => x.Message).ToList();
+                    _logManager.Warning(index, string.Join(Environment.NewLine, errors), task);
+
                     if (result.HasError<Login>())
                     {
-                        _logManager.Warning(index, "Login page is showing, stop current task and login", task);
                         Add(index, new LoginTask(index), true);
                     }
                     else if (result.HasError<Stop>())
                     {
                         UpdateAccountStatus(index, AccountStatus.Paused);
-                        _logManager.Warning(index, $"There is something wrong. Bot is pausing", task);
-                        var errors = result.Reasons.Select(x => x.Message).ToList();
-                        _logManager.Error(index, string.Join(Environment.NewLine, errors));
                     }
                     else if (result.HasError<Skip>())
                     {
@@ -188,7 +186,6 @@ namespace MainCore.Services.Implementations
                     else if (result.HasError<Cancel>())
                     {
                         UpdateAccountStatus(index, AccountStatus.Paused);
-                        _logManager.Information(index, $"Stop command requested", task);
                     }
                 }
                 else

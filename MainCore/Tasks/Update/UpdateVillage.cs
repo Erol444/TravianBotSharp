@@ -2,6 +2,8 @@
 using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace MainCore.Tasks.Update
@@ -17,21 +19,34 @@ namespace MainCore.Tasks.Update
 
         public override Result Execute()
         {
+            var commands = new List<Func<Result>>()
             {
-                var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            {
-                var updateTask = new UpdateInfo(AccountId, CancellationToken);
-                var result = updateTask.Execute();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            {
-                var result = UpdateVillageInfo();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
+                SwitchVillage,
+                UpdateInfo,
+                UpdateVillageInfo,
+            };
 
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            }
             return Result.Ok();
+        }
+
+        private Result SwitchVillage()
+        {
+            var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+            return result;
+        }
+
+        private Result UpdateInfo()
+        {
+            var updateTask = new UpdateInfo(AccountId, CancellationToken);
+            var result = updateTask.Execute();
+            return result;
         }
 
         private Result UpdateVillageInfo()

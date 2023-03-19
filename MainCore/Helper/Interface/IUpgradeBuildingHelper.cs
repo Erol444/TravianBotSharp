@@ -8,8 +8,6 @@ namespace MainCore.Helper.Interface
     {
         Result<bool> IsNeedAdsUpgrade(int accountId, int villageId, PlanTask buildingTask);
 
-        public Result<bool> IsBuildingCompleted(int accountId, int villageId, int buildingId, int buildingLevel);
-
         bool IsEnoughFreeCrop(int villageId, BuildingEnums building);
 
         public Result<bool> GotoBuilding(int accountId, int villageId, PlanTask buildingTask);
@@ -20,8 +18,6 @@ namespace MainCore.Helper.Interface
 
         PlanTask ExtractResField(int villageId, PlanTask buildingTask);
 
-        Result<PlanTask> NextBuildingTask(int accountId, int villageId);
-
         void RemoveFinishedCB(int villageId);
 
         Result Construct(int accountId, PlanTask buildingTask);
@@ -29,5 +25,11 @@ namespace MainCore.Helper.Interface
         Result Upgrade(int accountId, PlanTask buildingTask);
 
         Result UpgradeAds(int accountId, PlanTask buildingTask);
+
+        PlanTask GetFirstTask(int villageId);
+
+        PlanTask GetFirstBuildingTask(int villageId);
+
+        PlanTask GetFirstResTask(int villageId);
     }
 }

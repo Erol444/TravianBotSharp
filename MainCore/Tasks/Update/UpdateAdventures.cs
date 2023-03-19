@@ -5,6 +5,7 @@ using MainCore.Tasks.Sim;
 using ModuleCore.Parser;
 using Splat;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -24,25 +25,41 @@ namespace MainCore.Tasks.Update
 
         public override Result Execute()
         {
+            var commands = new List<Func<Result>>()
             {
-                var result = _navigateHelper.ToAdventure(AccountId);
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
+                ToAdventure,
+                UpdateAdventureList,
+                UpdateInfo,
+                SendAdventures,
+            };
 
+            foreach (var command in commands)
             {
-                var result = _updateHelper.UpdateAdventures(AccountId);
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            {
-                var updateInfo = new UpdateInfo(AccountId);
-                var result = updateInfo.Execute();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            {
-                var result = SendAdventures();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
             return Result.Ok();
+        }
+
+        private Result ToAdventure()
+        {
+            var result = _navigateHelper.ToAdventure(AccountId);
+            return result;
+        }
+
+        private Result UpdateAdventureList()
+        {
+            var result = _updateHelper.UpdateAdventures(AccountId);
+            return result;
+        }
+
+        private Result UpdateInfo()
+        {
+            var updateInfo = new UpdateInfo(AccountId);
+            var result = updateInfo.Execute();
+            return result;
         }
 
         private Result SendAdventures()

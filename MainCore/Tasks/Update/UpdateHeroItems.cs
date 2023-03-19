@@ -2,6 +2,8 @@
 using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
+using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace MainCore.Tasks.Update
@@ -17,16 +19,32 @@ namespace MainCore.Tasks.Update
 
         public override Result Execute()
         {
+            var commands = new List<Func<Result>>()
             {
-                var result = _navigateHelper.ToHeroInventory(AccountId);
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            {
-                var result = _updateHelper.UpdateHeroInventory(AccountId);
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
+                ToHeroInventory,
+                Update,
+            };
 
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            }
             return Result.Ok();
+        }
+
+        private Result ToHeroInventory()
+        {
+            var result = _navigateHelper.ToHeroInventory(AccountId);
+            return result;
+        }
+
+        private Result Update()
+        {
+            var result = _updateHelper.UpdateHeroInventory(AccountId);
+            return result;
         }
     }
 }
