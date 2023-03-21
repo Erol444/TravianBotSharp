@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace MainCore.Tasks.Update
+namespace MainCore.Tasks.Update.UpdateDorf2
 {
-    public class UpdateDorf1 : VillageBotTask
+    public class UpdateDorf2Task : VillageBotTask
     {
-        public UpdateDorf1(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
+        public UpdateDorf2Task(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }
 
@@ -32,13 +32,13 @@ namespace MainCore.Tasks.Update
 
         private Result ToDorf()
         {
-            var result = _navigateHelper.ToDorf1(AccountId);
+            var result = _navigateHelper.ToDorf2(AccountId);
             return result;
         }
 
         private Result UpdateVillage()
         {
-            var taskUpdate = new UpdateVillage(VillageId, AccountId, CancellationToken);
+            var taskUpdate = _taskFactory.CreateUpdateVillageTask(VillageId, AccountId, CancellationToken);
             var result = taskUpdate.Execute();
             return result;
         }

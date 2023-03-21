@@ -1,32 +1,18 @@
 ﻿using FluentResults;
+using HtmlAgilityPack;
 using MainCore.Errors;
-using MainCore.Helper.Interface;
-using MainCore.Services.Interface;
-using MainCore.Tasks.Sim;
-using MainCore.Tasks.Update;
-using ModuleCore.Parser;
 using OpenQA.Selenium;
-using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Misc
+namespace MainCore.Tasks.Misc.Login
 {
-    public class LoginTask : AccountBotTask
+    public class LoginTaskTravianOfficial : LoginTask
     {
-        private readonly ICheckHelper _checkHelper;
-
-        private readonly ISystemPageParser _systemPageParser;
-
-        private readonly IPlanManager _planManager;
-
-        public LoginTask(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
+        public LoginTaskTravianOfficial(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
-            _checkHelper = Locator.Current.GetService<ICheckHelper>();
-            _systemPageParser = Locator.Current.GetService<ISystemPageParser>();
-            _planManager = Locator.Current.GetService<IPlanManager>();
         }
 
         public override Result Execute()
@@ -66,11 +52,11 @@ namespace MainCore.Tasks.Misc
         {
             var html = _chromeBrowser.GetHtml();
 
-            var usernameNode = _systemPageParser.GetUsernameNode(html);
+            var usernameNode = GetUsernameNode(html);
 
-            var passwordNode = _systemPageParser.GetPasswordNode(html);
+            var passwordNode = GetPasswordNode(html);
 
-            var buttonNode = _systemPageParser.GetLoginButton(html);
+            var buttonNode = GetLoginButton(html);
             if (buttonNode is null)
             {
                 _logManager.Information(AccountId, "Account is already logged in. Skip login task");
@@ -117,59 +103,28 @@ namespace MainCore.Tasks.Misc
             passwordElement[0].SendKeys(access.Password);
 
             buttonElements[0].Click();
-            if (VersionDetector.IsTTWars())
-            {
-                html = _chromeBrowser.GetHtml();
-                if (_checkHelper.IsSkipTutorial(html))
-                {
-                    var skipButton = html.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("questButtonSkipTutorial"));
-                    if (skipButton is null)
-                    {
-                        return Result.Fail(new Retry("Cannot find skip quest button"));
-                    }
-                    var skipButtons = chrome.FindElements(By.XPath(skipButton.XPath));
-                    if (skipButtons.Count == 0)
-                    {
-                        return Result.Fail(new Retry("Cannot find skip quest button"));
-                    }
-                    var result = _navigateHelper.Click(AccountId, skipButtons[0]);
-                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                }
-            }
             return Result.Ok();
         }
 
-        private Result AddTask()
+        #region parser
+
+        private static HtmlNode GetUsernameNode(HtmlDocument doc)
         {
-            _taskManager.Add(AccountId, new UpdateInfo(AccountId));
-
-            using var context = _contextFactory.CreateDbContext();
-            var villages = context.Villages.Where(x => x.AccountId == AccountId);
-            var listTask = _taskManager.GetList(AccountId);
-            var upgradeBuildingList = listTask.OfType<UpgradeBuilding>();
-            var updateList = listTask.OfType<UpdateDorf1>();
-            foreach (var village in villages)
-            {
-                var queue = _planManager.GetList(village.Id);
-                if (queue.Any())
-                {
-                    var upgradeBuilding = upgradeBuildingList.FirstOrDefault(x => x.VillageId == village.Id);
-                    if (upgradeBuilding is null)
-                    {
-                        _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
-                    }
-                }
-                var setting = context.VillagesSettings.Find(village.Id);
-                if (setting.IsAutoRefresh)
-                {
-                    var update = updateList.FirstOrDefault(x => x.VillageId == village.Id);
-                    if (update is null)
-                    {
-                        _taskManager.Add(AccountId, new RefreshVillage(village.Id, AccountId));
-                    }
-                }
-            }
-            return Result.Ok();
+            return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("name"));
         }
+
+        private static HtmlNode GetPasswordNode(HtmlDocument doc)
+        {
+            return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("password"));
+        }
+
+        private static HtmlNode GetLoginButton(HtmlDocument doc)
+        {
+            var trNode = doc.DocumentNode.Descendants("tr").FirstOrDefault(x => x.HasClass("loginButtonRow"));
+            if (trNode == null) return null;
+            return trNode.Descendants("button").FirstOrDefault(x => x.HasClass("green"));
+        }
+
+        #endregion parser
     }
 }

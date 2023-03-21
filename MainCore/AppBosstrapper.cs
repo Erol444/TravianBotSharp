@@ -4,6 +4,7 @@ using MainCore.Helper.Interface;
 using MainCore.Migrations;
 using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
+using MainCore.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ModuleCore.Parser;
@@ -76,6 +77,18 @@ namespace MainCore
             services.AddSingleton<INavigateHelper, NavigateHelper>();
             services.AddSingleton<IUpdateHelper, UpdateHelper>();
             services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
+#if TRAVIAN_OFFICIAL
+
+            services.AddSingleton<ITaskFactory, TravianOfficialTaskFactory>();
+
+#elif TTWARS
+
+#else
+
+#error You forgot to define Travian version here
+
+#endif
+
             return services;
         }
     }

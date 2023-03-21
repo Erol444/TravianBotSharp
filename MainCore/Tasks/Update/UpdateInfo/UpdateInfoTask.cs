@@ -2,6 +2,8 @@
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Models.Database;
+using MainCore.Tasks.Update.UpdateAdventures;
+using MainCore.Tasks.Update.UpdateBothDorf;
 using ModuleCore.Parser;
 using Splat;
 using System;
@@ -9,16 +11,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Update
+namespace MainCore.Tasks.Update.UpdateInfo
 {
-    public class UpdateInfo : AccountBotTask
+    public class UpdateInfoTask : AccountBotTask
     {
         private readonly IVillagesTableParser _villagesTableParser;
         private readonly IHeroSectionParser _heroSectionParser;
         private readonly IRightBarParser _rightBarParser;
         private readonly IStockBarParser _stockBarParser;
 
-        public UpdateInfo(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
+        public UpdateInfoTask(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _villagesTableParser = Locator.Current.GetService<IVillagesTableParser>();
             _heroSectionParser = Locator.Current.GetService<IHeroSectionParser>();
@@ -108,11 +110,11 @@ namespace MainCore.Tasks.Update
                 context.AddVillage(newVill.Id);
                 context.AddTroop(newVill.Id, tribe);
 
-                var tasks = _taskManager.GetList(AccountId).OfType<UpdateVillage>().ToList();
+                var tasks = _taskManager.GetList(AccountId).OfType<UpdateBothDorfTask>().ToList();
                 var task = tasks.FirstOrDefault(x => x.VillageId == newVill.Id);
                 if (task is null)
                 {
-                    _taskManager.Add(AccountId, new UpdateBothDorf(newVill.Id, AccountId));
+                    _taskManager.Add(AccountId, _taskFactory.CreateUpdateBothDorfTask(newVill.Id, AccountId));
                 }
             }
             context.SaveChanges();
@@ -155,10 +157,10 @@ namespace MainCore.Tasks.Update
                 if (setting.IsAutoAdventure)
                 {
                     var listTask = _taskManager.GetList(AccountId);
-                    var task = listTask.OfType<UpdateAdventures>();
+                    var task = listTask.OfType<UpdateAdventuresTask>();
                     if (!task.Any())
                     {
-                        _taskManager.Add(AccountId, new UpdateAdventures(AccountId));
+                        _taskManager.Add(AccountId, _taskFactory.CreateUpdateAdventuresTask(AccountId));
                     }
                 }
             }

@@ -114,7 +114,7 @@ namespace MainCore.Tasks.Misc
                 _chromeBrowser.Setup(_nextAccess, setting);
                 var currentAccount = context.Accounts.Find(AccountId);
                 _chromeBrowser.Navigate(currentAccount.Server);
-                _taskManager.Add(AccountId, new LoginTask(AccountId), first: true);
+                _taskManager.Add(AccountId, _taskFactory.CreateLoginTask(AccountId), first: true);
             }
             return Result.Ok();
         }

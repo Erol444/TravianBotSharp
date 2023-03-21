@@ -7,11 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Update
+namespace MainCore.Tasks.Update.UpdateTroopLevel
 {
-    public class UpdateTroopLevel : VillageBotTask
+    public class UpdateTroopLevelTask : VillageBotTask
     {
-        public UpdateTroopLevel(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
+        public UpdateTroopLevelTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }
 
@@ -37,7 +37,7 @@ namespace MainCore.Tasks.Update
 
         private Result Update()
         {
-            var taskUpdate = new UpdateVillage(VillageId, AccountId, CancellationToken);
+            var taskUpdate = _taskFactory.CreateUpdateVillageTask(VillageId, AccountId, CancellationToken);
             var result = taskUpdate.Execute();
             return result;
         }

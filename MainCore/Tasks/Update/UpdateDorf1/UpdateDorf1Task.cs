@@ -1,28 +1,23 @@
 ﻿using FluentResults;
 using MainCore.Errors;
-using MainCore.Helper.Interface;
-using Splat;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace MainCore.Tasks.Update
+namespace MainCore.Tasks.Update.UpdateDorf1
 {
-    public class UpdateHeroItems : AccountBotTask
+    public class UpdateDorf1Task : VillageBotTask
     {
-        private readonly IUpdateHelper _updateHelper;
-
-        public UpdateHeroItems(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
+        public UpdateDorf1Task(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
-            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
         }
 
         public override Result Execute()
         {
             var commands = new List<Func<Result>>()
             {
-                ToHeroInventory,
-                Update,
+                ToDorf,
+                UpdateVillage,
             };
 
             foreach (var command in commands)
@@ -35,15 +30,16 @@ namespace MainCore.Tasks.Update
             return Result.Ok();
         }
 
-        private Result ToHeroInventory()
+        private Result ToDorf()
         {
-            var result = _navigateHelper.ToHeroInventory(AccountId);
+            var result = _navigateHelper.ToDorf1(AccountId);
             return result;
         }
 
-        private Result Update()
+        private Result UpdateVillage()
         {
-            var result = _updateHelper.UpdateHeroInventory(AccountId);
+            var taskUpdate = _taskFactory.CreateUpdateVillageTask(VillageId, AccountId, CancellationToken);
+            var result = taskUpdate.Execute();
             return result;
         }
     }

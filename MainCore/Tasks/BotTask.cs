@@ -16,6 +16,7 @@ namespace MainCore.Tasks
             _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = Locator.Current.GetService<IEventManager>();
             _taskManager = Locator.Current.GetService<ITaskManager>();
+            _taskFactory = Locator.Current.GetService<ITaskFactory>();
             _chromeManager = Locator.Current.GetService<IChromeManager>();
             _logManager = Locator.Current.GetService<ILogManager>();
             CancellationToken = cancellationToken;
@@ -26,6 +27,7 @@ namespace MainCore.Tasks
 
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
         protected readonly ITaskManager _taskManager;
+        protected readonly ITaskFactory _taskFactory;
         protected readonly IEventManager _eventManager;
         protected readonly IChromeManager _chromeManager;
         protected readonly ILogManager _logManager;

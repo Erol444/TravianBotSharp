@@ -406,52 +406,6 @@ namespace MainCore.Helper.Implementations
 
         public Result UpdateFarmList(int accountId)
         {
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var html = chromeBrowser.GetHtml();
-
-            var farmNodes = _farmListParser.GetFarmNodes(html);
-            var farms = new List<Farm>();
-            foreach (var farmNode in farmNodes)
-            {
-                var name = _farmListParser.GetName(farmNode);
-                var id = _farmListParser.GetId(farmNode);
-                var count = _farmListParser.GetNumOfFarms(farmNode);
-                var farm = new Farm()
-                {
-                    AccountId = accountId,
-                    Id = id,
-                    Name = name,
-                    FarmCount = count,
-                };
-                farms.Add(farm);
-            }
-            using var context = _contextFactory.CreateDbContext();
-            var farmsOld = context.Farms.Where(x => x.AccountId == accountId).ToList();
-            foreach (var farm in farms)
-            {
-                var existFarm = context.Farms.FirstOrDefault(x => x.Id == farm.Id);
-                if (existFarm is null)
-                {
-                    context.Farms.Add(farm);
-                    context.AddFarm(farm.Id);
-                }
-                else
-                {
-                    existFarm.Name = farm.Name;
-                    existFarm.FarmCount = farm.FarmCount;
-                    farmsOld.Remove(farmsOld.FirstOrDefault(x => x.Id == farm.Id));
-                }
-            }
-
-            foreach (var farm in farmsOld)
-            {
-                context.Remove(farm);
-                context.DeleteFarm(farm.Id);
-            }
-
-            context.SaveChanges();
-            _eventManager.OnFarmListUpdate(accountId);
-            return Result.Ok();
         }
     }
 }

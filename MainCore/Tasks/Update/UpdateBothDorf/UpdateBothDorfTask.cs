@@ -4,11 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace MainCore.Tasks.Update
+namespace MainCore.Tasks.Update.UpdateBothDorf
 {
-    public class UpdateBothDorf : VillageBotTask
+    public class UpdateBothDorfTask : VillageBotTask
     {
-        public UpdateBothDorf(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
+        public UpdateBothDorfTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }
 
@@ -52,14 +52,14 @@ namespace MainCore.Tasks.Update
 
         private Result UpdateDorf1()
         {
-            var updateDorf1 = new UpdateDorf1(VillageId, AccountId, CancellationToken);
+            var updateDorf1 = _taskFactory.CreateUpdateDorf1Task(VillageId, AccountId, CancellationToken);
             var result = updateDorf1.Execute();
             return result;
         }
 
         private Result UpdateDorf2()
         {
-            var updateDorf2 = new UpdateDorf2(VillageId, AccountId, CancellationToken);
+            var updateDorf2 = _taskFactory.CreateUpdateDorf2Task(VillageId, AccountId, CancellationToken);
             var result = updateDorf2.Execute();
             return result;
         }

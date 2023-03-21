@@ -168,7 +168,6 @@ namespace MainCore.Helper.Implementations
         }
 
         public Result ToDorf1(int accountId, bool isForce = false)
-
         {
             var chromeBrowser = _chromeManager.Get(accountId);
             var currentUrl = chromeBrowser.GetCurrentUrl();

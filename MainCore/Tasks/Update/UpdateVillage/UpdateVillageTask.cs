@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace MainCore.Tasks.Update
+namespace MainCore.Tasks.Update.UpdateVillage
 {
     public class UpdateVillage : VillageBotTask
     {
@@ -44,7 +44,7 @@ namespace MainCore.Tasks.Update
 
         private Result UpdateInfo()
         {
-            var updateTask = new UpdateInfo(AccountId, CancellationToken);
+            var updateTask = _taskFactory.CreateUpdateInfoTask(AccountId, CancellationToken);
             var result = updateTask.Execute();
             return result;
         }

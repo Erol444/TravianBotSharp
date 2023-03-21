@@ -1,5 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper.Interface;
+using MainCore.Tasks;
 using MainCore.Tasks.Misc;
 using MainCore.Tasks.Sim;
 using ReactiveUI;
@@ -21,12 +22,14 @@ namespace WPFUI.ViewModels.Uc.MainView
     {
         private readonly MainTabPanelViewModel _mainTabPanelViewModel;
         private readonly IAccessHelper _accessHelper;
+        private readonly ITaskFactory _taskFactory;
 
         public MainButtonPanelViewModel()
         {
             _eventManager.AccountStatusUpdate += OnAccountUpdate;
             _mainTabPanelViewModel = Locator.Current.GetService<MainTabPanelViewModel>();
             _accessHelper = Locator.Current.GetService<IAccessHelper>();
+            _taskFactory = Locator.Current.GetService<ITaskFactory>();
 
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
@@ -197,7 +200,7 @@ namespace WPFUI.ViewModels.Uc.MainView
                 MessageBox.Show(ex.Message, "Error");
                 return;
             }
-            _taskManager.Add(index, new LoginTask(index), true);
+            _taskManager.Add(index, _taskFactory.CreateLoginTask(index), true);
 
             var sleepExist = _taskManager.GetList(index).FirstOrDefault(x => x.GetType() == typeof(SleepTask));
             if (sleepExist is null)
