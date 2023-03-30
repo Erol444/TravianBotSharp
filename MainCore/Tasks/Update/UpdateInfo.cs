@@ -2,7 +2,7 @@
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Models.Database;
-using ModuleCore.Parser;
+using MainCore.Parser.Interface;
 using Splat;
 using System;
 using System.Collections.Generic;

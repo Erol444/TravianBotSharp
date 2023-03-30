@@ -2,7 +2,7 @@
 using MainCore.Helper.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
-using ModuleCore.Parser;
+using MainCore.Parser.Interface;
 using System.Linq;
 
 namespace MainCore.Helper.Implementations

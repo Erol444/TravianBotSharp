@@ -2,7 +2,7 @@
 using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Tasks.Sim;
-using ModuleCore.Parser;
+using MainCore.Parser.Interface;
 using Splat;
 using System;
 using System.Collections.Generic;

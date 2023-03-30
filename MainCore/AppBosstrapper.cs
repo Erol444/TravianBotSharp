@@ -6,15 +6,15 @@ using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ModuleCore.Parser;
+using MainCore.Parser.Interface;
 
 #if TRAVIAN_OFFICIAL
 
-using TravianOfficialCore.Parsers;
+using MainCore.Parser.Implementations.TravianOfficial;
 
 #elif TTWARS
 
-using TTWarsCore.Parsers;
+using MainCore.Parser.Implementations.TTWars;
 
 #else
 

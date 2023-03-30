@@ -4,7 +4,7 @@ using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Models.Runtime;
 using MainCore.Tasks.Update;
-using ModuleCore.Parser;
+using MainCore.Parser.Interface;
 using OpenQA.Selenium;
 using Splat;
 using System;

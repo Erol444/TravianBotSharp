@@ -1,10 +1,10 @@
 ﻿using FluentResults;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
+using MainCore.Parser.Interface;
 using MainCore.Services.Interface;
 using MainCore.Tasks.Sim;
 using MainCore.Tasks.Update;
-using ModuleCore.Parser;
 using OpenQA.Selenium;
 using Splat;
 using System;

@@ -5,7 +5,7 @@ using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
-using ModuleCore.Parser;
+using MainCore.Parser.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
