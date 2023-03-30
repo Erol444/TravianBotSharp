@@ -1,19 +1,19 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Helper.Interface;
+using MainCore.Parser.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
-using MainCore.Parser.Interface;
 using System.Linq;
 
-namespace MainCore.Helper.Implementations
+namespace MainCore.Helper.Implementations.Base
 {
-    public class CheckHelper : ICheckHelper
+    public abstract class CheckHelper : ICheckHelper
     {
-        private readonly IChromeManager _chromeManager;
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IVillagesTableParser _villagesTableParser;
-        private readonly IBuildingTabParser _buildingTabParser;
-        private readonly ISystemPageParser _systemPageParser;
+        protected readonly IChromeManager _chromeManager;
+        protected readonly IDbContextFactory<AppDbContext> _contextFactory;
+        protected readonly IVillagesTableParser _villagesTableParser;
+        protected readonly IBuildingTabParser _buildingTabParser;
+        protected readonly ISystemPageParser _systemPageParser;
 
         public CheckHelper(IChromeManager chromeManager, IVillagesTableParser villagesTableParser, IBuildingTabParser buildingTabParser, IDbContextFactory<AppDbContext> contextFactory, ISystemPageParser systemPageParser)
         {
@@ -61,16 +61,7 @@ namespace MainCore.Helper.Implementations
             return _buildingTabParser.IsCurrentTab(tabs[tab]);
         }
 
-        public bool IsFarmListPage(int accountId)
-        {
-            // check building
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var url = chromeBrowser.GetCurrentUrl();
-
-            if (VersionDetector.IsTravianOfficial() && !url.Contains("id=39")) return false;
-            if (VersionDetector.IsTTWars() && !url.Contains("tt=99")) return false;
-            return IsCorrectTab(accountId, 4);
-        }
+        public abstract bool IsFarmListPage(int accountId);
 
         public bool IsWWMsg(HtmlDocument doc) => doc.DocumentNode.Descendants("img").FirstOrDefault(x => x.GetAttributeValue("src", "") == "/img/ww100.png") is not null;
 

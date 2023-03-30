@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MainCore.Helper.Implementations
+namespace MainCore.Helper.Implementations.Base
 {
     public class BuildingsHelper : IBuildingsHelper
     {

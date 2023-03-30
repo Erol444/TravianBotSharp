@@ -3,7 +3,7 @@ using Octokit;
 using System;
 using System.Threading.Tasks;
 
-namespace MainCore.Helper.Implementations
+namespace MainCore.Helper.Implementations.Base
 {
     public class GithubHelper : IGithubHelper
     {

@@ -1,7 +1,7 @@
 ﻿using MainCore.Helper.Interface;
 using RestSharp;
 
-namespace MainCore.Helper.Implementations
+namespace MainCore.Helper.Implementations.Base
 {
     public class AccessHelper : IAccessHelper
     {

@@ -5,26 +5,26 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Models.Runtime;
+using MainCore.Parser.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
-using MainCore.Parser.Interface;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Helper.Implementations
+namespace MainCore.Helper.Implementations.Base
 {
     public class UpgradeBuildingHelper : IUpgradeBuildingHelper
     {
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IPlanManager _planManager;
-        private readonly IChromeManager _chromeManager;
-        private readonly ISystemPageParser _systemPageParser;
-        private readonly IBuildingsHelper _buildingsHelper;
-        private readonly INavigateHelper _navigateHelper;
-        private readonly ILogManager _logManager;
+        protected readonly IDbContextFactory<AppDbContext> _contextFactory;
+        protected readonly IPlanManager _planManager;
+        protected readonly IChromeManager _chromeManager;
+        protected readonly ISystemPageParser _systemPageParser;
+        protected readonly IBuildingsHelper _buildingsHelper;
+        protected readonly INavigateHelper _navigateHelper;
+        protected readonly ILogManager _logManager;
 
         public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IBuildingsHelper buildingsHelper, INavigateHelper navigateHelper, ILogManager logManager)
         {

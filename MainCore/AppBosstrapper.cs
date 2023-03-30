@@ -1,5 +1,4 @@
 ﻿using FluentMigrator.Runner;
-using MainCore.Helper.Implementations;
 using MainCore.Helper.Interface;
 using MainCore.Migrations;
 using MainCore.Services.Implementations;
@@ -11,10 +10,12 @@ using MainCore.Parser.Interface;
 #if TRAVIAN_OFFICIAL
 
 using MainCore.Parser.Implementations.TravianOfficial;
+using MainCore.Helper.Implementations.TravianOfficial;
 
 #elif TTWARS
 
 using MainCore.Parser.Implementations.TTWars;
+using MainCore.Helper.Implementations.TTWars;
 
 #else
 
