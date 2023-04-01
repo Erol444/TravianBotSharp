@@ -1,7 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper.Interface;
-using MainCore.Tasks.Misc;
-using MainCore.Tasks.Sim;
+using MainCore.Tasks.Base;
 using Microsoft.Win32;
 using ReactiveUI;
 using Splat;

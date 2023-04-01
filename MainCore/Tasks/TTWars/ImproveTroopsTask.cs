@@ -2,20 +2,16 @@
 using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
-using MainCore.Tasks.Update;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Misc
+namespace MainCore.Tasks.TTWars
 {
-    public class ImproveTroopsTask : VillageBotTask
+    public class ImproveTroopsTask : Base.ImproveTroopsTask
     {
-        private TroopEnums _troop;
-        public TroopEnums Troop => _troop;
-
         public ImproveTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }

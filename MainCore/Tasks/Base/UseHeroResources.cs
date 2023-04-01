@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace MainCore.Tasks.Misc
+namespace MainCore.Tasks.Base
 {
     public class UseHeroResources : VillageBotTask
     {

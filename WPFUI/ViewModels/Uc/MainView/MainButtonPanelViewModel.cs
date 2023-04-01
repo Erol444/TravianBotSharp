@@ -1,6 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper.Interface;
-using MainCore.Tasks.Misc;
+using MainCore.Tasks.Base;
 using MainCore.Tasks.Sim;
 using ReactiveUI;
 using Splat;

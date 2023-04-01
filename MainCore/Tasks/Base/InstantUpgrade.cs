@@ -1,19 +1,17 @@
 ﻿using FluentResults;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
-using MainCore.Tasks.Misc;
-using MainCore.Tasks.Update;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Sim
+namespace MainCore.Tasks.Base
 {
     public class InstantUpgrade : VillageBotTask
     {
-        private readonly IClickHelper _clickHelper;
+        protected readonly IClickHelper _clickHelper;
 
         public InstantUpgrade(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
@@ -42,13 +40,13 @@ namespace MainCore.Tasks.Sim
             return Result.Ok();
         }
 
-        private Result SwitchVillage()
+        protected Result SwitchVillage()
         {
             var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
             return result;
         }
 
-        private Result GoToDorf()
+        protected Result GoToDorf()
         {
             var currentUrl = _chromeBrowser.GetCurrentUrl();
             if (!currentUrl.Contains("dorf"))
@@ -59,13 +57,13 @@ namespace MainCore.Tasks.Sim
             return Result.Ok();
         }
 
-        private Result ClickCompleteNow()
+        protected Result ClickCompleteNow()
         {
             var result = _clickHelper.ClickCompleteNow(AccountId);
             return result;
         }
 
-        private Result TriggerTask()
+        protected Result TriggerTask()
         {
             var tasks = _taskManager.GetList(AccountId);
             var improveTroopTask = tasks.OfType<ImproveTroopsTask>().FirstOrDefault(x => x.VillageId == VillageId);
@@ -83,7 +81,7 @@ namespace MainCore.Tasks.Sim
             return Result.Ok();
         }
 
-        private Result Update()
+        protected Result Update()
         {
             var updateTask = new UpdateVillage(VillageId, AccountId, CancellationToken);
             var result = updateTask.Execute();

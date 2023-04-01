@@ -2,12 +2,13 @@
 using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
+using MainCore.Tasks.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Update
+namespace MainCore.Tasks.Base
 {
     public class UpdateTroopLevel : VillageBotTask
     {

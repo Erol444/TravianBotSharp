@@ -1,14 +1,12 @@
 ﻿using FluentResults;
 using MainCore.Enums;
 using MainCore.Errors;
-using MainCore.Tasks.Sim;
-using MainCore.Tasks.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Misc
+namespace MainCore.Tasks.Base
 {
     public class RefreshVillage : VillageBotTask
     {
@@ -38,7 +36,7 @@ namespace MainCore.Tasks.Misc
             return Result.Ok();
         }
 
-        private Result Update()
+        protected Result Update()
         {
             BotTask taskUpdate;
             switch (Mode)
@@ -67,19 +65,19 @@ namespace MainCore.Tasks.Misc
             return result;
         }
 
-        private Result ApplyAutoTask()
+        protected Result ApplyAutoTask()
         {
             using var context = _contextFactory.CreateDbContext();
 
             InstantUpgrade(context);
             AutoNPC(context);
 
-            if (Mode == 2 || (Mode == 0 && IsNeedDorf2())) AutoImproveTroop(context);
+            if (Mode == 2 || Mode == 0 && IsNeedDorf2()) AutoImproveTroop(context);
 
             return Result.Ok();
         }
 
-        private Result NextExecute()
+        protected Result NextExecute()
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
@@ -94,14 +92,14 @@ namespace MainCore.Tasks.Misc
             return Result.Ok();
         }
 
-        private bool IsNeedDorf2()
+        protected bool IsNeedDorf2()
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
             return setting.IsUpgradeTroop;
         }
 
-        private void InstantUpgrade(AppDbContext context)
+        protected void InstantUpgrade(AppDbContext context)
         {
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.OfType<InstantUpgrade>();
@@ -134,44 +132,9 @@ namespace MainCore.Tasks.Misc
             _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
         }
 
-        private void AutoNPC(AppDbContext context)
-        {
-            var listTask = _taskManager.GetList(AccountId);
-            var tasks = listTask.OfType<NPCTask>();
-            if (tasks.Any(x => x.VillageId == VillageId)) return;
+        protected abstract void AutoNPC(AppDbContext context);
 
-            var info = context.AccountsInfo.Find(AccountId);
-
-            var goldNeed = 0;
-            if (VersionDetector.IsTravianOfficial())
-            {
-                goldNeed = 3;
-            }
-            else if (VersionDetector.IsTTWars())
-            {
-                goldNeed = 5;
-            }
-            if (info.Gold < goldNeed) return;
-
-            var setting = context.VillagesSettings.Find(VillageId);
-
-            var resource = context.VillagesResources.Find(VillageId);
-            if (setting.IsAutoNPC && setting.AutoNPCPercent != 0)
-            {
-                var ratio = resource.Crop * 100.0f / resource.Granary;
-                if (ratio < setting.AutoNPCPercent) return;
-                _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
-            }
-            if (setting.IsAutoNPCWarehouse && setting.AutoNPCWarehousePercent != 0)
-            {
-                var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
-                var ratio = maxResource * 100.0f / resource.Warehouse;
-                if (ratio < setting.AutoNPCWarehousePercent) return;
-                _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
-            }
-        }
-
-        private void AutoImproveTroop(AppDbContext context)
+        protected void AutoImproveTroop(AppDbContext context)
         {
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.OfType<ImproveTroopsTask>();

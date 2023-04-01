@@ -40,6 +40,7 @@ namespace MainCore
             services.AddSingleton<ITaskManager, TaskManager>();
             services.AddSingleton<IPlanManager, PlanManager>();
             services.AddSingleton<ILogManager, LogManager>();
+            services.AddSingleton<ITaskFactory, TaskFactory>();
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb

@@ -1,4 +1,4 @@
-﻿using MainCore.Tasks.Update;
+﻿using MainCore.Tasks.Base;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;

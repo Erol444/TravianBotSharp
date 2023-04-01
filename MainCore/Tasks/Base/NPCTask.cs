@@ -3,7 +3,6 @@ using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Models.Runtime;
-using MainCore.Tasks.Update;
 using MainCore.Parser.Interface;
 using OpenQA.Selenium;
 using Splat;
@@ -12,11 +11,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Misc
+namespace MainCore.Tasks.Base
 {
-    public class NPCTask : VillageBotTask
+    public abstract class NPCTask : VillageBotTask
     {
-        private readonly ISystemPageParser _systemPageParser;
+        protected readonly ISystemPageParser _systemPageParser;
 
         public NPCTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
@@ -29,7 +28,7 @@ namespace MainCore.Tasks.Misc
             _ratio = ratio;
         }
 
-        private readonly Resources _ratio;
+        protected readonly Resources _ratio;
 
         public override Result Execute()
         {
@@ -54,32 +53,16 @@ namespace MainCore.Tasks.Misc
             return Result.Ok();
         }
 
-        private Result Update()
+        protected Result Update()
         {
             var updateDorf2 = new UpdateDorf2(VillageId, AccountId, CancellationToken);
             var result = updateDorf2.Execute();
             return result;
         }
 
-        private Result CheckGold()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var info = context.AccountsInfo.Find(AccountId);
+        protected abstract Result CheckGold();
 
-            var goldNeed = 0;
-            if (VersionDetector.IsTravianOfficial())
-            {
-                goldNeed = 3;
-            }
-            else if (VersionDetector.IsTTWars())
-            {
-                goldNeed = 5;
-            }
-            var result = info.Gold > goldNeed;
-            return result ? Result.Ok() : Result.Fail(new Skip("Not enough gold"));
-        }
-
-        private Result ToMarketPlace()
+        protected Result ToMarketPlace()
         {
             using var context = _contextFactory.CreateDbContext();
             var marketplace = context.VillagesBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
@@ -104,7 +87,7 @@ namespace MainCore.Tasks.Misc
             return Result.Ok();
         }
 
-        private Result ClickNPCButton()
+        protected Result ClickNPCButton()
         {
             var html = _chromeBrowser.GetHtml();
             var npcMerchant = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
@@ -130,67 +113,9 @@ namespace MainCore.Tasks.Misc
             return Result.Ok();
         }
 
-        private Result EnterNumber()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.Find(VillageId);
-            var ratio = new int[4];
-            if (_ratio is null)
-            {
-                ratio[0] = setting.AutoNPCWood;
-                ratio[1] = setting.AutoNPCClay;
-                ratio[2] = setting.AutoNPCIron;
-                ratio[3] = setting.AutoNPCCrop;
-            }
-            else
-            {
-                ratio[0] = _ratio.Wood;
-                ratio[1] = _ratio.Clay;
-                ratio[2] = _ratio.Iron;
-                ratio[3] = _ratio.Crop;
-            }
-            var ratioSum = ratio.Sum();
+        protected override Result EnterNumber();
 
-            if (ratioSum == 0)
-            {
-                Array.ForEach(ratio, x => x = 1);
-                ratioSum = 4;
-            }
-
-            var html = _chromeBrowser.GetHtml();
-            var nodeSum = _systemPageParser.GetNpcSumNode(html);
-            var sumCurrent = nodeSum.InnerText.ToNumeric();
-            var current = new long[4];
-            for (var i = 0; i < 4; i++)
-            {
-                current[i] = (long)(sumCurrent * ratio[i]) / ratioSum;
-            }
-            var sum = current.Sum();
-            var diff = sumCurrent - sum;
-            current[3] += diff;
-
-            var chrome = _chromeBrowser.GetChrome();
-            var script = "";
-            if (VersionDetector.IsTravianOfficial())
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    script = $"document.getElementsByName('desired{i}')[0].value = {current[i]};";
-                    chrome.ExecuteScript(script);
-                }
-            }
-            else if (VersionDetector.IsTTWars())
-            {
-                for (int i = 0; i < 4; i++)
-                {
-                    script = $"document.getElementById('m2[{i}]').value = {current[i]};";
-                    chrome.ExecuteScript(script);
-                }
-            }
-            return Result.Ok();
-        }
-
-        private Result ClickNPC()
+        protected Result ClickNPC()
         {
             var html = _chromeBrowser.GetHtml();
             var submit = html.GetElementbyId("submitText");

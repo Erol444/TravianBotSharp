@@ -1,10 +1,11 @@
 ﻿using FluentResults;
 using MainCore.Errors;
+using MainCore.Tasks.Update;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace MainCore.Tasks.Update
+namespace MainCore.Tasks.Base
 {
     public class UpdateBothDorf : VillageBotTask
     {

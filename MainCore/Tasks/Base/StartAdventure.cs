@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Sim
+namespace MainCore.Tasks.Base
 {
     public class StartAdventure : AccountBotTask
     {
