@@ -4,8 +4,6 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
-using MainCore.Tasks.Misc;
-using MainCore.Tasks.Update;
 using Splat;
 using System;
 using System.Collections.Generic;
@@ -14,15 +12,15 @@ using System.Threading;
 
 namespace MainCore.Tasks.Base
 {
-    public class UpgradeBuilding : VillageBotTask
+    public abstract class UpgradeBuilding : VillageBotTask
     {
-        private readonly IUpgradeBuildingHelper _upgradeBuildingHelper;
-        private readonly IUpdateHelper _updateHelper;
-        private readonly IPlanManager _planManager;
-        private readonly IBuildingsHelper _buildingsHelper;
+        protected readonly IUpgradeBuildingHelper _upgradeBuildingHelper;
+        protected readonly IUpdateHelper _updateHelper;
+        protected readonly IPlanManager _planManager;
+        protected readonly IBuildingsHelper _buildingsHelper;
 
-        private PlanTask _chosenTask;
-        private bool _isNewBuilding;
+        protected PlanTask _chosenTask;
+        protected bool _isNewBuilding;
 
         public UpgradeBuilding(int VillageId, int AccountId, CancellationToken cancellationToken = default) : base(VillageId, AccountId, cancellationToken)
         {
@@ -135,7 +133,7 @@ namespace MainCore.Tasks.Base
             } while (true);
         }
 
-        private Result Construct(PlanTask buildingTask)
+        protected Result Construct(PlanTask buildingTask)
         {
             var result = _upgradeBuildingHelper.Construct(AccountId, buildingTask);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
@@ -147,14 +145,14 @@ namespace MainCore.Tasks.Base
             return Result.Ok();
         }
 
-        private Result UpgradeAds(PlanTask buildingTask)
+        protected Result UpgradeAds(PlanTask buildingTask)
         {
             var result = _upgradeBuildingHelper.UpgradeAds(AccountId, buildingTask);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        private Result PreUpdate()
+        protected Result PreUpdate()
         {
             if (!_chromeBrowser.GetCurrentUrl().Contains("dorf"))
             {
@@ -170,7 +168,7 @@ namespace MainCore.Tasks.Base
             return Result.Ok();
         }
 
-        private Result ChooseBuilding()
+        protected Result ChooseBuilding()
         {
             _chosenTask = null;
             _upgradeBuildingHelper.RemoveFinishedCB(VillageId);
@@ -267,7 +265,7 @@ namespace MainCore.Tasks.Base
             }
         }
 
-        private Result CheckBuilding()
+        protected Result CheckBuilding()
         {
             if (_chosenTask is null)
             {
@@ -287,7 +285,7 @@ namespace MainCore.Tasks.Base
             return Result.Ok();
         }
 
-        private bool IsAutoResField()
+        protected bool IsAutoResField()
         {
             if (_chosenTask.Type != PlanTypeEnums.ResFields) return false;
 
@@ -304,7 +302,7 @@ namespace MainCore.Tasks.Base
             return true;
         }
 
-        private Result Update()
+        protected Result Update()
         {
             using var context = _contextFactory.CreateDbContext();
             // move to correct page
@@ -333,7 +331,7 @@ namespace MainCore.Tasks.Base
             return Result.Ok();
         }
 
-        private bool IsEnoughFreeCrop()
+        protected bool IsEnoughFreeCrop()
         {
             if (_upgradeBuildingHelper.IsEnoughFreeCrop(VillageId, _chosenTask.Building)) return true;
 
@@ -351,7 +349,7 @@ namespace MainCore.Tasks.Base
             return false;
         }
 
-        private bool IsCompleted()
+        protected bool IsCompleted()
         {
             var buildingId = _chosenTask.Location;
             var buildingLevel = _chosenTask.Level;
@@ -375,13 +373,13 @@ namespace MainCore.Tasks.Base
             return false;
         }
 
-        private Result GotoBuilding()
+        protected Result GotoBuilding()
         {
             var result = _navigateHelper.GoToBuilding(AccountId, _chosenTask.Location);
             return result;
         }
 
-        private Result GotoCorrectTab()
+        protected Result GotoCorrectTab()
         {
             using var context = _contextFactory.CreateDbContext();
             var building = context.VillagesBuildings.Find(VillageId, _chosenTask.Location);
@@ -416,87 +414,9 @@ namespace MainCore.Tasks.Base
             return Result.Ok();
         }
 
-        private Result CheckResource()
-        {
-            if (_upgradeBuildingHelper.IsEnoughResource(AccountId, VillageId, _chosenTask.Building, _isNewBuilding)) return Result.Ok();
+        protected abstract Result CheckResource();
 
-            var resMissing = _upgradeBuildingHelper.GetResourceMissing(AccountId, VillageId, _chosenTask.Building, _isNewBuilding);
-            if (VersionDetector.IsTravianOfficial())
-            {
-                {
-                    using var context = _contextFactory.CreateDbContext();
-                    var setting = context.VillagesSettings.Find(VillageId);
-                    if (!setting.IsUseHeroRes)
-                    {
-                        _logManager.Information(AccountId, "Don't have enough resources.");
-                        var production = context.VillagesProduction.Find(VillageId);
-                        var timeEnough = production.GetTimeWhenEnough(resMissing);
-                        ExecuteAt = timeEnough;
-                        return Result.Ok();
-                    }
-                }
-                {
-                    var taskUpdate = new UpdateHeroItems(AccountId, CancellationToken);
-                    var result = taskUpdate.Execute();
-                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                }
-                {
-                    using var context = _contextFactory.CreateDbContext();
-
-                    var itemsHero = context.HeroesItems.Where(x => x.AccountId == AccountId);
-                    var woodAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Wood);
-                    var clayAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Clay);
-                    var ironAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Iron);
-                    var cropAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Crop);
-
-                    var resAvaliable = new long[] { woodAvaliable?.Count ?? 0, clayAvaliable?.Count ?? 0, ironAvaliable?.Count ?? 0, cropAvaliable?.Count ?? 0 };
-
-                    var resLeft = new long[] { resAvaliable[0] - resMissing[0], resAvaliable[1] - resMissing[1], resAvaliable[2] - resMissing[2], resAvaliable[3] - resMissing[3] };
-                    if (resLeft.Any(x => x <= 0))
-                    {
-                        _logManager.Information(AccountId, "Don't have enough resources.");
-                        var production = context.VillagesProduction.Find(VillageId);
-                        var timeEnough = production.GetTimeWhenEnough(resMissing);
-                        ExecuteAt = timeEnough;
-                        return Result.Ok();
-                    }
-
-                    var items = new List<(HeroItemEnums, int)>()
-                            {
-                                (HeroItemEnums.Wood, (int)resMissing[0]),
-                                (HeroItemEnums.Clay, (int)resMissing[1]),
-                                (HeroItemEnums.Iron, (int)resMissing[2]),
-                                (HeroItemEnums.Crop, (int)resMissing[3]),
-                            };
-
-                    var taskEquip = new UseHeroResources(VillageId, AccountId, items, CancellationToken);
-                    var result = taskEquip.Execute();
-                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                }
-                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-                {
-                    var result = _upgradeBuildingHelper.GotoBuilding(AccountId, VillageId, _chosenTask);
-                    if (result.IsFailed)
-                    {
-                        var newResult = new Result();
-                        return newResult.WithErrors(result.Errors).WithError(new Trace(Trace.TraceMessage()));
-                    }
-                }
-            }
-            else if (VersionDetector.IsTTWars())
-            {
-                _logManager.Information(AccountId, "Don't have enough resources.");
-                using var context = _contextFactory.CreateDbContext();
-                var production = context.VillagesProduction.Find(VillageId);
-                var timeEnough = production.GetTimeWhenEnough(resMissing);
-                ExecuteAt = timeEnough;
-                return Result.Ok();
-            }
-
-            return Result.Ok();
-        }
-
-        private Result PostUpdate()
+        protected Result PostUpdate()
         {
             {
                 var result = _navigateHelper.WaitPageChanged(AccountId, "dorf");
@@ -510,18 +430,6 @@ namespace MainCore.Tasks.Base
             return Result.Ok();
         }
 
-        private void ChangeNextExecute()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var firstComplete = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).FirstOrDefault(x => x.Id == 0);
-            if (firstComplete.Level != -1)
-            {
-                var delay = 0;
-                if (VersionDetector.IsTravianOfficial()) delay = 10;
-                else if (VersionDetector.IsTTWars()) delay = 1;
-                ExecuteAt = firstComplete.CompleteTime.AddSeconds(delay);
-                _logManager.Information(AccountId, $"Next building will be contructed after {firstComplete.Type} - level {firstComplete.Level} complete. ({ExecuteAt})");
-            }
-        }
+        protected abstract void ChangeNextExecute();
     }
 }

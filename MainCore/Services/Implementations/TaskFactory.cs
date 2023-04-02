@@ -113,6 +113,11 @@ namespace MainCore.Services.Implementations
             return new Tasks.Base.UpdateVillage(accountId, villageId, cancellationToken);
         }
 
+        public BotTask GetUpgradeBuildingTask(int accountId, int villageId, CancellationToken cancellationToken = default)
+        {
+            return new UpgradeBuilding(accountId, villageId, cancellationToken);
+        }
+
         public BotTask GetUseHeroResourcesTask(int accountId, int villageId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.UseHeroResources(accountId, villageId, items, cancellationToken);

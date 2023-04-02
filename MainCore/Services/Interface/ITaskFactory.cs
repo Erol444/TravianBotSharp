@@ -44,6 +44,8 @@ namespace MainCore.Services.Interface
 
         BotTask GetUpdateVillageTask(int accountId, int villageId, CancellationToken cancellationToken = default);
 
+        BotTask GetUpgradeBuildingTask(int accountId, int villageId, CancellationToken cancellationToken = default);
+
         BotTask GetUseHeroResourcesTask(int accountId, int villageId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default);
     }
 }
