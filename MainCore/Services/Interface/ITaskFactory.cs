@@ -18,7 +18,7 @@ namespace MainCore.Services.Interface
 
         BotTask GetNPCTask(int villageId, int accountId, Resources ratio, CancellationToken cancellationToken = default);
 
-        BotTask GetRefreshVillageTask(int villageId, int accountId, int mode, CancellationToken cancellationToken = default);
+        BotTask GetRefreshVillageTask(int villageId, int accountId, int mode = 0, CancellationToken cancellationToken = default);
 
         BotTask GetSleepTask(int accountId, CancellationToken cancellationToken = default);
 

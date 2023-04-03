@@ -1,5 +1,4 @@
-﻿using FluentResults;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 
@@ -9,11 +8,6 @@ namespace MainCore.Tasks.TravianOfficial
     {
         public RefreshVillage(int villageId, int accountId, int mode = 0, CancellationToken cancellationToken = default) : base(villageId, accountId, mode, cancellationToken)
         {
-        }
-
-        public override Result Execute()
-        {
-            return base.Execute();
         }
 
         protected override void AutoNPC(AppDbContext context)

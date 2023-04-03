@@ -6,6 +6,7 @@ using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MainCore.Parser.Interface;
+using MainCore.Services.Implementations.TaskFactories;
 
 #if TRAVIAN_OFFICIAL
 
@@ -40,7 +41,15 @@ namespace MainCore
             services.AddSingleton<ITaskManager, TaskManager>();
             services.AddSingleton<IPlanManager, PlanManager>();
             services.AddSingleton<ILogManager, LogManager>();
-            services.AddSingleton<ITaskFactory, TaskFactory>();
+
+            if (VersionDetector.IsTravianOfficial())
+            {
+                services.AddSingleton<ITaskFactory, TravianOfficialTaskFactory>();
+            }
+            else if (VersionDetector.IsTTWars())
+            {
+                services.AddSingleton<ITaskFactory, TTWarsTaskFactory>();
+            }
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb

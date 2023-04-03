@@ -423,7 +423,7 @@ namespace MainCore.Tasks.Base
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var updateTask = new RefreshVillage(VillageId, AccountId);
+                var updateTask = _taskFactory.GetRefreshVillageTask(VillageId, AccountId);
                 var result = updateTask.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }

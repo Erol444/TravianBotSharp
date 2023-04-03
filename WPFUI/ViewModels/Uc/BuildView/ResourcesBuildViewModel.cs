@@ -68,7 +68,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
-                _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
+                _taskManager.Add(accountId, _taskFactory.GetUpgradeBuildingTask(villageId, accountId));
             }
             else
             {

@@ -1,7 +1,6 @@
 using FluentResults;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
-using MainCore.Tasks.Update;
 using Splat;
 using System;
 using System.Collections.Generic;

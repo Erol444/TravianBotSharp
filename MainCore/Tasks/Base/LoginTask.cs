@@ -12,7 +12,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.Base
 {
-    public class LoginTask : AccountBotTask
+    public abstract class LoginTask : AccountBotTask
     {
         protected readonly ICheckHelper _checkHelper;
 
@@ -79,7 +79,7 @@ namespace MainCore.Tasks.Base
                     var upgradeBuilding = upgradeBuildingList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (upgradeBuilding is null)
                     {
-                        _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
+                        _taskManager.Add(AccountId, _taskFactory.GetUpgradeBuildingTask(village.Id, AccountId));
                     }
                 }
                 var setting = context.VillagesSettings.Find(village.Id);
@@ -88,7 +88,7 @@ namespace MainCore.Tasks.Base
                     var update = updateList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (update is null)
                     {
-                        _taskManager.Add(AccountId, new RefreshVillage(village.Id, AccountId));
+                        _taskManager.Add(AccountId, _taskFactory.GetRefreshVillageTask(village.Id, AccountId));
                     }
                 }
             }

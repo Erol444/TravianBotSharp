@@ -13,14 +13,9 @@ namespace MainCore.Tasks.TTWars
         {
         }
 
-        public NPCTask(int villageId, int accountId, Resources ratio, CancellationToken cancellationToken = default) : this(villageId, accountId, ratio, cancellationToken)
+        public NPCTask(int villageId, int accountId, Resources ratio, CancellationToken cancellationToken = default) : base(villageId, accountId, ratio, cancellationToken)
 
         {
-        }
-
-        public override Result Execute()
-        {
-            return base.Execute();
         }
 
         protected override Result CheckGold()

@@ -165,7 +165,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     if (!tasks.Any(x => x.VillageId == villageId))
                     {
-                        _taskManager.Add(accountId, new RefreshVillage(villageId, accountId));
+                        _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId));
                     }
                 }
                 else

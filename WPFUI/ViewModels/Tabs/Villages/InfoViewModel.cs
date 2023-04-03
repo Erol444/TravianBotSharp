@@ -28,7 +28,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var updateTask = tasks.OfType<RefreshVillage>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, new RefreshVillage(villageId, accountId, 3));
+                _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId, 3));
             }
             else
             {
@@ -46,7 +46,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var updateTask = tasks.OfType<RefreshVillage>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, new RefreshVillage(villageId, accountId, 1));
+                _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId, 1));
             }
             else
             {
@@ -64,7 +64,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var updateTask = tasks.OfType<RefreshVillage>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, new RefreshVillage(villageId, accountId, 2));
+                _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId, 2));
             }
             else
             {

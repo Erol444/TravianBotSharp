@@ -32,7 +32,7 @@ namespace MainCore.Tasks.TravianOfficial
                 }
             }
             {
-                var taskUpdate = new UpdateHeroItems(AccountId, CancellationToken);
+                var taskUpdate = _taskFactory.GetUpdateHeroItemsTask(AccountId, CancellationToken);
                 var result = taskUpdate.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
@@ -65,7 +65,7 @@ namespace MainCore.Tasks.TravianOfficial
                                 (HeroItemEnums.Crop, (int)resMissing[3]),
                             };
 
-                var taskEquip = new UseHeroResources(VillageId, AccountId, items, CancellationToken);
+                var taskEquip = _taskFactory.GetUseHeroResourcesTask(VillageId, AccountId, items, CancellationToken);
                 var result = taskEquip.Execute();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }

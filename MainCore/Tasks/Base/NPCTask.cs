@@ -113,7 +113,7 @@ namespace MainCore.Tasks.Base
             return Result.Ok();
         }
 
-        protected override Result EnterNumber();
+        protected abstract Result EnterNumber();
 
         protected Result ClickNPC()
         {

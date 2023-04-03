@@ -1,5 +1,4 @@
-﻿using FluentResults;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 
@@ -9,11 +8,6 @@ namespace MainCore.Tasks.TravianOfficial
     {
         public UpdateAdventures(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
-        }
-
-        public override Result Execute()
-        {
-            return base.Execute();
         }
 
         protected override void NextExecute()

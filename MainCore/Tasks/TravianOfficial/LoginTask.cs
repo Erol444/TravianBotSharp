@@ -12,11 +12,6 @@ namespace MainCore.Tasks.TravianOfficial
         {
         }
 
-        public override Result Execute()
-        {
-            return base.Execute();
-        }
-
         protected override Result Login()
         {
             var html = _chromeBrowser.GetHtml();

@@ -1,5 +1,4 @@
-﻿using FluentResults;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 
@@ -11,12 +10,7 @@ namespace MainCore.Tasks.TTWars
         {
         }
 
-        public override Result Execute()
-        {
-            return base.Execute();
-        }
-
-        protected abstract void AutoNPC(AppDbContext context)
+        protected override void AutoNPC(AppDbContext context)
         {
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.OfType<NPCTask>();

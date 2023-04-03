@@ -3,7 +3,6 @@ using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Services.Interface;
 using MainCore.Tasks;
-using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 using System;
@@ -15,12 +14,13 @@ namespace MainCore.Services.Implementations
 {
     public sealed class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogManager logManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogManager logManager, ITaskFactory taskFactory)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
             _logManager = logManager;
             _eventManager.TaskExecute += Loop;
+            _taskFactory = taskFactory;
         }
 
         public void Add(int index, BotTask task, bool first = false)
@@ -168,7 +168,7 @@ namespace MainCore.Services.Implementations
 
                     if (result.HasError<Login>())
                     {
-                        Add(index, new LoginTask(index), true);
+                        Add(index, _taskFactory.GetLoginTask(index), true);
                     }
                     else if (result.HasError<Stop>())
                     {
@@ -246,5 +246,6 @@ namespace MainCore.Services.Implementations
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
         private readonly ILogManager _logManager;
+        private readonly ITaskFactory _taskFactory;
     }
 }

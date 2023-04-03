@@ -2,7 +2,6 @@
 using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
-using MainCore.Tasks.Update;
 using System;
 using System.Collections.Generic;
 using System.Linq;

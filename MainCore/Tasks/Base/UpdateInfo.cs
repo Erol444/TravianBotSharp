@@ -158,7 +158,7 @@ namespace MainCore.Tasks.Base
                     var task = listTask.OfType<UpdateAdventures>();
                     if (!task.Any())
                     {
-                        _taskManager.Add(AccountId, new UpdateAdventures(AccountId));
+                        _taskManager.Add(AccountId, _taskFactory.GetUpdateAdventuresTask(AccountId));
                     }
                 }
             }

@@ -1,27 +1,14 @@
-﻿using MainCore.Services.Interface;
-using MainCore.Tasks;
-using System.Threading;
+﻿using MainCore.Enums;
 using MainCore.Models.Runtime;
-using MainCore.Enums;
-using System.Collections.Generic;
-
-#if TRAVIAN_OFFICIAL
-
+using MainCore.Services.Interface;
+using MainCore.Tasks;
 using MainCore.Tasks.TravianOfficial;
+using System.Collections.Generic;
+using System.Threading;
 
-#elif TTWARS
-
-using MainCore.Tasks.TTWars;
-
-#else
-
-#error You forgot to define Travian version here
-
-#endif
-
-namespace MainCore.Services.Implementations
+namespace MainCore.Services.Implementations.TaskFactories
 {
-    public class TaskFactory : ITaskFactory
+    public class TravianOfficialTaskFactory : ITaskFactory
     {
         public BotTask GetImproveTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default)
         {
@@ -75,17 +62,17 @@ namespace MainCore.Services.Implementations
 
         public BotTask GetUpdateBothDorfTask(int accountId, int villageId, CancellationToken cancellationToken = default)
         {
-            return new Tasks.Base.UpdateBothDorf(accountId, villageId, cancellationToken);
+            return new Tasks.Base.UpdateBothDorf(villageId, accountId, cancellationToken);
         }
 
         public BotTask GetUpdateDorf1Task(int accountId, int villageId, CancellationToken cancellationToken = default)
         {
-            return new Tasks.Base.UpdateDorf1(accountId, villageId, cancellationToken);
+            return new Tasks.Base.UpdateDorf1(villageId, accountId, cancellationToken);
         }
 
         public BotTask GetUpdateDorf2Task(int accountId, int villageId, CancellationToken cancellationToken = default)
         {
-            return new Tasks.Base.UpdateDorf2(accountId, villageId, cancellationToken);
+            return new Tasks.Base.UpdateDorf2(villageId, accountId, cancellationToken);
         }
 
         public BotTask GetUpdateFarmListTask(int accountId, CancellationToken cancellationToken = default)
@@ -105,22 +92,22 @@ namespace MainCore.Services.Implementations
 
         public BotTask GetUpdateTroopLevelTask(int accountId, int villageId, CancellationToken cancellationToken = default)
         {
-            return new Tasks.Base.UpdateTroopLevel(accountId, villageId, cancellationToken);
+            return new Tasks.Base.UpdateTroopLevel(villageId, accountId, cancellationToken);
         }
 
         public BotTask GetUpdateVillageTask(int accountId, int villageId, CancellationToken cancellationToken = default)
         {
-            return new Tasks.Base.UpdateVillage(accountId, villageId, cancellationToken);
+            return new Tasks.Base.UpdateVillage(villageId, accountId, cancellationToken);
         }
 
         public BotTask GetUpgradeBuildingTask(int accountId, int villageId, CancellationToken cancellationToken = default)
         {
-            return new UpgradeBuilding(accountId, villageId, cancellationToken);
+            return new UpgradeBuilding(villageId, accountId, cancellationToken);
         }
 
         public BotTask GetUseHeroResourcesTask(int accountId, int villageId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default)
         {
-            return new Tasks.Base.UseHeroResources(accountId, villageId, items, cancellationToken);
+            return new Tasks.Base.UseHeroResources(villageId, accountId, items, cancellationToken);
         }
     }
 }

@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.Base
 {
-    public class RefreshVillage : VillageBotTask
+    public abstract class RefreshVillage : VillageBotTask
     {
         public int Mode { get; set; }
 
@@ -155,7 +155,7 @@ namespace MainCore.Tasks.Base
                 if (!troopsUpgrade[i]) continue;
                 if (troops[i].Level == -1) continue;
                 if (troops[i].Level >= smithy.Level) continue;
-                _taskManager.Add(AccountId, new ImproveTroopsTask(VillageId, AccountId));
+                _taskManager.Add(AccountId, _taskFactory.GetImproveTroopsTask(VillageId, AccountId));
             }
         }
     }
