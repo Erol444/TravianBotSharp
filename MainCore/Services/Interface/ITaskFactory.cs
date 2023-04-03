@@ -28,11 +28,11 @@ namespace MainCore.Services.Interface
 
         BotTask GetUpdateAdventuresTask(int accountId, CancellationToken cancellationToken = default);
 
-        BotTask GetUpdateBothDorfTask(int accountId, int villageId, CancellationToken cancellationToken = default);
+        BotTask GetUpdateBothDorfTask(int villageId, int accountId, CancellationToken cancellationToken = default);
 
-        BotTask GetUpdateDorf1Task(int accountId, int villageId, CancellationToken cancellationToken = default);
+        BotTask GetUpdateDorf1Task(int villageId, int accountId, CancellationToken cancellationToken = default);
 
-        BotTask GetUpdateDorf2Task(int accountId, int villageId, CancellationToken cancellationToken = default);
+        BotTask GetUpdateDorf2Task(int villageId, int accountId, CancellationToken cancellationToken = default);
 
         BotTask GetUpdateFarmListTask(int accountId, CancellationToken cancellationToken = default);
 
@@ -40,12 +40,12 @@ namespace MainCore.Services.Interface
 
         BotTask GetUpdateInfoTask(int accountId, CancellationToken cancellationToken = default);
 
-        BotTask GetUpdateTroopLevelTask(int accountId, int villageId, CancellationToken cancellationToken = default);
+        BotTask GetUpdateTroopLevelTask(int villageId, int accountId, CancellationToken cancellationToken = default);
 
-        BotTask GetUpdateVillageTask(int accountId, int villageId, CancellationToken cancellationToken = default);
+        BotTask GetUpdateVillageTask(int villageId, int accountId, CancellationToken cancellationToken = default);
 
-        BotTask GetUpgradeBuildingTask(int accountId, int villageId, CancellationToken cancellationToken = default);
+        BotTask GetUpgradeBuildingTask(int villageId, int accountId, CancellationToken cancellationToken = default);
 
-        BotTask GetUseHeroResourcesTask(int accountId, int villageId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default);
+        BotTask GetUseHeroResourcesTask(int villageId, int accountId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default);
     }
 }

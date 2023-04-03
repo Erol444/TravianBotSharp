@@ -60,17 +60,17 @@ namespace MainCore.Services.Implementations.TaskFactories
             return new UpdateAdventures(accountId, cancellationToken);
         }
 
-        public BotTask GetUpdateBothDorfTask(int accountId, int villageId, CancellationToken cancellationToken = default)
+        public BotTask GetUpdateBothDorfTask(int villageId, int accountId, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.UpdateBothDorf(villageId, accountId, cancellationToken);
         }
 
-        public BotTask GetUpdateDorf1Task(int accountId, int villageId, CancellationToken cancellationToken = default)
+        public BotTask GetUpdateDorf1Task(int villageId, int accountId, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.UpdateDorf1(villageId, accountId, cancellationToken);
         }
 
-        public BotTask GetUpdateDorf2Task(int accountId, int villageId, CancellationToken cancellationToken = default)
+        public BotTask GetUpdateDorf2Task(int villageId, int accountId, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.UpdateDorf2(villageId, accountId, cancellationToken);
         }
@@ -90,22 +90,22 @@ namespace MainCore.Services.Implementations.TaskFactories
             return new Tasks.Base.UpdateInfo(accountId, cancellationToken);
         }
 
-        public BotTask GetUpdateTroopLevelTask(int accountId, int villageId, CancellationToken cancellationToken = default)
+        public BotTask GetUpdateTroopLevelTask(int villageId, int accountId, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.UpdateTroopLevel(villageId, accountId, cancellationToken);
         }
 
-        public BotTask GetUpdateVillageTask(int accountId, int villageId, CancellationToken cancellationToken = default)
+        public BotTask GetUpdateVillageTask(int villageId, int accountId, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.UpdateVillage(villageId, accountId, cancellationToken);
         }
 
-        public BotTask GetUpgradeBuildingTask(int accountId, int villageId, CancellationToken cancellationToken = default)
+        public BotTask GetUpgradeBuildingTask(int villageId, int accountId, CancellationToken cancellationToken = default)
         {
             return new UpgradeBuilding(villageId, accountId, cancellationToken);
         }
 
-        public BotTask GetUseHeroResourcesTask(int accountId, int villageId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default)
+        public BotTask GetUseHeroResourcesTask(int villageId, int accountId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.UseHeroResources(villageId, accountId, items, cancellationToken);
         }
