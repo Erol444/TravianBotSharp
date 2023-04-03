@@ -1,5 +1,4 @@
 ﻿using MainCore.Models.Database;
-using MainCore.Tasks.Misc;
 using ReactiveUI;
 using System;
 using System.Reactive;
@@ -47,13 +46,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void RefreshTask()
         {
-            _taskManager.Add(AccountId, new RefreshVillage(VillageId, AccountId));
+            _taskManager.Add(AccountId, _taskFactory.GetRefreshVillageTask(VillageId, AccountId));
             MessageBox.Show("Added Refresh resources task to queue");
         }
 
         private void NPCTask()
         {
-            _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId, Ratio.GetResources()));
+            _taskManager.Add(AccountId, _taskFactory.GetNPCTask(VillageId, AccountId, Ratio.GetResources()));
             MessageBox.Show("Added NPC task to queue");
         }
 

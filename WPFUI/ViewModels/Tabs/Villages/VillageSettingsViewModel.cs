@@ -1,7 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper.Interface;
-using MainCore.Tasks.Misc;
-using MainCore.Tasks.Sim;
+using MainCore.Tasks.Base;
 using Microsoft.Win32;
 using ReactiveUI;
 using Splat;
@@ -166,7 +165,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     if (!tasks.Any(x => x.VillageId == villageId))
                     {
-                        _taskManager.Add(accountId, new RefreshVillage(villageId, accountId));
+                        _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId));
                     }
                 }
                 else

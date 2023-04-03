@@ -1,7 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
-using MainCore.Tasks.Attack;
-using MainCore.Tasks.Update;
+using MainCore.Tasks.Base;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;

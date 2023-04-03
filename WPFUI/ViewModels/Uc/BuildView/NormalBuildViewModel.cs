@@ -3,7 +3,7 @@ using MainCore;
 using MainCore.Enums;
 using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
-using MainCore.Tasks.Sim;
+using MainCore.Tasks.Base;
 using ReactiveUI;
 using Splat;
 using System;
@@ -107,7 +107,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
-                _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
+                _taskManager.Add(accountId, _taskFactory.GetUpgradeBuildingTask(villageId, accountId));
             }
             else
             {
