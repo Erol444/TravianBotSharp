@@ -133,10 +133,17 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private void DeleteAccountTask()
         {
-            _waitingWindow.Show("saving data");
-            DeleteAccount(AccountId);
-            _eventManager.OnAccountsUpdate();
-            _waitingWindow.Close();
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.Accounts.Find(AccountId);
+
+            if (MessageBox.Show($"Do you want to delete account {account.Username} ?", "Confirm",
+                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                _waitingWindow.Show("saving data");
+                DeleteAccount(AccountId);
+                _eventManager.OnAccountsUpdate();
+                _waitingWindow.Close();
+            }
         }
 
         public Task PauseTask() => Pause(AccountId);
