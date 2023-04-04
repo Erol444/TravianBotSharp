@@ -65,10 +65,10 @@ jobs:
         run: dotnet restore -r win-x86
 
       - name: Build
-        run: dotnet build WPFUI -c Release --no-restore -r win-x86
+        run: dotnet build WPFUI -c Release --no-restore -r win-x86 --self-contained true
         
       - name: Publish
-        run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }} --no-restore
+        run: dotnet publish WPFUI -c Release --no-restore -r win-x86 --self-contained true -p:PublishSingleFile=true -p:Server=${{ matrix.server }} 
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3
