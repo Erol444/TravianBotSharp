@@ -3,7 +3,6 @@ using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Services.Interface;
 using MainCore.Tasks;
-using MainCore.Tasks.Misc;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 using System;
@@ -15,12 +14,13 @@ namespace MainCore.Services.Implementations
 {
     public sealed class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogManager logManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogManager logManager, ITaskFactory taskFactory)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
             _logManager = logManager;
             _eventManager.TaskExecute += Loop;
+            _taskFactory = taskFactory;
         }
 
         public void Add(int index, BotTask task, bool first = false)
@@ -158,23 +158,21 @@ namespace MainCore.Services.Implementations
             }
             else
             {
-                var result = poliResult.Result;
-                if (result is null) result = poliResult.FinalHandledResult;
+                var result = poliResult.Result ?? poliResult.FinalHandledResult;
                 if (result.IsFailed)
                 {
                     task.Stage = TaskStage.Waiting;
 
+                    var errors = result.Reasons.Select(x => x.Message).ToList();
+                    _logManager.Warning(index, string.Join(Environment.NewLine, errors), task);
+
                     if (result.HasError<Login>())
                     {
-                        _logManager.Warning(index, "Login page is showing, stop current task and login", task);
-                        Add(index, new LoginTask(index), true);
+                        Add(index, _taskFactory.GetLoginTask(index), true);
                     }
                     else if (result.HasError<Stop>())
                     {
                         UpdateAccountStatus(index, AccountStatus.Paused);
-                        _logManager.Warning(index, $"There is something wrong. Bot is pausing", task);
-                        var errors = result.Reasons.Select(x => x.Message).ToList();
-                        _logManager.Error(index, string.Join(Environment.NewLine, errors));
                     }
                     else if (result.HasError<Skip>())
                     {
@@ -188,7 +186,6 @@ namespace MainCore.Services.Implementations
                     else if (result.HasError<Cancel>())
                     {
                         UpdateAccountStatus(index, AccountStatus.Paused);
-                        _logManager.Information(index, $"Stop command requested", task);
                     }
                 }
                 else
@@ -249,5 +246,6 @@ namespace MainCore.Services.Implementations
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
         private readonly ILogManager _logManager;
+        private readonly ITaskFactory _taskFactory;
     }
 }

@@ -1,7 +1,6 @@
 ﻿using MainCore.Enums;
 using MainCore.Helper.Interface;
-using MainCore.Tasks.Misc;
-using MainCore.Tasks.Sim;
+using MainCore.Tasks.Base;
 using ReactiveUI;
 using Splat;
 using System;
@@ -134,10 +133,17 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private void DeleteAccountTask()
         {
-            _waitingWindow.Show("saving data");
-            DeleteAccount(AccountId);
-            _eventManager.OnAccountsUpdate();
-            _waitingWindow.Close();
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.Accounts.Find(AccountId);
+
+            if (MessageBox.Show($"Do you want to delete account {account.Username} ?", "Confirm",
+                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
+                _waitingWindow.Show("saving data");
+                DeleteAccount(AccountId);
+                _eventManager.OnAccountsUpdate();
+                _waitingWindow.Close();
+            }
         }
 
         public Task PauseTask() => Pause(AccountId);
@@ -197,7 +203,7 @@ namespace WPFUI.ViewModels.Uc.MainView
                 MessageBox.Show(ex.Message, "Error");
                 return;
             }
-            _taskManager.Add(index, new LoginTask(index), true);
+            _taskManager.Add(index, _taskFactory.GetLoginTask(index), true);
 
             var sleepExist = _taskManager.GetList(index).FirstOrDefault(x => x.GetType() == typeof(SleepTask));
             if (sleepExist is null)
@@ -235,12 +241,6 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private async Task Pause(int index)
         {
-            var taskList = _taskManager.GetList(index);
-            var sleep = taskList.OfType<SleepTask>().FirstOrDefault();
-
-            sleep.ExecuteAt = DateTime.Now;
-            return;
-
             var status = _taskManager.GetAccountStatus(index);
             if (status == AccountStatus.Paused)
             {
@@ -277,12 +277,12 @@ namespace WPFUI.ViewModels.Uc.MainView
                 var queue = _planManager.GetList(village.Id);
                 if (queue.Any())
                 {
-                    _taskManager.Add(index, new UpgradeBuilding(village.Id, index));
+                    _taskManager.Add(index, _taskFactory.GetUpgradeBuildingTask(village.Id, index));
                 }
                 var villageSetting = context.VillagesSettings.Find(village.Id);
                 if (villageSetting.IsAutoRefresh)
                 {
-                    _taskManager.Add(index, new RefreshVillage(village.Id, index));
+                    _taskManager.Add(index, _taskFactory.GetRefreshVillageTask(village.Id, index));
                 }
             }
 

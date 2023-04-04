@@ -1,20 +1,22 @@
 ﻿using FluentMigrator.Runner;
-using MainCore.Helper.Implementations;
 using MainCore.Helper.Interface;
 using MainCore.Migrations;
 using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ModuleCore.Parser;
+using MainCore.Parser.Interface;
+using MainCore.Services.Implementations.TaskFactories;
 
 #if TRAVIAN_OFFICIAL
 
-using TravianOfficialCore.Parsers;
+using MainCore.Parser.Implementations.TravianOfficial;
+using MainCore.Helper.Implementations.TravianOfficial;
 
 #elif TTWARS
 
-using TTWarsCore.Parsers;
+using MainCore.Parser.Implementations.TTWars;
+using MainCore.Helper.Implementations.TTWars;
 
 #else
 
@@ -39,6 +41,15 @@ namespace MainCore
             services.AddSingleton<ITaskManager, TaskManager>();
             services.AddSingleton<IPlanManager, PlanManager>();
             services.AddSingleton<ILogManager, LogManager>();
+
+            if (VersionDetector.IsTravianOfficial())
+            {
+                services.AddSingleton<ITaskFactory, TravianOfficialTaskFactory>();
+            }
+            else if (VersionDetector.IsTTWars())
+            {
+                services.AddSingleton<ITaskFactory, TTWarsTaskFactory>();
+            }
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb

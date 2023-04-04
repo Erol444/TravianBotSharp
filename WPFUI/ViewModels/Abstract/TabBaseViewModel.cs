@@ -20,6 +20,7 @@ namespace WPFUI.ViewModels.Abstract
             _logManager = Locator.Current.GetService<ILogManager>();
             _timeManager = Locator.Current.GetService<ITimerManager>();
             _chromeManager = Locator.Current.GetService<IChromeManager>();
+            _taskFactory = Locator.Current.GetService<ITaskFactory>();
 
             _waitingWindow = Locator.Current.GetService<WaitingViewModel>();
             _versionWindow = Locator.Current.GetService<VersionViewModel>();
@@ -37,6 +38,7 @@ namespace WPFUI.ViewModels.Abstract
         protected readonly ILogManager _logManager;
         protected readonly ITimerManager _timeManager;
         protected readonly IChromeManager _chromeManager;
+        protected readonly ITaskFactory _taskFactory;
 
         protected readonly WaitingViewModel _waitingWindow;
         protected readonly VersionViewModel _versionWindow;

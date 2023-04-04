@@ -1,7 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
 using MainCore;
-using MainCore.Tasks.Update;
+using MainCore.Tasks.Base;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -122,10 +122,10 @@ namespace WPFUI.ViewModels.Tabs
         {
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
-            var task = tasks.FirstOrDefault(x => x is UpdateAdventures);
+            var task = tasks.OfType<UpdateAdventures>().FirstOrDefault();
             if (task is null)
             {
-                _taskManager.Add(accountId, new UpdateAdventures(accountId));
+                _taskManager.Add(accountId, _taskFactory.GetUpdateAdventuresTask(accountId));
             }
             else
             {

@@ -1,7 +1,5 @@
 ﻿using MainCore;
 using MainCore.Enums;
-using MainCore.Tasks.Misc;
-using MainCore.Tasks.Update;
 using ReactiveUI;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -87,7 +85,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             {
                 if (item.IsChecked)
                 {
-                    _taskManager.Add(AccountId, new ImproveTroopsTask(VillageId, AccountId));
+                    _taskManager.Add(AccountId, _taskFactory.GetImproveTroopsTask(VillageId, AccountId));
                     MessageBox.Show("Apply");
                     return;
                 }
@@ -97,7 +95,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void UpdateTask()
         {
-            _taskManager.Add(AccountId, new UpdateTroopLevel(VillageId, AccountId));
+            _taskManager.Add(AccountId, _taskFactory.GetUpdateTroopLevelTask(VillageId, AccountId));
             MessageBox.Show("Update");
         }
 
