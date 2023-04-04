@@ -65,7 +65,7 @@ jobs:
         run: dotnet restore -r win-x86
 
       - name: Build
-        run: dotnet build --configuration Release --no-restore -r win-x86
+        run: dotnet build WPFUI -c Release --no-restore -r win-x86
         
       - name: Publish
         run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }} --no-restore
