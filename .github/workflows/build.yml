@@ -54,10 +54,10 @@ jobs:
         run: dotnet build --configuration Release --no-restore
         
       - name: Publish
-        run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }}
+        run: dotnet publish WPFUI -c Release --self-contained true --no-restore -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }}
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: TBS-Build-${{ matrix.server }}-${{ github.run_id }}
           path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
