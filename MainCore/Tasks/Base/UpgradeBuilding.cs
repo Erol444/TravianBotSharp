@@ -91,27 +91,19 @@ namespace MainCore.Tasks.Base
                 }
                 else
                 {
-                    if (VersionDetector.IsTravianOfficial())
+                    var result = _upgradeBuildingHelper.IsNeedAdsUpgrade(AccountId, VillageId, _chosenTask);
+                    if (result.IsFailed)
                     {
-                        var result = _upgradeBuildingHelper.IsNeedAdsUpgrade(AccountId, VillageId, _chosenTask);
-                        if (result.IsFailed)
-                        {
-                            var newResult = new Result();
-                            return newResult.WithErrors(result.Errors).WithError(new Trace(Trace.TraceMessage()));
-                        }
-
-                        if (result.Value)
-                        {
-                            var upgrade = UpgradeAds(_chosenTask);
-                            if (upgrade.IsFailed) return upgrade.WithError(new Trace(Trace.TraceMessage()));
-                        }
-                        else
-                        {
-                            var upgrade = _upgradeBuildingHelper.Upgrade(AccountId, _chosenTask);
-                            if (upgrade.IsFailed) return upgrade.WithError(new Trace(Trace.TraceMessage()));
-                        }
+                        var newResult = new Result();
+                        return newResult.WithErrors(result.Errors).WithError(new Trace(Trace.TraceMessage()));
                     }
-                    else if (VersionDetector.IsTTWars())
+
+                    if (result.Value)
+                    {
+                        var upgrade = UpgradeAds(_chosenTask);
+                        if (upgrade.IsFailed) return upgrade.WithError(new Trace(Trace.TraceMessage()));
+                    }
+                    else
                     {
                         var upgrade = _upgradeBuildingHelper.Upgrade(AccountId, _chosenTask);
                         if (upgrade.IsFailed) return upgrade.WithError(new Trace(Trace.TraceMessage()));
