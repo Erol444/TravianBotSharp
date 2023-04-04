@@ -22,8 +22,11 @@ jobs:
 
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
-
-      - name: Build Bot
+      
+      - name: Test bot
+        run: dotnet test
+        
+      - name: Build bot
         run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }}
 
       - name: Upload a Build Artifact
