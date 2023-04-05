@@ -59,6 +59,18 @@
     <None Update="Parser\NavigationBar\HtmlFiles\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Parser\RightBar\HtmlFiles\TravianOfficial.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\RightBar\HtmlFiles\TTWars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\StockBar\HtmlFiles\TravianOfficial.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\StockBar\HtmlFiles\TTWars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
