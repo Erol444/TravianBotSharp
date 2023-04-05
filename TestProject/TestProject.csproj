@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Parser\BuildingTab\HtmlFile\**" />
+    <EmbeddedResource Remove="Parser\BuildingTab\HtmlFile\**" />
+    <None Remove="Parser\BuildingTab\HtmlFile\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.1" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="5.0.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="3.0.0" />
@@ -20,6 +26,33 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WPFUI\WPFUI.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Parser\BuildingTab\HtmlFiles\TravianOfficial.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\BuildingTab\HtmlFiles\TTwars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\HeroSection\HtmlFiles\TravianOfficial_adventures.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\HeroSection\HtmlFiles\TravianOfficial_inputdialog.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\HeroSection\HtmlFiles\TravianOfficial_inventory.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\HeroSection\HtmlFiles\TTWars_adventures.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\HeroSection\HtmlFiles\TTwars_inputdialog.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\HeroSection\HtmlFiles\TTWars_inventory.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
