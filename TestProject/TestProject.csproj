@@ -119,6 +119,12 @@
     <None Update="Parser\VillageInfrastructure\HtmlFiles\TTwars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Parser\VillagesTable\HtmlFiles\TravianOfficial.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\VillagesTable\HtmlFiles\TTwars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
