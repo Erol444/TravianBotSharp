@@ -107,6 +107,18 @@
     <None Update="Parser\VillageCurrentlyBuilding\HtmlFiles\TTwars_dialogue.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Parser\VillageField\HtmlFiles\TravianOfficial.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\VillageField\HtmlFiles\TTwars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\VillageInfrastructure\HtmlFiles\TravianOfficial.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\VillageInfrastructure\HtmlFiles\TTwars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

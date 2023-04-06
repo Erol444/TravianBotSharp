@@ -3,6 +3,7 @@ using MainCore.Parser.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace MainCore.Parser.Implementations.TTWars
 {
@@ -10,10 +11,10 @@ namespace MainCore.Parser.Implementations.TTWars
     {
         public List<HtmlNode> GetNodes(HtmlDocument doc)
         {
-            var villageMapNode = doc.GetElementbyId("village_map");
+            var villageMapNode = doc.GetElementbyId("resourceFieldContainer");
             if (villageMapNode is null) return new();
 
-            return villageMapNode.Descendants("div").Where(x => !x.HasClass("labelLayer")).ToList();
+            return villageMapNode.Descendants("div").Where(x => x.HasClass("level")).ToList();
         }
 
         public HtmlNode GetNode(HtmlDocument doc, int index)
@@ -23,10 +24,11 @@ namespace MainCore.Parser.Implementations.TTWars
 
         public int GetId(HtmlNode node)
         {
-            var classess = node.GetClasses();
-            var needClass = classess.FirstOrDefault(x => x.StartsWith("aid"));
-            if (string.IsNullOrEmpty(needClass)) return -1;
-            var strResult = new string(needClass.Where(c => char.IsDigit(c)).ToArray());
+            var onclickStr = node.GetAttributeValue("onclick", "");
+            var valueStrFixed = WebUtility.HtmlDecode(onclickStr);
+
+            if (string.IsNullOrEmpty(valueStrFixed)) return -1;
+            var strResult = new string(valueStrFixed.Where(c => char.IsDigit(c)).ToArray());
             if (string.IsNullOrEmpty(strResult)) return -1;
             return int.Parse(strResult);
         }
