@@ -48,7 +48,7 @@ namespace MainCore.Tasks.Base
         private Result UpdateAccountInfo()
         {
             var html = _chromeBrowser.GetHtml();
-            var tribe = _rightBarParser.GetTribe(html);
+            //var tribe = _rightBarParser.GetTribe(html);
             var hasPlusAccount = _rightBarParser.HasPlusAccount(html);
             var gold = _stockBarParser.GetGold(html);
             var silver = _stockBarParser.GetSilver(html);
@@ -60,7 +60,7 @@ namespace MainCore.Tasks.Base
             account.Gold = gold;
             account.Silver = silver;
 
-            if (account.Tribe == TribeEnums.Any) account.Tribe = (TribeEnums)tribe;
+            //if (account.Tribe == TribeEnums.Any) account.Tribe = (TribeEnums)tribe;
 
             context.SaveChanges();
             return Result.Ok();
