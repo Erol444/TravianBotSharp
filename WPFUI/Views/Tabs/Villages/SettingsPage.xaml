@@ -49,6 +49,11 @@
                     <TextBlock TextWrapping="Wrap" Text="Troop settings" VerticalAlignment="Center" FontWeight="Bold" />
                     <CheckBox x:Name="TroopUpgradeCheckBox" Content="Auto improve troop" />
                     <controls:TroopsWithCheckBoxUc x:Name="TroopUpgrade" />
+
+                    <CheckBox x:Name="TroopTrainCheckBox" Content="Auto train troop" />
+                    <controls:TroopsWithCheckBoxUc x:Name="TroopTrain" />
+                    <controls:ToleranceUc x:Name="TroopTrainTime" />
+                    <CheckBox x:Name="TroopTrainGreat" Content="Include greate barrack/stable" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>

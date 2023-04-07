@@ -21,6 +21,10 @@ namespace WPFUI.Views.Tabs.Villages
             AutoNPCWarehouse.ViewModel = new("Auto NPC when any resource is more than", "% of warehouse (this need auto refresh)");
             AutoNPCRatio.ViewModel = new("Ratio");
             TroopUpgrade.ViewModel = new("Troop will be upgraded");
+
+            TroopTrain.ViewModel = new("Troop will be trained");
+            TroopTrainTime.ViewModel = new("Troop train time", "mins");
+
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel, vm => vm.ExportCommand, v => v.ExportButton).DisposeWith(d);
@@ -51,6 +55,7 @@ namespace WPFUI.Views.Tabs.Villages
 
                 this.Bind(ViewModel, vm => vm.Settings.IsUpgradeTroop, v => v.TroopUpgradeCheckBox.IsChecked).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.TroopUpgrade, v => v.TroopUpgrade.ViewModel.Troops).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.TroopUpgrade, v => v.TroopTrain.ViewModel.Troops).DisposeWith(d);
             });
         }
     }
