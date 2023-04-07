@@ -23,6 +23,14 @@
         </Grid>
         <StackPanel Grid.Row="1" Margin="10,0,10,0">
             <StackPanel>
+                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Account information" VerticalAlignment="Center" FontWeight="Bold" />
+                <StackPanel Orientation="Horizontal" Height="25">
+                    <Label Content="Tribe" />
+                    <ComboBox x:Name="Tribe" Width="Auto" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Name" />
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel>
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Delay settings" VerticalAlignment="Center" FontWeight="Bold" />
                 <controls:ToleranceUc x:Name="ClickDelay" />
                 <controls:ToleranceUc x:Name="TaskDelay" />

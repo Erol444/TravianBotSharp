@@ -1,7 +1,9 @@
-﻿using MainCore.Tasks.Base;
+﻿using MainCore.Enums;
+using MainCore.Tasks.Base;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -22,6 +24,8 @@ namespace WPFUI.ViewModels.Tabs
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
+
+            Tribes = new(Enum.GetValues<TribeEnums>().Skip(1).Where(x => x != TribeEnums.Nature && x != TribeEnums.Natars).Select(x => new TribeComboBox() { Tribe = x }).ToList());
         }
 
         protected override void Init(int accountId)
@@ -33,7 +37,12 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var settings = context.AccountsSettings.Find(index);
-            RxApp.MainThreadScheduler.Schedule(() => Settings.CopyFrom(settings));
+            var info = context.AccountsInfo.Find(index);
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Settings.CopyFrom(settings);
+                SelectedTribe = Tribes.FirstOrDefault(x => x.Tribe == info.Tribe);
+            });
         }
 
         private async Task SaveTask()
@@ -114,6 +123,9 @@ namespace WPFUI.ViewModels.Tabs
             Settings.CopyTo(accountSetting);
             Settings.CopyFrom(accountSetting);
             context.Update(accountSetting);
+            var accountInfo = context.AccountsInfo.Find(index);
+            accountInfo.Tribe = SelectedTribe?.Tribe ?? TribeEnums.Any;
+            context.Update(accountInfo);
             context.SaveChanges();
         }
 
@@ -140,8 +152,19 @@ namespace WPFUI.ViewModels.Tabs
         }
 
         public AccountSetting Settings { get; } = new();
+
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> ExportCommand { get; }
         public ReactiveCommand<Unit, Unit> ImportCommand { get; }
+
+        private TribeComboBox _selectedTribe;
+
+        public TribeComboBox SelectedTribe
+        {
+            get => _selectedTribe;
+            set => this.RaiseAndSetIfChanged(ref _selectedTribe, value);
+        }
+
+        public ObservableCollection<TribeComboBox> Tribes { get; }
     }
 }

@@ -26,10 +26,6 @@ namespace MainCore.Parser.Implementations.TTWars
 
         public HtmlNode GetMessageButton(HtmlDocument doc) => GetButton(doc, 6);
 
-        public HtmlNode GetDailyButton(HtmlDocument doc)
-        {
-            var buttonNode = doc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("questButtonOverviewAchievements"));
-            return buttonNode;
-        }
+        public HtmlNode GetDailyButton(HtmlDocument doc) => GetButton(doc, 7);
     }
 }

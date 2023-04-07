@@ -70,38 +70,18 @@ namespace MainCore
 
         public static int GetMaxLevel(this BuildingEnums building)
         {
-            if (VersionDetector.IsTravianOfficial())
+            return building switch
             {
-                return building switch
-                {
-                    BuildingEnums.Brewery => 20,
-                    BuildingEnums.Bakery => 5,
-                    BuildingEnums.Brickyard => 5,
-                    BuildingEnums.IronFoundry => 5,
-                    BuildingEnums.GrainMill => 5,
-                    BuildingEnums.Sawmill => 5,
+                BuildingEnums.Brewery => 20,
+                BuildingEnums.Bakery => 5,
+                BuildingEnums.Brickyard => 5,
+                BuildingEnums.IronFoundry => 5,
+                BuildingEnums.GrainMill => 5,
+                BuildingEnums.Sawmill => 5,
 
-                    BuildingEnums.Cranny => 10,
-                    _ => 20,
-                };
-            }
-            if (VersionDetector.IsTTWars())
-            {
-                return building switch
-                {
-                    BuildingEnums.Brewery => 10,
-                    BuildingEnums.Bakery => 5,
-                    BuildingEnums.Brickyard => 5,
-                    BuildingEnums.IronFoundry => 5,
-                    BuildingEnums.GrainMill => 5,
-                    BuildingEnums.Sawmill => 5,
-
-                    BuildingEnums.Cranny => 10,
-                    _ => 20,
-                };
-            }
-
-            return 0;
+                BuildingEnums.Cranny => 10,
+                _ => 20,
+            };
         }
 
         public static Color GetColor(this BuildingEnums building)

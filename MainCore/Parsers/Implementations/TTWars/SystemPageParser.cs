@@ -8,12 +8,12 @@ namespace MainCore.Parser.Implementations.TTWars
     {
         public HtmlNode GetUsernameNode(HtmlDocument doc)
         {
-            return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("user"));
+            return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("name"));
         }
 
         public HtmlNode GetPasswordNode(HtmlDocument doc)
         {
-            return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("pw"));
+            return doc.DocumentNode.Descendants("input").FirstOrDefault(x => x.GetAttributeValue("name", "").Equals("password"));
         }
 
         public HtmlNode GetLoginButton(HtmlDocument doc)
@@ -33,7 +33,7 @@ namespace MainCore.Parser.Implementations.TTWars
 
         public HtmlNode GetNpcSumNode(HtmlDocument doc)
         {
-            return doc.GetElementbyId($"org4");
+            return doc.GetElementbyId($"sum");
         }
     }
 }

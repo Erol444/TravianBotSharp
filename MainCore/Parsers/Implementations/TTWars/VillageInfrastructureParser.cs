@@ -13,7 +13,7 @@ namespace MainCore.Parser.Implementations.TTWars
         {
             var villageContentNode = doc.GetElementbyId("village_map");
             if (villageContentNode is null) return new();
-            var list = villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
+            var list = villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).Skip(18).ToList();
             if (list.Count == 22) return list;
             list.RemoveAt(22);
             return list;

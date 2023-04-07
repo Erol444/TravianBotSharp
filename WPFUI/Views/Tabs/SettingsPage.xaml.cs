@@ -26,6 +26,9 @@ namespace WPFUI.Views.Tabs
                 this.BindCommand(ViewModel, vm => vm.ImportCommand, v => v.ImportButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.SaveCommand, v => v.SaveButton).DisposeWith(d);
 
+                this.OneWayBind(ViewModel, vm => vm.Tribes, v => v.Tribe.ItemsSource).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SelectedTribe, v => v.Tribe.SelectedItem).DisposeWith(d);
+
                 this.Bind(ViewModel, vm => vm.Settings.ClickDelay, v => v.ClickDelay.ViewModel.MainValue).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.ClickDelayRange, v => v.ClickDelay.ViewModel.ToleranceValue).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.TaskDelay, v => v.TaskDelay.ViewModel.MainValue).DisposeWith(d);

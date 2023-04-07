@@ -1,4 +1,6 @@
 ﻿using MainCore;
+using MainCore.DependencyInjectior;
+using MainCore.Enums;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ReactiveUI;
@@ -15,8 +17,9 @@ namespace WPFUI
 {
     public static class AppBoostrapper
     {
-        public static IServiceProvider Init()
+        public static IServiceProvider Init(VersionEnums version)
         {
+            var coreInjector = InjectorFactory.GetInjector(version);
             var host = Host
                 .CreateDefaultBuilder()
                 .ConfigureServices(services =>
@@ -25,9 +28,7 @@ namespace WPFUI
                     var resolver = Locator.CurrentMutable;
                     resolver.InitializeSplat();
                     resolver.InitializeReactiveUI();
-                    services.ConfigureServices();
-                    services.ConfigureHelper();
-                    services.ConfigureParser();
+                    coreInjector.Configure(services);
                     services.ConfigureUcViewModel();
                     services.ConfigureViewModel();
                 })
@@ -35,6 +36,11 @@ namespace WPFUI
             var container = host.Services;
             container.UseMicrosoftDependencyResolver();
             return container;
+        }
+
+        public static IServiceProvider Init()
+        {
+            return Init(VersionDetector.GetVersion());
         }
     }
 

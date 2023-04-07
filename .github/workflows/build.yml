@@ -6,6 +6,29 @@ on:
   workflow_dispatch:
 
 jobs:
+  test:
+    runs-on: windows-2019
+    steps:
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+            dotnet-version: 6.0.x
+      
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v3
+      
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+
+      - name: Install dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build -c Release --no-restore
+
+      - name: Test
+        run: dotnet test --no-restore
+    
   build:
     strategy:
       matrix:
@@ -13,27 +36,33 @@ jobs:
     runs-on: windows-2019
     steps:
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
         with:
             dotnet-version: 6.0.x
       
       - name: 'Checkout repo' 
-        uses: actions/checkout@v2
-
+        uses: actions/checkout@v3
+      
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
 
-      - name: Build Bot
-        run: dotnet publish WPFUI -c Release --self-contained true -p:PublishSingleFile=true -r win-x86 -p:Server=${{ matrix.server }}
+      - name: Install dependencies
+        run: dotnet restore -r win-x86
+
+      - name: Build
+        run: dotnet build WPFUI -c Release --no-restore -r win-x86 --self-contained true
+        
+      - name: Publish
+        run: dotnet publish WPFUI -c Release --no-restore -r win-x86 --self-contained true -p:PublishSingleFile=true -p:Server=${{ matrix.server }} 
 
       - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: TBS-Build-${{ matrix.server }}-${{ github.run_id }}
           path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
           if-no-files-found: error
   commentor:
-    needs: build
+    needs: [build, test]
     runs-on: ubuntu-latest
     steps:
       - name: Comment PR
@@ -41,5 +70,3 @@ jobs:
         with:
           message: Click [here](https://nightly.link/Erol444/TravianBotSharp/actions/runs/${{ github.run_id }}) to check the build          
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-    

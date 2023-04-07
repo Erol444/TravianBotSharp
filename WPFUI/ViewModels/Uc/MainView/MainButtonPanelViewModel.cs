@@ -152,9 +152,15 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private void LoginAccount(int index)
         {
+            using var context = _contextFactory.CreateDbContext();
+            var accountInfo = context.AccountsInfo.Find(index);
+            if (accountInfo.Tribe == TribeEnums.Any)
+            {
+                MessageBox.Show("You have to choose tribe in Settings tab first");
+                return;
+            }
             _taskManager.UpdateAccountStatus(index, AccountStatus.Starting);
             _logManager.AddAccount(index);
-            using var context = _contextFactory.CreateDbContext();
             var accesses = context.Accesses.Where(x => x.AccountId == index).OrderBy(x => x.LastUsed);
             Access selectedAccess = null;
             foreach (var access in accesses)
