@@ -54,5 +54,33 @@ namespace MainCore.Models.Database
             }
             UpgradeTroop = result.ToString();
         }
+
+        public bool IsTrainTroop { get; set; }
+        public string TrainTroop { get; set; }
+
+        public bool[] GetTroopTrain()
+        {
+            var result = new bool[10];
+            if (string.IsNullOrEmpty(TrainTroop))
+                return result;
+            var arr = TrainTroop.Split(',');
+            for (int i = 0; i < arr.Length; i++)
+            {
+                result[i] = arr[i] == "1";
+            }
+            return result;
+        }
+
+        public void SetTroopTrain(bool[] arr)
+        {
+            var result = new StringBuilder();
+            for (int i = 0; i < arr.Length; i++)
+            {
+                result.Append(arr[i] ? "1" : "0");
+                if (i < arr.Length - 1)
+                    result.Append(',');
+            }
+            TrainTroop = result.ToString();
+        }
     }
 }
