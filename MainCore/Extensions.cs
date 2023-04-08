@@ -737,5 +737,28 @@ namespace MainCore
             }
             return ret;
         }
+
+        // we use residence for chief and settler
+        public static BuildingEnums GetTrainBuilding(this TroopEnums troop)
+        {
+            return troop switch
+            {
+                TroopEnums.Legionnaire or TroopEnums.Praetorian or TroopEnums.Imperian or TroopEnums.Clubswinger or TroopEnums.Spearman or TroopEnums.Axeman or TroopEnums.Scout or TroopEnums.Phalanx or TroopEnums.Swordsman or TroopEnums.SlaveMilitia or TroopEnums.AshWarden or TroopEnums.KhopeshWarrior or TroopEnums.Mercenary or TroopEnums.Bowman => BuildingEnums.Barracks,
+                TroopEnums.EquitesLegati or TroopEnums.EquitesImperatoris or TroopEnums.EquitesCaesaris or TroopEnums.Paladin or TroopEnums.TeutonicKnight or TroopEnums.Pathfinder or TroopEnums.TheutatesThunder or TroopEnums.Druidrider or TroopEnums.Haeduan or TroopEnums.SopduExplorer or TroopEnums.AnhurGuard or TroopEnums.ReshephChariot or TroopEnums.Spotter or TroopEnums.SteppeRider or TroopEnums.Marksman or TroopEnums.Marauder => BuildingEnums.Stable,
+                TroopEnums.RomanRam or TroopEnums.RomanCatapult or TroopEnums.TeutonRam or TroopEnums.TeutonCatapult or TroopEnums.GaulRam or TroopEnums.GaulCatapult or TroopEnums.EgyptianRam or TroopEnums.EgyptianCatapult or TroopEnums.HunRam or TroopEnums.HunCatapult => BuildingEnums.Workshop,
+                TroopEnums.RomanChief or TroopEnums.RomanSettler or TroopEnums.TeutonChief or TroopEnums.TeutonSettler or TroopEnums.GaulChief or TroopEnums.GaulSettler or TroopEnums.EgyptianChief or TroopEnums.EgyptianSettler or TroopEnums.HunChief or TroopEnums.HunSettler => BuildingEnums.Residence,
+                _ => BuildingEnums.Site,
+            };
+        }
+
+        public static BuildingEnums GetGreatVersion(this BuildingEnums building)
+        {
+            return building switch
+            {
+                BuildingEnums.Barracks => BuildingEnums.GreatBarracks,
+                BuildingEnums.Stable => BuildingEnums.GreatStable,
+                _ => BuildingEnums.Site,
+            };
+        }
     }
 }

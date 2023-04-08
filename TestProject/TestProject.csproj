@@ -127,4 +127,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Parser\TroopTraining\HtmlFiles\" />
+  </ItemGroup>
+
 </Project>
