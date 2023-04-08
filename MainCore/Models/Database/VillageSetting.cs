@@ -56,6 +56,7 @@ namespace MainCore.Models.Database
         }
 
         public bool IsTrainTroop { get; set; }
+        public bool IsGreatBuilding { get; set; }
         public string TrainTroop { get; set; }
 
         public bool[] GetTroopTrain()
