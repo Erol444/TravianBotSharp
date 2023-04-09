@@ -38,6 +38,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IVillageFieldParser, VillageFieldParser>();
             services.AddSingleton<IVillageInfrastructureParser, VillageInfrastructureParser>();
             services.AddSingleton<IVillagesTableParser, VillagesTableParser>();
+            services.AddSingleton<ITrainTroopParser, TrainTroopParser>();
             return services;
         }
 
