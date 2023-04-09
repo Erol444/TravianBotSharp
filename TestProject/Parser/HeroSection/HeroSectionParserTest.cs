@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace TestProject.Parser.HeroSection
     public class HeroSectionParserTest
     {
         private static readonly List<IHeroSectionParser> _instance = new(){
-            new MainCore.Parser.Implementations.TravianOfficial.HeroSectionParser(),
-            new MainCore.Parser.Implementations.TTWars.HeroSectionParser()
+            new MainCore.Parsers.Implementations.TravianOfficial.HeroSectionParser(),
+            new MainCore.Parsers.Implementations.TTWars.HeroSectionParser()
         };
 
         private static List<string> _version;

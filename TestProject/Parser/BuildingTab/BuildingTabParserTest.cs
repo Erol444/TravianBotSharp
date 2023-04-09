@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace TestProject.Parser.BuildingTab
     public class BuildingTabParserTest
     {
         private static readonly List<IBuildingTabParser> _instance = new(){
-            new MainCore.Parser.Implementations.TravianOfficial.BuildingTabParser(),
-            new MainCore.Parser.Implementations.TTWars.BuildingTabParser()
+            new MainCore.Parsers.Implementations.TravianOfficial.BuildingTabParser(),
+            new MainCore.Parsers.Implementations.TTWars.BuildingTabParser()
         };
 
         private static List<string> _version;

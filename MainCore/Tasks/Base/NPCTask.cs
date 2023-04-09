@@ -3,7 +3,7 @@ using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Models.Runtime;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using OpenQA.Selenium;
 using Splat;
 using System;

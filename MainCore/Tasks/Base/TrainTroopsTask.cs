@@ -9,12 +9,14 @@ namespace MainCore.Tasks.Base
     public class TrainTroopsTask : VillageBotTask
     {
         protected TroopEnums _troop;
+        public TroopEnums Troop => _troop;
+
+        protected bool _greatTrain;
+        public bool GreatTrain => _greatTrain;
 
         public TrainTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }
-
-        public TroopEnums Troop => _troop;
 
         public override Result Execute()
         {
@@ -28,23 +30,23 @@ namespace MainCore.Tasks.Base
             return result;
         }
 
-        private Result CheckSmithy()
-        {
-            if (!IsVaild())
-            {
-                return Result.Fail(new Skip("Missing smithy"));
-            }
-            return Result.Ok();
-        }
-
-        private bool IsVaild()
+        private Result CheckTrainBuilding()
         {
             using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.Find(VillageId);
+
+            var buildingType = Troop.GetTrainBuilding();
             var villageBuilding = context.VillagesBuildings.Where(x => x.VillageId == VillageId);
-            var troop = villageBuilding.FirstOrDefault(x => x.Type == BuildingEnums.Smithy);
-            if (troop is null) return false;
-            if (troop.Level <= 0) return false;
-            return true;
+            var building = villageBuilding.FirstOrDefault(x => x.Type == buildingType);
+            if (building is null || building.Level < 1) return Result.Fail(new Skip($"Missing {buildingType} to train {Troop}"));
+
+            if (setting.IsGreatBuilding)
+            {
+                building = villageBuilding.FirstOrDefault(x => x.Type == buildingType.GetGreatVersion());
+
+                _greatTrain = building is not null && building.Level >= 1;
+            }
+            return Result.Ok();
         }
 
         private Result Enter()

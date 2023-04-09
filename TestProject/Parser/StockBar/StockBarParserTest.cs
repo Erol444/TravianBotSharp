@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace TestProject.Parser.StockBar
     public class StockBarParserTest
     {
         private static readonly List<IStockBarParser> _instance = new(){
-            new MainCore.Parser.Implementations.TravianOfficial.StockBarParser(),
-            new MainCore.Parser.Implementations.TTWars.StockBarParser()
+            new MainCore.Parsers.Implementations.TravianOfficial.StockBarParser(),
+            new MainCore.Parsers.Implementations.TTWars.StockBarParser()
         };
 
         private static List<string> _version;

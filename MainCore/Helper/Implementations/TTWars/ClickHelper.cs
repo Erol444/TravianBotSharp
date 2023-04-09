@@ -2,7 +2,7 @@
 using HtmlAgilityPack;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;

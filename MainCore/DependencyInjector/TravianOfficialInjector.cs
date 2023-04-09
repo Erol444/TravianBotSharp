@@ -1,7 +1,7 @@
 ﻿using MainCore.Helper.Implementations.TravianOfficial;
 using MainCore.Helper.Interface;
-using MainCore.Parser.Implementations.TravianOfficial;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Implementations.TravianOfficial;
+using MainCore.Parsers.Interface;
 using MainCore.Services.Implementations.TaskFactories;
 using MainCore.Services.Interface;
 using Microsoft.Extensions.DependencyInjection;

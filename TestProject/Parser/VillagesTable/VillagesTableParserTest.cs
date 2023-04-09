@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace TestProject.Parser.VillagesTable
     public class VillagesTableParserTest
     {
         private static readonly List<IVillagesTableParser> _instance = new(){
-            new MainCore.Parser.Implementations.TravianOfficial.VillagesTableParser(),
-            new MainCore.Parser.Implementations.TTWars.VillagesTableParser()
+            new MainCore.Parsers.Implementations.TravianOfficial.VillagesTableParser(),
+            new MainCore.Parsers.Implementations.TTWars.VillagesTableParser()
         };
 
         private static List<string> _version;

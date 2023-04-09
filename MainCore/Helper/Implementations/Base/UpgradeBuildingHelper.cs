@@ -5,7 +5,7 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Models.Runtime;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;

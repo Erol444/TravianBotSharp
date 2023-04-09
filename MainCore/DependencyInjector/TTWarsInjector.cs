@@ -1,7 +1,7 @@
 ﻿using MainCore.Helper.Implementations.TTWars;
 using MainCore.Helper.Interface;
-using MainCore.Parser.Implementations.TTWars;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Implementations.TTWars;
+using MainCore.Parsers.Interface;
 using MainCore.Services.Implementations.TaskFactories;
 using MainCore.Services.Interface;
 using Microsoft.Extensions.DependencyInjection;

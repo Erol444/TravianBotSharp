@@ -24,7 +24,7 @@ namespace TestProject.DependencyInjector
         {
             var namespaces = new List<string>()
             {
-                "MainCore.Parser.Interface",
+                "MainCore.Parsers.Interface",
                 "MainCore.Helper.Interface",
             };
 

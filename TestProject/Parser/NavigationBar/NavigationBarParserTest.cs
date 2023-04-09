@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace TestProject.Parser.NavigationBar
     public class NavigationBarParserTest
     {
         private static readonly List<INavigationBarParser> _instance = new(){
-            new MainCore.Parser.Implementations.TravianOfficial.NavigationBarParser(),
-            new MainCore.Parser.Implementations.TTWars.NavigationBarParser()
+            new MainCore.Parsers.Implementations.TravianOfficial.NavigationBarParser(),
+            new MainCore.Parsers.Implementations.TTWars.NavigationBarParser()
         };
 
         private static List<string> _version;

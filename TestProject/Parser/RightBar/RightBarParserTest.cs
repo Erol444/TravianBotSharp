@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace TestProject.Parser.RightBar
     public class RightBarParserTest
     {
         private static readonly List<IRightBarParser> _instance = new(){
-            new MainCore.Parser.Implementations.TravianOfficial.RightBarParser(),
-            new MainCore.Parser.Implementations.TTWars.RightBarParser()
+            new MainCore.Parsers.Implementations.TravianOfficial.RightBarParser(),
+            new MainCore.Parsers.Implementations.TTWars.RightBarParser()
         };
 
         private static List<string> _version;

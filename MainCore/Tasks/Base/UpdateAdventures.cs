@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using Splat;
 using System;
 using System.Collections.Generic;

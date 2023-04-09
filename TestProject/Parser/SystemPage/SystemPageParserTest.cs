@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace TestProject.Parser.SystemPage
     public class SystemPageParserTest
     {
         private static readonly List<ISystemPageParser> _instance = new(){
-            new MainCore.Parser.Implementations.TravianOfficial.SystemPageParser(),
-            new MainCore.Parser.Implementations.TTWars.SystemPageParser()
+            new MainCore.Parsers.Implementations.TravianOfficial.SystemPageParser(),
+            new MainCore.Parsers.Implementations.TTWars.SystemPageParser()
         };
 
         private static List<string> _version;

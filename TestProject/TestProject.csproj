@@ -83,16 +83,34 @@
     <None Update="Parser\SystemPage\HtmlFiles\TravianOfficial_upgrade.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TTwars_adventure.html">
+    <None Update="Parser\SystemPage\HtmlFiles\TTWars_adventure.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TTwars_login.html">
+    <None Update="Parser\SystemPage\HtmlFiles\TTWars_login.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TTwars_market.html">
+    <None Update="Parser\SystemPage\HtmlFiles\TTWars_market.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TTwars_upgrade.html">
+    <None Update="Parser\SystemPage\HtmlFiles\TTWars_upgrade.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\TroopTrain\HtmlFiles\TravianOfficial_barrack.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\TroopTrain\HtmlFiles\TravianOfficial_stable.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\TroopTrain\HtmlFiles\TravianOfficial_workshop.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\TroopTrain\HtmlFiles\TTWars_barrack.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\TroopTrain\HtmlFiles\TTWars_stable.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Parser\TroopTrain\HtmlFiles\TTWars_workshop.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Parser\VillageCurrentlyBuilding\HtmlFiles\TravianOfficial.html">
@@ -125,10 +143,6 @@
     <None Update="Parser\VillagesTable\HtmlFiles\TTwars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Parser\TroopTraining\HtmlFiles\" />
   </ItemGroup>
 
 </Project>

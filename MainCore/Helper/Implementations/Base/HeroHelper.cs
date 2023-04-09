@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using MainCore.Enums;
 using MainCore.Helper.Interface;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using OpenQA.Selenium;
 

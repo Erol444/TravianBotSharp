@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Enums;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ namespace TestProject.Parser.VillageField
     public class VillageFieldParserTest
     {
         private static readonly List<IVillageFieldParser> _instance = new(){
-            new MainCore.Parser.Implementations.TravianOfficial.VillageFieldParser(),
-            new MainCore.Parser.Implementations.TTWars.VillageFieldParser()
+            new MainCore.Parsers.Implementations.TravianOfficial.VillageFieldParser(),
+            new MainCore.Parsers.Implementations.TTWars.VillageFieldParser()
         };
 
         private static List<string> _version;
