@@ -5,10 +5,11 @@
         xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        x:Name="root">
     <StackPanel Orientation="Horizontal">
-        <CheckBox x:Name="IsChecked" VerticalAlignment="Center" Width="NaN" />
+        <CheckBox x:Name="IsChecked" Content="{Binding Text, ElementName=root}" VerticalAlignment="Center" Width="NaN" />
         <xctk:IntegerUpDown x:Name="Value" Minimum="0" />
-        <Label x:Name="UnitLabel" Width="NaN" />
+        <Label Content="{Binding Unit, ElementName=root}" Width="NaN" />
     </StackPanel>
 </rxui:ReactiveUserControl>

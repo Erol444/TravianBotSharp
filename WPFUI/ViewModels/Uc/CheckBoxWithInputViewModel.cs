@@ -4,18 +4,8 @@ namespace WPFUI.ViewModels.Uc
 {
     public class CheckBoxWithInputViewModel : ReactiveObject
     {
-        public CheckBoxWithInputViewModel(string text, string unit) : base()
+        public CheckBoxWithInputViewModel() : base()
         {
-            Text = text;
-            Unit = unit;
-        }
-
-        private string _text;
-
-        public string Text
-        {
-            get => $"{_text} ";
-            set => this.RaiseAndSetIfChanged(ref _text, value);
         }
 
         private bool _isChecked;
@@ -32,14 +22,6 @@ namespace WPFUI.ViewModels.Uc
         {
             get => _value;
             set => this.RaiseAndSetIfChanged(ref _value, value);
-        }
-
-        private string _unit;
-
-        public string Unit
-        {
-            get => _unit;
-            set => this.RaiseAndSetIfChanged(ref _unit, value);
         }
     }
 }

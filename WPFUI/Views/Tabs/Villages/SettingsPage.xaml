@@ -27,8 +27,8 @@
                     <TextBlock TextWrapping="Wrap" Text="Build settings" VerticalAlignment="Center" FontWeight="Bold" />
                     <CheckBox x:Name="UseHeroResCheckBox" Content="Use resource from hero inventory" />
                     <CheckBox x:Name="IgnoreRomanAdvantageCheckBox" Content="Ignore Roman tribe's advantage" />
-                    <controls:CheckBoxWithInputUc x:Name="Complete" />
-                    <controls:CheckBoxWithInputUc x:Name="WatchAds" />
+                    <controls:CheckBoxWithInputUc x:Name="Complete" Text="Auto complete upgrade when queue is longer than" Unit="min(s)" />
+                    <controls:CheckBoxWithInputUc x:Name="WatchAds" Text="Using ads upgrade button when building time is longer than" Unit="min(s)" />
                 </StackPanel>
 
                 <StackPanel>
@@ -40,8 +40,8 @@
                 <StackPanel>
                     <TextBlock TextWrapping="Wrap" Text="NPC settings" VerticalAlignment="Center" FontWeight="Bold" />
                     <CheckBox x:Name="NPCCheckBox" Content="NPC even if after NPC resource is overflow (this may make TBS stuck)" />
-                    <controls:CheckBoxWithInputUc x:Name="AutoNPC" />
-                    <controls:CheckBoxWithInputUc x:Name="AutoNPCWarehouse" />
+                    <controls:CheckBoxWithInputUc x:Name="AutoNPC" Text="Auto NPC when crop is more than" Unit="% of granary (this need auto refresh)" />
+                    <controls:CheckBoxWithInputUc x:Name="AutoNPCWarehouse" Text="Auto NPC when any resource is more than" Unit="% of warehouse (this need auto refresh)" />
                     <controls:ResourcesUc x:Name="AutoNPCRatio" />
                 </StackPanel>
 

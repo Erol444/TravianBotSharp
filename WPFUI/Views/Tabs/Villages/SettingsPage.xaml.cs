@@ -14,11 +14,11 @@ namespace WPFUI.Views.Tabs.Villages
         {
             ViewModel = Locator.Current.GetService<VillageSettingsViewModel>();
             InitializeComponent();
-            Complete.ViewModel = new("Auto complete upgrade when queue is longer than", "min(s)");
-            WatchAds.ViewModel = new("Using ads upgrade button when building time is longer than", "min(s)");
+            Complete.ViewModel = new();
+            WatchAds.ViewModel = new();
             Refresh.ViewModel = new();
-            AutoNPC.ViewModel = new("Auto NPC when crop is more than", "% of granary (this need auto refresh)");
-            AutoNPCWarehouse.ViewModel = new("Auto NPC when any resource is more than", "% of warehouse (this need auto refresh)");
+            AutoNPC.ViewModel = new();
+            AutoNPCWarehouse.ViewModel = new();
             AutoNPCRatio.ViewModel = new("Ratio");
             TroopUpgrade.ViewModel = new("Troop will be upgraded");
 
