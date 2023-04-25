@@ -1,6 +1,8 @@
 ﻿using FluentResults;
 using MainCore.Enums;
 using MainCore.Errors;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -8,10 +10,10 @@ namespace MainCore.Tasks.Base
 {
     public class TrainTroopsTask : VillageBotTask
     {
-        protected TroopEnums _troop;
+        protected TroopEnums _troop = TroopEnums.Phalanx;
         public TroopEnums Troop => _troop;
 
-        protected bool _greatTrain;
+        protected bool _greatTrain = false;
         public bool GreatTrain => _greatTrain;
 
         public TrainTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
@@ -20,12 +22,27 @@ namespace MainCore.Tasks.Base
 
         public override Result Execute()
         {
-            throw new System.NotImplementedException();
+            var commands = new List<Func<Result>>()
+            {
+                Update,
+                CheckTrainBuilding,
+                EnterBuilding,
+                Train,
+            };
+
+            foreach (var command in commands)
+            {
+                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                var result = command.Invoke();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            }
+            return Result.Ok();
         }
 
         private Result Update()
         {
-            var taskUpdate = new UpdateVillage(VillageId, AccountId, CancellationToken);
+            var taskUpdate = new UpdateDorf2(VillageId, AccountId, CancellationToken);
             var result = taskUpdate.Execute();
             return result;
         }
@@ -49,13 +66,20 @@ namespace MainCore.Tasks.Base
             return Result.Ok();
         }
 
-        private Result Enter()
+        private Result EnterBuilding()
         {
             using var context = _contextFactory.CreateDbContext();
             var villageBuilding = context.VillagesBuildings.Where(x => x.VillageId == VillageId);
-            var smithy = villageBuilding.FirstOrDefault(x => x.Type == BuildingEnums.Smithy);
+            var buildingType = Troop.GetTrainBuilding();
+
+            var smithy = villageBuilding.FirstOrDefault(x => x.Type == buildingType);
             var result = _navigateHelper.GoToBuilding(AccountId, smithy.Id);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
+        }
+
+        private Result Train()
+        {
             return Result.Ok();
         }
     }

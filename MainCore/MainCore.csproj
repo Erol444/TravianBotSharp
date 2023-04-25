@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <Server>TRAVIAN_OFFICIAL</Server>
-    <!--<Server>TTWARS</Server>-->
+    <!--<Server>TRAVIAN_OFFICIAL</Server>-->
+    <Server>TTWARS</Server>
     
     <DefineConstants Condition="'$(Server)' != ''">$(DefineConstants);$(Server)</DefineConstants>
   </PropertyGroup>
@@ -50,10 +50,6 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Serilog.Sinks.Map" Version="1.0.2" />
     <PackageReference Include="Splat" Version="14.6.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Condition="'$(Server)' == 'TTWARS'" Include="..\TTWarsCore\TTWarsCore.csproj" />
   </ItemGroup>
 
 </Project>

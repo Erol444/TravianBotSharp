@@ -25,7 +25,7 @@ namespace WPFUI.ViewModels
         public async Task Load()
         {
             var result = await _githubHelper.GetLatestVersion();
-
+            if (result is null) result = new Version(30, 4, 1975);
             LatestVersion = result.ToString();
         }
 
