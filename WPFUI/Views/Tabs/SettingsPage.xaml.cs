@@ -15,10 +15,10 @@ namespace WPFUI.Views.Tabs
             ViewModel = Locator.Current.GetService<SettingsViewModel>();
             InitializeComponent();
 
-            ClickDelay.ViewModel = new("Click delay", "ms");
-            TaskDelay.ViewModel = new("Task delay", "ms");
-            WorkTime.ViewModel = new("Work time", "mins");
-            SleepTime.ViewModel = new("Sleep time", "mins");
+            ClickDelay.ViewModel = new();
+            TaskDelay.ViewModel = new();
+            WorkTime.ViewModel = new();
+            SleepTime.ViewModel = new();
 
             this.WhenActivated(d =>
             {

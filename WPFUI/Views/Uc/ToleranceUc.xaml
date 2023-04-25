@@ -5,12 +5,13 @@
         xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        x:Name="root">
     <StackPanel Orientation="Horizontal" Height="25">
-        <Label x:Name="TextLabel" Width="NaN" />
+        <Label Content="{Binding Text, ElementName=root}" Width="NaN" />
         <xctk:IntegerUpDown x:Name="MainValue" Minimum="0" />
         <Label x:Name="ToleranceLabel" Content="±" />
         <xctk:IntegerUpDown x:Name="Tolerance" Minimum="0" />
-        <Label x:Name="UnitLabel" Width="NaN" />
+        <Label Content="{Binding Unit, ElementName=root}" Width="NaN" />
     </StackPanel>
 </rxui:ReactiveUserControl>

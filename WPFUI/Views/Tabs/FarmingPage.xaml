@@ -20,7 +20,7 @@
 
         <!--Row 0-->
         <Button x:Name="RefreshFarmListsButton" Content="Refresh farm lists" Margin="0,5,0,0" />
-        <controls:ToleranceUc x:Name="Interval" Grid.Column="1" />
+        <controls:ToleranceUc x:Name="Interval" Text="Time for next send" Unit="sec(s)" Grid.Column="1" />
         <Button x:Name="SaveButton" Content="Save" Grid.Column="2" Margin="5,5,5,5" />
         <!--Row 1-->
         <Button x:Name="ActiveButton" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,5,5,5" />

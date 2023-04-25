@@ -14,7 +14,7 @@ namespace WPFUI.Views.Tabs
         {
             ViewModel = Locator.Current.GetService<FarmingViewModel>();
             InitializeComponent();
-            Interval.ViewModel = new("Time for next send", "sec(s)");
+            Interval.ViewModel = new();
             this.WhenActivated(d =>
             {
                 //command

@@ -32,14 +32,14 @@
 
             <StackPanel>
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Delay settings" VerticalAlignment="Center" FontWeight="Bold" />
-                <controls:ToleranceUc x:Name="ClickDelay" />
-                <controls:ToleranceUc x:Name="TaskDelay" />
+                <controls:ToleranceUc x:Name="ClickDelay" Text="Click delay" Unit="ms" />
+                <controls:ToleranceUc x:Name="TaskDelay" Text="Task delay" Unit="ms" />
             </StackPanel>
 
             <StackPanel>
                 <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Activity settings" VerticalAlignment="Center" FontWeight="Bold" />
-                <controls:ToleranceUc x:Name="WorkTime" />
-                <controls:ToleranceUc x:Name="SleepTime" />
+                <controls:ToleranceUc x:Name="WorkTime" Text="Work time" Unit="mins" />
+                <controls:ToleranceUc x:Name="SleepTime" Text="Sleep time" Unit="mins" />
             </StackPanel>
 
             <StackPanel>

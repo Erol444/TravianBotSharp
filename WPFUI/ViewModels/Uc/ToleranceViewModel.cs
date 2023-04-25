@@ -5,10 +5,8 @@ namespace WPFUI.ViewModels.Uc
 {
     public class ToleranceViewModel : ReactiveObject
     {
-        public ToleranceViewModel(string text, string unit) : base()
+        public ToleranceViewModel() : base()
         {
-            Text = text;
-            Unit = unit;
             this.WhenAnyValue(vm => vm.MainValue).Subscribe(x =>
             {
                 ToleranceMax = x;
@@ -16,20 +14,9 @@ namespace WPFUI.ViewModels.Uc
             });
         }
 
-        private string _text;
-
-        public string Text
+        public (int, int) GetTolerance()
         {
-            get => $"{_text}: ";
-            set => this.RaiseAndSetIfChanged(ref _text, value);
-        }
-
-        private string _unit;
-
-        public string Unit
-        {
-            get => _unit;
-            set => this.RaiseAndSetIfChanged(ref _unit, value);
+            return (MainValue, ToleranceValue);
         }
 
         private int _mainValue;

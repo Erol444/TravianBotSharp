@@ -34,7 +34,7 @@
                 <StackPanel>
                     <TextBlock TextWrapping="Wrap" Text="Refresh settings" VerticalAlignment="Center" FontWeight="Bold" />
                     <CheckBox x:Name="RefreshCheckBox" Content="Auto refresh village" />
-                    <controls:ToleranceUc x:Name="Refresh" />
+                    <controls:ToleranceUc x:Name="Refresh" Text="Refresh interval" Unit="min(s)" />
                 </StackPanel>
 
                 <StackPanel>
@@ -52,7 +52,7 @@
 
                     <CheckBox x:Name="TroopTrainCheckBox" Content="Auto train troop" />
                     <controls:TroopsWithCheckBoxUc x:Name="TroopTrain" />
-                    <controls:ToleranceUc x:Name="TroopTrainTime" />
+                    <controls:ToleranceUc x:Name="TroopTrainTime" Text="Troop train time" Unit="mins" />
                     <CheckBox x:Name="TroopTrainGreat" Content="Include greate barrack/stable" />
                 </StackPanel>
             </StackPanel>
