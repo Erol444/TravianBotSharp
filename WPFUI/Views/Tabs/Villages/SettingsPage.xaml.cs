@@ -19,11 +19,11 @@ namespace WPFUI.Views.Tabs.Villages
             Refresh.ViewModel = new();
             AutoNPC.ViewModel = new();
             AutoNPCWarehouse.ViewModel = new();
-            AutoNPCRatio.ViewModel = new("Ratio");
-            TroopUpgrade.ViewModel = new("Troop will be upgraded");
+            AutoNPCRatio.ViewModel = new();
+            //TroopUpgrade.ViewModel = new("Troop will be upgraded");
 
-            TroopTrain.ViewModel = new("Troop will be trained");
-            TroopTrainTime.ViewModel = new();
+            //TroopTrain.ViewModel = new("Troop will be trained");
+            //.ViewModel = new();
 
             this.WhenActivated(d =>
             {
@@ -53,9 +53,9 @@ namespace WPFUI.Views.Tabs.Villages
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCIron, v => v.AutoNPCRatio.ViewModel.Iron).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCCrop, v => v.AutoNPCRatio.ViewModel.Crop).DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.Settings.IsUpgradeTroop, v => v.TroopUpgradeCheckBox.IsChecked).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.TroopUpgrade, v => v.TroopUpgrade.ViewModel.Troops).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.TroopUpgrade, v => v.TroopTrain.ViewModel.Troops).DisposeWith(d);
+                //this.Bind(ViewModel, vm => vm.Settings.IsUpgradeTroop, v => v.TroopUpgradeCheckBox.IsChecked).DisposeWith(d);
+                //this.OneWayBind(ViewModel, vm => vm.TroopUpgrade, v => v.TroopUpgrade.ViewModel.Troops).DisposeWith(d);
+                //this.OneWayBind(ViewModel, vm => vm.TroopUpgrade, v => v.TroopTrain.ViewModel.Troops).DisposeWith(d);
             });
         }
     }

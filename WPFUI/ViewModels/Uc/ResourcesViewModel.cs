@@ -4,17 +4,8 @@ namespace WPFUI.ViewModels.Uc
 {
     public class ResourcesViewModel : ReactiveObject
     {
-        public ResourcesViewModel(string text) : base()
+        public ResourcesViewModel() : base()
         {
-            Text = text;
-        }
-
-        private string _text;
-
-        public string Text
-        {
-            get => $"{_text}: ";
-            set => this.RaiseAndSetIfChanged(ref _text, value);
         }
 
         private int _wood;

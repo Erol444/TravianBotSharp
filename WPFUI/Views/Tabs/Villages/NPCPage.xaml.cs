@@ -16,7 +16,7 @@ namespace WPFUI.Views.Tabs.Villages
             InitializeComponent();
 
             Storage.ViewModel = new();
-            Ratio.ViewModel = new("Ratio");
+            Ratio.ViewModel = new();
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel, vm => vm.RefreshCommand, v => v.UpdateResource).DisposeWith(d);
