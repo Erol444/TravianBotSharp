@@ -53,6 +53,9 @@ namespace WPFUI.Views.Tabs.Villages
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCIron, v => v.AutoNPCRatio.ViewModel.Iron).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Settings.AutoNPCCrop, v => v.AutoNPCRatio.ViewModel.Crop).DisposeWith(d);
 
+                this.Bind(ViewModel, vm => vm.BarrackTraining, v => v.BarrackTrain.ViewModel).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.StableTraining, v => v.StableTrain.ViewModel).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.BarrackTraining, v => v.BarrackTrain.ViewModel).DisposeWith(d);
                 //this.Bind(ViewModel, vm => vm.Settings.IsUpgradeTroop, v => v.TroopUpgradeCheckBox.IsChecked).DisposeWith(d);
                 //this.OneWayBind(ViewModel, vm => vm.TroopUpgrade, v => v.TroopUpgrade.ViewModel.Troops).DisposeWith(d);
                 //this.OneWayBind(ViewModel, vm => vm.TroopUpgrade, v => v.TroopTrain.ViewModel.Troops).DisposeWith(d);

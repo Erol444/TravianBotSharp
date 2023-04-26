@@ -13,11 +13,11 @@
     </UserControl.Resources>
     <StackPanel>
         <Label Content="{Binding Text, ElementName=root}" Width="NaN" />
-        <ComboBox x:Name="ComboBox">
+        <ComboBox x:Name="TroopComboBox">
             <ComboBoxItem>Phalanx</ComboBoxItem>
             <ComboBoxItem>Swordman</ComboBoxItem>
         </ComboBox>
-        <controls:ToleranceUc x:Name="TotalTrainTime" Text="Fill queue for" Unit="min(s)" />
-        <CheckBox Visibility="{Binding Great, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}" >Train in great version too</CheckBox>
+        <controls:ToleranceUc x:Name="FillTime" Text="Fill queue for" Unit="min(s)" />
+        <CheckBox x:Name="IsGreat" Visibility="{Binding Great, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}" >Train in great version too</CheckBox>
     </StackPanel>
 </rxui:ReactiveUserControl>

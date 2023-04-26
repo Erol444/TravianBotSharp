@@ -16,12 +16,17 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
     public class VillageSettingsViewModel : VillageTabBaseViewModel
     {
         private readonly IUpgradeBuildingHelper _upgradeBuildingHelper;
+
+        public TroopTrainingSelectorViewModel BarrackTraining = new();
+        public TroopTrainingSelectorViewModel StableTraining = new();
+        public TroopTrainingSelectorViewModel WorkshopTraining = new();
 
         public VillageSettingsViewModel()
         {

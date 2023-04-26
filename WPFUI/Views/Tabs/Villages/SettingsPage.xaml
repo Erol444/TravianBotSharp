@@ -48,9 +48,9 @@
 
                 <StackPanel>
                     <TextBlock TextWrapping="Wrap" Text="Troop settings" VerticalAlignment="Center" FontWeight="Bold" />
-                    <controls:TroopTrainingSelectorUc Text="Barrack" Great="True" />
-                    <controls:TroopTrainingSelectorUc Text="Stable" Great="True" />
-                    <controls:TroopTrainingSelectorUc Text="Workshop" Great="False" />
+                    <controls:TroopTrainingSelectorUc x:Name="BarrackTrain" Text="Barrack" Great="True" />
+                    <controls:TroopTrainingSelectorUc x:Name="StableTrain" Text="Stable" Great="True" />
+                    <controls:TroopTrainingSelectorUc x:Name="WorkshopTrain" Text="Workshop" Great="False" />
                 </StackPanel>
             </StackPanel>
         </ScrollViewer>
