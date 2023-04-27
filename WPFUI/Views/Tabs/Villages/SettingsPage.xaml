@@ -5,8 +5,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="clr-namespace:WPFUI.ViewModels.Tabs.Villages"
       xmlns:reactiveui="http://reactiveui.net"
-      xmlns:controls="clr-namespace:WPFUI.Views.Uc"
-      xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
+      xmlns:controls="clr-namespace:WPFUI.Views.Uc">
     <Grid Background="#FFE5E5E5" Margin="0,2,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
@@ -40,9 +39,9 @@
 
                 <StackPanel>
                     <TextBlock TextWrapping="Wrap" Text="NPC settings" VerticalAlignment="Center" FontWeight="Bold" />
-                    <CheckBox x:Name="NPCCheckBox" Content="NPC even if after NPC resource is overflow (this may make TBS stuck)" />
                     <controls:CheckBoxWithInputUc x:Name="AutoNPC" Text="Auto NPC when crop is more than" Unit="% of granary (this need auto refresh)" />
                     <controls:CheckBoxWithInputUc x:Name="AutoNPCWarehouse" Text="Auto NPC when any resource is more than" Unit="% of warehouse (this need auto refresh)" />
+                    <CheckBox x:Name="NPCCheckBox" Content="NPC even if after NPC resource is overflow (this may make TBS stuck)" />
                     <controls:ResourcesUc x:Name="AutoNPCRatio" Text="Ratio" />
                 </StackPanel>
 

@@ -1,20 +1,13 @@
-﻿using MainCore.Enums;
-using MainCore.Helper.Interface;
-using MainCore.Tasks.Base;
+﻿using MainCore.Helper.Interface;
 using Microsoft.Win32;
 using ReactiveUI;
 using Splat;
 using System;
-using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
-using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Uc;
 
@@ -24,9 +17,49 @@ namespace WPFUI.ViewModels.Tabs.Villages
     {
         private readonly IUpgradeBuildingHelper _upgradeBuildingHelper;
 
-        public TroopTrainingSelectorViewModel BarrackTraining = new();
-        public TroopTrainingSelectorViewModel StableTraining = new();
-        public TroopTrainingSelectorViewModel WorkshopTraining = new();
+        private bool _useHeroRes;
+
+        public bool UseHeroRes
+        {
+            get => _useHeroRes;
+            set => this.RaiseAndSetIfChanged(ref _useHeroRes, value);
+        }
+
+        private bool _ignoreRoman;
+
+        public bool IgnoreRoman
+        {
+            get => _ignoreRoman;
+            set => this.RaiseAndSetIfChanged(ref _ignoreRoman, value);
+        }
+
+        public CheckBoxWithInputViewModel AutoComplete { get; } = new();
+        public CheckBoxWithInputViewModel WatchAds { get; } = new();
+
+        private bool _isAutoRefresh;
+
+        public bool IsAutoRefresh
+        {
+            get => _isAutoRefresh;
+            set => this.RaiseAndSetIfChanged(ref _isAutoRefresh, value);
+        }
+
+        public ToleranceViewModel AutoRefresh { get; } = new();
+
+        public CheckBoxWithInputViewModel AutoNPCCrop { get; } = new();
+        public CheckBoxWithInputViewModel AutoNPCResource { get; } = new();
+        private bool _isAutoNPCOverflow;
+
+        public bool IsAutoNPCOverflow
+        {
+            get => _isAutoNPCOverflow;
+            set => this.RaiseAndSetIfChanged(ref _isAutoNPCOverflow, value);
+        }
+
+        public ResourcesViewModel RatioNPC { get; } = new();
+        public TroopTrainingSelectorViewModel BarrackTraining { get; } = new();
+        public TroopTrainingSelectorViewModel StableTraining { get; } = new();
+        public TroopTrainingSelectorViewModel WorkshopTraining { get; } = new();
 
         public VillageSettingsViewModel()
         {
@@ -34,8 +67,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
-
-            this.WhenAnyValue(x => x.Settings.UpgradeTroop).Subscribe(LoadUpgradeTroop);
         }
 
         protected override void Init(int villageId)
@@ -47,24 +78,31 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesSettings.Find(villageId);
-            RxApp.MainThreadScheduler.Schedule(() => Settings.CopyFrom(settings));
+
+            UseHeroRes = settings.IsUseHeroRes;
+            IgnoreRoman = settings.IsIgnoreRomanAdvantage;
+            AutoComplete.IsChecked = settings.IsInstantComplete;
+            AutoComplete.Value = settings.InstantCompleteTime;
+            WatchAds.IsChecked = settings.IsAdsUpgrade;
+            WatchAds.Value = settings.AdsUpgradeTime;
+
+            IsAutoRefresh = settings.IsAutoRefresh;
+            AutoRefresh.MainValue = (settings.AutoRefreshTimeMax + settings.AutoRefreshTimeMin) / 2;
+            AutoRefresh.ToleranceValue = (settings.AutoRefreshTimeMax - settings.AutoRefreshTimeMin) / 2;
+
+            AutoNPCCrop.IsChecked = settings.IsAutoNPC;
+            AutoNPCCrop.Value = settings.AutoNPCPercent;
+            AutoNPCResource.IsChecked = settings.IsAutoNPCWarehouse;
+            AutoNPCResource.Value = settings.AutoNPCWarehousePercent;
+            IsAutoNPCOverflow = settings.IsNPCOverflow;
+            RatioNPC.Wood = settings.AutoNPCWood;
+            RatioNPC.Clay = settings.AutoNPCClay;
+            RatioNPC.Iron = settings.AutoNPCIron;
+            RatioNPC.Crop = settings.AutoNPCCrop;
         }
 
         private async Task SaveTask()
         {
-            if (!Settings.IsValidate()) return;
-            _waitingWindow.Show("saving village's settings");
-
-            await Task.Run(() =>
-            {
-                var villageId = VillageId;
-                Save(villageId);
-                var accountId = AccountId;
-                TaskBasedSetting(villageId, accountId);
-            });
-            _waitingWindow.Close();
-
-            MessageBox.Show("Saved.");
         }
 
         private void ImportTask()
@@ -125,90 +163,57 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void Save(int index)
         {
-            for (var i = 0; i < TroopUpgrade.Count; i++)
-            {
-                var troop = TroopUpgrade[i];
-                Settings.UpgradeTroop[i] = troop.IsChecked;
-            }
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.Find(index);
-            Settings.CopyTo(setting);
-            context.Update(setting);
-            context.SaveChanges();
         }
 
         private void TaskBasedSetting(int villageId, int accountId)
         {
-            var list = _taskManager.GetList(accountId);
-            {
-                var tasks = list.Where(x => x is InstantUpgrade);
-                if (Settings.IsInstantComplete)
-                {
-                    if (!tasks.Any())
-                    {
-                        _upgradeBuildingHelper.RemoveFinishedCB(villageId);
-                        using var context = _contextFactory.CreateDbContext();
-                        var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-                        var count = currentBuildings.Count(x => x.Level != -1);
-                        if (count > 0)
-                        {
-                            _taskManager.Add(accountId, new InstantUpgrade(villageId, accountId));
-                        }
-                    }
-                }
-                else
-                {
-                    foreach (var item in tasks)
-                    {
-                        _taskManager.Remove(accountId, item);
-                    }
-                }
-            }
-            {
-                var tasks = list.OfType<RefreshVillage>();
-                if (Settings.IsAutoRefresh)
-                {
-                    if (!tasks.Any(x => x.VillageId == villageId))
-                    {
-                        _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId));
-                    }
-                }
-                else
-                {
-                    var updateTasks = tasks.Where(x => x.VillageId == villageId);
-                    foreach (var item in updateTasks)
-                    {
-                        _taskManager.Remove(accountId, item);
-                    }
-                }
-            }
-        }
-
-        private void LoadUpgradeTroop(bool[] upgradeTroop)
-        {
-            if (!IsActive) return;
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                using var context = _contextFactory.CreateDbContext();
-                var troops = context.VillagesTroops.Where(x => x.VillageId == VillageId).ToArray();
-                TroopUpgrade.Clear();
-                for (var i = 0; i < troops.Length; i++)
-                {
-                    var troop = troops[i];
-                    TroopUpgrade.Add(new TroopInfoCheckBox
-                    {
-                        Troop = (TroopEnums)troop.Id,
-                        IsChecked = upgradeTroop[i],
-                    });
-                }
-            });
+            //var list = _taskManager.GetList(accountId);
+            //{
+            //    var tasks = list.Where(x => x is InstantUpgrade);
+            //    if (Settings.IsInstantComplete)
+            //    {
+            //        if (!tasks.Any())
+            //        {
+            //            _upgradeBuildingHelper.RemoveFinishedCB(villageId);
+            //            using var context = _contextFactory.CreateDbContext();
+            //            var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
+            //            var count = currentBuildings.Count(x => x.Level != -1);
+            //            if (count > 0)
+            //            {
+            //                _taskManager.Add(accountId, new InstantUpgrade(villageId, accountId));
+            //            }
+            //        }
+            //    }
+            //    else
+            //    {
+            //        foreach (var item in tasks)
+            //        {
+            //            _taskManager.Remove(accountId, item);
+            //        }
+            //    }
+            //}
+            //{
+            //    var tasks = list.OfType<RefreshVillage>();
+            //    if (Settings.IsAutoRefresh)
+            //    {
+            //        if (!tasks.Any(x => x.VillageId == villageId))
+            //        {
+            //            _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId));
+            //        }
+            //    }
+            //    else
+            //    {
+            //        var updateTasks = tasks.Where(x => x.VillageId == villageId);
+            //        foreach (var item in updateTasks)
+            //        {
+            //            _taskManager.Remove(accountId, item);
+            //        }
+            //    }
+            //}
         }
 
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> ExportCommand { get; }
         public ReactiveCommand<Unit, Unit> ImportCommand { get; }
-
-        public VillageSetting Settings { get; } = new();
-        public ObservableCollection<TroopInfoCheckBox> TroopUpgrade { get; } = new();
     }
 }
