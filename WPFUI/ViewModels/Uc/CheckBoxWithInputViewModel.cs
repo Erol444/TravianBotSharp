@@ -4,8 +4,15 @@ namespace WPFUI.ViewModels.Uc
 {
     public class CheckBoxWithInputViewModel : ReactiveObject
     {
-        public CheckBoxWithInputViewModel() : base()
+        public void LoadData(bool isChecked, int value)
         {
+            IsChecked = isChecked;
+            Value = value;
+        }
+
+        public (bool, int) GetData()
+        {
+            return (IsChecked, Value);
         }
 
         private bool _isChecked;

@@ -1,6 +1,7 @@
 ﻿using MainCore;
 using MainCore.Enums;
 using MainCore.Helper.Interface;
+using MainCore.Tasks.Base;
 using Microsoft.Win32;
 using ReactiveUI;
 using Splat;
@@ -85,36 +86,38 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             UseHeroRes = settings.IsUseHeroRes;
             IgnoreRoman = settings.IsIgnoreRomanAdvantage;
-            AutoComplete.IsChecked = settings.IsInstantComplete;
-            AutoComplete.Value = settings.InstantCompleteTime;
-            WatchAds.IsChecked = settings.IsAdsUpgrade;
-            WatchAds.Value = settings.AdsUpgradeTime;
+            AutoComplete.LoadData(settings.IsInstantComplete, settings.InstantCompleteTime);
+            WatchAds.LoadData(settings.IsAdsUpgrade, settings.AdsUpgradeTime);
 
             IsAutoRefresh = settings.IsAutoRefresh;
-            AutoRefresh.MainValue = (settings.AutoRefreshTimeMax + settings.AutoRefreshTimeMin) / 2;
-            AutoRefresh.ToleranceValue = (settings.AutoRefreshTimeMax - settings.AutoRefreshTimeMin) / 2;
+            AutoRefresh.LoadData(settings.AutoRefreshTimeMin, settings.AutoRefreshTimeMax);
 
-            AutoNPCCrop.IsChecked = settings.IsAutoNPC;
-            AutoNPCCrop.Value = settings.AutoNPCPercent;
-            AutoNPCResource.IsChecked = settings.IsAutoNPCWarehouse;
-            AutoNPCResource.Value = settings.AutoNPCWarehousePercent;
+            AutoNPCCrop.LoadData(settings.IsAutoNPC, settings.AutoNPCPercent);
+            AutoNPCResource.LoadData(settings.IsAutoNPCWarehouse, settings.AutoNPCWarehousePercent);
             IsAutoNPCOverflow = settings.IsNPCOverflow;
-            RatioNPC.Wood = settings.AutoNPCWood;
-            RatioNPC.Clay = settings.AutoNPCClay;
-            RatioNPC.Iron = settings.AutoNPCIron;
-            RatioNPC.Crop = settings.AutoNPCCrop;
+
+            RatioNPC.LoadData(settings.AutoNPCWood, settings.AutoNPCClay, settings.AutoNPCIron, settings.AutoNPCCrop);
 
             var account = context.Villages.Find(villageId);
             var accountInfo = context.AccountsInfo.Find(account.AccountId);
             var tribe = accountInfo.Tribe;
 
-            BarrackTraining.LoadData(tribe.GetInfantryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.BarrackTroop);
-            StableTraining.LoadData(tribe.GetCavalryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.StableTroop);
-            WorkshopTraining.LoadData(tribe.GetSiegeTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.WorkshopTroop);
+            BarrackTraining.LoadData(tribe.GetInfantryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.BarrackTroop, settings.BarrackTroopTimeMin, settings.BarrackTroopTimeMax, settings.IsGreatBarrack);
+            StableTraining.LoadData(tribe.GetCavalryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.StableTroop, settings.StableTroopTimeMin, settings.StableTroopTimeMax, settings.IsGreatStable);
+            WorkshopTraining.LoadData(tribe.GetSiegeTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.WorkshopTroop, settings.WorkshopTroopTimeMin, settings.WorkshopTroopTimeMax, false);
         }
 
         private async Task SaveTask()
         {
+            _waitingWindow.Show("saving account's settings");
+            await Task.Run(() =>
+            {
+                Save(VillageId);
+                TaskBasedSetting(VillageId, AccountId);
+            });
+            _waitingWindow.Close();
+
+            MessageBox.Show("Saved.");
         }
 
         private void ImportTask()
@@ -175,53 +178,84 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void Save(int index)
         {
+            using var context = _contextFactory.CreateDbContext();
+            var settings = context.VillagesSettings.Find(index);
+
+            settings.IsUseHeroRes = UseHeroRes;
+            settings.IsIgnoreRomanAdvantage = IgnoreRoman;
+
+            (settings.IsInstantComplete, settings.InstantCompleteTime) = AutoComplete.GetData();
+            (settings.IsAdsUpgrade, settings.AdsUpgradeTime) = WatchAds.GetData();
+
+            settings.IsAutoRefresh = IsAutoRefresh;
+            (settings.AutoRefreshTimeMin, settings.AutoRefreshTimeMax) = AutoRefresh.GetData();
+
+            (settings.IsAutoNPC, settings.AutoNPCPercent) = AutoNPCCrop.GetData();
+            (settings.IsAutoNPCWarehouse, settings.AutoNPCWarehousePercent) = AutoNPCResource.GetData();
+
+            settings.IsNPCOverflow = IsAutoNPCOverflow;
+
+            (settings.AutoNPCWood, settings.AutoNPCClay, settings.AutoNPCIron, settings.AutoNPCCrop) = RatioNPC.GetData();
+
+            TroopEnums troop;
+            (troop, settings.BarrackTroopTimeMin, settings.BarrackTroopTimeMax, settings.IsGreatBarrack) = BarrackTraining.GetData();
+            settings.BarrackTroop = (int)troop;
+            (troop, settings.StableTroopTimeMin, settings.StableTroopTimeMax, settings.IsGreatStable) = StableTraining.GetData();
+            settings.StableTroop = (int)troop;
+            (troop, settings.WorkshopTroopTimeMin, settings.WorkshopTroopTimeMax, _) = WorkshopTraining.GetData();
+            settings.WorkshopTroop = (int)troop;
+
+            context.Update(settings);
+            context.SaveChanges();
         }
 
         private void TaskBasedSetting(int villageId, int accountId)
         {
-            //var list = _taskManager.GetList(accountId);
-            //{
-            //    var tasks = list.Where(x => x is InstantUpgrade);
-            //    if (Settings.IsInstantComplete)
-            //    {
-            //        if (!tasks.Any())
-            //        {
-            //            _upgradeBuildingHelper.RemoveFinishedCB(villageId);
-            //            using var context = _contextFactory.CreateDbContext();
-            //            var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-            //            var count = currentBuildings.Count(x => x.Level != -1);
-            //            if (count > 0)
-            //            {
-            //                _taskManager.Add(accountId, new InstantUpgrade(villageId, accountId));
-            //            }
-            //        }
-            //    }
-            //    else
-            //    {
-            //        foreach (var item in tasks)
-            //        {
-            //            _taskManager.Remove(accountId, item);
-            //        }
-            //    }
-            //}
-            //{
-            //    var tasks = list.OfType<RefreshVillage>();
-            //    if (Settings.IsAutoRefresh)
-            //    {
-            //        if (!tasks.Any(x => x.VillageId == villageId))
-            //        {
-            //            _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId));
-            //        }
-            //    }
-            //    else
-            //    {
-            //        var updateTasks = tasks.Where(x => x.VillageId == villageId);
-            //        foreach (var item in updateTasks)
-            //        {
-            //            _taskManager.Remove(accountId, item);
-            //        }
-            //    }
-            //}
+            var list = _taskManager.GetList(accountId);
+
+            using var context = _contextFactory.CreateDbContext();
+            var settings = context.VillagesSettings.Find(villageId);
+            {
+                var tasks = list.Where(x => x is InstantUpgrade);
+                if (settings.IsInstantComplete)
+                {
+                    if (!tasks.Any())
+                    {
+                        _upgradeBuildingHelper.RemoveFinishedCB(villageId);
+                        var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
+                        var count = currentBuildings.Count(x => x.Level != -1);
+                        if (count > 0)
+                        {
+                            _taskManager.Add(accountId, new InstantUpgrade(villageId, accountId));
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var item in tasks)
+                    {
+                        _taskManager.Remove(accountId, item);
+                    }
+                }
+            }
+            {
+                var tasks = list.OfType<RefreshVillage>();
+                if (settings.IsAutoRefresh)
+                {
+                    if (!tasks.Any(x => x.VillageId == villageId))
+                    {
+                        _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId));
+                    }
+                }
+                else
+                {
+                    var updateTasks = tasks.Where(x => x.VillageId == villageId);
+                    foreach (var item in updateTasks)
+                    {
+                        _taskManager.Remove(accountId, item);
+                    }
+                }
+            }
         }
 
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }

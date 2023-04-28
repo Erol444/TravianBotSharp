@@ -4,8 +4,17 @@ namespace WPFUI.ViewModels.Uc
 {
     public class ResourcesViewModel : ReactiveObject
     {
-        public ResourcesViewModel() : base()
+        public void LoadData(int wood, int clay, int iron, int crop)
         {
+            Wood = wood;
+            Clay = clay;
+            Iron = iron;
+            Crop = crop;
+        }
+
+        public (int, int, int, int) GetData()
+        {
+            return (Wood, Clay, Iron, Crop);
         }
 
         private int _wood;

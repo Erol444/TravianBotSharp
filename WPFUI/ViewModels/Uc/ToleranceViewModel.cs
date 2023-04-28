@@ -14,9 +14,17 @@ namespace WPFUI.ViewModels.Uc
             });
         }
 
-        public (int, int) GetTolerance()
+        public void LoadData(int min, int max)
         {
-            return (MainValue, ToleranceValue);
+            MainValue = (max + min) / 2;
+            ToleranceValue = (max - min) / 2;
+        }
+
+        public (int, int) GetData()
+        {
+            var min = (MainValue - ToleranceValue) / 2;
+            var max = (MainValue + ToleranceValue) / 2;
+            return (min, max);
         }
 
         private int _mainValue;
