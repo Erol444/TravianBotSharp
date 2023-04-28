@@ -1,13 +1,17 @@
-﻿using MainCore.Helper.Interface;
+﻿using MainCore;
+using MainCore.Enums;
+using MainCore.Helper.Interface;
 using Microsoft.Win32;
 using ReactiveUI;
 using Splat;
 using System;
 using System.IO;
+using System.Linq;
 using System.Reactive;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Uc;
 
@@ -99,6 +103,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
             RatioNPC.Clay = settings.AutoNPCClay;
             RatioNPC.Iron = settings.AutoNPCIron;
             RatioNPC.Crop = settings.AutoNPCCrop;
+
+            var account = context.Villages.Find(villageId);
+            var accountInfo = context.AccountsInfo.Find(account.AccountId);
+            var tribe = accountInfo.Tribe;
+
+            BarrackTraining.LoadData(tribe.GetInfantryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.BarrackTroop);
+            StableTraining.LoadData(tribe.GetCavalryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.StableTroop);
+            WorkshopTraining.LoadData(tribe.GetSiegeTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.WorkshopTroop);
         }
 
         private async Task SaveTask()

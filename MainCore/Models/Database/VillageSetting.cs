@@ -55,33 +55,17 @@ namespace MainCore.Models.Database
             UpgradeTroop = result.ToString();
         }
 
-        public bool IsTrainTroop { get; set; }
-        public bool IsGreatBuilding { get; set; }
-        public string TrainTroop { get; set; }
+        public int BarrackTroop { get; set; }
+        public int BarrackTroopTimeMin { get; set; }
+        public int BarrackTroopTimeMax { get; set; }
+        public bool IsGreatBarrack { get; set; }
 
-        public bool[] GetTroopTrain()
-        {
-            var result = new bool[10];
-            if (string.IsNullOrEmpty(TrainTroop))
-                return result;
-            var arr = TrainTroop.Split(',');
-            for (int i = 0; i < arr.Length; i++)
-            {
-                result[i] = arr[i] == "1";
-            }
-            return result;
-        }
-
-        public void SetTroopTrain(bool[] arr)
-        {
-            var result = new StringBuilder();
-            for (int i = 0; i < arr.Length; i++)
-            {
-                result.Append(arr[i] ? "1" : "0");
-                if (i < arr.Length - 1)
-                    result.Append(',');
-            }
-            TrainTroop = result.ToString();
-        }
+        public int StableTroop { get; set; }
+        public int StableTroopTimeMin { get; set; }
+        public int StableTroopTimeMax { get; set; }
+        public bool IsGreatStable { get; set; }
+        public int WorkshopTroop { get; set; }
+        public int WorkshopTroopTimeMin { get; set; }
+        public int WorkshopTroopTimeMax { get; set; }
     }
 }

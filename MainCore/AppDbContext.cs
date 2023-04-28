@@ -277,6 +277,18 @@ namespace MainCore
                 AutoNPCClay = 1,
                 AutoNPCIron = 1,
                 AutoNPCCrop = 0,
+
+                BarrackTroop = 0,
+                BarrackTroopTimeMin = 0,
+                BarrackTroopTimeMax = 0,
+                IsGreatBarrack = false,
+                StableTroop = 0,
+                StableTroopTimeMin = 0,
+                StableTroopTimeMax = 0,
+                IsGreatStable = false,
+                WorkshopTroop = 0,
+                WorkshopTroopTimeMin = 0,
+                WorkshopTroopTimeMax = 0,
             });
 
             //VillagesQueueBuildings
@@ -383,9 +395,36 @@ namespace MainCore
                         VillageId = villageId,
                         IsAdsUpgrade = false,
                         AdsUpgradeTime = 5,
+
                         IsUseHeroRes = false,
+
                         IsInstantComplete = false,
-                        InstantCompleteTime = 30
+                        InstantCompleteTime = 30,
+
+                        IsAutoRefresh = false,
+                        AutoRefreshTimeMin = 25,
+                        AutoRefreshTimeMax = 35,
+
+                        IsAutoNPC = false,
+                        IsAutoNPCWarehouse = false,
+                        AutoNPCPercent = 90,
+                        AutoNPCWarehousePercent = 90,
+                        AutoNPCWood = 1,
+                        AutoNPCClay = 1,
+                        AutoNPCIron = 1,
+                        AutoNPCCrop = 0,
+
+                        BarrackTroop = 0,
+                        BarrackTroopTimeMin = 0,
+                        BarrackTroopTimeMax = 0,
+                        IsGreatBarrack = false,
+                        StableTroop = 0,
+                        StableTroopTimeMin = 0,
+                        StableTroopTimeMax = 0,
+                        IsGreatStable = false,
+                        WorkshopTroop = 0,
+                        WorkshopTroopTimeMin = 0,
+                        WorkshopTroopTimeMax = 0,
                     });
                 }
             }
@@ -515,6 +554,8 @@ namespace MainCore
                 KeyValuePair.Create(202212152155,"NPCWarehouse"),
                 KeyValuePair.Create(202212301138,"FarmSettings"),
                 KeyValuePair.Create(202302101011,"SleepWhenChangingProxy"),
+                KeyValuePair.Create(202304081043,"AutoTrainTroop"),
+                KeyValuePair.Create(202304281723,"AutoTrainTroopFixed"),
             };
             foreach (var migration in migrations)
             {

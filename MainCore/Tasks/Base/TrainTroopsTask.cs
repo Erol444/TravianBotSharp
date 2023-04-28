@@ -57,12 +57,12 @@ namespace MainCore.Tasks.Base
             var building = villageBuilding.FirstOrDefault(x => x.Type == buildingType);
             if (building is null || building.Level < 1) return Result.Fail(new Skip($"Missing {buildingType} to train {Troop}"));
 
-            if (setting.IsGreatBuilding)
-            {
-                building = villageBuilding.FirstOrDefault(x => x.Type == buildingType.GetGreatVersion());
+            //if (setting.IsGreatBuilding)
+            //{
+            //    building = villageBuilding.FirstOrDefault(x => x.Type == buildingType.GetGreatVersion());
 
-                _greatTrain = building is not null && building.Level >= 1;
-            }
+            //    _greatTrain = building is not null && building.Level >= 1;
+            //}
             return Result.Ok();
         }
 

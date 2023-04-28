@@ -1,7 +1,9 @@
 ﻿using DynamicData;
+using MainCore.Enums;
 using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using WPFUI.Models;
 
 namespace WPFUI.ViewModels.Uc
@@ -14,10 +16,13 @@ namespace WPFUI.ViewModels.Uc
             FillTime = new();
         }
 
-        public void LoadData(IEnumerable<TroopInfo> troops)
+        public void LoadData(IEnumerable<TroopInfo> troops, TroopEnums selectedTroop)
         {
             Troops.Clear();
+            Troops.Add(new(TroopEnums.None));
             Troops.AddRange(troops);
+
+            SelectedTroop = Troops.FirstOrDefault(x => x.Troop == selectedTroop);
         }
 
         public ObservableCollection<TroopInfo> Troops { get; }
