@@ -872,6 +872,7 @@ namespace MainCore
             {
                 BuildingEnums.Barracks => BuildingEnums.GreatBarracks,
                 BuildingEnums.Stable => BuildingEnums.GreatStable,
+                BuildingEnums.Workshop => BuildingEnums.Workshop,
                 _ => BuildingEnums.Site,
             };
         }
