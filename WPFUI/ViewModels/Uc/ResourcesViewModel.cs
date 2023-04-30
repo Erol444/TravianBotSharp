@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using System.Reactive.Concurrency;
 
 namespace WPFUI.ViewModels.Uc
 {
@@ -6,10 +7,13 @@ namespace WPFUI.ViewModels.Uc
     {
         public void LoadData(int wood, int clay, int iron, int crop)
         {
-            Wood = wood;
-            Clay = clay;
-            Iron = iron;
-            Crop = crop;
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Wood = wood;
+                Clay = clay;
+                Iron = iron;
+                Crop = crop;
+            });
         }
 
         public (int, int, int, int) GetData()

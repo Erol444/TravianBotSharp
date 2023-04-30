@@ -19,10 +19,10 @@ namespace WPFUI.ViewModels.Uc
                 Troops.Add(new(TroopEnums.None));
                 Troops.AddRange(troops);
                 SelectedTroop = Troops.FirstOrDefault(x => x.Troop == selectedTroop) ?? Troops.First();
-            });
 
-            FillTime.LoadData(min, max);
-            IsGreat = isGreat;
+                FillTime.LoadData(min, max);
+                IsGreat = isGreat;
+            });
         }
 
         public (TroopEnums, int, int, bool) GetData()
