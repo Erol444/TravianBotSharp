@@ -59,20 +59,39 @@ namespace MainCore.Tasks.Base
                 {
                     _logManager.Information(AccountId, $"Don't have enough resource to train troops");
                     ExecuteAt = DateTime.Now.AddHours(1);
+                    {
+                        var result = UpdateDorf2();
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                        if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+                    }
                     return Result.Ok();
                 }
                 if (maxTroop < amountTroop)
                 {
                     amountTroop = maxTroop;
                 }
-                _logManager.Information(AccountId, $"There is {amountTroop}");
-                InputAmountTroop(amountTroop);
+                if (amountTroop == 0)
+                {
+                    NextExecute();
+                    {
+                        var result = UpdateDorf2();
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                        if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+                    }
+                    return Result.Ok();
+                }
+                else
+                {
+                    InputAmountTroop(amountTroop);
+                }
             }
+            NextExecute();
             {
                 var result = UpdateDorf2();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
+
             return Result.Ok();
         }
 
@@ -215,7 +234,8 @@ namespace MainCore.Tasks.Base
 
             var timeLeft = timeTrain - timeRemaining;
 
-            return (int)(timeLeft.TotalMilliseconds / trainTime.TotalMilliseconds) + 1;
+            var result = (int)(timeLeft.TotalMilliseconds / trainTime.TotalMilliseconds);
+            return result > 0 ? result + 1 : result;
         }
 
         private int GetMaxTroop()
@@ -304,6 +324,14 @@ namespace MainCore.Tasks.Base
             var buttonElements = chrome.FindElements(By.XPath(button.XPath));
 
             buttonElements[0].Click();
+        }
+
+        private void NextExecute()
+        {
+            var doc = _chromeBrowser.GetHtml();
+            var timeRemaining = _trainTroopParser.GetQueueTrainTime(doc);
+            var timePass = timeRemaining.TotalMilliseconds * 0.9;
+            ExecuteAt = DateTime.Now.AddMilliseconds(timePass);
         }
     }
 
