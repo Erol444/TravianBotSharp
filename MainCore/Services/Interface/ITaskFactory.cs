@@ -47,5 +47,11 @@ namespace MainCore.Services.Interface
         BotTask GetUpgradeBuildingTask(int villageId, int accountId, CancellationToken cancellationToken = default);
 
         BotTask GetUseHeroResourcesTask(int villageId, int accountId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default);
+
+        BotTask GetBarrackTrainTroopTask(int villageId, int accountId, CancellationToken cancellationToken = default);
+
+        BotTask GetStableTrainTroopTask(int villageId, int accountId, CancellationToken cancellationToken = default);
+
+        BotTask GetWorkshopTrainTroopTask(int villageId, int accountId, CancellationToken cancellationToken = default);
     }
 }
