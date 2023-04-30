@@ -22,8 +22,8 @@ namespace WPFUI.ViewModels.Uc
 
         public (int, int) GetData()
         {
-            var min = (MainValue - ToleranceValue) / 2;
-            var max = (MainValue + ToleranceValue) / 2;
+            var min = MainValue - ToleranceValue;
+            var max = MainValue + ToleranceValue;
             return (min, max);
         }
 
