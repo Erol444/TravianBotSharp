@@ -1,6 +1,11 @@
 ﻿using FluentResults;
+using HtmlAgilityPack;
 using MainCore.Enums;
 using MainCore.Errors;
+using MainCore.Parsers.Interface;
+using OpenQA.Selenium;
+using Splat;
+using System;
 using System.Linq;
 using System.Threading;
 
@@ -11,9 +16,12 @@ namespace MainCore.Tasks.Base
         private readonly BuildingEnums _trainingBuilding;
         protected BuildingEnums TrainingBuilding => _trainingBuilding;
 
+        private readonly ITrainTroopParser _trainTroopParser;
+
         public TrainTroopsTask(int villageId, int accountId, BuildingEnums trainingBuilding, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _trainingBuilding = trainingBuilding;
+            _trainTroopParser = Locator.Current.GetService<ITrainTroopParser>();
         }
 
         public override Result Execute()
@@ -40,6 +48,28 @@ namespace MainCore.Tasks.Base
             }
             {
                 var result = EnterBuilding(false);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            }
+            {
+                var timeTrain = GetTroopTime();
+                var amountTroop = GetAmountTroop(timeTrain);
+                var maxTroop = GetMaxTroop();
+                if (maxTroop == 0)
+                {
+                    _logManager.Information(AccountId, $"Don't have enough resource to train troops");
+                    ExecuteAt = DateTime.Now.AddHours(1);
+                    return Result.Ok();
+                }
+                if (maxTroop < amountTroop)
+                {
+                    amountTroop = maxTroop;
+                }
+                _logManager.Information(AccountId, $"There is {amountTroop}");
+                InputAmountTroop(amountTroop);
+            }
+            {
+                var result = UpdateDorf2();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
@@ -113,6 +143,167 @@ namespace MainCore.Tasks.Base
             var buildingType = great ? TrainingBuilding.GetGreatVersion() : TrainingBuilding;
             var building = buildings.FirstOrDefault(x => x.Type == buildingType);
             return _navigateHelper.GoToBuilding(AccountId, building.Id);
+        }
+
+        private TimeSpan GetTroopTime()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == VillageId);
+            var troopType = 0;
+            switch (TrainingBuilding)
+            {
+                case BuildingEnums.Barracks:
+                    troopType = setting.BarrackTroop;
+                    break;
+
+                case BuildingEnums.Stable:
+                    troopType = setting.StableTroop;
+                    break;
+
+                case BuildingEnums.Workshop:
+                    troopType = setting.WorkshopTroop;
+                    break;
+
+                default:
+                    break;
+            }
+
+            var doc = _chromeBrowser.GetHtml();
+            var nodes = _trainTroopParser.GetTroopNodes(doc);
+            HtmlNode troopNode = null;
+            foreach (var node in nodes)
+            {
+                if (_trainTroopParser.GetTroopType(node) == troopType)
+                {
+                    troopNode = node;
+                    break;
+                }
+            }
+
+            return _trainTroopParser.GetTrainTime(troopNode);
+        }
+
+        private int GetAmountTroop(TimeSpan trainTime)
+        {
+            var doc = _chromeBrowser.GetHtml();
+            var timeRemaining = _trainTroopParser.GetQueueTrainTime(doc);
+
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == VillageId);
+            var timeTrainMinutes = 0;
+            switch (TrainingBuilding)
+            {
+                case BuildingEnums.Barracks:
+                    timeTrainMinutes = Random.Shared.Next(setting.BarrackTroopTimeMin, setting.BarrackTroopTimeMax);
+                    break;
+
+                case BuildingEnums.Stable:
+                    timeTrainMinutes = Random.Shared.Next(setting.StableTroopTimeMin, setting.StableTroopTimeMax);
+                    break;
+
+                case BuildingEnums.Workshop:
+                    timeTrainMinutes = Random.Shared.Next(setting.WorkshopTroopTimeMin, setting.WorkshopTroopTimeMax);
+                    break;
+
+                default:
+                    break;
+            }
+
+            var timeTrain = TimeSpan.FromMinutes(timeTrainMinutes);
+
+            if (timeRemaining > timeTrain) return 0;
+
+            var timeLeft = timeTrain - timeRemaining;
+
+            return (int)(timeLeft.TotalMilliseconds / trainTime.TotalMilliseconds) + 1;
+        }
+
+        private int GetMaxTroop()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == VillageId);
+            var troopType = 0;
+            switch (TrainingBuilding)
+            {
+                case BuildingEnums.Barracks:
+                    troopType = setting.BarrackTroop;
+                    break;
+
+                case BuildingEnums.Stable:
+                    troopType = setting.StableTroop;
+                    break;
+
+                case BuildingEnums.Workshop:
+                    troopType = setting.WorkshopTroop;
+                    break;
+
+                default:
+                    break;
+            }
+
+            var doc = _chromeBrowser.GetHtml();
+            var nodes = _trainTroopParser.GetTroopNodes(doc);
+            HtmlNode troopNode = null;
+            foreach (var node in nodes)
+            {
+                if (_trainTroopParser.GetTroopType(node) == troopType)
+                {
+                    troopNode = node;
+                    break;
+                }
+            }
+
+            return _trainTroopParser.GetMaxAmount(troopNode);
+        }
+
+        private void InputAmountTroop(int amountTroop)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == VillageId);
+            var troopType = 0;
+            switch (TrainingBuilding)
+            {
+                case BuildingEnums.Barracks:
+                    troopType = setting.BarrackTroop;
+                    break;
+
+                case BuildingEnums.Stable:
+                    troopType = setting.StableTroop;
+                    break;
+
+                case BuildingEnums.Workshop:
+                    troopType = setting.WorkshopTroop;
+                    break;
+
+                default:
+                    break;
+            }
+
+            var doc = _chromeBrowser.GetHtml();
+            var nodes = _trainTroopParser.GetTroopNodes(doc);
+            HtmlNode troopNode = null;
+            foreach (var node in nodes)
+            {
+                if (_trainTroopParser.GetTroopType(node) == troopType)
+                {
+                    troopNode = node;
+                    break;
+                }
+            }
+
+            var input = _trainTroopParser.GetInputBox(troopNode);
+            var chrome = _chromeBrowser.GetChrome();
+            var inputElements = chrome.FindElements(By.XPath(input.XPath));
+
+            inputElements[0].SendKeys(Keys.Home);
+            inputElements[0].SendKeys(Keys.Shift + Keys.End);
+            inputElements[0].SendKeys($"{amountTroop}");
+
+            doc = _chromeBrowser.GetHtml();
+            var button = _trainTroopParser.GetTrainButton(doc);
+            var buttonElements = chrome.FindElements(By.XPath(button.XPath));
+
+            buttonElements[0].Click();
         }
     }
 

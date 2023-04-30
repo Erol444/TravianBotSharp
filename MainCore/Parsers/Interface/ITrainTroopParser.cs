@@ -20,5 +20,7 @@ namespace MainCore.Parsers.Interface
         public int GetMaxAmount(HtmlNode node);
 
         public HtmlNode GetTrainButton(HtmlDocument doc);
+
+        public TimeSpan GetQueueTrainTime(HtmlDocument doc);
     }
 }

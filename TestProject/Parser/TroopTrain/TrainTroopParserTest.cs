@@ -161,5 +161,22 @@ namespace TestProject.Parser.TroopTrain
             var node = _instance[index].GetTrainButton(_doc);
             Assert.IsNotNull(node);
         }
+
+        [DataTestMethod]
+        [DataRow(VersionEnums.TravianOfficial, BARRACK, 15153)]
+        [DataRow(VersionEnums.TravianOfficial, STABLE, 26420)]
+        [DataRow(VersionEnums.TravianOfficial, WORKSHOP, 0)]
+        [DataRow(VersionEnums.TTWars, BARRACK, 0)]
+        [DataRow(VersionEnums.TTWars, STABLE, 0)]
+        [DataRow(VersionEnums.TTWars, WORKSHOP, 0)]
+        public void GetQueueTrain(VersionEnums version, string type, int expected)
+        {
+            var index = (int)version;
+            var file = Path.Combine(_path, $"{_version[index]}_{type}.html");
+            _doc.Load(file);
+
+            var actual = _instance[index].GetQueueTrainTime(_doc);
+            Assert.AreEqual(TimeSpan.FromSeconds(expected), actual);
+        }
     }
 }

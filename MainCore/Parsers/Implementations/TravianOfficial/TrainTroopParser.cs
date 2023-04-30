@@ -24,6 +24,16 @@ namespace MainCore.Parsers.Implementations.TravianOfficial
             return int.Parse(value);
         }
 
+        public TimeSpan GetQueueTrainTime(HtmlDocument doc)
+        {
+            var table = doc.DocumentNode.Descendants("table").FirstOrDefault(x => x.HasClass("under_progress"));
+            if (table is null) return TimeSpan.FromSeconds(0);
+            var td = table.Descendants("td").FirstOrDefault(x => x.HasClass("dur"));
+            var timer = td.Descendants("span").FirstOrDefault(x => x.HasClass("timer"));
+            var value = timer.GetAttributeValue("value", 0);
+            return TimeSpan.FromSeconds(value);
+        }
+
         public HtmlNode GetTrainButton(HtmlDocument doc)
         {
             return doc.GetElementbyId("s1");
