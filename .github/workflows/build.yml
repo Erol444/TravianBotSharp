@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: TBS-Build-${{ matrix.server }}-${{ github.run_id }}
-          path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
+          path: WPFUI\bin\Release\net6.0-windows\win-x64\publish\
           if-no-files-found: error
   commentor:
     needs: [build, test]
