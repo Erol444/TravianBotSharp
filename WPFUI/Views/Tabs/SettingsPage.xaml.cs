@@ -15,11 +15,6 @@ namespace WPFUI.Views.Tabs
             ViewModel = Locator.Current.GetService<SettingsViewModel>();
             InitializeComponent();
 
-            ClickDelay.ViewModel = new();
-            TaskDelay.ViewModel = new();
-            WorkTime.ViewModel = new();
-            SleepTime.ViewModel = new();
-
             this.WhenActivated(d =>
             {
                 this.BindCommand(ViewModel, vm => vm.ExportCommand, v => v.ExportButton).DisposeWith(d);
@@ -29,20 +24,16 @@ namespace WPFUI.Views.Tabs
                 this.OneWayBind(ViewModel, vm => vm.Tribes, v => v.Tribe.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.SelectedTribe, v => v.Tribe.SelectedItem).DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.Settings.ClickDelay, v => v.ClickDelay.ViewModel.MainValue).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.ClickDelayRange, v => v.ClickDelay.ViewModel.ToleranceValue).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.TaskDelay, v => v.TaskDelay.ViewModel.MainValue).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.TaskDelayRange, v => v.TaskDelay.ViewModel.ToleranceValue).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.WorkTime, v => v.WorkTime.ViewModel.MainValue).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.WorkTimeRange, v => v.WorkTime.ViewModel.ToleranceValue).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.SleepTime, v => v.SleepTime.ViewModel.MainValue).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.SleepTimeRange, v => v.SleepTime.ViewModel.ToleranceValue).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.ClickDelay, v => v.ClickDelay.ViewModel).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.TaskDelay, v => v.TaskDelay.ViewModel).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.WorkTime, v => v.WorkTime.ViewModel).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SleepTime, v => v.SleepTime.ViewModel).DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.Settings.IsSleepBetweenProxyChanging, v => v.SleepBetweenChangingProxy.IsChecked).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.IsDontLoadImage, v => v.DisableImageCheckBox.IsChecked).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Settings.IsMinimized, v => v.MinimizedCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsSleepBetweenProxyChanging, v => v.SleepBetweenChangingProxy.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsDontLoadImage, v => v.DisableImageCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsMinimized, v => v.MinimizedCheckBox.IsChecked).DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.Settings.IsAutoStartAdventure, v => v.AutoStartAdventureCheckBox.IsChecked).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsAutoStartAdventure, v => v.AutoStartAdventureCheckBox.IsChecked).DisposeWith(d);
             });
         }
     }

@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
@@ -84,17 +85,20 @@ namespace WPFUI.ViewModels.Tabs.Villages
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesSettings.Find(villageId);
 
-            UseHeroRes = settings.IsUseHeroRes;
-            IgnoreRoman = settings.IsIgnoreRomanAdvantage;
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                UseHeroRes = settings.IsUseHeroRes;
+                IgnoreRoman = settings.IsIgnoreRomanAdvantage;
+                IsAutoRefresh = settings.IsAutoRefresh;
+                IsAutoNPCOverflow = settings.IsNPCOverflow;
+            });
             AutoComplete.LoadData(settings.IsInstantComplete, settings.InstantCompleteTime);
             WatchAds.LoadData(settings.IsAdsUpgrade, settings.AdsUpgradeTime);
 
-            IsAutoRefresh = settings.IsAutoRefresh;
             AutoRefresh.LoadData(settings.AutoRefreshTimeMin, settings.AutoRefreshTimeMax);
 
             AutoNPCCrop.LoadData(settings.IsAutoNPC, settings.AutoNPCPercent);
             AutoNPCResource.LoadData(settings.IsAutoNPCWarehouse, settings.AutoNPCWarehousePercent);
-            IsAutoNPCOverflow = settings.IsNPCOverflow;
 
             RatioNPC.LoadData(settings.AutoNPCWood, settings.AutoNPCClay, settings.AutoNPCIron, settings.AutoNPCCrop);
 

@@ -14,11 +14,58 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.ViewModels.Tabs
 {
     public class SettingsViewModel : AccountTabBaseViewModel
     {
+        private TribeComboBox _selectedTribe;
+
+        public TribeComboBox SelectedTribe
+        {
+            get => _selectedTribe;
+            set => this.RaiseAndSetIfChanged(ref _selectedTribe, value);
+        }
+
+        public ObservableCollection<TribeComboBox> Tribes { get; }
+        public ToleranceViewModel ClickDelay { get; } = new();
+        public ToleranceViewModel TaskDelay { get; } = new();
+        public ToleranceViewModel WorkTime { get; } = new();
+        public ToleranceViewModel SleepTime { get; } = new();
+
+        private bool _isSleepBetweenProxyChanging;
+
+        public bool IsSleepBetweenProxyChanging
+        {
+            get => _isSleepBetweenProxyChanging;
+            set => this.RaiseAndSetIfChanged(ref _isSleepBetweenProxyChanging, value);
+        }
+
+        private bool _isDontLoadImage;
+
+        public bool IsDontLoadImage
+        {
+            get => _isDontLoadImage;
+            set => this.RaiseAndSetIfChanged(ref _isDontLoadImage, value);
+        }
+
+        private bool _isMinimized;
+
+        public bool IsMinimized
+        {
+            get => _isMinimized;
+            set => this.RaiseAndSetIfChanged(ref _isMinimized, value);
+        }
+
+        private bool _IsAutoStartAdventure;
+
+        public bool IsAutoStartAdventure
+        {
+            get => _IsAutoStartAdventure;
+            set => this.RaiseAndSetIfChanged(ref _IsAutoStartAdventure, value);
+        }
+
         public SettingsViewModel()
         {
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
@@ -38,11 +85,21 @@ namespace WPFUI.ViewModels.Tabs
             using var context = _contextFactory.CreateDbContext();
             var settings = context.AccountsSettings.Find(index);
             var info = context.AccountsInfo.Find(index);
+
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                Settings.CopyFrom(settings);
                 SelectedTribe = Tribes.FirstOrDefault(x => x.Tribe == info.Tribe);
+
+                IsSleepBetweenProxyChanging = settings.IsSleepBetweenProxyChanging;
+                IsDontLoadImage = settings.IsDontLoadImage;
+                IsMinimized = settings.IsMinimized;
+                IsAutoStartAdventure = settings.IsAutoAdventure;
             });
+
+            ClickDelay.LoadData(settings.ClickDelayMin, settings.ClickDelayMax);
+            TaskDelay.LoadData(settings.TaskDelayMin, settings.TaskDelayMax);
+            WorkTime.LoadData(settings.WorkTimeMin, settings.WorkTimeMax);
+            SleepTime.LoadData(settings.SleepTimeMin, settings.SleepTimeMax);
         }
 
         private async Task SaveTask()
@@ -120,8 +177,17 @@ namespace WPFUI.ViewModels.Tabs
         {
             using var context = _contextFactory.CreateDbContext();
             var accountSetting = context.AccountsSettings.Find(index);
-            Settings.CopyTo(accountSetting);
-            Settings.CopyFrom(accountSetting);
+
+            accountSetting.IsSleepBetweenProxyChanging = IsSleepBetweenProxyChanging;
+            accountSetting.IsDontLoadImage = IsDontLoadImage;
+            accountSetting.IsMinimized = IsMinimized;
+            accountSetting.IsAutoAdventure = IsAutoStartAdventure;
+
+            (accountSetting.ClickDelayMin, accountSetting.ClickDelayMax) = ClickDelay.GetData();
+            (accountSetting.TaskDelayMin, accountSetting.TaskDelayMax) = TaskDelay.GetData();
+            (accountSetting.WorkTimeMin, accountSetting.WorkTimeMax) = WorkTime.GetData();
+            (accountSetting.SleepTimeMin, accountSetting.SleepTimeMax) = SleepTime.GetData();
+
             context.Update(accountSetting);
             var accountInfo = context.AccountsInfo.Find(index);
             accountInfo.Tribe = SelectedTribe?.Tribe ?? TribeEnums.Any;
@@ -133,7 +199,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             var tasks = _taskManager.GetList(index);
             var task = tasks.OfType<UpdateAdventures>().FirstOrDefault();
-            if (Settings.IsAutoStartAdventure)
+            if (IsAutoStartAdventure)
             {
                 if (task is null)
                 {
@@ -151,20 +217,8 @@ namespace WPFUI.ViewModels.Tabs
             }
         }
 
-        public AccountSetting Settings { get; } = new();
-
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> ExportCommand { get; }
         public ReactiveCommand<Unit, Unit> ImportCommand { get; }
-
-        private TribeComboBox _selectedTribe;
-
-        public TribeComboBox SelectedTribe
-        {
-            get => _selectedTribe;
-            set => this.RaiseAndSetIfChanged(ref _selectedTribe, value);
-        }
-
-        public ObservableCollection<TribeComboBox> Tribes { get; }
     }
 }
