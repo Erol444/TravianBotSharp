@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    runs-on: windows-2019
+    runs-on: windows-latest
     steps:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v3
@@ -16,9 +16,6 @@ jobs:
       
       - name: 'Checkout repo' 
         uses: actions/checkout@v3
-      
-      - name: Navigate to Workspace
-        run: cd $GITHUB_WORKSPACE
 
       - name: Install dependencies
         run: dotnet restore
@@ -32,8 +29,8 @@ jobs:
   build:
     strategy:
       matrix:
-        server: [TRAVIAN_OFFICIAL]
-    runs-on: windows-2019
+        server: [TRAVIAN_OFFICIAL, TTWARS]
+    runs-on: windows-latest
     steps:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v3
@@ -42,19 +39,10 @@ jobs:
       
       - name: 'Checkout repo' 
         uses: actions/checkout@v3
-      
-      - name: Navigate to Workspace
-        run: cd $GITHUB_WORKSPACE
-
-      - name: Install dependencies
-        run: dotnet restore -r win-x86
-
-      - name: Build
-        run: dotnet build WPFUI -c Release --no-restore -r win-x86 --self-contained true
         
-      - name: Publish
-        run: dotnet publish WPFUI -c Release --no-restore -r win-x86 --self-contained true -p:PublishSingleFile=true -p:Server=${{ matrix.server }} 
-
+      - name: Publish 
+        run: |
+          dotnet publish WPFUI -c Release -p:PublishSingleFile=true -p:Server=${{ matrix.server }} --self-contained
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3
         with:
