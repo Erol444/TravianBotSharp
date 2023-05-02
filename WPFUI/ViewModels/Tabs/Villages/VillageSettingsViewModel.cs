@@ -300,7 +300,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             {
                 var tasks = list.OfType<WorkshopTrainTroopsTask>();
-                if (settings.StableTroop != 0)
+                if (settings.WorkshopTroop != 0)
                 {
                     if (!tasks.Any(x => x.VillageId == villageId))
                     {
