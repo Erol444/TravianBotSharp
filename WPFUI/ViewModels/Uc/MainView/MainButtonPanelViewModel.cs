@@ -278,6 +278,7 @@ namespace WPFUI.ViewModels.Uc.MainView
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == index);
             _taskManager.Clear(index);
+
             foreach (var village in villages)
             {
                 var queue = _planManager.GetList(village.Id);
@@ -289,6 +290,19 @@ namespace WPFUI.ViewModels.Uc.MainView
                 if (villageSetting.IsAutoRefresh)
                 {
                     _taskManager.Add(index, _taskFactory.GetRefreshVillageTask(village.Id, index));
+                }
+
+                if (villageSetting.BarrackTroop != 0)
+                {
+                    _taskManager.Add(AccountId, _taskFactory.GetBarrackTrainTroopTask(village.Id, AccountId));
+                }
+                if (villageSetting.StableTroop != 0)
+                {
+                    _taskManager.Add(AccountId, _taskFactory.GetStableTrainTroopTask(village.Id, AccountId));
+                }
+                if (villageSetting.WorkshopTroop != 0)
+                {
+                    _taskManager.Add(AccountId, _taskFactory.GetWorkshopTrainTroopTask(village.Id, AccountId));
                 }
             }
 
