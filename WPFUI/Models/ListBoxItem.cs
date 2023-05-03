@@ -7,6 +7,9 @@ namespace WPFUI.Models
 {
     public class ListBoxItem : ReactiveObject
     {
+        public ListBoxItem()
+        { }
+
         public ListBoxItem(int id) => Id = id;
 
         public ListBoxItem(int id, string content, Color color) : this(id)
@@ -32,7 +35,13 @@ namespace WPFUI.Models
         }
 
         public int Id { get; set; }
-        public string Content { get; set; }
+        private string _content;
+
+        public string Content
+        {
+            get => _content;
+            set => this.RaiseAndSetIfChanged(ref _content, value);
+        }
 
         private Color _color;
 

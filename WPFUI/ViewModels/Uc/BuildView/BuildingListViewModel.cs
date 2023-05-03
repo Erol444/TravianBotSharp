@@ -1,47 +1,33 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
 using MainCore;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using Splat;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Concurrency;
-using System.Threading.Tasks;
 using WPFUI.Models;
-using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc.BuildView
 {
-    public class BuildingListViewModel : VillageTabBaseViewModel
+    public class BuildingListViewModel : ReactiveObject
     {
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly SelectorViewModel _selectorViewModel;
+        private readonly IPlanManager _planManager;
+
         public BuildingListViewModel()
         {
+            _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
+            _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
+            _planManager = Locator.Current.GetService<IPlanManager>();
+
             this.WhenAnyValue(vm => vm.CurrentBuilding).BindTo(_selectorViewModel, vm => vm.Building);
-            LoadCommand = ReactiveCommand.CreateFromTask(BuildTask, this.WhenAnyValue(vm => vm._selectorViewModel.IsVillageSelected));
-            _eventManager.VillageCurrentUpdate += EventManager_VillageUpdate;
-            _eventManager.VillageBuildQueueUpdate += EventManager_VillageUpdate;
-            _eventManager.VillageBuildsUpdate += EventManager_VillageUpdate;
         }
 
-        protected override void Init(int villageId)
-        {
-            LoadBuildings(villageId);
-        }
-
-        private void EventManager_VillageUpdate(int villageId)
-        {
-            if (!IsActive) return;
-            if (villageId != VillageId) return;
-            LoadBuildings(villageId);
-        }
-
-        private Task BuildTask()
-        {
-            if (!IsActive) return Task.CompletedTask;
-            return Task.Run(() => LoadBuildings(VillageId));
-        }
-
-        private void LoadBuildings(int villageId)
+        public void LoadData(int villageId)
         {
             var oldIndex = -1;
             if (CurrentBuilding is not null)
@@ -85,7 +71,7 @@ namespace WPFUI.ViewModels.Uc.BuildView
                 {
                     if (oldIndex == -1)
                     {
-                        CurrentBuilding = Buildings.First();
+                        CurrentBuilding = buildings.First();
                     }
                     else
                     {
@@ -105,7 +91,5 @@ namespace WPFUI.ViewModels.Uc.BuildView
             get => _currentBuilding;
             set => this.RaiseAndSetIfChanged(ref _currentBuilding, value);
         }
-
-        public ReactiveCommand<Unit, Unit> LoadCommand { get; }
     }
 }

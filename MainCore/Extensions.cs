@@ -89,11 +89,11 @@ namespace MainCore
             return building switch
             {
                 BuildingEnums.Site => Color.White,
-                BuildingEnums.Woodcutter => Color.ForestGreen,
+                BuildingEnums.Woodcutter => Color.Lime,
                 BuildingEnums.ClayPit => Color.Orange,
-                BuildingEnums.IronMine => Color.Gray,
+                BuildingEnums.IronMine => Color.LightGray,
                 BuildingEnums.Cropland => Color.Yellow,
-                _ => Color.LawnGreen,
+                _ => Color.LightCyan,
             };
         }
 

@@ -7,10 +7,14 @@ using WPFUI.ViewModels;
 
 namespace WPFUI.Views
 {
+    public class MainWindowBase : ReactiveWindow<MainWindowViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
+    public partial class MainWindow : MainWindowBase
     {
         private bool _canClose = false;
         private bool _isClosing = false;
