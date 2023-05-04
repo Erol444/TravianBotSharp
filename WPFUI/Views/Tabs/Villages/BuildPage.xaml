@@ -8,7 +8,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit">
-    <Grid x:Name="MainGrid" Margin="0,2,0,0">
+    <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="2" />
@@ -16,80 +16,88 @@
             <ColumnDefinition Width="2" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Grid Grid.Column="0">
+        <Grid  Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="1*" />
                 <RowDefinition Height="2" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
-            <ListBox x:Name="CurrentlyBuildings"  Grid.Row="0">
-                <d:ListBox.ItemsSource>
-                    <x:Array Type="{x:Type models:ListBoxItem}">
-                        <models:ListBoxItem Id="1" Content="Cropland - level 1 complete at 1975/04/30 11:30 " Color="Black" />
-                        <models:ListBoxItem Id="1" Content="Cropland - level 2 complete at 1975/04/30 11:30 " Color="Black" />
-                        <models:ListBoxItem Id="1" Content="Cropland - level 3 complete at 1975/04/30 11:30 " Color="Black" />
-                    </x:Array>
-                </d:ListBox.ItemsSource>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Content}">
-                            <TextBlock.Foreground>
-                                <SolidColorBrush Color="{Binding Color}" />
-                            </TextBlock.Foreground>
-                        </TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <Border Grid.Row="0" Style="{DynamicResource Box}">
+                <ListBox x:Name="CurrentlyBuildings">
+                    <d:ListBox.ItemsSource>
+                        <x:Array Type="{x:Type models:ListBoxItem}">
+                            <models:ListBoxItem Id="1" Content="Cropland - level 1 complete at 1975/04/30 11:30 " Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Cropland - level 2 complete at 1975/04/30 11:30 " Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Cropland - level 3 complete at 1975/04/30 11:30 " Color="Black" />
+                        </x:Array>
+                    </d:ListBox.ItemsSource>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Content}">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{Binding Color}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
             <GridSplitter Grid.Row="1" Height="2" HorizontalAlignment="Stretch" />
-            <ListBox x:Name="Buildings"  Grid.Row="2">
-                <d:ListBox.ItemsSource>
-                    <x:Array Type="{x:Type models:ListBoxItem}">
-                        <models:ListBoxItem Id="1" Content="[1] Cropland | 1" Color="Yellow" />
-                        <models:ListBoxItem Id="1" Content="[1] Woodcutter | 1" Color="Green" />
-                        <models:ListBoxItem Id="1" Content="[1] Ironmine | 1" Color="Gray" />
-                    </x:Array>
-                </d:ListBox.ItemsSource>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Content}" Foreground="Black">
-                            <TextBlock.Background>
-                                <SolidColorBrush Color="{Binding Color}" />
-                            </TextBlock.Background>
-                        </TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <Border Grid.Row="2" Style="{DynamicResource Box}">
+                <ListBox x:Name="Buildings">
+                    <d:ListBox.ItemsSource>
+                        <x:Array Type="{x:Type models:ListBoxItem}">
+                            <models:ListBoxItem Id="1" Content="[1] Cropland | 1" Color="Yellow" />
+                            <models:ListBoxItem Id="1" Content="[1] Woodcutter | 1" Color="Green" />
+                            <models:ListBoxItem Id="1" Content="[1] Ironmine | 1" Color="Gray" />
+                        </x:Array>
+                    </d:ListBox.ItemsSource>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Content}" Foreground="Black">
+                                <TextBlock.Background>
+                                    <SolidColorBrush Color="{Binding Color}" />
+                                </TextBlock.Background>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
         </Grid>
+
         <GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Stretch" />
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Content="Building" VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <Label Grid.Row="1" Grid.Column="0" Content="Level"  VerticalAlignment="Center" HorizontalAlignment="Center" />
-                <ComboBox x:Name="NormalBuildings" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"  HorizontalAlignment="Stretch" DisplayMemberPath="Name">
-                    <ComboBox.Background>
-                        <LinearGradientBrush EndPoint="0,1">
-                            <GradientStop Color="#FFF0F0F0" />
-                            <GradientStop Color="White" Offset="1" />
-                        </LinearGradientBrush>
-                    </ComboBox.Background>
-                </ComboBox>
-                <xctk:IntegerUpDown x:Name="NormalLevel" Grid.Row="1"  Grid.Column="1" Minimum="0" />
-                <Button x:Name="NormalBuild" Grid.RowSpan="2" Grid.Column="2" Content="Build" />
-            </Grid>
-            <Grid Grid.Row="1">
+            <Border Grid.Row="0" Style="{DynamicResource Box}">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Building" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="Level"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <ComboBox x:Name="NormalBuildings" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"  HorizontalAlignment="Stretch" DisplayMemberPath="Name">
+                        <ComboBox.Background>
+                            <LinearGradientBrush EndPoint="0,1">
+                                <GradientStop Color="#FFF0F0F0" />
+                                <GradientStop Color="White" Offset="1" />
+                            </LinearGradientBrush>
+                        </ComboBox.Background>
+                    </ComboBox>
+                    <xctk:IntegerUpDown x:Name="NormalLevel" Grid.Row="1"  Grid.Column="1" Minimum="0" />
+                    <Button x:Name="NormalBuild" Grid.RowSpan="2" Grid.Column="2" Content="Build" />
+                </Grid>
+            </Border>
+            <Border Grid.Row="1" Style="{DynamicResource Box}">
+                <Grid >
                 <Grid.RowDefinitions>
                     <RowDefinition Height="4*" />
                     <RowDefinition Height="4*" />
@@ -106,6 +114,7 @@
                 <xctk:IntegerUpDown x:Name="ResourceLevel" Minimum="1" Grid.Column="1" Grid.Row="1" />
                 <Button x:Name="ResourceBuild" Content="Build" Grid.Row="2" Grid.ColumnSpan="2" />
             </Grid>
+            </Border>
         </Grid>
         <GridSplitter Grid.Column="3" Width="2" HorizontalAlignment="Stretch" />
         <Grid Grid.Column="4">
@@ -113,37 +122,51 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
-                </Grid.ColumnDefinitions>
-                <Button x:Name="TopButton"  Grid.Column="0" Grid.Row="0" Content="Top" />
-                <Button x:Name="BottomButton"  Grid.Column="0" Grid.Row="1" Content="Bottom" />
-                <Button x:Name="UpButton" Grid.Column="1" Grid.Row="0" Content="Up" />
-                <Button x:Name="DownButton" Grid.Column="1" Grid.Row="1" Content="Down" />
-                <Button x:Name="DeleteButton" Grid.Column="2" Grid.Row="0" Content="Delete" />
-                <Button x:Name="DeleteAllButton" Grid.Column="2" Grid.Row="1" Content="Delete all" />
-                <Button x:Name="ImportButton" Grid.Column="3" Grid.Row="0" Content="Import" />
-                <Button x:Name="ExportButton" Grid.Column="3" Grid.Row="1" Content="Export" />
-            </Grid>
-            <ListBox x:Name="QueueBuildings" Grid.Row="1" Grid.ColumnSpan="4">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Content}">
-                            <TextBlock.Foreground>
-                                <SolidColorBrush Color="{Binding Color}" />
-                            </TextBlock.Foreground>
-                        </TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <Border Grid.Row="0" Style="{DynamicResource Box}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="TopButton"  Grid.Column="0" Grid.Row="0" Content="Top" />
+                    <Button x:Name="BottomButton"  Grid.Column="0" Grid.Row="1" Content="Bottom" />
+                    <Button x:Name="UpButton" Grid.Column="1" Grid.Row="0" Content="Up" />
+                    <Button x:Name="DownButton" Grid.Column="1" Grid.Row="1" Content="Down" />
+                    <Button x:Name="DeleteButton" Grid.Column="2" Grid.Row="0" Content="Delete" />
+                    <Button x:Name="DeleteAllButton" Grid.Column="2" Grid.Row="1" Content="Delete all" />
+                    <Button x:Name="ImportButton" Grid.Column="3" Grid.Row="0" Content="Import" />
+                    <Button x:Name="ExportButton" Grid.Column="3" Grid.Row="1" Content="Export" />
+                </Grid>
+            </Border>
+            <Border Grid.Row="1" Grid.ColumnSpan="4" Style="{DynamicResource Box}">
+                <ListBox x:Name="QueueBuildings" >
+                    <d:ListBox.ItemsSource>
+                        <x:Array Type="{x:Type models:ListBoxItem}">
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                        </x:Array>
+                    </d:ListBox.ItemsSource>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Content}">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{Binding Color}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
         </Grid>
     </Grid>
 </views:BuildPageBase>
