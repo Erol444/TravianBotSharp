@@ -10,7 +10,7 @@
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
         TextElement.FontWeight="Medium"
-        TextElement.FontSize="14"
+        TextElement.FontSize="13"
         FontFamily="{materialDesign:MaterialDesignFont}"
         mc:Ignorable="d"
         Title="TravianBotSharp" Height="510" Width="1024">
