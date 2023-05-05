@@ -66,6 +66,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public TroopTrainingSelectorViewModel BarrackTraining { get; } = new();
         public TroopTrainingSelectorViewModel StableTraining { get; } = new();
         public TroopTrainingSelectorViewModel WorkshopTraining { get; } = new();
+        public ToleranceViewModel TimeTrain { get; } = new();
 
         public VillageSettingsViewModel()
         {
@@ -109,6 +110,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
             BarrackTraining.LoadData(tribe.GetInfantryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.BarrackTroop, settings.BarrackTroopTimeMin, settings.BarrackTroopTimeMax, settings.IsGreatBarrack);
             StableTraining.LoadData(tribe.GetCavalryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.StableTroop, settings.StableTroopTimeMin, settings.StableTroopTimeMax, settings.IsGreatStable);
             WorkshopTraining.LoadData(tribe.GetSiegeTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.WorkshopTroop, settings.WorkshopTroopTimeMin, settings.WorkshopTroopTimeMax, false);
+
+            TimeTrain.LoadData(settings.TroopTimeMin, settings.TroopTimeMax);
         }
 
         private async Task SaveTask()

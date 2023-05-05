@@ -59,7 +59,6 @@ namespace MainCore.Models.Database
         public int BarrackTroopTimeMin { get; set; }
         public int BarrackTroopTimeMax { get; set; }
         public bool IsGreatBarrack { get; set; }
-
         public int StableTroop { get; set; }
         public int StableTroopTimeMin { get; set; }
         public int StableTroopTimeMax { get; set; }
@@ -67,5 +66,7 @@ namespace MainCore.Models.Database
         public int WorkshopTroop { get; set; }
         public int WorkshopTroopTimeMin { get; set; }
         public int WorkshopTroopTimeMax { get; set; }
+        public int TroopTimeMin { get; set; }
+        public int TroopTimeMax { get; set; }
     }
 }

@@ -289,6 +289,8 @@ namespace MainCore
                 WorkshopTroop = 0,
                 WorkshopTroopTimeMin = 0,
                 WorkshopTroopTimeMax = 0,
+                TroopTimeMin = 0,
+                TroopTimeMax = 0,
             });
 
             //VillagesQueueBuildings
@@ -556,6 +558,7 @@ namespace MainCore
                 KeyValuePair.Create(202302101011,"SleepWhenChangingProxy"),
                 KeyValuePair.Create(202304081043,"AutoTrainTroop"),
                 KeyValuePair.Create(202304281723,"AutoTrainTroopFixed"),
+                KeyValuePair.Create(202305052234,"AutoTrainTroopTimeDelay"),
             };
             foreach (var migration in migrations)
             {
