@@ -91,7 +91,7 @@
                     <ComboBox x:Name="Strategy" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectedIndex="0" />
 
                     <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Level" />
-                    <xctk:IntegerUpDown x:Name="ResourceLevel" Grid.Row="2"  Grid.Column="1" Minimum="1"/>
+                    <xctk:IntegerUpDown x:Name="ResourceLevel" Grid.Row="2"  Grid.Column="1" Minimum="1" />
                     <Button x:Name="ResourceBuild" Grid.Row="3" Grid.ColumnSpan="2" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Build">
                         <materialDesign:PackIcon Width="30" Height="30" Kind="Hammer" />
                     </Button>

@@ -5,14 +5,18 @@ using MainCore.Enums;
 using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
 using MainCore.Tasks.Base;
+using Microsoft.Win32;
 using ReactiveUI;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Text.Json;
+using System.Windows;
 using System.Windows.Media;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
@@ -319,123 +323,124 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void TopTask()
         {
-            //var index = _queueListViewModel.CurrentItem.Id;
-            //if (index == 0) return;
-            //var villageId = VillageId;
+            var index = CurrentQueueBuilding.Id;
+            if (index == 0) return;
+            var villageId = VillageId;
 
-            //var item = _planManager.GetList(villageId)[index];
-            //_planManager.Remove(villageId, index);
-            //_planManager.Insert(villageId, 0, item);
-            //_eventManager.OnVillageBuildQueueUpdate(villageId);
+            var item = _planManager.GetList(villageId)[index];
+            _planManager.Remove(villageId, index);
+            _planManager.Insert(villageId, 0, item);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void BottomTask()
         {
-            //var index = _queueListViewModel.CurrentItem.Id;
-            //if (index == _queueListViewModel.Buildings.Count - 1) return;
-            //var villageId = VillageId;
-            //var item = _planManager.GetList(villageId)[index];
-            //_planManager.Remove(villageId, index);
-            //_planManager.Add(villageId, item);
-            //_eventManager.OnVillageBuildQueueUpdate(villageId);
+            var index = CurrentQueueBuilding.Id;
+            if (index == QueueBuildings.Count - 1) return;
+            var villageId = VillageId;
+            var item = _planManager.GetList(villageId)[index];
+            _planManager.Remove(villageId, index);
+            _planManager.Add(villageId, item);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void UpTask()
         {
-            //var index = _queueListViewModel.CurrentItem.Id;
-            //if (index == 0) return;
-            //var villageId = VillageId;
-            //var item = _planManager.GetList(villageId)[index];
+            var index = CurrentQueueBuilding.Id;
+            if (index == 0) return;
+            var villageId = VillageId;
+            var item = _planManager.GetList(villageId)[index];
 
-            //_planManager.Remove(villageId, index);
-            //_planManager.Insert(villageId, index - 1, item);
-            //_eventManager.OnVillageBuildQueueUpdate(villageId);
+            _planManager.Remove(villageId, index);
+            _planManager.Insert(villageId, index - 1, item);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void DownTask()
         {
-            //var index = _queueListViewModel.CurrentItem.Id;
-            //if (index == _queueListViewModel.Buildings.Count - 1) return;
-            //var villageId = VillageId;
-            //var item = _planManager.GetList(villageId)[index];
-            //_planManager.Remove(villageId, index);
-            //_planManager.Insert(villageId, index + 1, item);
-            //_eventManager.OnVillageBuildQueueUpdate(villageId);
+            var index = CurrentQueueBuilding.Id;
+            if (index == QueueBuildings.Count - 1) return;
+            var villageId = VillageId;
+            var item = _planManager.GetList(villageId)[index];
+            _planManager.Remove(villageId, index);
+            _planManager.Insert(villageId, index + 1, item);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void DeleteTask()
         {
-            //var index = _queueListViewModel.CurrentItem.Id;
-            //var villageId = VillageId;
-            //_planManager.Remove(villageId, index);
-            //_eventManager.OnVillageBuildQueueUpdate(villageId);
+            var index = CurrentQueueBuilding.Id;
+            var villageId = VillageId;
+            _planManager.Remove(villageId, index);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
+            CurrentQueueBuilding = index > QueueBuildings.Count ? QueueBuildings.Last() : QueueBuildings[index];
         }
 
         private void DeleteAllTask()
         {
-            //var villageId = VillageId;
-            //_planManager.Clear(villageId);
-            //_eventManager.OnVillageBuildQueueUpdate(villageId);
+            var villageId = VillageId;
+            _planManager.Clear(villageId);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private void ImportTask()
         {
-            //using var context = _contextFactory.CreateDbContext();
-            //var accountId = AccountId;
-            //var account = context.Accounts.Find(accountId);
-            //var villageId = VillageId;
-            //var village = context.Villages.Find(villageId);
-            //var ofd = new OpenFileDialog
-            //{
-            //    InitialDirectory = AppContext.BaseDirectory,
-            //    Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
-            //    FilterIndex = 1,
-            //    RestoreDirectory = true,
-            //    FileName = $"{village.Name.Replace('.', '_')}_{account.Username}_queuebuildings.tbs",
-            //};
+            using var context = _contextFactory.CreateDbContext();
+            var accountId = AccountId;
+            var account = context.Accounts.Find(accountId);
+            var villageId = VillageId;
+            var village = context.Villages.Find(villageId);
+            var ofd = new OpenFileDialog
+            {
+                InitialDirectory = AppContext.BaseDirectory,
+                Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true,
+                FileName = $"{village.Name.Replace('.', '_')}_{account.Username}_queuebuildings.tbs",
+            };
 
-            //if (ofd.ShowDialog() == true)
-            //{
-            //    var jsonString = File.ReadAllText(ofd.FileName);
-            //    try
-            //    {
-            //        var queue = JsonSerializer.Deserialize<List<PlanTask>>(jsonString);
-            //        foreach (var item in queue)
-            //        {
-            //            _planManager.Add(villageId, item);
-            //        }
-            //        _eventManager.OnVillageBuildQueueUpdate(villageId);
-            //    }
-            //    catch
-            //    {
-            //        MessageBox.Show("Invalid file.", "Warning");
-            //        return;
-            //    }
-            //}
+            if (ofd.ShowDialog() == true)
+            {
+                var jsonString = File.ReadAllText(ofd.FileName);
+                try
+                {
+                    var queue = JsonSerializer.Deserialize<List<PlanTask>>(jsonString);
+                    foreach (var item in queue)
+                    {
+                        _planManager.Add(villageId, item);
+                    }
+                    _eventManager.OnVillageBuildQueueUpdate(villageId);
+                }
+                catch
+                {
+                    MessageBox.Show("Invalid file.", "Warning");
+                    return;
+                }
+            }
         }
 
         private void ExportTask()
         {
-            //using var context = _contextFactory.CreateDbContext();
-            //var villageId = VillageId;
-            //var queueBuildings = _planManager.GetList(villageId);
-            //var accountId = AccountId;
-            //var account = context.Accounts.Find(accountId);
-            //var village = context.Villages.Find(villageId);
-            //var jsonString = JsonSerializer.Serialize(queueBuildings);
-            //var svd = new SaveFileDialog
-            //{
-            //    InitialDirectory = AppContext.BaseDirectory,
-            //    Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
-            //    FilterIndex = 1,
-            //    RestoreDirectory = true,
-            //    FileName = $"{village.Name.Replace('.', '_')}_{account.Username}_queuebuildings.tbs",
-            //};
+            using var context = _contextFactory.CreateDbContext();
+            var villageId = VillageId;
+            var queueBuildings = _planManager.GetList(villageId);
+            var accountId = AccountId;
+            var account = context.Accounts.Find(accountId);
+            var village = context.Villages.Find(villageId);
+            var jsonString = JsonSerializer.Serialize(queueBuildings);
+            var svd = new SaveFileDialog
+            {
+                InitialDirectory = AppContext.BaseDirectory,
+                Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
+                FilterIndex = 1,
+                RestoreDirectory = true,
+                FileName = $"{village.Name.Replace('.', '_')}_{account.Username}_queuebuildings.tbs",
+            };
 
-            //if (svd.ShowDialog() == true)
-            //{
-            //    File.WriteAllText(svd.FileName, jsonString);
-            //}
+            if (svd.ShowDialog() == true)
+            {
+                File.WriteAllText(svd.FileName, jsonString);
+            }
         }
 
         #endregion Command Handler
