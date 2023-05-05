@@ -85,6 +85,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             LoadBuildings(villageId);
             LoadCurrentlyBuildings(villageId);
             LoadNormalBuild(villageId, CurrentBuilding?.Id ?? -1);
+            LoadQueueBuilding(villageId);
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
@@ -211,7 +212,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             return (new(), 0);
         }
 
-        public void LoadQueueBuilding(int villageId)
+        private void LoadQueueBuilding(int villageId)
         {
             var oldIndex = -1;
             if (CurrentQueueBuilding is not null)
