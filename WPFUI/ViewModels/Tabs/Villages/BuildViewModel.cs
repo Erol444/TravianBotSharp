@@ -86,8 +86,11 @@ namespace WPFUI.ViewModels.Tabs.Villages
             LoadCurrentlyBuildings(villageId);
             LoadNormalBuild(villageId, CurrentBuilding?.Id ?? -1);
 
-            CurrentStrategy ??= ComboStrategy[0];
-            CurrentResType ??= ComboResTypes[0];
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                CurrentStrategy ??= ComboStrategy[0];
+                CurrentResType ??= ComboResTypes[0];
+            });
         }
 
         private void LoadBuildings(int villageId)
