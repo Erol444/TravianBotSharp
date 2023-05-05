@@ -24,7 +24,7 @@
                 <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
             <Border Grid.Row="0" Style="{DynamicResource Box}">
-                <ListBox x:Name="CurrentlyBuildings">
+                <ListBox x:Name="CurrentlyBuildings"  ItemTemplate="{DynamicResource ListBoxDataTemplate}">
                     <d:ListBox.ItemsSource>
                         <x:Array Type="{x:Type models:ListBoxItem}">
                             <models:ListBoxItem Id="1" Content="Cropland - level 1 complete at 1975/04/30 11:30 " Color="Black" />
@@ -32,20 +32,11 @@
                             <models:ListBoxItem Id="1" Content="Cropland - level 3 complete at 1975/04/30 11:30 " Color="Black" />
                         </x:Array>
                     </d:ListBox.ItemsSource>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Content}">
-                                <TextBlock.Foreground>
-                                    <SolidColorBrush Color="{Binding Color}" />
-                                </TextBlock.Foreground>
-                            </TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
                 </ListBox>
             </Border>
             <GridSplitter Grid.Row="1" Height="2" HorizontalAlignment="Stretch" />
             <Border Grid.Row="2" Style="{DynamicResource Box}">
-                <ListBox x:Name="Buildings">
+                <ListBox x:Name="Buildings" ItemTemplate="{DynamicResource ListBoxDataTemplateColor}">
                     <d:ListBox.ItemsSource>
                         <x:Array Type="{x:Type models:ListBoxItem}">
                             <models:ListBoxItem Id="1" Content="[1] Cropland | 1" Color="Yellow" />
@@ -53,15 +44,6 @@
                             <models:ListBoxItem Id="1" Content="[1] Ironmine | 1" Color="Gray" />
                         </x:Array>
                     </d:ListBox.ItemsSource>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Content}" Foreground="Black">
-                                <TextBlock.Background>
-                                    <SolidColorBrush Color="{Binding Color}" />
-                                </TextBlock.Background>
-                            </TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
                 </ListBox>
             </Border>
         </Grid>
@@ -136,31 +118,31 @@
                     <Button x:Name="TopButton"  Grid.Column="0" Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Top">
                         <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ArrowUpBold" />
                     </Button>
-                    <Button x:Name="BottomButton"  Grid.Column="0" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Bottom">
+                    <Button x:Name="BottomButton"  Grid.Column="0" Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Bottom">
                         <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ArrowDownBold" />
                     </Button>
                     <Button x:Name="UpButton" Grid.Column="1" Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Up">
                         <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ArrowUp" />
                     </Button>
-                    <Button x:Name="DownButton" Grid.Column="1" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Down">
+                    <Button x:Name="DownButton" Grid.Column="1" Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Down">
                         <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ArrowDown" />
                     </Button>
-                    <Button x:Name="DeleteButton" Grid.Column="2" Grid.Row="0" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Delete">
+                    <Button x:Name="DeleteButton" Grid.Column="2" Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Delete">
                         <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Delete" />
                     </Button>
-                    <Button x:Name="DeleteAllButton" Grid.Column="2" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Delete all">
+                    <Button x:Name="DeleteAllButton" Grid.Column="2" Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Delete all">
                         <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="DeleteForever" />
                     </Button>
-                    <Button x:Name="ImportButton" Grid.Column="3" Grid.Row="0" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Import">
+                    <Button x:Name="ImportButton" Grid.Column="3" Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Import">
                         <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Import" />
                     </Button>
-                    <Button x:Name="ExportButton" Grid.Column="3" Grid.Row="1" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Export">
+                    <Button x:Name="ExportButton" Grid.Column="3" Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Export">
                         <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Export" />
                     </Button>
                 </Grid>
             </Border>
             <Border Grid.Row="1" Grid.ColumnSpan="4" Style="{DynamicResource Box}">
-                <ListBox x:Name="QueueBuildings">
+                <ListBox x:Name="QueueBuildings" ItemTemplate="{DynamicResource ListBoxDataTemplate}">
                     <d:ListBox.ItemsSource>
                         <x:Array Type="{x:Type models:ListBoxItem}">
                             <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
@@ -171,15 +153,6 @@
                             <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
                         </x:Array>
                     </d:ListBox.ItemsSource>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Content}">
-                                <TextBlock.Foreground>
-                                    <SolidColorBrush Color="{Binding Color}" />
-                                </TextBlock.Foreground>
-                            </TextBlock>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
                 </ListBox>
             </Border>
         </Grid>
