@@ -37,7 +37,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             //    _taskManager.Update(accountId);
             //}
 
-            _taskManager.Add(AccountId, new BarrackTrainTroopsTask(VillageId, AccountId));
+            _taskManager.Add(AccountId, new TrainTroopsTask(VillageId, AccountId));
             //_taskManager.Add(AccountId, new StableTrainTroopsTask(VillageId, AccountId));
         }
 

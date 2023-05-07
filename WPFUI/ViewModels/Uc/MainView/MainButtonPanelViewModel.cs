@@ -292,17 +292,9 @@ namespace WPFUI.ViewModels.Uc.MainView
                     _taskManager.Add(index, _taskFactory.GetRefreshVillageTask(village.Id, index));
                 }
 
-                if (villageSetting.BarrackTroop != 0)
+                if (villageSetting.BarrackTroop != 0 || villageSetting.StableTroop != 0 || villageSetting.WorkshopTroop != 0)
                 {
-                    _taskManager.Add(AccountId, _taskFactory.GetBarrackTrainTroopTask(village.Id, AccountId));
-                }
-                if (villageSetting.StableTroop != 0)
-                {
-                    _taskManager.Add(AccountId, _taskFactory.GetStableTrainTroopTask(village.Id, AccountId));
-                }
-                if (villageSetting.WorkshopTroop != 0)
-                {
-                    _taskManager.Add(AccountId, _taskFactory.GetWorkshopTrainTroopTask(village.Id, AccountId));
+                    _taskManager.Add(AccountId, _taskFactory.GetTrainTroopTask(village.Id, AccountId));
                 }
             }
 

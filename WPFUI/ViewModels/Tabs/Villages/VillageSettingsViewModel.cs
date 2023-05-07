@@ -264,50 +264,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 }
             }
             {
-                var tasks = list.OfType<BarrackTrainTroopsTask>();
-                if (settings.BarrackTroop != 0)
+                var tasks = list.OfType<TrainTroopsTask>();
+                if (settings.BarrackTroop != 0 || settings.StableTroop != 0 || settings.WorkshopTroop != 0)
                 {
                     if (!tasks.Any(x => x.VillageId == villageId))
                     {
-                        _taskManager.Add(accountId, _taskFactory.GetBarrackTrainTroopTask(villageId, accountId));
-                    }
-                }
-                else
-                {
-                    var updateTasks = tasks.Where(x => x.VillageId == villageId);
-                    foreach (var item in updateTasks)
-                    {
-                        _taskManager.Remove(accountId, item);
-                    }
-                }
-            }
-
-            {
-                var tasks = list.OfType<StableTrainTroopsTask>();
-                if (settings.StableTroop != 0)
-                {
-                    if (!tasks.Any(x => x.VillageId == villageId))
-                    {
-                        _taskManager.Add(accountId, _taskFactory.GetStableTrainTroopTask(villageId, accountId));
-                    }
-                }
-                else
-                {
-                    var updateTasks = tasks.Where(x => x.VillageId == villageId);
-                    foreach (var item in updateTasks)
-                    {
-                        _taskManager.Remove(accountId, item);
-                    }
-                }
-            }
-
-            {
-                var tasks = list.OfType<WorkshopTrainTroopsTask>();
-                if (settings.WorkshopTroop != 0)
-                {
-                    if (!tasks.Any(x => x.VillageId == villageId))
-                    {
-                        _taskManager.Add(accountId, _taskFactory.GetWorkshopTrainTroopTask(villageId, accountId));
+                        _taskManager.Add(accountId, _taskFactory.GetTrainTroopTask(villageId, accountId));
                     }
                 }
                 else

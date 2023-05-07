@@ -10,11 +10,6 @@ namespace MainCore.Services.Implementations.TaskFactories
 {
     public class TravianOfficialTaskFactory : ITaskFactory
     {
-        public BotTask GetBarrackTrainTroopTask(int villageId, int accountId, CancellationToken cancellationToken = default)
-        {
-            return new Tasks.Base.BarrackTrainTroopsTask(villageId, accountId, cancellationToken);
-        }
-
         public BotTask GetImproveTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default)
         {
             return new ImproveTroopsTask(villageId, accountId, cancellationToken);
@@ -50,11 +45,6 @@ namespace MainCore.Services.Implementations.TaskFactories
             return new Tasks.Base.SleepTask(accountId, cancellationToken);
         }
 
-        public BotTask GetStableTrainTroopTask(int villageId, int accountId, CancellationToken cancellationToken = default)
-        {
-            return new Tasks.Base.StableTrainTroopsTask(villageId, accountId, cancellationToken);
-        }
-
         public BotTask GetStartAdventureTask(int accountId, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.StartAdventure(accountId, cancellationToken);
@@ -63,6 +53,11 @@ namespace MainCore.Services.Implementations.TaskFactories
         public BotTask GetStartFarmListTask(int accountId, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.StartFarmList(accountId, cancellationToken);
+        }
+
+        public BotTask GetTrainTroopTask(int villageId, int accountId, CancellationToken cancellationToken = default)
+        {
+            return new Tasks.Base.TrainTroopsTask(villageId, accountId, cancellationToken);
         }
 
         public BotTask GetUpdateAdventuresTask(int accountId, CancellationToken cancellationToken = default)
@@ -118,11 +113,6 @@ namespace MainCore.Services.Implementations.TaskFactories
         public BotTask GetUseHeroResourcesTask(int villageId, int accountId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default)
         {
             return new Tasks.Base.UseHeroResources(villageId, accountId, items, cancellationToken);
-        }
-
-        public BotTask GetWorkshopTrainTroopTask(int villageId, int accountId, CancellationToken cancellationToken = default)
-        {
-            return new Tasks.Base.WorkshopTrainTroopsTask(villageId, accountId, cancellationToken);
         }
     }
 }
