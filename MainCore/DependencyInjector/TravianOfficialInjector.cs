@@ -21,6 +21,8 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<INavigateHelper, NavigateHelper>();
             services.AddSingleton<IUpdateHelper, UpdateHelper>();
             services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
+
+            services.AddSingleton<ITrainTroopHelper, TrainTroopHelper>();
             return services;
         }
 
