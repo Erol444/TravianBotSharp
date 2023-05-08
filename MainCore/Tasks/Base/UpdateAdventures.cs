@@ -44,7 +44,7 @@ namespace MainCore.Tasks.Base
 
         protected Result ToAdventure()
         {
-            var result = _navigateHelper.ToAdventure(AccountId);
+            var result = _generalHelper.ToAdventure(AccountId);
             return result;
         }
 

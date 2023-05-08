@@ -77,11 +77,11 @@ namespace MainCore.Tasks.Base
             }
 
             {
-                var result = _navigateHelper.GoToBuilding(AccountId, marketplace.Id);
+                var result = _generalHelper.GoToBuilding(AccountId, marketplace.Id);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var result = _navigateHelper.SwitchTab(AccountId, 0);
+                var result = _generalHelper.SwitchTab(AccountId, 0);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
@@ -102,7 +102,7 @@ namespace MainCore.Tasks.Base
             {
                 return Result.Fail(new Retry("NPC button is not found"));
             }
-            _navigateHelper.Click(AccountId, npcButtonElements[0]);
+            _generalHelper.Click(AccountId, npcButtonElements[0]);
             var wait = _chromeBrowser.GetWait();
             wait.Until(driver =>
             {
@@ -131,7 +131,7 @@ namespace MainCore.Tasks.Base
                 return Result.Fail(new Retry("NPC submit button is not found"));
             }
             {
-                var result = _navigateHelper.Click(AccountId, distributeElements[0]);
+                var result = _generalHelper.Click(AccountId, distributeElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -149,7 +149,7 @@ namespace MainCore.Tasks.Base
                 return Result.Fail(new Retry("NPC submit button is not found"));
             }
             {
-                var result = _navigateHelper.Click(AccountId, submitElements[0]);
+                var result = _generalHelper.Click(AccountId, submitElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();

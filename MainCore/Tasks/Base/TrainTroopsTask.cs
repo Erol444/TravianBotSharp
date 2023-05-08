@@ -80,7 +80,7 @@ namespace MainCore.Tasks.Base
 
         private Result SwitchVillage()
         {
-            return _navigateHelper.SwitchVillage(AccountId, VillageId);
+            return _generalHelper.SwitchVillage(AccountId, VillageId);
         }
 
         private void NextExecute()

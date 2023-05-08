@@ -11,7 +11,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 {
     public class HeroHelper : Base.HeroHelper
     {
-        public HeroHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, INavigateHelper navigateHelper) : base(chromeManager, heroSectionParser, navigateHelper)
+        public HeroHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper) : base(chromeManager, heroSectionParser, generalHelper)
         {
         }
 

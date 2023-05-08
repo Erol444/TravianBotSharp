@@ -38,7 +38,7 @@ namespace MainCore.Tasks.Base
 
         private Result SwitchVillage()
         {
-            var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+            var result = _generalHelper.SwitchVillage(AccountId, VillageId);
             return result;
         }
 

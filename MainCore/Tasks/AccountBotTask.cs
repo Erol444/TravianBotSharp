@@ -11,13 +11,13 @@ namespace MainCore.Tasks
         private readonly int _accountId;
         public int AccountId => _accountId;
         protected readonly IChromeBrowser _chromeBrowser;
-        protected readonly INavigateHelper _navigateHelper;
+        protected readonly IGeneralHelper _generalHelper;
 
         public AccountBotTask(int accountId, CancellationToken cancellationToken = default) : base(cancellationToken)
         {
             _accountId = accountId;
             _chromeBrowser = _chromeManager.Get(accountId);
-            _navigateHelper = Locator.Current.GetService<INavigateHelper>();
+            _generalHelper = Locator.Current.GetService<IGeneralHelper>();
         }
 
         public override string GetName()
@@ -34,11 +34,11 @@ namespace MainCore.Tasks
             _chromeBrowser.Navigate();
             if (DateTime.Now.Millisecond % 10 > 5)
             {
-                _navigateHelper.ToDorf1(AccountId);
+                _generalHelper.ToDorf1(AccountId);
             }
             else
             {
-                _navigateHelper.ToDorf2(AccountId);
+                _generalHelper.ToDorf2(AccountId);
             }
         }
     }

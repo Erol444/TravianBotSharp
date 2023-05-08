@@ -32,7 +32,7 @@ namespace MainCore.Tasks.Base
 
         private Result ToDorf()
         {
-            var result = _navigateHelper.ToDorf2(AccountId);
+            var result = _generalHelper.ToDorf2(AccountId);
             return result;
         }
 

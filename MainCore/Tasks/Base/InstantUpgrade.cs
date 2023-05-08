@@ -42,7 +42,7 @@ namespace MainCore.Tasks.Base
 
         protected Result SwitchVillage()
         {
-            var result = _navigateHelper.SwitchVillage(AccountId, VillageId);
+            var result = _generalHelper.SwitchVillage(AccountId, VillageId);
             return result;
         }
 
@@ -51,7 +51,7 @@ namespace MainCore.Tasks.Base
             var currentUrl = _chromeBrowser.GetCurrentUrl();
             if (!currentUrl.Contains("dorf"))
             {
-                var result = _navigateHelper.GoRandomDorf(AccountId);
+                var result = _generalHelper.GoRandomDorf(AccountId);
                 return result;
             }
             return Result.Ok();

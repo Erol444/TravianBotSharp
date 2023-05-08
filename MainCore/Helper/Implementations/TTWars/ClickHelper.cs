@@ -14,7 +14,7 @@ namespace MainCore.Helper.Implementations.TTWars
 {
     public class ClickHelper : Base.ClickHelper
     {
-        public ClickHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IHeroSectionParser heroSectionParser, INavigateHelper navigateHelper, IDbContextFactory<AppDbContext> contextFactory) : base(villageCurrentlyBuildingParser, chromeManager, heroSectionParser, navigateHelper, contextFactory)
+        public ClickHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory) : base(villageCurrentlyBuildingParser, chromeManager, heroSectionParser, generalHelper, contextFactory)
         {
         }
 
@@ -35,7 +35,7 @@ namespace MainCore.Helper.Implementations.TTWars
             }
 
             {
-                var result = _navigateHelper.Click(accountId, finishElements[0]);
+                var result = _generalHelper.Click(accountId, finishElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -49,7 +49,7 @@ namespace MainCore.Helper.Implementations.TTWars
 
             {
                 var elements = chrome.FindElements(By.Id("start"));
-                var result = _navigateHelper.Click(accountId, elements[0]);
+                var result = _generalHelper.Click(accountId, elements[0]);
                 if (result.IsFailed) return result.WithError("from click start adventure");
             }
 
@@ -95,7 +95,7 @@ namespace MainCore.Helper.Implementations.TTWars
             }
 
             {
-                var result = _navigateHelper.Click(accountId, checkboxAlls[0]);
+                var result = _generalHelper.Click(accountId, checkboxAlls[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -115,11 +115,11 @@ namespace MainCore.Helper.Implementations.TTWars
             }
 
             {
-                var result = _navigateHelper.Click(accountId, buttonStartFarms[0]);
+                var result = _generalHelper.Click(accountId, buttonStartFarms[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var result = _navigateHelper.SwitchTab(accountId, 1);
+                var result = _generalHelper.SwitchTab(accountId, 1);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 

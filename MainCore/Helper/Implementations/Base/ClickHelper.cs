@@ -14,15 +14,15 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IChromeManager _chromeManager;
         protected readonly IVillageCurrentlyBuildingParser _villageCurrentlyBuildingParser;
         protected readonly IHeroSectionParser _heroSectionParser;
-        protected readonly INavigateHelper _navigateHelper;
+        protected readonly IGeneralHelper _generalHelper;
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-        public ClickHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IHeroSectionParser heroSectionParser, INavigateHelper navigateHelper, IDbContextFactory<AppDbContext> contextFactory)
+        public ClickHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory)
         {
             _villageCurrentlyBuildingParser = villageCurrentlyBuildingParser;
             _chromeManager = chromeManager;
             _heroSectionParser = heroSectionParser;
-            _navigateHelper = navigateHelper;
+            _generalHelper = generalHelper;
             _contextFactory = contextFactory;
         }
 
@@ -63,7 +63,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry("Cannot find complete now button"));
             }
             {
-                var result = _navigateHelper.Click(accountId, finishElements[0]);
+                var result = _generalHelper.Click(accountId, finishElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
@@ -96,7 +96,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry("Cannot find confirm button"));
             }
             {
-                var result = _navigateHelper.Click(accountId, finishElements[0]);
+                var result = _generalHelper.Click(accountId, finishElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();

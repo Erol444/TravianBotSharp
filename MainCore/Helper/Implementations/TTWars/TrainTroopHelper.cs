@@ -7,7 +7,7 @@ namespace MainCore.Helper.Implementations.TTWars
 {
     public class TrainTroopHelper : Base.TrainTroopHelper
     {
-        public TrainTroopHelper(IDbContextFactory<AppDbContext> contextFactory, INavigateHelper navigateHelper, ILogManager logManager, IChromeManager chromeManager, ITrainTroopParser trainTroopParser) : base(contextFactory, navigateHelper, logManager, chromeManager, trainTroopParser)
+        public TrainTroopHelper(IDbContextFactory<AppDbContext> contextFactory, IGeneralHelper generalHelper, ILogManager logManager, IChromeManager chromeManager, ITrainTroopParser trainTroopParser) : base(contextFactory, generalHelper, logManager, chromeManager, trainTroopParser)
         {
         }
     }

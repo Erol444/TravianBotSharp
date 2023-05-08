@@ -81,7 +81,7 @@ namespace MainCore.Tasks.TTWars
                 {
                     return Result.Fail(new Retry("Cannot find skip quest button"));
                 }
-                var result = _navigateHelper.Click(AccountId, skipButtons[0]);
+                var result = _generalHelper.Click(AccountId, skipButtons[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 

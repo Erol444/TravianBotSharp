@@ -54,7 +54,7 @@ namespace MainCore.Tasks.Base
             {
                 var driver = _chromeBrowser.GetChrome();
                 var acceptCookie = driver.FindElements(By.ClassName("cmpboxbtnyes"));
-                var result = _navigateHelper.Click(AccountId, acceptCookie[0]);
+                var result = _generalHelper.Click(AccountId, acceptCookie[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();

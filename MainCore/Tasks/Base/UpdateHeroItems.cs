@@ -37,7 +37,7 @@ namespace MainCore.Tasks.Base
 
         private Result ToHeroInventory()
         {
-            var result = _navigateHelper.ToHeroInventory(AccountId);
+            var result = _generalHelper.ToHeroInventory(AccountId);
             return result;
         }
 

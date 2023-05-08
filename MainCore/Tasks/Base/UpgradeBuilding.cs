@@ -148,7 +148,7 @@ namespace MainCore.Tasks.Base
         {
             if (!_chromeBrowser.GetCurrentUrl().Contains("dorf"))
             {
-                var result = _navigateHelper.GoRandomDorf(AccountId);
+                var result = _generalHelper.GoRandomDorf(AccountId);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -367,7 +367,7 @@ namespace MainCore.Tasks.Base
 
         protected Result GotoBuilding()
         {
-            var result = _navigateHelper.GoToBuilding(AccountId, _chosenTask.Location);
+            var result = _generalHelper.GoToBuilding(AccountId, _chosenTask.Location);
             return result;
         }
 
@@ -382,7 +382,7 @@ namespace MainCore.Tasks.Base
                 isNewBuilding = true;
                 var tab = _chosenTask.Building.GetBuildingsCategory();
                 {
-                    var result = _navigateHelper.SwitchTab(AccountId, tab);
+                    var result = _generalHelper.SwitchTab(AccountId, tab);
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
             }
@@ -396,7 +396,7 @@ namespace MainCore.Tasks.Base
                 {
                     if (_chosenTask.Building.HasMultipleTabs() && building.Level != 0)
                     {
-                        var result = _navigateHelper.SwitchTab(AccountId, 0);
+                        var result = _generalHelper.SwitchTab(AccountId, 0);
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                 }
@@ -411,7 +411,7 @@ namespace MainCore.Tasks.Base
         protected Result PostUpdate()
         {
             {
-                var result = _navigateHelper.WaitPageChanged(AccountId, "dorf");
+                var result = _generalHelper.WaitPageChanged(AccountId, "dorf");
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {

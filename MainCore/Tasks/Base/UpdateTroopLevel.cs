@@ -66,7 +66,7 @@ namespace MainCore.Tasks.Base
             using var context = _contextFactory.CreateDbContext();
             var villageBuilding = context.VillagesBuildings.Where(x => x.VillageId == VillageId);
             var smithy = villageBuilding.FirstOrDefault(x => x.Type == BuildingEnums.Smithy);
-            var result = _navigateHelper.GoToBuilding(AccountId, smithy.Id);
+            var result = _generalHelper.GoToBuilding(AccountId, smithy.Id);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

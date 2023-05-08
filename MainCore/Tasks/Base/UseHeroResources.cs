@@ -41,7 +41,7 @@ namespace MainCore.Tasks.Base
 
         private Result SwitchVillage()
         {
-            if (VillageId != -1) return _navigateHelper.SwitchVillage(AccountId, VillageId);
+            if (VillageId != -1) return _generalHelper.SwitchVillage(AccountId, VillageId);
             return Result.Ok();
         }
 

@@ -12,7 +12,7 @@ namespace MainCore.Helper.Implementations.TTWars
 {
     public class HeroHelper : Base.HeroHelper
     {
-        public HeroHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, INavigateHelper navigateHelper) : base(chromeManager, heroSectionParser, navigateHelper)
+        public HeroHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper) : base(chromeManager, heroSectionParser, generalHelper)
         {
         }
 
@@ -47,7 +47,7 @@ namespace MainCore.Helper.Implementations.TTWars
             }
             else
             {
-                var result = _navigateHelper.WaitPageLoaded(accountId);
+                var result = _generalHelper.WaitPageLoaded(accountId);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
@@ -72,7 +72,7 @@ namespace MainCore.Helper.Implementations.TTWars
 
             Thread.Sleep(3000);
 
-            var result = _navigateHelper.WaitPageLoaded(accountId);
+            var result = _generalHelper.WaitPageLoaded(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();

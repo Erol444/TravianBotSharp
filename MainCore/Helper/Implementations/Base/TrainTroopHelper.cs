@@ -22,7 +22,7 @@ namespace MainCore.Helper.Implementations.Base
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-        private readonly INavigateHelper _navigateHelper;
+        private readonly IGeneralHelper _generalHelper;
         private readonly ILogManager _logManager;
 
         private readonly IChromeManager _chromeManager;
@@ -31,10 +31,10 @@ namespace MainCore.Helper.Implementations.Base
 
         private IChromeBrowser _chromeBrowser;
 
-        public TrainTroopHelper(IDbContextFactory<AppDbContext> contextFactory, INavigateHelper navigateHelper, ILogManager logManager, IChromeManager chromeManager, ITrainTroopParser trainTroopParser)
+        public TrainTroopHelper(IDbContextFactory<AppDbContext> contextFactory, IGeneralHelper generalHelper, ILogManager logManager, IChromeManager chromeManager, ITrainTroopParser trainTroopParser)
         {
             _contextFactory = contextFactory;
-            _navigateHelper = navigateHelper;
+            _generalHelper = generalHelper;
             _logManager = logManager;
             _chromeManager = chromeManager;
             _trainTroopParser = trainTroopParser;
@@ -92,7 +92,7 @@ namespace MainCore.Helper.Implementations.Base
 
         private Result UpdateDorf2()
         {
-            return _navigateHelper.ToDorf2(_accountId);
+            return _generalHelper.ToDorf2(_accountId);
         }
 
         private int GetBuilding(BuildingEnums trainBuilding)
@@ -140,7 +140,7 @@ namespace MainCore.Helper.Implementations.Base
 
         private Result EnterBuilding(int buildingLocation)
         {
-            return _navigateHelper.GoToBuilding(_accountId, buildingLocation);
+            return _generalHelper.GoToBuilding(_accountId, buildingLocation);
         }
 
         private int GetTroopTraining(BuildingEnums trainBuilding)

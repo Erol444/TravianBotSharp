@@ -62,11 +62,11 @@ namespace MainCore.Tasks.Base
             }
 
             {
-                var result = _navigateHelper.GoToBuilding(AccountId, 39);
+                var result = _generalHelper.GoToBuilding(AccountId, 39);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var result = _navigateHelper.SwitchTab(AccountId, 4);
+                var result = _generalHelper.SwitchTab(AccountId, 4);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 

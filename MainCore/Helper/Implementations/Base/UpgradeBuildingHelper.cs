@@ -23,17 +23,17 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IChromeManager _chromeManager;
         protected readonly ISystemPageParser _systemPageParser;
         protected readonly IBuildingsHelper _buildingsHelper;
-        protected readonly INavigateHelper _navigateHelper;
+        protected readonly IGeneralHelper _generalHelper;
         protected readonly ILogManager _logManager;
 
-        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IBuildingsHelper buildingsHelper, INavigateHelper navigateHelper, ILogManager logManager)
+        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IBuildingsHelper buildingsHelper, IGeneralHelper generalHelper, ILogManager logManager)
         {
             _contextFactory = contextFactory;
             _planManager = planManager;
             _chromeManager = chromeManager;
             _systemPageParser = systemPageParser;
             _buildingsHelper = buildingsHelper;
-            _navigateHelper = navigateHelper;
+            _generalHelper = generalHelper;
             _logManager = logManager;
         }
 
@@ -228,7 +228,7 @@ namespace MainCore.Helper.Implementations.Base
         public Result<bool> GotoBuilding(int accountId, int villageId, PlanTask buildingTask)
         {
             {
-                var result = _navigateHelper.GoToBuilding(accountId, buildingTask.Location);
+                var result = _generalHelper.GoToBuilding(accountId, buildingTask.Location);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -241,7 +241,7 @@ namespace MainCore.Helper.Implementations.Base
                 isNewBuilding = true;
                 var tab = buildingTask.Building.GetBuildingsCategory();
                 {
-                    var result = _navigateHelper.SwitchTab(accountId, tab);
+                    var result = _generalHelper.SwitchTab(accountId, tab);
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
             }
@@ -255,7 +255,7 @@ namespace MainCore.Helper.Implementations.Base
                 {
                     if (buildingTask.Building.HasMultipleTabs() && building.Level != 0)
                     {
-                        var result = _navigateHelper.SwitchTab(accountId, 0);
+                        var result = _generalHelper.SwitchTab(accountId, 0);
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                 }
@@ -289,7 +289,7 @@ namespace MainCore.Helper.Implementations.Base
             }
 
             {
-                var result = _navigateHelper.Click(accountId, elements[0]);
+                var result = _generalHelper.Click(accountId, elements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
@@ -320,7 +320,7 @@ namespace MainCore.Helper.Implementations.Base
             }
 
             {
-                var result = _navigateHelper.Click(accountId, elements[0]);
+                var result = _generalHelper.Click(accountId, elements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
@@ -343,7 +343,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry($"Cannot find fast upgrade button for {buildingTask.Building}"));
             }
             {
-                var result = _navigateHelper.Click(accountId, elements[0]);
+                var result = _generalHelper.Click(accountId, elements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
@@ -363,7 +363,7 @@ namespace MainCore.Helper.Implementations.Base
                     return Result.Fail(new Retry("Cannot find accept watching ads button"));
                 }
                 {
-                    var result = _navigateHelper.Click(accountId, elements[0]);
+                    var result = _generalHelper.Click(accountId, elements[0]);
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
                 chrome.ExecuteScript("jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
@@ -401,7 +401,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry($"Cannot find iframe for {buildingTask.Building}"));
             }
             {
-                var result = _navigateHelper.Click(accountId, elementsIframe[0]);
+                var result = _generalHelper.Click(accountId, elementsIframe[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -422,7 +422,7 @@ namespace MainCore.Helper.Implementations.Base
                 chrome.SwitchTo().Window(current);
 
                 {
-                    var result = _navigateHelper.Click(accountId, elementsIframe[0]);
+                    var result = _generalHelper.Click(accountId, elementsIframe[0]);
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
                 chrome.SwitchTo().DefaultContent();
@@ -445,13 +445,13 @@ namespace MainCore.Helper.Implementations.Base
                 }
 
                 {
-                    var result = _navigateHelper.Click(accountId, dontshowthisagain[0]);
+                    var result = _generalHelper.Click(accountId, dontshowthisagain[0]);
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
                 Thread.Sleep(800);
                 {
                     var dialogbuttonok = chrome.FindElements(By.ClassName("dialogButtonOk"));
-                    var result = _navigateHelper.Click(accountId, dialogbuttonok[0]);
+                    var result = _generalHelper.Click(accountId, dialogbuttonok[0]);
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
             }
@@ -481,7 +481,7 @@ namespace MainCore.Helper.Implementations.Base
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {
-                var result = _navigateHelper.WaitPageChanged(accountId, "dorf");
+                var result = _generalHelper.WaitPageChanged(accountId, "dorf");
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             {

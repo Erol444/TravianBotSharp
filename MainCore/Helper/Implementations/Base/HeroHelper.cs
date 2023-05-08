@@ -11,13 +11,13 @@ namespace MainCore.Helper.Implementations.Base
     {
         protected readonly IChromeManager _chromeManager;
         protected readonly IHeroSectionParser _heroSectionParser;
-        protected readonly INavigateHelper _navigateHelper;
+        protected readonly IGeneralHelper _generalHelper;
 
-        public HeroHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, INavigateHelper navigateHelper)
+        public HeroHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper)
         {
             _chromeManager = chromeManager;
             _heroSectionParser = heroSectionParser;
-            _navigateHelper = navigateHelper;
+            _generalHelper = generalHelper;
         }
 
         public abstract Result ClickItem(int accountId, HeroItemEnums item);

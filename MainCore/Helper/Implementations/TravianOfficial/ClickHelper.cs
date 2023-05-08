@@ -11,7 +11,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 {
     public class ClickHelper : Base.ClickHelper
     {
-        public ClickHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IHeroSectionParser heroSectionParser, INavigateHelper navigateHelper, IDbContextFactory<AppDbContext> contextFactory) : base(villageCurrentlyBuildingParser, chromeManager, heroSectionParser, navigateHelper, contextFactory)
+        public ClickHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory) : base(villageCurrentlyBuildingParser, chromeManager, heroSectionParser, generalHelper, contextFactory)
         {
         }
 
@@ -32,7 +32,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             }
 
             {
-                var result = _navigateHelper.Click(accountId, finishElements[0]);
+                var result = _generalHelper.Click(accountId, finishElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
@@ -60,7 +60,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 return Result.Fail(new Retry("Cannot found start button"));
             }
             {
-                var result = _navigateHelper.Click(accountId, startElements[0]);
+                var result = _generalHelper.Click(accountId, startElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 

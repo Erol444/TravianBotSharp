@@ -85,7 +85,7 @@ namespace MainCore.Tasks.Base
                 var upgradeElements = chrome.FindElements(By.XPath(upgradeButton.XPath));
                 if (upgradeElements.Count == 0) return Result.Fail(new Retry("Cannot found upgrade button"));
 
-                var result = _navigateHelper.Click(AccountId, upgradeElements[0]);
+                var result = _generalHelper.Click(AccountId, upgradeElements[0]);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 return Result.Ok();
             }
