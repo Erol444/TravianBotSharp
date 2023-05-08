@@ -212,6 +212,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
             (troop, settings.WorkshopTroopTimeMin, settings.WorkshopTroopTimeMax, _) = WorkshopTraining.GetData();
             settings.WorkshopTroop = (int)troop;
 
+            (settings.TroopTimeMin, settings.TroopTimeMax) = TimeTrain.GetData();
+
             context.Update(settings);
             context.SaveChanges();
         }
