@@ -13,17 +13,17 @@ namespace MainCore.DependencyInjector
         protected override IServiceCollection ConfigureHelper(IServiceCollection services)
         {
             services.AddSingleton<IAccessHelper, AccessHelper>();
-            services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
             services.AddSingleton<IGithubHelper, GithubHelper>();
-            services.AddSingleton<IHeroResourcesHelper, HeroHelper>();
-            services.AddSingleton<IGeneralHelper, GeneralHelper>();
             services.AddSingleton<IUpdateHelper, UpdateHelper>();
             services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
 
             services.AddTransient<ICheckHelper, CheckHelper>();
-
+            services.AddTransient<IGeneralHelper, GeneralHelper>();
+            services.AddTransient<IBuildingsHelper, BuildingsHelper>();
             services.AddTransient<ITrainTroopHelper, TrainTroopHelper>();
             services.AddTransient<ICompleteNowHelper, CompleteNowHelper>();
+            services.AddSingleton<IHeroResourcesHelper, HeroResourcesHelper>();
+
             return services;
         }
 

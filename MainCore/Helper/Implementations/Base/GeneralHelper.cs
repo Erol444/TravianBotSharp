@@ -67,30 +67,12 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result WaitPageLoaded()
         {
-            var wait = _chromeBrowser.GetWait();
-            try
-            {
-                wait.Until(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
-            }
-            catch (TimeoutException)
-            {
-                return Result.Fail(new Stop("Page not loaded in 3 mins"));
-            }
-            return Result.Ok();
+            return Wait(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
         }
 
         public Result WaitPageChanged(string path)
         {
-            var wait = _chromeBrowser.GetWait();
-            try
-            {
-                wait.Until(driver => driver.Url.Contains(path));
-            }
-            catch
-            {
-                return Result.Fail(new Stop("Page not loaded in 3 mins"));
-            }
-            return Result.Ok();
+            return Wait(driver => driver.Url.Contains(path));
         }
 
         public Result Wait(Func<IWebDriver, bool> condition)
@@ -100,7 +82,7 @@ namespace MainCore.Helper.Implementations.Base
             {
                 wait.Until(condition);
             }
-            catch
+            catch (TimeoutException)
             {
                 return Result.Fail(new Stop("Page not loaded in 3 mins"));
             }
