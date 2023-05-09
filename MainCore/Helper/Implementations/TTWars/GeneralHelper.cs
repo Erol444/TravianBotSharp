@@ -77,23 +77,24 @@ namespace MainCore.Helper.Implementations.TTWars
             _result = Click(By.XPath(finishButton.XPath), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            var wait = _chromeBrowser.GetWait();
-            wait.Until(driver =>
+            _result = Wait(driver =>
             {
                 var elements = driver.FindElements(By.Id("start"));
                 if (elements.Count == 0) return false;
                 return elements[0].Enabled && elements[0].Displayed;
             });
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = Click(By.Id("start"), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            wait.Until(driver =>
+            _result = Wait(driver =>
             {
                 var elements = driver.FindElements(By.Id("ok"));
                 if (elements.Count == 0) return false;
                 return elements[0].Enabled && elements[0].Displayed;
             });
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }

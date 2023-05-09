@@ -15,7 +15,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IAccessHelper, AccessHelper>();
             services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
             services.AddSingleton<IGithubHelper, GithubHelper>();
-            services.AddSingleton<IHeroHelper, HeroHelper>();
+            services.AddSingleton<IHeroResourcesHelper, HeroHelper>();
             services.AddSingleton<IGeneralHelper, GeneralHelper>();
             services.AddSingleton<IUpdateHelper, UpdateHelper>();
             services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();

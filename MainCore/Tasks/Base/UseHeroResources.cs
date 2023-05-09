@@ -11,11 +11,11 @@ namespace MainCore.Tasks.Base
 {
     public class UseHeroResources : VillageBotTask
     {
-        private readonly IHeroHelper _heroHelper;
+        private readonly IHeroResourcesHelper _heroHelper;
 
         public UseHeroResources(int villageId, int accountId, List<(HeroItemEnums, int)> items, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
-            _heroHelper = Locator.Current.GetService<IHeroHelper>();
+            _heroHelper = Locator.Current.GetService<IHeroResourcesHelper>();
             _items = items;
         }
 

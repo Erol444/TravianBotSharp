@@ -93,12 +93,26 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
+        public Result Wait(Func<IWebDriver, bool> condition)
+        {
+            var wait = _chromeBrowser.GetWait();
+            try
+            {
+                wait.Until(condition);
+            }
+            catch
+            {
+                return Result.Fail(new Stop("Page not loaded in 3 mins"));
+            }
+            return Result.Ok();
+        }
+
         public Result Click(By by, bool waitPageLoaded = true)
         {
             var chrome = _chromeBrowser.GetChrome();
             var elements = chrome.FindElements(by);
 
-            if (elements.Count == 0) return Result.Fail(NotFound.Element);
+            if (elements.Count == 0) return Result.Fail(Retry.ElementNotFound);
 
             var element = elements[0];
             if (!element.Displayed || !element.Enabled) return Result.Fail(Retry.ElementCannotClick);
@@ -123,6 +137,21 @@ namespace MainCore.Helper.Implementations.Base
 
             _result = WaitPageLoaded();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
+        }
+
+        public Result Input(By by, string content)
+        {
+            var chrome = _chromeBrowser.GetChrome();
+            var elements = chrome.FindElements(by);
+
+            if (elements.Count == 0) return Result.Fail(Retry.ElementNotFound);
+
+            var element = elements[0];
+            element.SendKeys(Keys.Home);
+            element.SendKeys(Keys.Shift + Keys.End);
+            element.SendKeys(content);
+
             return Result.Ok();
         }
 

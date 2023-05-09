@@ -27,9 +27,8 @@ namespace MainCore.Helper.Implementations.Base
                 var latest = await _client.Repository.Release.GetLatest(_username, _repo);
                 if (latest is not null) return new Version(latest.TagName);
             }
-            catch (Exception e)
+            catch ()
             {
-                _ = e;
             }
             return null;
         }

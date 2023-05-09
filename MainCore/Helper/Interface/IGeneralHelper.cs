@@ -1,5 +1,6 @@
 ﻿using FluentResults;
 using OpenQA.Selenium;
+using System;
 using System.Threading;
 
 namespace MainCore.Helper.Interface
@@ -9,6 +10,8 @@ namespace MainCore.Helper.Interface
         Result Click(By by, bool waitPageLoaded = true);
 
         Result Click(By by, string path);
+
+        Result Input(By by, string content);
 
         void DelayClick();
 
@@ -37,6 +40,8 @@ namespace MainCore.Helper.Interface
         Result ToDorf2(bool forceReload = false);
 
         Result ToHeroInventory();
+
+        Result Wait(Func<IWebDriver, bool> condition);
 
         Result WaitPageChanged(string path);
 

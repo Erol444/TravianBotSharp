@@ -89,8 +89,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             _result = Click(By.XPath(avatar.XPath), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            var wait = _chromeBrowser.GetWait();
-            wait.Until(driver =>
+            _result = Wait(driver =>
             {
                 var doc = new HtmlDocument();
                 doc.LoadHtml(driver.PageSource);
@@ -98,6 +97,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 if (tab is null) return false;
                 return _heroSectionParser.IsCurrentTab(tab);
             });
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
@@ -115,8 +115,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             _result = Click(By.XPath(node.XPath), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            var wait = _chromeBrowser.GetWait();
-            wait.Until(driver =>
+            _result = Wait(driver =>
             {
                 var doc = new HtmlDocument();
                 doc.LoadHtml(driver.PageSource);
@@ -126,6 +125,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 if (heroState is null) return false;
                 return driver.FindElements(By.XPath(heroState.XPath)).Count > 0;
             });
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
