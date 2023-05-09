@@ -1,11 +1,14 @@
 ﻿using HtmlAgilityPack;
 using MainCore.Services.Interface;
+using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface ICheckHelper
     {
-        int GetCurrentVillageId(int accountId);
+        void Load(int villageId, int accountId, CancellationToken cancellationToken);
+
+        int GetCurrentVillageId();
 
         bool IsBanMsg(HtmlDocument doc);
 
@@ -13,11 +16,11 @@ namespace MainCore.Helper.Interface
 
         bool IsContextualHelp(HtmlDocument doc);
 
-        bool IsCorrectTab(int accountId, int tab);
+        bool IsCorrectTab(int tab);
 
-        bool IsCorrectVillage(int accountId, int villageId);
+        bool IsCorrectVillage();
 
-        bool IsFarmListPage(int accountId);
+        bool IsFarmListPage();
 
         bool IsLoginScreen(HtmlDocument doc);
 

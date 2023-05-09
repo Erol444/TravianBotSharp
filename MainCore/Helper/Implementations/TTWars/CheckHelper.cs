@@ -10,14 +10,11 @@ namespace MainCore.Helper.Implementations.TTWars
         {
         }
 
-        public override bool IsFarmListPage(int accountId)
+        public override bool IsFarmListPage()
         {
-            // check building
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var url = chromeBrowser.GetCurrentUrl();
-
+            var url = _chromeBrowser.GetCurrentUrl();
             if (!url.Contains("tt=99")) return false;
-            return IsCorrectTab(accountId, 4);
+            return IsCorrectTab(4);
         }
     }
 }

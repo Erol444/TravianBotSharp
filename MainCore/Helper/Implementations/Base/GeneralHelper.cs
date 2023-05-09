@@ -44,6 +44,8 @@ namespace MainCore.Helper.Implementations.Base
             _accountId = accountId;
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
+
+            _checkHelper.Load(villageId, accountId, cancellationToken);
         }
 
         public bool IsPageValid()
@@ -209,7 +211,7 @@ namespace MainCore.Helper.Implementations.Base
         {
             if (!IsPageValid()) return Result.Fail(Stop.Announcement);
 
-            while (!_checkHelper.IsCorrectVillage(_accountId, _villageId))
+            while (!_checkHelper.IsCorrectVillage())
             {
                 if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
                 var html = _chromeBrowser.GetHtml();
@@ -231,17 +233,17 @@ namespace MainCore.Helper.Implementations.Base
         public Result SwitchTab(int index)
         {
             if (!IsPageValid()) return Result.Fail(Stop.Announcement);
-            while (!_checkHelper.IsCorrectTab(_accountId, index))
+            while (!_checkHelper.IsCorrectTab(index))
             {
                 var html = _chromeBrowser.GetHtml();
                 var listNode = _buildingTabParser.GetBuildingTabNodes(html);
                 if (listNode.Count == 0)
                 {
-                    return Result.Fail(Retry.Msg("Cannot find building tabs"));
+                    return Result.Fail(new Retry("Cannot find building tabs"));
                 }
                 if (index > listNode.Count)
                 {
-                    return Result.Fail(Retry.Msg($"Tab {index} is invalid, this building only has {listNode.Count} tabs"));
+                    return Result.Fail(new Retry($"Tab {index} is invalid, this building only has {listNode.Count} tabs"));
                 }
 
                 _result = Click(By.XPath(listNode[index].XPath));
@@ -256,5 +258,9 @@ namespace MainCore.Helper.Implementations.Base
         public abstract Result ToHeroInventory();
 
         public abstract Result ToAdventure();
+
+        public abstract Result ClickStartAdventure(int x, int y);
+
+        public abstract Result ClickStartFarm(int farmId);
     }
 }

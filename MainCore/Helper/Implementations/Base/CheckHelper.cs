@@ -1,9 +1,11 @@
-﻿using HtmlAgilityPack;
+﻿using FluentResults;
+using HtmlAgilityPack;
 using MainCore.Helper.Interface;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
@@ -15,6 +17,12 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IBuildingTabParser _buildingTabParser;
         protected readonly ISystemPageParser _systemPageParser;
 
+        protected Result _result;
+        protected int _villageId;
+        protected int _accountId;
+        protected CancellationToken _token;
+        protected IChromeBrowser _chromeBrowser;
+
         public CheckHelper(IChromeManager chromeManager, IVillagesTableParser villagesTableParser, IBuildingTabParser buildingTabParser, IDbContextFactory<AppDbContext> contextFactory, ISystemPageParser systemPageParser)
         {
             _chromeManager = chromeManager;
@@ -24,25 +32,31 @@ namespace MainCore.Helper.Implementations.Base
             _systemPageParser = systemPageParser;
         }
 
-        public bool IsCorrectVillage(int accountId, int villageId)
+        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
         {
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var html = chromeBrowser.GetHtml();
+            _villageId = villageId;
+            _accountId = accountId;
+            _token = cancellationToken;
+            _chromeBrowser = _chromeManager.Get(_accountId);
+        }
+
+        public bool IsCorrectVillage()
+        {
+            var html = _chromeBrowser.GetHtml();
 
             var listNode = _villagesTableParser.GetVillages(html);
             foreach (var node in listNode)
             {
                 var id = _villagesTableParser.GetId(node);
-                if (id != villageId) continue;
+                if (id != _villageId) continue;
                 return _villagesTableParser.IsActive(node);
             }
             return false;
         }
 
-        public int GetCurrentVillageId(int accountId)
+        public int GetCurrentVillageId()
         {
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var html = chromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
 
             var listNode = _villagesTableParser.GetVillages(html);
             foreach (var node in listNode)
@@ -53,15 +67,14 @@ namespace MainCore.Helper.Implementations.Base
             return -1;
         }
 
-        public bool IsCorrectTab(int accountId, int tab)
+        public bool IsCorrectTab(int tab)
         {
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var html = chromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
             var tabs = _buildingTabParser.GetBuildingTabNodes(html);
             return _buildingTabParser.IsCurrentTab(tabs[tab]);
         }
 
-        public abstract bool IsFarmListPage(int accountId);
+        public abstract bool IsFarmListPage();
 
         public bool IsWWMsg(HtmlDocument doc) => doc.DocumentNode.Descendants("img").FirstOrDefault(x => x.GetAttributeValue("src", "") == "/img/ww100.png") is not null;
 

@@ -11,7 +11,5 @@ namespace MainCore.Errors
         public static Retry ElementCannotClick => new("Element cannot click");
 
         public static Retry ButtonNotFound(string button) => new($"Button [{button}] not found");
-
-        public static Retry Msg(string message) => new(message);
     }
 }

@@ -39,7 +39,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                         var node = _villageFieldParser.GetNode(html, index);
                         if (node is null)
                         {
-                            return Result.Fail(Retry.Msg($"Cannot find resource field at {index}"));
+                            return Result.Fail(new Retry($"Cannot find resource field at {index}"));
                         }
                         _result = Click(By.XPath(node.XPath));
                         if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
@@ -51,12 +51,12 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                         var node = _villageInfrastructureParser.GetNode(html, index);
                         if (node is null)
                         {
-                            return Result.Fail(Retry.Msg($"Cannot find building field at {index}"));
+                            return Result.Fail(new Retry($"Cannot find building field at {index}"));
                         }
                         var pathBuilding = node.Descendants("path").FirstOrDefault();
                         if (pathBuilding is null)
                         {
-                            return Result.Fail(Retry.Msg($"Cannot find building field at {index}"));
+                            return Result.Fail(new Retry($"Cannot find building field at {index}"));
                         }
                         var href = pathBuilding.GetAttributeValue("onclick", "");
                         var script = href.Replace("&amp;", "&");
@@ -84,7 +84,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             var avatar = _heroSectionParser.GetHeroAvatar(html);
             if (avatar is null)
             {
-                return Result.Fail(Retry.Msg("Cannot find hero avatar"));
+                return Result.Fail(new Retry("Cannot find hero avatar"));
             }
             _result = Click(By.XPath(avatar.XPath), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
@@ -104,11 +104,13 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 
         public override Result ToAdventure()
         {
+            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
+
             var html = _chromeBrowser.GetHtml();
             var node = _heroSectionParser.GetAdventuresButton(html);
             if (node is null)
             {
-                return Result.Fail(Retry.Msg("Cannot find adventures button"));
+                return Result.Fail(new Retry("Cannot find adventures button"));
             }
             _result = Click(By.XPath(node.XPath), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
@@ -124,6 +126,46 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 if (heroState is null) return false;
                 return driver.FindElements(By.XPath(heroState.XPath)).Count > 0;
             });
+
+            return Result.Ok();
+        }
+
+        public override Result ClickStartAdventure(int x, int y)
+        {
+            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
+
+            var html = _chromeBrowser.GetHtml();
+            var finishButton = _heroSectionParser.GetStartAdventureButton(html, x, y);
+            if (finishButton is null)
+            {
+                return Result.Fail(new Retry("Cannot find start adventure button"));
+            }
+
+            _result = Click(By.XPath(finishButton.XPath));
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            return Result.Ok();
+        }
+
+        public override Result ClickStartFarm(int farmId)
+        {
+            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
+
+            var html = _chromeBrowser.GetHtml();
+
+            var farmNode = html.GetElementbyId($"raidList{farmId}");
+            if (farmNode is null)
+            {
+                return Result.Fail(new Retry("Cannot found farm node"));
+            }
+            var startNode = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
+            if (startNode is null)
+            {
+                return Result.Fail(new Retry("Cannot found start button"));
+            }
+
+            _result = Click(By.XPath(startNode.XPath));
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }

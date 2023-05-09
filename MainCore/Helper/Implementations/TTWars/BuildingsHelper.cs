@@ -5,7 +5,7 @@ namespace MainCore.Helper.Implementations.TTWars
 {
     public class BuildingsHelper : Base.BuildingsHelper
     {
-        public BuildingsHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager) : base(contextFactory, planManager)
+        public BuildingsHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager) : base(contextFactory, planManager, chromeManager)
         {
         }
     }

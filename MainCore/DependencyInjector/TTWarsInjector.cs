@@ -14,15 +14,16 @@ namespace MainCore.DependencyInjector
         {
             services.AddSingleton<IAccessHelper, AccessHelper>();
             services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
-            services.AddSingleton<ICheckHelper, CheckHelper>();
-            services.AddSingleton<IClickHelper, ClickHelper>();
             services.AddSingleton<IGithubHelper, GithubHelper>();
             services.AddSingleton<IHeroHelper, HeroHelper>();
             services.AddSingleton<IGeneralHelper, GeneralHelper>();
             services.AddSingleton<IUpdateHelper, UpdateHelper>();
             services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
 
+            services.AddTransient<ICheckHelper, CheckHelper>();
+
             services.AddTransient<ITrainTroopHelper, TrainTroopHelper>();
+            services.AddTransient<ICompleteNowHelper, CompleteNowHelper>();
             return services;
         }
 
