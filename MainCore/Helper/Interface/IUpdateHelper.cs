@@ -4,20 +4,20 @@ namespace MainCore.Helper.Interface
 {
     public interface IUpdateHelper
     {
-        Result UpdateAdventures(int accountId);
+        Result UpdateAdventures();
 
-        Result UpdateCurrentlyBuilding(int accountId, int villageId);
+        Result UpdateCurrentlyBuilding();
 
-        Result UpdateDorf1(int accountId, int villageId);
+        Result UpdateDorf1();
 
-        Result UpdateDorf2(int accountId, int villageId);
+        Result UpdateDorf2();
 
-        Result UpdateFarmList(int accountId);
+        Result UpdateFarmList();
 
-        Result UpdateHeroInventory(int accountId);
+        Result UpdateHeroInventory();
 
-        Result UpdateProduction(int accountId, int villageId);
+        Result UpdateProduction();
 
-        Result UpdateResource(int accountId, int villageId);
+        Result UpdateResource();
     }
 }

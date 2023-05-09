@@ -14,16 +14,15 @@ namespace MainCore.Helper.Implementations.TTWars
         {
         }
 
-        public override Result UpdateDorf2(int accountId, int villageId)
+        public override Result UpdateDorf2()
         {
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var html = chromeBrowser.GetHtml();
+            var html = _chromeBrowser.GetHtml();
             var buildingNodes = _villageInfrastructureParser.GetNodes(html);
             using var context = _contextFactory.CreateDbContext();
             foreach (var buildingNode in buildingNodes)
             {
                 var id = _villageInfrastructureParser.GetId(buildingNode);
-                var building = context.VillagesBuildings.Find(villageId, id);
+                var building = context.VillagesBuildings.Find(_villageId, id);
                 var level = _villageInfrastructureParser.GetLevel(buildingNode);
                 int type = 0;
                 if (id == 39)
@@ -32,7 +31,7 @@ namespace MainCore.Helper.Implementations.TTWars
                 }
                 else if (id == 40)
                 {
-                    var tribe = context.AccountsInfo.Find(accountId).Tribe;
+                    var tribe = context.AccountsInfo.Find(_accountId).Tribe;
 
                     var wall = tribe.GetTribesWall();
                     type = (int)wall;
@@ -46,7 +45,7 @@ namespace MainCore.Helper.Implementations.TTWars
                 {
                     context.VillagesBuildings.Add(new()
                     {
-                        VillageId = villageId,
+                        VillageId = _villageId,
                         Id = id,
                         Level = level,
                         Type = (BuildingEnums)type,
@@ -58,10 +57,10 @@ namespace MainCore.Helper.Implementations.TTWars
                     building.Level = level;
                     building.Type = (BuildingEnums)type;
                     building.IsUnderConstruction = isUnderConstruction;
+                    context.Update(building);
                 }
             }
-            context.SaveChanges();
-            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
+            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == _villageId).ToList();
             if (currentlyBuilding.Count > 0)
             {
                 foreach (var building in currentlyBuilding)
@@ -69,16 +68,16 @@ namespace MainCore.Helper.Implementations.TTWars
                     var build = context.VillagesBuildings.FirstOrDefault(x => x.IsUnderConstruction && x.Type == building.Type && x.Level - building.Level < 3);
                     if (build is null) continue;
                     building.Location = build.Id;
+                    context.Update(building);
                 }
-                context.SaveChanges();
             }
 
-            var updateTime = context.VillagesUpdateTime.Find(villageId);
+            var updateTime = context.VillagesUpdateTime.Find(_villageId);
             if (updateTime is null)
             {
                 updateTime = new()
                 {
-                    VillageId = villageId,
+                    VillageId = _villageId,
                     Dorf2 = DateTime.Now
                 };
 
@@ -87,11 +86,12 @@ namespace MainCore.Helper.Implementations.TTWars
             else
             {
                 updateTime.Dorf2 = DateTime.Now;
+                context.Update(updateTime);
             }
             context.SaveChanges();
 
-            _eventManager.OnVillageCurrentUpdate(villageId);
-            _eventManager.OnVillageBuildsUpdate(villageId);
+            _eventManager.OnVillageCurrentUpdate(_villageId);
+            _eventManager.OnVillageBuildsUpdate(_villageId);
             return Result.Ok();
         }
     }

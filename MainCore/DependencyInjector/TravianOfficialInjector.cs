@@ -14,10 +14,10 @@ namespace MainCore.DependencyInjector
         {
             services.AddSingleton<IAccessHelper, AccessHelper>();
             services.AddSingleton<IGithubHelper, GithubHelper>();
-            services.AddSingleton<IUpdateHelper, UpdateHelper>();
             services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
 
             services.AddTransient<ICheckHelper, CheckHelper>();
+            services.AddTransient<IUpdateHelper, UpdateHelper>();
             services.AddTransient<IGeneralHelper, GeneralHelper>();
             services.AddTransient<IBuildingsHelper, BuildingsHelper>();
             services.AddTransient<ITrainTroopHelper, TrainTroopHelper>();
