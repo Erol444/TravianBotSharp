@@ -10,11 +10,11 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 {
     public class UpdateHelper : Base.UpdateHelper
     {
-        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager) : base(villageCurrentlyBuildingParser, chromeManager, contextFactory, villageFieldParser, villageInfrastructureParser, stockBarParser, subTabParser, heroSectionParser, farmListParser, eventManager)
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager) : base(villageCurrentlyBuildingParser, chromeManager, contextFactory, villageFieldParser, villageInfrastructureParser, stockBarParser, subTabParser, heroSectionParser, farmListParser, eventManager, villagesTableParser, taskManager)
         {
         }
 
-        public override Result UpdateBuildings()
+        protected override Result UpdateBuildings()
         {
             var html = _chromeBrowser.GetHtml();
             var buildingNodes = _villageInfrastructureParser.GetNodes(html);

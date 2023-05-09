@@ -6,30 +6,30 @@ namespace MainCore.Helper.Interface
 {
     public interface IUpgradeBuildingHelper
     {
-        Result<bool> IsNeedAdsUpgrade(int accountId, int villageId, PlanTask buildingTask);
+        Result<bool> IsNeedAdsUpgrade(PlanTask buildingTask);
 
-        bool IsEnoughFreeCrop(int villageId, BuildingEnums building);
+        bool IsEnoughFreeCrop(BuildingEnums building);
 
-        public Result<bool> GotoBuilding(int accountId, int villageId, PlanTask buildingTask);
+        public Result<bool> GotoBuilding(PlanTask buildingTask);
 
-        bool IsEnoughResource(int accountId, int villageId, BuildingEnums building, bool isNewBuilding);
+        bool IsEnoughResource(BuildingEnums building, bool isNewBuilding);
 
-        long[] GetResourceMissing(int accountId, int villageId, BuildingEnums building, bool isNewBuilding);
+        long[] GetResourceMissing(BuildingEnums building, bool isNewBuilding);
 
-        PlanTask ExtractResField(int villageId, PlanTask buildingTask);
+        PlanTask ExtractResField(PlanTask buildingTask);
 
-        void RemoveFinishedCB(int villageId);
+        void RemoveFinishedCB();
 
-        Result Construct(int accountId, PlanTask buildingTask);
+        Result Construct(PlanTask buildingTask);
 
-        Result Upgrade(int accountId, PlanTask buildingTask);
+        Result Upgrade(PlanTask buildingTask);
 
-        Result UpgradeAds(int accountId, PlanTask buildingTask);
+        Result UpgradeAds(PlanTask buildingTask);
 
-        PlanTask GetFirstTask(int villageId);
+        PlanTask GetFirstTask();
 
-        PlanTask GetFirstBuildingTask(int villageId);
+        PlanTask GetFirstBuildingTask();
 
-        PlanTask GetFirstResTask(int villageId);
+        PlanTask GetFirstResTask();
     }
 }

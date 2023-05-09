@@ -14,7 +14,6 @@ namespace MainCore.DependencyInjector
         {
             services.AddSingleton<IAccessHelper, AccessHelper>();
             services.AddSingleton<IGithubHelper, GithubHelper>();
-            services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
 
             services.AddTransient<ICheckHelper, CheckHelper>();
             services.AddTransient<IUpdateHelper, UpdateHelper>();
@@ -23,6 +22,7 @@ namespace MainCore.DependencyInjector
             services.AddTransient<ITrainTroopHelper, TrainTroopHelper>();
             services.AddTransient<ICompleteNowHelper, CompleteNowHelper>();
             services.AddTransient<IHeroResourcesHelper, HeroResourcesHelper>();
+            services.AddTransient<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
             return services;
         }
 
