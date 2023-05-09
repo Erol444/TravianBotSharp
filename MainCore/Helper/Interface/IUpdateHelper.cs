@@ -1,23 +1,22 @@
 ﻿using FluentResults;
+using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface IUpdateHelper
     {
-        Result UpdateAdventures();
+        void Load(int villageId, int accountId, CancellationToken cancellationToken);
 
-        Result UpdateCurrentlyBuilding();
+        Result Update();
 
         Result UpdateDorf1();
 
         Result UpdateDorf2();
 
+        Result UpdateAdventures();
+
         Result UpdateFarmList();
 
         Result UpdateHeroInventory();
-
-        Result UpdateProduction();
-
-        Result UpdateResource();
     }
 }

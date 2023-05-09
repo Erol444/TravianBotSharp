@@ -5,6 +5,8 @@ using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
+using MainCore.Tasks;
+using MainCore.Tasks.Base;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -25,6 +27,9 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly ISubTabParser _subTabParser;
         protected readonly IFarmListParser _farmListParser;
         protected readonly IEventManager _eventManager;
+        protected readonly IVillagesTableParser _villagesTableParser;
+        protected readonly ITaskManager _taskManager;
+        protected readonly ITaskFactory _taskFactory;
 
         protected Result _result;
         protected int _villageId;
@@ -32,7 +37,7 @@ namespace MainCore.Helper.Implementations.Base
         protected CancellationToken _token;
         protected IChromeBrowser _chromeBrowser;
 
-        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager)
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager)
         {
             _villageCurrentlyBuildingParser = villageCurrentlyBuildingParser;
             _chromeManager = chromeManager;
@@ -44,6 +49,8 @@ namespace MainCore.Helper.Implementations.Base
             _heroSectionParser = heroSectionParser;
             _farmListParser = farmListParser;
             _eventManager = eventManager;
+            _villagesTableParser = villagesTableParser;
+            _taskManager = taskManager;
         }
 
         public void Load(int villageId, int accountId, CancellationToken cancellationToken)
@@ -54,7 +61,50 @@ namespace MainCore.Helper.Implementations.Base
             _chromeBrowser = _chromeManager.Get(_accountId);
         }
 
-        public Result UpdateCurrentlyBuilding()
+        public Result Update()
+        {
+            _result = UpdateHeroInfo();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = UpdateResource();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = UpdateVillageList();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            return Result.Ok();
+        }
+
+        public Result UpdateDorf1()
+        {
+            _result = Update();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = UpdateCurrentlyBuilding();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = UpdateResourceFields();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = UpdateProduction();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
+        }
+
+        public Result UpdateDorf2()
+        {
+            _result = Update();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = UpdateCurrentlyBuilding();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = UpdateBuildings();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
+        }
+
+        private Result UpdateCurrentlyBuilding()
         {
             var html = _chromeBrowser.GetHtml();
             var nodes = _villageCurrentlyBuildingParser.GetItems(html);
@@ -114,7 +164,7 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result UpdateDorf1()
+        private Result UpdateResourceFields()
         {
             var html = _chromeBrowser.GetHtml();
             var resFields = _villageFieldParser.GetNodes(html);
@@ -181,9 +231,9 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public abstract Result UpdateDorf2();
+        protected abstract Result UpdateBuildings();
 
-        public Result UpdateResource()
+        protected Result UpdateResource()
         {
             var html = _chromeBrowser.GetHtml();
             using var context = _contextFactory.CreateDbContext();
@@ -299,7 +349,7 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result UpdateProduction()
+        protected Result UpdateProduction()
         {
             var html = _chromeBrowser.GetHtml();
             using var context = _contextFactory.CreateDbContext();
@@ -381,6 +431,123 @@ namespace MainCore.Helper.Implementations.Base
 
             context.SaveChanges();
             _eventManager.OnFarmListUpdate(_accountId);
+            return Result.Ok();
+        }
+
+        protected Result UpdateVillageList()
+        {
+            var html = _chromeBrowser.GetHtml();
+
+            var listNode = _villagesTableParser.GetVillages(html);
+            var foundVills = new List<Village>();
+            foreach (var node in listNode)
+            {
+                var id = _villagesTableParser.GetId(node);
+                var name = _villagesTableParser.GetName(node);
+                var x = _villagesTableParser.GetX(node);
+                var y = _villagesTableParser.GetY(node);
+                foundVills.Add(new()
+                {
+                    AccountId = _accountId,
+                    Id = id,
+                    Name = name,
+                    X = x,
+                    Y = y,
+                });
+            }
+
+            using var context = _contextFactory.CreateDbContext();
+            var currentVills = context.Villages.Where(x => x.AccountId == _accountId).ToList();
+
+            var missingVills = new List<Village>();
+            var taskList = _taskManager.GetList(_accountId).OfType<VillageBotTask>();
+            for (var i = 0; i < currentVills.Count; i++)
+            {
+                var currentVillage = currentVills[i];
+                var foundVillage = foundVills.FirstOrDefault(x => x.Id == currentVillage.Id);
+
+                if (foundVillage is null)
+                {
+                    missingVills.Add(currentVillage);
+                    var tasks = taskList.Where(x => x.VillageId == currentVillage.Id).ToList();
+                    foreach (var task in tasks)
+                    {
+                        if (task.Stage == TaskStage.Executing) _taskManager.StopCurrentTask(_accountId);
+                        _taskManager.Remove(_accountId, task);
+                    }
+                    continue;
+                }
+
+                currentVillage.Name = foundVillage.Name;
+                foundVills.Remove(foundVillage);
+            }
+            bool villageChange = missingVills.Count > 0 || foundVills.Count > 0;
+            foreach (var item in missingVills)
+            {
+                context.DeleteVillage(item.Id);
+            }
+
+            var tribe = context.AccountsInfo.Find(_accountId).Tribe;
+            foreach (var newVill in foundVills)
+            {
+                context.Villages.Add(new Village()
+                {
+                    Id = newVill.Id,
+                    Name = newVill.Name,
+                    AccountId = newVill.AccountId,
+                    X = newVill.X,
+                    Y = newVill.Y,
+                });
+                context.AddVillage(newVill.Id);
+                context.AddTroop(newVill.Id, tribe);
+
+                _taskManager.Add(_accountId, _taskFactory.GetUpdateBothDorfTask(newVill.Id, _accountId));
+            }
+            context.SaveChanges();
+            if (villageChange)
+            {
+                _eventManager.OnVillagesUpdate(_accountId);
+            }
+            return Result.Ok();
+        }
+
+        protected Result UpdateHeroInfo()
+        {
+            var html = _chromeBrowser.GetHtml();
+            var health = _heroSectionParser.GetHealth(html);
+            var status = _heroSectionParser.GetStatus(html);
+            var numberAdventure = _heroSectionParser.GetAdventureNum(html);
+
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.Heroes.Find(_accountId);
+            account.Health = health;
+            account.Status = (HeroStatusEnums)status;
+            context.Update(account);
+
+            var adventures = context.Adventures.Count(x => x.AccountId == _accountId);
+            if (numberAdventure == 0)
+            {
+                if (adventures != 0)
+                {
+                    var heroAdventures = context.Adventures.Where(x => x.AccountId == _accountId).ToList();
+                    context.Adventures.RemoveRange(heroAdventures);
+                }
+            }
+            else if (adventures != numberAdventure)
+            {
+                var setting = context.AccountsSettings.Find(_accountId);
+                if (setting.IsAutoAdventure)
+                {
+                    var listTask = _taskManager.GetList(_accountId);
+                    var task = listTask.OfType<UpdateAdventures>();
+                    if (!task.Any())
+                    {
+                        _taskManager.Add(_accountId, _taskFactory.GetUpdateAdventuresTask(_accountId));
+                    }
+                }
+            }
+
+            context.SaveChanges();
             return Result.Ok();
         }
     }

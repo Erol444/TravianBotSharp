@@ -14,7 +14,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
         {
         }
 
-        public override Result UpdateDorf2()
+        public override Result UpdateBuildings()
         {
             var html = _chromeBrowser.GetHtml();
             var buildingNodes = _villageInfrastructureParser.GetNodes(html);

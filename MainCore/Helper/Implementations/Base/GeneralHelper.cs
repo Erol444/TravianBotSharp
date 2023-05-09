@@ -17,6 +17,7 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IChromeManager _chromeManager;
 
         protected readonly ICheckHelper _checkHelper;
+        protected readonly IUpdateHelper _updateHelper;
 
         protected readonly INavigationBarParser _navigationBarParser;
         protected readonly IVillagesTableParser _villagesTableParser;
@@ -28,7 +29,7 @@ namespace MainCore.Helper.Implementations.Base
         protected CancellationToken _token;
         protected IChromeBrowser _chromeBrowser;
 
-        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser)
+        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper)
         {
             _chromeManager = chromeManager;
             _navigationBarParser = navigationBarParser;
@@ -36,6 +37,7 @@ namespace MainCore.Helper.Implementations.Base
             _villagesTableParser = villagesTableParser;
             _contextFactory = contextFactory;
             _buildingTabParser = buildingTabParser;
+            _updateHelper = updateHelper;
         }
 
         public void Load(int villageId, int accountId, CancellationToken cancellationToken)
@@ -46,6 +48,7 @@ namespace MainCore.Helper.Implementations.Base
             _chromeBrowser = _chromeManager.Get(_accountId);
 
             _checkHelper.Load(villageId, accountId, cancellationToken);
+            _updateHelper.Load(villageId, accountId, cancellationToken);
         }
 
         public bool IsPageValid()
@@ -181,6 +184,9 @@ namespace MainCore.Helper.Implementations.Base
 
             _result = Click(By.XPath(node.XPath), dorf1);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = _updateHelper.UpdateDorf1();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
@@ -207,6 +213,9 @@ namespace MainCore.Helper.Implementations.Base
             }
 
             _result = Click(By.XPath(node.XPath), dorf2);
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = _updateHelper.UpdateDorf2();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
