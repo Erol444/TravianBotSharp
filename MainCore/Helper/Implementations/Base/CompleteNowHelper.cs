@@ -43,27 +43,25 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Execute()
         {
+            _result = _generalHelper.SwitchVillage();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+
+            _result = _generalHelper.ToDorf();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+
             _result = ClickCompleteNowButton();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            try
-            {
-                var wait = _chromeBrowser.GetWait();
-                wait.Until(driver =>
-                {
-                    var html = new HtmlDocument();
-                    html.LoadHtml(driver.PageSource);
-                    var confirmButton = _villageCurrentlyBuildingParser.GetConfirmFinishNowButton(html);
-                    return confirmButton is not null;
-                });
-            }
-            catch
-            {
-                return Result.Fail(new Retry("Cannot find diaglog complete now"));
-            }
+            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
             _result = ClickConfirmCompleteNowButton();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+
+            _result = _generalHelper.ToDorf(true);
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
             return Result.Ok();
         }
@@ -76,7 +74,16 @@ namespace MainCore.Helper.Implementations.Base
             {
                 return Result.Fail(Retry.ButtonNotFound("complete now"));
             }
-            _result = _generalHelper.Click(By.XPath(finishButton.XPath));
+            _result = _generalHelper.Click(By.XPath(finishButton.XPath), waitPageLoaded: false);
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = _generalHelper.Wait(driver =>
+            {
+                var html = new HtmlDocument();
+                html.LoadHtml(driver.PageSource);
+                var confirmButton = _villageCurrentlyBuildingParser.GetConfirmFinishNowButton(html);
+                return confirmButton is not null;
+            });
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
