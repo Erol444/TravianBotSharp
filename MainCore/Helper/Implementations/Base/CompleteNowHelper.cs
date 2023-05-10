@@ -44,24 +44,24 @@ namespace MainCore.Helper.Implementations.Base
         public Result Execute()
         {
             _result = _generalHelper.SwitchVillage();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = _generalHelper.ToDorf();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = ClickCompleteNowButton();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = ClickConfirmCompleteNowButton();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = _generalHelper.ToDorf(true);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }

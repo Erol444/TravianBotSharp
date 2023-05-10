@@ -22,8 +22,8 @@ namespace MainCore.Tasks.Base
             _completeNowHelper.Load(VillageId, AccountId, CancellationToken);
 
             var result = _completeNowHelper.Execute();
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             TriggerTask();
 

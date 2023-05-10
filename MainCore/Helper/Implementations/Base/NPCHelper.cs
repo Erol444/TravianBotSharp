@@ -45,28 +45,28 @@ namespace MainCore.Helper.Implementations.Base
         public Result Execute(Resources ratio)
         {
             _result = _generalHelper.ToDorf2(true);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = CheckGold();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = ToMarketPlace();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = ClickNPCButton();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = EnterNumber(ratio);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = ClickNPC();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
