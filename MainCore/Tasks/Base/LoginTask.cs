@@ -5,8 +5,6 @@ using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using OpenQA.Selenium;
 using Splat;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -14,55 +12,95 @@ namespace MainCore.Tasks.Base
 {
     public abstract class LoginTask : AccountBotTask
     {
-        protected readonly ICheckHelper _checkHelper;
+        private readonly ISystemPageParser _systemPageParser;
+        private readonly IPlanManager _planManager;
 
-        protected readonly ISystemPageParser _systemPageParser;
+        private readonly IGeneralHelper _generalHelper;
 
-        protected readonly IPlanManager _planManager;
+        private IChromeBrowser _chromeBrowser;
 
         public LoginTask(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
-            _checkHelper = Locator.Current.GetService<ICheckHelper>();
             _systemPageParser = Locator.Current.GetService<ISystemPageParser>();
             _planManager = Locator.Current.GetService<IPlanManager>();
+
+            _generalHelper = Locator.Current.GetService<IGeneralHelper>();
         }
 
         public override Result Execute()
         {
-            var commands = new List<Func<Result>>()
-            {
-                AcceptCookie,
-                Login,
-                AddTask,
-            };
+            _generalHelper.Load(-1, AccountId, CancellationToken);
+            _chromeBrowser = _chromeManager.Get(AccountId);
 
-            foreach (var command in commands)
-            {
-                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
-                var result = command.Invoke();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-            }
+            Result result;
+
+            result = AcceptCookie();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
+            result = Login();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
+            AddTask();
             return Result.Ok();
         }
 
-        protected Result AcceptCookie()
+        private Result AcceptCookie()
         {
             var html = _chromeBrowser.GetHtml();
 
             if (html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes")))
             {
-                var driver = _chromeBrowser.GetChrome();
-                var acceptCookie = driver.FindElements(By.ClassName("cmpboxbtnyes"));
-                var result = _generalHelper.Click(AccountId, acceptCookie[0]);
+                var result = _generalHelper.Click(By.ClassName("cmpboxbtnyes"), false);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
         }
 
-        protected abstract Result Login();
+        private Result Login()
+        {
+            var html = _chromeBrowser.GetHtml();
 
-        protected Result AddTask()
+            var usernameNode = _systemPageParser.GetUsernameNode(html);
+
+            var passwordNode = _systemPageParser.GetPasswordNode(html);
+
+            var buttonNode = _systemPageParser.GetLoginButton(html);
+            if (buttonNode is null)
+            {
+                _logManager.Information(AccountId, "Account is already logged in. Skip login task");
+                return Result.Ok();
+            }
+
+            if (usernameNode is null)
+            {
+                return Result.Fail(new Retry("Cannot find username box"));
+            }
+
+            if (passwordNode is null)
+            {
+                return Result.Fail(new Retry("Cannot find password box"));
+            }
+
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.Accounts.Find(AccountId);
+            var access = context.Accesses.Where(x => x.AccountId == AccountId).OrderByDescending(x => x.LastUsed).FirstOrDefault();
+
+            Result result;
+
+            result = _generalHelper.Input(By.XPath(usernameNode.XPath), account.Username);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+
+            result = _generalHelper.Input(By.XPath(passwordNode.XPath), access.Password);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+
+            result = _generalHelper.Click(By.XPath(buttonNode.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
+        }
+
+        private void AddTask()
         {
             _taskManager.Add(AccountId, new UpdateInfo(AccountId));
 
@@ -103,8 +141,6 @@ namespace MainCore.Tasks.Base
                     }
                 }
             }
-
-            return Result.Ok();
         }
     }
 }
