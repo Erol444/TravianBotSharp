@@ -3,7 +3,6 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -11,74 +10,56 @@ namespace MainCore.Tasks.Base
 {
     public class InstantUpgrade : VillageBotTask
     {
-        protected readonly IClickHelper _clickHelper;
+        private readonly IGeneralHelper _generalHelper;
+        private readonly ICompleteNowHelper _completeNowHelper;
 
         public InstantUpgrade(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
-            _clickHelper = Locator.Current.GetService<IClickHelper>();
+            _generalHelper = Locator.Current.GetService<IGeneralHelper>();
+            _completeNowHelper = Locator.Current.GetService<ICompleteNowHelper>();
         }
 
         public override Result Execute()
         {
-            var commands = new List<Func<Result>>()
-            {
-                SwitchVillage,
-                GoToDorf,
-                ClickCompleteNow,
-                TriggerTask,
-                Update,
-            };
+            _generalHelper.Load(VillageId, AccountId, CancellationToken);
+            Result result;
 
-            foreach (var command in commands)
-            {
-                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
-                var result = command.Invoke();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-            }
+            result = _generalHelper.SwitchVillage();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
+            result = _generalHelper.ToDorf();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
+            result = _completeNowHelper.Execute();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
+            TriggerTask();
+
+            result = _generalHelper.ToDorf(true);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             return Result.Ok();
         }
 
-        protected Result SwitchVillage()
-        {
-            var result = _generalHelper.SwitchVillage(AccountId, VillageId);
-            return result;
-        }
-
-        protected Result GoToDorf()
-        {
-            var currentUrl = _chromeBrowser.GetCurrentUrl();
-            if (!currentUrl.Contains("dorf"))
-            {
-                var result = _generalHelper.GoRandomDorf(AccountId);
-                return result;
-            }
-            return Result.Ok();
-        }
-
-        protected Result ClickCompleteNow()
-        {
-            var result = _clickHelper.ClickCompleteNow(AccountId);
-            return result;
-        }
-
-        protected Result TriggerTask()
+        private void TriggerTask()
         {
             var tasks = _taskManager.GetList(AccountId);
-            var improveTroopTask = tasks.OfType<ImproveTroopsTask>().FirstOrDefault(x => x.VillageId == VillageId);
-            if (improveTroopTask is not null)
-            {
-                improveTroopTask.ExecuteAt = DateTime.Now;
-                _taskManager.Update(AccountId);
-            }
+            //var improveTroopTask = tasks.OfType<ImproveTroopsTask>().FirstOrDefault(x => x.VillageId == VillageId);
+            //if (improveTroopTask is not null)
+            //{
+            //    improveTroopTask.ExecuteAt = DateTime.Now;
+            //    _taskManager.Update(AccountId);
+            //}
             var upgradeTask = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == VillageId);
             if (upgradeTask is not null)
             {
                 upgradeTask.ExecuteAt = DateTime.Now;
                 _taskManager.Update(AccountId);
             }
-            return Result.Ok();
         }
 
         protected Result Update()

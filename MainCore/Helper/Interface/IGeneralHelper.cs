@@ -33,7 +33,7 @@ namespace MainCore.Helper.Interface
 
         Result ToBuilding(int index);
 
-        Result ToDorf();
+        Result ToDorf(bool forceReload = false);
 
         Result ToDorf1(bool forceReload = false);
 

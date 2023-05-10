@@ -220,10 +220,20 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result ToDorf()
+        public Result ToDorf(bool forceReload = false)
         {
-            var chanceDorf2 = DateTime.Now.Ticks % 100;
+            const string dorf = "dorf";
+            var currentUrl = _chromeBrowser.GetCurrentUrl();
+            if (currentUrl.Contains(dorf))
+            {
+                if (forceReload)
+                {
+                    Reload();
+                }
+                return Result.Ok();
+            }
 
+            var chanceDorf2 = DateTime.Now.Ticks % 100;
             return chanceDorf2 >= 50 ? ToDorf2() : ToDorf1();
         }
 
