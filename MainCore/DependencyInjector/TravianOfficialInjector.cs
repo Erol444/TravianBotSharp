@@ -29,6 +29,7 @@ namespace MainCore.DependencyInjector
             services.AddTransient<ILoginHelper, LoginHelper>();
             services.AddTransient<ITrainTroopHelper, TrainTroopHelper>();
             services.AddTransient<ICompleteNowHelper, CompleteNowHelper>();
+            services.AddTransient<IAdventureHelper, AdventureHelper>();
             return services;
         }
 

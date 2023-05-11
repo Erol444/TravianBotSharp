@@ -23,6 +23,8 @@ namespace MainCore.Tasks.Base
         public override Result Execute()
         {
             _trainTroopHelper.Load(VillageId, AccountId, CancellationToken);
+            NextExecute();
+
             CheckBuilding();
 
             var result = SwitchVillage();
@@ -44,7 +46,6 @@ namespace MainCore.Tasks.Base
                 if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             }
 
-            NextExecute();
             return Result.Ok();
         }
 
