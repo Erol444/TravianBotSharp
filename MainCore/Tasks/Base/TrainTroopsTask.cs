@@ -14,20 +14,23 @@ namespace MainCore.Tasks.Base
         private readonly List<BuildingEnums> _buildings = new();
 
         private readonly ITrainTroopHelper _trainTroopHelper;
+        private readonly IGeneralHelper _generalHelper;
 
         public TrainTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _trainTroopHelper = Locator.Current.GetService<ITrainTroopHelper>();
+            _generalHelper = Locator.Current.GetService<IGeneralHelper>();
         }
 
         public override Result Execute()
         {
+            _generalHelper.Load(VillageId, AccountId, CancellationToken);
             _trainTroopHelper.Load(VillageId, AccountId, CancellationToken);
             NextExecute();
 
             CheckBuilding();
 
-            var result = SwitchVillage();
+            var result = _generalHelper.SwitchVillage();
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
@@ -77,11 +80,6 @@ namespace MainCore.Tasks.Base
             {
                 _buildings.Add(BuildingEnums.Workshop);
             }
-        }
-
-        private Result SwitchVillage()
-        {
-            return _generalHelper.SwitchVillage(AccountId, VillageId);
         }
 
         private void NextExecute()
