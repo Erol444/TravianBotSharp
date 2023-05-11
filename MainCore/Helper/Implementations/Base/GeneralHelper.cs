@@ -288,8 +288,6 @@ namespace MainCore.Helper.Implementations.Base
 
         public abstract Result ToAdventure();
 
-        public abstract Result ClickStartAdventure(int x, int y);
-
         public abstract Result ClickStartFarm(int farmId);
     }
 }

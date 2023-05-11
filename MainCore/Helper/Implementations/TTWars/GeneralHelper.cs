@@ -63,42 +63,6 @@ namespace MainCore.Helper.Implementations.TTWars
             return Result.Ok();
         }
 
-        public override Result ClickStartAdventure(int x, int y)
-        {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
-
-            var html = _chromeBrowser.GetHtml();
-            var finishButton = _heroSectionParser.GetStartAdventureButton(html, x, y);
-            if (finishButton is null)
-            {
-                return Result.Fail(new Retry("Cannot find start adventure button"));
-            }
-
-            _result = Click(By.XPath(finishButton.XPath), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = Wait(driver =>
-            {
-                var elements = driver.FindElements(By.Id("start"));
-                if (elements.Count == 0) return false;
-                return elements[0].Enabled && elements[0].Displayed;
-            });
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = Click(By.Id("start"), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = Wait(driver =>
-            {
-                var elements = driver.FindElements(By.Id("ok"));
-                if (elements.Count == 0) return false;
-                return elements[0].Enabled && elements[0].Displayed;
-            });
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            return Result.Ok();
-        }
-
         public override Result ClickStartFarm(int farmId)
         {
             if (!IsPageValid()) return Result.Fail(Stop.Announcement);

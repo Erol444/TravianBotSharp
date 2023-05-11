@@ -129,45 +129,5 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 
             return Result.Ok();
         }
-
-        public override Result ClickStartAdventure(int x, int y)
-        {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
-
-            var html = _chromeBrowser.GetHtml();
-            var finishButton = _heroSectionParser.GetStartAdventureButton(html, x, y);
-            if (finishButton is null)
-            {
-                return Result.Fail(new Retry("Cannot find start adventure button"));
-            }
-
-            _result = Click(By.XPath(finishButton.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            return Result.Ok();
-        }
-
-        public override Result ClickStartFarm(int farmId)
-        {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
-
-            var html = _chromeBrowser.GetHtml();
-
-            var farmNode = html.GetElementbyId($"raidList{farmId}");
-            if (farmNode is null)
-            {
-                return Result.Fail(new Retry("Cannot found farm node"));
-            }
-            var startNode = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("startButton"));
-            if (startNode is null)
-            {
-                return Result.Fail(new Retry("Cannot found start button"));
-            }
-
-            _result = Click(By.XPath(startNode.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            return Result.Ok();
-        }
     }
 }

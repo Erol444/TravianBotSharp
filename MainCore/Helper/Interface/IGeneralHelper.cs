@@ -47,8 +47,6 @@ namespace MainCore.Helper.Interface
 
         Result WaitPageLoaded();
 
-        Result ClickStartAdventure(int x, int y);
-
         Result ClickStartFarm(int farmId);
     }
 }
