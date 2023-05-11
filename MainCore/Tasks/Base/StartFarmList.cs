@@ -3,71 +3,43 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace MainCore.Tasks.Base
 {
     public class StartFarmList : AccountBotTask
     {
-        private readonly IClickHelper _clickHelper;
+        private readonly IRallypointHelper _rallypointHelper;
+        private readonly ICheckHelper _checkHelper;
 
         public StartFarmList(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
-            _clickHelper = Locator.Current.GetService<IClickHelper>();
+            _rallypointHelper = Locator.Current.GetService<IRallypointHelper>();
+            _checkHelper = Locator.Current.GetService<ICheckHelper>(); ;
         }
 
         public override Result Execute()
         {
-            var commands = new List<Func<Result>>()
-            {
-                Update,
-                ClickStartFarm,
-                SetNextExecute,
-            };
+            _checkHelper.Load(-1, AccountId, CancellationToken);
+            _rallypointHelper.Load(_checkHelper.GetCurrentVillageId(), AccountId, CancellationToken);
 
-            foreach (var command in commands)
-            {
-                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
-                var result = command.Invoke();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-            }
+            var result = _rallypointHelper.StartFarmList();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
+            SetNextExecute();
             return Result.Ok();
         }
 
-        private Result Update()
+        private int GetCurrentVillage()
         {
-            var updateTask = new UpdateFarmList(AccountId);
-            var result = updateTask.Execute();
-            return result;
         }
 
-        private Result ClickStartFarm()
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var farms = context.Farms.Where(x => x.AccountId == AccountId).ToList();
-            foreach (var farm in farms)
-            {
-                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-                var isActive = context.FarmsSettings.Find(farm.Id).IsActive;
-                if (!isActive) continue;
-
-                var result = _clickHelper.ClickStartFarm(AccountId, farm.Id);
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            }
-            return Result.Ok();
-        }
-
-        private Result SetNextExecute()
+        private void SetNextExecute()
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.AccountsSettings.Find(AccountId);
             var time = Random.Shared.Next(setting.FarmIntervalMin, setting.FarmIntervalMax);
             ExecuteAt = DateTime.Now.AddSeconds(time);
-            return Result.Ok();
         }
     }
 }

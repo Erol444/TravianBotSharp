@@ -287,7 +287,5 @@ namespace MainCore.Helper.Implementations.Base
         public abstract Result ToHeroInventory();
 
         public abstract Result ToAdventure();
-
-        public abstract Result ClickStartFarm(int farmId);
     }
 }
