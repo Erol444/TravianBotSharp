@@ -16,6 +16,8 @@ namespace MainCore.Tasks.Base
         private readonly IAccessHelper _accessHelper;
 
         private readonly IRestClientManager _restClientManager;
+        private readonly IChromeManager _chromeManager;
+        private IChromeBrowser _chromeBrowser;
 
         private Access _nextAccess;
         private DateTime _sleepEnd;
@@ -25,10 +27,13 @@ namespace MainCore.Tasks.Base
             _accessHelper = Locator.Current.GetService<IAccessHelper>();
 
             _restClientManager = Locator.Current.GetService<IRestClientManager>();
+
+            _chromeManager = Locator.Current.GetService<IChromeManager>();
         }
 
         public override Result Execute()
         {
+            _chromeBrowser = _chromeManager.Get(AccountId);
             var commands = new List<Func<Result>>()
             {
                 ChooseNextProxy,
@@ -40,10 +45,10 @@ namespace MainCore.Tasks.Base
 
             foreach (var command in commands)
             {
-                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+                //_logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
                 var result = command.Invoke();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
         }
