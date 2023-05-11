@@ -1,8 +1,9 @@
 ﻿using FluentResults;
 using MainCore.Enums;
 using MainCore.Errors;
+using MainCore.Helper.Interface;
+using Splat;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
@@ -10,86 +11,52 @@ namespace MainCore.Tasks.Base
 {
     public abstract class RefreshVillage : VillageBotTask
     {
-        public int Mode { get; set; }
+        private readonly IGeneralHelper _generalHelper;
+        private readonly INPCHelper _npcHelper;
 
-        public RefreshVillage(int villageId, int accountId, int mode = 0, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
+        public RefreshVillage(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
-            Mode = mode;
+            _generalHelper = Locator.Current.GetService<IGeneralHelper>();
+            _npcHelper = Locator.Current.GetService<INPCHelper>();
         }
 
         public override Result Execute()
         {
-            var commands = new List<Func<Result>>()
+            _generalHelper.Load(VillageId, AccountId, CancellationToken);
+            _npcHelper.Load(VillageId, AccountId, CancellationToken);
+            Result result;
+            if (IsNeedDorf2())
             {
-                Update,
-                ApplyAutoTask,
-                NextExecute,
-            };
-
-            foreach (var command in commands)
-            {
-                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
-                var result = command.Invoke();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                result = _generalHelper.ToDorf2();
                 if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
+
+            result = _generalHelper.ToDorf1();
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            ApplyAutoTask();
+            NextExecute();
             return Result.Ok();
         }
 
-        protected Result Update()
+        protected void ApplyAutoTask()
         {
-            BotTask taskUpdate;
-            switch (Mode)
-            {
-                case 0:
-                    taskUpdate = IsNeedDorf2() ? new UpdateBothDorf(VillageId, AccountId, CancellationToken) : new UpdateDorf1(VillageId, AccountId, CancellationToken);
-                    break;
+            InstantUpgrade();
+            AutoNPC();
 
-                case 1:
-                    taskUpdate = new UpdateDorf1(VillageId, AccountId, CancellationToken);
-                    break;
-
-                case 2:
-                    taskUpdate = new UpdateDorf2(VillageId, AccountId, CancellationToken);
-                    break;
-
-                case 3:
-                    taskUpdate = new UpdateBothDorf(VillageId, AccountId, CancellationToken);
-                    break;
-
-                default:
-                    return Result.Ok();
-            }
-
-            var result = taskUpdate.Execute();
-            return result;
+            //if (IsNeedDorf2()) AutoImproveTroop();
         }
 
-        protected Result ApplyAutoTask()
-        {
-            using var context = _contextFactory.CreateDbContext();
-
-            InstantUpgrade(context);
-            AutoNPC(context);
-
-            if (Mode == 2 || Mode == 0 && IsNeedDorf2()) AutoImproveTroop(context);
-
-            return Result.Ok();
-        }
-
-        protected Result NextExecute()
+        protected void NextExecute()
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
 
-            if (!setting.IsAutoRefresh) return Result.Ok();
-
-            // auto refresh should be auto mode
-            Mode = 0;
+            if (!setting.IsAutoRefresh) return;
 
             var delay = Random.Shared.Next(setting.AutoRefreshTimeMin, setting.AutoRefreshTimeMax);
             ExecuteAt = DateTime.Now.AddMinutes(delay);
-            return Result.Ok();
         }
 
         protected bool IsNeedDorf2()
@@ -99,8 +66,10 @@ namespace MainCore.Tasks.Base
             return setting.IsUpgradeTroop;
         }
 
-        protected void InstantUpgrade(AppDbContext context)
+        protected void InstantUpgrade()
         {
+            using var context = _contextFactory.CreateDbContext();
+
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.OfType<InstantUpgrade>();
             if (tasks.Any(x => x.VillageId == VillageId)) return;
@@ -132,10 +101,37 @@ namespace MainCore.Tasks.Base
             _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
         }
 
-        protected abstract void AutoNPC(AppDbContext context);
-
-        protected void AutoImproveTroop(AppDbContext context)
+        protected void AutoNPC()
         {
+            var listTask = _taskManager.GetList(AccountId);
+            var tasks = listTask.OfType<NPCTask>();
+            if (tasks.Any(x => x.VillageId == VillageId)) return;
+
+            if (!_npcHelper.IsEnoughGold()) return;
+
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.Find(VillageId);
+
+            var resource = context.VillagesResources.Find(VillageId);
+            if (setting.IsAutoNPC && setting.AutoNPCPercent != 0)
+            {
+                var ratio = resource.Crop * 100.0f / resource.Granary;
+                if (ratio < setting.AutoNPCPercent) return;
+                _taskManager.Add(AccountId, _taskFactory.GetNPCTask(VillageId, AccountId));
+            }
+            if (setting.IsAutoNPCWarehouse && setting.AutoNPCWarehousePercent != 0)
+            {
+                var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
+                var ratio = maxResource * 100.0f / resource.Warehouse;
+                if (ratio < setting.AutoNPCWarehousePercent) return;
+                _taskManager.Add(AccountId, _taskFactory.GetNPCTask(VillageId, AccountId));
+            }
+        }
+
+        protected void AutoImproveTroop()
+        {
+            using var context = _contextFactory.CreateDbContext();
+
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.OfType<ImproveTroopsTask>();
             if (tasks.Any(x => x.VillageId == VillageId)) return;

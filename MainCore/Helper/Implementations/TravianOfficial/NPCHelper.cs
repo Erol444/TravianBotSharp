@@ -1,5 +1,4 @@
 ﻿using FluentResults;
-using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
 using MainCore.Parsers.Interface;
@@ -19,15 +18,14 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             _systemPageParser = systemPageParser;
         }
 
-        protected override Result CheckGold()
+        public override bool IsEnoughGold()
         {
             using var context = _contextFactory.CreateDbContext();
             var info = context.AccountsInfo.Find(_accountId);
 
             var goldNeed = 3;
 
-            var result = info.Gold > goldNeed;
-            return result ? Result.Ok() : Result.Fail(new Skip("Not enough gold"));
+            return info.Gold > goldNeed;
         }
 
         protected override Result EnterNumber(Resources _ratio)

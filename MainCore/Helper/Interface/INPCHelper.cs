@@ -7,6 +7,9 @@ namespace MainCore.Helper.Interface
     public interface INPCHelper
     {
         Result Execute(Resources ratio);
+
         void Load(int villageId, int accountId, CancellationToken cancellationToken);
+
+        bool IsEnoughGold();
     }
 }

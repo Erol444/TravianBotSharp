@@ -28,6 +28,7 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IFarmListParser _farmListParser;
         protected readonly IEventManager _eventManager;
         protected readonly IVillagesTableParser _villagesTableParser;
+        protected readonly IRightBarParser _rightBarParser;
         protected readonly ITaskManager _taskManager;
         protected readonly ITaskFactory _taskFactory;
 
@@ -37,7 +38,7 @@ namespace MainCore.Helper.Implementations.Base
         protected CancellationToken _token;
         protected IChromeBrowser _chromeBrowser;
 
-        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager)
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser)
         {
             _villageCurrentlyBuildingParser = villageCurrentlyBuildingParser;
             _chromeManager = chromeManager;
@@ -51,6 +52,7 @@ namespace MainCore.Helper.Implementations.Base
             _eventManager = eventManager;
             _villagesTableParser = villagesTableParser;
             _taskManager = taskManager;
+            _rightBarParser = rightBarParser;
         }
 
         public void Load(int villageId, int accountId, CancellationToken cancellationToken)
@@ -63,6 +65,9 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Update()
         {
+            _result = UpdateAccountInfo();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
             _result = UpdateHeroInfo();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
@@ -547,6 +552,27 @@ namespace MainCore.Helper.Implementations.Base
                 }
             }
 
+            context.SaveChanges();
+            return Result.Ok();
+        }
+
+        protected Result UpdateAccountInfo()
+        {
+            var html = _chromeBrowser.GetHtml();
+            //var tribe = _rightBarParser.GetTribe(html);
+            var hasPlusAccount = _rightBarParser.HasPlusAccount(html);
+            var gold = _stockBarParser.GetGold(html);
+            var silver = _stockBarParser.GetSilver(html);
+
+            using var context = _contextFactory.CreateDbContext();
+            var account = context.AccountsInfo.Find(_accountId);
+
+            account.HasPlusAccount = hasPlusAccount;
+            account.Gold = gold;
+            account.Silver = silver;
+
+            //if (account.Tribe == TribeEnums.Any) account.Tribe = (TribeEnums)tribe;
+            context.Update(account);
             context.SaveChanges();
             return Result.Ok();
         }

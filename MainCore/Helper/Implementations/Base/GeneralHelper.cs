@@ -220,7 +220,7 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result ToDorf(bool forceReload = false)
+        public Result<int> ToDorf(bool forceReload = false)
         {
             const string dorf = "dorf";
             var currentUrl = _chromeBrowser.GetCurrentUrl();
@@ -228,9 +228,8 @@ namespace MainCore.Helper.Implementations.Base
             {
                 if (forceReload)
                 {
-                    Reload();
+                    return Reload();
                 }
-                return Result.Ok();
             }
 
             var chanceDorf2 = DateTime.Now.Ticks % 100;

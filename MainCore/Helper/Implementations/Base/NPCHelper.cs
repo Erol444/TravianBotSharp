@@ -70,7 +70,12 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        protected abstract Result CheckGold();
+        public abstract bool IsEnoughGold();
+
+        protected Result CheckGold()
+        {
+            return Result.OkIf(IsEnoughGold(), new Skip("Not enough gold"));
+        }
 
         protected Result ToMarketPlace()
         {
