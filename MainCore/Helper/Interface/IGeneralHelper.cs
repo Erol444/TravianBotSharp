@@ -29,8 +29,6 @@ namespace MainCore.Helper.Interface
 
         Result SwitchVillage();
 
-        Result ToAdventure();
-
         Result ToBuilding(int index);
 
         Result ToDorf(bool forceReload = false);

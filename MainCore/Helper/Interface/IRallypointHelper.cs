@@ -5,8 +5,10 @@ namespace MainCore.Helper.Interface
 {
     public interface IRallypointHelper
     {
-        Result EnterFarmList();
+        Result EnterFarmListPage();
+
         void Load(int villageId, int accountId, CancellationToken cancellationToken);
+
         Result StartFarmList();
     }
 }

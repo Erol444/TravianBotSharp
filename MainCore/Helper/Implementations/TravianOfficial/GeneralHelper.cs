@@ -99,32 +99,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             });
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            return Result.Ok();
-        }
-
-        public override Result ToAdventure()
-        {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
-
-            var html = _chromeBrowser.GetHtml();
-            var node = _heroSectionParser.GetAdventuresButton(html);
-            if (node is null)
-            {
-                return Result.Fail(new Retry("Cannot find adventures button"));
-            }
-            _result = Click(By.XPath(node.XPath), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = Wait(driver =>
-            {
-                var doc = new HtmlDocument();
-                doc.LoadHtml(driver.PageSource);
-                var adventureDiv = doc.GetElementbyId("heroAdventure");
-                if (adventureDiv is null) return false;
-                var heroState = adventureDiv.Descendants("div").FirstOrDefault(x => x.HasClass("heroState"));
-                if (heroState is null) return false;
-                return driver.FindElements(By.XPath(heroState.XPath)).Count > 0;
-            });
+            _result = _updateHelper.UpdateHeroInventory();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();

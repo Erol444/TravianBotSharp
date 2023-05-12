@@ -276,6 +276,9 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result UpdateHeroInventory()
         {
+            _result = Update();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
             var foundItems = _heroSectionParser.GetItems(_chromeBrowser.GetHtml());
             using var context = _contextFactory.CreateDbContext();
             var heroItems = context.HeroesItems.Where(x => x.AccountId == _accountId).ToList();
@@ -313,6 +316,9 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result UpdateAdventures()
         {
+            _result = Update();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
             var foundAdventures = _heroSectionParser.GetAdventures(_chromeBrowser.GetHtml());
             using var context = _contextFactory.CreateDbContext();
             var heroAdventures = context.Adventures.Where(x => x.AccountId == _accountId).ToList();
@@ -391,6 +397,8 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result UpdateFarmList()
         {
+            _result = Update();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             var html = _chromeBrowser.GetHtml();
 
             var farmNodes = _farmListParser.GetFarmNodes(html);

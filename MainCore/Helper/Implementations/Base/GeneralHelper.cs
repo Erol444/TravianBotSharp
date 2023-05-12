@@ -220,7 +220,7 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result<int> ToDorf(bool forceReload = false)
+        public Result ToDorf(bool forceReload = false)
         {
             const string dorf = "dorf";
             var currentUrl = _chromeBrowser.GetCurrentUrl();
@@ -285,7 +285,5 @@ namespace MainCore.Helper.Implementations.Base
         public abstract Result ToBuilding(int index);
 
         public abstract Result ToHeroInventory();
-
-        public abstract Result ToAdventure();
     }
 }

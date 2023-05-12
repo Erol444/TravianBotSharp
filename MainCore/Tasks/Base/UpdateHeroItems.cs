@@ -2,49 +2,27 @@
 using MainCore.Errors;
 using MainCore.Helper.Interface;
 using Splat;
-using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace MainCore.Tasks.Base
 {
     public class UpdateHeroItems : AccountBotTask
     {
-        private readonly IUpdateHelper _updateHelper;
+        private readonly IGeneralHelper _generalHelper;
 
         public UpdateHeroItems(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
-            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
+            _generalHelper = Locator.Current.GetService<IGeneralHelper>();
         }
 
         public override Result Execute()
         {
-            var commands = new List<Func<Result>>()
-            {
-                ToHeroInventory,
-                Update,
-            };
+            _generalHelper.Load(-1, AccountId, CancellationToken);
+            var result = _generalHelper.ToHeroInventory();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
-            foreach (var command in commands)
-            {
-                _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
-                var result = command.Invoke();
-                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
-            }
             return Result.Ok();
-        }
-
-        private Result ToHeroInventory()
-        {
-            var result = _generalHelper.ToHeroInventory(AccountId);
-            return result;
-        }
-
-        private Result Update()
-        {
-            var result = _updateHelper.UpdateHeroInventory(AccountId);
-            return result;
         }
     }
 }

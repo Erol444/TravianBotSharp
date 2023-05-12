@@ -18,21 +18,6 @@ namespace MainCore.Helper.Implementations.TTWars
             _heroSectionParser = heroSectionParser;
         }
 
-        public override Result ToAdventure()
-        {
-            var html = _chromeBrowser.GetHtml();
-            var node = _heroSectionParser.GetAdventuresButton(html);
-            if (node is null)
-            {
-                return Result.Fail(new Retry("Cannot find adventures button"));
-            }
-
-            _result = Click(By.XPath(node.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            return Result.Ok();
-        }
-
         public override Result ToBuilding(int index)
         {
             if (!IsPageValid()) return Result.Fail(Stop.Announcement);
@@ -58,6 +43,8 @@ namespace MainCore.Helper.Implementations.TTWars
             _result = Click(By.XPath(avatar.XPath));
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
+            _result = _updateHelper.UpdateHeroInventory();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
     }

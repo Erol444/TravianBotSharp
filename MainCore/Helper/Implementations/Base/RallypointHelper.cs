@@ -40,7 +40,7 @@ namespace MainCore.Helper.Implementations.Base
             _updateHelper.Load(villageId, accountId, cancellationToken);
         }
 
-        public Result EnterFarmList()
+        public Result EnterFarmListPage()
         {
             _result = _generalHelper.SwitchVillage();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
@@ -69,7 +69,7 @@ namespace MainCore.Helper.Implementations.Base
         {
             if (!_generalHelper.IsPageValid()) return Result.Fail(Stop.Announcement);
 
-            _result = EnterFarmList();
+            _result = EnterFarmListPage();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             using var context = _contextFactory.CreateDbContext();

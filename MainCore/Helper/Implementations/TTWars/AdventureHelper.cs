@@ -14,6 +14,26 @@ namespace MainCore.Helper.Implementations.TTWars
         {
         }
 
+        public override Result ToAdventure()
+        {
+            if (!_generalHelper.IsPageValid()) return Result.Fail(Stop.Announcement);
+
+            var html = _chromeBrowser.GetHtml();
+            var node = _heroSectionParser.GetAdventuresButton(html);
+            if (node is null)
+            {
+                return Result.Fail(new Retry("Cannot find adventures button"));
+            }
+
+            _result = _generalHelper.Click(By.XPath(node.XPath));
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = _updateHelper.UpdateAdventures();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            return Result.Ok();
+        }
+
         protected override Result ClickStartAdventure()
         {
             if (!_generalHelper.IsPageValid()) return Result.Fail(Stop.Announcement);
