@@ -6,7 +6,7 @@ namespace MainCore.Helper.Interface
 {
     public interface IHeroResourcesHelper
     {
-        void Load(int accountId, CancellationToken cancellationToken);
+        void Load(int villageId, int accountId, CancellationToken cancellationToken);
 
         Result Execute(HeroItemEnums item, int amount);
     }

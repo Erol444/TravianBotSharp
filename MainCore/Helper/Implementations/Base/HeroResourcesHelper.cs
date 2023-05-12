@@ -16,6 +16,7 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IGeneralHelper _generalHelper;
 
         protected Result _result;
+        protected int _villageId;
         protected int _accountId;
         protected CancellationToken _token;
         protected IChromeBrowser _chromeBrowser;
@@ -27,19 +28,24 @@ namespace MainCore.Helper.Implementations.Base
             _generalHelper = generalHelper;
         }
 
-        public void Load(int accountId, CancellationToken cancellationToken)
+        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
         {
+            _villageId = villageId;
             _accountId = accountId;
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
 
-            _generalHelper.Load(-1, accountId, cancellationToken);
+            _generalHelper.Load(_villageId, accountId, cancellationToken);
         }
 
         public Result Execute(HeroItemEnums item, int amount)
         {
+            _result = _generalHelper.SwitchVillage();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
             _result = ClickItem(item);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
             _result = EnterAmount(amount);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
@@ -56,9 +62,15 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry("Cannot find amount box"));
             }
 
-            _result = _generalHelper.Input(By.XPath(amountBox.XPath), $"{amount}");
+            _result = _generalHelper.Input(By.XPath(amountBox.XPath), $"{RoundUpTo100(amount)}");
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
+        }
+
+        private static int RoundUpTo100(int res)
+        {
+            var remainder = res % 100;
+            return res + (100 - remainder);
         }
 
         protected abstract Result Confirm();
