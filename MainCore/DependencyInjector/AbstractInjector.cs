@@ -31,8 +31,6 @@ namespace MainCore.DependencyInjector
             return services;
         }
 
-        protected abstract IServiceCollection ConfigureFactory(IServiceCollection services);
-
         protected abstract IServiceCollection ConfigureParser(IServiceCollection services);
 
         protected abstract IServiceCollection ConfigureHelper(IServiceCollection services);

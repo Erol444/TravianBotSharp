@@ -32,7 +32,7 @@ namespace MainCore.Helper.Implementations.TTWars
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(_villageId);
-            var ratio = new int[4];
+            var ratio = new long[4];
             if (_ratio is null)
             {
                 ratio[0] = setting.AutoNPCWood;

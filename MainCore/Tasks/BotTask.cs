@@ -18,7 +18,6 @@ namespace MainCore.Tasks
             _taskManager = Locator.Current.GetService<ITaskManager>();
             _chromeManager = Locator.Current.GetService<IChromeManager>();
             _logManager = Locator.Current.GetService<ILogManager>();
-            _taskFactory = Locator.Current.GetService<ITaskFactory>();
             CancellationToken = cancellationToken;
         }
 
@@ -30,7 +29,6 @@ namespace MainCore.Tasks
         protected readonly IEventManager _eventManager;
         protected readonly IChromeManager _chromeManager;
         protected readonly ILogManager _logManager;
-        protected readonly ITaskFactory _taskFactory;
         protected string _name;
 
         public CancellationToken CancellationToken { get; set; }

@@ -2,8 +2,6 @@
 using MainCore.Helper.Interface;
 using MainCore.Parsers.Implementations.TravianOfficial;
 using MainCore.Parsers.Interface;
-using MainCore.Services.Implementations.TaskFactories;
-using MainCore.Services.Interface;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MainCore.DependencyInjector
@@ -22,15 +20,15 @@ namespace MainCore.DependencyInjector
             services.AddTransient<IUpdateHelper, UpdateHelper>();
             services.AddTransient<IGeneralHelper, GeneralHelper>();
             services.AddTransient<IBuildingsHelper, BuildingsHelper>();
-            services.AddTransient<IHeroResourcesHelper, HeroResourcesHelper>();
-            services.AddTransient<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
 
+            services.AddTransient<IHeroResourcesHelper, HeroResourcesHelper>();
+            services.AddTransient<IRallypointHelper, RallypointHelper>();
             services.AddTransient<INPCHelper, NPCHelper>();
             services.AddTransient<ILoginHelper, LoginHelper>();
             services.AddTransient<ITrainTroopHelper, TrainTroopHelper>();
             services.AddTransient<ICompleteNowHelper, CompleteNowHelper>();
             services.AddTransient<IAdventureHelper, AdventureHelper>();
-            services.AddTransient<IRallypointHelper, RallypointHelper>();
+            services.AddTransient<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
             return services;
         }
 
@@ -49,12 +47,6 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IVillageInfrastructureParser, VillageInfrastructureParser>();
             services.AddSingleton<IVillagesTableParser, VillagesTableParser>();
             services.AddSingleton<ITrainTroopParser, TrainTroopParser>();
-            return services;
-        }
-
-        protected override IServiceCollection ConfigureFactory(IServiceCollection services)
-        {
-            services.AddSingleton<ITaskFactory, TravianOfficialTaskFactory>();
             return services;
         }
     }

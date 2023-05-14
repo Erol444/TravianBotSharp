@@ -30,7 +30,6 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IVillagesTableParser _villagesTableParser;
         protected readonly IRightBarParser _rightBarParser;
         protected readonly ITaskManager _taskManager;
-        protected readonly ITaskFactory _taskFactory;
 
         protected Result _result;
         protected int _villageId;

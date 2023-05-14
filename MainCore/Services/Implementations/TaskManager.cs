@@ -14,13 +14,12 @@ namespace MainCore.Services.Implementations
 {
     public sealed class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogManager logManager, ITaskFactory taskFactory)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogManager logManager)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
             _logManager = logManager;
             _eventManager.TaskExecute += Loop;
-            _taskFactory = taskFactory;
         }
 
         public void Add(int index, BotTask task, bool first = false)
@@ -246,6 +245,5 @@ namespace MainCore.Services.Implementations
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
         private readonly ILogManager _logManager;
-        private readonly ITaskFactory _taskFactory;
     }
 }

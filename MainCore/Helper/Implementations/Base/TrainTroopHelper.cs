@@ -50,7 +50,7 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Execute(BuildingEnums trainBuilding)
         {
-            _result = UpdateDorf2();
+            _result = _generalHelper.ToDorf2();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
@@ -62,7 +62,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Ok();
             }
 
-            _result = EnterBuilding(buildingLoc);
+            _result = _generalHelper.ToBuilding(buildingLoc);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
@@ -88,11 +88,6 @@ namespace MainCore.Helper.Implementations.Base
 
             InputAmountTroop(troop, amountTroop);
             return Result.Ok();
-        }
-
-        private Result UpdateDorf2()
-        {
-            return _generalHelper.ToDorf2(_accountId);
         }
 
         private int GetBuilding(BuildingEnums trainBuilding)
@@ -136,11 +131,6 @@ namespace MainCore.Helper.Implementations.Base
             }
             context.Update(setting);
             context.SaveChanges();
-        }
-
-        private Result EnterBuilding(int buildingLocation)
-        {
-            return _generalHelper.GoToBuilding(_accountId, buildingLocation);
         }
 
         private int GetTroopTraining(BuildingEnums trainBuilding)

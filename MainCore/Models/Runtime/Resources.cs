@@ -39,6 +39,15 @@ namespace MainCore.Models.Runtime
             return $"Wood: {Wood}, Clay: {Clay}, Iron: {Iron}, Crop: {Crop}";
         }
 
+        /// <summary>
+        /// complier complain, change this before you use
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return (int)(Wood + Clay + Iron + Crop);
+        }
+
         public static bool operator >(Resources a, VillageResources b)
         {
             return (a.Wood > b.Wood && a.Clay > b.Clay && a.Iron > b.Iron && a.Crop > b.Crop);
