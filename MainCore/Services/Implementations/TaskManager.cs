@@ -2,7 +2,7 @@
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Services.Interface;
-using MainCore.Tasks;
+using MainCore.Tasks.Base;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 using System;

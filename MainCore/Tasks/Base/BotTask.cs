@@ -7,7 +7,7 @@ using System;
 using System.Threading;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
-namespace MainCore.Tasks
+namespace MainCore.Tasks.Base
 {
     public abstract class BotTask
     {

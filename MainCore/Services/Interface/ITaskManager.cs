@@ -1,5 +1,5 @@
 ﻿using MainCore.Enums;
-using MainCore.Tasks;
+using MainCore.Tasks.Base;
 using System.Collections.Generic;
 
 namespace MainCore.Services.Interface

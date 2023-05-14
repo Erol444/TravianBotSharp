@@ -1,10 +1,11 @@
 ﻿using FluentResults;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
+using MainCore.Tasks.Base;
 using Splat;
 using System.Threading;
 
-namespace MainCore.Tasks.Base
+namespace MainCore.Tasks.FunctionTasks
 {
     public class StartAdventure : AccountBotTask
     {

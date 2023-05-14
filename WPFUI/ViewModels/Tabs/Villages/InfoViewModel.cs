@@ -1,4 +1,4 @@
-﻿using MainCore.Tasks.Base;
+﻿using MainCore.Tasks.FunctionTasks;
 using ReactiveUI;
 using System;
 using System.Linq;

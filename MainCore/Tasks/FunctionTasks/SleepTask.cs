@@ -3,13 +3,14 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Services.Interface;
+using MainCore.Tasks.Base;
 using Splat;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Base
+namespace MainCore.Tasks.FunctionTasks
 {
     public class SleepTask : AccountBotTask
     {

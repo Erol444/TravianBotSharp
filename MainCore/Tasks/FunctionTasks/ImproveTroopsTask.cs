@@ -1,8 +1,9 @@
 ﻿using FluentResults;
 using MainCore.Enums;
+using MainCore.Tasks.Base;
 using System.Threading;
 
-namespace MainCore.Tasks.Base
+namespace MainCore.Tasks.FunctionTasks
 {
     public abstract class ImproveTroopsTask : VillageBotTask
     {

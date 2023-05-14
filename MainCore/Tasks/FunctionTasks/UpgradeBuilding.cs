@@ -2,10 +2,11 @@
 using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
+using MainCore.Tasks.Base;
 using Splat;
 using System.Threading;
 
-namespace MainCore.Tasks.Base
+namespace MainCore.Tasks.FunctionTasks
 {
     public abstract class UpgradeBuilding : VillageBotTask
     {

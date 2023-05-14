@@ -2,12 +2,13 @@
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
+using MainCore.Tasks.Base;
 using Splat;
 using System;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Base
+namespace MainCore.Tasks.FunctionTasks
 {
     public abstract class RefreshVillage : VillageBotTask
     {

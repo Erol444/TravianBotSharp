@@ -1,7 +1,7 @@
 ﻿using MainCore.Enums;
 using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
-using MainCore.Tasks;
+using MainCore.Tasks.Base;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using System;

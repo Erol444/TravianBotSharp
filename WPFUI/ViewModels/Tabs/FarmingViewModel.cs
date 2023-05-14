@@ -1,6 +1,6 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
-using MainCore.Tasks.Base;
+using MainCore.Tasks.FunctionTasks;
 using MainCore.Tasks.UpdateTasks;
 using ReactiveUI;
 using System;

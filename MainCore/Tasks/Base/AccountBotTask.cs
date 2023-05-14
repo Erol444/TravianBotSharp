@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace MainCore.Tasks
+namespace MainCore.Tasks.Base
 {
     public abstract class AccountBotTask : BotTask
     {

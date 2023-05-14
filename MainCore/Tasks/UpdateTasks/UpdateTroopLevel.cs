@@ -1,4 +1,5 @@
 ﻿using FluentResults;
+using MainCore.Tasks.Base;
 using System.Threading;
 
 namespace MainCore.Tasks.UpdateTasks
