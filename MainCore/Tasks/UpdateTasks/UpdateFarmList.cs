@@ -6,7 +6,7 @@ using Splat;
 using System.Linq;
 using System.Threading;
 
-namespace MainCore.Tasks.Base
+namespace MainCore.Tasks.UpdateTasks
 {
     public class UpdateFarmList : AccountBotTask
     {
@@ -26,7 +26,6 @@ namespace MainCore.Tasks.Base
 
             var result = _rallypointHelper.EnterFarmListPage();
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             return Result.Ok();
         }
 

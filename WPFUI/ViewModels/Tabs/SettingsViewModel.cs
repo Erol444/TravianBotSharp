@@ -1,5 +1,5 @@
 ﻿using MainCore.Enums;
-using MainCore.Tasks.Base;
+using MainCore.Tasks.UpdateTasks;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;

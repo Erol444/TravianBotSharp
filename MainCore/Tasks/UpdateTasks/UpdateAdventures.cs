@@ -4,7 +4,7 @@ using MainCore.Helper.Interface;
 using Splat;
 using System.Threading;
 
-namespace MainCore.Tasks.Base
+namespace MainCore.Tasks.UpdateTasks
 {
     public abstract class UpdateAdventures : AccountBotTask
     {

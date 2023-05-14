@@ -4,7 +4,7 @@ using MainCore.Helper.Interface;
 using Splat;
 using System.Threading;
 
-namespace MainCore.Tasks.Base
+namespace MainCore.Tasks.UpdateTasks
 {
     public class UpdateHeroItems : AccountBotTask
     {
@@ -20,7 +20,6 @@ namespace MainCore.Tasks.Base
             _generalHelper.Load(-1, AccountId, CancellationToken);
             var result = _generalHelper.ToHeroInventory();
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             return Result.Ok();
         }

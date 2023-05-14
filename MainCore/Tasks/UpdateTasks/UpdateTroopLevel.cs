@@ -1,7 +1,7 @@
 ﻿using FluentResults;
 using System.Threading;
 
-namespace MainCore.Tasks.Base
+namespace MainCore.Tasks.UpdateTasks
 {
     public class UpdateTroopLevel : VillageBotTask
     {

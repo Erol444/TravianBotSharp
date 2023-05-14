@@ -6,7 +6,7 @@ using MainCore.Models.Database;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using MainCore.Tasks;
-using MainCore.Tasks.Base;
+using MainCore.Tasks.UpdateTasks;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
