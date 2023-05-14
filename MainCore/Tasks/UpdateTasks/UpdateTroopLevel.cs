@@ -4,7 +4,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.UpdateTasks
 {
-    public class UpdateTroopLevel : VillageBotTask
+    public sealed class UpdateTroopLevel : VillageBotTask
     {
         public UpdateTroopLevel(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {

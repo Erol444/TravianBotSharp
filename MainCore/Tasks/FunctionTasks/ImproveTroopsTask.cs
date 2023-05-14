@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.FunctionTasks
 {
-    public abstract class ImproveTroopsTask : VillageBotTask
+    public sealed class ImproveTroopsTask : VillageBotTask
     {
         protected TroopEnums _troop;
         public TroopEnums Troop => _troop;

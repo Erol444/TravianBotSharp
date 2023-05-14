@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.FunctionTasks
 {
-    public class StartFarmList : AccountBotTask
+    public sealed class StartFarmList : AccountBotTask
     {
         private readonly IRallypointHelper _rallypointHelper;
         private readonly ICheckHelper _checkHelper;

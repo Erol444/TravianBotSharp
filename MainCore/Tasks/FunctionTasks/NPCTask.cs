@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.FunctionTasks
 {
-    public abstract class NPCTask : VillageBotTask
+    public sealed class NPCTask : VillageBotTask
     {
         private readonly INPCHelper _npcHelper;
 

@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.UpdateTasks
 {
-    public abstract class UpdateAdventures : AccountBotTask
+    public sealed class UpdateAdventures : AccountBotTask
     {
         protected readonly IAdventureHelper _adventureHelper;
 

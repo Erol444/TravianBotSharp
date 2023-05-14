@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.FunctionTasks
 {
-    public abstract class LoginTask : AccountBotTask
+    public sealed class LoginTask : AccountBotTask
     {
         private readonly IPlanManager _planManager;
 

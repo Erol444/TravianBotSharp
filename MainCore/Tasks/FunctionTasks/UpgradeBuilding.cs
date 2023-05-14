@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.FunctionTasks
 {
-    public abstract class UpgradeBuilding : VillageBotTask
+    public sealed class UpgradeBuilding : VillageBotTask
     {
         protected readonly IUpgradeBuildingHelper _upgradeBuildingHelper;
 

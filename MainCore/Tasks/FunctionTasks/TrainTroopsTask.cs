@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.FunctionTasks
 {
-    public class TrainTroopsTask : VillageBotTask
+    public sealed class TrainTroopsTask : VillageBotTask
     {
         private readonly List<BuildingEnums> _buildings = new();
 

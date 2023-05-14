@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.FunctionTasks
 {
-    public abstract class RefreshVillage : VillageBotTask
+    public sealed class RefreshVillage : VillageBotTask
     {
         private readonly IGeneralHelper _generalHelper;
         private readonly INPCHelper _npcHelper;

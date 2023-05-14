@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.UpdateTasks
 {
-    public class UpdateHeroItems : AccountBotTask
+    public sealed class UpdateHeroItems : AccountBotTask
     {
         private readonly IGeneralHelper _generalHelper;
 

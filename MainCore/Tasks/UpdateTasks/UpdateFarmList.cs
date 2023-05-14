@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace MainCore.Tasks.UpdateTasks
 {
-    public class UpdateFarmList : AccountBotTask
+    public sealed class UpdateFarmList : AccountBotTask
     {
         private readonly IRallypointHelper _rallypointHelper;
         private readonly ICheckHelper _checkHelper;
