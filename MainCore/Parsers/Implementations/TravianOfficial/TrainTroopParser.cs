@@ -54,13 +54,7 @@ namespace MainCore.Parsers.Implementations.TravianOfficial
             var crop = resource[3].Descendants("span").FirstOrDefault(x => x.HasClass("value")).InnerText;
             var cropValue = new string(crop.Where(c => char.IsDigit(c)).ToArray());
 
-            return new Resources()
-            {
-                Wood = int.Parse(woodValue),
-                Clay = int.Parse(clayValue),
-                Iron = int.Parse(ironValue),
-                Crop = int.Parse(cropValue)
-            };
+            return new Resources(long.Parse(woodValue), long.Parse(clayValue), long.Parse(ironValue), long.Parse(cropValue));
         }
 
         public TimeSpan GetTrainTime(HtmlNode node)

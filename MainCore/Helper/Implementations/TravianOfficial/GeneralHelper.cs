@@ -36,6 +36,8 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             {
                 case 1:
                     {
+                        _result = ToDorf1();
+                        if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
                         var node = _villageFieldParser.GetNode(html, index);
                         if (node is null)
                         {
@@ -48,6 +50,9 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 
                 case 2:
                     {
+                        _result = ToDorf2();
+                        if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
                         var node = _villageInfrastructureParser.GetNode(html, index);
                         if (node is null)
                         {

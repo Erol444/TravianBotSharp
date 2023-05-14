@@ -2,15 +2,20 @@
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
+using MainCore.Models.Runtime;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
     public abstract class HeroResourcesHelper : IHeroResourcesHelper
     {
+        protected readonly IDbContextFactory<AppDbContext> _contextFactory;
         protected readonly IChromeManager _chromeManager;
         protected readonly IHeroSectionParser _heroSectionParser;
         protected readonly IGeneralHelper _generalHelper;
@@ -21,11 +26,12 @@ namespace MainCore.Helper.Implementations.Base
         protected CancellationToken _token;
         protected IChromeBrowser _chromeBrowser;
 
-        public HeroResourcesHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper)
+        public HeroResourcesHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory)
         {
             _chromeManager = chromeManager;
             _heroSectionParser = heroSectionParser;
             _generalHelper = generalHelper;
+            _contextFactory = contextFactory;
         }
 
         public void Load(int villageId, int accountId, CancellationToken cancellationToken)
@@ -74,5 +80,38 @@ namespace MainCore.Helper.Implementations.Base
         }
 
         protected abstract Result Confirm();
+
+        public Result FillResource(Resources cost)
+        {
+            using var context = _contextFactory.CreateDbContext();
+
+            var itemsHero = context.HeroesItems.Where(x => x.AccountId == _accountId);
+            var woodAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Wood);
+            var clayAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Clay);
+            var ironAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Iron);
+            var cropAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Crop);
+
+            var resAvaliable = new Resources(woodAvaliable?.Count ?? 0, clayAvaliable?.Count ?? 0, ironAvaliable?.Count ?? 0, cropAvaliable?.Count ?? 0);
+            var resLeft = resAvaliable - cost;
+            if (resLeft.IsNegative())
+            {
+                return Result.Fail(NoResource.Hero(cost));
+            }
+
+            var items = new List<(HeroItemEnums, int)>()
+                            {
+                                (HeroItemEnums.Wood, (int)cost.Wood),
+                                (HeroItemEnums.Clay, (int)cost.Clay),
+                                (HeroItemEnums.Iron, (int)cost.Iron),
+                                (HeroItemEnums.Crop, (int)cost.Crop),
+                            };
+
+            foreach (var item in items)
+            {
+                _result = Execute(item.Item1, item.Item2);
+                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
+        }
     }
 }

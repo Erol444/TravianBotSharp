@@ -73,7 +73,7 @@ namespace MainCore.Helper.Implementations.Base
             var maxTroop = GetMaxTroop(troop);
             if (maxTroop == 0)
             {
-                return Result.Fail(new NoResource($"Don't have enough resource to train in {trainBuilding}"));
+                return Result.Fail(NoResource.Train(trainBuilding));
             }
 
             if (maxTroop < amountTroop)
@@ -83,7 +83,7 @@ namespace MainCore.Helper.Implementations.Base
 
             if (amountTroop == 0)
             {
-                return Result.Fail(new NoResource($"Don't have enough resource to train in {trainBuilding}"));
+                return Result.Fail(NoResource.Train(trainBuilding));
             }
 
             InputAmountTroop(troop, amountTroop);
