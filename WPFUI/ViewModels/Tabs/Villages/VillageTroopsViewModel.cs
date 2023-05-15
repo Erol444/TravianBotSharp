@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using MainCore.Tasks.UpdateTasks;
+using ReactiveUI;
 using System.Reactive;
 using System.Windows;
 using WPFUI.ViewModels.Abstract;
@@ -89,7 +90,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void UpdateTask()
         {
-            _taskManager.Add(AccountId, _taskFactory.GetUpdateTroopLevelTask(VillageId, AccountId));
+            _taskManager.Add(AccountId, new UpdateTroopLevel(VillageId, AccountId));
             MessageBox.Show("Update");
         }
 

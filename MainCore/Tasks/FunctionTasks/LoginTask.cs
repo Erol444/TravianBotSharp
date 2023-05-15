@@ -12,6 +12,7 @@ namespace MainCore.Tasks.FunctionTasks
     public sealed class LoginTask : AccountBotTask
     {
         private readonly IPlanManager _planManager;
+        private readonly ITaskManager _taskManager;
 
         private readonly ILoginHelper _loginHelper;
 
@@ -20,6 +21,7 @@ namespace MainCore.Tasks.FunctionTasks
             _planManager = Locator.Current.GetService<IPlanManager>();
 
             _loginHelper = Locator.Current.GetService<ILoginHelper>();
+            _taskManager = Locator.Current.GetService<ITaskManager>();
         }
 
         public override Result Execute()
@@ -36,42 +38,41 @@ namespace MainCore.Tasks.FunctionTasks
 
         private void AddTask()
         {
-            _taskManager.Add(AccountId, new UpdateInfo(AccountId));
-
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages.Where(x => x.AccountId == AccountId);
             var listTask = _taskManager.GetList(AccountId);
-            var upgradeBuildingList = listTask.OfType<UpgradeBuilding>();
-            var updateList = listTask.OfType<UpdateDorf1>();
 
+            var upgradeBuildingList = listTask.OfType<UpgradeBuilding>();
+            var updateList = listTask.OfType<RefreshVillage>();
             var trainTroopList = listTask.OfType<TrainTroopsTask>();
+
             foreach (var village in villages)
             {
                 var queue = _planManager.GetList(village.Id);
                 if (queue.Any())
                 {
-                    var upgradeBuilding = upgradeBuildingList.FirstOrDefault(x => x.VillageId == village.Id);
-                    if (upgradeBuilding is null)
+                    var task = upgradeBuildingList.FirstOrDefault(x => x.VillageId == village.Id);
+                    if (task is null)
                     {
-                        _taskManager.Add(AccountId, _taskFactory.GetUpgradeBuildingTask(village.Id, AccountId));
+                        _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
                     }
                 }
                 var setting = context.VillagesSettings.Find(village.Id);
                 if (setting.IsAutoRefresh)
                 {
-                    var update = updateList.FirstOrDefault(x => x.VillageId == village.Id);
-                    if (update is null)
+                    var task = updateList.FirstOrDefault(x => x.VillageId == village.Id);
+                    if (task is null)
                     {
-                        _taskManager.Add(AccountId, _taskFactory.GetRefreshVillageTask(village.Id, AccountId));
+                        _taskManager.Add(AccountId, new RefreshVillage(village.Id, AccountId));
                     }
                 }
 
                 if (setting.BarrackTroop != 0 || setting.StableTroop != 0 || setting.WorkshopTroop != 0)
                 {
-                    var update = trainTroopList.FirstOrDefault(x => x.VillageId == village.Id);
-                    if (update is null)
+                    var task = trainTroopList.FirstOrDefault(x => x.VillageId == village.Id);
+                    if (task is null)
                     {
-                        _taskManager.Add(AccountId, _taskFactory.GetTrainTroopTask(village.Id, AccountId));
+                        _taskManager.Add(AccountId, new TrainTroopsTask(village.Id, AccountId));
                     }
                 }
             }

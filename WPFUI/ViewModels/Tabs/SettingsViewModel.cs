@@ -203,7 +203,7 @@ namespace WPFUI.ViewModels.Tabs
             {
                 if (task is null)
                 {
-                    _taskManager.Add(index, _taskFactory.GetUpdateAdventuresTask(index));
+                    _taskManager.Add(index, new UpdateAdventures(index));
                 }
                 else
                 {

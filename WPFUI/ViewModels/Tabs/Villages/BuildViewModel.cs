@@ -86,6 +86,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadData(int villageId)
         {
+            _buildingsHelper.Load(villageId, AccountId, default);
             LoadBuildings(villageId);
             LoadCurrentlyBuildings(villageId);
             LoadNormalBuild(villageId, CurrentBuilding?.Id ?? -1);
@@ -207,7 +208,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 return (new() { new() { Building = plannedBuilding.Building } }, plannedBuilding.Level + 1);
             }
 
-            var buildings = _buildingsHelper.GetCanBuild(AccountId, villageId);
+            var buildings = _buildingsHelper.GetCanBuild();
             if (buildings.Count > 0)
             {
                 var list = buildings.Select(x => new BuildingComboBox() { Building = x }).ToList();
@@ -277,7 +278,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
-                _taskManager.Add(accountId, _taskFactory.GetUpgradeBuildingTask(villageId, accountId));
+                _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
             }
             else
             {
@@ -312,7 +313,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
-                _taskManager.Add(accountId, _taskFactory.GetUpgradeBuildingTask(villageId, accountId));
+                _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
             }
             else
             {

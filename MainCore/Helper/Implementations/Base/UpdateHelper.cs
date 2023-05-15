@@ -513,7 +513,7 @@ namespace MainCore.Helper.Implementations.Base
                 context.AddVillage(newVill.Id);
                 context.AddTroop(newVill.Id, tribe);
 
-                _taskManager.Add(_accountId, _taskFactory.GetUpdateBothDorfTask(newVill.Id, _accountId));
+                _taskManager.Add(_accountId, new UpdateBothDorf(newVill.Id, _accountId));
             }
             context.SaveChanges();
             if (villageChange)
@@ -554,7 +554,7 @@ namespace MainCore.Helper.Implementations.Base
                     var task = listTask.OfType<UpdateAdventures>();
                     if (!task.Any())
                     {
-                        _taskManager.Add(_accountId, _taskFactory.GetUpdateAdventuresTask(_accountId));
+                        _taskManager.Add(_accountId, new UpdateAdventures(_accountId));
                     }
                 }
             }

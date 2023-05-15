@@ -31,10 +31,6 @@ namespace MainCore.Tasks.FunctionTasks
             return Result.Ok();
         }
 
-        private int GetCurrentVillage()
-        {
-        }
-
         private void SetNextExecute()
         {
             using var context = _contextFactory.CreateDbContext();

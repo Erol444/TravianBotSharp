@@ -83,6 +83,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadData(int villageId)
         {
+            _upgradeBuildingHelper.Load(VillageId, AccountId, default);
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesSettings.Find(villageId);
 
@@ -230,7 +231,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     if (!tasks.Any())
                     {
-                        _upgradeBuildingHelper.RemoveFinishedCB(villageId);
+                        _upgradeBuildingHelper.RemoveFinishedCB();
                         var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
                         var count = currentBuildings.Count(x => x.Level != -1);
                         if (count > 0)
@@ -253,7 +254,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     if (!tasks.Any(x => x.VillageId == villageId))
                     {
-                        _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId));
+                        _taskManager.Add(accountId, new RefreshVillage(villageId, accountId));
                     }
                 }
                 else
@@ -271,7 +272,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     if (!tasks.Any(x => x.VillageId == villageId))
                     {
-                        _taskManager.Add(accountId, _taskFactory.GetTrainTroopTask(villageId, accountId));
+                        _taskManager.Add(accountId, new TrainTroopsTask(villageId, accountId));
                     }
                 }
                 else

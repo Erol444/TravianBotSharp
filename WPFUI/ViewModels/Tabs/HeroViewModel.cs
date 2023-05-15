@@ -125,7 +125,7 @@ namespace WPFUI.ViewModels.Tabs
             var task = tasks.OfType<UpdateAdventures>().FirstOrDefault();
             if (task is null)
             {
-                _taskManager.Add(accountId, _taskFactory.GetUpdateAdventuresTask(accountId));
+                _taskManager.Add(accountId, new UpdateAdventures(accountId));
             }
             else
             {

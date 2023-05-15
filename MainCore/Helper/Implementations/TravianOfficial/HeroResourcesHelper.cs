@@ -5,6 +5,7 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System.Linq;
 
@@ -12,7 +13,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 {
     public class HeroResourcesHelper : Base.HeroResourcesHelper
     {
-        public HeroResourcesHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper) : base(chromeManager, heroSectionParser, generalHelper)
+        public HeroResourcesHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory) : base(chromeManager, heroSectionParser, generalHelper, contextFactory)
         {
         }
 

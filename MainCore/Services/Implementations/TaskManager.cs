@@ -3,6 +3,7 @@ using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Services.Interface;
 using MainCore.Tasks.Base;
+using MainCore.Tasks.FunctionTasks;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 using System;
@@ -124,11 +125,6 @@ namespace MainCore.Services.Implementations
                         _logManager.Error(index, exception.Message, exception);
                     }
                     _logManager.Warning(index, $"Retry {retryCount} for {task.GetName()}");
-
-                    if (task is AccountBotTask accountTask)
-                    {
-                        accountTask.RefreshChrome();
-                    }
                 });
 
             _taskExecuting[index] = true;
@@ -167,7 +163,7 @@ namespace MainCore.Services.Implementations
 
                     if (result.HasError<Login>())
                     {
-                        Add(index, _taskFactory.GetLoginTask(index), true);
+                        Add(index, new LoginTask(index), true);
                     }
                     else if (result.HasError<Stop>())
                     {

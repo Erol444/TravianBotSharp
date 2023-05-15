@@ -9,7 +9,7 @@ namespace MainCore.Tasks.UpdateTasks
 {
     public sealed class UpdateAdventures : AccountBotTask
     {
-        protected readonly IAdventureHelper _adventureHelper;
+        private readonly IAdventureHelper _adventureHelper;
 
         public UpdateAdventures(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {

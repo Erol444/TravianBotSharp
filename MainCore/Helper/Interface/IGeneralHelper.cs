@@ -37,6 +37,8 @@ namespace MainCore.Helper.Interface
 
         Result ToDorf2(bool forceReload = false);
 
+        Result ToBothDorf();
+
         Result ToHeroInventory();
 
         Result Wait(Func<IWebDriver, bool> condition);

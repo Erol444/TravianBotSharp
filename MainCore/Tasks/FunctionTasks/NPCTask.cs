@@ -23,7 +23,7 @@ namespace MainCore.Tasks.FunctionTasks
             _ratio = ratio;
         }
 
-        protected readonly Resources _ratio;
+        private readonly Resources _ratio;
 
         public override Result Execute()
         {

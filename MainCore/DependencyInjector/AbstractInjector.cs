@@ -38,7 +38,6 @@ namespace MainCore.DependencyInjector
         public IServiceCollection Configure(IServiceCollection services)
         {
             ConfigureService(services);
-            ConfigureFactory(services);
             ConfigureParser(services);
             ConfigureHelper(services);
 

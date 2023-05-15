@@ -17,10 +17,13 @@ namespace MainCore.Tasks.FunctionTasks
         private readonly ITrainTroopHelper _trainTroopHelper;
         private readonly IGeneralHelper _generalHelper;
 
+        private readonly Services.Interface.ILogManager _logManager;
+
         public TrainTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _trainTroopHelper = Locator.Current.GetService<ITrainTroopHelper>();
             _generalHelper = Locator.Current.GetService<IGeneralHelper>();
+            _logManager = Locator.Current.GetService<Services.Interface.ILogManager>();
         }
 
         public override Result Execute()

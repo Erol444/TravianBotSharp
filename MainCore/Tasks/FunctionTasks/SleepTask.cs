@@ -18,6 +18,8 @@ namespace MainCore.Tasks.FunctionTasks
 
         private readonly IRestClientManager _restClientManager;
         private readonly IChromeManager _chromeManager;
+        private readonly ITaskManager _taskManager;
+        private readonly Services.Interface.ILogManager _logManager;
         private IChromeBrowser _chromeBrowser;
 
         private Access _nextAccess;
@@ -30,6 +32,8 @@ namespace MainCore.Tasks.FunctionTasks
             _restClientManager = Locator.Current.GetService<IRestClientManager>();
 
             _chromeManager = Locator.Current.GetService<IChromeManager>();
+            _taskManager = Locator.Current.GetService<ITaskManager>();
+            _logManager = Locator.Current.GetService<Services.Interface.ILogManager>();
         }
 
         public override Result Execute()

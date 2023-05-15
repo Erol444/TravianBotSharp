@@ -209,7 +209,7 @@ namespace WPFUI.ViewModels.Uc.MainView
                 MessageBox.Show(ex.Message, "Error");
                 return;
             }
-            _taskManager.Add(index, _taskFactory.GetLoginTask(index), true);
+            _taskManager.Add(index, new LoginTask(index), true);
 
             var sleepExist = _taskManager.GetList(index).FirstOrDefault(x => x.GetType() == typeof(SleepTask));
             if (sleepExist is null)
@@ -284,17 +284,17 @@ namespace WPFUI.ViewModels.Uc.MainView
                 var queue = _planManager.GetList(village.Id);
                 if (queue.Any())
                 {
-                    _taskManager.Add(index, _taskFactory.GetUpgradeBuildingTask(village.Id, index));
+                    _taskManager.Add(index, new UpgradeBuilding(village.Id, index));
                 }
                 var villageSetting = context.VillagesSettings.Find(village.Id);
                 if (villageSetting.IsAutoRefresh)
                 {
-                    _taskManager.Add(index, _taskFactory.GetRefreshVillageTask(village.Id, index));
+                    _taskManager.Add(index, new RefreshVillage(village.Id, index));
                 }
 
                 if (villageSetting.BarrackTroop != 0 || villageSetting.StableTroop != 0 || villageSetting.WorkshopTroop != 0)
                 {
-                    _taskManager.Add(AccountId, _taskFactory.GetTrainTroopTask(village.Id, AccountId));
+                    _taskManager.Add(AccountId, new TrainTroopsTask(village.Id, AccountId));
                 }
             }
 

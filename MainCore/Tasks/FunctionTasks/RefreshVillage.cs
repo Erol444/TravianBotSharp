@@ -2,6 +2,7 @@
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
+using MainCore.Services.Interface;
 using MainCore.Tasks.Base;
 using Splat;
 using System;
@@ -15,10 +16,13 @@ namespace MainCore.Tasks.FunctionTasks
         private readonly IGeneralHelper _generalHelper;
         private readonly INPCHelper _npcHelper;
 
+        private readonly ITaskManager _taskManager;
+
         public RefreshVillage(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _generalHelper = Locator.Current.GetService<IGeneralHelper>();
             _npcHelper = Locator.Current.GetService<INPCHelper>();
+            _taskManager = Locator.Current.GetService<ITaskManager>();
         }
 
         public override Result Execute()
@@ -29,19 +33,17 @@ namespace MainCore.Tasks.FunctionTasks
             if (IsNeedDorf2())
             {
                 result = _generalHelper.ToDorf2();
-                if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
             result = _generalHelper.ToDorf1();
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             ApplyAutoTask();
             NextExecute();
             return Result.Ok();
         }
 
-        protected void ApplyAutoTask()
+        private void ApplyAutoTask()
         {
             InstantUpgrade();
             AutoNPC();
@@ -49,7 +51,7 @@ namespace MainCore.Tasks.FunctionTasks
             //if (IsNeedDorf2()) AutoImproveTroop();
         }
 
-        protected void NextExecute()
+        private void NextExecute()
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
@@ -60,14 +62,14 @@ namespace MainCore.Tasks.FunctionTasks
             ExecuteAt = DateTime.Now.AddMinutes(delay);
         }
 
-        protected bool IsNeedDorf2()
+        private bool IsNeedDorf2()
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
             return setting.IsUpgradeTroop;
         }
 
-        protected void InstantUpgrade()
+        private void InstantUpgrade()
         {
             using var context = _contextFactory.CreateDbContext();
 
@@ -102,7 +104,7 @@ namespace MainCore.Tasks.FunctionTasks
             _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
         }
 
-        protected void AutoNPC()
+        private void AutoNPC()
         {
             var listTask = _taskManager.GetList(AccountId);
             var tasks = listTask.OfType<NPCTask>();
@@ -118,18 +120,18 @@ namespace MainCore.Tasks.FunctionTasks
             {
                 var ratio = resource.Crop * 100.0f / resource.Granary;
                 if (ratio < setting.AutoNPCPercent) return;
-                _taskManager.Add(AccountId, _taskFactory.GetNPCTask(VillageId, AccountId));
+                _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
             }
             if (setting.IsAutoNPCWarehouse && setting.AutoNPCWarehousePercent != 0)
             {
                 var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
                 var ratio = maxResource * 100.0f / resource.Warehouse;
                 if (ratio < setting.AutoNPCWarehousePercent) return;
-                _taskManager.Add(AccountId, _taskFactory.GetNPCTask(VillageId, AccountId));
+                _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
             }
         }
 
-        protected void AutoImproveTroop()
+        private void AutoImproveTroop()
         {
             using var context = _contextFactory.CreateDbContext();
 
@@ -152,7 +154,7 @@ namespace MainCore.Tasks.FunctionTasks
                 if (!troopsUpgrade[i]) continue;
                 if (troops[i].Level == -1) continue;
                 if (troops[i].Level >= smithy.Level) continue;
-                _taskManager.Add(AccountId, _taskFactory.GetImproveTroopsTask(VillageId, AccountId));
+                _taskManager.Add(AccountId, new ImproveTroopsTask(VillageId, AccountId));
             }
         }
     }

@@ -44,11 +44,12 @@ namespace MainCore.Helper.Implementations.Base
         public Result Execute()
         {
             _result = AcceptCookie();
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = Login();
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = _generalHelper.ToDorf1();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

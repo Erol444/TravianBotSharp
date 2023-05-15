@@ -1,4 +1,5 @@
 ﻿using MainCore.Tasks.FunctionTasks;
+using MainCore.Tasks.UpdateTasks;
 using ReactiveUI;
 using System;
 using System.Linq;
@@ -46,15 +47,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var villageId = VillageId;
-            var updateTask = tasks.OfType<RefreshVillage>().FirstOrDefault(x => x.VillageId == villageId);
+            var updateTask = tasks.OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId, 1));
+                _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
             }
             else
             {
                 updateTask.ExecuteAt = DateTime.Now;
-                updateTask.Mode = 1;
                 _taskManager.Update(accountId);
             }
         }
@@ -64,15 +64,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var villageId = VillageId;
-            var updateTask = tasks.OfType<RefreshVillage>().FirstOrDefault(x => x.VillageId == villageId);
+            var updateTask = tasks.OfType<UpdateDorf2>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId, 2));
+                _taskManager.Add(accountId, new UpdateDorf2(villageId, accountId));
             }
             else
             {
                 updateTask.ExecuteAt = DateTime.Now;
-                updateTask.Mode = 2;
                 _taskManager.Update(accountId);
             }
         }

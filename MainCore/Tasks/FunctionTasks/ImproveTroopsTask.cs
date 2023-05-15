@@ -1,5 +1,4 @@
 ﻿using FluentResults;
-using MainCore.Enums;
 using MainCore.Tasks.Base;
 using System.Threading;
 
@@ -7,9 +6,6 @@ namespace MainCore.Tasks.FunctionTasks
 {
     public sealed class ImproveTroopsTask : VillageBotTask
     {
-        protected TroopEnums _troop;
-        public TroopEnums Troop => _troop;
-
         public ImproveTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
         }

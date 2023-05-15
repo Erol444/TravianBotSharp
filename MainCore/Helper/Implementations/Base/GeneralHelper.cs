@@ -6,6 +6,7 @@ using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
@@ -236,6 +237,46 @@ namespace MainCore.Helper.Implementations.Base
             return chanceDorf2 >= 50 ? ToDorf2() : ToDorf1();
         }
 
+        public Result ToBothDorf()
+        {
+            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
+            _result = SwitchVillage();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            var commands = new List<Func<Result>>();
+            var url = _chromeBrowser.GetCurrentUrl();
+            if (url.Contains("dorf2"))
+            {
+                commands.Add(() => ToDorf2());
+                commands.Add(() => ToDorf1());
+            }
+            else if (url.Contains("dorf1"))
+            {
+                commands.Add(() => ToDorf1());
+                commands.Add(() => ToDorf2());
+            }
+            else
+            {
+                if (Random.Shared.Next(0, 100) > 50)
+                {
+                    commands.Add(() => ToDorf1());
+                    commands.Add(() => ToDorf2());
+                }
+                else
+                {
+                    commands.Add(() => ToDorf2());
+                    commands.Add(() => ToDorf1());
+                }
+            }
+
+            foreach (var command in commands)
+            {
+                _result = command.Invoke();
+                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
+        }
+
         public Result SwitchVillage()
         {
             if (!IsPageValid()) return Result.Fail(Stop.Announcement);
@@ -251,8 +292,8 @@ namespace MainCore.Helper.Implementations.Base
                     var id = _villagesTableParser.GetId(node);
                     if (id != _villageId) continue;
 
-                    var result = Click(By.XPath(node.XPath));
-                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                    _result = Click(By.XPath(node.XPath));
+                    if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
                     break;
                 }
             }
