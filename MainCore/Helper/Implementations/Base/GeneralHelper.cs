@@ -19,6 +19,7 @@ namespace MainCore.Helper.Implementations.Base
 
         protected readonly ICheckHelper _checkHelper;
         protected readonly IUpdateHelper _updateHelper;
+        protected readonly IInvalidPageHelper _invalidPageHelper;
 
         protected readonly INavigationBarParser _navigationBarParser;
         protected readonly IVillagesTableParser _villagesTableParser;
@@ -50,14 +51,6 @@ namespace MainCore.Helper.Implementations.Base
 
             _checkHelper.Load(villageId, accountId, cancellationToken);
             _updateHelper.Load(villageId, accountId, cancellationToken);
-        }
-
-        public bool IsPageValid()
-        {
-            var doc = _chromeBrowser.GetHtml();
-            var resourceButton = _navigationBarParser.GetBuildingButton(doc);
-            if (resourceButton is null) return false;
-            return true;
         }
 
         public int GetDelayClick()
@@ -123,6 +116,10 @@ namespace MainCore.Helper.Implementations.Base
 
             _result = WaitPageLoaded();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = _invalidPageHelper.CheckPage();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
             return Result.Ok();
         }
 
@@ -147,6 +144,10 @@ namespace MainCore.Helper.Implementations.Base
             DelayClick();
             _result = WaitPageLoaded();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            _result = _invalidPageHelper.CheckPage();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
             return Result.Ok();
         }
 
@@ -174,7 +175,8 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Ok();
             }
 
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
+            _result = _invalidPageHelper.CheckPage();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             var doc = _chromeBrowser.GetHtml();
             var node = _navigationBarParser.GetResourceButton(doc);
@@ -203,8 +205,6 @@ namespace MainCore.Helper.Implementations.Base
                 }
                 return Result.Ok();
             }
-
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
 
             var doc = _chromeBrowser.GetHtml();
             var node = _navigationBarParser.GetBuildingButton(doc);
@@ -239,7 +239,6 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result ToBothDorf()
         {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
             _result = SwitchVillage();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
@@ -279,8 +278,6 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result SwitchVillage()
         {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
-
             while (!_checkHelper.IsCorrectVillage())
             {
                 if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
@@ -302,7 +299,6 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result SwitchTab(int index)
         {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
             while (!_checkHelper.IsCorrectTab(index))
             {
                 var html = _chromeBrowser.GetHtml();

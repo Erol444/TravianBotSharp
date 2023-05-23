@@ -17,8 +17,6 @@ namespace MainCore.Helper.Interface
 
         int GetDelayClick();
 
-        bool IsPageValid();
-
         void Load(int villageId, int accountId, CancellationToken cancellationToken);
 
         Result Reload();

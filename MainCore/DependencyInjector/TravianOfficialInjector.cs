@@ -21,6 +21,7 @@ namespace MainCore.DependencyInjector
             services.AddTransient<IGeneralHelper, GeneralHelper>();
             services.AddTransient<IBuildingsHelper, BuildingsHelper>();
 
+            services.AddTransient<IInvalidPageHelper, InvalidPageHelper>();
             services.AddTransient<IHeroResourcesHelper, HeroResourcesHelper>();
             services.AddTransient<ISleepHelper, SleepHelper>();
             services.AddTransient<IRallypointHelper, RallypointHelper>();
