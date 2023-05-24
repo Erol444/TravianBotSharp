@@ -17,8 +17,6 @@ namespace MainCore.Helper.Implementations.TTWars
 
         protected override Result ClickStartFarm(int farmId)
         {
-            if (!_generalHelper.IsPageValid()) return Result.Fail(Stop.Announcement);
-
             var chrome = _chromeBrowser.GetChrome();
             chrome.ExecuteScript($"Travian.Game.RaidList.toggleList({farmId});");
             _generalHelper.DelayClick();

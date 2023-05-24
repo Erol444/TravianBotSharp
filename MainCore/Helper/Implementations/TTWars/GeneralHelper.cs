@@ -20,8 +20,6 @@ namespace MainCore.Helper.Implementations.TTWars
 
         public override Result ToBuilding(int index)
         {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
-
             var currentUrl = _chromeBrowser.GetCurrentUrl();
             var uri = new Uri(currentUrl);
             var serverUrl = $"{uri.Scheme}://{uri.Host}";

@@ -16,7 +16,6 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 
         protected override Result ClickStartFarm(int farmId)
         {
-            if (!_generalHelper.IsPageValid()) return Result.Fail(Stop.Announcement);
             var html = _chromeBrowser.GetHtml();
 
             var farmNode = html.GetElementbyId($"raidList{farmId}");

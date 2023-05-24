@@ -27,8 +27,6 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 
         public override Result ToBuilding(int index)
         {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
-
             var dorf = _buildingsHelper.GetDorf(index);
             var chrome = _chromeBrowser.GetChrome();
             var html = _chromeBrowser.GetHtml();
@@ -83,8 +81,6 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 
         public override Result ToHeroInventory()
         {
-            if (!IsPageValid()) return Result.Fail(Stop.Announcement);
-
             var html = _chromeBrowser.GetHtml();
             var avatar = _heroSectionParser.GetHeroAvatar(html);
             if (avatar is null)

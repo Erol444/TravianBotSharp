@@ -18,8 +18,6 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 
         public override Result ToAdventure()
         {
-            if (!_generalHelper.IsPageValid()) return Result.Fail(Stop.Announcement);
-
             var html = _chromeBrowser.GetHtml();
             var node = _heroSectionParser.GetAdventuresButton(html);
             if (node is null)
@@ -48,8 +46,6 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 
         protected override Result ClickStartAdventure()
         {
-            if (!_generalHelper.IsPageValid()) return Result.Fail(Stop.Announcement);
-
             var html = _chromeBrowser.GetHtml();
             var finishButton = _heroSectionParser.GetStartAdventureButton(html, _adventure.X, _adventure.Y);
             if (finishButton is null)

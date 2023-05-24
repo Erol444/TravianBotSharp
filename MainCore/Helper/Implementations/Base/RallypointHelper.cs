@@ -67,8 +67,6 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result StartFarmList()
         {
-            if (!_generalHelper.IsPageValid()) return Result.Fail(Stop.Announcement);
-
             _result = EnterFarmListPage();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
