@@ -31,7 +31,7 @@ namespace MainCore.Helper.Implementations.Base
         protected CancellationToken _token;
         protected IChromeBrowser _chromeBrowser;
 
-        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper)
+        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper, IInvalidPageHelper invalidPageHelper)
         {
             _chromeManager = chromeManager;
             _navigationBarParser = navigationBarParser;
@@ -40,6 +40,7 @@ namespace MainCore.Helper.Implementations.Base
             _contextFactory = contextFactory;
             _buildingTabParser = buildingTabParser;
             _updateHelper = updateHelper;
+            _invalidPageHelper = invalidPageHelper;
         }
 
         public void Load(int villageId, int accountId, CancellationToken cancellationToken)
