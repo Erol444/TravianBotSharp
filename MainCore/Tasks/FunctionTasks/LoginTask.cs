@@ -15,24 +15,29 @@ namespace MainCore.Tasks.FunctionTasks
         private readonly ITaskManager _taskManager;
 
         private readonly ILoginHelper _loginHelper;
+        private readonly IUpdateHelper _updateHelper;
 
         public LoginTask(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _planManager = Locator.Current.GetService<IPlanManager>();
 
             _loginHelper = Locator.Current.GetService<ILoginHelper>();
+            _updateHelper = Locator.Current.GetService<IUpdateHelper>();
             _taskManager = Locator.Current.GetService<ITaskManager>();
         }
 
         public override Result Execute()
         {
             _loginHelper.Load(AccountId, CancellationToken);
+            _updateHelper.Load(-1, AccountId, CancellationToken);
 
             var result = _loginHelper.Execute();
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            result = _updateHelper.Update();
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             AddTask();
+
             return Result.Ok();
         }
 

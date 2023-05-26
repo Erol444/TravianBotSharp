@@ -159,6 +159,8 @@ namespace MainCore.Helper.Implementations.Base
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             _result = WaitPageLoaded();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            _result = _invalidPageHelper.CheckPage();
+            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
@@ -174,9 +176,6 @@ namespace MainCore.Helper.Implementations.Base
                 }
                 return Result.Ok();
             }
-
-            _result = _invalidPageHelper.CheckPage();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             var doc = _chromeBrowser.GetHtml();
             var node = _navigationBarParser.GetResourceButton(doc);

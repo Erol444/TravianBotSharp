@@ -70,8 +70,11 @@ namespace MainCore.Helper.Implementations.Base
             _result = UpdateHeroInfo();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = UpdateResource();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (_villageId == -1)
+            {
+                _result = UpdateResource();
+                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            }
 
             _result = UpdateVillageList();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
