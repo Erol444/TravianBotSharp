@@ -13,6 +13,8 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IAccessHelper, AccessHelper>();
             services.AddSingleton<IGithubHelper, GithubHelper>();
 
+            services.AddSingleton<IDatabaseHelper, DatabaseHelper>();
+
             services.AddTransient<INPCHelper, NPCHelper>();
             services.AddTransient<ILoginHelper, LoginHelper>();
 

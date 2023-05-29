@@ -1,17 +1,14 @@
 ﻿using FluentResults;
 using System;
-using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface IAdventureHelper
     {
-        void Load(int accountId, CancellationToken cancellationToken);
+        Result StartAdventure(int accountId);
 
-        Result StartAdventure();
+        DateTime GetAdventureTimeLength(int accountId);
 
-        DateTime GetAdventureTimeLength();
-
-        Result ToAdventure();
+        Result ToAdventure(int accountId);
     }
 }

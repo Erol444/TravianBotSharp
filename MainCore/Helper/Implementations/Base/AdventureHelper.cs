@@ -4,85 +4,68 @@ using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
     public abstract class AdventureHelper : IAdventureHelper
     {
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        protected readonly IDatabaseHelper _databaseHelper;
         protected readonly IChromeManager _chromeManager;
         protected readonly IGeneralHelper _generalHelper;
         protected readonly IUpdateHelper _updateHelper;
 
-        protected readonly IHeroSectionParser _heroSectionParser;
         protected readonly ISystemPageParser _systemPageParser;
+        protected readonly IHeroSectionParser _heroSectionParser;
 
-        protected Result _result;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
-        protected Adventure _adventure;
-
-        public AdventureHelper(IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IGeneralHelper generalHelper, IHeroSectionParser heroSectionParser, ISystemPageParser systemPageParser)
+        public AdventureHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IHeroSectionParser heroSectionParser, ISystemPageParser systemPageParser, IDatabaseHelper databaseHelper)
         {
             _chromeManager = chromeManager;
-            _contextFactory = contextFactory;
             _generalHelper = generalHelper;
             _heroSectionParser = heroSectionParser;
             _systemPageParser = systemPageParser;
+            _databaseHelper = databaseHelper;
         }
 
-        public void Load(int accountId, CancellationToken cancellationToken)
+        public abstract Result ToAdventure(int accountId);
+
+        public abstract Result ClickStartAdventure(int accountId, Adventure adventure);
+
+        public Result StartAdventure(int accountId)
         {
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-            _generalHelper.Load(-1, accountId, cancellationToken);
-            _updateHelper.Load(-1, accountId, cancellationToken);
-        }
-
-        public abstract Result ToAdventure();
-
-        public Result StartAdventure()
-        {
-            _result = ChooseAdventures();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = ClickStartAdventure();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = ChooseAdventures(accountId);
+            if (result.IsFailed) return Result.Fail(result.Errors).WithError(new Trace(Trace.TraceMessage()));
+            var adventure = result.Value;
+            result = ClickStartAdventure(accountId, adventure);
+            if (result.IsFailed) return Result.Fail(result.Errors).WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        private Result ChooseAdventures()
+        private Result<Adventure> ChooseAdventures(int accountId)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.AccountsSettings.Find(_accountId);
+            var setting = _databaseHelper.GetAccountSetting(accountId);
             if (!setting.IsAutoAdventure)
             {
                 return Result.Fail(new Skip("Auto send adventures is set off."));
             }
-            var hero = context.Heroes.Find(_accountId);
+            var hero = _databaseHelper.GetHero(accountId);
             if (hero.Status != Enums.HeroStatusEnums.Home)
             {
                 return Result.Fail(new Skip("Hero is not at home."));
             }
 
-            var adventures = context.Adventures.Where(a => a.AccountId == _accountId);
-            _adventure = adventures.FirstOrDefault();
-            if (_adventure is null) return Result.Fail(new Skip("No adventure available"));
-            return Result.Ok();
+            var adventures = _databaseHelper.GetAdventures(accountId);
+            var adventure = adventures.FirstOrDefault();
+            if (adventure is null) return Result.Fail(new Skip("No adventure available"));
+            return Result.Ok(adventure);
         }
 
-        protected abstract Result ClickStartAdventure();
-
-        public DateTime GetAdventureTimeLength()
+        public DateTime GetAdventureTimeLength(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+
+            var html = chromeBrowser.GetHtml();
             var tileDetails = _systemPageParser.GetAdventuresDetail(html);
             if (tileDetails is null)
             {

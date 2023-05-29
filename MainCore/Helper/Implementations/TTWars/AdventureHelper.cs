@@ -1,67 +1,69 @@
 ﻿using FluentResults;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
+using MainCore.Models.Database;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
-using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 
 namespace MainCore.Helper.Implementations.TTWars
 {
     public class AdventureHelper : Base.AdventureHelper
     {
-        public AdventureHelper(IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IGeneralHelper generalHelper, IHeroSectionParser heroSectionParser, ISystemPageParser systemPageParser) : base(chromeManager, contextFactory, generalHelper, heroSectionParser, systemPageParser)
+        public AdventureHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IHeroSectionParser heroSectionParser, ISystemPageParser systemPageParser, IDatabaseHelper databaseHelper) : base(chromeManager, generalHelper, heroSectionParser, systemPageParser, databaseHelper)
         {
         }
 
-        public override Result ToAdventure()
+        public override Result ToAdventure(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var node = _heroSectionParser.GetAdventuresButton(html);
             if (node is null)
             {
                 return Result.Fail(new Retry("Cannot find adventures button"));
             }
 
-            _result = _generalHelper.Click(By.XPath(node.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(By.XPath(node.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _updateHelper.UpdateAdventures();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _updateHelper.UpdateAdventures();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        protected override Result ClickStartAdventure()
+        public override Result ClickStartAdventure(int accountId, Adventure adventure)
         {
-            var html = _chromeBrowser.GetHtml();
-            var finishButton = _heroSectionParser.GetStartAdventureButton(html, _adventure.X, _adventure.Y);
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
+            var finishButton = _heroSectionParser.GetStartAdventureButton(html, adventure.X, adventure.Y);
             if (finishButton is null)
             {
                 return Result.Fail(new Retry("Cannot find start adventure button"));
             }
 
-            _result = _generalHelper.Click(By.XPath(finishButton.XPath), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(By.XPath(finishButton.XPath), waitPageLoaded: false);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Wait(driver =>
+            result = _generalHelper.Wait(driver =>
             {
                 var elements = driver.FindElements(By.Id("start"));
                 if (elements.Count == 0) return false;
                 return elements[0].Enabled && elements[0].Displayed;
             });
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Click(By.Id("start"), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.Click(By.Id("start"), waitPageLoaded: false);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Wait(driver =>
+            result = _generalHelper.Wait(driver =>
             {
                 var elements = driver.FindElements(By.Id("ok"));
                 if (elements.Count == 0) return false;
                 return elements[0].Enabled && elements[0].Displayed;
             });
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }

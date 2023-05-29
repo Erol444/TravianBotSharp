@@ -18,17 +18,16 @@ namespace MainCore.Tasks.UpdateTasks
 
         public override Result Execute()
         {
-            _adventureHelper.Load(AccountId, CancellationToken);
             Result result;
-            result = _adventureHelper.ToAdventure();
+            result = _adventureHelper.ToAdventure(AccountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
-            result = _adventureHelper.StartAdventure();
+            result = _adventureHelper.StartAdventure(AccountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
-            ExecuteAt = _adventureHelper.GetAdventureTimeLength();
+            ExecuteAt = _adventureHelper.GetAdventureTimeLength(AccountId);
             return Result.Ok();
         }
     }

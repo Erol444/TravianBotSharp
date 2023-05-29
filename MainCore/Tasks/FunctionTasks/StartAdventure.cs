@@ -18,9 +18,7 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _adventureHelper.Load(AccountId, CancellationToken);
-
-            var result = _adventureHelper.StartAdventure();
+            var result = _adventureHelper.StartAdventure(AccountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
