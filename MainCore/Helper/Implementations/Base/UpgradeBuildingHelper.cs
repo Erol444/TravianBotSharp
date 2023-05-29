@@ -57,7 +57,6 @@ namespace MainCore.Helper.Implementations.Base
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
 
-            _buildingsHelper.Load(villageId, accountId, cancellationToken);
             _generalHelper.Load(villageId, accountId, cancellationToken);
             _heroResourcesHelper.Load(villageId, accountId, cancellationToken);
         }

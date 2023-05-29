@@ -17,7 +17,7 @@ namespace MainCore.DependencyInjector
             services.AddTransient<ICheckHelper, CheckHelper>();
             services.AddTransient<IUpdateHelper, UpdateHelper>();
             services.AddTransient<IGeneralHelper, GeneralHelper>();
-            services.AddTransient<IBuildingsHelper, BuildingsHelper>();
+            services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
 
             services.AddTransient<IInvalidPageHelper, InvalidPageHelper>();
             services.AddTransient<IHeroResourcesHelper, HeroResourcesHelper>();
@@ -27,7 +27,7 @@ namespace MainCore.DependencyInjector
             services.AddTransient<ILoginHelper, LoginHelper>();
             services.AddTransient<ITrainTroopHelper, TrainTroopHelper>();
             services.AddTransient<ICompleteNowHelper, CompleteNowHelper>();
-            services.AddTransient<IAdventureHelper, AdventureHelper>();
+            services.AddSingleton<IAdventureHelper, AdventureHelper>();
             services.AddTransient<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
 
             return services;

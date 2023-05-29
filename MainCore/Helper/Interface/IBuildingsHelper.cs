@@ -1,19 +1,24 @@
 ﻿using MainCore.Enums;
 using System.Collections.Generic;
-using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface IBuildingsHelper
     {
-        void Load(int villageId, int accountId, CancellationToken cancellationToken);
-
-        bool CanBuild(BuildingEnums building);
-
         int GetDorf(int index);
 
         int GetDorf(BuildingEnums building);
 
-        List<BuildingEnums> GetCanBuild();
+        List<BuildingEnums> GetCanBuild(int villageId);
+
+        bool IsAutoCropFieldAboveLevel(int villageId, int level);
+
+        bool IsAutoResourceFieldAboveLevel(int villageId, int level);
+
+        bool IsBuildingAboveLevel(int villageId, BuildingEnums building, int level);
+
+        bool IsExists(int villageId, BuildingEnums building);
+
+        bool CanBuild(int villageId, TribeEnums tribe, BuildingEnums building);
     }
 }

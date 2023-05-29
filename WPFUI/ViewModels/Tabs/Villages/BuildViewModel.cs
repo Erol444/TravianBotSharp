@@ -86,7 +86,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadData(int villageId)
         {
-            _buildingsHelper.Load(villageId, AccountId, default);
             LoadBuildings(villageId);
             LoadCurrentlyBuildings(villageId);
             LoadNormalBuild(villageId, CurrentBuilding?.Id ?? -1);
@@ -208,7 +207,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 return (new() { new() { Building = plannedBuilding.Building } }, plannedBuilding.Level + 1);
             }
 
-            var buildings = _buildingsHelper.GetCanBuild();
+            var buildings = _buildingsHelper.GetCanBuild(villageId);
             if (buildings.Count > 0)
             {
                 var list = buildings.Select(x => new BuildingComboBox() { Building = x }).ToList();
