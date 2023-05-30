@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
@@ -20,12 +19,6 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IHeroSectionParser _heroSectionParser;
         protected readonly IGeneralHelper _generalHelper;
 
-        protected Result _result;
-        protected int _villageId;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
         public HeroResourcesHelper(IChromeManager chromeManager, IHeroSectionParser heroSectionParser, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory)
         {
             _chromeManager = chromeManager;
@@ -34,40 +27,35 @@ namespace MainCore.Helper.Implementations.Base
             _contextFactory = contextFactory;
         }
 
-        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
+        public Result Execute(int accountId, int villageId, HeroItemEnums item, int amount)
         {
-            _villageId = villageId;
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-        }
+            var result = _generalHelper.SwitchVillage(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-        public Result Execute(HeroItemEnums item, int amount)
-        {
-            _result = _generalHelper.SwitchVillage(_accountId, _villageId);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = ClickItem(accountId, item);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = ClickItem(item);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = EnterAmount(amount);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = EnterAmount(accountId, amount);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        protected abstract Result ClickItem(HeroItemEnums item);
+        public abstract Result ClickItem(int accountId, HeroItemEnums item);
 
-        protected Result EnterAmount(int amount)
+        public abstract Result Confirm(int accountId);
+
+        public Result EnterAmount(int accountId, int amount)
         {
-            var doc = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var doc = chromeBrowser.GetHtml();
             var amountBox = _heroSectionParser.GetAmountBox(doc);
             if (amountBox is null)
             {
                 return Result.Fail(new Retry("Cannot find amount box"));
             }
 
-            _result = _generalHelper.Input(_accountId, By.XPath(amountBox.XPath), $"{RoundUpTo100(amount)}");
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Input(accountId, By.XPath(amountBox.XPath), $"{RoundUpTo100(amount)}");
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
@@ -77,13 +65,11 @@ namespace MainCore.Helper.Implementations.Base
             return res + (100 - remainder);
         }
 
-        protected abstract Result Confirm();
-
-        public Result FillResource(Resources cost)
+        public Result FillResource(int accountId, int villageId, Resources cost)
         {
             using var context = _contextFactory.CreateDbContext();
 
-            var itemsHero = context.HeroesItems.Where(x => x.AccountId == _accountId);
+            var itemsHero = context.HeroesItems.Where(x => x.AccountId == accountId);
             var woodAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Wood);
             var clayAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Clay);
             var ironAvaliable = itemsHero.FirstOrDefault(x => x.Item == HeroItemEnums.Iron);
@@ -106,8 +92,8 @@ namespace MainCore.Helper.Implementations.Base
 
             foreach (var item in items)
             {
-                _result = Execute(item.Item1, item.Item2);
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                var result = Execute(accountId, villageId, item.Item1, item.Item2);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
         }

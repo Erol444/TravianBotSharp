@@ -56,8 +56,6 @@ namespace MainCore.Helper.Implementations.Base
             _accountId = accountId;
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
-
-            _heroResourcesHelper.Load(villageId, accountId, cancellationToken);
         }
 
         public Result Execute()
@@ -309,7 +307,7 @@ namespace MainCore.Helper.Implementations.Base
             _result = _generalHelper.ToHeroInventory(_accountId);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _heroResourcesHelper.FillResource(resCurrent - resNeed);
+            _result = _heroResourcesHelper.FillResource(_accountId, _villageId, resCurrent - resNeed);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = _generalHelper.Navigate(_accountId, buildingUrl);

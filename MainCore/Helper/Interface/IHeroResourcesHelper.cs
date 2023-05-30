@@ -1,15 +1,19 @@
 ﻿using FluentResults;
 using MainCore.Enums;
 using MainCore.Models.Runtime;
-using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface IHeroResourcesHelper
     {
-        void Load(int villageId, int accountId, CancellationToken cancellationToken);
+        Result ClickItem(int accountId, HeroItemEnums item);
 
-        Result Execute(HeroItemEnums item, int amount);
-        Result FillResource(Resources cost);
+        Result Confirm(int accountId);
+
+        Result EnterAmount(int accountId, int amount);
+
+        Result Execute(int accountId, int villageId, HeroItemEnums item, int amount);
+
+        Result FillResource(int accountId, int villageId, Resources cost);
     }
 }
