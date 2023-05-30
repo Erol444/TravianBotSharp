@@ -114,7 +114,7 @@ namespace MainCore.Helper.Implementations.Base
             result = WaitPageLoaded(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _invalidPageHelper.CheckPage();
+            result = _invalidPageHelper.CheckPage(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
@@ -144,7 +144,7 @@ namespace MainCore.Helper.Implementations.Base
             var result = WaitPageLoaded(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _invalidPageHelper.CheckPage();
+            result = _invalidPageHelper.CheckPage(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
@@ -159,7 +159,7 @@ namespace MainCore.Helper.Implementations.Base
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             result = WaitPageLoaded(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            result = _invalidPageHelper.CheckPage();
+            result = _invalidPageHelper.CheckPage(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

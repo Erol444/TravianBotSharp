@@ -20,7 +20,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
 
             services.AddTransient<IInvalidPageHelper, InvalidPageHelper>();
-            services.AddTransient<IHeroResourcesHelper, HeroResourcesHelper>();
+            services.AddSingleton<IHeroResourcesHelper, HeroResourcesHelper>();
             services.AddTransient<ISleepHelper, SleepHelper>();
             services.AddTransient<IRallypointHelper, RallypointHelper>();
             services.AddTransient<INPCHelper, NPCHelper>();
