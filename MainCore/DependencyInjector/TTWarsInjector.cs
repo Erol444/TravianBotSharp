@@ -14,7 +14,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IGithubHelper, GithubHelper>();
             services.AddSingleton<IDatabaseHelper, DatabaseHelper>();
 
-            services.AddTransient<ICheckHelper, CheckHelper>();
+            services.AddSingleton<ICheckHelper, CheckHelper>();
             services.AddTransient<IUpdateHelper, UpdateHelper>();
             services.AddTransient<IGeneralHelper, GeneralHelper>();
             services.AddSingleton<IBuildingsHelper, BuildingsHelper>();

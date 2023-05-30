@@ -22,38 +22,44 @@ namespace MainCore.Tasks.UpdateTasks
 
         public override Result Execute()
         {
-            _checkHelper.Load(-1, AccountId, CancellationToken);
-            _rallypointHelper.Load(GetVillageHasRallyPoint(), AccountId, CancellationToken);
+            var resultVillage = GetVillageHasRallyPoint();
+            if (resultVillage.IsFailed) return Result.Fail(resultVillage.Errors).WithError(new Trace(Trace.TraceMessage()));
+
+            _rallypointHelper.Load(resultVillage.Value, AccountId, CancellationToken);
 
             var result = _rallypointHelper.EnterFarmListPage();
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        private int GetVillageHasRallyPoint()
+        private Result<int> GetVillageHasRallyPoint()
         {
             using var context = _contextFactory.CreateDbContext();
 
-            var currentVillage = _checkHelper.GetCurrentVillageId();
-            if (currentVillage != -1)
-            {
-                var building = context.VillagesBuildings
-                   .Where(x => x.VillageId == currentVillage)
-                   .FirstOrDefault(x => x.Type == BuildingEnums.RallyPoint && x.Level > 0);
-                if (building is not null) return currentVillage;
-            }
+            // check current village
+            var result = _checkHelper.GetCurrentVillageId(AccountId);
+            if (result.IsFailed) return Result.Fail(result.Errors).WithError(new Trace(Trace.TraceMessage()));
+            var currentVillage = result.Value;
 
+            var rallyPointCurrentVillage = context.VillagesBuildings
+               .Where(x => x.VillageId == currentVillage)
+               .FirstOrDefault(x => x.Type == BuildingEnums.RallyPoint && x.Level > 0);
+            if (rallyPointCurrentVillage is not null) return currentVillage;
+
+            // check other village
             var villages = context.Villages.Where(x => x.AccountId == AccountId);
 
             foreach (var village in villages)
             {
-                var building = context.VillagesBuildings
+                if (village.Id == currentVillage) continue;
+
+                var rallyPoint = context.VillagesBuildings
                     .Where(x => x.VillageId == village.Id)
                     .FirstOrDefault(x => x.Type == BuildingEnums.RallyPoint && x.Level > 0);
-                if (building is null) continue;
+                if (rallyPoint is null) continue;
                 return village.Id;
             }
-            return -1;
+            return Result.Fail(new Skip("No village has rally point"));
         }
     }
 }

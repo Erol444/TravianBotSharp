@@ -21,8 +21,10 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _checkHelper.Load(-1, AccountId, CancellationToken);
-            _rallypointHelper.Load(_checkHelper.GetCurrentVillageId(), AccountId, CancellationToken);
+            var resultVillage = _checkHelper.GetCurrentVillageId(AccountId);
+            if (resultVillage.IsFailed) return Result.Fail(resultVillage.Errors).WithError(new Trace(Trace.TraceMessage()));
+
+            _rallypointHelper.Load(resultVillage.Value, AccountId, CancellationToken);
 
             var result = _rallypointHelper.StartFarmList();
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));

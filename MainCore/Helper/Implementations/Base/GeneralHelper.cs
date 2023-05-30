@@ -50,7 +50,6 @@ namespace MainCore.Helper.Implementations.Base
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
 
-            _checkHelper.Load(villageId, accountId, cancellationToken);
             _updateHelper.Load(villageId, accountId, cancellationToken);
         }
 
@@ -278,9 +277,14 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result SwitchVillage()
         {
-            while (!_checkHelper.IsCorrectVillage())
+            while (true)
             {
+                var resultIsCorrectVillage = _checkHelper.IsCorrectVillage(_accountId, _villageId);
+                if (resultIsCorrectVillage.IsFailed) return Result.Fail(resultIsCorrectVillage.Errors).WithError(new Trace(Trace.TraceMessage()));
+
+                if (resultIsCorrectVillage.Value) return Result.Ok();
                 if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+
                 var html = _chromeBrowser.GetHtml();
 
                 var listNode = _villagesTableParser.GetVillages(html);
@@ -294,12 +298,11 @@ namespace MainCore.Helper.Implementations.Base
                     break;
                 }
             }
-            return Result.Ok();
         }
 
         public Result SwitchTab(int index)
         {
-            while (!_checkHelper.IsCorrectTab(index))
+            while (_checkHelper.IsCorrectTab(_accountId, index))
             {
                 var html = _chromeBrowser.GetHtml();
                 var listNode = _buildingTabParser.GetBuildingTabNodes(html);

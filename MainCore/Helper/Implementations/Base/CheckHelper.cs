@@ -1,62 +1,47 @@
 ﻿using FluentResults;
-using HtmlAgilityPack;
+using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
-using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
     public abstract class CheckHelper : ICheckHelper
     {
         protected readonly IChromeManager _chromeManager;
-        protected readonly IDbContextFactory<AppDbContext> _contextFactory;
-        protected readonly IVillagesTableParser _villagesTableParser;
-        protected readonly IBuildingTabParser _buildingTabParser;
-        protected readonly ISystemPageParser _systemPageParser;
+        private readonly IVillagesTableParser _villagesTableParser;
+        private readonly IBuildingTabParser _buildingTabParser;
+        private readonly ISystemPageParser _systemPageParser;
 
-        protected Result _result;
-        protected int _villageId;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
-        public CheckHelper(IChromeManager chromeManager, IVillagesTableParser villagesTableParser, IBuildingTabParser buildingTabParser, IDbContextFactory<AppDbContext> contextFactory, ISystemPageParser systemPageParser)
+        public CheckHelper(IChromeManager chromeManager, IVillagesTableParser villagesTableParser, IBuildingTabParser buildingTabParser, ISystemPageParser systemPageParser)
         {
             _chromeManager = chromeManager;
             _villagesTableParser = villagesTableParser;
             _buildingTabParser = buildingTabParser;
-            _contextFactory = contextFactory;
             _systemPageParser = systemPageParser;
         }
 
-        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
-        {
-            _villageId = villageId;
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-        }
+        public abstract bool IsFarmListPage(int accountId);
 
-        public bool IsCorrectVillage()
+        public Result<bool> IsCorrectVillage(int accountId, int villageId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
 
             var listNode = _villagesTableParser.GetVillages(html);
             foreach (var node in listNode)
             {
                 var id = _villagesTableParser.GetId(node);
-                if (id != _villageId) continue;
+                if (id != villageId) continue;
                 return _villagesTableParser.IsActive(node);
             }
-            return false;
+            return Result.Fail(new Retry($"Not found villageId {villageId} in village list"));
         }
 
-        public int GetCurrentVillageId()
+        public Result<int> GetCurrentVillageId(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
 
             var listNode = _villagesTableParser.GetVillages(html);
             foreach (var node in listNode)
@@ -64,40 +49,25 @@ namespace MainCore.Helper.Implementations.Base
                 if (!_villagesTableParser.IsActive(node)) continue;
                 return _villagesTableParser.GetId(node);
             }
-            return -1;
+            return Result.Fail(new Retry($"Cannot detect active village in village list"));
         }
 
-        public bool IsCorrectTab(int tab)
+        public bool IsCorrectTab(int accountId, int tab)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var tabs = _buildingTabParser.GetBuildingTabNodes(html);
             return _buildingTabParser.IsCurrentTab(tabs[tab]);
         }
 
-        public abstract bool IsFarmListPage();
-
-        public bool IsWWMsg(HtmlDocument doc) => doc.DocumentNode.Descendants("img").FirstOrDefault(x => x.GetAttributeValue("src", "") == "/img/ww100.png") is not null;
-
-        public bool IsWWPage(IChromeBrowser chromeBrowser) => chromeBrowser.GetCurrentUrl().EndsWith("/spieler.php?uid=1");
-
-        public bool IsSkipTutorial(HtmlDocument doc) => doc.DocumentNode.Descendants().Any(x => x.HasClass("questButtonSkipTutorial"));
-
-        public bool IsContextualHelp(HtmlDocument doc) => doc.GetElementbyId("contextualHelp") is not null;
-
-        public bool IsBanMsg(HtmlDocument doc) => doc.GetElementbyId("punishmentMsgButtons") is not null;
-
-        public bool IsMaintanance(HtmlDocument doc) => doc.DocumentNode.Descendants("img").Any(x => x.HasClass("fatalErrorImage"));
-
-        public bool IsCaptcha(HtmlDocument doc) => doc.GetElementbyId("recaptchaImage") is not null;
-
-        public bool IsLoginScreen(HtmlDocument doc)
+        public bool IsLoginScreen(int accountId)
         {
-            var username = _systemPageParser.GetUsernameNode(doc);
-            var password = _systemPageParser.GetPasswordNode(doc);
-            var button = _systemPageParser.GetLoginButton(doc);
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
+            var username = _systemPageParser.GetUsernameNode(html);
+            var password = _systemPageParser.GetPasswordNode(html);
+            var button = _systemPageParser.GetLoginButton(html);
             return username is not null && password is not null && button is not null;
         }
-
-        public bool IsSysMsg(HtmlDocument doc) => doc.GetElementbyId("sysmsg") is not null;
     }
 }
