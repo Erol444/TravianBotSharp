@@ -19,9 +19,9 @@ namespace MainCore.Helper.Implementations.TTWars
         {
             var chrome = _chromeBrowser.GetChrome();
             chrome.ExecuteScript($"Travian.Game.RaidList.toggleList({farmId});");
-            _generalHelper.DelayClick();
+            _generalHelper.DelayClick(_accountId);
 
-            _result = _generalHelper.Wait(driver =>
+            _result = _generalHelper.Wait(_accountId, driver =>
             {
                 var waitHtml = new HtmlDocument();
                 waitHtml.LoadHtml(driver.PageSource);
@@ -32,7 +32,7 @@ namespace MainCore.Helper.Implementations.TTWars
             });
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Click(By.Id($"raidListMarkAll{farmId}"));
+            _result = _generalHelper.Click(_accountId, By.Id($"raidListMarkAll{farmId}"));
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             var html = _chromeBrowser.GetHtml();
@@ -44,7 +44,7 @@ namespace MainCore.Helper.Implementations.TTWars
                 return Result.Fail(new Retry("Cannot find button start farmlist"));
             }
 
-            _result = _generalHelper.Click(By.XPath(buttonStartFarm.XPath));
+            _result = _generalHelper.Click(_accountId, By.XPath(buttonStartFarm.XPath));
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();

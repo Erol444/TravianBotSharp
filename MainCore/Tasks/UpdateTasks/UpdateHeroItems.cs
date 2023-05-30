@@ -18,8 +18,7 @@ namespace MainCore.Tasks.UpdateTasks
 
         public override Result Execute()
         {
-            _generalHelper.Load(-1, AccountId, CancellationToken);
-            var result = _generalHelper.ToHeroInventory();
+            var result = _generalHelper.ToHeroInventory(AccountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();

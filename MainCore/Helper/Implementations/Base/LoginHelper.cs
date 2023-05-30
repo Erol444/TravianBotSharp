@@ -37,8 +37,6 @@ namespace MainCore.Helper.Implementations.Base
             _accountId = accountId;
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
-
-            _generalHelper.Load(-1, accountId, cancellationToken);
         }
 
         public Result Execute()
@@ -49,7 +47,7 @@ namespace MainCore.Helper.Implementations.Base
             _result = Login();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.ToDorf1();
+            _result = _generalHelper.ToDorf1(_accountId);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
@@ -60,7 +58,7 @@ namespace MainCore.Helper.Implementations.Base
 
             if (html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes")))
             {
-                var result = _generalHelper.Click(By.ClassName("cmpboxbtnyes"), false);
+                var result = _generalHelper.Click(_accountId, By.ClassName("cmpboxbtnyes"), false);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
@@ -94,13 +92,13 @@ namespace MainCore.Helper.Implementations.Base
             var account = context.Accounts.Find(_accountId);
             var access = context.Accesses.Where(x => x.AccountId == _accountId).OrderByDescending(x => x.LastUsed).FirstOrDefault();
 
-            _result = _generalHelper.Input(By.XPath(usernameNode.XPath), account.Username);
+            _result = _generalHelper.Input(_accountId, By.XPath(usernameNode.XPath), account.Username);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Input(By.XPath(passwordNode.XPath), access.Password);
+            _result = _generalHelper.Input(_accountId, By.XPath(passwordNode.XPath), access.Password);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Click(By.XPath(buttonNode.XPath));
+            _result = _generalHelper.Click(_accountId, By.XPath(buttonNode.XPath));
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

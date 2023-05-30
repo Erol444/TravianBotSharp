@@ -24,7 +24,7 @@ namespace MainCore.Helper.Implementations.TTWars
                 return Result.Fail(new Retry("Cannot find adventures button"));
             }
 
-            var result = _generalHelper.Click(By.XPath(node.XPath));
+            var result = _generalHelper.Click(accountId, By.XPath(node.XPath));
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = _updateHelper.UpdateAdventures();
@@ -43,10 +43,10 @@ namespace MainCore.Helper.Implementations.TTWars
                 return Result.Fail(new Retry("Cannot find start adventure button"));
             }
 
-            var result = _generalHelper.Click(By.XPath(finishButton.XPath), waitPageLoaded: false);
+            var result = _generalHelper.Click(accountId, By.XPath(finishButton.XPath), waitPageLoaded: false);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.Wait(driver =>
+            result = _generalHelper.Wait(accountId, driver =>
             {
                 var elements = driver.FindElements(By.Id("start"));
                 if (elements.Count == 0) return false;
@@ -54,10 +54,10 @@ namespace MainCore.Helper.Implementations.TTWars
             });
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.Click(By.Id("start"), waitPageLoaded: false);
+            result = _generalHelper.Click(accountId, By.Id("start"), waitPageLoaded: false);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.Wait(driver =>
+            result = _generalHelper.Wait(accountId, driver =>
             {
                 var elements = driver.FindElements(By.Id("ok"));
                 if (elements.Count == 0) return false;

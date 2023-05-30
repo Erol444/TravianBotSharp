@@ -50,7 +50,7 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Execute(BuildingEnums trainBuilding)
         {
-            _result = _generalHelper.ToDorf2();
+            _result = _generalHelper.ToDorf2(_accountId);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
@@ -62,7 +62,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Ok();
             }
 
-            _result = _generalHelper.ToBuilding(buildingLoc);
+            _result = _generalHelper.ToBuilding(_accountId, buildingLoc);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 

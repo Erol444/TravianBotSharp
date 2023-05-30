@@ -25,10 +25,10 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             {
                 return Result.Fail(new Retry("Cannot find adventures button"));
             }
-            var result = _generalHelper.Click(By.XPath(node.XPath), waitPageLoaded: false);
+            var result = _generalHelper.Click(accountId, By.XPath(node.XPath), waitPageLoaded: false);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.Wait(driver =>
+            result = _generalHelper.Wait(accountId, driver =>
             {
                 var doc = new HtmlDocument();
                 doc.LoadHtml(driver.PageSource);
@@ -55,7 +55,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 return Result.Fail(new Retry("Cannot find start adventure button"));
             }
 
-            var result = _generalHelper.Click(By.XPath(finishButton.XPath));
+            var result = _generalHelper.Click(accountId, By.XPath(finishButton.XPath));
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();

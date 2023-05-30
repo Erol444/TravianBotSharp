@@ -25,31 +25,33 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             _heroSectionParser = heroSectionParser;
         }
 
-        public override Result ToBuilding(int index)
+        public override Result ToBuilding(int accountId, int index)
         {
             var dorf = _buildingsHelper.GetDorf(index);
-            var chrome = _chromeBrowser.GetChrome();
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var chrome = chromeBrowser.GetChrome();
+            var html = chromeBrowser.GetHtml();
+            Result result;
             switch (dorf)
             {
                 case 1:
                     {
-                        _result = ToDorf1();
-                        if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                        result = ToDorf1(accountId);
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                         var node = _villageFieldParser.GetNode(html, index);
                         if (node is null)
                         {
                             return Result.Fail(new Retry($"Cannot find resource field at {index}"));
                         }
-                        _result = Click(By.XPath(node.XPath));
-                        if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                        result = Click(accountId, By.XPath(node.XPath));
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                     break;
 
                 case 2:
                     {
-                        _result = ToDorf2();
-                        if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                        result = ToDorf2(accountId);
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
                         var node = _villageInfrastructureParser.GetNode(html, index);
                         if (node is null)
@@ -65,8 +67,8 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                         var script = href.Replace("&amp;", "&");
                         chrome.ExecuteScript(script);
 
-                        _result = WaitPageChanged($"?id={index}");
-                        if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                        result = WaitPageChanged(accountId, $"?id={index}");
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                     break;
 
@@ -74,23 +76,24 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                     break;
             }
 
-            _result = WaitPageLoaded();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = WaitPageLoaded(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        public override Result ToHeroInventory()
+        public override Result ToHeroInventory(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var avatar = _heroSectionParser.GetHeroAvatar(html);
             if (avatar is null)
             {
                 return Result.Fail(new Retry("Cannot find hero avatar"));
             }
-            _result = Click(By.XPath(avatar.XPath), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = Click(accountId, By.XPath(avatar.XPath), waitPageLoaded: false);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = Wait(driver =>
+            result = Wait(accountId, driver =>
             {
                 var doc = new HtmlDocument();
                 doc.LoadHtml(driver.PageSource);
@@ -98,10 +101,10 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 if (tab is null) return false;
                 return _heroSectionParser.IsCurrentTab(tab);
             });
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _updateHelper.UpdateHeroInventory();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _updateHelper.UpdateHeroInventory();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }

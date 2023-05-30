@@ -27,16 +27,15 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _generalHelper.Load(VillageId, AccountId, CancellationToken);
             _npcHelper.Load(VillageId, AccountId, CancellationToken);
             Result result;
             if (IsNeedDorf2())
             {
-                result = _generalHelper.ToDorf2();
+                result = _generalHelper.ToDorf2(AccountId);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
-            result = _generalHelper.ToDorf1();
+            result = _generalHelper.ToDorf1(AccountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             ApplyAutoTask();
             NextExecute();

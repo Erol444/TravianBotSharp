@@ -25,12 +25,6 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IVillagesTableParser _villagesTableParser;
         protected readonly IBuildingTabParser _buildingTabParser;
 
-        protected Result _result;
-        protected int _villageId;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
         public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper, IInvalidPageHelper invalidPageHelper)
         {
             _chromeManager = chromeManager;
@@ -43,38 +37,26 @@ namespace MainCore.Helper.Implementations.Base
             _invalidPageHelper = invalidPageHelper;
         }
 
-        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
-        {
-            _villageId = villageId;
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
+        public abstract Result ToBuilding(int accountId, int index);
 
-            _updateHelper.Load(villageId, accountId, cancellationToken);
-        }
+        public abstract Result ToHeroInventory(int accountId);
 
-        public int GetDelayClick()
+        public int GetDelayClick(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var setting = context.AccountsSettings.Find(_accountId);
+            var setting = context.AccountsSettings.Find(accountId);
             return Random.Shared.Next(setting.ClickDelayMin, setting.ClickDelayMax);
         }
 
-        public void DelayClick() => Thread.Sleep(GetDelayClick());
-
-        public Result WaitPageLoaded()
+        public void DelayClick(int accountId)
         {
-            return Wait(driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            Thread.Sleep(GetDelayClick(accountId));
         }
 
-        public Result WaitPageChanged(string path)
+        public Result Wait(int accountId, Func<IWebDriver, bool> condition)
         {
-            return Wait(driver => driver.Url.Contains(path));
-        }
-
-        public Result Wait(Func<IWebDriver, bool> condition)
-        {
-            var wait = _chromeBrowser.GetWait();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var wait = chromeBrowser.GetWait();
             try
             {
                 wait.Until(condition);
@@ -86,9 +68,24 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result Click(By by, bool waitPageLoaded = true)
+        public Result WaitPageLoaded(int accountId)
         {
-            var chrome = _chromeBrowser.GetChrome();
+            var result = Wait(accountId, driver => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
+        }
+
+        public Result WaitPageChanged(int accountId, string path)
+        {
+            var result = Wait(accountId, driver => driver.Url.Contains(path));
+            if (result.IsFailed) return result.WithError($"Browser cannot change to path [{path}]").WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
+        }
+
+        public Result Click(int accountId, By by, bool waitPageLoaded = true)
+        {
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var chrome = chromeBrowser.GetChrome();
             var elements = chrome.FindElements(by);
 
             if (elements.Count == 0) return Result.Fail(Retry.ElementNotFound);
@@ -96,36 +93,37 @@ namespace MainCore.Helper.Implementations.Base
             var element = elements[0];
             if (!element.Displayed || !element.Enabled) return Result.Fail(Retry.ElementCannotClick);
             element.Click();
-            DelayClick();
+            DelayClick(accountId);
 
             if (waitPageLoaded)
             {
-                _result = WaitPageLoaded();
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                var result = WaitPageLoaded(accountId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
         }
 
-        public Result Click(By by, string path)
+        public Result Click(int accountId, By by, string path)
         {
-            _result = Click(by, waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = Click(accountId, by, waitPageLoaded: false);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = WaitPageChanged(path);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = WaitPageChanged(accountId, path);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = WaitPageLoaded();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = WaitPageLoaded(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _invalidPageHelper.CheckPage();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _invalidPageHelper.CheckPage();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        public Result Input(By by, string content)
+        public Result Input(int accountId, By by, string content)
         {
-            var chrome = _chromeBrowser.GetChrome();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var chrome = chromeBrowser.GetChrome();
             var elements = chrome.FindElements(by);
 
             if (elements.Count == 0) return Result.Fail(Retry.ElementNotFound);
@@ -138,173 +136,197 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result Reload()
+        public Result Reload(int accountId)
         {
-            _chromeBrowser.Navigate();
-            DelayClick();
-            _result = WaitPageLoaded();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var chromeBrowser = _chromeManager.Get(accountId);
+            chromeBrowser.Navigate();
+            DelayClick(accountId);
+            var result = WaitPageLoaded(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _invalidPageHelper.CheckPage();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _invalidPageHelper.CheckPage();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        public Result Navigate(string url)
+        public Result Navigate(int accountId, string url)
         {
-            _chromeBrowser.Navigate(url);
-            DelayClick();
-            _result = WaitPageChanged(url);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            _result = WaitPageLoaded();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            _result = _invalidPageHelper.CheckPage();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var chromeBrowser = _chromeManager.Get(accountId);
+            chromeBrowser.Navigate(url);
+            DelayClick(accountId);
+            var result = WaitPageChanged(accountId, url);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            result = WaitPageLoaded(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            result = _invalidPageHelper.CheckPage();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        public Result ToDorf1(bool forceReload = false)
+        public Result ToDorf1(int accountId, bool forceReload = false)
         {
             const string dorf1 = "dorf1";
-            var currentUrl = _chromeBrowser.GetCurrentUrl();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var currentUrl = chromeBrowser.GetCurrentUrl();
             if (currentUrl.Contains(dorf1))
             {
                 if (forceReload)
                 {
-                    Reload();
+                    Reload(accountId);
                 }
                 return Result.Ok();
             }
 
-            var doc = _chromeBrowser.GetHtml();
+            var doc = chromeBrowser.GetHtml();
             var node = _navigationBarParser.GetResourceButton(doc);
             if (node is null)
             {
                 return Result.Fail(Retry.ButtonNotFound("resources"));
             }
 
-            _result = Click(By.XPath(node.XPath), dorf1);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = Click(accountId, By.XPath(node.XPath), dorf1);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _updateHelper.UpdateDorf1();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _updateHelper.UpdateDorf1();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        public Result ToDorf2(bool forceReload = false)
+        public Result ToDorf2(int accountId, bool forceReload = false)
         {
             const string dorf2 = "dorf2";
-            var currentUrl = _chromeBrowser.GetCurrentUrl();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var currentUrl = chromeBrowser.GetCurrentUrl();
             if (currentUrl.Contains(dorf2))
             {
                 if (forceReload)
                 {
-                    Reload();
+                    Reload(accountId);
                 }
                 return Result.Ok();
             }
 
-            var doc = _chromeBrowser.GetHtml();
+            var doc = chromeBrowser.GetHtml();
             var node = _navigationBarParser.GetBuildingButton(doc);
             if (node is null)
             {
                 return Result.Fail(Retry.ButtonNotFound("buildings"));
             }
 
-            _result = Click(By.XPath(node.XPath), dorf2);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = Click(accountId, By.XPath(node.XPath), dorf2);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _updateHelper.UpdateDorf2();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _updateHelper.UpdateDorf2();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        public Result ToDorf(bool forceReload = false)
+        public Result ToDorf(int accountId, int villageId, bool forceReload = false)
+        {
+            var result = SwitchVillage(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+
+            result = ToDorf(accountId, forceReload);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
+        }
+
+        public Result ToDorf(int accountId, bool forceReload = false)
         {
             const string dorf = "dorf";
-            var currentUrl = _chromeBrowser.GetCurrentUrl();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var currentUrl = chromeBrowser.GetCurrentUrl();
             if (currentUrl.Contains(dorf))
             {
                 if (forceReload)
                 {
-                    return Reload();
+                    return Reload(accountId);
                 }
             }
 
             var chanceDorf2 = DateTime.Now.Ticks % 100;
-            return chanceDorf2 >= 50 ? ToDorf2() : ToDorf1();
+            return chanceDorf2 >= 50 ? ToDorf2(accountId) : ToDorf1(accountId);
         }
 
-        public Result ToBothDorf()
+        public Result ToBothDorf(int accountId, int villageId)
         {
-            _result = SwitchVillage();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = SwitchVillage(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
+            result = ToBothDorf(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
+        }
+
+        public Result ToBothDorf(int accountId)
+        {
             var commands = new List<Func<Result>>();
-            var url = _chromeBrowser.GetCurrentUrl();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var url = chromeBrowser.GetCurrentUrl();
             if (url.Contains("dorf2"))
             {
-                commands.Add(() => ToDorf2());
-                commands.Add(() => ToDorf1());
+                commands.Add(() => ToDorf2(accountId));
+                commands.Add(() => ToDorf1(accountId));
             }
             else if (url.Contains("dorf1"))
             {
-                commands.Add(() => ToDorf1());
-                commands.Add(() => ToDorf2());
+                commands.Add(() => ToDorf1(accountId));
+                commands.Add(() => ToDorf2(accountId));
             }
             else
             {
                 if (Random.Shared.Next(0, 100) > 50)
                 {
-                    commands.Add(() => ToDorf1());
-                    commands.Add(() => ToDorf2());
+                    commands.Add(() => ToDorf1(accountId));
+                    commands.Add(() => ToDorf2(accountId));
                 }
                 else
                 {
-                    commands.Add(() => ToDorf2());
-                    commands.Add(() => ToDorf1());
+                    commands.Add(() => ToDorf2(accountId));
+                    commands.Add(() => ToDorf1(accountId));
                 }
             }
 
             foreach (var command in commands)
             {
-                _result = command.Invoke();
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                var result = command.Invoke();
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
         }
 
-        public Result SwitchVillage()
+        public Result SwitchVillage(int accountId, int villageId)
         {
+            var chromeBrowser = _chromeManager.Get(accountId);
             while (true)
             {
-                var resultIsCorrectVillage = _checkHelper.IsCorrectVillage(_accountId, _villageId);
+                var resultIsCorrectVillage = _checkHelper.IsCorrectVillage(accountId, villageId);
                 if (resultIsCorrectVillage.IsFailed) return Result.Fail(resultIsCorrectVillage.Errors).WithError(new Trace(Trace.TraceMessage()));
 
                 if (resultIsCorrectVillage.Value) return Result.Ok();
-                if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
-                var html = _chromeBrowser.GetHtml();
+                var html = chromeBrowser.GetHtml();
 
                 var listNode = _villagesTableParser.GetVillages(html);
                 foreach (var node in listNode)
                 {
                     var id = _villagesTableParser.GetId(node);
-                    if (id != _villageId) continue;
+                    if (id != villageId) continue;
 
-                    _result = Click(By.XPath(node.XPath));
-                    if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                    var result = Click(accountId, By.XPath(node.XPath));
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     break;
                 }
             }
         }
 
-        public Result SwitchTab(int index)
+        public Result SwitchTab(int accountId, int index)
         {
-            while (_checkHelper.IsCorrectTab(_accountId, index))
+            var chromeBrowser = _chromeManager.Get(accountId);
+            while (_checkHelper.IsCorrectTab(accountId, index))
             {
-                var html = _chromeBrowser.GetHtml();
+                var html = chromeBrowser.GetHtml();
                 var listNode = _buildingTabParser.GetBuildingTabNodes(html);
                 if (listNode.Count == 0)
                 {
@@ -315,15 +337,11 @@ namespace MainCore.Helper.Implementations.Base
                     return Result.Fail(new Retry($"Tab {index} is invalid, this building only has {listNode.Count} tabs"));
                 }
 
-                _result = Click(By.XPath(listNode[index].XPath));
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                var result = Click(accountId, By.XPath(listNode[index].XPath));
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 return Result.Ok();
             }
             return Result.Ok();
         }
-
-        public abstract Result ToBuilding(int index);
-
-        public abstract Result ToHeroInventory();
     }
 }

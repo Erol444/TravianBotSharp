@@ -25,10 +25,10 @@ namespace MainCore.Helper.Implementations.TTWars
                 return Result.Fail($"Cannot find item {item}");
             }
 
-            _result = _generalHelper.Click(By.XPath(node.XPath), waitPageLoaded: false);
+            _result = _generalHelper.Click(_accountId, By.XPath(node.XPath), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Wait(driver =>
+            _result = _generalHelper.Wait(_accountId, driver =>
             {
                 var html = new HtmlDocument();
                 html.LoadHtml(driver.PageSource);
@@ -49,7 +49,7 @@ namespace MainCore.Helper.Implementations.TTWars
                 return Result.Fail(Retry.ButtonNotFound("confirm"));
             }
 
-            _result = _generalHelper.Click(By.XPath(confirmButton.XPath));
+            _result = _generalHelper.Click(_accountId, By.XPath(confirmButton.XPath));
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

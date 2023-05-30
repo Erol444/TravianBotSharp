@@ -38,13 +38,11 @@ namespace MainCore.Helper.Implementations.Base
             _accountId = accountId;
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
-
-            _generalHelper.Load(villageId, accountId, cancellationToken);
         }
 
         public Result Execute(Resources ratio)
         {
-            _result = _generalHelper.ToDorf2(true);
+            _result = _generalHelper.ToDorf2(_accountId, true);
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
@@ -90,10 +88,10 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Skip("Marketplace is missing"));
             }
 
-            _result = _generalHelper.ToBuilding(marketplace.Id);
+            _result = _generalHelper.ToBuilding(_accountId, marketplace.Id);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.SwitchTab(0);
+            _result = _generalHelper.SwitchTab(_accountId, 0);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
@@ -109,10 +107,10 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry("NPC button is not found"));
             }
 
-            _result = _generalHelper.Click(By.XPath(npcButton.XPath), waitPageLoaded: false);
+            _result = _generalHelper.Click(_accountId, By.XPath(npcButton.XPath), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Wait(driver =>
+            _result = _generalHelper.Wait(_accountId, driver =>
             {
                 var waitHtml = new HtmlDocument();
                 waitHtml.LoadHtml(driver.PageSource);
@@ -133,10 +131,10 @@ namespace MainCore.Helper.Implementations.Base
             {
                 return Result.Fail(new Retry("NPC submit button is not found"));
             }
-            _result = _generalHelper.Click(By.XPath(distribute.XPath), waitPageLoaded: false);
+            _result = _generalHelper.Click(_accountId, By.XPath(distribute.XPath), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Wait(driver =>
+            _result = _generalHelper.Wait(_accountId, driver =>
             {
                 var buttons = driver.FindElements(By.Id("npc_market_button"));
                 if (buttons.Count == 0) return false;
@@ -144,7 +142,7 @@ namespace MainCore.Helper.Implementations.Base
             });
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Click(By.Id("npc_market_button"), waitPageLoaded: false);
+            _result = _generalHelper.Click(_accountId, By.Id("npc_market_button"), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

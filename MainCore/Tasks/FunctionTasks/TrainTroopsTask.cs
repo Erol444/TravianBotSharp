@@ -28,13 +28,12 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _generalHelper.Load(VillageId, AccountId, CancellationToken);
             _trainTroopHelper.Load(VillageId, AccountId, CancellationToken);
             NextExecute();
 
             CheckBuilding();
 
-            var result = _generalHelper.SwitchVillage();
+            var result = _generalHelper.SwitchVillage(AccountId, VillageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 

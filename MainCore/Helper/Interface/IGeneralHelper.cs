@@ -1,48 +1,49 @@
 ﻿using FluentResults;
 using OpenQA.Selenium;
 using System;
-using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface IGeneralHelper
     {
-        Result Click(By by, bool waitPageLoaded = true);
+        Result Click(int accountId, By by, bool waitPageLoaded = true);
 
-        Result Click(By by, string path);
+        Result Click(int accountId, By by, string path);
 
-        Result Input(By by, string content);
+        void DelayClick(int accountId);
 
-        void DelayClick();
+        int GetDelayClick(int accountId);
 
-        int GetDelayClick();
+        Result Input(int accountId, By by, string content);
 
-        void Load(int villageId, int accountId, CancellationToken cancellationToken);
+        Result Navigate(int accountId, string url);
 
-        Result Reload();
+        Result Reload(int accountId);
 
-        Result Navigate(string url);
+        Result SwitchTab(int accountId, int index);
 
-        Result SwitchTab(int index);
+        Result SwitchVillage(int accountId, int villageId);
 
-        Result SwitchVillage();
+        Result ToBothDorf(int accountId, int villageId);
 
-        Result ToBuilding(int index);
+        Result ToBothDorf(int accountId);
 
-        Result ToDorf(bool forceReload = false);
+        Result ToBuilding(int accountId, int index);
 
-        Result ToDorf1(bool forceReload = false);
+        Result ToDorf(int accountId, bool forceReload = false);
 
-        Result ToDorf2(bool forceReload = false);
+        Result ToDorf(int accountId, int villageId, bool forceReload = false);
 
-        Result ToBothDorf();
+        Result ToDorf1(int accountId, bool forceReload = false);
 
-        Result ToHeroInventory();
+        Result ToDorf2(int accountId, bool forceReload = false);
 
-        Result Wait(Func<IWebDriver, bool> condition);
+        Result ToHeroInventory(int accountId);
 
-        Result WaitPageChanged(string path);
+        Result Wait(int accountId, Func<IWebDriver, bool> condition);
 
-        Result WaitPageLoaded();
+        Result WaitPageChanged(int accountId, string path);
+
+        Result WaitPageLoaded(int accountId);
     }
 }

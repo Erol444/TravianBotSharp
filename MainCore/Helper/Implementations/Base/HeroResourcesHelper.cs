@@ -40,13 +40,11 @@ namespace MainCore.Helper.Implementations.Base
             _accountId = accountId;
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
-
-            _generalHelper.Load(_villageId, accountId, cancellationToken);
         }
 
         public Result Execute(HeroItemEnums item, int amount)
         {
-            _result = _generalHelper.SwitchVillage();
+            _result = _generalHelper.SwitchVillage(_accountId, _villageId);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = ClickItem(item);
@@ -68,7 +66,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry("Cannot find amount box"));
             }
 
-            _result = _generalHelper.Input(By.XPath(amountBox.XPath), $"{RoundUpTo100(amount)}");
+            _result = _generalHelper.Input(_accountId, By.XPath(amountBox.XPath), $"{RoundUpTo100(amount)}");
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

@@ -36,17 +36,16 @@ namespace MainCore.Helper.Implementations.Base
             _accountId = accountId;
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
-            _generalHelper.Load(villageId, accountId, cancellationToken);
             _updateHelper.Load(villageId, accountId, cancellationToken);
         }
 
         public Result EnterFarmListPage()
         {
-            _result = _generalHelper.SwitchVillage();
+            _result = _generalHelper.SwitchVillage(_accountId, _villageId);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
-            _result = _generalHelper.ToDorf2();
+            _result = _generalHelper.ToDorf2(_accountId);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
@@ -54,7 +53,7 @@ namespace MainCore.Helper.Implementations.Base
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
-            _result = _generalHelper.SwitchTab(4);
+            _result = _generalHelper.SwitchTab(_accountId, 4);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
 
@@ -94,7 +93,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Skip("Rallypoint is missing"));
             }
 
-            _result = _generalHelper.ToBuilding(rallypoint.Id);
+            _result = _generalHelper.ToBuilding(_accountId, rallypoint.Id);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();

@@ -57,16 +57,15 @@ namespace MainCore.Helper.Implementations.Base
             _token = cancellationToken;
             _chromeBrowser = _chromeManager.Get(_accountId);
 
-            _generalHelper.Load(villageId, accountId, cancellationToken);
             _heroResourcesHelper.Load(villageId, accountId, cancellationToken);
         }
 
         public Result Execute()
         {
-            _result = _generalHelper.SwitchVillage();
+            _result = _generalHelper.SwitchVillage(_accountId, _villageId);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.ToDorf1(forceReload: true);
+            _result = _generalHelper.ToDorf1(_accountId, forceReload: true);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             while (true)
@@ -119,7 +118,7 @@ namespace MainCore.Helper.Implementations.Base
 
                 #region enter building
 
-                _result = _generalHelper.ToBuilding(_chosenTask.Location);
+                _result = _generalHelper.ToBuilding(_accountId, _chosenTask.Location);
                 if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
                 _result = GotoCorrectTab();
                 if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
@@ -307,13 +306,13 @@ namespace MainCore.Helper.Implementations.Base
 
             var buildingUrl = _chromeBrowser.GetCurrentUrl();
 
-            _result = _generalHelper.ToHeroInventory();
+            _result = _generalHelper.ToHeroInventory(_accountId);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = _heroResourcesHelper.FillResource(resCurrent - resNeed);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Navigate(buildingUrl);
+            _result = _generalHelper.Navigate(_accountId, buildingUrl);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
@@ -363,7 +362,7 @@ namespace MainCore.Helper.Implementations.Base
                 isNewBuilding = true;
                 var tab = _chosenTask.Building.GetBuildingsCategory();
                 {
-                    var result = _generalHelper.SwitchTab(tab);
+                    var result = _generalHelper.SwitchTab(_accountId, tab);
                     if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 }
             }
@@ -377,7 +376,7 @@ namespace MainCore.Helper.Implementations.Base
                 {
                     if (_chosenTask.Building.HasMultipleTabs() && building.Level != 0)
                     {
-                        var result = _generalHelper.SwitchTab(0);
+                        var result = _generalHelper.SwitchTab(_accountId, 0);
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                 }
@@ -402,7 +401,7 @@ namespace MainCore.Helper.Implementations.Base
             {
                 return Result.Fail(new Retry($"Cannot find Build button for {_chosenTask.Building}"));
             }
-            _result = _generalHelper.Click(By.XPath(button.XPath));
+            _result = _generalHelper.Click(_accountId, By.XPath(button.XPath));
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
@@ -422,7 +421,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry($"Cannot find upgrade button for {_chosenTask.Building}"));
             }
 
-            _result = _generalHelper.Click(By.XPath(upgradeButton.XPath));
+            _result = _generalHelper.Click(_accountId, By.XPath(upgradeButton.XPath));
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
@@ -438,7 +437,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry($"Cannot find fast upgrade button for {_chosenTask.Building}"));
             }
 
-            _result = _generalHelper.Click(By.XPath(nodeFastUpgrade.XPath));
+            _result = _generalHelper.Click(_accountId, By.XPath(nodeFastUpgrade.XPath));
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
@@ -450,7 +449,7 @@ namespace MainCore.Helper.Implementations.Base
             var nodeNotShowAgainConfirm = html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']");
             if (nodeNotShowAgainConfirm is not null)
             {
-                _result = _generalHelper.Click(By.XPath(nodeNotShowAgainConfirm.ParentNode.XPath));
+                _result = _generalHelper.Click(_accountId, By.XPath(nodeNotShowAgainConfirm.ParentNode.XPath));
                 if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
                 _chromeBrowser.GetChrome().ExecuteScript("jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
             }
@@ -479,7 +478,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry($"Cannot find iframe for {_chosenTask.Building}"));
             }
 
-            _result = _generalHelper.Click(By.XPath(nodeIframe.XPath), waitPageLoaded: false);
+            _result = _generalHelper.Click(_accountId, By.XPath(nodeIframe.XPath), waitPageLoaded: false);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             var chrome = _chromeBrowser.GetChrome();
@@ -499,7 +498,7 @@ namespace MainCore.Helper.Implementations.Base
                 chrome.Close();
                 chrome.SwitchTo().Window(current);
 
-                _result = _generalHelper.Click(By.XPath(nodeIframe.XPath), waitPageLoaded: false);
+                _result = _generalHelper.Click(_accountId, By.XPath(nodeIframe.XPath), waitPageLoaded: false);
                 if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
                 chrome.SwitchTo().DefaultContent();
@@ -513,10 +512,10 @@ namespace MainCore.Helper.Implementations.Base
             var html = _chromeBrowser.GetHtml();
             if (html.GetElementbyId("dontShowThisAgain") is not null)
             {
-                _result = _generalHelper.Click(By.Id("dontShowThisAgain"));
+                _result = _generalHelper.Click(_accountId, By.Id("dontShowThisAgain"));
                 if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-                _result = _generalHelper.Click(By.ClassName("dialogButtonOk"));
+                _result = _generalHelper.Click(_accountId, By.ClassName("dialogButtonOk"));
                 if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
@@ -539,7 +538,7 @@ namespace MainCore.Helper.Implementations.Base
             _result = UpgradeAds_ClickPlayAds();
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.WaitPageChanged("dorf");
+            _result = _generalHelper.WaitPageChanged(_accountId, "dorf");
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             _result = UpgradeAds_DontShowThis();

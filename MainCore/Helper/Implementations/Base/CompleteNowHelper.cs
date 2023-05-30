@@ -25,10 +25,7 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Execute(int accountId, int villageId)
         {
-            var result = _generalHelper.SwitchVillage();
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-
-            result = _generalHelper.ToDorf();
+            var result = _generalHelper.ToDorf(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = ClickCompleteNowButton(accountId);
@@ -37,7 +34,7 @@ namespace MainCore.Helper.Implementations.Base
             result = ClickConfirmCompleteNowButton(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.ToDorf(true);
+            result = _generalHelper.ToDorf(accountId, true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
@@ -52,10 +49,10 @@ namespace MainCore.Helper.Implementations.Base
             {
                 return Result.Fail(Retry.ButtonNotFound("complete now"));
             }
-            var result = _generalHelper.Click(By.XPath(finishButton.XPath), waitPageLoaded: false);
+            var result = _generalHelper.Click(accountId, By.XPath(finishButton.XPath), waitPageLoaded: false);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.Wait(driver =>
+            result = _generalHelper.Wait(accountId, driver =>
             {
                 var html = new HtmlDocument();
                 html.LoadHtml(driver.PageSource);
@@ -77,7 +74,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(Retry.ButtonNotFound("confirm"));
             }
 
-            var result = _generalHelper.Click(By.XPath(finishButton.XPath));
+            var result = _generalHelper.Click(accountId, By.XPath(finishButton.XPath));
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();

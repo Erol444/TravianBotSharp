@@ -30,7 +30,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 return Result.Fail(new Retry("Cannot found start button"));
             }
 
-            _result = _generalHelper.Click(By.XPath(startNode.XPath));
+            _result = _generalHelper.Click(_accountId, By.XPath(startNode.XPath));
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
