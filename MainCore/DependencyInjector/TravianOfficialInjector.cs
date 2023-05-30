@@ -30,7 +30,7 @@ namespace MainCore.DependencyInjector
             services.AddTransient<INPCHelper, NPCHelper>();
             services.AddTransient<ILoginHelper, LoginHelper>();
             services.AddTransient<ITrainTroopHelper, TrainTroopHelper>();
-            services.AddTransient<ICompleteNowHelper, CompleteNowHelper>();
+            services.AddSingleton<ICompleteNowHelper, CompleteNowHelper>();
             services.AddSingleton<IAdventureHelper, AdventureHelper>();
             services.AddTransient<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
             return services;

@@ -4,102 +4,81 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
-using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
-using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
     public class CompleteNowHelper : ICompleteNowHelper
     {
-        protected readonly IDbContextFactory<AppDbContext> _contextFactory;
-        protected readonly IChromeManager _chromeManager;
+        private readonly IChromeManager _chromeManager;
 
-        protected readonly IVillageCurrentlyBuildingParser _villageCurrentlyBuildingParser;
+        private readonly IVillageCurrentlyBuildingParser _villageCurrentlyBuildingParser;
 
-        protected readonly IGeneralHelper _generalHelper;
+        private readonly IGeneralHelper _generalHelper;
 
-        protected Result _result;
-        protected int _villageId;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
-        public CompleteNowHelper(IDbContextFactory<AppDbContext> contextFactory, IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IGeneralHelper generalHelper)
+        public CompleteNowHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IGeneralHelper generalHelper, IChromeManager chromeManager)
         {
-            _contextFactory = contextFactory;
             _villageCurrentlyBuildingParser = villageCurrentlyBuildingParser;
             _generalHelper = generalHelper;
+            _chromeManager = chromeManager;
         }
 
-        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
+        public Result Execute(int accountId, int villageId)
         {
-            _villageId = villageId;
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-            _generalHelper.Load(villageId, accountId, cancellationToken);
-        }
+            var result = _generalHelper.SwitchVillage();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-        public Result Execute()
-        {
-            _result = _generalHelper.SwitchVillage();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            result = _generalHelper.ToDorf();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.ToDorf();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            result = ClickCompleteNowButton(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = ClickCompleteNowButton();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            result = ClickConfirmCompleteNowButton(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = ClickConfirmCompleteNowButton();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
-
-            _result = _generalHelper.ToDorf(true);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            result = _generalHelper.ToDorf(true);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        private Result ClickCompleteNowButton()
+        public Result ClickCompleteNowButton(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var finishButton = _villageCurrentlyBuildingParser.GetFinishButton(html);
             if (finishButton is null)
             {
                 return Result.Fail(Retry.ButtonNotFound("complete now"));
             }
-            _result = _generalHelper.Click(By.XPath(finishButton.XPath), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(By.XPath(finishButton.XPath), waitPageLoaded: false);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Wait(driver =>
+            result = _generalHelper.Wait(driver =>
             {
                 var html = new HtmlDocument();
                 html.LoadHtml(driver.PageSource);
                 var confirmButton = _villageCurrentlyBuildingParser.GetConfirmFinishNowButton(html);
                 return confirmButton is not null;
             });
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        private Result ClickConfirmCompleteNowButton()
+        public Result ClickConfirmCompleteNowButton(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var finishButton = _villageCurrentlyBuildingParser.GetConfirmFinishNowButton(html);
             if (finishButton is null)
             {
                 return Result.Fail(Retry.ButtonNotFound("confirm"));
             }
 
-            _result = _generalHelper.Click(By.XPath(finishButton.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(By.XPath(finishButton.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }

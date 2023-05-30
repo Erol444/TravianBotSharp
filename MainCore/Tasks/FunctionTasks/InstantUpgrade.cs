@@ -23,9 +23,9 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _completeNowHelper.Load(VillageId, AccountId, CancellationToken);
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
-            var result = _completeNowHelper.Execute();
+            var result = _completeNowHelper.Execute(AccountId, VillageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             TriggerTask();

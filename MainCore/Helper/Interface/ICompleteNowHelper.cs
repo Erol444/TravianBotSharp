@@ -1,11 +1,13 @@
 ﻿using FluentResults;
-using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface ICompleteNowHelper
     {
-        Result Execute();
-        void Load(int villageId, int accountId, CancellationToken cancellationToken);
+        Result ClickCompleteNowButton(int accountId);
+
+        Result ClickConfirmCompleteNowButton(int accountId);
+
+        Result Execute(int accountId, int villageId);
     }
 }
