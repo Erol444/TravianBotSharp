@@ -5,7 +5,6 @@ using MainCore.Helper.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
@@ -16,12 +15,6 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IGeneralHelper _generalHelper;
         protected readonly IUpdateHelper _updateHelper;
 
-        protected Result _result;
-        protected int _villageId;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
         public RallypointHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory, IUpdateHelper updateHelper)
         {
             _chromeManager = chromeManager;
@@ -30,75 +23,60 @@ namespace MainCore.Helper.Implementations.Base
             _updateHelper = updateHelper;
         }
 
-        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
+        public abstract Result ClickStartFarm(int accountId, int farmId);
+
+        public Result EnterFarmListPage(int accountId, int villageId)
         {
-            _villageId = villageId;
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-            _updateHelper.Load(villageId, accountId, cancellationToken);
-        }
+            var result = _generalHelper.SwitchVillage(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-        public Result EnterFarmListPage()
-        {
-            _result = _generalHelper.SwitchVillage(_accountId, _villageId);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            result = _generalHelper.ToDorf2(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.ToDorf2(_accountId);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            result = ToRallypoint(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = ToRallypoint();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            result = _generalHelper.SwitchTab(accountId, 4);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.SwitchTab(_accountId, 4);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
-
-            _result = _updateHelper.UpdateFarmList();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            result = _updateHelper.UpdateFarmList();
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        public Result StartFarmList()
+        public Result StartFarmList(int accountId, int villageId)
         {
-            _result = EnterFarmListPage();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = EnterFarmListPage(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             using var context = _contextFactory.CreateDbContext();
-            var farms = context.Farms.Where(x => x.AccountId == _accountId);
+            var farms = context.Farms.Where(x => x.AccountId == accountId);
             foreach (var farm in farms)
             {
-                if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
                 var isActive = context.FarmsSettings.Find(farm.Id).IsActive;
                 if (!isActive) continue;
 
-                var result = ClickStartFarm(farm.Id);
+                result = ClickStartFarm(accountId, farm.Id);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
         }
 
-        protected Result ToRallypoint()
+        public Result ToRallypoint(int accountId, int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var rallypoint = context.VillagesBuildings.Where(x => x.VillageId == _villageId)
+            var rallypoint = context.VillagesBuildings.Where(x => x.VillageId == villageId)
                                                       .FirstOrDefault(x => x.Type == BuildingEnums.RallyPoint && x.Level > 0);
             if (rallypoint is null)
             {
                 return Result.Fail(new Skip("Rallypoint is missing"));
             }
 
-            _result = _generalHelper.ToBuilding(_accountId, rallypoint.Id);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.ToBuilding(accountId, rallypoint.Id);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
-
-        protected abstract Result ClickStartFarm(int farmId);
     }
 }

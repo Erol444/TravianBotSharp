@@ -14,9 +14,10 @@ namespace MainCore.Helper.Implementations.TravianOfficial
         {
         }
 
-        protected override Result ClickStartFarm(int farmId)
+        public override Result ClickStartFarm(int accountId, int farmId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
 
             var farmNode = html.GetElementbyId($"raidList{farmId}");
             if (farmNode is null)
@@ -30,8 +31,8 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 return Result.Fail(new Retry("Cannot found start button"));
             }
 
-            _result = _generalHelper.Click(_accountId, By.XPath(startNode.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(accountId, By.XPath(startNode.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
     }

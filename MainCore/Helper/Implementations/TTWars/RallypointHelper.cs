@@ -15,13 +15,14 @@ namespace MainCore.Helper.Implementations.TTWars
         {
         }
 
-        protected override Result ClickStartFarm(int farmId)
+        public override Result ClickStartFarm(int accountId, int farmId)
         {
-            var chrome = _chromeBrowser.GetChrome();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var chrome = chromeBrowser.GetChrome();
             chrome.ExecuteScript($"Travian.Game.RaidList.toggleList({farmId});");
-            _generalHelper.DelayClick(_accountId);
+            _generalHelper.DelayClick(accountId);
 
-            _result = _generalHelper.Wait(_accountId, driver =>
+            var result = _generalHelper.Wait(accountId, driver =>
             {
                 var waitHtml = new HtmlDocument();
                 waitHtml.LoadHtml(driver.PageSource);
@@ -30,12 +31,12 @@ namespace MainCore.Helper.Implementations.TTWars
                 var table = waitFarmNode.Descendants("div").FirstOrDefault(x => x.HasClass("listContent"));
                 return !table.HasClass("hide");
             });
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Click(_accountId, By.Id($"raidListMarkAll{farmId}"));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.Click(accountId, By.Id($"raidListMarkAll{farmId}"));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            var html = _chromeBrowser.GetHtml();
+            var html = chromeBrowser.GetHtml();
             var farmNode = html.GetElementbyId($"list{farmId}");
             var buttonStartFarm = farmNode.Descendants("button").FirstOrDefault(x => x.HasClass("green") && x.GetAttributeValue("type", "").Contains("submit"));
 
@@ -44,8 +45,8 @@ namespace MainCore.Helper.Implementations.TTWars
                 return Result.Fail(new Retry("Cannot find button start farmlist"));
             }
 
-            _result = _generalHelper.Click(_accountId, By.XPath(buttonStartFarm.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.Click(accountId, By.XPath(buttonStartFarm.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }

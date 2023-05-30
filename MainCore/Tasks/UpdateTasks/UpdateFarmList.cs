@@ -25,9 +25,7 @@ namespace MainCore.Tasks.UpdateTasks
             var resultVillage = GetVillageHasRallyPoint();
             if (resultVillage.IsFailed) return Result.Fail(resultVillage.Errors).WithError(new Trace(Trace.TraceMessage()));
 
-            _rallypointHelper.Load(resultVillage.Value, AccountId, CancellationToken);
-
-            var result = _rallypointHelper.EnterFarmListPage();
+            var result = _rallypointHelper.EnterFarmListPage(AccountId, resultVillage.Value);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

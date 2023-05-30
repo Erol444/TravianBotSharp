@@ -22,9 +22,9 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IInvalidPageHelper, InvalidPageHelper>();
             services.AddSingleton<IHeroResourcesHelper, HeroResourcesHelper>();
             services.AddTransient<ISleepHelper, SleepHelper>();
-            services.AddTransient<IRallypointHelper, RallypointHelper>();
-            services.AddTransient<INPCHelper, NPCHelper>();
-            services.AddTransient<ILoginHelper, LoginHelper>();
+            services.AddSingleton<IRallypointHelper, RallypointHelper>();
+            services.AddSingleton<INPCHelper, NPCHelper>();
+            services.AddSingleton<ILoginHelper, LoginHelper>();
             services.AddTransient<ITrainTroopHelper, TrainTroopHelper>();
             services.AddSingleton<ICompleteNowHelper, CompleteNowHelper>();
             services.AddSingleton<IAdventureHelper, AdventureHelper>();

@@ -1,14 +1,15 @@
 ﻿using FluentResults;
-using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface IRallypointHelper
     {
-        Result EnterFarmListPage();
+        Result ClickStartFarm(int accountId, int farmId);
 
-        void Load(int villageId, int accountId, CancellationToken cancellationToken);
+        Result EnterFarmListPage(int accountId, int villageId);
 
-        Result StartFarmList();
+        Result StartFarmList(int accountId, int villageId);
+
+        Result ToRallypoint(int accountId, int villageId);
     }
 }
