@@ -18,20 +18,20 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             _systemPageParser = systemPageParser;
         }
 
-        public override bool IsEnoughGold()
+        public override bool IsEnoughGold(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var info = context.AccountsInfo.Find(_accountId);
+            var info = context.AccountsInfo.Find(accountId);
 
             var goldNeed = 3;
 
             return info.Gold > goldNeed;
         }
 
-        protected override Result EnterNumber(Resources _ratio)
+        public override Result EnterNumber(int accountId, int villageId, Resources _ratio)
         {
             using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.Find(_villageId);
+            var setting = context.VillagesSettings.Find(villageId);
             var ratio = new long[4];
             if (_ratio is null)
             {
@@ -54,8 +54,8 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 Array.ForEach(ratio, x => x = 1);
                 ratioSum = 4;
             }
-
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var nodeSum = _systemPageParser.GetNpcSumNode(html);
             var sumCurrent = nodeSum.InnerText.ToNumeric();
             var current = new long[4];
@@ -67,7 +67,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             var diff = sumCurrent - sum;
             current[3] += diff;
 
-            var chrome = _chromeBrowser.GetChrome();
+            var chrome = chromeBrowser.GetChrome();
             var script = "";
 
             for (int i = 0; i < 4; i++)

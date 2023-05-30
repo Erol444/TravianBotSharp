@@ -27,9 +27,8 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _npcHelper.Load(VillageId, AccountId, CancellationToken);
-            var result = _npcHelper.Execute(_ratio);
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            var result = _npcHelper.Execute(AccountId, VillageId, _ratio);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

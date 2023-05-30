@@ -8,7 +8,6 @@ using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System.Linq;
-using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
@@ -19,12 +18,6 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IChromeManager _chromeManager;
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-        protected Result _result;
-        protected int _villageId;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
         public NPCHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory)
         {
             _chromeManager = chromeManager;
@@ -32,74 +25,66 @@ namespace MainCore.Helper.Implementations.Base
             _contextFactory = contextFactory;
         }
 
-        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
+        public abstract bool IsEnoughGold(int accountId);
+
+        public abstract Result EnterNumber(int accountId, int villageId, Resources ratio);
+
+        public Result Execute(int accountId, int villageId, Resources ratio)
         {
-            _villageId = villageId;
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-        }
+            var result = _generalHelper.SwitchVillage(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-        public Result Execute(Resources ratio)
-        {
-            _result = _generalHelper.ToDorf2(_accountId, true);
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.ToDorf2(accountId, true);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = CheckGold();
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = CheckGold(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = ToMarketPlace();
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = ToMarketPlace(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = ClickNPCButton();
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = ClickNPCButton(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = EnterNumber(ratio);
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = EnterNumber(accountId, villageId: villageId, ratio);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = ClickNPC();
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = ClickNPC(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        public abstract bool IsEnoughGold();
-
-        protected Result CheckGold()
+        public Result CheckGold(int accountId)
         {
-            return Result.OkIf(IsEnoughGold(), new Skip("Not enough gold"));
+            return Result.OkIf(IsEnoughGold(accountId), new Skip("Not enough gold"));
         }
 
-        protected Result ToMarketPlace()
+        public Result ToMarketPlace(int accountId, int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var marketplace = context.VillagesBuildings.Where(x => x.VillageId == _villageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
+            var marketplace = context.VillagesBuildings.Where(x => x.VillageId == villageId).FirstOrDefault(x => x.Type == BuildingEnums.Marketplace && x.Level > 0);
             if (marketplace is null)
             {
-                var setting = context.VillagesSettings.Find(_villageId);
+                var setting = context.VillagesSettings.Find(villageId);
                 setting.IsAutoNPC = false;
                 context.Update(setting);
                 context.SaveChanges();
                 return Result.Fail(new Skip("Marketplace is missing"));
             }
 
-            _result = _generalHelper.ToBuilding(_accountId, marketplace.Id);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.ToBuilding(accountId, marketplace.Id);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.SwitchTab(_accountId, 0);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.SwitchTab(accountId, 0);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        protected Result ClickNPCButton()
+        public Result ClickNPCButton(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var npcMerchant = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("npcMerchant"));
             var npcButton = npcMerchant.Descendants("button").FirstOrDefault(x => x.HasClass("gold"));
             if (npcButton is null)
@@ -107,43 +92,42 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Retry("NPC button is not found"));
             }
 
-            _result = _generalHelper.Click(_accountId, By.XPath(npcButton.XPath), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(accountId, By.XPath(npcButton.XPath), waitPageLoaded: false);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Wait(_accountId, driver =>
+            result = _generalHelper.Wait(accountId, driver =>
             {
                 var waitHtml = new HtmlDocument();
                 waitHtml.LoadHtml(driver.PageSource);
                 return waitHtml.GetElementbyId("npc_market_button") is not null;
             });
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        protected abstract Result EnterNumber(Resources ratio);
-
-        protected Result ClickNPC()
+        public Result ClickNPC(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var submit = html.GetElementbyId("submitText");
             var distribute = submit.Descendants("button").FirstOrDefault();
             if (distribute is null)
             {
                 return Result.Fail(new Retry("NPC submit button is not found"));
             }
-            _result = _generalHelper.Click(_accountId, By.XPath(distribute.XPath), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(accountId, By.XPath(distribute.XPath), waitPageLoaded: false);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Wait(_accountId, driver =>
+            result = _generalHelper.Wait(accountId, driver =>
             {
                 var buttons = driver.FindElements(By.Id("npc_market_button"));
                 if (buttons.Count == 0) return false;
                 return buttons[0].Displayed && buttons[0].Enabled;
             });
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Click(_accountId, By.Id("npc_market_button"), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.Click(accountId, By.Id("npc_market_button"), waitPageLoaded: false);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
     }

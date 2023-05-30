@@ -27,7 +27,6 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _npcHelper.Load(VillageId, AccountId, CancellationToken);
             Result result;
             if (IsNeedDorf2())
             {
@@ -109,7 +108,7 @@ namespace MainCore.Tasks.FunctionTasks
             var tasks = listTask.OfType<NPCTask>();
             if (tasks.Any(x => x.VillageId == VillageId)) return;
 
-            if (!_npcHelper.IsEnoughGold()) return;
+            if (!_npcHelper.IsEnoughGold(AccountId)) return;
 
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);

@@ -1,15 +1,22 @@
 ﻿using FluentResults;
 using MainCore.Models.Runtime;
-using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface INPCHelper
     {
-        Result Execute(Resources ratio);
+        Result CheckGold(int accountId);
 
-        void Load(int villageId, int accountId, CancellationToken cancellationToken);
+        Result ClickNPC(int accountId);
 
-        bool IsEnoughGold();
+        Result ClickNPCButton(int accountId);
+
+        Result EnterNumber(int accountId, int villageId, Resources ratio);
+
+        Result Execute(int accountId, int villageId, Resources ratio);
+
+        bool IsEnoughGold(int accountId);
+
+        Result ToMarketPlace(int accountId, int villageId);
     }
 }
