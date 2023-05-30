@@ -28,10 +28,9 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _loginHelper.Load(AccountId, CancellationToken);
             _updateHelper.Load(-1, AccountId, CancellationToken);
 
-            var result = _loginHelper.Execute();
+            var result = _loginHelper.Execute(AccountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             result = _updateHelper.Update();
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));

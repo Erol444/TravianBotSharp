@@ -6,7 +6,6 @@ using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System.Linq;
-using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
@@ -19,11 +18,6 @@ namespace MainCore.Helper.Implementations.Base
 
         protected readonly ISystemPageParser _systemPageParser;
 
-        protected Result _result;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
         public LoginHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory, ISystemPageParser systemPageParser)
         {
             _chromeManager = chromeManager;
@@ -32,41 +26,36 @@ namespace MainCore.Helper.Implementations.Base
             _systemPageParser = systemPageParser;
         }
 
-        public void Load(int accountId, CancellationToken cancellationToken)
+        public Result Execute(int accountId)
         {
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-        }
+            var result = AcceptCookie(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-        public Result Execute()
-        {
-            _result = AcceptCookie();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = Login(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = Login();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = _generalHelper.ToDorf1(_accountId);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.ToDorf1(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        private Result AcceptCookie()
+        private Result AcceptCookie(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
 
             if (html.DocumentNode.Descendants("a").Any(x => x.HasClass("cmpboxbtn") && x.HasClass("cmpboxbtnyes")))
             {
-                var result = _generalHelper.Click(_accountId, By.ClassName("cmpboxbtnyes"), false);
+                var result = _generalHelper.Click(accountId, By.ClassName("cmpboxbtnyes"), false);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
         }
 
-        private Result Login()
+        private Result Login(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
 
             var usernameNode = _systemPageParser.GetUsernameNode(html);
 
@@ -89,17 +78,17 @@ namespace MainCore.Helper.Implementations.Base
             }
 
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(_accountId);
-            var access = context.Accesses.Where(x => x.AccountId == _accountId).OrderByDescending(x => x.LastUsed).FirstOrDefault();
+            var account = context.Accounts.Find(accountId);
+            var access = context.Accesses.Where(x => x.AccountId == accountId).OrderByDescending(x => x.LastUsed).FirstOrDefault();
 
-            _result = _generalHelper.Input(_accountId, By.XPath(usernameNode.XPath), account.Username);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Input(accountId, By.XPath(usernameNode.XPath), account.Username);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Input(_accountId, By.XPath(passwordNode.XPath), access.Password);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.Input(accountId, By.XPath(passwordNode.XPath), access.Password);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Click(_accountId, By.XPath(buttonNode.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.Click(accountId, By.XPath(buttonNode.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
     }

@@ -23,7 +23,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IGeneralHelper, GeneralHelper>();
             services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
 
-            services.AddTransient<IInvalidPageHelper, InvalidPageHelper>();
+            services.AddSingleton<IInvalidPageHelper, InvalidPageHelper>();
             services.AddSingleton<IHeroResourcesHelper, HeroResourcesHelper>();
             services.AddTransient<ISleepHelper, SleepHelper>();
             services.AddTransient<IRallypointHelper, RallypointHelper>();
