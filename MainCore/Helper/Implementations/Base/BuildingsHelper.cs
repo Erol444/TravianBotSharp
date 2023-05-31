@@ -7,17 +7,15 @@ using System.Linq;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public class BuildingsHelper : IBuildingsHelper
+    public sealed class BuildingsHelper : IBuildingsHelper
     {
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IPlanManager _planManager;
-        protected readonly IChromeManager _chromeManager;
 
-        public BuildingsHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager)
+        public BuildingsHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager)
         {
             _contextFactory = contextFactory;
             _planManager = planManager;
-            _chromeManager = chromeManager;
         }
 
         public int GetDorf(int index) => index < 19 ? 1 : 2;

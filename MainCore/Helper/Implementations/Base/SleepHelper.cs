@@ -11,7 +11,7 @@ using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public class SleepHelper : ISleepHelper
+    public sealed class SleepHelper : ISleepHelper
     {
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IChromeManager _chromeManager;

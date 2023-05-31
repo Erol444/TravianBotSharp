@@ -9,15 +9,15 @@ using System.Linq;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public class LoginHelper : ILoginHelper
+    public sealed class LoginHelper : ILoginHelper
     {
-        protected readonly IChromeManager _chromeManager;
+        private readonly IChromeManager _chromeManager;
 
-        protected readonly IGeneralHelper _generalHelper;
-        protected readonly IUpdateHelper _updateHelper;
-        protected readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IGeneralHelper _generalHelper;
+        private readonly IUpdateHelper _updateHelper;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-        protected readonly ISystemPageParser _systemPageParser;
+        private readonly ISystemPageParser _systemPageParser;
 
         public LoginHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory, ISystemPageParser systemPageParser, IUpdateHelper updateHelper)
         {

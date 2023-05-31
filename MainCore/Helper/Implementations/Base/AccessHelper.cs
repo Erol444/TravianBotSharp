@@ -3,7 +3,7 @@ using RestSharp;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public class AccessHelper : IAccessHelper
+    public sealed class AccessHelper : IAccessHelper
     {
         public bool IsValid(RestClient client)
         {

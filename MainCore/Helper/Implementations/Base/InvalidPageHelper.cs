@@ -6,7 +6,7 @@ using MainCore.Services.Interface;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public class InvalidPageHelper : IInvalidPageHelper
+    public sealed class InvalidPageHelper : IInvalidPageHelper
     {
         private readonly IChromeManager _chromeManager;
         private readonly ISystemPageParser _systemPageParser;

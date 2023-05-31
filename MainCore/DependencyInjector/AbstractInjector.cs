@@ -44,6 +44,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<ITrainTroopHelper, TrainTroopHelper>();
             services.AddSingleton<ICompleteNowHelper, CompleteNowHelper>();
             services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
+            services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
 
             return services;
         }
@@ -56,6 +57,7 @@ namespace MainCore.DependencyInjector
         {
             ConfigureService(services);
             ConfigureParser(services);
+            ConfigureHelper(services);
             ConfigureServerHelper(services);
 
             return services;

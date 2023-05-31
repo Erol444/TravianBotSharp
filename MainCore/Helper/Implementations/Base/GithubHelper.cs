@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public class GithubHelper : IGithubHelper
+    public sealed class GithubHelper : IGithubHelper
     {
         private const string _username = "Erol444";
         private const string _repo = "TravianBotSharp";
-        private static readonly GitHubClient _client = new(new ProductHeaderValue("TBS"));
+        private readonly GitHubClient _client = new(new ProductHeaderValue("TBS"));
 
         public string GetLink(string version)
         {

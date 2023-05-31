@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public class DatabaseHelper : IDatabaseHelper
+    public sealed class DatabaseHelper : IDatabaseHelper
     {
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
 

@@ -9,9 +9,9 @@ namespace MainCore.Helper.Implementations.Base
     public abstract class CheckHelper : ICheckHelper
     {
         protected readonly IChromeManager _chromeManager;
-        private readonly IVillagesTableParser _villagesTableParser;
-        private readonly IBuildingTabParser _buildingTabParser;
-        private readonly ISystemPageParser _systemPageParser;
+        protected readonly IVillagesTableParser _villagesTableParser;
+        protected readonly IBuildingTabParser _buildingTabParser;
+        protected readonly ISystemPageParser _systemPageParser;
 
         public CheckHelper(IChromeManager chromeManager, IVillagesTableParser villagesTableParser, IBuildingTabParser buildingTabParser, ISystemPageParser systemPageParser)
         {

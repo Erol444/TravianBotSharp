@@ -13,7 +13,6 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<ICheckHelper, CheckHelper>();
             services.AddSingleton<IUpdateHelper, UpdateHelper>();
             services.AddSingleton<IGeneralHelper, GeneralHelper>();
-            services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
 
             services.AddSingleton<IHeroResourcesHelper, HeroResourcesHelper>();
             services.AddSingleton<IRallypointHelper, RallypointHelper>();

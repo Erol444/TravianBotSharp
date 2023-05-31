@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public class TrainTroopHelper : ITrainTroopHelper
+    public sealed class TrainTroopHelper : ITrainTroopHelper
     {
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
 

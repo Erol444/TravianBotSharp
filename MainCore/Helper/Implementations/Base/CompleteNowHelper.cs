@@ -8,12 +8,10 @@ using OpenQA.Selenium;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public class CompleteNowHelper : ICompleteNowHelper
+    public sealed class CompleteNowHelper : ICompleteNowHelper
     {
         private readonly IChromeManager _chromeManager;
-
         private readonly IVillageCurrentlyBuildingParser _villageCurrentlyBuildingParser;
-
         private readonly IGeneralHelper _generalHelper;
 
         public CompleteNowHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IGeneralHelper generalHelper, IChromeManager chromeManager)
