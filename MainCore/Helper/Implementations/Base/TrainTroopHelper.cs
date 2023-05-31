@@ -9,17 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using OpenQA.Selenium;
 using System;
 using System.Linq;
-using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
     public class TrainTroopHelper : ITrainTroopHelper
     {
-        private Result _result;
-        private int _villageId;
-        private int _accountId;
-        private CancellationToken _token;
-
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
         private readonly IGeneralHelper _generalHelper;
@@ -28,8 +22,6 @@ namespace MainCore.Helper.Implementations.Base
         private readonly IChromeManager _chromeManager;
 
         private readonly ITrainTroopParser _trainTroopParser;
-
-        private IChromeBrowser _chromeBrowser;
 
         public TrainTroopHelper(IDbContextFactory<AppDbContext> contextFactory, IGeneralHelper generalHelper, ILogManager logManager, IChromeManager chromeManager, ITrainTroopParser trainTroopParser)
         {
@@ -40,37 +32,27 @@ namespace MainCore.Helper.Implementations.Base
             _trainTroopParser = trainTroopParser;
         }
 
-        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
+        public Result Execute(int accountId, int villageId, BuildingEnums trainBuilding)
         {
-            _villageId = villageId;
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-        }
+            var result = _generalHelper.ToDorf2(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-        public Result Execute(BuildingEnums trainBuilding)
-        {
-            _result = _generalHelper.ToDorf2(_accountId);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
-
-            var buildingLoc = GetBuilding(trainBuilding);
+            var buildingLoc = GetBuilding(villageId, trainBuilding);
             if (buildingLoc == -1)
             {
-                DisableSetting(trainBuilding);
-                _logManager.Information(_accountId, $"There is no {trainBuilding} in village");
+                DisableSetting(villageId, trainBuilding);
+                _logManager.Information(accountId, $"There is no {trainBuilding} in village");
                 return Result.Ok();
             }
 
-            _result = _generalHelper.ToBuilding(_accountId, buildingLoc);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            if (_token.IsCancellationRequested) return Result.Fail(new Cancel());
+            result = _generalHelper.ToBuilding(accountId, buildingLoc);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            var troop = GetTroopTraining(trainBuilding);
+            var troop = GetTroopTraining(villageId, trainBuilding);
 
-            var timeTrain = GetTroopTime(troop);
-            var amountTroop = GetAmountTroop(trainBuilding, timeTrain);
-            var maxTroop = GetMaxTroop(troop);
+            var timeTrain = GetTroopTime(accountId, villageId, troop);
+            var amountTroop = GetAmountTroop(accountId, villageId, trainBuilding, timeTrain);
+            var maxTroop = GetMaxTroop(accountId, troop);
             if (maxTroop == 0)
             {
                 return Result.Fail(NoResource.Train(trainBuilding));
@@ -86,24 +68,24 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(NoResource.Train(trainBuilding));
             }
 
-            InputAmountTroop(troop, amountTroop);
+            result = InputAmountTroop(accountId, troop, amountTroop);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        private int GetBuilding(BuildingEnums trainBuilding)
+        public int GetBuilding(int villageId, BuildingEnums trainBuilding)
         {
             using var context = _contextFactory.CreateDbContext();
-            var buildings = context.VillagesBuildings.Where(x => x.VillageId == _villageId);
-
-            var building = buildings.FirstOrDefault(x => x.Type == trainBuilding && x.Level > 0);
+            var building = context.VillagesBuildings.Where(x => x.VillageId == villageId)
+                                                    .FirstOrDefault(x => x.Type == trainBuilding && x.Level > 0);
             if (building is null) return -1;
             return building.Id;
         }
 
-        private void DisableSetting(BuildingEnums trainBuilding)
+        public void DisableSetting(int villageId, BuildingEnums trainBuilding)
         {
             using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == _villageId);
+            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == villageId);
             switch (trainBuilding)
             {
                 case BuildingEnums.Barracks:
@@ -133,10 +115,10 @@ namespace MainCore.Helper.Implementations.Base
             context.SaveChanges();
         }
 
-        private int GetTroopTraining(BuildingEnums trainBuilding)
+        public int GetTroopTraining(int villageId, BuildingEnums trainBuilding)
         {
             using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == _villageId);
+            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == villageId);
             return trainBuilding switch
             {
                 BuildingEnums.Barracks or BuildingEnums.GreatBarracks => setting.BarrackTroop,
@@ -146,9 +128,10 @@ namespace MainCore.Helper.Implementations.Base
             };
         }
 
-        private TimeSpan GetTroopTime(int troop)
+        public TimeSpan GetTroopTime(int accountId, int villageId, int troop)
         {
-            var doc = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var doc = chromeBrowser.GetHtml();
             var nodes = _trainTroopParser.GetTroopNodes(doc);
             HtmlNode troopNode = null;
             foreach (var node in nodes)
@@ -163,13 +146,14 @@ namespace MainCore.Helper.Implementations.Base
             return _trainTroopParser.GetTrainTime(troopNode);
         }
 
-        private int GetAmountTroop(BuildingEnums trainBuilding, TimeSpan trainTime)
+        public int GetAmountTroop(int accountId, int villageId, BuildingEnums trainBuilding, TimeSpan trainTime)
         {
-            var doc = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var doc = chromeBrowser.GetHtml();
             var timeRemaining = _trainTroopParser.GetQueueTrainTime(doc);
 
             using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == _villageId);
+            var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == villageId);
             var timeTrainMinutes = 0;
             switch (trainBuilding)
             {
@@ -201,9 +185,10 @@ namespace MainCore.Helper.Implementations.Base
             return result > 0 ? result + 1 : result;
         }
 
-        private int GetMaxTroop(int troop)
+        public int GetMaxTroop(int accountId, int troop)
         {
-            var doc = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var doc = chromeBrowser.GetHtml();
             var nodes = _trainTroopParser.GetTroopNodes(doc);
             HtmlNode troopNode = null;
             foreach (var node in nodes)
@@ -218,9 +203,10 @@ namespace MainCore.Helper.Implementations.Base
             return _trainTroopParser.GetMaxAmount(troopNode);
         }
 
-        private void InputAmountTroop(int troop, int amountTroop)
+        public Result InputAmountTroop(int accountId, int troop, int amountTroop)
         {
-            var doc = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var doc = chromeBrowser.GetHtml();
             var nodes = _trainTroopParser.GetTroopNodes(doc);
             HtmlNode troopNode = null;
             foreach (var node in nodes)
@@ -233,18 +219,13 @@ namespace MainCore.Helper.Implementations.Base
             }
 
             var input = _trainTroopParser.GetInputBox(troopNode);
-            var chrome = _chromeBrowser.GetChrome();
-            var inputElements = chrome.FindElements(By.XPath(input.XPath));
+            var result = _generalHelper.Input(accountId, By.XPath(input.XPath), $"{amountTroop}");
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            inputElements[0].SendKeys(Keys.Home);
-            inputElements[0].SendKeys(Keys.Shift + Keys.End);
-            inputElements[0].SendKeys($"{amountTroop}");
-
-            doc = _chromeBrowser.GetHtml();
             var button = _trainTroopParser.GetTrainButton(doc);
-            var buttonElements = chrome.FindElements(By.XPath(button.XPath));
-
-            buttonElements[0].Click();
+            result = _generalHelper.Click(accountId, By.XPath(button.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            return Result.Ok();
         }
     }
 }

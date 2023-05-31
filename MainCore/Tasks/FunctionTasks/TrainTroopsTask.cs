@@ -28,7 +28,6 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _trainTroopHelper.Load(VillageId, AccountId, CancellationToken);
             NextExecute();
 
             CheckBuilding();
@@ -39,7 +38,7 @@ namespace MainCore.Tasks.FunctionTasks
 
             foreach (var building in _buildings)
             {
-                result = _trainTroopHelper.Execute(building);
+                result = _trainTroopHelper.Execute(AccountId, VillageId, building);
                 if (result.IsFailed)
                 {
                     if (result.HasError<NoResource>())
