@@ -1,4 +1,6 @@
 ﻿using FluentMigrator.Runner;
+using MainCore.Helper.Implementations.Base;
+using MainCore.Helper.Interface;
 using MainCore.Migrations;
 using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
@@ -31,15 +33,30 @@ namespace MainCore.DependencyInjector
             return services;
         }
 
+        private IServiceCollection ConfigureHelper(IServiceCollection services)
+        {
+            services.AddSingleton<IAccessHelper, AccessHelper>();
+            services.AddSingleton<IGithubHelper, GithubHelper>();
+            services.AddSingleton<IDatabaseHelper, DatabaseHelper>();
+            services.AddSingleton<IInvalidPageHelper, InvalidPageHelper>();
+            services.AddSingleton<ISleepHelper, SleepHelper>();
+            services.AddSingleton<ILoginHelper, LoginHelper>();
+            services.AddSingleton<ITrainTroopHelper, TrainTroopHelper>();
+            services.AddSingleton<ICompleteNowHelper, CompleteNowHelper>();
+            services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
+
+            return services;
+        }
+
         protected abstract IServiceCollection ConfigureParser(IServiceCollection services);
 
-        protected abstract IServiceCollection ConfigureHelper(IServiceCollection services);
+        protected abstract IServiceCollection ConfigureServerHelper(IServiceCollection services);
 
         public IServiceCollection Configure(IServiceCollection services)
         {
             ConfigureService(services);
             ConfigureParser(services);
-            ConfigureHelper(services);
+            ConfigureServerHelper(services);
 
             return services;
         }

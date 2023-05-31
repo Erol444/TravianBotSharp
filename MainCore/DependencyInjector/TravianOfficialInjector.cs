@@ -8,27 +8,17 @@ namespace MainCore.DependencyInjector
 {
     public class TravianOfficialInjector : AbstractInjector
     {
-        protected override IServiceCollection ConfigureHelper(IServiceCollection services)
+        protected override IServiceCollection ConfigureServerHelper(IServiceCollection services)
         {
-            services.AddSingleton<IAccessHelper, AccessHelper>();
-            services.AddSingleton<IGithubHelper, GithubHelper>();
-            services.AddSingleton<IDatabaseHelper, DatabaseHelper>();
-
             services.AddSingleton<ICheckHelper, CheckHelper>();
             services.AddSingleton<IUpdateHelper, UpdateHelper>();
             services.AddSingleton<IGeneralHelper, GeneralHelper>();
             services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
 
-            services.AddSingleton<IInvalidPageHelper, InvalidPageHelper>();
             services.AddSingleton<IHeroResourcesHelper, HeroResourcesHelper>();
-            services.AddSingleton<ISleepHelper, SleepHelper>();
             services.AddSingleton<IRallypointHelper, RallypointHelper>();
             services.AddSingleton<INPCHelper, NPCHelper>();
-            services.AddSingleton<ILoginHelper, LoginHelper>();
-            services.AddSingleton<ITrainTroopHelper, TrainTroopHelper>();
-            services.AddSingleton<ICompleteNowHelper, CompleteNowHelper>();
             services.AddSingleton<IAdventureHelper, AdventureHelper>();
-            services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
             return services;
         }
 
