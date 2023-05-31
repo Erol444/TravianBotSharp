@@ -24,7 +24,7 @@ namespace MainCore.Helper.Implementations.Base
         public List<Access> GetAccesses(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
-            return context.Accesses.Where(a => a.AccountId == accountId).OrderByDescending(x => x.LastUsed).ToList();
+            return context.Accesses.Where(a => a.AccountId == accountId).OrderBy(x => x.LastUsed).ToList();
         }
 
         public Hero GetHero(int accountId)

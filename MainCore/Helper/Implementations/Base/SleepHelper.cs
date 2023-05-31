@@ -30,31 +30,33 @@ namespace MainCore.Helper.Implementations.Base
             _taskManager = taskManager;
         }
 
-        public Result Execute(int accountId)
+        public Result Execute(int accountId, CancellationToken token)
         {
-            _nextAccess = ChooseNextAccess();
+            var sleepEnd = DateTime.Now;
+            var nextAccess = GetNextAccess(accountId);
 
-            if (_nextAccess is null || IsForceSleep())
+            if (nextAccess is null || IsForceSleep(accountId))
             {
-                var sleepTime = GetSleepTime();
-                _sleepEnd = DateTime.Now.Add(sleepTime);
+                var sleepTime = GetSleepTime(accountId);
+                sleepEnd = sleepEnd.Add(sleepTime);
                 _logManager.Information(accountId, $"No proxy vaild or force sleep is acitve. Bot will sleep {(int)sleepTime.TotalMinutes} mins");
             }
             else
             {
                 var sleepTime = TimeSpan.FromSeconds(Random.Shared.Next(14 * 60, 16 * 60));
-                _sleepEnd = DateTime.Now.Add(sleepTime);
-                var proxyHost = string.IsNullOrEmpty(_nextAccess.ProxyHost) ? "default" : _nextAccess.ProxyHost;
+                sleepEnd = sleepEnd.Add(sleepTime);
+                var proxyHost = string.IsNullOrEmpty(nextAccess.ProxyHost) ? "default" : nextAccess.ProxyHost;
                 _logManager.Information(accountId, $"There is vaild proxy ({proxyHost}). Bot will sleep {(int)sleepTime.TotalMinutes} mins before switching to vaild proxy");
             }
-            _result = Sleep();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            _result = WakeUp();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+
+            var result = Sleep(accountId, sleepEnd, token);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            result = WakeUp(accountId, nextAccess);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        private Access ChooseNextAccess()
+        public Access GetNextAccess(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
             var accesses = context.Accesses.Where(x => x.AccountId == accountId).OrderBy(x => x.LastUsed).ToList();
@@ -79,26 +81,28 @@ namespace MainCore.Helper.Implementations.Base
                 }
                 else
                 {
-                    _logManager.Information(accountId, $"Proxy {access.ProxyHost} is not working");
+                    _logManager.Warning(accountId, $"Proxy {access.ProxyHost} is not working");
                 }
             }
 
             return null;
         }
 
-        private Result Sleep()
+        public Result Sleep(int accountId, DateTime sleepEnd, CancellationToken token)
         {
-            _chromeBrowser.Close();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            chromeBrowser.Close();
+
             int lastMinute = 0;
 
             while (true)
             {
-                if (_token.IsCancellationRequested)
+                if (token.IsCancellationRequested)
                 {
                     _logManager.Information(accountId, "Cancellation requested");
                     return Result.Ok();
                 }
-                var timeRemaining = _sleepEnd - DateTime.Now;
+                var timeRemaining = sleepEnd - DateTime.Now;
                 if (timeRemaining < TimeSpan.Zero) return Result.Ok();
 
                 Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -112,35 +116,36 @@ namespace MainCore.Helper.Implementations.Base
             }
         }
 
-        private Result WakeUp()
+        public Result WakeUp(int accountId, Access nextAccess)
         {
             var status = _taskManager.GetAccountStatus(accountId);
             if (status != Enums.AccountStatus.Stopping && status != Enums.AccountStatus.Pausing)
             {
                 using var context = _contextFactory.CreateDbContext();
                 // just use current access
-                if (_nextAccess is null)
+                if (nextAccess is null)
                 {
                     var accesses = context.Accesses.Where(x => x.AccountId == accountId).OrderBy(x => x.LastUsed).ToList();
-                    _nextAccess = accesses.Last();
+                    nextAccess = accesses.Last();
                 }
                 var setting = context.AccountsSettings.Find(accountId);
-                _chromeBrowser.Setup(_nextAccess, setting);
+                var chromeBrowser = _chromeManager.Get(accountId);
+                chromeBrowser.Setup(nextAccess, setting);
                 var currentAccount = context.Accounts.Find(accountId);
-                _chromeBrowser.Navigate(currentAccount.Server);
+                chromeBrowser.Navigate(currentAccount.Server);
                 _taskManager.Add(accountId, new LoginTask(accountId), first: true);
             }
             return Result.Ok();
         }
 
-        private bool IsForceSleep()
+        public bool IsForceSleep(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.AccountsSettings.Find(accountId);
             return setting.IsSleepBetweenProxyChanging;
         }
 
-        private TimeSpan GetSleepTime()
+        public TimeSpan GetSleepTime(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.AccountsSettings.Find(accountId);
@@ -151,7 +156,7 @@ namespace MainCore.Helper.Implementations.Base
             return time;
         }
 
-        public TimeSpan GetWorkTime()
+        public TimeSpan GetWorkTime(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
             var setting = context.AccountsSettings.Find(accountId);

@@ -21,7 +21,7 @@ namespace MainCore.DependencyInjector
 
             services.AddSingleton<IInvalidPageHelper, InvalidPageHelper>();
             services.AddSingleton<IHeroResourcesHelper, HeroResourcesHelper>();
-            services.AddTransient<ISleepHelper, SleepHelper>();
+            services.AddSingleton<ISleepHelper, SleepHelper>();
             services.AddSingleton<IRallypointHelper, RallypointHelper>();
             services.AddSingleton<INPCHelper, NPCHelper>();
             services.AddSingleton<ILoginHelper, LoginHelper>();

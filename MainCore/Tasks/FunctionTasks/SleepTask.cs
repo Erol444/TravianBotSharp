@@ -19,11 +19,9 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _sleepHelper.Load(AccountId, CancellationToken);
-
-            var result = _sleepHelper.Execute();
+            var result = _sleepHelper.Execute(AccountId, CancellationToken);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            ExecuteAt = DateTime.Now.Add(_sleepHelper.GetWorkTime());
+            ExecuteAt = DateTime.Now.Add(_sleepHelper.GetWorkTime(AccountId));
             return Result.Ok();
         }
     }
