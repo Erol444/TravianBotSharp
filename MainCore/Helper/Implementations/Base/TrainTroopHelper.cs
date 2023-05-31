@@ -34,7 +34,7 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Execute(int accountId, int villageId, BuildingEnums trainBuilding)
         {
-            var result = _generalHelper.ToDorf2(accountId);
+            var result = _generalHelper.ToDorf2(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             var buildingLoc = GetBuilding(villageId, trainBuilding);
@@ -45,7 +45,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Ok();
             }
 
-            result = _generalHelper.ToBuilding(accountId, buildingLoc);
+            result = _generalHelper.ToBuilding(accountId, villageId, buildingLoc);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             var troop = GetTroopTraining(villageId, trainBuilding);

@@ -40,8 +40,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             });
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _updateHelper.UpdateAdventures();
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            _updateHelper.UpdateAdventures(accountId);
             return Result.Ok();
         }
 

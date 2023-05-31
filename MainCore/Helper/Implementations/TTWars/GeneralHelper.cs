@@ -18,7 +18,7 @@ namespace MainCore.Helper.Implementations.TTWars
             _heroSectionParser = heroSectionParser;
         }
 
-        public override Result ToBuilding(int accountId, int index)
+        public override Result ToBuilding(int accountId, int villageId, int index)
         {
             var chromeBrowser = _chromeManager.Get(accountId);
             var currentUrl = chromeBrowser.GetCurrentUrl();
@@ -43,8 +43,7 @@ namespace MainCore.Helper.Implementations.TTWars
             var result = Click(accountId, By.XPath(avatar.XPath));
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _updateHelper.UpdateHeroInventory();
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            _updateHelper.UpdateHeroInventory(accountId);
             return Result.Ok();
         }
     }

@@ -1,5 +1,4 @@
-﻿using FluentResults;
-using MainCore.Enums;
+﻿using MainCore.Enums;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -10,19 +9,23 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 {
     public class UpdateHelper : Base.UpdateHelper
     {
-        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser) : base(villageCurrentlyBuildingParser, chromeManager, contextFactory, villageFieldParser, villageInfrastructureParser, stockBarParser, subTabParser, heroSectionParser, farmListParser, eventManager, villagesTableParser, taskManager, rightBarParser)
+        private readonly IVillageInfrastructureParser _villageInfrastructureParser;
+
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser, IVillageInfrastructureParser villageInfrastructureParser) : base(villageCurrentlyBuildingParser, chromeManager, contextFactory, villageFieldParser, stockBarParser, subTabParser, heroSectionParser, farmListParser, eventManager, villagesTableParser, taskManager, rightBarParser)
         {
+            _villageInfrastructureParser = villageInfrastructureParser;
         }
 
-        protected override Result UpdateBuildings()
+        public override void UpdateBuildings(int accountId, int villageId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var buildingNodes = _villageInfrastructureParser.GetNodes(html);
             using var context = _contextFactory.CreateDbContext();
             foreach (var buildingNode in buildingNodes)
             {
                 var id = _villageInfrastructureParser.GetId(buildingNode);
-                var building = context.VillagesBuildings.Find(_villageId, id);
+                var building = context.VillagesBuildings.Find(villageId, id);
                 var level = _villageInfrastructureParser.GetLevel(buildingNode);
                 int type = 0;
                 if (id == 26)
@@ -35,7 +38,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 }
                 else if (id == 40)
                 {
-                    var tribe = context.AccountsInfo.Find(_accountId).Tribe;
+                    var tribe = context.AccountsInfo.Find(accountId).Tribe;
 
                     var wall = tribe.GetTribesWall();
                     type = (int)wall;
@@ -49,7 +52,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 {
                     context.VillagesBuildings.Add(new()
                     {
-                        VillageId = _villageId,
+                        VillageId = villageId,
                         Id = id,
                         Level = level,
                         Type = (BuildingEnums)type,
@@ -64,7 +67,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                     context.Update(building);
                 }
             }
-            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == _villageId).ToList();
+            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
             if (currentlyBuilding.Count > 0)
             {
                 foreach (var building in currentlyBuilding)
@@ -76,12 +79,12 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 }
             }
 
-            var updateTime = context.VillagesUpdateTime.Find(_villageId);
+            var updateTime = context.VillagesUpdateTime.Find(villageId);
             if (updateTime is null)
             {
                 updateTime = new()
                 {
-                    VillageId = _villageId,
+                    VillageId = villageId,
                     Dorf2 = DateTime.Now
                 };
 
@@ -94,9 +97,8 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             }
             context.SaveChanges();
 
-            _eventManager.OnVillageCurrentUpdate(_villageId);
-            _eventManager.OnVillageBuildsUpdate(_villageId);
-            return Result.Ok();
+            _eventManager.OnVillageCurrentUpdate(villageId);
+            _eventManager.OnVillageBuildsUpdate(villageId);
         }
     }
 }

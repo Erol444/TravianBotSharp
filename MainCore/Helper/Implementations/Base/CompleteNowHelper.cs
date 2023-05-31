@@ -34,7 +34,7 @@ namespace MainCore.Helper.Implementations.Base
             result = ClickConfirmCompleteNowButton(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.ToDorf(accountId, true);
+            result = _generalHelper.ToDorf(accountId, villageId, true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();

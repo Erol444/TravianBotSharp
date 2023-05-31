@@ -7,7 +7,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 {
     public class LoginHelper : Base.LoginHelper
     {
-        public LoginHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory, ISystemPageParser systemPageParser) : base(chromeManager, generalHelper, contextFactory, systemPageParser)
+        public LoginHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory, ISystemPageParser systemPageParser, IUpdateHelper updateHelper) : base(chromeManager, generalHelper, contextFactory, systemPageParser, updateHelper)
         {
         }
     }

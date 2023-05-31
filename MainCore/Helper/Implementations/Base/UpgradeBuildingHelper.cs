@@ -63,7 +63,7 @@ namespace MainCore.Helper.Implementations.Base
             _result = _generalHelper.SwitchVillage(_accountId, _villageId);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.ToDorf1(_accountId, forceReload: true);
+            _result = _generalHelper.ToDorf1(_accountId, _villageId, forceReload: true);
             if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
 
             while (true)
@@ -116,7 +116,7 @@ namespace MainCore.Helper.Implementations.Base
 
                 #region enter building
 
-                _result = _generalHelper.ToBuilding(_accountId, _chosenTask.Location);
+                _result = _generalHelper.ToBuilding(_accountId, _villageId, _chosenTask.Location);
                 if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
                 _result = GotoCorrectTab();
                 if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));

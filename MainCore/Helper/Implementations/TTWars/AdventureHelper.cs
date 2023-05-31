@@ -27,8 +27,7 @@ namespace MainCore.Helper.Implementations.TTWars
             var result = _generalHelper.Click(accountId, By.XPath(node.XPath));
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _updateHelper.UpdateAdventures();
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            _updateHelper.UpdateAdventures(accountId);
 
             return Result.Ok();
         }

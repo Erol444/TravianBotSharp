@@ -1,22 +1,35 @@
 ﻿using FluentResults;
-using System.Threading;
 
 namespace MainCore.Helper.Interface
 {
     public interface IUpdateHelper
     {
-        void Load(int villageId, int accountId, CancellationToken cancellationToken);
+        void Update(int accountId, int villageId = -1);
 
-        Result Update();
+        void UpdateAccountInfo(int accountId);
 
-        Result UpdateDorf1();
+        void UpdateAdventures(int accountId);
 
-        Result UpdateDorf2();
+        void UpdateBuildings(int accountId, int villageId);
 
-        Result UpdateAdventures();
+        Result UpdateCurrentlyBuilding(int accountId, int villageId);
 
-        Result UpdateFarmList();
+        Result UpdateDorf1(int accountId, int villageId);
 
-        Result UpdateHeroInventory();
+        Result UpdateDorf2(int accountId, int villageId);
+
+        void UpdateFarmList(int accountId);
+
+        void UpdateHeroInfo(int accountId);
+
+        void UpdateHeroInventory(int accountId);
+
+        void UpdateProduction(int accountId, int villageId);
+
+        void UpdateResource(int accountId, int villageId);
+
+        void UpdateResourceFields(int accountId, int villageId);
+
+        void UpdateVillageList(int accountId);
     }
 }

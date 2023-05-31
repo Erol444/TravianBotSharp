@@ -34,7 +34,7 @@ namespace MainCore.Helper.Implementations.Base
             var result = _generalHelper.SwitchVillage(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.ToDorf2(accountId, true);
+            result = _generalHelper.ToDorf2(accountId, villageId, true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = CheckGold(accountId);
@@ -72,7 +72,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Skip("Marketplace is missing"));
             }
 
-            var result = _generalHelper.ToBuilding(accountId, marketplace.Id);
+            var result = _generalHelper.ToBuilding(accountId, villageId, marketplace.Id);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = _generalHelper.SwitchTab(accountId, 0);

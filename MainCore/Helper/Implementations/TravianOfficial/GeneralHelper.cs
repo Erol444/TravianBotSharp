@@ -25,7 +25,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             _heroSectionParser = heroSectionParser;
         }
 
-        public override Result ToBuilding(int accountId, int index)
+        public override Result ToBuilding(int accountId, int villageId, int index)
         {
             var dorf = _buildingsHelper.GetDorf(index);
             var chromeBrowser = _chromeManager.Get(accountId);
@@ -36,7 +36,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             {
                 case 1:
                     {
-                        result = ToDorf1(accountId);
+                        result = ToDorf1(accountId, villageId);
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                         var node = _villageFieldParser.GetNode(html, index);
                         if (node is null)
@@ -50,7 +50,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 
                 case 2:
                     {
-                        result = ToDorf2(accountId);
+                        result = ToDorf2(accountId, villageId);
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
                         var node = _villageInfrastructureParser.GetNode(html, index);
@@ -103,8 +103,7 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             });
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _updateHelper.UpdateHeroInventory();
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            _updateHelper.UpdateHeroInventory(accountId);
 
             return Result.Ok();
         }

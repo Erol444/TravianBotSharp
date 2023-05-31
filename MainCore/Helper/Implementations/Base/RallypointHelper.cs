@@ -30,7 +30,7 @@ namespace MainCore.Helper.Implementations.Base
             var result = _generalHelper.SwitchVillage(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.ToDorf2(accountId);
+            result = _generalHelper.ToDorf2(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = ToRallypoint(accountId, villageId);
@@ -39,8 +39,7 @@ namespace MainCore.Helper.Implementations.Base
             result = _generalHelper.SwitchTab(accountId, 4);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _updateHelper.UpdateFarmList();
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            _updateHelper.UpdateFarmList(accountId);
 
             return Result.Ok();
         }
@@ -73,7 +72,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(new Skip("Rallypoint is missing"));
             }
 
-            var result = _generalHelper.ToBuilding(accountId, rallypoint.Id);
+            var result = _generalHelper.ToBuilding(accountId, villageId, rallypoint.Id);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();

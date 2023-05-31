@@ -14,16 +14,18 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IChromeManager _chromeManager;
 
         protected readonly IGeneralHelper _generalHelper;
+        protected readonly IUpdateHelper _updateHelper;
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
 
         protected readonly ISystemPageParser _systemPageParser;
 
-        public LoginHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory, ISystemPageParser systemPageParser)
+        public LoginHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IDbContextFactory<AppDbContext> contextFactory, ISystemPageParser systemPageParser, IUpdateHelper updateHelper)
         {
             _chromeManager = chromeManager;
             _generalHelper = generalHelper;
             _contextFactory = contextFactory;
             _systemPageParser = systemPageParser;
+            _updateHelper = updateHelper;
         }
 
         public Result Execute(int accountId)
@@ -34,8 +36,7 @@ namespace MainCore.Helper.Implementations.Base
             result = Login(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.ToDorf1(accountId);
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            _updateHelper.Update(accountId);
             return Result.Ok();
         }
 

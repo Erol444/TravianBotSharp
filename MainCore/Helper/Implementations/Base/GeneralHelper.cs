@@ -37,7 +37,7 @@ namespace MainCore.Helper.Implementations.Base
             _invalidPageHelper = invalidPageHelper;
         }
 
-        public abstract Result ToBuilding(int accountId, int index);
+        public abstract Result ToBuilding(int accountId, int villageId, int index);
 
         public abstract Result ToHeroInventory(int accountId);
 
@@ -164,7 +164,7 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result ToDorf1(int accountId, bool forceReload = false)
+        public Result ToDorf1(int accountId, int villageId, bool forceReload = false)
         {
             const string dorf1 = "dorf1";
             var chromeBrowser = _chromeManager.Get(accountId);
@@ -188,12 +188,12 @@ namespace MainCore.Helper.Implementations.Base
             var result = Click(accountId, By.XPath(node.XPath), dorf1);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _updateHelper.UpdateDorf1();
+            result = _updateHelper.UpdateDorf1(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        public Result ToDorf2(int accountId, bool forceReload = false)
+        public Result ToDorf2(int accountId, int villageId, bool forceReload = false)
         {
             const string dorf2 = "dorf2";
             var chromeBrowser = _chromeManager.Get(accountId);
@@ -217,7 +217,7 @@ namespace MainCore.Helper.Implementations.Base
             var result = Click(accountId, By.XPath(node.XPath), dorf2);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _updateHelper.UpdateDorf2();
+            result = _updateHelper.UpdateDorf2(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
@@ -227,13 +227,6 @@ namespace MainCore.Helper.Implementations.Base
             var result = SwitchVillage(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = ToDorf(accountId, forceReload);
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            return Result.Ok();
-        }
-
-        public Result ToDorf(int accountId, bool forceReload = false)
-        {
             const string dorf = "dorf";
             var chromeBrowser = _chromeManager.Get(accountId);
             var currentUrl = chromeBrowser.GetCurrentUrl();
@@ -246,7 +239,7 @@ namespace MainCore.Helper.Implementations.Base
             }
 
             var chanceDorf2 = DateTime.Now.Ticks % 100;
-            return chanceDorf2 >= 50 ? ToDorf2(accountId) : ToDorf1(accountId);
+            return chanceDorf2 >= 50 ? ToDorf2(accountId, villageId) : ToDorf1(accountId, villageId);
         }
 
         public Result ToBothDorf(int accountId, int villageId)
@@ -254,43 +247,36 @@ namespace MainCore.Helper.Implementations.Base
             var result = SwitchVillage(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = ToBothDorf(accountId);
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            return Result.Ok();
-        }
-
-        public Result ToBothDorf(int accountId)
-        {
             var commands = new List<Func<Result>>();
             var chromeBrowser = _chromeManager.Get(accountId);
             var url = chromeBrowser.GetCurrentUrl();
             if (url.Contains("dorf2"))
             {
-                commands.Add(() => ToDorf2(accountId));
-                commands.Add(() => ToDorf1(accountId));
+                commands.Add(() => ToDorf2(accountId, villageId));
+                commands.Add(() => ToDorf1(accountId, villageId));
             }
             else if (url.Contains("dorf1"))
             {
-                commands.Add(() => ToDorf1(accountId));
-                commands.Add(() => ToDorf2(accountId));
+                commands.Add(() => ToDorf1(accountId, villageId));
+                commands.Add(() => ToDorf2(accountId, villageId));
             }
             else
             {
                 if (Random.Shared.Next(0, 100) > 50)
                 {
-                    commands.Add(() => ToDorf1(accountId));
-                    commands.Add(() => ToDorf2(accountId));
+                    commands.Add(() => ToDorf1(accountId, villageId));
+                    commands.Add(() => ToDorf2(accountId, villageId));
                 }
                 else
                 {
-                    commands.Add(() => ToDorf2(accountId));
-                    commands.Add(() => ToDorf1(accountId));
+                    commands.Add(() => ToDorf2(accountId, villageId));
+                    commands.Add(() => ToDorf1(accountId, villageId));
                 }
             }
 
             foreach (var command in commands)
             {
-                var result = command.Invoke();
+                result = command.Invoke();
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();

@@ -26,17 +26,13 @@ namespace MainCore.Helper.Interface
 
         Result ToBothDorf(int accountId, int villageId);
 
-        Result ToBothDorf(int accountId);
-
-        Result ToBuilding(int accountId, int index);
-
-        Result ToDorf(int accountId, bool forceReload = false);
+        Result ToBuilding(int accountId, int villageId, int index);
 
         Result ToDorf(int accountId, int villageId, bool forceReload = false);
 
-        Result ToDorf1(int accountId, bool forceReload = false);
+        Result ToDorf1(int accountId, int villageId, bool forceReload = false);
 
-        Result ToDorf2(int accountId, bool forceReload = false);
+        Result ToDorf2(int accountId, int villageId, bool forceReload = false);
 
         Result ToHeroInventory(int accountId);
 

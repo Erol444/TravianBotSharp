@@ -18,7 +18,7 @@ namespace MainCore.Tasks.UpdateTasks
 
         public override Result Execute()
         {
-            var result = _generalHelper.ToDorf2(AccountId);
+            var result = _generalHelper.ToDorf2(AccountId, VillageId);
 
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 

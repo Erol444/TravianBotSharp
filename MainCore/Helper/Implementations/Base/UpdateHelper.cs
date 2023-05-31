@@ -11,7 +11,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
@@ -21,7 +20,6 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IChromeManager _chromeManager;
         protected readonly IDbContextFactory<AppDbContext> _contextFactory;
         protected readonly IVillageFieldParser _villageFieldParser;
-        protected readonly IVillageInfrastructureParser _villageInfrastructureParser;
         protected readonly IStockBarParser _stockBarParser;
         protected readonly IHeroSectionParser _heroSectionParser;
         protected readonly ISubTabParser _subTabParser;
@@ -31,19 +29,12 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IRightBarParser _rightBarParser;
         protected readonly ITaskManager _taskManager;
 
-        protected Result _result;
-        protected int _villageId;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
-        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser)
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser)
         {
             _villageCurrentlyBuildingParser = villageCurrentlyBuildingParser;
             _chromeManager = chromeManager;
             _contextFactory = contextFactory;
             _villageFieldParser = villageFieldParser;
-            _villageInfrastructureParser = villageInfrastructureParser;
             _stockBarParser = stockBarParser;
             _subTabParser = subTabParser;
             _heroSectionParser = heroSectionParser;
@@ -54,72 +45,56 @@ namespace MainCore.Helper.Implementations.Base
             _rightBarParser = rightBarParser;
         }
 
-        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
+        public abstract void UpdateBuildings(int accountId, int villageId);
+
+        public void Update(int accountId, int villageId = -1)
         {
-            _villageId = villageId;
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-        }
+            UpdateAccountInfo(accountId);
 
-        public Result Update()
-        {
-            _result = UpdateAccountInfo();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            UpdateHeroInfo(accountId);
 
-            _result = UpdateHeroInfo();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            UpdateVillageList(accountId);
 
-            if (_villageId == -1)
+            if (villageId == -1)
             {
-                _result = UpdateResource();
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                UpdateResource(accountId, villageId);
             }
+        }
 
-            _result = UpdateVillageList();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+        public Result UpdateDorf1(int accountId, int villageId)
+        {
+            Update(accountId, villageId);
 
+            var result = UpdateCurrentlyBuilding(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+
+            UpdateResourceFields(accountId, villageId);
+
+            UpdateProduction(accountId, villageId);
             return Result.Ok();
         }
 
-        public Result UpdateDorf1()
+        public Result UpdateDorf2(int accountId, int villageId)
         {
-            _result = Update();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            Update(accountId, villageId);
 
-            _result = UpdateCurrentlyBuilding();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = UpdateCurrentlyBuilding(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = UpdateResourceFields();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = UpdateProduction();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            UpdateBuildings(accountId, villageId);
             return Result.Ok();
         }
 
-        public Result UpdateDorf2()
+        public Result UpdateCurrentlyBuilding(int accountId, int villageId)
         {
-            _result = Update();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = UpdateCurrentlyBuilding();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = UpdateBuildings();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            return Result.Ok();
-        }
-
-        private Result UpdateCurrentlyBuilding()
-        {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var nodes = _villageCurrentlyBuildingParser.GetItems(html);
             using var context = _contextFactory.CreateDbContext();
             for (int i = 0; i < nodes.Count; i++)
             {
                 var node = nodes[i];
-                var building = context.VillagesCurrentlyBuildings.Find(_villageId, i);
+                var building = context.VillagesCurrentlyBuildings.Find(villageId, i);
 
                 var strType = _villageCurrentlyBuildingParser.GetBuildingType(node);
                 var level = _villageCurrentlyBuildingParser.GetLevel(node);
@@ -132,7 +107,7 @@ namespace MainCore.Helper.Implementations.Base
                     context.VillagesCurrentlyBuildings.Add(new()
                     {
                         Id = i,
-                        VillageId = _villageId,
+                        VillageId = villageId,
                         Type = type,
                         Level = level,
                         CompleteTime = DateTime.Now.Add(duration),
@@ -147,13 +122,13 @@ namespace MainCore.Helper.Implementations.Base
             }
             for (int i = nodes.Count; i < 4; i++) // we will save 3 slot for each village, Roman can build 3 building in one time
             {
-                var building = context.VillagesCurrentlyBuildings.Find(_villageId, i);
+                var building = context.VillagesCurrentlyBuildings.Find(villageId, i);
                 if (building is null)
                 {
                     context.VillagesCurrentlyBuildings.Add(new()
                     {
                         Id = i,
-                        VillageId = _villageId,
+                        VillageId = villageId,
                         Type = 0,
                         Level = -1,
                         CompleteTime = DateTime.MaxValue,
@@ -167,19 +142,20 @@ namespace MainCore.Helper.Implementations.Base
                 }
             }
             context.SaveChanges();
-            _eventManager.OnVillageCurrentUpdate(_villageId);
+            _eventManager.OnVillageCurrentUpdate(villageId);
             return Result.Ok();
         }
 
-        private Result UpdateResourceFields()
+        public void UpdateResourceFields(int accountId, int villageId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var resFields = _villageFieldParser.GetNodes(html);
             using var context = _contextFactory.CreateDbContext();
             foreach (var fieldNode in resFields)
             {
                 var id = _villageFieldParser.GetId(fieldNode);
-                var resource = context.VillagesBuildings.Find(_villageId, id);
+                var resource = context.VillagesBuildings.Find(villageId, id);
                 var level = _villageFieldParser.GetLevel(fieldNode);
                 var type = _villageFieldParser.GetBuildingType(fieldNode);
                 var isUnderConstruction = _villageFieldParser.IsUnderConstruction(fieldNode);
@@ -187,7 +163,7 @@ namespace MainCore.Helper.Implementations.Base
                 {
                     context.VillagesBuildings.Add(new()
                     {
-                        VillageId = _villageId,
+                        VillageId = villageId,
                         Id = id,
                         Level = level,
                         Type = (BuildingEnums)type,
@@ -203,7 +179,7 @@ namespace MainCore.Helper.Implementations.Base
                 }
             }
 
-            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == _villageId && x.Level != -1).ToList();
+            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level != -1).ToList();
             if (currentlyBuilding.Count > 0)
             {
                 foreach (var building in currentlyBuilding)
@@ -215,12 +191,12 @@ namespace MainCore.Helper.Implementations.Base
                 }
             }
 
-            var updateTime = context.VillagesUpdateTime.Find(_villageId);
+            var updateTime = context.VillagesUpdateTime.Find(villageId);
             if (updateTime is null)
             {
                 updateTime = new()
                 {
-                    VillageId = _villageId,
+                    VillageId = villageId,
                     Dorf1 = DateTime.Now
                 };
 
@@ -233,24 +209,22 @@ namespace MainCore.Helper.Implementations.Base
             }
             context.SaveChanges();
 
-            _eventManager.OnVillageCurrentUpdate(_villageId);
-            _eventManager.OnVillageBuildsUpdate(_villageId);
-            return Result.Ok();
+            _eventManager.OnVillageCurrentUpdate(villageId);
+            _eventManager.OnVillageBuildsUpdate(villageId);
         }
 
-        protected abstract Result UpdateBuildings();
-
-        protected Result UpdateResource()
+        public void UpdateResource(int accountId, int villageId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             using var context = _contextFactory.CreateDbContext();
-            var resource = context.VillagesResources.Find(_villageId);
+            var resource = context.VillagesResources.Find(villageId);
 
             if (resource is null)
             {
                 context.VillagesResources.Add(new()
                 {
-                    VillageId = _villageId,
+                    VillageId = villageId,
                     Wood = _stockBarParser.GetWood(html),
                     Clay = _stockBarParser.GetClay(html),
                     Iron = _stockBarParser.GetIron(html),
@@ -272,18 +246,17 @@ namespace MainCore.Helper.Implementations.Base
                 context.Update(resource);
             }
             context.SaveChanges();
-
-            return Result.Ok();
         }
 
-        public Result UpdateHeroInventory()
+        public void UpdateHeroInventory(int accountId)
         {
-            _result = Update();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            Update(accountId);
 
-            var foundItems = _heroSectionParser.GetItems(_chromeBrowser.GetHtml());
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
+            var foundItems = _heroSectionParser.GetItems(html);
             using var context = _contextFactory.CreateDbContext();
-            var heroItems = context.HeroesItems.Where(x => x.AccountId == _accountId).ToList();
+            var heroItems = context.HeroesItems.Where(x => x.AccountId == accountId).ToList();
             var addedItems = new List<HeroItem>();
             foreach (var item in foundItems)
             {
@@ -293,7 +266,7 @@ namespace MainCore.Helper.Implementations.Base
                 {
                     context.HeroesItems.Add(new()
                     {
-                        AccountId = _accountId,
+                        AccountId = accountId,
                         Item = type,
                         Count = count,
                     });
@@ -312,23 +285,23 @@ namespace MainCore.Helper.Implementations.Base
             }
             context.HeroesItems.RemoveRange(heroItems);
             context.SaveChanges();
-            _eventManager.OnHeroInventoryUpdate(_accountId);
-            return Result.Ok();
+            _eventManager.OnHeroInventoryUpdate(accountId);
         }
 
-        public Result UpdateAdventures()
+        public void UpdateAdventures(int accountId)
         {
-            _result = Update();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            Update(accountId);
 
-            var foundAdventures = _heroSectionParser.GetAdventures(_chromeBrowser.GetHtml());
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
+            var foundAdventures = _heroSectionParser.GetAdventures(html);
             using var context = _contextFactory.CreateDbContext();
-            var heroAdventures = context.Adventures.Where(x => x.AccountId == _accountId).ToList();
+            var heroAdventures = context.Adventures.Where(x => x.AccountId == accountId).ToList();
             if (foundAdventures.Count == 0)
             {
                 context.Adventures.RemoveRange(heroAdventures);
                 context.SaveChanges();
-                return Result.Ok();
+                return;
             }
             var addedAdventures = new List<Adventure>();
             foreach (var adventure in foundAdventures)
@@ -340,7 +313,7 @@ namespace MainCore.Helper.Implementations.Base
                 {
                     context.Adventures.Add(new()
                     {
-                        AccountId = _accountId,
+                        AccountId = accountId,
                         X = x,
                         Y = y,
                         Difficulty = (DifficultyEnums)difficulty,
@@ -358,15 +331,15 @@ namespace MainCore.Helper.Implementations.Base
             }
             context.Adventures.RemoveRange(heroAdventures);
             context.SaveChanges();
-            _eventManager.OnHeroAdventuresUpdate(_accountId);
-            return Result.Ok();
+            _eventManager.OnHeroAdventuresUpdate(accountId);
         }
 
-        protected Result UpdateProduction()
+        public void UpdateProduction(int accountId, int villageId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             using var context = _contextFactory.CreateDbContext();
-            var production = context.VillagesProduction.Find(_villageId);
+            var production = context.VillagesProduction.Find(villageId);
 
             var productionList = _subTabParser.GetProductions(html);
             var wood = _subTabParser.GetProduction(productionList[0]);
@@ -378,7 +351,7 @@ namespace MainCore.Helper.Implementations.Base
             {
                 context.VillagesProduction.Add(new()
                 {
-                    VillageId = _villageId,
+                    VillageId = villageId,
                     Wood = wood,
                     Clay = clay,
                     Iron = iron,
@@ -394,14 +367,13 @@ namespace MainCore.Helper.Implementations.Base
                 context.Update(production);
             }
             context.SaveChanges();
-            return Result.Ok();
         }
 
-        public Result UpdateFarmList()
+        public void UpdateFarmList(int accountId)
         {
-            _result = Update();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-            var html = _chromeBrowser.GetHtml();
+            Update(accountId);
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
 
             var farmNodes = _farmListParser.GetFarmNodes(html);
             var farms = new List<Farm>();
@@ -412,7 +384,7 @@ namespace MainCore.Helper.Implementations.Base
                 var count = _farmListParser.GetNumOfFarms(farmNode);
                 var farm = new Farm()
                 {
-                    AccountId = _accountId,
+                    AccountId = accountId,
                     Id = id,
                     Name = name,
                     FarmCount = count,
@@ -420,7 +392,7 @@ namespace MainCore.Helper.Implementations.Base
                 farms.Add(farm);
             }
             using var context = _contextFactory.CreateDbContext();
-            var farmsOld = context.Farms.Where(x => x.AccountId == _accountId).ToList();
+            var farmsOld = context.Farms.Where(x => x.AccountId == accountId).ToList();
             foreach (var farm in farms)
             {
                 var existFarm = context.Farms.FirstOrDefault(x => x.Id == farm.Id);
@@ -445,13 +417,13 @@ namespace MainCore.Helper.Implementations.Base
             }
 
             context.SaveChanges();
-            _eventManager.OnFarmListUpdate(_accountId);
-            return Result.Ok();
+            _eventManager.OnFarmListUpdate(accountId);
         }
 
-        protected Result UpdateVillageList()
+        public void UpdateVillageList(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
 
             var listNode = _villagesTableParser.GetVillages(html);
             var foundVills = new List<Village>();
@@ -463,7 +435,7 @@ namespace MainCore.Helper.Implementations.Base
                 var y = _villagesTableParser.GetY(node);
                 foundVills.Add(new()
                 {
-                    AccountId = _accountId,
+                    AccountId = accountId,
                     Id = id,
                     Name = name,
                     X = x,
@@ -472,10 +444,10 @@ namespace MainCore.Helper.Implementations.Base
             }
 
             using var context = _contextFactory.CreateDbContext();
-            var currentVills = context.Villages.Where(x => x.AccountId == _accountId).ToList();
+            var currentVills = context.Villages.Where(x => x.AccountId == accountId).ToList();
 
             var missingVills = new List<Village>();
-            var taskList = _taskManager.GetList(_accountId).OfType<VillageBotTask>();
+            var taskList = _taskManager.GetList(accountId).OfType<VillageBotTask>();
             for (var i = 0; i < currentVills.Count; i++)
             {
                 var currentVillage = currentVills[i];
@@ -487,8 +459,8 @@ namespace MainCore.Helper.Implementations.Base
                     var tasks = taskList.Where(x => x.VillageId == currentVillage.Id).ToList();
                     foreach (var task in tasks)
                     {
-                        if (task.Stage == TaskStage.Executing) _taskManager.StopCurrentTask(_accountId);
-                        _taskManager.Remove(_accountId, task);
+                        if (task.Stage == TaskStage.Executing) _taskManager.StopCurrentTask(accountId);
+                        _taskManager.Remove(accountId, task);
                     }
                     continue;
                 }
@@ -502,7 +474,7 @@ namespace MainCore.Helper.Implementations.Base
                 context.DeleteVillage(item.Id);
             }
 
-            var tribe = context.AccountsInfo.Find(_accountId).Tribe;
+            var tribe = context.AccountsInfo.Find(accountId).Tribe;
             foreach (var newVill in foundVills)
             {
                 context.Villages.Add(new Village()
@@ -516,66 +488,66 @@ namespace MainCore.Helper.Implementations.Base
                 context.AddVillage(newVill.Id);
                 context.AddTroop(newVill.Id, tribe);
 
-                _taskManager.Add(_accountId, new UpdateBothDorf(newVill.Id, _accountId));
+                _taskManager.Add(accountId, new UpdateBothDorf(newVill.Id, accountId));
             }
             context.SaveChanges();
             if (villageChange)
             {
-                _eventManager.OnVillagesUpdate(_accountId);
+                _eventManager.OnVillagesUpdate(accountId);
             }
-            return Result.Ok();
         }
 
-        protected Result UpdateHeroInfo()
+        public void UpdateHeroInfo(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var health = _heroSectionParser.GetHealth(html);
             var status = _heroSectionParser.GetStatus(html);
             var numberAdventure = _heroSectionParser.GetAdventureNum(html);
 
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Heroes.Find(_accountId);
+            var account = context.Heroes.Find(accountId);
             account.Health = health;
             account.Status = (HeroStatusEnums)status;
             context.Update(account);
 
-            var adventures = context.Adventures.Count(x => x.AccountId == _accountId);
+            var adventures = context.Adventures.Count(x => x.AccountId == accountId);
             if (numberAdventure == 0)
             {
                 if (adventures != 0)
                 {
-                    var heroAdventures = context.Adventures.Where(x => x.AccountId == _accountId).ToList();
+                    var heroAdventures = context.Adventures.Where(x => x.AccountId == accountId).ToList();
                     context.Adventures.RemoveRange(heroAdventures);
                 }
             }
             else if (adventures != numberAdventure)
             {
-                var setting = context.AccountsSettings.Find(_accountId);
+                var setting = context.AccountsSettings.Find(accountId);
                 if (setting.IsAutoAdventure)
                 {
-                    var listTask = _taskManager.GetList(_accountId);
+                    var listTask = _taskManager.GetList(accountId);
                     var task = listTask.OfType<UpdateAdventures>();
                     if (!task.Any())
                     {
-                        _taskManager.Add(_accountId, new UpdateAdventures(_accountId));
+                        _taskManager.Add(accountId, new UpdateAdventures(accountId));
                     }
                 }
             }
 
             context.SaveChanges();
-            return Result.Ok();
         }
 
-        protected Result UpdateAccountInfo()
+        public void UpdateAccountInfo(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             //var tribe = _rightBarParser.GetTribe(html);
             var hasPlusAccount = _rightBarParser.HasPlusAccount(html);
             var gold = _stockBarParser.GetGold(html);
             var silver = _stockBarParser.GetSilver(html);
 
             using var context = _contextFactory.CreateDbContext();
-            var account = context.AccountsInfo.Find(_accountId);
+            var account = context.AccountsInfo.Find(accountId);
 
             account.HasPlusAccount = hasPlusAccount;
             account.Gold = gold;
@@ -584,7 +556,6 @@ namespace MainCore.Helper.Implementations.Base
             //if (account.Tribe == TribeEnums.Any) account.Tribe = (TribeEnums)tribe;
             context.Update(account);
             context.SaveChanges();
-            return Result.Ok();
         }
     }
 }
