@@ -16,27 +16,23 @@ using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public abstract class UpgradeBuildingHelper : IUpgradeBuildingHelper
+    public sealed class UpgradeBuildingHelper : IUpgradeBuildingHelper
     {
-        protected readonly IDbContextFactory<AppDbContext> _contextFactory;
-        protected readonly IPlanManager _planManager;
-        protected readonly IChromeManager _chromeManager;
-        protected readonly ISystemPageParser _systemPageParser;
-        protected readonly IBuildingsHelper _buildingsHelper;
-        protected readonly IGeneralHelper _generalHelper;
-        protected readonly IHeroResourcesHelper _heroResourcesHelper;
-        protected readonly ILogManager _logManager;
-        protected readonly IEventManager _eventManager;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IPlanManager _planManager;
+        private readonly IChromeManager _chromeManager;
+        private readonly ISystemPageParser _systemPageParser;
+        private readonly IGeneralHelper _generalHelper;
+        private readonly IHeroResourcesHelper _heroResourcesHelper;
+        private readonly IEventManager _eventManager;
 
-        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IBuildingsHelper buildingsHelper, IGeneralHelper generalHelper, ILogManager logManager, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper)
+        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper)
         {
             _contextFactory = contextFactory;
             _planManager = planManager;
             _chromeManager = chromeManager;
             _systemPageParser = systemPageParser;
-            _buildingsHelper = buildingsHelper;
             _generalHelper = generalHelper;
-            _logManager = logManager;
             _eventManager = eventManager;
             _heroResourcesHelper = heroResourcesHelper;
         }
@@ -279,7 +275,7 @@ namespace MainCore.Helper.Implementations.Base
             return true;
         }
 
-        protected Result CheckResource(int accountId, int villageId, PlanTask task, bool isNewBuilding)
+        public Result CheckResource(int accountId, int villageId, PlanTask task, bool isNewBuilding)
         {
             using var context = _contextFactory.CreateDbContext();
 
@@ -372,7 +368,7 @@ namespace MainCore.Helper.Implementations.Base
             return isNewBuilding;
         }
 
-        protected Result Construct(int accountId, PlanTask task)
+        public Result Construct(int accountId, PlanTask task)
         {
             var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
@@ -539,7 +535,7 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        protected Result<PlanTask> ChooseBuilding(int accountId, int villageId)
+        public Result<PlanTask> ChooseBuilding(int accountId, int villageId)
         {
             PlanTask chosenTask = null;
             var tasks = _planManager.GetList(villageId);

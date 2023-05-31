@@ -6,6 +6,12 @@ namespace MainCore.Helper.Interface
 {
     public interface IUpgradeBuildingHelper
     {
+        Result CheckResource(int accountId, int villageId, PlanTask task, bool isNewBuilding);
+
+        Result<PlanTask> ChooseBuilding(int accountId, int villageId);
+
+        Result Construct(int accountId, PlanTask task);
+
         Result Execute(int accountId, int villageId);
 
         PlanTask ExtractResField(int villageId, PlanTask task);

@@ -55,10 +55,10 @@ namespace MainCore.DependencyInjector
 
         public IServiceCollection Configure(IServiceCollection services)
         {
-            ConfigureService(services);
-            ConfigureParser(services);
             ConfigureHelper(services);
             ConfigureServerHelper(services);
+            ConfigureService(services);
+            ConfigureParser(services);
 
             return services;
         }
