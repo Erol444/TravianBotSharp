@@ -19,13 +19,14 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly ISystemPageParser _systemPageParser;
         protected readonly IHeroSectionParser _heroSectionParser;
 
-        public AdventureHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IHeroSectionParser heroSectionParser, ISystemPageParser systemPageParser, IDatabaseHelper databaseHelper)
+        protected AdventureHelper(IDatabaseHelper databaseHelper, IChromeManager chromeManager, IGeneralHelper generalHelper, IUpdateHelper updateHelper, ISystemPageParser systemPageParser, IHeroSectionParser heroSectionParser)
         {
+            _databaseHelper = databaseHelper;
             _chromeManager = chromeManager;
             _generalHelper = generalHelper;
-            _heroSectionParser = heroSectionParser;
+            _updateHelper = updateHelper;
             _systemPageParser = systemPageParser;
-            _databaseHelper = databaseHelper;
+            _heroSectionParser = heroSectionParser;
         }
 
         public abstract Result ToAdventure(int accountId);

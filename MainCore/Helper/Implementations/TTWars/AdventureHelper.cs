@@ -10,7 +10,7 @@ namespace MainCore.Helper.Implementations.TTWars
 {
     public class AdventureHelper : Base.AdventureHelper
     {
-        public AdventureHelper(IChromeManager chromeManager, IGeneralHelper generalHelper, IHeroSectionParser heroSectionParser, ISystemPageParser systemPageParser, IDatabaseHelper databaseHelper) : base(chromeManager, generalHelper, heroSectionParser, systemPageParser, databaseHelper)
+        public AdventureHelper(IDatabaseHelper databaseHelper, IChromeManager chromeManager, IGeneralHelper generalHelper, IUpdateHelper updateHelper, ISystemPageParser systemPageParser, IHeroSectionParser heroSectionParser) : base(databaseHelper, chromeManager, generalHelper, updateHelper, systemPageParser, heroSectionParser)
         {
         }
 
