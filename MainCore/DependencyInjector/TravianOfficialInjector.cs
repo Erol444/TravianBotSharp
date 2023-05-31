@@ -28,7 +28,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<ITrainTroopHelper, TrainTroopHelper>();
             services.AddSingleton<ICompleteNowHelper, CompleteNowHelper>();
             services.AddSingleton<IAdventureHelper, AdventureHelper>();
-            services.AddTransient<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
+            services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
             return services;
         }
 

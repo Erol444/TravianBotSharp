@@ -28,15 +28,6 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly ILogManager _logManager;
         protected readonly IEventManager _eventManager;
 
-        protected Result _result;
-        protected int _villageId;
-        protected int _accountId;
-        protected CancellationToken _token;
-        protected IChromeBrowser _chromeBrowser;
-
-        protected PlanTask _chosenTask;
-        protected bool _isNewBuilding;
-
         public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IBuildingsHelper buildingsHelper, IGeneralHelper generalHelper, ILogManager logManager, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper)
         {
             _contextFactory = contextFactory;
@@ -50,34 +41,26 @@ namespace MainCore.Helper.Implementations.Base
             _heroResourcesHelper = heroResourcesHelper;
         }
 
-        public void Load(int villageId, int accountId, CancellationToken cancellationToken)
+        public Result Execute(int accountId, int villageId)
         {
-            _villageId = villageId;
-            _accountId = accountId;
-            _token = cancellationToken;
-            _chromeBrowser = _chromeManager.Get(_accountId);
-        }
+            var result = _generalHelper.SwitchVillage(accountId, villageId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-        public Result Execute()
-        {
-            _result = _generalHelper.SwitchVillage(_accountId, _villageId);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-
-            _result = _generalHelper.ToDorf1(_accountId, _villageId, forceReload: true);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.ToDorf1(accountId, villageId, forceReload: true);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             while (true)
             {
                 #region choose building
 
-                _result = ChooseBuilding();
-                if (_result.IsFailed)
+                var resultBuilding = ChooseBuilding(accountId, villageId);
+                if (resultBuilding.IsFailed)
                 {
-                    //if (_result.HasError<NoTaskInQueue>() || _result.HasError<QueueFull>())
-                    if (_result.HasError<LackFreeCrop>())
+                    //if (result.HasError<NoTaskInQueue>() || result.HasError<QueueFull>())
+                    if (resultBuilding.HasError<LackFreeCrop>())
                     {
                         using var context = _contextFactory.CreateDbContext();
-                        var cropland = context.VillagesBuildings.Where(x => x.VillageId == _villageId).Where(x => x.Type == BuildingEnums.Cropland).OrderBy(x => x.Level).FirstOrDefault();
+                        var cropland = context.VillagesBuildings.Where(x => x.VillageId == villageId).Where(x => x.Type == BuildingEnums.Cropland).OrderBy(x => x.Level).FirstOrDefault();
                         var task = new PlanTask()
                         {
                             Type = PlanTypeEnums.General,
@@ -85,30 +68,32 @@ namespace MainCore.Helper.Implementations.Base
                             Building = BuildingEnums.Cropland,
                             Location = cropland.Id,
                         };
-                        _planManager.Insert(_villageId, 0, task);
-                        _eventManager.OnVillageBuildQueueUpdate(_villageId);
+                        _planManager.Insert(villageId, 0, task);
+                        _eventManager.OnVillageBuildQueueUpdate(villageId);
                         continue;
                     }
 
-                    return _result.WithError(new Trace(Trace.TraceMessage()));
+                    return Result.Fail(resultBuilding.Errors).WithError(new Trace(Trace.TraceMessage()));
                 }
 
                 #endregion choose building
 
+                var chosenTask = resultBuilding.Value;
+
                 #region extract resource fields
 
-                if (_chosenTask.Type == PlanTypeEnums.ResFields)
+                if (chosenTask.Type == PlanTypeEnums.ResFields)
                 {
-                    var task = ExtractResField();
+                    var task = ExtractResField(villageId, chosenTask);
                     if (task is null)
                     {
-                        _planManager.Remove(_villageId, _chosenTask);
+                        _planManager.Remove(villageId, chosenTask);
                     }
                     else
                     {
-                        _planManager.Insert(_villageId, 0, task);
+                        _planManager.Insert(villageId, 0, task);
                     }
-                    _eventManager.OnVillageBuildQueueUpdate(_villageId);
+                    _eventManager.OnVillageBuildQueueUpdate(villageId);
                     continue;
                 }
 
@@ -116,33 +101,35 @@ namespace MainCore.Helper.Implementations.Base
 
                 #region enter building
 
-                _result = _generalHelper.ToBuilding(_accountId, _villageId, _chosenTask.Location);
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-                _result = GotoCorrectTab();
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                result = _generalHelper.ToBuilding(accountId, villageId, chosenTask.Location);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                var resultIsNewBuilding = GotoCorrectTab(accountId, villageId, chosenTask);
+                if (resultIsNewBuilding.IsFailed) return Result.Fail(resultIsNewBuilding.Errors).WithError(new Trace(Trace.TraceMessage()));
 
                 #endregion enter building
 
-                _result = CheckResource();
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                var isNewBuilding = resultIsNewBuilding.Value;
+
+                result = CheckResource(accountId, villageId, chosenTask, isNewBuilding);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
                 #region click
 
-                if (_isNewBuilding)
+                if (isNewBuilding)
                 {
-                    Construct();
+                    Construct(accountId, chosenTask);
                 }
                 else
                 {
-                    if (IsNeedAdsUpgrade())
+                    if (IsNeedAdsUpgrade(accountId, villageId, chosenTask))
                     {
-                        _result = UpgradeAds();
-                        if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                        result = UpgradeAds(accountId, chosenTask);
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                     else
                     {
-                        _result = Upgrade();
-                        if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                        result = Upgrade(accountId, chosenTask);
+                        if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                 }
 
@@ -150,22 +137,22 @@ namespace MainCore.Helper.Implementations.Base
             }
         }
 
-        protected PlanTask ExtractResField()
+        public PlanTask ExtractResField(int villageId, PlanTask task)
         {
             List<VillageBuilding> buildings = null; // Potential buildings to be upgraded next
             using var context = _contextFactory.CreateDbContext();
-            switch (_chosenTask.ResourceType)
+            switch (task.ResourceType)
             {
                 case ResTypeEnums.AllResources:
-                    buildings = context.VillagesBuildings.Where(x => x.VillageId == _villageId && (x.Type == BuildingEnums.Woodcutter || x.Type == BuildingEnums.ClayPit || x.Type == BuildingEnums.IronMine || x.Type == BuildingEnums.Cropland)).ToList();
+                    buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId && (x.Type == BuildingEnums.Woodcutter || x.Type == BuildingEnums.ClayPit || x.Type == BuildingEnums.IronMine || x.Type == BuildingEnums.Cropland)).ToList();
                     break;
 
                 case ResTypeEnums.ExcludeCrop:
-                    buildings = context.VillagesBuildings.Where(x => x.VillageId == _villageId && (x.Type == BuildingEnums.Woodcutter || x.Type == BuildingEnums.ClayPit || x.Type == BuildingEnums.IronMine)).ToList();
+                    buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId && (x.Type == BuildingEnums.Woodcutter || x.Type == BuildingEnums.ClayPit || x.Type == BuildingEnums.IronMine)).ToList();
                     break;
 
                 case ResTypeEnums.OnlyCrop:
-                    buildings = context.VillagesBuildings.Where(x => x.VillageId == _villageId && x.Type == BuildingEnums.Cropland).ToList();
+                    buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId && x.Type == BuildingEnums.Cropland).ToList();
                     break;
             }
 
@@ -173,11 +160,11 @@ namespace MainCore.Helper.Implementations.Base
             {
                 if (b.IsUnderConstruction)
                 {
-                    var levelUpgrading = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == _villageId).Count(x => x.Location == b.Id);
+                    var levelUpgrading = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).Count(x => x.Location == b.Id);
                     b.Level += (byte)levelUpgrading;
                 }
             }
-            buildings = buildings.Where(b => b.Level < _chosenTask.Level).ToList();
+            buildings = buildings.Where(b => b.Level < task.Level).ToList();
 
             if (buildings.Count == 0) return null;
 
@@ -192,19 +179,19 @@ namespace MainCore.Helper.Implementations.Base
             };
         }
 
-        public void RemoveFinishedCB()
+        public void RemoveFinishedCB(int villageId)
         {
             using var context = _contextFactory.CreateDbContext();
-            var tasksDone = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == _villageId && x.CompleteTime <= DateTime.Now);
+            var tasksDone = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.CompleteTime <= DateTime.Now);
 
             if (!tasksDone.Any()) return;
 
             foreach (var taskDone in tasksDone)
             {
-                var building = context.VillagesBuildings.Find(_villageId, taskDone.Location);
+                var building = context.VillagesBuildings.Find(villageId, taskDone.Location);
                 if (building is null)
                 {
-                    building = context.VillagesBuildings.FirstOrDefault(x => x.VillageId == _villageId && x.Type == taskDone.Type);
+                    building = context.VillagesBuildings.FirstOrDefault(x => x.VillageId == villageId && x.Type == taskDone.Type);
                     if (building is null) continue;
                 }
 
@@ -220,38 +207,38 @@ namespace MainCore.Helper.Implementations.Base
             context.SaveChanges();
         }
 
-        protected PlanTask GetFirstResTask()
+        public PlanTask GetFirstResTask(int villageId)
         {
-            var tasks = _planManager.GetList(_villageId);
+            var tasks = _planManager.GetList(villageId);
             var task = tasks.FirstOrDefault(x => x.Type == PlanTypeEnums.ResFields || x.Building.IsResourceField());
             return task;
         }
 
-        protected PlanTask GetFirstBuildingTask()
+        public PlanTask GetFirstBuildingTask(int villageId)
         {
-            var tasks = _planManager.GetList(_villageId);
+            var tasks = _planManager.GetList(villageId);
             var infrastructureTasks = tasks.Where(x => x.Type == PlanTypeEnums.General && !x.Building.IsResourceField());
-            var task = infrastructureTasks.FirstOrDefault(x => IsInfrastructureTaskVaild(x));
+            var task = infrastructureTasks.FirstOrDefault(x => IsInfrastructureTaskVaild(villageId, x));
             return task;
         }
 
-        protected PlanTask GetFirstTask()
+        public PlanTask GetFirstTask(int villageId)
         {
-            var tasks = _planManager.GetList(_villageId);
+            var tasks = _planManager.GetList(villageId);
             foreach (var task in tasks)
             {
                 if (task.Type != PlanTypeEnums.General) return task;
                 if (task.Building.IsResourceField()) return task;
-                if (IsInfrastructureTaskVaild(task)) return task;
+                if (IsInfrastructureTaskVaild(villageId, task)) return task;
             }
             return null;
         }
 
-        private bool IsInfrastructureTaskVaild(PlanTask planTask)
+        public bool IsInfrastructureTaskVaild(int villageId, PlanTask planTask)
         {
             (_, var prerequisiteBuildings) = planTask.Building.GetPrerequisiteBuildings();
             using var context = _contextFactory.CreateDbContext();
-            var buildings = context.VillagesBuildings.Where(x => x.VillageId == _villageId).ToList();
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
             foreach (var prerequisiteBuilding in prerequisiteBuildings)
             {
                 var building = buildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Type == prerequisiteBuilding.Building);
@@ -261,19 +248,20 @@ namespace MainCore.Helper.Implementations.Base
             return true;
         }
 
-        protected bool IsNeedAdsUpgrade()
+        public bool IsNeedAdsUpgrade(int accountId, int villageId, PlanTask task)
         {
             if (VersionDetector.GetVersion() != VersionEnums.TravianOfficial) return false;
             using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.Find(_villageId);
+            var setting = context.VillagesSettings.Find(villageId);
             if (!setting.IsAdsUpgrade) return false;
 
-            var building = context.VillagesBuildings.Find(_villageId, _chosenTask.Location);
+            var building = context.VillagesBuildings.Find(villageId, task.Location);
 
-            if (_chosenTask.Building.IsResourceField() && building.Level == 0) return false;
-            if (_chosenTask.Building.IsNotAdsUpgrade()) return false;
+            if (task.Building.IsResourceField() && building.Level == 0) return false;
+            if (task.Building.IsNotAdsUpgrade()) return false;
 
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var container = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
 
             var durationNode = container.Descendants("div").FirstOrDefault(x => x.HasClass("duration"));
@@ -291,34 +279,36 @@ namespace MainCore.Helper.Implementations.Base
             return true;
         }
 
-        protected Result CheckResource()
+        protected Result CheckResource(int accountId, int villageId, PlanTask task, bool isNewBuilding)
         {
             using var context = _contextFactory.CreateDbContext();
 
-            var resNeed = GetResourceNeed(_chosenTask.Building, _isNewBuilding);
-            var resCurrent = context.VillagesResources.Find(_villageId);
+            var resNeed = GetResourceNeed(accountId, task.Building, isNewBuilding);
+            var resCurrent = context.VillagesResources.Find(villageId);
             if (resNeed < resCurrent) return Result.Ok();
 
-            var setting = context.VillagesSettings.Find(_villageId);
-            if (!setting.IsUseHeroRes) return Result.Fail(NoResource.Build(_chosenTask.Building, _chosenTask.Level));
+            var setting = context.VillagesSettings.Find(villageId);
+            if (!setting.IsUseHeroRes) return Result.Fail(NoResource.Build(task.Building, task.Level));
 
-            var buildingUrl = _chromeBrowser.GetCurrentUrl();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var buildingUrl = chromeBrowser.GetCurrentUrl();
 
-            _result = _generalHelper.ToHeroInventory(_accountId);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.ToHeroInventory(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _heroResourcesHelper.FillResource(_accountId, _villageId, resCurrent - resNeed);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _heroResourcesHelper.FillResource(accountId, villageId, resCurrent - resNeed);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.Navigate(_accountId, buildingUrl);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.Navigate(accountId, buildingUrl);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        protected Resources GetResourceNeed(BuildingEnums building, bool multiple = false)
+        public Resources GetResourceNeed(int accountId, BuildingEnums building, bool multiple = false)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
 
             HtmlNode contractNode;
             if (multiple && !building.IsResourceField())
@@ -342,27 +332,26 @@ namespace MainCore.Helper.Implementations.Base
             return new Resources(resNeed);
         }
 
-        protected bool IsEnoughFreeCrop(BuildingEnums building)
+        public bool IsEnoughFreeCrop(int villageId, BuildingEnums building)
         {
             using var context = _contextFactory.CreateDbContext();
-            var freecrop = context.VillagesResources.Find(_villageId).FreeCrop;
+            var freecrop = context.VillagesResources.Find(villageId).FreeCrop;
             return freecrop > 5 || building == BuildingEnums.Cropland;
         }
 
-        protected Result GotoCorrectTab()
+        public Result<bool> GotoCorrectTab(int accountId, int villageId, PlanTask task)
         {
             using var context = _contextFactory.CreateDbContext();
-            var building = context.VillagesBuildings.Find(_villageId, _chosenTask.Location);
+            var building = context.VillagesBuildings.Find(villageId, task.Location);
 
             bool isNewBuilding = false;
             if (building.Type == BuildingEnums.Site)
             {
                 isNewBuilding = true;
-                var tab = _chosenTask.Building.GetBuildingsCategory();
-                {
-                    var result = _generalHelper.SwitchTab(_accountId, tab);
-                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-                }
+                var tab = task.Building.GetBuildingsCategory();
+
+                var result = _generalHelper.SwitchTab(accountId, tab);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             else
             {
@@ -372,91 +361,95 @@ namespace MainCore.Helper.Implementations.Base
                 }
                 else
                 {
-                    if (_chosenTask.Building.HasMultipleTabs() && building.Level != 0)
+                    if (task.Building.HasMultipleTabs() && building.Level != 0)
                     {
-                        var result = _generalHelper.SwitchTab(_accountId, 0);
+                        var result = _generalHelper.SwitchTab(accountId, 0);
                         if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                     }
                 }
             }
 
-            _isNewBuilding = isNewBuilding;
-            return Result.Ok();
+            return isNewBuilding;
         }
 
-        protected Result Construct()
+        protected Result Construct(int accountId, PlanTask task)
         {
-            var html = _chromeBrowser.GetHtml();
-            var node = html.GetElementbyId($"contract_building{(int)_chosenTask.Building}");
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
+            var node = html.GetElementbyId($"contract_building{(int)task.Building}");
             if (node is null)
             {
-                return Result.Fail(new Retry("Cannot find building box"));
+                return Result.Fail(new Retry($"Cannot find building box for {task.Building}"));
             }
             var button = node.Descendants("button").FirstOrDefault(x => x.HasClass("new"));
 
             // Check for prerequisites
             if (button is null)
             {
-                return Result.Fail(new Retry($"Cannot find Build button for {_chosenTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find Build button for {task.Building}"));
             }
-            _result = _generalHelper.Click(_accountId, By.XPath(button.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(accountId, By.XPath(button.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        protected Result Upgrade()
+        public Result Upgrade(int accountId, PlanTask task)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var container = html.DocumentNode.Descendants("div").FirstOrDefault(x => x.HasClass("upgradeButtonsContainer"));
             if (container is null)
             {
-                return Result.Fail(new Retry("Cannot find upgrading box"));
+                return Result.Fail(new Retry($"Cannot find upgrading box for {task.Building}"));
             }
             var upgradeButton = container.Descendants("button").FirstOrDefault(x => x.HasClass("build"));
 
             if (upgradeButton == null)
             {
-                return Result.Fail(new Retry($"Cannot find upgrade button for {_chosenTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find upgrade button for {task.Building}"));
             }
 
-            _result = _generalHelper.Click(_accountId, By.XPath(upgradeButton.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(accountId, By.XPath(upgradeButton.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        private Result UpgradeAds_UpgradeClicking()
+        public Result UpgradeAds_UpgradeClicking(int accountId, PlanTask task)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
 
             var nodeFastUpgrade = html.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("videoFeatureButton") && x.HasClass("green"));
             if (nodeFastUpgrade is null)
             {
-                return Result.Fail(new Retry($"Cannot find fast upgrade button for {_chosenTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find fast upgrade button for {task.Building}"));
             }
 
-            _result = _generalHelper.Click(_accountId, By.XPath(nodeFastUpgrade.XPath));
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(accountId, By.XPath(nodeFastUpgrade.XPath));
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             return Result.Ok();
         }
 
-        private Result UpgradeAds_AccpetAds()
+        public Result UpgradeAds_AccpetAds(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var nodeNotShowAgainConfirm = html.DocumentNode.SelectSingleNode("//input[@name='adSalesVideoInfoScreen']");
             if (nodeNotShowAgainConfirm is not null)
             {
-                _result = _generalHelper.Click(_accountId, By.XPath(nodeNotShowAgainConfirm.ParentNode.XPath));
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
-                _chromeBrowser.GetChrome().ExecuteScript("jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
+                var result = _generalHelper.Click(accountId, By.XPath(nodeNotShowAgainConfirm.ParentNode.XPath));
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                chromeBrowser.GetChrome().ExecuteScript("jQuery(window).trigger('showVideoWindowAfterInfoScreen')");
             }
             return Result.Ok();
         }
 
-        private void UpgradeAds_CloseOtherTab()
+        public void UpgradeAds_CloseOtherTab(int accountId)
         {
-            var chrome = _chromeBrowser.GetChrome();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var chrome = chromeBrowser.GetChrome();
             var current = chrome.CurrentWindowHandle;
             while (chrome.WindowHandles.Count > 1)
             {
@@ -467,19 +460,20 @@ namespace MainCore.Helper.Implementations.Base
             }
         }
 
-        private Result UpgradeAds_ClickPlayAds()
+        public Result UpgradeAds_ClickPlayAds(int accountId, PlanTask task)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             var nodeIframe = html.GetElementbyId("videoFeature");
             if (nodeIframe is null)
             {
-                return Result.Fail(new Retry($"Cannot find iframe for {_chosenTask.Building}"));
+                return Result.Fail(new Retry($"Cannot find iframe for {task.Building}"));
             }
 
-            _result = _generalHelper.Click(_accountId, By.XPath(nodeIframe.XPath), waitPageLoaded: false);
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = _generalHelper.Click(accountId, By.XPath(nodeIframe.XPath), waitPageLoaded: false);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            var chrome = _chromeBrowser.GetChrome();
+            var chrome = chromeBrowser.GetChrome();
             chrome.SwitchTo().DefaultContent();
 
             Thread.Sleep(Random.Shared.Next(1300, 2000));
@@ -496,8 +490,8 @@ namespace MainCore.Helper.Implementations.Base
                 chrome.Close();
                 chrome.SwitchTo().Window(current);
 
-                _result = _generalHelper.Click(_accountId, By.XPath(nodeIframe.XPath), waitPageLoaded: false);
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                result = _generalHelper.Click(accountId, By.XPath(nodeIframe.XPath), waitPageLoaded: false);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
                 chrome.SwitchTo().DefaultContent();
             }
@@ -505,68 +499,69 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        private Result UpgradeAds_DontShowThis()
+        public Result UpgradeAds_DontShowThis(int accountId)
         {
-            var html = _chromeBrowser.GetHtml();
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var html = chromeBrowser.GetHtml();
             if (html.GetElementbyId("dontShowThisAgain") is not null)
             {
-                _result = _generalHelper.Click(_accountId, By.Id("dontShowThisAgain"));
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                var result = _generalHelper.Click(accountId, By.Id("dontShowThisAgain"));
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-                _result = _generalHelper.Click(_accountId, By.ClassName("dialogButtonOk"));
-                if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+                result = _generalHelper.Click(accountId, By.ClassName("dialogButtonOk"));
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
             return Result.Ok();
         }
 
-        public Result UpgradeAds()
+        public Result UpgradeAds(int accountId, PlanTask task)
         {
-            _result = UpgradeAds_UpgradeClicking();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            var result = UpgradeAds_UpgradeClicking(accountId, task);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             Thread.Sleep(Random.Shared.Next(2400, 5300));
 
-            _result = UpgradeAds_AccpetAds();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = UpgradeAds_AccpetAds(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             Thread.Sleep(Random.Shared.Next(20000, 25000));
 
-            UpgradeAds_CloseOtherTab();
+            UpgradeAds_CloseOtherTab(accountId);
 
-            _result = UpgradeAds_ClickPlayAds();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = UpgradeAds_ClickPlayAds(accountId, task);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = _generalHelper.WaitPageChanged(_accountId, "dorf");
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = _generalHelper.WaitPageChanged(accountId, "dorf");
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            _result = UpgradeAds_DontShowThis();
-            if (_result.IsFailed) return _result.WithError(new Trace(Trace.TraceMessage()));
+            result = UpgradeAds_DontShowThis(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }
 
-        protected Result ChooseBuilding()
+        protected Result<PlanTask> ChooseBuilding(int accountId, int villageId)
         {
-            _chosenTask = null;
-            var tasks = _planManager.GetList(_villageId);
+            PlanTask chosenTask = null;
+            var tasks = _planManager.GetList(villageId);
             if (tasks.Count == 0)
             {
                 return Result.Fail(new Skip("Queue is empty."));
             }
 
             using var context = _contextFactory.CreateDbContext();
-            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == _villageId && x.Level != -1).ToList();
+            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level != -1).ToList();
             var totalBuild = currentList.Count;
 
             if (totalBuild == 0)
             {
-                _chosenTask = GetFirstTask();
+                chosenTask = GetFirstTask(villageId);
                 return Result.Ok();
             }
 
-            var accountInfo = context.AccountsInfo.Find(_accountId);
+            var accountInfo = context.AccountsInfo.Find(accountId);
             var tribe = accountInfo.Tribe;
             var hasPlusAccount = accountInfo.HasPlusAccount;
-            var setting = context.VillagesSettings.Find(_villageId);
+            var setting = context.VillagesSettings.Find(villageId);
 
             var romanAdvantage = tribe == TribeEnums.Romans && !setting.IsIgnoreRomanAdvantage;
 
@@ -582,7 +577,7 @@ namespace MainCore.Helper.Implementations.Base
             // roman can build both building or resource field
             if (maxBuild - totalBuild >= 2)
             {
-                _chosenTask = GetFirstTask();
+                chosenTask = GetFirstTask(villageId);
                 return Result.Ok();
             }
 
@@ -594,7 +589,7 @@ namespace MainCore.Helper.Implementations.Base
 
             if (numCurrentRes > numCurrentBuilding)
             {
-                var freeCrop = context.VillagesResources.Find(_villageId).FreeCrop;
+                var freeCrop = context.VillagesResources.Find(villageId).FreeCrop;
                 if (freeCrop < 6)
                 {
                     return Result.Fail(new LackFreeCrop());
@@ -605,7 +600,7 @@ namespace MainCore.Helper.Implementations.Base
                     return Result.Fail(NoTaskInQueue.Building);
                 }
 
-                _chosenTask = GetFirstBuildingTask();
+                chosenTask = GetFirstBuildingTask(villageId);
                 return Result.Ok();
             }
 
@@ -618,12 +613,12 @@ namespace MainCore.Helper.Implementations.Base
                     return Result.Fail(NoTaskInQueue.Resource);
                 }
 
-                _chosenTask = GetFirstResTask();
+                chosenTask = GetFirstResTask(villageId);
                 return Result.Ok();
             }
 
             // if same means 1 R and 1 I already, 1 ANY will be choose below
-            _chosenTask = GetFirstTask();
+            chosenTask = GetFirstTask(villageId);
             return Result.Ok();
         }
     }

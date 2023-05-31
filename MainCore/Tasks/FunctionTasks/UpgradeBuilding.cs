@@ -18,9 +18,7 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
-            _upgradeBuildingHelper.Load(VillageId, AccountId, CancellationToken);
-
-            var result = _upgradeBuildingHelper.Execute();
+            var result = _upgradeBuildingHelper.Execute(AccountId, VillageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

@@ -83,7 +83,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadData(int villageId)
         {
-            _upgradeBuildingHelper.Load(VillageId, AccountId, default);
             using var context = _contextFactory.CreateDbContext();
             var settings = context.VillagesSettings.Find(villageId);
 
@@ -231,7 +230,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     if (!tasks.Any())
                     {
-                        _upgradeBuildingHelper.RemoveFinishedCB();
+                        _upgradeBuildingHelper.RemoveFinishedCB(VillageId);
                         var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
                         var count = currentBuildings.Count(x => x.Level != -1);
                         if (count > 0)
