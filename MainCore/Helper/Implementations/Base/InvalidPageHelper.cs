@@ -37,8 +37,8 @@ namespace MainCore.Helper.Implementations.Base
             var chromeBrowser = _chromeManager.Get(accountId);
             var doc = chromeBrowser.GetHtml();
             var resourceButton = _navigationBarParser.GetBuildingButton(doc);
-            if (resourceButton is null) return false;
-            return true;
+            if (resourceButton is null) return true;
+            return false;
         }
 
         private bool IsLoginPage(int accountId)
