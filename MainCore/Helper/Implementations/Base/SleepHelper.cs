@@ -49,6 +49,9 @@ namespace MainCore.Helper.Implementations.Base
                 _logManager.Information(accountId, $"There is vaild proxy ({proxyHost}). Bot will sleep {(int)sleepTime.TotalMinutes} mins before switching to vaild proxy");
             }
 
+            var chromeBrowser = _chromeManager.Get(accountId);
+            chromeBrowser.Close();
+
             var result = Sleep(accountId, sleepEnd, token);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             result = WakeUp(accountId, nextAccess);
@@ -90,9 +93,6 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Sleep(int accountId, DateTime sleepEnd, CancellationToken token)
         {
-            var chromeBrowser = _chromeManager.Get(accountId);
-            chromeBrowser.Close();
-
             int lastMinute = 0;
 
             while (true)

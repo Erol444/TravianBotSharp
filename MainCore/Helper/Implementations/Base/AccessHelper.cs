@@ -1,5 +1,6 @@
 ﻿using MainCore.Helper.Interface;
 using RestSharp;
+using System;
 
 namespace MainCore.Helper.Implementations.Base
 {
@@ -16,8 +17,9 @@ namespace MainCore.Helper.Implementations.Base
                 var response = client.Execute(request);
                 return !string.IsNullOrWhiteSpace(response.Content);
             }
-            catch
+            catch (Exception e)
             {
+                _ = e;
                 return false;
             }
         }
