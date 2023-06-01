@@ -168,6 +168,8 @@ namespace WPFUI.ViewModels.Uc.MainView
                 if (string.IsNullOrEmpty(access.ProxyHost))
                 {
                     selectedAccess = access;
+                    access.LastUsed = DateTime.Now;
+                    context.SaveChanges();
                     break;
                 }
 

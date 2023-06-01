@@ -72,6 +72,8 @@ namespace MainCore.Helper.Implementations.Base
             {
                 if (string.IsNullOrEmpty(access.ProxyHost))
                 {
+                    access.LastUsed = DateTime.Now;
+                    context.SaveChanges();
                     return access;
                 }
 
