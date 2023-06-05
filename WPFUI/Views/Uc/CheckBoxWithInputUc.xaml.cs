@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.Views.Uc
 {
+    public class CheckBoxWithInputUcBase : ReactiveUserControl<CheckBoxWithInputViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for CheckBoxWithInput.xaml
     /// </summary>
-    public partial class CheckBoxWithInputUc : ReactiveUserControl<CheckBoxWithInputViewModel>
+    public partial class CheckBoxWithInputUc : CheckBoxWithInputUcBase
     {
         public CheckBoxWithInputUc()
         {

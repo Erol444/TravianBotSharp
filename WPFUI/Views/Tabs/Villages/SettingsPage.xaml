@@ -61,6 +61,7 @@
                         <controls:TroopTrainingSelectorUc x:Name="StableTrain" Text="Stable" Great="True" />
                         <controls:TroopTrainingSelectorUc x:Name="WorkshopTrain" Text="Workshop" Great="False" />
                         <controls:ToleranceUc x:Name="TimeTrain" Text="Next train troop execute after" Unit="min(s)" />
+                        <CheckBox x:Name="IsMaxTrain" Content="Train maximum amount if not have enough resource to fulfill" />
                     </StackPanel>
                 </Border>
             </StackPanel>
