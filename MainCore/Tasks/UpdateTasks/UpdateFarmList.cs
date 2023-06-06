@@ -22,6 +22,8 @@ namespace MainCore.Tasks.UpdateTasks
 
         public override Result Execute()
         {
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
             var resultVillage = GetVillageHasRallyPoint();
             if (resultVillage.IsFailed) return Result.Fail(resultVillage.Errors).WithError(new Trace(Trace.TraceMessage()));
 

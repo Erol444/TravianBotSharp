@@ -28,6 +28,8 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
             var result = _loginHelper.Execute(AccountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 

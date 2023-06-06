@@ -27,6 +27,8 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
             Result result;
             if (IsNeedDorf2())
             {

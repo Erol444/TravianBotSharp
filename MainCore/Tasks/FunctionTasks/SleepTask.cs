@@ -19,6 +19,8 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
             var result = _sleepHelper.Execute(AccountId, CancellationToken);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             ExecuteAt = DateTime.Now.Add(_sleepHelper.GetWorkTime(AccountId));

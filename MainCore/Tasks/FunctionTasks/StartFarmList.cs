@@ -21,6 +21,8 @@ namespace MainCore.Tasks.FunctionTasks
 
         public override Result Execute()
         {
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
             var resultVillage = _checkHelper.GetCurrentVillageId(AccountId);
             if (resultVillage.IsFailed) return Result.Fail(resultVillage.Errors).WithError(new Trace(Trace.TraceMessage()));
 

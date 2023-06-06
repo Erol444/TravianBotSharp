@@ -18,6 +18,8 @@ namespace MainCore.Tasks.UpdateTasks
 
         public override Result Execute()
         {
+            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+
             var result = _generalHelper.ToHeroInventory(AccountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
