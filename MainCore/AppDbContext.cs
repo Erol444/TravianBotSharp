@@ -418,6 +418,7 @@ namespace MainCore
 
                         TroopTimeMin = 50,
                         TroopTimeMax = 70,
+                        IsMaxTrain = true,
 
                         BarrackTroop = 0,
                         BarrackTroopTimeMin = 0,

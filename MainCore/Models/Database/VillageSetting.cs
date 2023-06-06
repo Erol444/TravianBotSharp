@@ -55,6 +55,9 @@ namespace MainCore.Models.Database
             UpgradeTroop = result.ToString();
         }
 
+        public int TroopTimeMin { get; set; }
+        public int TroopTimeMax { get; set; }
+        public bool IsMaxTrain { get; set; }
         public int BarrackTroop { get; set; }
         public int BarrackTroopTimeMin { get; set; }
         public int BarrackTroopTimeMax { get; set; }
@@ -66,7 +69,5 @@ namespace MainCore.Models.Database
         public int WorkshopTroop { get; set; }
         public int WorkshopTroopTimeMin { get; set; }
         public int WorkshopTroopTimeMax { get; set; }
-        public int TroopTimeMin { get; set; }
-        public int TroopTimeMax { get; set; }
     }
 }
