@@ -37,11 +37,12 @@ namespace WPFUI.Views.Tabs.Villages
                 this.Bind(ViewModel, vm => vm.IsAutoNPCOverflow, v => v.NPCCheckBox.IsChecked).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.RatioNPC, v => v.AutoNPCRatio.ViewModel).DisposeWith(d);
 
+                this.Bind(ViewModel, vm => vm.TimeTrain, v => v.TimeTrain.ViewModel).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.IsMaxTrain, v => v.IsMaxTrain.IsChecked).DisposeWith(d);
+
                 this.Bind(ViewModel, vm => vm.BarrackTraining, v => v.BarrackTrain.ViewModel).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.StableTraining, v => v.StableTrain.ViewModel).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.WorkshopTraining, v => v.WorkshopTrain.ViewModel).DisposeWith(d);
-
-                this.Bind(ViewModel, vm => vm.TimeTrain, v => v.TimeTrain.ViewModel).DisposeWith(d);
             });
         }
     }

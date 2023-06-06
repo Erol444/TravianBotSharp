@@ -63,10 +63,18 @@ namespace WPFUI.ViewModels.Tabs.Villages
         }
 
         public ResourcesViewModel RatioNPC { get; } = new();
+        private bool _isMaxTrain;
+
+        public bool IsMaxTrain
+        {
+            get => _isMaxTrain;
+            set => this.RaiseAndSetIfChanged(ref _isMaxTrain, value);
+        }
+
+        public ToleranceViewModel TimeTrain { get; } = new();
         public TroopTrainingSelectorViewModel BarrackTraining { get; } = new();
         public TroopTrainingSelectorViewModel StableTraining { get; } = new();
         public TroopTrainingSelectorViewModel WorkshopTraining { get; } = new();
-        public ToleranceViewModel TimeTrain { get; } = new();
 
         public VillageSettingsViewModel()
         {
@@ -103,15 +111,15 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             RatioNPC.LoadData(settings.AutoNPCWood, settings.AutoNPCClay, settings.AutoNPCIron, settings.AutoNPCCrop);
 
+            TimeTrain.LoadData(settings.TroopTimeMin, settings.TroopTimeMax);
+            IsMaxTrain = settings.IsMaxTrain;
+
             var account = context.Villages.Find(villageId);
             var accountInfo = context.AccountsInfo.Find(account.AccountId);
             var tribe = accountInfo.Tribe;
-
             BarrackTraining.LoadData(tribe.GetInfantryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.BarrackTroop, settings.BarrackTroopTimeMin, settings.BarrackTroopTimeMax, settings.IsGreatBarrack);
             StableTraining.LoadData(tribe.GetCavalryTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.StableTroop, settings.StableTroopTimeMin, settings.StableTroopTimeMax, settings.IsGreatStable);
             WorkshopTraining.LoadData(tribe.GetSiegeTroops().Select(x => new TroopInfo(x)), (TroopEnums)settings.WorkshopTroop, settings.WorkshopTroopTimeMin, settings.WorkshopTroopTimeMax, false);
-
-            TimeTrain.LoadData(settings.TroopTimeMin, settings.TroopTimeMax);
         }
 
         private async Task SaveTask()
@@ -204,6 +212,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             (settings.AutoNPCWood, settings.AutoNPCClay, settings.AutoNPCIron, settings.AutoNPCCrop) = RatioNPC.GetData();
 
+            (settings.TroopTimeMin, settings.TroopTimeMax) = TimeTrain.GetData();
+            settings.IsMaxTrain = IsMaxTrain;
+
             TroopEnums troop;
             (troop, settings.BarrackTroopTimeMin, settings.BarrackTroopTimeMax, settings.IsGreatBarrack) = BarrackTraining.GetData();
             settings.BarrackTroop = (int)troop;
@@ -211,8 +222,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
             settings.StableTroop = (int)troop;
             (troop, settings.WorkshopTroopTimeMin, settings.WorkshopTroopTimeMax, _) = WorkshopTraining.GetData();
             settings.WorkshopTroop = (int)troop;
-
-            (settings.TroopTimeMin, settings.TroopTimeMax) = TimeTrain.GetData();
 
             context.Update(settings);
             context.SaveChanges();
