@@ -416,6 +416,9 @@ namespace MainCore
                         AutoNPCIron = 1,
                         AutoNPCCrop = 0,
 
+                        TroopTimeMin = 50,
+                        TroopTimeMax = 70,
+
                         BarrackTroop = 0,
                         BarrackTroopTimeMin = 0,
                         BarrackTroopTimeMax = 0,

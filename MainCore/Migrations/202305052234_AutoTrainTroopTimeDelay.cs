@@ -14,8 +14,8 @@ namespace MainCore.Migrations
         public override void Up()
         {
             Alter.Table("VillagesSettings")
-                .AddColumn("TroopTimeMin").AsInt32().WithDefaultValue(0)
-                .AddColumn("TroopTimeMax").AsInt32().WithDefaultValue(0);
+                .AddColumn("TroopTimeMin").AsInt32().WithDefaultValue(50)
+                .AddColumn("TroopTimeMax").AsInt32().WithDefaultValue(70);
         }
     }
 }
