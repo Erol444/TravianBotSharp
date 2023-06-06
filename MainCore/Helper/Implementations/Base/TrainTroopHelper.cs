@@ -53,19 +53,23 @@ namespace MainCore.Helper.Implementations.Base
             var timeTrain = GetTroopTime(accountId, villageId, troop);
             var amountTroop = GetAmountTroop(accountId, villageId, trainBuilding, timeTrain);
             var maxTroop = GetMaxTroop(accountId, troop);
-            if (maxTroop == 0)
+            if (maxTroop <= 0)
             {
                 return Result.Fail(NoResource.Train(trainBuilding));
             }
 
-            if (maxTroop < amountTroop)
+            if (amountTroop > maxTroop)
             {
-                amountTroop = maxTroop;
-            }
-
-            if (amountTroop == 0)
-            {
-                return Result.Fail(NoResource.Train(trainBuilding));
+                using var context = _contextFactory.CreateDbContext();
+                var setting = context.VillagesSettings.Find(villageId);
+                if (setting.IsMaxTrain)
+                {
+                    amountTroop = maxTroop;
+                }
+                else
+                {
+                    return Result.Fail(NoResource.Train(trainBuilding));
+                }
             }
 
             result = InputAmountTroop(accountId, troop, amountTroop);
