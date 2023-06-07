@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MainCore.Enums;
 using MainCore.Models.Runtime;
+using System;
 
 namespace MainCore.Helper.Interface
 {
@@ -21,6 +22,8 @@ namespace MainCore.Helper.Interface
         PlanTask GetFirstResTask(int villageId);
 
         PlanTask GetFirstTask(int villageId);
+
+        DateTime GetNextExecute(DateTime completeTime);
 
         Resources GetResourceNeed(int accountId, BuildingEnums building, bool multiple = false);
 

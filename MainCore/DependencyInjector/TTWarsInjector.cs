@@ -18,6 +18,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IRallypointHelper, RallypointHelper>();
             services.AddSingleton<INPCHelper, NPCHelper>();
             services.AddSingleton<IAdventureHelper, AdventureHelper>();
+            services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
 
             return services;
         }

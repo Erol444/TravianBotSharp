@@ -3,6 +3,7 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Tasks.Base;
 using Splat;
+using System.Linq;
 using System.Threading;
 
 namespace MainCore.Tasks.FunctionTasks
@@ -21,8 +22,27 @@ namespace MainCore.Tasks.FunctionTasks
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             var result = _upgradeBuildingHelper.Execute(AccountId, VillageId);
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            if (result.IsFailed)
+            {
+                if (result.HasError<BuildingQueue>())
+                {
+                    NextExecute();
+                }
+                return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+
+            NextExecute();
             return Result.Ok();
+        }
+
+        public void NextExecute()
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId && x.Level != -1).OrderBy(x => x.CompleteTime);
+            var firstComplete = currentBuildings.FirstOrDefault();
+            if (firstComplete is null) return;
+
+            ExecuteAt = _upgradeBuildingHelper.GetNextExecute(firstComplete.CompleteTime);
         }
     }
 }

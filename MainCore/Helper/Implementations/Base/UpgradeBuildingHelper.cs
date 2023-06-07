@@ -16,7 +16,7 @@ using System.Threading;
 
 namespace MainCore.Helper.Implementations.Base
 {
-    public sealed class UpgradeBuildingHelper : IUpgradeBuildingHelper
+    public abstract class UpgradeBuildingHelper : IUpgradeBuildingHelper
     {
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IPlanManager _planManager;
@@ -37,6 +37,8 @@ namespace MainCore.Helper.Implementations.Base
             _heroResourcesHelper = heroResourcesHelper;
         }
 
+        public abstract DateTime GetNextExecute(DateTime completeTime);
+
         public Result Execute(int accountId, int villageId)
         {
             var result = _generalHelper.ToDorf1(accountId, villageId, forceReload: true, switchVillage: true);
@@ -53,7 +55,10 @@ namespace MainCore.Helper.Implementations.Base
                     if (resultBuilding.HasError<LackFreeCrop>())
                     {
                         using var context = _contextFactory.CreateDbContext();
-                        var cropland = context.VillagesBuildings.Where(x => x.VillageId == villageId).Where(x => x.Type == BuildingEnums.Cropland).OrderBy(x => x.Level).FirstOrDefault();
+                        var cropland = context.VillagesBuildings
+                            .Where(x => x.VillageId == villageId && x.Type == BuildingEnums.Cropland)
+                            .OrderBy(x => x.Level)
+                            .FirstOrDefault();
                         var task = new PlanTask()
                         {
                             Type = PlanTypeEnums.General,
@@ -563,7 +568,7 @@ namespace MainCore.Helper.Implementations.Base
             if (romanAdvantage) maxBuild++;
             if (totalBuild == maxBuild)
             {
-                return Result.Fail(new QueueFull());
+                return Result.Fail(BuildingQueue.Full);
             }
 
             // there is atleast 2 slot free
@@ -590,7 +595,7 @@ namespace MainCore.Helper.Implementations.Base
 
                 if (numQueueBuilding == 0)
                 {
-                    return Result.Fail(NoTaskInQueue.Building);
+                    return Result.Fail(BuildingQueue.NoBuilding);
                 }
 
                 chosenTask = GetFirstBuildingTask(villageId);
@@ -603,7 +608,7 @@ namespace MainCore.Helper.Implementations.Base
                 // jk, because of how we check free crop later, first res task is always crop
                 if (numQueueRes == 0)
                 {
-                    return Result.Fail(NoTaskInQueue.Resource);
+                    return Result.Fail(BuildingQueue.NoResource);
                 }
 
                 chosenTask = GetFirstResTask(villageId);
