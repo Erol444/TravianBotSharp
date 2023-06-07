@@ -20,7 +20,7 @@ namespace MainCore.Tasks.UpdateTasks
         {
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
-            var result = _generalHelper.ToDorf1(AccountId, VillageId);
+            var result = _generalHelper.ToDorf1(AccountId, VillageId, switchVillage: true);
 
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 

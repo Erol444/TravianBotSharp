@@ -39,10 +39,7 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Execute(int accountId, int villageId)
         {
-            var result = _generalHelper.SwitchVillage(accountId, villageId);
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-
-            result = _generalHelper.ToDorf1(accountId, villageId, forceReload: true);
+            var result = _generalHelper.ToDorf1(accountId, villageId, forceReload: true, switchVillage: true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             while (true)

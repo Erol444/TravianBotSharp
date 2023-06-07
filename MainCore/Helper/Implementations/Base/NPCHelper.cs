@@ -31,10 +31,7 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Execute(int accountId, int villageId, Resources ratio)
         {
-            var result = _generalHelper.SwitchVillage(accountId, villageId);
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-
-            result = _generalHelper.ToDorf2(accountId, villageId, true);
+            var result = _generalHelper.ToDorf2(accountId, villageId, forceReload: true, switchVillage: true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = CheckGold(accountId);

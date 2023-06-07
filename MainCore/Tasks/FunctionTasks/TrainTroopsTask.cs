@@ -34,9 +34,8 @@ namespace MainCore.Tasks.FunctionTasks
 
             CheckBuilding();
 
-            var result = _generalHelper.SwitchVillage(AccountId, VillageId);
+            var result = _generalHelper.ToDorf2(AccountId, VillageId, switchVillage: true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
 
             foreach (var building in _buildings)
             {

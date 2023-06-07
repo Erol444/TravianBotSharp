@@ -32,11 +32,11 @@ namespace MainCore.Tasks.FunctionTasks
             Result result;
             if (IsNeedDorf2())
             {
-                result = _generalHelper.ToDorf2(AccountId, VillageId);
+                result = _generalHelper.ToDorf2(AccountId, VillageId, switchVillage: true);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
 
-            result = _generalHelper.ToDorf1(AccountId, VillageId);
+            result = _generalHelper.ToDorf1(AccountId, VillageId, switchVillage: true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             ApplyAutoTask();
             NextExecute();

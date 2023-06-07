@@ -27,10 +27,7 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result EnterFarmListPage(int accountId, int villageId)
         {
-            var result = _generalHelper.SwitchVillage(accountId, villageId);
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-
-            result = _generalHelper.ToDorf2(accountId, villageId);
+            var result = _generalHelper.ToDorf2(accountId, villageId, switchVillage: true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = ToRallypoint(accountId, villageId);

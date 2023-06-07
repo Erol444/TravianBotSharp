@@ -164,8 +164,14 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result ToDorf1(int accountId, int villageId, bool forceReload = false)
+        public Result ToDorf1(int accountId, int villageId, bool forceReload = false, bool switchVillage = false)
         {
+            Result result;
+            if (switchVillage)
+            {
+                result = SwitchVillage(accountId, villageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
             const string dorf1 = "dorf1";
             var chromeBrowser = _chromeManager.Get(accountId);
             var currentUrl = chromeBrowser.GetCurrentUrl();
@@ -185,7 +191,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(Retry.ButtonNotFound("resources"));
             }
 
-            var result = Click(accountId, By.XPath(node.XPath), dorf1);
+            result = Click(accountId, By.XPath(node.XPath), dorf1);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = _updateHelper.UpdateDorf1(accountId, villageId);
@@ -193,8 +199,14 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
-        public Result ToDorf2(int accountId, int villageId, bool forceReload = false)
+        public Result ToDorf2(int accountId, int villageId, bool forceReload = false, bool switchVillage = false)
         {
+            Result result;
+            if (switchVillage)
+            {
+                result = SwitchVillage(accountId, villageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
             const string dorf2 = "dorf2";
             var chromeBrowser = _chromeManager.Get(accountId);
             var currentUrl = chromeBrowser.GetCurrentUrl();
@@ -214,7 +226,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(Retry.ButtonNotFound("buildings"));
             }
 
-            var result = Click(accountId, By.XPath(node.XPath), dorf2);
+            result = Click(accountId, By.XPath(node.XPath), dorf2);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = _updateHelper.UpdateDorf2(accountId, villageId);
