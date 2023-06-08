@@ -223,13 +223,7 @@ namespace MainCore.Helper.Implementations.Base
         public PlanTask GetFirstTask(int villageId)
         {
             var tasks = _planManager.GetList(villageId);
-            foreach (var task in tasks)
-            {
-                if (task.Type != PlanTypeEnums.General) return task;
-                if (task.Building.IsResourceField()) return task;
-                if (IsInfrastructureTaskVaild(villageId, task)) return task;
-            }
-            return null;
+            return tasks.FirstOrDefault();
         }
 
         public bool IsInfrastructureTaskVaild(int villageId, PlanTask planTask)
