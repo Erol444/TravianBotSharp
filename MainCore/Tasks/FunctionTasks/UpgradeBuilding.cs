@@ -3,6 +3,7 @@ using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Tasks.Base;
 using Splat;
+using System;
 using System.Linq;
 using System.Threading;
 
@@ -27,6 +28,10 @@ namespace MainCore.Tasks.FunctionTasks
                 if (result.HasError<BuildingQueue>())
                 {
                     NextExecute();
+                }
+                else if (result.HasError<NoResource>())
+                {
+                    ExecuteAt = DateTime.Now.AddMinutes(Random.Shared.Next(30, 40));
                 }
                 return result.WithError(new Trace(Trace.TraceMessage()));
             }
