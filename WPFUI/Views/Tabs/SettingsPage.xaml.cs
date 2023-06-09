@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
+    public class SettingsPageBase : ReactivePage<SettingsViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
     /// </summary>
-    public partial class SettingsPage : ReactivePage<SettingsViewModel>
+    public partial class SettingsPage : SettingsPageBase
     {
         public SettingsPage()
         {

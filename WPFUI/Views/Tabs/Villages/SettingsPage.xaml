@@ -1,4 +1,4 @@
-﻿<views:SettingsPageBase
+﻿<views:VillageSettingsPageBase
         x:Class="WPFUI.Views.Tabs.Villages.SettingsPage"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -57,14 +57,14 @@
                 <Border Style="{DynamicResource Box}">
                     <StackPanel>
                         <TextBlock TextWrapping="Wrap" Text="Train troop settings" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,0,10" />
-                        <controls:ToleranceUc x:Name="TimeTrain" Text="Next train troop execute after" Unit="min(s)" Margin="0,0,0,5"/>
-                        <CheckBox x:Name="IsMaxTrain" Content="Train even if don't have enough resources to fullfil queue" Margin="0,0,0,10"/>
-                        <controls:TroopTrainingSelectorUc x:Name="BarrackTrain" Text="Barrack" Great="True" Margin="0,0,0,10"/>
-                        <controls:TroopTrainingSelectorUc x:Name="StableTrain" Text="Stable" Great="True" Margin="0,0,0,10"/>
+                        <controls:ToleranceUc x:Name="TimeTrain" Text="Next train troop execute after" Unit="min(s)" Margin="0,0,0,5" />
+                        <CheckBox x:Name="IsMaxTrain" Content="Train even if don't have enough resources to fullfil queue" Margin="0,0,0,10" />
+                        <controls:TroopTrainingSelectorUc x:Name="BarrackTrain" Text="Barrack" Great="True" Margin="0,0,0,10" />
+                        <controls:TroopTrainingSelectorUc x:Name="StableTrain" Text="Stable" Great="True" Margin="0,0,0,10" />
                         <controls:TroopTrainingSelectorUc x:Name="WorkshopTrain" Text="Workshop" Great="False" />
                     </StackPanel>
                 </Border>
             </StackPanel>
         </ScrollViewer>
     </Grid>
-</views:SettingsPageBase>
+</views:VillageSettingsPageBase>
