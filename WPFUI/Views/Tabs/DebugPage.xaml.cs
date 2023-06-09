@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
+    public partial class DebugPageBase : ReactivePage<DebugViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for DebugPage.xaml
     /// </summary>
-    public partial class DebugPage : ReactivePage<DebugViewModel>
+    public partial class DebugPage : DebugPageBase
     {
         public DebugPage()
         {
