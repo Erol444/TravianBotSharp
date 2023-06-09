@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
+    public class VillagesPageBase : ReactivePage<VillagesViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for VillagesPage.xaml
     /// </summary>
-    public partial class VillagesPage : ReactivePage<VillagesViewModel>
+    public partial class VillagesPage : VillagesPageBase
     {
         public VillagesPage()
         {
