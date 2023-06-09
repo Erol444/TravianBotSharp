@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.Views.Uc.MainView
 {
+    public class MainTabPanelUcBase : ReactiveUserControl<MainTabPanelViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for MainTabPanelUc.xaml
     /// </summary>
-    public partial class MainTabPanelUc : ReactiveUserControl<MainTabPanelViewModel>
+    public partial class MainTabPanelUc : MainTabPanelUcBase
     {
         public MainTabPanelUc()
         {
