@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.Views.Uc
 {
+    public class ResourcesUcBase : ReactiveUserControl<ResourcesViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for ResourcesUc.xaml
     /// </summary>
-    public partial class ResourcesUc : ReactiveUserControl<ResourcesViewModel>
+    public partial class ResourcesUc : ResourcesUcBase
     {
         public ResourcesUc()
         {

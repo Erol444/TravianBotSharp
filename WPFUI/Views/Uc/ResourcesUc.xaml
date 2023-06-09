@@ -1,8 +1,6 @@
-﻿<rxui:ReactiveUserControl
+﻿<views:ResourcesUcBase
         x:Class="WPFUI.Views.Uc.ResourcesUc"
-        x:TypeArguments="vms:ResourcesViewModel"
-        xmlns:rxui="http://reactiveui.net"
-        xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc"
+        xmlns:views="clr-namespace:WPFUI.Views.Uc"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -34,4 +32,4 @@
         </Image>
         <xctk:IntegerUpDown x:Name="Crop" Minimum="0" />
     </StackPanel>
-</rxui:ReactiveUserControl>
+</views:ResourcesUcBase>
