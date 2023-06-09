@@ -5,10 +5,14 @@ using WPFUI.ViewModels;
 
 namespace WPFUI.Views
 {
+    public class VersionWindowBase : ReactiveWindow<VersionViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for VersionWindow.xaml
     /// </summary>
-    public partial class VersionWindow : ReactiveWindow<VersionViewModel>
+    public partial class VersionWindow : VersionWindowBase
     {
         public VersionWindow()
         {
