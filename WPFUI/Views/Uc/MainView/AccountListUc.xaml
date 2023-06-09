@@ -1,8 +1,6 @@
-﻿<rxui:ReactiveUserControl
+﻿<views:AccountListUcBase
         x:Class="WPFUI.Views.Uc.MainView.AccountListUc"
-        x:TypeArguments="vms:AccountListViewModel"
-        xmlns:rxui="http://reactiveui.net"
-        xmlns:vms="clr-namespace:WPFUI.ViewModels.Uc.MainView"
+        xmlns:views="clr-namespace:WPFUI.Views.Uc.MainView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <ListBox x:Name="AccountGrid"  SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
@@ -16,4 +14,4 @@
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>
-</rxui:ReactiveUserControl>
+</views:AccountListUcBase>

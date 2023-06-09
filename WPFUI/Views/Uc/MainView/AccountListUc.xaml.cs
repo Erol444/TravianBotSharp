@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.Views.Uc.MainView
 {
+    public class AccountListUcBase : ReactiveUserControl<AccountListViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for AccountListUc.xaml
     /// </summary>
-    public partial class AccountListUc : ReactiveUserControl<AccountListViewModel>
+    public partial class AccountListUc : AccountListUcBase
     {
         public AccountListUc()
         {
