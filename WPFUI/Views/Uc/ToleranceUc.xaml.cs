@@ -5,10 +5,13 @@ using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.Views.Uc
 {
+    public class ToleranceUcBase : ReactiveUserControl<ToleranceViewModel>
+    { }
+
     /// <summary>
     /// Interaction logic for ToleranceUc.xaml
     /// </summary>
-    public partial class ToleranceUc : ReactiveUserControl<ToleranceViewModel>
+    public partial class ToleranceUc : ToleranceUcBase
     {
         public ToleranceUc()
 
