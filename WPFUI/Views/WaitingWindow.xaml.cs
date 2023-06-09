@@ -5,10 +5,14 @@ using WPFUI.ViewModels;
 
 namespace WPFUI.Views
 {
+    public class WaitingWindowBase : ReactiveWindow<WaitingViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for WaitingWindow.xaml
     /// </summary>
-    public partial class WaitingWindow : ReactiveWindow<WaitingViewModel>
+    public partial class WaitingWindow : WaitingWindowBase
     {
         public WaitingWindow()
         {
