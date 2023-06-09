@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
+    public class HeroPageBase : ReactivePage<HeroViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for HeroPage.xaml
     /// </summary>
-    public partial class HeroPage : ReactivePage<HeroViewModel>
+    public partial class HeroPage : HeroPageBase
     {
         public HeroPage()
         {
