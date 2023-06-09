@@ -1,14 +1,12 @@
-﻿<rxui:ReactivePage
-        x:Class="WPFUI.Views.Tabs.AddAccountsPage"
-        x:TypeArguments="vms:AddAccountsViewModel"
-        xmlns:rxui="http://reactiveui.net"
-        xmlns:vms="clr-namespace:WPFUI.ViewModels.Tabs"
-        xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        mc:Ignorable="d">
+﻿<views:AddAccountsPageBase
+    x:Class="WPFUI.Views.Tabs.AddAccountsPage"
+    xmlns:views="clr-namespace:WPFUI.Views.Tabs"
+    xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d">
     <Grid Background="#FFE5E5E5" Margin="0,2,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="50*" />
@@ -32,4 +30,4 @@
         <TextBox x:Name="AccountsInput" AcceptsReturn="True"  VerticalScrollBarVisibility="Visible" />
         <Button x:Name="AddButton" Content="Add" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,1,0" />
     </Grid>
-</rxui:ReactivePage>
+</views:AddAccountsPageBase>
