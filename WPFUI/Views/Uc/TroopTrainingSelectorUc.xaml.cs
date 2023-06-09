@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.Views.Uc
 {
+    public class TroopTrainingSelectorUcBase : ReactiveUserControl<TroopTrainingSelectorViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for TroopTrainingSelectorUc.xaml
     /// </summary>
-    public partial class TroopTrainingSelectorUc : ReactiveUserControl<TroopTrainingSelectorViewModel>
+    public partial class TroopTrainingSelectorUc : TroopTrainingSelectorUcBase
     {
         public TroopTrainingSelectorUc()
         {
