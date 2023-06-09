@@ -4,10 +4,14 @@ using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.Views.Uc
 {
+    public class ResourcesWithStorageUcBase : ReactiveUserControl<ResourcesWithStorageViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for ResourcesWithStorageUc.xaml
     /// </summary>
-    public partial class ResourcesWithStorageUc : ReactiveUserControl<ResourcesWithStorageViewModel>
+    public partial class ResourcesWithStorageUc : ResourcesWithStorageUcBase
     {
         public ResourcesWithStorageUc()
         {
