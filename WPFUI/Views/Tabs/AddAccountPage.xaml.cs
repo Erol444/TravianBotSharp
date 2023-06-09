@@ -4,10 +4,14 @@ using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
+    public class AddAccountPageBase : ReactivePage<AddAccountViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for AddAccountPage.xaml
     /// </summary>
-    public partial class AddAccountPage : ReactivePage<AddAccountViewModel>
+    public partial class AddAccountPage : AddAccountPageBase
     {
         public AddAccountPage()
         {
