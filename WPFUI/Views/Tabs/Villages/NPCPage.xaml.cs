@@ -5,10 +5,14 @@ using WPFUI.ViewModels.Tabs.Villages;
 
 namespace WPFUI.Views.Tabs.Villages
 {
+    public class NPCPageBase : ReactivePage<NPCViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for NPCPage.xaml
     /// </summary>
-    public partial class NPCPage : ReactivePage<NPCViewModel>
+    public partial class NPCPage : NPCPageBase
     {
         public NPCPage()
         {
