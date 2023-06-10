@@ -10,17 +10,11 @@ namespace TestProject.Tests.UI.ViewModel.Uc
         [TestMethod]
         public void InitTest()
         {
-            _ = new TroopTrainingSelectorViewModel();
-        }
-
-        [TestMethod]
-        public void LoadDataTest()
-        {
             var vm = new TroopTrainingSelectorViewModel();
             var troops = FakeTroopTrainingSelectorData.GetTroopInfos();
             var selectedTroop = FakeTroopTrainingSelectorData.GetSelectedTroopInfo();
-            var min = FakeTroopTrainingSelectorData.GetMin();
-            var max = FakeTroopTrainingSelectorData.GetMax();
+            var min = FakeMinMaxData.Min;
+            var max = FakeMinMaxData.Max;
             var isGreat = FakeTroopTrainingSelectorData.GetIsGreat();
             vm.LoadData(troops, selectedTroop, min, max, isGreat);
 

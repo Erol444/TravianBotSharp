@@ -5,7 +5,7 @@ namespace WPFUI.ViewModels.Uc
 {
     public class ResourcesWithStorageViewModel : ReactiveObject
     {
-        public void LoadData(int warehouse, int granary, int wood, int clay, int iron, int crop)
+        public void LoadData(long warehouse, long granary, long wood, long clay, long iron, long crop)
         {
             RxApp.MainThreadScheduler.Schedule(() =>
             {
@@ -18,54 +18,54 @@ namespace WPFUI.ViewModels.Uc
             });
         }
 
-        public (int, int, int, int, int, int) GetData()
+        public (long, long, long, long, long, long) GetData()
         {
             return (Warehouse, Granary, Wood, Clay, Iron, Crop);
         }
 
-        private int _warehouse;
+        private long _warehouse;
 
-        public int Warehouse
+        public long Warehouse
         {
             get => _warehouse;
             set => this.RaiseAndSetIfChanged(ref _warehouse, value);
         }
 
-        private int _granary;
+        private long _granary;
 
-        public int Granary
+        public long Granary
         {
             get => _granary;
             set => this.RaiseAndSetIfChanged(ref _granary, value);
         }
 
-        private int _wood;
+        private long _wood;
 
-        public int Wood
+        public long Wood
         {
             get => _wood;
             set => this.RaiseAndSetIfChanged(ref _wood, value);
         }
 
-        private int _clay;
+        private long _clay;
 
-        public int Clay
+        public long Clay
         {
             get => _clay;
             set => this.RaiseAndSetIfChanged(ref _clay, value);
         }
 
-        private int _iron;
+        private long _iron;
 
-        public int Iron
+        public long Iron
         {
             get => _iron;
             set => this.RaiseAndSetIfChanged(ref _iron, value);
         }
 
-        private int _crop;
+        private long _crop;
 
-        public int Crop
+        public long Crop
         {
             get => _crop;
             set => this.RaiseAndSetIfChanged(ref _crop, value);

@@ -4,7 +4,7 @@ using WPFUI.Models;
 
 namespace TestProject.Tests.Mock.ViewModel.Uc
 {
-    public static class FakeTroopTrainingSelectorData
+    public class FakeTroopTrainingSelectorData
     {
         public static List<TroopInfo> GetTroopInfos()
         {
@@ -19,16 +19,6 @@ namespace TestProject.Tests.Mock.ViewModel.Uc
         public static TroopEnums GetSelectedTroopInfo()
         {
             return TroopEnums.Swordsman;
-        }
-
-        public static int GetMin()
-        {
-            return 10;
-        }
-
-        public static int GetMax()
-        {
-            return 20;
         }
 
         public static bool GetIsGreat()
