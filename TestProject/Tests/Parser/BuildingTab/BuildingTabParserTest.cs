@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.BuildingTab
+namespace TestProject.Tests.Parser.BuildingTab
 {
     [TestClass]
     public class BuildingTabParserTest

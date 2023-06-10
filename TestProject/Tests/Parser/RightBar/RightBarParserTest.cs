@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.RightBar
+namespace TestProject.Tests.Parser.RightBar
 {
     [TestClass]
     public class RightBarParserTest

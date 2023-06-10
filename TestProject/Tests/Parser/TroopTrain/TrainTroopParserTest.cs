@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.TroopTrain
+namespace TestProject.Tests.Parser.TroopTrain
 {
     [TestClass]
     public class TrainTroopParserTest

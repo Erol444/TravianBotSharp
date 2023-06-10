@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using WPFUI;
 
-namespace TestProject.DependencyInjector
+namespace TestProject.Tests.DependencyInjector
 {
     [TestClass]
     public class InitServicesTest

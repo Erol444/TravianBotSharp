@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.StockBar
+namespace TestProject.Tests.Parser.StockBar
 {
     [TestClass]
     public class StockBarParserTest

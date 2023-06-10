@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.VillageField
+namespace TestProject.Tests.Parser.VillageField
 {
     [TestClass]
     public class VillageFieldParserTest

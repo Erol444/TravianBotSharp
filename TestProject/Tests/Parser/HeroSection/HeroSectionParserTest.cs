@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.HeroSection
+namespace TestProject.Tests.Parser.HeroSection
 {
     [TestClass]
     public class HeroSectionParserTest

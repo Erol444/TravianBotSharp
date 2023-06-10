@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.SystemPage
+namespace TestProject.Tests.Parser.SystemPage
 {
     [TestClass]
     public class SystemPageParserTest

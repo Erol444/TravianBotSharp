@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.VillageCurrentlyBuilding
+namespace TestProject.Tests.Parser.VillageCurrentlyBuilding
 {
     [TestClass]
     public class VillageCurrentlyBuildingParserTest

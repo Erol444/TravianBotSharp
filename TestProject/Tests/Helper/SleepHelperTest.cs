@@ -6,7 +6,7 @@ using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace TestProject.Helper
+namespace TestProject.Tests.Helper
 {
     [TestClass]
     public class SleepHelperTest

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.NavigationBar
+namespace TestProject.Tests.Parser.NavigationBar
 {
     [TestClass]
     public class NavigationBarParserTest

@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Parser\BuildingTab\HtmlFile\**" />
-    <EmbeddedResource Remove="Parser\BuildingTab\HtmlFile\**" />
-    <None Remove="Parser\BuildingTab\HtmlFile\**" />
+    <Compile Remove="Tests\Parser\BuildingTab\HtmlFile\**" />
+    <EmbeddedResource Remove="Tests\Parser\BuildingTab\HtmlFile\**" />
+    <None Remove="Tests\Parser\BuildingTab\HtmlFile\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,118 +29,118 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Parser\BuildingTab\HtmlFiles\TravianOfficial.html">
+    <None Update="Tests\Parser\BuildingTab\HtmlFiles\TravianOfficial.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\BuildingTab\HtmlFiles\TTwars.html">
+    <None Update="Tests\Parser\BuildingTab\HtmlFiles\TTwars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\HeroSection\HtmlFiles\TravianOfficial_adventures.html">
+    <None Update="Tests\Parser\HeroSection\HtmlFiles\TravianOfficial_adventures.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\HeroSection\HtmlFiles\TravianOfficial_inputdialog.html">
+    <None Update="Tests\Parser\HeroSection\HtmlFiles\TravianOfficial_inputdialog.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\HeroSection\HtmlFiles\TravianOfficial_inventory.html">
+    <None Update="Tests\Parser\HeroSection\HtmlFiles\TravianOfficial_inventory.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\HeroSection\HtmlFiles\TTWars_adventures.html">
+    <None Update="Tests\Parser\HeroSection\HtmlFiles\TTWars_adventures.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\HeroSection\HtmlFiles\TTwars_inputdialog.html">
+    <None Update="Tests\Parser\HeroSection\HtmlFiles\TTwars_inputdialog.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\HeroSection\HtmlFiles\TTWars_inventory.html">
+    <None Update="Tests\Parser\HeroSection\HtmlFiles\TTWars_inventory.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\NavigationBar\HtmlFiles\TravianOfficial.html">
+    <None Update="Tests\Parser\NavigationBar\HtmlFiles\TravianOfficial.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\NavigationBar\HtmlFiles\TTWars.html">
+    <None Update="Tests\Parser\NavigationBar\HtmlFiles\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\RightBar\HtmlFiles\TravianOfficial.html">
+    <None Update="Tests\Parser\RightBar\HtmlFiles\TravianOfficial.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\RightBar\HtmlFiles\TTWars.html">
+    <None Update="Tests\Parser\RightBar\HtmlFiles\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\StockBar\HtmlFiles\TravianOfficial.html">
+    <None Update="Tests\Parser\StockBar\HtmlFiles\TravianOfficial.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\StockBar\HtmlFiles\TTWars.html">
+    <None Update="Tests\Parser\StockBar\HtmlFiles\TTWars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TravianOfficial_adventure.html">
+    <None Update="Tests\Parser\SystemPage\HtmlFiles\TravianOfficial_adventure.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TravianOfficial_login.html">
+    <None Update="Tests\Parser\SystemPage\HtmlFiles\TravianOfficial_login.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TravianOfficial_market.html">
+    <None Update="Tests\Parser\SystemPage\HtmlFiles\TravianOfficial_market.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TravianOfficial_upgrade.html">
+    <None Update="Tests\Parser\SystemPage\HtmlFiles\TravianOfficial_upgrade.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TTWars_adventure.html">
+    <None Update="Tests\Parser\SystemPage\HtmlFiles\TTWars_adventure.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TTWars_login.html">
+    <None Update="Tests\Parser\SystemPage\HtmlFiles\TTWars_login.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TTWars_market.html">
+    <None Update="Tests\Parser\SystemPage\HtmlFiles\TTWars_market.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\SystemPage\HtmlFiles\TTWars_upgrade.html">
+    <None Update="Tests\Parser\SystemPage\HtmlFiles\TTWars_upgrade.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\TroopTrain\HtmlFiles\TravianOfficial_barrack.html">
+    <None Update="Tests\Parser\TroopTrain\HtmlFiles\TravianOfficial_barrack.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\TroopTrain\HtmlFiles\TravianOfficial_stable.html">
+    <None Update="Tests\Parser\TroopTrain\HtmlFiles\TravianOfficial_stable.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\TroopTrain\HtmlFiles\TravianOfficial_workshop.html">
+    <None Update="Tests\Parser\TroopTrain\HtmlFiles\TravianOfficial_workshop.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\TroopTrain\HtmlFiles\TTWars_barrack.html">
+    <None Update="Tests\Parser\TroopTrain\HtmlFiles\TTWars_barrack.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\TroopTrain\HtmlFiles\TTWars_stable.html">
+    <None Update="Tests\Parser\TroopTrain\HtmlFiles\TTWars_stable.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\TroopTrain\HtmlFiles\TTWars_workshop.html">
+    <None Update="Tests\Parser\TroopTrain\HtmlFiles\TTWars_workshop.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillageCurrentlyBuilding\HtmlFiles\TravianOfficial.html">
+    <None Update="Tests\Parser\VillageCurrentlyBuilding\HtmlFiles\TravianOfficial.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillageCurrentlyBuilding\HtmlFiles\TravianOfficial_dialogue.html">
+    <None Update="Tests\Parser\VillageCurrentlyBuilding\HtmlFiles\TravianOfficial_dialogue.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillageCurrentlyBuilding\HtmlFiles\TTwars.html">
+    <None Update="Tests\Parser\VillageCurrentlyBuilding\HtmlFiles\TTwars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillageCurrentlyBuilding\HtmlFiles\TTwars_dialogue.html">
+    <None Update="Tests\Parser\VillageCurrentlyBuilding\HtmlFiles\TTwars_dialogue.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillageField\HtmlFiles\TravianOfficial.html">
+    <None Update="Tests\Parser\VillageField\HtmlFiles\TravianOfficial.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillageField\HtmlFiles\TTwars.html">
+    <None Update="Tests\Parser\VillageField\HtmlFiles\TTwars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillageInfrastructure\HtmlFiles\TravianOfficial.html">
+    <None Update="Tests\Parser\VillageInfrastructure\HtmlFiles\TravianOfficial.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillageInfrastructure\HtmlFiles\TTwars.html">
+    <None Update="Tests\Parser\VillageInfrastructure\HtmlFiles\TTwars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillagesTable\HtmlFiles\TravianOfficial.html">
+    <None Update="Tests\Parser\VillagesTable\HtmlFiles\TravianOfficial.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Parser\VillagesTable\HtmlFiles\TTwars.html">
+    <None Update="Tests\Parser\VillagesTable\HtmlFiles\TTwars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

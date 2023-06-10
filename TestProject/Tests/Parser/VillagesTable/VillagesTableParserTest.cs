@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace TestProject.Parser.VillagesTable
+namespace TestProject.Tests.Parser.VillagesTable
 {
     [TestClass]
     public class VillagesTableParserTest
