@@ -61,7 +61,9 @@ namespace WPFUI
             services.AddSingleton<HeroViewModel>();
             services.AddSingleton<SettingsViewModel>();
             services.AddSingleton<VillagesViewModel>();
+            services.AddSingleton<NoAccountViewModel>();
 
+            services.AddSingleton<NoVillageViewModel>();
             services.AddSingleton<BuildViewModel>();
             services.AddSingleton<InfoViewModel>();
             services.AddSingleton<NPCViewModel>();
@@ -84,6 +86,7 @@ namespace WPFUI
         public static IServiceCollection ConfigureStore(this IServiceCollection services)
         {
             services.AddSingleton<NavigationStore>();
+            services.AddSingleton<VillageNavigationStore>();
             return services;
         }
     }

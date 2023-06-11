@@ -1,5 +1,5 @@
-﻿<views:BuildPageBase
-        x:Class="WPFUI.Views.Tabs.Villages.BuildPage"
+﻿<views:BuildTabBase
+        x:Class="WPFUI.Views.Tabs.Villages.BuildTab"
         xmlns:views="clr-namespace:WPFUI.Views.Tabs.Villages"
         xmlns:models="clr-namespace:WPFUI.Models"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -158,4 +158,4 @@
             </Border>
         </Grid>
     </Grid>
-</views:BuildPageBase>
+</views:BuildTabBase>

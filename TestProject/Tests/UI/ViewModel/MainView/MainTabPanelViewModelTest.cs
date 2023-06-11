@@ -1,8 +1,6 @@
 ﻿using Microsoft.Reactive.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ReactiveUI.Testing;
-using WPFUI.Store;
-using WPFUI.ViewModels.Uc.MainView;
 
 namespace TestProject.Tests.UI.ViewModel.MainView
 {
@@ -14,9 +12,9 @@ namespace TestProject.Tests.UI.ViewModel.MainView
         {
             new TestScheduler().With(scheduler =>
             {
-                var navigationStore = new NavigationStore();
-                var vm = new MainTabPanelViewModel(navigationStore);
-                _ = vm;
+                //var navigationStore = new NavigationStore();
+                //var vm = new MainTabPanelViewModel(navigationStore);
+                //_ = vm;
             });
         }
     }

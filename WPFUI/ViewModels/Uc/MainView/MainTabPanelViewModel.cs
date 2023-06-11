@@ -19,16 +19,11 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private readonly ObservableAsPropertyHelper<ViewModelBase> _currentViewModel;
 
-        public ViewModelBase CurrentViewModel
-        {
-            get => _currentViewModel.Value;
-        }
-
         public ObservableCollection<TabHeaderViewModel> TabHeaders { get; } = new();
         private readonly Dictionary<TabType, TabHeaderViewModel[]> _tabsHolder;
         private TabType _currentTab;
 
-        public MainTabPanelViewModel(NavigationStore navigationStore)
+        public MainTabPanelViewModel(NavigationStore navigationStore, NoAccountViewModel noAccountViewModel, AddAccountViewModel addAccountViewModel, AddAccountsViewModel addAccountsViewModel, SettingsViewModel settingsViewModel, HeroViewModel heroViewModel, VillagesViewModel villagesViewModel, FarmingViewModel farmingViewModel, EditAccountViewModel editAccountViewModel, DebugViewModel debugViewModel)
         {
             _navigationStore = navigationStore;
             _tabsHolder = new()
@@ -36,30 +31,30 @@ namespace WPFUI.ViewModels.Uc.MainView
                 {
                     TabType.NoAccount, new TabHeaderViewModel[]
                     {
-                        new("No account", () => new NoAccountViewModel()) ,
+                        new("No account", noAccountViewModel,navigationStore    ) ,
                     }
                 },
                 {
                     TabType.AddAccount, new TabHeaderViewModel[]
                     {
-                        new("Add account", () => new AddAccountViewModel()) ,
+                        new("Add account", addAccountViewModel, navigationStore) ,
                     }
                 },
                 {
                     TabType.AddAccounts, new TabHeaderViewModel[]
                     {
-                        new("Add accounts", () => new AddAccountsViewModel()) ,
+                        new("Add accounts", addAccountsViewModel,navigationStore) ,
                     }
                 },
                 {
                     TabType.Normal, new TabHeaderViewModel[]
                     {
-                        new("Settings", () => new SettingsViewModel()),
-                        new("Hero", () => new HeroViewModel()),
-                        new("Villages", () => new VillagesViewModel()),
-                        new("Farming", () => new FarmingViewModel()),
-                        new("Edit account", () => new EditAccountViewModel()),
-                        new("Debug", () => new DebugViewModel()),
+                        new("Settings", settingsViewModel   , navigationStore),
+                        new("Hero", heroViewModel, navigationStore),
+                        new("Villages", villagesViewModel, navigationStore),
+                        new("Farming", farmingViewModel, navigationStore),
+                        new("Edit account", editAccountViewModel, navigationStore),
+                        new("Debug", debugViewModel, navigationStore),
                     }
                 }
             };
@@ -90,6 +85,11 @@ namespace WPFUI.ViewModels.Uc.MainView
             {
                 tab.IsSelected = false;
             }
+        }
+
+        public ViewModelBase CurrentViewModel
+        {
+            get => _currentViewModel.Value;
         }
     }
 }

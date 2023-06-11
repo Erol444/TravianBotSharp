@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using System;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Tabs;
 
@@ -12,9 +11,9 @@ namespace WPFUI.Store
             CurrentViewModel = new NoAccountViewModel();
         }
 
-        public void Change(Func<ViewModelBase> createViewModel)
+        public void Change(ViewModelBase viewModel)
         {
-            CurrentViewModel = createViewModel();
+            CurrentViewModel = viewModel;
         }
 
         private ViewModelBase _currentViewModel;

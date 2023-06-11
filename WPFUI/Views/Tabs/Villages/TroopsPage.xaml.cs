@@ -5,16 +5,16 @@ using WPFUI.ViewModels.Tabs.Villages;
 
 namespace WPFUI.Views.Tabs.Villages
 {
-    public class TroopsPageBase : ReactivePage<VillageTroopsViewModel>
+    public class TroopsTabBase : ReactiveUserControl<VillageTroopsViewModel>
     {
     }
 
     /// <summary>
     /// Interaction logic for TroopsPage.xaml
     /// </summary>
-    public partial class TroopsPage : TroopsPageBase
+    public partial class TroopsTab : TroopsTabBase
     {
-        public TroopsPage()
+        public TroopsTab()
         {
             ViewModel = Locator.Current.GetService<VillageTroopsViewModel>();
             InitializeComponent();

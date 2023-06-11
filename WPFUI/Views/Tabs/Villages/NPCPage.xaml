@@ -1,5 +1,5 @@
-﻿<views:NPCPageBase
-    x:Class="WPFUI.Views.Tabs.Villages.NPCPage"
+﻿<views:NPCTabBase
+    x:Class="WPFUI.Views.Tabs.Villages.NPCTab"
     xmlns:views="clr-namespace:WPFUI.Views.Tabs.Villages"
     xmlns:controls="clr-namespace:WPFUI.Views.Uc"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -14,4 +14,4 @@
         <controls:ResourcesUc x:Name="Ratio" Margin="10,0,10,0" />
         <Button x:Name="NPC"  Content="NPC" Margin="10"  Height="50" />
     </StackPanel>
-</views:NPCPageBase>
+</views:NPCTabBase>

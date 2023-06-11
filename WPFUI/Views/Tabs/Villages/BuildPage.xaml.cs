@@ -5,7 +5,7 @@ using WPFUI.ViewModels.Tabs.Villages;
 
 namespace WPFUI.Views.Tabs.Villages
 {
-    public class BuildPageBase : ReactivePage<BuildViewModel>
+    public class BuildTabBase : ReactiveUserControl<BuildViewModel>
     {
     }
 
@@ -13,9 +13,9 @@ namespace WPFUI.Views.Tabs.Villages
     /// Interaction logic for BuildPage.xaml
     /// </summary>
 
-    public partial class BuildPage : BuildPageBase
+    public partial class BuildTab : BuildTabBase
     {
-        public BuildPage()
+        public BuildTab()
         {
             ViewModel = Locator.Current.GetService<BuildViewModel>();
             InitializeComponent();

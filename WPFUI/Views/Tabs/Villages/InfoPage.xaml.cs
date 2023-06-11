@@ -4,16 +4,16 @@ using WPFUI.ViewModels.Tabs.Villages;
 
 namespace WPFUI.Views.Tabs.Villages
 {
-    public class InfoPageBase : ReactivePage<InfoViewModel>
+    public class InfoTabBase : ReactiveUserControl<InfoViewModel>
     {
     }
 
     /// <summary>
     /// Interaction logic for InfoPage.xaml
     /// </summary>
-    public partial class InfoPage : InfoPageBase
+    public partial class InfoTab : InfoTabBase
     {
-        public InfoPage()
+        public InfoTab()
         {
             ViewModel = new();
             InitializeComponent();

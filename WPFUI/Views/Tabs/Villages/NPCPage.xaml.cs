@@ -5,16 +5,16 @@ using WPFUI.ViewModels.Tabs.Villages;
 
 namespace WPFUI.Views.Tabs.Villages
 {
-    public class NPCPageBase : ReactivePage<NPCViewModel>
+    public class NPCTabBase : ReactiveUserControl<NPCViewModel>
     {
     }
 
     /// <summary>
     /// Interaction logic for NPCPage.xaml
     /// </summary>
-    public partial class NPCPage : NPCPageBase
+    public partial class NPCTab : NPCTabBase
     {
-        public NPCPage()
+        public NPCTab()
         {
             ViewModel = Locator.Current.GetService<NPCViewModel>();
             InitializeComponent();

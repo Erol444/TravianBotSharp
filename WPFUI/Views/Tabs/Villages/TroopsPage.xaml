@@ -1,5 +1,5 @@
-﻿<views:TroopsPageBase
-    x:Class="WPFUI.Views.Tabs.Villages.TroopsPage"
+﻿<views:TroopsTabBase
+    x:Class="WPFUI.Views.Tabs.Villages.TroopsTab"
     xmlns:views="clr-namespace:WPFUI.Views.Tabs.Villages"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
@@ -8,4 +8,4 @@
 
         <Button x:Name="Apply" Content="Upgrade" Padding="120,20,120,20" HorizontalAlignment="Center" Margin="10,20,10,0" />
     </StackPanel>
-</views:TroopsPageBase>
+</views:TroopsTabBase>

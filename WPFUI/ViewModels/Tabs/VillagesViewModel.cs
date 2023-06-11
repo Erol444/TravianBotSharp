@@ -7,44 +7,61 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
-using WPFUI.Views.Tabs.Villages;
+using WPFUI.ViewModels.Tabs.Villages;
+using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.ViewModels.Tabs
 {
     public class VillagesViewModel : AccountTabBaseViewModel
     {
-        public VillagesViewModel()
+        private readonly VillageNavigationStore _villageNavigationStore;
+
+        public ObservableCollection<TabHeaderViewModel> TabHeaders { get; } = new();
+        private readonly Dictionary<TabType, TabHeaderViewModel[]> _tabsHolder;
+        private TabType _currentTab;
+
+        private readonly ObservableAsPropertyHelper<ViewModelBase> _currentViewModel;
+
+        public ObservableCollection<VillageModel> Villages { get; } = new();
+
+        private VillageModel _currentVillage;
+
+        public VillagesViewModel(VillageNavigationStore villageNavigationStore, NoVillageViewModel noVillageViewModel, BuildViewModel buildViewModel, VillageSettingsViewModel villageSettingsViewModel, NPCViewModel npcViewModel, VillageTroopsViewModel villageTroopsViewModel, InfoViewModel infoViewModel)
         {
-            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(_selectorViewModel, vm => vm.Village);
-            this.WhenAnyValue(vm => vm.CurrentVillage).Where(x => x is not null).Subscribe(x =>
-            {
-                if (_current == TabType.Normal) return;
-                SetTab(TabType.Normal);
-            });
+            _villageNavigationStore = villageNavigationStore;
+
             _tabsHolder = new()
             {
                 {
-                    TabType.NoAccount, new TabItemModel[]
+                    TabType.NoAccount, new TabHeaderViewModel[]
                     {
-                        new("No village", new NoVillagePage()) ,
+                        new("No village", noVillageViewModel, villageNavigationStore) ,
                     }
                 },
                 {
-                    TabType.Normal, new TabItemModel[]
+                    TabType.Normal, new TabHeaderViewModel[]
                     {
-                        new("Build", new BuildPage()),
-                        new("Settings", new SettingsPage()),
-                        new("NPC", new NPCPage()),
-                        new("Troop", new TroopsPage()),
-                        new("Info", new InfoPage()),
+                        new("Build",  buildViewModel, villageNavigationStore),
+                        new("Settings", villageSettingsViewModel, villageNavigationStore),
+                        new("NPC", npcViewModel, villageNavigationStore),
+                        new("Troop", villageTroopsViewModel, villageNavigationStore),
+                        new("Info", infoViewModel, villageNavigationStore),
                     }
                 }
             };
-            Tabs = new()
+            this.WhenAnyValue(vm => vm._villageNavigationStore.CurrentViewModel)
+                .ToProperty(this, vm => vm.CurrentViewModel, out _currentViewModel);
+            this.WhenAnyValue(vm => vm.CurrentViewModel)
+                .Select(x => x is not null)
+                .Subscribe(x => TabChanged());
+
+            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(_selectorViewModel, vm => vm.Village);
+            this.WhenAnyValue(vm => vm.CurrentVillage).Where(x => x is not null).Subscribe(x =>
             {
-                _tabsHolder[TabType.NoAccount]
-            };
+                SetTab(TabType.Normal);
+            });
         }
 
         protected override void Init(int accountId)
@@ -93,35 +110,33 @@ namespace WPFUI.ViewModels.Tabs
         public void SetTab(TabType tab)
         {
             if (!IsActive) return;
+            if (_currentTab == tab) return;
+            _currentTab = tab;
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                Tabs.Clear();
-                Tabs.AddRange(_tabsHolder[tab]);
-                TabIndex = 0;
-                _current = tab;
+                TabHeaders.Clear();
+                TabHeaders.AddRange(_tabsHolder[tab]);
+                _tabsHolder[tab].First().Select(true);
             });
         }
 
-        public ObservableCollection<VillageModel> Villages { get; } = new();
+        private void TabChanged()
+        {
+            foreach (var tab in _tabsHolder[_currentTab])
+            {
+                tab.IsSelected = false;
+            }
+        }
 
-        private VillageModel _currentVillage;
+        public ViewModelBase CurrentViewModel
+        {
+            get => _currentViewModel.Value;
+        }
 
         public VillageModel CurrentVillage
         {
             get => _currentVillage;
             set => this.RaiseAndSetIfChanged(ref _currentVillage, value);
-        }
-
-        public ObservableCollection<TabItemModel> Tabs { get; }
-        private readonly Dictionary<TabType, TabItemModel[]> _tabsHolder;
-        private TabType _current;
-
-        private int _tabIndex;
-
-        public int TabIndex
-        {
-            get => _tabIndex;
-            set => this.RaiseAndSetIfChanged(ref _tabIndex, value);
         }
     }
 }

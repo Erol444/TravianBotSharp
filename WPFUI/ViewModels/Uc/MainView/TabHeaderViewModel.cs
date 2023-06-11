@@ -1,6 +1,4 @@
 ﻿using ReactiveUI;
-using Splat;
-using System;
 using System.Reactive;
 using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
@@ -14,12 +12,12 @@ namespace WPFUI.ViewModels.Uc.MainView
         public ReactiveCommand<Unit, Unit> ClickCommand { get; }
 
         private readonly NavigationStore _navigationStore;
-        private readonly Func<ViewModelBase> _createViewModel;
+        private readonly ViewModelBase _viewModel;
 
-        public TabHeaderViewModel(string content, Func<ViewModelBase> createViewModel)
+        public TabHeaderViewModel(string content, ViewModelBase viewModel, NavigationStore navigationStore)
         {
-            _navigationStore = Locator.Current.GetService<NavigationStore>();
-            _createViewModel = createViewModel;
+            _navigationStore = navigationStore;
+            _viewModel = viewModel;
             Content = content;
 
             ClickCommand = ReactiveCommand.Create(() => Select());
@@ -29,7 +27,7 @@ namespace WPFUI.ViewModels.Uc.MainView
         {
             if (IsSelected && !isForce) return;
 
-            _navigationStore.Change(_createViewModel);
+            _navigationStore.Change(_viewModel);
             IsSelected = true;
         }
 
