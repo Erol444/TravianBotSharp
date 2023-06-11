@@ -22,10 +22,10 @@ namespace MainCore.Models.Database
         public bool IsNPCOverflow { get; set; }
         public int AutoNPCPercent { get; set; }
         public int AutoNPCWarehousePercent { get; set; }
-        public int AutoNPCWood { get; set; }
-        public int AutoNPCClay { get; set; }
-        public int AutoNPCIron { get; set; }
-        public int AutoNPCCrop { get; set; }
+        public long AutoNPCWood { get; set; }
+        public long AutoNPCClay { get; set; }
+        public long AutoNPCIron { get; set; }
+        public long AutoNPCCrop { get; set; }
 
         public bool IsUpgradeTroop { get; set; }
         public string UpgradeTroop { get; set; }
