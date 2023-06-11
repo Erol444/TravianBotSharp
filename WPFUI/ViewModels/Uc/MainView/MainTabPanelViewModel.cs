@@ -1,6 +1,5 @@
 ﻿using DynamicData;
 using ReactiveUI;
-using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -16,9 +15,9 @@ namespace WPFUI.ViewModels.Uc.MainView
     {
         private readonly SelectorViewModel _selectorViewModel;
 
-        public MainTabPanelViewModel()
+        public MainTabPanelViewModel(SelectorViewModel selectorViewModel)
         {
-            _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
+            _selectorViewModel = selectorViewModel;
             this.WhenAnyValue(vm => vm._selectorViewModel.IsAccountSelected)
                 .Where(x => x)
                 .Subscribe(_ => SetTab(TabType.Normal));

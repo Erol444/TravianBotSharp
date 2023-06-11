@@ -52,14 +52,10 @@
 
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
-    <PackageReference Include="FluentMigrator" Version="3.3.2" />
     <PackageReference Include="MaterialDesignThemes" Version="4.8.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
-    <PackageReference Include="ReactiveUI" Version="18.4.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
+    <PackageReference Include="ReactiveUI" Version="19.2.1" />
     <PackageReference Include="ReactiveUI.WPF" Version="18.4.1" />
-    <PackageReference Include="Splat" Version="14.6.1" />
-    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="14.6.1" />
   </ItemGroup>
 
   <ItemGroup>
