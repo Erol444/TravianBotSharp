@@ -5,16 +5,16 @@ using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
-    public class SettingsPageBase : ReactivePage<SettingsViewModel>
+    public class SettingsTabBase : ReactiveUserControl<SettingsViewModel>
     {
     }
 
     /// <summary>
     /// Interaction logic for SettingsPage.xaml
     /// </summary>
-    public partial class SettingsPage : SettingsPageBase
+    public partial class SettingsTab : SettingsTabBase
     {
-        public SettingsPage()
+        public SettingsTab()
         {
             ViewModel = Locator.Current.GetService<SettingsViewModel>();
             InitializeComponent();

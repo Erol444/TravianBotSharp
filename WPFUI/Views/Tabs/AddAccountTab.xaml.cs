@@ -1,22 +1,21 @@
 ﻿using ReactiveUI;
-using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
-    public class EditAccountPageBase : ReactivePage<EditAccountViewModel>
+    public class AddAccountTabBase : ReactiveUserControl<AddAccountViewModel>
     {
     }
 
     /// <summary>
-    /// Interaction logic for EditAccountPage.xaml
+    /// Interaction logic for AddAccountPage.xaml
     /// </summary>
-    public partial class EditAccountPage : EditAccountPageBase
+    public partial class AddAccountTab : AddAccountTabBase
     {
-        public EditAccountPage()
+        public AddAccountTab()
         {
-            ViewModel = Locator.Current.GetService<EditAccountViewModel>();
+            ViewModel = new();
             InitializeComponent();
             this.WhenActivated(d =>
             {

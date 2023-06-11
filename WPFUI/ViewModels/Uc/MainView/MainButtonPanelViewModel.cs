@@ -19,6 +19,7 @@ namespace WPFUI.ViewModels.Uc.MainView
     public class MainButtonPanelViewModel : AccountTabBaseViewModel
     {
         private readonly MainTabPanelViewModel _mainTabPanelViewModel;
+        private readonly AccountListViewModel _accountListViewModel;
         private readonly IAccessHelper _accessHelper;
 
         public MainButtonPanelViewModel()
@@ -26,6 +27,7 @@ namespace WPFUI.ViewModels.Uc.MainView
             _eventManager.AccountStatusUpdate += OnAccountUpdate;
             _mainTabPanelViewModel = Locator.Current.GetService<MainTabPanelViewModel>();
             _accessHelper = Locator.Current.GetService<IAccessHelper>();
+            _accountListViewModel = Locator.Current.GetService<AccountListViewModel>();
 
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
@@ -120,11 +122,13 @@ namespace WPFUI.ViewModels.Uc.MainView
         private void AddAccountTask()
         {
             _mainTabPanelViewModel.SetTab(TabType.AddAccount);
+            _accountListViewModel.CurrentAccount = null;
         }
 
         private void AddAccountsTask()
         {
             _mainTabPanelViewModel.SetTab(TabType.AddAccounts);
+            _accountListViewModel.CurrentAccount = null;
         }
 
         private Task LoginTask() => Task.Run(() => LoginAccount(AccountId));

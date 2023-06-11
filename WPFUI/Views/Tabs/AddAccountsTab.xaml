@@ -1,5 +1,5 @@
-﻿<views:AddAccountsPageBase
-    x:Class="WPFUI.Views.Tabs.AddAccountsPage"
+﻿<views:AddAccountsTabBase
+    x:Class="WPFUI.Views.Tabs.AddAccountsTab"
     xmlns:views="clr-namespace:WPFUI.Views.Tabs"
     xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -30,4 +30,4 @@
         <TextBox x:Name="AccountsInput" AcceptsReturn="True"  VerticalScrollBarVisibility="Visible" />
         <Button x:Name="AddButton" Content="Add" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,0,1,0" />
     </Grid>
-</views:AddAccountsPageBase>
+</views:AddAccountsTabBase>

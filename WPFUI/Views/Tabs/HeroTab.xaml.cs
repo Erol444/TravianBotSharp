@@ -5,16 +5,16 @@ using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
-    public class HeroPageBase : ReactivePage<HeroViewModel>
+    public class HeroTabBase : ReactiveUserControl<HeroViewModel>
     {
     }
 
     /// <summary>
     /// Interaction logic for HeroPage.xaml
     /// </summary>
-    public partial class HeroPage : HeroPageBase
+    public partial class HeroTab : HeroTabBase
     {
-        public HeroPage()
+        public HeroTab()
         {
             ViewModel = Locator.Current.GetService<HeroViewModel>();
             InitializeComponent();

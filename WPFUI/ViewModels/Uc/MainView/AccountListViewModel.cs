@@ -6,6 +6,7 @@ using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using Splat;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -26,16 +27,18 @@ namespace WPFUI.ViewModels.Uc.MainView
         public AccountListViewModel()
         {
             _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
-            this.WhenAnyValue(x => x.CurrentAccount).BindTo(_selectorViewModel, vm => vm.Account);
-
             _mainTabPanelViewModel = Locator.Current.GetService<MainTabPanelViewModel>();
-
             _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
             _eventManager = Locator.Current.GetService<IEventManager>();
             _eventManager.AccountsTableUpdate += EventManager_AccountsTableUpdate;
             _eventManager.AccountStatusUpdate += EventManager_AccountStatusUpdate;
 
             Active += AccountListViewModel_Active;
+
+            this.WhenAnyValue(x => x.CurrentAccount).BindTo(_selectorViewModel, vm => vm.Account);
+            this.WhenAnyValue(x => x.CurrentAccount)
+                .Where(x => x is not null)
+                .Subscribe(x => _mainTabPanelViewModel.SetTab(TabType.Normal));
         }
 
         private void EventManager_AccountStatusUpdate(int accountId, AccountStatus status)
@@ -98,14 +101,8 @@ namespace WPFUI.ViewModels.Uc.MainView
 
                 if (accounts.Any())
                 {
-                    if (_mainTabPanelViewModel.Current == TabType.NoAccount)
-                    {
-                        CurrentAccount = Accounts[0];
-                    }
-                    else
-                    {
-                        CurrentAccount = null;
-                    }
+                    CurrentAccount = Accounts[0];
+                    _mainTabPanelViewModel.SetTab(TabType.Normal);
                 }
                 else
                 {

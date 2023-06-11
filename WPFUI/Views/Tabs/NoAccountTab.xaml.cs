@@ -5,9 +5,9 @@ namespace WPFUI.Views.Tabs
     /// <summary>
     /// Interaction logic for NoAccountPage.xaml
     /// </summary>
-    public partial class NoAccountPage : UserControl
+    public partial class NoAccountTab : UserControl
     {
-        public NoAccountPage()
+        public NoAccountTab()
         {
             InitializeComponent();
         }

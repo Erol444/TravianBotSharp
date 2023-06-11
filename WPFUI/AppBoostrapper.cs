@@ -7,6 +7,7 @@ using ReactiveUI;
 using Splat;
 using Splat.Microsoft.Extensions.DependencyInjection;
 using System;
+using WPFUI.Store;
 using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
@@ -28,6 +29,7 @@ namespace WPFUI
                     resolver.InitializeSplat();
                     resolver.InitializeReactiveUI();
                     coreInjector.Configure(services);
+                    services.ConfigureStore();
                     services.ConfigureUcViewModel();
                     services.ConfigureViewModel();
                 })
@@ -76,6 +78,12 @@ namespace WPFUI
             services.AddSingleton<MainTabPanelViewModel>();
             services.AddSingleton<MainButtonPanelViewModel>();
             services.AddSingleton<AccountListViewModel>();
+            return services;
+        }
+
+        public static IServiceCollection ConfigureStore(this IServiceCollection services)
+        {
+            services.AddSingleton<NavigationStore>();
             return services;
         }
     }

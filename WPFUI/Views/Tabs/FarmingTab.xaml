@@ -1,5 +1,5 @@
-﻿<views:FarmingPageBase
-    x:Class="WPFUI.Views.Tabs.FarmingPage"
+﻿<views:FarmingTabBase
+    x:Class="WPFUI.Views.Tabs.FarmingTab"
     xmlns:views="clr-namespace:WPFUI.Views.Tabs"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -39,4 +39,4 @@
             </ListBox.ItemTemplate>
         </ListBox>
     </Grid>
-</views:FarmingPageBase>
+</views:FarmingTabBase>

@@ -20,6 +20,7 @@ namespace WPFUI.Views.Uc.MainView
             InitializeComponent();
             this.WhenActivated(d =>
             {
+                this.OneWayBind(ViewModel, vm => vm.TabHeaders, v => v.Headers.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.CurrentViewModel, v => v.TabPanel.Content).DisposeWith(d);
             });
         }

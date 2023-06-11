@@ -5,7 +5,7 @@ using System.Reactive.Disposables;
 
 namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class ActivatableViewModelBase : ReactiveObject, IActivatableViewModel
+    public abstract class ActivatableViewModelBase : ViewModelBase, IActivatableViewModel
     {
         public ActivatableViewModelBase()
         {

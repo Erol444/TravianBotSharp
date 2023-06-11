@@ -1,5 +1,5 @@
-﻿<views:SettingsPageBase
-    x:Class="WPFUI.Views.Tabs.SettingsPage"
+﻿<views:SettingsTabBase
+    x:Class="WPFUI.Views.Tabs.SettingsTab"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:views="clr-namespace:WPFUI.Views.Tabs"
@@ -54,4 +54,4 @@
             </StackPanel>
         </StackPanel>
     </Grid>
-</views:SettingsPageBase>
+</views:SettingsTabBase>

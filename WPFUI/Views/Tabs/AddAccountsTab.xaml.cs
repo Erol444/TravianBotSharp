@@ -5,16 +5,16 @@ using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
-    public class AddAccountsPageBase : ReactivePage<AddAccountsViewModel>
+    public class AddAccountsTabBase : ReactiveUserControl<AddAccountsViewModel>
     {
     }
 
     /// <summary>
     /// Interaction logic for AddAccountsPage.xaml
     /// </summary>
-    public partial class AddAccountsPage : AddAccountsPageBase
+    public partial class AddAccountsTab : AddAccountsTabBase
     {
-        public AddAccountsPage()
+        public AddAccountsTab()
         {
             ViewModel = Locator.Current.GetService<AddAccountsViewModel>();
             InitializeComponent();

@@ -5,16 +5,16 @@ using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Views.Tabs
 {
-    public class FarmingPageBase : ReactivePage<FarmingViewModel>
+    public class FarmingTabBase : ReactiveUserControl<FarmingViewModel>
     {
     }
 
     /// <summary>
     /// Interaction logic for FarmingPage.xaml
     /// </summary>
-    public partial class FarmingPage : FarmingPageBase
+    public partial class FarmingTab : FarmingTabBase
     {
-        public FarmingPage()
+        public FarmingTab()
         {
             ViewModel = Locator.Current.GetService<FarmingViewModel>();
             InitializeComponent();

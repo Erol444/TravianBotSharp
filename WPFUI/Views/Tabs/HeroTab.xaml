@@ -1,5 +1,5 @@
-﻿<views:HeroPageBase
-    x:Class="WPFUI.Views.Tabs.HeroPage"
+﻿<views:HeroTabBase
+    x:Class="WPFUI.Views.Tabs.HeroTab"
     xmlns:views="clr-namespace:WPFUI.Views.Tabs"
     xmlns:Behaviours="clr-namespace:WPFUI.Behaviours"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -8,8 +8,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:WPFUI.Views.Tabs"
     mc:Ignorable="d"
-    d:DesignHeight="450" d:DesignWidth="800"
-    Title="HeroPage">
+    d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid Background="#FFE5E5E5" Margin="0,2,0,-4">
         <Grid.ColumnDefinitions>
@@ -84,4 +83,4 @@
             <Button x:Name="InventoryButton" Content="Refresh inventory" Margin="10,10,10,10" />
         </Grid>
     </Grid>
-</views:HeroPageBase>
+</views:HeroTabBase>
