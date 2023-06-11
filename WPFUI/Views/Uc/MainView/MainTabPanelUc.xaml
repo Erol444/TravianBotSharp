@@ -1,19 +1,25 @@
-﻿<views:MainTabPanelUcBase
-        x:Class="WPFUI.Views.Uc.MainView.MainTabPanelUc"
-        xmlns:views="clr-namespace:WPFUI.Views.Uc.MainView"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <TabControl x:Name="Tabs" Margin="5,0,0,0">
-        <TabControl.ItemTemplate>
-            <DataTemplate>
-                <TextBlock Text="{Binding Header}" />
-            </DataTemplate>
-        </TabControl.ItemTemplate>
-
-        <TabControl.ContentTemplate>
-            <DataTemplate>
-                <Frame Content="{Binding Content}" NavigationUIVisibility="Hidden" />
-            </DataTemplate>
-        </TabControl.ContentTemplate>
-    </TabControl>
-</views:MainTabPanelUcBase>
+﻿<v:MainTabPanelUcBase
+    x:Class="WPFUI.Views.Uc.MainView.MainTabPanelUc"
+    xmlns:v="clr-namespace:WPFUI.Views.Uc.MainView"
+    xmlns:viewmodels="clr-namespace:WPFUI.ViewModels.Tabs"
+    xmlns:views="clr-namespace:WPFUI.Views.Tabs"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <Button Content="Add" />
+            <Button Content="Remove" />
+        </StackPanel>
+        <ContentControl x:Name="TabPanel" Grid.Row="1">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type viewmodels:NoAccountViewModel}">
+                    <views:NoAccountPage />
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
+    </Grid>
+</v:MainTabPanelUcBase>
