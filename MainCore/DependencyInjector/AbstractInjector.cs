@@ -13,7 +13,7 @@ namespace MainCore.DependencyInjector
     {
         private const string _connectionString = "DataSource=TBS.db;Cache=Shared";
 
-        private IServiceCollection ConfigureService(IServiceCollection services)
+        private static IServiceCollection ConfigureService(IServiceCollection services)
         {
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(_connectionString));
             services.AddSingleton<IChromeManager, ChromeManager>();
@@ -33,7 +33,7 @@ namespace MainCore.DependencyInjector
             return services;
         }
 
-        private IServiceCollection ConfigureHelper(IServiceCollection services)
+        private static IServiceCollection ConfigureHelper(IServiceCollection services)
         {
             services.AddSingleton<IAccessHelper, AccessHelper>();
             services.AddSingleton<IGithubHelper, GithubHelper>();

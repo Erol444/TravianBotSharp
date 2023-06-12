@@ -1,8 +1,9 @@
 ﻿using MainCore.DependencyInjector;
 using MainCore.Enums;
 using System;
+using WPFUI.DependencyInjector;
 
-namespace MainCore.DependencyInjectior
+namespace WPFUI.DependencyInjectior
 {
     public static class InjectorFactory
     {
@@ -15,5 +16,7 @@ namespace MainCore.DependencyInjectior
                 _ => throw new Exception($"Version not supported {version}"),
             };
         }
+
+        public static IInjector GetUIInjector() => new UIInjector();
     }
 }
