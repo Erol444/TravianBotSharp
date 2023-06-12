@@ -23,10 +23,12 @@ namespace WPFUI
                     var resolver = Locator.CurrentMutable;
                     resolver.InitializeSplat();
                     resolver.InitializeReactiveUI();
+
                     coreInjector.Configure(services);
                     uiInjector.Configure(services);
                 })
                 .Build();
+
             var container = host.Services;
             container.UseMicrosoftDependencyResolver();
             return container;

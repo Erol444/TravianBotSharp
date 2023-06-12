@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Splat;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using TestProject.Tests.Mock;
 using WPFUI;
 
 namespace TestProject.Tests.DependencyInjector
@@ -22,33 +22,7 @@ namespace TestProject.Tests.DependencyInjector
 
         private static IEnumerable<object[]> GetTestData()
         {
-            var namespaces = new List<string>()
-            {
-                "MainCore.Parsers.Interface",
-                "MainCore.Helper.Interface",
-            };
-
-            var result = new List<object[]>();
-
-            foreach (var ns in namespaces)
-            {
-                var typelist = GetTypesInNamespace(ns);
-
-                var versionList = Enum.GetValues<VersionEnums>();
-                foreach (var version in versionList)
-                {
-                    result.AddRange(typelist.Select(x => new object[] { version, x }).ToList());
-                }
-            }
-
-            return result;
-        }
-
-        private static Type[] GetTypesInNamespace(string nameSpace)
-        {
-            return AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(t => t.GetTypes())
-                .Where(t => t.IsInterface && (t.Namespace?.Contains(nameSpace) ?? false)).ToArray();
+            return ServiceData.GetVersionService();
         }
     }
 }

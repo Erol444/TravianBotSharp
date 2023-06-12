@@ -9,7 +9,7 @@ using WPFUI;
 namespace TestProject.Tests.DependencyInjector
 {
     [TestClass]
-    public class InitServicesTest
+    public class InitServicesUITests
     {
         [DataTestMethod, Timeout(10000)]
         [DynamicData(nameof(GetTestData), DynamicDataSourceType.Method)]
@@ -22,7 +22,7 @@ namespace TestProject.Tests.DependencyInjector
 
         private static IEnumerable<object[]> GetTestData()
         {
-            return ServiceData.GetCoreService();
+            return ServiceData.GetUIService();
         }
     }
 }
