@@ -1,5 +1,8 @@
-﻿using MainCore.Models.Database;
+﻿using MainCore;
+using MainCore.Models.Database;
+using MainCore.Services.Interface;
 using MainCore.Tasks.FunctionTasks;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Reactive;
@@ -12,8 +15,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
 {
     public class NPCViewModel : VillageTabBaseViewModel
     {
-        public NPCViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly ITaskManager _taskManager;
+
+        public NPCViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager) : base(selectorViewModel)
         {
+            _contextFactory = contextFactory;
+            _taskManager = taskManager;
+
             RefreshCommand = ReactiveCommand.Create(RefreshTask);
             NPCCommand = ReactiveCommand.Create(NPCTask);
         }

@@ -1,5 +1,8 @@
-﻿using MainCore.Enums;
+﻿using MainCore;
+using MainCore.Enums;
+using MainCore.Services.Interface;
 using MainCore.Tasks.UpdateTasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using ReactiveUI;
 using System;
@@ -20,6 +23,24 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class SettingsViewModel : AccountTabBaseViewModel
     {
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly ITaskManager _taskManager;
+
+        private readonly WaitingViewModel _waitingWindow;
+
+        public SettingsViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingViewModel waitingWindow) : base(selectorViewModel)
+        {
+            _contextFactory = contextFactory;
+            _taskManager = taskManager;
+            _waitingWindow = waitingWindow;
+
+            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
+            ExportCommand = ReactiveCommand.Create(ExportTask);
+            ImportCommand = ReactiveCommand.Create(ImportTask);
+
+            Tribes = new(Enum.GetValues<TribeEnums>().Skip(1).Where(x => x != TribeEnums.Nature && x != TribeEnums.Natars).Select(x => new TribeComboBox() { Tribe = x }).ToList());
+        }
+
         private TribeComboBox _selectedTribe;
 
         public TribeComboBox SelectedTribe
@@ -64,15 +85,6 @@ namespace WPFUI.ViewModels.Tabs
         {
             get => _IsAutoStartAdventure;
             set => this.RaiseAndSetIfChanged(ref _IsAutoStartAdventure, value);
-        }
-
-        public SettingsViewModel()
-        {
-            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
-            ExportCommand = ReactiveCommand.Create(ExportTask);
-            ImportCommand = ReactiveCommand.Create(ImportTask);
-
-            Tribes = new(Enum.GetValues<TribeEnums>().Skip(1).Where(x => x != TribeEnums.Nature && x != TribeEnums.Natars).Select(x => new TribeComboBox() { Tribe = x }).ToList());
         }
 
         protected override void Init(int accountId)

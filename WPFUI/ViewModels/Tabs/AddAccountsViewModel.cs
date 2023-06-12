@@ -1,5 +1,8 @@
 ﻿using DynamicData;
+using MainCore;
 using MainCore.Models.Database;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -17,8 +20,19 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class AddAccountsViewModel : TabBaseViewModel
     {
-        public AddAccountsViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IUseragentManager _useragentManager;
+        private readonly IEventManager _eventManager;
+
+        private readonly WaitingViewModel _waitingWindow;
+
+        public AddAccountsViewModel(IDbContextFactory<AppDbContext> contextFactory, WaitingViewModel waitingWindow, IUseragentManager useragentManager, IEventManager eventManager)
         {
+            _contextFactory = contextFactory;
+            _waitingWindow = waitingWindow;
+            _useragentManager = useragentManager;
+            _eventManager = eventManager;
+
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             UpdateTable = ReactiveCommand.CreateFromTask<string>(UpdateTableTask);
 

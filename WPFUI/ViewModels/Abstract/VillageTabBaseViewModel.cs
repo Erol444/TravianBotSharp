@@ -5,10 +5,17 @@ using System.Reactive.Linq;
 
 namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class VillageTabBaseViewModel : TabBaseViewModel
+    public abstract class VillageTabBaseViewModel : ActivatableViewModelBase
     {
-        public VillageTabBaseViewModel()
+        protected readonly SelectorViewModel _selectorViewModel;
+
+        public VillageTabBaseViewModel(SelectorViewModel selectorViewModel)
         {
+            _selectorViewModel = selectorViewModel;
+
+            _selectorViewModel.VillageChanged += OnVillageChanged;
+            Active += OnActive;
+
             this.WhenAnyValue(vm => vm._selectorViewModel.Account)
                 .Where(x => x is not null)
                 .Select(x => x.Id)
@@ -18,9 +25,6 @@ namespace WPFUI.ViewModels.Abstract
                 .Where(x => x is not null)
                 .Select(x => x.Id)
                 .ToProperty(this, vm => vm.VillageId, out _villageId);
-
-            _selectorViewModel.VillageChanged += OnVillageChanged;
-            Active += OnActive;
         }
 
         protected abstract void Init(int id);

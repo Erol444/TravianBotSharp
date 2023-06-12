@@ -1,5 +1,8 @@
 ﻿using DynamicData;
+using MainCore;
 using MainCore.Models.Runtime;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -15,10 +18,20 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class DebugViewModel : AccountTabBaseViewModel
     {
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _eventManager;
+        private readonly ILogManager _logManager;
+        private readonly ITaskManager _taskManager;
+
         private const string discordUrl = "https://discord.gg/DVPV4gesCz";
 
-        public DebugViewModel()
+        public DebugViewModel(SelectorViewModel selectorViewModel, ITaskManager taskManager, ILogManager logManager, IEventManager eventManager, IDbContextFactory<AppDbContext> contextFactory) : base(selectorViewModel)
         {
+            _taskManager = taskManager;
+            _logManager = logManager;
+            _eventManager = eventManager;
+            _contextFactory = contextFactory;
+
             _eventManager.TaskUpdate += OnTasksUpdate;
             _eventManager.LogUpdate += OnLogsUpdate;
 

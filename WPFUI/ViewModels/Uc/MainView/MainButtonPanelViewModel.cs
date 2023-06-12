@@ -1,8 +1,10 @@
-﻿using MainCore.Enums;
+﻿using MainCore;
+using MainCore.Enums;
 using MainCore.Helper.Interface;
+using MainCore.Services.Interface;
 using MainCore.Tasks.FunctionTasks;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
-using Splat;
 using System;
 using System.Linq;
 using System.Reactive;
@@ -18,16 +20,39 @@ namespace WPFUI.ViewModels.Uc.MainView
 {
     public class MainButtonPanelViewModel : AccountTabBaseViewModel
     {
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _eventManager;
+        private readonly ITaskManager _taskManager;
+        private readonly IPlanManager _planManager;
+        private readonly IRestClientManager _restClientManager;
+        private readonly ILogManager _logManager;
+        private readonly ITimerManager _timeManager;
+        private readonly IChromeManager _chromeManager;
+
+        private readonly WaitingViewModel _waitingWindow;
+        private readonly VersionViewModel _versionWindow;
+
         private readonly MainTabPanelViewModel _mainTabPanelViewModel;
         private readonly AccountListViewModel _accountListViewModel;
         private readonly IAccessHelper _accessHelper;
 
-        public MainButtonPanelViewModel()
+        public MainButtonPanelViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogManager logManager, ITimerManager timeManager, IChromeManager chromeManager, WaitingViewModel waitingWindow, VersionViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectorViewModel)
         {
+            _contextFactory = contextFactory;
+            _eventManager = eventManager;
+            _taskManager = taskManager;
+            _planManager = planManager;
+            _restClientManager = restClientManager;
+            _logManager = logManager;
+            _timeManager = timeManager;
+            _chromeManager = chromeManager;
+            _waitingWindow = waitingWindow;
+            _versionWindow = versionWindow;
+            _mainTabPanelViewModel = mainTabPanelViewModel;
+            _accountListViewModel = accountListViewModel;
+            _accessHelper = accessHelper;
+
             _eventManager.AccountStatusUpdate += OnAccountUpdate;
-            _mainTabPanelViewModel = Locator.Current.GetService<MainTabPanelViewModel>();
-            _accessHelper = Locator.Current.GetService<IAccessHelper>();
-            _accountListViewModel = Locator.Current.GetService<AccountListViewModel>();
 
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);

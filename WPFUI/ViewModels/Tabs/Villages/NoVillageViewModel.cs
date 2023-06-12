@@ -2,7 +2,7 @@
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
-    public class NoVillageViewModel : ViewModelBase
+    public class NoVillageViewModel : TabBaseViewModel
     {
     }
 }

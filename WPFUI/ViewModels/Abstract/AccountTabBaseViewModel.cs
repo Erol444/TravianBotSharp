@@ -5,17 +5,21 @@ using System.Reactive.Linq;
 
 namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class AccountTabBaseViewModel : TabBaseViewModel
+    public abstract class AccountTabBaseViewModel : ActivatableViewModelBase
     {
-        public AccountTabBaseViewModel()
+        protected readonly SelectorViewModel _selectorViewModel;
+
+        public AccountTabBaseViewModel(SelectorViewModel selectorViewModel)
         {
+            _selectorViewModel = selectorViewModel;
+
+            _selectorViewModel.AccountChanged += OnAccountChanged;
+            Active += OnActive;
+
             this.WhenAnyValue(vm => vm._selectorViewModel.Account)
                 .Where(x => x is not null)
                 .Select(x => x.Id)
                 .ToProperty(this, vm => vm.AccountId, out _accountId);
-
-            _selectorViewModel.AccountChanged += OnAccountChanged;
-            Active += OnActive;
         }
 
         protected abstract void Init(int id);

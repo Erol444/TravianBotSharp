@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs;
 
@@ -16,7 +15,6 @@ namespace WPFUI.Views.Tabs
     {
         public FarmingTab()
         {
-            ViewModel = Locator.Current.GetService<FarmingViewModel>();
             InitializeComponent();
             Interval.ViewModel = new();
             this.WhenActivated(d =>

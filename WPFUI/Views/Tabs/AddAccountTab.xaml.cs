@@ -15,7 +15,6 @@ namespace WPFUI.Views.Tabs
     {
         public AddAccountTab()
         {
-            ViewModel = new();
             InitializeComponent();
             this.WhenActivated(d =>
             {

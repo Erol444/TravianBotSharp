@@ -15,7 +15,6 @@ namespace WPFUI.Views.Tabs.Villages
     {
         public InfoTab()
         {
-            ViewModel = new();
             InitializeComponent();
             this.WhenActivated(d =>
             {

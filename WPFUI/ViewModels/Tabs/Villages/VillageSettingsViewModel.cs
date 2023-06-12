@@ -1,10 +1,11 @@
 ﻿using MainCore;
 using MainCore.Enums;
 using MainCore.Helper.Interface;
+using MainCore.Services.Interface;
 using MainCore.Tasks.FunctionTasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using ReactiveUI;
-using Splat;
 using System;
 using System.IO;
 using System.Linq;
@@ -22,6 +23,23 @@ namespace WPFUI.ViewModels.Tabs.Villages
     public class VillageSettingsViewModel : VillageTabBaseViewModel
     {
         private readonly IUpgradeBuildingHelper _upgradeBuildingHelper;
+
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly ITaskManager _taskManager;
+
+        private readonly WaitingViewModel _waitingWindow;
+
+        public VillageSettingsViewModel(SelectorViewModel selectorViewModel, IUpgradeBuildingHelper upgradeBuildingHelper, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingViewModel waitingWindow) : base(selectorViewModel)
+        {
+            _upgradeBuildingHelper = upgradeBuildingHelper;
+            _contextFactory = contextFactory;
+            _taskManager = taskManager;
+            _waitingWindow = waitingWindow;
+
+            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
+            ExportCommand = ReactiveCommand.Create(ExportTask);
+            ImportCommand = ReactiveCommand.Create(ImportTask);
+        }
 
         private bool _useHeroRes;
 
@@ -75,14 +93,6 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public TroopTrainingSelectorViewModel BarrackTraining { get; } = new();
         public TroopTrainingSelectorViewModel StableTraining { get; } = new();
         public TroopTrainingSelectorViewModel WorkshopTraining { get; } = new();
-
-        public VillageSettingsViewModel()
-        {
-            _upgradeBuildingHelper = Locator.Current.GetService<IUpgradeBuildingHelper>();
-            SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
-            ExportCommand = ReactiveCommand.Create(ExportTask);
-            ImportCommand = ReactiveCommand.Create(ImportTask);
-        }
 
         protected override void Init(int villageId)
         {

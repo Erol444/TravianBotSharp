@@ -1,7 +1,9 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
 using MainCore;
+using MainCore.Services.Interface;
 using MainCore.Tasks.UpdateTasks;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -15,8 +17,15 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class HeroViewModel : AccountTabBaseViewModel
     {
-        public HeroViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _eventManager;
+        private readonly ITaskManager _taskManager;
+
+        public HeroViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager) : base(selectorViewModel)
         {
+            _contextFactory = contextFactory;
+            _eventManager = eventManager;
+            _taskManager = taskManager;
             _eventManager.HeroInfoUpdate += OnHeroInfoUpdate;
             _eventManager.HeroAdventuresUpdate += OnHeroAdventuresUpdate;
             _eventManager.HeroInventoryUpdate += OnheroInventoryUpdate;

@@ -1,4 +1,5 @@
-﻿using MainCore.Tasks.FunctionTasks;
+﻿using MainCore.Services.Interface;
+using MainCore.Tasks.FunctionTasks;
 using MainCore.Tasks.UpdateTasks;
 using ReactiveUI;
 using System;
@@ -10,8 +11,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
 {
     public class InfoViewModel : VillageTabBaseViewModel
     {
-        public InfoViewModel() : base()
+        private readonly ITaskManager _taskManager;
+
+        public InfoViewModel(SelectorViewModel selectorViewModel, ITaskManager taskManager) : base(selectorViewModel)
         {
+            _taskManager = taskManager;
+
             BothDorfCommand = ReactiveCommand.Create(BothDorf);
             Dorf1Command = ReactiveCommand.Create(Dorf1);
             Dorf2Command = ReactiveCommand.Create(Dorf2);

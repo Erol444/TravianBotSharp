@@ -1,7 +1,10 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
+using MainCore;
+using MainCore.Services.Interface;
 using MainCore.Tasks.FunctionTasks;
 using MainCore.Tasks.UpdateTasks;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -19,6 +22,11 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class FarmingViewModel : AccountTabBaseViewModel
     {
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _eventManager;
+        private readonly ITaskManager _taskManager;
+        private readonly WaitingViewModel _waitingWindow;
+
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
@@ -26,8 +34,13 @@ namespace WPFUI.ViewModels.Tabs
         public ReactiveCommand<Unit, Unit> ActiveCommand { get; }
         public ReactiveCommand<Unit, Unit> RefreshCommand { get; }
 
-        public FarmingViewModel()
+        public FarmingViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, WaitingViewModel waitingWindow) : base(selectorViewModel)
         {
+            _contextFactory = contextFactory;
+            _eventManager = eventManager;
+            _taskManager = taskManager;
+            _waitingWindow = waitingWindow;
+
             StartCommand = ReactiveCommand.CreateFromTask(StartTask);
             StopCommand = ReactiveCommand.CreateFromTask(StopTask);
 

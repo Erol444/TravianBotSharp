@@ -4,10 +4,11 @@ using MainCore;
 using MainCore.Enums;
 using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
+using MainCore.Services.Interface;
 using MainCore.Tasks.FunctionTasks;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Win32;
 using ReactiveUI;
-using Splat;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,9 +28,18 @@ namespace WPFUI.ViewModels.Tabs.Villages
     {
         private readonly IBuildingsHelper _buildingsHelper;
 
-        public BuildViewModel() : base()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _eventManager;
+        private readonly ITaskManager _taskManager;
+        private readonly IPlanManager _planManager;
+
+        public BuildViewModel(SelectorViewModel selectorViewModel, IBuildingsHelper buildingsHelper, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager) : base(selectorViewModel)
         {
-            _buildingsHelper = Locator.Current.GetService<IBuildingsHelper>();
+            _buildingsHelper = buildingsHelper;
+            _contextFactory = contextFactory;
+            _eventManager = eventManager;
+            _taskManager = taskManager;
+            _planManager = planManager;
 
             _eventManager.VillageCurrentUpdate += EventManager_VillageUpdate;
             _eventManager.VillageBuildQueueUpdate += EventManager_VillageUpdate;

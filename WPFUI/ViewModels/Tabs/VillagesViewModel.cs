@@ -1,5 +1,7 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
+using MainCore;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -17,8 +19,8 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class VillagesViewModel : AccountTabBaseViewModel
     {
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly VillageNavigationStore _villageNavigationStore;
-
         public ObservableCollection<TabHeaderViewModel> TabHeaders { get; } = new();
         private readonly Dictionary<TabType, TabHeaderViewModel[]> _tabsHolder;
         private TabType _currentTab;
@@ -29,9 +31,10 @@ namespace WPFUI.ViewModels.Tabs
 
         private ListBoxItem _currentVillage;
 
-        public VillagesViewModel(VillageNavigationStore villageNavigationStore, NoVillageViewModel noVillageViewModel, BuildViewModel buildViewModel, VillageSettingsViewModel villageSettingsViewModel, NPCViewModel npcViewModel, VillageTroopsViewModel villageTroopsViewModel, InfoViewModel infoViewModel)
+        public VillagesViewModel(SelectorViewModel selectorViewModel, VillageNavigationStore villageNavigationStore, IDbContextFactory<AppDbContext> contextFactory, NoVillageViewModel noVillageViewModel, BuildViewModel buildViewModel, VillageSettingsViewModel villageSettingsViewModel, NPCViewModel npcViewModel, VillageTroopsViewModel villageTroopsViewModel, InfoViewModel infoViewModel) : base(selectorViewModel)
         {
             _villageNavigationStore = villageNavigationStore;
+            _contextFactory = contextFactory;
 
             _tabsHolder = new()
             {

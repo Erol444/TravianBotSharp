@@ -1,4 +1,7 @@
-﻿using MainCore.Models.Database;
+﻿using MainCore;
+using MainCore.Models.Database;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -14,8 +17,18 @@ namespace WPFUI.ViewModels.Tabs
 {
     public class AddAccountViewModel : TabBaseViewModel
     {
-        public AddAccountViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IUseragentManager _useragentManager;
+        private readonly IEventManager _eventManager;
+
+        private readonly WaitingViewModel _waitingWindow;
+
+        public AddAccountViewModel(WaitingViewModel waitingWindow, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, IEventManager eventManager)
         {
+            _contextFactory = contextFactory;
+            _useragentManager = useragentManager;
+            _eventManager = eventManager;
+            _waitingWindow = waitingWindow;
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
         }
 

@@ -1,4 +1,5 @@
-﻿using MainCore.Tasks.UpdateTasks;
+﻿using MainCore.Services.Interface;
+using MainCore.Tasks.UpdateTasks;
 using ReactiveUI;
 using System.Reactive;
 using System.Windows;
@@ -8,8 +9,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
 {
     public class VillageTroopsViewModel : VillageTabBaseViewModel
     {
-        public VillageTroopsViewModel()
+        private readonly IEventManager _eventManager;
+        private readonly ITaskManager _taskManager;
+
+        public VillageTroopsViewModel(SelectorViewModel selectorViewModel, IEventManager eventManager, ITaskManager taskManager) : base(selectorViewModel)
         {
+            _eventManager = eventManager;
+            _taskManager = taskManager;
+
             ApplyCommand = ReactiveCommand.Create(ApplyTask);
             UpdateCommand = ReactiveCommand.Create(UpdateTask);
             _eventManager.TroopLevelUpdate += OnTroopLevelUpdate;

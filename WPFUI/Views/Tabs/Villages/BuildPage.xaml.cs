@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Tabs.Villages;
 
@@ -17,7 +16,6 @@ namespace WPFUI.Views.Tabs.Villages
     {
         public BuildTab()
         {
-            ViewModel = Locator.Current.GetService<BuildViewModel>();
             InitializeComponent();
             this.WhenActivated(d =>
             {
