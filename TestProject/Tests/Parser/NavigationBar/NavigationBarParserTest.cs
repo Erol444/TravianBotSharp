@@ -21,7 +21,7 @@ namespace TestProject.Tests.Parser.NavigationBar
 
         private readonly HtmlDocument _doc = new();
 
-        private readonly string _path = Path.Combine("Parser", "NavigationBar", "HtmlFiles");
+        private readonly string _path = Path.Combine("Tests", "Parser", "NavigationBar", "HtmlFiles");
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)

@@ -21,7 +21,7 @@ namespace TestProject.Tests.Parser.StockBar
 
         private readonly HtmlDocument _doc = new();
 
-        private readonly string _path = Path.Combine("Parser", "StockBar", "HtmlFiles");
+        private readonly string _path = Path.Combine("Tests", "Parser", "StockBar", "HtmlFiles");
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)

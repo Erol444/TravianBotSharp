@@ -21,7 +21,7 @@ namespace TestProject.Tests.Parser.VillageInfrastructure
 
         private readonly HtmlDocument _doc = new();
 
-        private readonly string _path = Path.Combine("Parser", "VillageInfrastructure", "HtmlFiles");
+        private readonly string _path = Path.Combine("Tests", "Parser", "VillageInfrastructure", "HtmlFiles");
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)

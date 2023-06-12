@@ -21,7 +21,7 @@ namespace TestProject.Tests.Parser.RightBar
 
         private readonly HtmlDocument _doc = new();
 
-        private readonly string _path = Path.Combine("Parser", "RightBar", "HtmlFiles");
+        private readonly string _path = Path.Combine("Tests", "Parser", "RightBar", "HtmlFiles");
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)

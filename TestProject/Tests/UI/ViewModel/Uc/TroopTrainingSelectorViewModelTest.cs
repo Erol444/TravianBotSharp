@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using TestProject.Tests.Mock.ViewModel.Uc;
+using TestProject.Mock.ViewModel.Uc;
 using WPFUI.ViewModels.Uc;
 
 namespace TestProject.Tests.UI.ViewModel.Uc

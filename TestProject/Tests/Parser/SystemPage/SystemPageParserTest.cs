@@ -21,7 +21,7 @@ namespace TestProject.Tests.Parser.SystemPage
 
         private readonly HtmlDocument _doc = new();
 
-        private readonly string _path = Path.Combine("Parser", "SystemPage", "HtmlFiles");
+        private readonly string _path = Path.Combine("Tests", "Parser", "SystemPage", "HtmlFiles");
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)

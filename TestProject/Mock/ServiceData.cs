@@ -7,7 +7,7 @@ using System.Linq;
 using WPFUI;
 using WPFUI.ViewModels.Uc.MainView;
 
-namespace TestProject.Tests.Mock
+namespace TestProject.Mock
 {
     public class ServiceData
     {

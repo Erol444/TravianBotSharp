@@ -21,7 +21,7 @@ namespace TestProject.Tests.Parser.TroopTrain
 
         private readonly HtmlDocument _doc = new();
 
-        private readonly string _path = Path.Combine("Parser", "TroopTrain", "HtmlFiles");
+        private readonly string _path = Path.Combine("Tests", "Parser", "TroopTrain", "HtmlFiles");
 
         private const string BARRACK = "barrack";
         private const string STABLE = "stable";

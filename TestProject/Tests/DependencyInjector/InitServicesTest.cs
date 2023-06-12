@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Splat;
 using System;
 using System.Collections.Generic;
-using TestProject.Tests.Mock;
+using TestProject.Mock;
 using WPFUI;
 
 namespace TestProject.Tests.DependencyInjector

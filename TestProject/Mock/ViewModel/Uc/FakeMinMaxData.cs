@@ -1,4 +1,4 @@
-﻿namespace TestProject.Tests.Mock.ViewModel.Uc
+﻿namespace TestProject.Mock.ViewModel.Uc
 {
     public class FakeMinMaxData
     {

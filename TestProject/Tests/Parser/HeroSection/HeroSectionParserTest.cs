@@ -21,7 +21,7 @@ namespace TestProject.Tests.Parser.HeroSection
 
         private readonly HtmlDocument _doc = new();
 
-        private readonly string _path = Path.Combine("Parser", "HeroSection", "HtmlFiles");
+        private readonly string _path = Path.Combine("Tests", "Parser", "HeroSection", "HtmlFiles");
 
         [ClassInitialize]
         public static void ClassInitialize(TestContext testContext)

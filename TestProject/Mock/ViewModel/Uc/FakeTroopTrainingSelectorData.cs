@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using WPFUI.Models;
 
-namespace TestProject.Tests.Mock.ViewModel.Uc
+namespace TestProject.Mock.ViewModel.Uc
 {
     public class FakeTroopTrainingSelectorData
     {
