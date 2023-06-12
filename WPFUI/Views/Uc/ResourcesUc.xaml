@@ -12,24 +12,24 @@
                 <BitmapImage UriSource="pack://application:,,,/Resources/wood.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Wood" Minimum="0" />
+        <xctk:LongUpDown x:Name="Wood" Minimum="0" />
         <Image Margin="20,0,5,0">
             <Image.Source>
                 <BitmapImage UriSource="pack://application:,,,/Resources/clay.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Clay" Minimum="0" />
+        <xctk:LongUpDown x:Name="Clay" Minimum="0" />
         <Image  Margin="20,0,5,0">
             <Image.Source>
                 <BitmapImage UriSource="pack://application:,,,/Resources/iron.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Iron" Minimum="0" />
+        <xctk:LongUpDown x:Name="Iron" Minimum="0" />
         <Image Margin="20,0,5,0">
             <Image.Source>
                 <BitmapImage UriSource="pack://application:,,,/Resources/crop.png" />
             </Image.Source>
         </Image>
-        <xctk:IntegerUpDown x:Name="Crop" Minimum="0" />
+        <xctk:LongUpDown x:Name="Crop" Minimum="0" />
     </StackPanel>
 </views:ResourcesUcBase>
