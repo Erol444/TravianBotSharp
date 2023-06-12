@@ -10,7 +10,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ItemsControl x:Name="Headers" Grid.Row="0">
+        <ItemsControl x:Name="Headers" Grid.Row="0" Margin="10,0,0,0">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />
@@ -18,10 +18,10 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button x:Name="button" Content="{Binding Content}" Command="{Binding ClickCommand}" Style="{DynamicResource MaterialDesignRaisedButton}" Margin="10,0,0,0" />
+                    <Button x:Name="button" Content="{Binding Content}" IsEnabled="{Binding IsNotSelected}" Command="{Binding ClickCommand}" Style="{DynamicResource MaterialDesignRaisedButton}" Margin="0,0,5,0" />
                     <DataTemplate.Triggers>
                         <Trigger SourceName="button" Property="IsMouseOver" Value="True">
-                            <Setter TargetName="button" Property="Background" Value="{DynamicResource PrimaryHueLightBrush}" />
+                            <Setter TargetName="button" Property="Background" Value="{DynamicResource PrimaryHueDarkBrush}" />
                         </Trigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>

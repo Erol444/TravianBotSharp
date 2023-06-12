@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Tabs;
+using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.Store
 {
@@ -14,7 +15,13 @@ namespace WPFUI.Store
         public void Change(ViewModelBase viewModel)
         {
             CurrentViewModel = viewModel;
+            foreach (var tab in TabHeaders)
+            {
+                tab.IsSelected = false;
+            }
         }
+
+        public TabHeaderViewModel[] TabHeaders { get; set; }
 
         private ViewModelBase _currentViewModel;
 

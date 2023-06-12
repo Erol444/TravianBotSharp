@@ -1,4 +1,5 @@
 ﻿using DynamicData;
+using DynamicData.Kernel;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -24,9 +25,9 @@ namespace WPFUI.ViewModels.Tabs
 
         private readonly ObservableAsPropertyHelper<ViewModelBase> _currentViewModel;
 
-        public ObservableCollection<VillageModel> Villages { get; } = new();
+        public ObservableCollection<ListBoxItem> Villages { get; } = new();
 
-        private VillageModel _currentVillage;
+        private ListBoxItem _currentVillage;
 
         public VillagesViewModel(VillageNavigationStore villageNavigationStore, NoVillageViewModel noVillageViewModel, BuildViewModel buildViewModel, VillageSettingsViewModel villageSettingsViewModel, NPCViewModel npcViewModel, VillageTroopsViewModel villageTroopsViewModel, InfoViewModel infoViewModel)
         {
@@ -53,9 +54,6 @@ namespace WPFUI.ViewModels.Tabs
             };
             this.WhenAnyValue(vm => vm._villageNavigationStore.CurrentViewModel)
                 .ToProperty(this, vm => vm.CurrentViewModel, out _currentViewModel);
-            this.WhenAnyValue(vm => vm.CurrentViewModel)
-                .Select(x => x is not null)
-                .Subscribe(x => TabChanged());
 
             this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(_selectorViewModel, vm => vm.Village);
             this.WhenAnyValue(vm => vm.CurrentVillage).Where(x => x is not null).Subscribe(x =>
@@ -80,12 +78,9 @@ namespace WPFUI.ViewModels.Tabs
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages
                 .Where(x => x.AccountId == accountId)
-                .Select(village => new VillageModel()
-                {
-                    Id = village.Id,
-                    Name = village.Name,
-                    Coords = $"{village.X}|{village.Y}",
-                })
+                .OrderBy(x => x.Name)
+                .AsList()
+                .Select(x => new ListBoxItem(x.Id, x.Name, x.X, x.Y))
                 .ToList();
 
             RxApp.MainThreadScheduler.Schedule(() =>
@@ -111,21 +106,16 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!IsActive) return;
             if (_currentTab == tab) return;
-            _currentTab = tab;
+
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 TabHeaders.Clear();
                 TabHeaders.AddRange(_tabsHolder[tab]);
-                _tabsHolder[tab].First().Select(true);
             });
-        }
 
-        private void TabChanged()
-        {
-            foreach (var tab in _tabsHolder[_currentTab])
-            {
-                tab.IsSelected = false;
-            }
+            _currentTab = tab;
+            _villageNavigationStore.TabHeaders = _tabsHolder[tab];
+            _tabsHolder[tab].First().Select(true);
         }
 
         public ViewModelBase CurrentViewModel
@@ -133,7 +123,7 @@ namespace WPFUI.ViewModels.Tabs
             get => _currentViewModel.Value;
         }
 
-        public VillageModel CurrentVillage
+        public ListBoxItem CurrentVillage
         {
             get => _currentVillage;
             set => this.RaiseAndSetIfChanged(ref _currentVillage, value);

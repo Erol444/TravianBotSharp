@@ -28,6 +28,7 @@ namespace WPFUI.Models
         public ListBoxItem(int id, string villageName, int x, int y) : this(id)
         {
             Content = $"{villageName}{Environment.NewLine}({x}|{y})";
+            Color = Color.FromRgb(0, 0, 0);
         }
 
         public ListBoxItem(int id, string content, System.Drawing.Color color) : this(id, content, color.ToMediaColor())

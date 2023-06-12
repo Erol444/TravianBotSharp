@@ -3,7 +3,7 @@
         xmlns:views="clr-namespace:WPFUI.Views.Uc.MainView"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-    <ListBox x:Name="AccountGrid"  SelectionMode="Single" IsSynchronizedWithCurrentItem="True">
+    <ListBox x:Name="AccountGrid" SelectionMode="Single">
         <ListBox.ItemTemplate>
             <DataTemplate>
                 <TextBlock Text="{Binding Content}">

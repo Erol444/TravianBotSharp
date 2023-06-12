@@ -99,9 +99,9 @@ namespace WPFUI.ViewModels
             get => _isAccountNotSelected.Value;
         }
 
-        private VillageModel _village;
+        private ListBoxItem _village;
 
-        public VillageModel Village
+        public ListBoxItem Village
         {
             get => _village;
             set => this.RaiseAndSetIfChanged(ref _village, value);

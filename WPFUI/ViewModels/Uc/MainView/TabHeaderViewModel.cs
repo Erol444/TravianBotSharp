@@ -1,5 +1,6 @@
 ﻿using ReactiveUI;
 using System.Reactive;
+using System.Reactive.Linq;
 using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
@@ -9,6 +10,8 @@ namespace WPFUI.ViewModels.Uc.MainView
     {
         private string _content;
         private bool _isSelected;
+        private readonly ObservableAsPropertyHelper<bool> _isNotSelected;
+
         public ReactiveCommand<Unit, Unit> ClickCommand { get; }
 
         private readonly NavigationStore _navigationStore;
@@ -21,6 +24,10 @@ namespace WPFUI.ViewModels.Uc.MainView
             Content = content;
 
             ClickCommand = ReactiveCommand.Create(() => Select());
+
+            this.WhenAnyValue(vm => vm.IsSelected)
+                .Select(x => !x)
+                .ToProperty(this, vm => vm.IsNotSelected, out _isNotSelected);
         }
 
         public void Select(bool isForce = false)
@@ -41,6 +48,11 @@ namespace WPFUI.ViewModels.Uc.MainView
         {
             get => _isSelected;
             set => this.RaiseAndSetIfChanged(ref _isSelected, value);
+        }
+
+        public bool IsNotSelected
+        {
+            get => _isNotSelected.Value;
         }
     }
 }
