@@ -27,7 +27,7 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <ContentControl x:Name="TabPanel" Grid.Row="1">
+        <ContentControl x:Name="TabPanel" Grid.Row="1" Margin="10,5,0,0">
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type viewmodels:NoAccountViewModel}">
                     <views:NoAccountTab />

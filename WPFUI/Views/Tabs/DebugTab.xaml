@@ -7,38 +7,34 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     mc:Ignorable="d"
     d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="#FFE5E5E5" Margin="0,2,0,0">
+    <Grid Background="#FFE5E5E5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="34*" />
-            <RowDefinition Height="37*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="385*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <Button x:Name="ReportButton" Content="Go to TBS's Discord server" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5">
-            <Button.Background>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ControlDarkColorKey}}" />
-            </Button.Background>
-        </Button>
-        <Button x:Name="LogButton" Content="Open log folder" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5,5,5,5">
-            <Button.Background>
-                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.AppWorkspaceColorKey}}" />
-            </Button.Background>
-        </Button>
-        <TextBlock x:Name="TaskTableLabel" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Task table" VerticalAlignment="Center" TextAlignment="Center" />
-        <TextBlock x:Name="LogTableLabel" Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Log table" VerticalAlignment="Center" TextAlignment="Center" />
-        <ListView x:Name="TaskGird" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,0,1,0">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Task" DisplayMemberBinding="{Binding Task}" Width="200" />
-                    <GridViewColumn Header="Execute at" DisplayMemberBinding="{Binding ExecuteAt}" Width="100" />
-                    <GridViewColumn Header="Stage" DisplayMemberBinding="{Binding Stage}" Width="100" />
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <ListView x:Name="LogGrid" Grid.Column="1" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="1,0,0,0">
+        <Button x:Name="ReportButton"           Grid.Row="0" Grid.Column="0" Content="Go to TBS's Discord server" Margin="10" />
+        <Button x:Name="LogButton"              Grid.Row="0" Grid.Column="1" Content="Open log folder"            Margin="10" />
+
+        <Label x:Name="TaskTableLabel"          Grid.Row="1" Grid.Column="0" Content="Task table"   HorizontalContentAlignment="Center" />
+        <Label x:Name="LogTableLabel"           Grid.Row="1" Grid.Column="1" Content="Log table"    HorizontalContentAlignment="Center"/>
+        <Border Style="{DynamicResource Box}"   Grid.Row="2" Grid.Column="0">
+            <ListView x:Name="TaskGird" d:ItemsSource="{d:SampleData ItemCount=5}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Task" DisplayMemberBinding="{Binding Task}" Width="200" />
+                        <GridViewColumn Header="Execute at" DisplayMemberBinding="{Binding ExecuteAt}" Width="100" />
+                        <GridViewColumn Header="Stage" DisplayMemberBinding="{Binding Stage}" Width="100" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </Border>
+        <Border Style="{DynamicResource Box}"   Grid.Row="2" Grid.Column="1">
+            <ListView x:Name="LogGrid" d:ItemsSource="{d:SampleData ItemCount=5}">
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="Time" DisplayMemberBinding="{Binding DateTime}" Width="150" />
@@ -47,5 +43,7 @@
                 </GridView>
             </ListView.View>
         </ListView>
+        </Border>
+
     </Grid>
 </views:DebugTabBase>
