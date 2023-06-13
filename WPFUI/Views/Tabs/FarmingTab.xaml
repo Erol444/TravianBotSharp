@@ -3,40 +3,53 @@
     xmlns:views="clr-namespace:WPFUI.Views.Tabs"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:WPFUI.Views.Uc">
-    <Grid Background="#FFE5E5E5" Margin="0,2,0,0">
+    xmlns:controls="clr-namespace:WPFUI.Views.Uc"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Background="#FFE5E5E5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="2*" />
-            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="4*" />
         </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="5*" />
-            <RowDefinition Height="5*" />
-        </Grid.RowDefinitions>
-
-        <!--Row 0-->
-        <Button x:Name="RefreshFarmListsButton" Content="Refresh farm lists" Margin="0,5,0,0" />
-        <controls:ToleranceUc x:Name="Interval" Text="Time for next send" Unit="sec(s)" Grid.Column="1" />
-        <Button x:Name="SaveButton" Content="Save" Grid.Column="2" Margin="5,5,5,5" />
-        <!--Row 1-->
-        <Button x:Name="ActiveButton" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,5,5,5" />
-        <!--Row 2-->
-        <Button x:Name="StartButton" Content="Start all active" Grid.Row="2" Grid.Column="1" Margin="5,5,5,5" />
-        <Button x:Name="StopButton" Content="Stop all" Grid.Row="2" Grid.Column="2" Margin="5,5,5,5" />
-
-        <!--Side-->
-        <ListBox x:Name="FarmListViewer" SelectionMode="Single" IsSynchronizedWithCurrentItem="True" Grid.Row="1" Grid.RowSpan="2" Margin="0,5,0,0">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Content}">
-                        <TextBlock.Foreground>
-                            <SolidColorBrush Color="{Binding Color}" />
-                        </TextBlock.Foreground>
-                    </TextBlock>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <Grid Grid.Row="0" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            <Button x:Name="RefreshFarmListsButton" Grid.Row="0" Content="Refresh farm lists" Margin="10" />
+            <Border Style="{DynamicResource Box}"   Grid.Row="1">
+                <ListBox x:Name="FarmListViewer" SelectionMode="Single" IsSynchronizedWithCurrentItem="True" Grid.Row="1" Grid.RowSpan="2" Margin="0,5,0,0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Content}">
+                                <TextBlock.Foreground>
+                                    <SolidColorBrush Color="{Binding Color}" />
+                                </TextBlock.Foreground>
+                            </TextBlock>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Grid>
+        <Grid Grid.Row="0" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel                     Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                <controls:ToleranceUc x:Name="Interval" Text="Time for next send" Unit="sec(s)" />
+                <Button x:Name="SaveButton" ToolTip="Save"                              Margin="10" >
+                    <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ContentSave"/>
+                </Button>
+            </StackPanel>
+            <Button x:Name="ActiveButton"   Grid.Row="1"                                Margin="10" />
+            <Button x:Name="StartButton"    Grid.Row="2" ToolTip="Send all active farm" Margin="10">
+                <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Play"/>
+            </Button>
+            <Button x:Name="StopButton"     Grid.Row="3" ToolTip="Stop all"             Margin="10" >
+                <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Stop"/>
+            </Button>
+        </Grid>
     </Grid>
 </views:FarmingTabBase>
