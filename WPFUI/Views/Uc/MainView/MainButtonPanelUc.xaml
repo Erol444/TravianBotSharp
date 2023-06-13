@@ -14,14 +14,15 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <Button x:Name="CheckVersionButton" Content="CHECK NEW VERSION" Grid.ColumnSpan="2" Margin="0,0,0,2" Background="{DynamicResource {x:Static SystemColors.MenuHighlightBrushKey}}" Foreground="White" />
-        <Button x:Name="AddAccountButton" Content="Add account" Grid.Row="1" Margin="0,0,1,2" />
-        <Button x:Name="AddAccountsButton" Grid.Column="1" Content="Add accounts" Grid.Row="1" Margin="1,0,0,2" />
-        <Button x:Name="LoginButton" Content="Login" Grid.Row="2" Margin="0,0,1,2" />
-        <Button x:Name="LogoutButton" Grid.Column="1" Content="Logout" Grid.Row="2" Margin="1,0,0,2" />
-        <Button x:Name="DeleteButton" Grid.ColumnSpan="2" Content="Delete" Grid.Row="3" Margin="1,0,0,2" />
-        <Button x:Name="PauseButton" Content="Pause" Grid.Row="4" Margin="0,0,1,2" />
-        <Button x:Name="RestartButton" Grid.Column="1" Content="Restart" Grid.Row="4" Margin="1,0,0,2" />
+        <Button x:Name="CheckVersionButton" Content="CHECK NEW VERSION" Grid.ColumnSpan="2" Grid.Row="0" Margin="0,0,0,2" />
+        <Button x:Name="AddAccountButton"   Content="Add account"       Grid.ColumnSpan="2" Grid.Row="1" Margin="0,0,1,2" />
+        <Button x:Name="AddAccountsButton"  Content="Add accounts"      Grid.ColumnSpan="2" Grid.Row="2" Margin="1,0,0,2" />
+        <Button x:Name="LoginButton"        Content="Login"             Grid.Column="0"     Grid.Row="3" Margin="0,0,1,2" />
+        <Button x:Name="LogoutButton"       Content="Logout"            Grid.Column="1"     Grid.Row="3" Margin="1,0,0,2" />
+        <Button x:Name="DeleteButton"       Content="Delete"            Grid.ColumnSpan="2" Grid.Row="4" Margin="1,0,0,2" />
+        <Button x:Name="PauseButton"        Content="Pause"             Grid.Column="0"     Grid.Row="5" Margin="0,0,1,2" />
+        <Button x:Name="RestartButton"      Content="Restart"           Grid.Column="1"     Grid.Row="5" Margin="1,0,0,2" />
     </Grid>
 </views:MainButtonPanelUcBase>

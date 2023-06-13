@@ -145,4 +145,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tests\UI\ViewModel\Tab\" />
+  </ItemGroup>
+
 </Project>

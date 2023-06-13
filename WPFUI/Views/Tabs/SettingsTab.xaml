@@ -26,39 +26,47 @@
                 <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Export" />
             </Button>
         </Grid>
-        <StackPanel Grid.Row="1" Margin="10,0,10,0">
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
             <StackPanel>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Account information" VerticalAlignment="Center" FontWeight="Bold" />
-                <StackPanel Orientation="Horizontal" Height="25">
-                    <Label Content="Tribe" />
-                    <ComboBox x:Name="Tribe" Width="Auto" IsSynchronizedWithCurrentItem="True" DisplayMemberPath="Name" />
-                </StackPanel>
+                <Border Style="{DynamicResource Box}">
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Account information" VerticalAlignment="Center" FontWeight="Bold" />
+                        <StackPanel Orientation="Horizontal" Height="25">
+                            <Label Content="Tribe" />
+                            <ComboBox x:Name="Tribe" Width="Auto" DisplayMemberPath="Name" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+                <Border Style="{DynamicResource Box}">
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Delay settings" VerticalAlignment="Center" FontWeight="Bold" />
+                        <controls:ToleranceUc x:Name="ClickDelay" Text="Click delay" Unit="ms" />
+                        <controls:ToleranceUc x:Name="TaskDelay" Text="Task delay" Unit="ms" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{DynamicResource Box}">
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Activity settings" VerticalAlignment="Center" FontWeight="Bold" />
+                        <controls:ToleranceUc x:Name="WorkTime" Text="Work time" Unit="mins" />
+                        <controls:ToleranceUc x:Name="SleepTime" Text="Sleep time" Unit="mins" />
+                    </StackPanel>
+                </Border>
+                <Border Style="{DynamicResource Box}">
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Chrome settings" VerticalAlignment="Center" FontWeight="Bold" />
+                        <CheckBox x:Name="SleepBetweenChangingProxy" Content="Sleep between changing proxy" />
+                        <CheckBox x:Name="DisableImageCheckBox" Content="Don't load images" />
+                        <CheckBox x:Name="MinimizedCheckBox" Content="Minimized when opening" />
+                        <!--<CheckBox x:Name="CloseCheckBox" Content="Close if no task" />-->
+                    </StackPanel>
+                </Border>
+                <Border Style="{DynamicResource Box}">
+                    <StackPanel>
+                        <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Hero settings" VerticalAlignment="Center" FontWeight="Bold" />
+                        <CheckBox x:Name="AutoStartAdventureCheckBox" Content="Auto start adventures" />
+                    </StackPanel>
+                </Border>
             </StackPanel>
-
-            <StackPanel>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Delay settings" VerticalAlignment="Center" FontWeight="Bold" />
-                <controls:ToleranceUc x:Name="ClickDelay" Text="Click delay" Unit="ms" />
-                <controls:ToleranceUc x:Name="TaskDelay" Text="Task delay" Unit="ms" />
-            </StackPanel>
-
-            <StackPanel>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Activity settings" VerticalAlignment="Center" FontWeight="Bold" />
-                <controls:ToleranceUc x:Name="WorkTime" Text="Work time" Unit="mins" />
-                <controls:ToleranceUc x:Name="SleepTime" Text="Sleep time" Unit="mins" />
-            </StackPanel>
-
-            <StackPanel>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Chrome settings" VerticalAlignment="Center" FontWeight="Bold" />
-                <CheckBox x:Name="SleepBetweenChangingProxy" Content="Sleep between changing proxy" />
-                <CheckBox x:Name="DisableImageCheckBox" Content="Don't load images" />
-                <CheckBox x:Name="MinimizedCheckBox" Content="Minimized when opening" />
-                <!--<CheckBox x:Name="CloseCheckBox" Content="Close if no task" />-->
-            </StackPanel>
-
-            <StackPanel>
-                <TextBlock HorizontalAlignment="Left" TextWrapping="Wrap" Text="Hero settings" VerticalAlignment="Center" FontWeight="Bold" />
-                <CheckBox x:Name="AutoStartAdventureCheckBox" Content="Auto start adventures" />
-            </StackPanel>
-        </StackPanel>
+        </ScrollViewer>
     </Grid>
 </views:SettingsTabBase>

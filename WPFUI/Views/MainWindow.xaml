@@ -17,12 +17,12 @@
     <Grid x:Name="MainGrid" Margin="5,5,5,5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="100*" />
-            <ColumnDefinition Width="410*" />
+            <ColumnDefinition Width="450*" />
         </Grid.ColumnDefinitions>
         <Grid x:Name="LeftGrid">
             <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="2*" />
+                <RowDefinition Height="4*" />
+                <RowDefinition Height="5*" />
             </Grid.RowDefinitions>
             <ucmain:MainButtonPanelUc x:Name="ButtonPanel" />
             <ucmain:AccountListUc Grid.Row="1" />
