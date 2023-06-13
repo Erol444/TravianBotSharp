@@ -34,9 +34,9 @@ namespace WPFUI.Views.Tabs.Villages
                 this.BindCommand(ViewModel, vm => vm.NormalBuildCommand, v => v.NormalBuild).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.ComboResTypes, v => v.ResType.ItemsSource).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.CurrentResType, v => v.NormalBuildings.SelectedItem).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.CurrentResType, v => v.ResType.SelectedItem).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.ComboStrategy, v => v.Strategy.ItemsSource).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.CurrentStrategy, v => v.NormalBuildings.SelectedItem).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.CurrentStrategy, v => v.Strategy.SelectedItem).DisposeWith(d);
 
                 this.Bind(ViewModel, vm => vm.ResourceLevel, v => v.ResourceLevel.Value).DisposeWith(d);
 

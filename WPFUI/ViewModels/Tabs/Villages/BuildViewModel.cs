@@ -1,5 +1,4 @@
 ﻿using DynamicData;
-using DynamicData.Kernel;
 using MainCore;
 using MainCore.Enums;
 using MainCore.Helper.Interface;
@@ -27,19 +26,22 @@ namespace WPFUI.ViewModels.Tabs.Villages
     public class BuildViewModel : VillageTabBaseViewModel
     {
         private readonly IBuildingsHelper _buildingsHelper;
-
+        private readonly IDatabaseHelper _databaseHelper;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
         private readonly IPlanManager _planManager;
 
-        public BuildViewModel(SelectorViewModel selectorViewModel, IBuildingsHelper buildingsHelper, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager) : base(selectorViewModel)
+        private readonly Color BLACK = Color.FromRgb(0, 0, 0);
+
+        public BuildViewModel(SelectorViewModel selectorViewModel, IBuildingsHelper buildingsHelper, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IDatabaseHelper databaseHelper) : base(selectorViewModel)
         {
             _buildingsHelper = buildingsHelper;
             _contextFactory = contextFactory;
             _eventManager = eventManager;
             _taskManager = taskManager;
             _planManager = planManager;
+            _databaseHelper = databaseHelper;
 
             _eventManager.VillageCurrentUpdate += EventManager_VillageUpdate;
             _eventManager.VillageBuildQueueUpdate += EventManager_VillageUpdate;
@@ -116,17 +118,11 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 oldIndex = CurrentBuilding.Id;
             }
 
-            using var context = _contextFactory.CreateDbContext();
-            var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0).ToList();
-            var queueBuildings = _planManager.GetList(villageId);
-            var buildings = context.VillagesBuildings
-                .Where(x => x.VillageId == villageId)
-                .OrderBy(x => x.Id)
-                .AsList()
+            var buildings = _databaseHelper.GetVillageBuildings(villageId);
+            var uiBuildings = buildings
                 .Select(building =>
                 {
-                    var plannedBuild = queueBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
-                    var currentBuild = currentlyBuildings.OrderByDescending(x => x.Level).FirstOrDefault(x => x.Location == building.Id);
+                    var (plannedBuild, currentBuild) = _databaseHelper.GetInProgressBuilding(villageId, building.Id);
 
                     var level = building.Level.ToString();
                     var type = building.Type;
@@ -147,16 +143,16 @@ namespace WPFUI.ViewModels.Tabs.Villages
             RxApp.MainThreadScheduler.Schedule(() =>
             {
                 Buildings.Clear();
-                Buildings.AddRange(buildings);
-                if (buildings.Any())
+                Buildings.AddRange(uiBuildings);
+                if (uiBuildings.Any())
                 {
                     if (oldIndex == -1)
                     {
-                        CurrentBuilding = buildings.First();
+                        CurrentBuilding = uiBuildings.First();
                     }
                     else
                     {
-                        var build = buildings.FirstOrDefault(x => x.Id == oldIndex);
+                        var build = uiBuildings.FirstOrDefault(x => x.Id == oldIndex);
                         CurrentBuilding = build;
                     }
                 }
@@ -165,13 +161,8 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         public void LoadCurrentlyBuildings(int villageId)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var black = Color.FromRgb(0, 0, 0);
-
-            var buildings = context.VillagesCurrentlyBuildings
-               .Where(x => x.CompleteTime != DateTime.MaxValue && x.VillageId == villageId)
-               .OrderBy(x => x.Id)
-               .Select(building => new ListBoxItem(building.Id, $"{building.Type} - level {building.Level} complete at {building.CompleteTime}", black))
+            var buildings = _databaseHelper.GetVillageCurrentlyBuildings(villageId)
+               .Select(building => new ListBoxItem(building.Id, $"{building.Type} - level {building.Level} complete at {building.CompleteTime}", BLACK))
                .ToList();
 
             RxApp.MainThreadScheduler.Schedule(() =>
