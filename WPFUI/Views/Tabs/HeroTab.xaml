@@ -15,50 +15,57 @@
         </Grid.ColumnDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="1*" />
-                <RowDefinition Height="15*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="5*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Button x:Name="AdventuresButton" Content="Refresh adventures" Margin="10,10,10,10" />
-            <ListView x:Name="AdventuresGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="5,0,5,0">
-                <ListView.View>
-                    <GridView>
-                        <GridViewColumn Header="Coordinates" DisplayMemberBinding="{Binding Coordinates}" />
-                        <GridViewColumn Header="Difficulty" DisplayMemberBinding="{Binding Difficulty}" />
-                    </GridView>
-                </ListView.View>
-            </ListView>
-            <TextBlock Grid.Row="1" TextWrapping="Wrap" Text="Adventures list" VerticalAlignment="Center" HorizontalAlignment="Center" />
-            <TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Hero's info" VerticalAlignment="Top" />
-            <Grid Grid.Row="4">
+            <Button x:Name="AdventuresButton" Content="Refresh adventures" Margin="10" />
+            <Label Grid.Row="1" Content="Adventures list" HorizontalAlignment="Center" />
+            <Border Style="{DynamicResource Box}" Grid.Row="2">
+                <ListView x:Name="AdventuresGrid"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="5,0,5,0">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Coordinates" DisplayMemberBinding="{Binding Coordinates}" />
+                            <GridViewColumn Header="Difficulty" DisplayMemberBinding="{Binding Difficulty}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+            <Label Grid.Row="3" Content="Hero's info" HorizontalAlignment="Center"  />
+            <Border Style="{DynamicResource Box}" Grid.Row="4">
+                <Grid>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
-                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="63*" />
-                    <ColumnDefinition Width="76*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
-                <TextBlock HorizontalAlignment="Center" TextWrapping="Wrap" Text="Health" VerticalAlignment="Center" />
-                <TextBlock HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" Text="Status" VerticalAlignment="Center" />
-                <TextBlock HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" Text="Number of adventures" VerticalAlignment="Center" />
-                <TextBox x:Name="HealthTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,5,0" />
-                <TextBox x:Name="StatusTextbox" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,5,0" />
-                <TextBox x:Name="NumAdventuresTextbox" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" Margin="0,0,5,0" />
+                <Label HorizontalAlignment="Center" Content="Health"  />
+                    <Label HorizontalAlignment="Center" Grid.Row="1" Content="Status"  />
+                    <Label HorizontalAlignment="Center" Grid.Row="2" Content="Number of adventures"  />
+                <TextBox x:Name="HealthTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True"  />
+                <TextBox x:Name="StatusTextbox" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True"  />
+                <TextBox x:Name="NumAdventuresTextbox" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" />
             </Grid>
+                </Border>
         </Grid>
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="3*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="1*" />
-                <RowDefinition Height="10*" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="1*" />
-                <RowDefinition Height="10*" />
             </Grid.RowDefinitions>
-            <ListView x:Name="ItemsGrid" Grid.Row="2" d:ItemsSource="{d:SampleData ItemCount=5}"  Margin="5,0,5,0">
+            <Button x:Name="InventoryButton" Content="Refresh inventory" Margin="10" />
+            <Label Content="Hero's items" Grid.Row="1" HorizontalAlignment="Center"  />
+            <Border Style="{DynamicResource Box}" Grid.Row="2">
+                <ListView x:Name="ItemsGrid"  d:ItemsSource="{d:SampleData ItemCount=5}"  >
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}" />
@@ -67,7 +74,10 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <ListView x:Name="EquiptGrid" Grid.Row="4" d:ItemsSource="{d:SampleData ItemCount=5}"  Margin="5,0,5,0" IsEnabled="False">
+                </Border>
+            <Label HorizontalAlignment="Center" Grid.Row="3" Content="Hero's equipt (Work in progress)"  />
+            <Border Style="{DynamicResource Box}" Grid.Row="4">
+                <ListView x:Name="EquiptGrid" d:ItemsSource="{d:SampleData ItemCount=5}"  Margin="5,0,5,0" IsEnabled="False">
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}" />
@@ -76,9 +86,7 @@
                     </GridView>
                 </ListView.View>
             </ListView>
-            <TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Hero's equipt (Work in progress)" VerticalAlignment="Center" />
-            <TextBlock TextWrapping="Wrap" Text="Hero's items" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            <Button x:Name="InventoryButton" Content="Refresh inventory" Margin="10,10,10,10" />
+            </Border>
         </Grid>
     </Grid>
 </views:HeroTabBase>
