@@ -5,7 +5,7 @@
     xmlns:views="clr-namespace:WPFUI.Views.Tabs"
     xmlns:controls="clr-namespace:WPFUI.Views.Uc"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
-    <Grid  Background="#FFE5E5E5" Margin="0,2,0,0">
+    <Grid  Background="#FFE5E5E5" >
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="8*" />

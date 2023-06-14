@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     mc:Ignorable="d">
-    <Grid Background="#FFE5E5E5" Margin="0,2,0,0">
+    <Grid Background="#FFE5E5E5">
         <Grid.RowDefinitions>
             <RowDefinition Height="10*" />
             <RowDefinition Height="80*" />
