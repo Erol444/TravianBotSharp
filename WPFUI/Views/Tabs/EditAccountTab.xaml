@@ -8,42 +8,39 @@
     mc:Ignorable="d">
     <Grid Background="#FFE5E5E5">
         <Grid.RowDefinitions>
-            <RowDefinition Height="10*" />
-            <RowDefinition Height="80*" />
-            <RowDefinition Height="10*" />
-            <RowDefinition Height="10*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="5*" />
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="5*" />
-            </Grid.ColumnDefinitions>
-            <TextBlock x:Name="ServerTextBlock" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="Server" VerticalAlignment="Center" TextAlignment="Center" Margin="10,0,5,0" />
-            <TextBlock x:Name="UsernameTextBlock" Grid.Column="2" HorizontalAlignment="Stretch" TextWrapping="Wrap" Text="Username" VerticalAlignment="Center" TextAlignment="Center" Margin="10,0,5,0" />
-            <TextBox x:Name="ServerTextBox" Grid.Column="1" HorizontalAlignment="Stretch" TextWrapping="Wrap" VerticalAlignment="Center" />
-            <TextBox x:Name="UsernameTextBox" Grid.Column="3" HorizontalAlignment="Stretch" TextWrapping="Wrap"  VerticalAlignment="Center" />
-        </Grid>
-        <DataGrid x:Name="ProxiesDataGrid" Grid.Row="1" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" CanUserDeleteRows="True" AutoGenerateColumns="False">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Password" Binding="{Binding Password}" />
-                <DataGridTextColumn Header="ProxyHost" Binding="{Binding ProxyHost}" />
-                <DataGridTextColumn Header="ProxyPort" Binding="{Binding ProxyPort}" />
-                <DataGridTextColumn Header="ProxyUsername" Binding="{Binding ProxyUsername}" />
-                <DataGridTextColumn Header="ProxyPassword" Binding="{Binding ProxyPassword}" />
-                <DataGridTextColumn Header="Status" Binding="{Binding ProxyStatus}" />
-            </DataGrid.Columns>
-        </DataGrid>
+        <Border Style="{DynamicResource Box}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="ServerTextBlock" Content="Server" />
+                <Label x:Name="UsernameTextBlock" Grid.Column="2"  Content="Username" />
+                <TextBox x:Name="ServerTextBox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" />
+                <TextBox x:Name="UsernameTextBox" Grid.Column="3"  TextWrapping="Wrap"  VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+        <Border Style="{DynamicResource Box}" Grid.Row="1">
+            <DataGrid x:Name="ProxiesDataGrid"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="0,2,0,0" CanUserDeleteRows="True" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Password" Binding="{Binding Password}" />
+                    <DataGridTextColumn Header="ProxyHost" Binding="{Binding ProxyHost}" />
+                    <DataGridTextColumn Header="ProxyPort" Binding="{Binding ProxyPort}" />
+                    <DataGridTextColumn Header="ProxyUsername" Binding="{Binding ProxyUsername}" />
+                    <DataGridTextColumn Header="ProxyPassword" Binding="{Binding ProxyPassword}" />
+                    <DataGridTextColumn Header="Status" Binding="{Binding ProxyStatus}" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
 
-        <Grid Grid.Row="3">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*" />
-                <ColumnDefinition Width="5*" />
-            </Grid.ColumnDefinitions>
-            <Button x:Name="SaveButton" Content="Save" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0,1,1,0" />
-            <Button x:Name="CancelButton" Grid.Column="1" Content="Cancel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="1,1,0,0" />
-        </Grid>
-        <Button x:Name="TestAllProxiesButton" IsEnabled="False" Content="Test all proxies above" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch" Margin="0,2,0,1" />
+        <Button x:Name="TestAllProxiesButton" IsEnabled="False" Content="Test all proxies above" HorizontalAlignment="Stretch" Grid.Row="2" VerticalAlignment="Stretch" Margin="10" />
+        <Button x:Name="SaveButton"  Grid.Row="3" Content="Save" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10" />
     </Grid>
 </views:EditAccountTabBase>
