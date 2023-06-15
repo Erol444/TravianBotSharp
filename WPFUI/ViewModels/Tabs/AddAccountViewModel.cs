@@ -12,6 +12,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.ViewModels.Tabs
 {
@@ -21,27 +22,27 @@ namespace WPFUI.ViewModels.Tabs
         private readonly IUseragentManager _useragentManager;
         private readonly IEventManager _eventManager;
 
-        private readonly WaitingViewModel _waitingWindow;
+        private readonly WaitingOverlayViewModel _waitingOverlay;
 
-        public AddAccountViewModel(WaitingViewModel waitingWindow, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, IEventManager eventManager)
+        public AddAccountViewModel(WaitingOverlayViewModel waitingWindow, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, IEventManager eventManager)
         {
             _contextFactory = contextFactory;
             _useragentManager = useragentManager;
             _eventManager = eventManager;
-            _waitingWindow = waitingWindow;
+            _waitingOverlay = waitingWindow;
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
         }
 
         private async Task SaveTask()
         {
             if (!CheckInput()) return;
-            _waitingWindow.Show("saving account");
+            _waitingOverlay.Show("saving account");
             await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
                 if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
                 {
-                    _waitingWindow.Close();
+                    _waitingOverlay.Close();
                     MessageBox.Show("This account was already in TBS", "Warning");
                     return;
                 }
@@ -75,7 +76,7 @@ namespace WPFUI.ViewModels.Tabs
             });
             Clean();
             _eventManager.OnAccountsUpdate();
-            _waitingWindow.Close();
+            _waitingOverlay.Close();
         }
 
         private void Clean()

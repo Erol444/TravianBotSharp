@@ -26,13 +26,13 @@ namespace WPFUI.ViewModels.Tabs
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly ITaskManager _taskManager;
 
-        private readonly WaitingViewModel _waitingWindow;
+        private readonly WaitingOverlayViewModel _waitingOverlay;
 
-        public SettingsViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingViewModel waitingWindow) : base(selectorViewModel)
+        public SettingsViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingOverlayViewModel waitingWindow) : base(selectorViewModel)
         {
             _contextFactory = contextFactory;
             _taskManager = taskManager;
-            _waitingWindow = waitingWindow;
+            _waitingOverlay = waitingWindow;
 
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
@@ -116,7 +116,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private async Task SaveTask()
         {
-            _waitingWindow.Show("saving account's settings");
+            _waitingOverlay.Show("saving account's settings");
 
             await Task.Run(() =>
             {
@@ -124,7 +124,7 @@ namespace WPFUI.ViewModels.Tabs
                 Save(accountId);
                 TaskBasedSetting(accountId);
             });
-            _waitingWindow.Close();
+            _waitingOverlay.Close();
 
             MessageBox.Show("Saved.");
         }

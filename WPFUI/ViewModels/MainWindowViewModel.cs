@@ -1,9 +1,11 @@
-﻿using MainCore;
+﻿using FluentMigrator.Runner;
+using MainCore;
 using MainCore.Enums;
+using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
-using Splat;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,29 +13,111 @@ using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows;
+using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
+using WPFUI.ViewModels.Uc.MainView;
+using WPFUI.Views;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI.ViewModels
 {
-    public class MainWindowViewModel : ReactiveObject
+    public class MainWindowViewModel : ViewModelBase
     {
-        public MainWindowViewModel()
+        private readonly IPlanManager _planManager;
+        private readonly ITaskManager _taskManager;
+        private readonly IChromeManager _chromeManager;
+        private readonly ILogManager _logManager;
+        private readonly ITimerManager _timerManager;
+        private readonly IUseragentManager _useragentManager;
+        private readonly IRestClientManager _restClientManager;
+        private readonly WaitingOverlayViewModel _waitingOverlay;
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+
+        private readonly VersionWindow _versionWindow;
+        private MainLayoutViewModel _mainLayoutViewModel;
+
+        public MainLayoutViewModel MainLayoutViewModel
         {
-            _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
-            _planManager = Locator.Current.GetService<IPlanManager>();
-            _taskManager = Locator.Current.GetService<ITaskManager>();
+            get => _mainLayoutViewModel;
+            set => this.RaiseAndSetIfChanged(ref _mainLayoutViewModel, value);
+        }
 
-            _waitingWindow = Locator.Current.GetService<WaitingViewModel>();
+        public WaitingOverlayViewModel WaitingOverlay => _waitingOverlay;
 
-            _logManager = Locator.Current.GetService<ILogManager>();
-            _restClientManager = Locator.Current.GetService<IRestClientManager>();
-            _timerManager = Locator.Current.GetService<ITimerManager>();
-            _chromeManager = Locator.Current.GetService<IChromeManager>();
+        public MainWindowViewModel(IPlanManager planManager, ITaskManager taskManager, IChromeManager chromeManager, ILogManager logManager, ITimerManager timerManager, IRestClientManager restClientManager, WaitingOverlayViewModel waitingOverlay, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager)
+        {
+            _planManager = planManager;
+            _taskManager = taskManager;
+            _chromeManager = chromeManager;
+            _logManager = logManager;
+            _timerManager = timerManager;
+            _restClientManager = restClientManager;
+            _waitingOverlay = waitingOverlay;
+            _contextFactory = contextFactory;
+            _useragentManager = useragentManager;
+            _versionWindow = new VersionWindow();
+        }
+
+        public async Task Load()
+        {
+            _waitingOverlay.Show("loading data");
+            try
+            {
+                await ChromeDriverInstaller.Install();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+                return;
+            }
+
+            var tasks = new List<Task>
+            {
+                Task.Run(() =>
+                {
+                    _chromeManager.LoadExtension();
+                }),
+
+                Task.Run(async () =>
+                {
+                    await _useragentManager.Load();
+                }),
+                Task.Run(() =>
+                {
+                    using var context = _contextFactory.CreateDbContext();
+                    using var scope = App.Container.CreateScope();
+                    var migrationRunner = scope.ServiceProvider.GetRequiredService<IMigrationRunner>();
+                    if (!context.Database.EnsureCreated())
+                    {
+                        migrationRunner.MigrateUp();
+                        context.UpdateDatabase();
+                    }
+                    else
+                    {
+                        context.AddVersionInfo();
+                    }
+                    _planManager.Load();
+                }),
+
+                Task.Run(() =>
+                {
+                    _logManager.Init();
+                })
+            };
+
+            await Task.WhenAll(tasks);
+            await _versionWindow.ViewModel.Load();
+
+            MainLayoutViewModel = new();
+
+            if (_versionWindow.ViewModel.IsNewVersion) _versionWindow.ViewModel.Show();
+            _waitingOverlay.Close();
         }
 
         public async Task ClosingTask(CancelEventArgs e)
         {
-            _waitingWindow.Show("saving data");
+            _waitingOverlay.Show("saving data");
             await Task.Run(async () =>
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -74,8 +158,6 @@ namespace WPFUI.ViewModels
             {
                 _timerManager.Shutdown();
             });
-
-            _waitingWindow.Close();
         }
 
         private async Task Pause(int index)
@@ -93,29 +175,16 @@ namespace WPFUI.ViewModels
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Pausing);
                 if (current is not null)
                 {
-                    _waitingWindow.Show("waiting current task stops");
+                    _waitingOverlay.Show("waiting current task stops");
                     await Task.Run(() =>
                     {
                         while (current.Stage != TaskStage.Waiting) { }
                     });
-                    _waitingWindow.Close();
+                    _waitingOverlay.Close();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
                 return;
             }
         }
-
-        private readonly IPlanManager _planManager;
-        private readonly ITaskManager _taskManager;
-        private readonly IChromeManager _chromeManager;
-        private readonly ILogManager _logManager;
-        private readonly ITimerManager _timerManager;
-        private readonly IRestClientManager _restClientManager;
-        private readonly WaitingViewModel _waitingWindow;
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-
-        public bool IsActive { get; set; }
-
-        public Action Show;
     }
 }

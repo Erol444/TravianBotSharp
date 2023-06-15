@@ -12,6 +12,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.ViewModels.Tabs
 {
@@ -21,14 +22,14 @@ namespace WPFUI.ViewModels.Tabs
         private readonly IUseragentManager _useragentManager;
         private readonly IEventManager _eventManager;
 
-        private readonly WaitingViewModel _waitingWindow;
+        private readonly WaitingOverlayViewModel _waitingOverlay;
 
-        public EditAccountViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, IEventManager eventManager, WaitingViewModel waitingWindow) : base(selectorViewModel)
+        public EditAccountViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, IEventManager eventManager, WaitingOverlayViewModel waitingWindow) : base(selectorViewModel)
         {
             _contextFactory = contextFactory;
             _useragentManager = useragentManager;
             _eventManager = eventManager;
-            _waitingWindow = waitingWindow;
+            _waitingOverlay = waitingWindow;
 
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
         }
@@ -68,7 +69,7 @@ namespace WPFUI.ViewModels.Tabs
         private async Task SaveTask()
         {
             if (!CheckInput()) return;
-            _waitingWindow.Show("saving account");
+            _waitingOverlay.Show("saving account");
             await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
@@ -102,7 +103,7 @@ namespace WPFUI.ViewModels.Tabs
 
             _eventManager.OnAccountsUpdate();
             Clean();
-            _waitingWindow.Close();
+            _waitingOverlay.Close();
             MessageBox.Show("Account saved successfully");
         }
 

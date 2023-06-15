@@ -27,14 +27,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly ITaskManager _taskManager;
 
-        private readonly WaitingViewModel _waitingWindow;
+        private readonly WaitingOverlayViewModel _waitingOverlay;
 
-        public VillageSettingsViewModel(SelectorViewModel selectorViewModel, IUpgradeBuildingHelper upgradeBuildingHelper, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingViewModel waitingWindow) : base(selectorViewModel)
+        public VillageSettingsViewModel(SelectorViewModel selectorViewModel, IUpgradeBuildingHelper upgradeBuildingHelper, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingOverlayViewModel waitingWindow) : base(selectorViewModel)
         {
             _upgradeBuildingHelper = upgradeBuildingHelper;
             _contextFactory = contextFactory;
             _taskManager = taskManager;
-            _waitingWindow = waitingWindow;
+            _waitingOverlay = waitingWindow;
 
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
@@ -134,13 +134,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private async Task SaveTask()
         {
-            _waitingWindow.Show("saving account's settings");
+            _waitingOverlay.Show("saving account's settings");
             await Task.Run(() =>
             {
                 Save(VillageId);
                 TaskBasedSetting(VillageId, AccountId);
             });
-            _waitingWindow.Close();
+            _waitingOverlay.Close();
 
             MessageBox.Show("Saved.");
         }

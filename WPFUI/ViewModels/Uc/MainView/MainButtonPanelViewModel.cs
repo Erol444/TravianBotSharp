@@ -29,14 +29,14 @@ namespace WPFUI.ViewModels.Uc.MainView
         private readonly ITimerManager _timeManager;
         private readonly IChromeManager _chromeManager;
 
-        private readonly WaitingViewModel _waitingWindow;
+        private readonly WaitingOverlayViewModel _waitingOverlay;
         private readonly VersionViewModel _versionWindow;
 
         private readonly MainTabPanelViewModel _mainTabPanelViewModel;
         private readonly AccountListViewModel _accountListViewModel;
         private readonly IAccessHelper _accessHelper;
 
-        public MainButtonPanelViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogManager logManager, ITimerManager timeManager, IChromeManager chromeManager, WaitingViewModel waitingWindow, VersionViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectorViewModel)
+        public MainButtonPanelViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogManager logManager, ITimerManager timeManager, IChromeManager chromeManager, WaitingOverlayViewModel waitingWindow, VersionViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectorViewModel)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
@@ -46,7 +46,7 @@ namespace WPFUI.ViewModels.Uc.MainView
             _logManager = logManager;
             _timeManager = timeManager;
             _chromeManager = chromeManager;
-            _waitingWindow = waitingWindow;
+            _waitingOverlay = waitingWindow;
             _versionWindow = versionWindow;
             _mainTabPanelViewModel = mainTabPanelViewModel;
             _accountListViewModel = accountListViewModel;
@@ -168,10 +168,10 @@ namespace WPFUI.ViewModels.Uc.MainView
             if (MessageBox.Show($"Do you want to delete account {account.Username} ?", "Confirm",
                 MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                _waitingWindow.Show("saving data");
+                _waitingOverlay.Show("saving data");
                 DeleteAccount(AccountId);
                 _eventManager.OnAccountsUpdate();
-                _waitingWindow.Close();
+                _waitingOverlay.Close();
             }
         }
 
@@ -292,12 +292,12 @@ namespace WPFUI.ViewModels.Uc.MainView
                 if (current is not null)
                 {
                     _taskManager.StopCurrentTask(index);
-                    _waitingWindow.Show("waiting current task stops");
+                    _waitingOverlay.Show("waiting current task stops");
                     await Task.Run(() =>
                     {
                         while (current.Stage != TaskStage.Waiting) { }
                     });
-                    _waitingWindow.Close();
+                    _waitingOverlay.Close();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
                 return;

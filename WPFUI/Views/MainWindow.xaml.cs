@@ -1,7 +1,7 @@
 ﻿using ReactiveUI;
-using Splat;
 using System;
 using System.ComponentModel;
+using System.Reactive.Disposables;
 using System.Windows;
 using WPFUI.ViewModels;
 
@@ -18,18 +18,38 @@ namespace WPFUI.Views
     {
         private bool _canClose = false;
         private bool _isClosing = false;
+        private bool _isLoaded = false;
 
         public MainWindow()
         {
-            ViewModel = Locator.Current.GetService<MainWindowViewModel>();
-            ViewModel.Show = Show;
+            Loaded += OnLoaded;
             Closing += OnClosing;
 
             InitializeComponent();
+
+            this.WhenActivated(d =>
+            {
+                this.Bind(ViewModel, vm => vm.MainLayoutViewModel, v => v.MainLayout.Content).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.WaitingOverlay, v => v.WaitingOverlay.Content).DisposeWith(d);
+            });
+        }
+
+        private async void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            if (_isLoaded) return;
+            _isLoaded = false;
+            await ViewModel.Load();
+            _isLoaded = true;
         }
 
         private async void OnClosing(object sender, CancelEventArgs e)
         {
+            if (!_isLoaded)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             if (_canClose) return;
             e.Cancel = true;
             if (_isClosing) return;

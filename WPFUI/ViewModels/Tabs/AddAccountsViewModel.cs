@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.ViewModels.Tabs
 {
@@ -24,12 +25,12 @@ namespace WPFUI.ViewModels.Tabs
         private readonly IUseragentManager _useragentManager;
         private readonly IEventManager _eventManager;
 
-        private readonly WaitingViewModel _waitingWindow;
+        private readonly WaitingOverlayViewModel _waitingOverlay;
 
-        public AddAccountsViewModel(IDbContextFactory<AppDbContext> contextFactory, WaitingViewModel waitingWindow, IUseragentManager useragentManager, IEventManager eventManager)
+        public AddAccountsViewModel(IDbContextFactory<AppDbContext> contextFactory, WaitingOverlayViewModel waitingWindow, IUseragentManager useragentManager, IEventManager eventManager)
         {
             _contextFactory = contextFactory;
-            _waitingWindow = waitingWindow;
+            _waitingOverlay = waitingWindow;
             _useragentManager = useragentManager;
             _eventManager = eventManager;
 
@@ -42,7 +43,7 @@ namespace WPFUI.ViewModels.Tabs
         private async Task SaveTask()
         {
             if (!IsVaildInput()) return;
-            _waitingWindow.Show("adding accounts");
+            _waitingOverlay.Show("adding accounts");
 
             await Task.Run(() =>
             {
@@ -79,7 +80,7 @@ namespace WPFUI.ViewModels.Tabs
             });
             Clean();
             _eventManager.OnAccountsUpdate();
-            _waitingWindow.Close();
+            _waitingOverlay.Close();
             MessageBox.Show($"Added account to TBS's database", "Success");
         }
 

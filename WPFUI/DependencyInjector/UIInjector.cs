@@ -4,6 +4,7 @@ using WPFUI.Store;
 using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
+using WPFUI.ViewModels.Uc;
 using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.DependencyInjector
@@ -23,7 +24,7 @@ namespace WPFUI.DependencyInjector
         {
             services.AddSingleton<MainWindowViewModel>();
             services.AddSingleton<VersionViewModel>();
-            services.AddSingleton<WaitingViewModel>();
+            services.AddSingleton<WaitingOverlayViewModel>();
 
             services.AddSingleton<AddAccountsViewModel>();
             services.AddSingleton<AddAccountViewModel>();
