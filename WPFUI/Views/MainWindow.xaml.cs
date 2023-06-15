@@ -27,6 +27,8 @@ namespace WPFUI.Views
 
             InitializeComponent();
 
+            ViewModel.VersionWindow = new VersionWindow();
+
             this.WhenActivated(d =>
             {
                 this.Bind(ViewModel, vm => vm.MainLayoutViewModel, v => v.MainLayout.Content).DisposeWith(d);

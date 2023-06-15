@@ -34,8 +34,8 @@ namespace WPFUI.ViewModels
         private readonly WaitingOverlayViewModel _waitingOverlay;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-        private readonly VersionWindow _versionWindow;
         private MainLayoutViewModel _mainLayoutViewModel;
+        private readonly VersionWindow _versionWindow;
 
         public MainLayoutViewModel MainLayoutViewModel
         {
@@ -56,8 +56,9 @@ namespace WPFUI.ViewModels
             _waitingOverlay = waitingOverlay;
             _contextFactory = contextFactory;
             _useragentManager = useragentManager;
-            _versionWindow = new VersionWindow();
         }
+
+        public VersionWindow VersionWindow { get; set; }
 
         public async Task Load()
         {

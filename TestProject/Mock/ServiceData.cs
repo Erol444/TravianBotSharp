@@ -79,6 +79,7 @@ namespace TestProject.Mock
             var ignoreList = new Type[]
             {
                 typeof(TabHeaderViewModel),
+                typeof(MainLayoutViewModel),
             };
 
             var result = new List<object[]>();
