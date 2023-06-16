@@ -23,7 +23,7 @@ namespace WPFUI.DependencyInjector
         private static IServiceCollection ConfigureViewModel(IServiceCollection services)
         {
             services.AddSingleton<MainWindowViewModel>();
-            services.AddSingleton<VersionViewModel>();
+            services.AddSingleton<VersionOverlayViewModel>();
             services.AddSingleton<WaitingOverlayViewModel>();
 
             services.AddSingleton<AddAccountsViewModel>();

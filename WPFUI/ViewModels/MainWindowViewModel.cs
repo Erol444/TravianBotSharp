@@ -17,7 +17,6 @@ using System.Windows;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Uc;
 using WPFUI.ViewModels.Uc.MainView;
-using WPFUI.Views;
 using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI.ViewModels
@@ -31,11 +30,11 @@ namespace WPFUI.ViewModels
         private readonly ITimerManager _timerManager;
         private readonly IUseragentManager _useragentManager;
         private readonly IRestClientManager _restClientManager;
-        private readonly WaitingOverlayViewModel _waitingOverlay;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly WaitingOverlayViewModel _waitingOverlay;
+        private readonly VersionOverlayViewModel _versionOverlay;
 
         private MainLayoutViewModel _mainLayoutViewModel;
-        private readonly VersionWindow _versionWindow;
 
         public MainLayoutViewModel MainLayoutViewModel
         {
@@ -44,8 +43,9 @@ namespace WPFUI.ViewModels
         }
 
         public WaitingOverlayViewModel WaitingOverlay => _waitingOverlay;
+        public VersionOverlayViewModel VersionOverlay => _versionOverlay;
 
-        public MainWindowViewModel(IPlanManager planManager, ITaskManager taskManager, IChromeManager chromeManager, ILogManager logManager, ITimerManager timerManager, IRestClientManager restClientManager, WaitingOverlayViewModel waitingOverlay, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager)
+        public MainWindowViewModel(IPlanManager planManager, ITaskManager taskManager, IChromeManager chromeManager, ILogManager logManager, ITimerManager timerManager, IRestClientManager restClientManager, WaitingOverlayViewModel waitingOverlay, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, VersionOverlayViewModel versionViewModel)
         {
             _planManager = planManager;
             _taskManager = taskManager;
@@ -56,13 +56,12 @@ namespace WPFUI.ViewModels
             _waitingOverlay = waitingOverlay;
             _contextFactory = contextFactory;
             _useragentManager = useragentManager;
+            _versionOverlay = versionViewModel;
         }
-
-        public VersionWindow VersionWindow { get; set; }
 
         public async Task Load()
         {
-            _waitingOverlay.Show("loading data");
+            _waitingOverlay.ShowCommand.Execute("loading data").Subscribe();
             try
             {
                 await ChromeDriverInstaller.Install();
@@ -108,17 +107,14 @@ namespace WPFUI.ViewModels
             };
 
             await Task.WhenAll(tasks);
-            await _versionWindow.ViewModel.Load();
-
             MainLayoutViewModel = new();
-
-            if (_versionWindow.ViewModel.IsNewVersion) _versionWindow.ViewModel.Show();
-            _waitingOverlay.Close();
+            _versionOverlay.LoadCommand.Execute().Subscribe();
+            _waitingOverlay.CloseCommand.Execute().Subscribe();
         }
 
         public async Task ClosingTask(CancelEventArgs e)
         {
-            _waitingOverlay.Show("saving data");
+            _waitingOverlay.ShowCommand.Execute("saving data").Subscribe();
             await Task.Run(async () =>
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -176,12 +172,12 @@ namespace WPFUI.ViewModels
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Pausing);
                 if (current is not null)
                 {
-                    _waitingOverlay.Show("waiting current task stops");
+                    _waitingOverlay.ShowCommand.Execute("waiting current task stops").Subscribe();
                     await Task.Run(() =>
                     {
                         while (current.Stage != TaskStage.Waiting) { }
                     });
-                    _waitingOverlay.Close();
+                    _waitingOverlay.CloseCommand.Execute().Subscribe();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
                 return;

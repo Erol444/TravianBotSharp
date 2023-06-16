@@ -5,8 +5,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:viewmodelsLayout="clr-namespace:WPFUI.ViewModels.Uc.MainView"
         xmlns:viewsLayout="clr-namespace:WPFUI.Views.Uc.MainView"
-        xmlns:viewmodelsWaiting="clr-namespace:WPFUI.ViewModels.Uc"
-        xmlns:viewsWaiting="clr-namespace:WPFUI.Views.Uc"
+        xmlns:viewmodelsUc="clr-namespace:WPFUI.ViewModels.Uc"
+        xmlns:viewsUc="clr-namespace:WPFUI.Views.Uc"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         Background="{DynamicResource MaterialDesignPaper}"
@@ -22,10 +22,17 @@
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>
+        <ContentControl x:Name="VersionOverlay">
+            <ContentControl.Resources>
+                <DataTemplate DataType="{x:Type viewmodelsUc:VersionOverlayViewModel}">
+                    <viewsUc:VersionOverlayUc ViewModel="{Binding .}" />
+                </DataTemplate>
+            </ContentControl.Resources>
+        </ContentControl>
         <ContentControl x:Name="WaitingOverlay">
             <ContentControl.Resources>
-                <DataTemplate DataType="{x:Type viewmodelsWaiting:WaitingOverlayViewModel}">
-                    <viewsWaiting:WaitingOverlayUc DataContext="{Binding .}" />
+                <DataTemplate DataType="{x:Type viewmodelsUc:WaitingOverlayViewModel}">
+                    <viewsUc:WaitingOverlayUc DataContext="{Binding .}" />
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>

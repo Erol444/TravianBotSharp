@@ -116,7 +116,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private async Task SaveTask()
         {
-            _waitingOverlay.Show("saving account's settings");
+            _waitingOverlay.ShowCommand.Execute("saving account's settings").Subscribe();
 
             await Task.Run(() =>
             {
@@ -124,7 +124,7 @@ namespace WPFUI.ViewModels.Tabs
                 Save(accountId);
                 TaskBasedSetting(accountId);
             });
-            _waitingOverlay.Close();
+            _waitingOverlay.CloseCommand.Execute().Subscribe();
 
             MessageBox.Show("Saved.");
         }

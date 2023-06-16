@@ -30,13 +30,13 @@ namespace WPFUI.ViewModels.Uc.MainView
         private readonly IChromeManager _chromeManager;
 
         private readonly WaitingOverlayViewModel _waitingOverlay;
-        private readonly VersionViewModel _versionWindow;
+        private readonly VersionOverlayViewModel _versionWindow;
 
         private readonly MainTabPanelViewModel _mainTabPanelViewModel;
         private readonly AccountListViewModel _accountListViewModel;
         private readonly IAccessHelper _accessHelper;
 
-        public MainButtonPanelViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogManager logManager, ITimerManager timeManager, IChromeManager chromeManager, WaitingOverlayViewModel waitingWindow, VersionViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectorViewModel)
+        public MainButtonPanelViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogManager logManager, ITimerManager timeManager, IChromeManager chromeManager, WaitingOverlayViewModel waitingWindow, VersionOverlayViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectorViewModel)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
@@ -141,7 +141,7 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private void CheckVersionTask()
         {
-            _versionWindow.Show();
+            _versionWindow.OpenCommand.Execute().Subscribe();
         }
 
         private void AddAccountTask()
@@ -168,10 +168,10 @@ namespace WPFUI.ViewModels.Uc.MainView
             if (MessageBox.Show($"Do you want to delete account {account.Username} ?", "Confirm",
                 MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                _waitingOverlay.Show("saving data");
+                _waitingOverlay.ShowCommand.Execute("saving data").Subscribe();
                 DeleteAccount(AccountId);
                 _eventManager.OnAccountsUpdate();
-                _waitingOverlay.Close();
+                _waitingOverlay.CloseCommand.Execute().Subscribe();
             }
         }
 
@@ -292,12 +292,12 @@ namespace WPFUI.ViewModels.Uc.MainView
                 if (current is not null)
                 {
                     _taskManager.StopCurrentTask(index);
-                    _waitingOverlay.Show("waiting current task stops");
+                    _waitingOverlay.ShowCommand.Execute("waiting current task stops").Subscribe();
                     await Task.Run(() =>
                     {
                         while (current.Stage != TaskStage.Waiting) { }
                     });
-                    _waitingOverlay.Close();
+                    _waitingOverlay.CloseCommand.Execute().Subscribe();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
                 return;

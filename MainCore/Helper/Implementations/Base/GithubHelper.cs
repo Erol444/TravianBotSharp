@@ -27,17 +27,11 @@ namespace MainCore.Helper.Implementations.Base
                 var latest = await _client.Repository.Release.GetLatest(_username, _repo);
                 if (latest is not null) return new Version(latest.TagName);
             }
-            catch
+            catch (ApiException e)
             {
+                _ = e;
             }
             return null;
-        }
-
-        public async Task<bool> IsNewVersion(Version current)
-        {
-            var lastVersion = await GetLatestVersion();
-            if (lastVersion is null) return false;
-            return lastVersion > current;
         }
     }
 }

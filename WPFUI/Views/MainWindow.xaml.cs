@@ -27,12 +27,11 @@ namespace WPFUI.Views
 
             InitializeComponent();
 
-            ViewModel.VersionWindow = new VersionWindow();
-
             this.WhenActivated(d =>
             {
                 this.Bind(ViewModel, vm => vm.MainLayoutViewModel, v => v.MainLayout.Content).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.WaitingOverlay, v => v.WaitingOverlay.Content).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.VersionOverlay, v => v.VersionOverlay.Content).DisposeWith(d);
             });
         }
 

@@ -69,7 +69,7 @@ namespace WPFUI.ViewModels.Tabs
         private async Task SaveTask()
         {
             if (!CheckInput()) return;
-            _waitingOverlay.Show("saving account");
+            _waitingOverlay.ShowCommand.Execute("saving account").Subscribe();
             await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
@@ -103,7 +103,7 @@ namespace WPFUI.ViewModels.Tabs
 
             _eventManager.OnAccountsUpdate();
             Clean();
-            _waitingOverlay.Close();
+            _waitingOverlay.CloseCommand.Execute().Subscribe();
             MessageBox.Show("Account saved successfully");
         }
 
