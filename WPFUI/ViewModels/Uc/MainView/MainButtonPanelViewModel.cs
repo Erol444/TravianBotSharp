@@ -58,7 +58,7 @@ namespace WPFUI.ViewModels.Uc.MainView
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
 
-            DeleteAccountCommand = ReactiveCommand.Create(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
+            DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
 
             LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
             LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAllowLogout, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
@@ -160,7 +160,7 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private Task LogoutTask() => Task.Run(() => LogoutAccount(AccountId));
 
-        private void DeleteAccountTask()
+        private async Task DeleteAccountTask()
         {
             using var context = _contextFactory.CreateDbContext();
             var account = context.Accounts.Find(AccountId);
@@ -169,7 +169,7 @@ namespace WPFUI.ViewModels.Uc.MainView
                 MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
                 _waitingOverlay.ShowCommand.Execute("saving data").Subscribe();
-                DeleteAccount(AccountId);
+                await Task.Run(() => DeleteAccount(AccountId));
                 _eventManager.OnAccountsUpdate();
                 _waitingOverlay.CloseCommand.Execute().Subscribe();
             }

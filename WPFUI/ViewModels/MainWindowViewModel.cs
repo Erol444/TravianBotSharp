@@ -69,6 +69,7 @@ namespace WPFUI.ViewModels
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error");
+                _waitingOverlay.CloseCommand.Execute().Subscribe();
                 return;
             }
 
