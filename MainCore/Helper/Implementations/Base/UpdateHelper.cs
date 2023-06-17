@@ -55,7 +55,7 @@ namespace MainCore.Helper.Implementations.Base
 
             UpdateVillageList(accountId);
 
-            if (villageId == -1)
+            if (villageId != -1)
             {
                 UpdateResource(accountId, villageId);
             }
