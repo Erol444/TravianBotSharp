@@ -181,6 +181,9 @@ namespace MainCore.Helper.Implementations.Base
                 {
                     Reload(accountId);
                 }
+
+                result = _updateHelper.UpdateDorf1(accountId, villageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 return Result.Ok();
             }
 
@@ -216,6 +219,9 @@ namespace MainCore.Helper.Implementations.Base
                 {
                     Reload(accountId);
                 }
+
+                result = _updateHelper.UpdateDorf2(accountId, villageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
                 return Result.Ok();
             }
 
@@ -246,8 +252,20 @@ namespace MainCore.Helper.Implementations.Base
             {
                 if (forceReload)
                 {
-                    return Reload(accountId);
+                    Reload(accountId);
                 }
+
+                if (currentUrl.Contains("dorf1"))
+                {
+                    result = _updateHelper.UpdateDorf1(accountId, villageId);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                }
+                else if (currentUrl.Contains("dorf2"))
+                {
+                    result = _updateHelper.UpdateDorf2(accountId, villageId);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                }
+                return;
             }
 
             var chanceDorf2 = DateTime.Now.Ticks % 100;
