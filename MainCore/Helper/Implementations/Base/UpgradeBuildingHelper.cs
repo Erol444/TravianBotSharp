@@ -547,7 +547,7 @@ namespace MainCore.Helper.Implementations.Base
             if (totalBuild == 0)
             {
                 chosenTask = GetFirstTask(villageId);
-                return Result.Ok();
+                return Result.Ok(chosenTask);
             }
 
             var accountInfo = context.AccountsInfo.Find(accountId);
@@ -560,17 +560,23 @@ namespace MainCore.Helper.Implementations.Base
             var maxBuild = 1;
             if (hasPlusAccount) maxBuild++;
             if (romanAdvantage) maxBuild++;
+
             if (totalBuild == maxBuild)
             {
                 return Result.Fail(BuildingQueue.Full);
             }
 
-            // there is atleast 2 slot free
-            // roman can build both building or resource field
-            if (maxBuild - totalBuild >= 2)
+            // non-Roman tribe can build anything if there is atleast 1 free slot
+            if (tribe != TribeEnums.Romans && maxBuild - totalBuild >= 1)
             {
                 chosenTask = GetFirstTask(villageId);
-                return Result.Ok();
+                return Result.Ok(chosenTask);
+            }
+            // Roman tribe can build anything if there is atleast 2 free slots
+            if (tribe == TribeEnums.Romans && maxBuild - totalBuild >= 2)
+            {
+                chosenTask = GetFirstTask(villageId);
+                return Result.Ok(chosenTask);
             }
 
             var numQueueRes = tasks.Count(x => x.Building.IsResourceField() || x.Type == PlanTypeEnums.ResFields);
@@ -593,7 +599,7 @@ namespace MainCore.Helper.Implementations.Base
                 }
 
                 chosenTask = GetFirstBuildingTask(villageId);
-                return Result.Ok();
+                return Result.Ok(chosenTask);
             }
 
             if (numCurrentBuilding > numCurrentRes)
@@ -606,12 +612,12 @@ namespace MainCore.Helper.Implementations.Base
                 }
 
                 chosenTask = GetFirstResTask(villageId);
-                return Result.Ok();
+                return Result.Ok(chosenTask);
             }
 
             // if same means 1 R and 1 I already, 1 ANY will be choose below
             chosenTask = GetFirstTask(villageId);
-            return Result.Ok();
+            return Result.Ok(chosenTask);
         }
     }
 }
