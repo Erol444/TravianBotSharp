@@ -11,18 +11,6 @@ namespace TestProject.Mock
 {
     public class ServiceData
     {
-        private static readonly List<Type> serviceType = new()
-        {
-            typeof(IChromeManager),
-            typeof(IRestClientManager),
-            typeof(IUseragentManager),
-            typeof(IEventManager),
-            typeof(ITimerManager),
-            typeof(ITaskManager),
-            typeof(IPlanManager),
-            typeof(ILogManager),
-        };
-
         public static IEnumerable<object[]> GetCoreService()
         {
             var result = new List<object[]>();

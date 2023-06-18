@@ -6,6 +6,7 @@ using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog.Core;
 
 namespace MainCore.DependencyInjector
 {
@@ -23,7 +24,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<ITimerManager, TimerManager>();
             services.AddSingleton<ITaskManager, TaskManager>();
             services.AddSingleton<IPlanManager, PlanManager>();
-            services.AddSingleton<ILogManager, LogManager>();
+            services.AddSingleton<ILogEventSink, LoggerSink>();
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
@@ -36,6 +37,7 @@ namespace MainCore.DependencyInjector
         private static IServiceCollection ConfigureHelper(IServiceCollection services)
         {
             services.AddSingleton<IAccessHelper, AccessHelper>();
+            services.AddSingleton<ILogHelper, LogHelper>();
             services.AddSingleton<IGithubHelper, GithubHelper>();
             services.AddSingleton<IDatabaseHelper, DatabaseHelper>();
             services.AddSingleton<IInvalidPageHelper, InvalidPageHelper>();

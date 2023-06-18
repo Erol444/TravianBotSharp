@@ -17,16 +17,16 @@ namespace MainCore.Helper.Implementations.Base
         private readonly IChromeManager _chromeManager;
         private readonly IAccessHelper _accessHelper;
         private readonly IRestClientManager _restClientManager;
-        private readonly ILogManager _logManager;
+        private readonly ILogHelper _logHelper;
         private readonly ITaskManager _taskManager;
 
-        public SleepHelper(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IAccessHelper accessHelper, IRestClientManager restClientManager, ILogManager logManager, ITaskManager taskManager)
+        public SleepHelper(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IAccessHelper accessHelper, IRestClientManager restClientManager, ILogHelper logHelper, ITaskManager taskManager)
         {
             _contextFactory = contextFactory;
             _chromeManager = chromeManager;
             _accessHelper = accessHelper;
             _restClientManager = restClientManager;
-            _logManager = logManager;
+            _logHelper = logHelper;
             _taskManager = taskManager;
         }
 
@@ -39,14 +39,14 @@ namespace MainCore.Helper.Implementations.Base
             {
                 var sleepTime = GetSleepTime(accountId);
                 sleepEnd = sleepEnd.Add(sleepTime);
-                _logManager.Information(accountId, $"No proxy vaild or force sleep is acitve. Bot will sleep {(int)sleepTime.TotalMinutes} mins");
+                _logHelper.Information(accountId, $"No proxy vaild or force sleep is acitve. Bot will sleep {(int)sleepTime.TotalMinutes} mins");
             }
             else
             {
                 var sleepTime = TimeSpan.FromSeconds(Random.Shared.Next(14 * 60, 16 * 60));
                 sleepEnd = sleepEnd.Add(sleepTime);
                 var proxyHost = string.IsNullOrEmpty(nextAccess.ProxyHost) ? "default" : nextAccess.ProxyHost;
-                _logManager.Information(accountId, $"There is vaild proxy ({proxyHost}). Bot will sleep {(int)sleepTime.TotalMinutes} mins before switching to vaild proxy");
+                _logHelper.Information(accountId, $"There is vaild proxy ({proxyHost}). Bot will sleep {(int)sleepTime.TotalMinutes} mins before switching to vaild proxy");
             }
 
             var chromeBrowser = _chromeManager.Get(accountId);
@@ -86,7 +86,7 @@ namespace MainCore.Helper.Implementations.Base
                 }
                 else
                 {
-                    _logManager.Warning(accountId, $"Proxy {access.ProxyHost} is not working");
+                    _logHelper.Warning(accountId, $"Proxy {access.ProxyHost} is not working");
                 }
             }
 
@@ -101,7 +101,7 @@ namespace MainCore.Helper.Implementations.Base
             {
                 if (token.IsCancellationRequested)
                 {
-                    _logManager.Information(accountId, "Cancellation requested");
+                    _logHelper.Information(accountId, "Cancellation requested");
                     return Result.Ok();
                 }
                 var timeRemaining = sleepEnd - DateTime.Now;
@@ -112,7 +112,7 @@ namespace MainCore.Helper.Implementations.Base
 
                 if (lastMinute != currentMinute)
                 {
-                    _logManager.Information(accountId, $"Chrome will reopen in {currentMinute} mins");
+                    _logHelper.Information(accountId, $"Chrome will reopen in {currentMinute} mins");
                     lastMinute = currentMinute;
                 }
             }

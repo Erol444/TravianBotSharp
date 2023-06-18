@@ -1,6 +1,7 @@
 ﻿using FluentMigrator.Runner;
 using MainCore;
 using MainCore.Enums;
+using MainCore.Helper.Interface;
 using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -17,7 +18,6 @@ using System.Windows;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Uc;
 using WPFUI.ViewModels.Uc.MainView;
-using ILogManager = MainCore.Services.Interface.ILogManager;
 
 namespace WPFUI.ViewModels
 {
@@ -26,7 +26,7 @@ namespace WPFUI.ViewModels
         private readonly IPlanManager _planManager;
         private readonly ITaskManager _taskManager;
         private readonly IChromeManager _chromeManager;
-        private readonly ILogManager _logManager;
+        private readonly ILogHelper _logHelper;
         private readonly ITimerManager _timerManager;
         private readonly IUseragentManager _useragentManager;
         private readonly IRestClientManager _restClientManager;
@@ -45,12 +45,12 @@ namespace WPFUI.ViewModels
         public WaitingOverlayViewModel WaitingOverlay => _waitingOverlay;
         public VersionOverlayViewModel VersionOverlay => _versionOverlay;
 
-        public MainWindowViewModel(IPlanManager planManager, ITaskManager taskManager, IChromeManager chromeManager, ILogManager logManager, ITimerManager timerManager, IRestClientManager restClientManager, WaitingOverlayViewModel waitingOverlay, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, VersionOverlayViewModel versionViewModel)
+        public MainWindowViewModel(IPlanManager planManager, ITaskManager taskManager, IChromeManager chromeManager, ILogHelper logHelper, ITimerManager timerManager, IRestClientManager restClientManager, WaitingOverlayViewModel waitingOverlay, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, VersionOverlayViewModel versionViewModel)
         {
             _planManager = planManager;
             _taskManager = taskManager;
             _chromeManager = chromeManager;
-            _logManager = logManager;
+            _logHelper = logHelper;
             _timerManager = timerManager;
             _restClientManager = restClientManager;
             _waitingOverlay = waitingOverlay;
@@ -103,7 +103,7 @@ namespace WPFUI.ViewModels
 
                 Task.Run(() =>
                 {
-                    _logManager.Init();
+                    _logHelper.Init();
                 })
             };
 
@@ -139,7 +139,7 @@ namespace WPFUI.ViewModels
 
             await Task.Run(() =>
             {
-                _logManager.Shutdown();
+                _logHelper.Shutdown();
             });
 
             await Task.Run(() =>

@@ -1,5 +1,6 @@
 ﻿using DynamicData;
 using MainCore;
+using MainCore.Helper.Interface;
 using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -20,15 +21,15 @@ namespace WPFUI.ViewModels.Tabs
     {
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
-        private readonly ILogManager _logManager;
+        private readonly ILogHelper _logHelper;
         private readonly ITaskManager _taskManager;
 
         private const string discordUrl = "https://discord.gg/DVPV4gesCz";
 
-        public DebugViewModel(SelectorViewModel selectorViewModel, ITaskManager taskManager, ILogManager logManager, IEventManager eventManager, IDbContextFactory<AppDbContext> contextFactory) : base(selectorViewModel)
+        public DebugViewModel(SelectorViewModel selectorViewModel, ITaskManager taskManager, ILogHelper logHelper, IEventManager eventManager, IDbContextFactory<AppDbContext> contextFactory) : base(selectorViewModel)
         {
             _taskManager = taskManager;
-            _logManager = logManager;
+            _logHelper = logHelper;
             _eventManager = eventManager;
             _contextFactory = contextFactory;
 
@@ -89,7 +90,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadLogs(int accountId)
         {
-            var logs = _logManager.GetLog(accountId);
+            var logs = _logHelper.GetLog(accountId);
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {

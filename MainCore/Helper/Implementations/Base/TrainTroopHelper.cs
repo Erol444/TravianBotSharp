@@ -17,17 +17,17 @@ namespace MainCore.Helper.Implementations.Base
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
         private readonly IGeneralHelper _generalHelper;
-        private readonly ILogManager _logManager;
+        private readonly ILogHelper _logHelper;
 
         private readonly IChromeManager _chromeManager;
 
         private readonly ITrainTroopParser _trainTroopParser;
 
-        public TrainTroopHelper(IDbContextFactory<AppDbContext> contextFactory, IGeneralHelper generalHelper, ILogManager logManager, IChromeManager chromeManager, ITrainTroopParser trainTroopParser)
+        public TrainTroopHelper(IDbContextFactory<AppDbContext> contextFactory, IGeneralHelper generalHelper, ILogHelper logHelper, IChromeManager chromeManager, ITrainTroopParser trainTroopParser)
         {
             _contextFactory = contextFactory;
             _generalHelper = generalHelper;
-            _logManager = logManager;
+            _logHelper = logHelper;
             _chromeManager = chromeManager;
             _trainTroopParser = trainTroopParser;
         }
@@ -41,7 +41,7 @@ namespace MainCore.Helper.Implementations.Base
             if (buildingLoc == -1)
             {
                 DisableSetting(villageId, trainBuilding);
-                _logManager.Information(accountId, $"There is no {trainBuilding} in village");
+                _logHelper.Information(accountId, $"There is no {trainBuilding} in village");
                 return Result.Ok();
             }
 

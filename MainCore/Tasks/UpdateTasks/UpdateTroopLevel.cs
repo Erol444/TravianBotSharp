@@ -22,7 +22,7 @@ namespace MainCore.Tasks.UpdateTasks
 
             //foreach (var command in commands)
             //{
-            //    _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+            //    _logHelper.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
             //    var result = command.Invoke();
             //    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             //    if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());

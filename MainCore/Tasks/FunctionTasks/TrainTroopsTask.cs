@@ -17,13 +17,13 @@ namespace MainCore.Tasks.FunctionTasks
         private readonly ITrainTroopHelper _trainTroopHelper;
         private readonly IGeneralHelper _generalHelper;
 
-        private readonly Services.Interface.ILogManager _logManager;
+        private readonly ILogHelper _logHelper;
 
         public TrainTroopsTask(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _trainTroopHelper = Locator.Current.GetService<ITrainTroopHelper>();
             _generalHelper = Locator.Current.GetService<IGeneralHelper>();
-            _logManager = Locator.Current.GetService<Services.Interface.ILogManager>();
+            _logHelper = Locator.Current.GetService<ILogHelper>();
         }
 
         public override Result Execute()
@@ -44,7 +44,7 @@ namespace MainCore.Tasks.FunctionTasks
                 {
                     if (result.HasError<NoResource>())
                     {
-                        _logManager.Warning(AccountId, result.Reasons[0].Message);
+                        _logHelper.Warning(AccountId, result.Reasons[0].Message);
                         break;
                     }
                     return result.WithError(new Trace(Trace.TraceMessage()));

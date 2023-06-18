@@ -24,7 +24,7 @@ namespace MainCore.Tasks.FunctionTasks
 
             //foreach (var command in commands)
             //{
-            //    _logManager.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
+            //    _logHelper.Information(AccountId, $"[{GetName()}] Execute {command.Method.Name}");
             //    var result = command.Invoke();
             //    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             //    if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
@@ -110,7 +110,7 @@ namespace MainCore.Tasks.FunctionTasks
         //        var troop = troops[i];
         //        if (troop.Level == -1)
         //        {
-        //            _logManager.Warning(AccountId, $"{(TroopEnums)troop.Id} is not researched");
+        //            _logHelper.Warning(AccountId, $"{(TroopEnums)troop.Id} is not researched");
         //            boolean[troop.Id % 10 - 1] = false;
         //            settings.SetTroopUpgrade(boolean);
         //            context.Update(settings);
@@ -118,7 +118,7 @@ namespace MainCore.Tasks.FunctionTasks
         //        }
         //        if (troop.Level == 20)
         //        {
-        //            _logManager.Warning(AccountId, $"{(TroopEnums)troop.Id} is max level");
+        //            _logHelper.Warning(AccountId, $"{(TroopEnums)troop.Id} is max level");
         //            boolean[(int)Troop % 10 + 1] = false;
         //            settings.SetTroopUpgrade(boolean);
         //            context.Update(settings);

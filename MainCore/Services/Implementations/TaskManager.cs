@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using MainCore.Enums;
 using MainCore.Errors;
+using MainCore.Helper.Interface;
 using MainCore.Services.Interface;
 using MainCore.Tasks.Base;
 using MainCore.Tasks.FunctionTasks;
@@ -15,11 +16,11 @@ namespace MainCore.Services.Implementations
 {
     public sealed class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogManager logManager)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogHelper logHelper)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
-            _logManager = logManager;
+            _logHelper = logHelper;
             _eventManager.TaskExecute += Loop;
         }
 
@@ -113,18 +114,18 @@ namespace MainCore.Services.Implementations
                 .OrResult<Result>(x => x.HasError<Retry>())
                 .WaitAndRetry(retryCount: 3, sleepDurationProvider: _ => TimeSpan.FromSeconds(5), onRetry: (error, _, retryCount, _) =>
                 {
-                    _logManager.Warning(index, $"There is something wrong.");
+                    _logHelper.Warning(index, $"There is something wrong.");
                     if (error.Exception is null)
                     {
                         var errors = error.Result.Reasons.Select(x => x.Message).ToList();
-                        _logManager.Error(index, string.Join(Environment.NewLine, errors));
+                        _logHelper.Error(index, string.Join(Environment.NewLine, errors));
                     }
                     else
                     {
                         var exception = error.Exception;
-                        _logManager.Error(index, exception.Message, exception);
+                        _logHelper.Error(index, exception.Message, exception);
                     }
-                    _logManager.Warning(index, $"Retry {retryCount} for {task.GetName()}");
+                    _logHelper.Warning(index, $"Retry {retryCount} for {task.GetName()}");
                 });
 
             _taskExecuting[index] = true;
@@ -138,18 +139,18 @@ namespace MainCore.Services.Implementations
 
             _cancellationTokenSources[index] = cts;
 
-            _logManager.Information(index, $"{task.GetName()} is started");
+            _logHelper.Information(index, $"{task.GetName()} is started");
             ///===========================================================///
             var poliResult = retryPolicy.ExecuteAndCapture(task.Execute);
             ///===========================================================///
-            _logManager.Information(index, $"{task.GetName()} is finished");
+            _logHelper.Information(index, $"{task.GetName()} is finished");
 
             if (poliResult.FinalException is not null)
             {
                 UpdateAccountStatus(index, AccountStatus.Paused);
-                _logManager.Warning(index, $"There is something wrong. Bot is pausing. Last exception is", task);
+                _logHelper.Warning(index, $"There is something wrong. Bot is pausing. Last exception is", task);
                 var ex = poliResult.FinalException;
-                _logManager.Error(index, ex.Message, ex);
+                _logHelper.Error(index, ex.Message, ex);
             }
             else
             {
@@ -159,7 +160,7 @@ namespace MainCore.Services.Implementations
                     task.Stage = TaskStage.Waiting;
 
                     var errors = result.Reasons.Select(x => x.Message).ToList();
-                    _logManager.Warning(index, string.Join(Environment.NewLine, errors), task);
+                    _logHelper.Warning(index, string.Join(Environment.NewLine, errors), task);
 
                     if (result.HasError<Login>())
                     {
@@ -240,6 +241,6 @@ namespace MainCore.Services.Implementations
 
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
-        private readonly ILogManager _logManager;
+        private readonly ILogHelper _logHelper;
     }
 }

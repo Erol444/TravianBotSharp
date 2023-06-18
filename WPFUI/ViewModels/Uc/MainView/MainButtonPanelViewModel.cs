@@ -25,7 +25,7 @@ namespace WPFUI.ViewModels.Uc.MainView
         private readonly ITaskManager _taskManager;
         private readonly IPlanManager _planManager;
         private readonly IRestClientManager _restClientManager;
-        private readonly ILogManager _logManager;
+        private readonly ILogHelper _logHelper;
         private readonly ITimerManager _timeManager;
         private readonly IChromeManager _chromeManager;
 
@@ -36,14 +36,14 @@ namespace WPFUI.ViewModels.Uc.MainView
         private readonly AccountListViewModel _accountListViewModel;
         private readonly IAccessHelper _accessHelper;
 
-        public MainButtonPanelViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogManager logManager, ITimerManager timeManager, IChromeManager chromeManager, WaitingOverlayViewModel waitingWindow, VersionOverlayViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectorViewModel)
+        public MainButtonPanelViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogHelper logHelper, ITimerManager timeManager, IChromeManager chromeManager, WaitingOverlayViewModel waitingWindow, VersionOverlayViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectorViewModel)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
             _taskManager = taskManager;
             _planManager = planManager;
             _restClientManager = restClientManager;
-            _logManager = logManager;
+            _logHelper = logHelper;
             _timeManager = timeManager;
             _chromeManager = chromeManager;
             _waitingOverlay = waitingWindow;
@@ -189,7 +189,6 @@ namespace WPFUI.ViewModels.Uc.MainView
                 return;
             }
             _taskManager.UpdateAccountStatus(index, AccountStatus.Starting);
-            _logManager.AddAccount(index);
             var accesses = context.Accesses.Where(x => x.AccountId == index).OrderBy(x => x.LastUsed);
             Access selectedAccess = null;
             foreach (var access in accesses)
@@ -202,11 +201,11 @@ namespace WPFUI.ViewModels.Uc.MainView
                     break;
                 }
 
-                _logManager.Information(index, $"Checking proxy {access.ProxyHost}");
+                _logHelper.Information(index, $"Checking proxy {access.ProxyHost}");
                 var result = _accessHelper.IsValid(_restClientManager.Get(new(access)));
                 if (result)
                 {
-                    _logManager.Information(index, $"Proxy {access.ProxyHost} is working");
+                    _logHelper.Information(index, $"Proxy {access.ProxyHost} is working");
                     selectedAccess = access;
                     access.LastUsed = DateTime.Now;
                     context.SaveChanges();
@@ -214,14 +213,14 @@ namespace WPFUI.ViewModels.Uc.MainView
                 }
                 else
                 {
-                    _logManager.Information(index, $"Proxy {access.ProxyHost} is not working");
+                    _logHelper.Information(index, $"Proxy {access.ProxyHost} is not working");
                 }
             }
 
             if (selectedAccess is null)
             {
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Offline);
-                _logManager.Information(index, "All proxy of this account is not working");
+                _logHelper.Information(index, "All proxy of this account is not working");
                 MessageBox.Show("All proxy of this account is not working");
                 return;
             }
