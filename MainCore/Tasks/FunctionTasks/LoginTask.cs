@@ -57,7 +57,7 @@ namespace MainCore.Tasks.FunctionTasks
                     var task = upgradeBuildingList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (task is null)
                     {
-                        _taskManager.Add(AccountId, new UpgradeBuilding(village.Id, AccountId));
+                        _taskManager.Add<UpgradeBuilding>(AccountId, village.Id);
                     }
                 }
                 var setting = context.VillagesSettings.Find(village.Id);
@@ -66,7 +66,7 @@ namespace MainCore.Tasks.FunctionTasks
                     var task = updateList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (task is null)
                     {
-                        _taskManager.Add(AccountId, new RefreshVillage(village.Id, AccountId));
+                        _taskManager.Add<RefreshVillage>(AccountId, village.Id);
                     }
                 }
 
@@ -75,7 +75,7 @@ namespace MainCore.Tasks.FunctionTasks
                     var task = trainTroopList.FirstOrDefault(x => x.VillageId == village.Id);
                     if (task is null)
                     {
-                        _taskManager.Add(AccountId, new TrainTroopsTask(village.Id, AccountId));
+                        _taskManager.Add<TrainTroopsTask>(AccountId, village.Id);
                     }
                 }
             }

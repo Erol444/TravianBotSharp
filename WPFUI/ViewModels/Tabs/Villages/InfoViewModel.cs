@@ -1,5 +1,4 @@
 ﻿using MainCore.Services.Interface;
-using MainCore.Tasks.FunctionTasks;
 using MainCore.Tasks.UpdateTasks;
 using ReactiveUI;
 using System;
@@ -43,8 +42,10 @@ namespace WPFUI.ViewModels.Tabs.Villages
             //    _taskManager.Update(accountId);
             //}
 
-            _taskManager.Add(AccountId, new TrainTroopsTask(VillageId, AccountId));
+            //_taskManager.Add(AccountId, new TrainTroopsTask(VillageId, AccountId));
             //_taskManager.Add(AccountId, new StableTrainTroopsTask(VillageId, AccountId));
+
+            _taskManager.Add<UpdateBothDorf>(AccountId);
         }
 
         private void Dorf1()
@@ -55,12 +56,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var updateTask = tasks.OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, new UpdateDorf1(villageId, accountId));
+                _taskManager.Add<UpdateDorf1>(accountId, villageId);
             }
             else
             {
                 updateTask.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 
@@ -72,12 +73,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var updateTask = tasks.OfType<UpdateDorf2>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, new UpdateDorf2(villageId, accountId));
+                _taskManager.Add<UpdateDorf2>(accountId);
             }
             else
             {
                 updateTask.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 

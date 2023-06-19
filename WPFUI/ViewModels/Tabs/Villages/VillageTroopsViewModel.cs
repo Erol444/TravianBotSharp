@@ -97,7 +97,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void UpdateTask()
         {
-            _taskManager.Add(AccountId, new UpdateTroopLevel(VillageId, AccountId));
+            _taskManager.Add<UpdateTroopLevel>(AccountId, VillageId);
             MessageBox.Show("Update");
         }
 

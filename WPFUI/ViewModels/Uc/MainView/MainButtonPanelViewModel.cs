@@ -239,14 +239,14 @@ namespace WPFUI.ViewModels.Uc.MainView
                 MessageBox.Show(ex.Message, "Error");
                 return;
             }
-            _taskManager.Add(index, new LoginTask(index), true);
+            _taskManager.Add<LoginTask>(index, true);
 
-            var sleepExist = _taskManager.GetList(index).FirstOrDefault(x => x.GetType() == typeof(SleepTask));
+            var sleepExist = _taskManager.GetList(index).OfType<SleepTask>().FirstOrDefault();
             if (sleepExist is null)
             {
                 (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
                 var time = TimeSpan.FromMinutes(Random.Shared.Next(min, max));
-                _taskManager.Add(index, new SleepTask(index) { ExecuteAt = DateTime.Now.Add(time) });
+                _taskManager.Add<SleepTask>(index, () => new(index) { ExecuteAt = DateTime.Now.Add(time) });
             }
 
             _timeManager.Start(index);
@@ -314,17 +314,17 @@ namespace WPFUI.ViewModels.Uc.MainView
                 var queue = _planManager.GetList(village.Id);
                 if (queue.Any())
                 {
-                    _taskManager.Add(index, new UpgradeBuilding(village.Id, index));
+                    _taskManager.Add<UpgradeBuilding>(index, village.Id);
                 }
                 var villageSetting = context.VillagesSettings.Find(village.Id);
                 if (villageSetting.IsAutoRefresh)
                 {
-                    _taskManager.Add(index, new RefreshVillage(village.Id, index));
+                    _taskManager.Add<RefreshVillage>(index, village.Id);
                 }
 
                 if (villageSetting.BarrackTroop != 0 || villageSetting.StableTroop != 0 || villageSetting.WorkshopTroop != 0)
                 {
-                    _taskManager.Add(AccountId, new TrainTroopsTask(village.Id, AccountId));
+                    _taskManager.Add<TrainTroopsTask>(village.Id, index);
                 }
             }
 
@@ -332,7 +332,7 @@ namespace WPFUI.ViewModels.Uc.MainView
             (var min, var max) = (setting.WorkTimeMin, setting.WorkTimeMax);
 
             var time = TimeSpan.FromMinutes(Random.Shared.Next(min, max));
-            _taskManager.Add(index, new SleepTask(index) { ExecuteAt = DateTime.Now.Add(time) });
+            _taskManager.Add<SleepTask>(index, () => new(index) { ExecuteAt = DateTime.Now.Add(time) });
             _taskManager.UpdateAccountStatus(index, AccountStatus.Online);
         }
 

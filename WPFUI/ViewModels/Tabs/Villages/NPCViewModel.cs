@@ -56,13 +56,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void RefreshTask()
         {
-            _taskManager.Add(AccountId, new RefreshVillage(VillageId, AccountId));
+            _taskManager.Add<RefreshVillage>(AccountId, VillageId);
             MessageBox.Show("Added Refresh resources task to queue");
         }
 
         private void NPCTask()
         {
-            _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId, Ratio.GetResources()));
+            _taskManager.Add<NPCTask>(AccountId, () => new(VillageId, AccountId, Ratio.GetResources()));
             MessageBox.Show("Added NPC task to queue");
         }
 

@@ -278,12 +278,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
-                _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
+                _taskManager.Add<UpgradeBuilding>(accountId, villageId);
             }
             else
             {
                 task.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 
@@ -313,12 +313,12 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var task = tasks.OfType<UpgradeBuilding>().FirstOrDefault(x => x.VillageId == villageId);
             if (task is null)
             {
-                _taskManager.Add(accountId, new UpgradeBuilding(villageId, accountId));
+                _taskManager.Add<UpgradeBuilding>(accountId, villageId);
             }
             else
             {
                 task.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 

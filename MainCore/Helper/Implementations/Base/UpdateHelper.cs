@@ -488,7 +488,7 @@ namespace MainCore.Helper.Implementations.Base
                 context.AddVillage(newVill.Id);
                 context.AddTroop(newVill.Id, tribe);
 
-                _taskManager.Add(accountId, new UpdateBothDorf(newVill.Id, accountId));
+                _taskManager.Add<UpdateBothDorf>(accountId, newVill.Id);
             }
             context.SaveChanges();
             if (villageChange)
@@ -529,7 +529,7 @@ namespace MainCore.Helper.Implementations.Base
                     var task = listTask.OfType<UpdateAdventures>();
                     if (!task.Any())
                     {
-                        _taskManager.Add(accountId, new UpdateAdventures(accountId));
+                        _taskManager.Add<UpdateAdventures>(accountId);
                     }
                 }
             }

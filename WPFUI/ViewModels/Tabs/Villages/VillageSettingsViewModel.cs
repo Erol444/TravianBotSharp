@@ -254,7 +254,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                         var count = currentBuildings.Count(x => x.Level != -1);
                         if (count > 0)
                         {
-                            _taskManager.Add(accountId, new InstantUpgrade(villageId, accountId));
+                            _taskManager.Add<InstantUpgrade>(accountId, villageId);
                         }
                     }
                 }
@@ -272,7 +272,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     if (!tasks.Any(x => x.VillageId == villageId))
                     {
-                        _taskManager.Add(accountId, new RefreshVillage(villageId, accountId));
+                        _taskManager.Add<RefreshVillage>(accountId, villageId);
                     }
                 }
                 else
@@ -290,7 +290,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 {
                     if (!tasks.Any(x => x.VillageId == villageId))
                     {
-                        _taskManager.Add(accountId, new TrainTroopsTask(villageId, accountId));
+                        _taskManager.Add<TrainTroopsTask>(accountId, villageId);
                     }
                 }
                 else

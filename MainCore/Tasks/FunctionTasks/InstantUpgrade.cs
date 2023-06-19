@@ -46,7 +46,7 @@ namespace MainCore.Tasks.FunctionTasks
             if (upgradeTask is not null)
             {
                 upgradeTask.ExecuteAt = DateTime.Now;
-                _taskManager.Update(AccountId);
+                _taskManager.ReOrder(AccountId);
             }
         }
     }

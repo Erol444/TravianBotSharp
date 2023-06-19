@@ -101,7 +101,7 @@ namespace MainCore.Tasks.FunctionTasks
 
             if (currentlyBuildings.Max(x => x.CompleteTime) < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
 
-            _taskManager.Add(AccountId, new InstantUpgrade(VillageId, AccountId));
+            _taskManager.Add<InstantUpgrade>(AccountId, VillageId);
         }
 
         private void AutoNPC()
@@ -120,14 +120,14 @@ namespace MainCore.Tasks.FunctionTasks
             {
                 var ratio = resource.Crop * 100.0f / resource.Granary;
                 if (ratio < setting.AutoNPCPercent) return;
-                _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
+                _taskManager.Add<NPCTask>(AccountId, VillageId);
             }
             if (setting.IsAutoNPCWarehouse && setting.AutoNPCWarehousePercent != 0)
             {
                 var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
                 var ratio = maxResource * 100.0f / resource.Warehouse;
                 if (ratio < setting.AutoNPCWarehousePercent) return;
-                _taskManager.Add(AccountId, new NPCTask(VillageId, AccountId));
+                _taskManager.Add<NPCTask>(AccountId, VillageId);
             }
         }
 
@@ -154,7 +154,7 @@ namespace MainCore.Tasks.FunctionTasks
                 if (!troopsUpgrade[i]) continue;
                 if (troops[i].Level == -1) continue;
                 if (troops[i].Level >= smithy.Level) continue;
-                _taskManager.Add(AccountId, new ImproveTroopsTask(VillageId, AccountId));
+                _taskManager.Add<ImproveTroopsTask>(AccountId, VillageId);
             }
         }
     }

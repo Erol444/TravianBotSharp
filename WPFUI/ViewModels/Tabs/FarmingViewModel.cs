@@ -73,12 +73,12 @@ namespace WPFUI.ViewModels.Tabs
                 var task = tasks.OfType<StartFarmList>().FirstOrDefault();
                 if (task is null)
                 {
-                    _taskManager.Add(accountId, new StartFarmList(accountId));
+                    _taskManager.Add<StartFarmList>(accountId);
                 }
                 else
                 {
                     task.ExecuteAt = DateTime.Now;
-                    _taskManager.Update(AccountId);
+                    _taskManager.ReOrder(AccountId);
                 }
             });
 
@@ -158,13 +158,13 @@ namespace WPFUI.ViewModels.Tabs
             var tasks = _taskManager.GetList(accountId).OfType<UpdateFarmList>();
             if (!tasks.Any())
             {
-                _taskManager.Add(accountId, new UpdateFarmList(accountId));
+                _taskManager.Add<UpdateFarmList>(accountId);
             }
             else
             {
                 var updateFarmList = tasks.First();
                 updateFarmList.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
             return Task.CompletedTask;
         }

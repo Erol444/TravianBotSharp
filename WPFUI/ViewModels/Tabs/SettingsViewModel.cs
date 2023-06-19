@@ -215,12 +215,12 @@ namespace WPFUI.ViewModels.Tabs
             {
                 if (task is null)
                 {
-                    _taskManager.Add(index, new UpdateAdventures(index));
+                    _taskManager.Add<UpdateAdventures>(index);
                 }
                 else
                 {
                     task.ExecuteAt = DateTime.Now;
-                    _taskManager.Update(index);
+                    _taskManager.ReOrder(index);
                 }
             }
             else

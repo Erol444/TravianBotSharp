@@ -134,12 +134,12 @@ namespace WPFUI.ViewModels.Tabs
             var task = tasks.OfType<UpdateAdventures>().FirstOrDefault();
             if (task is null)
             {
-                _taskManager.Add(accountId, new UpdateAdventures(accountId));
+                _taskManager.Add<UpdateAdventures>(accountId);
             }
             else
             {
                 task.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 
@@ -147,15 +147,15 @@ namespace WPFUI.ViewModels.Tabs
         {
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
-            var task = tasks.FirstOrDefault(x => x is UpdateHeroItems);
+            var task = tasks.OfType<UpdateHeroItems>().FirstOrDefault();
             if (task is null)
             {
-                _taskManager.Add(accountId, new UpdateHeroItems(accountId));
+                _taskManager.Add<UpdateHeroItems>(accountId);
             }
             else
             {
                 task.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 
