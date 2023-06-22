@@ -3,6 +3,7 @@ using MainCore.Tasks.UpdateTasks;
 using ReactiveUI;
 using System.Reactive;
 using System.Windows;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
@@ -12,7 +13,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
 
-        public VillageTroopsViewModel(SelectorViewModel selectorViewModel, IEventManager eventManager, ITaskManager taskManager) : base(selectorViewModel)
+        public VillageTroopsViewModel(SelectedItemStore selectedItemStore, IEventManager eventManager, ITaskManager taskManager) : base(selectedItemStore)
         {
             _eventManager = eventManager;
             _taskManager = taskManager;

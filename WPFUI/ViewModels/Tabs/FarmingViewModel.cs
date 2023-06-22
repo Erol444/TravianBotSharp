@@ -16,6 +16,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Uc;
 
@@ -35,7 +36,7 @@ namespace WPFUI.ViewModels.Tabs
         public ReactiveCommand<Unit, Unit> ActiveCommand { get; }
         public ReactiveCommand<Unit, Unit> RefreshCommand { get; }
 
-        public FarmingViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, WaitingOverlayViewModel waitingWindow) : base(selectorViewModel)
+        public FarmingViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, WaitingOverlayViewModel waitingWindow) : base(selectedItemStore)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
@@ -51,7 +52,6 @@ namespace WPFUI.ViewModels.Tabs
             ActiveCommand = ReactiveCommand.CreateFromTask(ActiveTask, this.WhenAnyValue(vm => vm.CurrentFarm).Select(x => x is not null));
             RefreshCommand = ReactiveCommand.CreateFromTask(RefreshTask);
 
-            this.WhenAnyValue(vm => vm.CurrentFarm).BindTo(_selectorViewModel, vm => vm.Farm);
             this.WhenAnyValue(vm => vm.CurrentFarm).InvokeCommand(LoadCommand);
             _eventManager.FarmListUpdate += OnFarmListUpdate;
         }
@@ -107,7 +107,7 @@ namespace WPFUI.ViewModels.Tabs
             await Task.Run(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
-                var settings = context.AccountsSettings.Find(_selectorViewModel.Account.Id);
+                var settings = context.AccountsSettings.Find(_selectedItemStore.Account.Id);
                 settings.FarmIntervalMin = Interval - DiffInterval;
                 if (settings.FarmIntervalMin < 0) settings.FarmIntervalMin = 0;
                 settings.FarmIntervalMax = Interval + DiffInterval;
@@ -154,7 +154,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private Task RefreshTask()
         {
-            var accountId = _selectorViewModel.Account.Id;
+            var accountId = _selectedItemStore.Account.Id;
             var tasks = _taskManager.GetList(accountId).OfType<UpdateFarmList>();
             if (!tasks.Any())
             {
@@ -190,7 +190,7 @@ namespace WPFUI.ViewModels.Tabs
                     return new ListBoxItem(farm.Id, farm.Name, color);
                 }).ToList();
 
-            var settings = context.AccountsSettings.Find(_selectorViewModel.Account.Id);
+            var settings = context.AccountsSettings.Find(_selectedItemStore.Account.Id);
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {

@@ -11,6 +11,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Uc;
 
@@ -24,7 +25,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private readonly WaitingOverlayViewModel _waitingOverlay;
 
-        public EditAccountViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, IEventManager eventManager, WaitingOverlayViewModel waitingWindow) : base(selectorViewModel)
+        public EditAccountViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, IEventManager eventManager, WaitingOverlayViewModel waitingWindow) : base(selectedItemStore)
         {
             _contextFactory = contextFactory;
             _useragentManager = useragentManager;
@@ -70,36 +71,33 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!CheckInput()) return;
             _waitingOverlay.ShowCommand.Execute("saving account").Subscribe();
-            await Task.Run(() =>
+
+            var context = await _contextFactory.CreateDbContextAsync();
+            var accountId = _selectedItemStore.Account.Id;
+            var account = context.Accounts.FirstOrDefault(x => x.Id == accountId);
+            if (account is null) return;
+            Uri.TryCreate(Server, UriKind.Absolute, out var url);
+            account.Server = url.AbsoluteUri;
+            account.Username = Username;
+
+            var accesses = context.Accesses.Where(x => x.AccountId == accountId);
+
+            context.Accesses.RemoveRange(accesses);
+
+            foreach (var access in Accessess)
             {
-                var context = _contextFactory.CreateDbContext();
-                var accountId = _selectorViewModel.Account.Id;
-                var account = context.Accounts.FirstOrDefault(x => x.Id == accountId);
-                if (account is null) return;
-                Uri.TryCreate(Server, UriKind.Absolute, out var url);
-                account.Server = url.AbsoluteUri;
-                account.Username = Username;
-
-                var accesses = context.Accesses.Where(x => x.AccountId == accountId);
-
-                context.Accesses.RemoveRange(accesses);
-                context.SaveChanges();
-
-                foreach (var access in Accessess)
+                context.Accesses.Add(new()
                 {
-                    context.Accesses.Add(new()
-                    {
-                        AccountId = accountId,
-                        Password = access.Password,
-                        ProxyHost = access.ProxyHost,
-                        ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
-                        ProxyUsername = access.ProxyUsername,
-                        ProxyPassword = access.ProxyPassword,
-                        Useragent = _useragentManager.Get(),
-                    });
-                }
-                context.SaveChanges();
-            });
+                    AccountId = accountId,
+                    Password = access.Password,
+                    ProxyHost = access.ProxyHost,
+                    ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
+                    ProxyUsername = access.ProxyUsername,
+                    ProxyPassword = access.ProxyPassword,
+                    Useragent = _useragentManager.Get(),
+                });
+            }
+            await context.SaveChangesAsync();
 
             _eventManager.OnAccountsUpdate();
             Clean();

@@ -16,6 +16,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Uc;
 
@@ -28,7 +29,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private readonly WaitingOverlayViewModel _waitingOverlay;
 
-        public SettingsViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingOverlayViewModel waitingWindow) : base(selectorViewModel)
+        public SettingsViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingOverlayViewModel waitingWindow) : base(selectedItemStore)
         {
             _contextFactory = contextFactory;
             _taskManager = taskManager;

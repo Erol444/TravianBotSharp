@@ -13,6 +13,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
@@ -26,7 +27,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private const string discordUrl = "https://discord.gg/DVPV4gesCz";
 
-        public DebugViewModel(SelectorViewModel selectorViewModel, ITaskManager taskManager, ILogHelper logHelper, IEventManager eventManager, IDbContextFactory<AppDbContext> contextFactory) : base(selectorViewModel)
+        public DebugViewModel(SelectedItemStore selectedItemStore, ITaskManager taskManager, ILogHelper logHelper, IEventManager eventManager, IDbContextFactory<AppDbContext> contextFactory) : base(selectedItemStore)
         {
             _taskManager = taskManager;
             _logHelper = logHelper;
@@ -63,7 +64,7 @@ namespace WPFUI.ViewModels.Tabs
         private void LogFolderTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var info = context.Accounts.Find(_selectorViewModel.Account.Id);
+            var info = context.Accounts.Find(_selectedItemStore.Account.Id);
             var name = info.Username;
             Process.Start(new ProcessStartInfo(Path.Combine(AppContext.BaseDirectory, "logs"))
             {

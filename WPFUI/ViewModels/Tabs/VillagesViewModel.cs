@@ -31,7 +31,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private ListBoxItem _currentVillage;
 
-        public VillagesViewModel(SelectorViewModel selectorViewModel, VillageNavigationStore villageNavigationStore, IDbContextFactory<AppDbContext> contextFactory, NoVillageViewModel noVillageViewModel, BuildViewModel buildViewModel, VillageSettingsViewModel villageSettingsViewModel, NPCViewModel npcViewModel, VillageTroopsViewModel villageTroopsViewModel, InfoViewModel infoViewModel) : base(selectorViewModel)
+        public VillagesViewModel(SelectedItemStore SelectedItemStore, VillageNavigationStore villageNavigationStore, IDbContextFactory<AppDbContext> contextFactory, NoVillageViewModel noVillageViewModel, BuildViewModel buildViewModel, VillageSettingsViewModel villageSettingsViewModel, NPCViewModel npcViewModel, VillageTroopsViewModel villageTroopsViewModel, InfoViewModel infoViewModel) : base(SelectedItemStore)
         {
             _villageNavigationStore = villageNavigationStore;
             _contextFactory = contextFactory;
@@ -58,7 +58,7 @@ namespace WPFUI.ViewModels.Tabs
             this.WhenAnyValue(vm => vm._villageNavigationStore.CurrentViewModel)
                 .ToProperty(this, vm => vm.CurrentViewModel, out _currentViewModel);
 
-            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(_selectorViewModel, vm => vm.Village);
+            this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(_selectedItemStore, vm => vm.Village);
             this.WhenAnyValue(vm => vm.CurrentVillage).Where(x => x is not null).Subscribe(x =>
             {
                 SetTab(TabType.Normal);

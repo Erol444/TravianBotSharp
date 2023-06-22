@@ -4,6 +4,7 @@ using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
@@ -12,7 +13,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
     {
         private readonly ITaskManager _taskManager;
 
-        public InfoViewModel(SelectorViewModel selectorViewModel, ITaskManager taskManager) : base(selectorViewModel)
+        public InfoViewModel(SelectedItemStore selectedItemStore, ITaskManager taskManager) : base(selectedItemStore)
         {
             _taskManager = taskManager;
 

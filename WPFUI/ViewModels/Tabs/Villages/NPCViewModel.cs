@@ -9,6 +9,7 @@ using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
@@ -18,7 +19,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly ITaskManager _taskManager;
 
-        public NPCViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager) : base(selectorViewModel)
+        public NPCViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager) : base(selectedItemStore)
         {
             _contextFactory = contextFactory;
             _taskManager = taskManager;

@@ -43,7 +43,6 @@ namespace WPFUI.DependencyInjector
             services.AddSingleton<VillageSettingsViewModel>();
             services.AddSingleton<VillageTroopsViewModel>();
 
-            services.AddSingleton<SelectorViewModel>();
             return services;
         }
 
@@ -60,6 +59,7 @@ namespace WPFUI.DependencyInjector
         {
             services.AddSingleton<NavigationStore>();
             services.AddSingleton<VillageNavigationStore>();
+            services.AddSingleton<SelectedItemStore>();
             return services;
         }
     }

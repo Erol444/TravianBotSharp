@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
@@ -21,7 +22,7 @@ namespace WPFUI.ViewModels.Tabs
         private readonly IEventManager _eventManager;
         private readonly ITaskManager _taskManager;
 
-        public HeroViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager) : base(selectorViewModel)
+        public HeroViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager) : base(selectedItemStore)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;

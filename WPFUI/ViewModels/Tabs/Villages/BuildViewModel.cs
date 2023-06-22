@@ -15,10 +15,12 @@ using System.IO;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Media;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
@@ -34,7 +36,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private readonly Color BLACK = Color.FromRgb(0, 0, 0);
 
-        public BuildViewModel(SelectorViewModel selectorViewModel, IBuildingsHelper buildingsHelper, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IDatabaseHelper databaseHelper) : base(selectorViewModel)
+        public BuildViewModel(SelectedItemStore selectedItemStore, IBuildingsHelper buildingsHelper, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IDatabaseHelper databaseHelper) : base(selectedItemStore)
         {
             _buildingsHelper = buildingsHelper;
             _contextFactory = contextFactory;
@@ -47,36 +49,28 @@ namespace WPFUI.ViewModels.Tabs.Villages
             _eventManager.VillageBuildQueueUpdate += EventManager_VillageUpdate;
             _eventManager.VillageBuildsUpdate += EventManager_VillageUpdate;
 
-            this.WhenAnyValue(vm => vm.CurrentBuilding).BindTo(_selectorViewModel, vm => vm.Building);
-            this.WhenAnyValue(vm => vm.CurrentQueueBuilding).BindTo(_selectorViewModel, vm => vm.Queue);
+            this.WhenAnyValue(vm => vm.CurrentBuilding)
+                .WhereNotNull()
+                .Subscribe(item => LoadNormalBuild(VillageId, item.Id));
 
-            this.WhenAnyValue(vm => vm.CurrentBuilding).WhereNotNull().Subscribe(item => LoadNormalBuild(VillageId, item.Id));
-
-            foreach (var item in Enum.GetValues(typeof(ResTypeEnums)))
+            foreach (var item in Enum.GetValues<ResTypeEnums>())
             {
-                ComboResTypes.Add(new()
-                {
-                    Type = (ResTypeEnums)item,
-                });
+                ComboResTypes.Add(new(item));
             }
 
-            foreach (var item in Enum.GetValues(typeof(BuildingStrategyEnums)))
+            foreach (var item in Enum.GetValues<BuildingStrategyEnums>())
             {
-                ComboStrategy.Add(new()
-                {
-                    Strategy = (BuildingStrategyEnums)item,
-                });
+                ComboStrategy.Add(new(item));
             }
 
             ResourceBuildCommand = ReactiveCommand.Create(ResourceBuildTask);
             NormalBuildCommand = ReactiveCommand.Create(NormalBuildTask, this.WhenAnyValue(vm => vm.IsLevelEnable));
 
-            var isValid = this.WhenAnyValue(vm => vm._selectorViewModel.IsQueueSelected);
-            TopCommand = ReactiveCommand.Create(TopTask, isValid);
-            BottomCommand = ReactiveCommand.Create(BottomTask, isValid);
-            UpCommand = ReactiveCommand.Create(UpTask, isValid);
-            DownCommand = ReactiveCommand.Create(DownTask, isValid);
-            DeleteCommand = ReactiveCommand.Create(DeleteTask, isValid);
+            TopCommand = ReactiveCommand.Create(TopTask);
+            BottomCommand = ReactiveCommand.Create(BottomTask);
+            UpCommand = ReactiveCommand.Create(UpTask);
+            DownCommand = ReactiveCommand.Create(DownTask);
+            DeleteCommand = ReactiveCommand.Create(DeleteTask);
             DeleteAllCommand = ReactiveCommand.Create(DeleteAllTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
@@ -268,7 +262,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 Level = NormalLevel,
                 Type = PlanTypeEnums.General,
                 Building = CurrentNormalBuilding.Building,
-                Location = _selectorViewModel.Building.Id,
+                Location = CurrentBuilding.Id,
             };
             var villageId = VillageId;
             _planManager.Add(villageId, planTask);
@@ -324,6 +318,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void TopTask()
         {
+            if (CurrentBuilding is null) return;
             var index = CurrentQueueBuilding.Id;
             if (index == 0) return;
             var villageId = VillageId;
@@ -336,6 +331,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void BottomTask()
         {
+            if (CurrentBuilding is null) return;
             var index = CurrentQueueBuilding.Id;
             if (index == QueueBuildings.Count - 1) return;
             var villageId = VillageId;
@@ -347,6 +343,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void UpTask()
         {
+            if (CurrentBuilding is null) return;
             var index = CurrentQueueBuilding.Id;
             if (index == 0) return;
             var villageId = VillageId;
@@ -359,6 +356,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void DownTask()
         {
+            if (CurrentBuilding is null) return;
             var index = CurrentQueueBuilding.Id;
             if (index == QueueBuildings.Count - 1) return;
             var villageId = VillageId;
@@ -370,6 +368,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void DeleteTask()
         {
+            if (CurrentBuilding is null) return;
             var index = CurrentQueueBuilding.Id;
             var villageId = VillageId;
             _planManager.Remove(villageId, index);

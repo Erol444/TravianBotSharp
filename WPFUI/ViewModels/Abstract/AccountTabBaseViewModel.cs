@@ -1,45 +1,41 @@
 ﻿using ReactiveUI;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using WPFUI.Store;
 
 namespace WPFUI.ViewModels.Abstract
 {
     public abstract class AccountTabBaseViewModel : ActivatableViewModelBase
     {
-        protected readonly SelectorViewModel _selectorViewModel;
+        protected readonly SelectedItemStore _selectedItemStore;
 
-        public AccountTabBaseViewModel(SelectorViewModel selectorViewModel)
+        protected abstract void Init(int id);
+
+        private readonly ObservableAsPropertyHelper<int> _accountId;
+        public int AccountId => _accountId.Value;
+
+        public AccountTabBaseViewModel(SelectedItemStore selectedItemStore)
         {
-            _selectorViewModel = selectorViewModel;
+            _selectedItemStore = selectedItemStore;
 
-            _selectorViewModel.AccountChanged += OnAccountChanged;
+            _selectedItemStore.AccountChanged += OnAccountChanged;
             Active += OnActive;
 
-            this.WhenAnyValue(vm => vm._selectorViewModel.Account)
-                .Where(x => x is not null)
+            this.WhenAnyValue(vm => vm._selectedItemStore.Account)
+                .WhereNotNull()
                 .Select(x => x.Id)
                 .ToProperty(this, vm => vm.AccountId, out _accountId);
         }
 
-        protected abstract void Init(int id);
-
         private void OnActive()
         {
-            RxApp.TaskpoolScheduler.Schedule(() => Init(AccountId));
+            Init(AccountId);
         }
 
         private void OnAccountChanged(int accountId)
         {
             if (!IsActive) return;
-            RxApp.TaskpoolScheduler.Schedule(() => Init(accountId));
-        }
-
-        private readonly ObservableAsPropertyHelper<int> _accountId;
-
-        public int AccountId
-        {
-            get => _accountId.Value;
+            Init(accountId);
         }
     }
 }

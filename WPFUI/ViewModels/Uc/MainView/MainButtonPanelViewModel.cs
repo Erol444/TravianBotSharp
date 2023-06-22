@@ -13,6 +13,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 using Access = MainCore.Models.Database.Access;
 
@@ -36,7 +37,7 @@ namespace WPFUI.ViewModels.Uc.MainView
         private readonly AccountListViewModel _accountListViewModel;
         private readonly IAccessHelper _accessHelper;
 
-        public MainButtonPanelViewModel(SelectorViewModel selectorViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogHelper logHelper, ITimerManager timeManager, IChromeManager chromeManager, WaitingOverlayViewModel waitingWindow, VersionOverlayViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectorViewModel)
+        public MainButtonPanelViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogHelper logHelper, ITimerManager timeManager, IChromeManager chromeManager, WaitingOverlayViewModel waitingWindow, VersionOverlayViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectedItemStore)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
@@ -58,10 +59,10 @@ namespace WPFUI.ViewModels.Uc.MainView
             AddAccountCommand = ReactiveCommand.Create(AddAccountTask);
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
 
-            DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
+            DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectedItemStore.IsAccountSelected, (a, b) => a && b));
 
-            LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
-            LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAllowLogout, vm => vm._selectorViewModel.IsAccountSelected, (a, b) => a && b));
+            LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAllowLogin, vm => vm._selectedItemStore.IsAccountSelected, (a, b) => a && b));
+            LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAllowLogout, vm => vm._selectedItemStore.IsAccountSelected, (a, b) => a && b));
 
             PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsValidStatus));
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));

@@ -15,6 +15,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Uc;
 
@@ -29,7 +30,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private readonly WaitingOverlayViewModel _waitingOverlay;
 
-        public VillageSettingsViewModel(SelectorViewModel selectorViewModel, IUpgradeBuildingHelper upgradeBuildingHelper, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingOverlayViewModel waitingWindow) : base(selectorViewModel)
+        public VillageSettingsViewModel(SelectedItemStore selectedItemStore, IUpgradeBuildingHelper upgradeBuildingHelper, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager, WaitingOverlayViewModel waitingWindow) : base(selectedItemStore)
         {
             _upgradeBuildingHelper = upgradeBuildingHelper;
             _contextFactory = contextFactory;

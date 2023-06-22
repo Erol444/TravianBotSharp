@@ -5,7 +5,6 @@ using MainCore.Enums;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
-using Splat;
 using System;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,35 +12,37 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Windows.Media;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc.MainView
 {
     public class AccountListViewModel : ActivatableViewModelBase
     {
-        private readonly SelectorViewModel _selectorViewModel;
+        private readonly SelectedItemStore _selectedItemStore;
         private readonly MainTabPanelViewModel _mainTabPanelViewModel;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
 
-        public AccountListViewModel()
+        public AccountListViewModel(SelectedItemStore selectedItemStore, MainTabPanelViewModel mainTabPanelViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager)
         {
-            _selectorViewModel = Locator.Current.GetService<SelectorViewModel>();
-            _mainTabPanelViewModel = Locator.Current.GetService<MainTabPanelViewModel>();
-            _contextFactory = Locator.Current.GetService<IDbContextFactory<AppDbContext>>();
-            _eventManager = Locator.Current.GetService<IEventManager>();
-            _eventManager.AccountsTableUpdate += EventManager_AccountsTableUpdate;
-            _eventManager.AccountStatusUpdate += EventManager_AccountStatusUpdate;
+            _selectedItemStore = selectedItemStore;
+            _mainTabPanelViewModel = mainTabPanelViewModel;
+            _contextFactory = contextFactory;
+            _eventManager = eventManager;
 
-            Active += AccountListViewModel_Active;
+            _eventManager.AccountsTableUpdate += OnAccountsTableUpdate;
+            _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
 
-            this.WhenAnyValue(x => x.CurrentAccount).BindTo(_selectorViewModel, vm => vm.Account);
+            Active += OnActive;
+
+            this.WhenAnyValue(x => x.CurrentAccount).BindTo(_selectedItemStore, vm => vm.Account);
             this.WhenAnyValue(x => x.CurrentAccount)
-                .Where(x => x is not null)
+                .WhereNotNull()
                 .Subscribe(x => _mainTabPanelViewModel.SetTab(TabType.Normal));
         }
 
-        private void EventManager_AccountStatusUpdate(int accountId, AccountStatus status)
+        private void OnAccountStatusUpdate(int accountId, AccountStatus status)
         {
             if (!IsActive) return;
 
@@ -76,13 +77,15 @@ namespace WPFUI.ViewModels.Uc.MainView
             }
         }
 
-        private void EventManager_AccountsTableUpdate()
+        private void OnAccountsTableUpdate()
         {
+            if (!IsActive) return;
             LoadData();
         }
 
-        private void AccountListViewModel_Active()
+        private void OnActive()
         {
+            if (!IsActive) return;
             LoadData();
         }
 
