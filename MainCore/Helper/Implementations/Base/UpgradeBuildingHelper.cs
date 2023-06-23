@@ -23,10 +23,11 @@ namespace MainCore.Helper.Implementations.Base
         private readonly IChromeManager _chromeManager;
         private readonly ISystemPageParser _systemPageParser;
         private readonly IGeneralHelper _generalHelper;
+        private readonly IUpdateHelper _updateHelper;
         private readonly IHeroResourcesHelper _heroResourcesHelper;
         private readonly IEventManager _eventManager;
 
-        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper)
+        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper)
         {
             _contextFactory = contextFactory;
             _planManager = planManager;
@@ -35,6 +36,7 @@ namespace MainCore.Helper.Implementations.Base
             _generalHelper = generalHelper;
             _eventManager = eventManager;
             _heroResourcesHelper = heroResourcesHelper;
+            _updateHelper = updateHelper;
         }
 
         public abstract DateTime GetNextExecute(DateTime completeTime);
@@ -132,6 +134,9 @@ namespace MainCore.Helper.Implementations.Base
                 }
 
                 #endregion click
+
+                result = _updateHelper.UpdateCurrentDorf(accountId, villageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             }
         }
 

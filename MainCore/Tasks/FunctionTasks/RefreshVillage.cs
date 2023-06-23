@@ -14,14 +14,12 @@ namespace MainCore.Tasks.FunctionTasks
     public sealed class RefreshVillage : VillageBotTask
     {
         private readonly IGeneralHelper _generalHelper;
-        private readonly INPCHelper _npcHelper;
 
         private readonly ITaskManager _taskManager;
 
         public RefreshVillage(int villageId, int accountId, CancellationToken cancellationToken = default) : base(villageId, accountId, cancellationToken)
         {
             _generalHelper = Locator.Current.GetService<IGeneralHelper>();
-            _npcHelper = Locator.Current.GetService<INPCHelper>();
             _taskManager = Locator.Current.GetService<ITaskManager>();
         }
 
@@ -38,17 +36,8 @@ namespace MainCore.Tasks.FunctionTasks
 
             result = _generalHelper.ToDorf1(AccountId, VillageId, switchVillage: true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-            ApplyAutoTask();
             NextExecute();
             return Result.Ok();
-        }
-
-        private void ApplyAutoTask()
-        {
-            InstantUpgrade();
-            AutoNPC();
-
-            //if (IsNeedDorf2()) AutoImproveTroop();
         }
 
         private void NextExecute()
@@ -67,68 +56,6 @@ namespace MainCore.Tasks.FunctionTasks
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.Find(VillageId);
             return setting.IsUpgradeTroop;
-        }
-
-        private void InstantUpgrade()
-        {
-            using var context = _contextFactory.CreateDbContext();
-
-            var listTask = _taskManager.GetList(AccountId);
-            var tasks = listTask.OfType<InstantUpgrade>();
-            if (tasks.Any(x => x.VillageId == VillageId)) return;
-
-            var setting = context.VillagesSettings.Find(VillageId);
-            if (!setting.IsInstantComplete) return;
-            var info = context.AccountsInfo.Find(AccountId);
-            if (info.Gold < 2) return;
-            var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == VillageId).Where(x => x.Level != -1).ToList();
-
-            var tribe = context.AccountsInfo.Find(AccountId).Tribe;
-            if (tribe == TribeEnums.Romans)
-            {
-                if (currentlyBuildings.Count(x => x.Level != -1) < (info.HasPlusAccount ? 3 : 2)) return;
-            }
-            else
-            {
-                if (currentlyBuildings.Count(x => x.Level != -1) < (info.HasPlusAccount ? 2 : 1)) return;
-            }
-            var notInstantBuildings = currentlyBuildings.Where(x => x.Type.IsNotAdsUpgrade());
-            foreach (var building in notInstantBuildings)
-            {
-                currentlyBuildings.Remove(building);
-            }
-            if (!currentlyBuildings.Any()) return;
-
-            if (currentlyBuildings.Max(x => x.CompleteTime) < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
-
-            _taskManager.Add<InstantUpgrade>(AccountId, VillageId);
-        }
-
-        private void AutoNPC()
-        {
-            var listTask = _taskManager.GetList(AccountId);
-            var tasks = listTask.OfType<NPCTask>();
-            if (tasks.Any(x => x.VillageId == VillageId)) return;
-
-            if (!_npcHelper.IsEnoughGold(AccountId)) return;
-
-            using var context = _contextFactory.CreateDbContext();
-            var setting = context.VillagesSettings.Find(VillageId);
-
-            var resource = context.VillagesResources.Find(VillageId);
-            if (setting.IsAutoNPC && setting.AutoNPCPercent != 0)
-            {
-                var ratio = resource.Crop * 100.0f / resource.Granary;
-                if (ratio < setting.AutoNPCPercent) return;
-                _taskManager.Add<NPCTask>(AccountId, VillageId);
-            }
-            if (setting.IsAutoNPCWarehouse && setting.AutoNPCWarehousePercent != 0)
-            {
-                var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
-                var ratio = maxResource * 100.0f / resource.Warehouse;
-                if (ratio < setting.AutoNPCWarehousePercent) return;
-                _taskManager.Add<NPCTask>(AccountId, VillageId);
-            }
         }
 
         private void AutoImproveTroop()

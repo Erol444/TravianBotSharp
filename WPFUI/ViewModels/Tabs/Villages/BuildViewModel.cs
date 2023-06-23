@@ -45,9 +45,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
             _planManager = planManager;
             _databaseHelper = databaseHelper;
 
-            _eventManager.VillageCurrentUpdate += EventManager_VillageUpdate;
-            _eventManager.VillageBuildQueueUpdate += EventManager_VillageUpdate;
-            _eventManager.VillageBuildsUpdate += EventManager_VillageUpdate;
+            _eventManager.VillageCurrentUpdate += OnVillageUpdate;
+            _eventManager.VillageBuildQueueUpdate += OnVillageUpdate;
+            _eventManager.VillageBuildsUpdate += OnVillageUpdate;
 
             this.WhenAnyValue(vm => vm.CurrentBuilding)
                 .WhereNotNull()
@@ -83,7 +83,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             LoadData(villageId);
         }
 
-        private void EventManager_VillageUpdate(int villageId)
+        private void OnVillageUpdate(int villageId)
         {
             if (!IsActive) return;
             if (villageId != VillageId) return;

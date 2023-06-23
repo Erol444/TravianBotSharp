@@ -72,12 +72,6 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int accountId)
         {
-            var oldIndex = -1;
-            if (CurrentVillage is not null)
-            {
-                oldIndex = CurrentVillage.Id;
-            }
-
             using var context = _contextFactory.CreateDbContext();
             var villages = context.Villages
                 .Where(x => x.AccountId == accountId)
@@ -92,15 +86,7 @@ namespace WPFUI.ViewModels.Tabs
                 Villages.AddRange(villages);
                 if (villages.Any())
                 {
-                    if (oldIndex == -1)
-                    {
-                        CurrentVillage = Villages.First();
-                    }
-                    else
-                    {
-                        var build = Villages.FirstOrDefault(x => x.Id == oldIndex);
-                        CurrentVillage = build;
-                    }
+                    CurrentVillage = Villages.First();
                 }
             });
         }

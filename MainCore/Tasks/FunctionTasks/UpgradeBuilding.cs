@@ -33,7 +33,7 @@ namespace MainCore.Tasks.FunctionTasks
                 {
                     ExecuteAt = DateTime.Now.AddMinutes(Random.Shared.Next(30, 40));
                 }
-                return result.WithError(new Trace(Trace.TraceMessage()));
+                return Result.Fail(result.Errors.First());
             }
 
             NextExecute();

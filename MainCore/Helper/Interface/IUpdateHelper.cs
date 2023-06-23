@@ -11,7 +11,7 @@ namespace MainCore.Helper.Interface
         void UpdateAdventures(int accountId);
 
         void UpdateBuildings(int accountId, int villageId);
-
+        Result UpdateCurrentDorf(int accountId, int villageId);
         Result UpdateCurrentlyBuilding(int accountId, int villageId);
 
         Result UpdateDorf1(int accountId, int villageId);

@@ -6,6 +6,7 @@ using MainCore.Models.Database;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using MainCore.Tasks.Base;
+using MainCore.Tasks.FunctionTasks;
 using MainCore.Tasks.UpdateTasks;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -28,8 +29,9 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IVillagesTableParser _villagesTableParser;
         protected readonly IRightBarParser _rightBarParser;
         protected readonly ITaskManager _taskManager;
+        protected readonly INPCHelper _npcHelper;
 
-        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser)
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser, INPCHelper npcHelper)
         {
             _villageCurrentlyBuildingParser = villageCurrentlyBuildingParser;
             _chromeManager = chromeManager;
@@ -43,6 +45,7 @@ namespace MainCore.Helper.Implementations.Base
             _villagesTableParser = villagesTableParser;
             _taskManager = taskManager;
             _rightBarParser = rightBarParser;
+            _npcHelper = npcHelper;
         }
 
         public abstract void UpdateBuildings(int accountId, int villageId);
@@ -58,7 +61,25 @@ namespace MainCore.Helper.Implementations.Base
             if (villageId != -1)
             {
                 UpdateResource(accountId, villageId);
+                TriggerAutoNPC(accountId, villageId);
             }
+        }
+
+        public Result UpdateCurrentDorf(int accountId, int villageId)
+        {
+            var chromeBrowser = _chromeManager.Get(accountId);
+            var url = chromeBrowser.GetCurrentUrl();
+            if (url.Contains("dorf1"))
+            {
+                var result = UpdateDorf1(accountId, villageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            else if (url.Contains("dorf2"))
+            {
+                var result = UpdateDorf2(accountId, villageId);
+                if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            }
+            return Result.Ok();
         }
 
         public Result UpdateDorf1(int accountId, int villageId)
@@ -67,6 +88,7 @@ namespace MainCore.Helper.Implementations.Base
 
             var result = UpdateCurrentlyBuilding(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            TriggerInstantUpgrade(accountId, villageId);
 
             UpdateResourceFields(accountId, villageId);
 
@@ -80,6 +102,7 @@ namespace MainCore.Helper.Implementations.Base
 
             var result = UpdateCurrentlyBuilding(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+            TriggerInstantUpgrade(accountId, villageId);
 
             UpdateBuildings(accountId, villageId);
             return Result.Ok();
@@ -556,6 +579,69 @@ namespace MainCore.Helper.Implementations.Base
             //if (account.Tribe == TribeEnums.Any) account.Tribe = (TribeEnums)tribe;
             context.Update(account);
             context.SaveChanges();
+        }
+
+        private void TriggerInstantUpgrade(int accountId, int villageId)
+        {
+            using var context = _contextFactory.CreateDbContext();
+
+            var setting = context.VillagesSettings.Find(villageId);
+            if (!setting.IsInstantComplete) return;
+            var info = context.AccountsInfo.Find(accountId);
+            if (info.Gold < 2) return;
+
+            var listTask = _taskManager.GetList(accountId);
+            var tasks = listTask.OfType<InstantUpgrade>();
+            if (tasks.Any(x => x.VillageId == villageId)) return;
+
+            var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0).ToList();
+
+            var tribe = context.AccountsInfo.Find(accountId).Tribe;
+            if (tribe == TribeEnums.Romans)
+            {
+                if (currentlyBuildings.Count < (info.HasPlusAccount ? 3 : 2)) return;
+            }
+            else
+            {
+                if (currentlyBuildings.Count < (info.HasPlusAccount ? 2 : 1)) return;
+            }
+            var notInstantBuildings = currentlyBuildings.Where(x => x.Type.IsNotAdsUpgrade());
+            foreach (var building in notInstantBuildings)
+            {
+                currentlyBuildings.Remove(building);
+            }
+            if (!currentlyBuildings.Any()) return;
+
+            if (currentlyBuildings.Max(x => x.CompleteTime) < DateTime.Now.AddMinutes(setting.InstantCompleteTime)) return;
+
+            _taskManager.Add<InstantUpgrade>(accountId, villageId);
+        }
+
+        private void TriggerAutoNPC(int accountId, int villageId)
+        {
+            if (!_npcHelper.IsEnoughGold(accountId)) return;
+
+            var listTask = _taskManager.GetList(accountId);
+            var tasks = listTask.OfType<NPCTask>();
+            if (tasks.Any(x => x.VillageId == villageId)) return;
+
+            using var context = _contextFactory.CreateDbContext();
+            var setting = context.VillagesSettings.Find(villageId);
+
+            var resource = context.VillagesResources.Find(villageId);
+            if (setting.IsAutoNPC && setting.AutoNPCPercent != 0)
+            {
+                var ratio = resource.Crop * 100.0f / resource.Granary;
+                if (ratio < setting.AutoNPCPercent) return;
+                _taskManager.Add<NPCTask>(accountId, villageId);
+            }
+            if (setting.IsAutoNPCWarehouse && setting.AutoNPCWarehousePercent != 0)
+            {
+                var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
+                var ratio = maxResource * 100.0f / resource.Warehouse;
+                if (ratio < setting.AutoNPCWarehousePercent) return;
+                _taskManager.Add<NPCTask>(accountId, villageId);
+            }
         }
     }
 }
