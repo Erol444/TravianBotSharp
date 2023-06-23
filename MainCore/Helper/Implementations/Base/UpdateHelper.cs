@@ -29,9 +29,9 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IVillagesTableParser _villagesTableParser;
         protected readonly IRightBarParser _rightBarParser;
         protected readonly ITaskManager _taskManager;
-        protected readonly INPCHelper _npcHelper;
+        protected readonly IVillageInfrastructureParser _villageInfrastructureParser;
 
-        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser, INPCHelper npcHelper)
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser, IVillageInfrastructureParser villageInfrastructureParser)
         {
             _villageCurrentlyBuildingParser = villageCurrentlyBuildingParser;
             _chromeManager = chromeManager;
@@ -45,7 +45,7 @@ namespace MainCore.Helper.Implementations.Base
             _villagesTableParser = villagesTableParser;
             _taskManager = taskManager;
             _rightBarParser = rightBarParser;
-            _npcHelper = npcHelper;
+            _villageInfrastructureParser = villageInfrastructureParser;
         }
 
         public abstract void UpdateBuildings(int accountId, int villageId);
@@ -619,8 +619,6 @@ namespace MainCore.Helper.Implementations.Base
 
         private void TriggerAutoNPC(int accountId, int villageId)
         {
-            if (!_npcHelper.IsEnoughGold(accountId)) return;
-
             var listTask = _taskManager.GetList(accountId);
             var tasks = listTask.OfType<NPCTask>();
             if (tasks.Any(x => x.VillageId == villageId)) return;

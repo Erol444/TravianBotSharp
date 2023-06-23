@@ -28,6 +28,7 @@ namespace MainCore.Tasks.FunctionTasks
         public override Result Execute()
         {
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            if (!_npcHelper.IsEnoughGold(AccountId)) return Result.Fail(new Skip("Don't have enough gold to NPC"));
 
             var result = _npcHelper.Execute(AccountId, VillageId, _ratio);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));

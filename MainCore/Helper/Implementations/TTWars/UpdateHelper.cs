@@ -1,5 +1,4 @@
 ﻿using MainCore.Enums;
-using MainCore.Helper.Interface;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +9,8 @@ namespace MainCore.Helper.Implementations.TTWars
 {
     public class UpdateHelper : Base.UpdateHelper
     {
-        private readonly IVillageInfrastructureParser _villageInfrastructureParser;
-
-        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser, INPCHelper npcHelper, IVillageInfrastructureParser villageInfrastructureParser) : base(villageCurrentlyBuildingParser, chromeManager, contextFactory, villageFieldParser, stockBarParser, subTabParser, heroSectionParser, farmListParser, eventManager, villagesTableParser, taskManager, rightBarParser, npcHelper)
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser, IVillageInfrastructureParser villageInfrastructureParser) : base(villageCurrentlyBuildingParser, chromeManager, contextFactory, villageFieldParser, stockBarParser, subTabParser, heroSectionParser, farmListParser, eventManager, villagesTableParser, taskManager, rightBarParser, villageInfrastructureParser)
         {
-            _villageInfrastructureParser = villageInfrastructureParser;
         }
 
         public override void UpdateBuildings(int accountId, int villageId)
