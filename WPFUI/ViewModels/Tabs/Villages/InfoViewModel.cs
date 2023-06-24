@@ -74,7 +74,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var updateTask = tasks.OfType<UpdateDorf2>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add<UpdateDorf2>(accountId);
+                _taskManager.Add<UpdateDorf2>(accountId, villageId);
             }
             else
             {

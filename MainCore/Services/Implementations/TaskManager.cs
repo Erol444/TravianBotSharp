@@ -58,12 +58,7 @@ namespace MainCore.Services.Implementations
 
         private void Add(int accountId, BotTask task, bool first = false)
         {
-            var tasks = _tasksDict.GetValueOrDefault(accountId);
-            if (tasks is null)
-            {
-                tasks = new();
-                _tasksDict.Add(accountId, tasks);
-            }
+            var tasks = GetTasks(accountId);
 
             if (first)
             {
@@ -188,8 +183,6 @@ namespace MainCore.Services.Implementations
                 var result = poliResult.Result ?? poliResult.FinalHandledResult;
                 if (result.IsFailed)
                 {
-                    task.Stage = TaskStage.Waiting;
-
                     var errors = result.Reasons.Select(x => x.Message).ToList();
                     _logHelper.Warning(accountId, string.Join(Environment.NewLine, errors), task);
 
@@ -203,11 +196,9 @@ namespace MainCore.Services.Implementations
                     }
                     else if (result.HasError<Skip>())
                     {
-                        if (task.ExecuteAt == cacheExecuteTime) Remove(accountId, task);
-                        else
+                        if (task.ExecuteAt == cacheExecuteTime)
                         {
-                            ReOrder(accountId);
-                            _eventManager.OnTaskUpdate(accountId);
+                            Remove(accountId, task);
                         }
                     }
                     else if (result.HasError<Cancel>())
@@ -217,16 +208,16 @@ namespace MainCore.Services.Implementations
                 }
                 else
                 {
-                    if (task.ExecuteAt == cacheExecuteTime) Remove(accountId, task);
-                    else
+                    if (task.ExecuteAt == cacheExecuteTime)
                     {
-                        ReOrder(accountId);
-                        _eventManager.OnTaskUpdate(accountId);
+                        Remove(accountId, task);
                     }
                 }
             }
+
             task.Stage = TaskStage.Waiting;
             info.IsExecuting = false;
+            ReOrder(accountId);
 
             using var context = _contextFactory.CreateDbContext();
             var setting = context.AccountsSettings.Find(accountId);

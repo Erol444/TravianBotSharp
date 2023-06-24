@@ -227,10 +227,10 @@ namespace MainCore.Services.Implementations
             {
                 case PlanTypeEnums.General:
                     {
-                        var currentBuilding = currentBuildings.Where(x => x.Id == task.Location).OrderByDescending(x => x.Level).FirstOrDefault();
+                        var currentBuilding = currentBuildings.Where(x => x.Location == task.Location).OrderByDescending(x => x.Level).FirstOrDefault();
                         if (currentBuilding is not null)
                         {
-                            if (currentBuilding.Level > task.Level)
+                            if (currentBuilding.Level >= task.Level)
                             {
                                 return true;
                             }

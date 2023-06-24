@@ -46,6 +46,11 @@ namespace MainCore.Helper.Implementations.Base
         public Result Execute(int accountId, int villageId)
         {
             Result result;
+
+            // update currently building
+            result = _generalHelper.ToDorf1(accountId, villageId, forceReload: true, switchVillage: true);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+
             while (true)
             {
                 #region choose building
@@ -561,7 +566,7 @@ namespace MainCore.Helper.Implementations.Base
             }
 
             using var context = _contextFactory.CreateDbContext();
-            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level != -1).ToList();
+            var currentList = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0).ToList();
             var totalBuild = currentList.Count;
 
             if (totalBuild == 0)

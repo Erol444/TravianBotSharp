@@ -134,6 +134,7 @@ namespace MainCore.Helper.Implementations.Base
                         Type = type,
                         Level = level,
                         CompleteTime = DateTime.Now.Add(duration),
+                        Location = -1,
                     });
                 }
                 else
@@ -155,6 +156,7 @@ namespace MainCore.Helper.Implementations.Base
                         Type = 0,
                         Level = -1,
                         CompleteTime = DateTime.MaxValue,
+                        Location = -1,
                     });
                 }
                 else
@@ -162,6 +164,7 @@ namespace MainCore.Helper.Implementations.Base
                     building.Type = 0;
                     building.Level = -1;
                     building.CompleteTime = DateTime.MaxValue;
+                    building.Location = -1;
                 }
             }
             context.SaveChanges();
@@ -175,45 +178,63 @@ namespace MainCore.Helper.Implementations.Base
             var html = chromeBrowser.GetHtml();
             var resFields = _villageFieldParser.GetNodes(html);
             using var context = _contextFactory.CreateDbContext();
+
+            var fieldUnderConstruction = new List<VillageBuilding>();
+
             foreach (var fieldNode in resFields)
             {
                 var id = _villageFieldParser.GetId(fieldNode);
-                var resource = context.VillagesBuildings.Find(villageId, id);
+                var field = context.VillagesBuildings.Find(villageId, id);
                 var level = _villageFieldParser.GetLevel(fieldNode);
                 var type = _villageFieldParser.GetBuildingType(fieldNode);
                 var isUnderConstruction = _villageFieldParser.IsUnderConstruction(fieldNode);
-                if (resource is null)
+                if (field is null)
                 {
-                    context.VillagesBuildings.Add(new()
+                    field = new()
                     {
                         VillageId = villageId,
                         Id = id,
                         Level = level,
                         Type = (BuildingEnums)type,
                         IsUnderConstruction = isUnderConstruction,
-                    });
+                    };
+
+                    context.VillagesBuildings.Add(field);
                 }
                 else
                 {
-                    resource.Level = level;
-                    resource.Type = (BuildingEnums)type;
-                    resource.IsUnderConstruction = isUnderConstruction;
-                    context.Update(resource);
+                    field.Level = level;
+                    field.Type = (BuildingEnums)type;
+                    field.IsUnderConstruction = isUnderConstruction;
+                    context.Update(field);
                 }
-            }
 
-            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level != -1).ToList();
-            if (currentlyBuilding.Count > 0)
-            {
-                foreach (var building in currentlyBuilding)
+                if (isUnderConstruction)
                 {
-                    var build = context.VillagesBuildings.FirstOrDefault(x => x.IsUnderConstruction && x.Type == building.Type && x.Level - building.Level < 3);
-                    if (build is null) continue;
-                    building.Location = build.Id;
-                    context.Update(building);
+                    fieldUnderConstruction.Add(field);
                 }
             }
+            if (fieldUnderConstruction.Any())
+            {
+                var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0).ToList();
+                var currentlyFields = currentlyBuilding.Where(x => x.Type.IsResourceField());
 
+                foreach (var field in fieldUnderConstruction)
+                {
+                    var currentlyField = currentlyFields.First(x => x.Level == field.Level + 1);
+                    currentlyField.Location = field.Id;
+                    context.Update(currentlyField);
+                }
+                {
+                    var currentlyField = currentlyFields.FirstOrDefault(x => x.Location == -1);
+                    if (currentlyField is not null)
+                    {
+                        var field = fieldUnderConstruction.First();
+                        currentlyField.Location = field.Id;
+                        context.Update(currentlyField);
+                    }
+                }
+            }
             var updateTime = context.VillagesUpdateTime.Find(villageId);
             if (updateTime is null)
             {

@@ -1,8 +1,10 @@
 ﻿using MainCore.Enums;
+using MainCore.Models.Database;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MainCore.Helper.Implementations.TravianOfficial
@@ -19,6 +21,9 @@ namespace MainCore.Helper.Implementations.TravianOfficial
             var html = chromeBrowser.GetHtml();
             var buildingNodes = _villageInfrastructureParser.GetNodes(html);
             using var context = _contextFactory.CreateDbContext();
+
+            var buildingUnderConstruction = new List<VillageBuilding>();
+
             foreach (var buildingNode in buildingNodes)
             {
                 var id = _villageInfrastructureParser.GetId(buildingNode);
@@ -47,14 +52,15 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                 var isUnderConstruction = _villageInfrastructureParser.IsUnderConstruction(buildingNode);
                 if (building is null)
                 {
-                    context.VillagesBuildings.Add(new()
+                    building = new()
                     {
                         VillageId = villageId,
                         Id = id,
                         Level = level,
                         Type = (BuildingEnums)type,
                         IsUnderConstruction = isUnderConstruction,
-                    });
+                    };
+                    context.VillagesBuildings.Add(building);
                 }
                 else
                 {
@@ -63,16 +69,31 @@ namespace MainCore.Helper.Implementations.TravianOfficial
                     building.IsUnderConstruction = isUnderConstruction;
                     context.Update(building);
                 }
-            }
-            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-            if (currentlyBuilding.Count > 0)
-            {
-                foreach (var building in currentlyBuilding)
+
+                if (isUnderConstruction)
                 {
-                    var build = context.VillagesBuildings.FirstOrDefault(x => x.IsUnderConstruction && x.Type == building.Type && x.Level - building.Level < 3);
-                    if (build is null) continue;
-                    building.Location = build.Id;
-                    context.Update(building);
+                    buildingUnderConstruction.Add(building);
+                }
+            }
+            if (buildingUnderConstruction.Any())
+            {
+                var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0).ToList();
+                var currentlyBuildings = currentlyBuilding.Where(x => !x.Type.IsResourceField());
+
+                foreach (var building in buildingUnderConstruction)
+                {
+                    var currentlyField = currentlyBuildings.First(x => x.Level == building.Level + 1);
+                    currentlyField.Location = building.Id;
+                    context.Update(currentlyField);
+                }
+                {
+                    var currentlyField = currentlyBuildings.FirstOrDefault(x => x.Location == -1);
+                    if (currentlyField is not null)
+                    {
+                        var field = buildingUnderConstruction.First();
+                        currentlyField.Location = field.Id;
+                        context.Update(currentlyField);
+                    }
                 }
             }
 
