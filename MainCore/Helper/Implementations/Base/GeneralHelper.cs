@@ -25,7 +25,12 @@ namespace MainCore.Helper.Implementations.Base
         protected readonly IVillagesTableParser _villagesTableParser;
         protected readonly IBuildingTabParser _buildingTabParser;
 
-        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper, IInvalidPageHelper invalidPageHelper)
+        protected readonly IBuildingsHelper _buildingsHelper;
+        protected readonly IVillageFieldParser _villageFieldParser;
+        protected readonly IVillageInfrastructureParser _villageInfrastructureParser;
+        protected readonly IHeroSectionParser _heroSectionParser;
+
+        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper, IInvalidPageHelper invalidPageHelper, IBuildingsHelper buildingsHelper, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IHeroSectionParser heroSectionParser)
         {
             _chromeManager = chromeManager;
             _navigationBarParser = navigationBarParser;
@@ -35,6 +40,10 @@ namespace MainCore.Helper.Implementations.Base
             _buildingTabParser = buildingTabParser;
             _updateHelper = updateHelper;
             _invalidPageHelper = invalidPageHelper;
+            _buildingsHelper = buildingsHelper;
+            _villageFieldParser = villageFieldParser;
+            _villageInfrastructureParser = villageInfrastructureParser;
+            _heroSectionParser = heroSectionParser;
         }
 
         public abstract Result ToBuilding(int accountId, int villageId, int index);

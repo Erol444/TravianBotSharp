@@ -221,7 +221,7 @@ namespace MainCore.Services.Implementations
             return tasks;
         }
 
-        private static bool IsTaskComplete(PlanTask task, IQueryable<VillageBuilding> buildings, IQueryable<VillCurrentBuilding> currentBuildings)
+        public bool IsTaskComplete(PlanTask task, IQueryable<VillageBuilding> buildings, IQueryable<VillCurrentBuilding> currentBuildings)
         {
             switch (task.Type)
             {

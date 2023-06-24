@@ -11,11 +11,8 @@ namespace MainCore.Helper.Implementations.TTWars
 {
     public class GeneralHelper : Base.GeneralHelper
     {
-        private readonly IHeroSectionParser _heroSectionParser;
-
-        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper, IInvalidPageHelper invalidPageHelper, IBuildingsHelper buildingsHelper, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IHeroSectionParser heroSectionParser) : base(chromeManager, navigationBarParser, checkHelper, villagesTableParser, contextFactory, buildingTabParser, updateHelper, invalidPageHelper)
+        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper, IInvalidPageHelper invalidPageHelper, IBuildingsHelper buildingsHelper, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IHeroSectionParser heroSectionParser) : base(chromeManager, navigationBarParser, checkHelper, villagesTableParser, contextFactory, buildingTabParser, updateHelper, invalidPageHelper, buildingsHelper, villageFieldParser, villageInfrastructureParser, heroSectionParser)
         {
-            _heroSectionParser = heroSectionParser;
         }
 
         public override Result ToBuilding(int accountId, int villageId, int index)
@@ -25,7 +22,10 @@ namespace MainCore.Helper.Implementations.TTWars
             var uri = new Uri(currentUrl);
             var serverUrl = $"{uri.Scheme}://{uri.Host}";
             var url = $"{serverUrl}/build.php?id={index}";
-            var result = Navigate(accountId, url);
+
+            Result result;
+
+            result = Navigate(accountId, url);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
         }

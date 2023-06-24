@@ -26,8 +26,9 @@ namespace MainCore.Helper.Implementations.Base
         private readonly IUpdateHelper _updateHelper;
         private readonly IHeroResourcesHelper _heroResourcesHelper;
         private readonly IEventManager _eventManager;
+        private readonly IBuildingsHelper _buildingsHelper;
 
-        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper)
+        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper, IBuildingsHelper buildingsHelper)
         {
             _contextFactory = contextFactory;
             _planManager = planManager;
@@ -37,15 +38,14 @@ namespace MainCore.Helper.Implementations.Base
             _eventManager = eventManager;
             _heroResourcesHelper = heroResourcesHelper;
             _updateHelper = updateHelper;
+            _buildingsHelper = buildingsHelper;
         }
 
         public abstract DateTime GetNextExecute(DateTime completeTime);
 
         public Result Execute(int accountId, int villageId)
         {
-            var result = _generalHelper.ToDorf1(accountId, villageId, forceReload: true, switchVillage: true);
-            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-
+            Result result;
             while (true)
             {
                 #region choose building
@@ -99,10 +99,25 @@ namespace MainCore.Helper.Implementations.Base
 
                 #endregion extract resource fields
 
+                #region validate plan task
+
+                var resultIsTaskComplete = IsTaskComplete(accountId, villageId, chosenTask);
+                if (resultIsTaskComplete.IsFailed) return Result.Fail(resultIsTaskComplete.Errors).WithError(new Trace(Trace.TraceMessage()));
+                var isTaskComplete = resultIsTaskComplete.Value;
+                if (isTaskComplete)
+                {
+                    _planManager.Remove(villageId, chosenTask);
+                    _eventManager.OnVillageBuildQueueUpdate(villageId);
+                    continue;
+                }
+
+                #endregion validate plan task
+
                 #region enter building
 
                 result = _generalHelper.ToBuilding(accountId, villageId, chosenTask.Location);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+
                 var resultIsNewBuilding = GotoCorrectTab(accountId, villageId, chosenTask);
                 if (resultIsNewBuilding.IsFailed) return Result.Fail(resultIsNewBuilding.Errors).WithError(new Trace(Trace.TraceMessage()));
 
@@ -623,6 +638,33 @@ namespace MainCore.Helper.Implementations.Base
             // if same means 1 R and 1 I already, 1 ANY will be choose below
             chosenTask = GetFirstTask(villageId);
             return Result.Ok(chosenTask);
+        }
+
+        private Result<bool> IsTaskComplete(int accountId, int villageId, PlanTask planTask)
+        {
+            Result result;
+            var dorf = _buildingsHelper.GetDorf(planTask.Location);
+            switch (dorf)
+            {
+                case 1:
+                    result = _generalHelper.ToDorf1(accountId, villageId);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                    break;
+
+                case 2:
+                    result = _generalHelper.ToDorf2(accountId, villageId);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                    break;
+
+                default:
+                    break;
+            }
+
+            using var context = _contextFactory.CreateDbContext();
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId);
+            var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0);
+
+            return Result.Ok(_planManager.IsTaskComplete(planTask, buildings, currentBuildings));
         }
     }
 }

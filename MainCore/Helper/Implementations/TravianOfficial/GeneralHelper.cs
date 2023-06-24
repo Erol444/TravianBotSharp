@@ -12,17 +12,8 @@ namespace MainCore.Helper.Implementations.TravianOfficial
 {
     public class GeneralHelper : Base.GeneralHelper
     {
-        private readonly IBuildingsHelper _buildingsHelper;
-        private readonly IVillageFieldParser _villageFieldParser;
-        private readonly IVillageInfrastructureParser _villageInfrastructureParser;
-        private readonly IHeroSectionParser _heroSectionParser;
-
-        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper, IInvalidPageHelper invalidPageHelper, IBuildingsHelper buildingsHelper, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IHeroSectionParser heroSectionParser) : base(chromeManager, navigationBarParser, checkHelper, villagesTableParser, contextFactory, buildingTabParser, updateHelper, invalidPageHelper)
+        public GeneralHelper(IChromeManager chromeManager, INavigationBarParser navigationBarParser, ICheckHelper checkHelper, IVillagesTableParser villagesTableParser, IDbContextFactory<AppDbContext> contextFactory, IBuildingTabParser buildingTabParser, IUpdateHelper updateHelper, IInvalidPageHelper invalidPageHelper, IBuildingsHelper buildingsHelper, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IHeroSectionParser heroSectionParser) : base(chromeManager, navigationBarParser, checkHelper, villagesTableParser, contextFactory, buildingTabParser, updateHelper, invalidPageHelper, buildingsHelper, villageFieldParser, villageInfrastructureParser, heroSectionParser)
         {
-            _buildingsHelper = buildingsHelper;
-            _villageFieldParser = villageFieldParser;
-            _villageInfrastructureParser = villageInfrastructureParser;
-            _heroSectionParser = heroSectionParser;
         }
 
         public override Result ToBuilding(int accountId, int villageId, int index)

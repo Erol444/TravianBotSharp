@@ -1,5 +1,7 @@
-﻿using MainCore.Models.Runtime;
+﻿using MainCore.Models.Database;
+using MainCore.Models.Runtime;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MainCore.Services.Interface
 {
@@ -20,5 +22,6 @@ namespace MainCore.Services.Interface
         public void Load();
 
         public List<PlanTask> GetList(int villageId);
+        bool IsTaskComplete(PlanTask task, IQueryable<VillageBuilding> buildings, IQueryable<VillCurrentBuilding> currentBuildings);
     }
 }
