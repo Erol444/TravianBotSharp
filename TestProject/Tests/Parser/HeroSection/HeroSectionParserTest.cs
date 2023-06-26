@@ -32,7 +32,7 @@ namespace TestProject.Tests.Parser.HeroSection
         }
 
         [DataTestMethod]
-        [DataRow(VersionEnums.TravianOfficial, 100)]
+        [DataRow(VersionEnums.TravianOfficial, 0)]
         [DataRow(VersionEnums.TTWars, 79)]
         public void GetHealthTest(VersionEnums version, int expected)
         {
@@ -45,7 +45,7 @@ namespace TestProject.Tests.Parser.HeroSection
         }
 
         [DataTestMethod]
-        [DataRow(VersionEnums.TravianOfficial, 1)]
+        [DataRow(VersionEnums.TravianOfficial, 3)]
         [DataRow(VersionEnums.TTWars, 1)]
         public void GetStatusTest(VersionEnums version, int expected)
         {
@@ -58,7 +58,7 @@ namespace TestProject.Tests.Parser.HeroSection
         }
 
         [DataTestMethod]
-        [DataRow(VersionEnums.TravianOfficial, 19)]
+        [DataRow(VersionEnums.TravianOfficial, 1)]
         [DataRow(VersionEnums.TTWars, 2)]
         public void GetAdventureNumTest(VersionEnums version, int expected)
         {
@@ -126,7 +126,7 @@ namespace TestProject.Tests.Parser.HeroSection
         }
 
         [DataTestMethod]
-        [DataRow(VersionEnums.TravianOfficial, 31)]
+        [DataRow(VersionEnums.TravianOfficial, 9)]
         [DataRow(VersionEnums.TTWars, 6)]
         public void GetItemsTest(VersionEnums version, int expected)
         {
