@@ -29,16 +29,15 @@ namespace MainCore.Services.Implementations
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
         private readonly ILogHelper _logHelper;
+        private readonly IChromeManager _chromeManager;
 
-        private readonly IGeneralHelper _generalHelper;
-
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogHelper logHelper, IGeneralHelper generalHelper)
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogHelper logHelper, IChromeManager chromeManager)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
             _logHelper = logHelper;
             _eventManager.TaskExecute += Loop;
-            _generalHelper = generalHelper;
+            _chromeManager = chromeManager;
         }
 
         public void Add<T>(int accountId, bool first = false) where T : AccountBotTask
@@ -156,7 +155,8 @@ namespace MainCore.Services.Implementations
                         _logHelper.Error(accountId, exception.Message, exception);
                     }
                     _logHelper.Warning(accountId, $"Retry {retryCount} for {task.GetName()}");
-                    _generalHelper.Reload(accountId);
+                    var chromeBrowser = _chromeManager.Get(accountId);
+                    chromeBrowser.Navigate();
                 });
 
             info.IsExecuting = true;
