@@ -30,12 +30,15 @@ namespace MainCore.Services.Implementations
         private readonly IEventManager _eventManager;
         private readonly ILogHelper _logHelper;
 
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogHelper logHelper)
+        private readonly IGeneralHelper _generalHelper;
+
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogHelper logHelper, IGeneralHelper generalHelper)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
             _logHelper = logHelper;
             _eventManager.TaskExecute += Loop;
+            _generalHelper = generalHelper;
         }
 
         public void Add<T>(int accountId, bool first = false) where T : AccountBotTask
@@ -153,6 +156,7 @@ namespace MainCore.Services.Implementations
                         _logHelper.Error(accountId, exception.Message, exception);
                     }
                     _logHelper.Warning(accountId, $"Retry {retryCount} for {task.GetName()}");
+                    _generalHelper.Reload(accountId);
                 });
 
             info.IsExecuting = true;
