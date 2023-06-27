@@ -10,6 +10,7 @@ namespace MainCore.Helper.Interface
         Account GetAccount(int accountId);
         AccountSetting GetAccountSetting(int accountId);
         List<Adventure> GetAdventures(int accountId);
+        VillageBuilding GetCropLand(int villageId);
         Hero GetHero(int accountId);
         (PlanTask, VillCurrentBuilding) GetInProgressBuilding(int villageId, int buildingId);
         Village GetVillage(int villageId);

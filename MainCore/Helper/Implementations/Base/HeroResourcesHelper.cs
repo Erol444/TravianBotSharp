@@ -29,6 +29,7 @@ namespace MainCore.Helper.Implementations.Base
 
         public Result Execute(int accountId, int villageId, HeroItemEnums item, int amount)
         {
+            if (amount == 0) return Result.Ok();
             var result = _generalHelper.SwitchVillage(accountId, villageId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
@@ -37,6 +38,10 @@ namespace MainCore.Helper.Implementations.Base
 
             result = EnterAmount(accountId, amount);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+
+            result = Confirm(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+
             return Result.Ok();
         }
 
@@ -82,6 +87,7 @@ namespace MainCore.Helper.Implementations.Base
                 return Result.Fail(NoResource.Hero(cost));
             }
 
+            cost.ZeroNegative();
             var items = new List<(HeroItemEnums, int)>()
                             {
                                 (HeroItemEnums.Wood, (int)cost.Wood),
@@ -94,6 +100,7 @@ namespace MainCore.Helper.Implementations.Base
             {
                 var result = Execute(accountId, villageId, item.Item1, item.Item2);
                 if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                _generalHelper.DelayClick(accountId);
             }
             return Result.Ok();
         }

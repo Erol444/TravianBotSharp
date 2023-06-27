@@ -1,4 +1,5 @@
-﻿using MainCore.Helper.Interface;
+﻿using MainCore.Enums;
+using MainCore.Helper.Interface;
 using MainCore.Models.Database;
 using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
@@ -85,6 +86,25 @@ namespace MainCore.Helper.Implementations.Base
                 .OrderBy(x => x.Id)
                 .ToList();
             return buildings;
+        }
+
+        public VillageBuilding GetCropLand(int villageId)
+        {
+            var buildings = GetVillageBuildings(villageId);
+            var currentlyBuildings = GetVillageCurrentlyBuildings(villageId);
+
+            var croplands = buildings
+                .Where(x => x.Type == BuildingEnums.Cropland);
+
+            foreach (var currentlyBuilding in currentlyBuildings)
+            {
+                var current = croplands.FirstOrDefault(x => x.Id == currentlyBuilding.Location);
+                if (current is null) continue;
+                current.Level = currentlyBuilding.Level;
+            }
+
+            var orderedCroplands = croplands.OrderBy(x => x.Level);
+            return orderedCroplands.FirstOrDefault();
         }
     }
 }

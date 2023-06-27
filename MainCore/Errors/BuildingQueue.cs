@@ -14,5 +14,6 @@ namespace MainCore.Errors
         public static BuildingQueue NoBuilding => NotTaskInqueue("building ");
 
         public static BuildingQueue Full => new("Amount of currently building is equal with maximum building can build in same time");
+        public static BuildingQueue LackFreeCrop => new("There is not enough freecrop ( < 4 ) to build and no slot available to upgrade cropland");
     }
 }

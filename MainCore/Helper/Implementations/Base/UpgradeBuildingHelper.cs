@@ -27,8 +27,9 @@ namespace MainCore.Helper.Implementations.Base
         private readonly IHeroResourcesHelper _heroResourcesHelper;
         private readonly IEventManager _eventManager;
         private readonly IBuildingsHelper _buildingsHelper;
+        private readonly IDatabaseHelper _databaseHelper;
 
-        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper, IBuildingsHelper buildingsHelper)
+        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper, IBuildingsHelper buildingsHelper, IDatabaseHelper databaseHelper)
         {
             _contextFactory = contextFactory;
             _planManager = planManager;
@@ -39,6 +40,7 @@ namespace MainCore.Helper.Implementations.Base
             _heroResourcesHelper = heroResourcesHelper;
             _updateHelper = updateHelper;
             _buildingsHelper = buildingsHelper;
+            _databaseHelper = databaseHelper;
         }
 
         public abstract DateTime GetNextExecute(DateTime completeTime);
@@ -58,14 +60,9 @@ namespace MainCore.Helper.Implementations.Base
                 var resultBuilding = ChooseBuilding(accountId, villageId);
                 if (resultBuilding.IsFailed)
                 {
-                    //if (result.HasError<NoTaskInQueue>() || result.HasError<QueueFull>())
                     if (resultBuilding.HasError<LackFreeCrop>())
                     {
-                        using var context = _contextFactory.CreateDbContext();
-                        var cropland = context.VillagesBuildings
-                            .Where(x => x.VillageId == villageId && x.Type == BuildingEnums.Cropland)
-                            .OrderBy(x => x.Level)
-                            .FirstOrDefault();
+                        var cropland = _databaseHelper.GetCropLand(villageId);
                         var task = new PlanTask()
                         {
                             Type = PlanTypeEnums.General,
@@ -313,7 +310,7 @@ namespace MainCore.Helper.Implementations.Base
             var result = _generalHelper.ToHeroInventory(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _heroResourcesHelper.FillResource(accountId, villageId, resCurrent - resNeed);
+            result = _heroResourcesHelper.FillResource(accountId, villageId, resNeed - resCurrent);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             result = _generalHelper.Navigate(accountId, buildingUrl);
@@ -572,6 +569,14 @@ namespace MainCore.Helper.Implementations.Base
             if (totalBuild == 0)
             {
                 chosenTask = GetFirstTask(villageId);
+                if (chosenTask.Type == PlanTypeEnums.General && chosenTask.Building != BuildingEnums.Cropland)
+                {
+                    var freeCrop = context.VillagesResources.Find(villageId).FreeCrop;
+                    if (freeCrop < 4)
+                    {
+                        return Result.Fail(new LackFreeCrop());
+                    }
+                }
                 return Result.Ok(chosenTask);
             }
 
@@ -595,12 +600,28 @@ namespace MainCore.Helper.Implementations.Base
             if (tribe != TribeEnums.Romans && maxBuild - totalBuild >= 1)
             {
                 chosenTask = GetFirstTask(villageId);
+                if (chosenTask.Type == PlanTypeEnums.General && chosenTask.Building != BuildingEnums.Cropland)
+                {
+                    var freeCrop = context.VillagesResources.Find(villageId).FreeCrop;
+                    if (freeCrop < 4)
+                    {
+                        return Result.Fail(new LackFreeCrop());
+                    }
+                }
                 return Result.Ok(chosenTask);
             }
             // Roman tribe can build anything if there is atleast 2 free slots
             if (tribe == TribeEnums.Romans && maxBuild - totalBuild >= 2)
             {
                 chosenTask = GetFirstTask(villageId);
+                if (chosenTask.Type == PlanTypeEnums.General && chosenTask.Building != BuildingEnums.Cropland)
+                {
+                    var freeCrop = context.VillagesResources.Find(villageId).FreeCrop;
+                    if (freeCrop < 4)
+                    {
+                        return Result.Fail(new LackFreeCrop());
+                    }
+                }
                 return Result.Ok(chosenTask);
             }
 
@@ -613,9 +634,9 @@ namespace MainCore.Helper.Implementations.Base
             if (numCurrentRes > numCurrentBuilding)
             {
                 var freeCrop = context.VillagesResources.Find(villageId).FreeCrop;
-                if (freeCrop < 6)
+                if (freeCrop < 4)
                 {
-                    return Result.Fail(new LackFreeCrop());
+                    return Result.Fail(BuildingQueue.LackFreeCrop);
                 }
 
                 if (numQueueBuilding == 0)

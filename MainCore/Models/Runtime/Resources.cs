@@ -34,6 +34,14 @@ namespace MainCore.Models.Runtime
             return Wood < 0 || Clay < 0 || Iron < 0 || Crop < 0;
         }
 
+        public void ZeroNegative()
+        {
+            if (Wood < 0) Wood = 0;
+            if (Clay < 0) Clay = 0;
+            if (Iron < 0) Iron = 0;
+            if (Crop < 0) Crop = 0;
+        }
+
         public override string ToString()
         {
             return $"Wood: {Wood}, Clay: {Clay}, Iron: {Iron}, Crop: {Crop}";

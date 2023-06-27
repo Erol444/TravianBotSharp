@@ -470,6 +470,7 @@ namespace MainCore.Helper.Implementations.Base
             var html = chromeBrowser.GetHtml();
 
             var listNode = _villagesTableParser.GetVillages(html);
+            if (listNode is null) return;
             var foundVills = new List<Village>();
             foreach (var node in listNode)
             {
