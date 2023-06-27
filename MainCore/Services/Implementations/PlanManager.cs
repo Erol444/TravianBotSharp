@@ -147,9 +147,17 @@ namespace MainCore.Services.Implementations
             tasks.Clear();
         }
 
-        public List<PlanTask> GetList(int villageId)
+        public List<PlanTask> GetList(int villageId, bool clearFinished = true)
         {
-            var tasks = GetFixedTasks(villageId);
+            List<PlanTask> tasks;
+            if (clearFinished)
+            {
+                tasks = GetFixedTasks(villageId);
+            }
+            else
+            {
+                tasks = GetTasks(villageId);
+            }
             return tasks.ToList();
         }
 
@@ -188,6 +196,50 @@ namespace MainCore.Services.Implementations
 
                 _tasksDict.Add(village.VillageId, listQueue);
             }
+        }
+
+        public void Top(int villageId, int index)
+        {
+            if (index == 0) return;
+            var tasks = GetTasks(villageId);
+            var task = tasks[index];
+
+            tasks.RemoveAt(index);
+            tasks.Insert(0, task);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
+        }
+
+        public void Bottom(int villageId, int index)
+        {
+            var tasks = GetTasks(villageId);
+            if (index == tasks.Count - 1) return;
+            var task = tasks[index];
+
+            tasks.RemoveAt(index);
+            tasks.Add(task);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
+        }
+
+        public void Up(int villageId, int index)
+        {
+            if (index == 0) return;
+            var tasks = GetTasks(villageId);
+            var task = tasks[index];
+
+            tasks.RemoveAt(index);
+            tasks.Insert(index - 1, task);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
+        }
+
+        public void Down(int villageId, int index)
+        {
+            var tasks = GetTasks(villageId);
+            if (index == tasks.Count - 1) return;
+            var task = tasks[index];
+
+            tasks.RemoveAt(index);
+            tasks.Insert(index + 1, task);
+            _eventManager.OnVillageBuildQueueUpdate(villageId);
         }
 
         private List<PlanTask> GetFixedTasks(int villageId)

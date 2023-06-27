@@ -21,7 +21,16 @@ namespace MainCore.Services.Interface
 
         public void Load();
 
-        public List<PlanTask> GetList(int villageId);
+        public List<PlanTask> GetList(int villageId, bool clearFinished = true);
+
         bool IsTaskComplete(PlanTask task, IQueryable<VillageBuilding> buildings, IQueryable<VillCurrentBuilding> currentBuildings);
+
+        void Top(int villageId, int index);
+
+        void Bottom(int villageId, int index);
+
+        void Up(int villageId, int index);
+
+        void Down(int villageId, int index);
     }
 }

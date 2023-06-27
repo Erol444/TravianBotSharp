@@ -45,13 +45,9 @@ namespace WPFUI.ViewModels.Tabs.Villages
             _planManager = planManager;
             _databaseHelper = databaseHelper;
 
-            _eventManager.VillageCurrentUpdate += OnVillageUpdate;
-            _eventManager.VillageBuildQueueUpdate += OnVillageUpdate;
-            _eventManager.VillageBuildsUpdate += OnVillageUpdate;
-
-            this.WhenAnyValue(vm => vm.CurrentBuilding)
-                .WhereNotNull()
-                .Subscribe(item => LoadNormalBuild(VillageId, item.Id));
+            _eventManager.VillageCurrentUpdate += OnCurrentlyBuildingsUpdate;
+            _eventManager.VillageBuildQueueUpdate += OnQueueUpdate;
+            _eventManager.VillageBuildsUpdate += OnBuildingsUpdate;
 
             foreach (var item in Enum.GetValues<ResTypeEnums>())
             {
@@ -74,6 +70,10 @@ namespace WPFUI.ViewModels.Tabs.Villages
             DeleteAllCommand = ReactiveCommand.Create(DeleteAllTask);
             ImportCommand = ReactiveCommand.Create(ImportTask);
             ExportCommand = ReactiveCommand.Create(ExportTask);
+
+            this.WhenAnyValue(vm => vm.CurrentBuilding)
+                .WhereNotNull()
+                .Subscribe(item => LoadNormalBuild(VillageId, item.Id));
         }
 
         #region LoadData
@@ -83,11 +83,25 @@ namespace WPFUI.ViewModels.Tabs.Villages
             LoadData(villageId);
         }
 
-        private void OnVillageUpdate(int villageId)
+        private void OnQueueUpdate(int villageId)
         {
             if (!IsActive) return;
             if (villageId != VillageId) return;
-            LoadData(villageId);
+            LoadQueueBuilding(villageId);
+        }
+
+        private void OnCurrentlyBuildingsUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (villageId != VillageId) return;
+            LoadCurrentlyBuildings(villageId);
+        }
+
+        private void OnBuildingsUpdate(int villageId)
+        {
+            if (!IsActive) return;
+            if (villageId != VillageId) return;
+            LoadBuildings(villageId);
         }
 
         private void LoadData(int villageId)
@@ -219,7 +233,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
                 oldIndex = CurrentQueueBuilding.Id;
             }
 
-            var queueBuildings = _planManager.GetList(villageId);
+            var queueBuildings = _planManager.GetList(villageId, false);
             var buildings = queueBuildings
                 .Select(building =>
                 {
@@ -320,50 +334,28 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             if (CurrentBuilding is null) return;
             var index = CurrentQueueBuilding.Id;
-            if (index == 0) return;
-            var villageId = VillageId;
-
-            var item = _planManager.GetList(villageId)[index];
-            _planManager.Remove(villageId, index);
-            _planManager.Insert(villageId, 0, item);
-            _eventManager.OnVillageBuildQueueUpdate(villageId);
+            _planManager.Top(VillageId, index);
         }
 
         private void BottomTask()
         {
             if (CurrentBuilding is null) return;
             var index = CurrentQueueBuilding.Id;
-            if (index == QueueBuildings.Count - 1) return;
-            var villageId = VillageId;
-            var item = _planManager.GetList(villageId)[index];
-            _planManager.Remove(villageId, index);
-            _planManager.Add(villageId, item);
-            _eventManager.OnVillageBuildQueueUpdate(villageId);
+            _planManager.Bottom(VillageId, index);
         }
 
         private void UpTask()
         {
             if (CurrentBuilding is null) return;
             var index = CurrentQueueBuilding.Id;
-            if (index == 0) return;
-            var villageId = VillageId;
-            var item = _planManager.GetList(villageId)[index];
-
-            _planManager.Remove(villageId, index);
-            _planManager.Insert(villageId, index - 1, item);
-            _eventManager.OnVillageBuildQueueUpdate(villageId);
+            _planManager.Up(VillageId, index);
         }
 
         private void DownTask()
         {
             if (CurrentBuilding is null) return;
             var index = CurrentQueueBuilding.Id;
-            if (index == QueueBuildings.Count - 1) return;
-            var villageId = VillageId;
-            var item = _planManager.GetList(villageId)[index];
-            _planManager.Remove(villageId, index);
-            _planManager.Insert(villageId, index + 1, item);
-            _eventManager.OnVillageBuildQueueUpdate(villageId);
+            _planManager.Down(VillageId, index);
         }
 
         private void DeleteTask()
