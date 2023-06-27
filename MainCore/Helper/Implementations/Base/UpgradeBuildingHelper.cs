@@ -548,6 +548,11 @@ namespace MainCore.Helper.Implementations.Base
             result = _generalHelper.WaitPageChanged(accountId, "dorf");
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
+            result = _generalHelper.WaitPageLoaded(accountId);
+            if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+
+            Thread.Sleep(1000);
+
             result = UpgradeAds_DontShowThis(accountId);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();

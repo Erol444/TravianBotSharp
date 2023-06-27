@@ -352,7 +352,7 @@ namespace MainCore.Helper.Implementations.Base
         public Result SwitchTab(int accountId, int index)
         {
             var chromeBrowser = _chromeManager.Get(accountId);
-            while (_checkHelper.IsCorrectTab(accountId, index))
+            while (!_checkHelper.IsCorrectTab(accountId, index))
             {
                 var html = chromeBrowser.GetHtml();
                 var listNode = _buildingTabParser.GetBuildingTabNodes(html);
