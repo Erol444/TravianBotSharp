@@ -35,6 +35,13 @@ namespace WPFUI.Models
         {
         }
 
+        public void CopyFrom(ListBoxItem source)
+        {
+            Id = source.Id;
+            Content = source.Content;
+            Color = source.Color;
+        }
+
         public int Id { get; set; }
         private string _content;
 

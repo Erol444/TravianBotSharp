@@ -150,8 +150,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                Buildings.Clear();
-                Buildings.AddRange(uiBuildings);
+                Update(Buildings, uiBuildings);
                 if (uiBuildings.Any())
                 {
                     if (oldIndex == -1)
@@ -175,8 +174,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                CurrentlyBuildings.Clear();
-                CurrentlyBuildings.AddRange(buildings);
+                Update(CurrentlyBuildings, buildings);
             });
         }
 
@@ -243,8 +241,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
             RxApp.MainThreadScheduler.Schedule(() =>
             {
-                QueueBuildings.Clear();
-                QueueBuildings.AddRange(buildings);
+                Update(QueueBuildings, buildings);
                 if (buildings.Any())
                 {
                     if (oldIndex == -1)
@@ -543,5 +540,32 @@ namespace WPFUI.ViewModels.Tabs.Villages
         public ReactiveCommand<Unit, Unit> ExportCommand { get; }
 
         #endregion Command
+
+        private void Update(ObservableCollection<ListBoxItem> source, List<ListBoxItem> items)
+        {
+            var count = Math.Min(source.Count, items.Count);
+            for (var index = 0; index < count; index++)
+            {
+                var current = source[index];
+                var item = items[index];
+
+                current.CopyFrom(item);
+            }
+
+            if (count == source.Count)
+            {
+                for (var index = count; index < items.Count; index++)
+                {
+                    source.Add(items[index]);
+                }
+            }
+            else
+            {
+                while (source.Count != items.Count)
+                {
+                    source.RemoveAt(source.Count - 1);
+                }
+            }
+        }
     }
 }
