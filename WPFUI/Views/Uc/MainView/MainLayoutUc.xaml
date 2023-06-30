@@ -1,11 +1,13 @@
-﻿<UserControl x:Class="WPFUI.Views.Uc.MainView.MainLayoutUc"
-            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-            mc:Ignorable="d"
-            xmlns:ucmain="clr-namespace:WPFUI.Views.Uc.MainView"
-            d:DesignHeight="450" d:DesignWidth="800">
+﻿<views:MainLayoutUcBase
+    x:Class="WPFUI.Views.Uc.MainView.MainLayoutUc"
+    xmlns:views="clr-namespace:WPFUI.Views.Uc.MainView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    xmlns:ucmain="clr-namespace:WPFUI.Views.Uc.MainView"
+d:DesignHeight="450" d:DesignWidth="800">
     <Grid Margin="5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="10*" />
@@ -16,9 +18,9 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="5*" />
             </Grid.RowDefinitions>
-            <ucmain:MainButtonPanelUc />
-            <ucmain:AccountListUc Grid.Row="1" />
+            <ucmain:MainButtonPanelUc x:Name="MainButtonPanel" />
+            <ucmain:AccountListUc x:Name="AccountList" Grid.Row="1" />
         </Grid>
-        <ucmain:MainTabPanelUc Grid.Column="1" />
+        <ucmain:MainTabPanelUc x:Name="MainTabPanel" Grid.Column="1" />
     </Grid>
-</UserControl>
+</views:MainLayoutUcBase>

@@ -27,10 +27,15 @@
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
-        <ContentControl x:Name="TabPanel" Grid.Row="1" Margin="10,5,0,0">
-            <ContentControl.Resources>
+        <ItemsControl x:Name="TabContent" Grid.Row="1" Margin="10,5,0,0">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.Resources>
                 <DataTemplate DataType="{x:Type viewmodels:NoAccountViewModel}">
-                    <views:NoAccountTab />
+                    <views:NoAccountTab ViewModel="{Binding .}" />
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type viewmodels:AddAccountViewModel}">
                     <views:AddAccountTab ViewModel="{Binding .}" />
@@ -56,7 +61,7 @@
                 <DataTemplate DataType="{x:Type viewmodels:DebugViewModel}">
                     <views:DebugTab ViewModel="{Binding .}" />
                 </DataTemplate>
-            </ContentControl.Resources>
-        </ContentControl>
+            </ItemsControl.Resources>
+        </ItemsControl>
     </Grid>
 </v:MainTabPanelUcBase>

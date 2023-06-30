@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WPFUI;
+using WPFUI.Store;
 using WPFUI.ViewModels.Uc.MainView;
 
 namespace TestProject.Mock
@@ -68,6 +69,7 @@ namespace TestProject.Mock
             {
                 typeof(TabHeaderViewModel),
                 typeof(MainLayoutViewModel),
+                typeof(NavigationStore),
             };
 
             var result = new List<object[]>();

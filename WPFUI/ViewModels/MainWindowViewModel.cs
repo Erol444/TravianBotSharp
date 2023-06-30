@@ -109,6 +109,7 @@ namespace WPFUI.ViewModels
 
             await Task.WhenAll(tasks);
             MainLayoutViewModel = new();
+            MainLayoutViewModel.Init();
             _versionOverlay.LoadCommand.Execute().Subscribe();
             _waitingOverlay.CloseCommand.Execute().Subscribe();
         }

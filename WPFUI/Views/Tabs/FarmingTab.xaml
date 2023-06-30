@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:WPFUI.Views.Uc"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
-    <Grid Background="#FFE5E5E5">
+    <Grid x:Name="MainGrid" Background="#FFE5E5E5">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="4*" />
@@ -39,16 +39,16 @@
             </Grid.RowDefinitions>
             <StackPanel                     Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
                 <controls:ToleranceUc x:Name="Interval" Text="Time for next send" Unit="sec(s)" />
-                <Button x:Name="SaveButton" ToolTip="Save"                              Margin="10" >
-                    <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ContentSave"/>
+                <Button x:Name="SaveButton" ToolTip="Save"                              Margin="10">
+                    <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ContentSave" />
                 </Button>
             </StackPanel>
             <Button x:Name="ActiveButton"   Grid.Row="1"                                Margin="10" />
             <Button x:Name="StartButton"    Grid.Row="2" ToolTip="Send all active farm" Margin="10">
-                <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Play"/>
+                <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Play" />
             </Button>
-            <Button x:Name="StopButton"     Grid.Row="3" ToolTip="Stop all"             Margin="10" >
-                <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Stop"/>
+            <Button x:Name="StopButton"     Grid.Row="3" ToolTip="Stop all"             Margin="10">
+                <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Stop" />
             </Button>
         </Grid>
     </Grid>

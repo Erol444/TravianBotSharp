@@ -19,7 +19,6 @@ namespace WPFUI.ViewModels.Abstract
             _selectedItemStore = selectedItemStore;
 
             _selectedItemStore.AccountChanged += OnAccountChanged;
-            Active += OnActive;
 
             this.WhenAnyValue(vm => vm._selectedItemStore.Account)
                 .WhereNotNull()
@@ -27,7 +26,7 @@ namespace WPFUI.ViewModels.Abstract
                 .ToProperty(this, vm => vm.AccountId, out _accountId);
         }
 
-        private void OnActive()
+        protected override void OnActive()
         {
             Init(AccountId);
         }

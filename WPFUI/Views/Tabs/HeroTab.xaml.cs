@@ -18,6 +18,8 @@ namespace WPFUI.Views.Tabs
             InitializeComponent();
             this.WhenActivated(d =>
             {
+                this.OneWayBind(ViewModel, vm => vm.IsActive, v => v.Visibility).DisposeWith(d);
+
                 this.BindCommand(ViewModel, vm => vm.AdventuresCommand, v => v.AdventuresButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.InventoryCommand, v => v.InventoryButton).DisposeWith(d);
 

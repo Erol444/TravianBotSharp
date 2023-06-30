@@ -19,6 +19,8 @@ namespace WPFUI.Views.Tabs
             Interval.ViewModel = new();
             this.WhenActivated(d =>
             {
+                this.OneWayBind(ViewModel, vm => vm.IsActive, v => v.Visibility).DisposeWith(d);
+
                 //command
                 this.BindCommand(ViewModel, vm => vm.StartCommand, v => v.StartButton).DisposeWith(d);
                 this.BindCommand(ViewModel, vm => vm.StopCommand, v => v.StopButton).DisposeWith(d);

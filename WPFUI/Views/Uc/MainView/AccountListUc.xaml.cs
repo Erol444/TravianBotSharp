@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Uc.MainView;
 
@@ -16,7 +15,6 @@ namespace WPFUI.Views.Uc.MainView
     {
         public AccountListUc()
         {
-            ViewModel = Locator.Current.GetService<AccountListViewModel>();
             InitializeComponent();
             this.WhenActivated((d) =>
             {
