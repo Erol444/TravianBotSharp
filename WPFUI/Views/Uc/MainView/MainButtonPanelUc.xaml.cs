@@ -1,4 +1,5 @@
 ﻿using ReactiveUI;
+using Splat;
 using System.Reactive.Disposables;
 using WPFUI.ViewModels.Uc.MainView;
 
@@ -15,6 +16,7 @@ namespace WPFUI.Views.Uc.MainView
     {
         public MainButtonPanelUc()
         {
+            ViewModel = Locator.Current.GetService<MainButtonPanelViewModel>();
             InitializeComponent();
             this.WhenActivated(d =>
             {

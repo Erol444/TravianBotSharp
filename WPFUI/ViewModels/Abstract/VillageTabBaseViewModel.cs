@@ -14,6 +14,7 @@ namespace WPFUI.ViewModels.Abstract
             _selectedItemStore = selectedItemStore;
 
             _selectedItemStore.VillageChanged += OnVillageChanged;
+            Active += OnActive;
 
             this.WhenAnyValue(vm => vm._selectedItemStore.Account)
                 .WhereNotNull()
@@ -28,7 +29,7 @@ namespace WPFUI.ViewModels.Abstract
 
         protected abstract void Init(int id);
 
-        protected override void OnActive()
+        private void OnActive()
         {
             Init(VillageId);
         }

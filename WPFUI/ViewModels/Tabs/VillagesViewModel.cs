@@ -3,6 +3,7 @@ using DynamicData.Kernel;
 using MainCore;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,6 +12,7 @@ using System.Reactive.Linq;
 using WPFUI.Models;
 using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Tabs.Villages;
 using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.ViewModels.Tabs
@@ -20,29 +22,46 @@ namespace WPFUI.ViewModels.Tabs
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly VillageNavigationStore _villageNavigationStore;
         public ObservableCollection<TabHeaderViewModel> TabHeaders { get; } = new();
-        public List<ActivatableViewModelBase> TabContents { get; }
+        private readonly Dictionary<TabType, TabHeaderViewModel[]> _tabsHolder;
+        private TabType _currentTab;
+
+        private readonly ObservableAsPropertyHelper<ViewModelBase> _currentViewModel;
 
         public ObservableCollection<ListBoxItem> Villages { get; } = new();
 
         private ListBoxItem _currentVillage;
 
-        public VillagesViewModel(SelectedItemStore SelectedItemStore, IDbContextFactory<AppDbContext> contextFactory, VillageNavigationStore villageNavigationStore) : base(SelectedItemStore)
+        public VillagesViewModel(SelectedItemStore SelectedItemStore, VillageNavigationStore villageNavigationStore, IDbContextFactory<AppDbContext> contextFactory, NoVillageViewModel noVillageViewModel, BuildViewModel buildViewModel, VillageSettingsViewModel villageSettingsViewModel, NPCViewModel npcViewModel, VillageTroopsViewModel villageTroopsViewModel, InfoViewModel infoViewModel) : base(SelectedItemStore)
         {
             _villageNavigationStore = villageNavigationStore;
             _contextFactory = contextFactory;
 
-            _villageNavigationStore.OnTabChanged += OnTabChanged;
-            TabContents = _villageNavigationStore.ViewModelList;
+            _tabsHolder = new()
+            {
+                {
+                    TabType.NoAccount, new TabHeaderViewModel[]
+                    {
+                        new("No village", noVillageViewModel, villageNavigationStore) ,
+                    }
+                },
+                {
+                    TabType.Normal, new TabHeaderViewModel[]
+                    {
+                        new("Build",  buildViewModel, villageNavigationStore),
+                        new("Settings", villageSettingsViewModel, villageNavigationStore),
+                        new("NPC", npcViewModel, villageNavigationStore),
+                        new("Troop", villageTroopsViewModel, villageNavigationStore),
+                        new("Info", infoViewModel, villageNavigationStore),
+                    }
+                }
+            };
+            this.WhenAnyValue(vm => vm._villageNavigationStore.CurrentViewModel)
+                .ToProperty(this, vm => vm.CurrentViewModel, out _currentViewModel);
 
             this.WhenAnyValue(vm => vm.CurrentVillage).BindTo(_selectedItemStore, vm => vm.Village);
-        }
-
-        private void OnTabChanged(TabHeaderViewModel[] tabHeaders)
-        {
-            RxApp.MainThreadScheduler.Schedule(() =>
+            this.WhenAnyValue(vm => vm.CurrentVillage).Where(x => x is not null).Subscribe(x =>
             {
-                TabHeaders.Clear();
-                TabHeaders.AddRange(tabHeaders);
+                SetTab(TabType.Normal);
             });
         }
 
@@ -68,14 +87,29 @@ namespace WPFUI.ViewModels.Tabs
                 if (villages.Any())
                 {
                     CurrentVillage = Villages.First();
-                    _villageNavigationStore.SetTab(TabType.Normal);
-                }
-                else
-                {
-                    CurrentVillage = null;
-                    _villageNavigationStore.SetTab(TabType.NoAccount);
                 }
             });
+        }
+
+        public void SetTab(TabType tab)
+        {
+            if (!IsActive) return;
+            if (_currentTab == tab) return;
+
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                TabHeaders.Clear();
+                TabHeaders.AddRange(_tabsHolder[tab]);
+            });
+
+            _currentTab = tab;
+            _villageNavigationStore.TabHeaders = _tabsHolder[tab];
+            _tabsHolder[tab].First().Select(true);
+        }
+
+        public ViewModelBase CurrentViewModel
+        {
+            get => _currentViewModel.Value;
         }
 
         public ListBoxItem CurrentVillage

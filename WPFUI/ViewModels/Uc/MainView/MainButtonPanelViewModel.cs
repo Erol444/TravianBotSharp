@@ -33,12 +33,11 @@ namespace WPFUI.ViewModels.Uc.MainView
         private readonly WaitingOverlayViewModel _waitingOverlay;
         private readonly VersionOverlayViewModel _versionWindow;
 
-        private readonly AccountNavigationStore _accountNavigationStore;
-
+        private readonly MainTabPanelViewModel _mainTabPanelViewModel;
         private readonly AccountListViewModel _accountListViewModel;
         private readonly IAccessHelper _accessHelper;
 
-        public MainButtonPanelViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogHelper logHelper, ITimerManager timeManager, IChromeManager chromeManager, WaitingOverlayViewModel waitingWindow, VersionOverlayViewModel versionWindow, AccountListViewModel accountListViewModel, IAccessHelper accessHelper, AccountNavigationStore accountNavigationStore) : base(selectedItemStore)
+        public MainButtonPanelViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, IPlanManager planManager, IRestClientManager restClientManager, ILogHelper logHelper, ITimerManager timeManager, IChromeManager chromeManager, WaitingOverlayViewModel waitingWindow, VersionOverlayViewModel versionWindow, MainTabPanelViewModel mainTabPanelViewModel, AccountListViewModel accountListViewModel, IAccessHelper accessHelper) : base(selectedItemStore)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
@@ -50,9 +49,9 @@ namespace WPFUI.ViewModels.Uc.MainView
             _chromeManager = chromeManager;
             _waitingOverlay = waitingWindow;
             _versionWindow = versionWindow;
+            _mainTabPanelViewModel = mainTabPanelViewModel;
             _accountListViewModel = accountListViewModel;
             _accessHelper = accessHelper;
-            _accountNavigationStore = accountNavigationStore;
 
             _eventManager.AccountStatusUpdate += OnAccountUpdate;
 
@@ -148,13 +147,13 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         private void AddAccountTask()
         {
-            _accountNavigationStore.SetTab(TabType.AddAccount);
+            _mainTabPanelViewModel.SetTab(TabType.AddAccount);
             _accountListViewModel.CurrentAccount = null;
         }
 
         private void AddAccountsTask()
         {
-            _accountNavigationStore.SetTab(TabType.AddAccounts);
+            _mainTabPanelViewModel.SetTab(TabType.AddAccounts);
             _accountListViewModel.CurrentAccount = null;
         }
 

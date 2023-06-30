@@ -1,25 +1,15 @@
-﻿using ReactiveUI;
-using System.Reactive.Disposables;
-using WPFUI.ViewModels.Tabs;
+﻿using System.Windows.Controls;
 
 namespace WPFUI.Views.Tabs
 {
-    public partial class NoAccountTabBase : ReactiveUserControl<NoAccountViewModel>
-    {
-    }
-
     /// <summary>
     /// Interaction logic for NoAccountPage.xaml
     /// </summary>
-    public partial class NoAccountTab : NoAccountTabBase
+    public partial class NoAccountTab : UserControl
     {
         public NoAccountTab()
         {
             InitializeComponent();
-            this.WhenActivated(d =>
-            {
-                this.OneWayBind(ViewModel, vm => vm.IsActive, v => v.Visibility).DisposeWith(d);
-            });
         }
     }
 }

@@ -1,38 +1,42 @@
 ﻿using ReactiveUI;
 using System;
-using System.Reactive.Linq;
+using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 
 namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class ActivatableViewModelBase : ViewModelBase
+    public abstract class ActivatableViewModelBase : ViewModelBase, IActivatableViewModel
     {
         public ActivatableViewModelBase()
         {
-            this.WhenAnyValue(vm => vm.IsActive)
-                .Where(isActive => isActive == true)
-                .ObserveOn(RxApp.TaskpoolScheduler)
-                .Subscribe(_ => OnActive());
+            this.WhenActivated(disposables =>
+            {
+                OnActived();
 
-            this.WhenAnyValue(vm => vm.IsActive)
-                .Where(isActive => isActive == false)
-                .ObserveOn(RxApp.TaskpoolScheduler)
-                .Subscribe(_ => OnDeactive());
+                Disposable
+                    .Create(() => OnDeactived())
+                    .DisposeWith(disposables);
+            });
         }
 
-        private bool _isActive;
+        protected event Action Active;
 
-        public bool IsActive
+        protected event Action Deactive;
+
+        protected bool IsActive { get; private set; }
+
+        private void OnActived()
         {
-            get => _isActive;
-            set => this.RaiseAndSetIfChanged(ref _isActive, value);
+            IsActive = true;
+            RxApp.TaskpoolScheduler.Schedule(() => Active?.Invoke());
         }
 
-        protected virtual void OnActive()
+        private void OnDeactived()
         {
+            IsActive = false;
+            RxApp.TaskpoolScheduler.Schedule(() => Deactive?.Invoke());
         }
 
-        protected virtual void OnDeactive()
-        {
-        }
+        public ViewModelActivator Activator { get; } = new();
     }
 }

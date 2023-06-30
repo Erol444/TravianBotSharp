@@ -1,27 +1,28 @@
-﻿using ReactiveUI;
-using System.Reactive.Disposables;
-using WPFUI.ViewModels.Uc.MainView;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace WPFUI.Views.Uc.MainView
 {
-    public class MainLayoutUcBase : ReactiveUserControl<MainLayoutViewModel>
-    {
-    }
-
     /// <summary>
     /// Interaction logic for MainLayoutUc.xaml
     /// </summary>
-    public partial class MainLayoutUc : MainLayoutUcBase
+    public partial class MainLayoutUc : UserControl
     {
         public MainLayoutUc()
         {
             InitializeComponent();
-            this.WhenActivated(d =>
-            {
-                this.OneWayBind(ViewModel, vm => vm.MainTabPanelViewModel, v => v.MainTabPanel.ViewModel).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.MainButtonPanelViewModel, v => v.MainButtonPanel.ViewModel).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.AccountListViewModel, v => v.AccountList.ViewModel).DisposeWith(d);
-            });
         }
     }
 }

@@ -20,23 +20,26 @@ namespace WPFUI.ViewModels.Uc.MainView
     public class AccountListViewModel : ActivatableViewModelBase
     {
         private readonly SelectedItemStore _selectedItemStore;
-        private readonly AccountNavigationStore _accountNavigationStore;
+        private readonly MainTabPanelViewModel _mainTabPanelViewModel;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IEventManager _eventManager;
 
-        public AccountListViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, AccountNavigationStore accountNavigationStore)
+        public AccountListViewModel(SelectedItemStore selectedItemStore, MainTabPanelViewModel mainTabPanelViewModel, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager)
         {
             _selectedItemStore = selectedItemStore;
+            _mainTabPanelViewModel = mainTabPanelViewModel;
             _contextFactory = contextFactory;
-            _accountNavigationStore = accountNavigationStore;
             _eventManager = eventManager;
 
             _eventManager.AccountsTableUpdate += OnAccountsTableUpdate;
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
 
-            this.WhenAnyValue(x => x.CurrentAccount).BindTo(_selectedItemStore, vm => vm.Account);
+            Active += OnActive;
 
-            this.WhenAnyValue(x => x.CurrentAccount).WhereNotNull().Subscribe(_ => _accountNavigationStore.SetTab(TabType.Normal));
+            this.WhenAnyValue(x => x.CurrentAccount).BindTo(_selectedItemStore, vm => vm.Account);
+            this.WhenAnyValue(x => x.CurrentAccount)
+                .WhereNotNull()
+                .Subscribe(x => _mainTabPanelViewModel.SetTab(TabType.Normal));
         }
 
         private void OnAccountStatusUpdate(int accountId, AccountStatus status)
@@ -80,8 +83,9 @@ namespace WPFUI.ViewModels.Uc.MainView
             LoadData();
         }
 
-        protected override void OnActive()
+        private void OnActive()
         {
+            if (!IsActive) return;
             LoadData();
         }
 
@@ -101,12 +105,12 @@ namespace WPFUI.ViewModels.Uc.MainView
                 if (accounts.Any())
                 {
                     CurrentAccount = Accounts[0];
-                    _accountNavigationStore.SetTab(TabType.Normal);
+                    _mainTabPanelViewModel.SetTab(TabType.Normal);
                 }
                 else
                 {
                     CurrentAccount = null;
-                    _accountNavigationStore.SetTab(TabType.NoAccount);
+                    _mainTabPanelViewModel.SetTab(TabType.NoAccount);
                 }
             });
         }

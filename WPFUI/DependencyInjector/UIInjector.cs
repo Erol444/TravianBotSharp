@@ -57,7 +57,7 @@ namespace WPFUI.DependencyInjector
 
         private static IServiceCollection ConfigureStore(IServiceCollection services)
         {
-            services.AddSingleton<AccountNavigationStore>();
+            services.AddSingleton<NavigationStore>();
             services.AddSingleton<VillageNavigationStore>();
             services.AddSingleton<SelectedItemStore>();
             return services;

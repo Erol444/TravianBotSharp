@@ -14,30 +14,27 @@ namespace WPFUI.ViewModels.Uc.MainView
 
         public ReactiveCommand<Unit, Unit> ClickCommand { get; }
 
-        private readonly ActivatableViewModelBase _viewModel;
         private readonly NavigationStore _navigationStore;
+        private readonly ViewModelBase _viewModel;
 
-        public TabHeaderViewModel(string content, ActivatableViewModelBase viewModel, NavigationStore navigationStore)
+        public TabHeaderViewModel(string content, ViewModelBase viewModel, NavigationStore navigationStore)
         {
+            _navigationStore = navigationStore;
             _viewModel = viewModel;
             Content = content;
-            _navigationStore = navigationStore;
+
             ClickCommand = ReactiveCommand.Create(() => Select());
 
             this.WhenAnyValue(vm => vm.IsSelected)
                 .Select(x => !x)
                 .ToProperty(this, vm => vm.IsNotSelected, out _isNotSelected);
-
-            this.WhenAnyValue(vm => vm.IsSelected)
-                .BindTo(_viewModel, vm => vm.IsActive);
         }
-
-        public ActivatableViewModelBase ViewModel => _viewModel;
 
         public void Select(bool isForce = false)
         {
             if (IsSelected && !isForce) return;
-            _navigationStore.ClearSelect();
+
+            _navigationStore.Change(_viewModel);
             IsSelected = true;
         }
 
