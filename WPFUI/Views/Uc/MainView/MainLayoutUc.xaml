@@ -54,8 +54,8 @@
                 </ListBox>
             </Grid>
         </Grid>
-        <TabControl Grid.Column="1" x:Name="Tabs" Margin="10,0,0,0">
-            <TabItem x:Name="NoAccountTab" Header="No account" IsSelected="True">
+        <TabControl Grid.Column="1" Margin="10,0,0,0">
+            <TabItem x:Name="NoAccountTab" Header="No account">
                 <views:NoAccountTab x:Name="NoAccount" />
             </TabItem>
             <TabItem x:Name="AddAccountTab" Header="Add account">

@@ -40,6 +40,21 @@ namespace WPFUI.Views.Uc.MainView
                 this.OneWayBind(ViewModel, vm => vm.FarmingViewModel, v => v.Farming.ViewModel).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.EditAccountViewModel, v => v.EditAccount.ViewModel).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.DebugViewModel, v => v.Debug.ViewModel).DisposeWith(d);
+
+                this.OneWayBind(ViewModel, vm => vm.AccountTabControlViewModel.IsNoAccountTabVisible, v => v.NoAccountTab.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AccountTabControlViewModel.IsAddAccountTabVisible, v => v.AddAccountTab.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AccountTabControlViewModel.IsAddAccountsTabVisible, v => v.AddAccountsTab.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AccountTabControlViewModel.IsNormalTabVisible, v => v.SettingsTab.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AccountTabControlViewModel.IsNormalTabVisible, v => v.HeroTab.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AccountTabControlViewModel.IsNormalTabVisible, v => v.VillagesTab.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AccountTabControlViewModel.IsNormalTabVisible, v => v.FarmingTab.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AccountTabControlViewModel.IsNormalTabVisible, v => v.EditAccountTab.Visibility).DisposeWith(d);
+                this.OneWayBind(ViewModel, vm => vm.AccountTabControlViewModel.IsNormalTabVisible, v => v.DebugTab.Visibility).DisposeWith(d);
+
+                this.Bind(ViewModel, vm => vm.AccountTabControlViewModel.IsNoAccountTabSelected, v => v.NoAccountTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.AccountTabControlViewModel.IsAddAccountTabSelected, v => v.AddAccountTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.AccountTabControlViewModel.IsAddAccountsTabSelected, v => v.AddAccountsTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.AccountTabControlViewModel.IsNormalTabSelected, v => v.SettingsTab.IsSelected).DisposeWith(d);
             });
         }
     }

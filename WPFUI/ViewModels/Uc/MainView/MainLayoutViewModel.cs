@@ -48,6 +48,8 @@ namespace WPFUI.ViewModels.Uc.MainView
         private readonly EditAccountViewModel _editAccountViewModel;
         private readonly DebugViewModel _debugViewModel;
 
+        public AccountTabControlViewModel AccountTabControlViewModel { get; } = new();
+
         public MainLayoutViewModel(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, SelectedItemStore selectedItemStore, VersionOverlayViewModel versionWindow, WaitingOverlayViewModel waitingOverlay, ITaskManager taskManager, IChromeManager chromeManager, IPlanManager planManager, NoAccountViewModel noAccountViewModel, AddAccountViewModel addAccountViewModel, AddAccountsViewModel addAccountsViewModel, SettingsViewModel settingsViewModel, HeroViewModel heroViewModel, VillagesViewModel villagesViewModel, FarmingViewModel farmingViewModel, EditAccountViewModel editAccountViewModel, DebugViewModel debugViewModel, ITimerManager timeManager, IAccessHelper accessHelper)
         {
             _contextFactory = contextFactory;
@@ -76,8 +78,6 @@ namespace WPFUI.ViewModels.Uc.MainView
             _eventManager.AccountsTableUpdate += OnAccountsTableUpdate;
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;
 
-            this.WhenAnyValue(x => x.CurrentAccount).BindTo(_selectedItemStore, vm => vm.Account);
-
             _selectedItemStore.AccountChanged += OnAccountChanged;
 
             CheckVersionCommand = ReactiveCommand.Create(CheckVersionTask);
@@ -91,6 +91,10 @@ namespace WPFUI.ViewModels.Uc.MainView
 
             PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsValidPause));
             RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
+
+            var currentAccountObservable = this.WhenAnyValue(x => x.CurrentAccount);
+            currentAccountObservable.BindTo(_selectedItemStore, vm => vm.Account);
+            currentAccountObservable.WhereNotNull().Subscribe(_ => AccountTabControlViewModel.SetTabType(TabType.Normal));
         }
 
         #region Event
@@ -244,11 +248,13 @@ namespace WPFUI.ViewModels.Uc.MainView
         private void AddAccountTask()
         {
             CurrentAccount = null;
+            AccountTabControlViewModel.SetTabType(TabType.AddAccount);
         }
 
         private void AddAccountsTask()
         {
             CurrentAccount = null;
+            AccountTabControlViewModel.SetTabType(TabType.AddAccounts);
         }
 
         private async Task DeleteAccountTask()
