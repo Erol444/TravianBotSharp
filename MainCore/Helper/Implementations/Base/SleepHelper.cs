@@ -16,16 +16,14 @@ namespace MainCore.Helper.Implementations.Base
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly IChromeManager _chromeManager;
         private readonly IAccessHelper _accessHelper;
-        private readonly IRestClientManager _restClientManager;
         private readonly ILogHelper _logHelper;
         private readonly ITaskManager _taskManager;
 
-        public SleepHelper(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IAccessHelper accessHelper, IRestClientManager restClientManager, ILogHelper logHelper, ITaskManager taskManager)
+        public SleepHelper(IDbContextFactory<AppDbContext> contextFactory, IChromeManager chromeManager, IAccessHelper accessHelper, ILogHelper logHelper, ITaskManager taskManager)
         {
             _contextFactory = contextFactory;
             _chromeManager = chromeManager;
             _accessHelper = accessHelper;
-            _restClientManager = restClientManager;
             _logHelper = logHelper;
             _taskManager = taskManager;
         }
@@ -33,20 +31,20 @@ namespace MainCore.Helper.Implementations.Base
         public Result Execute(int accountId, CancellationToken token)
         {
             var sleepEnd = DateTime.Now;
-            var nextAccess = GetNextAccess(accountId);
-
-            if (nextAccess is null || IsForceSleep(accountId))
+            var nextAccess = _accessHelper.GetNextAccess(accountId);
+            var isSameAccess = _accessHelper.IsLastAccess(accountId, nextAccess);
+            if (isSameAccess || IsForceSleep(accountId))
             {
                 var sleepTime = GetSleepTime(accountId);
                 sleepEnd = sleepEnd.Add(sleepTime);
-                _logHelper.Information(accountId, $"No proxy vaild or force sleep is acitve. Bot will sleep {(int)sleepTime.TotalMinutes} mins");
+                _logHelper.Information(accountId, $"Only 1 connection or force sleep is acitve. Bot will sleep {(int)sleepTime.TotalMinutes} mins");
             }
             else
             {
                 var sleepTime = TimeSpan.FromSeconds(Random.Shared.Next(14 * 60, 16 * 60));
                 sleepEnd = sleepEnd.Add(sleepTime);
                 var proxyHost = string.IsNullOrEmpty(nextAccess.ProxyHost) ? "default" : nextAccess.ProxyHost;
-                _logHelper.Information(accountId, $"There is vaild proxy ({proxyHost}). Bot will sleep {(int)sleepTime.TotalMinutes} mins before switching to vaild proxy");
+                _logHelper.Information(accountId, $"There are more than 1 connection ({proxyHost}). Bot will sleep {(int)sleepTime.TotalMinutes} mins before switching to new connection");
             }
 
             var chromeBrowser = _chromeManager.Get(accountId);
@@ -57,40 +55,6 @@ namespace MainCore.Helper.Implementations.Base
             result = WakeUp(accountId, nextAccess);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
-        }
-
-        public Access GetNextAccess(int accountId)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var accesses = context.Accesses.Where(x => x.AccountId == accountId).OrderBy(x => x.LastUsed).ToList();
-            var currentAccess = accesses.Last();
-            accesses.Remove(currentAccess);
-
-            var setting = context.AccountsSettings.Find(accountId);
-
-            foreach (var access in accesses)
-            {
-                if (string.IsNullOrEmpty(access.ProxyHost))
-                {
-                    access.LastUsed = DateTime.Now;
-                    context.SaveChanges();
-                    return access;
-                }
-
-                var result = _accessHelper.IsValid(_restClientManager.Get(new(access)));
-                if (result)
-                {
-                    access.LastUsed = DateTime.Now;
-                    context.SaveChanges();
-                    return access;
-                }
-                else
-                {
-                    _logHelper.Warning(accountId, $"Proxy {access.ProxyHost} is not working");
-                }
-            }
-
-            return null;
         }
 
         public Result Sleep(int accountId, DateTime sleepEnd, CancellationToken token)

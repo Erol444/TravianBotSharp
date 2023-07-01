@@ -21,7 +21,6 @@ namespace WPFUI.Views.Tabs
                 this.OneWayBind(ViewModel, vm => vm.Villages, v => v.VillagesGrid.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.CurrentVillage, v => v.VillagesGrid.SelectedItem).DisposeWith(d);
 
-                this.OneWayBind(ViewModel, vm => vm.TabHeaders, v => v.Headers.ItemsSource).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.CurrentViewModel, v => v.TabPanel.Content).DisposeWith(d);
             });
         }

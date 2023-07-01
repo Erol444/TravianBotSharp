@@ -4,7 +4,6 @@ using MainCore;
 using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -13,7 +12,6 @@ using WPFUI.Models;
 using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Tabs.Villages;
-using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.ViewModels.Tabs
 {
@@ -21,9 +19,7 @@ namespace WPFUI.ViewModels.Tabs
     {
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
         private readonly VillageNavigationStore _villageNavigationStore;
-        public ObservableCollection<TabHeaderViewModel> TabHeaders { get; } = new();
-        private readonly Dictionary<TabType, TabHeaderViewModel[]> _tabsHolder;
-        private TabType _currentTab;
+        private readonly TabType _currentTab;
 
         private readonly ObservableAsPropertyHelper<ViewModelBase> _currentViewModel;
 
@@ -36,25 +32,6 @@ namespace WPFUI.ViewModels.Tabs
             _villageNavigationStore = villageNavigationStore;
             _contextFactory = contextFactory;
 
-            _tabsHolder = new()
-            {
-                {
-                    TabType.NoAccount, new TabHeaderViewModel[]
-                    {
-                        new("No village", noVillageViewModel, villageNavigationStore) ,
-                    }
-                },
-                {
-                    TabType.Normal, new TabHeaderViewModel[]
-                    {
-                        new("Build",  buildViewModel, villageNavigationStore),
-                        new("Settings", villageSettingsViewModel, villageNavigationStore),
-                        new("NPC", npcViewModel, villageNavigationStore),
-                        new("Troop", villageTroopsViewModel, villageNavigationStore),
-                        new("Info", infoViewModel, villageNavigationStore),
-                    }
-                }
-            };
             this.WhenAnyValue(vm => vm._villageNavigationStore.CurrentViewModel)
                 .ToProperty(this, vm => vm.CurrentViewModel, out _currentViewModel);
 
@@ -95,16 +72,6 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!IsActive) return;
             if (_currentTab == tab) return;
-
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                TabHeaders.Clear();
-                TabHeaders.AddRange(_tabsHolder[tab]);
-            });
-
-            _currentTab = tab;
-            _villageNavigationStore.TabHeaders = _tabsHolder[tab];
-            _tabsHolder[tab].First().Select(true);
         }
 
         public ViewModelBase CurrentViewModel

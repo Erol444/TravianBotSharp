@@ -49,9 +49,7 @@ namespace WPFUI.DependencyInjector
         private static IServiceCollection ConfigureUcViewModel(IServiceCollection services)
         {
             // main view
-            services.AddSingleton<MainTabPanelViewModel>();
-            services.AddSingleton<MainButtonPanelViewModel>();
-            services.AddSingleton<AccountListViewModel>();
+            services.AddSingleton<MainLayoutViewModel>();
             return services;
         }
 

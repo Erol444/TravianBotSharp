@@ -9,8 +9,6 @@ namespace MainCore.Helper.Interface
     {
         Result Execute(int accountId, CancellationToken token);
 
-        Access GetNextAccess(int accountId);
-
         TimeSpan GetSleepTime(int accountId);
 
         TimeSpan GetWorkTime(int accountId);

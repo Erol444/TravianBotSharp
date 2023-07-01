@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using WPFUI;
-using WPFUI.ViewModels.Uc.MainView;
 
 namespace TestProject.Mock
 {
@@ -64,12 +63,10 @@ namespace TestProject.Mock
                 "WPFUI.ViewModels.Tabs.Villages",
                 "WPFUI.Store",
             };
-            var ignoreList = new Type[]
-            {
-                typeof(TabHeaderViewModel),
-                typeof(MainLayoutViewModel),
-            };
-
+            var ignoreList = Array.Empty<Type>();
+            //var ignoreList = new Type[]
+            //{
+            //};
             var result = new List<object[]>();
 
             foreach (var ns in namespaces)

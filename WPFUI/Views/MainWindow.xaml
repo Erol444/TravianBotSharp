@@ -18,7 +18,7 @@
         <ContentControl x:Name="MainLayout">
             <ContentControl.Resources>
                 <DataTemplate DataType="{x:Type viewmodelsLayout:MainLayoutViewModel}">
-                    <viewsLayout:MainLayoutUc />
+                    <viewsLayout:MainLayoutUc ViewModel="{Binding .}" />
                 </DataTemplate>
             </ContentControl.Resources>
         </ContentControl>

@@ -1,5 +1,4 @@
 ﻿using ReactiveUI;
-using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 
@@ -11,30 +10,26 @@ namespace WPFUI.ViewModels.Abstract
         {
             this.WhenActivated(disposables =>
             {
-                OnActived();
-
+                IsActive = true;
+                RxApp.TaskpoolScheduler.Schedule(OnActive);
                 Disposable
-                    .Create(() => OnDeactived())
+                    .Create(() =>
+                    {
+                        IsActive = false;
+                        RxApp.TaskpoolScheduler.Schedule(OnDeactive);
+                    })
                     .DisposeWith(disposables);
             });
         }
 
-        protected event Action Active;
-
-        protected event Action Deactive;
-
         protected bool IsActive { get; private set; }
 
-        private void OnActived()
+        protected virtual void OnActive()
         {
-            IsActive = true;
-            RxApp.TaskpoolScheduler.Schedule(() => Active?.Invoke());
         }
 
-        private void OnDeactived()
+        protected virtual void OnDeactive()
         {
-            IsActive = false;
-            RxApp.TaskpoolScheduler.Schedule(() => Deactive?.Invoke());
         }
 
         public ViewModelActivator Activator { get; } = new();

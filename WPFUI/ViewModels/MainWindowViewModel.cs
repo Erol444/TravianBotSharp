@@ -7,6 +7,7 @@ using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
+using Splat;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -108,7 +109,8 @@ namespace WPFUI.ViewModels
             };
 
             await Task.WhenAll(tasks);
-            MainLayoutViewModel = new();
+            MainLayoutViewModel = Locator.Current.GetService<MainLayoutViewModel>();
+            MainLayoutViewModel.LoadData();
             _versionOverlay.LoadCommand.Execute().Subscribe();
             _waitingOverlay.CloseCommand.Execute().Subscribe();
         }
