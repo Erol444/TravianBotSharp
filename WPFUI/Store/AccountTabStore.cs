@@ -2,14 +2,14 @@
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
 
-namespace WPFUI.ViewModels.Uc.MainView
+namespace WPFUI.Store
 {
-    public class AccountTabControlViewModel : ViewModelBase
+    public class AccountTabStore : ViewModelBase
     {
         private readonly bool[] _tabVisibility = new bool[4];
         private TabType _currentTabType;
 
-        public AccountTabControlViewModel()
+        public AccountTabStore()
         {
             SetTabType(TabType.NoAccount);
         }

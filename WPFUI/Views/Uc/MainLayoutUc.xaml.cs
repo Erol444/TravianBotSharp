@@ -1,8 +1,8 @@
 ﻿using ReactiveUI;
 using System.Reactive.Disposables;
-using WPFUI.ViewModels.Uc.MainView;
+using WPFUI.ViewModels.Uc;
 
-namespace WPFUI.Views.Uc.MainView
+namespace WPFUI.Views.Uc
 {
     public partial class MainLayoutUcBase : ReactiveUserControl<MainLayoutViewModel>
     {

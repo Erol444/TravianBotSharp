@@ -2,7 +2,6 @@
     x:Class="WPFUI.Views.Tabs.VillagesTab"
     xmlns:v="clr-namespace:WPFUI.Views.Tabs"
     xmlns:views="clr-namespace:WPFUI.Views.Tabs.Villages"
-    xmlns:viewmodels="clr-namespace:WPFUI.ViewModels.Tabs.Villages"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -26,50 +25,25 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <Grid Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <ItemsControl x:Name="Headers" Grid.Row="0" Margin="10,0,0,0">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button x:Name="button" Content="{Binding Content}" IsEnabled="{Binding IsNotSelected}" Command="{Binding ClickCommand}" Style="{DynamicResource MaterialDesignRaisedButton}" Margin="5,0,0,0" />
-                        <DataTemplate.Triggers>
-                            <Trigger SourceName="button" Property="IsMouseOver" Value="True">
-                                <Setter TargetName="button" Property="Background" Value="{DynamicResource PrimaryHueDarkBrush}" />
-                            </Trigger>
-                        </DataTemplate.Triggers>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            <ContentControl x:Name="TabPanel" Grid.Row="1">
-                <ContentControl.Resources>
-                    <DataTemplate DataType="{x:Type viewmodels:NoVillageViewModel}">
-                        <views:NoVillageTab />
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type viewmodels:BuildViewModel}">
-                        <views:BuildTab ViewModel="{Binding .}" />
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type viewmodels:VillageSettingsViewModel}">
-                        <views:VillageSettingsTab ViewModel="{Binding .}" />
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type viewmodels:NPCViewModel}">
-                        <views:NPCTab ViewModel="{Binding .}" />
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type viewmodels:VillageTroopsViewModel}">
-                        <views:TroopsTab ViewModel="{Binding .}" />
-                    </DataTemplate>
-                    <DataTemplate DataType="{x:Type viewmodels:InfoViewModel}">
-                        <views:InfoTab ViewModel="{Binding .}" />
-                    </DataTemplate>
-                </ContentControl.Resources>
-            </ContentControl>
-        </Grid>
+        <TabControl Grid.Column="1" Margin="10,0,0,0">
+            <TabItem x:Name="NoVillageTab" Header="No village" IsSelected="True">
+                <views:NoVillageTab x:Name="NoVillage" />
+            </TabItem>
+            <TabItem x:Name="BuildTab" Header="Build">
+                <views:BuildTab x:Name="Build" />
+            </TabItem>
+            <TabItem x:Name="VillageSettingsTab" Header="Village settings">
+                <views:VillageSettingsTab x:Name="VillageSettings" />
+            </TabItem>
+            <TabItem x:Name="NPCTab" Header="NPC">
+                <views:NPCTab x:Name="NPC" />
+            </TabItem>
+            <TabItem x:Name="TroopsTab" Header="Troops">
+                <views:TroopsTab x:Name="Troops" />
+            </TabItem>
+            <TabItem x:Name="InfoTab" Header="Info">
+                <views:InfoTab x:Name="Info" />
+            </TabItem>
+        </TabControl>
     </Grid>
 </v:VillagesTabBase>

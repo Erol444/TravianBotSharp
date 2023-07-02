@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Uc;
-using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.ViewModels
 {

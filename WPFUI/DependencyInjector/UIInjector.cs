@@ -5,7 +5,6 @@ using WPFUI.ViewModels;
 using WPFUI.ViewModels.Tabs;
 using WPFUI.ViewModels.Tabs.Villages;
 using WPFUI.ViewModels.Uc;
-using WPFUI.ViewModels.Uc.MainView;
 
 namespace WPFUI.DependencyInjector
 {
@@ -55,8 +54,6 @@ namespace WPFUI.DependencyInjector
 
         private static IServiceCollection ConfigureStore(IServiceCollection services)
         {
-            services.AddSingleton<NavigationStore>();
-            services.AddSingleton<VillageNavigationStore>();
             services.AddSingleton<SelectedItemStore>();
             return services;
         }

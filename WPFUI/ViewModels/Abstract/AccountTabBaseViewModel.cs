@@ -9,10 +9,7 @@ namespace WPFUI.ViewModels.Abstract
     {
         protected readonly SelectedItemStore _selectedItemStore;
 
-        protected abstract void Init(int id);
-
-        private readonly ObservableAsPropertyHelper<int> _accountId;
-        public int AccountId => _accountId.Value;
+        protected abstract void Init(int accountId);
 
         public AccountTabBaseViewModel(SelectedItemStore selectedItemStore)
         {
@@ -28,6 +25,7 @@ namespace WPFUI.ViewModels.Abstract
 
         protected override void OnActive()
         {
+            if (!_selectedItemStore.IsAccountSelected) return;
             Init(AccountId);
         }
 
@@ -36,5 +34,8 @@ namespace WPFUI.ViewModels.Abstract
             if (!IsActive) return;
             Init(accountId);
         }
+
+        private readonly ObservableAsPropertyHelper<int> _accountId;
+        public int AccountId => _accountId.Value;
     }
 }

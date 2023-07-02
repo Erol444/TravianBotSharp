@@ -42,4 +42,8 @@
     <ProjectReference Include="..\MainCore\MainCore.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\Uc\MainView\" />
+  </ItemGroup>
+
 </Project>

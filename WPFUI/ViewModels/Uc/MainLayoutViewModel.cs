@@ -21,7 +21,7 @@ using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 using WPFUI.ViewModels.Tabs;
 
-namespace WPFUI.ViewModels.Uc.MainView
+namespace WPFUI.ViewModels.Uc
 {
     public class MainLayoutViewModel : ViewModelBase
     {
@@ -48,7 +48,7 @@ namespace WPFUI.ViewModels.Uc.MainView
         private readonly EditAccountViewModel _editAccountViewModel;
         private readonly DebugViewModel _debugViewModel;
 
-        public AccountTabControlViewModel AccountTabControlViewModel { get; } = new();
+        public AccountTabStore AccountTabControlViewModel { get; } = new();
 
         public MainLayoutViewModel(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, SelectedItemStore selectedItemStore, VersionOverlayViewModel versionWindow, WaitingOverlayViewModel waitingOverlay, ITaskManager taskManager, IChromeManager chromeManager, IPlanManager planManager, NoAccountViewModel noAccountViewModel, AddAccountViewModel addAccountViewModel, AddAccountsViewModel addAccountsViewModel, SettingsViewModel settingsViewModel, HeroViewModel heroViewModel, VillagesViewModel villagesViewModel, FarmingViewModel farmingViewModel, EditAccountViewModel editAccountViewModel, DebugViewModel debugViewModel, ITimerManager timeManager, IAccessHelper accessHelper)
         {

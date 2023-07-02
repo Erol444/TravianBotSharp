@@ -9,6 +9,8 @@ namespace WPFUI.ViewModels.Abstract
     {
         protected readonly SelectedItemStore _selectedItemStore;
 
+        protected abstract void Init(int villageId);
+
         public VillageTabBaseViewModel(SelectedItemStore selectedItemStore)
         {
             _selectedItemStore = selectedItemStore;
@@ -26,15 +28,15 @@ namespace WPFUI.ViewModels.Abstract
                 .ToProperty(this, vm => vm.VillageId, out _villageId);
         }
 
-        protected abstract void Init(int id);
-
         protected override void OnActive()
         {
+            if (!_selectedItemStore.IsVillageSelected) return;
             Init(VillageId);
         }
 
         private void OnVillageChanged(int villageId)
         {
+            if (!IsActive) return;
             Init(villageId);
         }
 
