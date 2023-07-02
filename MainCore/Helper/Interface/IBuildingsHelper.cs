@@ -26,5 +26,6 @@ namespace MainCore.Helper.Interface
         Result<bool> IsPrerequisiteAvailable(int villageId, PlanTask task);
 
         bool IsTaskComplete(int villageId, PlanTask task);
+        Result<bool> IsMultipleReady(int villageId, PlanTask task);
     }
 }

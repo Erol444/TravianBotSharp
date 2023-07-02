@@ -144,5 +144,25 @@ namespace MainCore.Helper.Implementations.Base
             }
             return true;
         }
+
+        public Result<bool> IsMultipleReady(int villageId, PlanTask task)
+        {
+            if (!task.Building.IsMultipleAllow()) return true;
+            using var context = _contextFactory.CreateDbContext();
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId && x.Type == task.Building);
+            var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0 && x.Type == task.Building);
+
+            var highestLevelBuilding = buildings.OrderByDescending(x => x.Level).FirstOrDefault();
+            if (highestLevelBuilding.Id == task.Location) return true;
+
+            if (highestLevelBuilding.Level < task.Building.GetMaxLevel())
+            {
+                var isBuilding = currentBuildings.Any(x => x.Level == task.Building.GetMaxLevel());
+                if (!isBuilding) return false;
+                return Result.Fail(BuildingQueue.MultipleInQueue(task));
+            }
+
+            return true;
+        }
     }
 }

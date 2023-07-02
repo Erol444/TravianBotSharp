@@ -18,5 +18,7 @@ namespace MainCore.Errors
         public static BuildingQueue LackFreeCrop => new("There is not enough freecrop ( < 4 ) to build and no slot available to upgrade cropland");
 
         public static BuildingQueue PrerequisiteInQueue(PlanTask task) => new($"Prerequisite buildings of {task.Building} is already in queue. Wait for them complete");
+
+        public static BuildingQueue MultipleInQueue(PlanTask task) => new($"{task.Building} is going to finish first building. Wait for it complete");
     }
 }

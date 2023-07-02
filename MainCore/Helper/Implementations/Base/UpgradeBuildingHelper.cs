@@ -122,6 +122,14 @@ namespace MainCore.Helper.Implementations.Base
                     return Result.Fail(new Skip($"{chosenTask.Building} - level {chosenTask.Level} doens't have enough prerequisite buildings. Please check your build queue."));
                 }
 
+                var isMultipleReadyResult = _buildingsHelper.IsMultipleReady(villageId, chosenTask);
+                if (isMultipleReadyResult.IsFailed) return Result.Fail(isMultipleReadyResult.Errors).WithError(new Trace(Trace.TraceMessage()));
+                var isMultipleReady = isMultipleReadyResult.Value;
+                if (!isMultipleReady)
+                {
+                    return Result.Fail(new Skip($"{chosenTask.Building} - level {chosenTask.Level} is going to build but the first {chosenTask.Building} isn't max level. Please check your build queue."));
+                }
+
                 #endregion validate plan task
 
                 #region enter building
