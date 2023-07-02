@@ -23,8 +23,6 @@ namespace MainCore.Services.Interface
 
         public List<PlanTask> GetList(int villageId, bool clearFinished = true);
 
-        bool IsTaskComplete(PlanTask task, IQueryable<VillageBuilding> buildings, IQueryable<VillCurrentBuilding> currentBuildings);
-
         void Top(int villageId, int index);
 
         void Bottom(int villageId, int index);
@@ -32,5 +30,7 @@ namespace MainCore.Services.Interface
         void Up(int villageId, int index);
 
         void Down(int villageId, int index);
+
+        bool IsTaskComplete(PlanTask task, IQueryable<VillageBuilding> buildings, IQueryable<VillCurrentBuilding> currentBuildings);
     }
 }

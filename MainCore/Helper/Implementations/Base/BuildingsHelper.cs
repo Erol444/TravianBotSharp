@@ -1,5 +1,8 @@
-﻿using MainCore.Enums;
+﻿using FluentResults;
+using MainCore.Enums;
+using MainCore.Errors;
 using MainCore.Helper.Interface;
+using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -111,6 +114,35 @@ namespace MainCore.Helper.Implementations.Base
                 BuildingEnums.Woodcutter or BuildingEnums.ClayPit or BuildingEnums.IronMine or BuildingEnums.Cropland => 1,
                 _ => 2,
             };
+        }
+
+        public bool IsTaskComplete(int villageId, PlanTask task)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId);
+            var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0);
+            return _planManager.IsTaskComplete(task, buildings, currentBuildings);
+        }
+
+        public Result<bool> IsPrerequisiteAvailable(int villageId, PlanTask task)
+        {
+            using var context = _contextFactory.CreateDbContext();
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId);
+            var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0);
+
+            var (_, prerequisiteBuildings) = task.Building.GetPrerequisiteBuildings();
+
+            foreach (var prerequisiteBuilding in prerequisiteBuildings)
+            {
+                var isBuilt = buildings.Any(x => x.Type == prerequisiteBuilding.Building && x.Level >= prerequisiteBuilding.Level);
+                if (!isBuilt)
+                {
+                    var isBuilding = currentBuildings.Any(x => x.Type == prerequisiteBuilding.Building && x.Level >= prerequisiteBuilding.Level);
+                    if (!isBuilding) return false;
+                    return Result.Fail(BuildingQueue.PrerequisiteInQueue(task));
+                }
+            }
+            return true;
         }
     }
 }

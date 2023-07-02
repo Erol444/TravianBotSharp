@@ -1,4 +1,6 @@
-﻿using MainCore.Enums;
+﻿using FluentResults;
+using MainCore.Enums;
+using MainCore.Models.Runtime;
 using System.Collections.Generic;
 
 namespace MainCore.Helper.Interface
@@ -20,5 +22,9 @@ namespace MainCore.Helper.Interface
         bool IsExists(int villageId, BuildingEnums building);
 
         bool CanBuild(int villageId, TribeEnums tribe, BuildingEnums building);
+
+        Result<bool> IsPrerequisiteAvailable(int villageId, PlanTask task);
+
+        bool IsTaskComplete(int villageId, PlanTask task);
     }
 }

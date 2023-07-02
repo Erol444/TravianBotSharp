@@ -251,6 +251,28 @@ namespace MainCore.Helper.Implementations.Base
             return Result.Ok();
         }
 
+        public Result ToDorf(int accountId, int villageId, int location)
+        {
+            Result result;
+            var dorf = _buildingsHelper.GetDorf(location);
+            switch (dorf)
+            {
+                case 1:
+                    result = ToDorf1(accountId, villageId);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                    break;
+
+                case 2:
+                    result = ToDorf2(accountId, villageId);
+                    if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
+                    break;
+
+                default:
+                    break;
+            }
+            return Result.Ok();
+        }
+
         public Result ToDorf(int accountId, int villageId, bool forceReload = false)
         {
             var result = SwitchVillage(accountId, villageId);

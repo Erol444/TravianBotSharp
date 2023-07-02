@@ -28,12 +28,14 @@ namespace MainCore.Tasks.FunctionTasks
                 if (result.HasError<BuildingQueue>())
                 {
                     NextExecute();
+                    return Result.Fail(result.Errors.First());
                 }
                 else if (result.HasError<NoResource>())
                 {
                     ExecuteAt = DateTime.Now.AddMinutes(Random.Shared.Next(30, 40));
+                    return Result.Fail(result.Errors.First());
                 }
-                return Result.Fail(result.Errors.First());
+                return Result.Fail(result.Errors);
             }
 
             NextExecute();

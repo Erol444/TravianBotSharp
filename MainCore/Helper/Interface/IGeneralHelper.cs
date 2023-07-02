@@ -30,6 +30,8 @@ namespace MainCore.Helper.Interface
 
         Result ToDorf(int accountId, int villageId, bool forceReload = false);
 
+        Result ToDorf(int accountId, int villageId, int location);
+
         Result ToDorf1(int accountId, int villageId, bool forceReload = false, bool switchVillage = false);
 
         Result ToDorf2(int accountId, int villageId, bool forceReload = false, bool switchVillage = false);

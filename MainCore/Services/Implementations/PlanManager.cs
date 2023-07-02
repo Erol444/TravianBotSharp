@@ -273,6 +273,17 @@ namespace MainCore.Services.Implementations
             return tasks;
         }
 
+        private List<PlanTask> GetTasks(int villageId)
+        {
+            var tasks = _tasksDict.GetValueOrDefault(villageId);
+            if (tasks is null)
+            {
+                tasks = new();
+                _tasksDict.Add(villageId, tasks);
+            }
+            return tasks;
+        }
+
         public bool IsTaskComplete(PlanTask task, IQueryable<VillageBuilding> buildings, IQueryable<VillCurrentBuilding> currentBuildings)
         {
             switch (task.Type)
@@ -309,17 +320,6 @@ namespace MainCore.Services.Implementations
                 default:
                     return true;
             }
-        }
-
-        private List<PlanTask> GetTasks(int villageId)
-        {
-            var tasks = _tasksDict.GetValueOrDefault(villageId);
-            if (tasks is null)
-            {
-                tasks = new();
-                _tasksDict.Add(villageId, tasks);
-            }
-            return tasks;
         }
     }
 }

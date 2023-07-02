@@ -1,4 +1,5 @@
 ﻿using FluentResults;
+using MainCore.Models.Runtime;
 
 namespace MainCore.Errors
 {
@@ -15,5 +16,7 @@ namespace MainCore.Errors
 
         public static BuildingQueue Full => new("Amount of currently building is equal with maximum building can build in same time");
         public static BuildingQueue LackFreeCrop => new("There is not enough freecrop ( < 4 ) to build and no slot available to upgrade cropland");
+
+        public static BuildingQueue PrerequisiteInQueue(PlanTask task) => new($"Prerequisite buildings of {task.Building} is already in queue. Wait for them complete");
     }
 }
