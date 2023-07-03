@@ -10,10 +10,12 @@ namespace MainCore.Tasks.UpdateTasks
     public sealed class UpdateAdventures : AccountBotTask
     {
         private readonly IAdventureHelper _adventureHelper;
+        private readonly IGeneralHelper _generalHelper;
 
         public UpdateAdventures(int accountId, CancellationToken cancellationToken = default) : base(accountId, cancellationToken)
         {
             _adventureHelper = Locator.Current.GetService<IAdventureHelper>();
+            _generalHelper = Locator.Current.GetService<IGeneralHelper>();
         }
 
         public override Result Execute()

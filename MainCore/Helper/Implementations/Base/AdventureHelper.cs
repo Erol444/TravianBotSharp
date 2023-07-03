@@ -80,7 +80,7 @@ namespace MainCore.Helper.Implementations.Base
 
             int sec = int.Parse(timer.GetAttributeValue("value", "0"));
             if (sec < 0) sec = 0;
-            return DateTime.Now.AddMinutes(sec * 2 + Random.Shared.Next(5, 10));
+            return DateTime.Now.AddSeconds(sec * 2 + Random.Shared.Next(5, 10));
         }
     }
 }
