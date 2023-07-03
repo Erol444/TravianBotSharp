@@ -15,7 +15,6 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using WPFUI.Models;
 using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
@@ -85,12 +84,10 @@ namespace WPFUI.ViewModels.Uc
             AddAccountsCommand = ReactiveCommand.Create(AddAccountsTask);
 
             DeleteAccountCommand = ReactiveCommand.CreateFromTask(DeleteAccountTask);
-
             LoginCommand = ReactiveCommand.CreateFromTask(LoginTask, this.WhenAnyValue(vm => vm.IsAllowLogin));
             LogoutCommand = ReactiveCommand.CreateFromTask(LogoutTask, this.WhenAnyValue(vm => vm.IsAllowLogout));
-
-            PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsValidPause));
-            RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsValidRestart));
+            PauseCommand = ReactiveCommand.CreateFromTask(PauseTask, this.WhenAnyValue(x => x.IsAllowPause));
+            RestartCommand = ReactiveCommand.Create(RestartTask, this.WhenAnyValue(x => x.IsAllowRestart));
 
             var currentAccountObservable = this.WhenAnyValue(x => x.CurrentAccount);
             currentAccountObservable.BindTo(_selectedItemStore, vm => vm.Account);
@@ -104,32 +101,8 @@ namespace WPFUI.ViewModels.Uc
             var account = Accounts.FirstOrDefault(x => x.Id == accountId);
             if (account is null) return;
 
-            switch (status)
-            {
-                case AccountStatus.Offline:
-                    account.Color = Color.FromRgb(0, 0, 0); // black
-                    break;
-
-                case AccountStatus.Starting:
-                    account.Color = Color.FromRgb(255, 165, 0); // orange
-                    break;
-
-                case AccountStatus.Online:
-                    account.Color = Color.FromRgb(0, 255, 0); // green
-                    break;
-
-                case AccountStatus.Pausing:
-                    account.Color = Color.FromRgb(255, 165, 0); // orange
-                    break;
-
-                case AccountStatus.Paused:
-                    account.Color = Color.FromRgb(255, 0, 0); // red
-                    break;
-
-                case AccountStatus.Stopping:
-                    account.Color = Color.FromRgb(255, 165, 0); // orange
-                    break;
-            }
+            Status = status;
+            account.Color = status.GetColor().ToMediaColor();
         }
 
         private void OnAccountsTableUpdate()
@@ -141,7 +114,7 @@ namespace WPFUI.ViewModels.Uc
         {
             if (CurrentAccount is null) return;
             if (CurrentAccount.Id != accountId) return;
-            LoadStatusData(_taskManager.GetAccountStatus(accountId));
+            Status = _taskManager.GetAccountStatus(accountId);
         }
 
         #endregion Event
@@ -174,65 +147,6 @@ namespace WPFUI.ViewModels.Uc
                 {
                     CurrentAccount = null;
                 }
-            });
-        }
-
-        private void LoadStatusData(AccountStatus status)
-        {
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                switch (status)
-                {
-                    case AccountStatus.Offline:
-                        IsAllowLogin = true;
-                        IsAllowLogout = false;
-
-                        IsValidPause = false;
-                        TextPause = "Offline";
-                        break;
-
-                    case AccountStatus.Starting:
-                        IsAllowLogin = false;
-                        IsAllowLogout = false;
-
-                        IsValidPause = false;
-                        TextPause = "Starting";
-                        break;
-
-                    case AccountStatus.Online:
-                        IsAllowLogin = false;
-                        IsAllowLogout = true;
-
-                        IsValidPause = true;
-                        TextPause = "Pause";
-                        break;
-
-                    case AccountStatus.Pausing:
-                        IsAllowLogin = false;
-                        IsAllowLogout = false;
-
-                        IsValidPause = false;
-                        TextPause = "Pausing";
-                        break;
-
-                    case AccountStatus.Paused:
-                        IsAllowLogin = false;
-                        IsAllowLogout = true;
-
-                        IsValidPause = true;
-                        TextPause = "Resume";
-                        break;
-
-                    case AccountStatus.Stopping:
-                        IsAllowLogin = false;
-                        IsAllowLogout = false;
-
-                        IsValidPause = false;
-                        TextPause = "Stopping";
-                        break;
-                }
-
-                IsValidRestart = status == AccountStatus.Paused;
             });
         }
 
@@ -487,12 +401,20 @@ namespace WPFUI.ViewModels.Uc
         public ReactiveCommand<Unit, Unit> PauseCommand { get; }
         public ReactiveCommand<Unit, Unit> RestartCommand { get; }
 
-        private bool _isAllowLogout;
+        private AccountStatus _status;
 
-        public bool IsAllowLogout
+        public AccountStatus Status
         {
-            get => _isAllowLogout;
-            set => this.RaiseAndSetIfChanged(ref _isAllowLogout, value);
+            get => _status;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _status, value);
+                IsAllowLogin = value.IsAllowLogin();
+                IsAllowLogout = value.IsAllowLogout();
+                IsAllowRestart = value.IsAllowRestart();
+                IsAllowPause = value.IsAllowPause();
+                TextPause = value.GetPauseText();
+            }
         }
 
         private bool _isAllowLogin;
@@ -503,20 +425,28 @@ namespace WPFUI.ViewModels.Uc
             set => this.RaiseAndSetIfChanged(ref _isAllowLogin, value);
         }
 
-        private bool _isValidPause;
+        private bool _isAllowLogout;
 
-        public bool IsValidPause
+        public bool IsAllowLogout
         {
-            get => _isValidPause;
-            set => this.RaiseAndSetIfChanged(ref _isValidPause, value);
+            get => _isAllowLogout;
+            set => this.RaiseAndSetIfChanged(ref _isAllowLogout, value);
         }
 
-        private bool _isValidRestart;
+        private bool _isAllowRestart;
 
-        public bool IsValidRestart
+        public bool IsAllowRestart
         {
-            get => _isValidRestart;
-            set => this.RaiseAndSetIfChanged(ref _isValidRestart, value);
+            get => _isAllowRestart;
+            set => this.RaiseAndSetIfChanged(ref _isAllowRestart, value);
+        }
+
+        private bool _isAllowPause;
+
+        public bool IsAllowPause
+        {
+            get => _isAllowPause;
+            set => this.RaiseAndSetIfChanged(ref _isAllowPause, value);
         }
 
         private string _textPause;

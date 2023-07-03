@@ -876,5 +876,52 @@ namespace MainCore
                 _ => BuildingEnums.Site,
             };
         }
+
+        public static bool IsAllowLogin(this AccountStatus status)
+        {
+            if (status == AccountStatus.Offline) return true;
+            return false;
+        }
+
+        public static bool IsAllowLogout(this AccountStatus status)
+        {
+            if (status == AccountStatus.Online) return true;
+            if (status == AccountStatus.Paused) return true;
+            return false;
+        }
+
+        public static bool IsAllowPause(this AccountStatus status)
+        {
+            if (status == AccountStatus.Online) return true;
+            if (status == AccountStatus.Paused) return true;
+            return false;
+        }
+
+        public static bool IsAllowRestart(this AccountStatus status)
+        {
+            if (status == AccountStatus.Paused) return true;
+            return false;
+        }
+
+        public static string GetPauseText(this AccountStatus status)
+        {
+            if (status == AccountStatus.Online) return "Pause";
+            if (status == AccountStatus.Paused) return "Resume";
+            return "[~!~]";
+        }
+
+        public static Color GetColor(this AccountStatus status)
+        {
+            return status switch
+            {
+                AccountStatus.Offline => Color.Black,
+                AccountStatus.Starting => Color.Orange,
+                AccountStatus.Online => Color.Green,
+                AccountStatus.Pausing => Color.Orange,
+                AccountStatus.Paused => Color.Red,
+                AccountStatus.Stopping => Color.Orange,
+                _ => Color.Black,
+            };
+        }
     }
 }
