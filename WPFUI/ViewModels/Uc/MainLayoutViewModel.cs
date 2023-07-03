@@ -47,7 +47,7 @@ namespace WPFUI.ViewModels.Uc
         private readonly EditAccountViewModel _editAccountViewModel;
         private readonly DebugViewModel _debugViewModel;
 
-        public AccountTabStore AccountTabControlViewModel { get; } = new();
+        public AccountTabStore AccountTabStore { get; } = new();
 
         public MainLayoutViewModel(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, SelectedItemStore selectedItemStore, VersionOverlayViewModel versionWindow, WaitingOverlayViewModel waitingOverlay, ITaskManager taskManager, IChromeManager chromeManager, IPlanManager planManager, NoAccountViewModel noAccountViewModel, AddAccountViewModel addAccountViewModel, AddAccountsViewModel addAccountsViewModel, SettingsViewModel settingsViewModel, HeroViewModel heroViewModel, VillagesViewModel villagesViewModel, FarmingViewModel farmingViewModel, EditAccountViewModel editAccountViewModel, DebugViewModel debugViewModel, ITimerManager timeManager, IAccessHelper accessHelper)
         {
@@ -91,7 +91,12 @@ namespace WPFUI.ViewModels.Uc
 
             var currentAccountObservable = this.WhenAnyValue(x => x.CurrentAccount);
             currentAccountObservable.BindTo(_selectedItemStore, vm => vm.Account);
-            currentAccountObservable.WhereNotNull().Subscribe(_ => AccountTabControlViewModel.SetTabType(TabType.Normal));
+            currentAccountObservable.Subscribe(x =>
+            {
+                var tabType = TabType.Normal;
+                if (x is null) tabType = TabType.NoAccount;
+                AccountTabStore.SetTabType(tabType);
+            });
         }
 
         #region Event
@@ -162,13 +167,13 @@ namespace WPFUI.ViewModels.Uc
         private void AddAccountTask()
         {
             CurrentAccount = null;
-            AccountTabControlViewModel.SetTabType(TabType.AddAccount);
+            AccountTabStore.SetTabType(TabType.AddAccount);
         }
 
         private void AddAccountsTask()
         {
             CurrentAccount = null;
-            AccountTabControlViewModel.SetTabType(TabType.AddAccounts);
+            AccountTabStore.SetTabType(TabType.AddAccounts);
         }
 
         private async Task DeleteAccountTask()

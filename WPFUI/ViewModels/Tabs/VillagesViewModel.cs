@@ -43,7 +43,12 @@ namespace WPFUI.ViewModels.Tabs
 
             var currentVillageObservable = this.WhenAnyValue(vm => vm.CurrentVillage);
             currentVillageObservable.BindTo(_selectedItemStore, vm => vm.Village);
-            currentVillageObservable.WhereNotNull().Subscribe(_ => _villageTabStore.SetTabType(TabType.Normal));
+            currentVillageObservable.Subscribe(x =>
+            {
+                var tabType = TabType.Normal;
+                if (x is null) tabType = TabType.NoAccount;
+                VillageTabStore.SetTabType(tabType);
+            });
         }
 
         protected override void Init(int accountId)
