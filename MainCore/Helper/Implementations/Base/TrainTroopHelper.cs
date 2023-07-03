@@ -152,9 +152,9 @@ namespace MainCore.Helper.Implementations.Base
 
         public int GetAmountTroop(int accountId, int villageId, BuildingEnums trainBuilding, TimeSpan trainTime)
         {
-            var chromeBrowser = _chromeManager.Get(accountId);
-            var doc = chromeBrowser.GetHtml();
-            var timeRemaining = _trainTroopParser.GetQueueTrainTime(doc);
+            //var chromeBrowser = _chromeManager.Get(accountId);
+            //var doc = chromeBrowser.GetHtml();
+            //var timeRemaining = _trainTroopParser.GetQueueTrainTime(doc);
 
             using var context = _contextFactory.CreateDbContext();
             var setting = context.VillagesSettings.FirstOrDefault(x => x.VillageId == villageId);
@@ -181,11 +181,16 @@ namespace MainCore.Helper.Implementations.Base
 
             var timeTrain = TimeSpan.FromMinutes(timeTrainMinutes);
 
-            if (timeRemaining > timeTrain) return 0;
+            //if (timeRemaining > timeTrain) return 0;
 
-            var timeLeft = timeTrain - timeRemaining;
+            //var timeLeft = timeTrain - timeRemaining;
 
-            var result = (int)(timeLeft.TotalMilliseconds / trainTime.TotalMilliseconds);
+            // quite confused but this comment will explain
+            // we caclulate how many troop we will train
+            // timeTrain aka time we want added into train queue
+            // trainTime aka time to train 1 troop
+
+            var result = (int)(timeTrain.TotalMilliseconds / trainTime.TotalMilliseconds);
             return result > 0 ? result + 1 : result;
         }
 
