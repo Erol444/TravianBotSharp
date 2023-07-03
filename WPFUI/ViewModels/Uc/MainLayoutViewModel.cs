@@ -270,7 +270,7 @@ namespace WPFUI.ViewModels.Uc
 
             _taskManager.UpdateAccountStatus(accountId, AccountStatus.Starting);
 
-            var selectedAccess = _accessHelper.GetNextAccess(accountId);
+            var (selectedAccess, _) = _accessHelper.GetNextAccess(accountId);
 
             if (selectedAccess is null)
             {

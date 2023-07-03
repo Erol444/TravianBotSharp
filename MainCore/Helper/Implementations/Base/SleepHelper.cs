@@ -31,8 +31,7 @@ namespace MainCore.Helper.Implementations.Base
         public Result Execute(int accountId, CancellationToken token)
         {
             var sleepEnd = DateTime.Now;
-            var nextAccess = _accessHelper.GetNextAccess(accountId);
-            var isSameAccess = _accessHelper.IsLastAccess(accountId, nextAccess);
+            var (nextAccess, isSameAccess) = _accessHelper.GetNextAccess(accountId);
             if (isSameAccess || IsForceSleep(accountId))
             {
                 var sleepTime = GetSleepTime(accountId);

@@ -39,20 +39,12 @@ namespace MainCore.Helper.Implementations.Base
             }
         }
 
-        public bool IsLastAccess(int accountId, Access access)
+        public (Access, bool) GetNextAccess(int accountId)
         {
             using var context = _contextFactory.CreateDbContext();
             var accesses = context.Accesses.Where(x => x.AccountId == accountId).OrderBy(x => x.LastUsed).ToList();
 
-            var lastAccess = accesses.Last();
-            return access.Id == lastAccess.Id;
-        }
-
-        public Access GetNextAccess(int accountId)
-        {
-            using var context = _contextFactory.CreateDbContext();
-            var accesses = context.Accesses.Where(x => x.AccountId == accountId).OrderBy(x => x.LastUsed).ToList();
-
+            var currentAccess = accesses.Last();
             foreach (var access in accesses)
             {
                 if (string.IsNullOrEmpty(access.ProxyHost))
@@ -61,7 +53,7 @@ namespace MainCore.Helper.Implementations.Base
                     access.LastUsed = DateTime.Now;
                     context.Update(access);
                     context.SaveChanges();
-                    return access;
+                    return (access, access.Id == currentAccess.Id);
                 }
 
                 var result = IsValid(_restClientManager.Get(new(access)));
@@ -71,7 +63,7 @@ namespace MainCore.Helper.Implementations.Base
                     access.LastUsed = DateTime.Now;
                     context.Update(access);
                     context.SaveChanges();
-                    return access;
+                    return (access, access.Id == currentAccess.Id);
                 }
                 else
                 {
@@ -81,7 +73,7 @@ namespace MainCore.Helper.Implementations.Base
 
             _logHelper.Warning(accountId, "All connection of this account is not working");
 
-            return null;
+            return (null, false);
         }
     }
 }

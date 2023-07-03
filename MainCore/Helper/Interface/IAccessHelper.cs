@@ -5,8 +5,8 @@ namespace MainCore.Helper.Interface
 {
     public interface IAccessHelper
     {
-        Access GetNextAccess(int accountId);
-        bool IsLastAccess(int accountId, Access access);
+        (Access, bool) GetNextAccess(int accountId);
+
         bool IsValid(RestClient client);
     }
 }
