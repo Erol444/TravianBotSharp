@@ -184,7 +184,7 @@ namespace WPFUI.ViewModels.Uc
                 return;
             }
 
-            await DeleteAccount(CurrentAccount.Id);
+            await Task.Run(() => DeleteAccount(CurrentAccount.Id));
         }
 
         private async Task LoginTask()
@@ -195,7 +195,7 @@ namespace WPFUI.ViewModels.Uc
                 return;
             }
 
-            await LoginAccount(CurrentAccount.Id);
+            await Task.Run(() => LoginAccount(CurrentAccount.Id));
         }
 
         private async Task LogoutTask()
@@ -235,9 +235,9 @@ namespace WPFUI.ViewModels.Uc
 
         #region Method
 
-        private async Task DeleteAccount(int accountId)
+        private void DeleteAccount(int accountId)
         {
-            using var context = await _contextFactory.CreateDbContextAsync();
+            using var context = _contextFactory.CreateDbContext();
             var account = context.Accounts.Find(accountId);
 
             string messageBoxText = $"Do you want to delete account {account.Username} ?";
@@ -246,15 +246,15 @@ namespace WPFUI.ViewModels.Uc
             {
                 _waitingOverlay.ShowCommand.Execute("saving data").Subscribe();
                 context.DeleteAccount(accountId);
-                await context.SaveChangesAsync();
+                context.SaveChanges();
                 _eventManager.OnAccountsUpdate();
                 _waitingOverlay.CloseCommand.Execute().Subscribe();
             }
         }
 
-        private async Task LoginAccount(int accountId)
+        private void LoginAccount(int accountId)
         {
-            using var context = await _contextFactory.CreateDbContextAsync();
+            using var context = _contextFactory.CreateDbContext();
             var accountInfo = context.AccountsInfo.Find(accountId);
             if (accountInfo.Tribe == TribeEnums.Any)
             {
@@ -310,9 +310,14 @@ namespace WPFUI.ViewModels.Uc
             if (current is not null)
             {
                 _taskManager.StopCurrentTask(index);
-                await Task.Run(() =>
+                await Task.Run(async () =>
                 {
-                    while (current.Stage != TaskStage.Waiting) { }
+                    while (current.Stage != TaskStage.Waiting)
+                    {
+                        current = _taskManager.GetCurrentTask(index);
+                        if (current is null) return;
+                        await Task.Delay(500);
+                    }
                 });
             }
 
@@ -339,9 +344,14 @@ namespace WPFUI.ViewModels.Uc
                 {
                     _taskManager.StopCurrentTask(index);
                     _waitingOverlay.ShowCommand.Execute("waiting current task stops").Subscribe();
-                    await Task.Run(() =>
+                    await Task.Run(async () =>
                     {
-                        while (current.Stage != TaskStage.Waiting) { }
+                        while (current.Stage != TaskStage.Waiting)
+                        {
+                            current = _taskManager.GetCurrentTask(index);
+                            if (current is null) return;
+                            await Task.Delay(500);
+                        }
                     });
                     _waitingOverlay.CloseCommand.Execute().Subscribe();
                 }
