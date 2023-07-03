@@ -152,6 +152,8 @@ namespace MainCore.Helper.Implementations.Base
             var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId && x.Type == task.Building);
             var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0 && x.Type == task.Building);
 
+            if (!buildings.Any()) return true; // first building
+
             var highestLevelBuilding = buildings.OrderByDescending(x => x.Level).FirstOrDefault();
             if (highestLevelBuilding.Id == task.Location) return true;
 
