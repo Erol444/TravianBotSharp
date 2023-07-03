@@ -106,8 +106,11 @@ namespace WPFUI.ViewModels.Uc
             var account = Accounts.FirstOrDefault(x => x.Id == accountId);
             if (account is null) return;
 
-            Status = status;
-            account.Color = status.GetColor().ToMediaColor();
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Status = status;
+                account.Color = status.GetColor().ToMediaColor();
+            });
         }
 
         private void OnAccountsTableUpdate()
@@ -119,7 +122,10 @@ namespace WPFUI.ViewModels.Uc
         {
             if (CurrentAccount is null) return;
             if (CurrentAccount.Id != accountId) return;
-            Status = _taskManager.GetAccountStatus(accountId);
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                Status = _taskManager.GetAccountStatus(accountId);
+            });
         }
 
         #endregion Event

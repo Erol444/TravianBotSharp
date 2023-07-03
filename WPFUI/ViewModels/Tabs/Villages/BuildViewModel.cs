@@ -88,6 +88,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             if (!IsActive) return;
             if (villageId != VillageId) return;
             LoadQueueBuilding(villageId);
+            LoadBuildings(villageId);
         }
 
         private void OnCurrentlyBuildingsUpdate(int villageId)
