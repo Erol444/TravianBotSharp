@@ -46,7 +46,7 @@ namespace WPFUI.ViewModels.Tabs.Villages
             //_taskManager.Add(AccountId, new TrainTroopsTask(VillageId, AccountId));
             //_taskManager.Add(AccountId, new StableTrainTroopsTask(VillageId, AccountId));
 
-            _taskManager.Add<UpdateBothDorf>(AccountId);
+            _taskManager.Add<UpdateBothDorf>(VillageId, AccountId);
         }
 
         private void Dorf1()
