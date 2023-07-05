@@ -39,35 +39,40 @@ namespace MainCore.Services.Implementations
             // check building can build muiltiple times (warehouse, ganary, ...)
             if (task.Building.IsMultipleAllow())
             {
-                var villageBuildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
-                var building = villageBuildings.Where(x => x.Type == task.Building).OrderByDescending(x => x.Level).FirstOrDefault();
-                if (building is not null)
+                var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId && x.Type == task.Building).OrderByDescending(x => x.Level).ToList();
+                var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Type == task.Building).OrderByDescending(x => x.Level).ToList();
+                var planTasks = GetList(villageId).Where(x => x.Building == task.Building).OrderByDescending(x => x.Level).ToList();
+
+                var largestLevel = 0;
+                var id = 0;
+                if (buildings.Any())
                 {
-                    if (task.Location != building.Id && building.Level != building.Type.GetMaxLevel())
+                    var building = buildings.First();
+                    largestLevel = building.Level;
+                    id = building.Id;
+                }
+                if (currentBuildings.Any())
+                {
+                    var currentBuilding = currentBuildings.First();
+                    if (currentBuilding.Level > largestLevel)
                     {
-                        task.Location = building.Id;
+                        largestLevel = currentBuilding.Level;
+                        id = currentBuilding.Location;
                     }
-                    return task;
+                }
+                if (planTasks.Any())
+                {
+                    var planTask = planTasks.First();
+                    if (planTask.Level > largestLevel)
+                    {
+                        largestLevel = planTask.Level;
+                        id = planTask.Location;
+                    }
                 }
 
-                var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-                var currentBuilding = currentBuildings.Where(x => x.Type == task.Building).OrderByDescending(x => x.Level).FirstOrDefault();
-                if (currentBuilding is not null)
+                if (largestLevel < task.Building.GetMaxLevel())
                 {
-                    if (task.Location != currentBuilding.Location && currentBuilding.Level != currentBuilding.Type.GetMaxLevel())
-                    {
-                        task.Location = currentBuilding.Location;
-                    }
-                    return task;
-                }
-
-                var planTasks = GetList(villageId);
-                var planTask = planTasks.Where(x => x.Building == task.Building).OrderByDescending(x => x.Level).FirstOrDefault();
-                if (planTask is null) return task;
-
-                if (task.Location != planTask.Location && planTask.Level != planTask.Building.GetMaxLevel())
-                {
-                    task.Location = planTask.Location;
+                    task.Location = id;
                 }
                 return task;
             }
@@ -81,8 +86,7 @@ namespace MainCore.Services.Implementations
                 return task;
             }
             {
-                var villageBuildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
-                var building = villageBuildings.FirstOrDefault(x => x.Type == task.Building);
+                var building = context.VillagesBuildings.Where(x => x.VillageId == villageId && x.Type == task.Building).FirstOrDefault();
                 if (building is not null)
                 {
                     if (task.Location != building.Id)
@@ -92,8 +96,7 @@ namespace MainCore.Services.Implementations
                     return task;
                 }
 
-                var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-                var currentBuilding = currentBuildings.FirstOrDefault(x => x.Type == task.Building);
+                var currentBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Type == task.Building).FirstOrDefault();
                 if (currentBuilding is not null)
                 {
                     if (task.Location != currentBuilding.Location)
@@ -105,10 +108,13 @@ namespace MainCore.Services.Implementations
 
                 var planTasks = GetList(villageId);
                 var planTask = planTasks.FirstOrDefault(x => x.Building == task.Building);
-                if (planTask is null) return task;
-                if (task.Location != planTask.Location)
+                if (planTask is not null)
                 {
-                    task.Location = planTask.Location;
+                    if (task.Location != planTask.Location)
+                    {
+                        task.Location = planTask.Location;
+                    }
+                    return task;
                 }
             }
             return task;
