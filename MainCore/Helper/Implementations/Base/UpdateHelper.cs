@@ -627,7 +627,7 @@ namespace MainCore.Helper.Implementations.Base
             {
                 if (currentlyBuildings.Count < (info.HasPlusAccount ? 2 : 1)) return;
             }
-            var notInstantBuildings = currentlyBuildings.Where(x => x.Type.IsNotAdsUpgrade());
+            var notInstantBuildings = currentlyBuildings.Where(x => x.Type.IsNotAdsUpgrade()).ToList();
             foreach (var building in notInstantBuildings)
             {
                 currentlyBuildings.Remove(building);
