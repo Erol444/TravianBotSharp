@@ -124,7 +124,7 @@ namespace MainCore.Helper.Implementations.Base
                 logger = Log.ForContext("Account", account.Username);
             }
 
-            logger.Error("{message}", message);
+            logger.Error(error, "{message}", message);
         }
     }
 }

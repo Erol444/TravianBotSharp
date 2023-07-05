@@ -8,7 +8,7 @@ namespace MainCore.Helper.Implementations.TTWars
 {
     public class UpgradeBuildingHelper : Base.UpgradeBuildingHelper
     {
-        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper, IBuildingsHelper buildingsHelper, IDatabaseHelper databaseHelper) : base(contextFactory, planManager, chromeManager, systemPageParser, generalHelper, eventManager, heroResourcesHelper, updateHelper, buildingsHelper, databaseHelper)
+        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper, IBuildingsHelper buildingsHelper, IDatabaseHelper databaseHelper, ILogHelper logHelper) : base(contextFactory, planManager, chromeManager, systemPageParser, generalHelper, eventManager, heroResourcesHelper, updateHelper, buildingsHelper, databaseHelper, logHelper)
         {
         }
 

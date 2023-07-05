@@ -28,8 +28,9 @@ namespace MainCore.Helper.Implementations.Base
         private readonly IEventManager _eventManager;
         private readonly IBuildingsHelper _buildingsHelper;
         private readonly IDatabaseHelper _databaseHelper;
+        private readonly ILogHelper _logHelper;
 
-        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper, IBuildingsHelper buildingsHelper, IDatabaseHelper databaseHelper)
+        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper, IBuildingsHelper buildingsHelper, IDatabaseHelper databaseHelper, ILogHelper logHelper)
         {
             _contextFactory = contextFactory;
             _planManager = planManager;
@@ -41,6 +42,7 @@ namespace MainCore.Helper.Implementations.Base
             _updateHelper = updateHelper;
             _buildingsHelper = buildingsHelper;
             _databaseHelper = databaseHelper;
+            _logHelper = logHelper;
         }
 
         public abstract DateTime GetNextExecute(DateTime completeTime);
@@ -94,8 +96,10 @@ namespace MainCore.Helper.Implementations.Base
                     else
                     {
                         _planManager.Insert(villageId, 0, task);
+                        _logHelper.Information(accountId, $"Imported {task.Building} - level {task.Level} to build queue from {chosenTask.Content}.");
                     }
                     _eventManager.OnVillageBuildQueueUpdate(villageId);
+
                     continue;
                 }
 
@@ -151,10 +155,12 @@ namespace MainCore.Helper.Implementations.Base
 
                 if (isNewBuilding)
                 {
+                    _logHelper.Information(accountId, $"Start building {chosenTask.Building} - level {chosenTask.Level}.");
                     Construct(accountId, chosenTask);
                 }
                 else
                 {
+                    _logHelper.Information(accountId, $"Start upgrade {chosenTask.Building} - level {chosenTask.Level}.");
                     if (IsNeedAdsUpgrade(accountId, villageId, chosenTask))
                     {
                         result = UpgradeAds(accountId, chosenTask);
