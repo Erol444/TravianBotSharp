@@ -77,6 +77,7 @@ namespace MainCore.Helper.Implementations.Base
                 using var context = _contextFactory.CreateDbContext();
                 var account = context.Accounts.Find(accountId);
                 logger = Log.ForContext("Account", account.Username);
+                _loggers.Add(accountId, logger);
             }
 
             logger.Information("{message}", message);
@@ -92,6 +93,7 @@ namespace MainCore.Helper.Implementations.Base
                 using var context = _contextFactory.CreateDbContext();
                 var account = context.Accounts.Find(accountId);
                 logger = Log.ForContext("Account", account.Username);
+                _loggers.Add(accountId, logger);
             }
 
             logger.Warning("{message}", message);
@@ -107,6 +109,7 @@ namespace MainCore.Helper.Implementations.Base
                 using var context = _contextFactory.CreateDbContext();
                 var account = context.Accounts.Find(accountId);
                 logger = Log.ForContext("Account", account.Username);
+                _loggers.Add(accountId, logger);
             }
 
             logger.Error("{message}", message);
@@ -122,6 +125,7 @@ namespace MainCore.Helper.Implementations.Base
                 using var context = _contextFactory.CreateDbContext();
                 var account = context.Accounts.Find(accountId);
                 logger = Log.ForContext("Account", account.Username);
+                _loggers.Add(accountId, logger);
             }
 
             logger.Error(error, "{message}", message);
