@@ -653,6 +653,17 @@ namespace MainCore.Helper.Implementations.Base
             {
                 var ratio = resource.Crop * 100.0f / resource.Granary;
                 if (ratio < setting.AutoNPCPercent) return;
+                if (!setting.IsNPCOverflow)
+                {
+                    var sumRatio = setting.AutoNPCClay + setting.AutoNPCIron + setting.AutoNPCWood + setting.AutoNPCCrop;
+                    if (sumRatio == 0) return;
+                    var sumRes = resource.Wood + resource.Clay + resource.Iron + resource.Crop;
+
+                    var maxRatio = Math.Max(setting.AutoNPCClay, Math.Max(setting.AutoNPCIron, setting.AutoNPCWood));
+
+                    var res = sumRes * maxRatio / sumRatio;
+                    if (res > resource.Warehouse) return;
+                }
                 _taskManager.Add<NPCTask>(accountId, villageId);
             }
             if (setting.IsAutoNPCWarehouse && setting.AutoNPCWarehousePercent != 0)
@@ -660,6 +671,14 @@ namespace MainCore.Helper.Implementations.Base
                 var maxResource = Math.Max(resource.Wood, Math.Max(resource.Clay, resource.Iron));
                 var ratio = maxResource * 100.0f / resource.Warehouse;
                 if (ratio < setting.AutoNPCWarehousePercent) return;
+                if (!setting.IsNPCOverflow)
+                {
+                    var sumRatio = setting.AutoNPCClay + setting.AutoNPCIron + setting.AutoNPCWood + setting.AutoNPCCrop;
+                    if (sumRatio == 0) return;
+                    var sumRes = resource.Wood + resource.Clay + resource.Iron + resource.Crop;
+                    var crop = sumRes * setting.AutoNPCCrop / sumRatio;
+                    if (crop > resource.Granary) return;
+                }
                 _taskManager.Add<NPCTask>(accountId, villageId);
             }
         }
