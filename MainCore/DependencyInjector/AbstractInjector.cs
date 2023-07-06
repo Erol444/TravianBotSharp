@@ -1,9 +1,12 @@
 ﻿using FluentMigrator.Runner;
+using MainCore.Helper.Implementations.Base;
+using MainCore.Helper.Interface;
 using MainCore.Migrations;
 using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog.Core;
 
 namespace MainCore.DependencyInjector
 {
@@ -11,7 +14,7 @@ namespace MainCore.DependencyInjector
     {
         private const string _connectionString = "DataSource=TBS.db;Cache=Shared";
 
-        private IServiceCollection ConfigureService(IServiceCollection services)
+        private static IServiceCollection ConfigureService(IServiceCollection services)
         {
             services.AddDbContextFactory<AppDbContext>(options => options.UseSqlite(_connectionString));
             services.AddSingleton<IChromeManager, ChromeManager>();
@@ -21,7 +24,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<ITimerManager, TimerManager>();
             services.AddSingleton<ITaskManager, TaskManager>();
             services.AddSingleton<IPlanManager, PlanManager>();
-            services.AddSingleton<ILogManager, LogManager>();
+            services.AddSingleton<ILogEventSink, LoggerSink>();
 
             services.AddFluentMigratorCore()
                 .ConfigureRunner(rb => rb
@@ -31,18 +34,32 @@ namespace MainCore.DependencyInjector
             return services;
         }
 
-        protected abstract IServiceCollection ConfigureFactory(IServiceCollection services);
+        private static IServiceCollection ConfigureHelper(IServiceCollection services)
+        {
+            services.AddSingleton<IAccessHelper, AccessHelper>();
+            services.AddSingleton<ILogHelper, LogHelper>();
+            services.AddSingleton<IGithubHelper, GithubHelper>();
+            services.AddSingleton<IDatabaseHelper, DatabaseHelper>();
+            services.AddSingleton<IInvalidPageHelper, InvalidPageHelper>();
+            services.AddSingleton<ISleepHelper, SleepHelper>();
+            services.AddSingleton<ILoginHelper, LoginHelper>();
+            services.AddSingleton<ITrainTroopHelper, TrainTroopHelper>();
+            services.AddSingleton<ICompleteNowHelper, CompleteNowHelper>();
+            services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
+
+            return services;
+        }
 
         protected abstract IServiceCollection ConfigureParser(IServiceCollection services);
 
-        protected abstract IServiceCollection ConfigureHelper(IServiceCollection services);
+        protected abstract IServiceCollection ConfigureServerHelper(IServiceCollection services);
 
         public IServiceCollection Configure(IServiceCollection services)
         {
-            ConfigureService(services);
-            ConfigureFactory(services);
-            ConfigureParser(services);
             ConfigureHelper(services);
+            ConfigureServerHelper(services);
+            ConfigureService(services);
+            ConfigureParser(services);
 
             return services;
         }

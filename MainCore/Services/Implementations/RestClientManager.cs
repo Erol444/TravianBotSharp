@@ -1,6 +1,5 @@
 ﻿using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
-using Microsoft.EntityFrameworkCore;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -12,10 +11,8 @@ namespace MainCore.Services.Implementations
 {
     public sealed class RestClientManager : IRestClientManager
     {
-        public RestClientManager(IDbContextFactory<AppDbContext> contextFactory)
+        public RestClientManager()
         {
-            _contextFactory = contextFactory;
-
             var clientOptions = new RestClientOptions
             {
                 MaxTimeout = 10000,
@@ -53,7 +50,7 @@ namespace MainCore.Services.Implementations
             var clientOptions = new RestClientOptions
             {
                 MaxTimeout = 10000,
-                BaseUrl = new Uri("https://api.ipify.org"),
+                BaseUrl = new Uri("https://api.ipify.org/"),
                 Proxy = proxy,
             };
 
@@ -81,6 +78,5 @@ namespace MainCore.Services.Implementations
         }
 
         private readonly Dictionary<int, RestClient> _database = new();
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
     }
 }

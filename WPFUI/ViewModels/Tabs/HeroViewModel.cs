@@ -1,7 +1,9 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
 using MainCore;
-using MainCore.Tasks.Base;
+using MainCore.Services.Interface;
+using MainCore.Tasks.UpdateTasks;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -9,14 +11,22 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs
 {
     public class HeroViewModel : AccountTabBaseViewModel
     {
-        public HeroViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _eventManager;
+        private readonly ITaskManager _taskManager;
+
+        public HeroViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager) : base(selectedItemStore)
         {
+            _contextFactory = contextFactory;
+            _eventManager = eventManager;
+            _taskManager = taskManager;
             _eventManager.HeroInfoUpdate += OnHeroInfoUpdate;
             _eventManager.HeroAdventuresUpdate += OnHeroAdventuresUpdate;
             _eventManager.HeroInventoryUpdate += OnheroInventoryUpdate;
@@ -125,12 +135,12 @@ namespace WPFUI.ViewModels.Tabs
             var task = tasks.OfType<UpdateAdventures>().FirstOrDefault();
             if (task is null)
             {
-                _taskManager.Add(accountId, _taskFactory.GetUpdateAdventuresTask(accountId));
+                _taskManager.Add<UpdateAdventures>(accountId);
             }
             else
             {
                 task.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 
@@ -138,15 +148,15 @@ namespace WPFUI.ViewModels.Tabs
         {
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
-            var task = tasks.FirstOrDefault(x => x is UpdateHeroItems);
+            var task = tasks.OfType<UpdateHeroItems>().FirstOrDefault();
             if (task is null)
             {
-                _taskManager.Add(accountId, new UpdateHeroItems(accountId));
+                _taskManager.Add<UpdateHeroItems>(accountId);
             }
             else
             {
                 task.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 

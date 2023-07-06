@@ -7,6 +7,9 @@ namespace WPFUI.Models
 {
     public class ListBoxItem : ReactiveObject
     {
+        public ListBoxItem()
+        { }
+
         public ListBoxItem(int id) => Id = id;
 
         public ListBoxItem(int id, string content, Color color) : this(id)
@@ -25,14 +28,28 @@ namespace WPFUI.Models
         public ListBoxItem(int id, string villageName, int x, int y) : this(id)
         {
             Content = $"{villageName}{Environment.NewLine}({x}|{y})";
+            Color = Color.FromRgb(0, 0, 0);
         }
 
         public ListBoxItem(int id, string content, System.Drawing.Color color) : this(id, content, color.ToMediaColor())
         {
         }
 
+        public void CopyFrom(ListBoxItem source)
+        {
+            Id = source.Id;
+            Content = source.Content;
+            Color = source.Color;
+        }
+
         public int Id { get; set; }
-        public string Content { get; set; }
+        private string _content;
+
+        public string Content
+        {
+            get => _content;
+            set => this.RaiseAndSetIfChanged(ref _content, value);
+        }
 
         private Color _color;
 

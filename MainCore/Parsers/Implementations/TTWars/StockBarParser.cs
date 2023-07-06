@@ -1,9 +1,9 @@
 ﻿using HtmlAgilityPack;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using System.Linq;
 using System.Net;
 
-namespace MainCore.Parser.Implementations.TTWars
+namespace MainCore.Parsers.Implementations.TTWars
 {
     public class StockBarParser : IStockBarParser
     {

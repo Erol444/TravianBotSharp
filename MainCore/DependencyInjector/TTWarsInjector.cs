@@ -1,26 +1,25 @@
 ﻿using MainCore.Helper.Implementations.TTWars;
 using MainCore.Helper.Interface;
-using MainCore.Parser.Implementations.TTWars;
-using MainCore.Parser.Interface;
-using MainCore.Services.Implementations.TaskFactories;
-using MainCore.Services.Interface;
+using MainCore.Parsers.Implementations.TTWars;
+using MainCore.Parsers.Interface;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MainCore.DependencyInjector
 {
     public class TTWarsInjector : AbstractInjector
     {
-        protected override IServiceCollection ConfigureHelper(IServiceCollection services)
+        protected override IServiceCollection ConfigureServerHelper(IServiceCollection services)
         {
-            services.AddSingleton<IAccessHelper, AccessHelper>();
-            services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
             services.AddSingleton<ICheckHelper, CheckHelper>();
-            services.AddSingleton<IClickHelper, ClickHelper>();
-            services.AddSingleton<IGithubHelper, GithubHelper>();
-            services.AddSingleton<IHeroHelper, HeroHelper>();
-            services.AddSingleton<INavigateHelper, NavigateHelper>();
             services.AddSingleton<IUpdateHelper, UpdateHelper>();
+            services.AddSingleton<IGeneralHelper, GeneralHelper>();
+
+            services.AddSingleton<IHeroResourcesHelper, HeroResourcesHelper>();
+            services.AddSingleton<IRallypointHelper, RallypointHelper>();
+            services.AddSingleton<INPCHelper, NPCHelper>();
+            services.AddSingleton<IAdventureHelper, AdventureHelper>();
             services.AddSingleton<IUpgradeBuildingHelper, UpgradeBuildingHelper>();
+
             return services;
         }
 
@@ -38,12 +37,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<IVillageFieldParser, VillageFieldParser>();
             services.AddSingleton<IVillageInfrastructureParser, VillageInfrastructureParser>();
             services.AddSingleton<IVillagesTableParser, VillagesTableParser>();
-            return services;
-        }
-
-        protected override IServiceCollection ConfigureFactory(IServiceCollection services)
-        {
-            services.AddSingleton<ITaskFactory, TTWarsTaskFactory>();
+            services.AddSingleton<ITrainTroopParser, TrainTroopParser>();
             return services;
         }
     }

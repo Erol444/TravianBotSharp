@@ -1,4 +1,7 @@
 ﻿using DynamicData;
+using MainCore;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -8,14 +11,27 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.ViewModels.Tabs
 {
     public class EditAccountViewModel : AccountTabBaseViewModel
     {
-        public EditAccountViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IUseragentManager _useragentManager;
+        private readonly IEventManager _eventManager;
+
+        private readonly WaitingOverlayViewModel _waitingOverlay;
+
+        public EditAccountViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, IEventManager eventManager, WaitingOverlayViewModel waitingWindow) : base(selectedItemStore)
         {
+            _contextFactory = contextFactory;
+            _useragentManager = useragentManager;
+            _eventManager = eventManager;
+            _waitingOverlay = waitingWindow;
+
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
         }
 
@@ -54,41 +70,38 @@ namespace WPFUI.ViewModels.Tabs
         private async Task SaveTask()
         {
             if (!CheckInput()) return;
-            _waitingWindow.Show("saving account");
-            await Task.Run(() =>
+            _waitingOverlay.ShowCommand.Execute("saving account").Subscribe();
+
+            var context = await _contextFactory.CreateDbContextAsync();
+            var accountId = _selectedItemStore.Account.Id;
+            var account = context.Accounts.FirstOrDefault(x => x.Id == accountId);
+            if (account is null) return;
+            Uri.TryCreate(Server, UriKind.Absolute, out var url);
+            account.Server = url.AbsoluteUri;
+            account.Username = Username;
+
+            var accesses = context.Accesses.Where(x => x.AccountId == accountId);
+
+            context.Accesses.RemoveRange(accesses);
+
+            foreach (var access in Accessess)
             {
-                var context = _contextFactory.CreateDbContext();
-                var accountId = _selectorViewModel.Account.Id;
-                var account = context.Accounts.FirstOrDefault(x => x.Id == accountId);
-                if (account is null) return;
-                Uri.TryCreate(Server, UriKind.Absolute, out var url);
-                account.Server = url.AbsoluteUri;
-                account.Username = Username;
-
-                var accesses = context.Accesses.Where(x => x.AccountId == accountId);
-
-                context.Accesses.RemoveRange(accesses);
-                context.SaveChanges();
-
-                foreach (var access in Accessess)
+                context.Accesses.Add(new()
                 {
-                    context.Accesses.Add(new()
-                    {
-                        AccountId = accountId,
-                        Password = access.Password,
-                        ProxyHost = access.ProxyHost,
-                        ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
-                        ProxyUsername = access.ProxyUsername,
-                        ProxyPassword = access.ProxyPassword,
-                        Useragent = _useragentManager.Get(),
-                    });
-                }
-                context.SaveChanges();
-            });
+                    AccountId = accountId,
+                    Password = access.Password,
+                    ProxyHost = access.ProxyHost,
+                    ProxyPort = int.Parse(access.ProxyPort ?? "-1"),
+                    ProxyUsername = access.ProxyUsername,
+                    ProxyPassword = access.ProxyPassword,
+                    Useragent = _useragentManager.Get(),
+                });
+            }
+            await context.SaveChangesAsync();
 
             _eventManager.OnAccountsUpdate();
             Clean();
-            _waitingWindow.Close();
+            _waitingOverlay.CloseCommand.Execute().Subscribe();
             MessageBox.Show("Account saved successfully");
         }
 

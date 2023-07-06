@@ -1,0 +1,20 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style x:Key="Box" TargetType="Border">
+        <Setter Property="Margin" Value="5" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="BorderBrush"  Value="Gray" />
+        <Setter Property="Padding"  Value="5" />
+    </Style>
+    <DataTemplate x:Key="ListBoxDataTemplate">
+        <TextBlock Text="{Binding Content}" />
+    </DataTemplate>
+    <DataTemplate x:Key="ListBoxDataTemplateColor">
+        <TextBlock Text="{Binding Content}" Foreground="Black">
+            <TextBlock.Background>
+                <SolidColorBrush Color="{Binding Color}" />
+            </TextBlock.Background>
+        </TextBlock>
+    </DataTemplate>
+</ResourceDictionary>

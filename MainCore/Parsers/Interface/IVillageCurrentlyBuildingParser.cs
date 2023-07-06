@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MainCore.Parser.Interface
+namespace MainCore.Parsers.Interface
 {
     public interface IVillageCurrentlyBuildingParser
     {

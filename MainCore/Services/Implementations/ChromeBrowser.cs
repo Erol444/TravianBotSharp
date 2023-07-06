@@ -62,8 +62,9 @@ namespace MainCore.Services.Implementations
 
             options.AddArgument("--mute-audio");
             if (setting.IsDontLoadImage) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
+            var pathUserData = Path.Combine(_pathUserData, string.IsNullOrEmpty(access.ProxyHost) ? "default" : access.ProxyHost);
 
-            options.AddArguments($"user-data-dir={_pathUserData}");
+            options.AddArguments($"user-data-dir={pathUserData}");
 
             _driver = new ChromeDriver(_chromeService, options);
             if (setting.IsMinimized) _driver.Manage().Window.Minimize();

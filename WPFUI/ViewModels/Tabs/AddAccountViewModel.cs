@@ -1,4 +1,7 @@
-﻿using MainCore.Models.Database;
+﻿using MainCore;
+using MainCore.Models.Database;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
@@ -9,26 +12,37 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.ViewModels.Tabs
 {
     public class AddAccountViewModel : TabBaseViewModel
     {
-        public AddAccountViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IUseragentManager _useragentManager;
+        private readonly IEventManager _eventManager;
+
+        private readonly WaitingOverlayViewModel _waitingOverlay;
+
+        public AddAccountViewModel(WaitingOverlayViewModel waitingWindow, IDbContextFactory<AppDbContext> contextFactory, IUseragentManager useragentManager, IEventManager eventManager)
         {
+            _contextFactory = contextFactory;
+            _useragentManager = useragentManager;
+            _eventManager = eventManager;
+            _waitingOverlay = waitingWindow;
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
         }
 
         private async Task SaveTask()
         {
             if (!CheckInput()) return;
-            _waitingWindow.Show("saving account");
+            _waitingOverlay.ShowCommand.Execute("saving account").Subscribe();
             await Task.Run(() =>
             {
                 var context = _contextFactory.CreateDbContext();
                 if (context.Accounts.Any(x => x.Username.Equals(Username) && x.Server.Equals(Server)))
                 {
-                    _waitingWindow.Close();
+                    _waitingOverlay.CloseCommand.Execute().Subscribe();
                     MessageBox.Show("This account was already in TBS", "Warning");
                     return;
                 }
@@ -62,7 +76,7 @@ namespace WPFUI.ViewModels.Tabs
             });
             Clean();
             _eventManager.OnAccountsUpdate();
-            _waitingWindow.Close();
+            _waitingOverlay.CloseCommand.Execute().Subscribe();
         }
 
         private void Clean()

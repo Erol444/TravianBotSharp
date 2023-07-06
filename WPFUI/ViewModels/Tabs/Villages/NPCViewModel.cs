@@ -1,18 +1,29 @@
-﻿using MainCore.Models.Database;
+﻿using MainCore;
+using MainCore.Models.Database;
+using MainCore.Services.Interface;
+using MainCore.Tasks.FunctionTasks;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
     public class NPCViewModel : VillageTabBaseViewModel
     {
-        public NPCViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly ITaskManager _taskManager;
+
+        public NPCViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager) : base(selectedItemStore)
         {
+            _contextFactory = contextFactory;
+            _taskManager = taskManager;
+
             RefreshCommand = ReactiveCommand.Create(RefreshTask);
             NPCCommand = ReactiveCommand.Create(NPCTask);
         }
@@ -46,13 +57,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void RefreshTask()
         {
-            _taskManager.Add(AccountId, _taskFactory.GetRefreshVillageTask(VillageId, AccountId));
+            _taskManager.Add<RefreshVillage>(AccountId, VillageId);
             MessageBox.Show("Added Refresh resources task to queue");
         }
 
         private void NPCTask()
         {
-            _taskManager.Add(AccountId, _taskFactory.GetNPCTask(VillageId, AccountId, Ratio.GetResources()));
+            _taskManager.Add<NPCTask>(AccountId, () => new(VillageId, AccountId, Ratio.GetResources()));
             MessageBox.Show("Added NPC task to queue");
         }
 

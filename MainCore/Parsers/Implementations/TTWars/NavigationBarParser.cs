@@ -1,8 +1,8 @@
 ﻿using HtmlAgilityPack;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using System.Linq;
 
-namespace MainCore.Parser.Implementations.TTWars
+namespace MainCore.Parsers.Implementations.TTWars
 {
     public class NavigationBarParser : INavigationBarParser
     {

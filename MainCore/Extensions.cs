@@ -89,11 +89,11 @@ namespace MainCore
             return building switch
             {
                 BuildingEnums.Site => Color.White,
-                BuildingEnums.Woodcutter => Color.ForestGreen,
+                BuildingEnums.Woodcutter => Color.Lime,
                 BuildingEnums.ClayPit => Color.Orange,
-                BuildingEnums.IronMine => Color.Gray,
+                BuildingEnums.IronMine => Color.LightGray,
                 BuildingEnums.Cropland => Color.Yellow,
-                _ => Color.LawnGreen,
+                _ => Color.LightCyan,
             };
         }
 
@@ -504,6 +504,121 @@ namespace MainCore
             };
         }
 
+        public static List<TroopEnums> GetInfantryTroops(this TribeEnums tribe)
+        {
+            return tribe switch
+            {
+                TribeEnums.Romans => new()
+                {
+                    TroopEnums.Legionnaire,
+                    TroopEnums.Praetorian,
+                    TroopEnums.Imperian,
+                },
+                TribeEnums.Teutons => new()
+                {
+                    TroopEnums.Clubswinger,
+                    TroopEnums.Spearman,
+                    TroopEnums.Axeman,
+                    TroopEnums.Scout,
+                },
+                TribeEnums.Gauls => new()
+                {
+                   TroopEnums.Phalanx,
+                    TroopEnums.Swordsman,
+                },
+                TribeEnums.Nature => new(),
+                TribeEnums.Natars => new(),
+                TribeEnums.Egyptians => new()
+                {
+                    TroopEnums.SlaveMilitia,
+                    TroopEnums.AshWarden,
+                    TroopEnums.KhopeshWarrior,
+                },
+                TribeEnums.Huns => new()
+                {
+                    TroopEnums.Mercenary,
+                    TroopEnums.Bowman,
+                },
+                _ => new(),
+            };
+        }
+
+        public static List<TroopEnums> GetCavalryTroops(this TribeEnums tribe)
+        {
+            return tribe switch
+            {
+                TribeEnums.Romans => new()
+                {
+                    TroopEnums.EquitesLegati,
+                    TroopEnums.EquitesImperatoris,
+                    TroopEnums.EquitesCaesaris,
+                },
+                TribeEnums.Teutons => new()
+                {
+                    TroopEnums.Paladin,
+                    TroopEnums.TeutonicKnight,
+                },
+                TribeEnums.Gauls => new()
+                {
+                    TroopEnums.Pathfinder,
+                    TroopEnums.TheutatesThunder,
+                    TroopEnums.Druidrider,
+                    TroopEnums.Haeduan,
+                },
+                TribeEnums.Nature => new(),
+                TribeEnums.Natars => new(),
+                TribeEnums.Egyptians => new()
+                {
+                    TroopEnums.SopduExplorer,
+                    TroopEnums.AnhurGuard,
+                    TroopEnums.ReshephChariot,
+                },
+                TribeEnums.Huns => new()
+                {
+                    TroopEnums.Spotter,
+                    TroopEnums.SteppeRider,
+                    TroopEnums.Marksman,
+                    TroopEnums.Marauder,
+                },
+                _ => new(),
+            };
+        }
+
+        public static List<TroopEnums> GetSiegeTroops(this TribeEnums tribe)
+        {
+            return tribe switch
+            {
+                TribeEnums.Romans => new()
+                {
+                    TroopEnums.RomanRam,
+                    TroopEnums.RomanCatapult,
+                },
+                TribeEnums.Teutons => new()
+                {
+                    TroopEnums.TeutonRam,
+                    TroopEnums.TeutonCatapult,
+                },
+                TribeEnums.Gauls => new()
+                {
+                    TroopEnums.GaulRam,
+                    TroopEnums.GaulCatapult,
+                },
+                TribeEnums.Nature => new(),
+                TribeEnums.Natars => new(),
+                TribeEnums.Egyptians => new()
+                {
+                    TroopEnums.EgyptianRam,
+                    TroopEnums.EgyptianCatapult
+                },
+                TribeEnums.Huns => new()
+                {
+                    TroopEnums.HunRam,
+                    TroopEnums.HunCatapult,
+                },
+                _ => new(),
+            };
+        }
+
         public static List<PrerequisiteBuilding> GetPrerequisiteBuilding(this TroopEnums troop)
         {
             var ret = new List<PrerequisiteBuilding>();
@@ -736,6 +851,77 @@ namespace MainCore
                 if (ret < toWaitForThisRes) ret = toWaitForThisRes;
             }
             return ret;
+        }
+
+        // we use residence for chief and settler
+        public static BuildingEnums GetTrainBuilding(this TroopEnums troop)
+        {
+            return troop switch
+            {
+                TroopEnums.Legionnaire or TroopEnums.Praetorian or TroopEnums.Imperian or TroopEnums.Clubswinger or TroopEnums.Spearman or TroopEnums.Axeman or TroopEnums.Scout or TroopEnums.Phalanx or TroopEnums.Swordsman or TroopEnums.SlaveMilitia or TroopEnums.AshWarden or TroopEnums.KhopeshWarrior or TroopEnums.Mercenary or TroopEnums.Bowman => BuildingEnums.Barracks,
+                TroopEnums.EquitesLegati or TroopEnums.EquitesImperatoris or TroopEnums.EquitesCaesaris or TroopEnums.Paladin or TroopEnums.TeutonicKnight or TroopEnums.Pathfinder or TroopEnums.TheutatesThunder or TroopEnums.Druidrider or TroopEnums.Haeduan or TroopEnums.SopduExplorer or TroopEnums.AnhurGuard or TroopEnums.ReshephChariot or TroopEnums.Spotter or TroopEnums.SteppeRider or TroopEnums.Marksman or TroopEnums.Marauder => BuildingEnums.Stable,
+                TroopEnums.RomanRam or TroopEnums.RomanCatapult or TroopEnums.TeutonRam or TroopEnums.TeutonCatapult or TroopEnums.GaulRam or TroopEnums.GaulCatapult or TroopEnums.EgyptianRam or TroopEnums.EgyptianCatapult or TroopEnums.HunRam or TroopEnums.HunCatapult => BuildingEnums.Workshop,
+                TroopEnums.RomanChief or TroopEnums.RomanSettler or TroopEnums.TeutonChief or TroopEnums.TeutonSettler or TroopEnums.GaulChief or TroopEnums.GaulSettler or TroopEnums.EgyptianChief or TroopEnums.EgyptianSettler or TroopEnums.HunChief or TroopEnums.HunSettler => BuildingEnums.Residence,
+                _ => BuildingEnums.Site,
+            };
+        }
+
+        public static BuildingEnums GetGreatVersion(this BuildingEnums building)
+        {
+            return building switch
+            {
+                BuildingEnums.Barracks => BuildingEnums.GreatBarracks,
+                BuildingEnums.Stable => BuildingEnums.GreatStable,
+                BuildingEnums.Workshop => BuildingEnums.Workshop,
+                _ => BuildingEnums.Site,
+            };
+        }
+
+        public static bool IsAllowLogin(this AccountStatus status)
+        {
+            if (status == AccountStatus.Offline) return true;
+            return false;
+        }
+
+        public static bool IsAllowLogout(this AccountStatus status)
+        {
+            if (status == AccountStatus.Online) return true;
+            if (status == AccountStatus.Paused) return true;
+            return false;
+        }
+
+        public static bool IsAllowPause(this AccountStatus status)
+        {
+            if (status == AccountStatus.Online) return true;
+            if (status == AccountStatus.Paused) return true;
+            return false;
+        }
+
+        public static bool IsAllowRestart(this AccountStatus status)
+        {
+            if (status == AccountStatus.Paused) return true;
+            return false;
+        }
+
+        public static string GetPauseText(this AccountStatus status)
+        {
+            if (status == AccountStatus.Online) return "Pause";
+            if (status == AccountStatus.Paused) return "Resume";
+            return "[~!~]";
+        }
+
+        public static Color GetColor(this AccountStatus status)
+        {
+            return status switch
+            {
+                AccountStatus.Offline => Color.Black,
+                AccountStatus.Starting => Color.Orange,
+                AccountStatus.Online => Color.Green,
+                AccountStatus.Pausing => Color.Orange,
+                AccountStatus.Paused => Color.Red,
+                AccountStatus.Stopping => Color.Orange,
+                _ => Color.Black,
+            };
         }
     }
 }

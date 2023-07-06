@@ -1,5 +1,8 @@
 ﻿using DynamicData;
+using MainCore;
 using MainCore.Models.Database;
+using MainCore.Services.Interface;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -12,13 +15,25 @@ using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.ViewModels.Tabs
 {
     public class AddAccountsViewModel : TabBaseViewModel
     {
-        public AddAccountsViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IUseragentManager _useragentManager;
+        private readonly IEventManager _eventManager;
+
+        private readonly WaitingOverlayViewModel _waitingOverlay;
+
+        public AddAccountsViewModel(IDbContextFactory<AppDbContext> contextFactory, WaitingOverlayViewModel waitingWindow, IUseragentManager useragentManager, IEventManager eventManager)
         {
+            _contextFactory = contextFactory;
+            _waitingOverlay = waitingWindow;
+            _useragentManager = useragentManager;
+            _eventManager = eventManager;
+
             SaveCommand = ReactiveCommand.CreateFromTask(SaveTask);
             UpdateTable = ReactiveCommand.CreateFromTask<string>(UpdateTableTask);
 
@@ -28,7 +43,7 @@ namespace WPFUI.ViewModels.Tabs
         private async Task SaveTask()
         {
             if (!IsVaildInput()) return;
-            _waitingWindow.Show("adding accounts");
+            _waitingOverlay.ShowCommand.Execute("adding accounts").Subscribe();
 
             await Task.Run(() =>
             {
@@ -65,7 +80,7 @@ namespace WPFUI.ViewModels.Tabs
             });
             Clean();
             _eventManager.OnAccountsUpdate();
-            _waitingWindow.Close();
+            _waitingOverlay.CloseCommand.Execute().Subscribe();
             MessageBox.Show($"Added account to TBS's database", "Success");
         }
 
