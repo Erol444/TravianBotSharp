@@ -44,7 +44,7 @@ namespace MainCore.Services.Implementations
                 var planTasks = GetList(villageId).Where(x => x.Building == task.Building).OrderByDescending(x => x.Level).ToList();
 
                 var largestLevel = 0;
-                var id = 0;
+                var id = task.Location;
                 if (buildings.Any())
                 {
                     var building = buildings.First();
