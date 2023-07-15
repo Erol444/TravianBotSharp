@@ -1,9 +1,10 @@
 ﻿using ReactiveUI;
 using System.Reactive.Concurrency;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class ResourcesViewModel : ReactiveObject
+    public class ResourcesViewModel : ViewModelBase
     {
         public void LoadData(long wood, long clay, long iron, long crop)
         {

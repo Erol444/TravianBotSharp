@@ -5,7 +5,7 @@ using WPFUI.Store;
 
 namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class AccountTabBaseViewModel : ActivatableViewModelBase
+    public abstract class AccountTabBaseViewModel : TabBaseViewModel
     {
         protected readonly SelectedItemStore _selectedItemStore;
 
@@ -32,7 +32,7 @@ namespace WPFUI.ViewModels.Abstract
         private void OnAccountChanged(int accountId)
         {
             if (!IsActive) return;
-            Init(accountId);
+            Observable.Start(() => Init(accountId), RxApp.MainThreadScheduler);
         }
 
         private readonly ObservableAsPropertyHelper<int> _accountId;

@@ -47,7 +47,7 @@ namespace WPFUI.ViewModels.Uc
         private readonly EditAccountViewModel _editAccountViewModel;
         private readonly DebugViewModel _debugViewModel;
 
-        public AccountTabStore AccountTabStore { get; } = new();
+        public AccountTabStore AccountTabStore { get; }
 
         public MainLayoutViewModel(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, SelectedItemStore selectedItemStore, VersionOverlayViewModel versionWindow, WaitingOverlayViewModel waitingOverlay, ITaskManager taskManager, IChromeManager chromeManager, IPlanManager planManager, NoAccountViewModel noAccountViewModel, AddAccountViewModel addAccountViewModel, AddAccountsViewModel addAccountsViewModel, SettingsViewModel settingsViewModel, HeroViewModel heroViewModel, VillagesViewModel villagesViewModel, FarmingViewModel farmingViewModel, EditAccountViewModel editAccountViewModel, DebugViewModel debugViewModel, ITimerManager timeManager, IAccessHelper accessHelper)
         {
@@ -73,6 +73,8 @@ namespace WPFUI.ViewModels.Uc
             _farmingViewModel = farmingViewModel;
             _editAccountViewModel = editAccountViewModel;
             _debugViewModel = debugViewModel;
+
+            AccountTabStore = new(_noAccountViewModel, _addAccountViewModel, _addAccountsViewModel, _settingsViewModel);
 
             _eventManager.AccountsTableUpdate += OnAccountsTableUpdate;
             _eventManager.AccountStatusUpdate += OnAccountStatusUpdate;

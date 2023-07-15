@@ -1,6 +1,5 @@
 ﻿using ReactiveUI;
 using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using WPFUI.Models;
 
@@ -19,7 +18,7 @@ namespace WPFUI.Store
                 .ToProperty(this, vm => vm.IsAccountNotSelected, out _isAccountNotSelected);
             accountObservable
                 .WhereNotNull()
-                .Subscribe(x => RxApp.TaskpoolScheduler.Schedule(() => OnAccountChanged(x.Id)));
+                .Subscribe(x => OnAccountChanged(x.Id));
 
             var villageObservable = this.WhenAnyValue(vm => vm.Village);
             villageObservable
@@ -30,7 +29,7 @@ namespace WPFUI.Store
                 .ToProperty(this, vm => vm.IsVillageNotSelected, out _isVillageNotSelected);
             villageObservable
                 .WhereNotNull()
-                .Subscribe(x => RxApp.TaskpoolScheduler.Schedule(() => OnVillageChanged(x.Id)));
+                .Subscribe(x => OnVillageChanged(x.Id));
         }
 
         public event Action<int> AccountChanged;

@@ -1,9 +1,10 @@
 ﻿using ReactiveUI;
 using System.Reactive.Concurrency;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class CheckBoxWithInputViewModel : ReactiveObject
+    public class CheckBoxWithInputViewModel : ViewModelBase
     {
         public void LoadData(bool isChecked, int value)
         {

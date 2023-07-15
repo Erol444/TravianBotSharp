@@ -6,10 +6,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using WPFUI.Models;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class TroopTrainingSelectorViewModel : ReactiveObject
+    public class TroopTrainingSelectorViewModel : ViewModelBase
     {
         public void LoadData(IEnumerable<TroopInfo> troops, TroopEnums selectedTroop, int min, int max, bool isGreat)
         {

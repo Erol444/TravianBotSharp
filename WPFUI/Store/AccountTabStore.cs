@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using WPFUI.Models;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Tabs;
 
 namespace WPFUI.Store
 {
@@ -9,8 +10,18 @@ namespace WPFUI.Store
         private readonly bool[] _tabVisibility = new bool[4];
         private TabType _currentTabType;
 
-        public AccountTabStore()
+        private readonly NoAccountViewModel _noAccountViewModel;
+        private readonly AddAccountViewModel _addAccountViewModel;
+        private readonly AddAccountsViewModel _addAccountsViewModel;
+        private readonly SettingsViewModel _normalAccountViewModel;
+
+        public AccountTabStore(NoAccountViewModel noAccountViewModel, AddAccountViewModel addAccountViewModel, AddAccountsViewModel addAccountsViewModel, SettingsViewModel normalAccountViewModel)
         {
+            _noAccountViewModel = noAccountViewModel;
+            _addAccountViewModel = addAccountViewModel;
+            _addAccountsViewModel = addAccountsViewModel;
+            _normalAccountViewModel = normalAccountViewModel;
+
             SetTabType(TabType.NoAccount);
         }
 
@@ -33,19 +44,19 @@ namespace WPFUI.Store
             switch (tabType)
             {
                 case TabType.NoAccount:
-                    IsNoAccountTabSelected = true;
+                    _noAccountViewModel.IsActive = true;
                     break;
 
                 case TabType.Normal:
-                    IsNormalTabSelected = true;
+                    _normalAccountViewModel.IsActive = true;
                     break;
 
                 case TabType.AddAccount:
-                    IsAddAccountTabSelected = true;
+                    _addAccountViewModel.IsActive = true;
                     break;
 
                 case TabType.AddAccounts:
-                    IsAddAccountsTabSelected = true;
+                    _addAccountsViewModel.IsActive = true;
                     break;
 
                 default:
@@ -83,38 +94,6 @@ namespace WPFUI.Store
         {
             get => _isNormalTabVisible;
             set => this.RaiseAndSetIfChanged(ref _isNormalTabVisible, value);
-        }
-
-        private bool _isNoAccountTabSelected;
-
-        public bool IsNoAccountTabSelected
-        {
-            get => _isNoAccountTabSelected;
-            set => this.RaiseAndSetIfChanged(ref _isNoAccountTabSelected, value);
-        }
-
-        private bool _isAddAccountTabSelected;
-
-        public bool IsAddAccountTabSelected
-        {
-            get => _isAddAccountTabSelected;
-            set => this.RaiseAndSetIfChanged(ref _isAddAccountTabSelected, value);
-        }
-
-        private bool _isAddAccountsTabSelected;
-
-        public bool IsAddAccountsTabSelected
-        {
-            get => _isAddAccountsTabSelected;
-            set => this.RaiseAndSetIfChanged(ref _isAddAccountsTabSelected, value);
-        }
-
-        private bool _isNormalTabSelected;
-
-        public bool IsNormalTabSelected
-        {
-            get => _isNormalTabSelected;
-            set => this.RaiseAndSetIfChanged(ref _isNormalTabSelected, value);
         }
     }
 }

@@ -4,7 +4,7 @@ using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.Views.Uc
 {
-    public partial class MainLayoutUcBase : ReactiveUserControl<MainLayoutViewModel>
+    public class MainLayoutUcBase : ReactiveUserControl<MainLayoutViewModel>
     {
     }
 
@@ -51,10 +51,15 @@ namespace WPFUI.Views.Uc
                 this.OneWayBind(ViewModel, vm => vm.AccountTabStore.IsNormalTabVisible, v => v.EditAccountTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.AccountTabStore.IsNormalTabVisible, v => v.DebugTab.Visibility).DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.AccountTabStore.IsNoAccountTabSelected, v => v.NoAccountTab.IsSelected).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.AccountTabStore.IsAddAccountTabSelected, v => v.AddAccountTab.IsSelected).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.AccountTabStore.IsAddAccountsTabSelected, v => v.AddAccountsTab.IsSelected).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.AccountTabStore.IsNormalTabSelected, v => v.SettingsTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.NoAccountViewModel.IsActive, v => v.NoAccountTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.AddAccountViewModel.IsActive, v => v.AddAccountTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.AddAccountsViewModel.IsActive, v => v.AddAccountsTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.SettingsViewModel.IsActive, v => v.SettingsTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.HeroViewModel.IsActive, v => v.HeroTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.VillagesViewModel.IsActive, v => v.VillagesTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.FarmingViewModel.IsActive, v => v.FarmingTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.EditAccountViewModel.IsActive, v => v.EditAccountTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.DebugViewModel.IsActive, v => v.DebugTab.IsSelected).DisposeWith(d);
             });
         }
     }

@@ -2,10 +2,11 @@
 using System;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class ToleranceViewModel : ReactiveObject
+    public class ToleranceViewModel : ViewModelBase
     {
         public ToleranceViewModel() : base()
         {

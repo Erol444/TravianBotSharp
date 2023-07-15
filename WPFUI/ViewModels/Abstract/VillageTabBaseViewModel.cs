@@ -5,7 +5,7 @@ using WPFUI.Store;
 
 namespace WPFUI.ViewModels.Abstract
 {
-    public abstract class VillageTabBaseViewModel : ActivatableViewModelBase
+    public abstract class VillageTabBaseViewModel : TabBaseViewModel
     {
         protected readonly SelectedItemStore _selectedItemStore;
 
@@ -31,13 +31,15 @@ namespace WPFUI.ViewModels.Abstract
         protected override void OnActive()
         {
             if (!_selectedItemStore.IsVillageSelected) return;
-            Init(VillageId);
+            Observable.Start(() => Init(VillageId), RxApp.MainThreadScheduler);
+
+            //Init(VillageId);
         }
 
         private void OnVillageChanged(int villageId)
         {
             if (!IsActive) return;
-            Init(villageId);
+            Observable.Start(() => Init(villageId), RxApp.MainThreadScheduler);
         }
 
         private readonly ObservableAsPropertyHelper<int> _accountId;

@@ -38,9 +38,9 @@
             <TabItem x:Name="NPCTab" Header="NPC">
                 <views:NPCTab x:Name="NPC" />
             </TabItem>
-            <TabItem x:Name="TroopsTab" Header="Troops">
+            <!--<TabItem x:Name="TroopsTab" Header="Troops">
                 <views:TroopsTab x:Name="Troops" />
-            </TabItem>
+            </TabItem>-->
             <TabItem x:Name="InfoTab" Header="Info">
                 <views:InfoTab x:Name="Info" />
             </TabItem>

@@ -19,7 +19,7 @@ namespace WPFUI.ViewModels.Tabs
     {
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
-        private readonly VillageTabStore _villageTabStore = new();
+        private readonly VillageTabStore _villageTabStore;
 
         private readonly NoVillageViewModel _noVillageViewModel;
         private readonly BuildViewModel _buildViewModel;
@@ -40,6 +40,8 @@ namespace WPFUI.ViewModels.Tabs
             _npcViewModel = npcViewModel;
             _villageTroopsViewModel = villageTroopsViewModel;
             _infoViewModel = infoViewModel;
+
+            _villageTabStore = new(_noVillageViewModel, _buildViewModel);
 
             var currentVillageObservable = this.WhenAnyValue(vm => vm.CurrentVillage);
             currentVillageObservable.BindTo(_selectedItemStore, vm => vm.Village);

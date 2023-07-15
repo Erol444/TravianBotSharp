@@ -25,18 +25,18 @@ namespace WPFUI.Views.Tabs
                 this.OneWayBind(ViewModel, vm => vm.BuildViewModel, v => v.Build.ViewModel).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.VillageSettingsViewModel, v => v.VillageSettings.ViewModel).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.NPCViewModel, v => v.NPC.ViewModel).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.VillageTroopsViewModel, v => v.Troops.ViewModel).DisposeWith(d);
+                //this.OneWayBind(ViewModel, vm => vm.VillageTroopsViewModel, v => v.Troops.ViewModel).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.InfoViewModel, v => v.Info.ViewModel).DisposeWith(d);
 
                 this.OneWayBind(ViewModel, vm => vm.VillageTabStore.IsNoVillageTabVisible, v => v.NoVillageTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.VillageTabStore.IsNormalTabVisible, v => v.BuildTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.VillageTabStore.IsNormalTabVisible, v => v.VillageSettingsTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.VillageTabStore.IsNormalTabVisible, v => v.NPCTab.Visibility).DisposeWith(d);
-                this.OneWayBind(ViewModel, vm => vm.VillageTabStore.IsNormalTabVisible, v => v.TroopsTab.Visibility).DisposeWith(d);
+                //this.OneWayBind(ViewModel, vm => vm.VillageTabStore.IsNormalTabVisible, v => v.TroopsTab.Visibility).DisposeWith(d);
                 this.OneWayBind(ViewModel, vm => vm.VillageTabStore.IsNormalTabVisible, v => v.InfoTab.Visibility).DisposeWith(d);
 
-                this.Bind(ViewModel, vm => vm.VillageTabStore.IsNoVillageTabSelected, v => v.NoVillageTab.IsSelected).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.VillageTabStore.IsNormalTabSelected, v => v.BuildTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.NoVillageViewModel.IsActive, v => v.NoVillageTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.BuildViewModel.IsActive, v => v.BuildTab.IsSelected).DisposeWith(d);
             });
         }
     }
