@@ -28,25 +28,19 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void BothDorf()
         {
-            //var accountId = AccountId;
-            //var tasks = _taskManager.GetList(accountId);
-            //var villageId = VillageId;
-            //var updateTask = tasks.OfType<RefreshVillage>().FirstOrDefault(x => x.VillageId == villageId);
-            //if (updateTask is null)
-            //{
-            //    _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId, 3));
-            //}
-            //else
-            //{
-            //    updateTask.ExecuteAt = DateTime.Now;
-            //    updateTask.Mode = 3;
-            //    _taskManager.Update(accountId);
-            //}
-
-            //_taskManager.Add(AccountId, new TrainTroopsTask(VillageId, AccountId));
-            //_taskManager.Add(AccountId, new StableTrainTroopsTask(VillageId, AccountId));
-
-            _taskManager.Add<UpdateBothDorf>(VillageId, AccountId);
+            var accountId = AccountId;
+            var tasks = _taskManager.GetList(accountId);
+            var villageId = VillageId;
+            var updateTask = tasks.OfType<UpdateBothDorf>().FirstOrDefault(x => x.VillageId == villageId);
+            if (updateTask is null)
+            {
+                _taskManager.Add<UpdateBothDorf>(accountId, villageId);
+            }
+            else
+            {
+                updateTask.ExecuteAt = DateTime.Now;
+                _taskManager.ReOrder(accountId);
+            }
         }
 
         private void Dorf1()

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Reactive;
-using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Windows;
 using WPFUI.Models;
 using WPFUI.Store;
@@ -35,24 +35,29 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadData(int villageId)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var resources = context.VillagesResources.Find(villageId);
-            var updateTime = context.VillagesUpdateTime.Find(villageId);
-            var setting = context.VillagesSettings.Find(VillageId);
-
-            var dorf1 = updateTime.Dorf1;
-            var dorf2 = updateTime.Dorf2;
-
-            RxApp.MainThreadScheduler.Schedule(() =>
+            Observable.Start(() =>
             {
-                Resources = resources;
-                LastUpdate = dorf1 > dorf2 ? dorf1 : dorf2;
+                using var context = _contextFactory.CreateDbContext();
+                var resources = context.VillagesResources.Find(villageId);
+                var updateTime = context.VillagesUpdateTime.Find(villageId);
+                var setting = context.VillagesSettings.Find(VillageId);
+                return (resources, updateTime, setting);
+            }, RxApp.TaskpoolScheduler)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe((data) =>
+                {
+                    var (resources, updateTime, setting) = data;
+                    var dorf1 = updateTime.Dorf1;
+                    var dorf2 = updateTime.Dorf2;
 
-                Ratio.Wood = setting.AutoNPCWood.ToString();
-                Ratio.Clay = setting.AutoNPCClay.ToString();
-                Ratio.Iron = setting.AutoNPCIron.ToString();
-                Ratio.Crop = setting.AutoNPCCrop.ToString();
-            });
+                    Resources = resources;
+                    LastUpdate = dorf1 > dorf2 ? dorf1 : dorf2;
+
+                    Ratio.Wood = setting.AutoNPCWood.ToString();
+                    Ratio.Clay = setting.AutoNPCClay.ToString();
+                    Ratio.Iron = setting.AutoNPCIron.ToString();
+                    Ratio.Crop = setting.AutoNPCCrop.ToString();
+                });
         }
 
         private void RefreshTask()

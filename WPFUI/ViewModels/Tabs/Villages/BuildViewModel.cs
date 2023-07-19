@@ -386,16 +386,14 @@ namespace WPFUI.ViewModels.Tabs.Villages
         {
             using var context = _contextFactory.CreateDbContext();
             var accountId = AccountId;
-            var account = context.Accounts.Find(accountId);
             var villageId = VillageId;
-            var village = context.Villages.Find(villageId);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
                 Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
                 FilterIndex = 1,
                 RestoreDirectory = true,
-                FileName = $"{village.Name.Replace('.', '_')}_{account.Username}_queuebuildings.tbs",
+                FileName = $"{villageId}_{accountId}_queuebuildings.tbs",
             };
 
             if (ofd.ShowDialog() == true)
@@ -424,20 +422,18 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var villageId = VillageId;
             var queueBuildings = _planManager.GetList(villageId);
             var accountId = AccountId;
-            var account = context.Accounts.Find(accountId);
-            var village = context.Villages.Find(villageId);
-            var jsonString = JsonSerializer.Serialize(queueBuildings);
             var svd = new SaveFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
                 Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
                 FilterIndex = 1,
                 RestoreDirectory = true,
-                FileName = $"{village.Name.Replace('.', '_')}_{account.Username}_queuebuildings.tbs",
+                FileName = $"{villageId}_{accountId}_queuebuildings.tbs",
             };
 
             if (svd.ShowDialog() == true)
             {
+                var jsonString = JsonSerializer.Serialize(queueBuildings);
                 File.WriteAllText(svd.FileName, jsonString);
             }
         }

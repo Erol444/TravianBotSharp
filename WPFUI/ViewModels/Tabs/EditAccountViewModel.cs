@@ -42,29 +42,34 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int accountId)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(accountId);
-
-            var accesses = context.Accesses
-                .Where(x => x.AccountId == accountId)
-                .Select(item => new Models.Access()
-                {
-                    Password = item.Password,
-                    ProxyHost = item.ProxyHost,
-                    ProxyPort = item.ProxyPort.ToString(),
-                    ProxyUsername = item.ProxyUsername,
-                    ProxyPassword = item.ProxyPassword,
-                })
-                .ToList();
-
-            RxApp.MainThreadScheduler.Schedule(() =>
+            Observable.Start(() =>
             {
-                Username = account.Username;
-                Server = account.Server;
+                using var context = _contextFactory.CreateDbContext();
+                var account = context.Accounts.Find(accountId);
 
-                Accessess.Clear();
-                Accessess.AddRange(accesses);
-            });
+                var accesses = context.Accesses
+                    .Where(x => x.AccountId == accountId)
+                    .Select(item => new Models.Access()
+                    {
+                        Password = item.Password,
+                        ProxyHost = item.ProxyHost,
+                        ProxyPort = item.ProxyPort.ToString(),
+                        ProxyUsername = item.ProxyUsername,
+                        ProxyPassword = item.ProxyPassword,
+                    })
+                    .ToList();
+                return (account, accesses);
+            }, RxApp.TaskpoolScheduler)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe((data) =>
+                {
+                    var (account, accesses) = data;
+                    Username = account.Username;
+                    Server = account.Server;
+
+                    Accessess.Clear();
+                    Accessess.AddRange(accesses);
+                });
         }
 
         private async Task SaveTask()

@@ -76,8 +76,7 @@ namespace WPFUI.ViewModels.Tabs
         {
             if (!IsActive) return;
             if (AccountId != accountId) return;
-
-            Observable.Start(() => LoadTask(accountId), RxApp.MainThreadScheduler);
+            LoadTask(accountId);
         }
 
         private void OnLogsUpdate(int accountId, LogMessage logMessage)

@@ -11,7 +11,6 @@ using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -179,21 +178,27 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int id)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var farms = context.Farms
-                .Where(x => x.AccountId == id)
-                .AsList()
-                .Select(farm =>
-                {
-                    var farmSetting = context.FarmsSettings.Find(farm.Id);
-                    var color = farmSetting.IsActive ? Color.ForestGreen.ToMediaColor() : Color.Red.ToMediaColor();
-                    return new ListBoxItem(farm.Id, farm.Name, color);
-                }).ToList();
-
-            var settings = context.AccountsSettings.Find(_selectedItemStore.Account.Id);
-
-            RxApp.MainThreadScheduler.Schedule(() =>
+            Observable.Start(() =>
             {
+                using var context = _contextFactory.CreateDbContext();
+                var farms = context.Farms
+                    .Where(x => x.AccountId == id)
+                    .AsList()
+                    .Select(farm =>
+                    {
+                        var farmSetting = context.FarmsSettings.Find(farm.Id);
+                        var color = farmSetting.IsActive ? Color.ForestGreen.ToMediaColor() : Color.Red.ToMediaColor();
+                        return new ListBoxItem(farm.Id, farm.Name, color);
+                    }).ToList();
+
+                var settings = context.AccountsSettings.Find(_selectedItemStore.Account.Id);
+
+                return (farms, settings);
+            }, RxApp.TaskpoolScheduler)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe((data) =>
+            {
+                var (farms, settings) = data;
                 FarmList.Clear();
                 FarmList.AddRange(farms);
                 if (farms.Any())

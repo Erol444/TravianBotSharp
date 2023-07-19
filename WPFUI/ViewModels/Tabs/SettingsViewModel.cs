@@ -10,7 +10,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -95,24 +94,29 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int index)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var settings = context.AccountsSettings.Find(index);
-            var info = context.AccountsInfo.Find(index);
-
-            RxApp.MainThreadScheduler.Schedule(() =>
+            Observable.Start(() =>
             {
-                SelectedTribe = Tribes.FirstOrDefault(x => x.Tribe == info.Tribe);
+                using var context = _contextFactory.CreateDbContext();
+                var settings = context.AccountsSettings.Find(index);
+                var info = context.AccountsInfo.Find(index);
+                return (settings, info);
+            }, RxApp.TaskpoolScheduler)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe(data =>
+                {
+                    var (settings, info) = data;
+                    SelectedTribe = Tribes.FirstOrDefault(x => x.Tribe == info.Tribe);
 
-                IsSleepBetweenProxyChanging = settings.IsSleepBetweenProxyChanging;
-                IsDontLoadImage = settings.IsDontLoadImage;
-                IsMinimized = settings.IsMinimized;
-                IsAutoStartAdventure = settings.IsAutoAdventure;
-            });
+                    IsSleepBetweenProxyChanging = settings.IsSleepBetweenProxyChanging;
+                    IsDontLoadImage = settings.IsDontLoadImage;
+                    IsMinimized = settings.IsMinimized;
+                    IsAutoStartAdventure = settings.IsAutoAdventure;
 
-            ClickDelay.LoadData(settings.ClickDelayMin, settings.ClickDelayMax);
-            TaskDelay.LoadData(settings.TaskDelayMin, settings.TaskDelayMax);
-            WorkTime.LoadData(settings.WorkTimeMin, settings.WorkTimeMax);
-            SleepTime.LoadData(settings.SleepTimeMin, settings.SleepTimeMax);
+                    ClickDelay.LoadData(settings.ClickDelayMin, settings.ClickDelayMax);
+                    TaskDelay.LoadData(settings.TaskDelayMin, settings.TaskDelayMax);
+                    WorkTime.LoadData(settings.WorkTimeMin, settings.WorkTimeMax);
+                    SleepTime.LoadData(settings.SleepTimeMin, settings.SleepTimeMax);
+                });
         }
 
         private async Task SaveTask()
@@ -133,14 +137,13 @@ namespace WPFUI.ViewModels.Tabs
         private void ImportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(AccountId);
             var ofd = new OpenFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
                 Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
                 FilterIndex = 1,
                 RestoreDirectory = true,
-                FileName = $"{account.Username}_settings.tbs",
+                FileName = $"{AccountId}_settings.tbs",
             };
 
             if (ofd.ShowDialog() == true)
@@ -167,21 +170,19 @@ namespace WPFUI.ViewModels.Tabs
         private void ExportTask()
         {
             using var context = _contextFactory.CreateDbContext();
-            var account = context.Accounts.Find(AccountId);
-            if (account is null) return;
             var svd = new SaveFileDialog
             {
                 InitialDirectory = AppContext.BaseDirectory,
                 Filter = "TBS files (*.tbs)|*.tbs|All files (*.*)|*.*",
                 FilterIndex = 1,
                 RestoreDirectory = true,
-                FileName = $"{account.Username}_settings.tbs",
+                FileName = $"{AccountId}_settings.tbs",
             };
 
-            var accountSetting = context.AccountsSettings.Find(AccountId);
-            var jsonString = JsonSerializer.Serialize(accountSetting);
             if (svd.ShowDialog() == true)
             {
+                var accountSetting = context.AccountsSettings.Find(AccountId);
+                var jsonString = JsonSerializer.Serialize(accountSetting);
                 File.WriteAllText(svd.FileName, jsonString);
             }
         }
