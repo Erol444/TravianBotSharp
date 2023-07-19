@@ -13,6 +13,7 @@ namespace MainCore.Services.Implementations
     {
         private readonly ConcurrentDictionary<int, ChromeBrowser> _dictionary = new();
         private string[] _extensionsPath;
+        private string _driverPath;
         private readonly IDbContextFactory<AppDbContext> _contextFactory;
 
         public ChromeManager(IDbContextFactory<AppDbContext> contextFactory)
@@ -28,7 +29,7 @@ namespace MainCore.Services.Implementations
             using var context = _contextFactory.CreateDbContext();
             var account = context.Accounts.FirstOrDefault(x => x.Id == accountId);
 
-            browser = new ChromeBrowser(_extensionsPath, account.Server, account.Username);
+            browser = new ChromeBrowser(_driverPath, _extensionsPath, account.Server, account.Username);
             _dictionary.TryAdd(accountId, browser);
             return browser;
         }
@@ -40,6 +41,11 @@ namespace MainCore.Services.Implementations
                 _dictionary.Remove(id, out ChromeBrowser browser);
                 browser.Shutdown();
             }
+        }
+
+        public void LoadDriver()
+        {
+            _driverPath = ChromeDriverInstaller.InstallChromeDriver();
         }
 
         public void LoadExtension()

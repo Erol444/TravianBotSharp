@@ -2,7 +2,6 @@
 using MainCore;
 using MainCore.Enums;
 using MainCore.Helper.Interface;
-using MainCore.Services.Implementations;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -64,7 +63,7 @@ namespace WPFUI.ViewModels
             _waitingOverlay.ShowCommand.Execute("loading data").Subscribe();
             try
             {
-                await ChromeDriverInstaller.Install();
+                _chromeManager.LoadDriver();
             }
             catch (Exception ex)
             {

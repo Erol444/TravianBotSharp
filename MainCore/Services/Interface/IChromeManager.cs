@@ -7,5 +7,6 @@
         public IChromeBrowser Get(int accountId);
 
         public void Shutdown();
+        void LoadDriver();
     }
 }
