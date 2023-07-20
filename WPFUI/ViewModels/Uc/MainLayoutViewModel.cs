@@ -251,11 +251,11 @@ namespace WPFUI.ViewModels.Uc
             var result = MessageBox.Show(messageBoxText, "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question);
             if (result == MessageBoxResult.Yes)
             {
-                _waitingOverlay.ShowCommand.Execute("saving data").Subscribe();
+                _waitingOverlay.Show("saving data");
                 context.DeleteAccount(accountId);
                 context.SaveChanges();
                 _eventManager.OnAccountsUpdate();
-                _waitingOverlay.CloseCommand.Execute().Subscribe();
+                _waitingOverlay.Close();
             }
         }
 
@@ -350,7 +350,7 @@ namespace WPFUI.ViewModels.Uc
                 if (current is not null)
                 {
                     _taskManager.StopCurrentTask(index);
-                    _waitingOverlay.ShowCommand.Execute("waiting current task stops").Subscribe();
+                    _waitingOverlay.Show("waiting current task stops");
                     await Task.Run(async () =>
                     {
                         while (current.Stage != TaskStage.Waiting)
@@ -360,7 +360,7 @@ namespace WPFUI.ViewModels.Uc
                             await Task.Delay(500);
                         }
                     });
-                    _waitingOverlay.CloseCommand.Execute().Subscribe();
+                    _waitingOverlay.Close();
                 }
                 _taskManager.UpdateAccountStatus(index, AccountStatus.Paused);
                 return;

@@ -102,7 +102,7 @@ namespace WPFUI.ViewModels.Tabs
         public async Task SaveData()
         {
             if (CurrentFarm is null) return;
-            _waitingOverlay.ShowCommand.Execute("Saving ...").Subscribe();
+            _waitingOverlay.Show("Saving ...");
             await Task.Run(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
@@ -113,7 +113,7 @@ namespace WPFUI.ViewModels.Tabs
                 context.Update(settings);
                 context.SaveChanges();
             });
-            _waitingOverlay.CloseCommand.Execute().Subscribe();
+            _waitingOverlay.Close();
             MessageBox.Show("Saved");
         }
 
@@ -134,7 +134,7 @@ namespace WPFUI.ViewModels.Tabs
         public async Task ActiveTask()
         {
             if (CurrentFarm is null) return;
-            _waitingOverlay.ShowCommand.Execute("Processing ...").Subscribe();
+            _waitingOverlay.Show("Processing ...");
             var active = true;
             await Task.Run(() =>
             {
@@ -145,7 +145,7 @@ namespace WPFUI.ViewModels.Tabs
                 context.Update(setting);
                 context.SaveChanges();
             });
-            _waitingOverlay.CloseCommand.Execute().Subscribe();
+            _waitingOverlay.Close();
             MessageBox.Show("Done");
             CurrentFarm.Color = active ? Color.ForestGreen.ToMediaColor() : Color.Red.ToMediaColor();
             ContentButton = active ? "Deactive" : "Active";

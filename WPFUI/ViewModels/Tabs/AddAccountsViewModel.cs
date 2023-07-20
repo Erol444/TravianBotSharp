@@ -42,7 +42,7 @@ namespace WPFUI.ViewModels.Tabs
         private async Task SaveTask()
         {
             if (!IsVaildInput()) return;
-            _waitingOverlay.ShowCommand.Execute("adding accounts").Subscribe();
+            _waitingOverlay.Show("adding accounts");
 
             await Task.Run(() =>
             {
@@ -79,7 +79,7 @@ namespace WPFUI.ViewModels.Tabs
             });
             Clean();
             _eventManager.OnAccountsUpdate();
-            _waitingOverlay.CloseCommand.Execute().Subscribe();
+            _waitingOverlay.Close();
             MessageBox.Show($"Added account to TBS's database", "Success");
         }
 

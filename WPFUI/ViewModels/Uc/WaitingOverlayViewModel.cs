@@ -1,29 +1,24 @@
 ﻿using ReactiveUI;
-using System.Reactive;
+using System.Reactive.Linq;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc
 {
     public class WaitingOverlayViewModel : ViewModelBase
     {
-        public ReactiveCommand<string, Unit> ShowCommand { get; }
-        public ReactiveCommand<Unit, Unit> CloseCommand { get; }
-
         public WaitingOverlayViewModel()
         {
-            ShowCommand = ReactiveCommand.Create<string>(ShowTask);
-            CloseCommand = ReactiveCommand.Create(CloseTask);
-            BusyMessage = "is initializing ...";
+            Show("is initializing");
         }
 
-        private void ShowTask(string message)
+        public void Show(string message)
         {
-            BusyMessage = message;
+            Observable.Start(() => BusyMessage = message);
         }
 
-        private void CloseTask()
+        public void Close()
         {
-            BusyMessage = null;
+            Observable.Start(() => BusyMessage = null);
         }
 
         private string _busyMessage;
