@@ -27,7 +27,7 @@ jobs:
         run: |
           {
             echo "changelog<<EOF" 
-            echo "$(curl "https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/e6919fc1f685703f2c650d4fa2a3604ea5c15509/tbs_changelogs.md")
+            echo "$(curl https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/e6919fc1f685703f2c650d4fa2a3604ea5c15509/tbs_changelogs.md)
             echo "EOF"
           } >> $GITHUB_ENV
   build:
