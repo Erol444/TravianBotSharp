@@ -27,7 +27,7 @@ jobs:
         id: changelog
         run: |
           changelog=$(curl https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/e6919fc1f685703f2c650d4fa2a3604ea5c15509/tbs_changelogs.md)
-          echo "::set-output name=changelog::$changelog"
+          echo "changelog=$changelog" >> $GITHUB_OUTPUT
             
   build:
     runs-on: windows-2019
@@ -57,7 +57,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: TBS-${{ matrix.server }}
-          path: WPFUI\bin\Release\net6.0-windows\win-x86\publish\
+          path: WPFUI\bin\Release\net6.0-windows\win-x64\publish\
           if-no-files-found: error
                   
   release:
