@@ -82,7 +82,7 @@ jobs:
         with:
           name: TBS-${{needs.version.outputs.version}}
           tag: ${{needs.version.outputs.version}}
-          commit: main          
+          commit: master          
           artifacts: "TBS-${{needs.version.outputs.version}}-TravianOfficial.zip, TBS-${{needs.version.outputs.version}}-TTWars.zip"
           token: ${{ secrets.GITHUB_TOKEN }}
           body: |
@@ -105,7 +105,7 @@ jobs:
           nodetail: true
           description: |
             Version `TBS-${{needs.version.outputs.version}}`
-            Click [here](https://github.com/Erol444/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
+            Click [here](https://github.com/vinaghost/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
             
             **Changelog**:              
               ${{needs.version.outputs.changelog}}
