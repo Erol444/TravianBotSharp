@@ -27,7 +27,7 @@ jobs:
         id: changelog
         run: |
           echo 'changelog<<CHANGELOG_BODY_EOF' >> $GITHUB_OUTPUT
-          echo "$(curl https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/)" >> $GITHUB_ENV
+          echo "$(curl https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/)" >> $GITHUB_OUTPUT
           echo 'CHANGELOG_BODY_EOF' >> $GITHUB_OUTPUT
   build:
     runs-on: windows-2019
