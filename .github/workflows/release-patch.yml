@@ -26,10 +26,9 @@ jobs:
       - name: Get changelog
         id: changelog
         run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "changelog<<$EOF" >> $GITHUB_OUTPUT
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
           curl "https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/e6919fc1f685703f2c650d4fa2a3604ea5c15509/tbs_changelogs.md" >> $GITHUB_OUTPUT
-          echo "$EOF" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
   build:
     runs-on: windows-2019
     needs: version
