@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 
     <Server>TRAVIAN_OFFICIAL</Server>
