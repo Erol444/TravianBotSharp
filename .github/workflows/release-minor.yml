@@ -25,9 +25,11 @@ jobs:
       - name: Get changelog
         id: changelog
         run: |
-          echo "changelog<<EOF" >> $GITHUB_ENV
-          curl "https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/e6919fc1f685703f2c650d4fa2a3604ea5c15509/tbs_changelogs.md" >> $GITHUB_ENV
-          echo "EOF" >> $GITHUB_ENV
+          {
+            echo "changelog<<EOF" 
+            echo "$(curl "https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/e6919fc1f685703f2c650d4fa2a3604ea5c15509/tbs_changelogs.md")
+            echo "EOF"
+          } >> $GITHUB_ENV
             
   build:
     runs-on: windows-2019
