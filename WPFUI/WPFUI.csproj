@@ -7,6 +7,8 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <AssemblyName>TravianBotSharp</AssemblyName>
     <AssemblyVersion>1975.4.30</AssemblyVersion>
+    <RuntimeIdentifiers>win10-x64</RuntimeIdentifiers>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
   <ItemGroup>
