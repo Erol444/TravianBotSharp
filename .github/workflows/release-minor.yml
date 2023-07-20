@@ -7,7 +7,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.semvers.outputs.minor }}
-      changelog: ${{ steps.changelog.outputs.changelog }}
     steps:
       - name: Checkout repo'
         uses: actions/checkout@v3   
@@ -26,9 +25,9 @@ jobs:
       - name: Get changelog
         id: changelog
         run: |
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          curl "https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/e6919fc1f685703f2c650d4fa2a3604ea5c15509/tbs_changelogs.md" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "changelog<<EOF" >> $GITHUB_ENV
+          curl "https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/e6919fc1f685703f2c650d4fa2a3604ea5c15509/tbs_changelogs.md" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
             
   build:
     runs-on: windows-2019
@@ -87,7 +86,7 @@ jobs:
             Please join our Discord server for more information: [https://discord.gg/mBa4f2K](https://discord.gg/mBa4f2K)
             
             **Changelog**: 
-              ${{needs.version.outputs.changelog}}
+              ${{env.changelog}}
   Discord:
     runs-on: ubuntu-latest
     needs: [release, version] 
@@ -106,7 +105,7 @@ jobs:
             Click [here](https://github.com/vinaghost/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
             
             **Changelog**:              
-              ${{needs.version.outputs.changelog}}
+              ${{env.changelog}}
   Clear:
     runs-on: ubuntu-latest
     needs: release
