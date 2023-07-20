@@ -2,10 +2,6 @@ name: ReleaseFlow - Minor
 
 on:
   workflow_dispatch:
-    inputs:
-      changelog:
-        type: string
-        description: Release changelog
 jobs:
   version:
     runs-on: ubuntu-latest
