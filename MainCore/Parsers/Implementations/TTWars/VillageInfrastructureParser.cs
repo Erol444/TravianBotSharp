@@ -1,11 +1,11 @@
 ﻿using HtmlAgilityPack;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-namespace MainCore.Parser.Implementations.TTWars
+namespace MainCore.Parsers.Implementations.TTWars
 {
     public class VillageInfrastructureParser : IVillageInfrastructureParser
     {
@@ -13,7 +13,7 @@ namespace MainCore.Parser.Implementations.TTWars
         {
             var villageContentNode = doc.GetElementbyId("village_map");
             if (villageContentNode is null) return new();
-            var list = villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).ToList();
+            var list = villageContentNode.Descendants("div").Where(x => x.HasClass("buildingSlot")).Skip(18).ToList();
             if (list.Count == 22) return list;
             list.RemoveAt(22);
             return list;

@@ -4,8 +4,9 @@
     {
         public void LoadExtension();
 
-        public IChromeBrowser Get(int id);
+        public IChromeBrowser Get(int accountId);
 
         public void Shutdown();
+        void LoadDriver();
     }
 }

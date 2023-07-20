@@ -1,35 +1,36 @@
 ﻿using ReactiveUI;
 using System;
+using System.Reactive.Concurrency;
+using System.Reactive.Linq;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class ToleranceViewModel : ReactiveObject
+    public class ToleranceViewModel : ViewModelBase
     {
-        public ToleranceViewModel(string text, string unit) : base()
+        public ToleranceViewModel() : base()
         {
-            Text = text;
-            Unit = unit;
-            this.WhenAnyValue(vm => vm.MainValue).Subscribe(x =>
+            Observable.ObserveOn(this.WhenAnyValue(vm => vm.MainValue), RxApp.MainThreadScheduler).Subscribe(x =>
             {
                 ToleranceMax = x;
                 if (ToleranceValue > x) ToleranceValue = x;
             });
         }
 
-        private string _text;
-
-        public string Text
+        public void LoadData(int min, int max)
         {
-            get => $"{_text}: ";
-            set => this.RaiseAndSetIfChanged(ref _text, value);
+            RxApp.MainThreadScheduler.Schedule(() =>
+            {
+                MainValue = (max + min) / 2;
+                ToleranceValue = (max - min) / 2;
+            });
         }
 
-        private string _unit;
-
-        public string Unit
+        public (int, int) GetData()
         {
-            get => _unit;
-            set => this.RaiseAndSetIfChanged(ref _unit, value);
+            var min = MainValue - ToleranceValue;
+            var max = MainValue + ToleranceValue;
+            return (min, max);
         }
 
         private int _mainValue;

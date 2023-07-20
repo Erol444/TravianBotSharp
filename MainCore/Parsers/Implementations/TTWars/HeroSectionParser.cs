@@ -1,30 +1,31 @@
 ﻿using HtmlAgilityPack;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MainCore.Parser.Implementations.TTWars
+namespace MainCore.Parsers.Implementations.TTWars
 {
     public class HeroSectionParser : IHeroSectionParser
     {
         public int GetHealth(HtmlDocument doc)
         {
-            var sidebarBox = doc.GetElementbyId("sidebarBoxHero");
-            if (sidebarBox is null) return -1;
-            var healthBar = sidebarBox.Descendants("div").FirstOrDefault(x => x.HasClass("bar"));
-            if (healthBar is null) return -1;
+            var healthMask = doc.DocumentNode.Descendants("svg").FirstOrDefault(x => x.HasClass("health"));
+            if (healthMask is null) return -1;
+            var path = healthMask.Descendants("path").FirstOrDefault();
+            if (path is null) return -1;
+            var commands = path.GetAttributeValue("d", "").Split(' ');
             try
             {
-                var health = healthBar.Attributes.FirstOrDefault(x => x.Name == "style").Value.Split(':')[1].Replace("%", "");
-                health = health.Split('.')[0];
-                var valueStr = new string(health.Where(c => char.IsDigit(c)).ToArray());
-                if (string.IsNullOrEmpty(valueStr)) return -1;
-                return int.Parse(valueStr);
+                var xx = double.Parse(commands[^2], System.Globalization.CultureInfo.InvariantCulture);
+                var yy = double.Parse(commands[^1], System.Globalization.CultureInfo.InvariantCulture);
+
+                var rad = Math.Atan2(yy - 55, xx - 55);
+                return (int)Math.Round(-56.173 * rad + 96.077);
             }
             catch
             {
-                return -1;
+                return 0;
             }
         }
 
@@ -55,9 +56,9 @@ namespace MainCore.Parser.Implementations.TTWars
 
         public int GetAdventureNum(HtmlDocument doc)
         {
-            var adv45 = doc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("adventureWhite"));
+            var adv45 = doc.DocumentNode.Descendants("a").FirstOrDefault(x => x.HasClass("adventure"));
             if (adv45 is null) return 0;
-            var content = adv45.Descendants().FirstOrDefault(x => x.HasClass("speechBubbleContent"));
+            var content = adv45.Descendants("div").FirstOrDefault(x => x.HasClass("content"));
             if (content is null) return 0;
             var valueStr = new string(content.InnerText.Where(c => char.IsDigit(c)).ToArray());
             if (string.IsNullOrEmpty(valueStr)) return 0;
@@ -103,7 +104,7 @@ namespace MainCore.Parser.Implementations.TTWars
 
         public bool IsCurrentTab(HtmlNode tabNode)
         {
-            throw new NotSupportedException();
+            return tabNode.HasClass("active");
         }
 
         public HtmlNode GetHeroInventory(HtmlDocument doc)
@@ -113,7 +114,7 @@ namespace MainCore.Parser.Implementations.TTWars
 
         public HtmlNode GetAdventuresButton(HtmlDocument doc)
         {
-            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventureWhite"));
+            return doc.DocumentNode.Descendants().FirstOrDefault(x => x.HasClass("adventure"));
         }
 
         public List<HtmlNode> GetAdventures(HtmlDocument doc)
@@ -156,7 +157,11 @@ namespace MainCore.Parser.Implementations.TTWars
 
         public HtmlNode GetHeroTab(HtmlDocument doc, int index)
         {
-            throw new NotSupportedException();
+            var heroDiv = doc.GetElementbyId("content");
+            if (heroDiv is null) return null;
+            var aNode = heroDiv.Descendants("a").ToList();
+            if (index >= aNode.Count) return null;
+            return aNode[index];
         }
 
         public HtmlNode GetItemSlot(HtmlDocument doc, int type)

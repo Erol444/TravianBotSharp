@@ -1,8 +1,8 @@
 ﻿using HtmlAgilityPack;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using System.Linq;
 
-namespace MainCore.Parser.Implementations.TTWars
+namespace MainCore.Parsers.Implementations.TTWars
 {
     public class NavigationBarParser : INavigationBarParser
     {
@@ -26,10 +26,6 @@ namespace MainCore.Parser.Implementations.TTWars
 
         public HtmlNode GetMessageButton(HtmlDocument doc) => GetButton(doc, 6);
 
-        public HtmlNode GetDailyButton(HtmlDocument doc)
-        {
-            var buttonNode = doc.DocumentNode.Descendants("button").FirstOrDefault(x => x.HasClass("questButtonOverviewAchievements"));
-            return buttonNode;
-        }
+        public HtmlNode GetDailyButton(HtmlDocument doc) => GetButton(doc, 7);
     }
 }

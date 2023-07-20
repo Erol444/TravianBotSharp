@@ -8,7 +8,5 @@ namespace MainCore.Helper.Interface
         Task<Version> GetLatestVersion();
 
         string GetLink(string version);
-
-        Task<bool> IsNewVersion(Version current);
     }
 }

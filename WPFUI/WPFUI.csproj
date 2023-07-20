@@ -3,32 +3,13 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>favicon.ico</ApplicationIcon>
     <AssemblyName>TravianBotSharp</AssemblyName>
     <AssemblyVersion>1975.4.30</AssemblyVersion>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="Resources\clay.png" />
-    <None Remove="Resources\crop.png" />
-    <None Remove="Resources\egyptian.png" />
-    <None Remove="Resources\gaul.png" />
-    <None Remove="Resources\granary.png" />
-    <None Remove="Resources\hun.png" />
-    <None Remove="Resources\iron.png" />
-    <None Remove="Resources\natar.png" />
-    <None Remove="Resources\nature.png" />
-    <None Remove="Resources\roman.png" />
-    <None Remove="Resources\spartan.png" />
-    <None Remove="Resources\teuton.png" />
-    <None Remove="Resources\warehouse.png" />
-    <None Remove="Resources\wood.png" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\gaul.png" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="favicon.ico" />
@@ -39,6 +20,7 @@
     <Resource Include="Resources\crop.png" />
     <Resource Include="Resources\egyptian.png" />
     <Resource Include="Resources\granary.png" />
+    <Resource Include="Resources\gaul.png" />
     <Resource Include="Resources\hun.png" />
     <Resource Include="Resources\iron.png" />
     <Resource Include="Resources\natar.png" />
@@ -52,13 +34,10 @@
 
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.5.0" />
-    <PackageReference Include="FluentMigrator" Version="3.3.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.8.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     <PackageReference Include="ReactiveUI" Version="18.4.1" />
     <PackageReference Include="ReactiveUI.WPF" Version="18.4.1" />
-    <PackageReference Include="Splat" Version="14.6.1" />
-    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="14.6.1" />
   </ItemGroup>
 
   <ItemGroup>

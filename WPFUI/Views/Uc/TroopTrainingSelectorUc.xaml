@@ -1,0 +1,29 @@
+﻿<views:TroopTrainingSelectorUcBase
+        x:Class="WPFUI.Views.Uc.TroopTrainingSelectorUc"
+        xmlns:views="clr-namespace:WPFUI.Views.Uc"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:WPFUI.Views.Uc"
+        x:Name="root">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <Label Content="{Binding Text, ElementName=root}" Width="NaN" />
+            <ComboBox x:Name="TroopComboBox">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="{Binding Image}" />
+                            <TextBlock Text="{Binding Troop}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+        <controls:ToleranceUc x:Name="FillTime" Text="Fill queue for" Unit="min(s)" />
+        <CheckBox x:Name="IsGreat" Visibility="{Binding Great, ElementName=root, Converter={StaticResource BooleanToVisibilityConverter}}" >Train in great version too</CheckBox>
+    </StackPanel>
+</views:TroopTrainingSelectorUcBase>

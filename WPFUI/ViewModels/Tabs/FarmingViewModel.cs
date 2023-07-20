@@ -1,23 +1,33 @@
 ﻿using DynamicData;
 using DynamicData.Kernel;
-using MainCore.Tasks.Base;
+using MainCore;
+using MainCore.Services.Interface;
+using MainCore.Tasks.FunctionTasks;
+using MainCore.Tasks.UpdateTasks;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
+using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.ViewModels.Tabs
 {
     public class FarmingViewModel : AccountTabBaseViewModel
     {
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _eventManager;
+        private readonly ITaskManager _taskManager;
+        private readonly WaitingOverlayViewModel _waitingOverlay;
+
         public ReactiveCommand<Unit, Unit> StartCommand { get; }
         public ReactiveCommand<Unit, Unit> StopCommand { get; }
         public ReactiveCommand<Unit, Unit> SaveCommand { get; }
@@ -25,8 +35,13 @@ namespace WPFUI.ViewModels.Tabs
         public ReactiveCommand<Unit, Unit> ActiveCommand { get; }
         public ReactiveCommand<Unit, Unit> RefreshCommand { get; }
 
-        public FarmingViewModel()
+        public FarmingViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ITaskManager taskManager, WaitingOverlayViewModel waitingWindow) : base(selectedItemStore)
         {
+            _contextFactory = contextFactory;
+            _eventManager = eventManager;
+            _taskManager = taskManager;
+            _waitingOverlay = waitingWindow;
+
             StartCommand = ReactiveCommand.CreateFromTask(StartTask);
             StopCommand = ReactiveCommand.CreateFromTask(StopTask);
 
@@ -36,7 +51,6 @@ namespace WPFUI.ViewModels.Tabs
             ActiveCommand = ReactiveCommand.CreateFromTask(ActiveTask, this.WhenAnyValue(vm => vm.CurrentFarm).Select(x => x is not null));
             RefreshCommand = ReactiveCommand.CreateFromTask(RefreshTask);
 
-            this.WhenAnyValue(vm => vm.CurrentFarm).BindTo(_selectorViewModel, vm => vm.Farm);
             this.WhenAnyValue(vm => vm.CurrentFarm).InvokeCommand(LoadCommand);
             _eventManager.FarmListUpdate += OnFarmListUpdate;
         }
@@ -58,12 +72,12 @@ namespace WPFUI.ViewModels.Tabs
                 var task = tasks.OfType<StartFarmList>().FirstOrDefault();
                 if (task is null)
                 {
-                    _taskManager.Add(accountId, new StartFarmList(accountId));
+                    _taskManager.Add<StartFarmList>(accountId);
                 }
                 else
                 {
                     task.ExecuteAt = DateTime.Now;
-                    _taskManager.Update(AccountId);
+                    _taskManager.ReOrder(AccountId);
                 }
             });
 
@@ -88,18 +102,18 @@ namespace WPFUI.ViewModels.Tabs
         public async Task SaveData()
         {
             if (CurrentFarm is null) return;
-            _waitingWindow.Show("Saving ...");
+            _waitingOverlay.ShowCommand.Execute("Saving ...").Subscribe();
             await Task.Run(() =>
             {
                 using var context = _contextFactory.CreateDbContext();
-                var settings = context.AccountsSettings.Find(_selectorViewModel.Account.Id);
+                var settings = context.AccountsSettings.Find(_selectedItemStore.Account.Id);
                 settings.FarmIntervalMin = Interval - DiffInterval;
                 if (settings.FarmIntervalMin < 0) settings.FarmIntervalMin = 0;
                 settings.FarmIntervalMax = Interval + DiffInterval;
                 context.Update(settings);
                 context.SaveChanges();
             });
-            _waitingWindow.Close();
+            _waitingOverlay.CloseCommand.Execute().Subscribe();
             MessageBox.Show("Saved");
         }
 
@@ -120,7 +134,7 @@ namespace WPFUI.ViewModels.Tabs
         public async Task ActiveTask()
         {
             if (CurrentFarm is null) return;
-            _waitingWindow.Show("Processing ...");
+            _waitingOverlay.ShowCommand.Execute("Processing ...").Subscribe();
             var active = true;
             await Task.Run(() =>
             {
@@ -131,7 +145,7 @@ namespace WPFUI.ViewModels.Tabs
                 context.Update(setting);
                 context.SaveChanges();
             });
-            _waitingWindow.Close();
+            _waitingOverlay.CloseCommand.Execute().Subscribe();
             MessageBox.Show("Done");
             CurrentFarm.Color = active ? Color.ForestGreen.ToMediaColor() : Color.Red.ToMediaColor();
             ContentButton = active ? "Deactive" : "Active";
@@ -139,17 +153,17 @@ namespace WPFUI.ViewModels.Tabs
 
         private Task RefreshTask()
         {
-            var accountId = _selectorViewModel.Account.Id;
+            var accountId = _selectedItemStore.Account.Id;
             var tasks = _taskManager.GetList(accountId).OfType<UpdateFarmList>();
             if (!tasks.Any())
             {
-                _taskManager.Add(accountId, new UpdateFarmList(accountId));
+                _taskManager.Add<UpdateFarmList>(accountId);
             }
             else
             {
                 var updateFarmList = tasks.First();
                 updateFarmList.ExecuteAt = DateTime.Now;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
             return Task.CompletedTask;
         }
@@ -164,21 +178,27 @@ namespace WPFUI.ViewModels.Tabs
 
         private void LoadData(int id)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var farms = context.Farms
-                .Where(x => x.AccountId == id)
-                .AsList()
-                .Select(farm =>
-                {
-                    var farmSetting = context.FarmsSettings.Find(farm.Id);
-                    var color = farmSetting.IsActive ? Color.ForestGreen.ToMediaColor() : Color.Red.ToMediaColor();
-                    return new ListBoxItem(farm.Id, farm.Name, color);
-                }).ToList();
-
-            var settings = context.AccountsSettings.Find(_selectorViewModel.Account.Id);
-
-            RxApp.MainThreadScheduler.Schedule(() =>
+            Observable.Start(() =>
             {
+                using var context = _contextFactory.CreateDbContext();
+                var farms = context.Farms
+                    .Where(x => x.AccountId == id)
+                    .AsList()
+                    .Select(farm =>
+                    {
+                        var farmSetting = context.FarmsSettings.Find(farm.Id);
+                        var color = farmSetting.IsActive ? Color.ForestGreen.ToMediaColor() : Color.Red.ToMediaColor();
+                        return new ListBoxItem(farm.Id, farm.Name, color);
+                    }).ToList();
+
+                var settings = context.AccountsSettings.Find(_selectedItemStore.Account.Id);
+
+                return (farms, settings);
+            }, RxApp.TaskpoolScheduler)
+            .ObserveOn(RxApp.MainThreadScheduler)
+            .Subscribe((data) =>
+            {
+                var (farms, settings) = data;
                 FarmList.Clear();
                 FarmList.AddRange(farms);
                 if (farms.Any())

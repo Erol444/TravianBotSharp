@@ -1,18 +1,29 @@
-﻿using MainCore.Models.Database;
+﻿using MainCore;
+using MainCore.Models.Database;
+using MainCore.Services.Interface;
+using MainCore.Tasks.FunctionTasks;
+using Microsoft.EntityFrameworkCore;
 using ReactiveUI;
 using System;
 using System.Reactive;
-using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using System.Windows;
 using WPFUI.Models;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
     public class NPCViewModel : VillageTabBaseViewModel
     {
-        public NPCViewModel()
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly ITaskManager _taskManager;
+
+        public NPCViewModel(SelectedItemStore selectedItemStore, IDbContextFactory<AppDbContext> contextFactory, ITaskManager taskManager) : base(selectedItemStore)
         {
+            _contextFactory = contextFactory;
+            _taskManager = taskManager;
+
             RefreshCommand = ReactiveCommand.Create(RefreshTask);
             NPCCommand = ReactiveCommand.Create(NPCTask);
         }
@@ -24,35 +35,40 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private void LoadData(int villageId)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var resources = context.VillagesResources.Find(villageId);
-            var updateTime = context.VillagesUpdateTime.Find(villageId);
-            var setting = context.VillagesSettings.Find(VillageId);
-
-            var dorf1 = updateTime.Dorf1;
-            var dorf2 = updateTime.Dorf2;
-
-            RxApp.MainThreadScheduler.Schedule(() =>
+            Observable.Start(() =>
             {
-                Resources = resources;
-                LastUpdate = dorf1 > dorf2 ? dorf1 : dorf2;
+                using var context = _contextFactory.CreateDbContext();
+                var resources = context.VillagesResources.Find(villageId);
+                var updateTime = context.VillagesUpdateTime.Find(villageId);
+                var setting = context.VillagesSettings.Find(VillageId);
+                return (resources, updateTime, setting);
+            }, RxApp.TaskpoolScheduler)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe((data) =>
+                {
+                    var (resources, updateTime, setting) = data;
+                    var dorf1 = updateTime.Dorf1;
+                    var dorf2 = updateTime.Dorf2;
 
-                Ratio.Wood = setting.AutoNPCWood.ToString();
-                Ratio.Clay = setting.AutoNPCClay.ToString();
-                Ratio.Iron = setting.AutoNPCIron.ToString();
-                Ratio.Crop = setting.AutoNPCCrop.ToString();
-            });
+                    Resources = resources;
+                    LastUpdate = dorf1 > dorf2 ? dorf1 : dorf2;
+
+                    Ratio.Wood = setting.AutoNPCWood.ToString();
+                    Ratio.Clay = setting.AutoNPCClay.ToString();
+                    Ratio.Iron = setting.AutoNPCIron.ToString();
+                    Ratio.Crop = setting.AutoNPCCrop.ToString();
+                });
         }
 
         private void RefreshTask()
         {
-            _taskManager.Add(AccountId, _taskFactory.GetRefreshVillageTask(VillageId, AccountId));
+            _taskManager.Add<RefreshVillage>(AccountId, VillageId);
             MessageBox.Show("Added Refresh resources task to queue");
         }
 
         private void NPCTask()
         {
-            _taskManager.Add(AccountId, _taskFactory.GetNPCTask(VillageId, AccountId, Ratio.GetResources()));
+            _taskManager.Add<NPCTask>(AccountId, () => new(VillageId, AccountId, Ratio.GetResources()));
             MessageBox.Show("Added NPC task to queue");
         }
 

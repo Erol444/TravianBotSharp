@@ -1,25 +1,28 @@
-﻿using FluentResults;
-using MainCore.Enums;
-using MainCore.Parser.Interface;
+﻿using MainCore.Enums;
+using MainCore.Models.Database;
+using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace MainCore.Helper.Implementations.TTWars
 {
     public class UpdateHelper : Base.UpdateHelper
     {
-        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IVillageInfrastructureParser villageInfrastructureParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager) : base(villageCurrentlyBuildingParser, chromeManager, contextFactory, villageFieldParser, villageInfrastructureParser, stockBarParser, subTabParser, heroSectionParser, farmListParser, eventManager)
+        public UpdateHelper(IVillageCurrentlyBuildingParser villageCurrentlyBuildingParser, IChromeManager chromeManager, IDbContextFactory<AppDbContext> contextFactory, IVillageFieldParser villageFieldParser, IStockBarParser stockBarParser, ISubTabParser subTabParser, IHeroSectionParser heroSectionParser, IFarmListParser farmListParser, IEventManager eventManager, IVillagesTableParser villagesTableParser, ITaskManager taskManager, IRightBarParser rightBarParser, IVillageInfrastructureParser villageInfrastructureParser) : base(villageCurrentlyBuildingParser, chromeManager, contextFactory, villageFieldParser, stockBarParser, subTabParser, heroSectionParser, farmListParser, eventManager, villagesTableParser, taskManager, rightBarParser, villageInfrastructureParser)
         {
         }
 
-        public override Result UpdateDorf2(int accountId, int villageId)
+        public override void UpdateBuildings(int accountId, int villageId)
         {
             var chromeBrowser = _chromeManager.Get(accountId);
             var html = chromeBrowser.GetHtml();
             var buildingNodes = _villageInfrastructureParser.GetNodes(html);
             using var context = _contextFactory.CreateDbContext();
+
+            var buildingUnderConstruction = new List<VillageBuilding>();
             foreach (var buildingNode in buildingNodes)
             {
                 var id = _villageInfrastructureParser.GetId(buildingNode);
@@ -42,35 +45,52 @@ namespace MainCore.Helper.Implementations.TTWars
                     type = _villageInfrastructureParser.GetBuildingType(buildingNode);
                 }
                 var isUnderConstruction = _villageInfrastructureParser.IsUnderConstruction(buildingNode);
+
                 if (building is null)
                 {
-                    context.VillagesBuildings.Add(new()
+                    building = new()
                     {
                         VillageId = villageId,
                         Id = id,
                         Level = level,
                         Type = (BuildingEnums)type,
                         IsUnderConstruction = isUnderConstruction,
-                    });
+                    };
+                    context.VillagesBuildings.Add(building);
                 }
                 else
                 {
                     building.Level = level;
                     building.Type = (BuildingEnums)type;
                     building.IsUnderConstruction = isUnderConstruction;
+                    context.Update(building);
+                }
+                if (isUnderConstruction)
+                {
+                    buildingUnderConstruction.Add(building);
                 }
             }
-            context.SaveChanges();
-            var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
-            if (currentlyBuilding.Count > 0)
+
+            if (buildingUnderConstruction.Any())
             {
-                foreach (var building in currentlyBuilding)
+                var currentlyBuilding = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0).ToList();
+                var currentlyBuildings = currentlyBuilding.Where(x => !x.Type.IsResourceField());
+
+                foreach (var building in buildingUnderConstruction)
                 {
-                    var build = context.VillagesBuildings.FirstOrDefault(x => x.IsUnderConstruction && x.Type == building.Type && x.Level - building.Level < 3);
-                    if (build is null) continue;
-                    building.Location = build.Id;
+                    var currentlyField = currentlyBuildings.First(x => x.Level == building.Level + 1);
+                    currentlyField.Location = building.Id;
+                    context.Update(currentlyField);
                 }
-                context.SaveChanges();
+                {
+                    var currentlyField = currentlyBuildings.FirstOrDefault(x => x.Location == -1);
+                    if (currentlyField is not null)
+                    {
+                        var field = buildingUnderConstruction.First();
+                        currentlyField.Location = field.Id;
+                        context.Update(currentlyField);
+                    }
+                }
             }
 
             var updateTime = context.VillagesUpdateTime.Find(villageId);
@@ -87,12 +107,12 @@ namespace MainCore.Helper.Implementations.TTWars
             else
             {
                 updateTime.Dorf2 = DateTime.Now;
+                context.Update(updateTime);
             }
             context.SaveChanges();
 
             _eventManager.OnVillageCurrentUpdate(villageId);
             _eventManager.OnVillageBuildsUpdate(villageId);
-            return Result.Ok();
         }
     }
 }

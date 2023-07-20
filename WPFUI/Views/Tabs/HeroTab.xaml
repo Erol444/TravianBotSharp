@@ -1,0 +1,92 @@
+﻿<views:HeroTabBase
+    x:Class="WPFUI.Views.Tabs.HeroTab"
+    xmlns:views="clr-namespace:WPFUI.Views.Tabs"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d"
+    d:DesignHeight="450" d:DesignWidth="800">
+
+    <Grid Background="#FFE5E5E5">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Button x:Name="AdventuresButton" Content="Refresh adventures" Margin="10" />
+            <Label Grid.Row="1" Content="Adventures list" HorizontalAlignment="Center" />
+            <Border Style="{DynamicResource Box}" Grid.Row="2">
+                <ListView x:Name="AdventuresGrid"  d:ItemsSource="{d:SampleData ItemCount=5}" Margin="5,0,5,0">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Coordinates" DisplayMemberBinding="{Binding Coordinates}" />
+                            <GridViewColumn Header="Difficulty" DisplayMemberBinding="{Binding Difficulty}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </Border>
+            <Label Grid.Row="3" Content="Hero's info" HorizontalAlignment="Center"  />
+            <Border Style="{DynamicResource Box}" Grid.Row="4">
+                <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Label HorizontalAlignment="Center" Content="Health"  />
+                    <Label HorizontalAlignment="Center" Grid.Row="1" Content="Status"  />
+                    <Label HorizontalAlignment="Center" Grid.Row="2" Content="Number of adventures"  />
+                <TextBox x:Name="HealthTextbox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True"  />
+                <TextBox x:Name="StatusTextbox" Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True"  />
+                <TextBox x:Name="NumAdventuresTextbox" Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Center" IsReadOnly="True" />
+            </Grid>
+                </Border>
+        </Grid>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Button x:Name="InventoryButton" Content="Refresh inventory" Margin="10" />
+            <Label Content="Hero's items" Grid.Row="1" HorizontalAlignment="Center"  />
+            <Border Style="{DynamicResource Box}" Grid.Row="2">
+                <ListView x:Name="ItemsGrid"  d:ItemsSource="{d:SampleData ItemCount=5}"  >
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}" />
+                        <GridViewColumn Header="Tier" DisplayMemberBinding="{Binding Tier}" />
+                        <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+                </Border>
+            <Label HorizontalAlignment="Center" Grid.Row="3" Content="Hero's equipt (Work in progress)"  />
+            <Border Style="{DynamicResource Box}" Grid.Row="4">
+                <ListView x:Name="EquiptGrid" d:ItemsSource="{d:SampleData ItemCount=5}"  Margin="5,0,5,0" IsEnabled="False">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Item" DisplayMemberBinding="{Binding Item}" />
+                        <GridViewColumn Header="Tier" DisplayMemberBinding="{Binding Tier}" />
+                        <GridViewColumn Header="Amount" DisplayMemberBinding="{Binding Amount}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            </Border>
+        </Grid>
+    </Grid>
+</views:HeroTabBase>

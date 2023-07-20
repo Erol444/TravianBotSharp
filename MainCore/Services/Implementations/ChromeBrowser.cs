@@ -21,14 +21,14 @@ namespace MainCore.Services.Implementations
 
         private readonly string _pathUserData;
 
-        public ChromeBrowser(string[] extensionsPath, string server, string username)
+        public ChromeBrowser(string driverPath, string[] extensionsPath, string server, string username)
         {
             _pathUserData = Path.Combine(AppContext.BaseDirectory, "Data", "Cache", server.Replace("https://", "").Replace(".", "_"), username);
             Directory.CreateDirectory(_pathUserData);
 
             _extensionsPath = extensionsPath;
 
-            _chromeService = ChromeDriverService.CreateDefaultService();
+            _chromeService = ChromeDriverService.CreateDefaultService(driverPath);
             _chromeService.HideCommandPromptWindow = true;
         }
 
@@ -62,8 +62,9 @@ namespace MainCore.Services.Implementations
 
             options.AddArgument("--mute-audio");
             if (setting.IsDontLoadImage) options.AddArguments("--blink-settings=imagesEnabled=false"); //--disable-images
+            var pathUserData = Path.Combine(_pathUserData, string.IsNullOrEmpty(access.ProxyHost) ? "default" : access.ProxyHost);
 
-            options.AddArguments($"user-data-dir={_pathUserData}");
+            options.AddArguments($"user-data-dir={pathUserData}");
 
             _driver = new ChromeDriver(_chromeService, options);
             if (setting.IsMinimized) _driver.Manage().Window.Minimize();
