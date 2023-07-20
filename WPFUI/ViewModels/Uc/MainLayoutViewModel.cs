@@ -11,7 +11,6 @@ using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -107,12 +106,11 @@ namespace WPFUI.ViewModels.Uc
         {
             var account = Accounts.FirstOrDefault(x => x.Id == accountId);
             if (account is null) return;
-
-            RxApp.MainThreadScheduler.Schedule(() =>
+            Observable.Start(() =>
             {
                 Status = status;
                 account.Color = status.GetColor().ToMediaColor();
-            });
+            }, RxApp.MainThreadScheduler);
         }
 
         private void OnAccountsTableUpdate()
@@ -124,10 +122,7 @@ namespace WPFUI.ViewModels.Uc
         {
             if (CurrentAccount is null) return;
             if (CurrentAccount.Id != accountId) return;
-            RxApp.MainThreadScheduler.Schedule(() =>
-            {
-                Status = _taskManager.GetAccountStatus(accountId);
-            });
+            Observable.Start(() => Status = _taskManager.GetAccountStatus(accountId), RxApp.MainThreadScheduler);
         }
 
         #endregion Event
@@ -141,26 +136,30 @@ namespace WPFUI.ViewModels.Uc
 
         private void LoadAccountList()
         {
-            using var context = _contextFactory.CreateDbContext();
-            var accounts = context.Accounts
-                .AsList()
-                .Select(x => new ListBoxItem(x.Id, x.Username, x.Server))
-                .ToList();
-
-            RxApp.MainThreadScheduler.Schedule(() =>
+            Observable.Start(() =>
             {
-                Accounts.Clear();
-                Accounts.AddRange(accounts);
+                using var context = _contextFactory.CreateDbContext();
+                var accounts = context.Accounts
+                    .AsList()
+                    .Select(x => new ListBoxItem(x.Id, x.Username, x.Server))
+                    .ToList();
+                return accounts;
+            }, RxApp.TaskpoolScheduler)
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Subscribe((accounts) =>
+                {
+                    Accounts.Clear();
+                    Accounts.AddRange(accounts);
 
-                if (accounts.Any())
-                {
-                    CurrentAccount = Accounts[0];
-                }
-                else
-                {
-                    CurrentAccount = null;
-                }
-            });
+                    if (accounts.Any())
+                    {
+                        CurrentAccount = Accounts[0];
+                    }
+                    else
+                    {
+                        CurrentAccount = null;
+                    }
+                });
         }
 
         #endregion Load
