@@ -37,6 +37,10 @@ namespace WPFUI.Views.Tabs
 
                 this.Bind(ViewModel, vm => vm.NoVillageViewModel.IsActive, v => v.NoVillageTab.IsSelected).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.BuildViewModel.IsActive, v => v.BuildTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.VillageSettingsViewModel.IsActive, v => v.VillageSettingsTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.NPCViewModel.IsActive, v => v.NPCTab.IsSelected).DisposeWith(d);
+                //this.OneWayBind(ViewModel, vm => vm.VillageTroopsViewModel.IsActive, v => v.TroopsTab.IsSelected).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.InfoViewModel.IsActive, v => v.InfoTab.IsSelected).DisposeWith(d);
             });
         }
     }

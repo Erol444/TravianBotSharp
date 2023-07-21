@@ -143,13 +143,13 @@ namespace WPFUI.ViewModels.Tabs.Villages
 
         private async Task SaveTask()
         {
-            _waitingOverlay.ShowCommand.Execute("saving account's settings").Subscribe();
+            _waitingOverlay.Show("saving account's settings");
             await Task.Run(() =>
             {
                 Save(VillageId);
                 TaskBasedSetting(VillageId, AccountId);
             });
-            _waitingOverlay.CloseCommand.Execute().Subscribe();
+            _waitingOverlay.Close();
 
             MessageBox.Show("Saved.");
         }

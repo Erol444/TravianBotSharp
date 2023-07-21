@@ -32,7 +32,7 @@ namespace WPFUI.ViewModels.Abstract
         private void OnAccountChanged(int accountId)
         {
             if (!IsActive) return;
-            Observable.Start(() => Init(accountId), RxApp.MainThreadScheduler);
+            Init(accountId);
         }
 
         private readonly ObservableAsPropertyHelper<int> _accountId;

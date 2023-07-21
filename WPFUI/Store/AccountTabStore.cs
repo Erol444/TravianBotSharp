@@ -64,7 +64,7 @@ namespace WPFUI.Store
             }
         }
 
-        private bool _isNoAccountTabVisible;
+        private bool _isNoAccountTabVisible = true;
 
         public bool IsNoAccountTabVisible
         {

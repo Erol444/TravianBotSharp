@@ -31,15 +31,13 @@ namespace WPFUI.ViewModels.Abstract
         protected override void OnActive()
         {
             if (!_selectedItemStore.IsVillageSelected) return;
-            Observable.Start(() => Init(VillageId), RxApp.MainThreadScheduler);
-
-            //Init(VillageId);
+            Init(VillageId);
         }
 
         private void OnVillageChanged(int villageId)
         {
             if (!IsActive) return;
-            Observable.Start(() => Init(villageId), RxApp.MainThreadScheduler);
+            Init(villageId);
         }
 
         private readonly ObservableAsPropertyHelper<int> _accountId;
