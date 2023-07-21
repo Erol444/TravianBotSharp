@@ -66,7 +66,7 @@ namespace WPFUI.ViewModels
                 await Task.Run(_chromeManager.LoadDriver);
 
                 _waitingOverlay.Show("loading chrome extension");
-                await Task.Run(_chromeManager.LoadDriver);
+                await Task.Run(_chromeManager.LoadExtension);
 
                 _waitingOverlay.Show("loading useragent data");
                 await _useragentManager.Load();

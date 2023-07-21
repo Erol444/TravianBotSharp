@@ -2,6 +2,7 @@
 using MainCore.Enums;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
+using MainCore.Models.Database;
 using MainCore.Models.Runtime;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -29,26 +30,30 @@ namespace MainCore.Helper.Implementations.Base
             var village = context.Villages.Find(villageId);
             var tribe = context.AccountsInfo.Find(village.AccountId).Tribe;
 
-            var buildings = new List<BuildingEnums>();
+            var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId).ToList();
+            var currentlyBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).ToList();
+            var queueBuildings = _planManager.GetList(villageId);
+
+            var canBuildings = new List<BuildingEnums>();
             for (var i = BuildingEnums.Sawmill; i <= BuildingEnums.Hospital; i++)
             {
-                if (CanBuild(villageId, tribe, i)) buildings.Add(i);
+                if (CanBuild(i, tribe, buildings, currentlyBuildings, queueBuildings))
+                {
+                    canBuildings.Add(i);
+                }
             }
-            return buildings;
+
+            return canBuildings;
         }
 
-        public bool CanBuild(int villageId, TribeEnums tribe, BuildingEnums building)
+        private static bool CanBuild(BuildingEnums building, TribeEnums tribe, List<VillageBuilding> buildings, List<VillCurrentBuilding> currentlyBuildings, List<PlanTask> queueBuildings)
         {
-            if (IsExists(villageId, building))
+            if (IsExists(building, buildings, currentlyBuildings, queueBuildings))
             {
                 return building switch
                 {
-                    BuildingEnums.Warehouse => IsBuildingAboveLevel(villageId, BuildingEnums.Warehouse, 20),
-                    BuildingEnums.Granary => IsBuildingAboveLevel(villageId, BuildingEnums.Granary, 20),
-                    BuildingEnums.GreatWarehouse => IsBuildingAboveLevel(villageId, BuildingEnums.GreatWarehouse, 20),
-                    BuildingEnums.GreatGranary => IsBuildingAboveLevel(villageId, BuildingEnums.GreatGranary, 20),
-                    BuildingEnums.Trapper => IsBuildingAboveLevel(villageId, BuildingEnums.Trapper, 20),
-                    BuildingEnums.Cranny => IsBuildingAboveLevel(villageId, BuildingEnums.Cranny, 10),
+                    BuildingEnums.Warehouse or BuildingEnums.Granary or BuildingEnums.GreatWarehouse or BuildingEnums.GreatGranary or BuildingEnums.Trapper => IsBuildingAboveLevel(building, 20, buildings, currentlyBuildings, queueBuildings),
+                    BuildingEnums.Cranny => IsBuildingAboveLevel(building, 10, buildings, currentlyBuildings, queueBuildings),
                     _ => false,
                 };
             }
@@ -61,50 +66,48 @@ namespace MainCore.Helper.Implementations.Base
                 {
                     if (prerequisite.Building == BuildingEnums.Cropland)
                     {
-                        if (IsAutoCropFieldAboveLevel(villageId, prerequisite.Level)) return true;
+                        if (IsAutoCropFieldAboveLevel(prerequisite.Level, queueBuildings)) return true;
                     }
                     else
                     {
-                        if (IsAutoResourceFieldAboveLevel(villageId, prerequisite.Level)) return true;
+                        if (IsAutoResourceFieldAboveLevel(prerequisite.Level, queueBuildings)) return true;
                     }
                 }
-                if (!IsBuildingAboveLevel(villageId, prerequisite.Building, prerequisite.Level)) return false;
+                if (!IsBuildingAboveLevel(prerequisite.Building, prerequisite.Level, buildings, currentlyBuildings, queueBuildings)) return false;
             }
             return true;
         }
 
-        public bool IsExists(int villageId, BuildingEnums building)
+        private static bool IsExists(BuildingEnums building, List<VillageBuilding> buildings, List<VillCurrentBuilding> currentlyBuildings, List<PlanTask> queueBuildings)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var b = context.VillagesBuildings.Where(x => x.VillageId == villageId).Any(x => x.Type == building);
+            var b = buildings.Any(x => x.Type == building);
             if (b) return true;
-            var c = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).Any(x => x.Type == building);
+            var c = currentlyBuildings.Any(x => x.Type == building);
             if (c) return true;
-            var q = _planManager.GetList(villageId).Any(x => x.Building == building);
+            var q = queueBuildings.Any(x => x.Building == building);
             if (q) return true;
             return false;
         }
 
-        public bool IsBuildingAboveLevel(int villageId, BuildingEnums building, int level)
+        private static bool IsBuildingAboveLevel(BuildingEnums building, int level, List<VillageBuilding> buildings, List<VillCurrentBuilding> currentlyBuildings, List<PlanTask> queueBuildings)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var b = context.VillagesBuildings.Where(x => x.VillageId == villageId).Any(x => x.Type == building && level <= x.Level);
+            var b = buildings.Any(x => x.Type == building && x.Level >= level);
             if (b) return true;
-            var c = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId).Any(x => x.Type == building && level <= x.Level);
+            var c = currentlyBuildings.Any(x => x.Type == building && x.Level >= level);
             if (c) return true;
-            var q = _planManager.GetList(villageId).Any(x => x.Building == building && level <= x.Level);
+            var q = queueBuildings.Any(x => x.Building == building && x.Level >= level);
             if (q) return true;
             return false;
         }
 
-        public bool IsAutoResourceFieldAboveLevel(int villageId, int level)
+        private static bool IsAutoResourceFieldAboveLevel(int level, List<PlanTask> queueBuildings)
         {
-            return _planManager.GetList(villageId).Any(x => (x.ResourceType == ResTypeEnums.AllResources || x.ResourceType == ResTypeEnums.ExcludeCrop) && level <= x.Level);
+            return queueBuildings.Any(x => (x.ResourceType == ResTypeEnums.AllResources || x.ResourceType == ResTypeEnums.ExcludeCrop) && x.Level >= level);
         }
 
-        public bool IsAutoCropFieldAboveLevel(int villageId, int level)
+        private static bool IsAutoCropFieldAboveLevel(int level, List<PlanTask> queueBuildings)
         {
-            return _planManager.GetList(villageId).Any(x => (x.ResourceType == ResTypeEnums.AllResources || x.ResourceType == ResTypeEnums.OnlyCrop) && level <= x.Level);
+            return queueBuildings.Any(x => (x.ResourceType == ResTypeEnums.AllResources || x.ResourceType == ResTypeEnums.OnlyCrop) && x.Level >= level);
         }
 
         public int GetDorf(BuildingEnums building)
