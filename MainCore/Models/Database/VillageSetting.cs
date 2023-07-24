@@ -22,10 +22,10 @@ namespace MainCore.Models.Database
         public bool IsNPCOverflow { get; set; }
         public int AutoNPCPercent { get; set; }
         public int AutoNPCWarehousePercent { get; set; }
-        public int AutoNPCWood { get; set; }
-        public int AutoNPCClay { get; set; }
-        public int AutoNPCIron { get; set; }
-        public int AutoNPCCrop { get; set; }
+        public long AutoNPCWood { get; set; }
+        public long AutoNPCClay { get; set; }
+        public long AutoNPCIron { get; set; }
+        public long AutoNPCCrop { get; set; }
 
         public bool IsUpgradeTroop { get; set; }
         public string UpgradeTroop { get; set; }
@@ -54,5 +54,20 @@ namespace MainCore.Models.Database
             }
             UpgradeTroop = result.ToString();
         }
+
+        public int TroopTimeMin { get; set; }
+        public int TroopTimeMax { get; set; }
+        public bool IsMaxTrain { get; set; }
+        public int BarrackTroop { get; set; }
+        public int BarrackTroopTimeMin { get; set; }
+        public int BarrackTroopTimeMax { get; set; }
+        public bool IsGreatBarrack { get; set; }
+        public int StableTroop { get; set; }
+        public int StableTroopTimeMin { get; set; }
+        public int StableTroopTimeMax { get; set; }
+        public bool IsGreatStable { get; set; }
+        public int WorkshopTroop { get; set; }
+        public int WorkshopTroopTimeMin { get; set; }
+        public int WorkshopTroopTimeMax { get; set; }
     }
 }

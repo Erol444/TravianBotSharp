@@ -1,15 +1,15 @@
 ﻿using HtmlAgilityPack;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MainCore.Parser.Implementations.TTWars
+namespace MainCore.Parsers.Implementations.TTWars
 {
     public class VillagesTableParser : IVillagesTableParser
     {
         public List<HtmlNode> GetVillages(HtmlDocument doc)
         {
-            var villsNode = doc.GetElementbyId("sidebarBoxVillagelist");
+            var villsNode = doc.DocumentNode.Descendants("div").FirstOrDefault(x => x.Id.Equals("sidebarBoxVillagelist"));
             if (villsNode is null) return null;
             return villsNode.Descendants("li").ToList();
         }
@@ -41,10 +41,9 @@ namespace MainCore.Parser.Implementations.TTWars
 
         public string GetName(HtmlNode node)
         {
-            var textNode = node.Descendants("a").FirstOrDefault();
+            var textNode = node.Descendants("span").FirstOrDefault(x => x.HasClass("name"));
             if (textNode is null) return "";
-            var strArr = textNode.InnerText.Split('‎');
-            return strArr[0];
+            return textNode.InnerText;
         }
 
         public int GetX(HtmlNode node)

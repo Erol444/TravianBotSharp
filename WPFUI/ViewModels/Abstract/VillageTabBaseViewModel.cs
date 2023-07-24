@@ -1,52 +1,51 @@
 ﻿using ReactiveUI;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using WPFUI.Store;
 
 namespace WPFUI.ViewModels.Abstract
 {
     public abstract class VillageTabBaseViewModel : TabBaseViewModel
     {
-        public VillageTabBaseViewModel()
+        protected readonly SelectedItemStore _selectedItemStore;
+
+        protected abstract void Init(int villageId);
+
+        public VillageTabBaseViewModel(SelectedItemStore selectedItemStore)
         {
-            this.WhenAnyValue(vm => vm._selectorViewModel.Account)
-                .Where(x => x is not null)
+            _selectedItemStore = selectedItemStore;
+
+            _selectedItemStore.VillageChanged += OnVillageChanged;
+
+            this.WhenAnyValue(vm => vm._selectedItemStore.Account)
+                .WhereNotNull()
                 .Select(x => x.Id)
                 .ToProperty(this, vm => vm.AccountId, out _accountId);
 
-            this.WhenAnyValue(vm => vm._selectorViewModel.Village)
-                .Where(x => x is not null)
+            this.WhenAnyValue(vm => vm._selectedItemStore.Village)
+                .WhereNotNull()
                 .Select(x => x.Id)
                 .ToProperty(this, vm => vm.VillageId, out _villageId);
-
-            _selectorViewModel.VillageChanged += OnVillageChanged;
-            Active += OnActive;
         }
 
-        protected abstract void Init(int id);
-
-        private void OnActive()
+        protected override void OnActive()
         {
-            RxApp.TaskpoolScheduler.Schedule(() => Init(VillageId));
+            if (!_selectedItemStore.IsVillageSelected) return;
+            Init(VillageId);
         }
 
         private void OnVillageChanged(int villageId)
         {
-            RxApp.TaskpoolScheduler.Schedule(() => Init(villageId));
+            if (!IsActive) return;
+            Init(villageId);
         }
 
         private readonly ObservableAsPropertyHelper<int> _accountId;
 
-        public int AccountId
-        {
-            get => _accountId.Value;
-        }
+        public int AccountId => _accountId.Value;
 
         private readonly ObservableAsPropertyHelper<int> _villageId;
 
-        public int VillageId
-        {
-            get => _villageId.Value;
-        }
+        public int VillageId => _villageId.Value;
     }
 }

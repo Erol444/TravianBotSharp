@@ -1,6 +1,6 @@
 ﻿using HtmlAgilityPack;
 
-namespace MainCore.Parser.Interface
+namespace MainCore.Parsers.Interface
 {
     public interface ISystemPageParser
     {

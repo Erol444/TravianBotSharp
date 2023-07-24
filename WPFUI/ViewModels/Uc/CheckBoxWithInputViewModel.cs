@@ -1,21 +1,23 @@
 ﻿using ReactiveUI;
+using System.Reactive.Linq;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class CheckBoxWithInputViewModel : ReactiveObject
+    public class CheckBoxWithInputViewModel : ViewModelBase
     {
-        public CheckBoxWithInputViewModel(string text, string unit) : base()
+        public void LoadData(bool isChecked, int value)
         {
-            Text = text;
-            Unit = unit;
+            Observable.Start(() =>
+            {
+                IsChecked = isChecked;
+                Value = value;
+            }, RxApp.MainThreadScheduler);
         }
 
-        private string _text;
-
-        public string Text
+        public (bool, int) GetData()
         {
-            get => $"{_text} ";
-            set => this.RaiseAndSetIfChanged(ref _text, value);
+            return (IsChecked, Value);
         }
 
         private bool _isChecked;
@@ -32,14 +34,6 @@ namespace WPFUI.ViewModels.Uc
         {
             get => _value;
             set => this.RaiseAndSetIfChanged(ref _value, value);
-        }
-
-        private string _unit;
-
-        public string Unit
-        {
-            get => _unit;
-            set => this.RaiseAndSetIfChanged(ref _unit, value);
         }
     }
 }

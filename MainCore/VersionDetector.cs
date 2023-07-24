@@ -4,25 +4,18 @@
 
 #endif
 
+using MainCore.Enums;
+
 namespace MainCore
 {
     public static class VersionDetector
     {
-        public static bool IsTravianOfficial()
+        public static VersionEnums GetVersion()
         {
 #if TRAVIAN_OFFICIAL
-            return true;
-#else
-            return false;
-#endif
-        }
-
-        public static bool IsTTWars()
-        {
-#if TTWARS
-            return true;
-#else
-            return false;
+            return VersionEnums.TravianOfficial;
+#elif TTWARS
+            return VersionEnums.TTWars;
 #endif
         }
     }

@@ -1,16 +1,22 @@
-﻿using MainCore.Tasks.Base;
+﻿using MainCore.Services.Interface;
+using MainCore.Tasks.UpdateTasks;
 using ReactiveUI;
 using System;
 using System.Linq;
 using System.Reactive;
+using WPFUI.Store;
 using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Tabs.Villages
 {
     public class InfoViewModel : VillageTabBaseViewModel
     {
-        public InfoViewModel() : base()
+        private readonly ITaskManager _taskManager;
+
+        public InfoViewModel(SelectedItemStore selectedItemStore, ITaskManager taskManager) : base(selectedItemStore)
         {
+            _taskManager = taskManager;
+
             BothDorfCommand = ReactiveCommand.Create(BothDorf);
             Dorf1Command = ReactiveCommand.Create(Dorf1);
             Dorf2Command = ReactiveCommand.Create(Dorf2);
@@ -25,16 +31,15 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var villageId = VillageId;
-            var updateTask = tasks.OfType<RefreshVillage>().FirstOrDefault(x => x.VillageId == villageId);
+            var updateTask = tasks.OfType<UpdateBothDorf>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId, 3));
+                _taskManager.Add<UpdateBothDorf>(accountId, villageId);
             }
             else
             {
                 updateTask.ExecuteAt = DateTime.Now;
-                updateTask.Mode = 3;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 
@@ -43,16 +48,15 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var villageId = VillageId;
-            var updateTask = tasks.OfType<RefreshVillage>().FirstOrDefault(x => x.VillageId == villageId);
+            var updateTask = tasks.OfType<UpdateDorf1>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId, 1));
+                _taskManager.Add<UpdateDorf1>(accountId, villageId);
             }
             else
             {
                 updateTask.ExecuteAt = DateTime.Now;
-                updateTask.Mode = 1;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 
@@ -61,16 +65,15 @@ namespace WPFUI.ViewModels.Tabs.Villages
             var accountId = AccountId;
             var tasks = _taskManager.GetList(accountId);
             var villageId = VillageId;
-            var updateTask = tasks.OfType<RefreshVillage>().FirstOrDefault(x => x.VillageId == villageId);
+            var updateTask = tasks.OfType<UpdateDorf2>().FirstOrDefault(x => x.VillageId == villageId);
             if (updateTask is null)
             {
-                _taskManager.Add(accountId, _taskFactory.GetRefreshVillageTask(villageId, accountId, 2));
+                _taskManager.Add<UpdateDorf2>(accountId, villageId);
             }
             else
             {
                 updateTask.ExecuteAt = DateTime.Now;
-                updateTask.Mode = 2;
-                _taskManager.Update(accountId);
+                _taskManager.ReOrder(accountId);
             }
         }
 

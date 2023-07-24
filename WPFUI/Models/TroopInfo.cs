@@ -8,41 +8,11 @@ using System.Windows.Media.Imaging;
 
 namespace WPFUI.Models
 {
-    public class TroopInfoCheckBox : TroopInfo
-    {
-        private bool _isChecked;
-
-        public bool IsChecked
-        {
-            get => _isChecked;
-            set => this.RaiseAndSetIfChanged(ref _isChecked, value);
-        }
-    }
-
-    public class TroopInfoText : TroopInfo
-    {
-        private int _text;
-
-        public int Text
-        {
-            get => _text;
-            set => this.RaiseAndSetIfChanged(ref _text, value);
-        }
-    }
-
     public class TroopInfo : ReactiveObject
     {
-        private TroopEnums _troop;
+        public TroopInfo(TroopEnums troop) => Troop = troop;
 
-        public TroopEnums Troop
-        {
-            get => _troop;
-            set
-            {
-                this.RaiseAndSetIfChanged(ref _troop, value);
-                this.RaisePropertyChanged(nameof(Image));
-            }
-        }
+        public TroopEnums Troop { get; }
 
         public CroppedBitmap Image => this.GetBitmap();
     }
@@ -81,11 +51,18 @@ namespace WPFUI.Models
 
         public static CroppedBitmap GetBitmap(this TroopInfo troopInfo)
         {
-            var tribe = troopInfo.Troop.GetTribe();
-            if (tribe == TribeEnums.Any) return null;
-            var pathImage = TribeImage[tribe];
-            var sourceImage = new BitmapImage(new Uri($"pack://application:,,,/Resources/{pathImage}"));
-            return new CroppedBitmap(sourceImage, new Int32Rect(GetImageOffset(troopInfo.Troop), 0, 16, 16));
+            if (troopInfo.Troop == TroopEnums.None)
+            {
+                return null;
+            }
+            else
+            {
+                var tribe = troopInfo.Troop.GetTribe();
+                if (tribe == TribeEnums.Any) return null;
+                var pathImage = TribeImage[tribe];
+                var sourceImage = new BitmapImage(new Uri($"pack://application:,,,/Resources/{pathImage}"));
+                return new CroppedBitmap(sourceImage, new Int32Rect(GetImageOffset(troopInfo.Troop), 0, 16, 16));
+            }
         }
     }
 }

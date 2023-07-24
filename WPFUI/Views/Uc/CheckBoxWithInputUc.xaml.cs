@@ -1,13 +1,18 @@
 ﻿using ReactiveUI;
 using System.Reactive.Disposables;
+using System.Windows;
 using WPFUI.ViewModels.Uc;
 
 namespace WPFUI.Views.Uc
 {
+    public class CheckBoxWithInputUcBase : ReactiveUserControl<CheckBoxWithInputViewModel>
+    {
+    }
+
     /// <summary>
     /// Interaction logic for CheckBoxWithInput.xaml
     /// </summary>
-    public partial class CheckBoxWithInputUc : ReactiveUserControl<CheckBoxWithInputViewModel>
+    public partial class CheckBoxWithInputUc : CheckBoxWithInputUcBase
     {
         public CheckBoxWithInputUc()
         {
@@ -15,10 +20,26 @@ namespace WPFUI.Views.Uc
             this.WhenActivated(d =>
             {
                 this.Bind(ViewModel, vm => vm.IsChecked, v => v.IsChecked.IsChecked).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Text, v => v.IsChecked.Content).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.Value, v => v.Value.Value).DisposeWith(d);
-                this.Bind(ViewModel, vm => vm.Unit, v => v.UnitLabel.Content).DisposeWith(d);
             });
+        }
+
+        public static readonly DependencyProperty TextProperty =
+            DependencyProperty.Register("Text", typeof(string), typeof(CheckBoxWithInputUc), new PropertyMetadata(default(string)));
+
+        public string Text
+        {
+            get => (string)GetValue(TextProperty);
+            set => SetValue(TextProperty, value);
+        }
+
+        public static readonly DependencyProperty UnitProperty =
+            DependencyProperty.Register("Unit", typeof(string), typeof(CheckBoxWithInputUc), new PropertyMetadata(default(string)));
+
+        public string Unit
+        {
+            get => (string)GetValue(UnitProperty);
+            set => SetValue(UnitProperty, value);
         }
     }
 }

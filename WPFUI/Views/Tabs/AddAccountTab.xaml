@@ -1,0 +1,44 @@
+﻿<views:AddAccountTabBase
+    x:Class="WPFUI.Views.Tabs.AddAccountTab"
+    xmlns:views="clr-namespace:WPFUI.Views.Tabs"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    mc:Ignorable="d">
+    <Grid Background="#FFE5E5E5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*" />
+            <RowDefinition Height="80*" />
+            <RowDefinition Height="10*" />
+        </Grid.RowDefinitions>
+        <Border Style="{DynamicResource Box}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="5*" />
+                </Grid.ColumnDefinitions>
+                <Label x:Name="ServerTextBlock" Content="Server" />
+                <Label x:Name="UsernameTextBlock" Grid.Column="2"  Content="Username" />
+                <TextBox x:Name="ServerTextBox" Grid.Column="1" TextWrapping="Wrap" VerticalAlignment="Center" />
+                <TextBox x:Name="UsernameTextBox" Grid.Column="3"  TextWrapping="Wrap"  VerticalAlignment="Center" />
+            </Grid>
+        </Border>
+        <Border Style="{DynamicResource Box}"  Grid.Row="1">
+            <DataGrid x:Name="ProxiesDataGrid" d:ItemsSource="{d:SampleData ItemCount=5}" CanUserDeleteRows="True" AutoGenerateColumns="False">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Password" Binding="{Binding Password}" />
+                    <DataGridTextColumn Header="Proxy Host" Binding="{Binding ProxyHost}" />
+                    <DataGridTextColumn Header="Proxy Port" Binding="{Binding ProxyPort}" />
+                    <DataGridTextColumn Header="Proxy Username" Binding="{Binding ProxyUsername}" />
+                    <DataGridTextColumn Header="Proxy Password" Binding="{Binding ProxyPassword}" />
+                    <!--<DataGridTextColumn Header="Status" Binding="{Binding ProxyStatus}" />-->
+                </DataGrid.Columns>
+            </DataGrid>
+        </Border>
+
+        <Button x:Name="SaveButton" Content="Save" Grid.Row="3" />
+    </Grid>
+</views:AddAccountTabBase>

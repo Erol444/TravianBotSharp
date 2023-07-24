@@ -1,8 +1,10 @@
 ﻿using FluentResults;
 using MainCore.Enums;
 using MainCore.Errors;
+using MainCore.Helper.Interface;
 using MainCore.Services.Interface;
-using MainCore.Tasks;
+using MainCore.Tasks.Base;
+using MainCore.Tasks.FunctionTasks;
 using Microsoft.EntityFrameworkCore;
 using Polly;
 using System;
@@ -14,21 +16,55 @@ namespace MainCore.Services.Implementations
 {
     public sealed class TaskManager : ITaskManager
     {
-        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogManager logManager, ITaskFactory taskFactory)
+        private class TaskInfo
+        {
+            public bool IsExecuting { get; set; } = false;
+            public AccountStatus Status { get; set; } = AccountStatus.Offline;
+            public CancellationTokenSource CancellationTokenSource { get; set; } = null;
+        }
+
+        private readonly Dictionary<int, List<BotTask>> _tasksDict = new();
+        private readonly Dictionary<int, TaskInfo> _taskInfo = new();
+
+        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IEventManager _eventManager;
+        private readonly ILogHelper _logHelper;
+        private readonly IChromeManager _chromeManager;
+
+        public TaskManager(IDbContextFactory<AppDbContext> contextFactory, IEventManager eventManager, ILogHelper logHelper, IChromeManager chromeManager)
         {
             _contextFactory = contextFactory;
             _eventManager = eventManager;
-            _logManager = logManager;
+            _logHelper = logHelper;
             _eventManager.TaskExecute += Loop;
-            _taskFactory = taskFactory;
+            _chromeManager = chromeManager;
         }
 
-        public void Add(int index, BotTask task, bool first = false)
+        public void Add<T>(int accountId, bool first = false) where T : AccountBotTask
         {
-            Check(index);
+            var task = (T)Activator.CreateInstance(typeof(T), accountId, null);
+            Add(accountId, task, first);
+        }
+
+        public void Add<T>(int accountId, int villageId, bool first = false) where T : VillageBotTask
+        {
+            var task = (T)Activator.CreateInstance(typeof(T), villageId, accountId, null);
+            Add(accountId, task, first);
+        }
+
+        public void Add<T>(int accountId, Func<T> func, bool first = false) where T : BotTask
+        {
+            var task = func();
+            Add(accountId, task, first);
+        }
+
+        private void Add(int accountId, BotTask task, bool first = false)
+        {
+            var tasks = GetTasks(accountId);
+
             if (first)
             {
-                var firstTask = _tasksDict[index].FirstOrDefault();
+                var firstTask = tasks.FirstOrDefault();
                 if (firstTask is not null)
                 {
                     if (firstTask.ExecuteAt < DateTime.Now)
@@ -42,69 +78,63 @@ namespace MainCore.Services.Implementations
                 }
             }
             if (task.ExecuteAt == default) task.ExecuteAt = DateTime.Now;
-            _tasksDict[index].Add(task);
-            ReOrder(index);
+
+            tasks.Add(task);
+            ReOrder(accountId, tasks);
         }
 
-        public void Update(int index)
+        public void Remove(int accountId, BotTask task)
         {
-            Check(index);
-            ReOrder(index);
+            var tasks = GetTasks(accountId);
+
+            tasks.Remove(task);
+            ReOrder(accountId, tasks);
         }
 
-        public void Remove(int index, BotTask task)
+        public void Clear(int accountId)
         {
-            Check(index);
-            _tasksDict[index].Remove(task);
-            ReOrder(index);
+            var tasks = GetTasks(accountId);
+            tasks.Clear();
+            _eventManager.OnTaskUpdate(accountId);
         }
 
-        public void Clear(int index)
+        public void ReOrder(int accountId)
         {
-            Check(index);
-            _tasksDict[index].Clear();
-            ReOrder(index);
+            var tasks = GetTasks(accountId);
+            ReOrder(accountId, tasks);
         }
 
-        public void ReOrder(int index)
+        private void ReOrder(int accountId, List<BotTask> tasks)
         {
-            Check(index);
-            _tasksDict[index].Sort((x, y) => DateTime.Compare(x.ExecuteAt, y.ExecuteAt));
-            _eventManager.OnTaskUpdate(index);
+            tasks.Sort((x, y) => DateTime.Compare(x.ExecuteAt, y.ExecuteAt));
+            _eventManager.OnTaskUpdate(accountId);
         }
 
-        public int Count(int index)
+        public int Count(int accountId)
         {
-            Check(index);
-            return _tasksDict[index].Count;
+            var tasks = GetTasks(accountId);
+            return tasks.Count;
         }
 
-        public BotTask GetCurrentTask(int index)
+        public BotTask GetCurrentTask(int accountId)
         {
-            Check(index);
-            return _tasksDict[index].FirstOrDefault(x => x.Stage == TaskStage.Executing);
+            var tasks = GetTasks(accountId);
+            return tasks.FirstOrDefault(x => x.Stage == TaskStage.Executing);
         }
 
-        public List<BotTask> GetList(int index)
+        public List<BotTask> GetList(int accountId)
         {
-            Check(index);
-            return _tasksDict[index].ToList();
+            var tasks = GetTasks(accountId);
+            return tasks.ToList();
         }
 
-        private void Check(int index)
+        private void Loop(int accountId)
         {
-            _tasksDict.TryAdd(index, new());
-            _taskExecuting.TryAdd(index, false);
-            _botStatus.TryAdd(index, AccountStatus.Offline);
-            _cancellationTokenSources.TryAdd(index, null);
-        }
-
-        private void Loop(int index)
-        {
-            var accountStatus = _botStatus[index];
-            if (accountStatus != AccountStatus.Online) return;
-            if (_tasksDict[index].Count == 0) return;
-            var task = _tasksDict[index].First();
+            var info = GetInfo(accountId);
+            if (info.Status != AccountStatus.Online) return;
+            var tasks = GetTasks(accountId);
+            if (tasks.Count == 0) return;
+            var task = tasks.First();
 
             if (task.ExecuteAt > DateTime.Now) return;
 
@@ -113,139 +143,142 @@ namespace MainCore.Services.Implementations
                 .OrResult<Result>(x => x.HasError<Retry>())
                 .WaitAndRetry(retryCount: 3, sleepDurationProvider: _ => TimeSpan.FromSeconds(5), onRetry: (error, _, retryCount, _) =>
                 {
-                    _logManager.Warning(index, $"There is something wrong.");
+                    _logHelper.Warning(accountId, $"There is something wrong.");
                     if (error.Exception is null)
                     {
                         var errors = error.Result.Reasons.Select(x => x.Message).ToList();
-                        _logManager.Error(index, string.Join(Environment.NewLine, errors));
+                        _logHelper.Error(accountId, string.Join(Environment.NewLine, errors));
                     }
                     else
                     {
                         var exception = error.Exception;
-                        _logManager.Error(index, exception.Message, exception);
+                        _logHelper.Error(accountId, exception.Message, exception);
                     }
-                    _logManager.Warning(index, $"Retry {retryCount} for {task.GetName()}");
-
-                    if (task is AccountBotTask accountTask)
-                    {
-                        accountTask.RefreshChrome();
-                    }
+                    _logHelper.Warning(accountId, $"Retry {retryCount} for {task.GetName()}");
+                    var chromeBrowser = _chromeManager.Get(accountId);
+                    chromeBrowser.Navigate();
                 });
 
-            _taskExecuting[index] = true;
+            info.IsExecuting = true;
             task.Stage = TaskStage.Executing;
-            _eventManager.OnTaskUpdate(index);
+            _eventManager.OnTaskUpdate(accountId);
+
             var cacheExecuteTime = task.ExecuteAt;
 
             var cts = new CancellationTokenSource();
-            _cancellationTokenSources[index] = cts;
+            info.CancellationTokenSource = cts;
             task.CancellationToken = cts.Token;
 
-            _cancellationTokenSources[index] = cts;
-
-            _logManager.Information(index, $"{task.GetName()} is started");
+            _logHelper.Information(accountId, $"{task.GetName()} is started");
             ///===========================================================///
             var poliResult = retryPolicy.ExecuteAndCapture(task.Execute);
             ///===========================================================///
-            _logManager.Information(index, $"{task.GetName()} is finished");
+            _logHelper.Information(accountId, $"{task.GetName()} is finished");
 
             if (poliResult.FinalException is not null)
             {
-                UpdateAccountStatus(index, AccountStatus.Paused);
-                _logManager.Warning(index, $"There is something wrong. Bot is pausing. Last exception is", task);
+                UpdateAccountStatus(accountId, AccountStatus.Paused);
+                _logHelper.Warning(accountId, $"There is something wrong. Bot is pausing. Last exception is", task);
                 var ex = poliResult.FinalException;
-                _logManager.Error(index, ex.Message, ex);
+                _logHelper.Error(accountId, ex.Message, ex);
             }
             else
             {
                 var result = poliResult.Result ?? poliResult.FinalHandledResult;
                 if (result.IsFailed)
                 {
-                    task.Stage = TaskStage.Waiting;
-
                     var errors = result.Reasons.Select(x => x.Message).ToList();
-                    _logManager.Warning(index, string.Join(Environment.NewLine, errors), task);
+                    _logHelper.Warning(accountId, string.Join(Environment.NewLine, errors), task);
 
                     if (result.HasError<Login>())
                     {
-                        Add(index, _taskFactory.GetLoginTask(index), true);
+                        Add<LoginTask>(accountId, true);
                     }
                     else if (result.HasError<Stop>())
                     {
-                        UpdateAccountStatus(index, AccountStatus.Paused);
+                        UpdateAccountStatus(accountId, AccountStatus.Paused);
                     }
                     else if (result.HasError<Skip>())
                     {
-                        if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
-                        else
+                        if (task.ExecuteAt == cacheExecuteTime)
                         {
-                            ReOrder(index);
-                            _eventManager.OnTaskUpdate(index);
+                            Remove(accountId, task);
                         }
                     }
                     else if (result.HasError<Cancel>())
                     {
-                        UpdateAccountStatus(index, AccountStatus.Paused);
+                        UpdateAccountStatus(accountId, AccountStatus.Paused);
                     }
                 }
                 else
                 {
-                    if (task.ExecuteAt == cacheExecuteTime) Remove(index, task);
-                    else
+                    if (task.ExecuteAt == cacheExecuteTime)
                     {
-                        ReOrder(index);
-                        _eventManager.OnTaskUpdate(index);
+                        Remove(accountId, task);
                     }
                 }
             }
+
             task.Stage = TaskStage.Waiting;
-            _taskExecuting[index] = false;
+            info.IsExecuting = false;
+            ReOrder(accountId);
 
             using var context = _contextFactory.CreateDbContext();
-            var setting = context.AccountsSettings.Find(index);
+            var setting = context.AccountsSettings.Find(accountId);
             Thread.Sleep(Random.Shared.Next(setting.TaskDelayMin, setting.TaskDelayMax));
 
             cts.Dispose();
-            _cancellationTokenSources[index] = null;
+            info.CancellationTokenSource = null;
         }
 
-        public bool IsTaskExecuting(int index)
+        public bool IsTaskExecuting(int accountId)
         {
-            Check(index);
-            return _taskExecuting[index];
+            var info = GetInfo(accountId);
+            return info.IsExecuting;
         }
 
-        public AccountStatus GetAccountStatus(int index)
+        public AccountStatus GetAccountStatus(int accountId)
         {
-            Check(index);
-            _botStatus.TryGetValue(index, out var accountStatus);
-            return accountStatus;
+            var info = GetInfo(accountId);
+            return info.Status;
         }
 
-        public void UpdateAccountStatus(int index, AccountStatus status)
+        public void UpdateAccountStatus(int accountId, AccountStatus status)
         {
-            Check(index);
-
-            _botStatus[index] = status;
-            _eventManager.OnStatusUpdate(index, status);
+            var info = GetInfo(accountId);
+            info.Status = status;
+            _eventManager.OnStatusUpdate(accountId, status);
         }
 
-        public void StopCurrentTask(int index)
+        public void StopCurrentTask(int accountId)
         {
-            Check(index);
-            var cts = _cancellationTokenSources[index];
+            var info = GetInfo(accountId);
+            var cts = info.CancellationTokenSource;
             if (cts is null) return;
             cts.Cancel();
         }
 
-        private readonly Dictionary<int, List<BotTask>> _tasksDict = new();
-        private readonly Dictionary<int, bool> _taskExecuting = new();
-        private readonly Dictionary<int, AccountStatus> _botStatus = new();
-        private readonly Dictionary<int, CancellationTokenSource> _cancellationTokenSources = new();
+        private List<BotTask> GetTasks(int accountId)
+        {
+            var tasks = _tasksDict.GetValueOrDefault(accountId);
+            if (tasks is null)
+            {
+                tasks = new();
+                _tasksDict.Add(accountId, tasks);
+            }
+            return tasks;
+        }
 
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
-        private readonly IEventManager _eventManager;
-        private readonly ILogManager _logManager;
-        private readonly ITaskFactory _taskFactory;
+        private TaskInfo GetInfo(int accountId)
+        {
+            var info = _taskInfo.GetValueOrDefault(accountId);
+            if (info is null)
+            {
+                info = new();
+                _taskInfo.Add(accountId, info);
+            }
+
+            return info;
+        }
     }
 }

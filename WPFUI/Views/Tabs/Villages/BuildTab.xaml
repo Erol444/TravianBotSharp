@@ -1,0 +1,161 @@
+﻿<views:BuildTabBase
+        x:Class="WPFUI.Views.Tabs.Villages.BuildTab"
+        xmlns:views="clr-namespace:WPFUI.Views.Tabs.Villages"
+        xmlns:models="clr-namespace:WPFUI.Models"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="2" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid  Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="2" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Style="{DynamicResource Box}">
+                <ListBox x:Name="CurrentlyBuildings"  ItemTemplate="{DynamicResource ListBoxDataTemplate}">
+                    <d:ListBox.ItemsSource>
+                        <x:Array Type="{x:Type models:ListBoxItem}">
+                            <models:ListBoxItem Id="1" Content="Cropland - level 1 complete at 1975/04/30 11:30 " Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Cropland - level 2 complete at 1975/04/30 11:30 " Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Cropland - level 3 complete at 1975/04/30 11:30 " Color="Black" />
+                        </x:Array>
+                    </d:ListBox.ItemsSource>
+                </ListBox>
+            </Border>
+            <GridSplitter Grid.Row="1" Height="2" HorizontalAlignment="Stretch" />
+            <Border Grid.Row="2" Style="{DynamicResource Box}">
+                <ListBox x:Name="Buildings" ItemTemplate="{DynamicResource ListBoxDataTemplateColor}">
+                    <d:ListBox.ItemsSource>
+                        <x:Array Type="{x:Type models:ListBoxItem}">
+                            <models:ListBoxItem Id="1" Content="[1] Cropland | 1" Color="Yellow" />
+                            <models:ListBoxItem Id="1" Content="[1] Woodcutter | 1" Color="Green" />
+                            <models:ListBoxItem Id="1" Content="[1] Ironmine | 1" Color="Gray" />
+                        </x:Array>
+                    </d:ListBox.ItemsSource>
+                </ListBox>
+            </Border>
+        </Grid>
+
+        <GridSplitter Grid.Column="1" Width="2" HorizontalAlignment="Stretch" />
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Style="{DynamicResource Box}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="2*" />
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.Column="0" Content="Building" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="Level"  VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <ComboBox x:Name="NormalBuildings" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"  HorizontalAlignment="Stretch" DisplayMemberPath="Name" />
+
+                    <xctk:IntegerUpDown x:Name="NormalLevel" Grid.Row="1"  Grid.Column="1" Minimum="0" />
+                    <Button x:Name="NormalBuild" Grid.Row="2" Grid.ColumnSpan="2" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Build">
+                        <materialDesign:PackIcon Width="30" Height="30" Kind="Hammer" />
+                    </Button>
+                </Grid>
+            </Border>
+            <Border Grid.Row="1" Style="{DynamicResource Box}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="4*" />
+                        <RowDefinition Height="4*" />
+                        <RowDefinition Height="4*" />
+                        <RowDefinition Height="5*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="ResType" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectedIndex="0" />
+                    <ComboBox x:Name="Strategy" Grid.Row="1" Grid.ColumnSpan="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" DisplayMemberPath="Name" SelectedIndex="0" />
+
+                    <Label Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" Content="Level" />
+                    <xctk:IntegerUpDown x:Name="ResourceLevel" Grid.Row="2"  Grid.Column="1" Minimum="1" />
+                    <Button x:Name="ResourceBuild" Grid.Row="3" Grid.ColumnSpan="2" Style="{DynamicResource MaterialDesignFloatingActionMiniDarkButton}" ToolTip="Build">
+                        <materialDesign:PackIcon Width="30" Height="30" Kind="Hammer" />
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+        <GridSplitter Grid.Column="3" Width="2" HorizontalAlignment="Stretch" />
+        <Grid Grid.Column="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+            <Border Grid.Row="0" Style="{DynamicResource Box}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="TopButton"  Grid.Column="0" Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Top">
+                        <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ArrowUpBold" />
+                    </Button>
+                    <Button x:Name="BottomButton"  Grid.Column="0" Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Bottom">
+                        <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ArrowDownBold" />
+                    </Button>
+                    <Button x:Name="UpButton" Grid.Column="1" Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Up">
+                        <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ArrowUp" />
+                    </Button>
+                    <Button x:Name="DownButton" Grid.Column="1" Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Down">
+                        <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="ArrowDown" />
+                    </Button>
+                    <Button x:Name="DeleteButton" Grid.Column="2" Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Delete">
+                        <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Delete" />
+                    </Button>
+                    <Button x:Name="DeleteAllButton" Grid.Column="2" Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Delete all">
+                        <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="DeleteForever" />
+                    </Button>
+                    <Button x:Name="ImportButton" Grid.Column="3" Grid.Row="0" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Import">
+                        <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Import" />
+                    </Button>
+                    <Button x:Name="ExportButton" Grid.Column="3" Grid.Row="1" Style="{DynamicResource MaterialDesignFloatingActionMiniLightButton}" ToolTip="Export">
+                        <materialDesign:PackIcon Width="{DynamicResource IconSize}" Height="{DynamicResource IconSize}" Kind="Export" />
+                    </Button>
+                </Grid>
+            </Border>
+            <Border Grid.Row="1" Grid.ColumnSpan="4" Style="{DynamicResource Box}">
+                <ListBox x:Name="QueueBuildings" ItemTemplate="{DynamicResource ListBoxDataTemplate}">
+                    <d:ListBox.ItemsSource>
+                        <x:Array Type="{x:Type models:ListBoxItem}">
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                            <models:ListBoxItem Id="1" Content="Build Cropland to level 5 at location 5" Color="Black" />
+                        </x:Array>
+                    </d:ListBox.ItemsSource>
+                </ListBox>
+            </Border>
+        </Grid>
+    </Grid>
+</views:BuildTabBase>

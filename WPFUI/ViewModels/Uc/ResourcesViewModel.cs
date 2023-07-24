@@ -1,49 +1,54 @@
 ﻿using ReactiveUI;
+using System.Reactive.Linq;
+using WPFUI.ViewModels.Abstract;
 
 namespace WPFUI.ViewModels.Uc
 {
-    public class ResourcesViewModel : ReactiveObject
+    public class ResourcesViewModel : ViewModelBase
     {
-        public ResourcesViewModel(string text) : base()
+        public void LoadData(long wood, long clay, long iron, long crop)
         {
-            Text = text;
+            Observable.Start(() =>
+            {
+                Wood = wood;
+                Clay = clay;
+                Iron = iron;
+                Crop = crop;
+            }, RxApp.MainThreadScheduler);
         }
 
-        private string _text;
-
-        public string Text
+        public (long, long, long, long) GetData()
         {
-            get => $"{_text}: ";
-            set => this.RaiseAndSetIfChanged(ref _text, value);
+            return (Wood, Clay, Iron, Crop);
         }
 
-        private int _wood;
+        private long _wood;
 
-        public int Wood
+        public long Wood
         {
             get => _wood;
             set => this.RaiseAndSetIfChanged(ref _wood, value);
         }
 
-        private int _clay;
+        private long _clay;
 
-        public int Clay
+        public long Clay
         {
             get => _clay;
             set => this.RaiseAndSetIfChanged(ref _clay, value);
         }
 
-        private int _iron;
+        private long _iron;
 
-        public int Iron
+        public long Iron
         {
             get => _iron;
             set => this.RaiseAndSetIfChanged(ref _iron, value);
         }
 
-        private int _crop;
+        private long _crop;
 
-        public int Crop
+        public long Crop
         {
             get => _crop;
             set => this.RaiseAndSetIfChanged(ref _crop, value);

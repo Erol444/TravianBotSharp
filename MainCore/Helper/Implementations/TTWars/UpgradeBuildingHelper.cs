@@ -1,14 +1,20 @@
 ﻿using MainCore.Helper.Interface;
-using MainCore.Parser.Interface;
+using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace MainCore.Helper.Implementations.TTWars
 {
     public class UpgradeBuildingHelper : Base.UpgradeBuildingHelper
     {
-        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IBuildingsHelper buildingsHelper, INavigateHelper navigateHelper, ILogManager logManager) : base(contextFactory, planManager, chromeManager, systemPageParser, buildingsHelper, navigateHelper, logManager)
+        public UpgradeBuildingHelper(IDbContextFactory<AppDbContext> contextFactory, IPlanManager planManager, IChromeManager chromeManager, ISystemPageParser systemPageParser, IGeneralHelper generalHelper, IEventManager eventManager, IHeroResourcesHelper heroResourcesHelper, IUpdateHelper updateHelper, IBuildingsHelper buildingsHelper, IDatabaseHelper databaseHelper, ILogHelper logHelper) : base(contextFactory, planManager, chromeManager, systemPageParser, generalHelper, eventManager, heroResourcesHelper, updateHelper, buildingsHelper, databaseHelper, logHelper)
         {
+        }
+
+        public override DateTime GetNextExecute(DateTime completeTime)
+        {
+            return completeTime.AddSeconds(1);
         }
     }
 }

@@ -1,0 +1,119 @@
+name: ReleaseFlow - Patch
+
+on:
+  workflow_dispatch:
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.semvers.outputs.patch }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+    steps:
+      - name: Checkout repo'
+        uses: actions/checkout@v3   
+      
+      - name: Get latest version
+        id: latesttag
+        uses: pozetroninc/github-action-get-latest-release@master        
+        with:
+          repository: ${{ github.repository }}
+      
+      - name: Get next version
+        id: semvers
+        uses: WyriHaximus/github-action-next-semvers@v1
+        with:
+          version: ${{ steps.latesttag.outputs.release }}
+      - name: Get changelog
+        id: changelog
+        run: |
+          echo 'changelog<<CHANGELOG_BODY_EOF' >> $GITHUB_OUTPUT
+          echo "$(curl https://gist.githubusercontent.com/vinaghost/f7ce5204670e8194eea71a3961405c2f/raw/)" >> $GITHUB_OUTPUT
+          echo 'CHANGELOG_BODY_EOF' >> $GITHUB_OUTPUT
+  build:
+    runs-on: windows-2019
+    needs: version
+    strategy:
+      matrix:
+        server: [TRAVIAN_OFFICIAL, TTWARS]
+    steps:
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 6.0.x
+        
+      - name: 'Checkout repo' 
+        uses: actions/checkout@v3
+      
+      - name: Install dependencies
+        run: dotnet restore --locked-mode
+      
+      - name: Build
+        run: dotnet build WPFUI -c Release --no-restore --self-contained
+      
+      - name: Publish
+        run: dotnet publish WPFUI -c Release --no-restore --self-contained -p:PublishSingleFile=true -p:Server=${{ matrix.server }} 
+      
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: TBS-${{ matrix.server }}
+          path: WPFUI\bin\Release\net6.0-windows\win-x64\publish\
+          if-no-files-found: error
+                  
+  release:
+    runs-on: ubuntu-latest
+    needs: [build, version]
+    steps:        
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          path: TBS
+      
+      - name: Archive release
+        run: |
+          cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TravianOfficial.zip" TBS-TRAVIAN_OFFICIAL; cp -R "TBS-${{needs.version.outputs.version}}-TravianOfficial.zip" ../; cd ..
+          cd TBS; zip -r "TBS-${{needs.version.outputs.version}}-TTWars.zip" TBS-TTWARS; cp -R "TBS-${{needs.version.outputs.version}}-TTWars.zip" ../; cd ..
+      
+      - name: Create release
+        uses: ncipollo/release-action@v1
+        with:
+          name: TBS-${{needs.version.outputs.version}}
+          tag: ${{needs.version.outputs.version}}
+          commit: master          
+          artifacts: "TBS-${{needs.version.outputs.version}}-TravianOfficial.zip, TBS-${{needs.version.outputs.version}}-TTWars.zip"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: |
+            Please join our Discord server for more information: [https://discord.gg/mBa4f2K](https://discord.gg/mBa4f2K)
+            
+            **Changelog**: 
+              ${{needs.version.outputs.changelog}}
+  Discord:
+    runs-on: ubuntu-latest
+    needs: [release, version] 
+    steps:
+      - name: Ping @everyone
+        run: |
+          curl --header "Content-Type: application/json" --data "{\"content\": \"@everyone\"}" "${{ secrets.DISCORD_BOT }}"
+      - name: Send to discord server
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_BOT }}
+          title: New release
+          nodetail: true
+          description: |
+            Version `TBS-${{needs.version.outputs.version}}`
+            Click [here](https://github.com/vinaghost/TravianBotSharp/releases/tag/${{needs.version.outputs.version}}) to download!
+            
+            **Changelog**:              
+            ${{needs.version.outputs.changelog}}
+  Clear:
+    runs-on: ubuntu-latest
+    needs: release
+    strategy:
+      matrix:
+        server: [TRAVIAN_OFFICIAL, TTWARS]
+    steps:
+      - name: Delete artifact
+        uses: geekyeggo/delete-artifact@v1
+        with:
+          name: TBS-${{ matrix.server }}
