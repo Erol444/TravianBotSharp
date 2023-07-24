@@ -256,22 +256,22 @@ namespace MainCore.Services.Implementations
             using var context = _contextFactory.CreateDbContext();
             var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId);
             var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0);
-
-            foreach (var task in tasks)
+            for (int i = 0; i < tasks.Count; i++)
             {
+                var task = tasks[i];
                 if (IsTaskComplete(task, buildings, currentBuildings))
                 {
                     removedTasks.Add(task);
                 }
             }
 
-            foreach (var task in removedTasks)
-            {
-                tasks.Remove(task);
-            }
-
             if (removedTasks.Count > 0)
             {
+                for (int i = 0; i < removedTasks.Count; i++)
+                {
+                    var task = removedTasks[i];
+                    tasks.Remove(task);
+                }
                 _eventManager.OnVillageBuildQueueUpdate(villageId);
             }
 
