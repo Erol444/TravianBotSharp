@@ -268,7 +268,6 @@ namespace MainCore.Services.Implementations
             foreach (var task in removedTasks)
             {
                 tasks.Remove(task);
-                Remove(villageId, task);
             }
 
             if (removedTasks.Count > 0)
