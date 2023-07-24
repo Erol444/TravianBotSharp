@@ -21,7 +21,7 @@ namespace MainCore.Services.Interface
 
         public void Load();
 
-        public List<PlanTask> GetList(int villageId, bool clearFinished = true);
+        public List<PlanTask> GetList(int villageId, bool clearFinished = false);
 
         void Top(int villageId, int index);
 
