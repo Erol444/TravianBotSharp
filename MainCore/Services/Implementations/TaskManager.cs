@@ -187,16 +187,15 @@ namespace MainCore.Services.Implementations
                 var result = poliResult.Result ?? poliResult.FinalHandledResult;
                 if (result.IsFailed)
                 {
-                    var errors = result.Reasons.Select(x => x.Message).ToList();
-                    _logHelper.Warning(accountId, string.Join(Environment.NewLine, errors), task);
-
                     if (result.HasError<Login>())
                     {
                         Add<LoginTask>(accountId, true);
+                        _logHelper.Warning(accountId, result.Reasons[0].Message, task);
                     }
                     else if (result.HasError<Stop>())
                     {
                         UpdateAccountStatus(accountId, AccountStatus.Paused);
+                        _logHelper.Warning(accountId, result.Reasons[0].Message, task);
                     }
                     else if (result.HasError<Skip>())
                     {
@@ -204,10 +203,17 @@ namespace MainCore.Services.Implementations
                         {
                             Remove(accountId, task);
                         }
+                        _logHelper.Warning(accountId, result.Reasons[0].Message, task);
                     }
                     else if (result.HasError<Cancel>())
                     {
                         UpdateAccountStatus(accountId, AccountStatus.Paused);
+                        _logHelper.Warning(accountId, result.Reasons[0].Message, task);
+                    }
+                    else
+                    {
+                        var errors = result.Reasons.Select(x => x.Message).ToList();
+                        _logHelper.Warning(accountId, string.Join(Environment.NewLine, errors), task);
                     }
                 }
                 else

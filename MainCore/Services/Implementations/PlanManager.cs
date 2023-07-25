@@ -153,7 +153,7 @@ namespace MainCore.Services.Implementations
             tasks.Clear();
         }
 
-        public List<PlanTask> GetList(int villageId, bool clearFinished = true)
+        public List<PlanTask> GetList(int villageId, bool clearFinished = false)
         {
             List<PlanTask> tasks;
             if (clearFinished)
@@ -250,29 +250,28 @@ namespace MainCore.Services.Implementations
 
         private List<PlanTask> GetFixedTasks(int villageId)
         {
-            var tasks = GetTasks(villageId);
-            var removedTasks = new List<PlanTask>();
-
             using var context = _contextFactory.CreateDbContext();
             var buildings = context.VillagesBuildings.Where(x => x.VillageId == villageId);
             var currentBuildings = context.VillagesCurrentlyBuildings.Where(x => x.VillageId == villageId && x.Level > 0);
 
-            foreach (var task in tasks)
+            var tasks = GetTasks(villageId);
+            var removedTasks = new List<PlanTask>();
+            for (int i = 0; i < tasks.Count; i++)
             {
+                var task = tasks[i];
                 if (IsTaskComplete(task, buildings, currentBuildings))
                 {
                     removedTasks.Add(task);
                 }
             }
 
-            foreach (var task in removedTasks)
-            {
-                tasks.Remove(task);
-                Remove(villageId, task);
-            }
-
             if (removedTasks.Count > 0)
             {
+                for (int i = 0; i < removedTasks.Count; i++)
+                {
+                    var task = removedTasks[i];
+                    tasks.Remove(task);
+                }
                 _eventManager.OnVillageBuildQueueUpdate(villageId);
             }
 

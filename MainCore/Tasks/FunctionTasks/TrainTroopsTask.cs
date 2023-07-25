@@ -6,6 +6,7 @@ using MainCore.Tasks.Base;
 using Splat;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace MainCore.Tasks.FunctionTasks
@@ -29,16 +30,20 @@ namespace MainCore.Tasks.FunctionTasks
         public override Result Execute()
         {
             if (CancellationToken.IsCancellationRequested) return Result.Fail(new Cancel());
+            _buildings.Clear();
 
             NextExecute();
 
             CheckBuilding();
+
+            _logHelper.Information(AccountId, $"Is going to train in {string.Join(", ", _buildings.Select(x => x.ToString()))}");
 
             var result = _generalHelper.ToDorf2(AccountId, VillageId, switchVillage: true);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             foreach (var building in _buildings)
             {
+                _logHelper.Information(AccountId, $"Start train in {building}");
                 result = _trainTroopHelper.Execute(AccountId, VillageId, building);
                 if (result.IsFailed)
                 {
@@ -73,7 +78,7 @@ namespace MainCore.Tasks.FunctionTasks
             if (setting.StableTroop != 0)
             {
                 _buildings.Add(BuildingEnums.Stable);
-                if (setting.IsGreatBarrack)
+                if (setting.IsGreatStable)
                 {
                     _buildings.Add(BuildingEnums.GreatStable);
                 }

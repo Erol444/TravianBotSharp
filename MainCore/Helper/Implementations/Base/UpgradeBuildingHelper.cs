@@ -584,7 +584,7 @@ namespace MainCore.Helper.Implementations.Base
         public Result<PlanTask> ChooseBuilding(int accountId, int villageId)
         {
             PlanTask chosenTask = null;
-            var tasks = _planManager.GetList(villageId);
+            var tasks = _planManager.GetList(villageId, true);
             if (tasks.Count == 0)
             {
                 return Result.Fail(new Skip("Queue is empty."));
