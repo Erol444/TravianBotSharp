@@ -78,7 +78,7 @@ namespace MainCore.Tasks.FunctionTasks
             if (setting.StableTroop != 0)
             {
                 _buildings.Add(BuildingEnums.Stable);
-                if (setting.IsGreatBarrack)
+                if (setting.IsGreatStable)
                 {
                     _buildings.Add(BuildingEnums.GreatStable);
                 }
