@@ -72,7 +72,7 @@ namespace MainCore.Helper.Implementations.Base
                 }
             }
 
-            _logHelper.Information(accountId, $"Training {amountTroop} {troop}(s)")
+            _logHelper.Information(accountId, $"Training {amountTroop} {troop}(s)");
             result = InputAmountTroop(accountId, troop, amountTroop);
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
             return Result.Ok();
