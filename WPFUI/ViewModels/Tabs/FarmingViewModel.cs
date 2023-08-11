@@ -61,13 +61,19 @@ namespace WPFUI.ViewModels.Tabs
             {
                 var accountId = AccountId;
                 using var context = _contextFactory.CreateDbContext();
-                var farms = context.Farms.Where(x => x.AccountId == accountId).ToList();
-                var activeFarms = farms.Where(x =>
+
+                var setting = context.AccountsSettings.Find(accountId);
+                if (!setting.UseStartAllFarm)
                 {
-                    var farmSetting = context.FarmsSettings.Find(x.Id);
-                    return farmSetting.IsActive;
-                }).ToList();
-                if (activeFarms.Count == 0) return;
+                    var farms = context.Farms.Where(x => x.AccountId == accountId).ToList();
+                    var activeFarms = farms.Where(x =>
+                    {
+                        var farmSetting = context.FarmsSettings.Find(x.Id);
+                        return farmSetting.IsActive;
+                    }).ToList();
+                    if (activeFarms.Count == 0) return;
+                }
+
                 var tasks = _taskManager.GetList(AccountId);
                 var task = tasks.OfType<StartFarmList>().FirstOrDefault();
                 if (task is null)
