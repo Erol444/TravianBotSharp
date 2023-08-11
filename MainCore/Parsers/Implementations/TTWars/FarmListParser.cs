@@ -42,10 +42,7 @@ namespace MainCore.Parsers.Implementations.TTWars
 
         public HtmlNode GetStartAllButton(HtmlDocument doc)
         {
-            var raidList = doc.GetElementbyId("raidList");
-            if (raidList is null) return null;
-            var startAll = raidList.Descendants("button").FirstOrDefault(x => x.HasClass("startAll"));
-            return startAll;
+            return doc.DocumentNode.Descendants().First();
         }
     }
 }
