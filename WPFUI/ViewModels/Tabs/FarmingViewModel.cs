@@ -101,7 +101,6 @@ namespace WPFUI.ViewModels.Tabs
 
         public async Task SaveData()
         {
-            if (CurrentFarm is null) return;
             _waitingOverlay.Show("Saving ...");
             await Task.Run(() =>
             {
@@ -110,6 +109,7 @@ namespace WPFUI.ViewModels.Tabs
                 settings.FarmIntervalMin = Interval - DiffInterval;
                 if (settings.FarmIntervalMin < 0) settings.FarmIntervalMin = 0;
                 settings.FarmIntervalMax = Interval + DiffInterval;
+                settings.UseStartAllFarm = UseStartAll;
                 context.Update(settings);
                 context.SaveChanges();
             });
@@ -212,6 +212,7 @@ namespace WPFUI.ViewModels.Tabs
 
                 Interval = (settings.FarmIntervalMax + settings.FarmIntervalMin) / 2;
                 DiffInterval = (settings.FarmIntervalMax - settings.FarmIntervalMin) / 2;
+                UseStartAll = settings.UseStartAllFarm;
             });
         }
 
@@ -234,6 +235,14 @@ namespace WPFUI.ViewModels.Tabs
         {
             get => _diffInterval;
             set => this.RaiseAndSetIfChanged(ref _diffInterval, value);
+        }
+
+        private bool _useStartAll;
+
+        public bool UseStartAll
+        {
+            get => _useStartAll;
+            set => this.RaiseAndSetIfChanged(ref _useStartAll, value);
         }
 
         private string _contentButton;
