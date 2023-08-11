@@ -37,6 +37,12 @@
     <None Update="Tests\Parser\BuildingTab\HtmlFiles\TTwars.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Tests\Parser\FarmList\HtmlFiles\TravianOfficial.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Tests\Parser\FarmList\HtmlFiles\TTWars.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Tests\Parser\HeroSection\HtmlFiles\TravianOfficial_adventures.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
