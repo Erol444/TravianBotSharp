@@ -1,10 +1,10 @@
 ﻿using FluentResults;
-using HtmlAgilityPack;
 using MainCore.Errors;
 using MainCore.Helper.Interface;
 using MainCore.Parsers.Interface;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
+using OpenQA.Selenium;
 using System.Linq;
 
 namespace MainCore.Helper.Implementations.TravianOfficial
@@ -18,21 +18,22 @@ namespace MainCore.Helper.Implementations.TravianOfficial
         public override Result ClickStartFarm(int accountId, int farmId)
         {
             var chromeBrowser = _chromeManager.Get(accountId);
-            var chrome = chromeBrowser.GetChrome();
-            chrome.ExecuteScript($"Travian.Game.RaidList.startRaid({farmId});");
-            _generalHelper.DelayClick(accountId);
+            var html = chromeBrowser.GetHtml();
 
-            var result = _generalHelper.Wait(accountId, driver =>
+            var farmNode = html.GetElementbyId($"raidList{farmId}");
+            if (farmNode is null)
             {
-                var waitHtml = new HtmlDocument();
-                waitHtml.LoadHtml(driver.PageSource);
+                return Result.Fail(new Retry("Cannot found farm node"));
+            }
+            var startNode = farmNode.Descendants("button")
+                                    .FirstOrDefault(x => x.HasClass("startButton"));
+            if (startNode is null)
+            {
+                return Result.Fail(new Retry("Cannot found start button"));
+            }
 
-                var waitFarmNode = waitHtml.GetElementbyId($"list{farmId}");
-                var table = waitFarmNode.Descendants("div").FirstOrDefault(x => x.HasClass("listContent"));
-                return !table.HasClass("hide");
-            });
+            var result = _generalHelper.Click(accountId, By.XPath(startNode.XPath));
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
-
             return Result.Ok();
         }
     }
