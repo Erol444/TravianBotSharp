@@ -21,14 +21,14 @@ namespace MainCore.Services.Implementations
 
         private readonly string _pathUserData;
 
-        public ChromeBrowser(string driverPath, string[] extensionsPath, string server, string username)
+        public ChromeBrowser(string[] extensionsPath, string server, string username)
         {
             _pathUserData = Path.Combine(AppContext.BaseDirectory, "Data", "Cache", server.Replace("https://", "").Replace(".", "_"), username);
             Directory.CreateDirectory(_pathUserData);
 
             _extensionsPath = extensionsPath;
 
-            _chromeService = ChromeDriverService.CreateDefaultService(driverPath);
+            _chromeService = ChromeDriverService.CreateDefaultService();
             _chromeService.HideCommandPromptWindow = true;
         }
 
