@@ -57,6 +57,7 @@ namespace WPFUI.ViewModels.Tabs
 
         private async Task StartTask()
         {
+            var isSend = true;
             await Task.Run(() =>
             {
                 var accountId = AccountId;
@@ -71,7 +72,11 @@ namespace WPFUI.ViewModels.Tabs
                         var farmSetting = context.FarmsSettings.Find(x.Id);
                         return farmSetting.IsActive;
                     }).ToList();
-                    if (activeFarms.Count == 0) return;
+                    if (activeFarms.Count == 0)
+                    {
+                        isSend = false;
+                        return;
+                    }
                 }
 
                 var tasks = _taskManager.GetList(AccountId);
@@ -86,8 +91,14 @@ namespace WPFUI.ViewModels.Tabs
                     _taskManager.ReOrder(AccountId);
                 }
             });
-
-            MessageBox.Show("Send all active farm");
+            if (isSend)
+            {
+                MessageBox.Show("Send all active farm");
+            }
+            else
+            {
+                MessageBox.Show("Did you forget to active farm?");
+            }
         }
 
         private async Task StopTask()

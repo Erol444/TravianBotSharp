@@ -7,6 +7,15 @@ namespace MainCore.Parsers.Implementations.TravianOfficial
 {
     public class FarmListParser : IFarmListParser
     {
+        public HtmlNode GetStartButton(HtmlDocument doc, int raidId)
+        {
+            var farmNode = doc.GetElementbyId($"raidList{raidId}");
+            if (farmNode is null) return null;
+            var startNode = farmNode.Descendants("button")
+                                    .FirstOrDefault(x => x.HasClass("startButton"));
+            return startNode;
+        }
+
         public List<HtmlNode> GetFarmNodes(HtmlDocument doc)
         {
             var raidList = doc.GetElementbyId("raidList");
