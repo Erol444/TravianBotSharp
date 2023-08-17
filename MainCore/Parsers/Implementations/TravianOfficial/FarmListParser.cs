@@ -7,6 +7,15 @@ namespace MainCore.Parsers.Implementations.TravianOfficial
 {
     public class FarmListParser : IFarmListParser
     {
+        public HtmlNode GetStartButton(HtmlDocument doc, int raidId)
+        {
+            var farmNode = doc.GetElementbyId($"raidList{raidId}");
+            if (farmNode is null) return null;
+            var startNode = farmNode.Descendants("button")
+                                    .FirstOrDefault(x => x.HasClass("startButton"));
+            return startNode;
+        }
+
         public List<HtmlNode> GetFarmNodes(HtmlDocument doc)
         {
             var raidList = doc.GetElementbyId("raidList");
@@ -32,12 +41,18 @@ namespace MainCore.Parsers.Implementations.TravianOfficial
 
         public int GetNumOfFarms(HtmlNode node)
         {
-            var slotCount = node.Descendants("span").FirstOrDefault(x => x.HasClass("raidListSlotCount"));
+            var slotCount = node.Descendants("span").FirstOrDefault(x => x.HasClass("slotsCount"));
             if (slotCount is null) return 0;
-            var slot = slotCount.InnerText.Split('/');
-            if (slot.Length < 1) return 0;
-            var value = new string(slot[0].Where(c => char.IsDigit(c)).ToArray());
+            var value = new string(slotCount.InnerText.Where(c => char.IsDigit(c)).ToArray());
             return int.Parse(value);
+        }
+
+        public HtmlNode GetStartAllButton(HtmlDocument doc)
+        {
+            var raidList = doc.GetElementbyId("raidList");
+            if (raidList is null) return null;
+            var startAll = raidList.Descendants("button").FirstOrDefault(x => x.HasClass("startAll"));
+            return startAll;
         }
     }
 }

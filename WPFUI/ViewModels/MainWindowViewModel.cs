@@ -2,6 +2,7 @@
 using MainCore;
 using MainCore.Enums;
 using MainCore.Helper.Interface;
+using MainCore.Services;
 using MainCore.Services.Interface;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -63,7 +64,7 @@ namespace WPFUI.ViewModels
             try
             {
                 _waitingOverlay.Show("loading chrome driver");
-                await Task.Run(_chromeManager.LoadDriver);
+                await ChromeDriverInstaller.Install();
 
                 _waitingOverlay.Show("loading chrome extension");
                 await Task.Run(_chromeManager.LoadExtension);

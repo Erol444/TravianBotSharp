@@ -12,5 +12,9 @@ namespace MainCore.Parsers.Interface
         public int GetId(HtmlNode node);
 
         public int GetNumOfFarms(HtmlNode node);
+
+        HtmlNode GetStartAllButton(HtmlDocument doc);
+
+        HtmlNode GetStartButton(HtmlDocument doc, int raidId);
     }
 }

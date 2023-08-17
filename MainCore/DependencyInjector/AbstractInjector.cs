@@ -46,6 +46,7 @@ namespace MainCore.DependencyInjector
             services.AddSingleton<ITrainTroopHelper, TrainTroopHelper>();
             services.AddSingleton<ICompleteNowHelper, CompleteNowHelper>();
             services.AddSingleton<IBuildingsHelper, BuildingsHelper>();
+            services.AddSingleton<IRallypointHelper, RallypointHelper>();
 
             return services;
         }
