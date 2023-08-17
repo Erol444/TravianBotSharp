@@ -98,5 +98,18 @@ namespace TestProject.Tests.Parser.HeroSection
             var actual = _instance[index].GetStartAllButton(_doc);
             Assert.IsNotNull(actual);
         }
+
+        [DataTestMethod]
+        [DataRow(VersionEnums.TravianOfficial, 1492)]
+        [DataRow(VersionEnums.TTWars, 54)]
+        public void GetStartButtonTest(VersionEnums version, int farmId)
+        {
+            var index = (int)version;
+            var file = Path.Combine(_path, $"{_version[index]}.html");
+            _doc.Load(file);
+
+            var actual = _instance[index].GetStartButton(_doc, farmId);
+            Assert.IsNotNull(actual);
+        }
     }
 }
