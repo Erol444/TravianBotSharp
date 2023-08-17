@@ -241,6 +241,7 @@ namespace MainCore
                 IsAutoAdventure = false,
                 FarmIntervalMax = 610,
                 FarmIntervalMin = 590,
+                UseStartAllFarm = false,
             });
             Heroes.Add(new Hero { AccountId = accountId });
 
@@ -564,6 +565,7 @@ namespace MainCore
                 KeyValuePair.Create(202304281723,"AutoTrainTroopFixed"),
                 KeyValuePair.Create(202305052234,"AutoTrainTroopTimeDelay"),
                 KeyValuePair.Create(202306061739,"AutoTrainTroopMaxTrain"),
+                KeyValuePair.Create(202308111513,"StartAllFarm"),
             };
             foreach (var migration in migrations)
             {

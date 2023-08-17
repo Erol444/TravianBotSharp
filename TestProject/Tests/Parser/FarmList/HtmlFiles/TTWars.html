@@ -1,0 +1,1309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0045)https://nor8.ttwars.com/build.php?tt=99&id=39 -->
+<html xmlns="http://www.w3.org/1999/xhtml" id="mainLayout" data-fbscriptallow="true" data-acxscriptallow="true" data-cbscriptallow="true" data-wgscriptallow="true"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>TTwars nor8</title>
+    <meta http-equiv="cache-control" content="max-age=0">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="imagetoolbar" content="no">
+    
+    <meta name="content-language" content="en-US">
+    <meta name="viewport" content="width=device-width">
+    <link rel="icon" type="image/x-icon" href="https://nor8.ttwars.com/favicon.ico">
+    <link href="./TTwars nor8_files/compact-bfe69477.min.css" rel="stylesheet" type="text/css">
+    <link href="./TTwars nor8_files/lang.css" rel="stylesheet" type="text/css">
+        <link href="./TTwars nor8_files/fixes.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript">
+        window.ajaxToken = '8a351c20cd3b3fe581c674a4487ed80fc9c923ce';
+        window._player_uuid = '2458a3b1-2a34-11ee-b20c-50ebf62f3541';
+    </script>
+    <script type="text/javascript" src="./TTwars nor8_files/jquery-3.2.1.min.js.download"></script>
+    <script type="text/javascript" src="./TTwars nor8_files/jquery.md5.min.js.download"></script>
+    <script type="text/javascript" src="./TTwars nor8_files/jquery.scrollbar.min.js.download"></script>
+    <script type="text/javascript" src="./TTwars nor8_files/d3.min.js.download"></script>
+    <script type="text/javascript" src="./TTwars nor8_files/d3pie.min.js.download"></script>
+    <script type="text/javascript" src="./TTwars nor8_files/TweenMax.min.js.download"></script>
+    <script type="text/javascript" src="./TTwars nor8_files/MorphSVGPlugin.min.js.download"></script>
+    <script type="text/javascript" src="./TTwars nor8_files/General.js.download"></script>
+    <script type="text/javascript">
+                window.TravianDefaults = Object.assign({"Map":{"Size":{"width":801,"height":801,"left":-400,"right":"400","bottom":-400,"top":"400"}},"Season":null}, false || {});
+    </script>
+    <script type="text/javascript" src="./TTwars nor8_files/crypt-v3-decompressed.js.download"></script>
+        <script type="text/javascript">
+        jQuery(window).on("paymentWizardOnCloseEvent", function (c) {
+            $("body").css("overflow", "");
+        });
+        jQuery(window).on('startPaymentWizard', function(){
+            $("body").css("overflow", "hidden");
+        });
+
+    </script>
+        <script type="text/javascript">
+        Travian.Translation.add({
+            'allgemein.anleitung': 'instructions',
+            'allgemein.cancel': 'cancel',
+            'allgemein.ok': 'ok',
+            'allgemein.close': 'close',
+            'allgemein.close_with_capital_c': 'close',
+            'cropfinder.keine_ergebnisse': 'no results found.'
+        });
+        
+                window.reload_enabled = false;
+        
+        Travian.applicationId = 'T4.4 Game';
+        Travian.Game.version = '4.4';
+        Travian.Game.worldId = 'nor8';
+        Travian.Game.speed = 10000;
+        Travian.Game.country = 'en';
+        Travian.Templates = {};
+        Travian.Templates.ButtonTemplate = '<button ><div class="button-container addHoverClick"><div class="button-background"><div class="buttonStart"><div class="buttonEnd"><div class="buttonMiddle"></div></div></div></div><div class="button-content"></div></div></button>';
+
+                Travian.Templates = {"ButtonV1": "<button >\n\t<\/button>\n","ButtonV2": "<button >\n\t<div>\n\t\t\t<\/div>\n<\/button>\n","DialogV1": "<div class=\"dialogOverlay\">\n    <div class=\"dialogWrapper dialogV1\" data-context=\"\">\n        <div class=\"dialog\">\n            <div class=\"dialogContainer\">\n                <div class=\"dialogContents\">\n                    <form action=\"?\" method=\"get\" accept-charset=\"UTF-8\">\n                        <div class=\"dialogDragBar\"><\/div>\n                        <div class=\"iconButton small info\"><\/div>\n                        <div class=\"dialogCancelButton iconButton small cancel\"><\/div>\n                        <div class=\"title\"><\/div>\n                        <div class=\"content\" id=\"dialogContent\"><\/div>\n                        <div class=\"buttons\"><\/div>\n                    <\/form>\n                <\/div>\n            <\/div>\n        <\/div>\n    <\/div>\n<\/div>\n","DialogV2": "<div class=\"dialogOverlay\">\n    <div class=\"dialogWrapper dialogV2\" data-context=\"\">\n        <div class=\"dialog\">\n            <div class=\"dialogContainer\">\n                <div class=\"dialogContents\">\n                    <form action=\"?\" method=\"get\" accept-charset=\"UTF-8\">\n                        <div class=\"dialogDragBar\"><\/div>\n                        <div class=\"iconButton buttonFramed green withIcon rectangle info\"><\/div>\n                        <div class=\"dialogCancelButton iconButton buttonFramed green withIcon rectangle cancel\" title=\"Close\">\n                            <svg viewBox=\"0 0 20 20\"><g class=\"outline\">\n  <path d=\"M0 17.01L7.01 10 .14 3.13 3.13.14 10 7.01 17.01 0 20 2.99 12.99 10l6.87 6.87-2.99 2.99L10 12.99 2.99 20 0 17.01z\"><\/path>\n<\/g><g class=\"icon\">\n  <path d=\"M0 17.01L7.01 10 .14 3.13 3.13.14 10 7.01 17.01 0 20 2.99 12.99 10l6.87 6.87-2.99 2.99L10 12.99 2.99 20 0 17.01z\"><\/path>\n<\/g><\/svg>\n                        <\/div>\n                        <div class=\"title\"><\/div>\n                        <div class=\"content\" id=\"dialogContent\"><\/div>\n                        <div class=\"buttons\"><\/div>\n                    <\/form>\n                <\/div>\n            <\/div>\n        <\/div>\n    <\/div>\n<\/div>\n"};
+        
+
+        Travian.Game.eventJamHtml = '<a href="javascript:void" onclick="document.location.reload();"><img src="/img/refresh.png"></a>';
+        Travian.Form.UnloadHelper.message = 'You have made changes. Do you really want to leave this page?';
+                Travian.Game.Preferences.initialize({"highlightsToggle":true,"travian_toggle_hero":"expanded","travian_toggle_infobox":"expanded","travian_toggle_villagelist":"collapsed","travian_toggle_alliance":"expanded","merchantsOnTheWayFilter":"","allianceBonusesOverview":"{\"bonusInfo0\":false,\"bonusInfo1\":false,\"bonusInfo2\":false,\"bonusInfo3\":false}","WMBlueprints":"[]","buildingDescriptionCollapsed":false});
+    </script>
+        <style type="text/css">
+        .theme-chooser-table {
+            background-color: transparent;
+        }
+        .theme-chooser-table td > * {
+            width: 100%;
+        }
+        .theme-chooser-table td, .theme-chooser-table th {
+            padding: 0;
+            background-color: transparent;
+        }
+        .sidebarBox.settings .content {
+            margin-top: 20px !important;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function (){
+            $('#game-language').on('change', function(){
+                $.get({
+                    url: '/dorf1.php?lang=' + $(this).val(),
+                    success: function (){
+                        window.location.reload();
+                    }
+                });
+            });
+            $('#game-theme').on('change', function(){
+                $.get({
+                    url: '/dorf1.php?theme=' + $(this).val(),
+                    success: function (){
+                        window.location.reload();
+                    }
+                });
+            });
+        });
+    </script>
+    </head>
+<body class="v35 en-US TTwars build  perspectiveResources ltr buildingsV3 ">
+<div id="reactDialogWrapper"></div>
+<div id="background" class="">
+    <div id="headerBar"></div>    <div id="topBar">
+        <a id="logo" href="http://www.ttwars.com/" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 172.7 60">
+    <path fill="#231f20" d="M52.9 34.4c-.2-.3-.3-.7-.3-1.3 0-.8-.1-1.2-.1-1.3l-.1-3.9.1-6.6c0-1.1.1-2.2.1-3.3.1-1.5.2-2.4.3-2.8.1 0 .3 0 .6-.1h.4c2.6 0 4.1.3 4.4.8.1.1.1.4.3.8.1.4.2.5.2.5s.1 0 .2-.1V17c0-.4.1-.9.2-1.4.2-.5.3-1 .5-1.6l-.4-.1c-.9.2-1.9.4-3.1.4h-5l-6.5-.3c-.3 0-.5.4-.8 1.2-.1.5-.3 1-.4 1.4-.2.5-.3.8-.3.8v.2h.2c.1-.4.3-.7.6-1 .3-.3.6-.5.9-.6.3-.1.9-.2 2.1-.4 1.3-.2 2.1-.3 2.5-.3.3 0 .4 1.5.4 4.5l-.1 8.6c-.1 2.2-.3 3.7-.3 4.6-.1.9-.2 1.5-.4 1.8-.1.1-.2.2-.4.2-.2.1-.3.2-.3.3l.5.1c.2-.1.4-.1.5-.1 1.1-.1 1.8-.2 1.9-.2l2.8.2c.2 0 .3-.1.4-.2 0 0-.3-.1-.8-.2-.4-.2-.7-.3-.8-.5zm19.7-.1c.6.7 1.4 1 2.3 1h.9c1.2-.1 1.8-.2 1.9-.3-.1 0-.4-.1-.8-.3-.2-.1-.5-.2-.6-.4-.5-.4-1.1-1.2-1.7-2.2-.5-.9-1-1.8-1.4-2.7-.3-.5-.7-1.3-1.4-2.4-.4-.8-.7-1.2-.7-1.2 0-.1.4-.5 1-1.1.7-.7 1.3-1.4 1.6-2.1.6-1 .9-2.2.9-3.4 0-1.8-.7-3.1-2.1-3.9-1-.6-2.3-1-3.7-1l-2.8.1c-.9 0-1.6.1-2.1.1l-1.5.1c-.1 0-.3.1-.6.2l.3.1c.2.1.2.1.3.2.4 1 .6 2 .6 3l.1 3.9v2s0 .3-.1.8c0 .5-.1.7-.1.8v2l-.2 4.2c0 1.9-.1 3-.2 3.3-.3.4-.5.6-.6.7 1.2-.2 2-.3 2.3-.3h2.2s.3-.1.9-.2c-.1-.1-.2-.1-.4-.1-.9 0-1.4-1-1.4-3v-5.4c0-.2.1-.4.3-.4 1.2 0 2 .2 2.4.6.5.5 1 1.3 1.5 2.1.4.7.8 1.5 1.2 2.2.8 1.7 1.4 2.7 1.7 3zm-5.2-8.2h-1.8l.1-11.3h.9c1.4 0 2.6.8 3.6 2.5.9 1.5 1.4 2.9 1.4 4.3 0 1.9-.3 3.1-.9 3.6-.4.7-1.5.9-3.3.9zm33.6 8.6c-.4-.2-.7-.5-.9-.9-1.2-2-2.5-4.9-3.8-8.6-.9-2.6-1.7-5.1-2.6-7.7-.2-.7-.5-1.3-.7-2-.4-1-.9-1.5-1.3-1.5h-3.2c-.2 0-.4.1-.6.1-.2 0-.3.1-.3.2.1.1.2.1.2.1h.5c.3 0 .5.1.8.3.2.2.3.5.3.8 0 .5-.9 3-2.6 7.5-1.6 4.1-2.7 6.9-3.4 8.5-.7 1.6-1.5 2.8-2.5 3.6.3 0 .8 0 1.4.1.7.1 1.1.1 1.4.1l3.6-.5c-.7-.2-1.4-.5-2.1-.8-.6-.3-.9-.8-.9-1.7 0-.8.4-2.2 1.1-4.1l.6-1.8c.4-1 .8-1.6 1-1.6h5.4c.8 1.8 1.4 3.2 1.8 4.2.4 1.1.9 2.3 1.3 3.5.8 1.7 1.7 2.6 2.7 2.6l3-.2c.3.1.1 0-.2-.2zm-8.5-10.3h-5.4l2.8-7.4c.4.7.6 1.3.8 1.7l1.8 5.4v.3zm20.7-10.2c.3-.1.6.2.8.7.2.4.2.8.2 1.3 0 1.3-.8 4.2-2.3 8.5-1 2.8-1.8 4.9-2.5 6.4-1.6-3.7-2.8-6.9-3.8-9.4-.8-2.3-1.5-4-1.8-5.1-.5-1.4-.8-2.1-.8-2.1-.3-.1-.8-.2-1.6-.2h-2.6c-.3 0-.5.1-.6.3.2.1.4.1.6.2.2.1.3.2.5.3 1.1 1.5 2.3 3.7 3.5 6.7.7 1.5 1.6 3.9 2.8 7.1 1.1 3 1.7 4.6 1.8 4.9.6 1.2.9 1.8 1 1.9 2.8-7.3 5.8-14.6 9-21.8h-4.2v.3zm7.8 3.6c0 .3.1.6.1.8v6.8l-.1 4.9-.5 5.1h4.2c.1-.1.1-.2.1-.2-.5-.2-.7-.3-.7-.3-.2-.2-.3-.5-.3-.9 0-.3-.1-.6-.1-1l.1-9.6c.1-3.6.2-6.7.5-9.4h-.3c.1 0-.1 0-.6.1s-1 .1-1.7.1h-1.5c.5.5.7 1.1.8 1.8-.1.5-.1 1.2 0 1.8zm27 16.9c-.4-.2-.7-.5-.9-.9-1.2-2-2.5-4.9-3.8-8.6-.9-2.6-1.7-5.1-2.6-7.7-.2-.7-.5-1.3-.7-2-.4-1-.9-1.5-1.3-1.5l-3.1.1c-.2 0-.4.1-.6.1-.2 0-.3.1-.3.2.1.1.2.1.2.1h.5c.3 0 .5.1.8.3.2.2.3.5.3.8 0 .5-.9 3-2.6 7.5-1.6 4.1-2.7 6.9-3.4 8.5-.7 1.6-1.5 2.8-2.5 3.6.3 0 .8 0 1.4.1.7.1 1.1.1 1.4.1l3.6-.5c-.7-.2-1.4-.5-2.1-.8-.6-.3-.9-.8-.9-1.7 0-.8.4-2.2 1.1-4.1l.6-1.8c.4-1 .8-1.6 1-1.6h5.4c.8 1.8 1.4 3.2 1.8 4.2.4 1.1.9 2.3 1.3 3.5.8 1.7 1.7 2.6 2.7 2.6l3-.2c.2 0 .1-.1-.3-.3zm-8.4-10.3h-5.4L137 17c.4.7.6 1.3.8 1.7l1.8 5.4v.3zm29.7-10.2c-.4 0-1 .2-2 .5-.8.3-1.3.5-1.4.6.2 0 .8 0 1.7-.1.2 0 .3.1.3.2.1 1.4.2 2.5.2 3.2.1 2.1.2 4.4.3 6.6l.1 4.6c0 .2 0 .3-.1.4-3.4-3.8-5.7-6.3-6.8-7.6-2.8-3.3-4.8-6.1-6.2-8.6-2.1.2-3.8.3-4.9.5 1.3.6 2.1 1.4 2.5 2.4.3.6.4 1.6.4 3l-.2 3.7v1.7c0 3.8-.2 6.4-.6 7.9-.1.4-.3.7-.7 1-.5.4-.8.7-.9.7.5.1 1.1.2 2 .2.7 0 1.5-.1 2.5-.3 1.3-.3 2-.5 2-.5-.6-.1-1.1-.2-1.4-.2-.5 0-.9-.1-1.4-.4-.1-.1-.2-.3-.3-.5 0-.1-.1-.3-.1-.7-.2-1.9-.3-3.2-.3-4-.1-3.9-.1-7.1 0-9.7 1.1 1.3 3.1 3.5 5.8 6.7 1.8 2.1 4.3 4.9 7.5 8.4.9.9 1.3 1.4 1.4 1.4.1 0 .1 0 .2-.1.1-1.8.2-3.7.3-5.5.2-3.6.3-5.6.3-6.1v-1.4c0-.3.2-2.6.6-6.9.2-.1.7-.3 1.3-.5.6-.2.9-.3 1.1-.5l-3.2-.1zm-112 27.6H56v9.5h6v-1.2h-4.7m14.5-3.2h5.3v-1.1h-5.3v-2.9h5.7v-1.1h-7v9.5h7.2v-1.2h-5.9m19.1-2.6h2.8v1.8c-.3.2-.7.5-1.2.7s-1.1.3-1.6.3c-.6 0-1.2-.1-1.8-.4-.6-.3-1-.7-1.3-1.3-.3-.6-.4-1.3-.4-2.1 0-.7.1-1.3.4-1.9.1-.3.3-.7.6-.9.3-.3.6-.5 1-.7.4-.2.9-.3 1.5-.3.5 0 .9.1 1.3.2s.7.4.9.7c.2.3.4.7.5 1.1l1.2-.3c-.2-.6-.4-1.2-.7-1.6s-.8-.7-1.3-.9c-.6-.2-1.2-.3-1.9-.3-1 0-1.8.2-2.5.6s-1.3 1-1.7 1.8c-.4.8-.6 1.7-.6 2.6 0 .9.2 1.8.6 2.5s1 1.3 1.8 1.7 1.6.6 2.6.6c.7 0 1.4-.1 2.1-.4.7-.2 1.3-.6 1.9-1.1v-3.5H91v1.1zm14.2-.6h5.4v-1.1h-5.4v-2.9h5.7v-1.1h-7v9.5h7.3v-1.2h-6m21-.9l-5.1-7.4h-1.3v9.5h1.3v-7.5l5 7.5h1.3v-9.5h-1.2m16.8.8c-.4-.3-.9-.6-1.4-.7-.4-.1-1-.1-1.7-.1h-3.3v9.5h3.5c.6 0 1.1-.1 1.6-.2s.8-.3 1.2-.5c.3-.2.6-.5.9-.9.3-.4.5-.8.7-1.4.2-.6.3-1.2.3-1.9 0-.8-.1-1.6-.4-2.3-.5-.5-.9-1.1-1.4-1.5zm-.1 5.7c-.2.5-.4.9-.7 1.2-.2.2-.5.4-.9.5s-.9.2-1.5.2h-2.1V43h2c.8 0 1.3.1 1.7.2.5.2.9.5 1.2 1.1.3.5.5 1.3.5 2.3.1.6 0 1.2-.2 1.7zm15.9-2c-.4-.2-1.1-.4-2.1-.6-1-.2-1.7-.5-1.9-.7-.2-.2-.4-.5-.4-.8 0-.4.2-.7.5-1 .4-.3.9-.4 1.7-.4.7 0 1.3.2 1.7.5.4.3.6.8.7 1.4l1.2-.1c0-.6-.2-1.1-.5-1.5-.3-.4-.7-.8-1.3-1-.5-.2-1.2-.3-1.9-.3-.6 0-1.2.1-1.8.3-.5.2-.9.5-1.2.9-.3.4-.4.9-.4 1.3s.1.8.3 1.2c.2.4.6.6 1 .9.4.2 1 .4 1.9.6.9.2 1.5.4 1.7.5.4.2.7.3.9.6.2.2.3.5.3.8 0 .3-.1.6-.3.8-.2.2-.5.4-.8.6-.4.1-.8.2-1.3.2s-1-.1-1.5-.3-.8-.4-1-.7c-.2-.3-.3-.7-.4-1.2l-1.2.1c0 .6.2 1.2.5 1.7s.8.9 1.4 1.1 1.3.4 2.2.4c.7 0 1.3-.1 1.9-.4.6-.2 1-.6 1.3-1 .3-.4.4-.9.4-1.4 0-.5-.1-1-.4-1.3-.2-.7-.6-1-1.2-1.2z"></path>
+    <image width="156" height="250" xlink:href="data:image/png;base64,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" transform="matrix(0.24 0 0 0.24 0 0)" overflow="visible"></image>
+</svg>
+        </a>
+                    <div id="header">
+                <input type="checkbox" id="mobileMenuState">
+                <div id="navigation">
+    <a class="village resourceView " href="https://nor8.ttwars.com/dorf1.php" accesskey="1"></a>
+    <a class="village buildingView " href="https://nor8.ttwars.com/dorf2.php" accesskey="2"></a>
+
+    <a class="map" href="https://nor8.ttwars.com/karte.php" accesskey="3"></a>
+    <a class="statistics" href="https://nor8.ttwars.com/statistics/" accesskey="4"></a>
+    <a class="reports" href="https://nor8.ttwars.com/report" accesskey="5">
+                    <div class="indicator">3</div>
+            </a>
+    <a class="messages" href="https://nor8.ttwars.com/messages.php" accesskey="6">
+            </a>
+
+    <a class="dailyQuests" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" accesskey="7" onclick="Travian.Game.Quest.openTodoListDialog(&#39;&#39;, true); return false;">
+                <div class="indicator">!</div>
+            </a>
+
+    <label class="mobileMenuButton" for="mobileMenuState"></label>
+    <a class="mobileShopButton" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" accesskey="8" title="" onclick="jQuery(window).trigger(&#39;startPaymentWizard&#39;, {}); this.blur(); return false;"></a>
+</div>
+                <div class="currency">
+    <i class="goldCoin_medium" onclick="jQuery(window).trigger(&#39;startPaymentWizard&#39;, {data:{activeTab: &#39;pros&#39;}}); return false;"></i>
+    <div class="value ajaxReplaceableGoldAmount">
+                    70            </div>
+    <i class="silverCoin_medium" onclick="jQuery(window).trigger(&#39;startPaymentWizard&#39;, {data:{activeTab: &#39;pros&#39;}}); return false;"></i>
+    <div class="value ajaxReplaceableSilverAmount">
+        1219    </div>
+</div>                <a class="shop" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" accesskey="8" onclick="jQuery(window).trigger(&#39;startPaymentWizard&#39;, {}); this.blur(); return false;"></a>
+                <nav id="mobileMenu">
+    <ul>
+        <li>
+            <a class="dailyQuests" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" accesskey="7" onclick="Travian.Game.Quest.openTodoListDialog(&#39;&#39;, true); return false;">
+
+                <div class="inlineIcon " title="">
+                    <svg viewBox="0 0 40 130.22" class="dailyQuests rewardAvailable">
+                        <rect width="40" height="89.11" rx="10.33"></rect>
+                        <ellipse cx="19.67" cy="115.67" rx="17.22" ry="14.56"></ellipse>
+                    </svg>
+                    <span class="value ">Daily Quests </span></div>
+            </a>
+        </li>
+        <li>
+            <a class="statistics" href="https://nor8.ttwars.com/statistics/">
+                <div class="inlineIcon " title="">
+                    <svg viewBox="0 0 120.56 137.33" class="statistics">
+                        <path d="M1.67 70.67h32.67V130H1.67zM43.56 35.56h32.67V130H43.56zM86.46 0h32.67v130H86.46zM0 133.56h120.56v3.78H0z"></path>
+                    </svg>
+                    <span class="value ">Statistics</span></div>
+            </a>
+        </li>
+        <li>
+            <a class="profile" href="https://nor8.ttwars.com/profile">
+                <div class="inlineIcon " title="">
+                    <svg viewBox="0 0 15.76 21" class="profile">
+                        <path d="M7.88 1.77c2.1 0 3.8 2.09 3.8 4.65s-1.7 4.65-3.8 4.65S4.08 9 4.08 6.42s1.71-4.65 3.8-4.65m0-1.77c-3 0-5.49 2.88-5.49 6.42s2.46 6.42 5.49 6.42 5.49-2.84 5.49-6.42S10.92 0 7.88 0zm7.88 21a11.81 11.81 0 0 0-2.51-7 7.17 7.17 0 0 1-5.37 2.46A7.17 7.17 0 0 1 2.52 14 11.82 11.82 0 0 0 0 21z"></path>
+                    </svg>
+                    <span class="value ">Profile</span></div>
+            </a>
+        </li>
+        <li>
+            <a class="options" href="https://nor8.ttwars.com/options">
+                <div class="inlineIcon " title="">
+                    <svg viewBox="0 0 20 20" class="settings">
+                        <path d="M9 20l-.24-3.26-.57-.16A7.21 7.21 0 0 1 6.66 16l-.52-.29-2.47 2.1-1.48-1.48 2.14-2.47-.33-.52a7.21 7.21 0 0 1-.62-1.49l-.16-.57L0 11V9l3.26-.24.16-.57A7.21 7.21 0 0 1 4 6.66l.29-.52-2.1-2.47 1.48-1.48 2.47 2.14.52-.33a7.21 7.21 0 0 1 1.49-.62l.57-.16L9 0h2l.24 3.26.57.16a7.21 7.21 0 0 1 1.53.58l.52.29 2.47-2.14 1.48 1.48-2.14 2.51.29.52a7.21 7.21 0 0 1 .62 1.49l.16.57L20 9v2l-3.26.24-.16.57a7.21 7.21 0 0 1-.58 1.53l-.29.52 2.14 2.47-1.48 1.48-2.47-2.14-.52.29a7.21 7.21 0 0 1-1.49.62l-.57.16L11 20zm1-15a5 5 0 1 0 5 5 5 5 0 0 0-5-5z"></path>
+                    </svg>
+                    <span class="value ">Options</span></div>
+            </a>
+        </li>
+        <li>
+            <a class="help" href="https://nor8.ttwars.com/help.php">
+                <div class="inlineIcon ">
+                    <svg viewBox="0 0 12.24 20" class="answers">
+                        <path d="M3.73 13.1v-.52c0-2.8 1.47-3.8 2.89-4.76 1-.72 2.14-1.46 2.14-2.9s-1.13-2.55-3-2.55A5.39 5.39 0 0 0 2 4.12L0 2.61A8.15 8.15 0 0 1 6.24 0c3 0 6 1.4 6 4.52 0 2.42-1.4 3.38-2.88 4.4-1.33.91-2.7 1.85-2.7 3.82v.36zm3.61 4.8a2.09 2.09 0 0 0-2.1-2.07 2.09 2.09 0 0 0 0 4.17 2.1 2.1 0 0 0 2.1-2.1z"></path>
+                    </svg>
+                    <span class="value ">Help</span></div>
+            </a>
+        </li>
+        <li>
+            <a class="forum" target="_blank" href="http://info.ttwars.com/">
+                <div class="inlineIcon " title="">
+                    <svg viewBox="0 0 20 18.54" class="forum">
+                        <path d="M3.31 4.7h8.5l-1.3 1.37h-7.2zm0 4.85h3.91l1.3-1.37H3.31zm0 3.47h3.45l.06-1.37H3.31zM17.16 1.29l-.94 1-1.43 1.5L13 5.66l-.49.51-2 2.11-1.26 1.37-.81.86-.06 1.24-.07 1.37v.51l3-.44 3.25-3.43.16-.17L20 4zm-.59 12l-.19-3.44L15 11.26a.61.61 0 0 0-.16.45l.07 1a.57.57 0 0 1-.15.43l-3.26 3.58a.57.57 0 0 1-.43.19H2.54a.58.58 0 0 1-.54-.58V2.53a.58.58 0 0 1 .58-.59h11a.59.59 0 0 0 .42-.17L15.7 0H.58A.58.58 0 0 0 0 .58V18a.58.58 0 0 0 .58.58H11.8a.57.57 0 0 0 .43-.19l4.19-4.66a.53.53 0 0 0 .15-.46z"></path>
+                    </svg>
+                    <span class="value ">Forum</span></div>
+            </a>
+        </li>
+        <li>
+            <a class="logout" href="https://nor8.ttwars.com/logout.php">
+                <div class="inlineIcon " title="">
+                    <svg viewBox="0 0 20 20" class="logout">
+                        <path d="M0 17.01L7.01 10 .14 3.13 3.13.14 10 7.01 17.01 0 20 2.99 12.99 10l6.87 6.87-2.99 2.99L10 12.99 2.99 20 0 17.01z"></path>
+                    </svg>
+                    <span class="value ">Logout</span></div>
+            </a>
+        </li>
+    </ul>
+
+    <svg viewBox="0 0 217.28 10.2" class="divider">
+        <path d="M78.66 7.51L0 5.1l78.66-2.41a18.49 18.49 0 0 0-.49 2.42 14.58 14.58 0 0 0 .49 2.4z"></path>
+        <path d="M75.94 6.08l-32.69-1 32.69-1a5.76 5.76 0 0 0-.27 1 4.64 4.64 0 0 0 .27 1zM139 7.51l78.32-.69L139 2.69a14.63 14.63 0 0 1 .74 2.56 9.31 9.31 0 0 1-.74 2.26z"></path>
+        <path d="M141.86 6.08l32.69-1-32.69-1a5.76 5.76 0 0 1 .27 1 4.64 4.64 0 0 1-.27 1zM84.82 5.1a2.31 2.31 0 1 1-4.6 0 2.31 2.31 0 1 1 4.6 0zM132.9 5.1a2.32 2.32 0 1 0 4.61 0 2.32 2.32 0 1 0-4.61 0zM104.142 5.095l5.099-5.098 5.098 5.098-5.098 5.098z"></path>
+        <path d="M42.23 4.96h128.66v.27H42.23z"></path>
+    </svg>
+
+    <ul>
+        <li>
+            <a class="mainpage" href="http://www.ttwars.com/" target="_blank" title="">Homepage</a>
+        </li>
+        <li>
+            <a class="terms" href="http://www.ttwars.com/agb.php" target="_blank" title="">Terms</a>
+        </li>
+        <li>
+            <a class="imprint" href="http://www.ttwars.com/impressum.php" target="_blank" title="">Imprint</a>
+        </li>
+    </ul>
+    <p class="copyright" style="direction:ltr;">© 2011 - 2023 Travian Games GmbH</p>
+</nav>
+            </div>
+
+            <ul id="outOfGame" class="LTR">
+                <li class="profile">
+                    <a href="https://nor8.ttwars.com/profile">
+                        <svg viewBox="0 0 15.76 21" class="profile">
+                            <g class="outline">
+                                <path d="M7.88 1.77c2.1 0 3.8 2.09 3.8 4.65s-1.7 4.65-3.8 4.65S4.08 9 4.08 6.42s1.71-4.65 3.8-4.65m0-1.77c-3 0-5.49 2.88-5.49 6.42s2.46 6.42 5.49 6.42 5.49-2.84 5.49-6.42S10.92 0 7.88 0zm7.88 21a11.81 11.81 0 0 0-2.51-7 7.17 7.17 0 0 1-5.37 2.46A7.17 7.17 0 0 1 2.52 14 11.82 11.82 0 0 0 0 21z"></path>
+                            </g>
+                            <g class="icon">
+                                <path d="M7.88 1.77c2.1 0 3.8 2.09 3.8 4.65s-1.7 4.65-3.8 4.65S4.08 9 4.08 6.42s1.71-4.65 3.8-4.65m0-1.77c-3 0-5.49 2.88-5.49 6.42s2.46 6.42 5.49 6.42 5.49-2.84 5.49-6.42S10.92 0 7.88 0zm7.88 21a11.81 11.81 0 0 0-2.51-7 7.17 7.17 0 0 1-5.37 2.46A7.17 7.17 0 0 1 2.52 14 11.82 11.82 0 0 0 0 21z"></path>
+                            </g>
+                        </svg>
+                    </a>
+                </li>
+                <li class="options">
+                                            <a href="https://nor8.ttwars.com/options">
+                            <svg viewBox="0 0 20 20" class="options">
+                                <g class="outline">
+                                    <path d="M9 20l-.24-3.26-.57-.16A7.21 7.21 0 0 1 6.66 16l-.52-.29-2.47 2.1-1.48-1.48 2.14-2.47-.33-.52a7.21 7.21 0 0 1-.62-1.49l-.16-.57L0 11V9l3.26-.24.16-.57A7.21 7.21 0 0 1 4 6.66l.29-.52-2.1-2.47 1.48-1.48 2.47 2.14.52-.33a7.21 7.21 0 0 1 1.49-.62l.57-.16L9 0h2l.24 3.26.57.16a7.21 7.21 0 0 1 1.53.58l.52.29 2.47-2.14 1.48 1.48-2.14 2.51.29.52a7.21 7.21 0 0 1 .62 1.49l.16.57L20 9v2l-3.26.24-.16.57a7.21 7.21 0 0 1-.58 1.53l-.29.52 2.14 2.47-1.48 1.48-2.47-2.14-.52.29a7.21 7.21 0 0 1-1.49.62l-.57.16L11 20zm1-15a5 5 0 1 0 5 5 5 5 0 0 0-5-5z"></path>
+                                </g>
+                                <g class="icon">
+                                    <path d="M9 20l-.24-3.26-.57-.16A7.21 7.21 0 0 1 6.66 16l-.52-.29-2.47 2.1-1.48-1.48 2.14-2.47-.33-.52a7.21 7.21 0 0 1-.62-1.49l-.16-.57L0 11V9l3.26-.24.16-.57A7.21 7.21 0 0 1 4 6.66l.29-.52-2.1-2.47 1.48-1.48 2.47 2.14.52-.33a7.21 7.21 0 0 1 1.49-.62l.57-.16L9 0h2l.24 3.26.57.16a7.21 7.21 0 0 1 1.53.58l.52.29 2.47-2.14 1.48 1.48-2.14 2.51.29.52a7.21 7.21 0 0 1 .62 1.49l.16.57L20 9v2l-3.26.24-.16.57a7.21 7.21 0 0 1-.58 1.53l-.29.52 2.14 2.47-1.48 1.48-2.47-2.14-.52.29a7.21 7.21 0 0 1-1.49.62l-.57.16L11 20zm1-15a5 5 0 1 0 5 5 5 5 0 0 0-5-5z"></path>
+                                </g>
+                            </svg>
+                        </a>
+                                    </li>
+                <li class="forum">
+                    <a target="_blank" href="http://info.ttwars.com/">
+                        <svg viewBox="0 0 20 18.54" class="forum">
+                            <g class="outline">
+                                <path d="M3.31 4.7h8.5l-1.3 1.37h-7.2zm0 4.85h3.91l1.3-1.37H3.31zm0 3.47h3.45l.06-1.37H3.31zM17.16 1.29l-.94 1-1.43 1.5L13 5.66l-.49.51-2 2.11-1.26 1.37-.81.86-.06 1.24-.07 1.37v.51l3-.44 3.25-3.43.16-.17L20 4zm-.59 12l-.19-3.44L15 11.26a.61.61 0 0 0-.16.45l.07 1a.57.57 0 0 1-.15.43l-3.26 3.58a.57.57 0 0 1-.43.19H2.54a.58.58 0 0 1-.54-.58V2.53a.58.58 0 0 1 .58-.59h11a.59.59 0 0 0 .42-.17L15.7 0H.58A.58.58 0 0 0 0 .58V18a.58.58 0 0 0 .58.58H11.8a.57.57 0 0 0 .43-.19l4.19-4.66a.53.53 0 0 0 .15-.46z"></path>
+                            </g>
+                            <g class="icon">
+                                <path d="M3.31 4.7h8.5l-1.3 1.37h-7.2zm0 4.85h3.91l1.3-1.37H3.31zm0 3.47h3.45l.06-1.37H3.31zM17.16 1.29l-.94 1-1.43 1.5L13 5.66l-.49.51-2 2.11-1.26 1.37-.81.86-.06 1.24-.07 1.37v.51l3-.44 3.25-3.43.16-.17L20 4zm-.59 12l-.19-3.44L15 11.26a.61.61 0 0 0-.16.45l.07 1a.57.57 0 0 1-.15.43l-3.26 3.58a.57.57 0 0 1-.43.19H2.54a.58.58 0 0 1-.54-.58V2.53a.58.58 0 0 1 .58-.59h11a.59.59 0 0 0 .42-.17L15.7 0H.58A.58.58 0 0 0 0 .58V18a.58.58 0 0 0 .58.58H11.8a.57.57 0 0 0 .43-.19l4.19-4.66a.53.53 0 0 0 .15-.46z"></path>
+                            </g>
+                        </svg>
+                    </a>
+                </li>
+                <li class="help">
+                    <a href="https://nor8.ttwars.com/help.php">
+                        <svg viewBox="0 0 12.24 20" class="answers">
+                            <g class="outline">
+                                <path d="M3.73 13.1v-.52c0-2.8 1.47-3.8 2.89-4.76 1-.72 2.14-1.46 2.14-2.9s-1.13-2.55-3-2.55A5.39 5.39 0 0 0 2 4.12L0 2.61A8.15 8.15 0 0 1 6.24 0c3 0 6 1.4 6 4.52 0 2.42-1.4 3.38-2.88 4.4-1.33.91-2.7 1.85-2.7 3.82v.36zm3.61 4.8a2.09 2.09 0 0 0-2.1-2.07 2.09 2.09 0 0 0 0 4.17 2.1 2.1 0 0 0 2.1-2.1z"></path>
+                            </g>
+                            <g class="icon">
+                                <path d="M3.73 13.1v-.52c0-2.8 1.47-3.8 2.89-4.76 1-.72 2.14-1.46 2.14-2.9s-1.13-2.55-3-2.55A5.39 5.39 0 0 0 2 4.12L0 2.61A8.15 8.15 0 0 1 6.24 0c3 0 6 1.4 6 4.52 0 2.42-1.4 3.38-2.88 4.4-1.33.91-2.7 1.85-2.7 3.82v.36zm3.61 4.8a2.09 2.09 0 0 0-2.1-2.07 2.09 2.09 0 0 0 0 4.17 2.1 2.1 0 0 0 2.1-2.1z"></path>
+                            </g>
+                        </svg>
+                    </a>
+                </li>
+                <li class="logout ">
+                    <a href="https://nor8.ttwars.com/logout.php">
+                        <svg viewBox="0 0 20 20" class="logout">
+                            <g class="outline">
+                                <path d="M0 17.01L7.01 10 .14 3.13 3.13.14 10 7.01 17.01 0 20 2.99 12.99 10l6.87 6.87-2.99 2.99L10 12.99 2.99 20 0 17.01z"></path>
+                            </g>
+                            <g class="icon">
+                                <path d="M0 17.01L7.01 10 .14 3.13 3.13.14 10 7.01 17.01 0 20 2.99 12.99 10l6.87 6.87-2.99 2.99L10 12.99 2.99 20 0 17.01z"></path>
+                            </g>
+                        </svg>
+                    </a>
+                </li>
+                <li class="clear">&nbsp;</li>
+            </ul>
+
+
+
+            <script type="text/javascript">
+                jQuery('#outOfGame li.logout a').click(function () {
+                    var windows = Travian.WindowManager.getWindows();
+                    for (var i = 0; i < windows.length; i++) {
+                        Travian.WindowManager.unregister(windows[i]);
+                    }
+                });
+            </script>
+            </div>
+    <div id="topBarHeroWrapper">
+    <div id="topBarHero">
+                <svg class="health" viewBox="0 0 110 110">
+            <defs>
+                <clippath id="healthMask" maskContentUnits="objectBoundingBox">
+                    <path d="M55 55L47.35 109.46A 55 55 0 0 0 109.86602276429 51.163393944073" fill="white"></path>
+                </clippath>
+            </defs>
+                            <image xlink:href="//gpack.ttwars.com/a5232e5f/mainPage/img_ltr//hud/topBar/header/hero/health.png" x="0" y="0" width="110" height="110" style="clip-path: url(#healthMask);">
+                </image>
+                        <path class="title" d="M55 55L47.35 109.46A 55 55 0 0 0 109.87 51.16" fill="transparent">
+                
+            </path>
+        </svg>
+        <svg class="experience" viewBox="0 0 110 110">
+            <defs>
+                <clippath id="experienceMask" maskContentUnits="objectBoundingBox">
+                    <path d="M55 55L32.63 105.25A 55 55 0 0 1 4.9253343507144 77.749238671047" fill="white"></path>
+                </clippath>
+            </defs>
+
+            <image xlink:href="//gpack.ttwars.com/a5232e5f/mainPage/img_ltr//hud/topBar/header/hero/experience.png" x="0" y="0" width="110" height="110" style="clip-path: url(#experienceMask);"></image>
+
+            <path class="title" d="M55 55L32.63 105.25A 55 55 0 0 1 4 34.4" fill="transparent">
+                
+            </path>
+        </svg>
+
+
+        <a id="heroImageButton" href="https://nor8.ttwars.com/hero" class="heroImageButton" type="button">
+            <div class="heroImageHover">
+                <img class="heroImage" src="./TTwars nor8_files/hero_head.php" alt="Hero">
+            </div>
+        </a>
+        <div class="heroStatus" data-status="100">
+                            <a href="https://nor8.ttwars.com/build.php?newdid=298973&amp;id=39&amp;&amp;tt=2" title="">
+                    <svg viewBox="0 0 20 17.43" class="heroHome">
+                        <g class="outline">
+                            <path d="M20 10L10 0 0 10l2.56 2.56 1.74-1.75v6.62h11.39V11l1.64 1.63zm-8.36 4.92H8.36V9.58h3.28z"></path>
+                        </g>
+                        <g class="icon">
+                            <path d="M20 10L10 0 0 10l2.56 2.56 1.74-1.75v6.62h11.39V11l1.64 1.63zm-8.36 4.92H8.36V9.58h3.28z"></path>
+                        </g>
+                    </svg>
+                </a>
+                    </div>
+                <i class="levelUp show"></i>
+                <a class="layoutButton buttonFramed round auction green withIcon" id="buttonc21" href="https://nor8.ttwars.com/hero/auction"><svg viewBox="0 0 20.18 19.44" class="auction"><g class="outline">
+    <path d="M20 9.44l-6.14 6.16a.54.54 0 0 1-.78 0L11 13.5a.56.56 0 0 1 0-.78l1.64-1.64-.64-.64h-1.24l-7.38 8.7L0 15.76l8.67-7.41V7.13l-.57-.57-.74.75a.49.49 0 0 1-.69 0L4.19 4.83a.49.49 0 0 1 0-.69l4-4a.49.49 0 0 1 .69 0l2.45 2.45a.52.52 0 0 1 0 .74l-.45.46.65.65h3.14v3.14l.73.73 1.75-1.75a.54.54 0 0 1 .78 0L20 8.66a.54.54 0 0 1 0 .78zm-9.35 7v3h9v-3z"></path>
+</g><g class="icon">
+    <path d="M20 9.44l-6.14 6.16a.54.54 0 0 1-.78 0L11 13.5a.56.56 0 0 1 0-.78l1.64-1.64-.64-.64h-1.24l-7.38 8.7L0 15.76l8.67-7.41V7.13l-.57-.57-.74.75a.49.49 0 0 1-.69 0L4.19 4.83a.49.49 0 0 1 0-.69l4-4a.49.49 0 0 1 .69 0l2.45 2.45a.52.52 0 0 1 0 .74l-.45.46.65.65h3.14v3.14l.73.73 1.75-1.75a.54.54 0 0 1 .78 0L20 8.66a.54.54 0 0 1 0 .78zm-9.35 7v3h9v-3z"></path>
+</g></svg></a><script type="text/javascript" id="buttonc21_script">
+            jQuery(function () {
+                jQuery('#buttonc21').on('mouseover', function (event) {
+                    Travian.Game.Layout.loadLayoutButtonTitle(event.delegateTarget, 'hero', 'auction');
+                });
+            });
+        
+        jQuery('#buttonc21').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"layoutButton buttonFramed round auction green withIcon","svg":"topBar\/auction.svg","redirectUrl":"\/hero\/auction","loadTitle":true,"id":"buttonc21"}]);
+        });
+    </script><a class="layoutButton buttonFramed round adventure green withIcon attention" id="buttonY22" href="https://nor8.ttwars.com/hero/adventures"><div class="content">18</div></a><script type="text/javascript" id="buttonY22_script">
+            jQuery(function () {
+                jQuery('#buttonY22').on('mouseover', function (event) {
+                    Travian.Game.Layout.loadLayoutButtonTitle(event.delegateTarget, 'hero', 'adventure');
+                });
+            });
+        
+        jQuery('#buttonY22').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"layoutButton buttonFramed round adventure green withIcon attention","svg":false,"redirectUrl":"\/hero\/adventures","loadTitle":true,"attention":true,"content":"18","id":"buttonY22"}]);
+        });
+    </script>    </div>
+</div>
+    <div id="bodyWrapper">
+        <img style="filter:chroma();" src="./TTwars nor8_files/x.gif" id="msfilter" alt="">
+        <div id="center">
+            <div id="sidebarBeforeContent" class="sidebar beforeContent">
+                <div class="sidebarBoxWrapper">
+                    <div id="sidebarBoxAlliance" class="sidebarBox   ">
+    <div class="header ">
+        <div class="buttonsWrapper">
+            <a id="buttonY23" class="layoutButton buttonFramed withIcon round alliance green disabled" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39">
+                <svg viewBox="0 0 20 14.2" class="alliance"><g class="outline">
+    <path d="M4.42 1.17L2 6.62a.51.51 0 0 1-.66.26L.3 6.41a.51.51 0 0 1-.3-.66L2.43.3a.51.51 0 0 1 .66-.3l1.08.51a.49.49 0 0 1 .25.66zM20 5.61L17.68.53A.51.51 0 0 0 17 .28l-.82.37a.5.5 0 0 0-.25.66l2.28 5.08a.49.49 0 0 0 .66.25l.82-.37a.5.5 0 0 0 .31-.66zM4.85 1.11L4.49 2l3.09.22 1.06-.9zM2.69 5.86l-.46.87 1.11 1.61.52-.82zm2.16 1.66a.84.84 0 0 0-1.1.48l-.63 1.39a.84.84 0 1 0 1.53.67l.63-1.43a.84.84 0 0 0-.43-1.11zm1.44 1.35a.84.84 0 0 0-1.1.43l-.63 1.44a.84.84 0 0 0 .44 1.1.85.85 0 0 0 1.11-.43L6.72 10a.84.84 0 0 0-.43-1.13zM17 10.29a1.18 1.18 0 0 1-.76.48 1.14 1.14 0 0 1-.2.87 1.19 1.19 0 0 1-1 .51H15a1.18 1.18 0 0 1-1.2 1.14 1.12 1.12 0 0 1-.67-.22L13 13a1.21 1.21 0 0 1-.22.7 1.19 1.19 0 0 1-1 .51 1.12 1.12 0 0 1-.67-.22l-1.93-1.34a.81.81 0 0 1-.77 0 .84.84 0 0 1-.49-.93l-.16.37a.84.84 0 1 1-1.53-.67L6.85 10A.86.86 0 0 1 8 9.6a.85.85 0 0 1 .48.94l.16-.37a.84.84 0 0 1 1.11-.43.81.81 0 0 1 .45.49l3.24 2.24a.5.5 0 0 0 .69-.13.49.49 0 0 0 0-.58l-3.25-2.24a6.61 6.61 0 0 0 .39-.52l3.17 2.19a.77.77 0 0 1 .19.17l.1.06a.51.51 0 0 0 .7-.12.49.49 0 0 0 .09-.28.47.47 0 0 0-.12-.32l-.09-.06-3.64-2.58V8a4 4 0 0 0 .15-.7l3.91 2.7a.48.48 0 0 0 .55-.19.47.47 0 0 0 .09-.28.49.49 0 0 0-.21-.41l-4.34-3a3.82 3.82 0 0 0-.15-.67l-.62-.38a2.88 2.88 0 0 1-.83-.76s-.94.58-1.1.65a3.08 3.08 0 0 1-1.55.43 1.69 1.69 0 0 1-1.68-1.18A1.32 1.32 0 0 1 7 2.67a5.82 5.82 0 0 0 1.17-.17A7.59 7.59 0 0 0 10.08 1a1.1 1.1 0 0 1 .69-.37c1 0 1.46 1.21 2.74 1.21a4.32 4.32 0 0 0 1.93-.44l2.23 4.86a4.54 4.54 0 0 1-.62 1.19c-.25.23-.66.18-1 .18a3 3 0 0 1-1.29-.3l1.93 1.33a1.19 1.19 0 0 1 .31 1.63zm-4.88 2.6a.49.49 0 0 0-.22-.41L10 11.17l-.4.93 1.72 1.19a.51.51 0 0 0 .7-.12.51.51 0 0 0 .08-.28z"></path>
+</g><g class="icon">
+    <path d="M4.42 1.17L2 6.62a.51.51 0 0 1-.66.26L.3 6.41a.51.51 0 0 1-.3-.66L2.43.3a.51.51 0 0 1 .66-.3l1.08.51a.49.49 0 0 1 .25.66zM20 5.61L17.68.53A.51.51 0 0 0 17 .28l-.82.37a.5.5 0 0 0-.25.66l2.28 5.08a.49.49 0 0 0 .66.25l.82-.37a.5.5 0 0 0 .31-.66zM4.85 1.11L4.49 2l3.09.22 1.06-.9zM2.69 5.86l-.46.87 1.11 1.61.52-.82zm2.16 1.66a.84.84 0 0 0-1.1.48l-.63 1.39a.84.84 0 1 0 1.53.67l.63-1.43a.84.84 0 0 0-.43-1.11zm1.44 1.35a.84.84 0 0 0-1.1.43l-.63 1.44a.84.84 0 0 0 .44 1.1.85.85 0 0 0 1.11-.43L6.72 10a.84.84 0 0 0-.43-1.13zM17 10.29a1.18 1.18 0 0 1-.76.48 1.14 1.14 0 0 1-.2.87 1.19 1.19 0 0 1-1 .51H15a1.18 1.18 0 0 1-1.2 1.14 1.12 1.12 0 0 1-.67-.22L13 13a1.21 1.21 0 0 1-.22.7 1.19 1.19 0 0 1-1 .51 1.12 1.12 0 0 1-.67-.22l-1.93-1.34a.81.81 0 0 1-.77 0 .84.84 0 0 1-.49-.93l-.16.37a.84.84 0 1 1-1.53-.67L6.85 10A.86.86 0 0 1 8 9.6a.85.85 0 0 1 .48.94l.16-.37a.84.84 0 0 1 1.11-.43.81.81 0 0 1 .45.49l3.24 2.24a.5.5 0 0 0 .69-.13.49.49 0 0 0 0-.58l-3.25-2.24a6.61 6.61 0 0 0 .39-.52l3.17 2.19a.77.77 0 0 1 .19.17l.1.06a.51.51 0 0 0 .7-.12.49.49 0 0 0 .09-.28.47.47 0 0 0-.12-.32l-.09-.06-3.64-2.58V8a4 4 0 0 0 .15-.7l3.91 2.7a.48.48 0 0 0 .55-.19.47.47 0 0 0 .09-.28.49.49 0 0 0-.21-.41l-4.34-3a3.82 3.82 0 0 0-.15-.67l-.62-.38a2.88 2.88 0 0 1-.83-.76s-.94.58-1.1.65a3.08 3.08 0 0 1-1.55.43 1.69 1.69 0 0 1-1.68-1.18A1.32 1.32 0 0 1 7 2.67a5.82 5.82 0 0 0 1.17-.17A7.59 7.59 0 0 0 10.08 1a1.1 1.1 0 0 1 .69-.37c1 0 1.46 1.21 2.74 1.21a4.32 4.32 0 0 0 1.93-.44l2.23 4.86a4.54 4.54 0 0 1-.62 1.19c-.25.23-.66.18-1 .18a3 3 0 0 1-1.29-.3l1.93 1.33a1.19 1.19 0 0 1 .31 1.63zm-4.88 2.6a.49.49 0 0 0-.22-.41L10 11.17l-.4.93 1.72 1.19a.51.51 0 0 0 .7-.12.51.51 0 0 0 .08-.28z"></path>
+</g></svg>            </a>
+            <a id="buttony24" class="layoutButton buttonFramed withIcon round forum green disabled" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39">
+                <svg viewBox="0 0 20 18.54" class="forum"><g class="outline">
+    <path d="M3.31 4.7h8.5l-1.3 1.37h-7.2zm0 4.85h3.91l1.3-1.37H3.31zm0 3.47h3.45l.06-1.37H3.31zM17.16 1.29l-.94 1-1.43 1.5L13 5.66l-.49.51-2 2.11-1.26 1.37-.81.86-.06 1.24-.07 1.37v.51l3-.44 3.25-3.43.16-.17L20 4zm-.59 12l-.19-3.44L15 11.26a.61.61 0 0 0-.16.45l.07 1a.57.57 0 0 1-.15.43l-3.26 3.58a.57.57 0 0 1-.43.19H2.54a.58.58 0 0 1-.54-.58V2.53a.58.58 0 0 1 .58-.59h11a.59.59 0 0 0 .42-.17L15.7 0H.58A.58.58 0 0 0 0 .58V18a.58.58 0 0 0 .58.58H11.8a.57.57 0 0 0 .43-.19l4.19-4.66a.53.53 0 0 0 .15-.46z"></path>
+</g><g class="icon">
+    <path d="M3.31 4.7h8.5l-1.3 1.37h-7.2zm0 4.85h3.91l1.3-1.37H3.31zm0 3.47h3.45l.06-1.37H3.31zM17.16 1.29l-.94 1-1.43 1.5L13 5.66l-.49.51-2 2.11-1.26 1.37-.81.86-.06 1.24-.07 1.37v.51l3-.44 3.25-3.43.16-.17L20 4zm-.59 12l-.19-3.44L15 11.26a.61.61 0 0 0-.16.45l.07 1a.57.57 0 0 1-.15.43l-3.26 3.58a.57.57 0 0 1-.43.19H2.54a.58.58 0 0 1-.54-.58V2.53a.58.58 0 0 1 .58-.59h11a.59.59 0 0 0 .42-.17L15.7 0H.58A.58.58 0 0 0 0 .58V18a.58.58 0 0 0 .58.58H11.8a.57.57 0 0 0 .43-.19l4.19-4.66a.53.53 0 0 0 .15-.46z"></path>
+</g></svg>            </a>
+
+            <a id="buttonz25" class="layoutButton buttonFramed withIcon round embassy green " href="https://nor8.ttwars.com/build.php?gid=18&amp;newdid=297371">
+                <svg viewBox="0 0 17.63 20" class="embassy"><g class="outline">
+    <path d="M16.15 2.21l-.23 1.66h-1.45v-.4A2.28 2.28 0 0 0 11 2.15l-.34.28h-.05a2.77 2.77 0 0 1-1.82.45 2.78 2.78 0 0 1-2.06-1.22c-.06-.13-.12-.25-.19-.37V1.2A2.68 2.68 0 0 0 3 .31c-.48.25-1.86 1.11-1.86 1.11.53-.31 3.46-.2 3.63 1.33C1 .92 0 4.37 0 4.37s2.42-1.48 4.19 1.48A3 3 0 0 0 .88 8c.55-.34 1.79-.07 2.48 0a3 3 0 0 1 2.39 1.62A2.5 2.5 0 0 0 9.63 11a1.67 1.67 0 0 1 .23-.23 1.56 1.56 0 0 1 .2-.16 2.46 2.46 0 0 1 1.65-.43c.32 0 .39.29.41.55a.89.89 0 0 0 1.59.55v-.31H15l-1.27 8.83 1.48.2 2.42-17.58zM13.6 10a17.28 17.28 0 0 1-.06-2.72 10.63 10.63 0 0 1 .54-1.81h1.62L15.08 10z"></path>
+</g><g class="icon">
+    <path d="M16.15 2.21l-.23 1.66h-1.45v-.4A2.28 2.28 0 0 0 11 2.15l-.34.28h-.05a2.77 2.77 0 0 1-1.82.45 2.78 2.78 0 0 1-2.06-1.22c-.06-.13-.12-.25-.19-.37V1.2A2.68 2.68 0 0 0 3 .31c-.48.25-1.86 1.11-1.86 1.11.53-.31 3.46-.2 3.63 1.33C1 .92 0 4.37 0 4.37s2.42-1.48 4.19 1.48A3 3 0 0 0 .88 8c.55-.34 1.79-.07 2.48 0a3 3 0 0 1 2.39 1.62A2.5 2.5 0 0 0 9.63 11a1.67 1.67 0 0 1 .23-.23 1.56 1.56 0 0 1 .2-.16 2.46 2.46 0 0 1 1.65-.43c.32 0 .39.29.41.55a.89.89 0 0 0 1.59.55v-.31H15l-1.27 8.83 1.48.2 2.42-17.58zM13.6 10a17.28 17.28 0 0 1-.06-2.72 10.63 10.63 0 0 1 .54-1.81h1.62L15.08 10z"></path>
+</g></svg>            </a>
+            <script type="text/javascript">
+                jQuery(function () {
+                    jQuery('#buttonz25').one('mouseenter', function (event) {
+                        Travian.Game.Layout.loadLayoutButtonTitle(event.delegateTarget, 'alliance', 'embassyWhite');
+                    });
+                });
+            </script>
+        </div>
+    </div>
+    <div class="content">
+        <div class="boxTitle">
+            <div class="name">No alliance</div>
+        </div>
+    </div>
+</div>
+<div id="sidebarBoxInfobox" class="sidebarBox toggleable expanded">
+    <div class="header "></div>
+    <div class="content">
+        <div class="boxTitle">Info Box</div>
+        <div class="inlineIcon messageShortInfo">
+            <svg viewBox="0 0 20 14.28" class="messageNew">
+                <path d="M.72.93A1.69 1.69 0 0 1 .33.21L.54 0h19a1.56 1.56 0 0 1 .16.2 1.73 1.73 0 0 1-.39.73l-7.2 7.78a2.79 2.79 0 0 1-4.18 0zm13.59 7.89l3.55 2.5-4.92-1.06a4.31 4.31 0 0 1-5.84 0l-4.89 1.06 3.53-2.49L0 2.62v10.06a1.54 1.54 0 0 0 1.47 1.6h17.06a1.54 1.54 0 0 0 1.47-1.6v-10z"></path>
+            </svg>
+            <span class="value">‭‭5‬×‬</span>
+        </div>
+        <ul>
+            <li id="infoID_p32" class="firstElement active">💰 <b>Gold Promotion</b> 💰<br><br><b> Promotional Gold:</b> 35% <br><b>Active until: </b>⏲️ Today 14:10 till Today 17:10. <br><br><i>*This promotion is only active while the <b>35%</b> promotion icon is shown on the package. "<b>35%</b>" </i></li><li id="infoID_78" class="unreaded"><p><a class="infoboxDeleteButton" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" data-id="78"><img src="./TTwars nor8_files/x.gif" class="del" alt="del"></a>WW plans will be released in <span class="timer " counting="down" value="82046">22:47:26</span> hours.</p></li><li id="infoID_725" class="unreaded"><p><a class="infoboxDeleteButton" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" data-id="725"><img src="./TTwars nor8_files/x.gif" class="del" alt="del"></a>Wood production boost is Expired.</p><button type="button" class="textButtonV1 gold  productionBoostButton wood" coins="5" value="Activate" id="buttonv26" version="textButtonV1"><div>Activate<i class="goldIcon"></i><span class="goldValue">5</span></div></button><script type="text/javascript" id="buttonv26_script">
+        jQuery('#buttonv26').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"textButtonV1 gold  productionBoostButton wood","title":"Activate now &lt;br&gt; Bonus duration in days: &lt;span class=&quot;bold&quot;&gt;1&lt;\/span&gt; hour","coins":5,"value":"Activate","wayOfPayment":{"featureKey":"productionboostWood","context":"infoBox"},"id":"buttonv26","version":"textButtonV1"}]);
+        });
+    </script></li><li id="infoID_726" class="unreaded"><p><a class="infoboxDeleteButton" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" data-id="726"><img src="./TTwars nor8_files/x.gif" class="del" alt="del"></a>Clay production boost is Expired.</p><button type="button" class="textButtonV1 gold  productionBoostButton clay" coins="5" value="Activate" id="buttonP27" version="textButtonV1"><div>Activate<i class="goldIcon"></i><span class="goldValue">5</span></div></button><script type="text/javascript" id="buttonP27_script">
+        jQuery('#buttonP27').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"textButtonV1 gold  productionBoostButton clay","title":"Activate now &lt;br&gt; Bonus duration in days: &lt;span class=&quot;bold&quot;&gt;1&lt;\/span&gt; hour","coins":5,"value":"Activate","wayOfPayment":{"featureKey":"productionboostClay","context":"infoBox"},"id":"buttonP27","version":"textButtonV1"}]);
+        });
+    </script></li><li id="infoID_727" class="unreaded"><p><a class="infoboxDeleteButton" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" data-id="727"><img src="./TTwars nor8_files/x.gif" class="del" alt="del"></a>Iron production boost is Expired.</p><button type="button" class="textButtonV1 gold  productionBoostButton iron" coins="5" value="Activate" id="buttonK28" version="textButtonV1"><div>Activate<i class="goldIcon"></i><span class="goldValue">5</span></div></button><script type="text/javascript" id="buttonK28_script">
+        jQuery('#buttonK28').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"textButtonV1 gold  productionBoostButton iron","title":"Activate now &lt;br&gt; Bonus duration in days: &lt;span class=&quot;bold&quot;&gt;1&lt;\/span&gt; hour","coins":5,"value":"Activate","wayOfPayment":{"featureKey":"productionboostIron","context":"infoBox"},"id":"buttonK28","version":"textButtonV1"}]);
+        });
+    </script></li><li id="infoID_728" class="unreaded"><p><a class="infoboxDeleteButton" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" data-id="728"><img src="./TTwars nor8_files/x.gif" class="del" alt="del"></a>Crop production boost is Expired.</p><button type="button" class="textButtonV1 gold  productionBoostButton crop" coins="5" value="Activate" id="buttono29" version="textButtonV1"><div>Activate<i class="goldIcon"></i><span class="goldValue">5</span></div></button><script type="text/javascript" id="buttono29_script">
+        jQuery('#buttono29').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"textButtonV1 gold  productionBoostButton crop","title":"Activate now &lt;br&gt; Bonus duration in days: &lt;span class=&quot;bold&quot;&gt;1&lt;\/span&gt; hour","coins":5,"value":"Activate","wayOfPayment":{"featureKey":"productionboostCrop","context":"infoBox"},"id":"buttono29","version":"textButtonV1"}]);
+        });
+    </script></li><li id="infoID_729" class="unreaded"><p><a class="infoboxDeleteButton" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" data-id="729"><img src="./TTwars nor8_files/x.gif" class="del" alt="del"></a>Your plus account is Expired.</p><button type="button" class="textButtonV1 gold " value="Activate" coins="10" id="buttona30" version="textButtonV1"><div>Activate<i class="goldIcon"></i><span class="goldValue">10</span></div></button><script type="text/javascript" id="buttona30_script">
+        jQuery('#buttona30').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"textButtonV1 gold ","value":"Activate","title":"Activate now.&lt;br&gt; Duration: &lt;span class=&quot;bold&quot;&gt;2&lt;\/span&gt; hour day","coins":10,"wayOfPayment":{"featureKey":"plus","context":"infoBox"},"id":"buttona30","version":"textButtonV1"}]);
+        });
+    </script></li>        </ul>
+    </div>
+        <div class="toggle">
+        <button type="button" class="toggleBox" onclick="">
+            <svg class="toggleArrow" viewBox="0 0 18 11">
+                <filter id="insetShadow">
+                    <feflood flood-color="#a2e25e"></feflood>
+                    <fecomposite in2="SourceAlpha" operator="out"></fecomposite>
+                    <fegaussianblur stdDeviation="2" result="blur"></fegaussianblur>
+                    <fecomposite operator="atop" in2="SourceGraphic"></fecomposite>
+                </filter>
+                <path class="caret" d="M1 10H17L9 1z"></path>
+                <path class="glow" d="M1 10H17L9 1z"></path>
+            </svg>
+        </button>
+    </div>
+    <script type="text/javascript">
+        jQuery(function () {
+            Travian.Game.Layout.setupInfoboxItemsDeletionWithMessage('Delete this message permanently?', 'Confirm');
+            Travian.Translation.add(
+                {
+                    'infobox_collapsed': 'Display more messages',
+                    'infobox_expanded': 'Hide messages'
+                });
+
+            var box = jQuery('#sidebarBoxInfobox');
+            box.find('button.toggleBox').click(function (e) {
+                Travian.Game.Layout.toggleBox(box, 'travian_toggle', 'infobox');
+            });
+        });
+    </script>
+    </div><div id="sidebarBoxLinklist" class="sidebarBox   ">
+    <div class="header">
+        <div class="buttonsWrapper">
+            <a id="buttonI31" class="layoutButton buttonFramed withIcon round edit gold" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#">
+                <svg viewBox="0 0 15.59 20" class="edit">
+                    <g class="outline">
+                        <path d="M15.59 18.55V20H0v-1.45zM11.52 0L1.05 13.47.92 17.4l3.65-1.21L15 2.73zm.25 7L8.16 4.33 9 3.2l3.6 2.62z"></path>
+                    </g>
+                    <g class="icon">
+                        <path d="M15.59 18.55V20H0v-1.45zM11.52 0L1.05 13.47.92 17.4l3.65-1.21L15 2.73zm.25 7L8.16 4.33 9 3.2l3.6 2.62z"></path>
+                    </g>
+                </svg>
+            </a>
+
+                            <script type="text/javascript">
+                    jQuery('#buttonI31').click(function (event) {
+                        jQuery(window).trigger('buttonClicked', [event.delegateTarget, {
+                            "type": "gold",
+                            "loadTitle": false,
+                            "boxId": "",
+                            "disabled": false,
+                            "attention": false,
+                            "colorBlind": false,
+                            "class": "",
+                            "id": "buttonI31",
+                            "redirectUrl": "#",
+                            "redirectUrlExternal": "",
+                            "svg": "sideBar\/edit.svg",
+                            "content": "",
+                            "plusDialog": {
+                                "featureKey": "linkList",
+                                "infoIcon": "https:\/\/answers.travian.com\/index.php?aid=Travian Answers#go2answer",
+                                "cssClass": "premiumFeaturePackage premiumFeaturePlus paymentShopV4",
+                                "premiumFeatureDialogVersion": 2,
+                                "version": 2,
+                                "paymentShopVersion": 4
+                            },
+                            "title": "Travian Plus allows you to make a link list.",
+                            "onclick": "event.preventDefault();"
+                        }]);
+                    });
+                </script>
+                    </div>
+    </div>
+
+    <div class="content">
+        <div class="boxTitle">Link list</div>
+                                    <ul><li class=""><a href="https://nor8.ttwars.com/voucher.php"> <span class="name">Vouchers (GoldBank)</span></a></li><li class=""><a href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39">  <span class="name">Farmlist</span></a></li><li class="newTab"><a target="_blank" style="color: orange; font-weight: bold" href="https://nor8.ttwars.com/messages.php?t=1&amp;id=2"><svg viewBox="0 0 20 19.6" class="link"><path d="M15.31 10.86v3.94a2.62 2.62 0 0 1-2.63 2.62H4.8a2.62 2.62 0 0 1-2.63-2.62V6.92A2.63 2.63 0 0 1 4.8 4.29h5.12V2.12H4a4 4 0 0 0-4 4v9.42a4 4 0 0 0 4 4h9.42a4 4 0 0 0 4-4v-4.68zM19.51 0H12.1a.48.48 0 0 0-.2.81l1.28 1.29.42.42a.49.49 0 0 1 0 .69l-.49.5-1 1L10 6.79l-3 3a.49.49 0 0 0 0 .69L9.53 13a.51.51 0 0 0 .69 0l2.7-2.71 1.57-1.57 1.62-1.62.66-.65a.47.47 0 0 1 .69 0l1.71 1.7a.48.48 0 0 0 .83-.39V.49a.49.49 0 0 0-.49-.49z"></path></svg><span class="name">Contact Support</span></a></li></ul>            <div class="linklistNotice">Travian Plus allows you to make a link list.</div>
+            </div>
+</div>
+<div id="sidebarBoxLinklist" class="sidebarBox   ">
+    <div class="header"></div>
+    <div class="content">
+        <div class="boxTitle">Settings</div>
+        <table class="theme-chooser-table">
+            <tbody><tr>
+                <td>Language:</td>
+                <td>
+                    <select id="game-language">
+                        <option value="en" selected="selected">English</option><option value="cz">Čeština</option><option value="fr">Français </option><option value="ru">Russian</option><option value="ba">Indonesia</option><option value="tr">Turkish</option><option value="it">Italiano</option><option value="pt">Portuguese</option><option value="ae">العربية</option><option value="sa">السعودية</option><option value="ir">فارسي</option>                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Theme version:</td>
+                <td>
+                    <select id="game-theme">
+                        <option value="a17a8f72">Old Version</option><option value="a5232e5f" selected="selected">New Version</option>                    </select>
+                </td>
+            </tr>
+        </tbody></table>
+    </div>
+</div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div id="contentOuterContainer" class="size1">
+                                    <div id="stockBar">
+    <div class="warehouse">
+        <div class="capacity">
+            <i class="warehouse_medium"></i>
+            <div class="value" style="font-size: 9px;">‭280,000,000‬</div>
+        </div>
+        <a class="stockBarButton" href="https://nor8.ttwars.com/production.php?t=1">
+            <i class="lumber_small"></i>
+                        <div id="l1" style="font-size: 9px;" class="value">40,476,313</div>
+            <div class="barBox">
+                <div id="lbar1" class="bar stock" style="width: 14%;"></div>
+            </div>
+        </a>
+        <a class="stockBarButton" href="https://nor8.ttwars.com/production.php?t=2">
+            <i class="clay_small"></i>
+                        <div id="l2" style="font-size: 9px;" class="value">54,706,254</div>
+            <div class="barBox">
+                <div id="lbar2" class="bar stock" style="width: 20%;"></div>
+            </div>
+        </a>
+        <a class="stockBarButton" href="https://nor8.ttwars.com/production.php?t=3">
+            <i class="iron_small"></i>
+                        <div id="l3" style="font-size: 9px;" class="value">66,612,931</div>
+            <div class="barBox">
+                <div id="lbar3" class="bar stock" style="width: 24%;"></div>
+            </div>
+        </a>
+    </div>
+    <div class="granary">
+        <div class="capacity">
+            <i class="granary_medium"></i>
+            <div class="value" style="font-size: 9px;">‭280,000,000‬</div>
+        </div>
+        <a class="stockBarButton" href="https://nor8.ttwars.com/production.php?t=4">
+            <i class="crop_medium"></i>
+                        <div id="l4" style="font-size: 9px;" class="value ">135,016,333</div>
+            <div class="barBox">
+                <div id="lbar4" class="bar stock" style="width: 48%;"></div>
+            </div>
+        </a>
+        <a class="stockBarButton" href="https://nor8.ttwars.com/production.php?t=5">
+            <i class="freeCrop_medium"></i>
+            <div id="stockBarFreeCrop" style="font-size: 8px;" class="value">‭6859065‬</div>
+        </a>
+    </div>
+</div>
+<script type="text/javascript">
+    var resources = {};
+
+    resources.production = {
+        "l1": 2940000,
+        "l2": 3920000,
+        "l3": 3920000,
+        "l4": 6765811,
+        "l5": 6859065    };
+    resources.storage = {
+        "l1": 40299608,
+        "l2": 54470615,
+        "l3": 66377292,
+        "l4": 134609759    };
+    resources.maxStorage = {
+        "l1": 280000000,
+        "l2": 280000000,
+        "l3": 280000000,
+        "l4": 280000000    };
+</script>
+                                <div class="contentTitle">
+                                            <a id="closeContentButton" class="contentTitleButton buttonFramed green withIcon rectangle" href="https://nor8.ttwars.com/dorf1.php">
+                            <svg viewBox="0 0 20 20"><g class="outline">
+                                    <path d="M0 17.01L7.01 10 .14 3.13 3.13.14 10 7.01 17.01 0 20 2.99 12.99 10l6.87 6.87-2.99 2.99L10 12.99 2.99 20 0 17.01z"></path>
+                                </g><g class="icon">
+                                    <path d="M0 17.01L7.01 10 .14 3.13 3.13.14 10 7.01 17.01 0 20 2.99 12.99 10l6.87 6.87-2.99 2.99L10 12.99 2.99 20 0 17.01z"></path>
+                                </g></svg>
+                        </a>
+                                                                <a id="answersButton" class="contentTitleButton buttonFramed withIcon rectangle green" href="http://t4answers.ttwars.com/?lang=en&amp;aid=1#go2answer" target="_blank">&nbsp;</a>
+                                    </div>
+                <div class="contentContainer">
+                    <div id="content" class="build">
+                        <h1 class="titleInHeader">Rally Point <span class="level">level 20</span></h1><div id="build" class="gid16 level20">
+    <a id="tabFavorButton" class="contentTitleButton buttonFramed green withIcon rectangle" onclick="Travian.api(&#39;ajax/tabFavorite&#39;, {data: {name: &#39;buildingRallyPoint&#39;,number: &#39;99&#39;},success: function(data) {if (data.success) { jQuery(&#39;.tabFavorWrapper .favor&#39;).removeClass(&#39;favorActive&#39;);jQuery(&#39;.tabFavorWrapper .favor.favorKey99&#39;).addClass(&#39;favorActive&#39;);}}});return false;">&nbsp;</a>
+
+    <div class="contentNavi subNavi tabFavorWrapper">
+        <button type="button" class="scrollFrom" disabled="disabled"></button>
+        <div class="scrollingContainer">
+                                            <div class="content
+
+        favor favorKey0        favorActive">
+                    <a id="buttons14" title="" class="tabItem  normal" href="https://nor8.ttwars.com/build.php?tt=0&amp;id=39">
+                        Management                    </a>
+                </div>
+                                                                    <div class="content
+
+        favor favorKey1        ">
+                    <a id="buttonY15" title="" class="tabItem  normal" href="https://nor8.ttwars.com/build.php?tt=1&amp;id=39">
+                        Overview                    </a>
+                </div>
+                                                                    <div class="content
+
+        favor favorKey2        ">
+                    <a id="buttonM16" title="" class="tabItem  normal" href="https://nor8.ttwars.com/build.php?tt=2&amp;id=39">
+                        Send Troops                    </a>
+                </div>
+                                                                    <div class="content
+
+        favor favorKey3        ">
+                    <a id="buttonP17" title="" class="tabItem  normal" href="https://nor8.ttwars.com/build.php?tt=3&amp;id=39">
+                        Combat Simulator                    </a>
+                </div>
+                                                                    <div class="content
+
+        favor favorKey99        ">
+                    <a id="buttonk18" class="tabItem  active" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39">
+                        Farm list                    </a>
+                </div>
+                                            </div>
+        <button type="button" class="scrollTo" disabled="disabled"></button>
+    </div>
+<div class="navigationSpacer"></div>
+<div class="contentNavi tabNavi tabFavorSubWrapper">
+    <div title="" class="container active">
+        <div class="background-start">&nbsp;</div>
+        <div class="background-end">&nbsp;</div>
+        <div class="content favor">
+            <a id="buttonu6" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39" class="tabItem">
+                Farmlists            </a>
+        </div>
+    </div>
+    <script type="text/javascript">
+        if (jQuery('#buttonu6')) {
+            jQuery('#buttonu6').click(function (event) {
+                jQuery(window).trigger('tabClicked', [this, {
+                    "class": "active",
+                    "title": false,
+                    "target": false,
+                    "id": "buttonu6",
+                    "href": "build.php?tt=99&id=39",
+                    "onclick": false,
+                    "enabled": true,
+                    "text": "Farmlists",
+                    "dialog": false,
+                    "plusDialog": false,
+                    "goldclubDialog": false,
+                    "containerId": "",
+                    "buttonIdentifier": "buttonu6"
+                }]);
+
+            });
+        }
+    </script>
+    <div title="" class="container ">
+        <div class="background-start">&nbsp;</div>
+        <div class="background-end">&nbsp;</div>
+        <div class="content favor">
+            <a id="buttonW7" href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39&amp;tab=autoraid" class="tabItem">
+                Autoraid            </a>
+        </div>
+    </div>
+    <script type="text/javascript">
+        if (jQuery('#buttonW7')) {
+            jQuery('#buttonW7').click(function (event) {
+                jQuery(window).trigger('tabClicked', [this, {
+                    "class": "",
+                    "title": false,
+                    "target": false,
+                    "id": "buttonW7",
+                    "href": "build.php?tt=99&id=39&tab=autoraid",
+                    "onclick": false,
+                    "enabled": true,
+                    "text": "Autoraid",
+                    "dialog": false,
+                    "plusDialog": false,
+                    "goldclubDialog": false,
+                    "containerId": "",
+                    "buttonIdentifier": "buttonW7"
+                }]);
+
+            });
+        }
+    </script>
+    <div class="clear"></div>
+</div>
+<button type="button" class="textButtonV1 gold addFarms" coins="500" onclick="" value="Automatically add unique 100 farms" id="buttone8" version="textButtonV1"><div>Automatically add unique 100 farms<i class="goldIcon"></i><span class="goldValue">500</span></div></button><script type="text/javascript" id="buttone8_script">
+        jQuery('#buttone8').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"textButtonV1 gold addFarms","title":"Automatically add unique 100 farms","coins":500,"wayOfPayment":{"featureKey":"addFarms","context":"ExtraModules"},"onclick":"","value":"Automatically add unique 100 farms","id":"buttone8","version":"textButtonV1"}]);
+        });
+    </script><br><br><div id="raidList">
+                <div class="villageWrapper" data-did="298172">
+            <a name="did298172"></a>
+            <div class="villageHeadline">
+                <a class="villageName" href="https://nor8.ttwars.com/build.php?gid=16&amp;tt=99&amp;newdid=298172">
+                    2                </a>
+                <a class="createNew " href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" onclick="Travian.Game.RaidList.showCreateNewList(298172); return false;">
+                    <div class="inlineIcon " title="">
+                        <svg viewBox="0 0 20 16" class="createNewIcon">
+                            <path d="M18 2h-8L8 0H2a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2zm-1 8h-3v3h-2v-3H9V8h3V5h2v3h3z"></path>
+                        </svg>
+                        <span class="value ">Create new list</span>
+                    </div>
+                </a>
+                <a class="createNew disabled hidden">
+                    <div class="inlineIcon " title="">
+                        <svg viewBox="0 0 20 16" class="createNewIcon">
+                            <path d="M18 2h-8L8 0H2a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2zm-1 8h-3v3h-2v-3H9V8h3V5h2v3h3z"></path>
+                        </svg>
+                        <span class="value ">Create new list</span>
+                    </div>
+                </a>
+            </div>
+                                            <div class="dropContainer" data-sortindex="1">
+    <div class="raidList" id="raidList54" data-listid="54">
+        <div class="raidListHeadline">
+            <div class="dragAndDrop">
+                <svg viewBox="0 0 4 24">
+                    <circle cx="2" cy="2" r="2"></circle>
+                    <circle cx="2" cy="12" r="2"></circle>
+                    <circle cx="2" cy="22" r="2"></circle>
+                </svg>
+            </div>
+            <div class="listName">
+                <div class="inlineIcon " title="">
+                    <a onclick="Travian.Game.RaidList.showUpdateList(54)">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="editIcon">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                        </svg>
+                    </a>
+                    <span class="value ">1</span>
+                </div>
+            </div>
+            <div class="slots">
+                <div>
+                    <i class="attack"></i>
+                    <span class="value">
+                        ‭<span class="runningRaids">‭0‬</span>/<span class="slotsCount">‭2‬</span>‬&nbsp;being raided                    </span>
+                </div>
+            </div>
+            <form method="post" action="https://nor8.ttwars.com/build.php?gid=16&amp;tt=99">
+                <input type="hidden" name="a" value="f1819c">
+                <input type="hidden" name="sort" value="distance">
+                <input type="hidden" name="direction" value="asc">
+                <input type="hidden" name="lid" value="54">
+                <button type="submit" class="textButtonV1 green startButton" value="Start" onclick="Travian.Game.RaidList.startRaid(54)" id="buttonX9" version="textButtonV1">Start</button><script type="text/javascript" id="buttonX9_script">
+        jQuery('#buttonX9').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"submit","class":"textButtonV1 green startButton","value":"Start","onclick":"Travian.Game.RaidList.startRaid(54)","id":"buttonX9","version":"textButtonV1","title":"Start"}]);
+        });
+    </script>            </form>
+            <div class="expandCollapse collapsed" onclick="Travian.Game.RaidList.toggleList(54);">
+                <img alt="Loading..." class="loading" src="./TTwars nor8_files/x.gif">
+                <svg viewBox="0 0 12 7.41">
+                    <path d="M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="raidListContent hide"></div>
+    </div>
+</div>
+                                            <div class="dropContainer" data-sortindex="2">
+    <div class="raidList" id="raidList55" data-listid="55">
+        <div class="raidListHeadline">
+            <div class="dragAndDrop">
+                <svg viewBox="0 0 4 24">
+                    <circle cx="2" cy="2" r="2"></circle>
+                    <circle cx="2" cy="12" r="2"></circle>
+                    <circle cx="2" cy="22" r="2"></circle>
+                </svg>
+            </div>
+            <div class="listName">
+                <div class="inlineIcon " title="">
+                    <a onclick="Travian.Game.RaidList.showUpdateList(55)">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="editIcon">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                        </svg>
+                    </a>
+                    <span class="value ">2</span>
+                </div>
+            </div>
+            <div class="slots">
+                <div>
+                    <i class="attack"></i>
+                    <span class="value">
+                        ‭<span class="runningRaids">‭0‬</span>/<span class="slotsCount">‭2‬</span>‬&nbsp;being raided                    </span>
+                </div>
+            </div>
+            <form method="post" action="https://nor8.ttwars.com/build.php?gid=16&amp;tt=99">
+                <input type="hidden" name="a" value="f1819c">
+                <input type="hidden" name="sort" value="distance">
+                <input type="hidden" name="direction" value="asc">
+                <input type="hidden" name="lid" value="55">
+                <button type="submit" class="textButtonV1 green startButton" value="Start" onclick="Travian.Game.RaidList.startRaid(55)" id="buttonN10" version="textButtonV1">Start</button><script type="text/javascript" id="buttonN10_script">
+        jQuery('#buttonN10').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"submit","class":"textButtonV1 green startButton","value":"Start","onclick":"Travian.Game.RaidList.startRaid(55)","id":"buttonN10","version":"textButtonV1","title":"Start"}]);
+        });
+    </script>            </form>
+            <div class="expandCollapse collapsed" onclick="Travian.Game.RaidList.toggleList(55);">
+                <img alt="Loading..." class="loading" src="./TTwars nor8_files/x.gif">
+                <svg viewBox="0 0 12 7.41">
+                    <path d="M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="raidListContent hide"></div>
+    </div>
+</div>
+                                            <div class="dropContainer" data-sortindex="3">
+    <div class="raidList" id="raidList56" data-listid="56">
+        <div class="raidListHeadline">
+            <div class="dragAndDrop">
+                <svg viewBox="0 0 4 24">
+                    <circle cx="2" cy="2" r="2"></circle>
+                    <circle cx="2" cy="12" r="2"></circle>
+                    <circle cx="2" cy="22" r="2"></circle>
+                </svg>
+            </div>
+            <div class="listName">
+                <div class="inlineIcon " title="">
+                    <a onclick="Travian.Game.RaidList.showUpdateList(56)">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="editIcon">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                        </svg>
+                    </a>
+                    <span class="value ">3</span>
+                </div>
+            </div>
+            <div class="slots">
+                <div>
+                    <i class="attack"></i>
+                    <span class="value">
+                        ‭<span class="runningRaids">‭0‬</span>/<span class="slotsCount">‭2‬</span>‬&nbsp;being raided                    </span>
+                </div>
+            </div>
+            <form method="post" action="https://nor8.ttwars.com/build.php?gid=16&amp;tt=99">
+                <input type="hidden" name="a" value="f1819c">
+                <input type="hidden" name="sort" value="distance">
+                <input type="hidden" name="direction" value="asc">
+                <input type="hidden" name="lid" value="56">
+                <button type="submit" class="textButtonV1 green startButton" value="Start" onclick="Travian.Game.RaidList.startRaid(56)" id="buttonp11" version="textButtonV1">Start</button><script type="text/javascript" id="buttonp11_script">
+        jQuery('#buttonp11').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"submit","class":"textButtonV1 green startButton","value":"Start","onclick":"Travian.Game.RaidList.startRaid(56)","id":"buttonp11","version":"textButtonV1","title":"Start"}]);
+        });
+    </script>            </form>
+            <div class="expandCollapse collapsed" onclick="Travian.Game.RaidList.toggleList(56);">
+                <img alt="Loading..." class="loading" src="./TTwars nor8_files/x.gif">
+                <svg viewBox="0 0 12 7.41">
+                    <path d="M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="raidListContent hide"></div>
+    </div>
+</div>
+                                            <div class="dropContainer" data-sortindex="4">
+    <div class="raidList" id="raidList57" data-listid="57">
+        <div class="raidListHeadline">
+            <div class="dragAndDrop">
+                <svg viewBox="0 0 4 24">
+                    <circle cx="2" cy="2" r="2"></circle>
+                    <circle cx="2" cy="12" r="2"></circle>
+                    <circle cx="2" cy="22" r="2"></circle>
+                </svg>
+            </div>
+            <div class="listName">
+                <div class="inlineIcon " title="">
+                    <a onclick="Travian.Game.RaidList.showUpdateList(57)">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="editIcon">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                        </svg>
+                    </a>
+                    <span class="value ">4</span>
+                </div>
+            </div>
+            <div class="slots">
+                <div>
+                    <i class="attack"></i>
+                    <span class="value">
+                        ‭<span class="runningRaids">‭0‬</span>/<span class="slotsCount">‭2‬</span>‬&nbsp;being raided                    </span>
+                </div>
+            </div>
+            <form method="post" action="https://nor8.ttwars.com/build.php?gid=16&amp;tt=99">
+                <input type="hidden" name="a" value="f1819c">
+                <input type="hidden" name="sort" value="distance">
+                <input type="hidden" name="direction" value="asc">
+                <input type="hidden" name="lid" value="57">
+                <button type="submit" class="textButtonV1 green startButton" value="Start" onclick="Travian.Game.RaidList.startRaid(57)" id="buttonM12" version="textButtonV1">Start</button><script type="text/javascript" id="buttonM12_script">
+        jQuery('#buttonM12').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"submit","class":"textButtonV1 green startButton","value":"Start","onclick":"Travian.Game.RaidList.startRaid(57)","id":"buttonM12","version":"textButtonV1","title":"Start"}]);
+        });
+    </script>            </form>
+            <div class="expandCollapse collapsed" onclick="Travian.Game.RaidList.toggleList(57);">
+                <img alt="Loading..." class="loading" src="./TTwars nor8_files/x.gif">
+                <svg viewBox="0 0 12 7.41">
+                    <path d="M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="raidListContent hide"></div>
+    </div>
+</div>
+                                            <div class="dropContainer" data-sortindex="5">
+    <div class="raidList" id="raidList58" data-listid="58">
+        <div class="raidListHeadline">
+            <div class="dragAndDrop">
+                <svg viewBox="0 0 4 24">
+                    <circle cx="2" cy="2" r="2"></circle>
+                    <circle cx="2" cy="12" r="2"></circle>
+                    <circle cx="2" cy="22" r="2"></circle>
+                </svg>
+            </div>
+            <div class="listName">
+                <div class="inlineIcon " title="">
+                    <a onclick="Travian.Game.RaidList.showUpdateList(58)">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" class="editIcon">
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+                        </svg>
+                    </a>
+                    <span class="value ">5</span>
+                </div>
+            </div>
+            <div class="slots">
+                <div>
+                    <i class="attack"></i>
+                    <span class="value">
+                        ‭<span class="runningRaids">‭0‬</span>/<span class="slotsCount">‭2‬</span>‬&nbsp;being raided                    </span>
+                </div>
+            </div>
+            <form method="post" action="https://nor8.ttwars.com/build.php?gid=16&amp;tt=99">
+                <input type="hidden" name="a" value="f1819c">
+                <input type="hidden" name="sort" value="distance">
+                <input type="hidden" name="direction" value="asc">
+                <input type="hidden" name="lid" value="58">
+                <button type="submit" class="textButtonV1 green startButton" value="Start" onclick="Travian.Game.RaidList.startRaid(58)" id="buttonv13" version="textButtonV1">Start</button><script type="text/javascript" id="buttonv13_script">
+        jQuery('#buttonv13').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"submit","class":"textButtonV1 green startButton","value":"Start","onclick":"Travian.Game.RaidList.startRaid(58)","id":"buttonv13","version":"textButtonV1","title":"Start"}]);
+        });
+    </script>            </form>
+            <div class="expandCollapse collapsed" onclick="Travian.Game.RaidList.toggleList(58);">
+                <img alt="Loading..." class="loading" src="./TTwars nor8_files/x.gif">
+                <svg viewBox="0 0 12 7.41">
+                    <path d="M1.41 0L6 4.58 10.59 0 12 1.41l-6 6-6-6z"></path>
+                </svg>
+            </div>
+        </div>
+        <div class="raidListContent hide"></div>
+    </div>
+</div>
+                    </div>
+            <div class="villageWrapper" data-did="296570">
+            <a name="did296570"></a>
+            <div class="villageHeadline">
+                <a class="villageName" href="https://nor8.ttwars.com/build.php?gid=16&amp;tt=99&amp;newdid=296570">
+                    3                </a>
+                <a class="createNew " href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#" onclick="Travian.Game.RaidList.showCreateNewList(296570); return false;">
+                    <div class="inlineIcon " title="">
+                        <svg viewBox="0 0 20 16" class="createNewIcon">
+                            <path d="M18 2h-8L8 0H2a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2zm-1 8h-3v3h-2v-3H9V8h3V5h2v3h3z"></path>
+                        </svg>
+                        <span class="value ">Create new list</span>
+                    </div>
+                </a>
+                <a class="createNew disabled hidden">
+                    <div class="inlineIcon " title="">
+                        <svg viewBox="0 0 20 16" class="createNewIcon">
+                            <path d="M18 2h-8L8 0H2a2 2 0 00-2 2v12a2 2 0 002 2h16a2 2 0 002-2V4a2 2 0 00-2-2zm-1 8h-3v3h-2v-3H9V8h3V5h2v3h3z"></path>
+                        </svg>
+                        <span class="value ">Create new list</span>
+                    </div>
+                </a>
+            </div>
+                    </div>
+    </div>
+
+<script type="text/javascript">
+    Travian.Game.RaidList.loadLists([]);
+</script>
+<script type="text/javascript">
+    Travian.Game.RaidList.enableDragAndDropSorting();
+    Travian.Game.RaidList.captchaField = 'g-recaptcha-response';
+</script>
+</div>                        <div class="clear"></div>
+                    </div>
+                    <div class="clear">&nbsp;</div>
+                </div>
+                <div class="contentFooter"></div>
+            </div>
+            <div id="sidebarAfterContent" class="sidebar afterContent">
+                <div class="sidebarBoxWrapper">
+                    <div id="sidebarBoxActiveVillage" class="sidebarBox   ">
+    <div class="header ">
+        <div class="buttonsWrapper">
+        <a class="layoutButton buttonFramed withIcon round market gold withIcon" id="buttont35"><svg viewBox="0 0 20.21 18" class="market"><g class="outline">
+    <path d="M17.12 7L17 3.43h1V2h-6V1h-1V0H9v1H8v1H2v1.43h1L2.92 6.9C1.89 7.47 0 8.71 0 10.14a3.58 3.58 0 1 0 7.15 0c0-1.47-2-2.74-3-3.29L4 3.43h5V15H8v1H6v1H5v1h10v-1h-1v-1h-2v-1h-1V3.43h5L15.9 7c-1 .54-3 1.81-3 3.29a3.67 3.67 0 0 0 3.75 3.5 3.75 3.75 0 0 0 3.57-3.57c-.01-1.49-2.07-2.66-3.1-3.22zm-3.58 3.2c0-1 1.59-1.85 2.46-2.24.32-.15.55-.23.55-.23s.26.1.63.27c.87.4 2.36 1.24 2.36 2.2 0 1.37-6 1.37-6 0zm-13 0C.53 9.21 2.11 8.35 3 8c.33-.15.55-.23.55-.23s.26.1.63.27c.88.4 2.37 1.24 2.37 2.2-.02 1.33-6.02 1.33-6.02-.04z"></path>
+</g><g class="icon">
+    <path d="M17.12 7L17 3.43h1V2h-6V1h-1V0H9v1H8v1H2v1.43h1L2.92 6.9C1.89 7.47 0 8.71 0 10.14a3.58 3.58 0 1 0 7.15 0c0-1.47-2-2.74-3-3.29L4 3.43h5V15H8v1H6v1H5v1h10v-1h-1v-1h-2v-1h-1V3.43h5L15.9 7c-1 .54-3 1.81-3 3.29a3.67 3.67 0 0 0 3.75 3.5 3.75 3.75 0 0 0 3.57-3.57c-.01-1.49-2.07-2.66-3.1-3.22zm-3.58 3.2c0-1 1.59-1.85 2.46-2.24.32-.15.55-.23.55-.23s.26.1.63.27c.87.4 2.36 1.24 2.36 2.2 0 1.37-6 1.37-6 0zm-13 0C.53 9.21 2.11 8.35 3 8c.33-.15.55-.23.55-.23s.26.1.63.27c.88.4 2.37 1.24 2.37 2.2-.02 1.33-6.02 1.33-6.02-.04z"></path>
+</g></svg></a><script type="text/javascript" id="buttont35_script">
+        jQuery('#buttont35').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"class":"layoutButton buttonFramed withIcon round market gold withIcon","svg":"sideBar\/market.svg","id":"buttont35","type":"gold","disabled":false,"plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer","cssClass":"premiumFeaturePackage premiumFeaturePlus paymentShopV4","premiumFeatureDialogVersion":2,"version":2,"paymentShopVersion":4},"title":"Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;"}]);
+        });
+    </script>                <a class="layoutButton buttonFramed withIcon round barracks gold withIcon" id="buttonC34"><svg viewBox="0 0 18.46 20" class="barracks"><g class="outline">
+    <path d="M4.32 13.44l.88.56 3-2.51-1.88-1.42a7.16 7.16 0 0 0-2.81 1.25c-.21.48-1 2.74-1 2.74l-1.34.64 1.13-4.07.16-.63a5.27 5.27 0 0 1 10 3.29c-.17 1.14-.15 3 1.39 3.91l.39.32a3.79 3.79 0 0 1-2.05.71c-.82-.14-1.62-2.3-1.62-2.33a1.49 1.49 0 1 0-2.66 1 1.45 1.45 0 0 0 1.13.58A13.32 13.32 0 0 1 1.49 20zM0 1.14l3.93 4.51c1-.14 3.5-1 4.56-.76 4.63 1.2 6.51 5.46 5.41 10.51 1.37 1.17 0 0 3.12 3.15a24.7 24.7 0 0 0 1-3.15 13.83 13.83 0 0 0 .44-3.28L15.66 11l2.73-.34a12.59 12.59 0 0 0-1.8-5.36l-3.67 1.44 2.82-2.69A10.8 10.8 0 0 0 11.5.83l-2 3.43.75-3.86-.2-.06A10.61 10.61 0 0 0 6.14.07l.41 3.09L5.09.25A18.06 18.06 0 0 0 0 1.14z"></path>
+</g><g class="icon">
+    <path d="M4.32 13.44l.88.56 3-2.51-1.88-1.42a7.16 7.16 0 0 0-2.81 1.25c-.21.48-1 2.74-1 2.74l-1.34.64 1.13-4.07.16-.63a5.27 5.27 0 0 1 10 3.29c-.17 1.14-.15 3 1.39 3.91l.39.32a3.79 3.79 0 0 1-2.05.71c-.82-.14-1.62-2.3-1.62-2.33a1.49 1.49 0 1 0-2.66 1 1.45 1.45 0 0 0 1.13.58A13.32 13.32 0 0 1 1.49 20zM0 1.14l3.93 4.51c1-.14 3.5-1 4.56-.76 4.63 1.2 6.51 5.46 5.41 10.51 1.37 1.17 0 0 3.12 3.15a24.7 24.7 0 0 0 1-3.15 13.83 13.83 0 0 0 .44-3.28L15.66 11l2.73-.34a12.59 12.59 0 0 0-1.8-5.36l-3.67 1.44 2.82-2.69A10.8 10.8 0 0 0 11.5.83l-2 3.43.75-3.86-.2-.06A10.61 10.61 0 0 0 6.14.07l.41 3.09L5.09.25A18.06 18.06 0 0 0 0 1.14z"></path>
+</g></svg></a><script type="text/javascript" id="buttonC34_script">
+        jQuery('#buttonC34').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"class":"layoutButton buttonFramed withIcon round barracks gold withIcon","svg":"sideBar\/barracks.svg","id":"buttonC34","type":"gold","disabled":false,"plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer","cssClass":"premiumFeaturePackage premiumFeaturePlus paymentShopV4","premiumFeatureDialogVersion":2,"version":2,"paymentShopVersion":4},"title":"Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;"}]);
+        });
+    </script>                <a class="layoutButton buttonFramed withIcon round stable gold withIcon" id="buttonY33"><svg viewBox="0 0 19.07 20" class="stable"><g class="outline">
+    <path d="M0 13.31a.79.79 0 0 0 .38.69 2.06 2.06 0 0 0 2 1.66h.33a2 2 0 0 0 1.67-1.68A8.12 8.12 0 0 0 6.76 13c.88-.51 1.87-1.23 2-2 .48-1.78-1.69-2.77-1.59-2.89 2.19.76 2.29 2 2.09 4.17 0 .35-2.42 6.68-2.57 7.11 1.37.81 2.36.71 5.15.31 1.55-.58 3.58-2.36 4.82-3a24.9 24.9 0 0 0 1.15-2.92 10.38 10.38 0 0 0-.24-3.46v-.05a7.48 7.48 0 0 1 1.52.77c0-.05-1.72-2.45-2.08-3a11.18 11.18 0 0 0-.79-.95 8.33 8.33 0 0 0-2.33-1.51 16 16 0 0 1 1.64-.05c-.92-.51-1.08-.88-5.64-2.45a12.52 12.52 0 0 1-1.61-.53A5 5 0 0 0 6.63.29 1.82 1.82 0 0 0 5.6 0a17.54 17.54 0 0 1 .17 1.75c.05.8.08 1.53.08 1.53l-.15.16-.49-.28-1.63-.94a5.07 5.07 0 0 0 .78 2.55c-.34.28-.62.7-.87.65s-.93.72-.93.72c-.25.51.14 1.23.06 1.9A7.47 7.47 0 0 0 2 9.27a5.85 5.85 0 0 0-.39 1.44l-1 1.82a.8.8 0 0 0-.61.78zm7.47-9.49c.49.05 5.82 1.87 7.72 5.31a9 9 0 0 1 .81 6.92s-.66-4.38-1.8-6.22c-1.29-2.07-1.22-2-4.42-4.19-1.18-.82-2.21-1.8-2.31-1.82zM3.55 8c0-.48.23-1.37.71-1.37h.48c.33 0 .61.1.61.42a1.16 1.16 0 0 1-.54.85.93.93 0 0 1-.55.2c-.48-.04-.71.35-.71-.1z"></path>
+</g><g class="icon">
+    <path d="M0 13.31a.79.79 0 0 0 .38.69 2.06 2.06 0 0 0 2 1.66h.33a2 2 0 0 0 1.67-1.68A8.12 8.12 0 0 0 6.76 13c.88-.51 1.87-1.23 2-2 .48-1.78-1.69-2.77-1.59-2.89 2.19.76 2.29 2 2.09 4.17 0 .35-2.42 6.68-2.57 7.11 1.37.81 2.36.71 5.15.31 1.55-.58 3.58-2.36 4.82-3a24.9 24.9 0 0 0 1.15-2.92 10.38 10.38 0 0 0-.24-3.46v-.05a7.48 7.48 0 0 1 1.52.77c0-.05-1.72-2.45-2.08-3a11.18 11.18 0 0 0-.79-.95 8.33 8.33 0 0 0-2.33-1.51 16 16 0 0 1 1.64-.05c-.92-.51-1.08-.88-5.64-2.45a12.52 12.52 0 0 1-1.61-.53A5 5 0 0 0 6.63.29 1.82 1.82 0 0 0 5.6 0a17.54 17.54 0 0 1 .17 1.75c.05.8.08 1.53.08 1.53l-.15.16-.49-.28-1.63-.94a5.07 5.07 0 0 0 .78 2.55c-.34.28-.62.7-.87.65s-.93.72-.93.72c-.25.51.14 1.23.06 1.9A7.47 7.47 0 0 0 2 9.27a5.85 5.85 0 0 0-.39 1.44l-1 1.82a.8.8 0 0 0-.61.78zm7.47-9.49c.49.05 5.82 1.87 7.72 5.31a9 9 0 0 1 .81 6.92s-.66-4.38-1.8-6.22c-1.29-2.07-1.22-2-4.42-4.19-1.18-.82-2.21-1.8-2.31-1.82zM3.55 8c0-.48.23-1.37.71-1.37h.48c.33 0 .61.1.61.42a1.16 1.16 0 0 1-.54.85.93.93 0 0 1-.55.2c-.48-.04-.71.35-.71-.1z"></path>
+</g></svg></a><script type="text/javascript" id="buttonY33_script">
+        jQuery('#buttonY33').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"class":"layoutButton buttonFramed withIcon round stable gold withIcon","svg":"sideBar\/stable.svg","id":"buttonY33","type":"gold","disabled":false,"plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer","cssClass":"premiumFeaturePackage premiumFeaturePlus paymentShopV4","premiumFeatureDialogVersion":2,"version":2,"paymentShopVersion":4},"title":"Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;"}]);
+        });
+    </script>                <a class="layoutButton buttonFramed withIcon round workshop gold withIcon" id="buttonm32"><svg viewBox="0 0 20 18.8" class="workshop"><g class="outline">
+    <path d="M19.73 6l-.45-.22-2.77-.8.49-.43a1.45 1.45 0 0 0 0-2 1.3 1.3 0 0 0-1.9.06l-.48.6-.48-3-3.93.15.12 4.05L13 5l-1.75 2a14.68 14.68 0 0 0-4.32-1.53 3.58 3.58 0 0 0 .17-4.06C6.26.19 4.87-.42 2.71.33A12.12 12.12 0 0 1 4 1a3.11 3.11 0 0 1 1.12 1.29 3.82 3.82 0 0 1-.39 3A16.83 16.83 0 0 1 3 4.64 3.15 3.15 0 0 1 1.56 3.3a5.86 5.86 0 0 1-.69-2 4.42 4.42 0 0 0-.38 4.62 3.56 3.56 0 0 0 3.84 1.32 12 12 0 0 0 .46 6.93l-1.31 1.49a1.29 1.29 0 0 0 .12 1.81l.12.11a1.28 1.28 0 0 0 1.81-.12l.84-.95A12.12 12.12 0 0 0 9 18.8l1.66-1.13A16.33 16.33 0 0 1 8 14.62l1.3-1.45 2.32-2.6a9.7 9.7 0 0 1 .83 1 16.44 16.44 0 0 1 1.87 3.57L16 14.05a12.44 12.44 0 0 0-2-4.72 7.09 7.09 0 0 0-.59-.74l1.75-2 .8 2.87.24.46c.56.55 1.82.11 2.8-1s1.29-2.4.73-2.92zM7.82 10.72l-.6.67-.45.51a13.24 13.24 0 0 1-.53-4.66 13.15 13.15 0 0 1 3.29 1.58z"></path>
+</g><g class="icon">
+    <path d="M19.73 6l-.45-.22-2.77-.8.49-.43a1.45 1.45 0 0 0 0-2 1.3 1.3 0 0 0-1.9.06l-.48.6-.48-3-3.93.15.12 4.05L13 5l-1.75 2a14.68 14.68 0 0 0-4.32-1.53 3.58 3.58 0 0 0 .17-4.06C6.26.19 4.87-.42 2.71.33A12.12 12.12 0 0 1 4 1a3.11 3.11 0 0 1 1.12 1.29 3.82 3.82 0 0 1-.39 3A16.83 16.83 0 0 1 3 4.64 3.15 3.15 0 0 1 1.56 3.3a5.86 5.86 0 0 1-.69-2 4.42 4.42 0 0 0-.38 4.62 3.56 3.56 0 0 0 3.84 1.32 12 12 0 0 0 .46 6.93l-1.31 1.49a1.29 1.29 0 0 0 .12 1.81l.12.11a1.28 1.28 0 0 0 1.81-.12l.84-.95A12.12 12.12 0 0 0 9 18.8l1.66-1.13A16.33 16.33 0 0 1 8 14.62l1.3-1.45 2.32-2.6a9.7 9.7 0 0 1 .83 1 16.44 16.44 0 0 1 1.87 3.57L16 14.05a12.44 12.44 0 0 0-2-4.72 7.09 7.09 0 0 0-.59-.74l1.75-2 .8 2.87.24.46c.56.55 1.82.11 2.8-1s1.29-2.4.73-2.92zM7.82 10.72l-.6.67-.45.51a13.24 13.24 0 0 1-.53-4.66 13.15 13.15 0 0 1 3.29 1.58z"></path>
+</g></svg></a><script type="text/javascript" id="buttonm32_script">
+        jQuery('#buttonm32').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"class":"layoutButton buttonFramed withIcon round workshop gold withIcon","disabled":false,"svg":"sideBar\/workshop.svg","id":"buttonm32","type":"button","title":"Direct Links||For this feature you need Travian Plus activated.&lt;br \/&gt;","plusDialog":{"featureKey":"directLinks","infoIcon":"http:\/\/t4.answers.travian.com\/index.php?aid=Travian Answers#go2answer","cssClass":"premiumFeaturePackage premiumFeaturePlus paymentShopV4","premiumFeatureDialogVersion":2,"version":2,"paymentShopVersion":4}}]);
+        });
+    </script>            </div>
+    </div>
+    <div class="content">
+        <div class="playerName">Marlbero</div>
+        <div id="villageName" class="boxTitle editable">
+                        <form>
+                <input class="villageInput" type="text" maxlength="20" name="villageName" value="3">
+                <svg viewBox="0 0 12.79 18.77" class="rename">
+                    <path d="M4 15.61l1.68.9L.8 18.77 0 13.42l1.75.95zm8.25-13.39L8.36.12A1 1 0 0 0 7 .55L1.19 11.22a1 1 0 0 0 .42 1.41l3.89 2.1a1.05 1.05 0 0 0 1.41-.42l5.76-10.68a1 1 0 0 0-.42-1.41z"></path>
+                </svg>
+            </form>
+                    </div>
+        <div class="loyalty medium">
+            Loyalty: <span>‭‭100‬%‬</span>
+        </div>
+                <script type="text/javascript">
+            function saveChanges(newVillageName) {
+                Travian.api('ajax/changeVillageName', {
+                    data: {
+                        name: newVillageName,
+                        did: '296570'
+                    },
+                    success: function(data) {
+
+                    },
+                    error: function(body) {
+                        var errorDialog = new Travian.Dialog.Dialog({
+                            buttonOk: true,
+                            buttonCloseOnClickOk: true,
+                            preventFormSubmit: true,
+                            type: Travian.Dialog.DIALOG_TYPE_MODAL
+                        });
+                        errorDialog.setContent(body.errorMsg);
+                        errorDialog.show();
+                    }
+                });
+            }
+
+            $(function() {
+                var villageNameForm = jQuery('#villageName form');
+                var villageNameInput = jQuery('#villageName input');
+
+                villageNameInput.on('focusout', function (event, preventSave) {
+                    if(typeof(preventSave) === 'undefined') {
+                        saveChanges(villageNameInput.val())
+                    }
+                });
+
+                villageNameForm.on('submit', function (event) {
+                    event.preventDefault();
+                    villageNameInput.trigger('focusout', ['preventSave']);
+                    saveChanges(villageNameInput.val())
+                });
+            })
+        </script>
+            </div>
+</div>
+<div id="sidebarBoxVillagelist" class="sidebarBox toggleable collapsed ">
+    <div class="header ">
+        <div class="buttonsWrapper">
+            <a id="buttonp39" class="layoutButton buttonFramed withIcon round overview green   " href="https://nor8.ttwars.com/village/statistics">
+                <svg viewBox="0 0 20 14.92" class="overview"><g class="outline">
+    <path d="M10 1.41c4.61 0 8.34 6.05 8.34 6.05s-3.73 6.05-8.34 6.05-8.34-6-8.34-6 3.73-6 8.34-6M10 0C7.7 0 5.38 1.16 3.1 3.44A20.17 20.17 0 0 0 .46 6.72L0 7.46l.46.74a20.17 20.17 0 0 0 2.64 3.28c2.28 2.28 4.6 3.44 6.9 3.44s4.62-1.16 6.9-3.44a20.17 20.17 0 0 0 2.64-3.28l.46-.74-.46-.74a20.17 20.17 0 0 0-2.64-3.28C14.62 1.16 12.3 0 10 0zm.08 11.64a4.5 4.5 0 1 1 4.49-4.49 4.5 4.5 0 0 1-4.49 4.49zm0-7.88a3.39 3.39 0 1 0 3.38 3.39 3.39 3.39 0 0 0-3.38-3.39zm0 5.92a2.53 2.53 0 1 1 2.52-2.53 2.53 2.53 0 0 1-2.52 2.53z"></path>
+</g><g class="icon">
+    <path d="M10 1.41c4.61 0 8.34 6.05 8.34 6.05s-3.73 6.05-8.34 6.05-8.34-6-8.34-6 3.73-6 8.34-6M10 0C7.7 0 5.38 1.16 3.1 3.44A20.17 20.17 0 0 0 .46 6.72L0 7.46l.46.74a20.17 20.17 0 0 0 2.64 3.28c2.28 2.28 4.6 3.44 6.9 3.44s4.62-1.16 6.9-3.44a20.17 20.17 0 0 0 2.64-3.28l.46-.74-.46-.74a20.17 20.17 0 0 0-2.64-3.28C14.62 1.16 12.3 0 10 0zm.08 11.64a4.5 4.5 0 1 1 4.49-4.49 4.5 4.5 0 0 1-4.49 4.49zm0-7.88a3.39 3.39 0 1 0 3.38 3.39 3.39 3.39 0 0 0-3.38-3.39zm0 5.92a2.53 2.53 0 1 1 2.52-2.53 2.53 2.53 0 0 1-2.52 2.53z"></path>
+</g></svg>            </a>
+
+            <script type="text/javascript">
+                jQuery('#buttonx40').click(function (event) {
+                    jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"green","loadTitle":false,"boxId":"","disabled":false,"attention":false,"class":"","id":"button5ecc3afabd7b1","redirectUrl":"/village/statistics","redirectUrlExternal":"","svg":"sideBar\/overview.svg","content":""}]);
+                });
+            </script>
+        </div>
+    </div>
+    <div class="content">
+        <div class="expansionSlotInfo">
+            <div class="boxTitle">
+                Villages                <span class="slots">‭‭4‬/‭8‬‬</span>
+            </div>
+            <div class="barWrapper">
+                <div class="bar" style="width:22.32%">&nbsp;</div>
+            </div>
+        </div>
+        <ul>
+            <li class=""><a href="https://nor8.ttwars.com/build.php?newdid=297371&amp;id=39&amp;gid=16&amp;tt=99" accesskey="b" class=""><span class="iconAndNameWrapper"><svg viewBox="0 0 20 19.06" class="attack"><path d="M16.22 13.08l2.14-2.14-1.37-1.36-1.63 1.63-2.15-2.15 4.74-4.73L19.06 0l-4.32 1.11L10 5.85 5.26 1.11.94 0l1.11 4.33 4.74 4.73-2.15 2.15-1.63-1.63-1.37 1.36 2.14 2.14L0 16.86l2.21 2.2 3.78-3.77 2.13 2.13 1.37-1.37-1.63-1.63L10 12.28l2.14 2.14-1.63 1.63 1.37 1.37 2.14-2.13 3.77 3.77 2.21-2.2-3.78-3.78z"></path></svg><span class="name">1</span></span><span class="coordinatesGrid">‭<span class="coordinates coordinatesWrapper coordinatesAligned coordinatesltr"><span class="coordinateX">(-201</span><span class="coordinatePipe">|</span><span class="coordinateY">29)</span></span>‬</span></a> </li><li class=""><a href="https://nor8.ttwars.com/build.php?newdid=298172&amp;id=39&amp;gid=16&amp;tt=99" accesskey="b" class=""><span class="iconAndNameWrapper"><svg viewBox="0 0 20 19.06" class="attack"><path d="M16.22 13.08l2.14-2.14-1.37-1.36-1.63 1.63-2.15-2.15 4.74-4.73L19.06 0l-4.32 1.11L10 5.85 5.26 1.11.94 0l1.11 4.33 4.74 4.73-2.15 2.15-1.63-1.63-1.37 1.36 2.14 2.14L0 16.86l2.21 2.2 3.78-3.77 2.13 2.13 1.37-1.37-1.63-1.63L10 12.28l2.14 2.14-1.63 1.63 1.37 1.37 2.14-2.13 3.77 3.77 2.21-2.2-3.78-3.78z"></path></svg><span class="name">2</span></span><span class="coordinatesGrid">‭<span class="coordinates coordinatesWrapper coordinatesAligned coordinatesltr"><span class="coordinateX">(-201</span><span class="coordinatePipe">|</span><span class="coordinateY">28)</span></span>‬</span></a> </li><li class="active"><a href="https://nor8.ttwars.com/build.php?newdid=296570&amp;id=39&amp;gid=16&amp;tt=99" accesskey="b" class="active"><span class="iconAndNameWrapper"><svg viewBox="0 0 20 19.06" class="attack"><path d="M16.22 13.08l2.14-2.14-1.37-1.36-1.63 1.63-2.15-2.15 4.74-4.73L19.06 0l-4.32 1.11L10 5.85 5.26 1.11.94 0l1.11 4.33 4.74 4.73-2.15 2.15-1.63-1.63-1.37 1.36 2.14 2.14L0 16.86l2.21 2.2 3.78-3.77 2.13 2.13 1.37-1.37-1.63-1.63L10 12.28l2.14 2.14-1.63 1.63 1.37 1.37 2.14-2.13 3.77 3.77 2.21-2.2-3.78-3.78z"></path></svg><span class="name">3</span></span><span class="coordinatesGrid">‭<span class="coordinates coordinatesWrapper coordinatesAligned coordinatesltr"><span class="coordinateX">(-201</span><span class="coordinatePipe">|</span><span class="coordinateY">30)</span></span>‬</span></a> </li><li class=""><a href="https://nor8.ttwars.com/build.php?newdid=298973&amp;id=39&amp;gid=16&amp;tt=99" accesskey="b" class=""><span class="iconAndNameWrapper"><svg viewBox="0 0 20 19.06" class="attack"><path d="M16.22 13.08l2.14-2.14-1.37-1.36-1.63 1.63-2.15-2.15 4.74-4.73L19.06 0l-4.32 1.11L10 5.85 5.26 1.11.94 0l1.11 4.33 4.74 4.73-2.15 2.15-1.63-1.63-1.37 1.36 2.14 2.14L0 16.86l2.21 2.2 3.78-3.77 2.13 2.13 1.37-1.37-1.63-1.63L10 12.28l2.14 2.14-1.63 1.63 1.37 1.37 2.14-2.13 3.77 3.77 2.21-2.2-3.78-3.78z"></path></svg><span class="name">Marlbero`s village</span></span><span class="coordinatesGrid">‭<span class="coordinates coordinatesWrapper coordinatesAligned coordinatesltr"><span class="coordinateX">(-201</span><span class="coordinatePipe">|</span><span class="coordinateY">27)</span></span>‬</span></a> </li>        </ul>
+    </div>
+</div>
+<div id="sidebarBoxVillagelist" class="sidebarBox">
+    <div class="content">
+        <h3 style="text-align: center; margin-bottom: 1em; margin-top: -0.5em;">
+            Vote for gold.            (0)
+        </h3>
+                                                <button type="button" class="textButtonV1 gold" coins="50" onclick="window.open(&#39;https://topg.org/travian-private-servers/in-490034-208_32&#39;, &#39;_blank&#39;);" style="text-align: center; width: 100%; height: 32px; padding-top: 5px; text-align: center; font-size: 1.2em;" contentclassname="" id="buttonr41"><div class="">Vote  1 <i class="goldIcon"></i><span class="goldValue">50</span></div></button><script type="text/javascript" id="buttonr41_script">
+        jQuery('#buttonr41').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"textButtonV1 gold","disabled":false,"content":"Vote  1 ","coins":50,"onclick":"window.open('https:\/\/topg.org\/travian-private-servers\/in-490034-208_32', '_blank');","style":"text-align: center; width: 100%; height: 32px; padding-top: 5px; text-align: center; font-size: 1.2em;","contentClassName":null,"id":"buttonr41"}]);
+        });
+    </script>                <br><br>
+                            <button type="button" class="textButtonV1 gold" coins="50" onclick="window.open(&#39;https://www.arena-top100.com/index.php?a=in&amp;u=TTwars&amp;id=208_32&#39;, &#39;_blank&#39;);" style="text-align: center; width: 100%; height: 32px; padding-top: 5px; text-align: center; font-size: 1.2em;" contentclassname="" id="buttonn42"><div class="">Vote  2 <i class="goldIcon"></i><span class="goldValue">50</span></div></button><script type="text/javascript" id="buttonn42_script">
+        jQuery('#buttonn42').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"textButtonV1 gold","disabled":false,"content":"Vote  2 ","coins":50,"onclick":"window.open('https:\/\/www.arena-top100.com\/index.php?a=in&u=TTwars&id=208_32', '_blank');","style":"text-align: center; width: 100%; height: 32px; padding-top: 5px; text-align: center; font-size: 1.2em;","contentClassName":null,"id":"buttonn42"}]);
+        });
+    </script>                <br><br>
+                            <button type="button" class="textButtonV1 gold" coins="50" onclick="window.open(&#39;https://gtop100.com/topsites/Travian/sitedetails/TTwars-94786?vote=1&amp;pingUsername=208_32&#39;, &#39;_blank&#39;);" style="text-align: center; width: 100%; height: 32px; padding-top: 5px; text-align: center; font-size: 1.2em;" contentclassname="" id="buttonR43"><div class="">Vote  3 <i class="goldIcon"></i><span class="goldValue">50</span></div></button><script type="text/javascript" id="buttonR43_script">
+        jQuery('#buttonR43').click(function (event) {
+            jQuery(window).trigger('buttonClicked', [event.delegateTarget, {"type":"button","class":"textButtonV1 gold","disabled":false,"content":"Vote  3 ","coins":50,"onclick":"window.open('https:\/\/gtop100.com\/topsites\/Travian\/sitedetails\/TTwars-94786?vote=1&pingUsername=208_32', '_blank');","style":"text-align: center; width: 100%; height: 32px; padding-top: 5px; text-align: center; font-size: 1.2em;","contentClassName":null,"id":"buttonR43"}]);
+        });
+    </script>                <br><br>
+                        </div>
+</div>
+<div id="sidebarBoxQuestmaster" class="sidebarBox   ">
+    <div class="header ">
+        <button id="questmasterButton" title="" class="forceDisplayElement vid_6 highlighted on " type="button">
+            <img class="border" alt="" src="./TTwars nor8_files/x.gif">
+            <img class="animation" alt="" src="./TTwars nor8_files/x.gif">
+            <img class="mentor" alt="" src="./TTwars nor8_files/x.gif">
+                    </button>
+    </div>
+    <div class="content">
+        <div class="boxTitle">
+            Task List        </div>
+        <script type="text/javascript">
+            jQuery(function () {
+                Travian.Game.Quest.setOptions({
+                    isTutorial: false
+                });
+                                // Dialog an den Questmaster binden
+                jQuery('#questmasterButton').click(function (event) {
+                    Travian.Game.Quest.mentorClick('');
+                });
+            });
+        </script>
+        <ul id="mentorTaskList" class="">
+            <li data-questid="World_08" data-category="world"><a href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#"><span class="description">Alliance</span></a></li><li data-questid="World_13" data-category="world"><a href="https://nor8.ttwars.com/build.php?tt=99&amp;id=39#"><span class="description">Surroundings report</span></a></li>            <script type="text/javascript">
+                Travian.Translation.add('answers.tutorial_01_title', "Travian Answers");
+            </script>
+                    </ul>
+        <script type="text/javascript">
+            jQuery(function () {
+                Travian.Game.Quest.setOptions(
+                    {tipsTurnoffAjaxTrigger: false, tutorialData: {}, highlightSelectors: {}}                );
+                Travian.Game.Quest.addListData({"battle":{"questsTotal":15,"questsCompleted":15,"name":"battle","quests":[]},"economy":{"questsTotal":12,"questsCompleted":12,"name":"Economy","quests":[]},"world":{"questsTotal":16,"questsCompleted":14,"name":"World","quests":{"World_08":{"id":"World_08","name":"questV2.world_08_name","category":"world","stepType":"task","currentStep":"0","stepCount":2,"steps":[{"stepId":0,"type":"task","stepDescription":null},{"stepId":1,"type":"reward"}],"answersLink":""},"World_13":{"id":"World_13","name":"questV2.world_13_name","category":"world","stepType":"task","currentStep":"0","stepCount":2,"steps":[{"stepId":0,"type":"task","stepDescription":null},{"stepId":1,"type":"reward"}],"answersLink":""}}},"highlightSelectors":[]});
+                Travian.Game.Quest.bindListDelegation(jQuery('ul#mentorTaskList li'));
+            });
+        </script>
+    </div>
+    <div class="footer">
+    </div>
+</div>
+                </div>
+                <div class="clear"></div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div id="footer" class="size1">
+            <div id="pageLinks">
+                <a href="http://www.ttwars.com/" target="_blank">Homepage</a>
+                <a href="http://info.ttwars.com/" target="_blank">Forum</a>
+                <a href="http://www.ttwars.com/links.php" target="_blank">Links</a>
+                <a href="http://t4answers.ttwars.com/?lang=en&amp;" target="_blank">FAQ - Answers</a>
+                <a href="http://www.ttwars.com/agb.php" target="_blank">Terms</a>
+                <a href="http://www.ttwars.com/impressum.php" target="_blank">Imprint</a>
+                <div class="clear"></div>
+            </div>
+            <p class="copyright" style="direction:ltr;">© 2011 - 2023 Travian Games GmbH</p>
+        </div>
+                    <div id="servertime" class="stime">
+                Server Time:&nbsp;
+                <span class="timer " counting="up" value="1690294138">15:12:34</span>            </div>
+            </div>
+    <div id="ce"></div>
+</div>
+<script type="text/javascript">
+        var T4_feature_flags = {"vacationMode":true,"territory":false,"heroitems":true,"allianceBonus":true,"boostedStart":false,"pushingProtectionAlways":false,"tribesEgyptiansAndHuns":false,"hideFoolsArtifacts":false,"welcomeScreen":false};
+    Travian.Game.setLanguage("en-US");
+
+
+    // Travian.Game.contextHelpData = {"groupName":"Resource fields explained (dorf1.php)","steps":[{"content":"Resource fields provide needed building materials.<br \/>\n<br \/>\nUpgrade one of them to increase its production.<br \/>\n<br \/>\nClick on a resource field.","stickToElement":"#resourceFieldContainer > .buildingSlot17","boxPosition":"below","arrowPosition":50}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Resource fields explained (build.php)","steps":[{"content":"Upgrading resource fields increases their production.","stickToElement":"#build_value tbody > tr.nextPossible","boxPosition":"after","arrowPosition":50},{"content":"Upgrading resource fields and buildings costs time and resources.","stickToElement":"div.inlineIconList.resourceWrapper","boxPosition":"before","arrowPosition":50},{"content":"Add your building to the building queue and grow your village.","stickToElement":"div.upgradeButtonsContainer div.section1 button","boxPosition":"below","arrowPosition":50}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Building slots explained (dorf2.php)","steps":[{"content":"You can place new buildings in these building slots.<br \/>\n<br \/>\nClick on one to see what you can build.","stickToElement":"div#village_map .buildingSlot.a32.g0","boxPosition":"below","arrowPosition":20}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Tasks Reward","steps":[{"content":"This task is completed \u2013 claim your reward!","stickToElement":"ul#mentorTaskList li:has(svg.check):first","boxPosition":"before","arrowPosition":50}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Adventure - Map","steps":[{"content":"Your adventure is shown on the map.<br \/>\n<br \/>\nClick on it to take a closer look.","stickToElement":"MapID.adventure626779","boxPosition":"below","arrowPosition":20}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Start Hero Adventure - Attributes Tab","steps":[{"content":"Open this tab to go on exciting adventures!","stickToElement":".contentNavi .tabItem.adventuresTab ","boxPosition":"below","arrowPosition":20}],"restartableGroup":"Hero Attributes"};
+    // Travian.Game.contextHelpData = {"groupName":"Start Hero Adventure - Adventure Tab","steps":[{"content":"The coordinates give your hero a hint about the adventure&#39;s location.","stickToElement":"#adventureListForm td.coords","boxPosition":"above","arrowPosition":20},{"content":"Your hero needs some time to travel to the adventure.","stickToElement":"#adventureListForm td.moveTime","boxPosition":"above","arrowPosition":20},{"content":"Adventures come in different difficulties. Those with a red skull should only be attempted by a healthy, well-trained hero.","stickToElement":"#adventureListForm td.difficulty","boxPosition":"above","arrowPosition":20},{"content":"This countdown shows how much time you have left before the adventure disappears.","stickToElement":"#adventureListForm td.timeLeft","boxPosition":"above","arrowPosition":20},{"content":"Here you can continue to send your hero on an adventure.","stickToElement":"#adventureListForm td.goTo:last","boxPosition":"below","arrowPosition":20}],"restartableGroup":"Start Hero Adventure - Adventure Tab"};
+    // Travian.Game.contextHelpData = {"groupName":"Hero Attributes","steps":[{"content":"If you are lacking a specific resource, you can focus your hero&#39;s resource production on it.","stickToElement":"#attributes .resourcePick","boxPosition":"below","arrowPosition":50,"teaser":{"content":"Open \"Attributes\" to learn about how to adjust hero resource production.","stickToElement":"#attributes .openCloseSwitchBar","boxPosition":"above","arrowPosition":20}},{"content":"You can protect your hero from incoming battles that are already a lost cause. If you set all your troops to flee in a separate setting, your hero will hide automatically too.","stickToElement":"#attributes .attackBehaviour","boxPosition":"above","arrowPosition":50},{"content":"The fighting strength determines how much damage your hero inflicts in battle, and how little damage your hero takes in adventures.","stickToElement":"#attributepower","boxPosition":"after","arrowPosition":50,"dismissButton":true}],"restartableGroup":"Hero Attributes"};
+    // Travian.Game.contextHelpData = {"groupName":"","steps":[],"restartableGroup":"Hero Attributes"};
+    // Travian.Game.contextHelpData = {"groupName":"","steps":[],"restartableGroup":"Hero Auctions - Auctions Tab"};
+    // Travian.Game.contextHelpData = {"groupName":"Hero Auctions - Auctions Tab","steps":[{"content":"This is the amount of Silver you already own.","stickToElement":"#header .currency .ajaxReplaceableSilverAmount","boxPosition":"below","arrowPosition":20},{"content":"You can exchange Gold and Silver whenever you are in need of one or the other.","stickToElement":"#exchangeGoldToSilverInput","boxPosition":"below","arrowPosition":20},{"content":"Hover over an item to discover what it can be used for.","stickToElement":"#auction table td.icon:eq(0)","boxPosition":"above","arrowPosition":20},{"content":"If you&#39;re interested in the item and have enough Silver, you can place a bid here.","stickToElement":"#auction table th.bid","boxPosition":"above","arrowPosition":20,"dismissButton":true}]};
+    // Travian.Game.contextHelpData = {"groupName":"","steps":[],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Report received","steps":[{"content":"You received a new report.<br \/>\n<br \/>\nLet&#39;s check it out!","stickToElement":"div#navigation a.reports","boxPosition":"below","arrowPosition":20}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Report list (adventure report)","steps":[{"content":"Your hero reports from an adventure.<br \/>\n<br \/>\nLet&#39;s see what your hero found.","stickToElement":"form#reportsForm table#overview tbody > tr:has(img.iReport21) img.iReport","boxPosition":"below","arrowPosition":20}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Read report (adventure)","steps":[{"content":"Your hero gained XP\u2026","stickToElement":"div.adventureReport table.additionalInformation tbody.infos td.dropItems > div:eq(0)","boxPosition":"above","arrowPosition":20},{"content":"\u2026lost some health\u2026","stickToElement":"div.adventureReport table.additionalInformation tbody.infos td.dropItems > div:eq(1)","boxPosition":"above","arrowPosition":20},{"content":"\u2026and brought something back!","stickToElement":"div.adventureReport table.additionalInformation tbody.goods > tr:eq(1) > td","boxPosition":"below","arrowPosition":20,"dismissButton":true}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Beginners protection extending","steps":[{"content":"If you need more time to get prepared, you can extend your beginner&#39;s protection by 3 days.","stickToElement":"#sidebarBoxInfobox li.infoType_25","boxPosition":"after","arrowPosition":50,"dismissButton":true,"delay":0,"teaser":{"content":"You could extend your beginner&#39;s protection. Please expand the info box to continue.","stickToElement":"#sidebarBoxInfobox .toggle button.toggleBox","boxPosition":"below","arrowPosition":20}}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Building queue (dorf1.php)","steps":[{"content":"This is your village&#39;s current building queue.<br \/>\n<br \/>\nTry to add another building to it.","stickToElement":".buildingList .lvl","boxPosition":"below","arrowPosition":50}],"restartableGroup":null};
+    // Travian.Game.contextHelpData = {"groupName":"Hero resources in inventory - Hero page","steps":[{"content":"As long as these resources are in the hero&#39;s inventory, they can&#39;t be raided.","stickToElement":"#itemsToSale div[class*=\"male_item_145\"]","boxPosition":"above","arrowPosition":50},{"content":"To use them, you first need to move them into your warehouse or granary.","stickToElement":"#itemsToSale div[class*=\"male_item_145\"]","boxPosition":"above","arrowPosition":50,"dismissButton":true}],"restartableGroup":"Hero resources in inventory - Hero page"};
+    // Travian.Game.contextHelpData = {"groupName":"Culture points tab in Residence (build.php)","steps":[{"content":"Culture points determine the number of villages you can settle or conquer.","stickToElement":"div#villageSlotInformation table:eq(0)","boxPosition":"after","arrowPosition":80},{"content":"Build and upgrade buildings to increase your culture point production.","stickToElement":"div#culturePointsProductionHint div.fluidSpeechBubble-container","boxPosition":"above","arrowPosition":20},{"content":"You can also see your current progress here.","stickToElement":"div#sidebarBoxVillagelist div.expansionSlotInfo > div.barWrapper","boxPosition":"before","arrowPosition":20,"dismissButton":true}]}
+    // Travian.Game.contextHelpData = {"groupName":"","steps":[],"restartableGroup":"Culture points tab in Residence (build.php)"};
+    // Travian.Game.contextHelpData = {"groupName":"Train tab in Residence (build.php)","steps":[{"content":"The Logades allows you to reduce loyalty in villages you want to conquer.<br \/>\n<br \/>\nClick on the image to learn more about this unit.","stickToElement":"div.innerTroopWrapper.troop9","boxPosition":"before","arrowPosition":50},{"content":"Three settlers allow you to found a new village. Keep them safe!","stickToElement":"div.innerTroopWrapper.troop10","boxPosition":"before","arrowPosition":50,"dismissButton":true}]}
+    // Travian.Game.contextHelpData = {"groupName":"","steps":[],"restartableGroup":"Train tab in Residence (build.php)"};
+    // Travian.Game.contextHelpData = {"groupName":"Marketplace tab management","steps":[{"content":"You can deliver resources to friendly villages with the merchants from the marketplace.","stickToElement":"div.contentNavi div.scrollingContainer div:eq(1)","boxPosition":"below","arrowPosition":50},{"content":"You can also buy resources offered by other villages.","stickToElement":"div.contentNavi div.scrollingContainer div:eq(2)","boxPosition":"below","arrowPosition":50},{"content":"Last but not least, you can order your merchants to offer resources for trade.","stickToElement":"div.contentNavi div.scrollingContainer div:eq(3)","boxPosition":"below","arrowPosition":50,"dismissButton":true}]}
+    // Travian.Game.contextHelpData = {"groupName":"","steps":[],"restartableGroup":"Marketplace tab management"};
+    // Travian.Game.contextHelpData = {"groupName":"Beginners protection","steps":[{"content":"You&#39;re safe for now. But once the beginner&#39;s protection ends, you should be ready to defend yourself.","stickToElement":"#sidebarBoxInfobox li.infoType_23","boxPosition":"after","arrowPosition":50,"dismissButton":true,"delay":0,"teaser":{"content":"You should learn something about your beginner&#39;s protection. Please expand the info box to continue.","stickToElement":"#sidebarBoxInfobox .toggle button.toggleBox","boxPosition":"below","arrowPosition":20}}],"restartableGroup":null};
+    // Travian.Game.ContextualHelp.initialize();
+    Travian.Game.setLanguage("en-US");
+
+    Travian.Game.Layout.initMobileOptimizations();
+    Travian.Game.PaymentWizardEventListener.defaultOptions = {
+        "shopUIVersion": 3,
+        "version": 1,
+        "cssClass": "paymentShopV3 brown"
+    };
+</script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="./TTwars nor8_files/js"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', '');
+    </script>
+
+
+
+<div style="position: absolute; top: 56px; left: 723px; z-index: 10000; display: none;"><div class="tip"><div class="tip-container"><div class="tl"></div><div class="tr"></div><div class="tc"></div><div class="ml"></div><div class="mr"></div><div class="mc"></div><div class="bl"></div><div class="br"></div><div class="bc"></div><div class="tip-contents" style="word-break: normal; overflow-wrap: normal; width: auto; white-space: normal; max-width: 422.4px;"><div class="title elementTitle" style="">Messages</div><div class="text elementText">New Message(s): 0</div></div></div></div></div></body></html>

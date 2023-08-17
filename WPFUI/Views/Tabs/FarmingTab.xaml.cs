@@ -35,6 +35,7 @@ namespace WPFUI.Views.Tabs
                 // interval
                 this.Bind(ViewModel, vm => vm.Interval, v => v.Interval.ViewModel.MainValue).DisposeWith(d);
                 this.Bind(ViewModel, vm => vm.DiffInterval, v => v.Interval.ViewModel.ToleranceValue).DisposeWith(d);
+                this.Bind(ViewModel, vm => vm.UseStartAll, v => v.UseStartAllCheckbox.IsChecked).DisposeWith(d);
 
                 // active content button
                 this.Bind(ViewModel, vm => vm.ContentButton, v => v.ActiveButton.Content).DisposeWith(d);

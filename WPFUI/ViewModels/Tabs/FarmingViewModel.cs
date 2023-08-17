@@ -61,13 +61,19 @@ namespace WPFUI.ViewModels.Tabs
             {
                 var accountId = AccountId;
                 using var context = _contextFactory.CreateDbContext();
-                var farms = context.Farms.Where(x => x.AccountId == accountId).ToList();
-                var activeFarms = farms.Where(x =>
+
+                var setting = context.AccountsSettings.Find(accountId);
+                if (!setting.UseStartAllFarm)
                 {
-                    var farmSetting = context.FarmsSettings.Find(x.Id);
-                    return farmSetting.IsActive;
-                }).ToList();
-                if (activeFarms.Count == 0) return;
+                    var farms = context.Farms.Where(x => x.AccountId == accountId).ToList();
+                    var activeFarms = farms.Where(x =>
+                    {
+                        var farmSetting = context.FarmsSettings.Find(x.Id);
+                        return farmSetting.IsActive;
+                    }).ToList();
+                    if (activeFarms.Count == 0) return;
+                }
+
                 var tasks = _taskManager.GetList(AccountId);
                 var task = tasks.OfType<StartFarmList>().FirstOrDefault();
                 if (task is null)
@@ -101,7 +107,6 @@ namespace WPFUI.ViewModels.Tabs
 
         public async Task SaveData()
         {
-            if (CurrentFarm is null) return;
             _waitingOverlay.Show("Saving ...");
             await Task.Run(() =>
             {
@@ -110,6 +115,7 @@ namespace WPFUI.ViewModels.Tabs
                 settings.FarmIntervalMin = Interval - DiffInterval;
                 if (settings.FarmIntervalMin < 0) settings.FarmIntervalMin = 0;
                 settings.FarmIntervalMax = Interval + DiffInterval;
+                settings.UseStartAllFarm = UseStartAll;
                 context.Update(settings);
                 context.SaveChanges();
             });
@@ -212,6 +218,7 @@ namespace WPFUI.ViewModels.Tabs
 
                 Interval = (settings.FarmIntervalMax + settings.FarmIntervalMin) / 2;
                 DiffInterval = (settings.FarmIntervalMax - settings.FarmIntervalMin) / 2;
+                UseStartAll = settings.UseStartAllFarm;
             });
         }
 
@@ -234,6 +241,14 @@ namespace WPFUI.ViewModels.Tabs
         {
             get => _diffInterval;
             set => this.RaiseAndSetIfChanged(ref _diffInterval, value);
+        }
+
+        private bool _useStartAll;
+
+        public bool UseStartAll
+        {
+            get => _useStartAll;
+            set => this.RaiseAndSetIfChanged(ref _useStartAll, value);
         }
 
         private string _contentButton;

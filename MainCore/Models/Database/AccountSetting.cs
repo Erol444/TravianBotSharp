@@ -18,5 +18,6 @@
         public bool IsAutoAdventure { get; set; }
         public int FarmIntervalMin { get; set; }
         public int FarmIntervalMax { get; set; }
+        public bool UseStartAllFarm { get; set; }
     }
 }
