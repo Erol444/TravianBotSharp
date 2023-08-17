@@ -7,7 +7,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
@@ -72,7 +71,7 @@ namespace MainCore.Services
                 throw new Exception($"ChromeDriver download request failed with status code: {driverZipResponse.StatusCode}, reason phrase: {driverZipResponse.ReasonPhrase}");
             }
             var driverName = GetDriverName();
-            string targetPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string targetPath = Path.GetDirectoryName(AppContext.BaseDirectory);
             targetPath = Path.Combine(targetPath, driverName);
 
             using (var zipFileStream = await driverZipResponse.Content.ReadAsStreamAsync())
@@ -88,7 +87,7 @@ namespace MainCore.Services
         private static async Task<Version> GetCurrentDriverVersion()
         {
             var driverName = GetDriverName();
-            string targetPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string targetPath = Path.GetDirectoryName(AppContext.BaseDirectory);
             targetPath = Path.Combine(targetPath, driverName);
             if (!File.Exists(targetPath)) return new Version(0, 0, 0, 0);
 
