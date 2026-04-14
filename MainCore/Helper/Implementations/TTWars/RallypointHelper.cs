@@ -33,7 +33,7 @@ namespace MainCore.Helper.Implementations.TTWars
             });
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
-            result = _generalHelper.Click(accountId, By.Id($"raidListMarkAll{farmId}"));
+            result = _generalHelper.Click(accountId, By.XPath("//button[contains(., 'Start all farm lists') or contains(., 'Start all farm')]"));
             if (result.IsFailed) return result.WithError(new Trace(Trace.TraceMessage()));
 
             var html = chromeBrowser.GetHtml();
